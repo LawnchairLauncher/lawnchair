@@ -20,8 +20,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.InsetDrawable;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.State;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -93,7 +93,6 @@ public class WidgetsContainerView extends BaseContainerView
         mWidgetHostViewLoader = new WidgetHostViewLoader(mLauncher);
         mAdapter = new WidgetsListAdapter(context, this, this, mLauncher);
         mIconCache = (LauncherAppState.getInstance()).getIconCache();
-
         if (DEBUG) {
             Log.d(TAG, "WidgetsContainerView constructor");
         }
@@ -347,6 +346,23 @@ public class WidgetsContainerView extends BaseContainerView
             setPadding(mFixedBounds.left, mFixedBounds.top, getMeasuredWidth() - mFixedBounds.right,
                     mFixedBounds.bottom);
         }
+
+        int inset = mFixedBounds.isEmpty() ? mView.getScrollbarWidth() : mFixedBoundsContainerInset;
+        mView.setPadding(inset + mView.getScrollbarWidth(), inset,
+                inset, inset);
+    }
+
+    @Override
+    protected void onUpdateBackgrounds() {
+        InsetDrawable background;
+        // Update the background of the reveal view and list to be inset with the fixed bound
+        // insets instead of the default insets
+        // TODO: Use quantum_panel instead of quantum_panel_shape.
+        int inset = mFixedBounds.isEmpty() ? mView.getScrollbarWidth() : mFixedBoundsContainerInset;
+        background = new InsetDrawable(
+                getContext().getResources().getDrawable(R.drawable.quantum_panel_shape),
+                inset, 0, inset, 0);
+        mView.updateBackgroundPadding(background);
     }
 
     /**

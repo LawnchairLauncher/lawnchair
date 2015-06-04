@@ -86,10 +86,8 @@ public class BaseRecyclerView extends RecyclerView
 
     private int mDownX;
     private int mDownY;
-    private int mLastX;
     private int mLastY;
     private int mScrollbarWidth;
-    private int mScrollbarMinHeight;
     private int mScrollbarInset;
     private Rect mBackgroundPadding = new Rect();
 
@@ -121,8 +119,6 @@ public class BaseRecyclerView extends RecyclerView
         mFastScrollTextPaint.setTextSize(res.getDimensionPixelSize(
                 R.dimen.all_apps_fast_scroll_text_size));
         mScrollbarWidth = res.getDimensionPixelSize(R.dimen.all_apps_fast_scroll_bar_width);
-        mScrollbarMinHeight =
-                res.getDimensionPixelSize(R.dimen.all_apps_fast_scroll_bar_min_height);
         mScrollbarInset =
                 res.getDimensionPixelSize(R.dimen.all_apps_fast_scroll_scrubber_touch_inset);
         setFastScrollerAlpha(mFastScrollAlpha);
@@ -173,7 +169,7 @@ public class BaseRecyclerView extends RecyclerView
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 // Keep track of the down positions
-                mDownX = mLastX = x;
+                mDownX = x;
                 mDownY = mLastY = y;
                 if (shouldStopScroll(ev)) {
                     stopScroll();
@@ -188,7 +184,6 @@ public class BaseRecyclerView extends RecyclerView
                     animateFastScrollerVisibility(true);
                 }
                 if (mDraggingFastScroller) {
-                    mLastX = x;
                     mLastY = y;
 
                     // Scroll to the right position, and update the section name
