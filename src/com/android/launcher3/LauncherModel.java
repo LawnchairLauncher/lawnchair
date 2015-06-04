@@ -2932,6 +2932,9 @@ public class LauncherModel extends BroadcastReceiver
                 }
             });
         }
+
+        // Reload widget list. No need to refresh, as we only want to update the icons and labels.
+        loadAndBindWidgetsAndShortcuts(mApp.getContext(), callbacks, false);
     }
 
     void enqueuePackageUpdated(PackageUpdatedTask task) {
