@@ -403,22 +403,34 @@ public class Launcher extends Activity
     FocusIndicatorView mFocusHandler;
 
     @Thunk boolean mRotationEnabled = false;
-    private boolean mPreferenceObserverRegistered = false;
+    private boolean mScreenOrientationSettingReceiverRegistered = false;
 
-    final private SharedPreferences.OnSharedPreferenceChangeListener mSettingsObserver =
-            new SharedPreferences.OnSharedPreferenceChangeListener() {
-        @Override
-        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            if (Utilities.ALLOW_ROTATION_PREFERENCE_KEY.equals(key)) {
-                if (mRotationEnabled = sharedPreferences.getBoolean(
-                        Utilities.ALLOW_ROTATION_PREFERENCE_KEY, false)) {
-                    unlockScreenOrientation(true);
-                } else {
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+    final private BroadcastReceiver mScreenOrientationSettingReceiver =
+            new BroadcastReceiver() {
+                @Thunk Runnable mUpdateOrientationRunnable = new Runnable() {
+                    public void run() {
+                        setOrientation();
+                    }
+                };
+
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    mRotationEnabled = intent.getBooleanExtra(
+                            Utilities.SCREEN_ROTATION_SETTING_EXTRA, false);
+                    if (!waitUntilResume(mUpdateOrientationRunnable, true)) {
+                        setOrientation();
+                    }
                 }
-            }
+            };
+
+    @Thunk void setOrientation() {
+        if (mRotationEnabled) {
+            unlockScreenOrientation(true);
+        } else {
+            setRequestedOrientation(
+                    ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
         }
-    };
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -520,16 +532,18 @@ public class Launcher extends Activity
         // In case we are on a device with locked rotation, we should look at preferences to check
         // if the user has specifically allowed rotation.
         if (!mRotationEnabled) {
-            getSharedPreferences(LauncherFiles.ROTATION_PREF_FILE,
-                    Context.MODE_MULTI_PROCESS).registerOnSharedPreferenceChangeListener(
-                    mSettingsObserver);
-            mPreferenceObserverRegistered = true;
+            String updateOrientationBroadcastPermission = getResources().getString(
+                    R.string.receive_update_orientation_broadcasts_permission);
+            registerReceiver(mScreenOrientationSettingReceiver,
+                    new IntentFilter(Utilities.SCREEN_ROTATION_SETTING_INTENT),
+                    updateOrientationBroadcastPermission, null);
+            mScreenOrientationSettingReceiverRegistered = true;
             mRotationEnabled = Utilities.isAllowRotationPrefEnabled(getApplicationContext());
         }
 
         // On large interfaces, or on devices that a user has specifically enabled screen rotation,
         // we want the screen to auto-rotate based on the current orientation
-        unlockScreenOrientation(true);
+        setOrientation();
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onCreate(savedInstanceState);
@@ -2016,11 +2030,9 @@ public class Launcher extends Activity
     public void onDestroy() {
         super.onDestroy();
 
-        if (mPreferenceObserverRegistered) {
-            getSharedPreferences(LauncherFiles.ROTATION_PREF_FILE,
-                    Context.MODE_MULTI_PROCESS).unregisterOnSharedPreferenceChangeListener(
-                    mSettingsObserver);
-            mPreferenceObserverRegistered = false;
+        if (mScreenOrientationSettingReceiverRegistered) {
+            unregisterReceiver(mScreenOrientationSettingReceiver);
+            mScreenOrientationSettingReceiverRegistered = false;
         }
 
         // Remove all pending runnables
@@ -3663,7 +3675,7 @@ public class Launcher extends Activity
      *
      * @return {@code true} if we are currently paused. The caller might be able to skip some work
      */
-    private boolean waitUntilResume(Runnable run, boolean deletePreviousRunnables) {
+    @Thunk boolean waitUntilResume(Runnable run, boolean deletePreviousRunnables) {
         if (mPaused) {
             if (LOGD) Log.d(TAG, "Deferring update until onResume");
             if (deletePreviousRunnables) {

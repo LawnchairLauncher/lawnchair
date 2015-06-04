@@ -18,12 +18,14 @@ package com.android.launcher3;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceScreen;
 
 /**
- * Settings activity for Launcher. Currently implements the following setting:
- * LockToPortrait
+ * Settings activity for Launcher. Currently implements the following setting: Allow rotation
  */
 public class SettingsActivity extends Activity {
     @Override
@@ -41,13 +43,25 @@ public class SettingsActivity extends Activity {
      */
     @SuppressWarnings("WeakerAccess")
     public static class LauncherSettingsFragment extends PreferenceFragment {
-
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            getPreferenceManager().setSharedPreferencesMode(Context.MODE_PRIVATE);
+            getPreferenceManager().setSharedPreferencesMode(Context.MODE_MULTI_PROCESS);
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.ROTATION_PREF_FILE);
             addPreferencesFromResource(R.xml.launcher_preferences);
+        }
+
+        @Override
+        public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen,
+                                             Preference preference) {
+            boolean allowRotation = getPreferenceManager().getSharedPreferences().getBoolean(
+                    Utilities.ALLOW_ROTATION_PREFERENCE_KEY, false);
+            Intent rotationSetting = new Intent(Utilities.SCREEN_ROTATION_SETTING_INTENT);
+            String launchBroadcastPermission = getResources().getString(
+                            R.string.receive_update_orientation_broadcasts_permission);
+            rotationSetting.putExtra(Utilities.SCREEN_ROTATION_SETTING_EXTRA, allowRotation);
+            getActivity().sendBroadcast(rotationSetting, launchBroadcastPermission);
+            return true;
         }
     }
 }
