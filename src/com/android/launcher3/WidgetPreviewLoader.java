@@ -586,26 +586,26 @@ public class WidgetPreviewLoader {
         protected Bitmap doInBackground(Void... params) {
             Bitmap unusedBitmap = null;
 
+            // If already cancelled before this gets to run in the background, then return early
+            if (isCancelled()) {
+                return null;
+            }
             synchronized (mUnusedBitmaps) {
-                // If already cancelled before this gets to run in the background, then return early
-                if (isCancelled()) {
-                    return null;
-                }
-                // Check if we can use a bitmap
+                // Check if we can re-use a bitmap
                 for (Bitmap candidate : mUnusedBitmaps) {
                     if (candidate != null && candidate.isMutable() &&
                             candidate.getWidth() == mPreviewWidth &&
                             candidate.getHeight() == mPreviewHeight) {
                         unusedBitmap = candidate;
+                        mUnusedBitmaps.remove(unusedBitmap);
                         break;
                     }
                 }
+            }
 
-                if (unusedBitmap == null) {
-                    unusedBitmap = Bitmap.createBitmap(mPreviewWidth, mPreviewHeight, Config.ARGB_8888);
-                } else {
-                    mUnusedBitmaps.remove(unusedBitmap);
-                }
+            // creating a bitmap is expensive. Do not do this inside synchronized block.
+            if (unusedBitmap == null) {
+                unusedBitmap = Bitmap.createBitmap(mPreviewWidth, mPreviewHeight, Config.ARGB_8888);
             }
             // If cancelled now, don't bother reading the preview from the DB
             if (isCancelled()) {
