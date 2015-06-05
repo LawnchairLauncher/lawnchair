@@ -43,7 +43,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         // Get the hover color
         mHoverColor = getResources().getColor(R.color.delete_target_hover_tint);
 
-        setDrawable(R.drawable.ic_launcher_remove_normal);
+        setDrawable(R.drawable.ic_remove_launcher);
     }
 
     public static boolean supportsDrop(Object info) {
