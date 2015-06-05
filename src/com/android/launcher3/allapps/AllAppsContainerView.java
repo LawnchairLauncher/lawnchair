@@ -432,6 +432,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                 icon = (BubbleTextView) mLayoutInflater.inflate(
                         R.layout.all_apps_prediction_bar_icon, mPredictionBarView, false);
                 icon.setFocusable(true);
+                icon.setLongPressTimeout(ViewConfiguration.get(getContext()).getLongPressTimeout());
                 mPredictionBarView.addView(icon);
             }
 

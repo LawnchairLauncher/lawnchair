@@ -51,7 +51,6 @@ public abstract class ButtonDropTarget extends TextView
 
     protected Launcher mLauncher;
     private int mBottomDragPadding;
-    protected TextView mText;
     protected SearchDropTargetBar mSearchDropTargetBar;
 
     /** Whether this drop target is active for the current drag */
@@ -82,11 +81,9 @@ public abstract class ButtonDropTarget extends TextView
         mOriginalTextColor = getTextColors();
 
         // Remove the text in the Phone UI in landscape
-        int orientation = getResources().getConfiguration().orientation;
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            if (!LauncherAppState.getInstance().isScreenLarge()) {
-                setText("");
-            }
+        DeviceProfile grid = ((Launcher) getContext()).getDeviceProfile();
+        if (grid.isVerticalBarLayout()) {
+            setText("");
         }
     }
 

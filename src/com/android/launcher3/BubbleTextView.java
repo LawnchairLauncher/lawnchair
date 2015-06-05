@@ -184,6 +184,12 @@ public class BubbleTextView extends TextView {
         verifyHighRes();
     }
 
+    /**
+     * Overrides the default long press timeout.
+     */
+    public void setLongPressTimeout(int longPressTimeout) {
+        mLongPressHelper.setLongPressTimeout(longPressTimeout);
+    }
 
     @Override
     protected boolean setFrame(int left, int top, int right, int bottom) {

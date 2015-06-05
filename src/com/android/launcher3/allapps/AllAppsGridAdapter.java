@@ -27,6 +27,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.android.launcher3.AppInfo;
@@ -418,6 +419,8 @@ class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHol
                 icon.setOnTouchListener(mTouchListener);
                 icon.setOnClickListener(mIconClickListener);
                 icon.setOnLongClickListener(mIconLongClickListener);
+                icon.setLongPressTimeout(ViewConfiguration.get(parent.getContext())
+                        .getLongPressTimeout());
                 icon.setFocusable(true);
                 return new ViewHolder(icon);
             default:

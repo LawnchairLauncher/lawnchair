@@ -25,6 +25,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.Log;
 
+import android.view.ViewConfiguration;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
@@ -39,9 +40,6 @@ public class LauncherAppState {
     @Thunk final LauncherModel mModel;
     private final IconCache mIconCache;
     private final WidgetPreviewLoader mWidgetCache;
-
-    private final boolean mIsScreenLarge;
-    private final int mLongPressTimeout = 300;
 
     private boolean mWallpaperChangedSinceLastCheck;
 
@@ -86,8 +84,6 @@ public class LauncherAppState {
             MemoryTracker.startTrackingMe(sContext, "L");
         }
 
-        // set sIsScreenXLarge and mScreenDensity *before* creating icon cache
-        mIsScreenLarge = isScreenLarge(sContext.getResources());
         mInvariantDeviceProfile = new InvariantDeviceProfile(sContext);
         mIconCache = new IconCache(sContext, mInvariantDeviceProfile);
         mWidgetCache = new WidgetPreviewLoader(sContext, mInvariantDeviceProfile, mIconCache);
@@ -149,6 +145,9 @@ public class LauncherAppState {
         return mModel;
     }
 
+    /**
+     * TODO(winsonc, hyunyoungs): We need to respect this
+     */
     boolean shouldShowAppOrWidgetProvider(ComponentName componentName) {
         return mAppFilter == null || mAppFilter.shouldShowApp(componentName);
     }
@@ -168,20 +167,7 @@ public class LauncherAppState {
     public WidgetPreviewLoader getWidgetCache() {
         return mWidgetCache;
     }
-
-    public boolean isScreenLarge() {
-        return mIsScreenLarge;
-    }
-
-    // Need a version that doesn't require an instance of LauncherAppState for the wallpaper picker
-    public static boolean isScreenLarge(Resources res) {
-        return res.getBoolean(R.bool.is_large_tablet);
-    }
-
-    public int getLongPressTimeout() {
-        return mLongPressTimeout;
-    }
-
+    
     public void onWallpaperChanged() {
         mWallpaperChangedSinceLastCheck = true;
     }
