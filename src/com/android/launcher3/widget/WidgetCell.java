@@ -26,6 +26,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLayoutChangeListener;
+import android.view.ViewPropertyAnimator;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -175,7 +176,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         if (bitmap != null) {
             mWidgetImage.setBitmap(bitmap);
             mWidgetImage.setAlpha(0f);
-            mWidgetImage.animate().alpha(1.0f).setDuration(FADE_IN_DURATION_MS);
+            ViewPropertyAnimator anim = mWidgetImage.animate();
+            anim.alpha(1.0f).setDuration(FADE_IN_DURATION_MS);
         }
     }
 

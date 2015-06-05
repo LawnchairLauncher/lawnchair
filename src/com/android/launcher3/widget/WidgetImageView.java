@@ -64,6 +64,14 @@ public class WidgetImageView extends View {
         }
     }
 
+    /**
+     * Prevents the inefficient alpha view rendering.
+     */
+    @Override
+    public boolean hasOverlappingRendering() {
+        return false;
+    }
+
     private void updateDstRectF() {
         if (mBitmap.getWidth() > getWidth()) {
             float scale = ((float) getWidth()) / mBitmap.getWidth();
