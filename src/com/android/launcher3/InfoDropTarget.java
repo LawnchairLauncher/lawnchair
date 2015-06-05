@@ -41,7 +41,7 @@ public class InfoDropTarget extends ButtonDropTarget {
         // Get the hover color
         mHoverColor = getResources().getColor(R.color.info_target_hover_tint);
 
-        setDrawable(R.drawable.ic_launcher_info_normal);
+        setDrawable(R.drawable.ic_info_launcher);
     }
 
     public static void startDetailsActivityForInfo(Object info, Launcher launcher) {

@@ -222,8 +222,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 DeviceProfile grid = launcher.getDeviceProfile();
                 sPreviewSize = grid.folderIconSizePx;
                 sPreviewPadding = res.getDimensionPixelSize(R.dimen.folder_preview_padding);
-                sSharedOuterRingDrawable = res.getDrawable(R.drawable.portal_ring_outer_holo);
-                sSharedInnerRingDrawable = res.getDrawable(R.drawable.portal_ring_inner_nolip_holo);
+                sSharedOuterRingDrawable = res.getDrawable(R.drawable.portal_ring_outer);
+                sSharedInnerRingDrawable = res.getDrawable(R.drawable.portal_ring_inner_nolip);
                 sSharedFolderLeaveBehind = res.getDrawable(R.drawable.portal_ring_rest);
                 sStaticValuesDirty = false;
             }
