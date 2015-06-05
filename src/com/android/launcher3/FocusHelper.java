@@ -222,8 +222,8 @@ public class FocusHelper {
         if (keyCode == KeyEvent.KEYCODE_DPAD_UP &&
                 !profile.isVerticalBarLayout()) {
             matrix = FocusLogic.createSparseMatrix(iconLayout, hotseatLayout,
-                    true /* hotseat horizontal */, hotseat.getAllAppsButtonRank(),
-                    iconRank == hotseat.getAllAppsButtonRank() /* include all apps icon */);
+                    true /* hotseat horizontal */, profile.inv.hotseatAllAppsRank,
+                    iconRank == profile.inv.hotseatAllAppsRank /* include all apps icon */);
             iconIndex += iconParent.getChildCount();
             countX = iconLayout.getCountX();
             countY = iconLayout.getCountY() + hotseatLayout.getCountY();
@@ -231,8 +231,8 @@ public class FocusHelper {
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT &&
                 profile.isVerticalBarLayout()) {
             matrix = FocusLogic.createSparseMatrix(iconLayout, hotseatLayout,
-                    false /* hotseat horizontal */, hotseat.getAllAppsButtonRank(),
-                    iconRank == hotseat.getAllAppsButtonRank() /* include all apps icon */);
+                    false /* hotseat horizontal */, profile.inv.hotseatAllAppsRank,
+                    iconRank == profile.inv.hotseatAllAppsRank /* include all apps icon */);
             iconIndex += iconParent.getChildCount();
             countX = iconLayout.getCountX() + hotseatLayout.getCountX();
             countY = iconLayout.getCountY();
@@ -316,13 +316,13 @@ public class FocusHelper {
         // with the hotseat.
         if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN && !profile.isVerticalBarLayout()) {
             matrix = FocusLogic.createSparseMatrix(iconLayout, hotseatLayout, true /* horizontal */,
-                    hotseat.getAllAppsButtonRank(),
+                    profile.inv.hotseatAllAppsRank,
                     !hotseat.hasIcons() /* ignore all apps icon, unless there are no other icons */);
             countY = countY + 1;
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT &&
                 profile.isVerticalBarLayout()) {
             matrix = FocusLogic.createSparseMatrix(iconLayout, hotseatLayout, false /* horizontal */,
-                    hotseat.getAllAppsButtonRank(),
+                    profile.inv.hotseatAllAppsRank,
                     !hotseat.hasIcons() /* ignore all apps icon, unless there are no other icons */);
             countX = countX + 1;
         } else if (keyCode == KeyEvent.KEYCODE_DEL || keyCode == KeyEvent.KEYCODE_FORWARD_DEL) {

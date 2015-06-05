@@ -3969,7 +3969,7 @@ public class Workspace extends PagedView
     @Override
     public boolean onEnterScrollArea(int x, int y, int direction) {
         // Ignore the scroll area if we are dragging over the hot seat
-        boolean isPortrait = !LauncherAppState.isScreenLandscape(getContext());
+        boolean isPortrait = !mLauncher.getDeviceProfile().isLandscape;
         if (mLauncher.getHotseat() != null && isPortrait) {
             Rect r = new Rect();
             mLauncher.getHotseat().getHitRect(r);

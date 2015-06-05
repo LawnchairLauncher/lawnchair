@@ -1810,16 +1810,17 @@ public class Launcher extends Activity
         }
     }
 
-    private final Handler mHandler = new Handler() {
+    @Thunk final Handler mHandler = new Handler(new Handler.Callback() {
+
         @Override
-        public void handleMessage(Message msg) {
+        public boolean handleMessage(Message msg) {
             if (msg.what == ADVANCE_MSG) {
                 int i = 0;
                 for (View key: mWidgetsToAdvance.keySet()) {
                     final View v = key.findViewById(mWidgetsToAdvance.get(key).autoAdvanceViewId);
                     final int delay = mAdvanceStagger * i;
                     if (v instanceof Advanceable) {
-                       postDelayed(new Runnable() {
+                        mHandler.postDelayed(new Runnable() {
                            public void run() {
                                ((Advanceable) v).advance();
                            }
@@ -1829,8 +1830,9 @@ public class Launcher extends Activity
                 }
                 sendAdvanceMessage(mAdvanceInterval);
             }
+            return true;
         }
-    };
+    });
 
     void addWidgetToAutoAdvanceIfNeeded(View hostView, AppWidgetProviderInfo appWidgetInfo) {
         if (appWidgetInfo == null || appWidgetInfo.autoAdvanceViewId == -1) return;
@@ -2345,7 +2347,7 @@ public class Launcher extends Activity
 
         Intent createShortcutIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
         createShortcutIntent.setComponent(componentName);
-        processShortcut(createShortcutIntent);
+        Utilities.startActivityForResultSafely(this, createShortcutIntent, REQUEST_CREATE_SHORTCUT);
     }
 
     /**
@@ -2400,14 +2402,6 @@ public class Launcher extends Activity
                 startActivityForResult(intent, REQUEST_BIND_APPWIDGET);
             }
         }
-    }
-
-    void processShortcut(Intent intent) {
-        Utilities.startActivityForResultSafely(this, intent, REQUEST_CREATE_SHORTCUT);
-    }
-
-    void processWallpaper(Intent intent) {
-        startActivityForResult(intent, REQUEST_PICK_WALLPAPER);
     }
 
     FolderIcon addFolder(CellLayout layout, long container, final long screenId, int cellX,
@@ -2811,18 +2805,8 @@ public class Launcher extends Activity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onClickSettingsButton(v);
         } else {
-            showSettingsActivity();
+            startActivity(new Intent(this, SettingsActivity.class));
         }
-    }
-
-    public void onTouchDownAllAppsButton(View v) {
-        // Provide the same haptic feedback that the system offers for virtual keys.
-        v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
-    }
-
-    public void performHapticFeedbackOnTouchDown(View v) {
-        // Provide the same haptic feedback that the system offers for virtual keys.
-        v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
     }
 
     public View.OnTouchListener getHapticFeedbackTouchListener() {
@@ -3774,10 +3758,6 @@ public class Launcher extends Activity
 
     @Override
     public void bindAddScreens(ArrayList<Long> orderedScreenIds) {
-        // Log to disk
-        Launcher.addDumpLog(TAG, "11683562 - bindAddScreens()", true);
-        Launcher.addDumpLog(TAG, "11683562 -   orderedScreenIds: " +
-                TextUtils.join(", ", orderedScreenIds), true);
         int count = orderedScreenIds.size();
         for (int i = 0; i < count; i++) {
             mWorkspace.insertNewWorkspaceScreenBeforeEmptyScreen(orderedScreenIds.get(i));
@@ -4533,10 +4513,6 @@ public class Launcher extends Activity
         SharedPreferences.Editor editor = mSharedPrefs.edit();
         editor.putBoolean(FIRST_RUN_ACTIVITY_DISPLAYED, true);
         editor.apply();
-    }
-
-    private void showSettingsActivity() {
-        startActivity(new Intent(this, SettingsActivity.class));
     }
 
     /**
