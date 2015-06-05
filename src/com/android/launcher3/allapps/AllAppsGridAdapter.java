@@ -140,7 +140,7 @@ class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHol
 
                 if (shouldDrawItemDivider(holder, items) && !hasDrawnPredictedAppsDivider) {
                     // Draw the divider under the predicted apps
-                    int top = child.getTop() + child.getHeight();
+                    int top = child.getTop() + child.getHeight() - mPredictionBarBottomPadding / 2;
                     c.drawLine(mBackgroundPadding.left, top,
                             parent.getWidth() - mBackgroundPadding.right, top,
                             mPredictedAppsDividerPaint);
@@ -295,6 +295,7 @@ class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHol
     private View.OnLongClickListener mIconLongClickListener;
     @Thunk final Rect mBackgroundPadding = new Rect();
     @Thunk int mPredictionBarHeight;
+    @Thunk int mPredictionBarBottomPadding;
     @Thunk int mAppsPerRow;
     @Thunk boolean mIsRtl;
     private String mEmptySearchText;
@@ -337,6 +338,8 @@ class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHol
         mPredictedAppsDividerPaint.setStrokeWidth(Utilities.pxFromDp(1f, res.getDisplayMetrics()));
         mPredictedAppsDividerPaint.setColor(0x1E000000);
         mPredictedAppsDividerPaint.setAntiAlias(true);
+        mPredictionBarBottomPadding =
+                res.getDimensionPixelSize(R.dimen.all_apps_prediction_bar_bottom_padding);
     }
 
     /**
