@@ -19,6 +19,7 @@ package com.android.launcher3;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -335,17 +336,11 @@ public class WorkspaceStateTransitionAnimation {
                     }
                     if (mOldBackgroundAlphas[i] != 0 ||
                             mNewBackgroundAlphas[i] != 0) {
-                        ValueAnimator bgAnim =
+                        ValueAnimator bgAnim = ObjectAnimator.ofFloat(cl, "backgroundAlpha",
+                                mOldBackgroundAlphas[i], mNewBackgroundAlphas[i]);
                                 LauncherAnimUtils.ofFloat(cl, 0f, 1f);
                         bgAnim.setInterpolator(mZoomInInterpolator);
                         bgAnim.setDuration(duration);
-                        bgAnim.addUpdateListener(new LauncherAnimatorUpdateListener() {
-                            public void onAnimationUpdate(float a, float b) {
-                                cl.setBackgroundAlpha(
-                                        a * mOldBackgroundAlphas[i] +
-                                                b * mNewBackgroundAlphas[i]);
-                            }
-                        });
                         mStateAnimator.play(bgAnim);
                     }
                 }

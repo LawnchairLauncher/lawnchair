@@ -868,8 +868,6 @@ public class LauncherProvider extends ContentProvider {
                 throw new RuntimeException("Error: max screen id was not initialized");
             }
             mMaxScreenId += 1;
-            // Log to disk
-            Launcher.addDumpLog(TAG, "11683562 - generateNewScreenId(): " + mMaxScreenId, true);
             return mMaxScreenId;
         }
 

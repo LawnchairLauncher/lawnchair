@@ -41,7 +41,6 @@ public class LauncherAppState {
     private final WidgetPreviewLoader mWidgetCache;
 
     private final boolean mIsScreenLarge;
-    private final float mScreenDensity;
     private final int mLongPressTimeout = 300;
 
     private boolean mWallpaperChangedSinceLastCheck;
@@ -89,7 +88,6 @@ public class LauncherAppState {
 
         // set sIsScreenXLarge and mScreenDensity *before* creating icon cache
         mIsScreenLarge = isScreenLarge(sContext.getResources());
-        mScreenDensity = sContext.getResources().getDisplayMetrics().density;
         mInvariantDeviceProfile = new InvariantDeviceProfile(sContext);
         mIconCache = new IconCache(sContext, mInvariantDeviceProfile);
         mWidgetCache = new WidgetPreviewLoader(sContext, mInvariantDeviceProfile, mIconCache);
@@ -178,15 +176,6 @@ public class LauncherAppState {
     // Need a version that doesn't require an instance of LauncherAppState for the wallpaper picker
     public static boolean isScreenLarge(Resources res) {
         return res.getBoolean(R.bool.is_large_tablet);
-    }
-
-    public static boolean isScreenLandscape(Context context) {
-        return context.getResources().getConfiguration().orientation ==
-            Configuration.ORIENTATION_LANDSCAPE;
-    }
-
-    public float getScreenDensity() {
-        return mScreenDensity;
     }
 
     public int getLongPressTimeout() {
