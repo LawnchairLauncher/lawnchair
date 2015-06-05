@@ -58,9 +58,10 @@
     <dimen name="all_apps_grid_section_y_offset">8dp</dimen>
     <dimen name="all_apps_grid_section_text_size">24sp</dimen>
     <dimen name="all_apps_search_bar_height">52dp</dimen>
+    <dimen name="all_apps_search_bar_prediction_bar_padding">8dp</dimen>
     <dimen name="all_apps_icon_top_bottom_padding">8dp</dimen>
-    <dimen name="all_apps_icon_left_right_padding">18dp</dimen>
-    <dimen name="all_apps_prediction_icon_top_bottom_padding">12dp</dimen>
+    <dimen name="all_apps_icon_width_gap">24dp</dimen>
+    <dimen name="all_apps_prediction_bar_bottom_padding">16dp</dimen>
 
     <dimen name="all_apps_fast_scroll_bar_width">4dp</dimen>
     <dimen name="all_apps_fast_scroll_scrubber_touch_inset">-16dp</dimen>

@@ -38,6 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/all_apps_search_bar_height"
+        android:paddingBottom="@dimen/all_apps_prediction_bar_bottom_padding"
         android:orientation="horizontal"
         android:descendantFocusability="afterDescendants"
         android:focusable="true"

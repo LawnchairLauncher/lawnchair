@@ -230,12 +230,12 @@ public class DeviceProfile {
     public boolean updateAppsViewNumCols(Resources res, int containerWidth) {
         int appsViewLeftMarginPx =
                 res.getDimensionPixelSize(R.dimen.all_apps_grid_view_start_margin);
-        int allAppsCellPaddingPx =
-                res.getDimensionPixelSize(R.dimen.all_apps_icon_left_right_padding);
+        int allAppsCellWidthGap =
+                res.getDimensionPixelSize(R.dimen.all_apps_icon_width_gap);
         int availableAppsWidthPx = (containerWidth > 0) ? containerWidth : availableWidthPx;
         int numAppsCols = (availableAppsWidthPx - appsViewLeftMarginPx) /
-                (allAppsIconSizePx + 2 * allAppsCellPaddingPx);
-        int numPredictiveAppCols = isPhone ? 4 : numAppsCols;
+                (allAppsIconSizePx + allAppsCellWidthGap);
+        int numPredictiveAppCols = Math.max(inv.minAllAppsPredictionColumns, numAppsCols);
         if ((numAppsCols != allAppsNumCols) ||
                 (numPredictiveAppCols != allAppsNumPredictiveCols)) {
             allAppsNumCols = numAppsCols;

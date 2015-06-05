@@ -20,7 +20,7 @@
     android:id="@+id/icon"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="left|center_vertical"
+    android:layout_gravity="center"
     android:paddingTop="@dimen/all_apps_icon_top_bottom_padding"
     android:paddingBottom="@dimen/all_apps_icon_top_bottom_padding"
     android:focusable="true"
