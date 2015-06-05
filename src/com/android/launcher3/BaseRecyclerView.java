@@ -89,9 +89,7 @@ public class BaseRecyclerView extends RecyclerView
     private int mLastY;
     private int mScrollbarWidth;
     private int mScrollbarInset;
-    private Rect mBackgroundPadding = new Rect();
-
-
+    protected Rect mBackgroundPadding = new Rect();
 
     public BaseRecyclerView(Context context) {
         this(context, null);
@@ -230,6 +228,10 @@ public class BaseRecyclerView extends RecyclerView
         return false;
     }
 
+    public void updateBackgroundPadding(Rect padding) {
+        mBackgroundPadding.set(padding);
+    }
+
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
@@ -340,9 +342,10 @@ public class BaseRecyclerView extends RecyclerView
             // Calculate the position for the fast scroller popup
             Rect bgBounds = mFastScrollerBg.getBounds();
             if (Utilities.isRtl(getResources())) {
-                x = mBackgroundPadding.left + getScrollBarSize();
+                x = mBackgroundPadding.left + (2 * getScrollbarWidth());
             } else {
-                x = getWidth() - getPaddingRight() - getScrollBarSize() - bgBounds.width();
+                x = getWidth() - mBackgroundPadding.right - (2 * getScrollbarWidth()) -
+                        bgBounds.width();
             }
             y = mLastY - (int) (FAST_SCROLL_OVERLAY_Y_OFFSET_FACTOR * bgBounds.height());
             y = Math.max(getPaddingTop(), Math.min(y, getHeight() - getPaddingBottom() -

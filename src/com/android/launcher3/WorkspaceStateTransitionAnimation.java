@@ -122,6 +122,52 @@ class ZoomInInterpolator implements TimeInterpolator {
 }
 
 /**
+ * Stores the transition states for convenience.
+ */
+class TransitionStates {
+
+    // Raw states
+    final boolean oldStateIsNormal;
+    final boolean oldStateIsSpringLoaded;
+    final boolean oldStateIsNormalHidden;
+    final boolean oldStateIsOverviewHidden;
+    final boolean oldStateIsOverview;
+
+    final boolean stateIsNormal;
+    final boolean stateIsSpringLoaded;
+    final boolean stateIsNormalHidden;
+    final boolean stateIsOverviewHidden;
+    final boolean stateIsOverview;
+
+    // Convenience members
+    final boolean workspaceToAllApps;
+    final boolean overviewToAllApps;
+    final boolean allAppsToWorkspace;
+    final boolean workspaceToOverview;
+    final boolean overviewToWorkspace;
+
+    public TransitionStates(final Workspace.State fromState, final Workspace.State toState) {
+        oldStateIsNormal = (fromState == Workspace.State.NORMAL);
+        oldStateIsSpringLoaded = (fromState == Workspace.State.SPRING_LOADED);
+        oldStateIsNormalHidden = (fromState == Workspace.State.NORMAL_HIDDEN);
+        oldStateIsOverviewHidden = (fromState == Workspace.State.OVERVIEW_HIDDEN);
+        oldStateIsOverview = (fromState == Workspace.State.OVERVIEW);
+
+        stateIsNormal = (toState == Workspace.State.NORMAL);
+        stateIsSpringLoaded = (toState == Workspace.State.SPRING_LOADED);
+        stateIsNormalHidden = (toState == Workspace.State.NORMAL_HIDDEN);
+        stateIsOverviewHidden = (toState == Workspace.State.OVERVIEW_HIDDEN);
+        stateIsOverview = (toState == Workspace.State.OVERVIEW);
+
+        workspaceToOverview = (oldStateIsNormal && stateIsOverview);
+        workspaceToAllApps = (oldStateIsNormal && stateIsNormalHidden);
+        overviewToWorkspace = (oldStateIsOverview && stateIsNormal);
+        overviewToAllApps = (oldStateIsOverview && stateIsOverviewHidden);
+        allAppsToWorkspace = (stateIsNormalHidden && stateIsNormal);
+    }
+}
+
+/**
  * Manages the animations between each of the workspace states.
  */
 public class WorkspaceStateTransitionAnimation {
@@ -175,9 +221,17 @@ public class WorkspaceStateTransitionAnimation {
     }
 
     public AnimatorSet getAnimationToState(Workspace.State fromState, Workspace.State toState,
-                                           int toPage, boolean animated,
-                                           HashMap<View, Integer> layerViews) {
-        getAnimation(fromState, toState, toPage, animated, layerViews);
+            int toPage, boolean animated, boolean hasOverlaySearchBar,
+            HashMap<View, Integer> layerViews) {
+        AccessibilityManager am = (AccessibilityManager)
+                mLauncher.getSystemService(Context.ACCESSIBILITY_SERVICE);
+        final boolean accessibilityEnabled = am.isEnabled();
+        TransitionStates states = new TransitionStates(fromState, toState);
+        int duration = getAnimationDuration(states);
+        animateWorkspace(states, toPage, animated, duration, layerViews,
+                accessibilityEnabled);
+        animateSearchBar(states, animated, duration, hasOverlaySearchBar, layerViews,
+                accessibilityEnabled);
         return mStateAnimator;
     }
 
@@ -186,15 +240,37 @@ public class WorkspaceStateTransitionAnimation {
     }
 
     /**
+     * Reinitializes the arrays that we need for the animations on each page.
+     */
+    private void reinitializeAnimationArrays() {
+        final int childCount = mWorkspace.getChildCount();
+        if (mLastChildCount == childCount) return;
+
+        mOldBackgroundAlphas = new float[childCount];
+        mOldAlphas = new float[childCount];
+        mNewBackgroundAlphas = new float[childCount];
+        mNewAlphas = new float[childCount];
+    }
+
+    /**
+     * Returns the proper animation duration for a transition.
+     */
+    private int getAnimationDuration(TransitionStates states) {
+        if (states.workspaceToAllApps || states.overviewToAllApps) {
+            return mAllAppsTransitionTime;
+        } else if (states.workspaceToOverview || states.overviewToWorkspace) {
+            return mOverviewTransitionTime;
+        } else {
+            return mOverlayTransitionTime;
+        }
+    }
+
+    /**
      * Starts a transition animation for the workspace.
      */
-    private void getAnimation(final Workspace.State fromState, final Workspace.State toState,
-                              int toPage, final boolean animated,
-                              final HashMap<View, Integer> layerViews) {
-        AccessibilityManager am = (AccessibilityManager)
-                mLauncher.getSystemService(Context.ACCESSIBILITY_SERVICE);
-        final boolean accessibilityEnabled = am.isEnabled();
-
+    private void animateWorkspace(final TransitionStates states, int toPage, final boolean animated,
+                                  final int duration, final HashMap<View, Integer> layerViews,
+                                  final boolean accessibilityEnabled) {
         // Reinitialize animation arrays for the current workspace state
         reinitializeAnimationArrays();
 
@@ -205,32 +281,12 @@ public class WorkspaceStateTransitionAnimation {
         }
 
         // Update the workspace state
-        final boolean oldStateIsNormal = (fromState == Workspace.State.NORMAL);
-        final boolean oldStateIsSpringLoaded = (fromState == Workspace.State.SPRING_LOADED);
-        final boolean oldStateIsNormalHidden = (fromState == Workspace.State.NORMAL_HIDDEN);
-        final boolean oldStateIsOverviewHidden = (fromState == Workspace.State.OVERVIEW_HIDDEN);
-        final boolean oldStateIsOverview = (fromState == Workspace.State.OVERVIEW);
-
-        final boolean stateIsNormal = (toState == Workspace.State.NORMAL);
-        final boolean stateIsSpringLoaded = (toState == Workspace.State.SPRING_LOADED);
-        final boolean stateIsNormalHidden = (toState == Workspace.State.NORMAL_HIDDEN);
-        final boolean stateIsOverviewHidden = (toState == Workspace.State.OVERVIEW_HIDDEN);
-        final boolean stateIsOverview = (toState == Workspace.State.OVERVIEW);
-
-        final boolean workspaceToAllApps = (oldStateIsNormal && stateIsNormalHidden);
-        final boolean overviewToAllApps = (oldStateIsOverview && stateIsOverviewHidden);
-        final boolean allAppsToWorkspace = (stateIsNormalHidden && stateIsNormal);
-        final boolean workspaceToOverview = (oldStateIsNormal && stateIsOverview);
-        final boolean overviewToWorkspace = (oldStateIsOverview && stateIsNormal);
-
-        float finalBackgroundAlpha = (stateIsSpringLoaded || stateIsOverview) ? 1.0f : 0f;
-        float finalHotseatAndPageIndicatorAlpha = (stateIsNormal || stateIsSpringLoaded) ? 1f : 0f;
-        float finalOverviewPanelAlpha = stateIsOverview ? 1f : 0f;
-        // We keep the search bar visible on the workspace and in AllApps now
-        boolean showSearchBar = stateIsNormal ||
-                (mLauncher.isAllAppsSearchOverridden() && stateIsNormalHidden);
-        float finalSearchBarAlpha = showSearchBar ? 1f : 0f;
-        float finalWorkspaceTranslationY = stateIsOverview || stateIsOverviewHidden ?
+        float finalBackgroundAlpha = (states.stateIsSpringLoaded || states.stateIsOverview) ?
+                1.0f : 0f;
+        float finalHotseatAndPageIndicatorAlpha = (states.stateIsNormal || states.stateIsSpringLoaded) ?
+                1f : 0f;
+        float finalOverviewPanelAlpha = states.stateIsOverview ? 1f : 0f;
+        float finalWorkspaceTranslationY = states.stateIsOverview || states.stateIsOverviewHidden ?
                 mWorkspace.getOverviewModeTranslationY() : 0;
 
         final int childCount = mWorkspace.getChildCount();
@@ -238,27 +294,18 @@ public class WorkspaceStateTransitionAnimation {
 
         mNewScale = 1.0f;
 
-        if (oldStateIsOverview) {
+        if (states.oldStateIsOverview) {
             mWorkspace.disableFreeScroll();
-        } else if (stateIsOverview) {
+        } else if (states.stateIsOverview) {
             mWorkspace.enableFreeScroll();
         }
 
-        if (!stateIsNormal) {
-            if (stateIsSpringLoaded) {
+        if (!states.stateIsNormal) {
+            if (states.stateIsSpringLoaded) {
                 mNewScale = mSpringLoadedShrinkFactor;
-            } else if (stateIsOverview || stateIsOverviewHidden) {
+            } else if (states.stateIsOverview || states.stateIsOverviewHidden) {
                 mNewScale = mOverviewModeShrinkFactor;
             }
-        }
-
-        final int duration;
-        if (workspaceToAllApps || overviewToAllApps) {
-            duration = mAllAppsTransitionTime;
-        } else if (workspaceToOverview || overviewToWorkspace) {
-            duration = mOverviewTransitionTime;
-        } else {
-            duration = mOverlayTransitionTime;
         }
 
         if (toPage == SCROLL_TO_CURRENT_PAGE) {
@@ -271,9 +318,9 @@ public class WorkspaceStateTransitionAnimation {
             boolean isCurrentPage = (i == toPage);
             float initialAlpha = cl.getShortcutsAndWidgets().getAlpha();
             float finalAlpha;
-            if (stateIsNormalHidden || stateIsOverviewHidden) {
+            if (states.stateIsNormalHidden || states.stateIsOverviewHidden) {
                 finalAlpha = 0f;
-            } else if (stateIsNormal && mWorkspaceFadeInAdjacentScreens) {
+            } else if (states.stateIsNormal && mWorkspaceFadeInAdjacentScreens) {
                 finalAlpha = (i == toPage || i < customPageCount) ? 1f : 0f;
             } else {
                 finalAlpha = 1f;
@@ -282,8 +329,8 @@ public class WorkspaceStateTransitionAnimation {
             // If we are animating to/from the small state, then hide the side pages and fade the
             // current page in
             if (!mWorkspace.isSwitchingState()) {
-                if (workspaceToAllApps || allAppsToWorkspace) {
-                    if (allAppsToWorkspace && isCurrentPage) {
+                if (states.workspaceToAllApps || states.allAppsToWorkspace) {
+                    if (states.allAppsToWorkspace && isCurrentPage) {
                         initialAlpha = 0f;
                     } else if (!isCurrentPage) {
                         initialAlpha = finalAlpha = 0f;
@@ -303,7 +350,6 @@ public class WorkspaceStateTransitionAnimation {
             }
         }
 
-        final View searchBar = mLauncher.getOrCreateQsbBar();
         final ViewGroup overviewPanel = mLauncher.getOverviewPanel();
         final View hotseat = mLauncher.getHotseat();
         final View pageIndicator = mWorkspace.getPageIndicator();
@@ -345,7 +391,7 @@ public class WorkspaceStateTransitionAnimation {
                     }
                 }
             }
-            Animator pageIndicatorAlpha = null;
+            Animator pageIndicatorAlpha;
             if (pageIndicator != null) {
                 pageIndicatorAlpha = new LauncherViewPropertyAnimator(pageIndicator)
                         .alpha(finalHotseatAndPageIndicatorAlpha).withLayer();
@@ -380,11 +426,11 @@ public class WorkspaceStateTransitionAnimation {
                 overviewPanelAlpha.withLayer();
             }
 
-            if (workspaceToOverview) {
+            if (states.workspaceToOverview) {
                 pageIndicatorAlpha.setInterpolator(new DecelerateInterpolator(2));
                 hotseatAlpha.setInterpolator(new DecelerateInterpolator(2));
                 overviewPanelAlpha.setInterpolator(null);
-            } else if (overviewToWorkspace) {
+            } else if (states.overviewToWorkspace) {
                 pageIndicatorAlpha.setInterpolator(null);
                 hotseatAlpha.setInterpolator(null);
                 overviewPanelAlpha.setInterpolator(new DecelerateInterpolator(2));
@@ -393,26 +439,6 @@ public class WorkspaceStateTransitionAnimation {
             overviewPanelAlpha.setDuration(duration);
             pageIndicatorAlpha.setDuration(duration);
             hotseatAlpha.setDuration(duration);
-
-            // TODO: This should really be coordinated with the SearchDropTargetBar, otherwise the
-            //       bar has no idea that it is hidden, and this has no idea what state the bar is
-            //       actually in.
-            if (searchBar != null) {
-                LauncherViewPropertyAnimator searchBarAlpha = new LauncherViewPropertyAnimator(searchBar)
-                    .alpha(finalSearchBarAlpha);
-                searchBarAlpha.addListener(new AlphaUpdateListener(searchBar, accessibilityEnabled));
-                searchBar.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-                if (layerViews != null) {
-                    // If layerViews is not null, we add these views, and indicate that
-                    // the caller can manage layer state.
-                    layerViews.put(searchBar, LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
-                } else {
-                    // Otherwise let the animator handle layer management.
-                    searchBarAlpha.withLayer();
-                }
-                searchBarAlpha.setDuration(duration);
-                mStateAnimator.play(searchBarAlpha);
-            }
 
             mStateAnimator.play(overviewPanelAlpha);
             mStateAnimator.play(hotseatAlpha);
@@ -437,10 +463,6 @@ public class WorkspaceStateTransitionAnimation {
                 pageIndicator.setAlpha(finalHotseatAndPageIndicatorAlpha);
                 AlphaUpdateListener.updateVisibility(pageIndicator, accessibilityEnabled);
             }
-            if (searchBar != null) {
-                searchBar.setAlpha(finalSearchBarAlpha);
-                AlphaUpdateListener.updateVisibility(searchBar, accessibilityEnabled);
-            }
             mWorkspace.updateCustomContentVisibility();
             mWorkspace.setScaleX(mNewScale);
             mWorkspace.setScaleY(mNewScale);
@@ -452,7 +474,7 @@ public class WorkspaceStateTransitionAnimation {
             }
         }
 
-        if (stateIsNormal) {
+        if (states.stateIsNormal) {
             animateBackgroundGradient(0f, animated);
         } else {
             animateBackgroundGradient(mWorkspaceScrimAlpha, animated);
@@ -460,16 +482,69 @@ public class WorkspaceStateTransitionAnimation {
     }
 
     /**
-     * Reinitializes the arrays that we need for the animations on each page.
+     * Coordinates with the workspace animation to animate the search bar.
+     *
+     * TODO: This should really be coordinated with the SearchDropTargetBar, otherwise the
+     *       bar has no idea that it is hidden, and this has no idea what state the bar is
+     *       actually in.
      */
-    private void reinitializeAnimationArrays() {
-        final int childCount = mWorkspace.getChildCount();
-        if (mLastChildCount == childCount) return;
+    private void animateSearchBar(TransitionStates states, boolean animated, int duration,
+            boolean hasOverlaySearchBar, final HashMap<View, Integer> layerViews,
+            final boolean accessibilityEnabled) {
 
-        mOldBackgroundAlphas = new float[childCount];
-        mOldAlphas = new float[childCount];
-        mNewBackgroundAlphas = new float[childCount];
-        mNewAlphas = new float[childCount];
+        // The search bar is only visible in the workspace
+        final View searchBar = mLauncher.getOrCreateQsbBar();
+        if (searchBar != null) {
+            final boolean searchBarWillBeShown = states.stateIsNormal;
+            final float finalSearchBarAlpha = searchBarWillBeShown ? 1f : 0f;
+            if (animated) {
+                if (hasOverlaySearchBar) {
+                    // If there is an overlay search bar, then we will coordinate with it.
+                    mStateAnimator.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            // If we are transitioning to a visible search bar, show it immediately
+                            // and let the overlay search bar has faded out
+                            if (searchBarWillBeShown) {
+                                searchBar.setAlpha(finalSearchBarAlpha);
+                                AlphaUpdateListener.updateVisibility(searchBar, accessibilityEnabled);
+                            }
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            // If we are transitioning to a hidden search bar, hide it only after
+                            // the overlay search bar has faded in
+                            if (!searchBarWillBeShown) {
+                                searchBar.setAlpha(finalSearchBarAlpha);
+                                AlphaUpdateListener.updateVisibility(searchBar, accessibilityEnabled);
+                            }
+                        }
+                    });
+                } else {
+                    // Otherwise, we can just do the normal animation
+                    LauncherViewPropertyAnimator searchBarAlpha =
+                            new LauncherViewPropertyAnimator(searchBar).alpha(finalSearchBarAlpha);
+                    searchBarAlpha.addListener(new AlphaUpdateListener(searchBar,
+                            accessibilityEnabled));
+                    searchBar.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+                    if (layerViews != null) {
+                        // If layerViews is not null, we add these views, and indicate that
+                        // the caller can manage layer state.
+                        layerViews.put(searchBar, LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
+                    } else {
+                        // Otherwise let the animator handle layer management.
+                        searchBarAlpha.withLayer();
+                    }
+                    searchBarAlpha.setDuration(duration);
+                    mStateAnimator.play(searchBarAlpha);
+                }
+            } else {
+                // Set the search bar state immediately
+                searchBar.setAlpha(finalSearchBarAlpha);
+                AlphaUpdateListener.updateVisibility(searchBar, accessibilityEnabled);
+            }
+        }
     }
 
     /**

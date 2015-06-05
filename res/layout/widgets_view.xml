@@ -21,25 +21,29 @@
     android:id="@+id/widgets_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="@dimen/widget_container_inset"
-    android:paddingBottom="@dimen/widget_container_inset"
+    android:orientation="vertical"
     android:descendantFocusability="afterDescendants">
 
     <FrameLayout
-        android:id="@+id/widgets_reveal_view"
+        android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:elevation="2dp"
-        android:focusable="false"
-        android:visibility="invisible" />
+        android:layout_height="match_parent">
+        <FrameLayout
+            android:id="@+id/widgets_reveal_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:focusable="false"
+            android:elevation="2dp"
+            android:visibility="invisible" />
 
         <com.android.launcher3.widget.WidgetsRecyclerView
             android:id="@+id/widgets_list_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/quantum_panel_dark"
+            android:layout_gravity="center"
             android:elevation="15dp"
             android:visibility="gone" />
+    </FrameLayout>
 
 </com.android.launcher3.widget.WidgetsContainerView>

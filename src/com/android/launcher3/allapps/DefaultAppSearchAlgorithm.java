@@ -17,7 +17,6 @@ package com.android.launcher3.allapps;
 
 import android.content.ComponentName;
 import android.os.Handler;
-
 import com.android.launcher3.AppInfo;
 
 import java.util.ArrayList;
@@ -25,39 +24,33 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- * An {@link AppSearchManager} which does label matching on the UI thread.
+ * The default search implementation.
  */
-public class SimpleAppSearchManagerImpl implements AppSearchManager {
+public class DefaultAppSearchAlgorithm {
 
     private static final Pattern SPLIT_PATTERN = Pattern.compile("[\\s|\\p{javaSpaceChar}]+");
 
     private final List<AppInfo> mApps;
     private final Handler mResultHandler;
 
-    public SimpleAppSearchManagerImpl(List<AppInfo> apps) {
+    public DefaultAppSearchAlgorithm(List<AppInfo> apps) {
         mApps = apps;
         mResultHandler = new Handler();
     }
 
-    @Override
-    public void connect() {
-        // No op
-    }
-
-    @Override
     public void cancel(boolean interruptActiveRequests) {
         if (interruptActiveRequests) {
             mResultHandler.removeCallbacksAndMessages(null);
         }
     }
 
-    @Override
-    public void doSearch(String query, final AppSearchResultCallback callback) {
+    public void doSearch(final String query,
+            final AllAppsSearchBarController.Callbacks callback) {
         // Do an intersection of the words in the query and each title, and filter out all the
         // apps that don't match all of the words in the query.
         final String queryTextLower = query.toLowerCase();
         final String[] queryWords = SPLIT_PATTERN.split(queryTextLower);
-        final ArrayList<ComponentName> result = new ArrayList<ComponentName>();
+        final ArrayList<ComponentName> result = new ArrayList<>();
         int total = mApps.size();
 
         for (int i = 0; i < total; i++) {
@@ -70,7 +63,7 @@ public class SimpleAppSearchManagerImpl implements AppSearchManager {
 
             @Override
             public void run() {
-                callback.onSearchResult(result);
+                callback.onSearchResult(query, result);
             }
         });
     }

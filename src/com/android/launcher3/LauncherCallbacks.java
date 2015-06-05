@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import com.android.launcher3.allapps.AllAppsSearchBarController;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -51,12 +52,9 @@ public interface LauncherCallbacks {
     public void onLauncherProviderChange();
     public void finishBindingItems(final boolean upgradePath);
     public void onClickAllAppsButton(View v);
-    public void onAllAppsShown();
-    public void onAllAppsHidden();
     public void bindAllApplications(ArrayList<AppInfo> apps);
     public void onClickFolderIcon(View v);
     public void onClickAppShortcut(View v);
-
     @Deprecated
     public void onClickPagedViewIcon(View v);
     public void onClickWallpaperPicker(View v);
@@ -89,10 +87,11 @@ public interface LauncherCallbacks {
     public View getIntroScreen();
     public boolean shouldMoveToDefaultScreenOnHomeIntent();
     public boolean hasSettings();
+    @Deprecated
     public ComponentName getWallpaperPickerComponent();
     public boolean overrideWallpaperDimensions();
     public boolean isLauncherPreinstalled();
-    public boolean overrideAllAppsSearch();
+    public AllAppsSearchBarController getAllAppsSearchBarController();
     public List<ComponentName> getPredictedApps();
 
     /**
@@ -112,14 +111,6 @@ public interface LauncherCallbacks {
      */
     public Launcher.LauncherOverlay setLauncherOverlayView(InsettableFrameLayout container,
             Launcher.LauncherOverlayCallbacks callbacks);
-
-    /**
-     * Sets the callbacks to allow any extensions to callback to the launcher.
-     *
-     * @param callbacks A set of callbacks to the Launcher, is actually a LauncherAppsCallback, but
-     *                  for implementation purposes is passed around as an object.
-     */
-    public void setLauncherAppsCallback(Object callbacks);
 
     /**
      * Sets the callbacks to allow reacting the actions of search overlays of the launcher.

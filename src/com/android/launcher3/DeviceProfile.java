@@ -223,26 +223,22 @@ public class DeviceProfile {
         folderCellHeightPx = cellHeightPx + edgeMarginPx;
         folderBackgroundOffset = -edgeMarginPx;
         folderIconSizePx = iconSizePx + 2 * -folderBackgroundOffset;
-
-        updateAppsViewNumCols(res, 0);
     }
 
-    public boolean updateAppsViewNumCols(Resources res, int containerWidth) {
+    /**
+     * @param recyclerViewWidth the available width of the AllAppsRecyclerView
+     */
+    public void updateAppsViewNumCols(Resources res, int recyclerViewWidth) {
         int appsViewLeftMarginPx =
                 res.getDimensionPixelSize(R.dimen.all_apps_grid_view_start_margin);
         int allAppsCellWidthGap =
                 res.getDimensionPixelSize(R.dimen.all_apps_icon_width_gap);
-        int availableAppsWidthPx = (containerWidth > 0) ? containerWidth : availableWidthPx;
+        int availableAppsWidthPx = (recyclerViewWidth > 0) ? recyclerViewWidth : availableWidthPx;
         int numAppsCols = (availableAppsWidthPx - appsViewLeftMarginPx) /
                 (allAppsIconSizePx + allAppsCellWidthGap);
         int numPredictiveAppCols = Math.max(inv.minAllAppsPredictionColumns, numAppsCols);
-        if ((numAppsCols != allAppsNumCols) ||
-                (numPredictiveAppCols != allAppsNumPredictiveCols)) {
-            allAppsNumCols = numAppsCols;
-            allAppsNumPredictiveCols = numPredictiveAppCols;
-            return true;
-        }
-        return false;
+        allAppsNumCols = numAppsCols;
+        allAppsNumPredictiveCols = numPredictiveAppCols;
     }
 
     /** Returns the search bar top offset */

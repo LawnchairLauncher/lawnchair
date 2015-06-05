@@ -16,8 +16,6 @@
 package com.android.launcher3.allapps;
 
 import android.content.Context;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -40,11 +38,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView
     private AlphabeticalAppsList mApps;
     private int mNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
-
     private int mPredictionBarHeight;
-    private int mScrollbarMinHeight;
-
-    private Rect mBackgroundPadding = new Rect();
 
     private Launcher mLauncher;
 
@@ -89,10 +83,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView
         pool.setMaxRecycledViews(AllAppsGridAdapter.SECTION_BREAK_VIEW_TYPE, approxRows);
     }
 
-    public void updateBackgroundPadding(Drawable background) {
-        background.getPadding(mBackgroundPadding);
-    }
-
     /**
      * Sets the prediction bar height.
      */
@@ -124,6 +114,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+
+        // Bind event handlers
         addOnItemTouchListener(this);
     }
 
@@ -227,8 +219,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView
     public void updateVerticalScrollbarBounds() {
         List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
 
-        // Skip early if there are no items.
-        if (items.isEmpty()) {
+        // Skip early if there are no items or we haven't been measured
+        if (items.isEmpty() || mNumAppsPerRow == 0) {
             verticalScrollbarBounds.setEmpty();
             return;
         }
@@ -242,8 +234,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView
             int height = getHeight() - getPaddingTop() - getPaddingBottom();
             int totalScrollHeight = rowCount * scrollPosState.rowHeight + predictionBarHeight;
             if (totalScrollHeight > height) {
-                int scrollbarHeight = Math.max(mScrollbarMinHeight,
-                        (int) (height / ((float) totalScrollHeight / height)));
+                int scrollbarHeight = (int) (height / ((float) totalScrollHeight / height));
 
                 // Calculate the position and size of the scroll bar
                 if (Utilities.isRtl(getResources())) {
@@ -277,8 +268,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView
         stateOut.rowTopOffset = -1;
         stateOut.rowHeight = -1;
 
-        // Return early if there are no items
-        if (items.isEmpty()) {
+        // Return early if there are no items or we haven't been measured
+        if (items.isEmpty() || mNumAppsPerRow == 0) {
             return;
         }
 

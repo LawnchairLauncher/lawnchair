@@ -18,11 +18,9 @@ package com.android.launcher3.widget;
 
 import android.content.Context;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
 import android.view.View;
-
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.model.WidgetsModel;
@@ -35,7 +33,6 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
 
     private static final String TAG = "WidgetsRecyclerView";
     private WidgetsModel mWidgets;
-    private Rect mBackgroundPadding = new Rect();
 
     public WidgetsRecyclerView(Context context) {
         this(context, null);
@@ -59,10 +56,6 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
     protected void onFinishInflate() {
         super.onFinishInflate();
         addOnItemTouchListener(this);
-    }
-
-    public void updateBackgroundPadding(Drawable background) {
-        background.getPadding(mBackgroundPadding);
     }
 
     /**

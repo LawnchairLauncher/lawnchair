@@ -1998,10 +1998,10 @@ public class Workspace extends PagedView
      * to that new state.
      */
     public Animator setStateWithAnimation(State toState, int toPage, boolean animated,
-                                          HashMap<View, Integer> layerViews) {
+            boolean hasOverlaySearchBar, HashMap<View, Integer> layerViews) {
         // Create the animation to the new state
         Animator workspaceAnim =  mStateTransitionAnimation.getAnimationToState(getState(),
-                toState, toPage, animated, layerViews);
+                toState, toPage, animated, hasOverlaySearchBar, layerViews);
 
         // Update the current state
         mState = toState;
@@ -2098,11 +2098,6 @@ public class Workspace extends PagedView
             mWorkspaceScreens.get(CUSTOM_CONTENT_SCREEN_ID).setVisibility(INVISIBLE);
             enableLayoutTransitions();
         }
-    }
-
-    @Override
-    public View getContent() {
-        return this;
     }
 
     /**
