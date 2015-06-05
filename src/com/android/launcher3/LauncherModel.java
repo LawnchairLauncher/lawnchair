@@ -1140,10 +1140,6 @@ public class LauncherModel extends BroadcastReceiver
      * a list of screen ids in the order that they should appear.
      */
     void updateWorkspaceScreenOrder(Context context, final ArrayList<Long> screens) {
-        // Log to disk
-        Launcher.addDumpLog(TAG, "11683562 - updateWorkspaceScreenOrder()", true);
-        Launcher.addDumpLog(TAG, "11683562 -   screens: " + TextUtils.join(", ", screens), true);
-
         final ArrayList<Long> screensCopy = new ArrayList<Long>(screens);
         final ContentResolver cr = context.getContentResolver();
         final Uri uri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
@@ -1764,9 +1760,6 @@ public class LauncherModel extends BroadcastReceiver
         }
 
         private void loadWorkspace() {
-            // Log to disk
-            Launcher.addDumpLog(TAG, "11683562 - loadWorkspace()", true);
-
             final long t = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
 
             final Context context = mContext;

@@ -36,8 +36,7 @@ public class Hotseat extends FrameLayout
 
     private int mAllAppsButtonRank;
 
-    private boolean mTransposeLayoutWithOrientation;
-    private boolean mIsLandscape;
+    private final boolean mHasVerticalHotseat;
 
     public Hotseat(Context context) {
         this(context, null);
@@ -49,13 +48,8 @@ public class Hotseat extends FrameLayout
 
     public Hotseat(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-
-        Resources r = context.getResources();
-        mTransposeLayoutWithOrientation = 
-                r.getBoolean(R.bool.hotseat_transpose_layout_with_orientation);
-        mIsLandscape = context.getResources().getConfiguration().orientation ==
-            Configuration.ORIENTATION_LANDSCAPE;
         mLauncher = (Launcher) context;
+        mHasVerticalHotseat = mLauncher.getDeviceProfile().isVerticalBarLayout();
     }
 
     CellLayout getLayout() {
@@ -77,26 +71,18 @@ public class Hotseat extends FrameLayout
         mContent.setOnLongClickListener(l);
     }
   
-    private boolean hasVerticalHotseat() {
-        return (mIsLandscape && mTransposeLayoutWithOrientation);
-    }
-
     /* Get the orientation invariant order of the item in the hotseat for persistence. */
     int getOrderInHotseat(int x, int y) {
-        return hasVerticalHotseat() ? (mContent.getCountY() - y - 1) : x;
+        return mHasVerticalHotseat ? (mContent.getCountY() - y - 1) : x;
     }
 
     /* Get the orientation specific coordinates given an invariant order in the hotseat. */
     int getCellXFromOrder(int rank) {
-        return hasVerticalHotseat() ? 0 : rank;
+        return mHasVerticalHotseat ? 0 : rank;
     }
 
     int getCellYFromOrder(int rank) {
-        return hasVerticalHotseat() ? (mContent.getCountY() - (rank + 1)) : 0;
-    }
-
-    public int getAllAppsButtonRank() {
-        return mAllAppsButtonRank;
+        return mHasVerticalHotseat ? (mContent.getCountY() - (rank + 1)) : 0;
     }
 
     public boolean isAllAppsButtonRank(int rank) {
