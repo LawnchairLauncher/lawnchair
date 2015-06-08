@@ -39,7 +39,7 @@
     <string name="delete_target_label" msgid="1822697352535677073">"Вилучити"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"Видалити"</string>
     <string name="info_target_label" msgid="8053346143994679532">"Про програму"</string>
-    <string name="permlab_install_shortcut" msgid="5632423390354674437">"установлювати ярлики"</string>
+    <string name="permlab_install_shortcut" msgid="5632423390354674437">"створення ярликів"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Дозволяє програмі самостійно додавати ярлики."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"читати налаштування та ярлики головного екрана"</string>
     <string name="permdesc_read_settings" msgid="5833423719057558387">"Дозволяє програмі читати налаштування та ярлики на головному екрані."</string>
