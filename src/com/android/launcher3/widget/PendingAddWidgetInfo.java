@@ -65,25 +65,6 @@ public class PendingAddWidgetInfo extends PendingAddItemInfo {
         return itemType == LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
     }
 
-    // Copy constructor
-    public PendingAddWidgetInfo(PendingAddWidgetInfo copy) {
-        minWidth = copy.minWidth;
-        minHeight = copy.minHeight;
-        minResizeWidth = copy.minResizeWidth;
-        minResizeHeight = copy.minResizeHeight;
-        previewImage = copy.previewImage;
-        icon = copy.icon;
-        info = copy.info;
-        boundWidget = copy.boundWidget;
-        componentName = copy.componentName;
-        itemType = copy.itemType;
-        spanX = copy.spanX;
-        spanY = copy.spanY;
-        minSpanX = copy.minSpanX;
-        minSpanY = copy.minSpanY;
-        bindOptions = copy.bindOptions == null ? null : (Bundle) copy.bindOptions.clone();
-    }
-
     @Override
     public String toString() {
         return String.format("PendingAddWidgetInfo package=%s, name=%s",

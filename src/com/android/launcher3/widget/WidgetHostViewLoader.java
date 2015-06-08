@@ -7,148 +7,111 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 
 import com.android.launcher3.AppWidgetResizeFrame;
+import com.android.launcher3.DragController.DragListener;
 import com.android.launcher3.DragLayer;
+import com.android.launcher3.DragSource;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.util.Thunk;
 
-public class WidgetHostViewLoader {
-
-    private static final boolean DEBUG = false;
-    private static final String TAG = "WidgetHostViewLoader";
-
-    /* constants used for widget loading state. */
-    private static final int WIDGET_NO_CLEANUP_REQUIRED = -1;
-    private static final int WIDGET_PRELOAD_PENDING = 0;
-    private static final int WIDGET_BOUND = 1;
-    private static final int WIDGET_INFLATED = 2;
-
-    int mState = WIDGET_NO_CLEANUP_REQUIRED;
+public class WidgetHostViewLoader implements DragListener {
 
     /* Runnables to handle inflation and binding. */
-    private Runnable mInflateWidgetRunnable = null;
+    @Thunk Runnable mInflateWidgetRunnable = null;
     private Runnable mBindWidgetRunnable = null;
-
-    /* Id of the widget being handled. */
-    int mWidgetLoadingId = -1;
-    PendingAddWidgetInfo mCreateWidgetInfo = null;
 
     // TODO: technically, this class should not have to know the existence of the launcher.
     @Thunk Launcher mLauncher;
-    private Handler mHandler;
+    @Thunk Handler mHandler;
+    @Thunk final View mView;
+    @Thunk final PendingAddWidgetInfo mInfo;
 
-    public WidgetHostViewLoader(Launcher launcher) {
+    // Widget id generated for binding a widget host view or -1 for invalid id. The id is
+    // not is use as long as it is stored here and can be deleted safely. Once its used, this value
+    // to be set back to -1.
+    @Thunk int mWidgetLoadingId = -1;
+
+    public WidgetHostViewLoader(Launcher launcher, View view) {
         mLauncher = launcher;
         mHandler = new Handler();
+        mView = view;
+        mInfo = (PendingAddWidgetInfo) view.getTag();
+    }
+
+    @Override
+    public void onDragStart(DragSource source, Object info, int dragAction) { }
+
+    @Override
+    public void onDragEnd() {
+        // Cleanup up preloading state.
+        mLauncher.getDragController().removeDragListener(this);
+
+        mHandler.removeCallbacks(mBindWidgetRunnable);
+        mHandler.removeCallbacks(mInflateWidgetRunnable);
+
+        // Cleanup widget id
+        if (mWidgetLoadingId != -1) {
+            mLauncher.getAppWidgetHost().deleteAppWidgetId(mWidgetLoadingId);
+            mWidgetLoadingId = -1;
+        }
+
+        // The widget was inflated and added to the DragLayer -- remove it.
+        if (mInfo.boundWidget != null) {
+            mLauncher.getDragLayer().removeView(mInfo.boundWidget);
+            mLauncher.getAppWidgetHost().deleteAppWidgetId(mInfo.boundWidget.getAppWidgetId());
+            mInfo.boundWidget = null;
+        }
     }
 
     /**
-     * Start loading the widget.
+     * Start preloading the widget.
      */
-    public void load(View v) {
-        if (mCreateWidgetInfo != null) {
-            // Just in case the cleanup process wasn't properly executed.
-            finish(false);
+    public boolean preloadWidget() {
+        final LauncherAppWidgetProviderInfo pInfo = mInfo.info;
+
+        if (pInfo.isCustomWidget) {
+            return false;
         }
-        boolean status = false;
-        if (v.getTag() instanceof PendingAddWidgetInfo) {
-            mCreateWidgetInfo = new PendingAddWidgetInfo((PendingAddWidgetInfo) v.getTag());
-            status = preloadWidget(v, mCreateWidgetInfo);
-        }
-        if (DEBUG) {
-            Log.d(TAG, String.format("load started on [state=%d, status=%s]", mState, status));
-        }
-    }
-
-
-    /**
-     * Clean up according to what the last known state was.
-     * @param widgetIdUsed   {@code true} if the widgetId was consumed which can happen only
-     *                       when view is fully inflated
-     */
-    public void finish(boolean widgetIdUsed) {
-        if (DEBUG) {
-            Log.d(TAG, String.format("cancel on state [%d] widgetId=[%d]",
-                    mState, mWidgetLoadingId));
-        }
-
-        // If the widget was not added, we may need to do further cleanup.
-        PendingAddWidgetInfo info = mCreateWidgetInfo;
-        mCreateWidgetInfo = null;
-
-        if (mState == WIDGET_PRELOAD_PENDING) {
-            // We never did any preloading, so just remove pending callbacks to do so
-            mHandler.removeCallbacks(mBindWidgetRunnable);
-            mHandler.removeCallbacks(mInflateWidgetRunnable);
-        } else if (mState == WIDGET_BOUND) {
-             // Delete the widget id which was allocated
-            if (mWidgetLoadingId != -1 && !info.isCustomWidget()) {
-                mLauncher.getAppWidgetHost().deleteAppWidgetId(mWidgetLoadingId);
-            }
-
-            // We never got around to inflating the widget, so remove the callback to do so.
-            mHandler.removeCallbacks(mInflateWidgetRunnable);
-        } else if (mState == WIDGET_INFLATED && !widgetIdUsed) {
-            // Delete the widget id which was allocated
-            if (mWidgetLoadingId != -1 && !info.isCustomWidget()) {
-                mLauncher.getAppWidgetHost().deleteAppWidgetId(mWidgetLoadingId);
-            }
-
-            // The widget was inflated and added to the DragLayer -- remove it.
-            AppWidgetHostView widget = info.boundWidget;
-            mLauncher.getDragLayer().removeView(widget);
-        }
-        setState(WIDGET_NO_CLEANUP_REQUIRED);
-        mWidgetLoadingId = -1;
-    }
-
-    private boolean preloadWidget(final View v, final PendingAddWidgetInfo info) {
-        final LauncherAppWidgetProviderInfo pInfo = info.info;
-
-        final Bundle options = pInfo.isCustomWidget ? null :
-                getDefaultOptionsForWidget(mLauncher, info);
+        final Bundle options = getDefaultOptionsForWidget(mLauncher, mInfo);
 
         // If there is a configuration activity, do not follow thru bound and inflate.
         if (pInfo.configure != null) {
-            info.bindOptions = options;
+            mInfo.bindOptions = options;
             return false;
         }
-        setState(WIDGET_PRELOAD_PENDING);
+
         mBindWidgetRunnable = new Runnable() {
             @Override
             public void run() {
-                if (pInfo.isCustomWidget) {
-                    setState(WIDGET_BOUND);
-                    return;
-                }
-
                 mWidgetLoadingId = mLauncher.getAppWidgetHost().allocateAppWidgetId();
                 if(AppWidgetManagerCompat.getInstance(mLauncher).bindAppWidgetIdIfAllowed(
                         mWidgetLoadingId, pInfo, options)) {
-                    setState(WIDGET_BOUND);
+
+                    // Widget id bound. Inflate the widget.
+                    mHandler.post(mInflateWidgetRunnable);
                 }
             }
         };
-        mHandler.post(mBindWidgetRunnable);
 
         mInflateWidgetRunnable = new Runnable() {
             @Override
             public void run() {
-                if (mState != WIDGET_BOUND) {
+                if (mWidgetLoadingId == -1) {
                     return;
                 }
                 AppWidgetHostView hostView = mLauncher.getAppWidgetHost().createView(
                         (Context) mLauncher, mWidgetLoadingId, pInfo);
-                info.boundWidget = hostView;
-                setState(WIDGET_INFLATED);
-                hostView.setVisibility(View.INVISIBLE);
-                int[] unScaledSize = mLauncher.getWorkspace().estimateItemSize(info, false);
+                mInfo.boundWidget = hostView;
 
+                // We used up the widget Id in binding the above view.
+                mWidgetLoadingId = -1;
+
+                hostView.setVisibility(View.INVISIBLE);
+                int[] unScaledSize = mLauncher.getWorkspace().estimateItemSize(mInfo, false);
                 // We want the first widget layout to be the correct size. This will be important
                 // for width size reporting to the AppWidgetManager.
                 DragLayer.LayoutParams lp = new DragLayer.LayoutParams(unScaledSize[0],
@@ -157,10 +120,11 @@ public class WidgetHostViewLoader {
                 lp.customPosition = true;
                 hostView.setLayoutParams(lp);
                 mLauncher.getDragLayer().addView(hostView);
-                v.setTag(info);
+                mView.setTag(mInfo);
             }
         };
-        mHandler.post(mInflateWidgetRunnable);
+
+        mHandler.post(mBindWidgetRunnable);
         return true;
     }
 
@@ -187,12 +151,5 @@ public class WidgetHostViewLoader {
                     rect.bottom - yPaddingDips);
         }
         return options;
-    }
-
-    @Thunk void setState(int state) {
-        if (DEBUG) {
-            Log.d(TAG, String.format("     state [%d -> %d]", mState, state));
-        }
-        mState = state;
     }
 }
