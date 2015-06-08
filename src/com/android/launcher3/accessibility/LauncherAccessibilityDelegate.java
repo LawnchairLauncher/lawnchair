@@ -20,6 +20,8 @@ import com.android.launcher3.AppInfo;
 import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeleteDropTarget;
+import com.android.launcher3.DragController.DragListener;
+import com.android.launcher3.DragSource;
 import com.android.launcher3.Folder;
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.InfoDropTarget;
@@ -39,7 +41,7 @@ import com.android.launcher3.util.Thunk;
 import java.util.ArrayList;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-public class LauncherAccessibilityDelegate extends AccessibilityDelegate {
+public class LauncherAccessibilityDelegate extends AccessibilityDelegate implements DragListener {
 
     private static final String TAG = "LauncherAccessibilityDelegate";
 
@@ -328,7 +330,6 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate {
         mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(clickedTarget, loc);
         mLauncher.getDragController().completeAccessibleDrag(loc);
 
-        endAccessibleDrag();
         if (!TextUtils.isEmpty(confirmation)) {
             announceConfirmation(confirmation);
         }
@@ -366,22 +367,21 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate {
         }
         mDragSource.enableAccessibleDrag(true);
         mDragSource.startDrag(cellInfo, true);
-    }
 
-    public boolean onBackPressed() {
-        if (isInAccessibleDrag()) {
-            cancelAccessibleDrag();
-            return true;
+        if (mLauncher.getDragController().isDragging()) {
+            mLauncher.getDragController().addDragListener(this);
         }
-        return false;
     }
 
-    private void cancelAccessibleDrag() {
-        mLauncher.getDragController().cancelDrag();
-        endAccessibleDrag();
+
+    @Override
+    public void onDragStart(DragSource source, Object info, int dragAction) {
+        // No-op
     }
 
-    private void endAccessibleDrag() {
+    @Override
+    public void onDragEnd() {
+        mLauncher.getDragController().removeDragListener(this);
         mDragInfo = null;
         if (mDragSource != null) {
             mDragSource.enableAccessibleDrag(false);
