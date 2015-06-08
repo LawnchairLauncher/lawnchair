@@ -50,7 +50,7 @@
     <string name="shortcut_uninstalled" msgid="8176767991305701821">"Ярлик \"<xliff:g id="NAME">%s</xliff:g>\" вилучено."</string>
     <string name="shortcut_duplicate" msgid="9167217446062498127">"Ярлик \"<xliff:g id="NAME">%s</xliff:g>\" уже існує."</string>
     <string name="title_select_shortcut" msgid="6680642571148153868">"Вибрати ярлик"</string>
-    <string name="title_select_application" msgid="3280812711670683644">"Вибрати програму"</string>
+    <string name="title_select_application" msgid="3280812711670683644">"Виберіть додаток"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Додатки"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Головний екран"</string>
     <string name="delete_zone_label_workspace" msgid="4009607676751398685">"Вилучити"</string>

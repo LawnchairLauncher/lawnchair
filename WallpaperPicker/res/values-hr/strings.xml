@@ -19,7 +19,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="wallpaper_instructions" msgid="3524143401182707094">"Postavi pozadinsku sliku"</string>
+    <string name="wallpaper_instructions" msgid="3524143401182707094">"Postavi pozadinu"</string>
     <string name="image_load_fail" msgid="7538534580694411837">"Nije moguće učitati sliku"</string>
     <string name="wallpaper_load_fail" msgid="4800700444605404650">"Nije moguće učitati sliku kao pozadinsku sliku"</string>
   <plurals name="number_of_items_selected">
