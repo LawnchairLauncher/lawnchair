@@ -74,7 +74,6 @@ public class WidgetsContainerView extends BaseContainerView
 
     /* Rendering related. */
     private WidgetPreviewLoader mWidgetPreviewLoader;
-    private WidgetHostViewLoader mWidgetHostViewLoader;
 
     private Rect mPadding = new Rect();
 
@@ -90,7 +89,6 @@ public class WidgetsContainerView extends BaseContainerView
         super(context, attrs, defStyleAttr);
         mLauncher = (Launcher) context;
         mDragController = mLauncher.getDragController();
-        mWidgetHostViewLoader = new WidgetHostViewLoader(mLauncher);
         mAdapter = new WidgetsListAdapter(context, this, this, mLauncher);
         mIconCache = (LauncherAppState.getInstance()).getIconCache();
         if (DEBUG) {
@@ -169,8 +167,13 @@ public class WidgetsContainerView extends BaseContainerView
         if (!mLauncher.isDraggingEnabled()) return false;
 
         boolean status = beginDragging(v);
-        if (status) {
-            mWidgetHostViewLoader.load(v);
+        if (status && v.getTag() instanceof PendingAddWidgetInfo) {
+            WidgetHostViewLoader hostLoader = new WidgetHostViewLoader(mLauncher, v);
+            boolean preloadStatus = hostLoader.preloadWidget();
+            if (DEBUG) {
+                Log.d(TAG, String.format("preloading widget [status=%s]", preloadStatus));
+            }
+            mLauncher.getDragController().addDragListener(hostLoader);
         }
         return status;
     }
@@ -325,10 +328,6 @@ public class WidgetsContainerView extends BaseContainerView
             }
             d.deferDragViewCleanupPostAnimation = false;
         }
-        //TODO(hyunyoungs): if drop fails, this call cleans up correctly.
-        // However, in rare corner case where drop succeeds but doesn't end up using the widget
-        // id created by the loader, this finish will leave dangling widget id.
-        mWidgetHostViewLoader.finish(success);
     }
 
     //
