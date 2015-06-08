@@ -465,7 +465,6 @@ public class Launcher extends Activity
                         app.getInvariantDeviceProfile().landscapeProfile
                             : app.getInvariantDeviceProfile().portraitProfile;
 
-        // the LauncherApplication should call this, but in case of Instrumentation it might not be present yet
         mSharedPrefs = getSharedPreferences(LauncherAppState.getSharedPreferencesKey(),
                 Context.MODE_PRIVATE);
         mIsSafeModeEnabled = getPackageManager().isSafeMode();
