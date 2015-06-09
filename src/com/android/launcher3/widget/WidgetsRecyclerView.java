@@ -25,7 +25,6 @@ import android.view.View;
 
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.model.PackageItemInfo;
 
@@ -37,7 +36,6 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
     private static final String TAG = "WidgetsRecyclerView";
     private WidgetsModel mWidgets;
     private Rect mBackgroundPadding = new Rect();
-    private PackageItemInfo mLastPackageItemInfo;
 
     public WidgetsRecyclerView(Context context) {
         this(context, null);
@@ -48,7 +46,13 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
     }
 
     public WidgetsRecyclerView(Context context, AttributeSet attrs, int defStyleAttr) {
+        // API 21 and below only support 3 parameter ctor.
         super(context, attrs, defStyleAttr);
+    }
+
+    public WidgetsRecyclerView(Context context, AttributeSet attrs, int defStyleAttr,
+            int defStyleRes) {
+        this(context, attrs, defStyleAttr);
     }
 
     @Override
