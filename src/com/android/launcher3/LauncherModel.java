@@ -45,6 +45,7 @@ import android.os.Parcelable;
 import android.os.Process;
 import android.os.RemoteException;
 import android.os.SystemClock;
+import android.os.TransactionTooLargeException;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
 import android.util.Log;
@@ -3284,27 +3285,51 @@ public class LauncherModel extends BroadcastReceiver
 
     public static List<LauncherAppWidgetProviderInfo> getWidgetProviders(Context context,
             boolean refresh) {
-        synchronized (sBgLock) {
-            if (sBgWidgetProviders == null || refresh) {
-                sBgWidgetProviders = new HashMap<>();
-                AppWidgetManagerCompat wm = AppWidgetManagerCompat.getInstance(context);
-                LauncherAppWidgetProviderInfo info;
+        ArrayList<LauncherAppWidgetProviderInfo> results =
+                new ArrayList<LauncherAppWidgetProviderInfo>();
+        try {
+            synchronized (sBgLock) {
+                if (sBgWidgetProviders == null || refresh) {
+                    HashMap<ComponentKey, LauncherAppWidgetProviderInfo> tmpWidgetProviders
+                            = new HashMap<>();
+                    AppWidgetManagerCompat wm = AppWidgetManagerCompat.getInstance(context);
+                    LauncherAppWidgetProviderInfo info;
 
-                List<AppWidgetProviderInfo> widgets = wm.getAllProviders();
-                for (AppWidgetProviderInfo pInfo : widgets) {
-                    info = LauncherAppWidgetProviderInfo.fromProviderInfo(context, pInfo);
-                    UserHandleCompat user = wm.getUser(info);
-                    sBgWidgetProviders.put(new ComponentKey(info.provider, user), info);
-                }
+                    List<AppWidgetProviderInfo> widgets = wm.getAllProviders();
+                    for (AppWidgetProviderInfo pInfo : widgets) {
+                        info = LauncherAppWidgetProviderInfo.fromProviderInfo(context, pInfo);
+                        UserHandleCompat user = wm.getUser(info);
+                        tmpWidgetProviders.put(new ComponentKey(info.provider, user), info);
+                    }
 
-                Collection<CustomAppWidget> customWidgets = Launcher.getCustomAppWidgets().values();
-                for (CustomAppWidget widget : customWidgets) {
-                    info = new LauncherAppWidgetProviderInfo(context, widget);
-                    UserHandleCompat user = wm.getUser(info);
-                    sBgWidgetProviders.put(new ComponentKey(info.provider, user), info);
+                    Collection<CustomAppWidget> customWidgets = Launcher.getCustomAppWidgets().values();
+                    for (CustomAppWidget widget : customWidgets) {
+                        info = new LauncherAppWidgetProviderInfo(context, widget);
+                        UserHandleCompat user = wm.getUser(info);
+                        tmpWidgetProviders.put(new ComponentKey(info.provider, user), info);
+                    }
+                    // Replace the global list at the very end, so that if there is an exception,
+                    // previously loaded provider list is used.
+                    sBgWidgetProviders = tmpWidgetProviders;
                 }
+                results.addAll(sBgWidgetProviders.values());
+                return results;
             }
-            return new ArrayList<LauncherAppWidgetProviderInfo>(sBgWidgetProviders.values());
+        } catch (Exception e) {
+            if (e.getCause() instanceof TransactionTooLargeException) {
+                // the returned value may be incomplete and will not be refreshed until the next
+                // time Launcher starts.
+                // TODO: after figuring out a repro step, introduce a dirty bit to check when
+                // onResume is called to refresh the widget provider list.
+                synchronized (sBgLock) {
+                    if (sBgWidgetProviders != null) {
+                        results.addAll(sBgWidgetProviders.values());
+                    }
+                    return results;
+                }
+            } else {
+                throw e;
+            }
         }
     }
 
