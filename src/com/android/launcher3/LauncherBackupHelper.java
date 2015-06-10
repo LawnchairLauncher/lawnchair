@@ -146,7 +146,6 @@ public class LauncherBackupHelper implements BackupHelper {
     private long mLastBackupRestoreTime;
     private boolean mBackupDataWasUpdated;
 
-    private LauncherAppState mLauncherAppState;
     private IconCache mIconCache;
     private DeviceProfieData mDeviceProfileData;
 
@@ -205,7 +204,11 @@ public class LauncherBackupHelper implements BackupHelper {
             return;
         }
 
-        lazyInitAppState(true /* noCreate */);
+        if (mDeviceProfileData == null) {
+            LauncherAppState app = LauncherAppState.getInstance();
+            mDeviceProfileData = initDeviceProfileData(app.getInvariantDeviceProfile());
+            mIconCache = app.getIconCache();
+        }
 
         Log.v(TAG, "lastBackupTime = " + in.t);
         mKeys.clear();
@@ -240,7 +243,7 @@ public class LauncherBackupHelper implements BackupHelper {
                 // Check if any metadata has changed
                 mBackupDataWasUpdated = (in.profile == null)
                         || !Arrays.equals(DeviceProfieData.toByteArray(in.profile),
-                            DeviceProfieData.toByteArray(getDeviceProfieData()))
+                            DeviceProfieData.toByteArray(mDeviceProfileData))
                         || (in.backupVersion != BACKUP_VERSION)
                         || (in.appVersion != getAppVersion());
             }
@@ -268,8 +271,7 @@ public class LauncherBackupHelper implements BackupHelper {
      * to this device.
      */
     private boolean isBackupCompatible(Journal oldState) {
-        DeviceProfieData currentProfile = getDeviceProfieData();
-
+        DeviceProfieData currentProfile = mDeviceProfileData;
         DeviceProfieData oldProfile = oldState.profile;
 
         if (oldProfile == null || oldProfile.desktopCols == 0) {
@@ -302,7 +304,14 @@ public class LauncherBackupHelper implements BackupHelper {
         if (!restoreSuccessful) {
             return;
         }
-        lazyInitAppState(false /* noCreate */);
+
+        if (mDeviceProfileData == null) {
+            // This call does not happen on a looper thread. So LauncherAppState
+            // can't be created . Instead initialize required dependencies directly.
+            InvariantDeviceProfile profile = new InvariantDeviceProfile(mContext);
+            mDeviceProfileData = initDeviceProfileData(profile);
+            mIconCache = new IconCache(mContext, profile);
+        }
 
         int dataSize = data.size();
         if (mBuffer.length < dataSize) {
@@ -379,7 +388,7 @@ public class LauncherBackupHelper implements BackupHelper {
         journal.key = mKeys.toArray(new BackupProtos.Key[mKeys.size()]);
         journal.appVersion = getAppVersion();
         journal.backupVersion = BACKUP_VERSION;
-        journal.profile = getDeviceProfieData();
+        journal.profile = mDeviceProfileData;
         return journal;
     }
 
@@ -390,31 +399,6 @@ public class LauncherBackupHelper implements BackupHelper {
         } catch (NameNotFoundException e) {
             return 0;
         }
-    }
-
-    /**
-     * @return the current device profile information.
-     */
-    private DeviceProfieData getDeviceProfieData() {
-        return mDeviceProfileData;
-    }
-
-    private void lazyInitAppState(boolean noCreate) {
-        if (mLauncherAppState != null) {
-            return;
-        }
-
-        if (noCreate) {
-            mLauncherAppState = LauncherAppState.getInstanceNoCreate();
-        } else {
-            LauncherAppState.setApplicationContext(mContext);
-            mLauncherAppState = LauncherAppState.getInstance();
-        }
-
-        mIconCache = mLauncherAppState.getIconCache();
-        InvariantDeviceProfile profile = mLauncherAppState.getInvariantDeviceProfile();
-
-        mDeviceProfileData = initDeviceProfileData(profile);
     }
 
     private DeviceProfieData initDeviceProfileData(InvariantDeviceProfile profile) {
@@ -631,7 +615,6 @@ public class LauncherBackupHelper implements BackupHelper {
     private void backupWidgets(BackupDataOutput data) throws IOException {
         // persist static widget info that hasn't been persisted yet
         final ContentResolver cr = mContext.getContentResolver();
-        final WidgetPreviewLoader previewLoader = mLauncherAppState.getWidgetCache();
         final int dpi = mContext.getResources().getDisplayMetrics().densityDpi;
         int backupWidgetCount = 0;
 
@@ -644,7 +627,6 @@ public class LauncherBackupHelper implements BackupHelper {
             while(cursor.moveToNext()) {
                 final long id = cursor.getLong(ID_INDEX);
                 final String providerName = cursor.getString(APPWIDGET_PROVIDER_INDEX);
-                final int spanX = cursor.getInt(SPANX_INDEX);
                 final ComponentName provider = ComponentName.unflattenFromString(providerName);
                 Key key = null;
                 String backupKey = null;
@@ -664,9 +646,7 @@ public class LauncherBackupHelper implements BackupHelper {
                     if (backupWidgetCount < MAX_WIDGETS_PER_PASS) {
                         if (DEBUG) Log.d(TAG, "saving widget " + backupKey);
                         UserHandleCompat user = UserHandleCompat.myUserHandle();
-                        writeRowToBackup(key,
-                                packWidget(dpi, previewLoader, mIconCache, provider, user),
-                                data);
+                        writeRowToBackup(key, packWidget(dpi, provider, user), data);
                         mKeys.add(key);
                         backupWidgetCount ++;
                     } else {
@@ -895,7 +875,7 @@ public class LauncherBackupHelper implements BackupHelper {
                 UserManagerCompat.getInstance(mContext).getSerialNumberForUser(myUserHandle);
         values.put(LauncherSettings.Favorites.PROFILE_ID, userSerialNumber);
 
-        DeviceProfieData currentProfile = getDeviceProfieData();
+        DeviceProfieData currentProfile = mDeviceProfileData;
 
         if (favorite.itemType == Favorites.ITEM_TYPE_APPWIDGET) {
             if (!TextUtils.isEmpty(favorite.appWidgetProvider)) {
@@ -972,8 +952,7 @@ public class LauncherBackupHelper implements BackupHelper {
     }
 
     /** Serialize a widget for persistence, including a checksum wrapper. */
-    private Widget packWidget(int dpi, WidgetPreviewLoader previewLoader, IconCache iconCache,
-            ComponentName provider, UserHandleCompat user) {
+    private Widget packWidget(int dpi, ComponentName provider, UserHandleCompat user) {
         final LauncherAppWidgetProviderInfo info =
                 LauncherModel.getProviderInfo(mContext, provider, user);
         Widget widget = new Widget();
@@ -982,7 +961,7 @@ public class LauncherBackupHelper implements BackupHelper {
         widget.configure = info.configure != null;
         if (info.icon != 0) {
             widget.icon = new Resource();
-            Drawable fullResIcon = iconCache.getFullResIcon(provider.getPackageName(), info.icon);
+            Drawable fullResIcon = mIconCache.getFullResIcon(provider.getPackageName(), info.icon);
             Bitmap icon = Utilities.createIconBitmap(fullResIcon, mContext);
             widget.icon.data = Utilities.flattenBitmap(icon);
             widget.icon.dpi = dpi;
