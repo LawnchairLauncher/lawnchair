@@ -62,6 +62,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 
 public class LauncherProvider extends ContentProvider {
     private static final String TAG = "Launcher.LauncherProvider";
@@ -269,6 +270,42 @@ public class LauncherProvider extends ContentProvider {
             }
         }
         return null;
+    }
+
+    /**
+     * Deletes any empty folder from the DB.
+     * @return Ids of deleted folders.
+     */
+    public List<Long> deleteEmptyFolders() {
+        ArrayList<Long> folderIds = new ArrayList<Long>();
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            // Select folders whose id do not match any container value.
+            String selection = LauncherSettings.Favorites.ITEM_TYPE + " = "
+                    + LauncherSettings.Favorites.ITEM_TYPE_FOLDER + " AND "
+                    + LauncherSettings.Favorites._ID +  " NOT IN (SELECT " +
+                            LauncherSettings.Favorites.CONTAINER + " FROM "
+                                + TABLE_FAVORITES + ")";
+            Cursor c = db.query(TABLE_FAVORITES,
+                    new String[] {LauncherSettings.Favorites._ID},
+                    selection, null, null, null, null);
+            while (c.moveToNext()) {
+                folderIds.add(c.getLong(0));
+            }
+            c.close();
+            if (folderIds.size() > 0) {
+                db.delete(TABLE_FAVORITES, Utilities.createDbSelectionQuery(
+                        LauncherSettings.Favorites._ID, folderIds), null);
+            }
+            db.setTransactionSuccessful();
+        } catch (SQLException ex) {
+            Log.e(TAG, ex.getMessage(), ex);
+            folderIds.clear();
+        } finally {
+            db.endTransaction();
+        }
+        return folderIds;
     }
 
     private void notifyListeners() {

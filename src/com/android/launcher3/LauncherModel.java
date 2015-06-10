@@ -20,7 +20,6 @@ import android.app.SearchManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
-import android.content.ContentProviderClient;
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -43,7 +42,6 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Parcelable;
 import android.os.Process;
-import android.os.RemoteException;
 import android.os.SystemClock;
 import android.os.TransactionTooLargeException;
 import android.provider.BaseColumns;
@@ -1866,6 +1864,7 @@ public class LauncherModel extends BroadcastReceiver
                             int itemType = c.getInt(itemTypeIndex);
                             boolean restored = 0 != c.getInt(restoredIndex);
                             boolean allowMissingTarget = false;
+                            container = c.getInt(containerIndex);
 
                             switch (itemType) {
                             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
@@ -2004,7 +2003,6 @@ public class LauncherModel extends BroadcastReceiver
                                     continue;
                                 }
 
-                                container = c.getInt(containerIndex);
                                 boolean useLowResIcon = container >= 0 &&
                                         c.getInt(rankIndex) >= FolderIcon.NUM_ITEMS_IN_PREVIEW;
 
@@ -2111,7 +2109,6 @@ public class LauncherModel extends BroadcastReceiver
                                 // Do not trim the folder label, as is was set by the user.
                                 folderInfo.title = c.getString(titleIndex);
                                 folderInfo.id = id;
-                                container = c.getInt(containerIndex);
                                 folderInfo.container = container;
                                 folderInfo.screenId = c.getInt(screenIndex);
                                 folderInfo.cellX = c.getInt(cellXIndex);
@@ -2233,7 +2230,6 @@ public class LauncherModel extends BroadcastReceiver
                                     appWidgetInfo.spanX = c.getInt(spanXIndex);
                                     appWidgetInfo.spanY = c.getInt(spanYIndex);
 
-                                    container = c.getInt(containerIndex);
                                     if (container != LauncherSettings.Favorites.CONTAINER_DESKTOP &&
                                         container != LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
                                         Log.e(TAG, "Widget found where container != " +
@@ -2241,7 +2237,7 @@ public class LauncherModel extends BroadcastReceiver
                                         continue;
                                     }
 
-                                    appWidgetInfo.container = c.getInt(containerIndex);
+                                    appWidgetInfo.container = container;
                                     // check & update map of what's occupied
                                     if (!checkItemPlacement(occupied, appWidgetInfo)) {
                                         itemsToRemove.add(id);
@@ -2283,56 +2279,32 @@ public class LauncherModel extends BroadcastReceiver
                     return;
                 }
 
-                // Remove any empty folder
-                LongArrayMap<FolderInfo> emptyFolders = sBgFolders.clone();
-                for (ItemInfo item: sBgItemsIdMap) {
-                    long container = item.container;
-                    if (emptyFolders.containsKey(container)) {
-                        emptyFolders.remove(container);
-                    }
-                }
-                for (FolderInfo folder : emptyFolders) {
-                    long folderId = folder.id;
-                    sBgFolders.remove(folderId);
-                    sBgItemsIdMap.remove(folderId);
-                    sBgWorkspaceItems.remove(folder);
-                    itemsToRemove.add(folderId);
-                }
-
                 if (itemsToRemove.size() > 0) {
-                    ContentProviderClient client = contentResolver.acquireContentProviderClient(
-                            contentUri);
                     // Remove dead items
-                    for (long id : itemsToRemove) {
-                        if (DEBUG_LOADERS) {
-                            Log.d(TAG, "Removed id = " + id);
-                        }
-                        // Don't notify content observers
-                        try {
-                            client.delete(LauncherSettings.Favorites.getContentUri(id), null, null);
-                        } catch (RemoteException e) {
-                            Log.w(TAG, "Could not remove id = " + id);
-                        }
+                    contentResolver.delete(LauncherSettings.Favorites.CONTENT_URI,
+                            Utilities.createDbSelectionQuery(
+                                    LauncherSettings.Favorites._ID, itemsToRemove), null);
+                    if (DEBUG_LOADERS) {
+                        Log.d(TAG, "Removed = " + Utilities.createDbSelectionQuery(
+                                LauncherSettings.Favorites._ID, itemsToRemove));
+                    }
+
+                    // Remove any empty folder
+                    for (long folderId : LauncherAppState.getLauncherProvider()
+                            .deleteEmptyFolders()) {
+                        sBgWorkspaceItems.remove(sBgFolders.get(folderId));
+                        sBgFolders.remove(folderId);
+                        sBgItemsIdMap.remove(folderId);
                     }
                 }
 
                 if (restoredRows.size() > 0) {
-                    ContentProviderClient updater = contentResolver.acquireContentProviderClient(
-                            contentUri);
                     // Update restored items that no longer require special handling
-                    try {
-                        StringBuilder selectionBuilder = new StringBuilder();
-                        selectionBuilder.append(LauncherSettings.Favorites._ID);
-                        selectionBuilder.append(" IN (");
-                        selectionBuilder.append(TextUtils.join(", ", restoredRows));
-                        selectionBuilder.append(")");
-                        ContentValues values = new ContentValues();
-                        values.put(LauncherSettings.Favorites.RESTORED, 0);
-                        updater.update(LauncherSettings.Favorites.CONTENT_URI,
-                                values, selectionBuilder.toString(), null);
-                    } catch (RemoteException e) {
-                        Log.w(TAG, "Could not update restored rows");
-                    }
+                    ContentValues values = new ContentValues();
+                    values.put(LauncherSettings.Favorites.RESTORED, 0);
+                    contentResolver.update(LauncherSettings.Favorites.CONTENT_URI, values,
+                            Utilities.createDbSelectionQuery(
+                                    LauncherSettings.Favorites._ID, restoredRows), null);
                 }
 
                 if (!isSdCardReady && !sPendingPackages.isEmpty()) {
@@ -2342,9 +2314,6 @@ public class LauncherModel extends BroadcastReceiver
                 }
 
                 sBgWorkspaceScreens.addAll(loadWorkspaceScreensDb(mContext));
-                // Log to disk
-                Launcher.addDumpLog(TAG, "11683562 -   sBgWorkspaceScreens: " +
-                        TextUtils.join(", ", sBgWorkspaceScreens), true);
 
                 // Remove any empty screens
                 ArrayList<Long> unusedScreens = new ArrayList<Long>(sBgWorkspaceScreens);
@@ -2358,10 +2327,6 @@ public class LauncherModel extends BroadcastReceiver
 
                 // If there are any empty screens remove them, and update.
                 if (unusedScreens.size() != 0) {
-                    // Log to disk
-                    Launcher.addDumpLog(TAG, "11683562 -   unusedScreens (to be removed): " +
-                            TextUtils.join(", ", unusedScreens), true);
-
                     sBgWorkspaceScreens.removeAll(unusedScreens);
                     updateWorkspaceScreenOrder(context, sBgWorkspaceScreens);
                 }
