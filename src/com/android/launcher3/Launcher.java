@@ -98,7 +98,6 @@ import android.widget.Toast;
 
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.PagedView.PageSwitchListener;
-import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AppSearchManager;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
@@ -2470,9 +2469,8 @@ public class Launcher extends Activity
             return;
         }
 
-        LauncherAccessibilityDelegate delegate =
-                LauncherAppState.getInstance().getAccessibilityDelegate();
-        if (delegate != null && delegate.onBackPressed()) {
+        if (mDragController.isDragging()) {
+            mDragController.cancelDrag();
             return;
         }
 
