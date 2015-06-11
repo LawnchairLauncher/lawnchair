@@ -567,6 +567,13 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     public void scrollTo(int x, int y) {
         // In free scroll mode, we clamp the scrollX
         if (mFreeScroll) {
+            // If the scroller is trying to move to a location beyond the maximum allowed
+            // in the free scroll mode, we make sure to end the scroll operation.
+            if (!mScroller.isFinished() &&
+                    (x > mFreeScrollMaxScrollX || x < mFreeScrollMinScrollX)) {
+                forceFinishScroller();
+            }
+
             x = Math.min(x, mFreeScrollMaxScrollX);
             x = Math.max(x, mFreeScrollMinScrollX);
         }
