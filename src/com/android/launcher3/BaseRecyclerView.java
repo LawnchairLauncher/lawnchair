@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
@@ -315,11 +317,36 @@ public class BaseRecyclerView extends RecyclerView
     /**
      * Animates the visibility of the fast scroller popup.
      */
-    private void animateFastScrollerVisibility(boolean visible) {
+    private void animateFastScrollerVisibility(final boolean visible) {
         ObjectAnimator anim = ObjectAnimator.ofFloat(this, "fastScrollerAlpha", visible ? 1f : 0f);
         anim.setDuration(visible ? 200 : 150);
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                if (visible) {
+                    onFastScrollingStart();
+                }
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (!visible) {
+                    onFastScrollingEnd();
+                }
+            }
+        });
         anim.start();
     }
+
+    /**
+     * To be overridden by subclasses.
+     */
+    protected void onFastScrollingStart() {}
+
+    /**
+     * To be overridden by subclasses.
+     */
+    protected void onFastScrollingEnd() {}
 
     /**
      * Invalidates the fast scroller popup.

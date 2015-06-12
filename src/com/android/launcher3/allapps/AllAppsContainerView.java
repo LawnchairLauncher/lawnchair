@@ -58,10 +58,69 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.util.Thunk;
 
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
 
+
+/**
+ * A merge algorithm that merges every section indiscriminately.
+ */
+final class FullMergeAlgorithm implements AlphabeticalAppsList.MergeAlgorithm {
+
+    @Override
+    public boolean continueMerging(AlphabeticalAppsList.SectionInfo section,
+           AlphabeticalAppsList.SectionInfo withSection,
+           int sectionAppCount, int numAppsPerRow, int mergeCount) {
+        // Merge EVERYTHING
+        return true;
+    }
+}
+
+/**
+ * The logic we use to merge multiple sections.  We only merge sections when their final row
+ * contains less than a certain number of icons, and stop at a specified max number of merges.
+ * In addition, we will try and not merge sections that identify apps from different scripts.
+ */
+final class SimpleSectionMergeAlgorithm implements AlphabeticalAppsList.MergeAlgorithm {
+
+    private int mMinAppsPerRow;
+    private int mMinRowsInMergedSection;
+    private int mMaxAllowableMerges;
+    private CharsetEncoder mAsciiEncoder;
+
+    public SimpleSectionMergeAlgorithm(int minAppsPerRow, int minRowsInMergedSection, int maxNumMerges) {
+        mMinAppsPerRow = minAppsPerRow;
+        mMinRowsInMergedSection = minRowsInMergedSection;
+        mMaxAllowableMerges = maxNumMerges;
+        mAsciiEncoder = Charset.forName("US-ASCII").newEncoder();
+    }
+
+    @Override
+    public boolean continueMerging(AlphabeticalAppsList.SectionInfo section,
+           AlphabeticalAppsList.SectionInfo withSection,
+           int sectionAppCount, int numAppsPerRow, int mergeCount) {
+        // Continue merging if the number of hanging apps on the final row is less than some
+        // fixed number (ragged), the merged rows has yet to exceed some minimum row count,
+        // and while the number of merged sections is less than some fixed number of merges
+        int rows = sectionAppCount / numAppsPerRow;
+        int cols = sectionAppCount % numAppsPerRow;
+
+        // Ensure that we do not merge across scripts, currently we only allow for english and
+        // native scripts so we can test if both can just be ascii encoded
+        boolean isCrossScript = false;
+        if (section.firstAppItem != null && withSection.firstAppItem != null) {
+            isCrossScript = mAsciiEncoder.canEncode(section.firstAppItem.sectionName) !=
+                    mAsciiEncoder.canEncode(withSection.firstAppItem.sectionName);
+        }
+        return (0 < cols && cols < mMinAppsPerRow) &&
+                rows < mMinRowsInMergedSection &&
+                mergeCount < mMaxAllowableMerges &&
+                !isCrossScript;
+    }
+}
 
 /**
  * The all apps view container.
@@ -72,7 +131,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         View.OnLongClickListener, ViewTreeObserver.OnPreDrawListener,
         AllAppsSearchBarController.Callbacks, Stats.LaunchSourceProvider {
 
-    public static final boolean GRID_MERGE_SECTIONS = true;
+    private static final int MIN_ROWS_IN_MERGED_SECTION_PHONE = 3;
+    private static final int MAX_NUM_MERGES_PHONE = 2;
 
     @Thunk Launcher mLauncher;
     @Thunk AlphabeticalAppsList mApps;
@@ -90,6 +150,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     private ViewGroup mSearchBarContainerView;
     private View mSearchBarView;
 
+    private int mSectionNamesMargin;
     private int mNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
     // This coordinate is relative to this container view
@@ -127,7 +188,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                 Utilities.calculateTextHeight(grid.allAppsIconTextSizePx) +
                 2 * res.getDimensionPixelSize(R.dimen.all_apps_icon_top_bottom_padding) +
                 2 * res.getDimensionPixelSize(R.dimen.all_apps_prediction_bar_top_bottom_padding));
-
+        mSectionNamesMargin = res.getDimensionPixelSize(R.dimen.all_apps_grid_view_start_margin);
         mApps = new AlphabeticalAppsList(context);
         mApps.setAdapterChangedCallback(this);
         mAdapter = new AllAppsGridAdapter(context, mApps, this, this, mLauncher, this);
@@ -342,9 +403,18 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                 mNumPredictedAppsPerRow != grid.allAppsNumPredictiveCols) {
             mNumAppsPerRow = grid.allAppsNumCols;
             mNumPredictedAppsPerRow = grid.allAppsNumPredictiveCols;
+
+            // If there is a start margin to draw section names, determine how we are going to merge
+            // app sections
+            boolean mergeSectionsFully = mSectionNamesMargin == 0 || !grid.isPhone;
+            AlphabeticalAppsList.MergeAlgorithm mergeAlgorithm = mergeSectionsFully ?
+                    new FullMergeAlgorithm() :
+                    new SimpleSectionMergeAlgorithm((int) Math.ceil(mNumAppsPerRow / 2f),
+                            MIN_ROWS_IN_MERGED_SECTION_PHONE, MAX_NUM_MERGES_PHONE);
+
             mAppsRecyclerView.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow);
             mAdapter.setNumAppsPerRow(mNumAppsPerRow);
-            mApps.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow);
+            mApps.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow, mergeAlgorithm);
         }
 
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -376,14 +446,12 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         // Pad the recycler view by the background padding plus the start margin (for the section
         // names)
-        DeviceProfile grid = mLauncher.getDeviceProfile();
-        int startMargin = grid.isPhone ? getResources().getDimensionPixelSize(
-                R.dimen.all_apps_grid_view_start_margin) : mAppsRecyclerView.getScrollbarWidth();
+        int startInset = Math.max(mSectionNamesMargin, mAppsRecyclerView.getScrollbarWidth());
         if (isRtl) {
             mAppsRecyclerView.setPadding(padding.left + mAppsRecyclerView.getScrollbarWidth(), 0,
-                    padding.right + startMargin, 0);
+                    padding.right + startInset, 0);
         } else {
-            mAppsRecyclerView.setPadding(padding.left + startMargin, 0,
+            mAppsRecyclerView.setPadding(padding.left + startInset, 0,
                     padding.right + mAppsRecyclerView.getScrollbarWidth(), 0);
         }
 
