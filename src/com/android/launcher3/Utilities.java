@@ -92,17 +92,14 @@ public final class Utilities {
     private static boolean sForceEnableRotation = isPropertyEnabled(FORCE_ENABLE_ROTATION_PROPERTY);
 
     public static final String ALLOW_ROTATION_PREFERENCE_KEY = "pref_allowRotation";
-    public static final String SCREEN_ROTATION_SETTING_INTENT =
-            "come.android.launcher3.SCREEN_ORIENTATION_PREF_CHANGED";
-    public static final String SCREEN_ROTATION_SETTING_EXTRA = "screenRotationPref";
 
     public static boolean isPropertyEnabled(String propertyName) {
         return Log.isLoggable(propertyName, Log.VERBOSE);
     }
 
     public static boolean isAllowRotationPrefEnabled(Context context) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LauncherFiles.ROTATION_PREF_FILE,
-                Context.MODE_MULTI_PROCESS);
+        SharedPreferences sharedPrefs = context.getSharedPreferences(
+                LauncherAppState.getSharedPreferencesKey(), Context.MODE_PRIVATE);
         boolean allowRotationPref = sharedPrefs.getBoolean(ALLOW_ROTATION_PREFERENCE_KEY, false);
         return sForceEnableRotation || allowRotationPref;
     }

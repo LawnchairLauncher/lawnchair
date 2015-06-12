@@ -8,4 +8,6 @@ package com.android.launcher3;
 public interface LauncherProviderChangeListener {
 
     public void onLauncherProviderChange();
+
+    public void onSettingsChanged(String settings, boolean value);
 }

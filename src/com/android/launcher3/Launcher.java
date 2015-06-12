@@ -398,29 +398,8 @@ public class Launcher extends Activity
     }
 
     private Stats mStats;
-
     FocusIndicatorView mFocusHandler;
-
-    @Thunk boolean mRotationEnabled = false;
-    private boolean mScreenOrientationSettingReceiverRegistered = false;
-
-    final private BroadcastReceiver mScreenOrientationSettingReceiver =
-            new BroadcastReceiver() {
-                @Thunk Runnable mUpdateOrientationRunnable = new Runnable() {
-                    public void run() {
-                        setOrientation();
-                    }
-                };
-
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    mRotationEnabled = intent.getBooleanExtra(
-                            Utilities.SCREEN_ROTATION_SETTING_EXTRA, false);
-                    if (!waitUntilResume(mUpdateOrientationRunnable, true)) {
-                        setOrientation();
-                    }
-                }
-            };
+    private boolean mRotationEnabled = false;
 
     @Thunk void setOrientation() {
         if (mRotationEnabled) {
@@ -430,6 +409,12 @@ public class Launcher extends Activity
                     ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
         }
     }
+
+    private Runnable mUpdateOrientationRunnable = new Runnable() {
+        public void run() {
+            setOrientation();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -530,12 +515,6 @@ public class Launcher extends Activity
         // In case we are on a device with locked rotation, we should look at preferences to check
         // if the user has specifically allowed rotation.
         if (!mRotationEnabled) {
-            String updateOrientationBroadcastPermission = getResources().getString(
-                    R.string.receive_update_orientation_broadcasts_permission);
-            registerReceiver(mScreenOrientationSettingReceiver,
-                    new IntentFilter(Utilities.SCREEN_ROTATION_SETTING_INTENT),
-                    updateOrientationBroadcastPermission, null);
-            mScreenOrientationSettingReceiverRegistered = true;
             mRotationEnabled = Utilities.isAllowRotationPrefEnabled(getApplicationContext());
         }
 
@@ -559,6 +538,16 @@ public class Launcher extends Activity
         } else {
             showFirstRunActivity();
             showFirstRunClings();
+        }
+    }
+
+    @Override
+    public void onSettingsChanged(String settings, boolean value) {
+        if (Utilities.ALLOW_ROTATION_PREFERENCE_KEY.equals(settings)) {
+            mRotationEnabled = value;
+            if (!waitUntilResume(mUpdateOrientationRunnable, true)) {
+                mUpdateOrientationRunnable.run();
+            }
         }
     }
 
@@ -2029,11 +2018,6 @@ public class Launcher extends Activity
     @Override
     public void onDestroy() {
         super.onDestroy();
-
-        if (mScreenOrientationSettingReceiverRegistered) {
-            unregisterReceiver(mScreenOrientationSettingReceiver);
-            mScreenOrientationSettingReceiverRegistered = false;
-        }
 
         // Remove all pending runnables
         mHandler.removeMessages(ADVANCE_MSG);

@@ -39,8 +39,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.database.sqlite.SQLiteStatement;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Process;
 import android.os.StrictMode;
 import android.os.UserManager;
 import android.text.TextUtils;
@@ -235,6 +237,38 @@ public class LauncherProvider extends ContentProvider {
         if (count > 0) notifyListeners();
 
         return count;
+    }
+
+    @Override
+    public Bundle call(String method, String arg, Bundle extras) {
+        if (Binder.getCallingUid() != Process.myUid()) {
+            return null;
+        }
+
+        switch (method) {
+            case LauncherSettings.Settings.METHOD_GET_BOOLEAN: {
+                Bundle result = new Bundle();
+                result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
+                        getContext().getSharedPreferences(
+                                LauncherAppState.getSharedPreferencesKey(), Context.MODE_PRIVATE)
+                                .getBoolean(arg, extras.getBoolean(
+                                        LauncherSettings.Settings.EXTRA_DEFAULT_VALUE)));
+                return result;
+            }
+            case LauncherSettings.Settings.METHOD_SET_BOOLEAN: {
+                boolean value = extras.getBoolean(LauncherSettings.Settings.EXTRA_VALUE);
+                getContext().getSharedPreferences(
+                        LauncherAppState.getSharedPreferencesKey(), Context.MODE_PRIVATE)
+                        .edit().putBoolean(arg, value).apply();
+                if (mListener != null) {
+                    mListener.onSettingsChanged(arg, value);
+                }
+                Bundle result = new Bundle();
+                result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE, value);
+                return result;
+            }
+        }
+        return null;
     }
 
     private void notifyListeners() {
