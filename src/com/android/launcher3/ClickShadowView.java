@@ -96,12 +96,14 @@ public class ClickShadowView extends View {
         float drawableWidth = view.getIcon().getBounds().width();
 
         setTranslationX(leftShift
+                + viewParent.getTranslationX()
                 + view.getCompoundPaddingLeft() * view.getScaleX()
                 + (iconHSpace - drawableWidth) * view.getScaleX() / 2  /* drawable gap */
                 + iconWidth * (1 - view.getScaleX()) / 2  /* gap due to scale */
                 - mShadowPadding  /* extra shadow size */
                 );
         setTranslationY(topShift
+                + viewParent.getTranslationY()
                 + view.getPaddingTop() * view.getScaleY()  /* drawable gap */
                 + view.getHeight() * (1 - view.getScaleY()) / 2  /* gap due to scale */
                 - mShadowPadding  /* extra shadow size */
