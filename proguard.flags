@@ -44,7 +44,7 @@
   public void setBrightness(int);
 }
 
--keep class com.android.launcher3.AppsContainerRecyclerView {
+-keep class com.android.launcher3.BaseRecyclerView {
   public void setFastScrollerAlpha(float);
   public float getFastScrollerAlpha();
 }
