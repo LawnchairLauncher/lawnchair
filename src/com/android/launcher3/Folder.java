@@ -598,7 +598,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     @Override
-    public void onDragStart(DragSource source, Object info, int dragAction) { }
+    public void onDragStart(DragSource source, ItemInfo info, int dragAction) { }
 
     @Override
     public void onDragEnd() {
@@ -647,7 +647,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     public boolean acceptDrop(DragObject d) {
-        final ItemInfo item = (ItemInfo) d.dragInfo;
+        final ItemInfo item = d.dragInfo;
         final int itemType = item.itemType;
         return ((itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
                     itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) &&

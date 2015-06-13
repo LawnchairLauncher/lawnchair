@@ -317,7 +317,7 @@ public class WidgetsContainerView extends BaseContainerView
                 int currentScreen = mLauncher.getCurrentWorkspaceScreen();
                 Workspace workspace = (Workspace) target;
                 CellLayout layout = (CellLayout) workspace.getChildAt(currentScreen);
-                ItemInfo itemInfo = (ItemInfo) d.dragInfo;
+                ItemInfo itemInfo = d.dragInfo;
                 if (layout != null) {
                     layout.calculateSpans(itemInfo);
                     showOutOfSpaceMessage =

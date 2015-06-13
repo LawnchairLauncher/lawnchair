@@ -13,6 +13,7 @@ import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.DragController.DragListener;
 import com.android.launcher3.DragLayer;
 import com.android.launcher3.DragSource;
+import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
@@ -43,7 +44,7 @@ public class WidgetHostViewLoader implements DragListener {
     }
 
     @Override
-    public void onDragStart(DragSource source, Object info, int dragAction) { }
+    public void onDragStart(DragSource source, ItemInfo info, int dragAction) { }
 
     @Override
     public void onDragEnd() {

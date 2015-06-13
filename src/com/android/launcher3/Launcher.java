@@ -253,7 +253,7 @@ public class Launcher extends Activity
     private AppWidgetManagerCompat mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
 
-    @Thunk ItemInfo mPendingAddInfo = new ItemInfo();
+    @Thunk final ItemInfo mPendingAddInfo = new ItemInfo();
     private LauncherAppWidgetProviderInfo mPendingAddWidgetInfo;
     private int mPendingAddWidgetId = -1;
 
@@ -1500,7 +1500,6 @@ public class Launcher extends Activity
     private void completeAddShortcut(Intent data, long container, long screenId, int cellX,
             int cellY) {
         int[] cellXY = mTmpAddItemCellCoordinates;
-        int[] touchXY = mPendingAddInfo.dropPos;
         CellLayout layout = getCellLayout(container, screenId);
 
         ShortcutInfo info = InstallShortcutReceiver.fromShortcutIntent(this, data);
@@ -1527,10 +1526,6 @@ public class Launcher extends Activity
                     true)) {
                 return;
             }
-        } else if (touchXY != null) {
-            // when dragging and dropping, just find the closest free spot
-            int[] result = layout.findNearestVacantArea(touchXY[0], touchXY[1], 1, 1, cellXY);
-            foundCellSpan = (result != null);
         } else {
             foundCellSpan = layout.findCellForSpan(cellXY, 1, 1);
         }
@@ -2214,7 +2209,6 @@ public class Launcher extends Activity
         mPendingAddInfo.cellX = mPendingAddInfo.cellY = -1;
         mPendingAddInfo.spanX = mPendingAddInfo.spanY = -1;
         mPendingAddInfo.minSpanX = mPendingAddInfo.minSpanY = -1;
-        mPendingAddInfo.dropPos = null;
     }
 
     void addAppWidgetImpl(final int appWidgetId, final ItemInfo info, final
@@ -2286,7 +2280,6 @@ public class Launcher extends Activity
         resetAddInfo();
         mPendingAddInfo.container = container;
         mPendingAddInfo.screenId = screenId;
-        mPendingAddInfo.dropPos = null;
 
         if (cell != null) {
             mPendingAddInfo.cellX = cell[0];
@@ -2310,7 +2303,6 @@ public class Launcher extends Activity
         resetAddInfo();
         mPendingAddInfo.container = info.container = container;
         mPendingAddInfo.screenId = info.screenId = screenId;
-        mPendingAddInfo.dropPos = null;
         mPendingAddInfo.minSpanX = info.minSpanX;
         mPendingAddInfo.minSpanY = info.minSpanY;
 

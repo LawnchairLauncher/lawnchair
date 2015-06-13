@@ -24,8 +24,6 @@ import android.graphics.Bitmap;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 
-import java.util.Arrays;
-
 /**
  * Represents an item in the launcher.
  */
@@ -35,14 +33,14 @@ public class ItemInfo {
      * Intent extra to store the profile. Format: UserHandle
      */
     static final String EXTRA_PROFILE = "profile";
-    
+
     public static final int NO_ID = -1;
-    
+
     /**
      * The id in the settings database for this item
      */
     public long id = NO_ID;
-    
+
     /**
      * One of {@link LauncherSettings.Favorites#ITEM_TYPE_APPLICATION},
      * {@link LauncherSettings.Favorites#ITEM_TYPE_SHORTCUT},
@@ -50,20 +48,20 @@ public class ItemInfo {
      * {@link LauncherSettings.Favorites#ITEM_TYPE_APPWIDGET}.
      */
     public int itemType;
-    
+
     /**
-     * The id of the container that holds this item. For the desktop, this will be 
+     * The id of the container that holds this item. For the desktop, this will be
      * {@link LauncherSettings.Favorites#CONTAINER_DESKTOP}. For the all applications folder it
      * will be {@link #NO_ID} (since it is not stored in the settings DB). For user folders
      * it will be the id of the folder.
      */
     public long container = NO_ID;
-    
+
     /**
      * Iindicates the screen in which the shortcut appears.
      */
     public long screenId = -1;
-    
+
     /**
      * Indicates the X position of the associated cell.
      */
@@ -100,11 +98,6 @@ public class ItemInfo {
     public int rank = 0;
 
     /**
-     * Indicates that this item needs to be updated in the db
-     */
-    public boolean requiresDbUpdate = false;
-
-    /**
      * Title of the item
      */
     public CharSequence title;
@@ -113,11 +106,6 @@ public class ItemInfo {
      * Content description of the item.
      */
     public CharSequence contentDescription;
-
-    /**
-     * The position of the item in a drag-and-drop operation.
-     */
-    public int[] dropPos = null;
 
     public UserHandleCompat user;
 
@@ -194,7 +182,6 @@ public class ItemInfo {
     public String toString() {
         return "Item(id=" + this.id + " type=" + this.itemType + " container=" + this.container
             + " screen=" + screenId + " cellX=" + cellX + " cellY=" + cellY + " spanX=" + spanX
-            + " spanY=" + spanY + " dropPos=" + Arrays.toString(dropPos)
-            + " user=" + user + ")";
+            + " spanY=" + spanY + " user=" + user + ")";
     }
 }

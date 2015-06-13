@@ -29,7 +29,6 @@ import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Represents a launchable icon on the workspaces and in folders.
@@ -241,7 +240,7 @@ public class ShortcutInfo extends ItemInfo {
         return "ShortcutInfo(title=" + title + "intent=" + intent + "id=" + this.id
                 + " type=" + this.itemType + " container=" + this.container + " screen=" + screenId
                 + " cellX=" + cellX + " cellY=" + cellY + " spanX=" + spanX + " spanY=" + spanY
-                + " dropPos=" + Arrays.toString(dropPos) + " user=" + user + ")";
+                + " user=" + user + ")";
     }
 
     public static void dumpShortcutInfoList(String tag, String label,

@@ -50,6 +50,7 @@ import android.view.animation.DecelerateInterpolator;
 
 import com.android.launcher3.BubbleTextView.BubbleTextShadowHandler;
 import com.android.launcher3.FolderIcon.FolderRingAnimator;
+import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
 import com.android.launcher3.accessibility.FolderAccessibilityHelper;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
@@ -1082,23 +1083,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         final int oldIndex = mDragOutlineCurrent;
         mDragOutlineAnims[oldIndex].animateOut();
         mDragCell[0] = mDragCell[1] = -1;
-    }
-
-    /**
-     * Find a vacant area that will fit the given bounds nearest the requested
-     * cell location. Uses Euclidean distance to score multiple vacant areas.
-     *
-     * @param pixelX The X location at which you want to search for a vacant area.
-     * @param pixelY The Y location at which you want to search for a vacant area.
-     * @param spanX Horizontal span of the object.
-     * @param spanY Vertical span of the object.
-     * @param result Array in which to place the result, or null (in which case a new array will
-     *        be allocated)
-     * @return The X, Y cell of a vacant area that can contain this object,
-     *         nearest the requested location.
-     */
-    int[] findNearestVacantArea(int pixelX, int pixelY, int spanX, int spanY, int[] result) {
-        return findNearestVacantArea(pixelX, pixelY, spanX, spanY, spanX, spanY, result, null);
     }
 
     /**
@@ -2198,6 +2182,15 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 mOccupied[i][j] = mTmpOccupied[i][j];
             }
         }
+
+        long screenId = mLauncher.getWorkspace().getIdForScreen(this);
+        int container = Favorites.CONTAINER_DESKTOP;
+
+        if (mLauncher.isHotseatLayout(this)) {
+            screenId = -1;
+            container = Favorites.CONTAINER_HOTSEAT;
+        }
+
         int childCount = mShortcutsAndWidgets.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View child = mShortcutsAndWidgets.getChildAt(i);
@@ -2206,17 +2199,21 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             // We do a null check here because the item info can be null in the case of the
             // AllApps button in the hotseat.
             if (info != null) {
-                if (info.cellX != lp.tmpCellX || info.cellY != lp.tmpCellY ||
-                        info.spanX != lp.cellHSpan || info.spanY != lp.cellVSpan) {
-                    info.requiresDbUpdate = true;
-                }
+                final boolean requiresDbUpdate = (info.cellX != lp.tmpCellX
+                        || info.cellY != lp.tmpCellY || info.spanX != lp.cellHSpan
+                        || info.spanY != lp.cellVSpan);
+
                 info.cellX = lp.cellX = lp.tmpCellX;
                 info.cellY = lp.cellY = lp.tmpCellY;
                 info.spanX = lp.cellHSpan;
                 info.spanY = lp.cellVSpan;
+
+                if (requiresDbUpdate) {
+                    LauncherModel.modifyItemInDatabase(mLauncher, info, container, screenId,
+                            info.cellX, info.cellY, info.spanX, info.spanY);
+                }
             }
         }
-        mLauncher.getWorkspace().updateItemLocationsInDatabase(this);
     }
 
     private void setUseTempCoords(boolean useTempCoords) {

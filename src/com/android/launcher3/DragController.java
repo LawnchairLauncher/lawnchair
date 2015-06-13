@@ -135,14 +135,14 @@ public class DragController {
          * @param dragAction The drag action: either {@link DragController#DRAG_ACTION_MOVE}
          *        or {@link DragController#DRAG_ACTION_COPY}
          */
-        void onDragStart(DragSource source, Object info, int dragAction);
+        void onDragStart(DragSource source, ItemInfo info, int dragAction);
 
         /**
          * The drag has ended
          */
         void onDragEnd();
     }
-    
+
     /**
      * Used to create a new DragLayer from XML.
      *
@@ -178,7 +178,7 @@ public class DragController {
      * @param dragRegion Coordinates within the bitmap b for the position of item being dragged.
      *          Makes dragging feel more precise, e.g. you can clip out a transparent border
      */
-    public void startDrag(View v, Bitmap bmp, DragSource source, Object dragInfo,
+    public void startDrag(View v, Bitmap bmp, DragSource source, ItemInfo dragInfo,
             Rect viewImageBounds, int dragAction, float initialDragViewScale) {
         int[] loc = mCoordinatesTemp;
         mLauncher.getDragLayer().getLocationInDragLayer(v, loc);
@@ -211,7 +211,7 @@ public class DragController {
      * @param accessible whether this drag should occur in accessibility mode
      */
     public DragView startDrag(Bitmap b, int dragLayerX, int dragLayerY,
-            DragSource source, Object dragInfo, int dragAction, Point dragOffset, Rect dragRegion,
+            DragSource source, ItemInfo dragInfo, int dragAction, Point dragOffset, Rect dragRegion,
             float initialDragViewScale, boolean accessible) {
         if (PROFILE_DRAWING_DURING_DRAG) {
             android.os.Debug.startMethodTracing("Launcher");

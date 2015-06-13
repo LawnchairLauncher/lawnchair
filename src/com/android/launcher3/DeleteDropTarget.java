@@ -46,20 +46,20 @@ public class DeleteDropTarget extends ButtonDropTarget {
         setDrawable(R.drawable.ic_remove_launcher);
     }
 
-    public static boolean supportsDrop(Object info) {
+    public static boolean supportsDrop(ItemInfo info) {
         return (info instanceof ShortcutInfo)
                 || (info instanceof LauncherAppWidgetInfo)
                 || (info instanceof FolderInfo);
     }
 
     @Override
-    protected boolean supportsDrop(DragSource source, Object info) {
+    protected boolean supportsDrop(DragSource source, ItemInfo info) {
         return source.supportsDeleteDropTarget() && supportsDrop(info);
     }
 
     @Override
     @Thunk void completeDrop(DragObject d) {
-        ItemInfo item = (ItemInfo) d.dragInfo;
+        ItemInfo item = d.dragInfo;
         if ((d.dragSource instanceof Workspace) || (d.dragSource instanceof Folder)) {
             removeWorkspaceOrFolderItem(mLauncher, item, null);
         }

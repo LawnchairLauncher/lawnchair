@@ -330,8 +330,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 !mFolder.isFull() && item != mInfo && !mInfo.opened);
     }
 
-    public boolean acceptDrop(Object dragInfo) {
-        final ItemInfo item = (ItemInfo) dragInfo;
+    public boolean acceptDrop(ItemInfo dragInfo) {
+        final ItemInfo item = dragInfo;
         return !mFolder.isDestroyed() && willAcceptItem(item);
     }
 
@@ -339,8 +339,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         mInfo.add(item);
     }
 
-    public void onDragEnter(Object dragInfo) {
-        if (mFolder.isDestroyed() || !willAcceptItem((ItemInfo) dragInfo)) return;
+    public void onDragEnter(ItemInfo dragInfo) {
+        if (mFolder.isDestroyed() || !willAcceptItem(dragInfo)) return;
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
         CellLayout layout = (CellLayout) getParent().getParent();
         mFolderRingAnimator.setCell(lp.cellX, lp.cellY);
@@ -356,7 +356,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             // Workspace#onDropExternal.
             mOpenAlarm.setAlarm(ON_OPEN_DELAY);
         }
-        mDragInfo = (ItemInfo) dragInfo;
+        mDragInfo = dragInfo;
     }
 
     public void onDragOver(Object dragInfo) {
