@@ -80,16 +80,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static final String RESTRICTION_PACKAGE_NAME = "workspace.configuration.package.name";
 
-    private LauncherProviderChangeListener mListener;
-
-    /**
-     * {@link Uri} triggered at any registered {@link android.database.ContentObserver} when
-     * {@link AppWidgetHost#deleteHost()} is called during database creation.
-     * Use this to recall {@link AppWidgetHost#startListening()} if needed.
-     */
-    static final Uri CONTENT_APPWIDGET_RESET_URI =
-            Uri.parse("content://" + AUTHORITY + "/appWidgetReset");
-
+    @Thunk LauncherProviderChangeListener mListener;
     @Thunk DatabaseHelper mOpenHelper;
 
     @Override
@@ -279,6 +270,18 @@ public class LauncherProvider extends ContentProvider {
         }
     }
 
+    @Thunk void notifyAppWidgetHostReset() {
+        new MainThreadExecutor().execute(new Runnable() {
+
+            @Override
+            public void run() {
+                if (mListener != null) {
+                    mListener.onAppWidgetHostReset();
+                }
+            }
+        });
+    }
+
     @Thunk static void addModifiedTime(ContentValues values) {
         values.put(LauncherSettings.ChangeLogColumns.MODIFIED, System.currentTimeMillis());
     }
@@ -455,17 +458,6 @@ public class LauncherProvider extends ContentProvider {
             return mNewDbCreated;
         }
 
-        /**
-         * Send notification that we've deleted the {@link AppWidgetHost},
-         * probably as part of the initial database creation. The receiver may
-         * want to re-call {@link AppWidgetHost#startListening()} to ensure
-         * callbacks are correctly set.
-         */
-        private void sendAppWidgetResetNotify() {
-            final ContentResolver resolver = mContext.getContentResolver();
-            resolver.notifyChange(CONTENT_APPWIDGET_RESET_URI, null);
-        }
-
         @Override
         public void onCreate(SQLiteDatabase db) {
             if (LOGD) Log.d(TAG, "creating new launcher database");
@@ -509,7 +501,14 @@ public class LauncherProvider extends ContentProvider {
             // Database was just created, so wipe any previous widgets
             if (mAppWidgetHost != null) {
                 mAppWidgetHost.deleteHost();
-                sendAppWidgetResetNotify();
+
+                /**
+                 * Send notification that we've deleted the {@link AppWidgetHost},
+                 * probably as part of the initial database creation. The receiver may
+                 * want to re-call {@link AppWidgetHost#startListening()} to ensure
+                 * callbacks are correctly set.
+                 */
+                LauncherAppState.getLauncherProvider().notifyAppWidgetHostReset();
             }
 
             // Fresh and clean launcher DB.
@@ -517,7 +516,7 @@ public class LauncherProvider extends ContentProvider {
             setFlagEmptyDbCreated();
 
             // When a new DB is created, remove all previously stored managed profile information.
-            ManagedProfileHeuristic.processAllUsers(Collections.EMPTY_LIST, mContext);
+            ManagedProfileHeuristic.processAllUsers(Collections.<UserHandleCompat>emptyList(), mContext);
         }
 
         private void addWorkspacesTable(SQLiteDatabase db) {

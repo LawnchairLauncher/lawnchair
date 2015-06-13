@@ -36,7 +36,6 @@ import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentCallbacks2;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -48,7 +47,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
-import android.database.ContentObserver;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -241,7 +239,6 @@ public class Launcher extends Activity
 
     private final BroadcastReceiver mCloseSystemDialogsReceiver
             = new CloseSystemDialogsIntentReceiver();
-    private final ContentObserver mWidgetObserver = new AppWidgetResetObserver();
 
     private LayoutInflater mInflater;
 
@@ -438,7 +435,6 @@ public class Launcher extends Activity
 
         LauncherAppState.setApplicationContext(getApplicationContext());
         LauncherAppState app = LauncherAppState.getInstance();
-        LauncherAppState.getLauncherProvider().setLauncherProviderChangeListener(this);
 
         // Load configuration-specific DeviceProfile
         mDeviceProfile = getResources().getConfiguration().orientation
@@ -477,8 +473,6 @@ public class Launcher extends Activity
 
         setupViews();
         mDeviceProfile.layout(this);
-
-        registerContentObservers();
 
         lockAllApps();
 
@@ -2017,7 +2011,6 @@ public class Launcher extends Activity
 
         TextKeyListener.getInstance().release();
 
-        getContentResolver().unregisterContentObserver(mWidgetObserver);
         unregisterReceiver(mCloseSystemDialogsReceiver);
 
         mDragLayer.clearAllResizeFrames();
@@ -2386,16 +2379,6 @@ public class Launcher extends Activity
         sFolders.remove(folder.id);
     }
 
-    /**
-     * Registers various content observers. The current implementation registers
-     * only a favorites observer to keep track of the favorites applications.
-     */
-    private void registerContentObservers() {
-        ContentResolver resolver = getContentResolver();
-        resolver.registerContentObserver(LauncherProvider.CONTENT_APPWIDGET_RESET_URI,
-                true, mWidgetObserver);
-    }
-
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -2452,9 +2435,10 @@ public class Launcher extends Activity
     }
 
     /**
-     * Re-listen when widgets are reset.
+     * Re-listen when widget host is reset.
      */
-    @Thunk void onAppWidgetReset() {
+    @Override
+    public void onAppWidgetHostReset() {
         if (mAppWidgetHost != null) {
             mAppWidgetHost.startListening();
         }
@@ -2939,7 +2923,7 @@ public class Launcher extends Activity
         return false;
     }
 
-    private boolean startActivitySafely(View v, Intent intent, Object tag) {
+    @Thunk boolean startActivitySafely(View v, Intent intent, Object tag) {
         boolean success = false;
         if (mIsSafeModeEnabled && !Utilities.isSystemApp(this, intent)) {
             Toast.makeText(this, R.string.safemode_shortcut_error, Toast.LENGTH_SHORT).show();
@@ -3558,20 +3542,6 @@ public class Launcher extends Activity
         @Override
         public void onReceive(Context context, Intent intent) {
             closeSystemDialogs();
-        }
-    }
-
-    /**
-     * Receives notifications whenever the appwidgets are reset.
-     */
-    private class AppWidgetResetObserver extends ContentObserver {
-        public AppWidgetResetObserver() {
-            super(new Handler());
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            onAppWidgetReset();
         }
     }
 

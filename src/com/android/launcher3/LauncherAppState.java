@@ -84,7 +84,7 @@ public class LauncherAppState {
 
         mInvariantDeviceProfile = new InvariantDeviceProfile(sContext);
         mIconCache = new IconCache(sContext, mInvariantDeviceProfile);
-        mWidgetCache = new WidgetPreviewLoader(sContext, mInvariantDeviceProfile, mIconCache);
+        mWidgetCache = new WidgetPreviewLoader(sContext, mIconCache);
 
         mAppFilter = AppFilter.loadByName(sContext.getString(R.string.app_filter_class));
         mBuildInfo = BuildInfo.loadByName(sContext.getString(R.string.build_info_class));
@@ -125,6 +125,7 @@ public class LauncherAppState {
     }
 
     LauncherModel setLauncher(Launcher launcher) {
+        getLauncherProvider().setLauncherProviderChangeListener(launcher);
         mModel.initialize(launcher);
         mAccessibilityDelegate = ((launcher != null) && Utilities.isLmpOrAbove()) ?
             new LauncherAccessibilityDelegate(launcher) : null;
