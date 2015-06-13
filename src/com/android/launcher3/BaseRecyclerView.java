@@ -290,6 +290,13 @@ public class BaseRecyclerView extends RecyclerView
     }
 
     /**
+     * Returns the fast scroller alpha.
+     */
+    public float getFastScrollerAlpha() {
+        return mFastScrollAlpha;
+    }
+
+    /**
      * Maps the touch (from 0..1) to the adapter position that should be visible.
      * <p>Override in each subclass of this base class.
      */
