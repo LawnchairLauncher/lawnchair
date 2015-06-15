@@ -99,7 +99,7 @@ import android.widget.Toast;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.PagedView.PageSwitchListener;
 import com.android.launcher3.allapps.AllAppsContainerView;
-import com.android.launcher3.allapps.AppSearchManager;
+import com.android.launcher3.allapps.AllAppsSearchBarController;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -137,9 +137,6 @@ public class Launcher extends Activity
                    LauncherStateTransitionAnimation.Callbacks {
     static final String TAG = "Launcher";
     static final boolean LOGD = false;
-
-    // Temporary flag
-    static final boolean DISABLE_ALL_APPS_SEARCH_INTEGRATION = true;
 
     static final boolean PROFILE_STARTUP = false;
     static final boolean DEBUG_WIDGETS = true;
@@ -562,32 +559,6 @@ public class Launcher extends Activity
 
     public boolean setLauncherCallbacks(LauncherCallbacks callbacks) {
         mLauncherCallbacks = callbacks;
-        mLauncherCallbacks.setLauncherAppsCallback(new Launcher.LauncherAppsCallbacks() {
-            @Override
-            public void onAllAppsBoundsChanged(Rect bounds) {
-                if (LOGD) {
-                    Log.d(TAG, "onAllAppsBoundsChanged(Rect): " + bounds);
-                }
-                mAppsView.setFixedBounds(bounds);
-                mWidgetsView.setFixedBounds(bounds);
-            }
-
-            @Override
-            public void dismissAllApps() {
-                if (!DISABLE_ALL_APPS_SEARCH_INTEGRATION) {
-                    // Dismiss All Apps if we aren't already paused/invisible
-                    if (!mPaused) {
-                        showWorkspace(WorkspaceStateTransitionAnimation.SCROLL_TO_CURRENT_PAGE, true,
-                                null /* onCompleteRunnable */, false /* notifyLauncherCallbacks */);
-                    }
-                }
-            }
-
-            @Override
-            public void setSearchManager(AppSearchManager manager) {
-                mAppsView.setSearchManager(manager);
-            }
-        });
         mLauncherCallbacks.setLauncherSearchCallback(new Launcher.LauncherSearchCallbacks() {
             private boolean mImportanceStored = false;
             private int mWorkspaceImportanceForAccessibility =
@@ -625,6 +596,14 @@ public class Launcher extends Activity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onLauncherProviderChange();
         }
+    }
+
+    /**
+     * Updates the bounds of all the overlays to match the new fixed bounds.
+     */
+    public void updateOverlayBounds(Rect newBounds) {
+        mAppsView.setSearchBarBounds(newBounds);
+        mWidgetsView.setSearchBarBounds(newBounds);
     }
 
     /** To be overridden by subclasses to hint to Launcher that we have custom content */
@@ -1001,16 +980,6 @@ public class Launcher extends Activity
         }
         mOnResumeState = State.NONE;
 
-        // Restore the apps state if we are in all apps
-        if (!Launcher.DISABLE_ALL_APPS_SEARCH_INTEGRATION) {
-            // Otherwise, notify the callbacks if we are in all apps mode
-            if (mState == State.APPS) {
-                if (mLauncherCallbacks != null) {
-                    mLauncherCallbacks.onAllAppsShown();
-                }
-            }
-        }
-
         // Background was set to gradient in onPause(), restore to transparent if in all apps.
         setWorkspaceBackground(mState == State.WORKSPACE ? WORKSPACE_BACKGROUND_GRADIENT
                 : WORKSPACE_BACKGROUND_TRANSPARENT);
@@ -1156,17 +1125,20 @@ public class Launcher extends Activity
          * Updates launcher to the available space that AllApps can take so as not to overlap with
          * any other views.
          */
+        @Deprecated
         public void onAllAppsBoundsChanged(Rect bounds);
 
         /**
          * Called to dismiss all apps if it is showing.
          */
+        @Deprecated
         public void dismissAllApps();
 
         /**
          * Sets the search manager to be used for app search.
          */
-        public void setSearchManager(AppSearchManager manager);
+        @Deprecated
+        public void setSearchManager(Object manager);
     }
 
     public interface LauncherSearchCallbacks {
@@ -1452,14 +1424,14 @@ public class Launcher extends Activity
         mSearchDropTargetBar = (SearchDropTargetBar)
                 mDragLayer.findViewById(R.id.search_drop_target_bar);
 
-        // Setup Apps
+        // Setup Apps and Widgets
         mAppsView = (AllAppsContainerView) findViewById(R.id.apps_view);
-        if (isAllAppsSearchOverridden()) {
-            mAppsView.hideHeaderBar();
-        }
-
-        // Setup AppsCustomize
         mWidgetsView = (WidgetsContainerView) findViewById(R.id.widgets_view);
+        if (mLauncherCallbacks != null && mLauncherCallbacks.getAllAppsSearchBarController() != null) {
+            mAppsView.setSearchBarController(mLauncherCallbacks.getAllAppsSearchBarController());
+        } else {
+            mAppsView.setSearchBarController(mAppsView.newDefaultAppSearchController());
+        }
 
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
         dragController.setDragScoller(mWorkspace);
@@ -2850,17 +2822,8 @@ public class Launcher extends Activity
     public void updateInteraction(Workspace.State fromState, Workspace.State toState) {
         // Only update the interacting state if we are transitioning to/from a view with an
         // overlay
-        boolean fromStateWithOverlay;
-        boolean toStateWithOverlay;
-        if (Launcher.DISABLE_ALL_APPS_SEARCH_INTEGRATION) {
-            fromStateWithOverlay = fromState != Workspace.State.NORMAL;
-            toStateWithOverlay = toState != Workspace.State.NORMAL;
-        } else {
-            fromStateWithOverlay = fromState != Workspace.State.NORMAL &&
-                    fromState != Workspace.State.NORMAL_HIDDEN;
-            toStateWithOverlay = toState != Workspace.State.NORMAL &&
-                    toState != Workspace.State.NORMAL_HIDDEN;
-        }
+        boolean fromStateWithOverlay = fromState != Workspace.State.NORMAL;
+        boolean toStateWithOverlay = toState != Workspace.State.NORMAL;
         if (toStateWithOverlay) {
             onInteractionBegin();
         } else if (fromStateWithOverlay) {
@@ -3304,21 +3267,19 @@ public class Launcher extends Activity
     }
 
     public void showWorkspace(boolean animated) {
-        showWorkspace(WorkspaceStateTransitionAnimation.SCROLL_TO_CURRENT_PAGE, animated, null,
-                true);
+        showWorkspace(WorkspaceStateTransitionAnimation.SCROLL_TO_CURRENT_PAGE, animated, null);
     }
 
     public void showWorkspace(boolean animated, Runnable onCompleteRunnable) {
         showWorkspace(WorkspaceStateTransitionAnimation.SCROLL_TO_CURRENT_PAGE, animated,
-                onCompleteRunnable, true);
+                onCompleteRunnable);
     }
 
     protected void showWorkspace(int snapToPage, boolean animated) {
-        showWorkspace(snapToPage, animated, null, true);
+        showWorkspace(snapToPage, animated, null);
     }
 
-    void showWorkspace(int snapToPage, boolean animated, Runnable onCompleteRunnable,
-            boolean notifyLauncherCallbacks) {
+    void showWorkspace(int snapToPage, boolean animated, Runnable onCompleteRunnable) {
         boolean changed = mState != State.WORKSPACE ||
                 mWorkspace.getState() != Workspace.State.NORMAL;
         if (changed) {
@@ -3350,12 +3311,6 @@ public class Launcher extends Activity
             // Send an accessibility event to announce the context change
             getWindow().getDecorView()
                     .sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
-            if (notifyLauncherCallbacks) {
-                // Dismiss all apps when the workspace is shown
-                if (!Launcher.DISABLE_ALL_APPS_SEARCH_INTEGRATION && mLauncherCallbacks != null) {
-                    mLauncherCallbacks.onAllAppsHidden();
-                }
-            }
         }
     }
 
@@ -3415,10 +3370,7 @@ public class Launcher extends Activity
         }
 
         if (toState == State.APPS) {
-            mStateTransitionAnimation.startAnimationToAllApps(animated);
-            if (!Launcher.DISABLE_ALL_APPS_SEARCH_INTEGRATION && mLauncherCallbacks != null) {
-                mLauncherCallbacks.onAllAppsShown();
-            }
+            mStateTransitionAnimation.startAnimationToAllApps(mState, animated);
         } else {
             mStateTransitionAnimation.startAnimationToWidgets(animated);
         }
@@ -3442,9 +3394,10 @@ public class Launcher extends Activity
      * new state.
      */
     public Animator startWorkspaceStateChangeAnimation(Workspace.State toState, int toPage,
-            boolean animated, HashMap<View, Integer> layerViews) {
+            boolean animated, boolean hasOverlaySearchBar, HashMap<View, Integer> layerViews) {
         Workspace.State fromState = mWorkspace.getState();
-        Animator anim = mWorkspace.setStateWithAnimation(toState, toPage, animated, layerViews);
+        Animator anim = mWorkspace.setStateWithAnimation(toState, toPage, animated,
+                hasOverlaySearchBar, layerViews);
         updateInteraction(fromState, toState);
         return anim;
     }
@@ -3465,14 +3418,6 @@ public class Launcher extends Activity
     public void exitSpringLoadedDragModeDelayed(final boolean successfulDrop, int delay,
             final Runnable onCompleteRunnable) {
         if (mState != State.APPS_SPRING_LOADED && mState != State.WIDGETS_SPRING_LOADED) return;
-
-        if (successfulDrop) {
-            // We need to trigger all apps hidden to notify search to update itself before the
-            // delayed call to showWorkspace below
-            if (!Launcher.DISABLE_ALL_APPS_SEARCH_INTEGRATION && mLauncherCallbacks != null) {
-                mLauncherCallbacks.onAllAppsHidden();
-            }
-        }
 
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -4455,20 +4400,6 @@ public class Launcher extends Activity
             return mLauncherCallbacks.getFirstRunActivity();
         }
         return null;
-    }
-
-    /**
-     * Returns whether the launcher callbacks overrides search in all apps.
-     */
-    @Thunk boolean isAllAppsSearchOverridden() {
-        if (DISABLE_ALL_APPS_SEARCH_INTEGRATION) {
-            return false;
-        }
-
-        if (mLauncherCallbacks != null) {
-            return mLauncherCallbacks.overrideAllAppsSearch();
-        }
-        return false;
     }
 
     private boolean shouldRunFirstRunActivity() {

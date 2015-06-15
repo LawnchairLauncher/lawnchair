@@ -16,13 +16,10 @@
 
 package com.android.launcher3;
 
-import android.view.View;
-
 /**
  * An interface to get callbacks during a launcher transition.
  */
 public interface LauncherTransitionable {
-    View getContent();
     void onLauncherTransitionPrepare(Launcher l, boolean animated, boolean toWorkspace);
     void onLauncherTransitionStart(Launcher l, boolean animated, boolean toWorkspace);
     void onLauncherTransitionStep(Launcher l, float t);

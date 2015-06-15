@@ -66,6 +66,7 @@ public class WidgetsContainerView extends BaseContainerView
     private IconCache mIconCache;
 
     /* Recycler view related member variables */
+    private View mContent;
     private WidgetsRecyclerView mView;
     private WidgetsListAdapter mAdapter;
 
@@ -98,6 +99,7 @@ public class WidgetsContainerView extends BaseContainerView
 
     @Override
     protected void onFinishInflate() {
+        mContent = findViewById(R.id.content);
         mView = (WidgetsRecyclerView) findViewById(R.id.widgets_list_view);
         mView.setAdapter(mAdapter);
 
@@ -112,7 +114,6 @@ public class WidgetsContainerView extends BaseContainerView
         });
         mPadding.set(getPaddingLeft(), getPaddingTop(), getPaddingRight(),
                 getPaddingBottom());
-        onUpdatePaddings();
     }
 
     //
@@ -335,33 +336,18 @@ public class WidgetsContainerView extends BaseContainerView
     //
 
     @Override
-    protected void onUpdatePaddings() {
-        if (mFixedBounds.isEmpty()) {
-            // If there are no fixed bounds, then use the default padding and insets
-            setPadding(mPadding.left + mInsets.left, mPadding.top + mInsets.top,
-                    mPadding.right + mInsets.right, mPadding.bottom + mInsets.bottom);
-        } else {
-            // If there are fixed bounds, then we update the padding to reflect the fixed bounds.
-            setPadding(mFixedBounds.left, mFixedBounds.top, getMeasuredWidth() - mFixedBounds.right,
-                    mFixedBounds.bottom);
-        }
+    protected void onUpdateBackgroundAndPaddings(Rect searchBarBounds, Rect padding) {
+        // Apply the top-bottom padding to the content itself so that the launcher transition is
+        // clipped correctly
+        mContent.setPadding(0, padding.top, 0, padding.bottom);
 
-        int inset = mFixedBounds.isEmpty() ? mView.getScrollbarWidth() : mFixedBoundsContainerInset;
-        mView.setPadding(inset + mView.getScrollbarWidth(), inset,
-                inset, inset);
-    }
-
-    @Override
-    protected void onUpdateBackgrounds() {
-        InsetDrawable background;
-        // Update the background of the reveal view and list to be inset with the fixed bound
-        // insets instead of the default insets
-        // TODO: Use quantum_panel instead of quantum_panel_shape.
-        int inset = mFixedBounds.isEmpty() ? mView.getScrollbarWidth() : mFixedBoundsContainerInset;
-        background = new InsetDrawable(
-                getContext().getResources().getDrawable(R.drawable.quantum_panel_shape),
-                inset, 0, inset, 0);
-        mView.updateBackgroundPadding(background);
+        // TODO: Use quantum_panel_dark instead of quantum_panel_shape_dark.
+        InsetDrawable background = new InsetDrawable(
+                getResources().getDrawable(R.drawable.quantum_panel_shape_dark), padding.left, 0,
+                padding.right, 0);
+        mView.setBackground(background);
+        getRevealView().setBackground(background.getConstantState().newDrawable());
+        mView.updateBackgroundPadding(padding);
     }
 
     /**

@@ -21,15 +21,37 @@
     android:id="@+id/apps_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:descendantFocusability="afterDescendants">
-    <include
-        layout="@layout/all_apps_reveal"
+    android:orientation="vertical">
+
+    <!-- Both android:focusable and android:focusableInTouchMode are needed for
+         the view to get focus change events. -->
+    <FrameLayout
+        android:id="@+id/search_box_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center" />
-    <include
-        layout="@layout/all_apps_container"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:visibility="gone" />
+
+    <FrameLayout
+        android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center" />
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <FrameLayout
+            android:id="@+id/all_apps_reveal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:focusable="false"
+            android:elevation="2dp"
+            android:visibility="invisible" />
+        <include
+            layout="@layout/all_apps_container"
+            android:id="@+id/all_apps_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+    </FrameLayout>
 </com.android.launcher3.allapps.AllAppsContainerView>

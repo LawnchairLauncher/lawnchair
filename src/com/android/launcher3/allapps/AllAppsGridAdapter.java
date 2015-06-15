@@ -109,6 +109,7 @@ class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHol
      */
     public class GridItemDecoration extends RecyclerView.ItemDecoration {
 
+        private static final boolean DEBUG_SECTION_MARGIN = false;
         private static final boolean FADE_OUT_SECTIONS = false;
 
         private HashMap<String, PointF> mCachedSectionBounds = new HashMap<>();
@@ -121,8 +122,15 @@ class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHol
 
         @Override
         public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
-            if (mApps.hasFilter()) {
+            if (mApps.hasFilter() || mAppsPerRow == 0) {
                 return;
+            }
+
+            if (DEBUG_SECTION_MARGIN) {
+                Paint p = new Paint();
+                p.setColor(0x33ff0000);
+                c.drawRect(mBackgroundPadding.left, 0, mBackgroundPadding.left + mStartMargin,
+                        parent.getMeasuredHeight(), p);
             }
 
             DeviceProfile grid = mLauncher.getDeviceProfile();
@@ -171,8 +179,8 @@ class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHol
 
                         // Calculate where to draw the section
                         int sectionBaseline = (int) (viewTopOffset + sectionBounds.y);
-                        int x = mIsRtl ? parent.getWidth() - mPaddingStart - mStartMargin :
-                                mPaddingStart;
+                        int x = mIsRtl ? parent.getWidth() - mBackgroundPadding.left - mStartMargin :
+                                mBackgroundPadding.left;
                         x += (int) ((mStartMargin - sectionBounds.x) / 2f);
                         int y = child.getTop() + sectionBaseline;
 
@@ -301,23 +309,20 @@ class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHol
     private String mEmptySearchText;
 
     // Section drawing
-    @Thunk int mPaddingStart;
     @Thunk int mStartMargin;
     @Thunk int mSectionHeaderOffset;
     @Thunk Paint mSectionTextPaint;
     @Thunk Paint mPredictedAppsDividerPaint;
 
-    public AllAppsGridAdapter(Context context, AlphabeticalAppsList apps, int appsPerRow,
+    public AllAppsGridAdapter(Context context, AlphabeticalAppsList apps,
             PredictionBarSpacerCallbacks pbCb, View.OnTouchListener touchListener,
             View.OnClickListener iconClickListener, View.OnLongClickListener iconLongClickListener) {
         Resources res = context.getResources();
         mHandler = new Handler();
         mApps = apps;
-        mAppsPerRow = appsPerRow;
         mPredictionBarCb = pbCb;
         mGridSizer = new GridSpanSizer();
-        mGridLayoutMgr = new GridLayoutManager(context, appsPerRow, GridLayoutManager.VERTICAL,
-                false);
+        mGridLayoutMgr = new GridLayoutManager(context, 1, GridLayoutManager.VERTICAL, false);
         mGridLayoutMgr.setSpanSizeLookup(mGridSizer);
         mItemDecoration = new GridItemDecoration(context);
         mLayoutInflater = LayoutInflater.from(context);
@@ -326,7 +331,6 @@ class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHol
         mIconLongClickListener = iconLongClickListener;
         mStartMargin = res.getDimensionPixelSize(R.dimen.all_apps_grid_view_start_margin);
         mSectionHeaderOffset = res.getDimensionPixelSize(R.dimen.all_apps_grid_section_y_offset);
-        mPaddingStart = res.getDimensionPixelSize(R.dimen.all_apps_container_inset);
 
         mSectionTextPaint = new Paint();
         mSectionTextPaint.setTextSize(res.getDimensionPixelSize(
@@ -339,7 +343,7 @@ class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHol
         mPredictedAppsDividerPaint.setColor(0x1E000000);
         mPredictedAppsDividerPaint.setAntiAlias(true);
         mPredictionBarBottomPadding =
-                res.getDimensionPixelSize(R.dimen.all_apps_prediction_bar_bottom_padding);
+                res.getDimensionPixelSize(R.dimen.all_apps_prediction_bar_top_bottom_padding);
     }
 
     /**
@@ -375,8 +379,8 @@ class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHol
      * Notifies the adapter of the background padding so that it can draw things correctly in the
      * item decorator.
      */
-    public void updateBackgroundPadding(Drawable background) {
-        background.getPadding(mBackgroundPadding);
+    public void updateBackgroundPadding(Rect padding) {
+        mBackgroundPadding.set(padding);
     }
 
     /**
@@ -392,13 +396,6 @@ class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHol
     public RecyclerView.ItemDecoration getItemDecoration() {
         // We don't draw any headers when we are uncomfortably dense
         return mItemDecoration;
-    }
-
-    /**
-     * Returns the left padding for the recycler view.
-     */
-    public int getContentMarginStart() {
-        return mStartMargin;
     }
 
     @Override

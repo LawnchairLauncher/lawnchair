@@ -235,11 +235,10 @@ public class AlphabeticalAppsList {
     private int mNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
 
-    public AlphabeticalAppsList(Context context, int numAppsPerRow, int numPredictedAppsPerRow) {
+    public AlphabeticalAppsList(Context context) {
         mLauncher = (Launcher) context;
         mIndexer = new AlphabeticIndexCompat(context);
         mAppNameComparator = new AppNameComparator(context);
-        setNumAppsPerRow(numAppsPerRow, numPredictedAppsPerRow);
     }
 
     /**
@@ -247,10 +246,6 @@ public class AlphabeticalAppsList {
      */
     public void setAdapterChangedCallback(AdapterChangedCallback cb) {
         mAdapterChangedCallback = cb;
-    }
-
-    public SimpleAppSearchManagerImpl newSimpleAppSearchManager() {
-        return new SimpleAppSearchManagerImpl(mApps);
     }
 
     /**
@@ -269,7 +264,7 @@ public class AlphabeticalAppsList {
         mNumAppsPerRow = numAppsPerRow;
         mNumPredictedAppsPerRow = numPredictedAppsPerRow;
 
-        onAppsUpdated();
+        updateAdapterItems();
     }
 
     /**
@@ -277,6 +272,13 @@ public class AlphabeticalAppsList {
      */
     public void setAdapter(RecyclerView.Adapter adapter) {
         mAdapter = adapter;
+    }
+
+    /**
+     * Returns all the apps.
+     */
+    public List<AppInfo> getApps() {
+        return mApps;
     }
 
     /**
@@ -597,6 +599,11 @@ public class AlphabeticalAppsList {
      * Merges multiple sections to reduce visual raggedness.
      */
     private void mergeSections() {
+        // Ignore merging until we have a valid row size
+        if (mNumAppsPerRow == 0) {
+            return;
+        }
+
         // Go through each section and try and merge some of the sections
         if (AllAppsContainerView.GRID_MERGE_SECTIONS && !hasFilter()) {
             int sectionAppCount = 0;
