@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import com.android.launcher3.allapps.AllAppsSearchBarController;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -122,14 +123,6 @@ public class LauncherExtension extends Launcher {
 
         @Override
         public void onClickAllAppsButton(View v) {
-        }
-
-        @Override
-        public void onAllAppsShown() {
-        }
-
-        @Override
-        public void onAllAppsHidden() {
         }
 
         @Override
@@ -255,8 +248,8 @@ public class LauncherExtension extends Launcher {
         }
 
         @Override
-        public boolean overrideAllAppsSearch() {
-            return false;
+        public AllAppsSearchBarController getAllAppsSearchBarController() {
+            return null;
         }
 
         @Override
@@ -282,11 +275,6 @@ public class LauncherExtension extends Launcher {
             mLauncherOverlay.setOverlayContainer(container);
 
             return mLauncherOverlay;
-        }
-
-        @Override
-        public void setLauncherAppsCallback(Object callbacks) {
-            // Do nothing
         }
 
         @Override

@@ -20,17 +20,15 @@ import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.InsetDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.text.Selection;
+import android.text.SpannableStringBuilder;
+import android.text.method.TextKeyListener;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -39,11 +37,8 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
-import android.widget.TextView;
-
+import android.widget.LinearLayout;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BaseContainerView;
 import com.android.launcher3.BubbleTextView;
@@ -54,7 +49,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.Folder;
-import com.android.launcher3.Insettable;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherTransitionable;
@@ -62,130 +56,23 @@ import com.android.launcher3.R;
 import com.android.launcher3.Stats;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.allapps.AppSearchManager.AppSearchResultCallback;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-/**
- * Interface for controlling the header elevation in response to RecyclerView scroll.
- */
-interface HeaderElevationController {
-    void onScroll(int scrollY);
-    void updateBackgroundPadding(Drawable bg);
-    void disable();
-}
-
-/**
- * Implementation of the header elevation mechanism for pre-L devices.  It simulates elevation
- * by drawing a gradient under the header bar.
- */
-final class HeaderElevationControllerV16 implements HeaderElevationController {
-
-    private final View mShadow;
-    private final float mScrollToElevation;
-    private final Rect mTmpRect = new Rect();
-
-    public HeaderElevationControllerV16(View header) {
-        Resources res = header.getContext().getResources();
-        mScrollToElevation = res.getDimension(R.dimen.all_apps_header_scroll_to_elevation);
-
-        mShadow = new View(header.getContext());
-        mShadow.setBackground(new GradientDrawable(
-                GradientDrawable.Orientation.TOP_BOTTOM, new int[] {0x44000000, 0x00000000}));
-        mShadow.setAlpha(0);
-
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                res.getDimensionPixelSize(R.dimen.all_apps_header_shadow_height));
-        lp.topMargin = ((FrameLayout.LayoutParams) header.getLayoutParams()).height;
-
-        ((ViewGroup) header.getParent()).addView(mShadow, lp);
-    }
-
-    @Override
-    public void onScroll(int scrollY) {
-        float elevationPct = (float) Math.min(scrollY, mScrollToElevation) /
-                mScrollToElevation;
-        mShadow.setAlpha(elevationPct);
-    }
-
-    @Override
-    public void updateBackgroundPadding(Drawable bg) {
-        bg.getPadding(mTmpRect);
-        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mShadow.getLayoutParams();
-        lp.leftMargin = mTmpRect.left;
-        lp.rightMargin = mTmpRect.right;
-        mShadow.requestLayout();
-    }
-
-    @Override
-    public void disable() {
-        ViewGroup parent = (ViewGroup) mShadow.getParent();
-        if (parent != null) {
-            parent.removeView(mShadow);
-        }
-    }
-}
-
-/**
- * Implementation of the header elevation mechanism for L+ devices, which makes use of the native
- * view elevation.
- */
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
-final class HeaderElevationControllerVL implements HeaderElevationController {
-
-    private final View mHeader;
-    private final float mMaxElevation;
-    private final float mScrollToElevation;
-
-    public HeaderElevationControllerVL(View header) {
-        mHeader = header;
-
-        Resources res = header.getContext().getResources();
-        mMaxElevation = res.getDimension(R.dimen.all_apps_header_max_elevation);
-        mScrollToElevation = res.getDimension(R.dimen.all_apps_header_scroll_to_elevation);
-    }
-
-    @Override
-    public void onScroll(int scrollY) {
-        float elevationPct = (float) Math.min(scrollY, mScrollToElevation) /
-                mScrollToElevation;
-        float newElevation = mMaxElevation * elevationPct;
-        if (Float.compare(mHeader.getElevation(), newElevation) != 0) {
-            mHeader.setElevation(newElevation);
-        }
-    }
-
-    @Override
-    public void updateBackgroundPadding(Drawable bg) {
-        // Do nothing, the background padding on the header view is already applied
-    }
-
-    @Override
-    public void disable() { }
-}
 
 /**
  * The all apps view container.
  */
-public class AllAppsContainerView extends BaseContainerView implements DragSource, Insettable,
-        TextWatcher, TextView.OnEditorActionListener, LauncherTransitionable,
-        AlphabeticalAppsList.AdapterChangedCallback, AllAppsGridAdapter.PredictionBarSpacerCallbacks,
-        View.OnTouchListener, View.OnClickListener, View.OnLongClickListener,
-        ViewTreeObserver.OnPreDrawListener, AppSearchResultCallback, Stats.LaunchSourceProvider {
+public class AllAppsContainerView extends BaseContainerView implements DragSource,
+        LauncherTransitionable, AlphabeticalAppsList.AdapterChangedCallback,
+        AllAppsGridAdapter.PredictionBarSpacerCallbacks, View.OnTouchListener,
+        View.OnLongClickListener, ViewTreeObserver.OnPreDrawListener,
+        AllAppsSearchBarController.Callbacks, Stats.LaunchSourceProvider {
 
     public static final boolean GRID_MERGE_SECTIONS = true;
-
-    private static final boolean ALLOW_SINGLE_APP_LAUNCH = true;
-    private static final boolean DYNAMIC_HEADER_ELEVATION = true;
-    private static final boolean DISMISS_SEARCH_ON_BACK = true;
-
-    private static final int FADE_IN_DURATION = 175;
-    private static final int FADE_OUT_DURATION = 100;
-    private static final int SEARCH_TRANSLATION_X_DP = 18;
 
     @Thunk Launcher mLauncher;
     @Thunk AlphabeticalAppsList mApps;
@@ -194,16 +81,14 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.ItemDecoration mItemDecoration;
 
-    @Thunk FrameLayout mContentView;
+    @Thunk View mContent;
+    @Thunk View mContainerView;
+    @Thunk View mRevealView;
     @Thunk AllAppsRecyclerView mAppsRecyclerView;
     @Thunk ViewGroup mPredictionBarView;
-    private View mHeaderView;
-    @Thunk View mSearchBarContainerView;
-    private View mSearchButtonView;
-    private View mDismissSearchButtonView;
-    @Thunk AllAppsSearchEditView mSearchBarEditView;
-
-    private HeaderElevationController mElevationController;
+    @Thunk AllAppsSearchBarController mSearchBarController;
+    private ViewGroup mSearchBarContainerView;
+    private View mSearchBarView;
 
     private int mNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
@@ -213,17 +98,15 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     private final Point mIconLastTouchPos = new Point();
     // This coordinate is used to proxy click and long-click events to the prediction bar icons
     private final Point mPredictionIconTouchDownPos = new Point();
-    private int mContentMarginStart;
     // Normal container insets
-    private int mContainerInset;
     private int mPredictionBarHeight;
     private int mLastRecyclerViewScrollPos = -1;
     @Thunk boolean mFocusPredictionBarOnFirstBind;
 
+    private SpannableStringBuilder mSearchQueryBuilder = null;
+
     private CheckLongPressHelper mPredictionIconCheckForLongPress;
     private View mPredictionIconUnderTouch;
-
-    private AppSearchManager mSearchManager;
 
     public AllAppsContainerView(Context context) {
         this(context, null);
@@ -238,30 +121,24 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         Resources res = context.getResources();
 
         mLauncher = (Launcher) context;
+        mLayoutInflater = LayoutInflater.from(context);
         DeviceProfile grid = mLauncher.getDeviceProfile();
-
-        mContainerInset = res.getDimensionPixelSize(R.dimen.all_apps_container_inset);
         mPredictionBarHeight = (int) (grid.allAppsIconSizePx + grid.iconDrawablePaddingOriginalPx +
                 Utilities.calculateTextHeight(grid.allAppsIconTextSizePx) +
                 2 * res.getDimensionPixelSize(R.dimen.all_apps_icon_top_bottom_padding) +
-                res.getDimensionPixelSize(R.dimen.all_apps_prediction_bar_bottom_padding));
+                2 * res.getDimensionPixelSize(R.dimen.all_apps_prediction_bar_top_bottom_padding));
 
-        mLayoutInflater = LayoutInflater.from(context);
-
-        mNumAppsPerRow = grid.allAppsNumCols;
-        mNumPredictedAppsPerRow = grid.allAppsNumPredictiveCols;
-        mApps = new AlphabeticalAppsList(context, mNumAppsPerRow, mNumPredictedAppsPerRow);
+        mApps = new AlphabeticalAppsList(context);
         mApps.setAdapterChangedCallback(this);
-        mAdapter = new AllAppsGridAdapter(context, mApps, mNumAppsPerRow, this, this, mLauncher, this);
+        mAdapter = new AllAppsGridAdapter(context, mApps, this, this, mLauncher, this);
         mAdapter.setEmptySearchText(res.getString(R.string.all_apps_loading_message));
-        mAdapter.setNumAppsPerRow(mNumAppsPerRow);
         mAdapter.setPredictionRowHeight(mPredictionBarHeight);
+        mApps.setAdapter(mAdapter);
         mLayoutManager = mAdapter.getLayoutManager();
         mItemDecoration = mAdapter.getItemDecoration();
-        mContentMarginStart = mAdapter.getContentMarginStart();
 
-        mApps.setAdapter(mAdapter);
-        mSearchManager = mApps.newSimpleAppSearchManager();
+        mSearchQueryBuilder = new SpannableStringBuilder();
+        Selection.setSelection(mSearchQueryBuilder, 0);
     }
 
     /**
@@ -285,11 +162,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mApps.addApps(apps);
     }
 
-    public void setSearchManager(AppSearchManager searchManager) {
-        mSearchManager.cancel(true);
-        mSearchManager = searchManager;
-    }
-
     /**
      * Updates existing apps in the list
      */
@@ -305,13 +177,23 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     }
 
     /**
-     * Hides the header bar
+     * Sets the search bar that shows above the a-z list.
      */
-    public void hideHeaderBar() {
-        mHeaderView.setVisibility(View.GONE);
-        mElevationController.disable();
-        onUpdateBackgrounds();
-        onUpdatePaddings();
+    public void setSearchBarController(AllAppsSearchBarController searchController) {
+        if (mSearchBarController != null) {
+            throw new RuntimeException("Expected search bar controller to only be set once");
+        }
+        mSearchBarController = searchController;
+        mSearchBarController.initialize(mApps, this);
+
+        // Add the new search view to the layout
+        View searchBarView = searchController.getView(mSearchBarContainerView);
+        mSearchBarContainerView.addView(searchBarView);
+        mSearchBarContainerView.setVisibility(View.VISIBLE);
+        mSearchBarView = searchBarView;
+        setHasSearchBar();
+
+        updateBackgroundAndPaddings();
     }
 
     /**
@@ -325,28 +207,43 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
      * Returns the content view used for the launcher transitions.
      */
     public View getContentView() {
-        return mContentView;
+        return mContainerView;
+    }
+
+    /**
+     * Returns the all apps search view.
+     */
+    public View getSearchBarView() {
+        return mSearchBarView;
     }
 
     /**
      * Returns the reveal view used for the launcher transitions.
      */
     public View getRevealView() {
-        return findViewById(R.id.apps_view_transition_overlay);
+        return mRevealView;
+    }
+
+    /**
+     * Returns an new instance of the default app search controller.
+     */
+    public AllAppsSearchBarController newDefaultAppSearchController() {
+        return new DefaultAppSearchController(getContext(), this, mAppsRecyclerView);
     }
 
     @Override
     protected void onFinishInflate() {
+        super.onFinishInflate();
         boolean isRtl = Utilities.isRtl(getResources());
         mAdapter.setRtl(isRtl);
+        mContent = findViewById(R.id.content);
 
-        // Work around the search box getting first focus and showing the cursor by
-        // proxying the focus from the content view to the recycler view directly
-        mContentView = (FrameLayout) findViewById(R.id.apps_list);
-        mContentView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        // This is a focus listener that proxies focus from a view into the list view.  This is to
+        // work around the search box from getting first focus and showing the cursor.
+        View.OnFocusChangeListener focusProxyListener = new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (v == mContentView && hasFocus) {
+                if (hasFocus) {
                     if (!mApps.getPredictedApps().isEmpty()) {
                         // If the prediction bar is going to be bound, then defer focusing until
                         // it is first bound
@@ -360,52 +257,16 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                     }
                 }
             }
-        });
+        };
+        mSearchBarContainerView = (ViewGroup) findViewById(R.id.search_box_container);
+        mSearchBarContainerView.setOnFocusChangeListener(focusProxyListener);
+        mContainerView = findViewById(R.id.all_apps_container);
+        mContainerView.setOnFocusChangeListener(focusProxyListener);
+        mRevealView = findViewById(R.id.all_apps_reveal);
 
-        // Fix the header view elevation if not dynamically calculating it
-        mHeaderView = findViewById(R.id.header);
-        mHeaderView.setOnClickListener(this);
-
-        mElevationController = Utilities.isLmpOrAbove() ?
-                new HeaderElevationControllerVL(mHeaderView) :
-                    new HeaderElevationControllerV16(mHeaderView);
-        if (!DYNAMIC_HEADER_ELEVATION) {
-            mElevationController.onScroll(getResources()
-                    .getDimensionPixelSize(R.dimen.all_apps_header_scroll_to_elevation));
-        }
-
-        // Fix the prediction bar size
-        mPredictionBarView = (ViewGroup) findViewById(R.id.prediction_bar);
-        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mPredictionBarView.getLayoutParams();
-        lp.height = mPredictionBarHeight;
-
-        mSearchButtonView = mHeaderView.findViewById(R.id.search_button);
-        mSearchBarContainerView = findViewById(R.id.app_search_container);
-        mDismissSearchButtonView = mSearchBarContainerView.findViewById(R.id.dismiss_search_button);
-        mDismissSearchButtonView.setOnClickListener(this);
-        mSearchBarEditView = (AllAppsSearchEditView) findViewById(R.id.apps_search_box);
-        if (mSearchBarEditView != null) {
-            mSearchBarEditView.addTextChangedListener(this);
-            mSearchBarEditView.setOnEditorActionListener(this);
-            if (DISMISS_SEARCH_ON_BACK) {
-                mSearchBarEditView.setOnBackKeyListener(
-                        new AllAppsSearchEditView.OnBackKeyListener() {
-                            @Override
-                            public void onBackKey() {
-                                // Only hide the search field if there is no query, or if there
-                                // are no filtered results
-                                String query = Utilities.trim(
-                                        mSearchBarEditView.getEditableText().toString());
-                                if (query.isEmpty() || mApps.hasNoFilteredResults()) {
-                                    hideSearchField(true, true);
-                                }
-                            }
-                        });
-            }
-        }
-        mAppsRecyclerView = (AllAppsRecyclerView) findViewById(R.id.apps_list_view);
+        // Load the all apps recycler view
+        mAppsRecyclerView = (AllAppsRecyclerView) findViewById(R.id.collection);
         mAppsRecyclerView.setApps(mApps);
-        mAppsRecyclerView.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow);
         mAppsRecyclerView.setPredictionBarHeight(mPredictionBarHeight);
         mAppsRecyclerView.setLayoutManager(mLayoutManager);
         mAppsRecyclerView.setAdapter(mAdapter);
@@ -413,8 +274,18 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         if (mItemDecoration != null) {
             mAppsRecyclerView.addItemDecoration(mItemDecoration);
         }
-        onUpdateBackgrounds();
-        onUpdatePaddings();
+
+        // Fix the prediction bar height
+        mPredictionBarView = (ViewGroup) findViewById(R.id.prediction_bar);
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mPredictionBarView.getLayoutParams();
+        lp.height = mPredictionBarHeight;
+
+        updateBackgroundAndPaddings();
+    }
+
+    @Override
+    public void onBoundsChanged(Rect newBounds) {
+        mLauncher.updateOverlayBounds(newBounds);
     }
 
     @Override
@@ -422,6 +293,12 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         updatePredictionBarVisibility();
 
         List<AppInfo> predictedApps = mApps.getPredictedApps();
+
+        // Remove extra prediction icons
+        while (mPredictionBarView.getChildCount() > mNumPredictedAppsPerRow) {
+            mPredictionBarView.removeViewAt(mPredictionBarView.getChildCount() - 1);
+        }
+
         int childCount = mPredictionBarView.getChildCount();
         for (int i = 0; i < mNumPredictedAppsPerRow; i++) {
             BubbleTextView icon;
@@ -455,95 +332,111 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     }
 
     @Override
-    protected void onFixedBoundsUpdated() {
-        // Update the number of items in the grid
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        // Update the number of items in the grid before we measure the view
+        int availableWidth = !mContentBounds.isEmpty() ? mContentBounds.width() :
+                MeasureSpec.getSize(widthMeasureSpec);
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        if (grid.updateAppsViewNumCols(getContext().getResources(), mFixedBounds.width())) {
+        grid.updateAppsViewNumCols(getResources(), availableWidth);
+        if (mNumAppsPerRow != grid.allAppsNumCols ||
+                mNumPredictedAppsPerRow != grid.allAppsNumPredictiveCols) {
             mNumAppsPerRow = grid.allAppsNumCols;
             mNumPredictedAppsPerRow = grid.allAppsNumPredictiveCols;
             mAppsRecyclerView.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow);
             mAdapter.setNumAppsPerRow(mNumAppsPerRow);
             mApps.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow);
         }
+
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     /**
-     * Update the padding of the Apps view and children.  To ensure that the RecyclerView has the
-     * full width to handle touches right to the edge of the screen, we only apply the top and
-     * bottom padding to the AppsContainerView and then the left/right padding on the RecyclerView
-     * itself.  In particular, the left/right padding is applied to the background of the view,
-     * and then additionally inset by the start margin.
+     * Update the background and padding of the Apps view and children.  Instead of insetting the
+     * container view, we inset the background and padding of the recycler view to allow for the
+     * recycler view to handle touch events (for fast scrolling) all the way to the edge.
      */
     @Override
-    protected void onUpdatePaddings() {
+    protected void onUpdateBackgroundAndPaddings(Rect searchBarBounds, Rect padding) {
         boolean isRtl = Utilities.isRtl(getResources());
-        boolean hasSearchBar = (mSearchBarEditView != null) &&
-                (mSearchBarEditView.getVisibility() == View.VISIBLE);
 
-        // Set the background on the container, but let the recyclerView extend the full screen,
-        // so that the fast-scroller works on the edge as well.
-        mContentView.setPadding(0, 0, 0, 0);
-
-        if (mFixedBounds.isEmpty()) {
-            // If there are no fixed bounds, then use the default padding and insets
-            setPadding(mInsets.left, mContainerInset + mInsets.top, mInsets.right,
-                    mContainerInset + mInsets.bottom);
-        } else {
-            // If there are fixed bounds, then we update the padding to reflect the fixed bounds.
-            setPadding(mFixedBounds.left, mFixedBounds.top, getMeasuredWidth() - mFixedBounds.right,
-                    mFixedBounds.bottom);
-        }
-
-        // Update the apps recycler view, inset it by the container inset as well
-        DeviceProfile grid = mLauncher.getDeviceProfile();
-        int startMargin = grid.isPhone ? mContentMarginStart : 0;
-        int inset = mFixedBounds.isEmpty() ? mContainerInset : mFixedBoundsContainerInset;
-        if (isRtl) {
-            mAppsRecyclerView.setPadding(inset + mAppsRecyclerView.getScrollbarWidth(), 0,
-                    inset + startMargin, 0);
-        } else {
-            mAppsRecyclerView.setPadding(inset + startMargin, 0,
-                    inset + mAppsRecyclerView.getScrollbarWidth(), 0);
-        }
-
-        // Update the header bar
-        if (hasSearchBar) {
-            FrameLayout.LayoutParams lp =
-                    (FrameLayout.LayoutParams) mHeaderView.getLayoutParams();
-            lp.leftMargin = lp.rightMargin = inset;
-            mHeaderView.requestLayout();
-        }
-
-        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mPredictionBarView.getLayoutParams();
-        lp.leftMargin = inset + mAppsRecyclerView.getScrollbarWidth();
-        lp.rightMargin = inset + mAppsRecyclerView.getScrollbarWidth();
-        mPredictionBarView.requestLayout();
-    }
-
-    /**
-     * Update the background of the Apps view and children.
-     */
-    @Override
-    protected void onUpdateBackgrounds() {
-        int inset = mFixedBounds.isEmpty() ? mContainerInset : mFixedBoundsContainerInset;
-
-        // Update the background of the reveal view and list to be inset with the fixed bound
-        // insets instead of the default insets
         // TODO: Use quantum_panel instead of quantum_panel_shape.
         InsetDrawable background = new InsetDrawable(
-                getContext().getResources().getDrawable(R.drawable.quantum_panel_shape),
-                inset, 0, inset, 0);
-        mContentView.setBackground(background);
-        mAppsRecyclerView.updateBackgroundPadding(background);
-        mAdapter.updateBackgroundPadding(background);
-        mElevationController.updateBackgroundPadding(background);
-        getRevealView().setBackground(background.getConstantState().newDrawable());
+                getResources().getDrawable(R.drawable.quantum_panel_shape), padding.left, 0,
+                padding.right, 0);
+        mContainerView.setBackground(background);
+        mRevealView.setBackground(background.getConstantState().newDrawable());
+        mAppsRecyclerView.updateBackgroundPadding(padding);
+        mAdapter.updateBackgroundPadding(padding);
+
+        // Hack: We are going to let the recycler view take the full width, so reset the padding on
+        // the container to zero after setting the background and apply the top-bottom padding to
+        // the content view instead so that the launcher transition clips correctly.
+        mContent.setPadding(0, padding.top, 0, padding.bottom);
+        mContainerView.setPadding(0, 0, 0, 0);
+
+        // Pad the recycler view by the background padding plus the start margin (for the section
+        // names)
+        DeviceProfile grid = mLauncher.getDeviceProfile();
+        int startMargin = grid.isPhone ? getResources().getDimensionPixelSize(
+                R.dimen.all_apps_grid_view_start_margin) : mAppsRecyclerView.getScrollbarWidth();
+        if (isRtl) {
+            mAppsRecyclerView.setPadding(padding.left + mAppsRecyclerView.getScrollbarWidth(), 0,
+                    padding.right + startMargin, 0);
+        } else {
+            mAppsRecyclerView.setPadding(padding.left + startMargin, 0,
+                    padding.right + mAppsRecyclerView.getScrollbarWidth(), 0);
+        }
+
+        // Inset the search bar to fit its bounds above the container
+        if (mSearchBarView != null) {
+            Rect backgroundPadding = new Rect();
+            if (mSearchBarView.getBackground() != null) {
+                mSearchBarView.getBackground().getPadding(backgroundPadding);
+            }
+            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams)
+                    mSearchBarContainerView.getLayoutParams();
+            lp.leftMargin = searchBarBounds.left - backgroundPadding.left;
+            lp.topMargin = searchBarBounds.top - backgroundPadding.top;
+            lp.rightMargin = (getMeasuredWidth() - searchBarBounds.right) - backgroundPadding.right;
+            mSearchBarContainerView.requestLayout();
+        }
+
+        // Update the prediction bar insets as well
+        mPredictionBarView = (ViewGroup) findViewById(R.id.prediction_bar);
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mPredictionBarView.getLayoutParams();
+        lp.leftMargin = padding.left + mAppsRecyclerView.getScrollbarWidth();
+        lp.rightMargin = padding.right + mAppsRecyclerView.getScrollbarWidth();
+        mPredictionBarView.requestLayout();
     }
 
     @Override
     public boolean onPreDraw() {
-        synchronizeToRecyclerViewScrollPosition(mAppsRecyclerView.getScrollPosition());
+        if (mNumAppsPerRow > 0) {
+            // Update the position of the prediction bar to match the scroll of the all apps list
+            synchronizeToRecyclerViewScrollPosition(mAppsRecyclerView.getScrollPosition());
+        }
         return true;
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        // Determine if the key event was actual text, if so, focus the search bar and then dispatch
+        // the key normally so that it can process this key event
+        if (!mSearchBarController.isSearchFieldFocused() &&
+                event.getAction() == KeyEvent.ACTION_DOWN) {
+            final int unicodeChar = event.getUnicodeChar();
+            final boolean isKeyNotWhitespace = unicodeChar > 0 &&
+                    !Character.isWhitespace(unicodeChar) && !Character.isSpaceChar(unicodeChar);
+            if (isKeyNotWhitespace) {
+                boolean gotKey = TextKeyListener.getInstance().onKeyDown(this, mSearchQueryBuilder,
+                        event.getKeyCode(), event);
+                if (gotKey && mSearchQueryBuilder.length() > 0) {
+                    mSearchBarController.focusSearchField();
+                }
+            }
+        }
+
+        return super.dispatchKeyEvent(event);
     }
 
     @Override
@@ -567,15 +460,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                 break;
         }
         return false;
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v == mHeaderView) {
-            showSearchField();
-        } else if (v == mDismissSearchButtonView) {
-            hideSearchField(true, true);
-        }
     }
 
     @Override
@@ -661,67 +545,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     }
 
     @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        // Do nothing
-    }
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-        // Do nothing
-    }
-
-    @Override
-    public void afterTextChanged(final Editable s) {
-        String queryText = s.toString();
-        if (queryText.isEmpty()) {
-            mSearchManager.cancel(true);
-            mApps.setOrderedFilter(null);
-        } else {
-            String formatStr = getResources().getString(R.string.all_apps_no_search_results);
-            mAdapter.setEmptySearchText(String.format(formatStr, queryText));
-
-            mSearchManager.cancel(false);
-            mSearchManager.doSearch(queryText, this);
-        }
-        scrollToTop();
-    }
-
-    @Override
-    public void onSearchResult(ArrayList<ComponentName> apps) {
-        if (apps != null) {
-            mApps.setOrderedFilter(apps);
-        }
-    }
-
-    @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        if (ALLOW_SINGLE_APP_LAUNCH && actionId == EditorInfo.IME_ACTION_DONE) {
-            // Skip the quick-launch if there isn't exactly one item
-            if (mApps.getSize() != 1) {
-                return false;
-            }
-
-            List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
-            for (int i = 0; i < items.size(); i++) {
-                AlphabeticalAppsList.AdapterItem item = items.get(i);
-                if (item.viewType == AllAppsGridAdapter.ICON_VIEW_TYPE) {
-                    mAppsRecyclerView.getChildAt(i).performClick();
-                    getInputMethodManager().hideSoftInputFromWindow(getWindowToken(), 0);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    @Override
     public void onAdapterItemsChanged() {
         updatePredictionBarVisibility();
-    }
-
-    @Override
-    public View getContent() {
-        return null;
     }
 
     @Override
@@ -745,14 +570,12 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     @Override
     public void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace) {
-        if (mSearchBarEditView != null) {
-            if (toWorkspace) {
-                hideSearchField(false, false);
-            }
-        }
         if (toWorkspace) {
             getViewTreeObserver().removeOnPreDrawListener(this);
             mLastRecyclerViewScrollPos = -1;
+
+            // Reset the search bar after transitioning home
+            mSearchBarController.reset();
         }
     }
 
@@ -763,9 +586,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     private void synchronizeToRecyclerViewScrollPosition(int scrollY) {
         if (mLastRecyclerViewScrollPos != scrollY) {
             mLastRecyclerViewScrollPos = scrollY;
-            if (DYNAMIC_HEADER_ELEVATION) {
-                mElevationController.onScroll(scrollY);
-            }
 
             // Scroll the prediction bar with the contents of the recycler view
             mPredictionBarView.setTranslationY(-scrollY + mAppsRecyclerView.getPaddingTop());
@@ -806,9 +626,9 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                     }
                 }
 
-                if (!mFixedBounds.isEmpty()) {
+                if (!mContentBounds.isEmpty()) {
                     // Outset the fixed bounds and check if the touch is outside all apps
-                    Rect tmpRect = new Rect(mFixedBounds);
+                    Rect tmpRect = new Rect(mContentBounds);
                     tmpRect.inset(-grid.allAppsIconSizePx / 2, 0);
                     if (ev.getX() < tmpRect.left || ev.getX() > tmpRect.right) {
                         mBoundsCheckLastTouchDownPos.set(x, y);
@@ -875,6 +695,29 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     }
 
     @Override
+    public void onSearchResult(String query, ArrayList<ComponentName> apps) {
+        if (apps != null) {
+            if (apps.isEmpty()) {
+                String formatStr = getResources().getString(R.string.all_apps_no_search_results);
+                mAdapter.setEmptySearchText(String.format(formatStr, query));
+            } else {
+                mAppsRecyclerView.scrollToTop();
+            }
+            mApps.setOrderedFilter(apps);
+        }
+    }
+
+    @Override
+    public void clearSearchResult() {
+        mApps.setOrderedFilter(null);
+
+        // Clear the search query
+        mSearchQueryBuilder.clear();
+        mSearchQueryBuilder.clearSpans();
+        Selection.setSelection(mSearchQueryBuilder, 0);
+    }
+
+    @Override
     public void fillInLaunchSourceData(Bundle sourceData) {
         // Since the other cases are caught by the AllAppsRecyclerView LaunchSourceProvider, we just
         // handle the prediction bar icons here
@@ -889,11 +732,11 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     private View findPredictedAppAtCoordinate(int x, int y) {
         Rect hitRect = new Rect();
 
-        // Ensure we aren't hitting the search bar
+        // Ensure that are touching in the recycler view
         int[] coord = {x, y};
-        Utilities.mapCoordInSelfToDescendent(mHeaderView, this, coord);
-        mHeaderView.getHitRect(hitRect);
-        if (hitRect.contains(coord[0], coord[1])) {
+        Utilities.mapCoordInSelfToDescendent(mAppsRecyclerView, this, coord);
+        mAppsRecyclerView.getHitRect(hitRect);
+        if (!hitRect.contains(coord[0], coord[1])) {
             return null;
         }
 
@@ -915,106 +758,17 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     }
 
     /**
-     * Shows the search field.
-     */
-    private void showSearchField() {
-        mSearchManager.connect();
-
-        // Show the search bar and focus the search
-        final int translationX = Utilities.pxFromDp(SEARCH_TRANSLATION_X_DP,
-                getContext().getResources().getDisplayMetrics());
-        mSearchBarContainerView.setVisibility(View.VISIBLE);
-        mSearchBarContainerView.setAlpha(0f);
-        mSearchBarContainerView.setTranslationX(translationX);
-        mSearchBarContainerView.animate()
-                .alpha(1f)
-                .translationX(0)
-                .setDuration(FADE_IN_DURATION)
-                .withLayer()
-                .withEndAction(new Runnable() {
-                    @Override
-                    public void run() {
-                        mSearchBarEditView.requestFocus();
-                        getInputMethodManager().showSoftInput(mSearchBarEditView,
-                                InputMethodManager.SHOW_IMPLICIT);
-                    }
-                });
-        mSearchButtonView.animate()
-                .alpha(0f)
-                .translationX(-translationX)
-                .setDuration(FADE_OUT_DURATION)
-                .withLayer();
-    }
-
-    /**
-     * Hides the search field.
-     */
-    @Thunk void hideSearchField(boolean animated, final boolean returnFocusToRecyclerView) {
-        mSearchManager.cancel(true);
-
-        final boolean resetTextField = mSearchBarEditView.getText().toString().length() > 0;
-        final int translationX = Utilities.pxFromDp(SEARCH_TRANSLATION_X_DP,
-                getContext().getResources().getDisplayMetrics());
-        if (animated) {
-            // Hide the search bar and focus the recycler view
-            mSearchBarContainerView.animate()
-                    .alpha(0f)
-                    .translationX(0)
-                    .setDuration(FADE_IN_DURATION)
-                    .withLayer()
-                    .withEndAction(new Runnable() {
-                        @Override
-                        public void run() {
-                            mSearchBarContainerView.setVisibility(View.INVISIBLE);
-                            if (resetTextField) {
-                                mSearchBarEditView.setText("");
-                            }
-                            mApps.setOrderedFilter(null);
-                            if (returnFocusToRecyclerView) {
-                                mAppsRecyclerView.requestFocus();
-                            }
-                        }
-                    });
-            mSearchButtonView.setTranslationX(-translationX);
-            mSearchButtonView.animate()
-                    .alpha(1f)
-                    .translationX(0)
-                    .setDuration(FADE_OUT_DURATION)
-                    .withLayer();
-        } else {
-            mSearchBarContainerView.setVisibility(View.INVISIBLE);
-            if (resetTextField) {
-                mSearchBarEditView.setText("");
-            }
-            mApps.setOrderedFilter(null);
-            mSearchButtonView.setAlpha(1f);
-            mSearchButtonView.setTranslationX(0f);
-            if (returnFocusToRecyclerView) {
-                mAppsRecyclerView.requestFocus();
-            }
-        }
-        getInputMethodManager().hideSoftInputFromWindow(getWindowToken(), 0);
-    }
-
-    /**
      * Updates the visibility of the prediction bar.
      * @return whether the prediction bar is visible
      */
     private boolean updatePredictionBarVisibility() {
-        boolean showPredictionBar = !mApps.getPredictedApps().isEmpty() && (!mApps.hasFilter() ||
-                mSearchBarEditView.getEditableText().toString().isEmpty());
+        boolean showPredictionBar = !mApps.getPredictedApps().isEmpty() &&
+                (!mApps.hasFilter() || mSearchBarController.shouldShowPredictionBar());
         if (showPredictionBar) {
             mPredictionBarView.setVisibility(View.VISIBLE);
         } else if (!showPredictionBar) {
             mPredictionBarView.setVisibility(View.INVISIBLE);
         }
         return showPredictionBar;
-    }
-
-    /**
-     * Returns an input method manager.
-     */
-    @Thunk InputMethodManager getInputMethodManager() {
-        return (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 }

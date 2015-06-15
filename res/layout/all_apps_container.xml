@@ -14,95 +14,35 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
+<!-- Both android:focusable and android:focusableInTouchMode are needed for
+     the view to get focus change events. -->
 <com.android.launcher3.allapps.AllAppsRecyclerViewContainerView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/apps_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:elevation="15dp"
-    android:focusableInTouchMode="true"
-    android:visibility="gone" >
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <com.android.launcher3.allapps.AllAppsRecyclerView
-        android:id="@+id/apps_list_view"
+        android:id="@+id/collection"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal|top"
-        android:layout_marginTop="@dimen/all_apps_search_bar_height"
         android:clipToPadding="false"
-        android:descendantFocusability="afterDescendants"
-        android:focusable="true" />
+        android:focusable="true"
+        android:descendantFocusability="afterDescendants" />
 
     <LinearLayout
         android:id="@+id/prediction_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/all_apps_search_bar_height"
-        android:paddingBottom="@dimen/all_apps_prediction_bar_bottom_padding"
+        android:paddingTop="@dimen/all_apps_prediction_bar_top_bottom_padding"
+        android:paddingBottom="@dimen/all_apps_prediction_bar_top_bottom_padding"
         android:orientation="horizontal"
-        android:descendantFocusability="afterDescendants"
         android:focusable="true"
+        android:descendantFocusability="afterDescendants"
         android:visibility="invisible" >
     </LinearLayout>
-
-    <!-- We always want the search bar on top, so it goes last. -->
-
-    <FrameLayout
-        android:id="@+id/header"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/all_apps_search_bar_height"
-        android:background="@drawable/all_apps_search_bg" >
-
-        <LinearLayout
-            android:id="@+id/app_search_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:visibility="invisible" >
-
-            <ImageView
-                android:id="@+id/dismiss_search_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
-                android:layout_marginLeft="4dp"
-                android:layout_marginStart="4dp"
-                android:contentDescription="@string/all_apps_button_label"
-                android:paddingBottom="13dp"
-                android:paddingTop="13dp"
-                android:src="@drawable/ic_arrow_back_grey" />
-
-            <com.android.launcher3.allapps.AllAppsSearchEditView
-                android:id="@+id/apps_search_box"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                android:focusableInTouchMode="true"
-                android:gravity="fill_horizontal"
-                android:hint="@string/all_apps_search_bar_hint"
-                android:imeOptions="actionDone|flagNoExtractUi"
-                android:maxLines="1"
-                android:paddingBottom="16dp"
-                android:paddingLeft="8dp"
-                android:paddingTop="16dp"
-                android:scrollHorizontally="true"
-                android:singleLine="true"
-                android:textColor="#4c4c4c"
-                android:textColorHint="#9c9c9c"
-                android:textSize="16sp" />
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/search_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|center_vertical"
-            android:layout_marginEnd="6dp"
-            android:layout_marginRight="6dp"
-            android:contentDescription="@string/all_apps_search_bar_hint"
-            android:paddingBottom="13dp"
-            android:paddingTop="13dp"
-            android:src="@drawable/ic_search_grey" />
-    </FrameLayout>
 
 </com.android.launcher3.allapps.AllAppsRecyclerViewContainerView>
