@@ -64,7 +64,7 @@ public class WidgetPreviewLoader {
     private final UserManagerCompat mUserManager;
     private final AppWidgetManagerCompat mManager;
     private final CacheDb mDb;
-    private final InvariantDeviceProfile mDeviceProfile;
+    private final int mProfileBadgeMargin;
 
     private final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
     @Thunk final Handler mWorkerHandler;
@@ -76,7 +76,8 @@ public class WidgetPreviewLoader {
         mUserManager = UserManagerCompat.getInstance(context);
         mDb = new CacheDb(context);
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
-        mDeviceProfile = inv;
+        mProfileBadgeMargin = context.getResources()
+                .getDimensionPixelSize(R.dimen.profile_badge_margin);
     }
 
     /**
@@ -401,7 +402,7 @@ public class WidgetPreviewLoader {
         }
 
         // Draw the scaled preview into the final bitmap
-        int x = (preview.getWidth() - previewWidth) / 2;
+        int x = (preview.getWidth() - previewWidth - mProfileBadgeMargin) / 2;
         if (widgetPreviewExists) {
             drawable.setBounds(x, 0, x + previewWidth, previewHeight);
             drawable.draw(c);
@@ -445,7 +446,8 @@ public class WidgetPreviewLoader {
             } catch (Resources.NotFoundException e) { }
             c.setBitmap(null);
         }
-        return mManager.getBadgeBitmap(info, preview, Math.min(preview.getHeight(), previewHeight));
+        int imageHeight = Math.min(preview.getHeight(), previewHeight + mProfileBadgeMargin);
+        return mManager.getBadgeBitmap(info, preview, imageHeight);
     }
 
     private Bitmap generateShortcutPreview(
