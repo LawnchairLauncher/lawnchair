@@ -1147,6 +1147,6 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             return true;
 
         // Check if the user has specifically enabled rotation via preferences.
-        return Utilities.isAllowRotationPrefEnabled(getApplicationContext());
+        return Utilities.isAllowRotationPrefEnabled(getApplicationContext(), true);
     }
 }
