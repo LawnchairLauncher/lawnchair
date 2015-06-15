@@ -1045,7 +1045,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     public void removeViewAt(int index) {
         // XXX: We should find a better way to hook into this before the view
         // gets removed form its parent...
-        removeViewAt(index);
+        removeMarkerForView(index);
         super.removeViewAt(index);
     }
     @Override
