@@ -39,6 +39,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView
     private int mNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
     private int mPredictionBarHeight;
+    private int mLastFastscrollPosition = -1;
 
     private Launcher mLauncher;
 
@@ -131,6 +132,11 @@ public class AllAppsRecyclerView extends BaseRecyclerView
         }
     }
 
+    @Override
+    protected void onFastScrollingEnd() {
+        mLastFastscrollPosition = -1;
+    }
+
     /**
      * Maps the touch (from 0..1) to the adapter position that should be visible.
      */
@@ -174,11 +180,13 @@ public class AllAppsRecyclerView extends BaseRecyclerView
 
         // Scroll to the view at the position, anchored at the top of the screen. We call the scroll
         // method on the LayoutManager directly since it is not exposed by RecyclerView.
-        layoutManager.scrollToPositionWithOffset(lastScrollSection.appItem.position, 0);
+        if (mLastFastscrollPosition != lastScrollSection.appItem.position) {
+            mLastFastscrollPosition = lastScrollSection.appItem.position;
+            layoutManager.scrollToPositionWithOffset(lastScrollSection.appItem.position, 0);
+        }
 
         return lastScrollSection.sectionName;
     }
-
 
     /**
      * Returns the row index for a app index in the list.

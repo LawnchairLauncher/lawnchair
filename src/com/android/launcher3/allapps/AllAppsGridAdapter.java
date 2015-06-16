@@ -21,7 +21,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,7 +31,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -114,11 +112,6 @@ class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHol
 
         private HashMap<String, PointF> mCachedSectionBounds = new HashMap<>();
         private Rect mTmpBounds = new Rect();
-        private Launcher mLauncher;
-
-        public GridItemDecoration(Context context) {
-            mLauncher = (Launcher) context;
-        }
 
         @Override
         public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
@@ -129,13 +122,13 @@ class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHol
             if (DEBUG_SECTION_MARGIN) {
                 Paint p = new Paint();
                 p.setColor(0x33ff0000);
-                c.drawRect(mBackgroundPadding.left, 0, mBackgroundPadding.left + mStartMargin,
+                c.drawRect(mBackgroundPadding.left, 0, mBackgroundPadding.left + mSectionNamesMargin,
                         parent.getMeasuredHeight(), p);
             }
 
-            DeviceProfile grid = mLauncher.getDeviceProfile();
             List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
             boolean hasDrawnPredictedAppsDivider = false;
+            boolean showSectionNames = mSectionNamesMargin > 0;
             int childCount = parent.getChildCount();
             int lastSectionTop = 0;
             int lastSectionHeight = 0;
@@ -154,7 +147,7 @@ class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHol
                             mPredictedAppsDividerPaint);
                     hasDrawnPredictedAppsDivider = true;
 
-                } else if (grid.isPhone && shouldDrawItemSection(holder, i, items)) {
+                } else if (showSectionNames && shouldDrawItemSection(holder, i, items)) {
                     // At this point, we only draw sections for each section break;
                     int viewTopOffset = (2 * child.getPaddingTop());
                     int pos = holder.getPosition();
@@ -179,9 +172,10 @@ class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHol
 
                         // Calculate where to draw the section
                         int sectionBaseline = (int) (viewTopOffset + sectionBounds.y);
-                        int x = mIsRtl ? parent.getWidth() - mBackgroundPadding.left - mStartMargin :
-                                mBackgroundPadding.left;
-                        x += (int) ((mStartMargin - sectionBounds.x) / 2f);
+                        int x = mIsRtl ?
+                                parent.getWidth() - mBackgroundPadding.left - mSectionNamesMargin :
+                                        mBackgroundPadding.left;
+                        x += (int) ((mSectionNamesMargin - sectionBounds.x) / 2f);
                         int y = child.getTop() + sectionBaseline;
 
                         // Determine whether this is the last row with apps in that section, if
@@ -309,7 +303,7 @@ class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHol
     private String mEmptySearchText;
 
     // Section drawing
-    @Thunk int mStartMargin;
+    @Thunk int mSectionNamesMargin;
     @Thunk int mSectionHeaderOffset;
     @Thunk Paint mSectionTextPaint;
     @Thunk Paint mPredictedAppsDividerPaint;
@@ -324,12 +318,12 @@ class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHol
         mGridSizer = new GridSpanSizer();
         mGridLayoutMgr = new GridLayoutManager(context, 1, GridLayoutManager.VERTICAL, false);
         mGridLayoutMgr.setSpanSizeLookup(mGridSizer);
-        mItemDecoration = new GridItemDecoration(context);
+        mItemDecoration = new GridItemDecoration();
         mLayoutInflater = LayoutInflater.from(context);
         mTouchListener = touchListener;
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
-        mStartMargin = res.getDimensionPixelSize(R.dimen.all_apps_grid_view_start_margin);
+        mSectionNamesMargin = res.getDimensionPixelSize(R.dimen.all_apps_grid_view_start_margin);
         mSectionHeaderOffset = res.getDimensionPixelSize(R.dimen.all_apps_grid_section_y_offset);
 
         mSectionTextPaint = new Paint();
