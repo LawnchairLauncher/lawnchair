@@ -99,6 +99,7 @@ public class LauncherProvider extends ContentProvider {
 
     public void setLauncherProviderChangeListener(LauncherProviderChangeListener listener) {
         mListener = listener;
+        mOpenHelper.mListener = mListener;
     }
 
     @Override
@@ -270,18 +271,6 @@ public class LauncherProvider extends ContentProvider {
         }
     }
 
-    @Thunk void notifyAppWidgetHostReset() {
-        new MainThreadExecutor().execute(new Runnable() {
-
-            @Override
-            public void run() {
-                if (mListener != null) {
-                    mListener.onAppWidgetHostReset();
-                }
-            }
-        });
-    }
-
     @Thunk static void addModifiedTime(ContentValues values) {
         values.put(LauncherSettings.ChangeLogColumns.MODIFIED, System.currentTimeMillis());
     }
@@ -429,6 +418,7 @@ public class LauncherProvider extends ContentProvider {
             SQLiteDatabase.deleteDatabase(dbFile);
         }
         mOpenHelper = new DatabaseHelper(getContext());
+        mOpenHelper.mListener = mListener;
     }
 
     private static class DatabaseHelper extends SQLiteOpenHelper implements LayoutParserCallback {
@@ -438,6 +428,8 @@ public class LauncherProvider extends ContentProvider {
         private long mMaxScreenId = -1;
 
         private boolean mNewDbCreated = false;
+
+        @Thunk LauncherProviderChangeListener mListener;
 
         DatabaseHelper(Context context) {
             super(context, LauncherFiles.LAUNCHER_DB, null, DATABASE_VERSION);
@@ -508,7 +500,15 @@ public class LauncherProvider extends ContentProvider {
                  * want to re-call {@link AppWidgetHost#startListening()} to ensure
                  * callbacks are correctly set.
                  */
-                LauncherAppState.getLauncherProvider().notifyAppWidgetHostReset();
+                new MainThreadExecutor().execute(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        if (mListener != null) {
+                            mListener.onAppWidgetHostReset();
+                        }
+                    }
+                });
             }
 
             // Fresh and clean launcher DB.
