@@ -39,6 +39,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BaseContainerView;
 import com.android.launcher3.BubbleTextView;
@@ -56,6 +57,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Stats;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.Thunk;
 
 import java.nio.charset.Charset;
@@ -763,7 +765,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     }
 
     @Override
-    public void onSearchResult(String query, ArrayList<ComponentName> apps) {
+    public void onSearchResult(String query, ArrayList<ComponentKey> apps) {
         if (apps != null) {
             if (apps.isEmpty()) {
                 String formatStr = getResources().getString(R.string.all_apps_no_search_results);

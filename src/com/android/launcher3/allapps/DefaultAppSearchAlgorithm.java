@@ -15,9 +15,10 @@
  */
 package com.android.launcher3.allapps;
 
-import android.content.ComponentName;
 import android.os.Handler;
+
 import com.android.launcher3.AppInfo;
+import com.android.launcher3.util.ComponentKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,19 +47,7 @@ public class DefaultAppSearchAlgorithm {
 
     public void doSearch(final String query,
             final AllAppsSearchBarController.Callbacks callback) {
-        // Do an intersection of the words in the query and each title, and filter out all the
-        // apps that don't match all of the words in the query.
-        final String queryTextLower = query.toLowerCase();
-        final String[] queryWords = SPLIT_PATTERN.split(queryTextLower);
-        final ArrayList<ComponentName> result = new ArrayList<>();
-        int total = mApps.size();
-
-        for (int i = 0; i < total; i++) {
-            AppInfo info = mApps.get(i);
-            if (!result.contains(info.componentName) && matches(info, queryWords)) {
-                result.add(info.componentName);
-            }
-        }
+        final ArrayList<ComponentKey> result = getTitleMatchResult(query);
         mResultHandler.post(new Runnable() {
 
             @Override
@@ -68,7 +57,22 @@ public class DefaultAppSearchAlgorithm {
         });
     }
 
-    private boolean matches(AppInfo info, String[] queryWords) {
+    protected ArrayList<ComponentKey> getTitleMatchResult(String query) {
+        // Do an intersection of the words in the query and each title, and filter out all the
+        // apps that don't match all of the words in the query.
+        final String queryTextLower = query.toLowerCase();
+        final String[] queryWords = SPLIT_PATTERN.split(queryTextLower);
+
+        final ArrayList<ComponentKey> result = new ArrayList<>();
+        for (AppInfo info : mApps) {
+            if (matches(info, queryWords)) {
+                result.add(info.toComponentKey());
+            }
+        }
+        return result;
+    }
+
+    protected boolean matches(AppInfo info, String[] queryWords) {
         String title = info.title.toString();
         String[] words = SPLIT_PATTERN.split(title.toLowerCase());
         for (int qi = 0; qi < queryWords.length; qi++) {
@@ -87,5 +91,4 @@ public class DefaultAppSearchAlgorithm {
         }
         return true;
     }
-
 }

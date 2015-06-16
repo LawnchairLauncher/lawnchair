@@ -19,12 +19,12 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
-import com.android.launcher3.model.AbstractUserComparator;
 import com.android.launcher3.model.AppNameComparator;
+import com.android.launcher3.util.ComponentKey;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -148,6 +148,8 @@ public class AlphabeticalAppsList {
 
     // The set of apps from the system not including predictions
     private final List<AppInfo> mApps = new ArrayList<>();
+    private final HashMap<ComponentKey, AppInfo> mComponentToAppMap = new HashMap<>();
+
     // The set of filtered apps with the current filter
     private List<AppInfo> mFilteredApps = new ArrayList<>();
     // The current set of adapter items
@@ -161,7 +163,7 @@ public class AlphabeticalAppsList {
     // The set of predicted apps resolved from the component names and the current set of apps
     private List<AppInfo> mPredictedApps = new ArrayList<>();
     // The of ordered component names as a result of a search query
-    private ArrayList<ComponentName> mSearchResults;
+    private ArrayList<ComponentKey> mSearchResults;
     private HashMap<CharSequence, String> mCachedSectionNames = new HashMap<>();
     private RecyclerView.Adapter mAdapter;
     private AlphabeticIndexCompat mIndexer;
@@ -255,7 +257,7 @@ public class AlphabeticalAppsList {
     /**
      * Sets the sorted list of filtered components.
      */
-    public void setOrderedFilter(ArrayList<ComponentName> f) {
+    public void setOrderedFilter(ArrayList<ComponentKey> f) {
         if (mSearchResults != f) {
             mSearchResults = f;
             updateAdapterItems();
@@ -283,33 +285,23 @@ public class AlphabeticalAppsList {
      * Sets the current set of apps.
      */
     public void setApps(List<AppInfo> apps) {
-        mApps.clear();
-        mApps.addAll(apps);
-        onAppsUpdated();
+        mComponentToAppMap.clear();
+        addApps(apps);
     }
 
     /**
      * Adds new apps to the list.
      */
     public void addApps(List<AppInfo> apps) {
-        // We add it in place, in alphabetical order
-        for (AppInfo info : apps) {
-            mApps.add(info);
-        }
-        onAppsUpdated();
+        updateApps(apps);
     }
 
     /**
      * Updates existing apps in the list
      */
     public void updateApps(List<AppInfo> apps) {
-        for (AppInfo info : apps) {
-            int index = mApps.indexOf(info);
-            if (index != -1) {
-                mApps.set(index, info);
-            } else {
-                mApps.add(info);
-            }
+        for (AppInfo app : apps) {
+            mComponentToAppMap.put(app.toComponentKey(), app);
         }
         onAppsUpdated();
     }
@@ -318,29 +310,10 @@ public class AlphabeticalAppsList {
      * Removes some apps from the list.
      */
     public void removeApps(List<AppInfo> apps) {
-        for (AppInfo info : apps) {
-            int removeIndex = findAppByComponent(mApps, info);
-            if (removeIndex != -1) {
-                mApps.remove(removeIndex);
-            }
+        for (AppInfo app : apps) {
+            mComponentToAppMap.remove(app.toComponentKey());
         }
         onAppsUpdated();
-    }
-
-    /**
-     * Finds the index of an app given a target AppInfo.
-     */
-    private int findAppByComponent(List<AppInfo> apps, AppInfo targetInfo) {
-        ComponentName targetComponent = targetInfo.intent.getComponent();
-        int length = apps.size();
-        for (int i = 0; i < length; ++i) {
-            AppInfo info = apps.get(i);
-            if (info.user.equals(targetInfo.user)
-                    && info.intent.getComponent().equals(targetComponent)) {
-                return i;
-            }
-        }
-        return -1;
     }
 
     /**
@@ -348,6 +321,8 @@ public class AlphabeticalAppsList {
      */
     private void onAppsUpdated() {
         // Sort the list of apps
+        mApps.clear();
+        mApps.addAll(mComponentToAppMap.values());
         Collections.sort(mApps, mAppNameComparator.getAppInfoComparator());
 
         // As a special case for some languages (currently only Simplified Chinese), we may need to
@@ -494,33 +469,13 @@ public class AlphabeticalAppsList {
             return mApps;
         }
 
-        int total = mSearchResults.size();
-        final HashMap<ComponentName, Integer> sortOrder = new HashMap<>(total);
-        for (int i = 0; i < total; i++) {
-            sortOrder.put(mSearchResults.get(i), i);
-        }
-
         ArrayList<AppInfo> result = new ArrayList<>();
-        for (AppInfo info : mApps) {
-            if (sortOrder.containsKey(info.componentName)) {
-                result.add(info);
+        for (ComponentKey key : mSearchResults) {
+            AppInfo match = mComponentToAppMap.get(key);
+            if (match != null) {
+                result.add(match);
             }
         }
-
-        Collections.sort(result, new AbstractUserComparator<AppInfo>(
-                LauncherAppState.getInstance().getContext()) {
-
-            @Override
-            public int compare(AppInfo lhs, AppInfo rhs) {
-                Integer indexA = sortOrder.get(lhs.componentName);
-                int result = indexA.compareTo(sortOrder.get(rhs.componentName));
-                if (result == 0) {
-                    return super.compare(lhs, rhs);
-                } else {
-                    return result;
-                }
-            }
-        });
         return result;
     }
 

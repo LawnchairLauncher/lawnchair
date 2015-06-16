@@ -25,6 +25,7 @@ import android.util.Log;
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.util.ComponentKey;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -135,6 +136,10 @@ public class AppInfo extends ItemInfo {
 
     public ShortcutInfo makeShortcut() {
         return new ShortcutInfo(this);
+    }
+
+    public ComponentKey toComponentKey() {
+        return new ComponentKey(componentName, user);
     }
 
     public static Intent makeLaunchIntent(Context context, LauncherActivityInfoCompat info,

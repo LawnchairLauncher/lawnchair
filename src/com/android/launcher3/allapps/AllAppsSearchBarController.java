@@ -20,6 +20,8 @@ import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.launcher3.util.ComponentKey;
+
 import java.util.ArrayList;
 
 /**
@@ -87,7 +89,7 @@ public abstract class AllAppsSearchBarController {
          *
          * @param apps sorted list of matching components or null if in case of failure.
          */
-        void onSearchResult(String query, ArrayList<ComponentName> apps);
+        void onSearchResult(String query, ArrayList<ComponentKey> apps);
 
         /**
          * Called when the search results should be cleared.
