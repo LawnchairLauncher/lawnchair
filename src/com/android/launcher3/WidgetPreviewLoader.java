@@ -27,6 +27,7 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
 import android.util.LongSparseArray;
+
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
@@ -69,7 +70,7 @@ public class WidgetPreviewLoader {
     private final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
     @Thunk final Handler mWorkerHandler;
 
-    public WidgetPreviewLoader(Context context, InvariantDeviceProfile inv, IconCache iconCache) {
+    public WidgetPreviewLoader(Context context, IconCache iconCache) {
         mContext = context;
         mIconCache = iconCache;
         mManager = AppWidgetManagerCompat.getInstance(context);

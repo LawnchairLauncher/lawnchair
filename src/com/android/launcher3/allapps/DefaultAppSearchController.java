@@ -56,7 +56,7 @@ final class DefaultAppSearchController extends AllAppsSearchBarController
     private View mDismissSearchButtonView;
     @Thunk AllAppsSearchEditView mSearchBarEditView;
     @Thunk AllAppsRecyclerView mAppsRecyclerView;
-    private Runnable mFocusRecyclerViewRunnable = new Runnable() {
+    @Thunk Runnable mFocusRecyclerViewRunnable = new Runnable() {
         @Override
         public void run() {
             mAppsRecyclerView.requestFocus();
