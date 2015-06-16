@@ -56,6 +56,8 @@ public class WidgetPreviewLoader {
     /**
      * Weak reference objects, do not prevent their referents from being made finalizable,
      * finalized, and then reclaimed.
+     * Note: synchronized block used for this variable is expensive and the block should always
+     * be posted to a background thread.
      */
     @Thunk Set<Bitmap> mUnusedBitmaps =
             Collections.newSetFromMap(new WeakHashMap<Bitmap, Boolean>());
@@ -555,10 +557,15 @@ public class WidgetPreviewLoader {
             // in the tasks's onCancelled() call, and if cancelled while the task is writing to
             // disk, it will be cancelled in the task's onPostExecute() call.
             if (mTask.mBitmapToRecycle != null) {
-                synchronized (mUnusedBitmaps) {
-                    mUnusedBitmaps.add(mTask.mBitmapToRecycle);
-                }
-                mTask.mBitmapToRecycle = null;
+                mWorkerHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        synchronized (mUnusedBitmaps) {
+                            mUnusedBitmaps.add(mTask.mBitmapToRecycle);
+                        }
+                        mTask.mBitmapToRecycle = null;
+                    }
+                });
             }
         }
     }
@@ -661,14 +668,19 @@ public class WidgetPreviewLoader {
         }
 
         @Override
-        protected void onCancelled(Bitmap preview) {
+        protected void onCancelled(final Bitmap preview) {
             // If we've cancelled while the task is running, then can return the bitmap to the
             // recycled set immediately. Otherwise, it will be recycled after the preview is written
             // to disk.
             if (preview != null) {
-                synchronized (mUnusedBitmaps) {
-                    mUnusedBitmaps.add(preview);
-                }
+                mWorkerHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        synchronized (mUnusedBitmaps) {
+                            mUnusedBitmaps.add(preview);
+                        }
+                    }
+                });
             }
         }
     }
