@@ -17,7 +17,6 @@ package com.android.launcher3.allapps;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Point;
@@ -155,6 +154,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     private int mSectionNamesMargin;
     private int mNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
+    private int mRecyclerViewTopBottomPadding;
     // This coordinate is relative to this container view
     private final Point mBoundsCheckLastTouchDownPos = new Point(-1, -1);
     // This coordinate is relative to its parent
@@ -189,7 +189,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mPredictionBarHeight = (int) (grid.allAppsIconSizePx + grid.iconDrawablePaddingOriginalPx +
                 Utilities.calculateTextHeight(grid.allAppsIconTextSizePx) +
                 2 * res.getDimensionPixelSize(R.dimen.all_apps_icon_top_bottom_padding) +
-                2 * res.getDimensionPixelSize(R.dimen.all_apps_prediction_bar_top_bottom_padding));
+                res.getDimensionPixelSize(R.dimen.all_apps_prediction_bar_top_padding) +
+                res.getDimensionPixelSize(R.dimen.all_apps_prediction_bar_bottom_padding));
         mSectionNamesMargin = res.getDimensionPixelSize(R.dimen.all_apps_grid_view_start_margin);
         mApps = new AlphabeticalAppsList(context);
         mApps.setAdapterChangedCallback(this);
@@ -199,6 +200,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mApps.setAdapter(mAdapter);
         mLayoutManager = mAdapter.getLayoutManager();
         mItemDecoration = mAdapter.getItemDecoration();
+        mRecyclerViewTopBottomPadding =
+                res.getDimensionPixelSize(R.dimen.all_apps_list_top_bottom_padding);
 
         mSearchQueryBuilder = new SpannableStringBuilder();
         Selection.setSelection(mSearchQueryBuilder, 0);
@@ -414,7 +417,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                     new SimpleSectionMergeAlgorithm((int) Math.ceil(mNumAppsPerRow / 2f),
                             MIN_ROWS_IN_MERGED_SECTION_PHONE, MAX_NUM_MERGES_PHONE);
 
-            mAppsRecyclerView.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow);
+            mAppsRecyclerView.setNumAppsPerRow(mNumAppsPerRow);
             mAdapter.setNumAppsPerRow(mNumAppsPerRow);
             mApps.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow, mergeAlgorithm);
         }
@@ -431,14 +434,16 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     protected void onUpdateBackgroundAndPaddings(Rect searchBarBounds, Rect padding) {
         boolean isRtl = Utilities.isRtl(getResources());
 
-        // TODO: Use quantum_panel instead of quantum_panel_shape.
+        // TODO: Use quantum_panel instead of quantum_panel_shape
         InsetDrawable background = new InsetDrawable(
                 getResources().getDrawable(R.drawable.quantum_panel_shape), padding.left, 0,
                 padding.right, 0);
+        Rect bgPadding = new Rect();
+        background.getPadding(bgPadding);
         mContainerView.setBackground(background);
         mRevealView.setBackground(background.getConstantState().newDrawable());
-        mAppsRecyclerView.updateBackgroundPadding(padding);
-        mAdapter.updateBackgroundPadding(padding);
+        mAppsRecyclerView.updateBackgroundPadding(bgPadding);
+        mAdapter.updateBackgroundPadding(bgPadding);
 
         // Hack: We are going to let the recycler view take the full width, so reset the padding on
         // the container to zero after setting the background and apply the top-bottom padding to
@@ -448,13 +453,14 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         // Pad the recycler view by the background padding plus the start margin (for the section
         // names)
-        int startInset = Math.max(mSectionNamesMargin, mAppsRecyclerView.getScrollbarWidth());
+        int startInset = Math.max(mSectionNamesMargin, mAppsRecyclerView.getMaxScrollbarWidth());
+        int topBottomPadding = mRecyclerViewTopBottomPadding;
         if (isRtl) {
-            mAppsRecyclerView.setPadding(padding.left + mAppsRecyclerView.getScrollbarWidth(), 0,
-                    padding.right + startInset, 0);
+            mAppsRecyclerView.setPadding(padding.left + mAppsRecyclerView.getMaxScrollbarWidth(),
+                    topBottomPadding, padding.right + startInset, topBottomPadding);
         } else {
-            mAppsRecyclerView.setPadding(padding.left + startInset, 0,
-                    padding.right + mAppsRecyclerView.getScrollbarWidth(), 0);
+            mAppsRecyclerView.setPadding(padding.left + startInset, topBottomPadding,
+                    padding.right + mAppsRecyclerView.getMaxScrollbarWidth(), topBottomPadding);
         }
 
         // Inset the search bar to fit its bounds above the container
@@ -474,8 +480,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         // Update the prediction bar insets as well
         mPredictionBarView = (ViewGroup) findViewById(R.id.prediction_bar);
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mPredictionBarView.getLayoutParams();
-        lp.leftMargin = padding.left + mAppsRecyclerView.getScrollbarWidth();
-        lp.rightMargin = padding.right + mAppsRecyclerView.getScrollbarWidth();
+        lp.leftMargin = padding.left + mAppsRecyclerView.getMaxScrollbarWidth();
+        lp.rightMargin = padding.right + mAppsRecyclerView.getMaxScrollbarWidth();
         mPredictionBarView.requestLayout();
     }
 

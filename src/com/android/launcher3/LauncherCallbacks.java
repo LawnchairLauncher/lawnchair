@@ -70,10 +70,12 @@ public interface LauncherCallbacks {
     /*
      * Extension points for replacing the search experience
      */
+    @Deprecated
     public boolean forceDisableVoiceButtonProxy();
     public boolean providesSearch();
     public boolean startSearch(String initialQuery, boolean selectInitialQuery,
             Bundle appSearchData, Rect sourceBounds);
+    @Deprecated
     public void startVoice();
     public boolean hasCustomContentToLeft();
     public void populateCustomContentContainer();

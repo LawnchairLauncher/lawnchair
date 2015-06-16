@@ -17,14 +17,14 @@
 package com.android.launcher3.widget;
 
 import android.content.Context;
-import android.graphics.Rect;
+import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
 import android.view.View;
 import com.android.launcher3.BaseRecyclerView;
-import com.android.launcher3.Utilities;
-import com.android.launcher3.model.WidgetsModel;
+import com.android.launcher3.R;
 import com.android.launcher3.model.PackageItemInfo;
+import com.android.launcher3.model.WidgetsModel;
 
 /**
  * The widgets recycler view.
@@ -33,6 +33,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
 
     private static final String TAG = "WidgetsRecyclerView";
     private WidgetsModel mWidgets;
+    private ScrollPositionState mScrollPosState = new ScrollPositionState();
 
     public WidgetsRecyclerView(Context context) {
         this(context, null);
@@ -58,6 +59,14 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
         addOnItemTouchListener(this);
     }
 
+    public int getFastScrollerTrackColor(int defaultTrackColor) {
+        return Color.WHITE;
+    }
+
+    public int getFastScrollerThumbInactiveColor(int defaultInactiveThumbColor) {
+        return getResources().getColor(R.color.widgets_view_fastscroll_thumb_inactive_color);
+    }
+
     /**
      * Sets the widget model in this view, used to determine the fast scroll position.
      */
@@ -70,15 +79,21 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
      */
     @Override
     public String scrollToPositionAtProgress(float touchFraction) {
-        float pos = mWidgets.getPackageSize() * touchFraction;
+        int rowCount = mWidgets.getPackageSize();
+        if (rowCount == 0) {
+            return "";
+        }
 
-        int posInt = (int) pos;
+        // Stop the scroller if it is scrolling
+        stopScroll();
+
+        getCurScrollState(mScrollPosState);
+        float pos = rowCount * touchFraction;
+        int availableScrollHeight = getAvailableScrollHeight(rowCount, mScrollPosState.rowHeight, 0);
         LinearLayoutManager layoutManager = ((LinearLayoutManager) getLayoutManager());
-        getCurScrollState(scrollPosState);
-        layoutManager.scrollToPositionWithOffset((int) pos,
-                (int) (scrollPosState.rowHeight * ((float) posInt - pos)));
+        layoutManager.scrollToPositionWithOffset(0, (int) -(availableScrollHeight * touchFraction));
 
-        posInt = (int) ((touchFraction == 1)? pos -1 : pos);
+        int posInt = (int) ((touchFraction == 1)? pos -1 : pos);
         PackageItemInfo p = mWidgets.getPackageItemInfo(posInt);
         return p.titleSectionName;
     }
@@ -87,43 +102,23 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
      * Updates the bounds for the scrollbar.
      */
     @Override
-    public void updateVerticalScrollbarBounds() {
+    public void onUpdateScrollbar() {
         int rowCount = mWidgets.getPackageSize();
-        verticalScrollbarBounds.setEmpty();
 
         // Skip early if, there are no items.
         if (rowCount == 0) {
+            mScrollbar.setScrollbarThumbOffset(-1, -1);
             return;
         }
 
         // Skip early if, there no child laid out in the container.
-        getCurScrollState(scrollPosState);
-        if (scrollPosState.rowIndex < 0) {
+        getCurScrollState(mScrollPosState);
+        if (mScrollPosState.rowIndex < 0) {
+            mScrollbar.setScrollbarThumbOffset(-1, -1);
             return;
         }
 
-        int actualHeight = getHeight() - getPaddingTop() - getPaddingBottom();
-        int totalScrollHeight = rowCount * scrollPosState.rowHeight;
-        // Skip early if the height of all the rows are actually less than the container height.
-        if (totalScrollHeight < actualHeight) {
-            verticalScrollbarBounds.setEmpty();
-            return;
-        }
-
-        int scrollbarHeight = (int) (actualHeight / ((float) totalScrollHeight / actualHeight));
-        int availableY = totalScrollHeight - actualHeight;
-        int availableScrollY = actualHeight - scrollbarHeight;
-        int y = (scrollPosState.rowIndex * scrollPosState.rowHeight)
-                - scrollPosState.rowTopOffset;
-        y = getPaddingTop() +
-                (int) (((float) (getPaddingTop() + y) / availableY) * availableScrollY);
-
-        // Calculate the position and size of the scroll bar.
-        int x = getWidth() - getScrollbarWidth() - mBackgroundPadding.right;
-        if (Utilities.isRtl(getResources())) {
-            x = mBackgroundPadding.left;
-        }
-        verticalScrollbarBounds.set(x, y, x + getScrollbarWidth(), y + scrollbarHeight);
+        synchronizeScrollBarThumbOffsetToViewScroll(mScrollPosState, rowCount, 0);
     }
 
     /**

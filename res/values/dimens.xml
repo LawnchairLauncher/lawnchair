@@ -49,12 +49,20 @@
     <dimen name="toolbar_button_vertical_padding">4dip</dimen>
     <dimen name="toolbar_button_horizontal_padding">12dip</dimen>
 
-<!-- All Apps -->
+<!-- Container -->
     <!-- Note: This needs to match the fixed insets for the search box. -->
     <dimen name="container_bounds_inset">8dp</dimen>
     <!-- Notes: container_bounds_inset - quantum_panel_outer_padding -->
     <dimen name="container_bounds_minus_quantum_panel_padding_inset">4dp</dimen>
 
+    <dimen name="container_fastscroll_thumb_min_width">4dp</dimen>
+    <dimen name="container_fastscroll_thumb_max_width">8dp</dimen>
+    <dimen name="container_fastscroll_thumb_height">64dp</dimen>
+    <dimen name="container_fastscroll_thumb_touch_inset">-24dp</dimen>
+    <dimen name="container_fastscroll_popup_size">72dp</dimen>
+    <dimen name="container_fastscroll_popup_text_size">48dp</dimen>
+
+<!-- All Apps -->
     <dimen name="all_apps_grid_view_start_margin">0dp</dimen>
     <dimen name="all_apps_grid_section_y_offset">8dp</dimen>
     <dimen name="all_apps_grid_section_text_size">24sp</dimen>
@@ -62,16 +70,10 @@
     <dimen name="all_apps_search_bar_prediction_bar_padding">8dp</dimen>
     <dimen name="all_apps_icon_top_bottom_padding">8dp</dimen>
     <dimen name="all_apps_icon_width_gap">24dp</dimen>
-    <dimen name="all_apps_prediction_bar_top_bottom_padding">16dp</dimen>
-
-    <dimen name="all_apps_fast_scroll_bar_width">4dp</dimen>
-    <dimen name="all_apps_fast_scroll_scrubber_touch_inset">-24dp</dimen>
-    <dimen name="all_apps_fast_scroll_popup_size">72dp</dimen>
-    <dimen name="all_apps_fast_scroll_text_size">48dp</dimen>
-
-    <dimen name="all_apps_header_max_elevation">4dp</dimen>
-    <dimen name="all_apps_header_scroll_to_elevation">16dp</dimen>
-    <dimen name="all_apps_header_shadow_height">6dp</dimen>
+    <!-- The top padding should account for the general all_apps_list_top_bottom_padding -->
+    <dimen name="all_apps_prediction_bar_top_padding">0dp</dimen>
+    <dimen name="all_apps_prediction_bar_bottom_padding">16dp</dimen>
+    <dimen name="all_apps_list_top_bottom_padding">8dp</dimen>
 
 <!-- Widget tray -->
     <dimen name="widget_container_inset">8dp</dimen>

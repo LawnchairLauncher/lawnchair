@@ -143,13 +143,6 @@ public class LauncherAppState {
         return mModel;
     }
 
-    /**
-     * TODO(winsonc, hyunyoungs): We need to respect this
-     */
-    boolean shouldShowAppOrWidgetProvider(ComponentName componentName) {
-        return mAppFilter == null || mAppFilter.shouldShowApp(componentName);
-    }
-
     static void setLauncherProvider(LauncherProvider provider) {
         sLauncherProvider = new WeakReference<LauncherProvider>(provider);
     }

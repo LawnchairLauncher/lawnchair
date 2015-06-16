@@ -17,7 +17,7 @@
 <resources>
 <!-- All Apps -->
     <dimen name="all_apps_search_bar_height">54dp</dimen>
-    <dimen name="all_apps_icon_top_bottom_padding">16dp</dimen>
+    <dimen name="all_apps_icon_top_bottom_padding">14dp</dimen>
 
 <!-- QSB -->
     <dimen name="toolbar_button_vertical_padding">8dip</dimen>
