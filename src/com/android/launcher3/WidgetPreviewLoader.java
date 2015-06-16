@@ -59,7 +59,7 @@ public class WidgetPreviewLoader {
      * Note: synchronized block used for this variable is expensive and the block should always
      * be posted to a background thread.
      */
-    @Thunk Set<Bitmap> mUnusedBitmaps =
+    @Thunk final Set<Bitmap> mUnusedBitmaps =
             Collections.newSetFromMap(new WeakHashMap<Bitmap, Boolean>());
 
     private final Context mContext;
@@ -540,7 +540,7 @@ public class WidgetPreviewLoader {
      */
     public class PreviewLoadRequest {
 
-        private final PreviewLoadTask mTask;
+        @Thunk final PreviewLoadTask mTask;
 
         public PreviewLoadRequest(PreviewLoadTask task) {
             mTask = task;
