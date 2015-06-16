@@ -32,7 +32,7 @@ public class DefaultAppSearchAlgorithm {
     private static final Pattern SPLIT_PATTERN = Pattern.compile("[\\s|\\p{javaSpaceChar}]+");
 
     private final List<AppInfo> mApps;
-    private final Handler mResultHandler;
+    protected final Handler mResultHandler;
 
     public DefaultAppSearchAlgorithm(List<AppInfo> apps) {
         mApps = apps;
