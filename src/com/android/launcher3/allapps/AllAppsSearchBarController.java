@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.allapps;
 
+import android.content.ComponentName;
 import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,13 +35,17 @@ public abstract class AllAppsSearchBarController {
     /**
      * Sets the references to the apps model and the search result callback.
      */
-    public void initialize(AlphabeticalAppsList apps, Callbacks cb) {
+    public final void initialize(AlphabeticalAppsList apps, Callbacks cb) {
         mApps = apps;
         mCb = cb;
+        onInitialize();
     }
 
-    @Deprecated
-    protected void onInitialize() { };
+    /**
+     * To be overridden by subclasses.  This method will get called when the controller is set,
+     * before getView().
+     */
+    protected abstract void onInitialize();
 
     /**
      * Returns the search bar view.

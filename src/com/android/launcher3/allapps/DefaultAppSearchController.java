@@ -31,6 +31,7 @@ import com.android.launcher3.util.Thunk;
 
 import java.util.List;
 
+
 /**
  * The default search controller.
  */
@@ -73,8 +74,6 @@ final class DefaultAppSearchController extends AllAppsSearchBarController
 
     @Override
     public View getView(ViewGroup parent) {
-        mSearchManager = new DefaultAppSearchAlgorithm(mApps.getApps());
-
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         mSearchView = inflater.inflate(R.layout.all_apps_search_bar, parent, false);
         mSearchView.setOnClickListener(this);
@@ -112,6 +111,11 @@ final class DefaultAppSearchController extends AllAppsSearchBarController
     @Override
     public boolean isSearchFieldFocused() {
         return mSearchBarEditView.isFocused();
+    }
+
+    @Override
+    protected void onInitialize() {
+        mSearchManager = new DefaultAppSearchAlgorithm(mApps.getApps());
     }
 
     @Override
