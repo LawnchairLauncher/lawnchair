@@ -554,32 +554,44 @@ public class Launcher extends Activity
     public boolean setLauncherCallbacks(LauncherCallbacks callbacks) {
         mLauncherCallbacks = callbacks;
         mLauncherCallbacks.setLauncherSearchCallback(new Launcher.LauncherSearchCallbacks() {
-            private boolean mImportanceStored = false;
+            private boolean mWorkspaceImportanceStored = false;
+            private boolean mHotseatImportanceStored = false;
             private int mWorkspaceImportanceForAccessibility =
                 View.IMPORTANT_FOR_ACCESSIBILITY_AUTO;
             private int mHotseatImportanceForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_AUTO;
 
             @Override
             public void onSearchOverlayOpened() {
-                if (mImportanceStored) {
+                if (mWorkspaceImportanceStored || mHotseatImportanceStored) {
                     return;
                 }
                 // The underlying workspace and hotseat are temporarily suppressed by the search
                 // overlay. So they sholudn't be accessible.
-                mWorkspaceImportanceForAccessibility = mWorkspace.getImportantForAccessibility();
-                mHotseatImportanceForAccessibility = mHotseat.getImportantForAccessibility();
-                mWorkspace.setImportantForAccessibility(
-                    View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
-                mHotseat.setImportantForAccessibility(
-                    View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
-                mImportanceStored = true;
+                if (mWorkspace != null) {
+                    mWorkspaceImportanceForAccessibility =
+                            mWorkspace.getImportantForAccessibility();
+                    mWorkspace.setImportantForAccessibility(
+                            View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
+                    mWorkspaceImportanceStored = true;
+                }
+                if (mHotseat != null) {
+                    mHotseatImportanceForAccessibility = mHotseat.getImportantForAccessibility();
+                    mHotseat.setImportantForAccessibility(
+                            View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
+                    mHotseatImportanceStored = true;
+                }
             }
 
             @Override
             public void onSearchOverlayClosed() {
-                mWorkspace.setImportantForAccessibility(mWorkspaceImportanceForAccessibility);
-                mHotseat.setImportantForAccessibility(mHotseatImportanceForAccessibility);
-                mImportanceStored = false;
+                if (mWorkspaceImportanceStored && mWorkspace != null) {
+                    mWorkspace.setImportantForAccessibility(mWorkspaceImportanceForAccessibility);
+                }
+                if (mHotseatImportanceStored && mHotseat != null) {
+                    mHotseat.setImportantForAccessibility(mHotseatImportanceForAccessibility);
+                }
+                mWorkspaceImportanceStored = false;
+                mHotseatImportanceStored = false;
             }
         });
         return true;
