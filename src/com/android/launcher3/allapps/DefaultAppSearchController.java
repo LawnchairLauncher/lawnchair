@@ -83,7 +83,7 @@ final class DefaultAppSearchController extends AllAppsSearchBarController
         mDismissSearchButtonView = mSearchBarContainerView.findViewById(R.id.dismiss_search_button);
         mDismissSearchButtonView.setOnClickListener(this);
         mSearchBarEditView = (AllAppsSearchEditView)
-                mSearchBarContainerView.findViewById(R.id.search_box);
+                mSearchBarContainerView.findViewById(R.id.search_box_input);
         mSearchBarEditView.addTextChangedListener(this);
         mSearchBarEditView.setOnEditorActionListener(this);
         mSearchBarEditView.setOnBackKeyListener(

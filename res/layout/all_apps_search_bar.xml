@@ -40,7 +40,7 @@
             android:src="@drawable/ic_arrow_back_grey" />
 
         <com.android.launcher3.allapps.AllAppsSearchEditView
-            android:id="@+id/search_box"
+            android:id="@+id/search_box_input"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/transparent"
