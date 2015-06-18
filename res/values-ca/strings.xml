@@ -21,6 +21,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
+    <string name="work_folder_name" msgid="3753320833950115786">"Feina"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"L\'aplicació no s\'ha instal·lat."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"L\'aplicació no està disponible."</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"L\'aplicació que has baixat està desactivada al mode segur."</string>
@@ -28,6 +29,9 @@
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Mostra la memòria"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Mantén premut un widget per triar-lo."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
+    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Cerca a les aplicacions"</string>
+    <string name="all_apps_loading_message" msgid="7557140873644765180">"S\'estan carregant les aplicacions..."</string>
+    <string name="all_apps_no_search_results" msgid="6332185285860416787">"No s\'ha trobat cap aplicació que coincideixi amb <xliff:g id="QUERY">%1$s</xliff:g>"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Ja no queda espai en aquesta pantalla d\'inici."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"No hi ha més espai a la safata Preferits."</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Aplicacions"</string>
@@ -69,5 +73,28 @@
     <string name="abandoned_search" msgid="891119232568284442">"Cerca"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Aquesta aplicació no està instal·lada"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"L\'aplicació d\'aquesta icona no està instal·lada. Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment."</string>
-    <string name="action_add_to_workspace" msgid="989613635294321898">"Afegeix a l\'espai de treball"</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"Afegeix a la pantalla d\'inici"</string>
+    <string name="action_move_here" msgid="2170188780612570250">"Mou l\'element aquí"</string>
+    <string name="item_added_to_workspace" msgid="4211073925752213539">"S\'ha afegit l\'element a la pantalla d\'inici"</string>
+    <string name="item_removed" msgid="851119963877842327">"S\'ha suprimit l\'element"</string>
+    <string name="action_move" msgid="4339390619886385032">"Desplaça l\'element"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"Desplaça l\'element a la fila <xliff:g id="NUMBER_0">%1$s</xliff:g> i la columna <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="move_to_position" msgid="6750008980455459790">"Desplaça l\'element a la posició <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
+    <string name="move_to_hotseat_position" msgid="6295412897075147808">"Desplaça l\'element a la posició de preferits <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
+    <string name="item_moved" msgid="4606538322571412879">"Element desplaçat"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"Afegeix l\'element a la carpeta: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="add_to_folder_with_app" msgid="4534929978967147231">"Afegeix l\'element a la carpeta amb <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"Element afegit a la carpeta"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"Crea una carpeta amb: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_created" msgid="6409794597405184510">"Carpeta creada"</string>
+    <string name="action_move_to_workspace" msgid="1603837886334246317">"Desplaça a la pantalla d\'inici"</string>
+    <string name="action_move_screen_left" msgid="8854216831569401665">"Desplaça pantalla a l\'esquerra"</string>
+    <string name="action_move_screen_right" msgid="329334910274311123">"Desplaça pantalla a la dreta"</string>
+    <string name="screen_moved" msgid="266230079505650577">"S\'ha desplaçat la pantalla"</string>
+    <string name="action_resize" msgid="1802976324781771067">"Canvia la mida"</string>
+    <string name="action_increase_width" msgid="8773715375078513326">"Augmenta l\'amplada"</string>
+    <string name="action_increase_height" msgid="459390020612501122">"Augmenta l\'alçada"</string>
+    <string name="action_decrease_width" msgid="1374549771083094654">"Redueix l\'amplada"</string>
+    <string name="action_decrease_height" msgid="282377193880900022">"Redueix l\'alçada"</string>
+    <string name="widget_resized" msgid="9130327887929620">"S\'ha canviat la mida del widget a l\'amplada <xliff:g id="NUMBER_0">%1$s</xliff:g> i l\'alçada <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
 </resources>

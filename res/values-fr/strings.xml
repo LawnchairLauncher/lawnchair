@@ -21,6 +21,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
+    <string name="work_folder_name" msgid="3753320833950115786">"Android Work"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"L\'application n\'est pas installée."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Application indisponible"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"L\'application téléchargée est désactivée en mode sécurisé."</string>
@@ -28,6 +29,9 @@
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Afficher la mémoire"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"App. de manière prolongée pour sélectionner widget."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d x %2$d"</string>
+    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Rechercher dans les applications"</string>
+    <string name="all_apps_loading_message" msgid="7557140873644765180">"Chargement des applications en cours…"</string>
+    <string name="all_apps_no_search_results" msgid="6332185285860416787">"Aucune application ne correspond à la requête \"<xliff:g id="QUERY">%1$s</xliff:g>\"."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Pas d\'espace libre sur cet écran d\'accueil."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Plus d\'espace disponible dans la zone de favoris."</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Applications"</string>
@@ -69,5 +73,28 @@
     <string name="abandoned_search" msgid="891119232568284442">"Rechercher"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Cette application n\'est pas installée"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"L\'application correspondant à cette icône n\'est pas installée. Vous pouvez supprimer cette dernière, ou essayer de rechercher l\'application et de l\'installer manuellement."</string>
-    <string name="action_add_to_workspace" msgid="989613635294321898">"Ajouter à l\'espace de travail"</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"Ajouter à l\'écran d\'accueil"</string>
+    <string name="action_move_here" msgid="2170188780612570250">"Déplacer l\'élément ici"</string>
+    <string name="item_added_to_workspace" msgid="4211073925752213539">"L\'élément a bien été ajouté à l\'écran d\'accueil."</string>
+    <string name="item_removed" msgid="851119963877842327">"L\'élément a bien été supprimé."</string>
+    <string name="action_move" msgid="4339390619886385032">"Déplacer l\'élément"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"Déplacer vers la ligne <xliff:g id="NUMBER_0">%1$s</xliff:g>, colonne <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="move_to_position" msgid="6750008980455459790">"Déplacer vers la position <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
+    <string name="move_to_hotseat_position" msgid="6295412897075147808">"Déplacer vers la position <xliff:g id="NUMBER">%1$s</xliff:g> dans les favoris"</string>
+    <string name="item_moved" msgid="4606538322571412879">"Élément déplacé"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"Ajouter au dossier \"<xliff:g id="NAME">%1$s</xliff:g>\""</string>
+    <string name="add_to_folder_with_app" msgid="4534929978967147231">"Ajouter au dossier contenant \"<xliff:g id="NAME">%1$s</xliff:g>\""</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"Élément ajouté au dossier"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"Créer un dossier avec \"<xliff:g id="NAME">%1$s</xliff:g>\""</string>
+    <string name="folder_created" msgid="6409794597405184510">"Dossier créé"</string>
+    <string name="action_move_to_workspace" msgid="1603837886334246317">"Déplacer vers l\'écran d\'accueil"</string>
+    <string name="action_move_screen_left" msgid="8854216831569401665">"Déplacer l\'écran vers la gauche"</string>
+    <string name="action_move_screen_right" msgid="329334910274311123">"Déplacer l\'écran vers la droite"</string>
+    <string name="screen_moved" msgid="266230079505650577">"L\'écran a bien été déplacé."</string>
+    <string name="action_resize" msgid="1802976324781771067">"Redimensionner"</string>
+    <string name="action_increase_width" msgid="8773715375078513326">"Augmenter la largeur"</string>
+    <string name="action_increase_height" msgid="459390020612501122">"Augmenter la hauteur"</string>
+    <string name="action_decrease_width" msgid="1374549771083094654">"Diminuer la largeur"</string>
+    <string name="action_decrease_height" msgid="282377193880900022">"Diminuer la hauteur"</string>
+    <string name="widget_resized" msgid="9130327887929620">"Le widget a bien été redimensionné (largeur : <xliff:g id="NUMBER_0">%1$s</xliff:g>, hauteur : <xliff:g id="NUMBER_1">%2$s</xliff:g>)."</string>
 </resources>

@@ -21,6 +21,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
+    <string name="work_folder_name" msgid="3753320833950115786">"Darbs"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Lietotne nav instalēta."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Lietotne nav pieejama."</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Lejupielādētā lietotne ir atspējota drošajā režīmā."</string>
@@ -28,6 +29,9 @@
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Rādīt atmiņu"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Lai izvēlētos logrīku, pieskarieties un turiet to."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
+    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Meklēt lietotnes"</string>
+    <string name="all_apps_loading_message" msgid="7557140873644765180">"Notiek lietotņu ielāde…"</string>
+    <string name="all_apps_no_search_results" msgid="6332185285860416787">"Vaicājumam “<xliff:g id="QUERY">%1$s</xliff:g>” neatbilda neviena lietotne."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Šajā sākuma ekrānā vairs nav vietas."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Izlases joslā vairs nav vietas."</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Lietotnes"</string>
@@ -69,5 +73,28 @@
     <string name="abandoned_search" msgid="891119232568284442">"Meklēt"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Šī lietotne nav instalēta"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Šai ikonai paredzētā lietotne nav instalēta. Varat noņemt ikonu vai meklēt lietotni un instalēt to manuāli."</string>
-    <string name="action_add_to_workspace" msgid="989613635294321898">"Pievienot darbvietai"</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"Pievienot sākuma ekrānam"</string>
+    <string name="action_move_here" msgid="2170188780612570250">"Pārvietot vienumu šeit"</string>
+    <string name="item_added_to_workspace" msgid="4211073925752213539">"Vienums pievienots sākuma ekrānam"</string>
+    <string name="item_removed" msgid="851119963877842327">"Vienums noņemts"</string>
+    <string name="action_move" msgid="4339390619886385032">"Pārvietot vienumu"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"Pārvietot uz <xliff:g id="NUMBER_0">%1$s</xliff:g>. rindu, <xliff:g id="NUMBER_1">%2$s</xliff:g>. kolonnu"</string>
+    <string name="move_to_position" msgid="6750008980455459790">"Pārvietot uz <xliff:g id="NUMBER">%1$s</xliff:g>. pozīciju"</string>
+    <string name="move_to_hotseat_position" msgid="6295412897075147808">"Pārvietot uz <xliff:g id="NUMBER">%1$s</xliff:g>. izlases pozīciju"</string>
+    <string name="item_moved" msgid="4606538322571412879">"Vienums pārvietots"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"Pievienot mapei: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="add_to_folder_with_app" msgid="4534929978967147231">"Pievienot mapei, kurā ir <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"Vienums pievienots mapei"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"Izveidot mapi ar: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_created" msgid="6409794597405184510">"Mape izveidota"</string>
+    <string name="action_move_to_workspace" msgid="1603837886334246317">"Pārvietot uz sākuma ekrānu"</string>
+    <string name="action_move_screen_left" msgid="8854216831569401665">"Pārvietot ekrānu pa kreisi"</string>
+    <string name="action_move_screen_right" msgid="329334910274311123">"Pārvietot ekrānu pa labi"</string>
+    <string name="screen_moved" msgid="266230079505650577">"Ekrāns pārvietots"</string>
+    <string name="action_resize" msgid="1802976324781771067">"Mainīt lielumu"</string>
+    <string name="action_increase_width" msgid="8773715375078513326">"Palielināt platumu"</string>
+    <string name="action_increase_height" msgid="459390020612501122">"Palielināt augstumu"</string>
+    <string name="action_decrease_width" msgid="1374549771083094654">"Samazināt platumu"</string>
+    <string name="action_decrease_height" msgid="282377193880900022">"Samazināt augstumu"</string>
+    <string name="widget_resized" msgid="9130327887929620">"Logrīka lielums mainīts — platums: <xliff:g id="NUMBER_0">%1$s</xliff:g>, augstums: <xliff:g id="NUMBER_1">%2$s</xliff:g>."</string>
 </resources>

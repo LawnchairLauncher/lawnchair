@@ -21,6 +21,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
+    <string name="work_folder_name" msgid="3753320833950115786">"دفتری"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"ایپ انسٹال نہیں ہے۔"</string>
     <string name="activity_not_available" msgid="7456344436509528827">"ایپ دستیاب نہیں ہے"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"ڈاؤن لوڈ کردہ ایپ کو محفوظ وضع میں غیر فعال کر دیا گیا"</string>
@@ -28,6 +29,9 @@
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"‏Mem دکھائیں"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"کوئی ویجیٹ منتخب کرنے کیلئے ٹچ کریں اور پکڑے رہیں۔"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
+    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"ایپس تلاش کریں"</string>
+    <string name="all_apps_loading_message" msgid="7557140873644765180">"ایپس لوڈ ہو رہی ہیں…"</string>
+    <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" سے مماثل کوئی ایپس نہیں ملیں"</string>
     <string name="out_of_space" msgid="4691004494942118364">"اس ہوم اسکرین پر مزید کوئی گنجائش نہیں ہے۔"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"پسندیدہ ٹرے میں مزید کوئی گنجائش نہیں ہے"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"ایپس"</string>
@@ -69,5 +73,28 @@
     <string name="abandoned_search" msgid="891119232568284442">"تلاش کریں"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"یہ ایپ انسٹال کردہ نہیں ہے"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"اس آئیکن کیلئے ایپ انسٹال کردہ نہیں ہے۔ آپ اسے ہٹا سکتے ہیں یا ایپ کو تلاش کر سکتے اور دستی طور پر اسے انسٹال کر سکتے ہیں۔"</string>
-    <string name="action_add_to_workspace" msgid="989613635294321898">"ورک اسپیس میں شامل کریں"</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"ہوم اسکرین میں شامل کریں"</string>
+    <string name="action_move_here" msgid="2170188780612570250">"آئٹم یہاں منتقل کریں"</string>
+    <string name="item_added_to_workspace" msgid="4211073925752213539">"آئٹم کو ہوم اسکرین میں شامل کر دیا گیا"</string>
+    <string name="item_removed" msgid="851119963877842327">"آئٹم ہٹا دیا گیا"</string>
+    <string name="action_move" msgid="4339390619886385032">"آئٹم منتقل کریں"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"قطار <xliff:g id="NUMBER_0">%1$s</xliff:g> کالم <xliff:g id="NUMBER_1">%2$s</xliff:g> میں منتقل کریں"</string>
+    <string name="move_to_position" msgid="6750008980455459790">"پوزیشن <xliff:g id="NUMBER">%1$s</xliff:g> میں منتقل کریں"</string>
+    <string name="move_to_hotseat_position" msgid="6295412897075147808">"پسندیدہ پوزیشن <xliff:g id="NUMBER">%1$s</xliff:g> میں منتقل کریں"</string>
+    <string name="item_moved" msgid="4606538322571412879">"آئٹم منتقل کر دیا گیا"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"فولڈر میں شامل کریں: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="add_to_folder_with_app" msgid="4534929978967147231">"<xliff:g id="NAME">%1$s</xliff:g> کے فولڈر میں شامل کریں"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"آئٹم فولڈر میں شامل کر دیا گیا"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"اس کے ساتھ فولڈر بنائیں: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_created" msgid="6409794597405184510">"فولڈر بنا دیا گیا"</string>
+    <string name="action_move_to_workspace" msgid="1603837886334246317">"ہوم اسکرین میں منتقل کریں"</string>
+    <string name="action_move_screen_left" msgid="8854216831569401665">"اسکرین کو بائیں منتقل کریں"</string>
+    <string name="action_move_screen_right" msgid="329334910274311123">"اسکرین کو دائیں منتقل کریں"</string>
+    <string name="screen_moved" msgid="266230079505650577">"اسکرین منتقل کر دی گئی"</string>
+    <string name="action_resize" msgid="1802976324781771067">"سائز تبدیل کریں"</string>
+    <string name="action_increase_width" msgid="8773715375078513326">"چوڑائی بڑھائیں"</string>
+    <string name="action_increase_height" msgid="459390020612501122">"اونچائی بڑھائیں"</string>
+    <string name="action_decrease_width" msgid="1374549771083094654">"چوڑائی کم کریں"</string>
+    <string name="action_decrease_height" msgid="282377193880900022">"اونچائی کم کریں"</string>
+    <string name="widget_resized" msgid="9130327887929620">"ویجیٹ کے سائز کو چوڑائی <xliff:g id="NUMBER_0">%1$s</xliff:g> اونچائی <xliff:g id="NUMBER_1">%2$s</xliff:g> میں تبدیل کر دیا گیا"</string>
 </resources>

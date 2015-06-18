@@ -21,6 +21,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="5181331383435256801">"লঞ্চার৩"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
+    <string name="work_folder_name" msgid="3753320833950115786">"কাজ"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"অ্যাপ্লিকেশান ইনস্টল করা নেই৷"</string>
     <string name="activity_not_available" msgid="7456344436509528827">"অ্যাপ্লিকেশান অনুপলব্ধ"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"ডাউনলোড করা অ্যাপ্লিকেশান নিরাপদ মোডে অক্ষম রয়েছে"</string>
@@ -28,6 +29,9 @@
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"মেম দেখান"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"একটি উইজেট তুলতে তা স্পর্শ করে ধরে রাখুন৷"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
+    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"অ্যাপ্লিকেশানগুলি অনুসন্ধান করুন"</string>
+    <string name="all_apps_loading_message" msgid="7557140873644765180">"অ্যাপ্লিকেশানগুলি লোড হচ্ছে..."</string>
+    <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" এর সাথে মেলে এমন কোনো অ্যাপ্লিকেশান পাওয়া যায়নি"</string>
     <string name="out_of_space" msgid="4691004494942118364">"এই হোম স্ক্রীনে আর কোনো জায়গা নেই৷"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"পছন্দসই ট্রে-তে আর কোনো জায়গা নেই"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"অ্যাপ্লিকেশানগুলি"</string>
@@ -69,5 +73,28 @@
     <string name="abandoned_search" msgid="891119232568284442">"অনুসন্ধান"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"এই অ্যাপ্লিকেশানটি ইন্সটল করা নাই"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"এই আইকনের অ্যাপ্লিকেশানটি ইন্সটল করা নাই। আপনি এটি সরাতে পারেন বা অ্যাপ্লিকেশানটি অনুসন্ধান করে এটি নিজে ইন্সটল করতে পারেন।"</string>
-    <string name="action_add_to_workspace" msgid="989613635294321898">"ওয়ার্কস্পেস যোগ করুন"</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"হোম স্ক্রীনে যোগ করুন"</string>
+    <string name="action_move_here" msgid="2170188780612570250">"এখানে আইটেম সরান"</string>
+    <string name="item_added_to_workspace" msgid="4211073925752213539">"হোম স্ক্রীনে আইটেম যোগ করা হয়েছে"</string>
+    <string name="item_removed" msgid="851119963877842327">"আইটেম সরানো হয়েছে"</string>
+    <string name="action_move" msgid="4339390619886385032">"আইটেম সরান"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"সারি <xliff:g id="NUMBER_0">%1$s</xliff:g> কলাম <xliff:g id="NUMBER_1">%2$s</xliff:g> এ সরান"</string>
+    <string name="move_to_position" msgid="6750008980455459790">"অবস্থানে সরান <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
+    <string name="move_to_hotseat_position" msgid="6295412897075147808">"পছন্দসই অবস্থানে সরান <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
+    <string name="item_moved" msgid="4606538322571412879">"আইটেম সরানো হয়েছে"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"ফোল্ডারে যোগ করুন: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="add_to_folder_with_app" msgid="4534929978967147231">"<xliff:g id="NAME">%1$s</xliff:g> সহ ফোল্ডারে যোগ করা হয়েছে"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"আইটেম ফোল্ডারে যোগ করা হয়েছে"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"এর সাথে ফোল্ডার তৈরি করুন: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_created" msgid="6409794597405184510">"ফোল্ডার তৈরি করা হয়েছে"</string>
+    <string name="action_move_to_workspace" msgid="1603837886334246317">"হোম স্ক্রীনে সরান"</string>
+    <string name="action_move_screen_left" msgid="8854216831569401665">"স্ক্রীন বাম দিকে সরান"</string>
+    <string name="action_move_screen_right" msgid="329334910274311123">"স্ক্রীন ডান দিকে সরান"</string>
+    <string name="screen_moved" msgid="266230079505650577">"স্ক্রীন সরানো হয়েছে"</string>
+    <string name="action_resize" msgid="1802976324781771067">"পুনরায় আকার দিন"</string>
+    <string name="action_increase_width" msgid="8773715375078513326">"প্রস্থ বাড়ান"</string>
+    <string name="action_increase_height" msgid="459390020612501122">"উচ্চতা বাড়ান"</string>
+    <string name="action_decrease_width" msgid="1374549771083094654">"প্রস্থ কমান"</string>
+    <string name="action_decrease_height" msgid="282377193880900022">"উচ্চতা কমান"</string>
+    <string name="widget_resized" msgid="9130327887929620">"উইজেটের আকার প্রস্থ <xliff:g id="NUMBER_0">%1$s</xliff:g> উচ্চতা <xliff:g id="NUMBER_1">%2$s</xliff:g> তে পরিবর্তন করা হয়েছে"</string>
 </resources>

@@ -21,6 +21,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
+    <string name="work_folder_name" msgid="3753320833950115786">"Werk"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"App is niet geïnstalleerd."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"App is niet beschikbaar"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Gedownloade app uitgeschakeld in veilige modus"</string>
@@ -28,6 +29,9 @@
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Geheugen weergeven"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Blijf aanraken om een widget toe te voegen."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
+    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Apps zoeken"</string>
+    <string name="all_apps_loading_message" msgid="7557140873644765180">"Apps laden…"</string>
+    <string name="all_apps_no_search_results" msgid="6332185285860416787">"Er zijn geen apps gevonden die overeenkomen met \'<xliff:g id="QUERY">%1$s</xliff:g>\'"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Er is geen ruimte meer op dit startscherm."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Geen ruimte meer in het vak \'Favorieten\'"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Apps"</string>
@@ -35,7 +39,7 @@
     <string name="delete_target_label" msgid="1822697352535677073">"Verwijderen"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"Verwijderen"</string>
     <string name="info_target_label" msgid="8053346143994679532">"App-info"</string>
-    <string name="permlab_install_shortcut" msgid="5632423390354674437">"snelkoppelingen installeren"</string>
+    <string name="permlab_install_shortcut" msgid="5632423390354674437">"Snelkoppelingen instellen"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Een app toestaan snelkoppelingen toe te voegen zonder tussenkomst van de gebruiker."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"instellingen en snelkoppelingen op de startpagina lezen"</string>
     <string name="permdesc_read_settings" msgid="5833423719057558387">"De app toestaan de instellingen en snelkoppelingen op de startpagina te lezen."</string>
@@ -69,5 +73,28 @@
     <string name="abandoned_search" msgid="891119232568284442">"Zoeken"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Deze app is niet geïnstalleerd"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"De app voor dit pictogram is niet geïnstalleerd. U kunt het pictogram verwijderen of de app zoeken en handmatig installeren."</string>
-    <string name="action_add_to_workspace" msgid="989613635294321898">"Toevoegen aan werkruimte"</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"Toevoegen aan startpagina"</string>
+    <string name="action_move_here" msgid="2170188780612570250">"Item hier naartoe verplaatsen"</string>
+    <string name="item_added_to_workspace" msgid="4211073925752213539">"Item toegevoegd aan startscherm"</string>
+    <string name="item_removed" msgid="851119963877842327">"Item verwijderd"</string>
+    <string name="action_move" msgid="4339390619886385032">"Item verplaatsen"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"Verplaatsen naar rij <xliff:g id="NUMBER_0">%1$s</xliff:g>, kolom <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="move_to_position" msgid="6750008980455459790">"Verplaatsen naar positie <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
+    <string name="move_to_hotseat_position" msgid="6295412897075147808">"Verplaatsen naar positie <xliff:g id="NUMBER">%1$s</xliff:g> voor favorieten"</string>
+    <string name="item_moved" msgid="4606538322571412879">"Item verplaatst"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"Toevoegen aan map: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="add_to_folder_with_app" msgid="4534929978967147231">"Toevoegen aan map met <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"Item toegevoegd aan map"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"Map maken met: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_created" msgid="6409794597405184510">"Map gemaakt"</string>
+    <string name="action_move_to_workspace" msgid="1603837886334246317">"Verplaatsen naar startscherm"</string>
+    <string name="action_move_screen_left" msgid="8854216831569401665">"Scherm naar links verplaatsen"</string>
+    <string name="action_move_screen_right" msgid="329334910274311123">"Scherm naar rechts verplaatsen"</string>
+    <string name="screen_moved" msgid="266230079505650577">"Scherm verplaatst"</string>
+    <string name="action_resize" msgid="1802976324781771067">"Formaat aanpassen"</string>
+    <string name="action_increase_width" msgid="8773715375078513326">"Breedte vergroten"</string>
+    <string name="action_increase_height" msgid="459390020612501122">"Hoogte vergroten"</string>
+    <string name="action_decrease_width" msgid="1374549771083094654">"Breedte verkleinen"</string>
+    <string name="action_decrease_height" msgid="282377193880900022">"Hoogte verkleinen"</string>
+    <string name="widget_resized" msgid="9130327887929620">"Formaat van widget gewijzigd in breedte <xliff:g id="NUMBER_0">%1$s</xliff:g> en hoogte <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
 </resources>

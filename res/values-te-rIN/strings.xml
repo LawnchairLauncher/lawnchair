@@ -21,6 +21,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="5181331383435256801">"లాంచర్3"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
+    <string name="work_folder_name" msgid="3753320833950115786">"కార్యాలయం"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"అనువర్తనం ఇన్‌స్టాల్ చేయబడలేదు."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"అనువర్తనం అందుబాటులో లేదు"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"డౌన్‌లోడ్ చేసిన అనువర్తనం సురక్షిత మోడ్‌లో నిలిపివేయబడింది"</string>
@@ -28,6 +29,9 @@
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"మెమరీ చూపు"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"విడ్జెట్‌ను ఎంచుకోవడానికి తాకి &amp; నొక్కి పెట్టండి."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
+    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"అనువర్తనాలను శోధించండి"</string>
+    <string name="all_apps_loading_message" msgid="7557140873644765180">"అనువర్తనాలను లోడ్ చేస్తోంది…"</string>
+    <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"కి సరిపోలే అనువర్తనాలేవీ కనుగొనబడలేదు"</string>
     <string name="out_of_space" msgid="4691004494942118364">"ఈ హోమ్ స్క్రీన్‌లో ఖాళీ లేదు."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ఇష్టమైనవి ట్రేలో ఖాళీ లేదు"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"అనువర్తనాలు"</string>
@@ -69,5 +73,28 @@
     <string name="abandoned_search" msgid="891119232568284442">"శోధించు"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"ఈ అనువర్తనం ఇన్‌స్టాల్ చేయబడలేదు"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ఈ చిహ్నం యొక్క అనువర్తనం ఇన్‌స్టాల్ చేయబడలేదు. మీరు దీన్ని తీసివేయవచ్చు లేదా ఆ అనువర్తనం కోసం శోధించి దాన్ని మాన్యువల్‌గా ఇన్‌స్టాల్ చేయవచ్చు."</string>
-    <string name="action_add_to_workspace" msgid="989613635294321898">"వర్క్‌స్పేస్‌కు జోడించు"</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"హోమ్ స్క్రీన్‌కు జోడించు"</string>
+    <string name="action_move_here" msgid="2170188780612570250">"అంశాన్ని ఇక్కడికి తరలించు"</string>
+    <string name="item_added_to_workspace" msgid="4211073925752213539">"అంశం హోమ్‌స్క్రీన్‌కి జోడించబడింది"</string>
+    <string name="item_removed" msgid="851119963877842327">"అంశం తీసివేయబడింది"</string>
+    <string name="action_move" msgid="4339390619886385032">"అంశాన్ని తరలించు"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"అడ్డు వరుస <xliff:g id="NUMBER_0">%1$s</xliff:g> నిలువు వరుస <xliff:g id="NUMBER_1">%2$s</xliff:g>కి తరలించు"</string>
+    <string name="move_to_position" msgid="6750008980455459790">"<xliff:g id="NUMBER">%1$s</xliff:g>వ స్థానానికి తరలించు"</string>
+    <string name="move_to_hotseat_position" msgid="6295412897075147808">"ఇష్టమైనవిలో <xliff:g id="NUMBER">%1$s</xliff:g>వ స్థానానికి తరలించు"</string>
+    <string name="item_moved" msgid="4606538322571412879">"అంశం తరలించబడింది"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"ఈ ఫోల్డర్‌కి జోడించండి: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="add_to_folder_with_app" msgid="4534929978967147231">"<xliff:g id="NAME">%1$s</xliff:g> గల ఫోల్డర్‌కు జోడించు"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"అంశం ఫోల్డర్‌కు జోడించబడింది"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"ఈ పేరుతో ఫోల్డర్‌ను సృష్టించండి: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_created" msgid="6409794597405184510">"ఫోల్డర్ సృష్టించబడింది"</string>
+    <string name="action_move_to_workspace" msgid="1603837886334246317">"హోమ్‌స్క్రీన్‌కు తరలించు"</string>
+    <string name="action_move_screen_left" msgid="8854216831569401665">"స్క్రీన్‌ను ఎడమవైపుకి జరుపు"</string>
+    <string name="action_move_screen_right" msgid="329334910274311123">"స్క్రీన్‌ను కుడివైపుకి జరుపు"</string>
+    <string name="screen_moved" msgid="266230079505650577">"స్క్రీన్ జరపబడింది"</string>
+    <string name="action_resize" msgid="1802976324781771067">"పరిమాణం మార్చు"</string>
+    <string name="action_increase_width" msgid="8773715375078513326">"వెడల్పును పెంచు"</string>
+    <string name="action_increase_height" msgid="459390020612501122">"ఎత్తును పెంచు"</string>
+    <string name="action_decrease_width" msgid="1374549771083094654">"వెడల్పును తగ్గించు"</string>
+    <string name="action_decrease_height" msgid="282377193880900022">"ఎత్తును తగ్గించు"</string>
+    <string name="widget_resized" msgid="9130327887929620">"విడ్జెట్ పరిమాణం వెడల్పు <xliff:g id="NUMBER_0">%1$s</xliff:g>కి, ఎత్తు <xliff:g id="NUMBER_1">%2$s</xliff:g>కి మార్చబడింది"</string>
 </resources>

@@ -21,6 +21,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
+    <string name="work_folder_name" msgid="3753320833950115786">"ការងារ"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"មិន​បាន​ដំឡើង​កម្មវិធី។"</string>
     <string name="activity_not_available" msgid="7456344436509528827">"មិន​មាន​កម្មវិធី"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"បាន​បិទ​កម្មវិធី​ដែល​បាន​ទាញ​យក​ក្នុង​របៀប​សុវត្ថិភាព"</string>
@@ -28,6 +29,9 @@
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"បង្ហាញ​ Mem"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"ប៉ះ &amp; សង្កត់ ដើម្បី​ជ្រើស​ធាតុ​ក្រាហ្វិក។"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
+    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"ស្វែងរកកម្មវិធី"</string>
+    <string name="all_apps_loading_message" msgid="7557140873644765180">"កំពុងដំណើរការកម្មវិធី..."</string>
+    <string name="all_apps_no_search_results" msgid="6332185285860416787">"គ្មានកម្មវិធីដែលត្រូវជាមួយ \"<xliff:g id="QUERY">%1$s</xliff:g>\" ទេ"</string>
     <string name="out_of_space" msgid="4691004494942118364">"គ្មាន​បន្ទប់​នៅ​លើ​អេក្រង់​ដើម​នេះ​ទៀត​ទេ។"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"គ្មាន​បន្ទប់​​ក្នុង​ថាស​និយម​ប្រើ"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"កម្មវិធី"</string>
@@ -69,5 +73,28 @@
     <string name="abandoned_search" msgid="891119232568284442">"ស្វែងរក"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"មិន​បាន​ដំឡើង​កម្មវិធី​នេះ"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"មិន​បាន​ដំឡើង​កម្មវិធី​សម្រាប់​រូបតំណាង​នេះ។ អ្នក​អាច​លុប​វា ឬ​ស្វែងរក​កម្មវិធី និង​ដំឡើង​វា​ដោយ​ដៃ។"</string>
-    <string name="action_add_to_workspace" msgid="989613635294321898">"បន្ថែមទៅចន្លោះបណ្តោះអាសន្ន"</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"បន្ថែមទៅអេក្រង់ដើម"</string>
+    <string name="action_move_here" msgid="2170188780612570250">"ផ្លាស់ធាតុមកទីនេះ"</string>
+    <string name="item_added_to_workspace" msgid="4211073925752213539">"ធាតុដែលត្រូវបានបន្ថែមទៅអេក្រង់ដើម"</string>
+    <string name="item_removed" msgid="851119963877842327">"ធាតុដែលបានដកចេញ"</string>
+    <string name="action_move" msgid="4339390619886385032">"ផ្លាស់ទីធាតុ"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"ផ្លាស់ទីទៅជួរដេកទី <xliff:g id="NUMBER_0">%1$s</xliff:g> ជួរឈរទី <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="move_to_position" msgid="6750008980455459790">"ផ្លាស់ទីទៅទីតាំង <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
+    <string name="move_to_hotseat_position" msgid="6295412897075147808">"ផ្លាស់ទីទៅការចូលចិត្តទីតាំងទី <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
+    <string name="item_moved" msgid="4606538322571412879">"បានផ្លាស់ទីធាតុ"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"បន្ថែមទៅថតឯកសារ៖ <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="add_to_folder_with_app" msgid="4534929978967147231">"បន្ថែមទៅថតឯកសារដែលមានឈ្មោះ <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"បានបន្ថែមធាតុទៅថតឯកសារ"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"បង្កើតថតឯកសារជាមួយ៖ <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_created" msgid="6409794597405184510">"បានបង្កើតថតឯកសារ"</string>
+    <string name="action_move_to_workspace" msgid="1603837886334246317">"ផ្លាស់ទៅអេក្រង់ដើម"</string>
+    <string name="action_move_screen_left" msgid="8854216831569401665">"រំកិលអេក្រង់ទៅខាងឆ្វេង"</string>
+    <string name="action_move_screen_right" msgid="329334910274311123">"រំកិលអេក្រង់ទៅខាងស្តាំ"</string>
+    <string name="screen_moved" msgid="266230079505650577">"អេក្រង់ដែលបានផ្លាស់ទី"</string>
+    <string name="action_resize" msgid="1802976324781771067">"ប្ដូរទំហំ"</string>
+    <string name="action_increase_width" msgid="8773715375078513326">"បង្កើនទទឹង"</string>
+    <string name="action_increase_height" msgid="459390020612501122">"បង្កើនកម្ពស់"</string>
+    <string name="action_decrease_width" msgid="1374549771083094654">"បន្ថយទទឹង"</string>
+    <string name="action_decrease_height" msgid="282377193880900022">"បន្ថយកម្ពស់"</string>
+    <string name="widget_resized" msgid="9130327887929620">"ធាតុក្រាហ្វិកដែលបានប្តូរទំហំទៅទទឹងប្រវែង <xliff:g id="NUMBER_0">%1$s</xliff:g> កម្ពស់ប្រវែង <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
 </resources>

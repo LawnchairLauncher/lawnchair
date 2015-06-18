@@ -21,6 +21,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
+    <string name="work_folder_name" msgid="3753320833950115786">"Jobb"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Appen er ikke installert."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Appen er ikke tilgjengelig"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"En nedlastet app er deaktivert i sikker modus"</string>
@@ -28,6 +29,9 @@
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Vis minne"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Trykk og hold inne for å plukke opp en modul."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
+    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Søk i apper"</string>
+    <string name="all_apps_loading_message" msgid="7557140873644765180">"Laster inn apper …"</string>
+    <string name="all_apps_no_search_results" msgid="6332185285860416787">"Fant ingen apper som samsvarer med «<xliff:g id="QUERY">%1$s</xliff:g>»"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Denne startsiden er full."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Favoritter-skuffen er full"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Apper"</string>
@@ -69,5 +73,28 @@
     <string name="abandoned_search" msgid="891119232568284442">"Søk"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Denne appen er ikke installert"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Appen for dette ikonet er ikke installert. Du kan fjerne det, eller prøve å søke etter appen og installere den manuelt."</string>
-    <string name="action_add_to_workspace" msgid="989613635294321898">"Legg til i arbeidsområdet"</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"Legg til på startskjermen"</string>
+    <string name="action_move_here" msgid="2170188780612570250">"Flytt elementet hit"</string>
+    <string name="item_added_to_workspace" msgid="4211073925752213539">"Elementet er lagt til på startskjermen"</string>
+    <string name="item_removed" msgid="851119963877842327">"Elementet er fjernet"</string>
+    <string name="action_move" msgid="4339390619886385032">"Flytt elementet"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"Flytt til rad <xliff:g id="NUMBER_0">%1$s</xliff:g>, kolonne <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="move_to_position" msgid="6750008980455459790">"Flytt til posisjon <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
+    <string name="move_to_hotseat_position" msgid="6295412897075147808">"Flytt til posisjonen for favoritter <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
+    <string name="item_moved" msgid="4606538322571412879">"Elementet er flyttet"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"Legg til i mappe: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="add_to_folder_with_app" msgid="4534929978967147231">"Legg til mappen med <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"Elementet er lagt til i mappen"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"Opprett mappe med: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_created" msgid="6409794597405184510">"Mappen er opprettet"</string>
+    <string name="action_move_to_workspace" msgid="1603837886334246317">"Flytt til startskjermen"</string>
+    <string name="action_move_screen_left" msgid="8854216831569401665">"Flytt skjermen til venstre"</string>
+    <string name="action_move_screen_right" msgid="329334910274311123">"Flytt skjermen til høyre"</string>
+    <string name="screen_moved" msgid="266230079505650577">"Skjermen er flyttet"</string>
+    <string name="action_resize" msgid="1802976324781771067">"Endre størrelse"</string>
+    <string name="action_increase_width" msgid="8773715375078513326">"Øk bredden"</string>
+    <string name="action_increase_height" msgid="459390020612501122">"Øk høyden"</string>
+    <string name="action_decrease_width" msgid="1374549771083094654">"Reduser bredden"</string>
+    <string name="action_decrease_height" msgid="282377193880900022">"Reduser høyden"</string>
+    <string name="widget_resized" msgid="9130327887929620">"Størrelsen på modulen er endret til bredde <xliff:g id="NUMBER_0">%1$s</xliff:g> og høyde <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
 </resources>

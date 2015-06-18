@@ -21,6 +21,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="5181331383435256801">"ಲಾಂಚರ್3"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
+    <string name="work_folder_name" msgid="3753320833950115786">"ಕೆಲಸ"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"ಅಪ್ಲಿಕೇಶನ್‌ ಅನ್ನು ಸ್ಥಾಪಿಸಲಾಗಿಲ್ಲ"</string>
     <string name="activity_not_available" msgid="7456344436509528827">"ಅಪ್ಲಿಕೇಶನ್ ಲಭ್ಯವಿಲ್ಲ"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"ಡೌನ್‌ಲೋಡ್ ಮಾಡಲಾದ ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು ಸುರಕ್ಷಿತ ಮೋಡ್‌ನಲ್ಲಿ ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"</string>
@@ -28,6 +29,9 @@
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"ಸ್ಮರಣೆ ತೋರಿಸು"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"ವಿಜೆಟ್ ಅನ್ನು ಆರಿಸಿಕೊಳ್ಳಲು ಸ್ಪರ್ಶಿಸಿ &amp; ಹಿಡಿದುಕೊಳ್ಳಿ."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
+    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"ಅಪ್ಲಿಕೇಷನ್‌ಗಳನ್ನು ಹುಡುಕಿ"</string>
+    <string name="all_apps_loading_message" msgid="7557140873644765180">"ಅಪ್ಲಿಕೇಶನ್‌ಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ..."</string>
+    <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" ಹೊಂದಿಕೆಯ ಯಾವುದೇ ಅಪ್ಲಿಕೇಶನ್‌ಗಳು ಕಂಡುಬಂದಿಲ್ಲ"</string>
     <string name="out_of_space" msgid="4691004494942118364">"ಈ ಮುಖಪುಟದ ಪರದೆಯಲ್ಲಿ ಹೆಚ್ಚು ಸ್ಥಳಾವಕಾಶವಿಲ್ಲ."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ಮೆಚ್ಚಿನವುಗಳ ಟ್ರೇನಲ್ಲಿ ಹೆಚ್ಚಿನ ಸ್ಥಳಾವಕಾಶವಿಲ್ಲ"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"ಅಪ್ಲಿಕೇಶನ್‌ಗಳು"</string>
@@ -69,5 +73,28 @@
     <string name="abandoned_search" msgid="891119232568284442">"ಹುಡುಕು"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"ಈ ಅಪ್ಲಿಕೇಶನ್ ಸ್ಥಾಪನೆಗೊಂಡಿಲ್ಲ"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ಈ ಐಕಾನ್ ಅಪ್ಲಿಕೇಶನ್ ಸ್ಥಾಪನೆಗೊಂಡಿಲ್ಲ. ನೀವು ಅದನ್ನು ತೆಗೆದುಹಾಕಬಹುದು ಅಥವಾ ಅಪ್ಲಿಕೇಶನ್ ಹುಡುಕಬಹುದು ಮತ್ತು ಹಸ್ತಚಾಲಿತವಾಗಿ ಅದನ್ನು ಸ್ಥಾಪಿಸಬಹುದು."</string>
-    <string name="action_add_to_workspace" msgid="989613635294321898">"ಕಾರ್ಯಕ್ಷೇತ್ರಕ್ಕೆ ಸೇರಿಸಿ"</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"ಮುಖಪುಟಕ್ಕೆ ಸೇರಿಸು"</string>
+    <string name="action_move_here" msgid="2170188780612570250">"ಐಟಂ ಇಲ್ಲಿಗೆ ಸರಿಸಿ"</string>
+    <string name="item_added_to_workspace" msgid="4211073925752213539">"ಮುಖಪುಟ ಪರದೆಗೆ ಐಟಂ ಸೇರಿಸಲಾಗಿದೆ"</string>
+    <string name="item_removed" msgid="851119963877842327">"ಐಟಂ ತೆಗೆದುಹಾಕಲಾಗಿದೆ"</string>
+    <string name="action_move" msgid="4339390619886385032">"ಐಟಂ ಸರಿಸಿ"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"<xliff:g id="NUMBER_0">%1$s</xliff:g> ಸಾಲು <xliff:g id="NUMBER_1">%2$s</xliff:g> ಕಾಲಮ್‌ಗೆ ಸರಿಸಿ"</string>
+    <string name="move_to_position" msgid="6750008980455459790">"<xliff:g id="NUMBER">%1$s</xliff:g> ಸ್ಥಾನಕ್ಕೆ ಸರಿಸಿ"</string>
+    <string name="move_to_hotseat_position" msgid="6295412897075147808">"ಮೆಚ್ಚಿನ <xliff:g id="NUMBER">%1$s</xliff:g> ಸ್ಥಾನಕ್ಕೆ ಸರಿಸಿ"</string>
+    <string name="item_moved" msgid="4606538322571412879">"ಐಟಂ ಸರಿಸಲಾಗಿದೆ"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"ಫೋಲ್ಡರ್‌ಗೆ ಸೇರಿಸಿ: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="add_to_folder_with_app" msgid="4534929978967147231">"<xliff:g id="NAME">%1$s</xliff:g> ಮೂಲಕ ಫೋಲ್ಡರ್‌ಗೆ ಸೇರಿಸಿ"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"ಐಟಂ ಅನ್ನು ಫೋಲ್ಡರ್‌ಗೆ ಸೇರಿಸಲಾಗಿದೆ"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"ಇದನ್ನು ಬಳಸಿಕೊಂಡು ಫೋಲ್ಡರ್ ರಚಿಸಿ: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_created" msgid="6409794597405184510">"ಫೋಲ್ಡರ್ ರಚಿಸಲಾಗಿದೆ"</string>
+    <string name="action_move_to_workspace" msgid="1603837886334246317">"ಮುಖಪುಟಕ್ಕೆ ಸರಿಸಿ"</string>
+    <string name="action_move_screen_left" msgid="8854216831569401665">"ಪರದೆಯನ್ನು ಎಡಕ್ಕೆ ಸರಿಸಿ"</string>
+    <string name="action_move_screen_right" msgid="329334910274311123">"ಪರದೆಯನ್ನು ಬಲಕ್ಕೆ ಸರಿಸಿ"</string>
+    <string name="screen_moved" msgid="266230079505650577">"ಪರದೆ ಸರಿಸಲಾಗಿದೆ"</string>
+    <string name="action_resize" msgid="1802976324781771067">"ಮರುಗಾತ್ರ"</string>
+    <string name="action_increase_width" msgid="8773715375078513326">"ಅಗಲವನ್ನು ಹೆಚ್ಚು ಮಾಡಿ"</string>
+    <string name="action_increase_height" msgid="459390020612501122">"ಎತ್ತರವನ್ನು ಹೆಚ್ಚು ಮಾಡಿ"</string>
+    <string name="action_decrease_width" msgid="1374549771083094654">"ಅಗಲವನ್ನು ಕಡಿಮೆ ಮಾಡಿ"</string>
+    <string name="action_decrease_height" msgid="282377193880900022">"ಎತ್ತರವನ್ನು ಕಡಿಮೆ ಮಾಡಿ"</string>
+    <string name="widget_resized" msgid="9130327887929620">"ವಿಜೆಟ್ ಅನ್ನು <xliff:g id="NUMBER_0">%1$s</xliff:g> ಅಗಲ <xliff:g id="NUMBER_1">%2$s</xliff:g> ಎತ್ತರಕ್ಕೆ ಮರುಗಾತ್ರಗೊಳಿಸಲಾಗಿದೆ"</string>
 </resources>

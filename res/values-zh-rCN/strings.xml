@@ -21,6 +21,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
+    <string name="work_folder_name" msgid="3753320833950115786">"Work"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"未安装该应用。"</string>
     <string name="activity_not_available" msgid="7456344436509528827">"应用不可用"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"安全模式下不允许使用下载的此应用"</string>
@@ -28,6 +29,9 @@
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"显示内存空间"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"触摸并按住小部件即可选择。"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
+    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"搜索应用"</string>
+    <string name="all_apps_loading_message" msgid="7557140873644765180">"正在加载应用…"</string>
+    <string name="all_apps_no_search_results" msgid="6332185285860416787">"未找到与“<xliff:g id="QUERY">%1$s</xliff:g>”相符的应用"</string>
     <string name="out_of_space" msgid="4691004494942118364">"此主屏幕上已没有空间。"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"收藏栏已满"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"应用"</string>
@@ -69,5 +73,28 @@
     <string name="abandoned_search" msgid="891119232568284442">"搜索"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"未安装此应用"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"未安装此图标对应的应用。您可以移除此图标，也可以尝试搜索相应的应用并手动安装。"</string>
-    <string name="action_add_to_workspace" msgid="989613635294321898">"添加至工作区"</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"添加到主屏幕"</string>
+    <string name="action_move_here" msgid="2170188780612570250">"将项目移至此处"</string>
+    <string name="item_added_to_workspace" msgid="4211073925752213539">"已将项目添加到主屏幕"</string>
+    <string name="item_removed" msgid="851119963877842327">"项目已移除"</string>
+    <string name="action_move" msgid="4339390619886385032">"移动项目"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"移至第 <xliff:g id="NUMBER_0">%1$s</xliff:g> 行第 <xliff:g id="NUMBER_1">%2$s</xliff:g> 列"</string>
+    <string name="move_to_position" msgid="6750008980455459790">"移至第 <xliff:g id="NUMBER">%1$s</xliff:g> 个位置"</string>
+    <string name="move_to_hotseat_position" msgid="6295412897075147808">"移至收藏夹第 <xliff:g id="NUMBER">%1$s</xliff:g> 个位置"</string>
+    <string name="item_moved" msgid="4606538322571412879">"已移动项目"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"添加到“<xliff:g id="NAME">%1$s</xliff:g>”文件夹"</string>
+    <string name="add_to_folder_with_app" msgid="4534929978967147231">"添加到“<xliff:g id="NAME">%1$s</xliff:g>”所在文件夹"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"项目已添加到文件夹"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"创建“<xliff:g id="NAME">%1$s</xliff:g>”文件夹"</string>
+    <string name="folder_created" msgid="6409794597405184510">"文件夹已创建"</string>
+    <string name="action_move_to_workspace" msgid="1603837886334246317">"移至主屏幕"</string>
+    <string name="action_move_screen_left" msgid="8854216831569401665">"将屏幕向左移动"</string>
+    <string name="action_move_screen_right" msgid="329334910274311123">"将屏幕向右移动"</string>
+    <string name="screen_moved" msgid="266230079505650577">"屏幕已移动"</string>
+    <string name="action_resize" msgid="1802976324781771067">"调整大小"</string>
+    <string name="action_increase_width" msgid="8773715375078513326">"增加宽度"</string>
+    <string name="action_increase_height" msgid="459390020612501122">"增加高度"</string>
+    <string name="action_decrease_width" msgid="1374549771083094654">"减小宽度"</string>
+    <string name="action_decrease_height" msgid="282377193880900022">"减小高度"</string>
+    <string name="widget_resized" msgid="9130327887929620">"小部件尺寸已调整为：宽度 <xliff:g id="NUMBER_0">%1$s</xliff:g>，高度 <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
 </resources>
