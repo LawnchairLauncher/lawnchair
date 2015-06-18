@@ -24,8 +24,9 @@
     android:focusable="true"
     android:focusableInTouchMode="true">
 
+    <!-- DO NOT CHANGE THE ID -->
     <com.android.launcher3.allapps.AllAppsRecyclerView
-        android:id="@+id/collection"
+        android:id="@+id/apps_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal|top"
