@@ -1,10 +1,12 @@
 
 package com.android.launcher3.model;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ResolveInfo;
 import android.util.Log;
 
+import com.android.launcher3.AppFilter;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
@@ -39,26 +41,32 @@ public class WidgetsModel {
     private final Comparator mWidgetAndShortcutNameComparator;
     private final Comparator mAppNameComparator;
     private final IconCache mIconCache;
+    private final AppFilter mAppFilter;
     private AlphabeticIndexCompat mIndexer;
 
-    public WidgetsModel(Context context) {
+    public WidgetsModel(Context context,  IconCache iconCache, AppFilter appFilter) {
         mWidgetAndShortcutNameComparator = new WidgetsAndShortcutNameComparator(context);
         mAppNameComparator = (new AppNameComparator(context)).getAppInfoComparator();
-        mIconCache = LauncherAppState.getInstance().getIconCache();
+        mIconCache = iconCache;
+        mAppFilter = appFilter;
         mIndexer = new AlphabeticIndexCompat(context);
     }
 
     private WidgetsModel(WidgetsModel model) {
         mPackageItemInfos = (ArrayList<PackageItemInfo>) model.mPackageItemInfos.clone();
         mWidgetsList = (HashMap<PackageItemInfo, ArrayList<Object>>) model.mWidgetsList.clone();
-        // mRawList is not copied as should not be needed.
+        mRawList = (ArrayList<Object>) model.mRawList.clone();
         mWidgetAndShortcutNameComparator = model.mWidgetAndShortcutNameComparator;
         mAppNameComparator = model.mAppNameComparator;
         mIconCache = model.mIconCache;
+        mAppFilter = model.mAppFilter;
     }
 
     // Access methods that may be deleted if the private fields are made package-private.
     public int getPackageSize() {
+        if (mPackageItemInfos == null) {
+            return 0;
+        }
         return mPackageItemInfos.size();
     }
 
@@ -78,7 +86,7 @@ public class WidgetsModel {
         return mRawList;
     }
 
-    public void addWidgetsAndShortcuts(ArrayList<Object> rawWidgetsShortcuts) {
+    public void setWidgetsAndShortcuts(ArrayList<Object> rawWidgetsShortcuts) {
         Utilities.assertWorkerThread();
         mRawList = rawWidgetsShortcuts;
         if (DEBUG) {
@@ -96,15 +104,27 @@ public class WidgetsModel {
         // add and update.
         for (Object o: rawWidgetsShortcuts) {
             String packageName = "";
+            ComponentName componentName = null;
             if (o instanceof LauncherAppWidgetProviderInfo) {
                 LauncherAppWidgetProviderInfo widgetInfo = (LauncherAppWidgetProviderInfo) o;
+                componentName = widgetInfo.provider;
                 packageName = widgetInfo.provider.getPackageName();
             } else if (o instanceof ResolveInfo) {
                 ResolveInfo resolveInfo = (ResolveInfo) o;
+                componentName = new ComponentName(resolveInfo.activityInfo.packageName,
+                        resolveInfo.activityInfo.name);
                 packageName = resolveInfo.activityInfo.packageName;
-            } else {
-                Log.e(TAG, String.format("addWidgetsAndShortcuts, nothing added for class=%s",
+            }
+
+            if (componentName == null) {
+                Log.e(TAG, String.format("Widget cannot be set for class=%s",
                         o.getClass().toString()));
+                continue;
+            }
+            if (mAppFilter != null && !mAppFilter.shouldShowApp(componentName)) {
+                Log.d(TAG, String.format("%s is filtered and not added to the widget tray.",
+                        packageName));
+                continue;
             }
 
             PackageItemInfo pInfo = tmpPackageItemInfos.get(packageName);
