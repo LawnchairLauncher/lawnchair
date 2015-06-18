@@ -54,7 +54,7 @@ import java.util.List;
 public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
     private static final String TAG = "WidgetsListAdapter";
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     private Launcher mLauncher;
     private LayoutInflater mLayoutInflater;
