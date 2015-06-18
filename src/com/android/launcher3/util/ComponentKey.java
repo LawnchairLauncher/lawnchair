@@ -17,8 +17,9 @@ package com.android.launcher3.util;
  */
 
 import android.content.ComponentName;
-
+import android.content.Context;
 import com.android.launcher3.compat.UserHandleCompat;
+import com.android.launcher3.compat.UserManagerCompat;
 
 import java.util.Arrays;
 
@@ -36,6 +37,35 @@ public class ComponentKey {
         this.user = user;
         mHashCode = Arrays.hashCode(new Object[] {componentName, user});
 
+    }
+
+    /**
+     * Creates a new component key from an encoded component key string in the form of
+     * [flattenedComponentString#userId].  If the userId is not present, then it defaults
+     * to the current user.
+     */
+    public ComponentKey(Context context, String componentKeyStr) {
+        int userDelimiterIndex = componentKeyStr.indexOf("#");
+        if (userDelimiterIndex != -1) {
+            String componentStr = componentKeyStr.substring(0, userDelimiterIndex);
+            Long componentUser = Long.valueOf(componentKeyStr.substring(userDelimiterIndex + 1));
+            componentName = ComponentName.unflattenFromString(componentStr);
+            user = UserManagerCompat.getInstance(context)
+                    .getUserForSerialNumber(componentUser.longValue());
+        } else {
+            // No user provided, default to the current user
+            componentName = ComponentName.unflattenFromString(componentKeyStr);
+            user = UserHandleCompat.myUserHandle();
+        }
+        mHashCode = Arrays.hashCode(new Object[] {componentName, user});
+    }
+
+    /**
+     * Encodes a component key as a string of the form [flattenedComponentString#userId].
+     */
+    public String flattenToString(Context context) {
+        return componentName.flattenToString() + "#" +
+                UserManagerCompat.getInstance(context).getSerialNumberForUser(user);
     }
 
     @Override
