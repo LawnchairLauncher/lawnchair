@@ -15,14 +15,14 @@
  */
 package com.android.launcher3.allapps;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
+import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.model.AppNameComparator;
 import com.android.launcher3.util.ComponentKey;
 
@@ -159,7 +159,7 @@ public class AlphabeticalAppsList {
     // The set of sections that we allow fast-scrolling to (includes non-merged sections)
     private List<FastScrollSectionInfo> mFastScrollerSections = new ArrayList<>();
     // The set of predicted app component names
-    private List<ComponentName> mPredictedAppComponents = new ArrayList<>();
+    private List<ComponentKey> mPredictedAppComponents = new ArrayList<>();
     // The set of predicted apps resolved from the component names and the current set of apps
     private List<AppInfo> mPredictedApps = new ArrayList<>();
     // The of ordered component names as a result of a search query
@@ -268,7 +268,7 @@ public class AlphabeticalAppsList {
      * Sets the current set of predicted apps.  Since this can be called before we get the full set
      * of applications, we should merge the results only in onAppsUpdated() which is idempotent.
      */
-    public void setPredictedApps(List<ComponentName> apps) {
+    public void setPredictedApps(List<ComponentKey> apps) {
         mPredictedAppComponents.clear();
         mPredictedAppComponents.addAll(apps);
         onAppsUpdated();
@@ -386,21 +386,27 @@ public class AlphabeticalAppsList {
 
         if (DEBUG_PREDICTIONS) {
             if (mPredictedAppComponents.isEmpty() && !mApps.isEmpty()) {
-                mPredictedAppComponents.add(mApps.get(0).componentName);
-                mPredictedAppComponents.add(mApps.get(0).componentName);
-                mPredictedAppComponents.add(mApps.get(0).componentName);
-                mPredictedAppComponents.add(mApps.get(0).componentName);
+                mPredictedAppComponents.add(new ComponentKey(mApps.get(0).componentName,
+                        UserHandleCompat.myUserHandle()));
+                mPredictedAppComponents.add(new ComponentKey(mApps.get(0).componentName,
+                        UserHandleCompat.myUserHandle()));
+                mPredictedAppComponents.add(new ComponentKey(mApps.get(0).componentName,
+                        UserHandleCompat.myUserHandle()));
+                mPredictedAppComponents.add(new ComponentKey(mApps.get(0).componentName,
+                        UserHandleCompat.myUserHandle()));
             }
         }
 
         // Process the predicted app components
         mPredictedApps.clear();
         if (mPredictedAppComponents != null && !mPredictedAppComponents.isEmpty() && !hasFilter()) {
-            for (ComponentName cn : mPredictedAppComponents) {
-                for (AppInfo info : mApps) {
-                    if (cn.equals(info.componentName)) {
-                        mPredictedApps.add(info);
-                        break;
+            for (ComponentKey ck : mPredictedAppComponents) {
+                AppInfo info = mComponentToAppMap.get(ck);
+                if (info != null) {
+                    mPredictedApps.add(info);
+                } else {
+                    if (LauncherAppState.isDogfoodBuild()) {
+                        Log.e(TAG, "Predicted app not found: " + ck.flattenToString(mLauncher));
                     }
                 }
                 // Stop at the number of predicted apps
