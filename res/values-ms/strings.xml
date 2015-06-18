@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="8424725141379931883">"Pelancar"</string>
-    <string name="home" msgid="5921706419368316758">"Laman Utama"</string>
     <string name="folder_name" msgid="8551881338202938211"></string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Tetapkan kertas dinding"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"Kertas dinding"</string>
@@ -43,10 +42,8 @@
     <string name="gadget_error_text" msgid="8359351016167075858">"Masalah memuatkan widget"</string>
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"Ini adalah aplikasi sistem dan tidak boleh dinyahpasang."</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Folder Tanpa Nama"</string>
-    <string name="workspace_description_format" msgid="2968608205939373034">"Skrin utama %1$d"</string>
     <string name="default_scroll_format" msgid="4057140866420001240">"Halaman %1$d dari %2$d"</string>
     <string name="workspace_scroll_format" msgid="1704767047951143301">"Skrin utama %1$d dari %2$d"</string>
-    <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
     <string name="folder_opened" msgid="1262064100943801533">"Folder dibuka, <xliff:g id="WIDTH">%1$d</xliff:g> kali <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1335478160661137579">"Sentuh untuk menutup folder"</string>
     <string name="folder_tap_to_rename" msgid="5201612989905472442">"Sentuh untuk menyimpan penamaan semula"</string>
