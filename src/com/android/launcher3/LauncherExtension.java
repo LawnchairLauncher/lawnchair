@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import com.android.launcher3.allapps.AllAppsSearchBarController;
+import com.android.launcher3.util.ComponentKey;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -253,7 +254,7 @@ public class LauncherExtension extends Launcher {
         }
 
         @Override
-        public List<ComponentName> getPredictedApps() {
+        public List<ComponentKey> getPredictedApps() {
             return new ArrayList<>();
         }
 

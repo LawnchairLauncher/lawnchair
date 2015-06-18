@@ -93,17 +93,16 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.PagedView.PageSwitchListener;
 import com.android.launcher3.allapps.AllAppsContainerView;
-import com.android.launcher3.allapps.AllAppsSearchBarController;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.model.WidgetsModel;
+import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
@@ -3436,7 +3435,7 @@ public class Launcher extends Activity
      */
     private void tryAndUpdatePredictedApps() {
         if (mLauncherCallbacks != null) {
-            List<ComponentName> apps = mLauncherCallbacks.getPredictedApps();
+            List<ComponentKey> apps = mLauncherCallbacks.getPredictedApps();
             if (!apps.isEmpty()) {
                 mAppsView.setPredictedApps(apps);
             }
