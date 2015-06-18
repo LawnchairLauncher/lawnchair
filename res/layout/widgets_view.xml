@@ -37,6 +37,7 @@
             android:elevation="2dp"
             android:visibility="invisible" />
 
+        <!-- DO NOT CHANGE THE ID -->
         <com.android.launcher3.widget.WidgetsRecyclerView
             android:id="@+id/widgets_list_view"
             android:layout_width="match_parent"

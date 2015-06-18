@@ -35,6 +35,7 @@
             android:layout_height="52dp" />
 
         <!-- The workspace contains 5 screens of cells -->
+        <!-- DO NOT CHANGE THE ID -->
         <com.android.launcher3.Workspace
             android:id="@+id/workspace"
             android:layout_width="match_parent"
@@ -43,6 +44,7 @@
             launcher:pageIndicator="@+id/page_indicator">
         </com.android.launcher3.Workspace>
 
+        <!-- DO NOT CHANGE THE ID -->
         <include layout="@layout/hotseat"
             android:id="@+id/hotseat"
             android:layout_width="match_parent"

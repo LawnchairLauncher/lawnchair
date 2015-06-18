@@ -328,7 +328,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mRevealView = findViewById(R.id.all_apps_reveal);
 
         // Load the all apps recycler view
-        mAppsRecyclerView = (AllAppsRecyclerView) findViewById(R.id.collection);
+        mAppsRecyclerView = (AllAppsRecyclerView) findViewById(R.id.apps_list_view);
         mAppsRecyclerView.setApps(mApps);
         mAppsRecyclerView.setPredictionBarHeight(mPredictionBarHeight);
         mAppsRecyclerView.setLayoutManager(mLayoutManager);
