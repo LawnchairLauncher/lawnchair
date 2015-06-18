@@ -46,7 +46,7 @@ public class UserManagerCompatVL extends UserManagerCompatV17 {
     public List<UserHandleCompat> getUserProfiles() {
         List<UserHandle> users = mUserManager.getUserProfiles();
         if (users == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         ArrayList<UserHandleCompat> compatUsers = new ArrayList<UserHandleCompat>(
                 users.size());

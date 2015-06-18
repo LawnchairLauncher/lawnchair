@@ -51,7 +51,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
         List<LauncherActivityInfo> list = mLauncherApps.getActivityList(packageName,
                 user.getUser());
         if (list.size() == 0) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         ArrayList<LauncherActivityInfoCompat> compatList =
                 new ArrayList<LauncherActivityInfoCompat>(list.size());

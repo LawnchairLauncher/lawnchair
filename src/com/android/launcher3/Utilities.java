@@ -54,12 +54,14 @@ import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Toast;
+
 import junit.framework.Assert;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -676,5 +678,9 @@ public final class Utilities {
     public static int pxFromSp(float size, DisplayMetrics metrics) {
         return (int) Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
                 size, metrics));
+    }
+
+    public static String createDbSelectionQuery(String columnName, Iterable<?> values) {
+        return String.format(Locale.ENGLISH, "%s IN (%s)", columnName, TextUtils.join(", ", values));
     }
 }
