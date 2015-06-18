@@ -219,7 +219,7 @@ public class IconCache {
         // Remove all active icon update tasks.
         mWorkerHandler.removeCallbacksAndMessages(ICON_UPDATE_TOKEN);
 
-        mIconDb.updateSystemStateString(mContext);
+        mIconDb.updateSystemStateString();
         for (UserHandleCompat user : mUserManager.getUserProfiles()) {
             // Query for the set of apps
             final List<LauncherActivityInfoCompat> apps = mLauncherApps.getActivityList(null, user);
@@ -756,14 +756,12 @@ public class IconCache {
 
         public IconDB(Context context) {
             super(context, LauncherFiles.APP_ICONS_DB, null, DB_VERSION);
-            updateSystemStateString(context);
+            updateSystemStateString();
         }
 
-        public void updateSystemStateString(Context c) {
-            mSystemState = Locale.getDefault().toString() + ","
-                    + c.getResources().getConfiguration().mcc;
+        public void updateSystemStateString() {
+            mSystemState = Locale.getDefault().toString();
         }
-
 
         @Override
         public void onCreate(SQLiteDatabase db) {
