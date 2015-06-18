@@ -301,7 +301,7 @@ public class IconCache {
         c.close();
         if (!itemsToRemove.isEmpty()) {
             mIconDb.getWritableDatabase().delete(IconDB.TABLE_NAME,
-                    IconDB.COLUMN_ROWID + " IN ( " + TextUtils.join(", ", itemsToRemove) +" )",
+                    Utilities.createDbSelectionQuery(IconDB.COLUMN_ROWID, itemsToRemove),
                     null);
         }
 
