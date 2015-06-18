@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="8424725141379931883">"Käivitaja"</string>
-    <string name="home" msgid="5921706419368316758">"Kodu"</string>
     <string name="folder_name" msgid="8551881338202938211"></string>
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Määra taustapilt"</string>
     <string name="pick_wallpaper" msgid="5630222540525626723">"Taustapildid"</string>
@@ -43,10 +42,8 @@
     <string name="gadget_error_text" msgid="8359351016167075858">"Probleem vidina laadimisel"</string>
     <string name="uninstall_system_app_text" msgid="6429814133777046491">"See on süsteemirakendus ja seda ei saa desinstallida."</string>
     <string name="folder_hint_text" msgid="8633351560105748141">"Nimeta kaust"</string>
-    <string name="workspace_description_format" msgid="2968608205939373034">"Avakuva %1$d"</string>
     <string name="default_scroll_format" msgid="4057140866420001240">"Leht %1$d/%2$d"</string>
     <string name="workspace_scroll_format" msgid="1704767047951143301">"Avakuva %1$d/%2$d"</string>
-    <string name="cling_dismiss" msgid="2780907108735868381">"OK"</string>
     <string name="folder_opened" msgid="1262064100943801533">"Kaust on avatud, <xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1335478160661137579">"Puudutage kausta sulgemiseks"</string>
     <string name="folder_tap_to_rename" msgid="5201612989905472442">"Puudutage uue nime salvestamiseks"</string>
