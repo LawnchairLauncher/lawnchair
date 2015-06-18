@@ -240,6 +240,7 @@ public class LauncherModel extends BroadcastReceiver
 
         mApp = app;
         mBgAllAppsList = new AllAppsList(iconCache, appFilter);
+        mBgWidgetsModel = new WidgetsModel(context, iconCache, appFilter);
         mIconCache = iconCache;
 
         final Resources res = context.getResources();
@@ -3311,10 +3312,12 @@ public class LauncherModel extends BroadcastReceiver
     public void loadAndBindWidgetsAndShortcuts(final Context context, final Callbacks callbacks,
             final boolean refresh) {
 
-        runOnWorkerThread(new Runnable(){
+        runOnWorkerThread(new Runnable() {
             @Override
             public void run() {
-                final WidgetsModel model = createWidgetsModel(context, refresh);
+                updateWidgetsModel(context, refresh);
+                final WidgetsModel model = mBgWidgetsModel.clone();
+
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -3324,7 +3327,6 @@ public class LauncherModel extends BroadcastReceiver
                         }
                     }
                 });
-                mBgWidgetsModel = model;
                 // update the Widget entries inside DB on the worker thread.
                 LauncherAppState.getInstance().getWidgetCache().removeObsoletePreviews(
                         model.getRawList());
@@ -3337,15 +3339,13 @@ public class LauncherModel extends BroadcastReceiver
      *
      * @see #loadAndBindWidgetsAndShortcuts
      */
-    @Thunk WidgetsModel createWidgetsModel(Context context, boolean refresh) {
+    @Thunk void updateWidgetsModel(Context context, boolean refresh) {
         PackageManager packageManager = context.getPackageManager();
         final ArrayList<Object> widgetsAndShortcuts = new ArrayList<Object>();
         widgetsAndShortcuts.addAll(getWidgetProviders(context, refresh));
         Intent shortcutsIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
         widgetsAndShortcuts.addAll(packageManager.queryIntentActivities(shortcutsIntent, 0));
-        WidgetsModel model = new WidgetsModel(context);
-        model.addWidgetsAndShortcuts(widgetsAndShortcuts);
-        return model;
+        mBgWidgetsModel.setWidgetsAndShortcuts(widgetsAndShortcuts);
     }
 
     @Thunk static boolean isPackageDisabled(Context context, String packageName,
