@@ -17,7 +17,7 @@ package com.android.launcher3.util;
  */
 
 import android.content.ComponentName;
-
+import android.content.Context;
 import com.android.launcher3.compat.UserHandleCompat;
 
 import java.util.Arrays;
@@ -36,6 +36,11 @@ public class ComponentKey {
         this.user = user;
         mHashCode = Arrays.hashCode(new Object[] {componentName, user});
 
+    }
+
+    public ComponentKey(Context context, String componentKeyStr) {
+        // Do nothing
+        throw new UnsupportedOperationException();
     }
 
     @Override
