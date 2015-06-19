@@ -37,6 +37,22 @@ public class Stats {
     public static final String EXTRA_SCREEN = "screen";
     public static final String EXTRA_CELLX = "cellX";
     public static final String EXTRA_CELLY = "cellY";
+    public static final String EXTRA_SOURCE = "source";
+
+    public static final String SOURCE_EXTRA_CONTAINER = "container";
+    public static final String SOURCE_EXTRA_CONTAINER_PAGE = "container_page";
+    public static final String SOURCE_EXTRA_SUB_CONTAINER = "sub_container";
+    public static final String SOURCE_EXTRA_SUB_CONTAINER_PAGE = "sub_container_page";
+
+    public static final String CONTAINER_SEARCH_BOX = "search_box";
+    public static final String CONTAINER_ALL_APPS = "all_apps";
+    public static final String CONTAINER_HOMESCREEN = "homescreen"; // aka. Workspace
+    public static final String CONTAINER_HOTSEAT = "hotseat";
+
+    public static final String SUB_CONTAINER_FOLDER = "folder";
+    public static final String SUB_CONTAINER_ALL_APPS_A_Z = "a-z";
+    public static final String SUB_CONTAINER_ALL_APPS_PREDICTION = "prediction";
+    public static final String SUB_CONTAINER_ALL_APPS_SEARCH = "search";
 
     private static final int LOG_VERSION = 1;
     private static final int LOG_TAG_VERSION = 0x1;
