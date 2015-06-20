@@ -192,8 +192,7 @@ public class WorkspaceStateTransitionAnimation {
 
     @Thunk final ZoomInInterpolator mZoomInInterpolator = new ZoomInInterpolator();
 
-    // These properties refer to the background protection gradient used for AllApps and Customize
-    @Thunk ValueAnimator mBackgroundFadeInAnimation;
+    // These properties refer to the background protection gradient used for AllApps and Widget tray.
     @Thunk ValueAnimator mBackgroundFadeOutAnimation;
 
     @Thunk float mSpringLoadedShrinkFactor;
@@ -232,6 +231,7 @@ public class WorkspaceStateTransitionAnimation {
                 accessibilityEnabled);
         animateSearchBar(states, animated, duration, hasOverlaySearchBar, layerViews,
                 accessibilityEnabled);
+        animateBackgroundGradient(states, animated, BACKGROUND_FADE_OUT_DURATION);
         return mStateAnimator;
     }
 
@@ -473,12 +473,6 @@ public class WorkspaceStateTransitionAnimation {
                         AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS, null);
             }
         }
-
-        if (states.stateIsNormal) {
-            animateBackgroundGradient(0f, animated);
-        } else {
-            animateBackgroundGradient(mWorkspaceScrimAlpha, animated);
-        }
     }
 
     /**
@@ -548,19 +542,17 @@ public class WorkspaceStateTransitionAnimation {
     }
 
     /**
-     * Animates the background scrim.
-     * TODO(winsonc): Is there a better place for this?
+     * Animates the background scrim. Add to the state animator to prevent jankiness.
      *
      * @param finalAlpha the final alpha for the background scrim
      * @param animated whether or not to set the background alpha immediately
+     * @duration duration of the animation
      */
-    private void animateBackgroundGradient(float finalAlpha, boolean animated) {
-        // Cancel any running background animations
-        cancelAnimator(mBackgroundFadeInAnimation);
-        cancelAnimator(mBackgroundFadeOutAnimation);
-
+    private void animateBackgroundGradient(TransitionStates states, boolean animated, int duration) {
         final DragLayer dragLayer = mLauncher.getDragLayer();
         final float startAlpha = dragLayer.getBackgroundAlpha();
+        float finalAlpha = states.stateIsNormal ? 0 : mWorkspaceScrimAlpha;
+
         if (finalAlpha != startAlpha) {
             if (animated) {
                 mBackgroundFadeOutAnimation =
@@ -573,8 +565,8 @@ public class WorkspaceStateTransitionAnimation {
                     }
                 });
                 mBackgroundFadeOutAnimation.setInterpolator(new DecelerateInterpolator(1.5f));
-                mBackgroundFadeOutAnimation.setDuration(BACKGROUND_FADE_OUT_DURATION);
-                mBackgroundFadeOutAnimation.start();
+                mBackgroundFadeOutAnimation.setDuration(duration);
+                mStateAnimator.play(mBackgroundFadeOutAnimation);
             } else {
                 dragLayer.setBackgroundAlpha(finalAlpha);
             }
