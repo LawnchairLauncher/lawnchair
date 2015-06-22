@@ -29,6 +29,9 @@
 
     <color name="workspace_icon_text_color">#FFF</color>
 
+    <color name="workspace_edge_effect_color">#FFFFFFFF</color>
+    <color name="folder_edge_effect_color">#FF757575</color>
+
     <color name="quantum_panel_text_color">#FF666666</color>
     <color name="quantum_panel_bg_color">#FFF5F5F5</color>
     <color name="quantum_panel_bg_color_dark">#FF243036</color>

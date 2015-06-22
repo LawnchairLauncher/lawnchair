@@ -97,6 +97,8 @@ public class FolderPagedView extends PagedView {
 
         mIsRtl = Utilities.isRtl(getResources());
         setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
+
+        setEdgeGlowColor(getResources().getColor(R.color.folder_edge_effect_color));
     }
 
     public void setFolder(Folder folder) {
@@ -459,16 +461,16 @@ public class FolderPagedView extends PagedView {
                 ? -SCROLL_HINT_FRACTION : SCROLL_HINT_FRACTION;
         int hint = (int) (fraction * getWidth());
         int scroll = getScrollForPage(getNextPage()) + hint;
-        int delta = scroll - mUnboundedScrollX;
+        int delta = scroll - getScrollX();
         if (delta != 0) {
             mScroller.setInterpolator(new DecelerateInterpolator());
-            mScroller.startScroll(mUnboundedScrollX, 0, delta, 0, Folder.SCROLL_HINT_DURATION);
+            mScroller.startScroll(getScrollX(), 0, delta, 0, Folder.SCROLL_HINT_DURATION);
             invalidate();
         }
     }
 
     public void clearScrollHint() {
-        if (mUnboundedScrollX != getScrollForPage(getNextPage())) {
+        if (getScrollX() != getScrollForPage(getNextPage())) {
             snapToPage(getNextPage());
         }
     }
@@ -666,5 +668,11 @@ public class FolderPagedView extends PagedView {
 
     public int itemsPerPage() {
         return mMaxItemsPerPage;
+    }
+
+    @Override
+    protected void getEdgeVerticalPostion(int[] pos) {
+        pos[0] = 0;
+        pos[1] = getViewportHeight();
     }
 }
