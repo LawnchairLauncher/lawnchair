@@ -31,7 +31,7 @@ public class LauncherSettings {
          * The time of the last update to this row.
          * <P>Type: INTEGER</P>
          */
-        static final String MODIFIED = "modified";
+        public static final String MODIFIED = "modified";
     }
 
     static interface BaseLauncherColumns extends ChangeLogColumns {
@@ -39,7 +39,7 @@ public class LauncherSettings {
          * Descriptive name of the gesture that can be displayed to the user.
          * <P>Type: TEXT</P>
          */
-        static final String TITLE = "title";
+        public static final String TITLE = "title";
 
         /**
          * The Intent URL of the gesture, describing what it points to. This
@@ -54,51 +54,51 @@ public class LauncherSettings {
          *
          * <P>Type: INTEGER</P>
          */
-        static final String ITEM_TYPE = "itemType";
+        public static final String ITEM_TYPE = "itemType";
 
         /**
          * The gesture is an application
          */
-        static final int ITEM_TYPE_APPLICATION = 0;
+        public static final int ITEM_TYPE_APPLICATION = 0;
 
         /**
          * The gesture is an application created shortcut
          */
-        static final int ITEM_TYPE_SHORTCUT = 1;
+        public static final int ITEM_TYPE_SHORTCUT = 1;
 
         /**
          * The icon type.
          * <P>Type: INTEGER</P>
          */
-        static final String ICON_TYPE = "iconType";
+        public static final String ICON_TYPE = "iconType";
 
         /**
          * The icon is a resource identified by a package name and an integer id.
          */
-        static final int ICON_TYPE_RESOURCE = 0;
+        public static final int ICON_TYPE_RESOURCE = 0;
 
         /**
          * The icon is a bitmap.
          */
-        static final int ICON_TYPE_BITMAP = 1;
+        public static final int ICON_TYPE_BITMAP = 1;
 
         /**
          * The icon package name, if icon type is ICON_TYPE_RESOURCE.
          * <P>Type: TEXT</P>
          */
-        static final String ICON_PACKAGE = "iconPackage";
+        public static final String ICON_PACKAGE = "iconPackage";
 
         /**
          * The icon resource id, if icon type is ICON_TYPE_RESOURCE.
          * <P>Type: TEXT</P>
          */
-        static final String ICON_RESOURCE = "iconResource";
+        public static final String ICON_RESOURCE = "iconResource";
 
         /**
          * The custom icon bitmap, if icon type is ICON_TYPE_BITMAP.
          * <P>Type: BLOB</P>
          */
-        static final String ICON = "icon";
+        public static final String ICON = "icon";
     }
 
     /**
@@ -179,26 +179,26 @@ public class LauncherSettings {
          * (if container is CONTAINER_HOTSEAT or CONTAINER_HOTSEAT)
          * <P>Type: INTEGER</P>
          */
-        static final String CELLX = "cellX";
+        public static final String CELLX = "cellX";
 
         /**
          * The Y coordinate of the cell holding the favorite
          * (if container is CONTAINER_DESKTOP)
          * <P>Type: INTEGER</P>
          */
-        static final String CELLY = "cellY";
+        public static final String CELLY = "cellY";
 
         /**
          * The X span of the cell holding the favorite
          * <P>Type: INTEGER</P>
          */
-        static final String SPANX = "spanX";
+        public static final String SPANX = "spanX";
 
         /**
          * The Y span of the cell holding the favorite
          * <P>Type: INTEGER</P>
          */
-        static final String SPANY = "spanY";
+        public static final String SPANY = "spanY";
 
         /**
          * The profile id of the item in the cell.
@@ -206,12 +206,12 @@ public class LauncherSettings {
          * Type: INTEGER
          * </P>
          */
-        static final String PROFILE_ID = "profileId";
+        public static final String PROFILE_ID = "profileId";
 
         /**
          * The favorite is a user created folder
          */
-        static final int ITEM_TYPE_FOLDER = 2;
+        public static final int ITEM_TYPE_FOLDER = 2;
 
         /**
         * The favorite is a live folder
@@ -220,6 +220,7 @@ public class LauncherSettings {
         * exist within the launcher database will be ignored when loading.  That said, these
         * entries in the database may still exist, and are not automatically stripped.
         */
+        @Deprecated
         static final int ITEM_TYPE_LIVE_FOLDER = 3;
 
         /**
@@ -235,16 +236,19 @@ public class LauncherSettings {
         /**
          * The favorite is a clock
          */
+        @Deprecated
         static final int ITEM_TYPE_WIDGET_CLOCK = 1000;
 
         /**
          * The favorite is a search widget
          */
+        @Deprecated
         static final int ITEM_TYPE_WIDGET_SEARCH = 1001;
 
         /**
          * The favorite is a photo frame
          */
+        @Deprecated
         static final int ITEM_TYPE_WIDGET_PHOTO_FRAME = 1002;
 
         /**
@@ -252,7 +256,7 @@ public class LauncherSettings {
          *
          * <P>Type: INTEGER</P>
          */
-        static final String APPWIDGET_ID = "appWidgetId";
+        public static final String APPWIDGET_ID = "appWidgetId";
 
         /**
          * The ComponentName of the widget provider
@@ -275,6 +279,7 @@ public class LauncherSettings {
          * live folders to find the content provider.
          * <P>Type: TEXT</P>
          */
+        @Deprecated
         static final String URI = "uri";
 
         /**
@@ -291,19 +296,19 @@ public class LauncherSettings {
          * Boolean indicating that his item was restored and not yet successfully bound.
          * <P>Type: INTEGER</P>
          */
-        static final String RESTORED = "restored";
+        public static final String RESTORED = "restored";
 
         /**
          * Indicates the position of the item inside an auto-arranged view like folder or hotseat.
          * <p>Type: INTEGER</p>
          */
-        static final String RANK = "rank";
+        public static final String RANK = "rank";
 
         /**
          * Stores general flag based options for {@link ItemInfo}s.
          * <p>Type: INTEGER</p>
          */
-        static final String OPTIONS = "options";
+        public static final String OPTIONS = "options";
     }
 
     /**
