@@ -100,16 +100,10 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     private ArrayList<FolderRingAnimator> mFolderOuterRings = new ArrayList<FolderRingAnimator>();
     private int[] mFolderLeaveBehindCell = {-1, -1};
 
-    private static final float FOREGROUND_ALPHA_DAMPER = 0.65f;
-    private int mForegroundAlpha = 0;
     private float mBackgroundAlpha;
 
     private static final int BACKGROUND_ACTIVATE_DURATION = 120;
     private final TransitionDrawable mBackground;
-
-    private final Drawable mOverScrollLeft;
-    private final Drawable mOverScrollRight;
-    private Drawable mOverScrollForegroundDrawable;
 
     // These values allow a fixed measurement to be set on the CellLayout.
     private int mFixedWidth = -1;
@@ -217,9 +211,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
         mBackground = (TransitionDrawable) res.getDrawable(R.drawable.bg_screenpanel);
         mBackground.setCallback(this);
-
-        mOverScrollLeft = res.getDrawable(R.drawable.overscroll_glow_left);
-        mOverScrollRight = res.getDrawable(R.drawable.overscroll_glow_right);
 
         mReorderPreviewAnimationMagnitude = (REORDER_PREVIEW_MAGNITUDE *
                 grid.iconSizePx);
@@ -396,19 +387,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         return mDropPending;
     }
 
-    void setOverScrollAmount(float r, boolean left) {
-        if (left && mOverScrollForegroundDrawable != mOverScrollLeft) {
-            mOverScrollForegroundDrawable = mOverScrollLeft;
-        } else if (!left && mOverScrollForegroundDrawable != mOverScrollRight) {
-            mOverScrollForegroundDrawable = mOverScrollRight;
-        }
-
-        r *= FOREGROUND_ALPHA_DAMPER;
-        mForegroundAlpha = (int) Math.round((r * 255));
-        mOverScrollForegroundDrawable.setAlpha(mForegroundAlpha);
-        invalidate();
-    }
-
     @Override
     public void setPressedIcon(BubbleTextView icon, Bitmap background) {
         if (icon == null || background == null) {
@@ -550,14 +528,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 d.draw(canvas);
                 canvas.restore();
             }
-        }
-    }
-
-    @Override
-    protected void dispatchDraw(Canvas canvas) {
-        super.dispatchDraw(canvas);
-        if (mForegroundAlpha > 0) {
-            mOverScrollForegroundDrawable.draw(canvas);
         }
     }
 
@@ -920,9 +890,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         mBackground.getPadding(mTempRect);
         mBackground.setBounds(-mTempRect.left, -mTempRect.top,
                 w + mTempRect.right, h + mTempRect.bottom);
-
-        mOverScrollLeft.setBounds(0, 0, w, h);
-        mOverScrollRight.setBounds(0, 0, w, h);
     }
 
     @Override
