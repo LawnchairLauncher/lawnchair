@@ -17,6 +17,7 @@
 package com.android.launcher3.widget;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
@@ -72,6 +73,18 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
      */
     public void setWidgets(WidgetsModel widgets) {
         mWidgets = widgets;
+    }
+    
+    /**
+     * We need to override the draw to ensure that we don't draw the overscroll effect beyond the
+     * background bounds.
+     */
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        canvas.clipRect(mBackgroundPadding.left, mBackgroundPadding.top,
+                getWidth() - mBackgroundPadding.right,
+                getHeight() - mBackgroundPadding.bottom);
+        super.dispatchDraw(canvas);
     }
 
     /**

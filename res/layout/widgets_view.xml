@@ -40,6 +40,7 @@
         <!-- DO NOT CHANGE THE ID -->
         <com.android.launcher3.widget.WidgetsRecyclerView
             android:id="@+id/widgets_list_view"
+            android:theme="@style/Theme.Dark.CustomOverscroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"

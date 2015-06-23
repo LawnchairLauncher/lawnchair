@@ -16,10 +16,12 @@
 package com.android.launcher3.allapps;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.BaseRecyclerViewFastScrollBar;
@@ -70,8 +72,9 @@ public class AllAppsRecyclerView extends BaseRecyclerView
     public AllAppsRecyclerView(Context context, AttributeSet attrs, int defStyleAttr,
             int defStyleRes) {
         super(context, attrs, defStyleAttr);
-        mLauncher = (Launcher) context;
-        setOverScrollMode(View.OVER_SCROLL_NEVER);
+        // We have a theme on this view, so we need to coerce the base activity context from that
+        ContextThemeWrapper ctx = (ContextThemeWrapper) context;
+        mLauncher = (Launcher) ctx.getBaseContext();
     }
 
     /**
@@ -123,6 +126,18 @@ public class AllAppsRecyclerView extends BaseRecyclerView
                             mScrollPosState.rowTopOffset;
         }
         return 0;
+    }
+
+    /**
+     * We need to override the draw to ensure that we don't draw the overscroll effect beyond the
+     * background bounds.
+     */
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        canvas.clipRect(mBackgroundPadding.left, mBackgroundPadding.top,
+                getWidth() - mBackgroundPadding.right,
+                getHeight() - mBackgroundPadding.bottom);
+        super.dispatchDraw(canvas);
     }
 
     @Override

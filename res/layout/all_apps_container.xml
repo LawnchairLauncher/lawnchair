@@ -27,6 +27,7 @@
     <!-- DO NOT CHANGE THE ID -->
     <com.android.launcher3.allapps.AllAppsRecyclerView
         android:id="@+id/apps_list_view"
+        android:theme="@style/Theme.Light.CustomOverscroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal|top"
