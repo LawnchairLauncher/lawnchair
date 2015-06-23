@@ -1173,8 +1173,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             if (!mEdgeGlowRight.isFinished()) {
                 final int restoreCount = canvas.save();
                 Rect display = mViewport;
-                canvas.translate(display.left +
-                        display.width() * (getChildCount() - 1), display.top);
+                canvas.translate(display.left + mPageScrolls[getChildCount() - 1], display.top);
                 canvas.rotate(90);
 
                 getEdgeVerticalPostion(sTmpIntPoint);
