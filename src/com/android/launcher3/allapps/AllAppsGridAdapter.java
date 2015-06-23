@@ -337,7 +337,7 @@ class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHol
         mPredictedAppsDividerPaint.setColor(0x1E000000);
         mPredictedAppsDividerPaint.setAntiAlias(true);
         mPredictionBarBottomPadding =
-                res.getDimensionPixelSize(R.dimen.all_apps_prediction_bar_top_bottom_padding);
+                res.getDimensionPixelSize(R.dimen.all_apps_prediction_bar_bottom_padding);
     }
 
     /**

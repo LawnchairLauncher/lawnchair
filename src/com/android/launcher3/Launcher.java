@@ -1125,27 +1125,6 @@ public class Launcher extends Activity
         public void forceExitFullImmersion();
     }
 
-    public interface LauncherAppsCallbacks {
-        /**
-         * Updates launcher to the available space that AllApps can take so as not to overlap with
-         * any other views.
-         */
-        @Deprecated
-        public void onAllAppsBoundsChanged(Rect bounds);
-
-        /**
-         * Called to dismiss all apps if it is showing.
-         */
-        @Deprecated
-        public void dismissAllApps();
-
-        /**
-         * Sets the search manager to be used for app search.
-         */
-        @Deprecated
-        public void setSearchManager(Object manager);
-    }
-
     public interface LauncherSearchCallbacks {
         /**
          * Called when the search overlay is shown.

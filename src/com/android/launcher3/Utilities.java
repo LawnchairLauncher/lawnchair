@@ -637,6 +637,25 @@ public final class Utilities {
         return -fm.top + fm.bottom;
     }
 
+    /**
+     * Convenience println with multiple args.
+     */
+    public static void println(String key, Object... args) {
+        StringBuilder b = new StringBuilder();
+        b.append(key);
+        b.append(": ");
+        boolean isFirstArgument = true;
+        for (Object arg : args) {
+            if (isFirstArgument) {
+                isFirstArgument = false;
+            } else {
+                b.append(", ");
+            }
+            b.append(arg);
+        }
+        System.out.println(b.toString());
+    }
+
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static boolean isRtl(Resources res) {
         return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) &&
