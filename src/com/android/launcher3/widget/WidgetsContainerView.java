@@ -345,9 +345,11 @@ public class WidgetsContainerView extends BaseContainerView
         InsetDrawable background = new InsetDrawable(
                 getResources().getDrawable(R.drawable.quantum_panel_shape_dark), padding.left, 0,
                 padding.right, 0);
+        Rect bgPadding = new Rect();
+        background.getPadding(bgPadding);
         mView.setBackground(background);
         getRevealView().setBackground(background.getConstantState().newDrawable());
-        mView.updateBackgroundPadding(padding);
+        mView.updateBackgroundPadding(bgPadding);
     }
 
     /**

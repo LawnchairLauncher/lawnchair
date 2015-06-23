@@ -16,23 +16,14 @@
 
 package com.android.launcher3;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewConfiguration;
-
 import com.android.launcher3.util.Thunk;
+
 
 /**
  * A base {@link RecyclerView}, which does the following:
@@ -41,7 +32,7 @@ import com.android.launcher3.util.Thunk;
  *   <li> Enable fast scroller.
  * </ul>
  */
-public class BaseRecyclerView extends RecyclerView
+public abstract class BaseRecyclerView extends RecyclerView
         implements RecyclerView.OnItemTouchListener {
 
     private static final int SCROLL_DELTA_THRESHOLD_DP = 4;
@@ -50,14 +41,8 @@ public class BaseRecyclerView extends RecyclerView
     @Thunk int mDy = 0;
     private float mDeltaThreshold;
 
-    //
-    // Keeps track of variables required for the second function of this class: fast scroller.
-    //
-
-    private static final float FAST_SCROLL_OVERLAY_Y_OFFSET_FACTOR = 1.5f;
-
     /**
-     * The current scroll state of the recycler view.  We use this in updateVerticalScrollbarBounds()
+     * The current scroll state of the recycler view.  We use this in onUpdateScrollbar()
      * and scrollToPositionAtProgress() to determine the scroll position of the recycler view so
      * that we can calculate what the scroll bar looks like, and where to jump to from the fast
      * scroller.
@@ -70,27 +55,12 @@ public class BaseRecyclerView extends RecyclerView
         // The height of a given row (they are currently all the same height)
         public int rowHeight;
     }
-    // Should be maintained inside overriden method #updateVerticalScrollbarBounds
-    public ScrollPositionState scrollPosState = new ScrollPositionState();
-    public Rect verticalScrollbarBounds = new Rect();
 
-    private boolean mDraggingFastScroller;
-
-    private Drawable mScrollbar;
-    private Drawable mFastScrollerBg;
-    private Rect mTmpFastScrollerInvalidateRect = new Rect();
-    private Rect mFastScrollerBounds = new Rect();
-
-    private String mFastScrollSectionName;
-    private Paint mFastScrollTextPaint;
-    private Rect mFastScrollTextBounds = new Rect();
-    private float mFastScrollAlpha;
+    protected BaseRecyclerViewFastScrollBar mScrollbar;
 
     private int mDownX;
     private int mDownY;
     private int mLastY;
-    private int mScrollbarWidth;
-    private int mScrollbarInset;
     protected Rect mBackgroundPadding = new Rect();
 
     public BaseRecyclerView(Context context) {
@@ -104,25 +74,10 @@ public class BaseRecyclerView extends RecyclerView
     public BaseRecyclerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mDeltaThreshold = getResources().getDisplayMetrics().density * SCROLL_DELTA_THRESHOLD_DP;
+        mScrollbar = new BaseRecyclerViewFastScrollBar(this, getResources());
 
         ScrollListener listener = new ScrollListener();
         setOnScrollListener(listener);
-
-        Resources res = context.getResources();
-        int fastScrollerSize = res.getDimensionPixelSize(R.dimen.all_apps_fast_scroll_popup_size);
-        mScrollbar = res.getDrawable(R.drawable.all_apps_scrollbar_thumb);
-        mFastScrollerBg = res.getDrawable(R.drawable.all_apps_fastscroll_bg);
-        mFastScrollerBg.setBounds(0, 0, fastScrollerSize, fastScrollerSize);
-        mFastScrollTextPaint = new Paint();
-        mFastScrollTextPaint.setColor(Color.WHITE);
-        mFastScrollTextPaint.setAntiAlias(true);
-        mFastScrollTextPaint.setTextSize(res.getDimensionPixelSize(
-                R.dimen.all_apps_fast_scroll_text_size));
-        mScrollbarWidth = res.getDimensionPixelSize(R.dimen.all_apps_fast_scroll_bar_width);
-        mScrollbarInset =
-                res.getDimensionPixelSize(R.dimen.all_apps_fast_scroll_scrubber_touch_inset);
-        setFastScrollerAlpha(mFastScrollAlpha);
-        setOverScrollMode(View.OVER_SCROLL_NEVER);
     }
 
     private class ScrollListener extends OnScrollListener {
@@ -133,6 +88,10 @@ public class BaseRecyclerView extends RecyclerView
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             mDy = dy;
+
+            // TODO(winsonc): If we want to animate the section heads while scrolling, we can
+            //                initiate that here if the recycler view scroll state is not
+            //                RecyclerView.SCROLL_STATE_IDLE.
         }
     }
 
@@ -161,8 +120,6 @@ public class BaseRecyclerView extends RecyclerView
      * it is already showing).
      */
     private boolean handleTouchEvent(MotionEvent ev) {
-        ViewConfiguration config = ViewConfiguration.get(getContext());
-
         int action = ev.getAction();
         int x = (int) ev.getX();
         int y = (int) ev.getY();
@@ -174,41 +131,19 @@ public class BaseRecyclerView extends RecyclerView
                 if (shouldStopScroll(ev)) {
                     stopScroll();
                 }
+                mScrollbar.handleTouchEvent(ev, mDownX, mDownY, mLastY);
                 break;
             case MotionEvent.ACTION_MOVE:
-                // Check if we are scrolling
-                if (!mDraggingFastScroller && isPointNearScrollbar(mDownX, mDownY) &&
-                        Math.abs(y - mDownY) > config.getScaledTouchSlop()) {
-                    getParent().requestDisallowInterceptTouchEvent(true);
-                    mDraggingFastScroller = true;
-                    animateFastScrollerVisibility(true);
-                }
-                if (mDraggingFastScroller) {
-                    mLastY = y;
-
-                    // Scroll to the right position, and update the section name
-                    int top = getPaddingTop() + (mFastScrollerBg.getBounds().height() / 2);
-                    int bottom = getHeight() - getPaddingBottom() -
-                            (mFastScrollerBg.getBounds().height() / 2);
-                    float boundedY = (float) Math.max(top, Math.min(bottom, y));
-                    mFastScrollSectionName = scrollToPositionAtProgress((boundedY - top) /
-                            (bottom - top));
-
-                    // Combine the old and new fast scroller bounds to create the full invalidate
-                    // rect
-                    mTmpFastScrollerInvalidateRect.set(mFastScrollerBounds);
-                    updateFastScrollerBounds();
-                    mTmpFastScrollerInvalidateRect.union(mFastScrollerBounds);
-                    invalidateFastScroller(mTmpFastScrollerInvalidateRect);
-                }
+                mLastY = y;
+                mScrollbar.handleTouchEvent(ev, mDownX, mDownY, mLastY);
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                mDraggingFastScroller = false;
-                animateFastScrollerVisibility(false);
+                onFastScrollCompleted();
+                mScrollbar.handleTouchEvent(ev, mDownX, mDownY, mLastY);
                 break;
         }
-        return mDraggingFastScroller;
+        return mScrollbar.isDragging();
     }
 
     public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
@@ -234,159 +169,117 @@ public class BaseRecyclerView extends RecyclerView
         mBackgroundPadding.set(padding);
     }
 
+    public Rect getBackgroundPadding() {
+        return mBackgroundPadding;
+    }
+
+    /**
+     * Returns the scroll bar width when the user is scrolling.
+     */
+    public int getMaxScrollbarWidth() {
+        return mScrollbar.getThumbMaxWidth();
+    }
+
+    /**
+     * Returns the available scroll height:
+     *   AvailableScrollHeight = Total height of the all items - last page height
+     *
+     * This assumes that all rows are the same height.
+     *
+     * @param yOffset the offset from the top of the recycler view to start tracking.
+     */
+    protected int getAvailableScrollHeight(int rowCount, int rowHeight, int yOffset) {
+        int visibleHeight = getHeight() - mBackgroundPadding.top - mBackgroundPadding.bottom;
+        int scrollHeight = getPaddingTop() + yOffset + rowCount * rowHeight + getPaddingBottom();
+        int availableScrollHeight = scrollHeight - visibleHeight;
+        return availableScrollHeight;
+    }
+
+    /**
+     * Returns the available scroll bar height:
+     *   AvailableScrollBarHeight = Total height of the visible view - thumb height
+     */
+    protected int getAvailableScrollBarHeight() {
+        int visibleHeight = getHeight() - mBackgroundPadding.top - mBackgroundPadding.bottom;
+        int availableScrollBarHeight = visibleHeight - mScrollbar.getThumbHeight();
+        return availableScrollBarHeight;
+    }
+
+    /**
+     * Returns the track color (ignoring alpha), can be overridden by each subclass.
+     */
+    public int getFastScrollerTrackColor(int defaultTrackColor) {
+        return defaultTrackColor;
+    }
+
+    /**
+     * Returns the inactive thumb color, can be overridden by each subclass.
+     */
+    public int getFastScrollerThumbInactiveColor(int defaultInactiveThumbColor) {
+        return defaultInactiveThumbColor;
+    }
+
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
-        drawVerticalScrubber(canvas);
-        drawFastScrollerPopup(canvas);
-    }
-
-    /**
-     * Draws the vertical scrollbar.
-     */
-    private void drawVerticalScrubber(Canvas canvas) {
-        updateVerticalScrollbarBounds();
-
-        // Draw the scroll bar
-        int restoreCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
-        canvas.translate(verticalScrollbarBounds.left, verticalScrollbarBounds.top);
-        mScrollbar.setBounds(0, 0, mScrollbarWidth, verticalScrollbarBounds.height());
+        onUpdateScrollbar();
         mScrollbar.draw(canvas);
-        canvas.restoreToCount(restoreCount);
     }
 
     /**
-     * Draws the fast scroller popup.
+     * Updates the scrollbar thumb offset to match the visible scroll of the recycler view.  It does
+     * this by mapping the available scroll area of the recycler view to the available space for the
+     * scroll bar.
+     *
+     * @param scrollPosState the current scroll position
+     * @param rowCount the number of rows, used to calculate the total scroll height (assumes that
+     *                 all rows are the same height)
+     * @param yOffset the offset to start tracking in the recycler view (only used for all apps)
      */
-    private void drawFastScrollerPopup(Canvas canvas) {
-        if (mFastScrollAlpha > 0f && mFastScrollSectionName != null && !mFastScrollSectionName.isEmpty()) {
-            // Draw the fast scroller popup
-            int restoreCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
-            canvas.translate(mFastScrollerBounds.left, mFastScrollerBounds.top);
-            mFastScrollerBg.setAlpha((int) (mFastScrollAlpha * 255));
-            mFastScrollerBg.draw(canvas);
-            mFastScrollTextPaint.setAlpha((int) (mFastScrollAlpha * 255));
-            mFastScrollTextPaint.getTextBounds(mFastScrollSectionName, 0,
-                    mFastScrollSectionName.length(), mFastScrollTextBounds);
-            float textWidth = mFastScrollTextPaint.measureText(mFastScrollSectionName);
-            canvas.drawText(mFastScrollSectionName,
-                    (mFastScrollerBounds.width() - textWidth) / 2,
-                    mFastScrollerBounds.height() -
-                            (mFastScrollerBounds.height() - mFastScrollTextBounds.height()) / 2,
-                    mFastScrollTextPaint);
-            canvas.restoreToCount(restoreCount);
+    protected void synchronizeScrollBarThumbOffsetToViewScroll(ScrollPositionState scrollPosState,
+            int rowCount, int yOffset) {
+        int availableScrollHeight = getAvailableScrollHeight(rowCount, scrollPosState.rowHeight,
+                yOffset);
+        int availableScrollBarHeight = getAvailableScrollBarHeight();
+
+        // Only show the scrollbar if there is height to be scrolled
+        if (availableScrollHeight <= 0) {
+            mScrollbar.setScrollbarThumbOffset(-1, -1);
+            return;
         }
-    }
 
-    /**
-     * Returns the scroll bar width.
-     */
-    public int getScrollbarWidth() {
-        return mScrollbarWidth;
-    }
+        // Calculate the current scroll position, the scrollY of the recycler view accounts for the
+        // view padding, while the scrollBarY is drawn right up to the background padding (ignoring
+        // padding)
+        int scrollY = getPaddingTop() + yOffset +
+                (scrollPosState.rowIndex * scrollPosState.rowHeight) - scrollPosState.rowTopOffset;
+        int scrollBarY = mBackgroundPadding.top +
+                (int) (((float) scrollY / availableScrollHeight) * availableScrollBarHeight);
 
-    /**
-     * Sets the fast scroller alpha.
-     */
-    public void setFastScrollerAlpha(float alpha) {
-        mFastScrollAlpha = alpha;
-        invalidateFastScroller(mFastScrollerBounds);
-    }
-
-    /**
-     * Returns the fast scroller alpha.
-     */
-    public float getFastScrollerAlpha() {
-        return mFastScrollAlpha;
+        // Calculate the position and size of the scroll bar
+        int scrollBarX;
+        if (Utilities.isRtl(getResources())) {
+            scrollBarX = mBackgroundPadding.left;
+        } else {
+            scrollBarX = getWidth() - mBackgroundPadding.right - mScrollbar.getWidth();
+        }
+        mScrollbar.setScrollbarThumbOffset(scrollBarX, scrollBarY);
     }
 
     /**
      * Maps the touch (from 0..1) to the adapter position that should be visible.
      * <p>Override in each subclass of this base class.
      */
-    public String scrollToPositionAtProgress(float touchFraction) {
-        return null;
-    }
+    public abstract String scrollToPositionAtProgress(float touchFraction);
 
     /**
      * Updates the bounds for the scrollbar.
      * <p>Override in each subclass of this base class.
      */
-    public void updateVerticalScrollbarBounds() {};
+    public abstract void onUpdateScrollbar();
 
     /**
-     * Animates the visibility of the fast scroller popup.
+     * <p>Override in each subclass of this base class.
      */
-    private void animateFastScrollerVisibility(final boolean visible) {
-        ObjectAnimator anim = ObjectAnimator.ofFloat(this, "fastScrollerAlpha", visible ? 1f : 0f);
-        anim.setDuration(visible ? 200 : 150);
-        anim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                if (visible) {
-                    onFastScrollingStart();
-                }
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (!visible) {
-                    onFastScrollingEnd();
-                }
-            }
-        });
-        anim.start();
-    }
-
-    /**
-     * To be overridden by subclasses.
-     */
-    protected void onFastScrollingStart() {}
-
-    /**
-     * To be overridden by subclasses.
-     */
-    protected void onFastScrollingEnd() {}
-
-    /**
-     * Invalidates the fast scroller popup.
-     */
-    protected void invalidateFastScroller(Rect bounds) {
-        invalidate(bounds.left, bounds.top, bounds.right, bounds.bottom);
-    }
-
-    /**
-     * Returns whether a given point is near the scrollbar.
-     */
-    private boolean isPointNearScrollbar(int x, int y) {
-        // Check if we are scrolling
-        updateVerticalScrollbarBounds();
-        verticalScrollbarBounds.inset(mScrollbarInset, mScrollbarInset);
-        return verticalScrollbarBounds.contains(x, y);
-    }
-
-    /**
-     * Updates the bounds for the fast scroller.
-     */
-    private void updateFastScrollerBounds() {
-        if (mFastScrollAlpha > 0f && !mFastScrollSectionName.isEmpty()) {
-            int x;
-            int y;
-
-            // Calculate the position for the fast scroller popup
-            Rect bgBounds = mFastScrollerBg.getBounds();
-            if (Utilities.isRtl(getResources())) {
-                x = mBackgroundPadding.left + (2 * getScrollbarWidth());
-            } else {
-                x = getWidth() - mBackgroundPadding.right - (2 * getScrollbarWidth()) -
-                        bgBounds.width();
-            }
-            y = mLastY - (int) (FAST_SCROLL_OVERLAY_Y_OFFSET_FACTOR * bgBounds.height());
-            y = Math.max(getPaddingTop(), Math.min(y, getHeight() - getPaddingBottom() -
-                    bgBounds.height()));
-            mFastScrollerBounds.set(x, y, x + bgBounds.width(), y + bgBounds.height());
-        } else {
-            mFastScrollerBounds.setEmpty();
-        }
-    }
+    public void onFastScrollCompleted() {}
 }

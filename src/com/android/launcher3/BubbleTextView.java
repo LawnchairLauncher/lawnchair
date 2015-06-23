@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -24,6 +25,7 @@ import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -34,6 +36,8 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.view.ViewParent;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 import com.android.launcher3.IconCache.IconLoadRequest;
 import com.android.launcher3.model.PackageItemInfo;
@@ -43,7 +47,8 @@ import com.android.launcher3.model.PackageItemInfo;
  * because we want to make the bubble taller than the text and TextView's clip is
  * too aggressive.
  */
-public class BubbleTextView extends TextView {
+public class BubbleTextView extends TextView
+        implements BaseRecyclerViewFastScrollBar.FastScrollFocusableView {
 
     private static SparseArray<Theme> sPreloaderThemes = new SparseArray<Theme>(2);
 
@@ -55,6 +60,13 @@ public class BubbleTextView extends TextView {
 
     private static final int DISPLAY_WORKSPACE = 0;
     private static final int DISPLAY_ALL_APPS = 1;
+
+    private static final float FAST_SCROLL_FOCUS_MAX_SCALE = 1.15f;
+    private static final int FAST_SCROLL_FOCUS_MODE_NONE = 0;
+    private static final int FAST_SCROLL_FOCUS_MODE_SCALE_ICON = 1;
+    private static final int FAST_SCROLL_FOCUS_MODE_DRAW_CIRCLE_BG = 2;
+    private static final int FAST_SCROLL_FOCUS_FADE_IN_DURATION = 175;
+    private static final int FAST_SCROLL_FOCUS_FADE_OUT_DURATION = 125;
 
     private final Launcher mLauncher;
     private Drawable mIcon;
@@ -78,6 +90,12 @@ public class BubbleTextView extends TextView {
     private boolean mStayPressed;
     private boolean mIgnorePressedStateChange;
     private boolean mDisableRelayout = false;
+
+    private ObjectAnimator mFastScrollFocusAnimator;
+    private Paint mFastScrollFocusBgPaint;
+    private float mFastScrollFocusFraction;
+    private boolean mFastScrollFocused;
+    private final int mFastScrollMode = FAST_SCROLL_FOCUS_MODE_SCALE_ICON;
 
     private IconLoadRequest mIconLoadRequest;
 
@@ -129,6 +147,13 @@ public class BubbleTextView extends TextView {
         mOutlineHelper = HolographicOutlineHelper.obtain(getContext());
         if (mCustomShadowsEnabled) {
             setShadowLayer(SHADOW_LARGE_RADIUS, 0.0f, SHADOW_Y_OFFSET, SHADOW_LARGE_COLOUR);
+        }
+
+        if (mFastScrollMode == FAST_SCROLL_FOCUS_MODE_DRAW_CIRCLE_BG) {
+            mFastScrollFocusBgPaint = new Paint();
+            mFastScrollFocusBgPaint.setAntiAlias(true);
+            mFastScrollFocusBgPaint.setColor(
+                    getResources().getColor(R.color.container_fastscroll_thumb_active_color));
         }
 
         setAccessibilityDelegate(LauncherAppState.getInstance().getAccessibilityDelegate());
@@ -335,7 +360,18 @@ public class BubbleTextView extends TextView {
     @Override
     public void draw(Canvas canvas) {
         if (!mCustomShadowsEnabled) {
+            // Draw the fast scroll focus bg if we have one
+            if (mFastScrollMode == FAST_SCROLL_FOCUS_MODE_DRAW_CIRCLE_BG &&
+                    mFastScrollFocusFraction > 0f) {
+                DeviceProfile grid = mLauncher.getDeviceProfile();
+                int iconCenterX = getScrollX() + (getWidth() / 2);
+                int iconCenterY = getScrollY() + getPaddingTop() + (grid.iconSizePx / 2);
+                canvas.drawCircle(iconCenterX, iconCenterY,
+                        mFastScrollFocusFraction * (getWidth() / 2), mFastScrollFocusBgPaint);
+            }
+
             super.draw(canvas);
+
             return;
         }
 
@@ -534,6 +570,51 @@ public class BubbleTextView extends TextView {
             if (info.usingLowResIcon) {
                 mIconLoadRequest = LauncherAppState.getInstance().getIconCache()
                         .updateIconInBackground(BubbleTextView.this, info);
+            }
+        }
+    }
+
+    // Setters & getters for the animation
+    public void setFastScrollFocus(float fraction) {
+        mFastScrollFocusFraction = fraction;
+        if (mFastScrollMode == FAST_SCROLL_FOCUS_MODE_SCALE_ICON) {
+            setScaleX(1f + fraction * (FAST_SCROLL_FOCUS_MAX_SCALE - 1f));
+            setScaleY(1f + fraction * (FAST_SCROLL_FOCUS_MAX_SCALE - 1f));
+        } else {
+            invalidate();
+        }
+    }
+
+    public float getFastScrollFocus() {
+        return mFastScrollFocusFraction;
+    }
+
+    @Override
+    public void setFastScrollFocused(final boolean focused, boolean animated) {
+        if (mFastScrollMode == FAST_SCROLL_FOCUS_MODE_NONE) {
+            return;
+        }
+
+        if (mFastScrollFocused != focused) {
+            mFastScrollFocused = focused;
+
+            if (animated) {
+                // Clean up the previous focus animator
+                if (mFastScrollFocusAnimator != null) {
+                    mFastScrollFocusAnimator.cancel();
+                }
+                mFastScrollFocusAnimator = ObjectAnimator.ofFloat(this, "fastScrollFocus",
+                        focused ? 1f : 0f);
+                if (focused) {
+                    mFastScrollFocusAnimator.setInterpolator(new DecelerateInterpolator());
+                } else {
+                    mFastScrollFocusAnimator.setInterpolator(new AccelerateInterpolator());
+                }
+                mFastScrollFocusAnimator.setDuration(focused ?
+                        FAST_SCROLL_FOCUS_FADE_IN_DURATION : FAST_SCROLL_FOCUS_FADE_OUT_DURATION);
+                mFastScrollFocusAnimator.start();
+            } else {
+                mFastScrollFocusFraction = focused ? 1f : 0f;
             }
         }
     }

@@ -62,15 +62,13 @@ public class AlphabeticalAppsList {
     public static class FastScrollSectionInfo {
         // The section name
         public String sectionName;
-        // To map the touch (from 0..1) to the index in the app list to jump to in the fast
-        // scroller, we use the fraction in range (0..1) of the app index / total app count.
-        public float appRangeFraction;
         // The AdapterItem to scroll to for this section
-        public AdapterItem appItem;
+        public AdapterItem fastScrollToItem;
+        // The touch fraction that should map to this fast scroll section info
+        public float touchFraction;
 
-        public FastScrollSectionInfo(String sectionName, float appRangeFraction) {
+        public FastScrollSectionInfo(String sectionName) {
             this.sectionName = sectionName;
-            this.appRangeFraction = appRangeFraction;
         }
     }
 
@@ -83,6 +81,8 @@ public class AlphabeticalAppsList {
         public int position;
         // The type of this item
         public int viewType;
+        // The row that this item shows up on
+        public int rowIndex;
 
         /** Section & App properties */
         // The section for this item
@@ -94,6 +94,8 @@ public class AlphabeticalAppsList {
         public String sectionName = null;
         // The index of this app in the section
         public int sectionAppIndex = -1;
+        // The index of this app in the row
+        public int rowAppIndex;
         // The associated AppInfo for the app
         public AppInfo appInfo = null;
         // The index of this app not including sections
@@ -172,6 +174,7 @@ public class AlphabeticalAppsList {
     private AdapterChangedCallback mAdapterChangedCallback;
     private int mNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
+    private int mNumAppRowsInAdapter;
 
     public AlphabeticalAppsList(Context context) {
         mLauncher = (Launcher) context;
@@ -238,6 +241,13 @@ public class AlphabeticalAppsList {
      */
     public int getSize() {
         return mFilteredApps.size();
+    }
+
+    /**
+     * Returns the number of rows of applications (not including predictions)
+     */
+    public int getNumAppRows() {
+        return mNumAppRowsInAdapter;
     }
 
     /**
@@ -419,23 +429,23 @@ public class AlphabeticalAppsList {
                 // Create a new spacer for the prediction bar
                 AdapterItem sectionItem = AdapterItem.asPredictionBarSpacer(position++);
                 mAdapterItems.add(sectionItem);
+                // Add a fastscroller section for the prediction bar
+                lastFastScrollerSectionInfo = new FastScrollSectionInfo("");
+                lastFastScrollerSectionInfo.fastScrollToItem = sectionItem;
+                mFastScrollerSections.add(lastFastScrollerSectionInfo);
             }
         }
 
         // Recreate the filtered and sectioned apps (for convenience for the grid layout) from the
         // ordered set of sections
-        List<AppInfo> apps = getFiltersAppInfos();
-        int numApps = apps.size();
-        for (int i = 0; i < numApps; i++) {
-            AppInfo info = apps.get(i);
+        for (AppInfo info : getFiltersAppInfos()) {
             String sectionName = getAndUpdateCachedSectionName(info.title);
 
             // Create a new section if the section names do not match
             if (lastSectionInfo == null || !sectionName.equals(lastSectionName)) {
                 lastSectionName = sectionName;
                 lastSectionInfo = new SectionInfo();
-                lastFastScrollerSectionInfo = new FastScrollSectionInfo(sectionName,
-                        (float) appIndex / numApps);
+                lastFastScrollerSectionInfo = new FastScrollSectionInfo(sectionName);
                 mSections.add(lastSectionInfo);
                 mFastScrollerSections.add(lastFastScrollerSectionInfo);
 
@@ -451,7 +461,7 @@ public class AlphabeticalAppsList {
                     lastSectionInfo.numApps++, info, appIndex++);
             if (lastSectionInfo.firstAppItem == null) {
                 lastSectionInfo.firstAppItem = appItem;
-                lastFastScrollerSectionInfo.appItem = appItem;
+                lastFastScrollerSectionInfo.fastScrollToItem = appItem;
             }
             mAdapterItems.add(appItem);
             mFilteredApps.add(info);
@@ -459,6 +469,45 @@ public class AlphabeticalAppsList {
 
         // Merge multiple sections together as requested by the merge strategy for this device
         mergeSections();
+
+        if (mNumAppsPerRow != 0) {
+            // Update the number of rows in the adapter after we do all the merging (otherwise, we
+            // would have to shift the values again)
+            int numAppsInSection = 0;
+            int numAppsInRow = 0;
+            int rowIndex = -1;
+            for (AdapterItem item : mAdapterItems) {
+                item.rowIndex = 0;
+                if (item.viewType == AllAppsGridAdapter.SECTION_BREAK_VIEW_TYPE) {
+                    numAppsInSection = 0;
+                } else if (item.viewType == AllAppsGridAdapter.ICON_VIEW_TYPE) {
+                    if (numAppsInSection % mNumAppsPerRow == 0) {
+                        numAppsInRow = 0;
+                        rowIndex++;
+                    }
+                    item.rowIndex = rowIndex;
+                    item.rowAppIndex = numAppsInRow;
+                    numAppsInSection++;
+                    numAppsInRow++;
+                }
+            }
+            mNumAppRowsInAdapter = rowIndex + 1;
+
+            // Pre-calculate all the fast scroller fractions based on the number of rows, if we have
+            // predicted apps, then we should account for that as a row in the touchFraction
+            float rowFraction = 1f / (mNumAppRowsInAdapter + (mPredictedApps.isEmpty() ? 0 : 1));
+            float initialOffset = mPredictedApps.isEmpty() ? 0 : rowFraction;
+            for (FastScrollSectionInfo info : mFastScrollerSections) {
+                AdapterItem item = info.fastScrollToItem;
+                if (item.viewType != AllAppsGridAdapter.ICON_VIEW_TYPE) {
+                    info.touchFraction = 0f;
+                    continue;
+                }
+
+                float subRowFraction = item.rowAppIndex * (rowFraction / mNumAppsPerRow);
+                info.touchFraction = initialOffset + item.rowIndex * rowFraction + subRowFraction;
+            }
+        }
 
         // Refresh the recycler view
         if (mAdapter != null) {
@@ -511,6 +560,7 @@ public class AlphabeticalAppsList {
                     // Remove the next section break
                     mAdapterItems.remove(nextSection.sectionBreakItem);
                     int pos = mAdapterItems.indexOf(section.firstAppItem);
+
                     // Point the section for these new apps to the merged section
                     int nextPos = pos + section.numApps;
                     for (int j = nextPos; j < (nextPos + nextSection.numApps); j++) {
