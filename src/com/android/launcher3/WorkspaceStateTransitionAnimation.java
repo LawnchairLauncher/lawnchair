@@ -192,9 +192,6 @@ public class WorkspaceStateTransitionAnimation {
 
     @Thunk final ZoomInInterpolator mZoomInInterpolator = new ZoomInInterpolator();
 
-    // These properties refer to the background protection gradient used for AllApps and Widget tray.
-    @Thunk ValueAnimator mBackgroundFadeOutAnimation;
-
     @Thunk float mSpringLoadedShrinkFactor;
     @Thunk float mOverviewModeShrinkFactor;
     @Thunk float mWorkspaceScrimAlpha;
@@ -548,25 +545,29 @@ public class WorkspaceStateTransitionAnimation {
      * @param animated whether or not to set the background alpha immediately
      * @duration duration of the animation
      */
-    private void animateBackgroundGradient(TransitionStates states, boolean animated, int duration) {
+    private void animateBackgroundGradient(TransitionStates states,
+            boolean animated, int duration) {
+
         final DragLayer dragLayer = mLauncher.getDragLayer();
         final float startAlpha = dragLayer.getBackgroundAlpha();
         float finalAlpha = states.stateIsNormal ? 0 : mWorkspaceScrimAlpha;
 
         if (finalAlpha != startAlpha) {
             if (animated) {
-                mBackgroundFadeOutAnimation =
+                // These properties refer to the background protection gradient used for AllApps
+                // and Widget tray.
+                ValueAnimator bgFadeOutAnimation =
                         LauncherAnimUtils.ofFloat(mWorkspace, startAlpha, finalAlpha);
-                mBackgroundFadeOutAnimation.addUpdateListener(
-                        new ValueAnimator.AnimatorUpdateListener() {
+                bgFadeOutAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
                         dragLayer.setBackgroundAlpha(
                                 ((Float)animation.getAnimatedValue()).floatValue());
                     }
                 });
-                mBackgroundFadeOutAnimation.setInterpolator(new DecelerateInterpolator(1.5f));
-                mBackgroundFadeOutAnimation.setDuration(duration);
-                mStateAnimator.play(mBackgroundFadeOutAnimation);
+                bgFadeOutAnimation.setInterpolator(new DecelerateInterpolator(1.5f));
+                bgFadeOutAnimation.setDuration(duration);
+                mStateAnimator.play(bgFadeOutAnimation);
             } else {
                 dragLayer.setBackgroundAlpha(finalAlpha);
             }
@@ -577,17 +578,10 @@ public class WorkspaceStateTransitionAnimation {
      * Cancels the current animation.
      */
     private void cancelAnimation() {
-        cancelAnimator(mStateAnimator);
-        mStateAnimator = null;
-    }
-
-    /**
-     * Cancels the specified animation.
-     */
-    private void cancelAnimator(Animator animator) {
-        if (animator != null) {
-            animator.setDuration(0);
-            animator.cancel();
+        if (mStateAnimator != null) {
+            mStateAnimator.setDuration(0);
+            mStateAnimator.cancel();
         }
+        mStateAnimator = null;
     }
 }
