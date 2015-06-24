@@ -15,7 +15,6 @@
  */
 package com.android.launcher3;
 
-import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
@@ -29,6 +28,8 @@ import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
+import com.android.launcher3.util.Thunk;
+
 /**
  * The track and scrollbar that shows when you scroll the list.
  */
@@ -41,20 +42,20 @@ public class BaseRecyclerViewFastScrollBar {
     private final static int MAX_TRACK_ALPHA = 30;
     private final static int SCROLL_BAR_VIS_DURATION = 150;
 
-    private BaseRecyclerView mRv;
+    @Thunk BaseRecyclerView mRv;
     private BaseRecyclerViewFastScrollPopup mPopup;
 
     private AnimatorSet mScrollbarAnimator;
 
     private int mThumbInactiveColor;
     private int mThumbActiveColor;
-    private Point mThumbOffset = new Point(-1, -1);
-    private Paint mThumbPaint;
+    @Thunk Point mThumbOffset = new Point(-1, -1);
+    @Thunk Paint mThumbPaint;
     private Paint mTrackPaint;
     private int mThumbMinWidth;
     private int mThumbMaxWidth;
-    private int mThumbWidth;
-    private int mThumbHeight;
+    @Thunk int mThumbWidth;
+    @Thunk int mThumbHeight;
     // The inset is the buffer around which a point will still register as a click on the scrollbar
     private int mTouchInset;
     private boolean mIsDragging;
