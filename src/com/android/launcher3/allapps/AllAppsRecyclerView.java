@@ -23,11 +23,13 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.ContextThemeWrapper;
 import android.view.View;
+
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.BaseRecyclerViewFastScrollBar;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Stats;
+import com.android.launcher3.util.Thunk;
 
 import java.util.List;
 
@@ -47,10 +49,11 @@ public class AllAppsRecyclerView extends BaseRecyclerView
     private int mNumAppsPerRow;
     private int mPredictionBarHeight;
 
-    private BaseRecyclerViewFastScrollBar.FastScrollFocusableView mLastFastScrollFocusedView;
-    private int mPrevFastScrollFocusedPosition;
-    private int mFastScrollFrameIndex;
-    private int[] mFastScrollFrames = new int[10];
+    @Thunk BaseRecyclerViewFastScrollBar.FastScrollFocusableView mLastFastScrollFocusedView;
+    @Thunk int mPrevFastScrollFocusedPosition;
+    @Thunk int mFastScrollFrameIndex;
+    @Thunk final int[] mFastScrollFrames = new int[10];
+
     private final int mFastScrollMode = FAST_SCROLL_MODE_JUMP_TO_FIRST_ICON;
     private final int mScrollBarMode = FAST_SCROLL_BAR_MODE_DISTRIBUTE_BY_ROW;
 
@@ -267,7 +270,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView
      * This runnable runs a single frame of the smooth scroll animation and posts the next frame
      * if necessary.
      */
-    private Runnable mSmoothSnapNextFrameRunnable = new Runnable() {
+    @Thunk Runnable mSmoothSnapNextFrameRunnable = new Runnable() {
         @Override
         public void run() {
             if (mFastScrollFrameIndex < mFastScrollFrames.length) {
