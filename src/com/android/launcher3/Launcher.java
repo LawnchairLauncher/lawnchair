@@ -3427,7 +3427,7 @@ public class Launcher extends Activity
     private void tryAndUpdatePredictedApps() {
         if (mLauncherCallbacks != null) {
             List<ComponentKey> apps = mLauncherCallbacks.getPredictedApps();
-            if (!apps.isEmpty()) {
+            if (apps != null) {
                 mAppsView.setPredictedApps(apps);
             }
         }
