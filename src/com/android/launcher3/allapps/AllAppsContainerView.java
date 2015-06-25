@@ -417,7 +417,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                     new SimpleSectionMergeAlgorithm((int) Math.ceil(mNumAppsPerRow / 2f),
                             MIN_ROWS_IN_MERGED_SECTION_PHONE, MAX_NUM_MERGES_PHONE);
 
-            mAppsRecyclerView.setNumAppsPerRow(mNumAppsPerRow);
+            mAppsRecyclerView.setNumAppsPerRow(grid, mNumAppsPerRow);
             mAdapter.setNumAppsPerRow(mNumAppsPerRow);
             mApps.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow, mergeAlgorithm);
         }
