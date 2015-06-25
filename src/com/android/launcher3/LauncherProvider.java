@@ -766,7 +766,7 @@ public class LauncherProvider extends ContentProvider {
                         continue;
                     }
 
-                    if (!InstallShortcutReceiver.isLauncherActivity(intent, mContext)) {
+                    if (!Utilities.isLauncherAppTarget(intent)) {
                         continue;
                     }
 

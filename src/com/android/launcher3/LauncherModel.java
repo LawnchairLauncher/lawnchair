@@ -57,6 +57,7 @@ import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.CursorIconInfo;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.ManagedProfileHeuristic;
 import com.android.launcher3.util.Thunk;
@@ -903,11 +904,10 @@ public class LauncherModel extends BroadcastReceiver
     @Thunk boolean shortcutExists(Context context, Intent intent, UserHandleCompat user) {
         assertWorkspaceLoaded();
         final String intentWithPkg, intentWithoutPkg;
-        final String packageName;
         if (intent.getComponent() != null) {
             // If component is not null, an intent with null package will produce
             // the same result and should also be a match.
-            packageName = intent.getComponent().getPackageName();
+            String packageName = intent.getComponent().getPackageName();
             if (intent.getPackage() != null) {
                 intentWithPkg = intent.toUri(0);
                 intentWithoutPkg = new Intent(intent).setPackage(null).toUri(0);
@@ -918,15 +918,16 @@ public class LauncherModel extends BroadcastReceiver
         } else {
             intentWithPkg = intent.toUri(0);
             intentWithoutPkg = intent.toUri(0);
-            packageName = intent.getPackage();
         }
 
         synchronized (sBgLock) {
             for (ItemInfo item : sBgItemsIdMap) {
                 if (item instanceof ShortcutInfo) {
                     ShortcutInfo info = (ShortcutInfo) item;
-                    if (info.getIntent() != null && info.user.equals(user)) {
-                        String s = info.getIntent().toUri(0);
+                    Intent targetIntent = info.promisedIntent == null
+                            ? info.intent : info.promisedIntent;
+                    if (targetIntent != null && info.user.equals(user)) {
+                        String s = targetIntent.toUri(0);
                         if (intentWithPkg.equals(s) || intentWithoutPkg.equals(s)) {
                             return true;
                         }
@@ -1793,13 +1794,6 @@ public class LauncherModel extends BroadcastReceiver
                             (LauncherSettings.Favorites.INTENT);
                     final int titleIndex = c.getColumnIndexOrThrow
                             (LauncherSettings.Favorites.TITLE);
-                    final int iconTypeIndex = c.getColumnIndexOrThrow(
-                            LauncherSettings.Favorites.ICON_TYPE);
-                    final int iconIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON);
-                    final int iconPackageIndex = c.getColumnIndexOrThrow(
-                            LauncherSettings.Favorites.ICON_PACKAGE);
-                    final int iconResourceIndex = c.getColumnIndexOrThrow(
-                            LauncherSettings.Favorites.ICON_RESOURCE);
                     final int containerIndex = c.getColumnIndexOrThrow(
                             LauncherSettings.Favorites.CONTAINER);
                     final int itemTypeIndex = c.getColumnIndexOrThrow(
@@ -1826,6 +1820,7 @@ public class LauncherModel extends BroadcastReceiver
                             LauncherSettings.Favorites.PROFILE_ID);
                     final int optionsIndex = c.getColumnIndexOrThrow(
                             LauncherSettings.Favorites.OPTIONS);
+                    final CursorIconInfo cursorIconInfo = new CursorIconInfo(c);
 
                     final LongSparseArray<UserHandleCompat> allUsers = new LongSparseArray<>();
                     for (UserHandleCompat user : mUserManager.getUserProfiles()) {
@@ -1991,7 +1986,8 @@ public class LauncherModel extends BroadcastReceiver
                                 if (itemReplaced) {
                                     if (user.equals(UserHandleCompat.myUserHandle())) {
                                         info = getAppShortcutInfo(manager, intent, user, context, null,
-                                                iconIndex, titleIndex, false, useLowResIcon);
+                                                cursorIconInfo.iconIndex, titleIndex,
+                                                false, useLowResIcon);
                                     } else {
                                         // Don't replace items for other profiles.
                                         itemsToRemove.add(id);
@@ -2003,7 +1999,7 @@ public class LauncherModel extends BroadcastReceiver
                                                 "constructing info for partially restored package",
                                                 true);
                                         info = getRestoredItemInfo(c, titleIndex, intent,
-                                                promiseType);
+                                                promiseType, cursorIconInfo, context);
                                         intent = getRestoredItemIntent(c, context, intent);
                                     } else {
                                         // Don't restore items for other profiles.
@@ -2013,11 +2009,10 @@ public class LauncherModel extends BroadcastReceiver
                                 } else if (itemType ==
                                         LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
                                     info = getAppShortcutInfo(manager, intent, user, context, c,
-                                            iconIndex, titleIndex, allowMissingTarget, useLowResIcon);
+                                            cursorIconInfo.iconIndex, titleIndex,
+                                            allowMissingTarget, useLowResIcon);
                                 } else {
-                                    info = getShortcutInfo(c, context, iconTypeIndex,
-                                            iconPackageIndex, iconResourceIndex, iconIndex,
-                                            titleIndex);
+                                    info = getShortcutInfo(c, context, titleIndex, cursorIconInfo);
 
                                     // App shortcuts that used to be automatically added to Launcher
                                     // didn't always have the correct intent flags set, so do that
@@ -2043,6 +2038,9 @@ public class LauncherModel extends BroadcastReceiver
                                     info.spanX = 1;
                                     info.spanY = 1;
                                     info.intent.putExtra(ItemInfo.EXTRA_PROFILE, serialNumber);
+                                    if (info.promisedIntent != null) {
+                                        info.promisedIntent.putExtra(ItemInfo.EXTRA_PROFILE, serialNumber);
+                                    }
                                     info.isDisabled = disabledState;
                                     if (isSafeMode && !Utilities.isSystemApp(context, intent)) {
                                         info.isDisabled |= ShortcutInfo.FLAG_DISABLED_SAFEMODE;
@@ -2687,7 +2685,7 @@ public class LauncherModel extends BroadcastReceiver
                         return;
                     }
                 }
-                mIconCache.updateDbIcons();
+                updateIconCache();
                 synchronized (LoaderTask.this) {
                     if (mStopped) {
                         return;
@@ -2697,6 +2695,27 @@ public class LauncherModel extends BroadcastReceiver
             } else {
                 onlyBindAllApps();
             }
+        }
+
+        private void updateIconCache() {
+            // Ignore packages which have a promise icon.
+            HashSet<String> packagesToIgnore = new HashSet<>();
+            synchronized (sBgLock) {
+                for (ItemInfo info : sBgItemsIdMap) {
+                    if (info instanceof ShortcutInfo) {
+                        ShortcutInfo si = (ShortcutInfo) info;
+                        if (si.isPromise() && si.getTargetComponent() != null) {
+                            packagesToIgnore.add(si.getTargetComponent().getPackageName());
+                        }
+                    } else if (info instanceof LauncherAppWidgetInfo) {
+                        LauncherAppWidgetInfo lawi = (LauncherAppWidgetInfo) info;
+                        if (lawi.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)) {
+                            packagesToIgnore.add(lawi.providerName.getPackageName());
+                        }
+                    }
+                }
+            }
+            mIconCache.updateDbIcons(packagesToIgnore);
         }
 
         private void onlyBindAllApps() {
@@ -3360,20 +3379,27 @@ public class LauncherModel extends BroadcastReceiver
      * Make an ShortcutInfo object for a restored application or shortcut item that points
      * to a package that is not yet installed on the system.
      */
-    public ShortcutInfo getRestoredItemInfo(Cursor cursor, int titleIndex, Intent intent,
-            int promiseType) {
+    public ShortcutInfo getRestoredItemInfo(Cursor c, int titleIndex, Intent intent,
+            int promiseType, CursorIconInfo iconInfo, Context context) {
         final ShortcutInfo info = new ShortcutInfo();
         info.user = UserHandleCompat.myUserHandle();
-        mIconCache.getTitleAndIcon(info, intent, info.user, false /* useLowResIcon */);
+
+        Bitmap icon = iconInfo.loadIcon(c, info, context);
+        // the fallback icon
+        if (icon == null) {
+            mIconCache.getTitleAndIcon(info, intent, info.user, false /* useLowResIcon */);
+        } else {
+            info.setIcon(icon);
+        }
 
         if ((promiseType & ShortcutInfo.FLAG_RESTORED_ICON) != 0) {
-            String title = (cursor != null) ? cursor.getString(titleIndex) : null;
+            String title = (c != null) ? c.getString(titleIndex) : null;
             if (!TextUtils.isEmpty(title)) {
                 info.title = Utilities.trim(title);
             }
         } else if  ((promiseType & ShortcutInfo.FLAG_AUTOINTALL_ICON) != 0) {
             if (TextUtils.isEmpty(info.title)) {
-                info.title = (cursor != null) ? Utilities.trim(cursor.getString(titleIndex)) : "";
+                info.title = (c != null) ? Utilities.trim(c.getString(titleIndex)) : "";
             }
         } else {
             throw new InvalidParameterException("Invalid restoreType " + promiseType);
@@ -3506,10 +3532,7 @@ public class LauncherModel extends BroadcastReceiver
      * Make an ShortcutInfo object for a shortcut that isn't an application.
      */
     @Thunk ShortcutInfo getShortcutInfo(Cursor c, Context context,
-            int iconTypeIndex, int iconPackageIndex, int iconResourceIndex, int iconIndex,
-            int titleIndex) {
-
-        Bitmap icon = null;
+            int titleIndex, CursorIconInfo iconInfo) {
         final ShortcutInfo info = new ShortcutInfo();
         // Non-app shortcuts are only supported for current user.
         info.user = UserHandleCompat.myUserHandle();
@@ -3519,39 +3542,11 @@ public class LauncherModel extends BroadcastReceiver
 
         info.title = Utilities.trim(c.getString(titleIndex));
 
-        int iconType = c.getInt(iconTypeIndex);
-        switch (iconType) {
-        case LauncherSettings.Favorites.ICON_TYPE_RESOURCE:
-            String packageName = c.getString(iconPackageIndex);
-            String resourceName = c.getString(iconResourceIndex);
-            info.customIcon = false;
-            // the resource
-            icon = Utilities.createIconBitmap(packageName, resourceName, context);
-            // the db
-            if (icon == null) {
-                icon = Utilities.createIconBitmap(c, iconIndex, context);
-            }
-            // the fallback icon
-            if (icon == null) {
-                icon = mIconCache.getDefaultIcon(info.user);
-                info.usingFallbackIcon = true;
-            }
-            break;
-        case LauncherSettings.Favorites.ICON_TYPE_BITMAP:
-            icon = Utilities.createIconBitmap(c, iconIndex, context);
-            if (icon == null) {
-                icon = mIconCache.getDefaultIcon(info.user);
-                info.customIcon = false;
-                info.usingFallbackIcon = true;
-            } else {
-                info.customIcon = true;
-            }
-            break;
-        default:
+        Bitmap icon = iconInfo.loadIcon(c, info, context);
+        // the fallback icon
+        if (icon == null) {
             icon = mIconCache.getDefaultIcon(info.user);
             info.usingFallbackIcon = true;
-            info.customIcon = false;
-            break;
         }
         info.setIcon(icon);
         return info;
