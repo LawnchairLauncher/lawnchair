@@ -4490,40 +4490,61 @@ public class Launcher extends Activity
         if (mSearchDropTargetBar != null) mSearchDropTargetBar.hideSearchBar(false);
     }
 
+    // TODO: These method should be a part of LauncherSearchCallback
     public ItemInfo createAppDragInfo(Intent appLaunchIntent) {
-        // Called from search suggestion, not supported in other profiles.
-        final UserHandleCompat myUser = UserHandleCompat.myUserHandle();
+        // Called from search suggestion
+        return createAppDragInfo(appLaunchIntent, UserHandleCompat.myUserHandle());
+    }
+
+    // TODO: This method should be a part of LauncherSearchCallback
+    public ItemInfo createAppDragInfo(Intent appLaunchIntent, UserHandleCompat user) {
+        if (user == null) {
+            user = UserHandleCompat.myUserHandle();
+        }
+
+        // Called from search suggestion, add the profile extra to the intent to ensure that we
+        // can launch it correctly
+        long serialNumber = UserManagerCompat.getInstance(this).getSerialNumberForUser(user);
+        appLaunchIntent.putExtra(AppInfo.EXTRA_PROFILE, serialNumber);
         LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(this);
         LauncherActivityInfoCompat activityInfo = launcherApps.resolveActivity(appLaunchIntent,
-                myUser);
+                user);
         if (activityInfo == null) {
             return null;
         }
-        return new AppInfo(this, activityInfo, myUser, mIconCache);
+        return new AppInfo(this, activityInfo, user, mIconCache);
     }
 
+    // TODO: This method should be a part of LauncherSearchCallback
     public ItemInfo createShortcutDragInfo(Intent shortcutIntent, CharSequence caption,
             Bitmap icon) {
-        // Called from search suggestion, not supported in other profiles.
+        // Called from search suggestion
         return createShortcutDragInfo(shortcutIntent, caption, icon,
                 UserHandleCompat.myUserHandle());
     }
 
+    // TODO: This method should be a part of LauncherSearchCallback
     public ItemInfo createShortcutDragInfo(Intent shortcutIntent, CharSequence caption,
             Bitmap icon, UserHandleCompat user) {
+        if (user == null) {
+            user = UserHandleCompat.myUserHandle();
+        }
+
+        // Called from search suggestion
         UserManagerCompat userManager = UserManagerCompat.getInstance(this);
         CharSequence contentDescription = userManager.getBadgedLabelForUser(caption, user);
         return new ShortcutInfo(shortcutIntent, caption, contentDescription, icon, user);
     }
 
-    protected void moveWorkspaceToDefaultScreen() {
-        mWorkspace.moveToDefaultScreen(false);
-    }
-
+    // TODO: This method should be a part of LauncherSearchCallback
     public void startDrag(View dragView, ItemInfo dragInfo, DragSource source) {
         dragView.setTag(dragInfo);
         mWorkspace.onExternalDragStartedWithItem(dragView);
         mWorkspace.beginExternalDragShared(dragView, source);
+    }
+
+    protected void moveWorkspaceToDefaultScreen() {
+        mWorkspace.moveToDefaultScreen(false);
     }
 
     @Override
