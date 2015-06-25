@@ -170,10 +170,12 @@ public class BaseRecyclerViewFastScrollBar {
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                mIsDragging = false;
                 mTouchOffset = 0;
-                mPopup.animateVisibility(false);
-                animateScrollbar(false);
+                if (mIsDragging) {
+                    mIsDragging = false;
+                    mPopup.animateVisibility(false);
+                    animateScrollbar(false);
+                }
                 break;
         }
     }
