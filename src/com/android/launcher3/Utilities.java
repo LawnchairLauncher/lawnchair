@@ -56,8 +56,6 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.Toast;
 
-import junit.framework.Assert;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -665,8 +663,9 @@ public final class Utilities {
     }
 
     public static void assertWorkerThread() {
-        if (LauncherAppState.isDogfoodBuild()) {
-            Assert.assertTrue(LauncherModel.sWorkerThread.getThreadId() == Process.myTid());
+        if (LauncherAppState.isDogfoodBuild() &&
+                (LauncherModel.sWorkerThread.getThreadId() != Process.myTid())) {
+            throw new IllegalStateException();
         }
     }
 
