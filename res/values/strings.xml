@@ -167,10 +167,8 @@
     <string name="settings_button_text">Settings</string>
 
     <!-- Strings for settings -->
-    <!-- Title for Allow Rotation setting. [CHAR LIMIT=50] [DO NOT TRANSLATE] -->
+    <!-- Title for Allow Rotation setting. [CHAR LIMIT=50] -->
     <string name="allow_rotation_title">Allow rotation</string>
-    <!-- Summary for Allow Rotation setting. [CHAR LIMIT=150] [DO NOT TRANSLATE] -->
-    <string name="allow_rotation_summary">Allow rotation of the home screen</string>
 
     <!-- Label on an icon that references an uninstalled package, for which we have no information about when it might be installed. [CHAR_LIMIT=15] -->
     <string name="package_state_unknown">Unknown</string>
