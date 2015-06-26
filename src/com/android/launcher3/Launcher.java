@@ -3519,6 +3519,8 @@ public class Launcher extends Activity
             text.add(getString(R.string.all_apps_button_label));
         } else if (mState == State.WIDGETS) {
             text.add(getString(R.string.widget_button_text));
+        } else if (mWorkspace != null) {
+            text.add(mWorkspace.getCurrentPageDescription());
         } else {
             text.add(getString(R.string.all_apps_home_button_label));
         }
