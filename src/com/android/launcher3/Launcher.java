@@ -64,6 +64,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.os.SystemClock;
+import android.os.UserHandle;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -93,6 +94,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.PagedView.PageSwitchListener;
 import com.android.launcher3.allapps.AllAppsContainerView;
@@ -4493,24 +4495,29 @@ public class Launcher extends Activity
     }
 
     // TODO: These method should be a part of LauncherSearchCallback
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public ItemInfo createAppDragInfo(Intent appLaunchIntent) {
         // Called from search suggestion
-        return createAppDragInfo(appLaunchIntent, UserHandleCompat.myUserHandle());
+        UserHandleCompat user = null;
+        if (Utilities.isLmpOrAbove()) {
+            UserHandle userHandle = appLaunchIntent.getParcelableExtra(Intent.EXTRA_USER);
+            if (userHandle != null) {
+                user = UserHandleCompat.fromUser(userHandle);
+            }
+        }
+        return createAppDragInfo(appLaunchIntent, user);
     }
 
     // TODO: This method should be a part of LauncherSearchCallback
-    public ItemInfo createAppDragInfo(Intent appLaunchIntent, UserHandleCompat user) {
+    public ItemInfo createAppDragInfo(Intent intent, UserHandleCompat user) {
         if (user == null) {
             user = UserHandleCompat.myUserHandle();
         }
 
         // Called from search suggestion, add the profile extra to the intent to ensure that we
         // can launch it correctly
-        long serialNumber = UserManagerCompat.getInstance(this).getSerialNumberForUser(user);
-        appLaunchIntent.putExtra(AppInfo.EXTRA_PROFILE, serialNumber);
         LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(this);
-        LauncherActivityInfoCompat activityInfo = launcherApps.resolveActivity(appLaunchIntent,
-                user);
+        LauncherActivityInfoCompat activityInfo = launcherApps.resolveActivity(intent, user);
         if (activityInfo == null) {
             return null;
         }
@@ -4520,22 +4527,8 @@ public class Launcher extends Activity
     // TODO: This method should be a part of LauncherSearchCallback
     public ItemInfo createShortcutDragInfo(Intent shortcutIntent, CharSequence caption,
             Bitmap icon) {
-        // Called from search suggestion
-        return createShortcutDragInfo(shortcutIntent, caption, icon,
+        return new ShortcutInfo(shortcutIntent, caption, caption, icon,
                 UserHandleCompat.myUserHandle());
-    }
-
-    // TODO: This method should be a part of LauncherSearchCallback
-    public ItemInfo createShortcutDragInfo(Intent shortcutIntent, CharSequence caption,
-            Bitmap icon, UserHandleCompat user) {
-        if (user == null) {
-            user = UserHandleCompat.myUserHandle();
-        }
-
-        // Called from search suggestion
-        UserManagerCompat userManager = UserManagerCompat.getInstance(this);
-        CharSequence contentDescription = userManager.getBadgedLabelForUser(caption, user);
-        return new ShortcutInfo(shortcutIntent, caption, contentDescription, icon, user);
     }
 
     // TODO: This method should be a part of LauncherSearchCallback
