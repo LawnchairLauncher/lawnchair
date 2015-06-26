@@ -883,6 +883,15 @@ public class Launcher extends Activity
         }
     }
 
+    /** @Override for MNC */
+    protected void onRequestPermissionsResult(int requestCode, String[] permissions,
+            int[] grantResults) {
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onRequestPermissionsResult(requestCode, permissions,
+                    grantResults);
+        }
+    }
+
     private PendingAddArguments preparePendingAddArgs(int requestCode, Intent data, int
             appWidgetId, ItemInfo info) {
         PendingAddArguments args = new PendingAddArguments();

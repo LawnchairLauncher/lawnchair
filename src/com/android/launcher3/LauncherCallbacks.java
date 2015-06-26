@@ -37,6 +37,8 @@ public interface LauncherCallbacks {
     public void onPostCreate(Bundle savedInstanceState);
     public void onNewIntent(Intent intent);
     public void onActivityResult(int requestCode, int resultCode, Intent data);
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            int[] grantResults);
     public void onWindowFocusChanged(boolean hasFocus);
     public boolean onPrepareOptionsMenu(Menu menu);
     public void dump(String prefix, FileDescriptor fd, PrintWriter w, String[] args);
