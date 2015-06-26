@@ -90,39 +90,6 @@
             </intent-filter>
         </activity>
 
-        <!-- ENABLE_FOR_TESTING
-
-        <activity
-            android:name="com.android.launcher3.testing.LauncherExtension"
-            android:launchMode="singleTask"
-            android:clearTaskOnLaunch="true"
-            android:stateNotNeeded="true"
-            android:theme="@style/Theme"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="nosensor"
-            android:enabled="false">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.HOME" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.MONKEY"/>
-            </intent-filter>
-        </activity>
-
-        -->
-
-        <activity
-            android:name="com.android.launcher3.ToggleWeightWatcher"
-            android:label="@string/toggle_weight_watcher"
-            android:enabled="@bool/debug_memory_enabled"
-            android:icon="@mipmap/ic_launcher_home">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
         <activity
             android:name="com.android.launcher3.WallpaperPickerActivity"
             android:theme="@style/Theme.WallpaperPicker"
@@ -157,27 +124,6 @@
             android:process=":settings_process">
         </activity>
 
-        <!-- Debugging tools -->
-        <activity
-            android:name="com.android.launcher3.MemoryDumpActivity"
-            android:theme="@android:style/Theme.NoDisplay"
-            android:label="@string/debug_memory_activity"
-            android:enabled="@bool/debug_memory_enabled"
-            android:excludeFromRecents="true"
-            android:icon="@mipmap/ic_launcher_home"
-            >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <service android:name="com.android.launcher3.MemoryTracker"
-            android:enabled="@bool/debug_memory_enabled"
-            >
-        </service>
-
         <!-- Intent received used to install shortcuts from other applications -->
         <receiver
             android:name="com.android.launcher3.InstallShortcutReceiver"
@@ -204,5 +150,54 @@
 
         <meta-data android:name="android.nfc.disable_beam_default"
                        android:value="true" />
+
+        <!-- ENABLE_FOR_TESTING
+
+        <activity
+            android:name="com.android.launcher3.testing.LauncherExtension"
+            android:launchMode="singleTask"
+            android:clearTaskOnLaunch="true"
+            android:stateNotNeeded="true"
+            android:theme="@style/Theme"
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="nosensor"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.MONKEY"/>
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.android.launcher3.testing.MemoryDumpActivity"
+            android:theme="@android:style/Theme.NoDisplay"
+            android:label="* HPROF"
+            android:excludeFromRecents="true"
+            android:icon="@mipmap/ic_launcher_home"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.android.launcher3.testing.ToggleWeightWatcher"
+            android:label="Show Mem"
+            android:icon="@mipmap/ic_launcher_home">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <service android:name="com.android.launcher3.testing.MemoryTracker" />
+
+        -->
+
     </application>
 </manifest>

@@ -14,22 +14,28 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.testing;
 
 import android.app.ActivityManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.*;
+import android.os.Binder;
+import android.os.Debug;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.os.SystemClock;
 import android.util.Log;
 import android.util.LongSparseArray;
+
+import com.android.launcher3.util.TestingUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MemoryTracker extends Service {
     public static final String TAG = MemoryTracker.class.getSimpleName();
-    public static final String ACTION_START_TRACKING = "com.android.launcher3.action.START_TRACKING";
 
     private static final long UPDATE_RATE = 5000;
 
@@ -82,14 +88,6 @@ public class MemoryTracker extends Service {
     };
 
     ActivityManager mAm;
-
-    public static void startTrackingMe(Context context, String name) {
-        context.startService(new Intent(context, MemoryTracker.class)
-                .setAction(MemoryTracker.ACTION_START_TRACKING)
-                .putExtra("pid", android.os.Process.myPid())
-                .putExtra("name", name)
-        );
-    }
 
     public ProcessMemInfo getMemInfo(int pid) {
         return mData.get(pid);
@@ -190,7 +188,7 @@ public class MemoryTracker extends Service {
         Log.v(TAG, "Received start id " + startId + ": " + intent);
 
         if (intent != null) {
-            if (ACTION_START_TRACKING.equals(intent.getAction())) {
+            if (TestingUtils.ACTION_START_TRACKING.equals(intent.getAction())) {
                 final int pid = intent.getIntExtra("pid", -1);
                 final String name = intent.getStringExtra("name");
                 final long start = intent.getLongExtra("start", System.currentTimeMillis());
