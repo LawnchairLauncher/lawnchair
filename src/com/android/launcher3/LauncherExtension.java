@@ -82,6 +82,11 @@ public class LauncherExtension extends Launcher {
         }
 
         @Override
+        public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                int[] grantResults) {
+        }
+
+        @Override
         public void onWindowFocusChanged(boolean hasFocus) {
         }
 
