@@ -22,22 +22,22 @@ import android.provider.BaseColumns;
 /**
  * Settings related utilities.
  */
-class LauncherSettings {
+public class LauncherSettings {
     /** Columns required on table staht will be subject to backup and restore. */
-    static interface ChangeLogColumns extends BaseColumns {
+    public static interface ChangeLogColumns extends BaseColumns {
         /**
          * The time of the last update to this row.
          * <P>Type: INTEGER</P>
          */
-        static final String MODIFIED = "modified";
+        public static final String MODIFIED = "modified";
     }
 
-    static interface BaseLauncherColumns extends ChangeLogColumns {
+    public static interface BaseLauncherColumns extends ChangeLogColumns {
         /**
          * Descriptive name of the gesture that can be displayed to the user.
          * <P>Type: TEXT</P>
          */
-        static final String TITLE = "title";
+        public static final String TITLE = "title";
 
         /**
          * The Intent URL of the gesture, describing what it points to. This
@@ -45,58 +45,58 @@ class LauncherSettings {
          * an Intent that can be launched.
          * <P>Type: TEXT</P>
          */
-        static final String INTENT = "intent";
+        public static final String INTENT = "intent";
 
         /**
          * The type of the gesture
          *
          * <P>Type: INTEGER</P>
          */
-        static final String ITEM_TYPE = "itemType";
+        public static final String ITEM_TYPE = "itemType";
 
         /**
          * The gesture is an application
          */
-        static final int ITEM_TYPE_APPLICATION = 0;
+        public static final int ITEM_TYPE_APPLICATION = 0;
 
         /**
          * The gesture is an application created shortcut
          */
-        static final int ITEM_TYPE_SHORTCUT = 1;
+        public static final int ITEM_TYPE_SHORTCUT = 1;
 
         /**
          * The icon type.
          * <P>Type: INTEGER</P>
          */
-        static final String ICON_TYPE = "iconType";
+        public static final String ICON_TYPE = "iconType";
 
         /**
          * The icon is a resource identified by a package name and an integer id.
          */
-        static final int ICON_TYPE_RESOURCE = 0;
+        public static final int ICON_TYPE_RESOURCE = 0;
 
         /**
          * The icon is a bitmap.
          */
-        static final int ICON_TYPE_BITMAP = 1;
+        public static final int ICON_TYPE_BITMAP = 1;
 
         /**
          * The icon package name, if icon type is ICON_TYPE_RESOURCE.
          * <P>Type: TEXT</P>
          */
-        static final String ICON_PACKAGE = "iconPackage";
+        public static final String ICON_PACKAGE = "iconPackage";
 
         /**
          * The icon resource id, if icon type is ICON_TYPE_RESOURCE.
          * <P>Type: TEXT</P>
          */
-        static final String ICON_RESOURCE = "iconResource";
+        public static final String ICON_RESOURCE = "iconResource";
 
         /**
          * The custom icon bitmap, if icon type is ICON_TYPE_BITMAP.
          * <P>Type: BLOB</P>
          */
-        static final String ICON = "icon";
+        public static final String ICON = "icon";
     }
 
     /**
@@ -104,11 +104,11 @@ class LauncherSettings {
      *
      * Tracks the order of workspace screens.
      */
-    static final class WorkspaceScreens implements ChangeLogColumns {
+    public static final class WorkspaceScreens implements ChangeLogColumns {
         /**
          * The content:// style URL for this table
          */
-        static final Uri CONTENT_URI = Uri.parse("content://" +
+        public static final Uri CONTENT_URI = Uri.parse("content://" +
                 LauncherProvider.AUTHORITY + "/" + LauncherProvider.TABLE_WORKSPACE_SCREENS +
                 "?" + LauncherProvider.PARAMETER_NOTIFY + "=true");
 
@@ -116,24 +116,24 @@ class LauncherSettings {
          * The rank of this screen -- ie. how it is ordered relative to the other screens.
          * <P>Type: INTEGER</P>
          */
-        static final String SCREEN_RANK = "screenRank";
+        public static final String SCREEN_RANK = "screenRank";
     }
 
     /**
      * Favorites.
      */
-    static final class Favorites implements BaseLauncherColumns {
+    public static final class Favorites implements BaseLauncherColumns {
         /**
          * The content:// style URL for this table
          */
-        static final Uri CONTENT_URI = Uri.parse("content://" +
+        public static final Uri CONTENT_URI = Uri.parse("content://" +
                 LauncherProvider.AUTHORITY + "/" + LauncherProvider.TABLE_FAVORITES +
                 "?" + LauncherProvider.PARAMETER_NOTIFY + "=true");
 
         /**
          * The content:// style URL for this table
          */
-        static final Uri OLD_CONTENT_URI = Uri.parse("content://" +
+        public static final Uri OLD_CONTENT_URI = Uri.parse("content://" +
                 LauncherProvider.OLD_AUTHORITY + "/" + LauncherProvider.TABLE_FAVORITES +
                 "?" + LauncherProvider.PARAMETER_NOTIFY + "=true");
 
@@ -141,7 +141,7 @@ class LauncherSettings {
          * The content:// style URL for this table. When this Uri is used, no notification is
          * sent if the content changes.
          */
-        static final Uri CONTENT_URI_NO_NOTIFICATION = Uri.parse("content://" +
+        public static final Uri CONTENT_URI_NO_NOTIFICATION = Uri.parse("content://" +
                 LauncherProvider.AUTHORITY + "/" + LauncherProvider.TABLE_FAVORITES +
                 "?" + LauncherProvider.PARAMETER_NOTIFY + "=false");
 
@@ -153,7 +153,7 @@ class LauncherSettings {
          *
          * @return The unique content URL for the specified row.
          */
-        static Uri getContentUri(long id, boolean notify) {
+        public static Uri getContentUri(long id, boolean notify) {
             return Uri.parse("content://" + LauncherProvider.AUTHORITY +
                     "/" + LauncherProvider.TABLE_FAVORITES + "/" + id + "?" +
                     LauncherProvider.PARAMETER_NOTIFY + "=" + notify);
@@ -163,15 +163,15 @@ class LauncherSettings {
          * The container holding the favorite
          * <P>Type: INTEGER</P>
          */
-        static final String CONTAINER = "container";
+        public static final String CONTAINER = "container";
 
         /**
          * The icon is a resource identified by a package name and an integer id.
          */
-        static final int CONTAINER_DESKTOP = -100;
-        static final int CONTAINER_HOTSEAT = -101;
+        public static final int CONTAINER_DESKTOP = -100;
+        public static final int CONTAINER_HOTSEAT = -101;
 
-        static final String containerToString(int container) {
+        public static final String containerToString(int container) {
             switch (container) {
                 case CONTAINER_DESKTOP: return "desktop";
                 case CONTAINER_HOTSEAT: return "hotseat";
@@ -183,33 +183,33 @@ class LauncherSettings {
          * The screen holding the favorite (if container is CONTAINER_DESKTOP)
          * <P>Type: INTEGER</P>
          */
-        static final String SCREEN = "screen";
+        public static final String SCREEN = "screen";
 
         /**
          * The X coordinate of the cell holding the favorite
          * (if container is CONTAINER_HOTSEAT or CONTAINER_HOTSEAT)
          * <P>Type: INTEGER</P>
          */
-        static final String CELLX = "cellX";
+        public static final String CELLX = "cellX";
 
         /**
          * The Y coordinate of the cell holding the favorite
          * (if container is CONTAINER_DESKTOP)
          * <P>Type: INTEGER</P>
          */
-        static final String CELLY = "cellY";
+        public static final String CELLY = "cellY";
 
         /**
          * The X span of the cell holding the favorite
          * <P>Type: INTEGER</P>
          */
-        static final String SPANX = "spanX";
+        public static final String SPANX = "spanX";
 
         /**
          * The Y span of the cell holding the favorite
          * <P>Type: INTEGER</P>
          */
-        static final String SPANY = "spanY";
+        public static final String SPANY = "spanY";
 
         /**
          * The profile id of the item in the cell.
@@ -217,12 +217,12 @@ class LauncherSettings {
          * Type: INTEGER
          * </P>
          */
-        static final String PROFILE_ID = "profileId";
+        public static final String PROFILE_ID = "profileId";
 
         /**
          * The favorite is a user created folder
          */
-        static final int ITEM_TYPE_FOLDER = 2;
+        public static final int ITEM_TYPE_FOLDER = 2;
 
         /**
         * The favorite is a live folder
@@ -231,39 +231,39 @@ class LauncherSettings {
         * exist within the launcher database will be ignored when loading.  That said, these
         * entries in the database may still exist, and are not automatically stripped.
         */
-        static final int ITEM_TYPE_LIVE_FOLDER = 3;
+        public static final int ITEM_TYPE_LIVE_FOLDER = 3;
 
         /**
          * The favorite is a widget
          */
-        static final int ITEM_TYPE_APPWIDGET = 4;
+        public static final int ITEM_TYPE_APPWIDGET = 4;
 
         /**
          * The favorite is a custom widget provided by the launcher
          */
-        static final int ITEM_TYPE_CUSTOM_APPWIDGET = 5;
+        public static final int ITEM_TYPE_CUSTOM_APPWIDGET = 5;
 
         /**
          * The favorite is a clock
          */
-        static final int ITEM_TYPE_WIDGET_CLOCK = 1000;
+        public static final int ITEM_TYPE_WIDGET_CLOCK = 1000;
 
         /**
          * The favorite is a search widget
          */
-        static final int ITEM_TYPE_WIDGET_SEARCH = 1001;
+        public static final int ITEM_TYPE_WIDGET_SEARCH = 1001;
 
         /**
          * The favorite is a photo frame
          */
-        static final int ITEM_TYPE_WIDGET_PHOTO_FRAME = 1002;
+        public static final int ITEM_TYPE_WIDGET_PHOTO_FRAME = 1002;
 
         /**
          * The appWidgetId of the widget
          *
          * <P>Type: INTEGER</P>
          */
-        static final String APPWIDGET_ID = "appWidgetId";
+        public static final String APPWIDGET_ID = "appWidgetId";
 
         /**
          * The ComponentName of the widget provider
@@ -302,12 +302,12 @@ class LauncherSettings {
          * Boolean indicating that his item was restored and not yet successfully bound.
          * <P>Type: INTEGER</P>
          */
-        static final String RESTORED = "restored";
+        public static final String RESTORED = "restored";
 
         /**
          * Indicates the position of the item inside an auto-arranged view like folder or hotseat.
          * <p>Type: INTEGER</p>
          */
-        static final String RANK = "rank";
+        public static final String RANK = "rank";
     }
 }
