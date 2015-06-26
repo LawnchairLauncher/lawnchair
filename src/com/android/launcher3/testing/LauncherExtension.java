@@ -1,7 +1,6 @@
-package com.android.launcher3;
+package com.android.launcher3.testing;
 
 import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.ComponentName;
@@ -11,6 +10,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.android.launcher3.AppInfo;
+import com.android.launcher3.InsettableFrameLayout;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAnimUtils;
+import com.android.launcher3.LauncherCallbacks;
+import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsSearchBarController;
 import com.android.launcher3.util.ComponentKey;
 
