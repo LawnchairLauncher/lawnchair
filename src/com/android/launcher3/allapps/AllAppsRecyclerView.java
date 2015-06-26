@@ -21,13 +21,11 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.view.ContextThemeWrapper;
 import android.view.View;
 
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.BaseRecyclerViewFastScrollBar;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.Stats;
 import com.android.launcher3.util.Thunk;
 
@@ -57,7 +55,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView
     private final int mFastScrollMode = FAST_SCROLL_MODE_JUMP_TO_FIRST_ICON;
     private final int mScrollBarMode = FAST_SCROLL_BAR_MODE_DISTRIBUTE_BY_ROW;
 
-    private Launcher mLauncher;
     private ScrollPositionState mScrollPosState = new ScrollPositionState();
 
     public AllAppsRecyclerView(Context context) {
@@ -75,9 +72,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView
     public AllAppsRecyclerView(Context context, AttributeSet attrs, int defStyleAttr,
             int defStyleRes) {
         super(context, attrs, defStyleAttr);
-        // We have a theme on this view, so we need to coerce the base activity context from that
-        ContextThemeWrapper ctx = (ContextThemeWrapper) context;
-        mLauncher = (Launcher) ctx.getBaseContext();
     }
 
     /**
@@ -90,10 +84,9 @@ public class AllAppsRecyclerView extends BaseRecyclerView
     /**
      * Sets the number of apps per row in this recycler view.
      */
-    public void setNumAppsPerRow(int numAppsPerRow) {
+    public void setNumAppsPerRow(DeviceProfile grid, int numAppsPerRow) {
         mNumAppsPerRow = numAppsPerRow;
 
-        DeviceProfile grid = mLauncher.getDeviceProfile();
         RecyclerView.RecycledViewPool pool = getRecycledViewPool();
         int approxRows = (int) Math.ceil(grid.availableHeightPx / grid.allAppsIconSizePx);
         pool.setMaxRecycledViews(AllAppsGridAdapter.PREDICTION_BAR_SPACER_TYPE, 1);
