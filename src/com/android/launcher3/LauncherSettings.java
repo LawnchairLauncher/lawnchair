@@ -105,6 +105,9 @@ public class LauncherSettings {
      * Tracks the order of workspace screens.
      */
     public static final class WorkspaceScreens implements ChangeLogColumns {
+
+        public static final String TABLE_NAME = "workspaceScreens";
+
         /**
          * The content:// style URL for this table
          */
