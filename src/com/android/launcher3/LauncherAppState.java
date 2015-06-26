@@ -27,6 +27,7 @@ import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.util.TestingUtils;
 import com.android.launcher3.util.Thunk;
 
 import java.lang.ref.WeakReference;
@@ -79,8 +80,8 @@ public class LauncherAppState {
 
         Log.v(Launcher.TAG, "LauncherAppState inited");
 
-        if (sContext.getResources().getBoolean(R.bool.debug_memory_enabled)) {
-            MemoryTracker.startTrackingMe(sContext, "L");
+        if (TestingUtils.MEMORY_DUMP_ENABLED) {
+            TestingUtils.startTrackingMemory(sContext);
         }
 
         mInvariantDeviceProfile = new InvariantDeviceProfile(sContext);

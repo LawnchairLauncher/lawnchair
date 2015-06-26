@@ -45,8 +45,6 @@
     <!-- SafeMode widget error string -->
     <string name="safemode_widget_error">Widgets disabled in Safe mode</string>
 
-    <string name="toggle_weight_watcher">Show Mem</string>
-
     <!-- Widgets -->
     <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
     <string name="long_press_widget_to_add">Touch &amp; hold to pick up a widget.</string>
@@ -161,9 +159,6 @@
     <string name="folder_renamed">Folder renamed to <xliff:g id="name" example="Games">%1$s</xliff:g></string>
     <!-- Folder name format -->
     <string name="folder_name_format">Folder: <xliff:g id="name" example="Games">%1$s</xliff:g></string>
-
-    <!-- Debug-only activity name. [DO NOT TRANSLATE] -->
-    <string name="debug_memory_activity">* HPROF</string>
 
     <!-- Strings for the customization mode -->
     <!-- Text for widget add button -->
