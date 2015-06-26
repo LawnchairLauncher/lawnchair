@@ -771,22 +771,7 @@ public class LauncherBackupHelper implements BackupHelper {
         favorite.spanX = c.getInt(SPANX_INDEX);
         favorite.spanY = c.getInt(SPANY_INDEX);
         favorite.iconType = c.getInt(ICON_TYPE_INDEX);
-        if (favorite.iconType == Favorites.ICON_TYPE_RESOURCE) {
-            String iconPackage = c.getString(ICON_PACKAGE_INDEX);
-            if (!TextUtils.isEmpty(iconPackage)) {
-                favorite.iconPackage = iconPackage;
-            }
-            String iconResource = c.getString(ICON_RESOURCE_INDEX);
-            if (!TextUtils.isEmpty(iconResource)) {
-                favorite.iconResource = iconResource;
-            }
-        }
-        if (favorite.iconType == Favorites.ICON_TYPE_BITMAP) {
-            byte[] blob = c.getBlob(ICON_INDEX);
-            if (blob != null && blob.length > 0) {
-                favorite.icon = blob;
-            }
-        }
+
         String title = c.getString(TITLE_INDEX);
         if (!TextUtils.isEmpty(title)) {
             favorite.title = title;
@@ -808,6 +793,22 @@ public class LauncherBackupHelper implements BackupHelper {
             String appWidgetProvider = c.getString(APPWIDGET_PROVIDER_INDEX);
             if (!TextUtils.isEmpty(appWidgetProvider)) {
                 favorite.appWidgetProvider = appWidgetProvider;
+            }
+        } else if (favorite.itemType == Favorites.ITEM_TYPE_SHORTCUT) {
+            if (favorite.iconType == Favorites.ICON_TYPE_RESOURCE) {
+                String iconPackage = c.getString(ICON_PACKAGE_INDEX);
+                if (!TextUtils.isEmpty(iconPackage)) {
+                    favorite.iconPackage = iconPackage;
+                }
+                String iconResource = c.getString(ICON_RESOURCE_INDEX);
+                if (!TextUtils.isEmpty(iconResource)) {
+                    favorite.iconResource = iconResource;
+                }
+            }
+
+            byte[] blob = c.getBlob(ICON_INDEX);
+            if (blob != null && blob.length > 0) {
+                favorite.icon = blob;
             }
         }
 
@@ -852,14 +853,16 @@ public class LauncherBackupHelper implements BackupHelper {
         values.put(Favorites.CELLY, favorite.cellY);
         values.put(Favorites.SPANX, favorite.spanX);
         values.put(Favorites.SPANY, favorite.spanY);
-        values.put(Favorites.ICON_TYPE, favorite.iconType);
-        if (favorite.iconType == Favorites.ICON_TYPE_RESOURCE) {
-            values.put(Favorites.ICON_PACKAGE, favorite.iconPackage);
-            values.put(Favorites.ICON_RESOURCE, favorite.iconResource);
-        }
-        if (favorite.iconType == Favorites.ICON_TYPE_BITMAP) {
+
+        if (favorite.itemType == Favorites.ITEM_TYPE_SHORTCUT) {
+            values.put(Favorites.ICON_TYPE, favorite.iconType);
+            if (favorite.iconType == Favorites.ICON_TYPE_RESOURCE) {
+                values.put(Favorites.ICON_PACKAGE, favorite.iconPackage);
+                values.put(Favorites.ICON_RESOURCE, favorite.iconResource);
+            }
             values.put(Favorites.ICON, favorite.icon);
         }
+
         if (!TextUtils.isEmpty(favorite.title)) {
             values.put(Favorites.TITLE, favorite.title);
         } else {

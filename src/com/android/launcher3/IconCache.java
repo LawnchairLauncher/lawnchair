@@ -46,10 +46,12 @@ import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.Thunk;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.Stack;
 
 /**
@@ -215,7 +217,7 @@ public class IconCache {
                 new String[] {packageName + "/%", Long.toString(userSerial)});
     }
 
-    public void updateDbIcons() {
+    public void updateDbIcons(Set<String> ignorePackagesForMainUser) {
         // Remove all active icon update tasks.
         mWorkerHandler.removeCallbacksAndMessages(ICON_UPDATE_TOKEN);
 
@@ -231,7 +233,8 @@ public class IconCache {
 
             // Update icon cache. This happens in segments and {@link #onPackageIconsUpdated}
             // is called by the icon cache when the job is complete.
-            updateDBIcons(user, apps);
+            updateDBIcons(user, apps, UserHandleCompat.myUserHandle().equals(user)
+                    ? ignorePackagesForMainUser : Collections.<String>emptySet());
         }
     }
 
@@ -240,7 +243,8 @@ public class IconCache {
      * the DB and are updated.
      * @return The set of packages for which icons have updated.
      */
-    private void updateDBIcons(UserHandleCompat user, List<LauncherActivityInfoCompat> apps) {
+    private void updateDBIcons(UserHandleCompat user, List<LauncherActivityInfoCompat> apps,
+            Set<String> ignorePackages) {
         long userSerial = mUserManager.getSerialNumberForUser(user);
         PackageManager pm = mContext.getPackageManager();
         HashMap<String, PackageInfo> pkgInfoMap = new HashMap<String, PackageInfo>();
@@ -275,8 +279,10 @@ public class IconCache {
             ComponentName component = ComponentName.unflattenFromString(cn);
             PackageInfo info = pkgInfoMap.get(component.getPackageName());
             if (info == null) {
-                remove(component, user);
-                itemsToRemove.add(c.getInt(rowIndex));
+                if (!ignorePackages.contains(component.getPackageName())) {
+                    remove(component, user);
+                    itemsToRemove.add(c.getInt(rowIndex));
+                }
                 continue;
             }
             if ((info.applicationInfo.flags & ApplicationInfo.FLAG_IS_DATA_ONLY) != 0) {

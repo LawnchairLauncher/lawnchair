@@ -432,10 +432,4 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 .fromResolveInfo(info, original.mContext);
         return new PendingInstallShortcutInfo(launcherInfo, original.mContext);
     }
-
-    public static boolean isLauncherActivity(Intent intent, Context context) {
-        Intent data = new Intent().putExtra(Intent.EXTRA_SHORTCUT_INTENT, intent);
-        PendingInstallShortcutInfo info = new PendingInstallShortcutInfo(data, context);
-        return convertToLauncherActivityIfPossible(info).isLuncherActivity();
-    }
 }

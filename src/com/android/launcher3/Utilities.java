@@ -45,6 +45,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Process;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -62,6 +63,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Locale;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -676,14 +678,23 @@ public final class Utilities {
      * @param launchIntent The intent that will be launched when the shortcut is clicked.
      */
     public static boolean isLauncherAppTarget(Intent launchIntent) {
-        return launchIntent != null
+        if (launchIntent != null
                 && Intent.ACTION_MAIN.equals(launchIntent.getAction())
                 && launchIntent.getComponent() != null
                 && launchIntent.getCategories() != null
                 && launchIntent.getCategories().size() == 1
                 && launchIntent.hasCategory(Intent.CATEGORY_LAUNCHER)
-                && launchIntent.getExtras() == null
-                && TextUtils.isEmpty(launchIntent.getDataString());
+                && TextUtils.isEmpty(launchIntent.getDataString())) {
+            // An app target can either have no extra or have ItemInfo.EXTRA_PROFILE.
+            Bundle extras = launchIntent.getExtras();
+            if (extras == null) {
+                return true;
+            } else {
+                Set<String> keys = extras.keySet();
+                return keys.size() == 1 && keys.contains(ItemInfo.EXTRA_PROFILE);
+            }
+        };
+        return false;
     }
 
     public static float dpiFromPx(int size, DisplayMetrics metrics){
