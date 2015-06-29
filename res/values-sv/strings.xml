@@ -68,6 +68,7 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Widgetar"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Bakgrunder"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"Inställningar"</string>
+    <string name="allow_rotation_title" msgid="2118706734511831751">"Tillåt rotering"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Okänt"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Ta bort"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Sök"</string>
