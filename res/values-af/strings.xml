@@ -68,6 +68,7 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Legstukke"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Muurpapiere"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"Instellings"</string>
+    <string name="allow_rotation_title" msgid="2118706734511831751">"Laat draai toe"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Onbekend"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Verwyder"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Soek"</string>

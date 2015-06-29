@@ -68,6 +68,7 @@
     <string name="widget_button_text" msgid="2880537293434387943">"ವಿಜೆಟ್‌ಗಳು"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"ವಾಲ್‌ಪೇಪರ್‌ಗಳು"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</string>
+    <string name="allow_rotation_title" msgid="2118706734511831751">"ತಿರುಗಿಸುವಿಕೆಯನ್ನು ಅನುಮತಿಸಿ"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"ಅಜ್ಞಾತ"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ತೆಗೆದುಹಾಕಿ"</string>
     <string name="abandoned_search" msgid="891119232568284442">"ಹುಡುಕು"</string>

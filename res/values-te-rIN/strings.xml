@@ -68,6 +68,7 @@
     <string name="widget_button_text" msgid="2880537293434387943">"విడ్జెట్‌లు"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"వాల్‌పేపర్‌లు"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"సెట్టింగ్‌లు"</string>
+    <string name="allow_rotation_title" msgid="2118706734511831751">"భ్రమణాన్ని అనుమతించండి"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"తెలియదు"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"తీసివేయి"</string>
     <string name="abandoned_search" msgid="891119232568284442">"శోధించు"</string>

@@ -68,6 +68,7 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Moduler"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Bakgrunner"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"Innstillinger"</string>
+    <string name="allow_rotation_title" msgid="2118706734511831751">"Tillat rotasjon"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Ukjent"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Fjern"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Søk"</string>
