@@ -68,8 +68,7 @@
     <string name="widget_button_text" msgid="2880537293434387943">"ვიჯეტები"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"ფონები"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"პარამეტრები"</string>
-    <!-- no translation found for allow_rotation_title (2118706734511831751) -->
-    <skip />
+    <string name="allow_rotation_title" msgid="2118706734511831751">"როტაციის დაშვება"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"უცნობი"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ამოშლა"</string>
     <string name="abandoned_search" msgid="891119232568284442">"ძიება"</string>
