@@ -68,8 +68,7 @@
     <string name="widget_button_text" msgid="2880537293434387943">"小部件"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"壁纸"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"设置"</string>
-    <!-- no translation found for allow_rotation_title (2118706734511831751) -->
-    <skip />
+    <string name="allow_rotation_title" msgid="2118706734511831751">"允许旋转"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"未知"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"移除"</string>
     <string name="abandoned_search" msgid="891119232568284442">"搜索"</string>
