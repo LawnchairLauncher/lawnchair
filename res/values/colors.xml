@@ -34,10 +34,9 @@
 
     <color name="quantum_panel_text_color">#FF666666</color>
     <color name="quantum_panel_bg_color">#FFF5F5F5</color>
-    <color name="quantum_panel_bg_color_dark">#FF243036</color>
+    <color name="quantum_panel_bg_color_dark">#FF374248</color>
 
     <color name="outline_color">#FFFFFFFF</color>
-    <color name="widget_text_panel">#FF374248</color>
 
     <!-- Containers -->
     <color name="container_fastscroll_thumb_inactive_color">#42000000</color>
