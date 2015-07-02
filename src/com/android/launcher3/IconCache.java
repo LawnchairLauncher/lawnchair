@@ -32,6 +32,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -68,7 +71,7 @@ public class IconCache {
 
     private static final boolean DEBUG = false;
 
-    private static final int LOW_RES_SCALE_FACTOR = 8;
+    private static final int LOW_RES_SCALE_FACTOR = 5;
 
     @Thunk static final Object ICON_UPDATE_TOKEN = new Object();
 
@@ -93,6 +96,20 @@ public class IconCache {
 
     @Thunk final Handler mWorkerHandler;
 
+    // The background color used for activity icons. Since these icons are displayed in all-apps
+    // and folders, this would be same as the light quantum panel background. This color
+    // is used to convert icons to RGB_565.
+    private final int mActivityBgColor;
+    // The background color used for package icons. These are displayed in widget tray, which
+    // has a dark quantum panel background.
+    private final int mPackageBgColor;
+    private final BitmapFactory.Options mLowResOptions;
+
+    private String mSystemState;
+    private Bitmap mLowResBitmap;
+    private Canvas mLowResCanvas;
+    private Paint mLowResPaint;
+
     public IconCache(Context context, InvariantDeviceProfile inv) {
         mContext = context;
         mPackageManager = context.getPackageManager();
@@ -102,6 +119,14 @@ public class IconCache {
         mIconDb = new IconDB(context);
 
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
+
+        mActivityBgColor = context.getResources().getColor(R.color.quantum_panel_bg_color);
+        mPackageBgColor = context.getResources().getColor(R.color.quantum_panel_bg_color_dark);
+        mLowResOptions = new BitmapFactory.Options();
+        // Always prefer RGB_565 config for low res. If the bitmap has transparency, it will
+        // automatically be loaded as ALPHA_8888.
+        mLowResOptions.inPreferredConfig = Bitmap.Config.RGB_565;
+        updateSystemStateString();
     }
 
     private Drawable getFullResDefaultActivityIcon() {
@@ -221,7 +246,7 @@ public class IconCache {
         // Remove all active icon update tasks.
         mWorkerHandler.removeCallbacksAndMessages(ICON_UPDATE_TOKEN);
 
-        mIconDb.updateSystemStateString();
+        updateSystemStateString();
         for (UserHandleCompat user : mUserManager.getUserProfiles()) {
             // Query for the set of apps
             final List<LauncherActivityInfoCompat> apps = mLauncherApps.getActivityList(null, user);
@@ -294,7 +319,7 @@ public class IconCache {
             int version = c.getInt(indexVersion);
             LauncherActivityInfoCompat app = componentMap.remove(component);
             if (version == info.versionCode && updateTime == info.lastUpdateTime &&
-                    TextUtils.equals(mIconDb.mSystemState, c.getString(systemStateIndex))) {
+                    TextUtils.equals(mSystemState, c.getString(systemStateIndex))) {
                 continue;
             }
             if (app == null) {
@@ -361,7 +386,7 @@ public class IconCache {
         entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, app.getUser());
         mCache.put(new ComponentKey(app.getComponentName(), app.getUser()), entry);
 
-        return mIconDb.newContentValues(entry.icon, entry.title.toString());
+        return newContentValues(entry.icon, entry.title.toString(), mActivityBgColor);
     }
 
     /**
@@ -596,7 +621,7 @@ public class IconCache {
                     // Add the icon in the DB here, since these do not get written during
                     // package updates.
                     ContentValues values =
-                            mIconDb.newContentValues(entry.icon, entry.title.toString());
+                            newContentValues(entry.icon, entry.title.toString(), mPackageBgColor);
                     addIconToDB(values, cn, info, mUserManager.getSerialNumberForUser(user));
 
                 } catch (NameNotFoundException e) {
@@ -635,7 +660,7 @@ public class IconCache {
             // pass
         }
 
-        ContentValues values = mIconDb.newContentValues(icon, label);
+        ContentValues values = newContentValues(icon, label, Color.TRANSPARENT);
         values.put(IconDB.COLUMN_COMPONENT, componentName.flattenToString());
         values.put(IconDB.COLUMN_USER, userSerial);
         mIconDb.getWritableDatabase().insertWithOnConflict(IconDB.TABLE_NAME, null, values,
@@ -653,7 +678,7 @@ public class IconCache {
                 null, null, null);
         try {
             if (c.moveToNext()) {
-                entry.icon = loadIconNoResize(c, 0);
+                entry.icon = loadIconNoResize(c, 0, lowRes ? mLowResOptions : null);
                 entry.isLowResIcon = lowRes;
                 entry.title = c.getString(1);
                 if (entry.title == null) {
@@ -744,8 +769,12 @@ public class IconCache {
         }
     }
 
+    private void updateSystemStateString() {
+        mSystemState = Locale.getDefault().toString();
+    }
+
     private static final class IconDB extends SQLiteOpenHelper {
-        private final static int DB_VERSION = 5;
+        private final static int DB_VERSION = 6;
 
         private final static String TABLE_NAME = "icons";
         private final static String COLUMN_ROWID = "rowid";
@@ -758,15 +787,8 @@ public class IconCache {
         private final static String COLUMN_LABEL = "label";
         private final static String COLUMN_SYSTEM_STATE = "system_state";
 
-        public String mSystemState;
-
         public IconDB(Context context) {
             super(context, LauncherFiles.APP_ICONS_DB, null, DB_VERSION);
-            updateSystemStateString();
-        }
-
-        public void updateSystemStateString() {
-            mSystemState = Locale.getDefault().toString();
         }
 
         @Override
@@ -802,24 +824,42 @@ public class IconCache {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
             onCreate(db);
         }
-
-        public ContentValues newContentValues(Bitmap icon, String label) {
-            ContentValues values = new ContentValues();
-            values.put(COLUMN_ICON, Utilities.flattenBitmap(icon));
-            values.put(COLUMN_ICON_LOW_RES, Utilities.flattenBitmap(
-                    Bitmap.createScaledBitmap(icon,
-                            icon.getWidth() / LOW_RES_SCALE_FACTOR,
-                            icon.getHeight() / LOW_RES_SCALE_FACTOR, true)));
-            values.put(COLUMN_LABEL, label);
-            values.put(COLUMN_SYSTEM_STATE, mSystemState);
-            return values;
-        }
     }
 
-    private static Bitmap loadIconNoResize(Cursor c, int iconIndex) {
+    private ContentValues newContentValues(Bitmap icon, String label, int lowResBackgroundColor) {
+        ContentValues values = new ContentValues();
+        values.put(IconDB.COLUMN_ICON, Utilities.flattenBitmap(icon));
+
+        values.put(IconDB.COLUMN_LABEL, label);
+        values.put(IconDB.COLUMN_SYSTEM_STATE, mSystemState);
+
+        if (lowResBackgroundColor == Color.TRANSPARENT) {
+          values.put(IconDB.COLUMN_ICON_LOW_RES, Utilities.flattenBitmap(
+          Bitmap.createScaledBitmap(icon,
+                  icon.getWidth() / LOW_RES_SCALE_FACTOR,
+                  icon.getHeight() / LOW_RES_SCALE_FACTOR, true)));
+        } else {
+            synchronized (this) {
+                if (mLowResBitmap == null) {
+                    mLowResBitmap = Bitmap.createBitmap(icon.getWidth() / LOW_RES_SCALE_FACTOR,
+                            icon.getHeight() / LOW_RES_SCALE_FACTOR, Bitmap.Config.RGB_565);
+                    mLowResCanvas = new Canvas(mLowResBitmap);
+                    mLowResPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
+                }
+                mLowResCanvas.drawColor(lowResBackgroundColor);
+                mLowResCanvas.drawBitmap(icon, new Rect(0, 0, icon.getWidth(), icon.getHeight()),
+                        new Rect(0, 0, mLowResBitmap.getWidth(), mLowResBitmap.getHeight()),
+                        mLowResPaint);
+                values.put(IconDB.COLUMN_ICON_LOW_RES, Utilities.flattenBitmap(mLowResBitmap));
+            }
+        }
+        return values;
+    }
+
+    private static Bitmap loadIconNoResize(Cursor c, int iconIndex, BitmapFactory.Options options) {
         byte[] data = c.getBlob(iconIndex);
         try {
-            return BitmapFactory.decodeByteArray(data, 0, data.length);
+            return BitmapFactory.decodeByteArray(data, 0, data.length, options);
         } catch (Exception e) {
             return null;
         }
