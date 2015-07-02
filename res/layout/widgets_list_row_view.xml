@@ -30,7 +30,7 @@
         android:id="@+id/section"
         android:layout_width="match_parent"
         android:layout_height="@dimen/widget_section_height"
-        android:background="@color/widget_text_panel"
+        android:background="@color/quantum_panel_bg_color_dark"
         android:drawablePadding="@dimen/widget_section_horizontal_padding"
         android:ellipsize="end"
         android:focusable="true"
