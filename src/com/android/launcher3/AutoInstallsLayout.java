@@ -580,6 +580,7 @@ public class AutoInstallsLayout {
 
             int type;
             int folderDepth = parser.getDepth();
+            int rank = 0;
             while ((type = parser.next()) != XmlPullParser.END_TAG ||
                     parser.getDepth() > folderDepth) {
                 if (type != XmlPullParser.START_TAG) {
@@ -587,12 +588,14 @@ public class AutoInstallsLayout {
                 }
                 mValues.clear();
                 mValues.put(Favorites.CONTAINER, folderId);
+                mValues.put(Favorites.RANK, rank);
 
                 TagParser tagParser = mFolderElements.get(parser.getName());
                 if (tagParser != null) {
                     final long id = tagParser.parseAndAdd(parser);
                     if (id >= 0) {
                         folderItems.add(id);
+                        rank++;
                     }
                 } else {
                     throw new RuntimeException("Invalid folder item " + parser.getName());
