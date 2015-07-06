@@ -58,6 +58,7 @@ import com.android.launcher3.UninstallDropTarget.UninstallSource;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate.AccessibilityDragSource;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.util.UiThreadCircularReveal;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -467,6 +468,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             prepareReveal();
             centerAboutIcon();
 
+            AnimatorSet anim = LauncherAnimUtils.createAnimatorSet();
             int width = getPaddingLeft() + getPaddingRight() + mContent.getDesiredWidth();
             int height = getFolderHeight();
 
@@ -477,7 +479,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             PropertyValuesHolder tx = PropertyValuesHolder.ofFloat("translationX", transX, 0);
             PropertyValuesHolder ty = PropertyValuesHolder.ofFloat("translationY", transY, 0);
 
-            Animator drift = LauncherAnimUtils.ofPropertyValuesHolder(this, tx, ty);
+            Animator drift = ObjectAnimator.ofPropertyValuesHolder(this, tx, ty);
             drift.setDuration(mMaterialExpandDuration);
             drift.setStartDelay(mMaterialExpandStagger);
             drift.setInterpolator(new LogDecelerateInterpolator(100, 0));
@@ -486,20 +488,19 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             int ry = (int) Math.max(Math.max(height - getPivotY(), 0), getPivotY());
             float radius = (float) Math.hypot(rx, ry);
 
-            AnimatorSet anim = LauncherAnimUtils.createAnimatorSet();
-            Animator reveal = LauncherAnimUtils.createCircularReveal(this, (int) getPivotX(),
+            Animator reveal = UiThreadCircularReveal.createCircularReveal(this, (int) getPivotX(),
                     (int) getPivotY(), 0, radius);
             reveal.setDuration(mMaterialExpandDuration);
             reveal.setInterpolator(new LogDecelerateInterpolator(100, 0));
 
             mContentWrapper.setAlpha(0f);
-            Animator iconsAlpha = LauncherAnimUtils.ofFloat(mContentWrapper, "alpha", 0f, 1f);
+            Animator iconsAlpha = ObjectAnimator.ofFloat(mContentWrapper, "alpha", 0f, 1f);
             iconsAlpha.setDuration(mMaterialExpandDuration);
             iconsAlpha.setStartDelay(mMaterialExpandStagger);
             iconsAlpha.setInterpolator(new AccelerateInterpolator(1.5f));
 
             mFooter.setAlpha(0f);
-            Animator textAlpha = LauncherAnimUtils.ofFloat(mFooter, "alpha", 0f, 1f);
+            Animator textAlpha = ObjectAnimator.ofFloat(mFooter, "alpha", 0f, 1f);
             textAlpha.setDuration(mMaterialExpandDuration);
             textAlpha.setStartDelay(mMaterialExpandStagger);
             textAlpha.setInterpolator(new AccelerateInterpolator(1.5f));
