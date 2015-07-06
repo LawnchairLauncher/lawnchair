@@ -3500,6 +3500,7 @@ public class Launcher extends Activity
                     .commit();
             }
 
+            mAppWidgetHost.setQsbWidgetId(widgetId);
             if (widgetId != -1) {
                 mQsb = mAppWidgetHost.createView(this, widgetId, searchProvider);
                 mQsb.updateAppWidgetOptions(opts);
