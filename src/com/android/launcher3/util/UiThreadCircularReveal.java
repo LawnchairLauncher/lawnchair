@@ -15,11 +15,15 @@ import com.android.launcher3.Utilities;
 public class UiThreadCircularReveal {
 
     public static ValueAnimator createCircularReveal(View v, int x, int y, float r0, float r1) {
+        return createCircularReveal(v, x, y, r0, r1, ViewOutlineProvider.BACKGROUND);
+    }
+
+    public static ValueAnimator createCircularReveal(View v, int x, int y, float r0, float r1,
+            final ViewOutlineProvider originalProvider) {
         ValueAnimator va = ValueAnimator.ofFloat(0f, 1f);
 
         final View revealView = v;
         final RevealOutlineProvider outlineProvider = new RevealOutlineProvider(x, y, r0, r1);
-        final ViewOutlineProvider originalProvider = revealView.getOutlineProvider();
         final float elevation = v.getElevation();
 
         va.addListener(new AnimatorListenerAdapter() {
