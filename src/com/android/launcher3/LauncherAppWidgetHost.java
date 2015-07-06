@@ -22,6 +22,7 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.os.TransactionTooLargeException;
 import android.view.LayoutInflater;
+import android.view.View;
 
 import java.util.ArrayList;
 
@@ -35,16 +36,31 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
 
     private final ArrayList<Runnable> mProviderChangeListeners = new ArrayList<Runnable>();
 
-    Launcher mLauncher;
+    private int mQsbWidgetId = -1;
+    private Launcher mLauncher;
 
     public LauncherAppWidgetHost(Launcher launcher, int hostId) {
         super(launcher, hostId);
         mLauncher = launcher;
     }
 
+    public void setQsbWidgetId(int widgetId) {
+        mQsbWidgetId = widgetId;
+    }
+
     @Override
     protected AppWidgetHostView onCreateView(Context context, int appWidgetId,
             AppWidgetProviderInfo appWidget) {
+        if (appWidgetId == mQsbWidgetId) {
+            return new LauncherAppWidgetHostView(context) {
+
+                @Override
+                protected View getErrorView() {
+                    // For the QSB, show an empty view instead of an error view.
+                    return new View(getContext());
+                }
+            };
+        }
         return new LauncherAppWidgetHostView(context);
     }
 
