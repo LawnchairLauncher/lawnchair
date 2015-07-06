@@ -66,7 +66,7 @@
     <string name="folder_renamed" msgid="1794088362165669656">"Jild nomi <xliff:g id="NAME">%1$s</xliff:g>ga o‘zgartirildi"</string>
     <string name="folder_name_format" msgid="6629239338071103179">"Jild: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Vidjetlar"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"Orqa fon rasmlari"</string>
+    <string name="wallpaper_button_text" msgid="8404103075899945851">"Fon rasmlari"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"Sozlamalar"</string>
     <string name="allow_rotation_title" msgid="2118706734511831751">"Aylanishga ruxsat berish"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Noma’lum"</string>

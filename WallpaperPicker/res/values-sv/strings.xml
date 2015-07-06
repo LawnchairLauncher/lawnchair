@@ -30,7 +30,7 @@
     <string name="wallpaper_accessibility_name" msgid="4093221025304876354">"Bakgrund %1$d av %2$d"</string>
     <string name="announce_selection" msgid="123723511662250539">"<xliff:g id="LABEL">%1$s</xliff:g> har valts"</string>
     <string name="wallpaper_delete" msgid="1459353972739215344">"Ta bort"</string>
-    <string name="pick_image" msgid="6704438906027442697">"Välj bild"</string>
+    <string name="pick_image" msgid="3189640419551368385">"Mina foton"</string>
     <string name="pick_wallpaper" msgid="4628969645948454559">"Bakgrunder"</string>
     <string name="crop_wallpaper" msgid="4882870800623585836">"Beskär bakgrund"</string>
 </resources>
