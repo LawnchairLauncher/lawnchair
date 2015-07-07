@@ -884,7 +884,7 @@ public class Launcher extends Activity
     }
 
     /** @Override for MNC */
-    protected void onRequestPermissionsResult(int requestCode, String[] permissions,
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
             int[] grantResults) {
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onRequestPermissionsResult(requestCode, permissions,
