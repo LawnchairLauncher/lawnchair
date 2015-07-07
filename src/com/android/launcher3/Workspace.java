@@ -1976,7 +1976,7 @@ public class Workspace extends PagedView
     public Animator setStateWithAnimation(State toState, int toPage, boolean animated,
             boolean hasOverlaySearchBar, HashMap<View, Integer> layerViews) {
         // Create the animation to the new state
-        Animator workspaceAnim =  mStateTransitionAnimation.getAnimationToState(getState(),
+        Animator workspaceAnim =  mStateTransitionAnimation.getAnimationToState(mState,
                 toState, toPage, animated, hasOverlaySearchBar, layerViews);
 
         // Update the current state
@@ -1996,6 +1996,9 @@ public class Workspace extends PagedView
             for (int i = numCustomPages(); i < total; i++) {
                 updateAccessibilityFlags((CellLayout) getPageAt(i), i);
             }
+            setImportantForAccessibility((mState == State.NORMAL || mState == State.OVERVIEW)
+                    ? IMPORTANT_FOR_ACCESSIBILITY_AUTO
+                            : IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
         } else {
             int accessible = mState == State.NORMAL ?
                     IMPORTANT_FOR_ACCESSIBILITY_AUTO :
