@@ -59,7 +59,6 @@ import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -572,13 +571,6 @@ public final class Utilities {
             return null;
         }
     }
-
-    public static final Comparator<ItemInfo> RANK_COMPARATOR = new Comparator<ItemInfo>() {
-        @Override
-        public int compare(ItemInfo lhs, ItemInfo rhs) {
-            return lhs.rank - rhs.rank;
-        }
-    };
 
     /**
      * Find the first vacant cell, if there is one.
