@@ -110,10 +110,10 @@ public class AlphabeticalAppsList {
             return item;
         }
 
-        public static AdapterItem asPredictionBarSpacer(int pos) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.PREDICTION_BAR_SPACER_TYPE;
-            item.position = pos;
+        public static AdapterItem asPredictedApp(int pos, SectionInfo section, String sectionName,
+                                        int sectionAppIndex, AppInfo appInfo, int appIndex) {
+            AdapterItem item = asApp(pos, section, sectionName, sectionAppIndex, appInfo, appIndex);
+            item.viewType = AllAppsGridAdapter.PREDICTION_ICON_VIEW_TYPE;
             return item;
         }
 
@@ -129,13 +129,6 @@ public class AlphabeticalAppsList {
             item.appIndex = appIndex;
             return item;
         }
-    }
-
-    /**
-     * Callback to notify when the set of adapter items have changed.
-     */
-    public interface AdapterChangedCallback {
-        void onAdapterItemsChanged();
     }
 
     /**
@@ -171,7 +164,6 @@ public class AlphabeticalAppsList {
     private AlphabeticIndexCompat mIndexer;
     private AppNameComparator mAppNameComparator;
     private MergeAlgorithm mMergeAlgorithm;
-    private AdapterChangedCallback mAdapterChangedCallback;
     private int mNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
     private int mNumAppRowsInAdapter;
@@ -180,13 +172,6 @@ public class AlphabeticalAppsList {
         mLauncher = (Launcher) context;
         mIndexer = new AlphabeticIndexCompat(context);
         mAppNameComparator = new AppNameComparator(context);
-    }
-
-    /**
-     * Sets the apps updated callback.
-     */
-    public void setAdapterChangedCallback(AdapterChangedCallback cb) {
-        mAdapterChangedCallback = cb;
     }
 
     /**
@@ -282,13 +267,6 @@ public class AlphabeticalAppsList {
         mPredictedAppComponents.clear();
         mPredictedAppComponents.addAll(apps);
         onAppsUpdated();
-    }
-
-    /**
-     * Returns the current set of predicted apps.
-     */
-    public List<AppInfo> getPredictedApps() {
-        return mPredictedApps;
     }
 
     /**
@@ -426,13 +404,25 @@ public class AlphabeticalAppsList {
             }
 
             if (!mPredictedApps.isEmpty()) {
-                // Create a new spacer for the prediction bar
-                AdapterItem sectionItem = AdapterItem.asPredictionBarSpacer(position++);
-                mAdapterItems.add(sectionItem);
-                // Add a fastscroller section for the prediction bar
+                // Add a section for the predictions
+                lastSectionInfo = new SectionInfo();
                 lastFastScrollerSectionInfo = new FastScrollSectionInfo("");
-                lastFastScrollerSectionInfo.fastScrollToItem = sectionItem;
+                AdapterItem sectionItem = AdapterItem.asSectionBreak(position++, lastSectionInfo);
+                mSections.add(lastSectionInfo);
                 mFastScrollerSections.add(lastFastScrollerSectionInfo);
+                mAdapterItems.add(sectionItem);
+
+                // Add the predicted app items
+                for (AppInfo info : mPredictedApps) {
+                    AdapterItem appItem = AdapterItem.asPredictedApp(position++, lastSectionInfo,
+                            "", lastSectionInfo.numApps++, info, appIndex++);
+                    if (lastSectionInfo.firstAppItem == null) {
+                        lastSectionInfo.firstAppItem = appItem;
+                        lastFastScrollerSectionInfo.fastScrollToItem = appItem;
+                    }
+                    mAdapterItems.add(appItem);
+                    mFilteredApps.add(info);
+                }
             }
         }
 
@@ -480,7 +470,8 @@ public class AlphabeticalAppsList {
                 item.rowIndex = 0;
                 if (item.viewType == AllAppsGridAdapter.SECTION_BREAK_VIEW_TYPE) {
                     numAppsInSection = 0;
-                } else if (item.viewType == AllAppsGridAdapter.ICON_VIEW_TYPE) {
+                } else if (item.viewType == AllAppsGridAdapter.ICON_VIEW_TYPE ||
+                        item.viewType == AllAppsGridAdapter.PREDICTION_ICON_VIEW_TYPE) {
                     if (numAppsInSection % mNumAppsPerRow == 0) {
                         numAppsInRow = 0;
                         rowIndex++;
@@ -493,29 +484,24 @@ public class AlphabeticalAppsList {
             }
             mNumAppRowsInAdapter = rowIndex + 1;
 
-            // Pre-calculate all the fast scroller fractions based on the number of rows, if we have
-            // predicted apps, then we should account for that as a row in the touchFraction
-            float rowFraction = 1f / (mNumAppRowsInAdapter + (mPredictedApps.isEmpty() ? 0 : 1));
-            float initialOffset = mPredictedApps.isEmpty() ? 0 : rowFraction;
+            // Pre-calculate all the fast scroller fractions based on the number of rows
+            float rowFraction = 1f / mNumAppRowsInAdapter;
             for (FastScrollSectionInfo info : mFastScrollerSections) {
                 AdapterItem item = info.fastScrollToItem;
-                if (item.viewType != AllAppsGridAdapter.ICON_VIEW_TYPE) {
+                if (item.viewType != AllAppsGridAdapter.ICON_VIEW_TYPE &&
+                        item.viewType != AllAppsGridAdapter.PREDICTION_ICON_VIEW_TYPE) {
                     info.touchFraction = 0f;
                     continue;
                 }
 
                 float subRowFraction = item.rowAppIndex * (rowFraction / mNumAppsPerRow);
-                info.touchFraction = initialOffset + item.rowIndex * rowFraction + subRowFraction;
+                info.touchFraction = item.rowIndex * rowFraction + subRowFraction;
             }
         }
 
         // Refresh the recycler view
         if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
-        }
-
-        if (mAdapterChangedCallback != null) {
-            mAdapterChangedCallback.onAdapterItemsChanged();
         }
     }
 

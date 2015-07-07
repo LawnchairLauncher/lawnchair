@@ -125,8 +125,7 @@ final class DefaultAppSearchController extends AllAppsSearchBarController
 
     @Override
     public boolean shouldShowPredictionBar() {
-        // Keep showing the prediction bar if the input query is empty
-        return mSearchBarEditView.getEditableText().toString().isEmpty();
+        return false;
     }
 
     @Override

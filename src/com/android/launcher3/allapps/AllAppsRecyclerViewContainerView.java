@@ -37,7 +37,6 @@ public class AllAppsRecyclerViewContainerView extends FrameLayout
         implements BubbleTextShadowHandler {
 
     private final ClickShadowView mTouchFeedbackView;
-    private View mPredictionBarView;
 
     public AllAppsRecyclerViewContainerView(Context context) {
         this(context, null);
@@ -61,13 +60,6 @@ public class AllAppsRecyclerViewContainerView extends FrameLayout
     }
 
     @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-
-        mPredictionBarView = findViewById(R.id.prediction_bar);
-    }
-
-    @Override
     public void setPressedIcon(BubbleTextView icon, Bitmap background) {
         if (icon == null || background == null) {
             mTouchFeedbackView.setBitmap(null);
@@ -75,35 +67,6 @@ public class AllAppsRecyclerViewContainerView extends FrameLayout
         } else if (mTouchFeedbackView.setBitmap(background)) {
             mTouchFeedbackView.alignWithIconView(icon, (ViewGroup) icon.getParent());
             mTouchFeedbackView.animateShadow();
-        }
-    }
-
-    /**
-     * This allows us to have custom drawing order, while keeping touch handling in correct z-order.
-     */
-    @Override
-    protected void dispatchDraw(Canvas canvas) {
-        final long drawingTime = getDrawingTime();
-
-        // Draw the click feedback first (since it is always on the bottom)
-        if (mTouchFeedbackView != null && mTouchFeedbackView.getVisibility() == View.VISIBLE) {
-            drawChild(canvas, mTouchFeedbackView, drawingTime);
-        }
-
-        // Then draw the prediction bar, since it needs to be "under" the recycler view to get the
-        // right edge effect to be drawn over it
-        if (mPredictionBarView != null && mPredictionBarView.getVisibility() == View.VISIBLE) {
-            drawChild(canvas, mPredictionBarView, drawingTime);
-        }
-
-        // Draw the remaining views
-        int childCount = getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            View v = getChildAt(i);
-            if (v != mTouchFeedbackView && v != mPredictionBarView &&
-                    v.getVisibility() == View.VISIBLE) {
-                drawChild(canvas, v, drawingTime);
-            }
         }
     }
 }
