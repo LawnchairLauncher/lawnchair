@@ -24,7 +24,6 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.content.res.Configuration;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.PointF;
@@ -185,8 +184,8 @@ public abstract class ButtonDropTarget extends TextView
         }
     }
 
-	@Override
-    public final void onDragStart(DragSource source, Object info, int dragAction) {
+    @Override
+    public final void onDragStart(DragSource source, ItemInfo info, int dragAction) {
         mActive = supportsDrop(source, info);
         mDrawable.setColorFilter(null);
         if (mCurrentColorAnim != null) {
@@ -202,7 +201,7 @@ public abstract class ButtonDropTarget extends TextView
         return supportsDrop(dragObject.dragSource, dragObject.dragInfo);
     }
 
-    protected abstract boolean supportsDrop(DragSource source, Object info);
+    protected abstract boolean supportsDrop(DragSource source, ItemInfo info);
 
     @Override
     public boolean isDropEnabled() {

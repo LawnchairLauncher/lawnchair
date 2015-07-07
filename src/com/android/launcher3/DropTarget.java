@@ -47,7 +47,7 @@ public interface DropTarget {
         public DragView dragView = null;
 
         /** The data associated with the object being dragged */
-        public Object dragInfo = null;
+        public ItemInfo dragInfo = null;
 
         /** Where the drag originated */
         public DragSource dragSource = null;

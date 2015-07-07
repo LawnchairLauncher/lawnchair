@@ -196,7 +196,7 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
      * DragController.DragListener implementation
      */
     @Override
-    public void onDragStart(DragSource source, Object info, int dragAction) {
+    public void onDragStart(DragSource source, ItemInfo info, int dragAction) {
         showDeleteTarget();
     }
 

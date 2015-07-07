@@ -660,12 +660,7 @@ public class LauncherModel extends BroadcastReceiver
                         modelShortcut.cellX == shortcut.cellX &&
                         modelShortcut.cellY == shortcut.cellY &&
                         modelShortcut.spanX == shortcut.spanX &&
-                        modelShortcut.spanY == shortcut.spanY &&
-                        ((modelShortcut.dropPos == null && shortcut.dropPos == null) ||
-                        (modelShortcut.dropPos != null &&
-                                shortcut.dropPos != null &&
-                                modelShortcut.dropPos[0] == shortcut.dropPos[0] &&
-                        modelShortcut.dropPos[1] == shortcut.dropPos[1]))) {
+                        modelShortcut.spanY == shortcut.spanY) {
                     // For all intents and purposes, this is the same object
                     return;
                 }

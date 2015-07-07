@@ -28,7 +28,6 @@ import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -167,7 +166,6 @@ public class Workspace extends PagedView
     // return an (x, y) value from helper functions. Do NOT use them to maintain other state.
     private int[] mTempCell = new int[2];
     private int[] mTempPt = new int[2];
-    private int[] mTempEstimate = new int[2];
     @Thunk float[] mDragViewVisualCenter = new float[2];
     private float[] mTempCellLayoutCenterCoordinates = new float[2];
     private Matrix mTempInverseMatrix = new Matrix();
@@ -369,7 +367,7 @@ public class Workspace extends PagedView
     }
 
     @Override
-    public void onDragStart(final DragSource source, Object info, int dragAction) {
+    public void onDragStart(final DragSource source, ItemInfo info, int dragAction) {
         if (ENFORCE_DRAG_EVENT_ORDER) {
             enfoceDragParity("onDragStart", 0, 0);
         }
@@ -2288,15 +2286,17 @@ public class Workspace extends PagedView
             icon.clearPressedBackground();
         }
 
-        if (child.getTag() == null || !(child.getTag() instanceof ItemInfo)) {
+        Object dragObject = child.getTag();
+        if (!(dragObject instanceof ItemInfo)) {
             String msg = "Drag started with a view that has no tag set. This "
                     + "will cause a crash (issue 11627249) down the line. "
                     + "View: " + child + "  tag: " + child.getTag();
             throw new IllegalStateException(msg);
         }
 
-        DragView dv = mDragController.startDrag(b, dragLayerX, dragLayerY, source, child.getTag(),
-                DragController.DRAG_ACTION_MOVE, dragVisualizeOffset, dragRect, scale, accessible);
+        DragView dv = mDragController.startDrag(b, dragLayerX, dragLayerY, source,
+                (ItemInfo) dragObject, DragController.DRAG_ACTION_MOVE, dragVisualizeOffset,
+                dragRect, scale, accessible);
         dv.setIntrinsicIconScaleFactor(source.getIntrinsicIconScaleFactor());
 
         if (child.getParent() instanceof ShortcutAndWidgetContainer) {
@@ -2336,7 +2336,8 @@ public class Workspace extends PagedView
         Point dragVisualizeOffset = new Point(-padding.get() / 2, padding.get() / 2);
         Rect dragRect = new Rect(0, 0, iconSize, iconSize);
 
-        if (child.getTag() == null || !(child.getTag() instanceof ItemInfo)) {
+        Object dragObject = child.getTag();
+        if (!(dragObject instanceof ItemInfo)) {
             String msg = "Drag started with a view that has no tag set. This "
                     + "will cause a crash (issue 11627249) down the line. "
                     + "View: " + child + "  tag: " + child.getTag();
@@ -2344,8 +2345,9 @@ public class Workspace extends PagedView
         }
 
         // Start the drag
-        DragView dv = mDragController.startDrag(b, dragLayerX, dragLayerY, source, child.getTag(),
-                DragController.DRAG_ACTION_MOVE, dragVisualizeOffset, dragRect, scale, false);
+        DragView dv = mDragController.startDrag(b, dragLayerX, dragLayerY, source,
+                (ItemInfo) dragObject, DragController.DRAG_ACTION_MOVE, dragVisualizeOffset,
+                dragRect, scale, false);
         dv.setIntrinsicIconScaleFactor(source.getIntrinsicIconScaleFactor());
 
         // Recycle temporary bitmaps
@@ -2386,9 +2388,8 @@ public class Workspace extends PagedView
                 spanX = dragCellInfo.spanX;
                 spanY = dragCellInfo.spanY;
             } else {
-                final ItemInfo dragInfo = (ItemInfo) d.dragInfo;
-                spanX = dragInfo.spanX;
-                spanY = dragInfo.spanY;
+                spanX = d.dragInfo.spanX;
+                spanY = d.dragInfo.spanY;
             }
 
             int minSpanX = spanX;
@@ -2403,12 +2404,12 @@ public class Workspace extends PagedView
                     mTargetCell);
             float distance = dropTargetLayout.getDistanceFromCell(mDragViewVisualCenter[0],
                     mDragViewVisualCenter[1], mTargetCell);
-            if (mCreateUserFolderOnDrop && willCreateUserFolder((ItemInfo) d.dragInfo,
+            if (mCreateUserFolderOnDrop && willCreateUserFolder(d.dragInfo,
                     dropTargetLayout, mTargetCell, distance, true)) {
                 return true;
             }
 
-            if (mAddToExistingFolderOnDrop && willAddToExistingUserFolder((ItemInfo) d.dragInfo,
+            if (mAddToExistingFolderOnDrop && willAddToExistingUserFolder(d.dragInfo,
                     dropTargetLayout, mTargetCell, distance)) {
                 return true;
             }
@@ -2474,7 +2475,7 @@ public class Workspace extends PagedView
         return (aboveShortcut && willBecomeShortcut);
     }
 
-    boolean willAddToExistingUserFolder(Object dragInfo, CellLayout target, int[] targetCell,
+    boolean willAddToExistingUserFolder(ItemInfo dragInfo, CellLayout target, int[] targetCell,
             float distance) {
         if (distance > mMaxDistanceForFolderCreation) return false;
         View dropOverView = target.getChildAt(targetCell[0], targetCell[1]);
@@ -2630,7 +2631,7 @@ public class Workspace extends PagedView
 
                 // Aside from the special case where we're dropping a shortcut onto a shortcut,
                 // we need to find the nearest cell location that is vacant
-                ItemInfo item = (ItemInfo) d.dragInfo;
+                ItemInfo item = d.dragInfo;
                 int minSpanX = item.spanX;
                 int minSpanY = item.spanY;
                 if (item.minSpanX > 0 && item.minSpanY > 0) {
@@ -3120,7 +3121,7 @@ public class Workspace extends PagedView
 
         Rect r = new Rect();
         CellLayout layout = null;
-        ItemInfo item = (ItemInfo) d.dragInfo;
+        ItemInfo item = d.dragInfo;
         if (item == null) {
             if (LauncherAppState.isDogfoodBuild()) {
                 throw new NullPointerException("DragObject has null info");
@@ -3181,7 +3182,7 @@ public class Workspace extends PagedView
                 mapPointFromSelfToChild(mDragTargetLayout, mDragViewVisualCenter, null);
             }
 
-            ItemInfo info = (ItemInfo) d.dragInfo;
+            ItemInfo info = d.dragInfo;
 
             int minSpanX = item.spanX;
             int minSpanY = item.spanY;
@@ -3361,24 +3362,6 @@ public class Workspace extends PagedView
     }
 
     /**
-     * Add the item specified by dragInfo to the given layout.
-     * @return true if successful
-     */
-    public boolean addExternalItemToScreen(ItemInfo dragInfo, CellLayout layout) {
-        if (layout.findCellForSpan(mTempEstimate, dragInfo.spanX, dragInfo.spanY)) {
-            onDropExternal(dragInfo.dropPos, (ItemInfo) dragInfo, (CellLayout) layout, false);
-            return true;
-        }
-        mLauncher.showOutOfSpaceMessage(mLauncher.isHotseatLayout(layout));
-        return false;
-    }
-
-    private void onDropExternal(int[] touchXY, Object dragInfo,
-            CellLayout cellLayout, boolean insertAtFirst) {
-        onDropExternal(touchXY, dragInfo, cellLayout, insertAtFirst, null);
-    }
-
-    /**
      * Drop an item that didn't originate on one of the workspace screens.
      * It may have come from Launcher (e.g. from all apps or customize), or it may have
      * come from another app altogether.
@@ -3386,7 +3369,7 @@ public class Workspace extends PagedView
      * NOTE: This can also be called when we are outside of a drag event, when we want
      * to add an item to one of the workspace screens.
      */
-    private void onDropExternal(final int[] touchXY, final Object dragInfo,
+    private void onDropExternal(final int[] touchXY, final ItemInfo dragInfo,
             final CellLayout cellLayout, boolean insertAtFirst, DragObject d) {
         final Runnable exitSpringLoadedRunnable = new Runnable() {
             @Override
@@ -3396,7 +3379,7 @@ public class Workspace extends PagedView
             }
         };
 
-        ItemInfo info = (ItemInfo) dragInfo;
+        ItemInfo info = dragInfo;
         int spanX = info.spanX;
         int spanY = info.spanY;
         if (mDragInfo != null) {
@@ -3423,14 +3406,14 @@ public class Workspace extends PagedView
                         cellLayout, mTargetCell);
                 float distance = cellLayout.getDistanceFromCell(mDragViewVisualCenter[0],
                         mDragViewVisualCenter[1], mTargetCell);
-                if (willCreateUserFolder((ItemInfo) d.dragInfo, cellLayout, mTargetCell,
-                        distance, true) || willAddToExistingUserFolder((ItemInfo) d.dragInfo,
-                                cellLayout, mTargetCell, distance)) {
+                if (willCreateUserFolder(d.dragInfo, cellLayout, mTargetCell, distance, true)
+                        || willAddToExistingUserFolder(
+                                d.dragInfo, cellLayout, mTargetCell, distance)) {
                     findNearestVacantCell = false;
                 }
             }
 
-            final ItemInfo item = (ItemInfo) d.dragInfo;
+            final ItemInfo item = d.dragInfo;
             boolean updateWidgetSize = false;
             if (findNearestVacantCell) {
                 int minSpanX = item.spanX;
@@ -3788,29 +3771,6 @@ public class Workspace extends PagedView
         mUninstallSuccessful = success;
         if (mDeferredAction != null) {
             mDeferredAction.run();
-        }
-    }
-
-    void updateItemLocationsInDatabase(CellLayout cl) {
-        int count = cl.getShortcutsAndWidgets().getChildCount();
-
-        long screenId = getIdForScreen(cl);
-        int container = Favorites.CONTAINER_DESKTOP;
-
-        if (mLauncher.isHotseatLayout(cl)) {
-            screenId = -1;
-            container = Favorites.CONTAINER_HOTSEAT;
-        }
-
-        for (int i = 0; i < count; i++) {
-            View v = cl.getShortcutsAndWidgets().getChildAt(i);
-            ItemInfo info = (ItemInfo) v.getTag();
-            // Null check required as the AllApps button doesn't have an item info
-            if (info != null && info.requiresDbUpdate) {
-                info.requiresDbUpdate = false;
-                LauncherModel.modifyItemInDatabase(mLauncher, info, container, screenId, info.cellX,
-                        info.cellY, info.spanX, info.spanY);
-            }
         }
     }
 

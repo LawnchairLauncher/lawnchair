@@ -20,8 +20,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.android.launcher3.compat.UserHandleCompat;
-
 public class InfoDropTarget extends ButtonDropTarget {
 
     public InfoDropTarget(Context context, AttributeSet attrs) {
@@ -41,7 +39,7 @@ public class InfoDropTarget extends ButtonDropTarget {
         setDrawable(R.drawable.ic_info_launcher);
     }
 
-    public static void startDetailsActivityForInfo(Object info, Launcher launcher) {
+    public static void startDetailsActivityForInfo(ItemInfo info, Launcher launcher) {
         ComponentName componentName = null;
         if (info instanceof AppInfo) {
             componentName = ((AppInfo) info).componentName;
@@ -50,24 +48,17 @@ public class InfoDropTarget extends ButtonDropTarget {
         } else if (info instanceof PendingAddItemInfo) {
             componentName = ((PendingAddItemInfo) info).componentName;
         }
-        final UserHandleCompat user;
-        if (info instanceof ItemInfo) {
-            user = ((ItemInfo) info).user;
-        } else {
-            user = UserHandleCompat.myUserHandle();
-        }
-
         if (componentName != null) {
-            launcher.startApplicationDetailsActivity(componentName, user);
+            launcher.startApplicationDetailsActivity(componentName, info.user);
         }
     }
 
     @Override
-    protected boolean supportsDrop(DragSource source, Object info) {
+    protected boolean supportsDrop(DragSource source, ItemInfo info) {
         return source.supportsAppInfoDropTarget() && supportsDrop(getContext(), info);
     }
 
-    public static boolean supportsDrop(Context context, Object info) {
+    public static boolean supportsDrop(Context context, ItemInfo info) {
         return info instanceof AppInfo || info instanceof PendingAddItemInfo;
     }
 

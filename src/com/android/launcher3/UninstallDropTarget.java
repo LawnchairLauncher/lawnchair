@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.os.UserManager;
 import android.util.AttributeSet;
 import android.util.Pair;
-import com.android.launcher3.R;
+
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.util.Thunk;
 
@@ -32,7 +32,7 @@ public class UninstallDropTarget extends ButtonDropTarget {
     }
 
     @Override
-    protected boolean supportsDrop(DragSource source, Object info) {
+    protected boolean supportsDrop(DragSource source, ItemInfo info) {
         return supportsDrop(getContext(), info);
     }
 
@@ -81,7 +81,7 @@ public class UninstallDropTarget extends ButtonDropTarget {
     @Override
     void completeDrop(final DragObject d) {
         final Pair<ComponentName, Integer> componentInfo = getAppInfoFlags(d.dragInfo);
-        final UserHandleCompat user = ((ItemInfo) d.dragInfo).user;
+        final UserHandleCompat user = d.dragInfo.user;
         if (startUninstallActivity(mLauncher, d.dragInfo)) {
 
             final Runnable checkIfUninstallWasSuccess = new Runnable() {
@@ -99,9 +99,9 @@ public class UninstallDropTarget extends ButtonDropTarget {
         }
     }
 
-    public static boolean startUninstallActivity(Launcher launcher, Object info) {
+    public static boolean startUninstallActivity(Launcher launcher, ItemInfo info) {
         final Pair<ComponentName, Integer> componentInfo = getAppInfoFlags(info);
-        final UserHandleCompat user = ((ItemInfo) info).user;
+        final UserHandleCompat user = info.user;
         return launcher.startApplicationUninstallActivity(
                 componentInfo.first, componentInfo.second, user);
     }

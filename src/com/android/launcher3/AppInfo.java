@@ -28,13 +28,11 @@ import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.ComponentKey;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Represents an app in AllAppsView.
  */
 public class AppInfo extends ItemInfo {
-    private static final String TAG = "Launcher3.AppInfo";
 
     /**
      * The intent used to start the application.
@@ -118,8 +116,7 @@ public class AppInfo extends ItemInfo {
         return "ApplicationInfo(title=" + title + " id=" + this.id
                 + " type=" + this.itemType + " container=" + this.container
                 + " screen=" + screenId + " cellX=" + cellX + " cellY=" + cellY
-                + " spanX=" + spanX + " spanY=" + spanY + " dropPos=" + Arrays.toString(dropPos)
-                + " user=" + user + ")";
+                + " spanX=" + spanX + " spanY=" + spanY + " user=" + user + ")";
     }
 
     /**
@@ -128,7 +125,7 @@ public class AppInfo extends ItemInfo {
     public static void dumpApplicationInfoList(String tag, String label, ArrayList<AppInfo> list) {
         Log.d(tag, label + " size=" + list.size());
         for (AppInfo info: list) {
-            Log.d(tag, "   title=\"" + info.title + "\" iconBitmap=" + info.iconBitmap 
+            Log.d(tag, "   title=\"" + info.title + "\" iconBitmap=" + info.iconBitmap
                     + " firstInstallTime=" + info.firstInstallTime
                     + " componentName=" + info.componentName.getPackageName());
         }

@@ -375,7 +375,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
 
 
     @Override
-    public void onDragStart(DragSource source, Object info, int dragAction) {
+    public void onDragStart(DragSource source, ItemInfo info, int dragAction) {
         // No-op
     }
 
