@@ -27,6 +27,7 @@ import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.BaseRecyclerViewFastScrollBar;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Stats;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Thunk;
 
 import java.util.List;
@@ -45,7 +46,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView
 
     private AlphabeticalAppsList mApps;
     private int mNumAppsPerRow;
-    private int mPredictionBarHeight;
 
     @Thunk BaseRecyclerViewFastScrollBar.FastScrollFocusableView mLastFastScrollFocusedView;
     @Thunk int mPrevFastScrollFocusedPosition;
@@ -89,17 +89,10 @@ public class AllAppsRecyclerView extends BaseRecyclerView
 
         RecyclerView.RecycledViewPool pool = getRecycledViewPool();
         int approxRows = (int) Math.ceil(grid.availableHeightPx / grid.allAppsIconSizePx);
-        pool.setMaxRecycledViews(AllAppsGridAdapter.PREDICTION_BAR_SPACER_TYPE, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.EMPTY_SEARCH_VIEW_TYPE, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.ICON_VIEW_TYPE, approxRows * mNumAppsPerRow);
+        pool.setMaxRecycledViews(AllAppsGridAdapter.PREDICTION_ICON_VIEW_TYPE, mNumAppsPerRow);
         pool.setMaxRecycledViews(AllAppsGridAdapter.SECTION_BREAK_VIEW_TYPE, approxRows);
-    }
-
-    /**
-     * Sets the prediction bar height.
-     */
-    public void setPredictionBarHeight(int height) {
-        mPredictionBarHeight = height;
     }
 
     /**
@@ -107,21 +100,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView
      */
     public void scrollToTop() {
         scrollToPosition(0);
-    }
-
-    /**
-     * Returns the current scroll position.
-     */
-    public int getScrollPosition() {
-        List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
-        getCurScrollState(mScrollPosState, items);
-        if (mScrollPosState.rowIndex != -1) {
-            int predictionBarHeight = mApps.getPredictedApps().isEmpty() ? 0 : mPredictionBarHeight;
-            return getPaddingTop() + predictionBarHeight +
-                    (mScrollPosState.rowIndex * mScrollPosState.rowHeight) -
-                            mScrollPosState.rowTopOffset;
-        }
-        return 0;
     }
 
     /**
@@ -189,9 +167,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView
 
         // Map the touch position back to the scroll of the recycler view
         getCurScrollState(mScrollPosState, mApps.getAdapterItems());
-        int predictionBarHeight = mApps.getPredictedApps().isEmpty() ? 0 : mPredictionBarHeight;
-        int availableScrollHeight = getAvailableScrollHeight(rowCount, mScrollPosState.rowHeight,
-                predictionBarHeight);
+        int availableScrollHeight = getAvailableScrollHeight(rowCount, mScrollPosState.rowHeight, 0);
         LinearLayoutManager layoutManager = (LinearLayoutManager) getLayoutManager();
         if (mFastScrollMode == FAST_SCROLL_MODE_FREE_SCROLL) {
             layoutManager.scrollToPositionWithOffset(0, (int) -(availableScrollHeight * touchFraction));
@@ -255,8 +231,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView
             return;
         }
 
-        int predictionBarHeight = mApps.getPredictedApps().isEmpty() ? 0 : mPredictionBarHeight;
-        synchronizeScrollBarThumbOffsetToViewScroll(mScrollPosState, rowCount, predictionBarHeight);
+        synchronizeScrollBarThumbOffsetToViewScroll(mScrollPosState, rowCount, 0);
     }
 
     /**
@@ -293,8 +268,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView
 
         // Calculate the full animation from the current scroll position to the final scroll
         // position, and then run the animation for the duration.
-        int predictionBarHeight = mApps.getPredictedApps().isEmpty() ? 0 : mPredictionBarHeight;
-        int curScrollY = getPaddingTop() + predictionBarHeight +
+        int curScrollY = getPaddingTop() +
                 (scrollPosState.rowIndex * scrollPosState.rowHeight) - scrollPosState.rowTopOffset;
         int newScrollY = getScrollAtPosition(position, scrollPosState.rowHeight);
         int numFrames = mFastScrollFrames.length;
@@ -307,8 +281,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView
     }
 
     /**
-     * Returns the current scroll state of the apps rows, not including the prediction
-     * bar.
+     * Returns the current scroll state of the apps rows.
      */
     private void getCurScrollState(ScrollPositionState stateOut,
             List<AlphabeticalAppsList.AdapterItem> items) {
@@ -327,7 +300,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView
             int position = getChildPosition(child);
             if (position != NO_POSITION) {
                 AlphabeticalAppsList.AdapterItem item = items.get(position);
-                if (item.viewType == AllAppsGridAdapter.ICON_VIEW_TYPE) {
+                if (item.viewType == AllAppsGridAdapter.ICON_VIEW_TYPE ||
+                        item.viewType == AllAppsGridAdapter.PREDICTION_ICON_VIEW_TYPE) {
                     stateOut.rowIndex = item.rowIndex;
                     stateOut.rowTopOffset = getLayoutManager().getDecoratedTop(child);
                     stateOut.rowHeight = child.getHeight();
@@ -342,9 +316,10 @@ public class AllAppsRecyclerView extends BaseRecyclerView
      */
     private int getScrollAtPosition(int position, int rowHeight) {
         AlphabeticalAppsList.AdapterItem item = mApps.getAdapterItems().get(position);
-        if (item.viewType == AllAppsGridAdapter.ICON_VIEW_TYPE) {
-            int predictionBarHeight = mApps.getPredictedApps().isEmpty() ? 0 : mPredictionBarHeight;
-            return getPaddingTop() + predictionBarHeight + item.rowIndex * rowHeight;
+        if (item.viewType == AllAppsGridAdapter.ICON_VIEW_TYPE ||
+                item.viewType == AllAppsGridAdapter.PREDICTION_ICON_VIEW_TYPE) {
+            int offset = item.rowIndex > 0 ? getPaddingTop() : 0;
+            return offset + item.rowIndex * rowHeight;
         } else {
             return 0;
         }

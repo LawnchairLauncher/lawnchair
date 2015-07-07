@@ -75,7 +75,11 @@ final class FullMergeAlgorithm implements AlphabeticalAppsList.MergeAlgorithm {
     public boolean continueMerging(AlphabeticalAppsList.SectionInfo section,
            AlphabeticalAppsList.SectionInfo withSection,
            int sectionAppCount, int numAppsPerRow, int mergeCount) {
-        // Merge EVERYTHING
+        // Don't merge the predicted apps
+        if (section.firstAppItem.viewType != AllAppsGridAdapter.ICON_VIEW_TYPE) {
+            return false;
+        }
+        // Otherwise, merge every other section
         return true;
     }
 }
@@ -103,6 +107,11 @@ final class SimpleSectionMergeAlgorithm implements AlphabeticalAppsList.MergeAlg
     public boolean continueMerging(AlphabeticalAppsList.SectionInfo section,
            AlphabeticalAppsList.SectionInfo withSection,
            int sectionAppCount, int numAppsPerRow, int mergeCount) {
+        // Don't merge the predicted apps
+        if (section.firstAppItem.viewType != AllAppsGridAdapter.ICON_VIEW_TYPE) {
+            return false;
+        }
+
         // Continue merging if the number of hanging apps on the final row is less than some
         // fixed number (ragged), the merged rows has yet to exceed some minimum row count,
         // and while the number of merged sections is less than some fixed number of merges
@@ -127,17 +136,14 @@ final class SimpleSectionMergeAlgorithm implements AlphabeticalAppsList.MergeAlg
  * The all apps view container.
  */
 public class AllAppsContainerView extends BaseContainerView implements DragSource,
-        LauncherTransitionable, AlphabeticalAppsList.AdapterChangedCallback,
-        AllAppsGridAdapter.PredictionBarSpacerCallbacks, View.OnTouchListener,
-        View.OnLongClickListener, ViewTreeObserver.OnPreDrawListener,
-        AllAppsSearchBarController.Callbacks, Stats.LaunchSourceProvider {
+        LauncherTransitionable, View.OnTouchListener, View.OnLongClickListener,
+        AllAppsSearchBarController.Callbacks {
 
     private static final int MIN_ROWS_IN_MERGED_SECTION_PHONE = 3;
     private static final int MAX_NUM_MERGES_PHONE = 2;
 
     @Thunk Launcher mLauncher;
     @Thunk AlphabeticalAppsList mApps;
-    private LayoutInflater mLayoutInflater;
     private AllAppsGridAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.ItemDecoration mItemDecoration;
@@ -146,7 +152,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     @Thunk View mContainerView;
     @Thunk View mRevealView;
     @Thunk AllAppsRecyclerView mAppsRecyclerView;
-    @Thunk ViewGroup mPredictionBarView;
     @Thunk AllAppsSearchBarController mSearchBarController;
     private ViewGroup mSearchBarContainerView;
     private View mSearchBarView;
@@ -159,17 +164,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     private final Point mBoundsCheckLastTouchDownPos = new Point(-1, -1);
     // This coordinate is relative to its parent
     private final Point mIconLastTouchPos = new Point();
-    // This coordinate is used to proxy click and long-click events to the prediction bar icons
-    private final Point mPredictionIconTouchDownPos = new Point();
-    // Normal container insets
-    private int mPredictionBarHeight;
-    private int mLastRecyclerViewScrollPos = -1;
-    @Thunk boolean mFocusPredictionBarOnFirstBind;
 
     private SpannableStringBuilder mSearchQueryBuilder = null;
-
-    private CheckLongPressHelper mPredictionIconCheckForLongPress;
-    private View mPredictionIconUnderTouch;
 
     public AllAppsContainerView(Context context) {
         this(context, null);
@@ -184,19 +180,10 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         Resources res = context.getResources();
 
         mLauncher = (Launcher) context;
-        mLayoutInflater = LayoutInflater.from(context);
-        DeviceProfile grid = mLauncher.getDeviceProfile();
-        mPredictionBarHeight = (int) (grid.allAppsIconSizePx + grid.iconDrawablePaddingOriginalPx +
-                Utilities.calculateTextHeight(grid.allAppsIconTextSizePx) +
-                2 * res.getDimensionPixelSize(R.dimen.all_apps_icon_top_bottom_padding) +
-                res.getDimensionPixelSize(R.dimen.all_apps_prediction_bar_top_padding) +
-                res.getDimensionPixelSize(R.dimen.all_apps_prediction_bar_bottom_padding));
         mSectionNamesMargin = res.getDimensionPixelSize(R.dimen.all_apps_grid_view_start_margin);
         mApps = new AlphabeticalAppsList(context);
-        mApps.setAdapterChangedCallback(this);
-        mAdapter = new AllAppsGridAdapter(context, mApps, this, this, mLauncher, this);
+        mAdapter = new AllAppsGridAdapter(context, mApps, this, mLauncher, this);
         mAdapter.setEmptySearchText(res.getString(R.string.all_apps_loading_message));
-        mAdapter.setPredictionRowHeight(mPredictionBarHeight);
         mApps.setAdapter(mAdapter);
         mLayoutManager = mAdapter.getLayoutManager();
         mItemDecoration = mAdapter.getItemDecoration();
@@ -310,17 +297,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-                    if (!mApps.getPredictedApps().isEmpty()) {
-                        // If the prediction bar is going to be bound, then defer focusing until
-                        // it is first bound
-                        if (mPredictionBarView.getChildCount() == 0) {
-                            mFocusPredictionBarOnFirstBind = true;
-                        } else {
-                            mPredictionBarView.requestFocus();
-                        }
-                    } else {
-                        mAppsRecyclerView.requestFocus();
-                    }
+                    mAppsRecyclerView.requestFocus();
                 }
             }
         };
@@ -333,7 +310,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         // Load the all apps recycler view
         mAppsRecyclerView = (AllAppsRecyclerView) findViewById(R.id.apps_list_view);
         mAppsRecyclerView.setApps(mApps);
-        mAppsRecyclerView.setPredictionBarHeight(mPredictionBarHeight);
         mAppsRecyclerView.setLayoutManager(mLayoutManager);
         mAppsRecyclerView.setAdapter(mAdapter);
         mAppsRecyclerView.setHasFixedSize(true);
@@ -341,60 +317,12 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             mAppsRecyclerView.addItemDecoration(mItemDecoration);
         }
 
-        // Fix the prediction bar height
-        mPredictionBarView = (ViewGroup) findViewById(R.id.prediction_bar);
-        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mPredictionBarView.getLayoutParams();
-        lp.height = mPredictionBarHeight;
-
         updateBackgroundAndPaddings();
     }
 
     @Override
     public void onBoundsChanged(Rect newBounds) {
         mLauncher.updateOverlayBounds(newBounds);
-    }
-
-    @Override
-    public void onBindPredictionBar() {
-        updatePredictionBarVisibility();
-
-        List<AppInfo> predictedApps = mApps.getPredictedApps();
-
-        // Remove extra prediction icons
-        while (mPredictionBarView.getChildCount() > mNumPredictedAppsPerRow) {
-            mPredictionBarView.removeViewAt(mPredictionBarView.getChildCount() - 1);
-        }
-
-        int childCount = mPredictionBarView.getChildCount();
-        for (int i = 0; i < mNumPredictedAppsPerRow; i++) {
-            BubbleTextView icon;
-            if (i < childCount) {
-                // If a child at that index exists, then get that child
-                icon = (BubbleTextView) mPredictionBarView.getChildAt(i);
-            } else {
-                // Otherwise, inflate a new icon
-                icon = (BubbleTextView) mLayoutInflater.inflate(
-                        R.layout.all_apps_prediction_bar_icon, mPredictionBarView, false);
-                icon.setFocusable(true);
-                icon.setLongPressTimeout(ViewConfiguration.get(getContext()).getLongPressTimeout());
-                mPredictionBarView.addView(icon);
-            }
-
-            // Either apply the app info to the child, or hide the view
-            if (i < predictedApps.size()) {
-                if (icon.getVisibility() != View.VISIBLE) {
-                    icon.setVisibility(View.VISIBLE);
-                }
-                icon.applyFromApplicationInfo(predictedApps.get(i));
-            } else {
-                icon.setVisibility(View.INVISIBLE);
-            }
-        }
-
-        if (mFocusPredictionBarOnFirstBind) {
-            mFocusPredictionBarOnFirstBind = false;
-            mPredictionBarView.requestFocus();
-        }
     }
 
     @Override
@@ -476,22 +404,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             lp.rightMargin = (getMeasuredWidth() - searchBarBounds.right) - backgroundPadding.right;
             mSearchBarContainerView.requestLayout();
         }
-
-        // Update the prediction bar insets as well
-        mPredictionBarView = (ViewGroup) findViewById(R.id.prediction_bar);
-        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mPredictionBarView.getLayoutParams();
-        lp.leftMargin = padding.left + mAppsRecyclerView.getMaxScrollbarWidth();
-        lp.rightMargin = padding.right + mAppsRecyclerView.getMaxScrollbarWidth();
-        mPredictionBarView.requestLayout();
-    }
-
-    @Override
-    public boolean onPreDraw() {
-        if (mNumAppsPerRow > 0) {
-            // Update the position of the prediction bar to match the scroll of the all apps list
-            synchronizeToRecyclerViewScrollPosition(mAppsRecyclerView.getScrollPosition());
-        }
-        return true;
     }
 
     @Override
@@ -621,17 +533,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     }
 
     @Override
-    public void onAdapterItemsChanged() {
-        updatePredictionBarVisibility();
-    }
-
-    @Override
     public void onLauncherTransitionPrepare(Launcher l, boolean animated, boolean toWorkspace) {
-        // Register for a pre-draw listener to synchronize the recycler view scroll to other views
-        // in this container
-        if (!toWorkspace) {
-            getViewTreeObserver().addOnPreDrawListener(this);
-        }
+        // Do nothing
     }
 
     @Override
@@ -647,35 +550,9 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     @Override
     public void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace) {
         if (toWorkspace) {
-            getViewTreeObserver().removeOnPreDrawListener(this);
-            mLastRecyclerViewScrollPos = -1;
-
             // Reset the search bar after transitioning home
             mSearchBarController.reset();
         }
-    }
-
-    /**
-     * Updates the container when the recycler view is scrolled.
-     */
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void synchronizeToRecyclerViewScrollPosition(int scrollY) {
-        if (mLastRecyclerViewScrollPos != scrollY) {
-            mLastRecyclerViewScrollPos = scrollY;
-
-            // Scroll the prediction bar with the contents of the recycler view
-            mPredictionBarView.setTranslationY(-scrollY + mAppsRecyclerView.getPaddingTop());
-        }
-    }
-
-    @Override
-    public void requestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-        // If we were waiting for long-click, cancel the request once a child has started handling
-        // the scrolling
-        if (mPredictionIconCheckForLongPress != null) {
-            mPredictionIconCheckForLongPress.cancelLongPress();
-        }
-        super.requestDisallowInterceptTouchEvent(disallowIntercept);
     }
 
     /**
@@ -689,19 +566,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                // We workaround the fact that the recycler view needs the touches for the scroll
-                // and we want to intercept it for clicks in the prediction bar by handling clicks
-                // and long clicks in the prediction bar ourselves.
-                if (mPredictionBarView != null && mPredictionBarView.getVisibility() == View.VISIBLE) {
-                    mPredictionIconTouchDownPos.set(x, y);
-                    mPredictionIconUnderTouch = findPredictedAppAtCoordinate(x, y);
-                    if (mPredictionIconUnderTouch != null) {
-                        mPredictionIconCheckForLongPress =
-                                new CheckLongPressHelper(mPredictionIconUnderTouch, this);
-                        mPredictionIconCheckForLongPress.postCheckForLongPress();
-                    }
-                }
-
                 if (!mContentBounds.isEmpty()) {
                     // Outset the fixed bounds and check if the touch is outside all apps
                     Rect tmpRect = new Rect(mContentBounds);
@@ -719,19 +583,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                     }
                 }
                 break;
-            case MotionEvent.ACTION_MOVE:
-                if (mPredictionIconUnderTouch != null) {
-                    float dist = (float) Math.hypot(x - mPredictionIconTouchDownPos.x,
-                            y - mPredictionIconTouchDownPos.y);
-                    if (dist > ViewConfiguration.get(getContext()).getScaledTouchSlop()) {
-                        if (mPredictionIconCheckForLongPress != null) {
-                            mPredictionIconCheckForLongPress.cancelLongPress();
-                        }
-                        mPredictionIconCheckForLongPress = null;
-                        mPredictionIconUnderTouch = null;
-                    }
-                }
-                break;
             case MotionEvent.ACTION_UP:
                 if (mBoundsCheckLastTouchDownPos.x > -1) {
                     ViewConfiguration viewConfig = ViewConfiguration.get(getContext());
@@ -745,26 +596,9 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                         return true;
                     }
                 }
-
-                // Trigger the click on the prediction bar icon if that's where we touched
-                if (mPredictionIconUnderTouch != null &&
-                        !mPredictionIconCheckForLongPress.hasPerformedLongPress()) {
-                    mLauncher.onClick(mPredictionIconUnderTouch);
-                }
-
                 // Fall through
             case MotionEvent.ACTION_CANCEL:
                 mBoundsCheckLastTouchDownPos.set(-1, -1);
-                mPredictionIconTouchDownPos.set(-1, -1);
-
-                // On touch up/cancel, cancel the long press on the prediction bar icon if it has
-                // not yet been performed
-                if (mPredictionIconCheckForLongPress != null) {
-                    mPredictionIconCheckForLongPress.cancelLongPress();
-                    mPredictionIconCheckForLongPress = null;
-                }
-                mPredictionIconUnderTouch = null;
-
                 break;
         }
         return false;
@@ -791,60 +625,5 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mSearchQueryBuilder.clear();
         mSearchQueryBuilder.clearSpans();
         Selection.setSelection(mSearchQueryBuilder, 0);
-    }
-
-    @Override
-    public void fillInLaunchSourceData(Bundle sourceData) {
-        // Since the other cases are caught by the AllAppsRecyclerView LaunchSourceProvider, we just
-        // handle the prediction bar icons here
-        sourceData.putString(Stats.SOURCE_EXTRA_CONTAINER, Stats.CONTAINER_ALL_APPS);
-        sourceData.putString(Stats.SOURCE_EXTRA_SUB_CONTAINER,
-                Stats.SUB_CONTAINER_ALL_APPS_PREDICTION);
-    }
-
-    /**
-     * Returns the predicted app in the prediction bar given a set of local coordinates.
-     */
-    private View findPredictedAppAtCoordinate(int x, int y) {
-        Rect hitRect = new Rect();
-
-        // Ensure that are touching in the recycler view
-        int[] coord = {x, y};
-        Utilities.mapCoordInSelfToDescendent(mAppsRecyclerView, this, coord);
-        mAppsRecyclerView.getHitRect(hitRect);
-        if (!hitRect.contains(coord[0], coord[1])) {
-            return null;
-        }
-
-        // Check against the children of the prediction bar
-        coord[0] = x;
-        coord[1] = y;
-        Utilities.mapCoordInSelfToDescendent(mPredictionBarView, this, coord);
-        for (int i = 0; i < mPredictionBarView.getChildCount(); i++) {
-            View child = mPredictionBarView.getChildAt(i);
-            if (child.getVisibility() != View.VISIBLE) {
-                continue;
-            }
-            child.getHitRect(hitRect);
-            if (hitRect.contains(coord[0], coord[1])) {
-                return child;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Updates the visibility of the prediction bar.
-     * @return whether the prediction bar is visible
-     */
-    private boolean updatePredictionBarVisibility() {
-        boolean showPredictionBar = !mApps.getPredictedApps().isEmpty() &&
-                (!mApps.hasFilter() || mSearchBarController.shouldShowPredictionBar());
-        if (showPredictionBar) {
-            mPredictionBarView.setVisibility(View.VISIBLE);
-        } else if (!showPredictionBar) {
-            mPredictionBarView.setVisibility(View.INVISIBLE);
-        }
-        return showPredictionBar;
     }
 }
