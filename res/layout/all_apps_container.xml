@@ -35,16 +35,4 @@
         android:focusable="true"
         android:descendantFocusability="afterDescendants" />
 
-    <LinearLayout
-        android:id="@+id/prediction_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/all_apps_prediction_bar_top_padding"
-        android:paddingBottom="@dimen/all_apps_prediction_bar_bottom_padding"
-        android:orientation="horizontal"
-        android:focusable="true"
-        android:descendantFocusability="afterDescendants"
-        android:visibility="invisible" >
-    </LinearLayout>
-
 </com.android.launcher3.allapps.AllAppsRecyclerViewContainerView>

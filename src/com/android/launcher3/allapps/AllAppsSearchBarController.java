@@ -72,6 +72,7 @@ public abstract class AllAppsSearchBarController {
      * Returns whether the prediction bar should currently be visible depending on the state of
      * the search bar.
      */
+    @Deprecated
     public abstract boolean shouldShowPredictionBar();
 
     /**

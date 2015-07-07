@@ -18,10 +18,11 @@
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     style="@style/Icon.AllApps"
     android:id="@+id/icon"
-    android:layout_width="0dp"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:layout_weight="1"
+    android:paddingTop="@dimen/all_apps_prediction_icon_top_padding"
+    android:paddingBottom="@dimen/all_apps_prediction_icon_bottom_padding"
     android:focusable="true"
     android:background="@drawable/focusable_view_bg"
     launcher:iconDisplay="all_apps" />
