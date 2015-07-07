@@ -18,7 +18,6 @@ package com.android.launcher3;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
@@ -1681,16 +1680,14 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
                                     // Animate the view translation from its old position to its new
                                     // position
-                                    AnimatorSet anim = (AnimatorSet) v.getTag(ANIM_TAG_KEY);
+                                    ObjectAnimator anim = (ObjectAnimator) v.getTag();
                                     if (anim != null) {
                                         anim.cancel();
                                     }
 
                                     v.setTranslationX(oldX - newX);
-                                    anim = new AnimatorSet();
+                                    anim = LauncherAnimUtils.ofFloat(v, View.TRANSLATION_X, 0);
                                     anim.setDuration(REORDERING_REORDER_REPOSITION_DURATION);
-                                    anim.playTogether(
-                                            ObjectAnimator.ofFloat(v, "translationX", 0f));
                                     anim.start();
                                     v.setTag(anim);
                                 }
@@ -2140,13 +2137,12 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     // Animate the drag view back to the original position
     private void animateDragViewToOriginalPosition() {
         if (mDragView != null) {
-            AnimatorSet anim = new AnimatorSet();
-            anim.setDuration(REORDERING_DROP_REPOSITION_DURATION);
-            anim.playTogether(
-                    ObjectAnimator.ofFloat(mDragView, "translationX", 0f),
-                    ObjectAnimator.ofFloat(mDragView, "translationY", 0f),
-                    ObjectAnimator.ofFloat(mDragView, "scaleX", 1f),
-                    ObjectAnimator.ofFloat(mDragView, "scaleY", 1f));
+            Animator anim = new LauncherViewPropertyAnimator(mDragView)
+                    .translationX(0)
+                    .translationY(0)
+                    .scaleX(1)
+                    .scaleY(1)
+                    .setDuration(REORDERING_DROP_REPOSITION_DURATION);
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -2242,8 +2238,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         // Animate the drag view back to the front position
         animateDragViewToOriginalPosition();
     }
-
-    private static final int ANIM_TAG_KEY = 100;
 
     /* Accessibility */
     @SuppressWarnings("deprecation")

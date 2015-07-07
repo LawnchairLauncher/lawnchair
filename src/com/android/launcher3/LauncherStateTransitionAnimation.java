@@ -30,8 +30,8 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 
 import com.android.launcher3.allapps.AllAppsContainerView;
-import com.android.launcher3.util.UiThreadCircularReveal;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.util.UiThreadCircularReveal;
 import com.android.launcher3.widget.WidgetsContainerView;
 
 import java.util.HashMap;
@@ -259,11 +259,11 @@ public class LauncherStateTransitionAnimation {
 
             // Create the animators
             PropertyValuesHolder panelAlpha =
-                    PropertyValuesHolder.ofFloat("alpha", revealViewToAlpha, 1f);
+                    PropertyValuesHolder.ofFloat(View.ALPHA, revealViewToAlpha, 1f);
             PropertyValuesHolder panelDriftY =
-                    PropertyValuesHolder.ofFloat("translationY", revealViewToYDrift, 0);
+                    PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, revealViewToYDrift, 0);
             PropertyValuesHolder panelDriftX =
-                    PropertyValuesHolder.ofFloat("translationX", revealViewToXDrift, 0);
+                    PropertyValuesHolder.ofFloat(View.TRANSLATION_X, revealViewToXDrift, 0);
             ObjectAnimator panelAlphaAndDrift = ObjectAnimator.ofPropertyValuesHolder(revealView,
                     panelAlpha, panelDriftY, panelDriftX);
             panelAlphaAndDrift.setDuration(revealDuration);

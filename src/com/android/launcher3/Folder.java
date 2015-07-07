@@ -450,11 +450,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             positionAndSizeAsIcon();
             centerAboutIcon();
 
-            PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 1);
-            PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.0f);
-            PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.0f);
-            final ObjectAnimator oa =
-                LauncherAnimUtils.ofPropertyValuesHolder(this, alpha, scaleX, scaleY);
+            final ObjectAnimator oa = LauncherAnimUtils.ofViewAlphaAndScale(this, 1, 1, 1);
             oa.setDuration(mExpandDuration);
             openFolderAnim = oa;
 
@@ -477,8 +473,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             float transY = - 0.075f * (height / 2 - getPivotY());
             setTranslationX(transX);
             setTranslationY(transY);
-            PropertyValuesHolder tx = PropertyValuesHolder.ofFloat("translationX", transX, 0);
-            PropertyValuesHolder ty = PropertyValuesHolder.ofFloat("translationY", transY, 0);
+            PropertyValuesHolder tx = PropertyValuesHolder.ofFloat(TRANSLATION_X, transX, 0);
+            PropertyValuesHolder ty = PropertyValuesHolder.ofFloat(TRANSLATION_Y, transY, 0);
 
             Animator drift = ObjectAnimator.ofPropertyValuesHolder(this, tx, ty);
             drift.setDuration(mMaterialExpandDuration);
@@ -557,6 +553,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             final boolean updateAnimationFlag = !mDragInProgress;
             openFolderAnim.addListener(new AnimatorListenerAdapter() {
 
+                @SuppressLint("InlinedApi")
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mFolderName.animate().setDuration(FOLDER_NAME_ANIMATION_DURATION)
@@ -623,12 +620,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     public void animateClosed() {
         if (!(getParent() instanceof DragLayer)) return;
-        PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 0);
-        PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 0.9f);
-        PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 0.9f);
-        final ObjectAnimator oa =
-                LauncherAnimUtils.ofPropertyValuesHolder(this, alpha, scaleX, scaleY);
-
+        final ObjectAnimator oa = LauncherAnimUtils.ofViewAlphaAndScale(this, 0, 0.9f, 0.9f);
         oa.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {

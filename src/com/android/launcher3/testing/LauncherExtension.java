@@ -330,7 +330,8 @@ public class LauncherExtension extends Launcher {
             @Override
             public void onScrollInteractionEnd() {
                 if (mProgress > 25 && mLauncherOverlayCallbacks.enterFullImmersion()) {
-                    ObjectAnimator oa = LauncherAnimUtils.ofFloat(mSearchOverlay, "translationX", 0);
+                    ObjectAnimator oa = LauncherAnimUtils.ofFloat(
+                            mSearchOverlay, View.TRANSLATION_X, 0);
                     oa.addListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator arg0) {

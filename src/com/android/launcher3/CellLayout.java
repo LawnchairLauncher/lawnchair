@@ -18,7 +18,6 @@ package com.android.launcher3;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
@@ -2156,17 +2155,14 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 a.cancel();
             }
 
-            AnimatorSet s = LauncherAnimUtils.createAnimatorSet();
-            a = s;
-            s.playTogether(
-                LauncherAnimUtils.ofFloat(child, "scaleX", getChildrenScale()),
-                LauncherAnimUtils.ofFloat(child, "scaleY", getChildrenScale()),
-                LauncherAnimUtils.ofFloat(child, "translationX", 0f),
-                LauncherAnimUtils.ofFloat(child, "translationY", 0f)
-            );
-            s.setDuration(REORDER_ANIMATION_DURATION);
-            s.setInterpolator(new android.view.animation.DecelerateInterpolator(1.5f));
-            s.start();
+            a = new LauncherViewPropertyAnimator(child)
+                .scaleX(getChildrenScale())
+                .scaleY(getChildrenScale())
+                .translationX(0)
+                .translationY(0)
+                .setDuration(REORDER_ANIMATION_DURATION);
+            a.setInterpolator(new android.view.animation.DecelerateInterpolator(1.5f));
+            a.start();
         }
     }
 
