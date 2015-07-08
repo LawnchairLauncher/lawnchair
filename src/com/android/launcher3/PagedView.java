@@ -909,11 +909,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             }
         }
 
-        if (mFirstLayout && mCurrentPage >= 0 && mCurrentPage < childCount) {
-            updateCurrentPageScroll();
-            mFirstLayout = false;
-        }
-
         final LayoutTransition transition = getLayoutTransition();
         // If the transition is running defer updating max scroll, as some empty pages could
         // still be present, and a max scroll change could cause sudden jumps in scroll.
@@ -936,6 +931,11 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             });
         } else {
             updateMaxScrollX();
+        }
+
+        if (mFirstLayout && mCurrentPage >= 0 && mCurrentPage < childCount) {
+            updateCurrentPageScroll();
+            mFirstLayout = false;
         }
 
         if (mScroller.isFinished() && mChildCountOnLastLayout != childCount) {
@@ -1173,7 +1173,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             if (!mEdgeGlowRight.isFinished()) {
                 final int restoreCount = canvas.save();
                 Rect display = mViewport;
-                canvas.translate(display.left + mPageScrolls[getChildCount() - 1], display.top);
+                canvas.translate(display.left + mPageScrolls[mIsRtl ? 0 : (getPageCount() - 1)], display.top);
                 canvas.rotate(90);
 
                 getEdgeVerticalPostion(sTmpIntPoint);
