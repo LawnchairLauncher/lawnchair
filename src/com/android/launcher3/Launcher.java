@@ -165,8 +165,6 @@ public class Launcher extends Activity
      */
     protected static final int REQUEST_LAST = 100;
 
-    static final int SCREEN_COUNT = 5;
-
     // To turn on these properties, type
     // adb shell setprop log.tag.PROPERTY_NAME [VERBOSE | SUPPRESS]
     static final String DUMP_STATE_PROPERTY = "launcher_dump_state";
@@ -293,8 +291,6 @@ public class Launcher extends Activity
 
     private ArrayList<Runnable> mBindOnResumeCallbacks = new ArrayList<Runnable>();
     private ArrayList<Runnable> mOnResumeCallbacks = new ArrayList<Runnable>();
-
-    private Bundle mSavedInstanceState;
 
     private LauncherModel mModel;
     private IconCache mIconCache;
@@ -3614,7 +3610,7 @@ public class Launcher extends Activity
         if (mWorkspace != null) {
             return mWorkspace.getCurrentPage();
         } else {
-            return SCREEN_COUNT / 2;
+            return 0;
         }
     }
 
@@ -4584,7 +4580,6 @@ public class Launcher extends Activity
         Log.d(TAG, "mWorkspaceLoading=" + mWorkspaceLoading);
         Log.d(TAG, "mRestoring=" + mRestoring);
         Log.d(TAG, "mWaitingForResult=" + mWaitingForResult);
-        Log.d(TAG, "mSavedInstanceState=" + mSavedInstanceState);
         Log.d(TAG, "sFolders.size=" + sFolders.size());
         mModel.dumpState();
         // TODO(hyunyoungs): add mWidgetsView.dumpState(); or mWidgetsModel.dumpState();

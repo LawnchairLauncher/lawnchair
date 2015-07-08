@@ -2436,19 +2436,36 @@ public class LauncherModel extends BroadcastReceiver
         private void sortWorkspaceItemsSpatially(ArrayList<ItemInfo> workspaceItems) {
             final LauncherAppState app = LauncherAppState.getInstance();
             final InvariantDeviceProfile profile = app.getInvariantDeviceProfile();
-            // XXX: review this
+            final int screenCols = profile.numColumns;
+            final int screenCellCount = profile.numColumns * profile.numRows;
             Collections.sort(workspaceItems, new Comparator<ItemInfo>() {
                 @Override
                 public int compare(ItemInfo lhs, ItemInfo rhs) {
-                    int cellCountX = (int) profile.numColumns;
-                    int cellCountY = (int) profile.numRows;
-                    int screenOffset = cellCountX * cellCountY;
-                    int containerOffset = screenOffset * (Launcher.SCREEN_COUNT + 1); // +1 hotseat
-                    long lr = (lhs.container * containerOffset + lhs.screenId * screenOffset +
-                            lhs.cellY * cellCountX + lhs.cellX);
-                    long rr = (rhs.container * containerOffset + rhs.screenId * screenOffset +
-                            rhs.cellY * cellCountX + rhs.cellX);
-                    return (int) (lr - rr);
+                    if (lhs.container == rhs.container) {
+                        // Within containers, order by their spatial position in that container
+                        switch ((int) lhs.container) {
+                            case LauncherSettings.Favorites.CONTAINER_DESKTOP: {
+                                long lr = (lhs.screenId * screenCellCount +
+                                        lhs.cellY * screenCols + lhs.cellX);
+                                long rr = (rhs.screenId * screenCellCount +
+                                        rhs.cellY * screenCols + rhs.cellX);
+                                return (int) (lr - rr);
+                            }
+                            case LauncherSettings.Favorites.CONTAINER_HOTSEAT: {
+                                // We currently use the screen id as the rank
+                                return (int) (lhs.screenId - rhs.screenId);
+                            }
+                            default:
+                                if (LauncherAppState.isDogfoodBuild()) {
+                                    throw new RuntimeException("Unexpected container type when " +
+                                            "sorting workspace items.");
+                                }
+                                return 0;
+                        }
+                    } else {
+                        // Between containers, order by hotseat, desktop
+                        return (int) (lhs.container - rhs.container);
+                    }
                 }
             });
         }
