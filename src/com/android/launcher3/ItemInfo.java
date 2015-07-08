@@ -134,7 +134,7 @@ public class ItemInfo {
     }
 
     public Intent getIntent() {
-        throw new RuntimeException("Unexpected Intent");
+        return null;
     }
 
     /**
