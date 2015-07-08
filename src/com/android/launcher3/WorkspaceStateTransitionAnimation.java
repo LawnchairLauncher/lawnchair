@@ -174,7 +174,6 @@ public class WorkspaceStateTransitionAnimation {
 
     public static final String TAG = "WorkspaceStateTransitionAnimation";
 
-    public static final int SCROLL_TO_CURRENT_PAGE = -1;
     @Thunk static final int BACKGROUND_FADE_OUT_DURATION = 350;
 
     final @Thunk Launcher mLauncher;
@@ -216,16 +215,18 @@ public class WorkspaceStateTransitionAnimation {
         mWorkspaceFadeInAdjacentScreens = grid.shouldFadeAdjacentWorkspaceScreens();
     }
 
+    public void snapToPageFromOverView(int whichPage) {
+        mWorkspace.snapToPage(whichPage, mOverviewTransitionTime, mZoomInInterpolator);
+    }
+
     public AnimatorSet getAnimationToState(Workspace.State fromState, Workspace.State toState,
-            int toPage, boolean animated, boolean hasOverlaySearchBar,
-            HashMap<View, Integer> layerViews) {
+            boolean animated, boolean hasOverlaySearchBar, HashMap<View, Integer> layerViews) {
         AccessibilityManager am = (AccessibilityManager)
                 mLauncher.getSystemService(Context.ACCESSIBILITY_SERVICE);
         final boolean accessibilityEnabled = am.isEnabled();
         TransitionStates states = new TransitionStates(fromState, toState);
         int duration = getAnimationDuration(states);
-        animateWorkspace(states, toPage, animated, duration, layerViews,
-                accessibilityEnabled);
+        animateWorkspace(states, animated, duration, layerViews, accessibilityEnabled);
         animateSearchBar(states, animated, duration, hasOverlaySearchBar, layerViews,
                 accessibilityEnabled);
         animateBackgroundGradient(states, animated, BACKGROUND_FADE_OUT_DURATION);
@@ -265,7 +266,7 @@ public class WorkspaceStateTransitionAnimation {
     /**
      * Starts a transition animation for the workspace.
      */
-    private void animateWorkspace(final TransitionStates states, int toPage, final boolean animated,
+    private void animateWorkspace(final TransitionStates states, final boolean animated,
                                   final int duration, final HashMap<View, Integer> layerViews,
                                   final boolean accessibilityEnabled) {
         // Reinitialize animation arrays for the current workspace state
@@ -305,11 +306,7 @@ public class WorkspaceStateTransitionAnimation {
             }
         }
 
-        if (toPage == SCROLL_TO_CURRENT_PAGE) {
-            toPage = mWorkspace.getPageNearestToCenterOfScreen();
-        }
-        mWorkspace.snapToPage(toPage, duration, mZoomInInterpolator);
-
+        int toPage = mWorkspace.getPageNearestToCenterOfScreen();
         for (int i = 0; i < childCount; i++) {
             final CellLayout cl = (CellLayout) mWorkspace.getChildAt(i);
             boolean isCurrentPage = (i == toPage);

@@ -2458,8 +2458,10 @@ public class Launcher extends Activity
 
         if (v instanceof CellLayout) {
             if (mWorkspace.isInOverviewMode()) {
-                showWorkspace(mWorkspace.indexOfChild(v), true);
+                mWorkspace.snapToPageFromOverView(mWorkspace.indexOfChild(v));
+                showWorkspace(true);
             }
+            return;
         }
 
         Object tag = v.getTag();
@@ -3247,26 +3249,17 @@ public class Launcher extends Activity
     }
 
     public void showWorkspace(boolean animated) {
-        showWorkspace(WorkspaceStateTransitionAnimation.SCROLL_TO_CURRENT_PAGE, animated, null);
+        showWorkspace(animated, null);
     }
 
     public void showWorkspace(boolean animated, Runnable onCompleteRunnable) {
-        showWorkspace(WorkspaceStateTransitionAnimation.SCROLL_TO_CURRENT_PAGE, animated,
-                onCompleteRunnable);
-    }
-
-    protected void showWorkspace(int snapToPage, boolean animated) {
-        showWorkspace(snapToPage, animated, null);
-    }
-
-    void showWorkspace(int snapToPage, boolean animated, Runnable onCompleteRunnable) {
         boolean changed = mState != State.WORKSPACE ||
                 mWorkspace.getState() != Workspace.State.NORMAL;
         if (changed) {
             boolean wasInSpringLoadedMode = (mState != State.WORKSPACE);
             mWorkspace.setVisibility(View.VISIBLE);
             mStateTransitionAnimation.startAnimationToWorkspace(mState, Workspace.State.NORMAL,
-                    snapToPage, animated, onCompleteRunnable);
+                    animated, onCompleteRunnable);
 
             // Show the search bar (only animate if we were showing the drop target bar in spring
             // loaded mode)
@@ -3297,8 +3290,7 @@ public class Launcher extends Activity
     void showOverviewMode(boolean animated) {
         mWorkspace.setVisibility(View.VISIBLE);
         mStateTransitionAnimation.startAnimationToWorkspace(mState, Workspace.State.OVERVIEW,
-                WorkspaceStateTransitionAnimation.SCROLL_TO_CURRENT_PAGE, animated,
-                null /* onCompleteRunnable */);
+                animated, null /* onCompleteRunnable */);
         mState = State.WORKSPACE;
     }
 
@@ -3373,11 +3365,11 @@ public class Launcher extends Activity
      * Updates the workspace and interaction state on state change, and return the animation to this
      * new state.
      */
-    public Animator startWorkspaceStateChangeAnimation(Workspace.State toState, int toPage,
+    public Animator startWorkspaceStateChangeAnimation(Workspace.State toState,
             boolean animated, boolean hasOverlaySearchBar, HashMap<View, Integer> layerViews) {
         Workspace.State fromState = mWorkspace.getState();
-        Animator anim = mWorkspace.setStateWithAnimation(toState, toPage, animated,
-                hasOverlaySearchBar, layerViews);
+        Animator anim = mWorkspace.setStateWithAnimation(
+                toState, animated, hasOverlaySearchBar, layerViews);
         updateInteraction(fromState, toState);
         return anim;
     }
@@ -3390,8 +3382,7 @@ public class Launcher extends Activity
         }
 
         mStateTransitionAnimation.startAnimationToWorkspace(mState, Workspace.State.SPRING_LOADED,
-                WorkspaceStateTransitionAnimation.SCROLL_TO_CURRENT_PAGE, true /* animated */,
-                null /* onCompleteRunnable */);
+                true /* animated */, null /* onCompleteRunnable */);
         mState = isAppsViewVisible() ? State.APPS_SPRING_LOADED : State.WIDGETS_SPRING_LOADED;
     }
 
