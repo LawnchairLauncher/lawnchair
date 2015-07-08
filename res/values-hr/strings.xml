@@ -56,7 +56,7 @@
     <string name="migration_cling_description" msgid="2752413805582227644">"Želite li uvesti ikone i mape sa starih početnih zaslona?"</string>
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"KOPIRAJ IKONE"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"POKRENI NOVO"</string>
-    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Pozadinske slike, widgeti i postavke"</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Pozadine, widgeti i postavke"</string>
     <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Dodirnite i zadržite pozadinu radi prilagodbe"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"SHVAĆAM"</string>
     <string name="folder_opened" msgid="94695026776264709">"Mapa je otvorena, <xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
@@ -66,7 +66,7 @@
     <string name="folder_renamed" msgid="1794088362165669656">"Mapa je preimenovana u <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format" msgid="6629239338071103179">"Mapa: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Widgeti"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"Pozadinske slike"</string>
+    <string name="wallpaper_button_text" msgid="8404103075899945851">"Pozadine"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"Postavke"</string>
     <string name="allow_rotation_title" msgid="2118706734511831751">"Dopusti rotaciju"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Nepoznato"</string>
