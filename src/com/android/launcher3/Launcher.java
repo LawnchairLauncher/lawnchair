@@ -2899,8 +2899,15 @@ public class Launcher extends Activity
                     }
                 }
                 if (opts == null && !Utilities.isLmpOrAbove()) {
+                    // Below L, we use a scale up animation
                     opts = ActivityOptions.makeScaleUpAnimation(v, 0, 0,
                                     v.getMeasuredWidth(), v.getMeasuredHeight());
+                } else if (opts == null && Utilities.isLmpMR1()) {
+                    // On L devices, we use the device default slide-up transition.
+                    // On L MR1 devices, we a custom version of the slide-up transition which
+                    // doesn't have the delay present in the device default.
+                    opts = ActivityOptions.makeCustomAnimation(this,
+                            R.anim.task_open_enter, R.anim.no_anim);
                 }
                 optsBundle = opts != null ? opts.toBundle() : null;
             }
