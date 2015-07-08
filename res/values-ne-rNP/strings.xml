@@ -81,7 +81,7 @@
     <string name="folder_hint_text" msgid="6617836969016293992">"बेनाम फोल्डर"</string>
     <string name="workspace_description_format" msgid="2950174241104043327">"गृह स्क्रिन %1$d"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"पृष्ठ %2$d को %1$d"</string>
-    <string name="workspace_scroll_format" msgid="8458889198184077399">"गृह स्क्रिन %2$d को %2$d"</string>
+    <string name="workspace_scroll_format" msgid="8458889198184077399">"गृह स्क्रिन %1$d को %2$d"</string>
     <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"अनुप्रयोग पृष्ठ %2$d को %1$d"</string>
     <!-- String.format failed for translation -->
     <!-- no translation found for apps_customize_widgets_scroll_format (3106209519974971521) -->
