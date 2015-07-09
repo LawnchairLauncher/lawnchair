@@ -28,7 +28,6 @@ import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -247,11 +246,6 @@ public class Workspace extends PagedView
 
     private SparseArray<Parcelable> mSavedStates;
     private final ArrayList<Integer> mRestoredPages = new ArrayList<Integer>();
-
-    // These variables are used for storing the initial and final values during workspace animations
-    private int mSavedScrollX;
-    private float mSavedRotationY;
-    private float mSavedTranslationX;
 
     private float mCurrentScale;
     private float mTransitionProgress;
@@ -2762,26 +2756,26 @@ public class Workspace extends PagedView
         }
     }
 
-    public void setFinalScrollForPageChange(int pageIndex) {
-        CellLayout cl = (CellLayout) getChildAt(pageIndex);
-        if (cl != null) {
-            mSavedScrollX = getScrollX();
-            mSavedTranslationX = cl.getTranslationX();
-            mSavedRotationY = cl.getRotationY();
-            final int newX = getScrollForPage(pageIndex);
-            setScrollX(newX);
-            cl.setTranslationX(0f);
-            cl.setRotationY(0f);
+    /**
+     * Computes the area relative to dragLayer which is used to display a page.
+     */
+    public void getPageAreaRelativeToDragLayer(Rect outArea) {
+        CellLayout child = (CellLayout) getChildAt(getNextPage());
+        if (child == null) {
+            return;
         }
-    }
+        ShortcutAndWidgetContainer boundingLayout = child.getShortcutsAndWidgets();
 
-    public void resetFinalScrollForPageChange(int pageIndex) {
-        if (pageIndex >= 0) {
-            CellLayout cl = (CellLayout) getChildAt(pageIndex);
-            setScrollX(mSavedScrollX);
-            cl.setTranslationX(mSavedTranslationX);
-            cl.setRotationY(mSavedRotationY);
-        }
+        // Use the absolute left instead of the child left, as we want the visible area
+        // irrespective of the visible child. Since the view can only scroll horizontally, the
+        // top position is not affected.
+        mTempXY[0] = getViewportOffsetX() + getPaddingLeft() + boundingLayout.getLeft();
+        mTempXY[1] = child.getTop() + boundingLayout.getTop();
+
+        float scale = mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, mTempXY);
+        outArea.set(mTempXY[0], mTempXY[1],
+                (int) (mTempXY[0] + scale * boundingLayout.getMeasuredWidth()),
+                (int) (mTempXY[1] + scale * boundingLayout.getMeasuredHeight()));
     }
 
     public void getViewLocationRelativeToSelf(View v, int[] location) {
