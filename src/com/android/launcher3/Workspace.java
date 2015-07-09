@@ -92,13 +92,17 @@ public class Workspace extends PagedView
 
     private static boolean ENFORCE_DRAG_EVENT_ORDER = false;
 
-    protected static final int SNAP_OFF_EMPTY_SCREEN_DURATION = 400;
-    protected static final int FADE_EMPTY_SCREEN_DURATION = 150;
+    private static final int SNAP_OFF_EMPTY_SCREEN_DURATION = 400;
+    private static final int FADE_EMPTY_SCREEN_DURATION = 150;
 
     private static final int ADJACENT_SCREEN_DROP_DURATION = 300;
 
-    static final boolean MAP_NO_RECURSE = false;
-    static final boolean MAP_RECURSE = true;
+    private static final boolean MAP_NO_RECURSE = false;
+    private static final boolean MAP_RECURSE = true;
+
+    // The screen id used for the empty screen always present to the right.
+    public final static long EXTRA_EMPTY_SCREEN_ID = -201;
+    private final static long CUSTOM_CONTENT_SCREEN_ID = -301;
 
     private static final long CUSTOM_CONTENT_GESTURE_DELAY = 200;
     private long mTouchDownTime = -1;
@@ -112,10 +116,6 @@ public class Workspace extends PagedView
     private int mDefaultPage;
 
     private ShortcutAndWidgetContainer mDragSourceInternal;
-
-    // The screen id used for the empty screen always present to the right.
-    final static long EXTRA_EMPTY_SCREEN_ID = -201;
-    private final static long CUSTOM_CONTENT_SCREEN_ID = -301;
 
     @Thunk LongArrayMap<CellLayout> mWorkspaceScreens = new LongArrayMap<>();
     @Thunk ArrayList<Long> mScreenOrder = new ArrayList<Long>();
@@ -136,8 +136,8 @@ public class Workspace extends PagedView
     private int mDragOverX = -1;
     private int mDragOverY = -1;
 
-    static Rect mLandscapeCellLayoutMetrics = null;
-    static Rect mPortraitCellLayoutMetrics = null;
+    private static Rect mLandscapeCellLayoutMetrics = null;
+    private static Rect mPortraitCellLayoutMetrics = null;
 
     CustomContentCallbacks mCustomContentCallbacks;
     boolean mCustomContentShowing;
@@ -164,11 +164,11 @@ public class Workspace extends PagedView
 
     // These are temporary variables to prevent having to allocate a new object just to
     // return an (x, y) value from helper functions. Do NOT use them to maintain other state.
-    private int[] mTempCell = new int[2];
-    private int[] mTempPt = new int[2];
+    private static final Rect sTempRect = new Rect();
+    private final int[] mTempXY = new int[2];
     @Thunk float[] mDragViewVisualCenter = new float[2];
     private float[] mTempCellLayoutCenterCoordinates = new float[2];
-    private Matrix mTempInverseMatrix = new Matrix();
+    private int[] mTempVisiblePagesRange = new int[2];
 
     private SpringLoadedDragController mSpringLoadedDragController;
     private float mSpringLoadedShrinkFactor;
@@ -182,7 +182,6 @@ public class Workspace extends PagedView
     private boolean mIsSwitchingState = false;
 
     boolean mAnimatingViewIntoPlace = false;
-    boolean mIsDragOccuring = false;
     boolean mChildrenLayersEnabled = true;
 
     private boolean mStripScreensOnPageStopMoving = false;
@@ -192,9 +191,6 @@ public class Workspace extends PagedView
 
     private HolographicOutlineHelper mOutlineHelper;
     @Thunk Bitmap mDragOutline = null;
-    private static final Rect sTempRect = new Rect();
-    private final int[] mTempXY = new int[2];
-    private int[] mTempVisiblePagesRange = new int[2];
     public static final int DRAG_BITMAP_PADDING = 2;
     private boolean mWorkspaceFadeInAdjacentScreens;
 
@@ -205,7 +201,6 @@ public class Workspace extends PagedView
 
     @Thunk Runnable mDelayedResizeRunnable;
     private Runnable mDelayedSnapToPageRunnable;
-    private Point mDisplaySize = new Point();
 
     // Variables relating to the creation of user folders by hovering shortcuts over shortcuts
     private static final int FOLDER_CREATION_TIMEOUT = 0;
@@ -372,7 +367,6 @@ public class Workspace extends PagedView
             enfoceDragParity("onDragStart", 0, 0);
         }
 
-        mIsDragOccuring = true;
         updateChildrenLayersEnabled(false);
         mLauncher.lockScreenOrientation();
         mLauncher.onInteractionBegin();
@@ -403,7 +397,6 @@ public class Workspace extends PagedView
             removeExtraEmptyScreen(true, mDragSourceInternal != null);
         }
 
-        mIsDragOccuring = false;
         updateChildrenLayersEnabled(false);
         mLauncher.unlockScreenOrientation(false);
 
@@ -431,8 +424,6 @@ public class Workspace extends PagedView
         setupLayoutTransition();
 
         mWallpaperOffset = new WallpaperOffsetInterpolator();
-        Display display = mLauncher.getWindowManager().getDefaultDisplay();
-        display.getSize(mDisplaySize);
 
         mMaxDistanceForFolderCreation = (0.55f * grid.iconSizePx);
 
@@ -1835,7 +1826,7 @@ public class Workspace extends PagedView
     }
 
     protected void onWallpaperTap(MotionEvent ev) {
-        final int[] position = mTempCell;
+        final int[] position = mTempXY;
         getLocationOnScreen(position);
 
         int pointerIndex = ev.getActionIndex();
@@ -3005,30 +2996,21 @@ public class Workspace extends PagedView
        xy[1] = xy[1] - v.getTop();
    }
 
-   boolean isPointInSelfOverHotseat(int x, int y, Rect r) {
-       if (r == null) {
-           r = new Rect();
-       }
-       mTempPt[0] = x;
-       mTempPt[1] = y;
-       mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, mTempPt, true);
-
-       DeviceProfile grid = mLauncher.getDeviceProfile();
-       r = grid.getHotseatRect();
-       if (r.contains(mTempPt[0], mTempPt[1])) {
-           return true;
-       }
-       return false;
+   boolean isPointInSelfOverHotseat(int x, int y) {
+       mTempXY[0] = x;
+       mTempXY[1] = y;
+       mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, mTempXY, true);
+       return mLauncher.getDeviceProfile().isInHotseatRect(mTempXY[0], mTempXY[1]);
    }
 
    void mapPointFromSelfToHotseatLayout(Hotseat hotseat, float[] xy) {
-       mTempPt[0] = (int) xy[0];
-       mTempPt[1] = (int) xy[1];
-       mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, mTempPt, true);
-       mLauncher.getDragLayer().mapCoordInSelfToDescendent(hotseat.getLayout(), mTempPt);
+       mTempXY[0] = (int) xy[0];
+       mTempXY[1] = (int) xy[1];
+       mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, mTempXY, true);
+       mLauncher.getDragLayer().mapCoordInSelfToDescendent(hotseat.getLayout(), mTempXY);
 
-       xy[0] = mTempPt[0];
-       xy[1] = mTempPt[1];
+       xy[0] = mTempXY[0];
+       xy[1] = mTempXY[1];
    }
 
    /*
@@ -3076,8 +3058,8 @@ public class Workspace extends PagedView
             final float[] touchXy = {originX, originY};
             // Transform the touch coordinates to the CellLayout's local coordinates
             // If the touch point is within the bounds of the cell layout, we can return immediately
-            cl.getMatrix().invert(mTempInverseMatrix);
-            mapPointFromSelfToChild(cl, touchXy, mTempInverseMatrix);
+            cl.getMatrix().invert(sTmpInvMatrix);
+            mapPointFromSelfToChild(cl, touchXy, sTmpInvMatrix);
 
             if (touchXy[0] >= 0 && touchXy[0] <= cl.getWidth() &&
                     touchXy[1] >= 0 && touchXy[1] <= cl.getHeight()) {
@@ -3119,7 +3101,6 @@ public class Workspace extends PagedView
         // Skip drag over events while we are dragging over side pages
         if (mInScrollArea || !transitionStateShouldAllowDrop()) return;
 
-        Rect r = new Rect();
         CellLayout layout = null;
         ItemInfo item = d.dragInfo;
         if (item == null) {
@@ -3137,7 +3118,7 @@ public class Workspace extends PagedView
         // Identify whether we have dragged over a side page
         if (workspaceInModalState()) {
             if (mLauncher.getHotseat() != null && !isExternalDragWidget(d)) {
-                if (isPointInSelfOverHotseat(d.x, d.y, r)) {
+                if (isPointInSelfOverHotseat(d.x, d.y)) {
                     layout = mLauncher.getHotseat().getLayout();
                 }
             }
@@ -3160,7 +3141,7 @@ public class Workspace extends PagedView
         } else {
             // Test to see if we are over the hotseat otherwise just use the current page
             if (mLauncher.getHotseat() != null && !isDragWidget(d)) {
-                if (isPointInSelfOverHotseat(d.x, d.y, r)) {
+                if (isPointInSelfOverHotseat(d.x, d.y)) {
                     layout = mLauncher.getHotseat().getLayout();
                 }
             }
