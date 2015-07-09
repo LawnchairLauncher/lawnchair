@@ -19,6 +19,7 @@ package com.android.launcher3;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.LinearLayout;
 
 /**
@@ -26,11 +27,13 @@ import android.widget.LinearLayout;
  */
 public abstract class BaseContainerView extends LinearLayout implements Insettable {
 
+    private final static String TAG = "BaseContainerView";
+
     // The window insets
     private Rect mInsets = new Rect();
     // The bounds of the search bar.  Only the left, top, right are used to inset the
     // search bar and the height is determined by the measurement of the layout
-    private Rect mSearchBarBounds = new Rect();
+    private Rect mFixedSearchBarBounds = new Rect();
     // The bounds of the container
     protected Rect mContentBounds = new Rect();
     // The padding to apply to the container to achieve the bounds
@@ -66,7 +69,11 @@ public abstract class BaseContainerView extends LinearLayout implements Insettab
      * Sets the search bar bounds for this container view to match.
      */
     final public void setSearchBarBounds(Rect bounds) {
-        mSearchBarBounds.set(bounds);
+        if (LauncherAppState.isDogfoodBuild() && !isValidSearchBarBounds(bounds)) {
+            Log.e(TAG, "Invalid search bar bounds: " + bounds);
+        }
+
+        mFixedSearchBarBounds.set(bounds);
 
         // Post the updates since they can trigger a relayout, and this call can be triggered from
         // a layout pass itself.
@@ -83,9 +90,9 @@ public abstract class BaseContainerView extends LinearLayout implements Insettab
      */
     protected void updateBackgroundAndPaddings() {
         Rect padding;
-        Rect searchBarBounds = new Rect(mSearchBarBounds);
-        if (mSearchBarBounds.isEmpty()) {
-            // Use the normal bounds
+        Rect searchBarBounds = new Rect(mFixedSearchBarBounds);
+        if (!isValidSearchBarBounds(mFixedSearchBarBounds)) {
+            // Use the default bounds
             padding = new Rect(mInsets.left + mContainerBoundsInset,
                     (mHasSearchBar ? 0 : (mInsets.top + mContainerBoundsInset)),
                     mInsets.right + mContainerBoundsInset,
@@ -99,18 +106,18 @@ public abstract class BaseContainerView extends LinearLayout implements Insettab
         } else {
             // Use the search bounds, if there is a search bar, the bounds will contain
             // the offsets for the insets so we can ignore that
-            padding = new Rect(mSearchBarBounds.left,
+            padding = new Rect(mFixedSearchBarBounds.left,
                     (mHasSearchBar ? 0 : (mInsets.top + mContainerBoundsInset)),
-                    getMeasuredWidth() - mSearchBarBounds.right,
+                    getMeasuredWidth() - mFixedSearchBarBounds.right,
                     mInsets.bottom + mContainerBoundsInset);
         }
-        if (!padding.equals(mContentPadding) || !searchBarBounds.equals(mSearchBarBounds)) {
+        if (!padding.equals(mContentPadding) || !searchBarBounds.equals(mFixedSearchBarBounds)) {
             mContentPadding.set(padding);
             mContentBounds.set(padding.left, padding.top,
                     getMeasuredWidth() - padding.right,
                     getMeasuredHeight() - padding.bottom);
-            mSearchBarBounds.set(searchBarBounds);
-            onUpdateBackgroundAndPaddings(mSearchBarBounds, padding);
+            mFixedSearchBarBounds.set(searchBarBounds);
+            onUpdateBackgroundAndPaddings(mFixedSearchBarBounds, padding);
         }
     }
 
@@ -118,4 +125,13 @@ public abstract class BaseContainerView extends LinearLayout implements Insettab
      * To be implemented by container views to update themselves when the bounds changes.
      */
     protected abstract void onUpdateBackgroundAndPaddings(Rect searchBarBounds, Rect padding);
+
+    /**
+     * Returns whether the search bar bounds we got are considered valid.
+     */
+    private boolean isValidSearchBarBounds(Rect searchBarBounds) {
+        return !searchBarBounds.isEmpty() &&
+                searchBarBounds.right <= getMeasuredWidth() &&
+                searchBarBounds.bottom <= getMeasuredHeight();
+    }
 }
