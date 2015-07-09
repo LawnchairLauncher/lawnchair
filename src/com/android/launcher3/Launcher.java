@@ -835,24 +835,22 @@ public class Launcher extends Activity
             return;
         }
 
-        // The pattern used here is that a user PICKs a specific application,
-        // which, depending on the target, might need to CREATE the actual target.
-
-        // For example, the user would PICK_SHORTCUT for "Music playlist", and we
-        // launch over to the Music app to actually CREATE_SHORTCUT.
-        if (resultCode == RESULT_OK && mPendingAddInfo.container != ItemInfo.NO_ID) {
-            final PendingAddArguments args = preparePendingAddArgs(requestCode, data, -1,
-                    mPendingAddInfo);
-            if (isWorkspaceLocked()) {
-                sPendingAddItem = args;
-            } else {
-                completeAdd(args);
+        if (requestCode == REQUEST_CREATE_SHORTCUT) {
+            // Handle custom shortcuts created using ACTION_CREATE_SHORTCUT.
+            if (resultCode == RESULT_OK && mPendingAddInfo.container != ItemInfo.NO_ID) {
+                final PendingAddArguments args = preparePendingAddArgs(requestCode, data, -1,
+                        mPendingAddInfo);
+                if (isWorkspaceLocked()) {
+                    sPendingAddItem = args;
+                } else {
+                    completeAdd(args);
+                    mWorkspace.removeExtraEmptyScreenDelayed(true, exitSpringLoaded,
+                            ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
+                }
+            } else if (resultCode == RESULT_CANCELED) {
                 mWorkspace.removeExtraEmptyScreenDelayed(true, exitSpringLoaded,
                         ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
             }
-        } else if (resultCode == RESULT_CANCELED) {
-            mWorkspace.removeExtraEmptyScreenDelayed(true, exitSpringLoaded,
-                    ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
         }
         mDragLayer.clearAnimatedView();
 
