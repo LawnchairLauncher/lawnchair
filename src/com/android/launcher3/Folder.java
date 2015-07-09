@@ -959,32 +959,22 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         int centerY = (int) (sTempRect.top + sTempRect.height() * scale / 2);
         int centeredLeft = centerX - width / 2;
         int centeredTop = centerY - height / 2;
-        int currentPage = mLauncher.getWorkspace().getNextPage();
-        // In case the workspace is scrolling, we need to use the final scroll to compute
-        // the folders bounds.
-        mLauncher.getWorkspace().setFinalScrollForPageChange(currentPage);
-        // We first fetch the currently visible CellLayoutChildren
-        CellLayout currentLayout = (CellLayout) mLauncher.getWorkspace().getChildAt(currentPage);
-        ShortcutAndWidgetContainer boundingLayout = currentLayout.getShortcutsAndWidgets();
-        Rect bounds = new Rect();
-        parent.getDescendantRectRelativeToSelf(boundingLayout, bounds);
-        // We reset the workspaces scroll
-        mLauncher.getWorkspace().resetFinalScrollForPageChange(currentPage);
 
-        // We need to bound the folder to the currently visible CellLayoutChildren
-        int left = Math.min(Math.max(bounds.left, centeredLeft),
-                bounds.left + bounds.width() - width);
-        int top = Math.min(Math.max(bounds.top, centeredTop),
-                bounds.top + bounds.height() - height);
+        // We need to bound the folder to the currently visible workspace area
+        mLauncher.getWorkspace().getPageAreaRelativeToDragLayer(sTempRect);
+        int left = Math.min(Math.max(sTempRect.left, centeredLeft),
+                sTempRect.left + sTempRect.width() - width);
+        int top = Math.min(Math.max(sTempRect.top, centeredTop),
+                sTempRect.top + sTempRect.height() - height);
         if (grid.isPhone && (grid.availableWidthPx - width) < grid.iconSizePx) {
             // Center the folder if it is full (on phones only)
             left = (grid.availableWidthPx - width) / 2;
-        } else if (width >= bounds.width()) {
+        } else if (width >= sTempRect.width()) {
             // If the folder doesn't fit within the bounds, center it about the desired bounds
-            left = bounds.left + (bounds.width() - width) / 2;
+            left = sTempRect.left + (sTempRect.width() - width) / 2;
         }
-        if (height >= bounds.height()) {
-            top = bounds.top + (bounds.height() - height) / 2;
+        if (height >= sTempRect.height()) {
+            top = sTempRect.top + (sTempRect.height() - height) / 2;
         }
 
         int folderPivotX = width / 2 + (centeredLeft - left);
