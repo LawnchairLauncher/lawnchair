@@ -75,10 +75,6 @@
     <!-- PagedView specific attributes. These attributes are used to customize
          a PagedView view in XML files. -->
     <declare-styleable name="PagedView">
-        <!-- A spacing override for the icons within a page -->
-        <attr name="pageLayoutWidthGap" format="dimension" />
-        <attr name="pageLayoutHeightGap" format="dimension" />
-
         <!-- The page indicator for this workspace -->
         <attr name="pageIndicator" format="reference" />
     </declare-styleable>

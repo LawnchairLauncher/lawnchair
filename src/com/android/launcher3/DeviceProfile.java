@@ -353,13 +353,13 @@ public class DeviceProfile {
     }
 
     // The rect returned will be extended to below the system ui that covers the workspace
-    Rect getHotseatRect() {
+    public boolean isInHotseatRect(int x, int y) {
         if (isVerticalBarLayout()) {
-            return new Rect(availableWidthPx - hotseatBarHeightPx, 0,
-                    Integer.MAX_VALUE, availableHeightPx);
+            return (x >= (availableWidthPx - hotseatBarHeightPx))
+                    && (y >= 0) && (y <= availableHeightPx);
         } else {
-            return new Rect(0, availableHeightPx - hotseatBarHeightPx,
-                    availableWidthPx, Integer.MAX_VALUE);
+            return (x >= 0) && (x <= availableWidthPx)
+                    && (y >= (availableHeightPx - hotseatBarHeightPx));
         }
     }
 
