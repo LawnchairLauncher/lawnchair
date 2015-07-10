@@ -91,7 +91,6 @@ public class LauncherStateTransitionAnimation {
      */
     static abstract class PrivateTransitionCallbacks {
         void onRevealViewVisible(View revealView, View contentView, View allAppsButtonView) {}
-        void onAnimationComplete(View revealView, View contentView, View allAppsButtonView) {}
         float getMaterialRevealViewFinalAlpha(View revealView) {
             return 0;
         }
@@ -108,6 +107,7 @@ public class LauncherStateTransitionAnimation {
                 View allAppsButtonView) {
             return null;
         }
+        void onTransitionComplete() {}
     }
 
     public static final String TAG = "LauncherStateTransitionAnimation";
@@ -128,8 +128,12 @@ public class LauncherStateTransitionAnimation {
 
     /**
      * Starts an animation to the apps view.
+     *
+     * @param startSearchAfterTransition Immediately starts app search after the transition to
+     *                                   All Apps is completed.
      */
-    public void startAnimationToAllApps(final Launcher.State fromState, final boolean animated) {
+    public void startAnimationToAllApps(final boolean animated,
+            final boolean startSearchAfterTransition) {
         final AllAppsContainerView toView = mLauncher.getAppsView();
         PrivateTransitionCallbacks cb = new PrivateTransitionCallbacks() {
             private int[] mAllAppsToPanelDelta;
@@ -171,10 +175,17 @@ public class LauncherStateTransitionAnimation {
                     }
                 };
             }
+            @Override
+            void onTransitionComplete() {
+                if (startSearchAfterTransition) {
+                    toView.startAppsSearch();
+                }
+            }
         };
         // Only animate the search bar if animating from spring loaded mode back to all apps
         startAnimationToOverlay(Workspace.State.NORMAL_HIDDEN, toView, toView.getContentView(),
-                toView.getRevealView(), toView.getSearchBarView(), animated, true, cb);
+                toView.getRevealView(), toView.getSearchBarView(), animated,
+                true /* hideSearchBar */, cb);
     }
 
     /**
@@ -348,7 +359,6 @@ public class LauncherStateTransitionAnimation {
 
                     // Hide the reveal view
                     revealView.setVisibility(View.INVISIBLE);
-                    pCb.onAnimationComplete(revealView, contentView, allAppsButtonView);
 
                     // Disable all necessary layers
                     for (View v : layerViews.keySet()) {
@@ -363,6 +373,7 @@ public class LauncherStateTransitionAnimation {
 
                     // This can hold unnecessary references to views.
                     mStateAnimation = null;
+                    pCb.onTransitionComplete();
                 }
 
             });
@@ -428,6 +439,7 @@ public class LauncherStateTransitionAnimation {
             dispatchOnLauncherTransitionPrepare(toView, animated, false);
             dispatchOnLauncherTransitionStart(toView, animated, false);
             dispatchOnLauncherTransitionEnd(toView, animated, false);
+            pCb.onTransitionComplete();
         }
     }
 
@@ -682,9 +694,6 @@ public class LauncherStateTransitionAnimation {
                         onCompleteRunnable.run();
                     }
 
-                    // Animation complete callback
-                    pCb.onAnimationComplete(revealView, contentView, allAppsButtonView);
-
                     // Disable all necessary layers
                     for (View v : layerViews.keySet()) {
                         if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
@@ -704,6 +713,7 @@ public class LauncherStateTransitionAnimation {
 
                     // This can hold unnecessary references to views.
                     mStateAnimation = null;
+                    pCb.onTransitionComplete();
                 }
             });
 
@@ -739,6 +749,7 @@ public class LauncherStateTransitionAnimation {
             dispatchOnLauncherTransitionPrepare(toView, animated, true);
             dispatchOnLauncherTransitionStart(toView, animated, true);
             dispatchOnLauncherTransitionEnd(toView, animated, true);
+            pCb.onTransitionComplete();
 
             // Run any queued runnables
             if (onCompleteRunnable != null) {

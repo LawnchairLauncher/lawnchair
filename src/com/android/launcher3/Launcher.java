@@ -986,7 +986,7 @@ public class Launcher extends Activity
             // view after launching an app, as they may be depending on the UI to be static to
             // switch to another app, otherwise, if it was
             showAppsView(false /* animated */, false /* resetListToTop */,
-                    !launchedFromApp /* updatePredictedApps */);
+                    !launchedFromApp /* updatePredictedApps */, false /* focusSearchBar */);
         } else if (mOnResumeState == State.WIDGETS) {
             showWidgetsView(false, false);
         }
@@ -2531,12 +2531,17 @@ public class Launcher extends Activity
      */
     protected void onClickAllAppsButton(View v) {
         if (LOGD) Log.d(TAG, "onClickAllAppsButton");
-        if (isAppsViewVisible()) {
-            showWorkspace(true);
-        } else {
-            // Try and refresh the set of predicted apps before we enter launcher
+        if (!isAppsViewVisible()) {
             showAppsView(true /* animated */, false /* resetListToTop */,
-                    true /* updatePredictedApps */);
+                    true /* updatePredictedApps */, false /* focusSearchBar */);
+        }
+    }
+
+    protected void onLongClickAllAppsButton(View v) {
+        if (LOGD) Log.d(TAG, "onLongClickAllAppsButton");
+        if (!isAppsViewVisible()) {
+            showAppsView(true /* animated */, false /* resetListToTop */,
+                    true /* updatePredictedApps */, true /* focusSearchBar */);
         }
     }
 
@@ -3113,6 +3118,11 @@ public class Launcher extends Activity
         if (isWorkspaceLocked()) return false;
         if (mState != State.WORKSPACE) return false;
 
+        if (v == mAllAppsButton) {
+            onLongClickAllAppsButton(v);
+            return true;
+        }
+
         if (v instanceof Workspace) {
             if (!mWorkspace.isInOverviewMode()) {
                 if (!mWorkspace.isTouchActive()) {
@@ -3305,14 +3315,15 @@ public class Launcher extends Activity
     /**
      * Shows the apps view.
      */
-    void showAppsView(boolean animated, boolean resetListToTop, boolean updatePredictedApps) {
+    void showAppsView(boolean animated, boolean resetListToTop, boolean updatePredictedApps,
+            boolean focusSearchBar) {
         if (resetListToTop) {
             mAppsView.scrollToTop();
         }
         if (updatePredictedApps) {
             tryAndUpdatePredictedApps();
         }
-        showAppsOrWidgets(animated, State.APPS);
+        showAppsOrWidgets(State.APPS, animated, focusSearchBar);
     }
 
     /**
@@ -3323,7 +3334,7 @@ public class Launcher extends Activity
         if (resetPageToZero) {
             mWidgetsView.scrollToTop();
         }
-        showAppsOrWidgets(animated, State.WIDGETS);
+        showAppsOrWidgets(State.WIDGETS, animated, false);
 
         mWidgetsView.post(new Runnable() {
             @Override
@@ -3340,7 +3351,7 @@ public class Launcher extends Activity
      */
     // TODO: calling method should use the return value so that when {@code false} is returned
     // the workspace transition doesn't fall into invalid state.
-    private boolean showAppsOrWidgets(boolean animated, State toState) {
+    private boolean showAppsOrWidgets(State toState, boolean animated, boolean focusSearchBar) {
         if (mState != State.WORKSPACE &&  mState != State.APPS_SPRING_LOADED &&
                 mState != State.WIDGETS_SPRING_LOADED) {
             return false;
@@ -3350,7 +3361,7 @@ public class Launcher extends Activity
         }
 
         if (toState == State.APPS) {
-            mStateTransitionAnimation.startAnimationToAllApps(mState, animated);
+            mStateTransitionAnimation.startAnimationToAllApps(animated, focusSearchBar);
         } else {
             mStateTransitionAnimation.startAnimationToWidgets(animated);
         }
@@ -3420,7 +3431,7 @@ public class Launcher extends Activity
     void exitSpringLoadedDragMode() {
         if (mState == State.APPS_SPRING_LOADED) {
             showAppsView(true /* animated */, false /* resetListToTop */,
-                    false /* updatePredictedApps */);
+                    false /* updatePredictedApps */, false /* focusSearchBar */);
         } else if (mState == State.WIDGETS_SPRING_LOADED) {
             showWidgetsView(true, false);
         }

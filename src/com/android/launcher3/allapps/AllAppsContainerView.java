@@ -284,6 +284,15 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         return new DefaultAppSearchController(getContext(), this, mAppsRecyclerView);
     }
 
+    /**
+     * Focuses the search field and begins an app search.
+     */
+    public void startAppsSearch() {
+        if (mSearchBarController != null) {
+            mSearchBarController.focusSearchField();
+        }
+    }
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
