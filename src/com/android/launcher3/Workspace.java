@@ -1820,6 +1820,16 @@ public class Workspace extends PagedView
         updateChildrenLayersEnabled(false);
     }
 
+    @Override
+    protected void getVisiblePages(int[] range) {
+        super.getVisiblePages(range);
+        if (mState == State.OVERVIEW || mState == State.SPRING_LOADED) {
+            // In overview mode, make sure that the two side pages are visible.
+            range[0] = Math.min(range[0], Math.max(getCurrentPage() - 1, numCustomPages()));
+            range[1] = Math.max(range[0], Math.min(getCurrentPage() + 1, getPageCount() - 1));
+        }
+    }
+
     protected void onWallpaperTap(MotionEvent ev) {
         final int[] position = mTempXY;
         getLocationOnScreen(position);
@@ -1940,6 +1950,10 @@ public class Workspace extends PagedView
         return mState == State.OVERVIEW;
     }
 
+    public void snapToPageFromOverView(int whichPage) {
+        mStateTransitionAnimation.snapToPageFromOverView(whichPage);
+    }
+
     int getOverviewModeTranslationY() {
         DeviceProfile grid = mLauncher.getDeviceProfile();
         Rect overviewBar = grid.getOverviewModeButtonBarRect();
@@ -1957,15 +1971,19 @@ public class Workspace extends PagedView
      * Sets the current workspace {@link State}, returning an animation transitioning the workspace
      * to that new state.
      */
-    public Animator setStateWithAnimation(State toState, int toPage, boolean animated,
+    public Animator setStateWithAnimation(State toState, boolean animated,
             boolean hasOverlaySearchBar, HashMap<View, Integer> layerViews) {
         // Create the animation to the new state
         Animator workspaceAnim =  mStateTransitionAnimation.getAnimationToState(mState,
-                toState, toPage, animated, hasOverlaySearchBar, layerViews);
+                toState, animated, hasOverlaySearchBar, layerViews);
 
         // Update the current state
         mState = toState;
         updateAccessibilityFlags();
+        if (mState == State.OVERVIEW || mState == State.SPRING_LOADED) {
+            // Redraw pages, as we might want to draw pages which were not visible.
+            invalidate();
+        }
 
         return workspaceAnim;
     }
@@ -2574,7 +2592,7 @@ public class Workspace extends PagedView
             }
         }
 
-        int snapScreen = WorkspaceStateTransitionAnimation.SCROLL_TO_CURRENT_PAGE;
+        int snapScreen = -1;
         boolean resizeOnDrop = false;
         if (d.dragSource != this) {
             final int[] touchXY = new int[] { (int) mDragViewVisualCenter[0],
@@ -2735,9 +2753,7 @@ public class Workspace extends PagedView
                     animateWidgetDrop(info, parent, d.dragView,
                             onCompleteRunnable, animationType, cell, false);
                 } else {
-                    int duration = snapScreen < 0 ?
-                            WorkspaceStateTransitionAnimation.SCROLL_TO_CURRENT_PAGE :
-                                    ADJACENT_SCREEN_DROP_DURATION;
+                    int duration = snapScreen < 0 ? -1 : ADJACENT_SCREEN_DROP_DURATION;
                     mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, cell, duration,
                             onCompleteRunnable, this);
                 }
