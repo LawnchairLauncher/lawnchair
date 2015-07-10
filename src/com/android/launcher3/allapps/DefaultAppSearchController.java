@@ -169,19 +169,21 @@ final class DefaultAppSearchController extends AllAppsSearchBarController
         if (actionId != EditorInfo.IME_ACTION_DONE) {
             return false;
         }
-        // Skip if there isn't exactly one item
-        if (mApps.getSize() != 1) {
+        // Skip if there are more than one icon
+        if (mApps.getNumFilteredApps() > 1) {
             return false;
         }
-        // If there is exactly one icon, then quick-launch it
+        // Otherwise, find the first icon, or fallback to the search-market-view and launch it
         List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
         for (int i = 0; i < items.size(); i++) {
             AlphabeticalAppsList.AdapterItem item = items.get(i);
-            if (item.viewType == AllAppsGridAdapter.ICON_VIEW_TYPE) {
-                mAppsRecyclerView.getChildAt(i).performClick();
-                mInputMethodManager.hideSoftInputFromWindow(
-                        mContainerView.getWindowToken(), 0);
-                return true;
+            switch (item.viewType) {
+                case AllAppsGridAdapter.ICON_VIEW_TYPE:
+                case AllAppsGridAdapter.SEARCH_MARKET_VIEW_TYPE:
+                    mAppsRecyclerView.getChildAt(i).performClick();
+                    mInputMethodManager.hideSoftInputFromWindow(
+                            mContainerView.getWindowToken(), 0);
+                    return true;
             }
         }
         return false;
