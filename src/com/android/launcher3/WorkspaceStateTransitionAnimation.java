@@ -211,8 +211,9 @@ public class WorkspaceStateTransitionAnimation {
         mOverlayTransitionTime = res.getInteger(R.integer.config_overlayTransitionTime);
         mSpringLoadedShrinkFactor =
                 res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100f;
+        mOverviewModeShrinkFactor =
+                res.getInteger(R.integer.config_workspaceOverviewShrinkPercentage) / 100f;
         mWorkspaceScrimAlpha = res.getInteger(R.integer.config_workspaceScrimAlpha) / 100f;
-        mOverviewModeShrinkFactor = grid.getOverviewModeScale(Utilities.isRtl(res));
         mWorkspaceFadeInAdjacentScreens = grid.shouldFadeAdjacentWorkspaceScreens();
     }
 
