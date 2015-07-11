@@ -38,7 +38,7 @@
     <string name="all_apps_home_button_label" msgid="252062713717058851">"ഹോം"</string>
     <string name="delete_target_label" msgid="1822697352535677073">"നീക്കംചെയ്യുക"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"അണ്‍ഇസ്റ്റാളുചെയ്യുക"</string>
-    <string name="info_target_label" msgid="8053346143994679532">"അപ്ലിക്കേഷൻ വിവരം"</string>
+    <string name="info_target_label" msgid="8053346143994679532">"ആപ്പ് വിവരം"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"കുറുക്കുവഴികൾ ഇൻസ്റ്റാളുചെയ്യുക"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"ഉപയോക്തൃ ഇടപെടൽ ഇല്ലാതെ കുറുക്കുവഴികൾ ചേർക്കാൻ അപ്ലിക്കേഷനെ അനുവദിക്കുന്നു."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"ഹോം ക്രമീകരണങ്ങളും കുറുക്കുവഴികളും റീഡുചെയ്യുക"</string>
