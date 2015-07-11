@@ -20,7 +20,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
-    <string name="home" msgid="7658288663002113681">"Αρχική σελίδα"</string>
+    <string name="home" msgid="7658288663002113681">"Αρχική οθόνη"</string>
     <string name="uid_name" msgid="7820867637514617527">"Βασικές εφαρμογές Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="activity_not_found" msgid="8071924732094499514">"Η εφαρμογή δεν έχει εγκατασταθεί."</string>
@@ -52,7 +52,7 @@
     <string name="title_select_shortcut" msgid="6680642571148153868">"Επιλογή συντόμευσης"</string>
     <string name="title_select_application" msgid="3280812711670683644">"Επιλογή εφαρμογής"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Εφαρμογές"</string>
-    <string name="all_apps_home_button_label" msgid="252062713717058851">"Αρχική σελίδα"</string>
+    <string name="all_apps_home_button_label" msgid="252062713717058851">"Αρχική οθόνη"</string>
     <string name="delete_zone_label_workspace" msgid="4009607676751398685">"Κατάργηση"</string>
     <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"Κατάργηση εγκατάστασης"</string>
     <string name="delete_target_label" msgid="1822697352535677073">"Κατάργηση"</string>

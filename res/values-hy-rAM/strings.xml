@@ -34,7 +34,7 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="external_drop_widget_error" msgid="3165821058322217155">"Հնարավոր չէ տեղադրել տարրն այս հիմնական էկրանին:"</string>
     <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"Ստեղծելու համար ընտրեք վիջեթը"</string>
-    <string name="rename_folder_label" msgid="3727762225964550653">"Թղթապանակի անունը"</string>
+    <string name="rename_folder_label" msgid="3727762225964550653">"Պանակի անունը"</string>
     <string name="rename_folder_title" msgid="3771389277707820891">"Վերանվանել պանակը"</string>
     <string name="rename_action" msgid="5559600076028658757">"Լավ"</string>
     <string name="cancel_action" msgid="7009134900002915310">"Չեղարկել"</string>
