@@ -265,7 +265,7 @@ public class DeviceProfile {
             if (isTablet) {
                 // Pad the left and right of the workspace to ensure consistent spacing
                 // between all icons
-                int width = isLandscape ? Math.max(widthPx, heightPx) : Math.min(widthPx, heightPx);
+                int width = getCurrentWidth();
                 // XXX: If the icon size changes across orientations, we will have to take
                 //      that into account here too.
                 int gap = (int) ((width - 2 * edgeMarginPx -
@@ -301,12 +301,8 @@ public class DeviceProfile {
                 // Pad the left and right of the workspace to ensure consistent spacing
                 // between all icons
                 float gapScale = 1f + (dragViewScale - 1f) / 2f;
-                int width = isLandscape
-                        ? Math.max(widthPx, heightPx)
-                        : Math.min(widthPx, heightPx);
-                int height = isLandscape
-                        ? Math.max(widthPx, heightPx)
-                        : Math.min(widthPx, heightPx);
+                int width = getCurrentWidth();
+                int height = getCurrentHeight();
                 int paddingTop = searchBarBounds.bottom;
                 int paddingBottom = hotseatBarHeightPx + pageIndicatorHeightPx;
                 int availableWidth = Math.max(0, width - (int) ((inv.numColumns * cellWidthPx) +
@@ -516,5 +512,17 @@ public class DeviceProfile {
                 }
             }
         }
+    }
+
+    private int getCurrentWidth() {
+        return isLandscape
+                ? Math.max(widthPx, heightPx)
+                : Math.min(widthPx, heightPx);
+    }
+
+    private int getCurrentHeight() {
+        return isLandscape
+                ? Math.min(widthPx, heightPx)
+                : Math.max(widthPx, heightPx);
     }
 }
