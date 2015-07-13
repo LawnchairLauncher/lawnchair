@@ -261,6 +261,7 @@ public class Launcher extends Activity
     private ViewGroup mOverviewPanel;
 
     private View mAllAppsButton;
+    private View mWidgetsButton;
 
     private SearchDropTargetBar mSearchDropTargetBar;
 
@@ -1364,8 +1365,8 @@ public class Launcher extends Activity
         }
 
         mOverviewPanel = (ViewGroup) findViewById(R.id.overview_panel);
-        View widgetButton = findViewById(R.id.widget_button);
-        widgetButton.setOnClickListener(new OnClickListener() {
+        mWidgetsButton = findViewById(R.id.widget_button);
+        mWidgetsButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 if (!mWorkspace.isSwitchingState()) {
@@ -1373,7 +1374,7 @@ public class Launcher extends Activity
                 }
             }
         });
-        widgetButton.setOnTouchListener(getHapticFeedbackTouchListener());
+        mWidgetsButton.setOnTouchListener(getHapticFeedbackTouchListener());
 
         View wallpaperButton = findViewById(R.id.wallpaper_button);
         wallpaperButton.setOnClickListener(new OnClickListener() {
@@ -1457,6 +1458,10 @@ public class Launcher extends Activity
 
     public View getAllAppsButton() {
         return mAllAppsButton;
+    }
+
+    public View getWidgetsButton() {
+        return mWidgetsButton;
     }
 
     /**
