@@ -122,8 +122,10 @@ public class WidgetsModel {
                 continue;
             }
             if (mAppFilter != null && !mAppFilter.shouldShowApp(componentName)) {
-                Log.d(TAG, String.format("%s is filtered and not added to the widget tray.",
+                if (DEBUG) {
+                    Log.d(TAG, String.format("%s is filtered and not added to the widget tray.",
                         packageName));
+                }
                 continue;
             }
 
