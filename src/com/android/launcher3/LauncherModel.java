@@ -1999,7 +1999,7 @@ public class LauncherModel extends BroadcastReceiver
                                                 "constructing info for partially restored package",
                                                 true);
                                         info = getRestoredItemInfo(c, titleIndex, intent,
-                                                promiseType, cursorIconInfo, context);
+                                                promiseType, itemType, cursorIconInfo, context);
                                         intent = getRestoredItemIntent(c, context, intent);
                                     } else {
                                         // Don't restore items for other profiles.
@@ -3380,7 +3380,7 @@ public class LauncherModel extends BroadcastReceiver
      * to a package that is not yet installed on the system.
      */
     public ShortcutInfo getRestoredItemInfo(Cursor c, int titleIndex, Intent intent,
-            int promiseType, CursorIconInfo iconInfo, Context context) {
+            int promiseType, int itemType, CursorIconInfo iconInfo, Context context) {
         final ShortcutInfo info = new ShortcutInfo();
         info.user = UserHandleCompat.myUserHandle();
 
@@ -3406,7 +3406,7 @@ public class LauncherModel extends BroadcastReceiver
         }
 
         info.contentDescription = mUserManager.getBadgedLabelForUser(info.title, info.user);
-        info.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+        info.itemType = itemType;
         info.promisedIntent = intent;
         info.status = promiseType;
         return info;

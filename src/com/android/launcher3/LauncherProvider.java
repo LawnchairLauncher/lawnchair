@@ -772,7 +772,7 @@ public class LauncherProvider extends ContentProvider {
 
                     long id = c.getLong(idIndex);
                     updateStmt.bindLong(1, id);
-                    updateStmt.execute();
+                    updateStmt.executeUpdateDelete();
                 }
                 db.setTransactionSuccessful();
             } catch (SQLException ex) {
