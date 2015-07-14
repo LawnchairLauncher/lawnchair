@@ -2163,7 +2163,11 @@ public class LauncherModel extends BroadcastReceiver
                                         appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId,
                                                 provider.provider);
 
-                                        int status = restoreStatus;
+                                        // The provider is available. So the widget is either
+                                        // available or not available. We do not need to track
+                                        // any future restore updates.
+                                        int status = restoreStatus &
+                                                ~LauncherAppWidgetInfo.FLAG_RESTORE_STARTED;
                                         if (!wasProviderReady) {
                                             // If provider was not previously ready, update the
                                             // status and UI flag.
@@ -3155,7 +3159,9 @@ public class LauncherModel extends BroadcastReceiver
                             if (mUser.equals(widgetInfo.user)
                                     && widgetInfo.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)
                                     && packageSet.contains(widgetInfo.providerName.getPackageName())) {
-                                widgetInfo.restoreStatus &= ~LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY;
+                                widgetInfo.restoreStatus &=
+                                        ~LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY &
+                                        ~LauncherAppWidgetInfo.FLAG_RESTORE_STARTED;
                                 widgets.add(widgetInfo);
                                 updateItemInDatabase(context, widgetInfo);
                             }
