@@ -466,7 +466,7 @@ public class IconCache {
         }
 
         LauncherActivityInfoCompat launcherActInfo = mLauncherApps.resolveActivity(intent, user);
-        CacheEntry entry = cacheLocked(component, launcherActInfo, user, true, true);
+        CacheEntry entry = cacheLocked(component, launcherActInfo, user, true, false /* useLowRes */);
         return entry.icon;
     }
 
