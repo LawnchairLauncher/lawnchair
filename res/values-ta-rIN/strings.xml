@@ -51,7 +51,7 @@
     <string name="folder_hint_text" msgid="6617836969016293992">"பெயரிடப்படாத கோப்புறை"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"பக்கம் %1$d / %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"முகப்புத் திரை %1$d of %2$d"</string>
-    <string name="first_run_cling_title" msgid="2459738000155917941">"வரவேற்கிறோம்"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"நல்வரவு"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"பயன்பாட்டின் ஐகான்களை நகலெடுக்கவும்"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"பழைய முகப்புத் திரைகளிலிருந்து ஐகான்களையும் கோப்புறைகளையும் இறக்குமதி செய்யவா?"</string>
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"ஐகான்களை நகலெடு"</string>

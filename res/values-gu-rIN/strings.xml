@@ -26,15 +26,15 @@
     <string name="activity_not_available" msgid="7456344436509528827">"એપ્લિકેશન ઉપલબ્ધ નથી"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"સુરક્ષિત મોડમાં ડાઉનલોડ કરેલ એપ્લિકેશન અક્ષમ કરી"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"સુરક્ષિત મોડમાં વિજેટ્સ અક્ષમ કર્યા"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Mem દર્શાવો"</string>
+    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Mem બતાવો"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"વિજેટ ચૂંટવા માટે ટચ કરો અને પકડી રાખો."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"શોધ એપ્લિકેશન્સ"</string>
-    <string name="all_apps_loading_message" msgid="7557140873644765180">"એપ્લિકેશન્સ લોડ કરી રહ્યું છે…"</string>
-    <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" થી મેળ ખાતી કોઈ એપ્લિકેશન્સ મળી નથી"</string>
+    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"શોધ એપ્લિકેશનો"</string>
+    <string name="all_apps_loading_message" msgid="7557140873644765180">"એપ્લિકેશનો લોડ કરી રહ્યું છે…"</string>
+    <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" થી મેળ ખાતી કોઈ એપ્લિકેશનો મળી નથી"</string>
     <string name="out_of_space" msgid="4691004494942118364">"આ હોમ સ્ક્રીન પર વધુ જગ્યા નથી."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"મનપસંદ ટ્રે પર વધુ જગ્યા નથી"</string>
-    <string name="all_apps_button_label" msgid="9110807029020582876">"એપ્લિકેશન્સ"</string>
+    <string name="all_apps_button_label" msgid="9110807029020582876">"એપ્લિકેશનો"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"હોમ"</string>
     <string name="delete_target_label" msgid="1822697352535677073">"દૂર કરો"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"અનઇન્સ્ટોલ કરો"</string>
