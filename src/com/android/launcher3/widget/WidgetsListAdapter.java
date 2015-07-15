@@ -163,13 +163,15 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
         ViewGroup container = (ViewGroup) mLayoutInflater.inflate(
                 R.layout.widgets_list_row_view, parent, false);
         LinearLayout cellList = (LinearLayout) container.findViewById(R.id.widgets_cell_list);
-        MarginLayoutParams lp = (MarginLayoutParams) cellList.getLayoutParams();
+
+        // if the end padding is 0, then container view (horizontal scroll view) doesn't respect
+        // the end of the linear layout width + the start padding and doesn't allow scrolling.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            lp.setMarginStart(mIndent);
+            cellList.setPaddingRelative(mIndent, 0, 1, 0);
         } else {
-            lp.leftMargin = mIndent;
+            cellList.setPadding(mIndent, 0, 1, 0);
         }
-        cellList.setLayoutParams(lp);
+
         return new WidgetsRowViewHolder(container);
     }
 
