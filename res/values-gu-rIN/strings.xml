@@ -21,7 +21,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
     <string name="home" msgid="7658288663002113681">"હોમ"</string>
-    <string name="uid_name" msgid="7820867637514617527">"Android Core એપ્લિકેશન્સ"</string>
+    <string name="uid_name" msgid="7820867637514617527">"Android Core એપ્લિકેશનો"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="activity_not_found" msgid="8071924732094499514">"એપ્લિકેશન ઇન્સ્ટોલ થઈ નથી."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"એપ્લિકેશન ઉપલબ્ધ નથી"</string>
@@ -29,7 +29,7 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"સુરક્ષિત મોડમાં વિજેટ્સ અક્ષમ કર્યા"</string>
     <string name="widgets_tab_label" msgid="2921133187116603919">"વિજેટ્સ"</string>
     <string name="widget_adder" msgid="3201040140710381657">"વિજેટ્સ"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Mem દર્શાવો"</string>
+    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Mem બતાવો"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"વિજેટ ચૂંટવા માટે ટચ કરો અને પકડી રાખો."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="external_drop_widget_error" msgid="3165821058322217155">"આ હોમ સ્ક્રીન પર આઇટમ છોડી શકાઈ નથી."</string>
@@ -39,7 +39,7 @@
     <string name="rename_action" msgid="5559600076028658757">"ઑકે"</string>
     <string name="cancel_action" msgid="7009134900002915310">"રદ કરો"</string>
     <string name="menu_item_add_item" msgid="1264911265836810421">"હોમ સ્ક્રીન પર ઉમેરો"</string>
-    <string name="group_applications" msgid="3797214114206693605">"એપ્લિકેશન્સ"</string>
+    <string name="group_applications" msgid="3797214114206693605">"એપ્લિકેશનો"</string>
     <string name="group_shortcuts" msgid="6012256992764410535">"શોર્ટકટ્સ"</string>
     <string name="group_widgets" msgid="1569030723286851002">"વિજેટ્સ"</string>
     <string name="completely_out_of_space" msgid="6106288382070760318">"તમારી હોમ સ્ક્રીન પર વધુ જગ્યા નથી."</string>
@@ -51,13 +51,13 @@
     <string name="shortcut_duplicate" msgid="9167217446062498127">"\"<xliff:g id="NAME">%s</xliff:g>\" શોર્ટકટ પહેલાંથી અસ્તિત્વમાં છે."</string>
     <string name="title_select_shortcut" msgid="6680642571148153868">"શોર્ટકટ પસંદ કરો"</string>
     <string name="title_select_application" msgid="3280812711670683644">"એપ્લિકેશન પસંદ કરો"</string>
-    <string name="all_apps_button_label" msgid="9110807029020582876">"એપ્લિકેશન્સ"</string>
+    <string name="all_apps_button_label" msgid="9110807029020582876">"એપ્લિકેશનો"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"હોમ"</string>
     <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"અનઇન્સ્ટોલ કરો"</string>
     <string name="delete_target_label" msgid="1822697352535677073">"દૂર કરો"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"અનઇન્સ્ટોલ કરો"</string>
     <string name="info_target_label" msgid="8053346143994679532">"એપ્લિકેશન માહિતી"</string>
-    <string name="accessibility_all_apps_button" msgid="2603132375383800483">"એપ્લિકેશન્સ"</string>
+    <string name="accessibility_all_apps_button" msgid="2603132375383800483">"એપ્લિકેશનો"</string>
     <string name="accessibility_delete_button" msgid="6466114477993744621">"દૂર કરો"</string>
     <string name="delete_zone_label_all_apps_system_app" msgid="449755632749610895">"અપડેટ અનઇન્સ્ટોલ કરો"</string>
     <string name="cab_menu_delete_app" msgid="7435191475867183689">"એપ્લિકેશન અનઇન્સ્ટોલ કરો"</string>
@@ -82,13 +82,13 @@
     <string name="workspace_description_format" msgid="2950174241104043327">"%1$d હોમ સ્ક્રીન"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"%2$d માંથી %1$d પૃષ્ઠ"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"%2$d માંથી %1$d હોમ સ્ક્રીન"</string>
-    <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"%2$d માંથી %1$d એપ્લિકેશન્સ પૃષ્ઠ"</string>
+    <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"%2$d માંથી %1$d એપ્લિકેશનો પૃષ્ઠ"</string>
     <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"%2$d માંથી %1$d વિજેટ્સ પૃષ્ઠ"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"સ્વાગત છે"</string>
     <string name="first_run_cling_description" msgid="6447072552696253358">"ઘરે જાતે બનાવે છે."</string>
     <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
     <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
-    <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"એપ્લિકેશન્સ અને ફોલ્ડર્સ માટે વધુ સ્ક્રીન બનાવો"</string>
+    <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"એપ્લિકેશનો અને ફોલ્ડર્સ માટે વધુ સ્ક્રીન બનાવો"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"તમારા એપ્લિકેશન આયકન્સને કૉપિ કરો"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"તમારી જૂની હોમ સ્ક્રીન્સથી આયકન્સ અને ફોલ્ડર્સને આયાત કરીએ?"</string>
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"આયકન્સને કૉપિ કરો"</string>
