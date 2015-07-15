@@ -48,7 +48,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
         super(context);
         mContext = context;
         mLongPressHelper = new CheckLongPressHelper(this);
-        mStylusEventHelper = new StylusEventHelper(this);
+        mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mDragLayer = ((Launcher) context).getDragLayer();
         setAccessibilityDelegate(LauncherAppState.getInstance().getAccessibilityDelegate());
@@ -94,7 +94,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
 
         // Watch for longpress or stylus button press events at this level to
         // make sure users can always pick up this widget
-        if (mStylusEventHelper.checkAndPerformStylusEvent(ev)) {
+        if (mStylusEventHelper.onMotionEvent(ev)) {
             mLongPressHelper.cancelLongPress();
             return true;
         }

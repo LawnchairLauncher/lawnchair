@@ -144,7 +144,7 @@ public class BubbleTextView extends TextView
         }
 
         mLongPressHelper = new CheckLongPressHelper(this);
-        mStylusEventHelper = new StylusEventHelper(this);
+        mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
 
         mOutlineHelper = HolographicOutlineHelper.obtain(getContext());
         if (mCustomShadowsEnabled) {
@@ -270,7 +270,7 @@ public class BubbleTextView extends TextView
         boolean result = super.onTouchEvent(event);
 
         // Check for a stylus button press, if it occurs cancel any long press checks.
-        if (mStylusEventHelper.checkAndPerformStylusEvent(event)) {
+        if (mStylusEventHelper.onMotionEvent(event)) {
             mLongPressHelper.cancelLongPress();
             result = true;
         }

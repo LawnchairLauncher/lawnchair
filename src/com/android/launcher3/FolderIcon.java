@@ -131,7 +131,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     private void init() {
         mLongPressHelper = new CheckLongPressHelper(this);
-        mStylusEventHelper = new StylusEventHelper(this);
+        mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
         setAccessibilityDelegate(LauncherAppState.getInstance().getAccessibilityDelegate());
     }
 
@@ -725,7 +725,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         boolean result = super.onTouchEvent(event);
 
         // Check for a stylus button press, if it occurs cancel any long press checks.
-        if (mStylusEventHelper.checkAndPerformStylusEvent(event)) {
+        if (mStylusEventHelper.onMotionEvent(event)) {
             mLongPressHelper.cancelLongPress();
             return true;
         }

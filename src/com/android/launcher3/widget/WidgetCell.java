@@ -36,6 +36,7 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.SimpleOnStylusPressListener;
 import com.android.launcher3.R;
 import com.android.launcher3.StylusEventHelper;
 import com.android.launcher3.WidgetPreviewLoader;
@@ -93,7 +94,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
         final Resources r = context.getResources();
         mLauncher = (Launcher) context;
-        mStylusEventHelper = new StylusEventHelper(this);
+        mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
 
         mDimensionsFormatString = r.getString(R.string.widget_dims_format);
         setContainerWidth();
@@ -211,7 +212,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         boolean handled = super.onTouchEvent(ev);
-        if (mStylusEventHelper.checkAndPerformStylusEvent(ev)) {
+        if (mStylusEventHelper.onMotionEvent(ev)) {
             return true;
         }
         return handled;

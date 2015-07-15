@@ -913,11 +913,12 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         v.setOnLongClickListener(mLongClickListener);
 
         // Enable stylus button to also trigger long click.
-        final StylusEventHelper stylusEventHelper = new StylusEventHelper(v);
+        final StylusEventHelper stylusEventHelper =
+                new StylusEventHelper(new SimpleOnStylusPressListener(v), v);
         v.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
-                return stylusEventHelper.checkAndPerformStylusEvent(event);
+                return stylusEventHelper.onMotionEvent(event);
             }
         });
     }
