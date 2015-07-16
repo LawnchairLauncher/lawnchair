@@ -2213,6 +2213,7 @@ public class LauncherModel extends BroadcastReceiver
                                 boolean customWidget = itemType ==
                                     LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
 
+                                id = c.getLong(idIndex);
                                 int appWidgetId = c.getInt(appWidgetIdIndex);
                                 serialNumber= c.getLong(profileIdIndex);
                                 user = mUserManager.getUserForSerialNumber(serialNumber);
@@ -2222,7 +2223,6 @@ public class LauncherModel extends BroadcastReceiver
                                     continue;
                                 }
                                 String savedProvider = c.getString(appWidgetProviderIndex);
-                                id = c.getLong(idIndex);
                                 final ComponentName component =
                                         ComponentName.unflattenFromString(savedProvider);
 
