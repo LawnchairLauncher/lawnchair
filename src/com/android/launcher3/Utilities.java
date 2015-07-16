@@ -56,6 +56,8 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.Toast;
 
+import com.android.launcher3.config.ProviderConfig;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -660,7 +662,7 @@ public final class Utilities {
     }
 
     public static void assertWorkerThread() {
-        if (LauncherAppState.isDogfoodBuild() &&
+        if (ProviderConfig.IS_DOGFOOD_BUILD &&
                 (LauncherModel.sWorkerThread.getThreadId() != Process.myTid())) {
             throw new IllegalStateException();
         }

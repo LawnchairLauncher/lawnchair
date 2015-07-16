@@ -22,6 +22,7 @@ import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.util.FocusLogic;
 import com.android.launcher3.util.Thunk;
 
@@ -74,7 +75,7 @@ public class FocusHelper {
 
 
             if (!(v.getParent() instanceof ShortcutAndWidgetContainer)) {
-                if (LauncherAppState.isDogfoodBuild()) {
+                if (ProviderConfig.IS_DOGFOOD_BUILD) {
                     throw new IllegalStateException("Parent of the focused item is not supported.");
                 } else {
                     return false;

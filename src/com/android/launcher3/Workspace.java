@@ -68,6 +68,7 @@ import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate.AccessibilityDragSource;
 import com.android.launcher3.accessibility.OverviewScreenAccessibilityDelegate;
 import com.android.launcher3.compat.UserHandleCompat;
+import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.WallpaperUtils;
@@ -2673,7 +2674,7 @@ public class Workspace extends PagedView
                         CellLayout parentCell = getParentCellLayoutForView(cell);
                         if (parentCell != null) {
                             parentCell.removeView(cell);
-                        } else if (LauncherAppState.isDogfoodBuild()) {
+                        } else if (ProviderConfig.IS_DOGFOOD_BUILD) {
                             throw new NullPointerException("mDragInfo.cell has null parent");
                         }
                         addInScreen(cell, container, screenId, mTargetCell[0], mTargetCell[1],
@@ -3115,7 +3116,7 @@ public class Workspace extends PagedView
         CellLayout layout = null;
         ItemInfo item = d.dragInfo;
         if (item == null) {
-            if (LauncherAppState.isDogfoodBuild()) {
+            if (ProviderConfig.IS_DOGFOOD_BUILD) {
                 throw new NullPointerException("DragObject has null info");
             }
             return;
@@ -3723,7 +3724,7 @@ public class Workspace extends PagedView
                     mDragInfo.container, mDragInfo.screenId);
             if (cellLayout != null) {
                 cellLayout.onDropChild(mDragInfo.cell);
-            } else if (LauncherAppState.isDogfoodBuild()) {
+            } else if (ProviderConfig.IS_DOGFOOD_BUILD) {
                 throw new RuntimeException("Invalid state: cellLayout == null in "
                         + "Workspace#onDropCompleted. Please file a bug. ");
             };
@@ -3743,7 +3744,7 @@ public class Workspace extends PagedView
         CellLayout parentCell = getParentCellLayoutForView(v);
         if (parentCell != null) {
             parentCell.removeView(v);
-        } else if (LauncherAppState.isDogfoodBuild()) {
+        } else if (ProviderConfig.IS_DOGFOOD_BUILD) {
             throw new NullPointerException("mDragInfo.cell has null parent");
         }
         if (v instanceof DropTarget) {

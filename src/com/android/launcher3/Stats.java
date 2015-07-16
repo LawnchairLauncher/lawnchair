@@ -25,6 +25,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewParent;
 
+import com.android.launcher3.config.ProviderConfig;
+
 public class Stats {
 
     /**
@@ -71,7 +73,7 @@ public class Stats {
 
             if (provider != null) {
                 provider.fillInLaunchSourceData(sourceData);
-            } else if (LauncherAppState.isDogfoodBuild()) {
+            } else if (ProviderConfig.IS_DOGFOOD_BUILD) {
                 throw new RuntimeException("Expected LaunchSourceProvider");
             }
         }
