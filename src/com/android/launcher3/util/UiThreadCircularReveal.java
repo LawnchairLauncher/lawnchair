@@ -46,10 +46,8 @@ public class UiThreadCircularReveal {
             public void onAnimationUpdate(ValueAnimator arg0) {
                 float progress = arg0.getAnimatedFraction();
                 outlineProvider.setProgress(progress);
-                if (Utilities.isLmpMR1OrAbove()) {
-                    revealView.invalidateOutline();
-                } else {
-                    // On L, a bug requires calling a full view invalidate.
+                revealView.invalidateOutline();
+                if (!Utilities.isLmpMR1OrAbove()) {
                     revealView.invalidate();
                 }
             }
