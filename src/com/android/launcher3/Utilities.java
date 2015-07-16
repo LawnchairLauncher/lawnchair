@@ -354,15 +354,6 @@ public final class Utilities {
                 localY < (v.getHeight() + slop);
     }
 
-    public static void scaleRect(Rect r, float scale) {
-        if (scale != 1.0f) {
-            r.left = (int) (r.left * scale + 0.5f);
-            r.top = (int) (r.top * scale + 0.5f);
-            r.right = (int) (r.right * scale + 0.5f);
-            r.bottom = (int) (r.bottom * scale + 0.5f);
-        }
-    }
-
     public static int[] getCenterDeltaInScreenSpace(View v0, View v1, int[] delta) {
         v0.getLocationInWindow(sLoc0);
         v1.getLocationInWindow(sLoc1);
@@ -383,11 +374,18 @@ public final class Utilities {
     }
 
     public static void scaleRectAboutCenter(Rect r, float scale) {
-        int cx = r.centerX();
-        int cy = r.centerY();
-        r.offset(-cx, -cy);
-        Utilities.scaleRect(r, scale);
-        r.offset(cx, cy);
+        if (scale != 1.0f) {
+            int cx = r.centerX();
+            int cy = r.centerY();
+            r.offset(-cx, -cy);
+
+            r.left = (int) (r.left * scale + 0.5f);
+            r.top = (int) (r.top * scale + 0.5f);
+            r.right = (int) (r.right * scale + 0.5f);
+            r.bottom = (int) (r.bottom * scale + 0.5f);
+
+            r.offset(cx, cy);
+        }
     }
 
     public static void startActivityForResultSafely(

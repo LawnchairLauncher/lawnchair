@@ -33,7 +33,6 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -2131,19 +2130,17 @@ public class Workspace extends PagedView
      * @param padding the horizontal and vertical padding to use when drawing
      */
     private static void drawDragView(View v, Canvas destCanvas, int padding) {
-        final Rect clipRect = sTempRect;
-        v.getDrawingRect(clipRect);
-
-        boolean textVisible = false;
-
         destCanvas.save();
         if (v instanceof TextView) {
             Drawable d = getTextViewIcon((TextView) v);
             Rect bounds = getDrawableBounds(d);
-            clipRect.set(0, 0, bounds.width() + padding, bounds.height() + padding);
             destCanvas.translate(padding / 2 - bounds.left, padding / 2 - bounds.top);
             d.draw(destCanvas);
         } else {
+            final Rect clipRect = sTempRect;
+            v.getDrawingRect(clipRect);
+
+            boolean textVisible = false;
             if (v instanceof FolderIcon) {
                 // For FolderIcons the text can bleed into the icon area, and so we need to
                 // hide the text completely (which can't be achieved by clipping).
@@ -2413,7 +2410,7 @@ public class Workspace extends PagedView
             if (mLauncher.isHotseatLayout(dropTargetLayout)) {
                 mapPointFromSelfToHotseatLayout(mLauncher.getHotseat(), mDragViewVisualCenter);
             } else {
-                mapPointFromSelfToChild(dropTargetLayout, mDragViewVisualCenter, null);
+                mapPointFromSelfToChild(dropTargetLayout, mDragViewVisualCenter);
             }
 
             int spanX = 1;
@@ -2619,7 +2616,7 @@ public class Workspace extends PagedView
             if (mLauncher.isHotseatLayout(dropTargetLayout)) {
                 mapPointFromSelfToHotseatLayout(mLauncher.getHotseat(), mDragViewVisualCenter);
             } else {
-                mapPointFromSelfToChild(dropTargetLayout, mDragViewVisualCenter, null);
+                mapPointFromSelfToChild(dropTargetLayout, mDragViewVisualCenter);
             }
         }
 
@@ -3027,13 +3024,8 @@ public class Workspace extends PagedView
     *
     * Convert the 2D coordinate xy from the parent View's coordinate space to this CellLayout's
     * coordinate space. The argument xy is modified with the return result.
-    *
-    * if cachedInverseMatrix is not null, this method will just use that matrix instead of
-    * computing it itself; we use this to avoid redundant matrix inversions in
-    * findMatchingPageForDragOver
-    *
     */
-   void mapPointFromSelfToChild(View v, float[] xy, Matrix cachedInverseMatrix) {
+   void mapPointFromSelfToChild(View v, float[] xy) {
        xy[0] = xy[0] - v.getLeft();
        xy[1] = xy[1] - v.getTop();
    }
@@ -3098,10 +3090,7 @@ public class Workspace extends PagedView
             CellLayout cl = (CellLayout) getChildAt(i);
 
             final float[] touchXy = {originX, originY};
-            // Transform the touch coordinates to the CellLayout's local coordinates
-            // If the touch point is within the bounds of the cell layout, we can return immediately
-            cl.getMatrix().invert(sTmpInvMatrix);
-            mapPointFromSelfToChild(cl, touchXy, sTmpInvMatrix);
+            mapPointFromSelfToChild(cl, touchXy);
 
             if (touchXy[0] >= 0 && touchXy[0] <= cl.getWidth() &&
                     touchXy[1] >= 0 && touchXy[1] <= cl.getHeight()) {
@@ -3202,7 +3191,7 @@ public class Workspace extends PagedView
             if (mLauncher.isHotseatLayout(mDragTargetLayout)) {
                 mapPointFromSelfToHotseatLayout(mLauncher.getHotseat(), mDragViewVisualCenter);
             } else {
-                mapPointFromSelfToChild(mDragTargetLayout, mDragViewVisualCenter, null);
+                mapPointFromSelfToChild(mDragTargetLayout, mDragViewVisualCenter);
             }
 
             ItemInfo info = d.dragInfo;

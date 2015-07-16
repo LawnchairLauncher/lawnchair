@@ -448,12 +448,9 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         for (int i = 0; i < mDragOutlines.length; i++) {
             final float alpha = mDragOutlineAlphas[i];
             if (alpha > 0) {
-                final Rect r = mDragOutlines[i];
-                mTempRect.set(r);
-                Utilities.scaleRectAboutCenter(mTempRect, getChildrenScale());
                 final Bitmap b = (Bitmap) mDragOutlineAnims[i].getTag();
                 paint.setAlpha((int)(alpha + .5f));
-                canvas.drawBitmap(b, null, mTempRect, paint);
+                canvas.drawBitmap(b, null, mDragOutlines[i], paint);
             }
         }
 
@@ -1031,53 +1028,57 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         if (cellX != oldDragCellX || cellY != oldDragCellY) {
             mDragCell[0] = cellX;
             mDragCell[1] = cellY;
-            // Find the top left corner of the rect the object will occupy
-            final int[] topLeft = mTmpPoint;
-            cellToPoint(cellX, cellY, topLeft);
 
-            int left = topLeft[0];
-            int top = topLeft[1];
-
-            if (v != null && dragOffset == null) {
-                // When drawing the drag outline, it did not account for margin offsets
-                // added by the view's parent.
-                MarginLayoutParams lp = (MarginLayoutParams) v.getLayoutParams();
-                left += lp.leftMargin;
-                top += lp.topMargin;
-
-                // Offsets due to the size difference between the View and the dragOutline.
-                // There is a size difference to account for the outer blur, which may lie
-                // outside the bounds of the view.
-                top += (v.getHeight() - dragOutline.getHeight()) / 2;
-                // We center about the x axis
-                left += ((mCellWidth * spanX) + ((spanX - 1) * mWidthGap)
-                        - dragOutline.getWidth()) / 2;
-            } else {
-                if (dragOffset != null && dragRegion != null) {
-                    // Center the drag region *horizontally* in the cell and apply a drag
-                    // outline offset
-                    left += dragOffset.x + ((mCellWidth * spanX) + ((spanX - 1) * mWidthGap)
-                             - dragRegion.width()) / 2;
-                    int cHeight = getShortcutsAndWidgets().getCellContentHeight();
-                    int cellPaddingY = (int) Math.max(0, ((mCellHeight - cHeight) / 2f));
-                    top += dragOffset.y + cellPaddingY;
-                } else {
-                    // Center the drag outline in the cell
-                    left += ((mCellWidth * spanX) + ((spanX - 1) * mWidthGap)
-                            - dragOutline.getWidth()) / 2;
-                    top += ((mCellHeight * spanY) + ((spanY - 1) * mHeightGap)
-                            - dragOutline.getHeight()) / 2;
-                }
-            }
             final int oldIndex = mDragOutlineCurrent;
             mDragOutlineAnims[oldIndex].animateOut();
             mDragOutlineCurrent = (oldIndex + 1) % mDragOutlines.length;
             Rect r = mDragOutlines[mDragOutlineCurrent];
-            r.set(left, top, left + dragOutline.getWidth(), top + dragOutline.getHeight());
+
             if (resize) {
                 cellToRect(cellX, cellY, spanX, spanY, r);
+            } else {
+                // Find the top left corner of the rect the object will occupy
+                final int[] topLeft = mTmpPoint;
+                cellToPoint(cellX, cellY, topLeft);
+
+                int left = topLeft[0];
+                int top = topLeft[1];
+
+                if (v != null && dragOffset == null) {
+                    // When drawing the drag outline, it did not account for margin offsets
+                    // added by the view's parent.
+                    MarginLayoutParams lp = (MarginLayoutParams) v.getLayoutParams();
+                    left += lp.leftMargin;
+                    top += lp.topMargin;
+
+                    // Offsets due to the size difference between the View and the dragOutline.
+                    // There is a size difference to account for the outer blur, which may lie
+                    // outside the bounds of the view.
+                    top += (v.getHeight() - dragOutline.getHeight()) / 2;
+                    // We center about the x axis
+                    left += ((mCellWidth * spanX) + ((spanX - 1) * mWidthGap)
+                            - dragOutline.getWidth()) / 2;
+                } else {
+                    if (dragOffset != null && dragRegion != null) {
+                        // Center the drag region *horizontally* in the cell and apply a drag
+                        // outline offset
+                        left += dragOffset.x + ((mCellWidth * spanX) + ((spanX - 1) * mWidthGap)
+                                - dragRegion.width()) / 2;
+                        int cHeight = getShortcutsAndWidgets().getCellContentHeight();
+                        int cellPaddingY = (int) Math.max(0, ((mCellHeight - cHeight) / 2f));
+                        top += dragOffset.y + cellPaddingY;
+                    } else {
+                        // Center the drag outline in the cell
+                        left += ((mCellWidth * spanX) + ((spanX - 1) * mWidthGap)
+                                - dragOutline.getWidth()) / 2;
+                        top += ((mCellHeight * spanY) + ((spanY - 1) * mHeightGap)
+                                - dragOutline.getHeight()) / 2;
+                    }
+                }
+                r.set(left, top, left + dragOutline.getWidth(), top + dragOutline.getHeight());
             }
 
+            Utilities.scaleRectAboutCenter(r, getChildrenScale());
             mDragOutlineAnims[mDragOutlineCurrent].setTag(dragOutline);
             mDragOutlineAnims[mDragOutlineCurrent].animateIn();
         }

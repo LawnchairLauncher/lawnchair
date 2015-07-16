@@ -179,7 +179,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     private Runnable mPostReorderingPreZoomInRunnable;
 
     // Convenience/caching
-    protected static final Matrix sTmpInvMatrix = new Matrix();
+    private static final Matrix sTmpInvMatrix = new Matrix();
     private static final float[] sTmpPoint = new float[2];
     private static final int[] sTmpIntPoint = new int[2];
     private static final Rect sTmpRect = new Rect();
