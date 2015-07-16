@@ -2215,6 +2215,12 @@ public class LauncherModel extends BroadcastReceiver
 
                                 int appWidgetId = c.getInt(appWidgetIdIndex);
                                 serialNumber= c.getLong(profileIdIndex);
+                                user = mUserManager.getUserForSerialNumber(serialNumber);
+                                if (user == null) {
+                                    // User has been deleted remove the item.
+                                    itemsToRemove.add(id);
+                                    continue;
+                                }
                                 String savedProvider = c.getString(appWidgetProviderIndex);
                                 id = c.getLong(idIndex);
                                 final ComponentName component =
@@ -2230,7 +2236,7 @@ public class LauncherModel extends BroadcastReceiver
                                 final LauncherAppWidgetProviderInfo provider =
                                         LauncherModel.getProviderInfo(context,
                                                 ComponentName.unflattenFromString(savedProvider),
-                                                mUserManager.getUserForSerialNumber(serialNumber));
+                                                user);
 
                                 final boolean isProviderReady = isValidProvider(provider);
                                 if (!isSafeMode && !customWidget &&
@@ -2295,6 +2301,7 @@ public class LauncherModel extends BroadcastReceiver
                                     appWidgetInfo.cellY = c.getInt(cellYIndex);
                                     appWidgetInfo.spanX = c.getInt(spanXIndex);
                                     appWidgetInfo.spanY = c.getInt(spanYIndex);
+                                    appWidgetInfo.user = user;
 
                                     if (!customWidget) {
                                         int[] minSpan = Launcher.getMinSpanForWidget(context, provider);
