@@ -23,6 +23,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.PendingAddItemInfo;
+import com.android.launcher3.compat.AppWidgetManagerCompat;
 
 /**
  * Meta data used for late binding of {@link LauncherAppWidgetProviderInfo}.
@@ -47,6 +48,7 @@ public class PendingAddWidgetInfo extends PendingAddItemInfo {
             itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
         }
         this.info = i;
+        user = AppWidgetManagerCompat.getInstance(launcher).getUser(i);
         componentName = i.provider;
         minWidth = i.minWidth;
         minHeight = i.minHeight;
