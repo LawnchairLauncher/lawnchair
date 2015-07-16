@@ -1,6 +1,7 @@
 package com.android.launcher3.compat;
 
 import android.content.Context;
+
 import com.android.launcher3.Utilities;
 
 import java.lang.reflect.Constructor;
@@ -62,6 +63,7 @@ public class AlphabeticIndexCompat extends BaseAlphabeticIndex {
     private boolean mHasValidAlphabeticIndex;
     private String mDefaultMiscLabel;
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public AlphabeticIndexCompat(Context context) {
         super();
         try {

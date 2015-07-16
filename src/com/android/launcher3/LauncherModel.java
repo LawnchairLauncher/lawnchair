@@ -1744,8 +1744,7 @@ public class LauncherModel extends BroadcastReceiver
             final PackageManager manager = context.getPackageManager();
             final boolean isSafeMode = manager.isSafeMode();
             final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
-            final boolean isSdCardReady = context.registerReceiver(null,
-                    new IntentFilter(StartupReceiver.SYSTEM_READY)) != null;
+            final boolean isSdCardReady = Utilities.isBootCompleted();
 
             LauncherAppState app = LauncherAppState.getInstance();
             InvariantDeviceProfile profile = app.getInvariantDeviceProfile();
@@ -2285,7 +2284,7 @@ public class LauncherModel extends BroadcastReceiver
 
                 if (!isSdCardReady && !sPendingPackages.isEmpty()) {
                     context.registerReceiver(new AppsAvailabilityCheck(),
-                            new IntentFilter(StartupReceiver.SYSTEM_READY),
+                            new IntentFilter(Intent.ACTION_BOOT_COMPLETED),
                             null, sWorker);
                 }
 
