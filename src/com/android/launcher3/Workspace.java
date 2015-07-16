@@ -2281,6 +2281,8 @@ public class Workspace extends PagedView
             dragRect = new Rect(left, top, right, bottom);
         } else if (child instanceof FolderIcon) {
             int previewSize = grid.folderIconSizePx;
+            dragVisualizeOffset = new Point(-padding.get() / 2,
+                    padding.get() / 2 - child.getPaddingTop());
             dragRect = new Rect(0, child.getPaddingTop(), child.getWidth(), previewSize);
         }
 
