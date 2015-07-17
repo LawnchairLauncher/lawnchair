@@ -8,10 +8,10 @@ import android.util.Log;
 
 import com.android.launcher3.AppFilter;
 import com.android.launcher3.IconCache;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
+import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 
 import java.util.ArrayList;
@@ -38,6 +38,7 @@ public class WidgetsModel {
 
     private ArrayList<Object> mRawList;
 
+    private final AppWidgetManagerCompat mAppWidgetMgr;
     private final Comparator mWidgetAndShortcutNameComparator;
     private final Comparator mAppNameComparator;
     private final IconCache mIconCache;
@@ -45,6 +46,7 @@ public class WidgetsModel {
     private AlphabeticIndexCompat mIndexer;
 
     public WidgetsModel(Context context,  IconCache iconCache, AppFilter appFilter) {
+        mAppWidgetMgr = AppWidgetManagerCompat.getInstance(context);
         mWidgetAndShortcutNameComparator = new WidgetsAndShortcutNameComparator(context);
         mAppNameComparator = (new AppNameComparator(context)).getAppInfoComparator();
         mIconCache = iconCache;
@@ -53,6 +55,7 @@ public class WidgetsModel {
     }
 
     private WidgetsModel(WidgetsModel model) {
+        mAppWidgetMgr = model.mAppWidgetMgr;
         mPackageItemInfos = (ArrayList<PackageItemInfo>) model.mPackageItemInfos.clone();
         mWidgetsList = (HashMap<PackageItemInfo, ArrayList<Object>>) model.mWidgetsList.clone();
         mRawList = (ArrayList<Object>) model.mRawList.clone();
@@ -104,21 +107,23 @@ public class WidgetsModel {
         // add and update.
         for (Object o: rawWidgetsShortcuts) {
             String packageName = "";
+            UserHandleCompat userHandle = null;
             ComponentName componentName = null;
             if (o instanceof LauncherAppWidgetProviderInfo) {
                 LauncherAppWidgetProviderInfo widgetInfo = (LauncherAppWidgetProviderInfo) o;
                 componentName = widgetInfo.provider;
                 packageName = widgetInfo.provider.getPackageName();
+                userHandle = mAppWidgetMgr.getUser(widgetInfo);
             } else if (o instanceof ResolveInfo) {
                 ResolveInfo resolveInfo = (ResolveInfo) o;
                 componentName = new ComponentName(resolveInfo.activityInfo.packageName,
                         resolveInfo.activityInfo.name);
                 packageName = resolveInfo.activityInfo.packageName;
+                userHandle = UserHandleCompat.myUserHandle();
             }
 
-            if (componentName == null) {
-                Log.e(TAG, String.format("Widget cannot be set for class=%s",
-                        o.getClass().toString()));
+            if (componentName == null || userHandle == null) {
+                Log.e(TAG, String.format("Widget cannot be set for %s.", o.getClass().toString()));
                 continue;
             }
             if (mAppFilter != null && !mAppFilter.shouldShowApp(componentName)) {
@@ -137,7 +142,7 @@ public class WidgetsModel {
                 widgetsShortcutsList = new ArrayList<Object>();
                 widgetsShortcutsList.add(o);
                 pInfo = new PackageItemInfo(packageName);
-                mIconCache.getTitleAndIconForApp(packageName, UserHandleCompat.myUserHandle(),
+                mIconCache.getTitleAndIconForApp(packageName, userHandle,
                         true /* userLowResIcon */, pInfo);
                 pInfo.titleSectionName = mIndexer.computeSectionName(pInfo.title);
                 mWidgetsList.put(pInfo, widgetsShortcutsList);
