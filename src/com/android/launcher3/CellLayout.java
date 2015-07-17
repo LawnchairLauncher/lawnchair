@@ -2687,8 +2687,12 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
      * @param result An array of length 2 in which to store the result (may be null).
      */
     public static int[] rectToCell(Launcher launcher, int width, int height, int[] result) {
-        DeviceProfile grid = launcher.getDeviceProfile();
-        Rect padding = grid.getWorkspacePadding(Utilities.isRtl(launcher.getResources()));
+        return rectToCell(launcher.getDeviceProfile(), launcher, width, height, result);
+    }
+
+    public static int[] rectToCell(DeviceProfile grid, Context context, int width, int height,
+            int[] result) {
+        Rect padding = grid.getWorkspacePadding(Utilities.isRtl(context.getResources()));
 
         // Always assume we're working with the smallest span to make sure we
         // reserve enough space in both orientations.
