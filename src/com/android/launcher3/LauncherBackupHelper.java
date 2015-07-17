@@ -75,7 +75,7 @@ public class LauncherBackupHelper implements BackupHelper {
     private static final boolean VERBOSE = LauncherBackupAgentHelper.VERBOSE;
     private static final boolean DEBUG = LauncherBackupAgentHelper.DEBUG;
 
-    private static final int BACKUP_VERSION = 2;
+    private static final int BACKUP_VERSION = 3;
     private static final int MAX_JOURNAL_SIZE = 1000000;
 
     // Journal key is such that it is always smaller than any dynamically generated
@@ -148,6 +148,7 @@ public class LauncherBackupHelper implements BackupHelper {
 
     private IconCache mIconCache;
     private DeviceProfieData mDeviceProfileData;
+    private InvariantDeviceProfile mIdp;
 
     boolean restoreSuccessful;
     int restoredBackupVersion = 1;
@@ -178,6 +179,7 @@ public class LauncherBackupHelper implements BackupHelper {
                 mExistingKeys.add(keyToBackupKey(key));
             }
         }
+        restoredBackupVersion = journal.backupVersion;
     }
 
     /**
@@ -206,7 +208,8 @@ public class LauncherBackupHelper implements BackupHelper {
 
         if (mDeviceProfileData == null) {
             LauncherAppState app = LauncherAppState.getInstance();
-            mDeviceProfileData = initDeviceProfileData(app.getInvariantDeviceProfile());
+            mIdp = app.getInvariantDeviceProfile();
+            mDeviceProfileData = initDeviceProfileData(mIdp);
             mIconCache = app.getIconCache();
         }
 
@@ -308,9 +311,9 @@ public class LauncherBackupHelper implements BackupHelper {
         if (mDeviceProfileData == null) {
             // This call does not happen on a looper thread. So LauncherAppState
             // can't be created . Instead initialize required dependencies directly.
-            InvariantDeviceProfile profile = new InvariantDeviceProfile(mContext);
-            mDeviceProfileData = initDeviceProfileData(profile);
-            mIconCache = new IconCache(mContext, profile);
+            mIdp = new InvariantDeviceProfile(mContext);
+            mDeviceProfileData = initDeviceProfileData(mIdp);
+            mIconCache = new IconCache(mContext, mIdp);
         }
 
         int dataSize = data.size();
@@ -335,7 +338,6 @@ public class LauncherBackupHelper implements BackupHelper {
                 MessageNano.mergeFrom(journal, readCheckedBytes(mBuffer, dataSize));
                 applyJournal(journal);
                 restoreSuccessful = isBackupCompatible(journal);
-                restoredBackupVersion = journal.backupVersion;
                 return;
             }
 
@@ -636,7 +638,7 @@ public class LauncherBackupHelper implements BackupHelper {
                 } else {
                     Log.w(TAG, "empty intent on appwidget: " + id);
                 }
-                if (mExistingKeys.contains(backupKey)) {
+                if (mExistingKeys.contains(backupKey) && restoredBackupVersion >= BACKUP_VERSION) {
                     if (DEBUG) Log.d(TAG, "already saved widget " + backupKey);
 
                     // remember that we already backed this up previously
@@ -969,6 +971,16 @@ public class LauncherBackupHelper implements BackupHelper {
             widget.icon.data = Utilities.flattenBitmap(icon);
             widget.icon.dpi = dpi;
         }
+
+        // Calculate the spans corresponding to any one of the orientations as it should not change
+        // based on orientation.
+        int[] minSpans = CellLayout.rectToCell(
+                mIdp.portraitProfile, mContext, info.minResizeWidth, info.minResizeHeight, null);
+        widget.minSpanX = (info.resizeMode & LauncherAppWidgetProviderInfo.RESIZE_HORIZONTAL) != 0
+                ? minSpans[0] : -1;
+        widget.minSpanY = (info.resizeMode & LauncherAppWidgetProviderInfo.RESIZE_VERTICAL) != 0
+                ? minSpans[1] : -1;
+
         return widget;
     }
 
