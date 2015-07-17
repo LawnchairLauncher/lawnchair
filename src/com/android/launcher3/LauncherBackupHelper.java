@@ -19,7 +19,6 @@ import android.app.backup.BackupDataInputStream;
 import android.app.backup.BackupDataOutput;
 import android.app.backup.BackupHelper;
 import android.app.backup.BackupManager;
-import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -58,7 +57,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.zip.CRC32;
 
@@ -70,7 +68,7 @@ public class LauncherBackupHelper implements BackupHelper {
     private static final boolean VERBOSE = LauncherBackupAgentHelper.VERBOSE;
     private static final boolean DEBUG = LauncherBackupAgentHelper.DEBUG;
 
-    private static final int BACKUP_VERSION = 2;
+    private static final int BACKUP_VERSION = 3;
     private static final int MAX_JOURNAL_SIZE = 1000000;
 
     // Journal key is such that it is always smaller than any dynamically generated
@@ -171,6 +169,7 @@ public class LauncherBackupHelper implements BackupHelper {
                 mExistingKeys.add(keyToBackupKey(key));
             }
         }
+        restoredBackupVersion = journal.backupVersion;
     }
 
     /**
@@ -313,7 +312,6 @@ public class LauncherBackupHelper implements BackupHelper {
                 MessageNano.mergeFrom(journal, readCheckedBytes(mBuffer, dataSize));
                 applyJournal(journal);
                 restoreSuccessful = isBackupCompatible(journal);
-                restoredBackupVersion = journal.backupVersion;
                 return;
             }
 
@@ -639,7 +637,7 @@ public class LauncherBackupHelper implements BackupHelper {
                 } else {
                     Log.w(TAG, "empty intent on appwidget: " + id);
                 }
-                if (mExistingKeys.contains(backupKey)) {
+                if (mExistingKeys.contains(backupKey) && restoredBackupVersion >= BACKUP_VERSION) {
                     if (DEBUG) Log.d(TAG, "already saved widget " + backupKey);
 
                     // remember that we already backed this up previously
@@ -942,6 +940,11 @@ public class LauncherBackupHelper implements BackupHelper {
                 widget.preview.dpi = dpi;
             }
         }
+
+        widget.minSpanX = (info.resizeMode & LauncherAppWidgetProviderInfo.RESIZE_HORIZONTAL) != 0
+                ? info.minSpanX : -1;
+        widget.minSpanY = (info.resizeMode & LauncherAppWidgetProviderInfo.RESIZE_VERTICAL) != 0
+                ? info.minSpanY : -1;
         return widget;
     }
 
