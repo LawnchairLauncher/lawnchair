@@ -601,10 +601,11 @@ public class LauncherBackupHelper implements BackupHelper {
         Bitmap icon = BitmapFactory.decodeByteArray(res.data, 0, res.data.length);
         if (icon == null) {
             Log.w(TAG, "failed to unpack icon for " + key.name);
+        } else {
+            if (VERBOSE) Log.v(TAG, "saving restored icon as: " + key.name);
+            mIconCache.preloadIcon(ComponentName.unflattenFromString(key.name), icon, res.dpi,
+                    "" /* label */, mUserSerial, mIdp);
         }
-        if (VERBOSE) Log.v(TAG, "saving restored icon as: " + key.name);
-        mIconCache.preloadIcon(ComponentName.unflattenFromString(key.name), icon, res.dpi,
-                "" /* label */, mUserSerial);
     }
 
     /**
@@ -685,7 +686,7 @@ public class LauncherBackupHelper implements BackupHelper {
                 Log.w(TAG, "failed to unpack widget icon for " + key.name);
             } else {
                 mIconCache.preloadIcon(ComponentName.unflattenFromString(widget.provider),
-                        icon, widget.icon.dpi, widget.label, mUserSerial);
+                        icon, widget.icon.dpi, widget.label, mUserSerial, mIdp);
             }
         }
 
