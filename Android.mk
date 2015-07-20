@@ -36,7 +36,7 @@ LOCAL_AAPT_FLAGS := --auto-add-overlay
 
 LOCAL_SDK_VERSION := current
 LOCAL_PACKAGE_NAME := Launcher3
-LOCAL_OVERRIDES_PACKAGES := Launcher2
+LOCAL_OVERRIDES_PACKAGES := Home Launcher2
 
 include $(BUILD_PACKAGE)
 
