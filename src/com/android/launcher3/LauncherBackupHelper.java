@@ -75,7 +75,7 @@ public class LauncherBackupHelper implements BackupHelper {
     private static final boolean VERBOSE = LauncherBackupAgentHelper.VERBOSE;
     private static final boolean DEBUG = LauncherBackupAgentHelper.DEBUG;
 
-    private static final int BACKUP_VERSION = 3;
+    private static final int BACKUP_VERSION = 4;
     private static final int MAX_JOURNAL_SIZE = 1000000;
 
     // Journal key is such that it is always smaller than any dynamically generated
@@ -107,6 +107,7 @@ public class LauncherBackupHelper implements BackupHelper {
         Favorites.SPANY,                   // 15
         Favorites.TITLE,                   // 16
         Favorites.PROFILE_ID,              // 17
+        Favorites.RANK,                    // 18
     };
 
     private static final int ID_INDEX = 0;
@@ -126,6 +127,7 @@ public class LauncherBackupHelper implements BackupHelper {
     private static final int SPANX_INDEX = 14;
     private static final int SPANY_INDEX = 15;
     private static final int TITLE_INDEX = 16;
+    private static final int RANK_INDEX = 18;
 
     private static final String[] SCREEN_PROJECTION = {
         WorkspaceScreens._ID,              // 0
@@ -441,7 +443,10 @@ public class LauncherBackupHelper implements BackupHelper {
                 Key key = getKey(Key.FAVORITE, id);
                 mKeys.add(key);
                 final String backupKey = keyToBackupKey(key);
-                if (!mExistingKeys.contains(backupKey) || updateTime >= mLastBackupRestoreTime) {
+
+                // Favorite proto changed in v4. Backup again if the version is old.
+                if (!mExistingKeys.contains(backupKey) || updateTime >= mLastBackupRestoreTime
+                        || restoredBackupVersion < 4) {
                     writeRowToBackup(key, packFavorite(cursor), data);
                 } else {
                     if (DEBUG) Log.d(TAG, "favorite already backup up: " + id);
@@ -648,7 +653,9 @@ public class LauncherBackupHelper implements BackupHelper {
                 } else {
                     Log.w(TAG, "empty intent on appwidget: " + id);
                 }
-                if (mExistingKeys.contains(backupKey) && restoredBackupVersion >= BACKUP_VERSION) {
+
+                // Widget backup proto changed in v3. So add it again if the original backup is old.
+                if (mExistingKeys.contains(backupKey) && restoredBackupVersion >= 3) {
                     if (DEBUG) Log.d(TAG, "already saved widget " + backupKey);
 
                     // remember that we already backed this up previously
@@ -783,6 +790,7 @@ public class LauncherBackupHelper implements BackupHelper {
         favorite.spanX = c.getInt(SPANX_INDEX);
         favorite.spanY = c.getInt(SPANY_INDEX);
         favorite.iconType = c.getInt(ICON_TYPE_INDEX);
+        favorite.rank = c.getInt(RANK_INDEX);
 
         String title = c.getString(TITLE_INDEX);
         if (!TextUtils.isEmpty(title)) {
@@ -870,6 +878,7 @@ public class LauncherBackupHelper implements BackupHelper {
         values.put(Favorites.CELLY, favorite.cellY);
         values.put(Favorites.SPANX, favorite.spanX);
         values.put(Favorites.SPANY, favorite.spanY);
+        values.put(Favorites.RANK, favorite.rank);
 
         if (favorite.itemType == Favorites.ITEM_TYPE_SHORTCUT) {
             values.put(Favorites.ICON_TYPE, favorite.iconType);
