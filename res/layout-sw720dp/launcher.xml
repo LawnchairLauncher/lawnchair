@@ -18,11 +18,9 @@
 <com.android.launcher3.LauncherRootView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
-
     android:id="@+id/launcher"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/workspace_bg"
     android:fitsSystemWindows="true">
 
     <com.android.launcher3.DragLayer
@@ -36,6 +34,7 @@
             android:layout_height="52dp" />
 
         <!-- The workspace contains 5 screens of cells -->
+        <!-- DO NOT CHANGE THE ID -->
         <com.android.launcher3.Workspace
             android:id="@+id/workspace"
             android:layout_width="match_parent"
@@ -44,6 +43,7 @@
             launcher:pageIndicator="@id/page_indicator">
         </com.android.launcher3.Workspace>
 
+        <!-- DO NOT CHANGE THE ID -->
         <include layout="@layout/hotseat"
             android:id="@+id/hotseat"
             android:layout_width="match_parent"
@@ -59,15 +59,20 @@
 
         <!-- Keep these behind the workspace so that they are not visible when
              we go into AllApps -->
-        <include
-            android:id="@+id/page_indicator"
+        <include android:id="@+id/page_indicator"
             layout="@layout/page_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal" />
 
-        <include layout="@layout/apps_customize_pane"
-            android:id="@+id/apps_customize_pane"
+        <include layout="@layout/widgets_view"
+            android:id="@+id/widgets_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible" />
+
+        <include layout="@layout/all_apps"
+            android:id="@+id/apps_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible" />

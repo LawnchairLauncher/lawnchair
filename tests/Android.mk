@@ -1,4 +1,4 @@
-# Copyright (C) 2011 The Android Open Source Project
+# Copyright (C) 2015 The Android Open Source Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,5 +12,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-#LOCAL_PATH := $(call my-dir)
-#include $(call all-makefiles-under,$(LOCAL_PATH))
+
+LOCAL_PATH := $(call my-dir)
+
+src_dirs := src
+res_dirs := res
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE_TAGS := tests
+
+LOCAL_STATIC_JAVA_LIBRARIES := android-support-test
+
+LOCAL_SRC_FILES := $(call all-java-files-under, src)
+LOCAL_RESOURCE_DIR := $(addprefix $(LOCAL_PATH)/, $(res_dirs))
+LOCAL_AAPT_FLAGS := --auto-add-overlay
+
+LOCAL_SDK_VERSION := 21
+
+LOCAL_PACKAGE_NAME := Launcher3Tests
+
+LOCAL_INSTRUMENTATION_FOR := Launcher3
+
+include $(BUILD_PACKAGE)

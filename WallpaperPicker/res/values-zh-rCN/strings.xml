@@ -30,7 +30,7 @@
     <string name="wallpaper_accessibility_name" msgid="4093221025304876354">"第%1$d张壁纸，共%2$d张"</string>
     <string name="announce_selection" msgid="123723511662250539">"已选择<xliff:g id="LABEL">%1$s</xliff:g>"</string>
     <string name="wallpaper_delete" msgid="1459353972739215344">"删除"</string>
-    <string name="pick_image" msgid="6704438906027442697">"选择图片"</string>
+    <string name="pick_image" msgid="3189640419551368385">"我的照片"</string>
     <string name="pick_wallpaper" msgid="4628969645948454559">"壁纸"</string>
     <string name="crop_wallpaper" msgid="4882870800623585836">"剪裁壁纸"</string>
 </resources>

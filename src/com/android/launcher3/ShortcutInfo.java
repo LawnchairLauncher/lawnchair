@@ -23,7 +23,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.UserHandleCompat;
+import com.android.launcher3.compat.UserManagerCompat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,18 +49,24 @@ public class ShortcutInfo extends ItemInfo {
      * be present along with {@link #FLAG_RESTORED_ICON}, and is set during default layout
      * parsing.
      */
-    public static final int FLAG_AUTOINTALL_ICON = 2;
+    public static final int FLAG_AUTOINTALL_ICON = 2; //0B10;
 
     /**
      * The icon is being installed. If {@link FLAG_RESTORED_ICON} or {@link FLAG_AUTOINTALL_ICON}
      * is set, then the icon is either being installed or is in a broken state.
      */
-    public static final int FLAG_INSTALL_SESSION_ACTIVE = 4;
+    public static final int FLAG_INSTALL_SESSION_ACTIVE = 4; // 0B100;
 
     /**
      * Indicates that the widget restore has started.
      */
-    public static final int FLAG_RESTORE_STARTED = 8;
+    public static final int FLAG_RESTORE_STARTED = 8; //0B1000;
+
+    /**
+     * Indicates if it represents a common type mentioned in {@link CommonAppTypeParser}.
+     * Upto 15 different types supported.
+     */
+    public static final int FLAG_RESTORED_APP_TYPE = 0B0011110000;
 
     /**
      * The intent used to start the application.
@@ -67,8 +76,9 @@ public class ShortcutInfo extends ItemInfo {
     /**
      * Indicates whether the icon comes from an application's resource (if false)
      * or from a custom Bitmap (if true.)
+     * TODO: remove this flag
      */
-    boolean customIcon;
+    public boolean customIcon;
 
     /**
      * Indicates whether we're using the default fallback icon instead of something from the
@@ -77,10 +87,15 @@ public class ShortcutInfo extends ItemInfo {
     boolean usingFallbackIcon;
 
     /**
+     * Indicates whether we're using a low res icon
+     */
+    boolean usingLowResIcon;
+
+    /**
      * If isShortcut=true and customIcon=false, this contains a reference to the
      * shortcut icon as an application's resource.
      */
-    Intent.ShortcutIconResource iconResource;
+    public Intent.ShortcutIconResource iconResource;
 
     /**
      * The application icon.
@@ -113,7 +128,7 @@ public class ShortcutInfo extends ItemInfo {
     /**
      * Refer {@link AppInfo#firstInstallTime}.
      */
-    long firstInstallTime;
+    public long firstInstallTime;
 
     /**
      * TODO move this to {@link status}
@@ -139,7 +154,7 @@ public class ShortcutInfo extends ItemInfo {
             Bitmap icon, UserHandleCompat user) {
         this();
         this.intent = intent;
-        this.title = title;
+        this.title = Utilities.trim(title);
         this.contentDescription = contentDescription;
         mIcon = icon;
         this.user = user;
@@ -147,7 +162,7 @@ public class ShortcutInfo extends ItemInfo {
 
     public ShortcutInfo(Context context, ShortcutInfo info) {
         super(info);
-        title = info.title.toString();
+        title = Utilities.trim(info.title);
         intent = new Intent(info.intent);
         if (info.iconResource != null) {
             iconResource = new Intent.ShortcutIconResource();
@@ -165,7 +180,7 @@ public class ShortcutInfo extends ItemInfo {
     /** TODO: Remove this.  It's only called by ApplicationInfo.makeShortcut. */
     public ShortcutInfo(AppInfo info) {
         super(info);
-        title = info.title.toString();
+        title = Utilities.trim(info.title);
         intent = new Intent(info.intent);
         customIcon = false;
         flags = info.flags;
@@ -184,8 +199,10 @@ public class ShortcutInfo extends ItemInfo {
     }
 
     public void updateIcon(IconCache iconCache) {
-        mIcon = iconCache.getIcon(promisedIntent != null ? promisedIntent : intent, user);
-        usingFallbackIcon = iconCache.isDefaultIcon(mIcon, user);
+        if (itemType == Favorites.ITEM_TYPE_APPLICATION) {
+            iconCache.getTitleAndIcon(this, promisedIntent != null ? promisedIntent : intent, user,
+                    shouldUseLowResIcon());
+        }
     }
 
     @Override
@@ -198,6 +215,7 @@ public class ShortcutInfo extends ItemInfo {
         String uri = promisedIntent != null ? promisedIntent.toUri(0)
                 : (intent != null ? intent.toUri(0) : null);
         values.put(LauncherSettings.BaseLauncherColumns.INTENT, uri);
+        values.put(LauncherSettings.Favorites.RESTORED, status);
 
         if (customIcon) {
             values.put(LauncherSettings.BaseLauncherColumns.ICON_TYPE,
@@ -207,9 +225,9 @@ public class ShortcutInfo extends ItemInfo {
             if (!usingFallbackIcon) {
                 writeBitmap(values, mIcon);
             }
-            values.put(LauncherSettings.BaseLauncherColumns.ICON_TYPE,
-                    LauncherSettings.BaseLauncherColumns.ICON_TYPE_RESOURCE);
             if (iconResource != null) {
+                values.put(LauncherSettings.BaseLauncherColumns.ICON_TYPE,
+                        LauncherSettings.BaseLauncherColumns.ICON_TYPE_RESOURCE);
                 values.put(LauncherSettings.BaseLauncherColumns.ICON_PACKAGE,
                         iconResource.packageName);
                 values.put(LauncherSettings.BaseLauncherColumns.ICON_RESOURCE,
@@ -255,6 +273,24 @@ public class ShortcutInfo extends ItemInfo {
     public void setInstallProgress(int progress) {
         mInstallProgress = progress;
         status |= FLAG_INSTALL_SESSION_ACTIVE;
+    }
+
+    public boolean shouldUseLowResIcon() {
+        return usingLowResIcon && container >= 0 && rank >= FolderIcon.NUM_ITEMS_IN_PREVIEW;
+    }
+
+    public static ShortcutInfo fromActivityInfo(LauncherActivityInfoCompat info, Context context) {
+        final ShortcutInfo shortcut = new ShortcutInfo();
+        shortcut.user = info.getUser();
+        shortcut.title = Utilities.trim(info.getLabel());
+        shortcut.contentDescription = UserManagerCompat.getInstance(context)
+                .getBadgedLabelForUser(info.getLabel(), info.getUser());
+        shortcut.customIcon = false;
+        shortcut.intent = AppInfo.makeLaunchIntent(context, info, info.getUser());
+        shortcut.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
+        shortcut.flags = AppInfo.initFlags(info);
+        shortcut.firstInstallTime = info.getFirstInstallTime();
+        return shortcut;
     }
 }
 

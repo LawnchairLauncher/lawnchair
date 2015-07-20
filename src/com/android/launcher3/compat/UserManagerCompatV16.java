@@ -48,4 +48,9 @@ public class UserManagerCompatV16 extends UserManagerCompat {
     public CharSequence getBadgedLabelForUser(CharSequence label, UserHandleCompat user) {
         return label;
     }
+
+    @Override
+    public long getUserCreationTime(UserHandleCompat user) {
+        return 0;
+    }
 }

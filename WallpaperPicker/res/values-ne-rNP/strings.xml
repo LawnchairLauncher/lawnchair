@@ -30,7 +30,7 @@
     <string name="wallpaper_accessibility_name" msgid="4093221025304876354">"%2$d को %1$d वालपेपर"</string>
     <string name="announce_selection" msgid="123723511662250539">"चयन गरिएको <xliff:g id="LABEL">%1$s</xliff:g>"</string>
     <string name="wallpaper_delete" msgid="1459353972739215344">"मेट्नुहोस्"</string>
-    <string name="pick_image" msgid="6704438906027442697">"तस्बिर छान्नुहोस्"</string>
+    <string name="pick_image" msgid="3189640419551368385">"मेरा तस्बिरहरू"</string>
     <string name="pick_wallpaper" msgid="4628969645948454559">"वालपेपरहरु"</string>
     <string name="crop_wallpaper" msgid="4882870800623585836">"वालपेपर काँटछाट गर्नुहोस्"</string>
 </resources>

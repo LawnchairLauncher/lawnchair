@@ -37,6 +37,7 @@ import android.util.Patterns;
 
 import com.android.launcher3.LauncherProvider.SqlArguments;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.util.Thunk;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -44,6 +45,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * Layout parsing code for auto installs layout
@@ -56,6 +58,11 @@ public class AutoInstallsLayout {
     static final String ACTION_LAUNCHER_CUSTOMIZATION =
             "android.autoinstalls.config.action.PLAY_AUTO_INSTALL";
 
+    /**
+     * Layout resource which also includes grid size and hotseat count, e.g., default_layout_6x6_h5
+     */
+    private static final String FORMATTED_LAYOUT_RES_WITH_HOSTEAT = "default_layout_%dx%d_h%s";
+    private static final String FORMATTED_LAYOUT_RES = "default_layout_%dx%d";
     private static final String LAYOUT_RES = "default_layout";
 
     static AutoInstallsLayout get(Context context, AppWidgetHost appWidgetHost,
@@ -65,19 +72,44 @@ public class AutoInstallsLayout {
         if (customizationApkInfo == null) {
             return null;
         }
+        return get(context, customizationApkInfo.first, customizationApkInfo.second,
+                appWidgetHost, callback);
+    }
 
-        String pkg = customizationApkInfo.first;
-        Resources res = customizationApkInfo.second;
-        int layoutId = res.getIdentifier(LAYOUT_RES, "xml", pkg);
+    static AutoInstallsLayout get(Context context, String pkg, Resources targetRes,
+            AppWidgetHost appWidgetHost, LayoutParserCallback callback) {
+        InvariantDeviceProfile grid = LauncherAppState.getInstance().getInvariantDeviceProfile();
+
+        // Try with grid size and hotseat count
+        String layoutName = String.format(Locale.ENGLISH, FORMATTED_LAYOUT_RES_WITH_HOSTEAT,
+                (int) grid.numColumns, (int) grid.numRows, (int) grid.numHotseatIcons);
+        int layoutId = targetRes.getIdentifier(layoutName, "xml", pkg);
+
+        // Try with only grid size
+        if (layoutId == 0) {
+            Log.d(TAG, "Formatted layout: " + layoutName
+                    + " not found. Trying layout without hosteat");
+            layoutName = String.format(Locale.ENGLISH, FORMATTED_LAYOUT_RES,
+                    (int) grid.numColumns, (int) grid.numRows);
+            layoutId = targetRes.getIdentifier(layoutName, "xml", pkg);
+        }
+
+        // Try the default layout
+        if (layoutId == 0) {
+            Log.d(TAG, "Formatted layout: " + layoutName + " not found. Trying the default layout");
+            layoutId = targetRes.getIdentifier(LAYOUT_RES, "xml", pkg);
+        }
+
         if (layoutId == 0) {
             Log.e(TAG, "Layout definition not found in package: " + pkg);
             return null;
         }
-        return new AutoInstallsLayout(context, appWidgetHost, callback, res, layoutId,
+        return new AutoInstallsLayout(context, appWidgetHost, callback, targetRes, layoutId,
                 TAG_WORKSPACE);
     }
 
     // Object Tags
+    private static final String TAG_INCLUDE = "include";
     private static final String TAG_WORKSPACE = "workspace";
     private static final String TAG_APP_ICON = "appicon";
     private static final String TAG_AUTO_INSTALL = "autoinstall";
@@ -100,6 +132,9 @@ public class AutoInstallsLayout {
     private static final String ATTR_ICON = "icon";
     private static final String ATTR_URL = "url";
 
+    // Attrs for "Include"
+    private static final String ATTR_WORKSPACE = "workspace";
+
     // Style attrs -- "Extra"
     private static final String ATTR_KEY = "key";
     private static final String ATTR_VALUE = "value";
@@ -110,9 +145,9 @@ public class AutoInstallsLayout {
     private static final String ACTION_APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE =
             "com.android.launcher.action.APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE";
 
-    private final Context mContext;
-    private final AppWidgetHost mAppWidgetHost;
-    private final LayoutParserCallback mCallback;
+    @Thunk final Context mContext;
+    @Thunk final AppWidgetHost mAppWidgetHost;
+    protected final LayoutParserCallback mCallback;
 
     protected final PackageManager mPackageManager;
     protected final Resources mSourceRes;
@@ -121,14 +156,21 @@ public class AutoInstallsLayout {
     private final int mHotseatAllAppsRank;
 
     private final long[] mTemp = new long[2];
-    private final ContentValues mValues;
-    private final String mRootTag;
+    @Thunk final ContentValues mValues;
+    protected final String mRootTag;
 
     protected SQLiteDatabase mDb;
 
     public AutoInstallsLayout(Context context, AppWidgetHost appWidgetHost,
             LayoutParserCallback callback, Resources res,
             int layoutId, String rootTag) {
+        this(context, appWidgetHost, callback, res, layoutId, rootTag,
+                LauncherAppState.getInstance().getInvariantDeviceProfile().hotseatAllAppsRank);
+    }
+
+    public AutoInstallsLayout(Context context, AppWidgetHost appWidgetHost,
+            LayoutParserCallback callback, Resources res,
+            int layoutId, String rootTag, int hotseatAllAppsRank) {
         mContext = context;
         mAppWidgetHost = appWidgetHost;
         mCallback = callback;
@@ -139,8 +181,7 @@ public class AutoInstallsLayout {
 
         mSourceRes = res;
         mLayoutId = layoutId;
-        mHotseatAllAppsRank = LauncherAppState.getInstance()
-                .getDynamicGrid().getDeviceProfile().hotseatAllAppsRank;
+        mHotseatAllAppsRank = hotseatAllAppsRank;
     }
 
     /**
@@ -202,6 +243,17 @@ public class AutoInstallsLayout {
             HashMap<String, TagParser> tagParserMap,
             ArrayList<Long> screenIds)
                     throws XmlPullParserException, IOException {
+
+        if (TAG_INCLUDE.equals(parser.getName())) {
+            final int resId = getAttributeResourceValue(parser, ATTR_WORKSPACE, 0);
+            if (resId != 0) {
+                // recursively load some more favorites, why not?
+                return parseLayout(resId, screenIds);
+            } else {
+                return 0;
+            }
+        }
+
         mValues.clear();
         parseContainerAndScreen(parser, mTemp);
         final long container = mTemp[0];
@@ -528,6 +580,7 @@ public class AutoInstallsLayout {
 
             int type;
             int folderDepth = parser.getDepth();
+            int rank = 0;
             while ((type = parser.next()) != XmlPullParser.END_TAG ||
                     parser.getDepth() > folderDepth) {
                 if (type != XmlPullParser.START_TAG) {
@@ -535,12 +588,14 @@ public class AutoInstallsLayout {
                 }
                 mValues.clear();
                 mValues.put(Favorites.CONTAINER, folderId);
+                mValues.put(Favorites.RANK, rank);
 
                 TagParser tagParser = mFolderElements.get(parser.getName());
                 if (tagParser != null) {
                     final long id = tagParser.parseAndAdd(parser);
                     if (id >= 0) {
                         folderItems.add(id);
+                        rank++;
                     }
                 } else {
                     throw new RuntimeException("Invalid folder item " + parser.getName());
@@ -554,7 +609,7 @@ public class AutoInstallsLayout {
             // failed to add, and less than 2 were actually added
             if (folderItems.size() < 2) {
                 // Delete the folder
-                Uri uri = Favorites.getContentUri(folderId, false);
+                Uri uri = Favorites.getContentUri(folderId);
                 SqlArguments args = new SqlArguments(uri, null, null);
                 mDb.delete(args.table, args.where, args.args);
                 addedId = -1;
@@ -627,7 +682,7 @@ public class AutoInstallsLayout {
         long insertAndCheck(SQLiteDatabase db, ContentValues values);
     }
 
-    private static void copyInteger(ContentValues from, ContentValues to, String key) {
+    @Thunk static void copyInteger(ContentValues from, ContentValues to, String key) {
         to.put(key, from.getAsInteger(key));
     }
 }

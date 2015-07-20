@@ -34,6 +34,8 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.inputmethod.InputMethodManager;
 
+import com.android.launcher3.util.Thunk;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -49,8 +51,8 @@ public class DragController {
     /** Indicates the drag is a copy.  */
     public static int DRAG_ACTION_COPY = 1;
 
-    private static final int SCROLL_DELAY = 500;
-    private static final int RESCROLL_DELAY = PagedView.PAGE_SNAP_ANIMATION_DURATION + 150;
+    public static final int SCROLL_DELAY = 500;
+    public static final int RESCROLL_DELAY = PagedView.PAGE_SNAP_ANIMATION_DURATION + 150;
 
     private static final boolean PROFILE_DRAWING_DURING_DRAG = false;
 
@@ -63,15 +65,19 @@ public class DragController {
 
     private static final float MAX_FLING_DEGREES = 35f;
 
-    private Launcher mLauncher;
+    @Thunk Launcher mLauncher;
     private Handler mHandler;
 
     // temporaries to avoid gc thrash
     private Rect mRectTemp = new Rect();
     private final int[] mCoordinatesTemp = new int[2];
+    private final boolean mIsRtl;
 
     /** Whether or not we're dragging. */
     private boolean mDragging;
+
+    /** Whether or not this is an accessible drag operation */
+    private boolean mIsAccessibleDrag;
 
     /** X coordinate of the down event. */
     private int mMotionDownX;
@@ -99,17 +105,17 @@ public class DragController {
 
     private View mMoveTarget;
 
-    private DragScroller mDragScroller;
-    private int mScrollState = SCROLL_OUTSIDE_ZONE;
+    @Thunk DragScroller mDragScroller;
+    @Thunk int mScrollState = SCROLL_OUTSIDE_ZONE;
     private ScrollRunnable mScrollRunnable = new ScrollRunnable();
 
     private DropTarget mLastDropTarget;
 
     private InputMethodManager mInputMethodManager;
 
-    private int mLastTouch[] = new int[2];
-    private long mLastTouchUpTime = -1;
-    private int mDistanceSinceScroll = 0;
+    @Thunk int mLastTouch[] = new int[2];
+    @Thunk long mLastTouchUpTime = -1;
+    @Thunk int mDistanceSinceScroll = 0;
 
     private int mTmpPoint[] = new int[2];
     private Rect mDragLayerRect = new Rect();
@@ -120,7 +126,7 @@ public class DragController {
     /**
      * Interface to receive notifications when a drag starts or stops
      */
-    interface DragListener {
+    public interface DragListener {
         /**
          * A drag has begun
          *
@@ -152,6 +158,7 @@ public class DragController {
         float density = r.getDisplayMetrics().density;
         mFlingToDeleteThresholdVelocity =
                 (int) (r.getInteger(R.integer.config_flingToDeleteMinVelocity) * density);
+        mIsRtl = Utilities.isRtl(r);
     }
 
     public boolean dragging() {
@@ -167,22 +174,21 @@ public class DragController {
      * @param dragInfo The data associated with the object that is being dragged
      * @param dragAction The drag action: either {@link #DRAG_ACTION_MOVE} or
      *        {@link #DRAG_ACTION_COPY}
+     * @param viewImageBounds the position of the image inside the view
      * @param dragRegion Coordinates within the bitmap b for the position of item being dragged.
      *          Makes dragging feel more precise, e.g. you can clip out a transparent border
      */
-    public void startDrag(View v, Bitmap bmp, DragSource source, Object dragInfo, int dragAction,
-            Point extraPadding, float initialDragViewScale) {
+    public void startDrag(View v, Bitmap bmp, DragSource source, Object dragInfo,
+            Rect viewImageBounds, int dragAction, float initialDragViewScale) {
         int[] loc = mCoordinatesTemp;
         mLauncher.getDragLayer().getLocationInDragLayer(v, loc);
-        int viewExtraPaddingLeft = extraPadding != null ? extraPadding.x : 0;
-        int viewExtraPaddingTop = extraPadding != null ? extraPadding.y : 0;
-        int dragLayerX = loc[0] + v.getPaddingLeft() + viewExtraPaddingLeft +
-                (int) ((initialDragViewScale * bmp.getWidth() - bmp.getWidth()) / 2);
-        int dragLayerY = loc[1] + v.getPaddingTop() + viewExtraPaddingTop +
-                (int) ((initialDragViewScale * bmp.getHeight() - bmp.getHeight()) / 2);
+        int dragLayerX = loc[0] + viewImageBounds.left
+                + (int) ((initialDragViewScale * bmp.getWidth() - bmp.getWidth()) / 2);
+        int dragLayerY = loc[1] + viewImageBounds.top
+                + (int) ((initialDragViewScale * bmp.getHeight() - bmp.getHeight()) / 2);
 
         startDrag(bmp, dragLayerX, dragLayerY, source, dragInfo, dragAction, null,
-                null, initialDragViewScale);
+                null, initialDragViewScale, false);
 
         if (dragAction == DRAG_ACTION_MOVE) {
             v.setVisibility(View.GONE);
@@ -202,10 +208,11 @@ public class DragController {
      *        {@link #DRAG_ACTION_COPY}
      * @param dragRegion Coordinates within the bitmap b for the position of item being dragged.
      *          Makes dragging feel more precise, e.g. you can clip out a transparent border
+     * @param accessible whether this drag should occur in accessibility mode
      */
     public DragView startDrag(Bitmap b, int dragLayerX, int dragLayerY,
             DragSource source, Object dragInfo, int dragAction, Point dragOffset, Rect dragRegion,
-            float initialDragViewScale) {
+            float initialDragViewScale, boolean accessible) {
         if (PROFILE_DRAWING_DURING_DRAG) {
             android.os.Debug.startMethodTracing("Launcher");
         }
@@ -228,12 +235,21 @@ public class DragController {
         final int dragRegionTop = dragRegion == null ? 0 : dragRegion.top;
 
         mDragging = true;
+        mIsAccessibleDrag = accessible;
 
         mDragObject = new DropTarget.DragObject();
 
         mDragObject.dragComplete = false;
-        mDragObject.xOffset = mMotionDownX - (dragLayerX + dragRegionLeft);
-        mDragObject.yOffset = mMotionDownY - (dragLayerY + dragRegionTop);
+        if (mIsAccessibleDrag) {
+            // For an accessible drag, we assume the view is being dragged from the center.
+            mDragObject.xOffset = b.getWidth() / 2;
+            mDragObject.yOffset = b.getHeight() / 2;
+            mDragObject.accessibleDrag = true;
+        } else {
+            mDragObject.xOffset = mMotionDownX - (dragLayerX + dragRegionLeft);
+            mDragObject.yOffset = mMotionDownY - (dragLayerY + dragRegionTop);
+        }
+
         mDragObject.dragSource = source;
         mDragObject.dragInfo = dragInfo;
 
@@ -349,6 +365,7 @@ public class DragController {
     private void endDrag() {
         if (mDragging) {
             mDragging = false;
+            mIsAccessibleDrag = false;
             clearScrollRunnable();
             boolean isDeferred = false;
             if (mDragObject.dragView != null) {
@@ -361,7 +378,7 @@ public class DragController {
 
             // Only end the drag if we are not deferred
             if (!isDeferred) {
-                for (DragListener listener : mListeners) {
+                for (DragListener listener : new ArrayList<>(mListeners)) {
                     listener.onDragEnd();
                 }
             }
@@ -378,13 +395,13 @@ public class DragController {
 
         if (mDragObject.deferDragViewCleanupPostAnimation) {
             // If we skipped calling onDragEnd() before, do it now
-            for (DragListener listener : mListeners) {
+            for (DragListener listener : new ArrayList<>(mListeners)) {
                 listener.onDragEnd();
             }
         }
     }
 
-    void onDeferredEndFling(DropTarget.DragObject d) {
+    public void onDeferredEndFling(DropTarget.DragObject d) {
         d.dragSource.onFlingToDeleteCompleted();
     }
 
@@ -421,6 +438,10 @@ public class DragController {
                     + mDragging);
         }
 
+        if (mIsAccessibleDrag) {
+            return false;
+        }
+
         // Update the velocity tracker
         acquireVelocityTrackerAndAddMovement(ev);
 
@@ -442,7 +463,7 @@ public class DragController {
                 mLastTouchUpTime = System.currentTimeMillis();
                 if (mDragging) {
                     PointF vec = isFlingingToDelete(mDragObject.dragSource);
-                    if (!DeleteDropTarget.willAcceptDrop(mDragObject.dragInfo)) {
+                    if (!DeleteDropTarget.supportsDrop(mDragObject.dragInfo)) {
                         vec = null;
                     }
                     if (vec != null) {
@@ -493,8 +514,7 @@ public class DragController {
         checkTouchMove(dropTarget);
 
         // Check if we are hovering over the scroll areas
-        mDistanceSinceScroll +=
-            Math.sqrt(Math.pow(mLastTouch[0] - x, 2) + Math.pow(mLastTouch[1] - y, 2));
+        mDistanceSinceScroll += Math.hypot(mLastTouch[0] - x, mLastTouch[1] - y);
         mLastTouch[0] = x;
         mLastTouch[1] = y;
         checkScrollState(x, y);
@@ -525,13 +545,12 @@ public class DragController {
         mLastDropTarget = dropTarget;
     }
 
-    private void checkScrollState(int x, int y) {
+    @Thunk void checkScrollState(int x, int y) {
         final int slop = ViewConfiguration.get(mLauncher).getScaledWindowTouchSlop();
         final int delay = mDistanceSinceScroll < slop ? RESCROLL_DELAY : SCROLL_DELAY;
         final DragLayer dragLayer = mLauncher.getDragLayer();
-        final boolean isRtl = (dragLayer.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL);
-        final int forwardDirection = isRtl ? SCROLL_RIGHT : SCROLL_LEFT;
-        final int backwardsDirection = isRtl ? SCROLL_LEFT : SCROLL_RIGHT;
+        final int forwardDirection = mIsRtl ? SCROLL_RIGHT : SCROLL_LEFT;
+        final int backwardsDirection = mIsRtl ? SCROLL_LEFT : SCROLL_RIGHT;
 
         if (x < mScrollZone) {
             if (mScrollState == SCROLL_OUTSIDE_ZONE) {
@@ -560,7 +579,7 @@ public class DragController {
      * Call this from a drag source view.
      */
     public boolean onTouchEvent(MotionEvent ev) {
-        if (!mDragging) {
+        if (!mDragging || mIsAccessibleDrag) {
             return false;
         }
 
@@ -596,7 +615,7 @@ public class DragController {
 
             if (mDragging) {
                 PointF vec = isFlingingToDelete(mDragObject.dragSource);
-                if (!DeleteDropTarget.willAcceptDrop(mDragObject.dragInfo)) {
+                if (!DeleteDropTarget.supportsDrop(mDragObject.dragInfo)) {
                     vec = null;
                 }
                 if (vec != null) {
@@ -614,6 +633,35 @@ public class DragController {
         }
 
         return true;
+    }
+
+    /**
+     * Since accessible drag and drop won't cause the same sequence of touch events, we manually
+     * inject the appropriate state.
+     */
+    public void prepareAccessibleDrag(int x, int y) {
+        mMotionDownX = x;
+        mMotionDownY = y;
+        mLastDropTarget = null;
+    }
+
+    /**
+     * As above, since accessible drag and drop won't cause the same sequence of touch events,
+     * we manually ensure appropriate drag and drop events get emulated for accessible drag.
+     */
+    public void completeAccessibleDrag(int[] location) {
+        final int[] coordinates = mCoordinatesTemp;
+
+        // We make sure that we prime the target for drop.
+        DropTarget dropTarget = findDropTarget(location[0], location[1], coordinates);
+        mDragObject.x = coordinates[0];
+        mDragObject.y = coordinates[1];
+        checkTouchMove(dropTarget);
+
+        dropTarget.prepareAccessibilityDrop();
+        // Perform the drop
+        drop(location[0], location[1]);
+        endDrag();
     }
 
     /**
@@ -662,8 +710,7 @@ public class DragController {
         mDragObject.dragComplete = true;
         mFlingToDeleteDropTarget.onDragExit(mDragObject);
         if (mFlingToDeleteDropTarget.acceptDrop(mDragObject)) {
-            mFlingToDeleteDropTarget.onFlingToDelete(mDragObject, mDragObject.x, mDragObject.y,
-                    vel);
+            mFlingToDeleteDropTarget.onFlingToDelete(mDragObject, vel);
             accepted = true;
         }
         mDragObject.dragSource.onDropCompleted((View) mFlingToDeleteDropTarget, mDragObject, true,

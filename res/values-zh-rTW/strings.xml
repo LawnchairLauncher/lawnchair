@@ -20,57 +20,27 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
-    <string name="home" msgid="7658288663002113681">"主螢幕"</string>
-    <string name="uid_name" msgid="7820867637514617527">"Android 核心應用程式"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
+    <string name="work_folder_name" msgid="3753320833950115786">"公司"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"應用程式未安裝。"</string>
     <string name="activity_not_available" msgid="7456344436509528827">"應用程式目前無法使用"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"在安全模式中無法使用「已下載的應用程式」功能"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"在安全模式下無法使用小工具"</string>
-    <string name="widgets_tab_label" msgid="2921133187116603919">"小工具"</string>
-    <string name="widget_adder" msgid="3201040140710381657">"小工具"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"顯示記憶體"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"輕觸並按住小工具即可選取。"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <string name="external_drop_widget_error" msgid="3165821058322217155">"無法將項目拖放至這個主螢幕上。"</string>
-    <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"選擇要建立的小工具"</string>
-    <string name="rename_folder_label" msgid="3727762225964550653">"資料夾名稱"</string>
-    <string name="rename_folder_title" msgid="3771389277707820891">"重新命名資料夾"</string>
-    <string name="rename_action" msgid="5559600076028658757">"確定"</string>
-    <string name="cancel_action" msgid="7009134900002915310">"取消"</string>
-    <string name="menu_item_add_item" msgid="1264911265836810421">"新增至主螢幕"</string>
-    <string name="group_applications" msgid="3797214114206693605">"應用程式"</string>
-    <string name="group_shortcuts" msgid="6012256992764410535">"捷徑"</string>
-    <string name="group_widgets" msgid="1569030723286851002">"小工具"</string>
-    <string name="completely_out_of_space" msgid="6106288382070760318">"主螢幕已無空間。"</string>
+    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"搜尋應用程式"</string>
+    <string name="all_apps_loading_message" msgid="7557140873644765180">"正在載入應用程式…"</string>
+    <string name="all_apps_no_search_results" msgid="6332185285860416787">"找不到符合「<xliff:g id="QUERY">%1$s</xliff:g>」的應用程式"</string>
     <string name="out_of_space" msgid="4691004494942118364">"這個主螢幕已無空間。"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"「我的最愛」匣已無可用空間"</string>
-    <string name="invalid_hotseat_item" msgid="5779907847267573691">"這個小工具過大，「我的最愛」匣無法容納"</string>
-    <string name="shortcut_installed" msgid="1701742129426969556">"已建立「<xliff:g id="NAME">%s</xliff:g>」捷徑。"</string>
-    <string name="shortcut_uninstalled" msgid="8176767991305701821">"已移除「<xliff:g id="NAME">%s</xliff:g>」捷徑。"</string>
-    <string name="shortcut_duplicate" msgid="9167217446062498127">"「<xliff:g id="NAME">%s</xliff:g>」捷徑已存在。"</string>
-    <string name="title_select_shortcut" msgid="6680642571148153868">"選擇捷徑"</string>
-    <string name="title_select_application" msgid="3280812711670683644">"選擇應用程式"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"應用程式"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"主螢幕"</string>
-    <string name="delete_zone_label_workspace" msgid="4009607676751398685">"移除"</string>
-    <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"解除安裝"</string>
     <string name="delete_target_label" msgid="1822697352535677073">"移除"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"解除安裝"</string>
     <string name="info_target_label" msgid="8053346143994679532">"應用程式資訊"</string>
-    <string name="accessibility_all_apps_button" msgid="2603132375383800483">"應用程式"</string>
-    <string name="accessibility_delete_button" msgid="6466114477993744621">"移除"</string>
-    <string name="delete_zone_label_all_apps_system_app" msgid="449755632749610895">"解除安裝更新"</string>
-    <string name="cab_menu_delete_app" msgid="7435191475867183689">"解除安裝應用程式"</string>
-    <string name="cab_menu_app_info" msgid="8593722221450362342">"應用程式詳細資料"</string>
-    <string name="cab_app_selection_text" msgid="374688303047985416">"已選取 1 個應用程式"</string>
-    <string name="cab_widget_selection_text" msgid="1833458597831541241">"已選取 1 個小工具"</string>
-    <string name="cab_folder_selection_text" msgid="7999992513806132118">"已選取 1 個資料夾"</string>
-    <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"已選取 1 個捷徑"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"安裝捷徑"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"允許應用程式自動新增捷徑。"</string>
-    <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"解除安裝捷徑"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="5134129545001836849">"允許應用程式自動移除捷徑。"</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"讀取主螢幕的設定和捷徑"</string>
     <string name="permdesc_read_settings" msgid="5833423719057558387">"允許應用程式讀取主螢幕中的設定和捷徑。"</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"寫入主螢幕設定和捷徑"</string>
@@ -78,30 +48,17 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"載入小工具時發生問題"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"設定"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"這是系統應用程式，不可解除安裝。"</string>
-    <string name="dream_name" msgid="1530253749244328964">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"未命名的資料夾"</string>
-    <string name="workspace_description_format" msgid="2950174241104043327">"主螢幕 %1$d"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"第 %1$d 頁，共 %2$d 頁"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"主螢幕：第 %1$d 頁，共 %2$d 頁"</string>
-    <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"應用程式：第 %1$d 頁，共 %2$d 頁"</string>
-    <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"小工具：第 %1$d 頁，共 %2$d 頁"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"歡迎使用"</string>
-    <string name="first_run_cling_description" msgid="6447072552696253358">"主螢幕由您作主。"</string>
-    <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
-    <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
-    <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"建立更多畫面容納應用程式和資料夾"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"複製您的應用程式圖示"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"要從舊的主螢幕匯入圖示和資料夾嗎？"</string>
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"複製圖示"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"重新開始"</string>
-    <string name="workspace_cling_title" msgid="5626202359865825661">"管理您的空間"</string>
-    <string name="workspace_cling_move_item" msgid="528201129978005352">"輕觸並按住背景，即可管理桌布、小工具和設定。"</string>
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"桌布、小工具和設定"</string>
     <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"輕觸並按住背景即可自訂"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"知道了"</string>
-    <string name="folder_cling_title" msgid="3894908818693254164">"資料夾顯示如下"</string>
-    <string name="folder_cling_create_folder" msgid="6158215559475836131">"如要建立類似的資料夾，請輕觸並按住應用程式，然後將應用程式疊放在另一個應用程式上。"</string>
-    <string name="cling_dismiss" msgid="8962359497601507581">"確定"</string>
     <string name="folder_opened" msgid="94695026776264709">"資料夾已開啟 (<xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>)"</string>
     <string name="folder_tap_to_close" msgid="1884479294466410023">"輕觸即可關閉資料夾"</string>
     <string name="folder_tap_to_rename" msgid="9191075570492871147">"輕觸即可儲存新名稱"</string>
@@ -111,14 +68,34 @@
     <string name="widget_button_text" msgid="2880537293434387943">"小工具"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"桌布"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"設定"</string>
-    <string name="package_state_enqueued" msgid="6227252464303085641">"等待中"</string>
-    <string name="package_state_downloading" msgid="4088770468458724721">"下載中…"</string>
-    <string name="package_state_installing" msgid="7588193972189849870">"安裝中"</string>
+    <string name="allow_rotation_title" msgid="2118706734511831751">"允許輪播"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"不明"</string>
-    <string name="package_state_error" msgid="7672093962724223588">"無法還原"</string>
-    <string name="abandoned_clean_all" msgid="5256770727689657618">"全部移除"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"移除"</string>
     <string name="abandoned_search" msgid="891119232568284442">"搜尋"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"尚未安裝這個應用程式"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"您尚未安裝這個圖示代表的應用程式。您可以移除這個圖示，也可以搜尋該應用程式並手動安裝。"</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"新增至主畫面"</string>
+    <string name="action_move_here" msgid="2170188780612570250">"將項目移至這裡"</string>
+    <string name="item_added_to_workspace" msgid="4211073925752213539">"已將項目新增到主畫面"</string>
+    <string name="item_removed" msgid="851119963877842327">"已移除項目"</string>
+    <string name="action_move" msgid="4339390619886385032">"移動項目"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"移至第 <xliff:g id="NUMBER_0">%1$s</xliff:g> 列第 <xliff:g id="NUMBER_1">%2$s</xliff:g> 欄"</string>
+    <string name="move_to_position" msgid="6750008980455459790">"移至位置 <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
+    <string name="move_to_hotseat_position" msgid="6295412897075147808">"移至收藏位置 <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
+    <string name="item_moved" msgid="4606538322571412879">"已移動項目"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"新增到「<xliff:g id="NAME">%1$s</xliff:g>」資料夾"</string>
+    <string name="add_to_folder_with_app" msgid="4534929978967147231">"新增到「<xliff:g id="NAME">%1$s</xliff:g>」所在資料夾"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"已將項目新增到資料夾"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"建立「<xliff:g id="NAME">%1$s</xliff:g>」資料夾"</string>
+    <string name="folder_created" msgid="6409794597405184510">"已建立資料夾"</string>
+    <string name="action_move_to_workspace" msgid="1603837886334246317">"移至主畫面"</string>
+    <string name="action_move_screen_left" msgid="8854216831569401665">"將畫面往左移"</string>
+    <string name="action_move_screen_right" msgid="329334910274311123">"將畫面往右移"</string>
+    <string name="screen_moved" msgid="266230079505650577">"已移動畫面"</string>
+    <string name="action_resize" msgid="1802976324781771067">"調整大小"</string>
+    <string name="action_increase_width" msgid="8773715375078513326">"增加寬度"</string>
+    <string name="action_increase_height" msgid="459390020612501122">"增加高度"</string>
+    <string name="action_decrease_width" msgid="1374549771083094654">"減少寬度"</string>
+    <string name="action_decrease_height" msgid="282377193880900022">"減少高度"</string>
+    <string name="widget_resized" msgid="9130327887929620">"已將小工具的寬度和高度分別調整為 <xliff:g id="NUMBER_0">%1$s</xliff:g> 和 <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
 </resources>

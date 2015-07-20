@@ -19,7 +19,6 @@
 -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/wallpaper_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <com.android.launcher3.CropView
@@ -28,7 +27,7 @@
         android:layout_height="match_parent" />
     <ProgressBar
         android:id="@+id/loading"
-        style="@android:style/Widget.Holo.ProgressBar.Large"
+        style="?android:attr/progressBarStyleLarge"
         android:visibility="invisible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
