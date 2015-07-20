@@ -153,6 +153,10 @@ public class LauncherBackupHelper implements BackupHelper {
     boolean restoreSuccessful;
     int restoredBackupVersion = 1;
 
+    // When migrating from a device which different hotseat configuration, the icons are shifted
+    // to center along the new all-apps icon.
+    private int mHotseatShift = 0;
+
     public LauncherBackupHelper(Context context) {
         mContext = context;
         mExistingKeys = new HashSet<String>();
@@ -285,10 +289,15 @@ public class LauncherBackupHelper implements BackupHelper {
         boolean isHotsetCompatible = false;
         if (currentProfile.allappsRank >= oldProfile.hotseatCount) {
             isHotsetCompatible = true;
+            mHotseatShift = 0;
         }
-        if ((currentProfile.hotseatCount >= oldProfile.hotseatCount) &&
-                (currentProfile.allappsRank == oldProfile.allappsRank)) {
+
+        if ((currentProfile.allappsRank >= oldProfile.allappsRank)
+                && ((currentProfile.hotseatCount - currentProfile.allappsRank) >=
+                        (oldProfile.hotseatCount - oldProfile.allappsRank))) {
+            // There is enough space on both sides of the hotseat.
             isHotsetCompatible = true;
+            mHotseatShift = currentProfile.allappsRank - oldProfile.allappsRank;
         }
 
         return isHotsetCompatible && (currentProfile.desktopCols >= oldProfile.desktopCols)
@@ -846,6 +855,11 @@ public class LauncherBackupHelper implements BackupHelper {
     private ContentValues unpackFavorite(byte[] buffer, int dataSize)
             throws IOException {
         Favorite favorite = unpackProto(new Favorite(), buffer, dataSize);
+
+        // If it is a hotseat item, move it accordingly.
+        if (favorite.container == Favorites.CONTAINER_HOTSEAT) {
+            favorite.screen += mHotseatShift;
+        }
 
         ContentValues values = new ContentValues();
         values.put(Favorites._ID, favorite.id);
