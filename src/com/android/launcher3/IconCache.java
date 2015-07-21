@@ -649,7 +649,7 @@ public class IconCache {
      * @param dpi the native density of the icon
      */
     public void preloadIcon(ComponentName componentName, Bitmap icon, int dpi, String label,
-            long userSerial) {
+            long userSerial, InvariantDeviceProfile idp) {
         // TODO rescale to the correct native DPI
         try {
             PackageManager packageManager = mContext.getPackageManager();
@@ -660,7 +660,9 @@ public class IconCache {
             // pass
         }
 
-        ContentValues values = newContentValues(icon, label, Color.TRANSPARENT);
+        ContentValues values = newContentValues(
+                Bitmap.createScaledBitmap(icon, idp.iconBitmapSize, idp.iconBitmapSize, true),
+                label, Color.TRANSPARENT);
         values.put(IconDB.COLUMN_COMPONENT, componentName.flattenToString());
         values.put(IconDB.COLUMN_USER, userSerial);
         mIconDb.getWritableDatabase().insertWithOnConflict(IconDB.TABLE_NAME, null, values,
