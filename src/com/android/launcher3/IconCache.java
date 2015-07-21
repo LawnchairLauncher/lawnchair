@@ -540,7 +540,7 @@ public class IconCache {
             mCache.put(cacheKey, entry);
 
             // Check the DB first.
-            if (!getEntryFromDB(componentName, user, entry, useLowResIcon)) {
+            if (!getEntryFromDB(cacheKey, entry, useLowResIcon)) {
                 if (info != null) {
                     entry.icon = Utilities.createIconBitmap(info.getBadgedIcon(mIconDpi), mContext);
                 } else {
@@ -579,7 +579,14 @@ public class IconCache {
             Bitmap icon, CharSequence title) {
         removeFromMemCacheLocked(packageName, user);
 
-        CacheEntry entry = getEntryForPackageLocked(packageName, user, false);
+        ComponentKey cacheKey = getPackageKey(packageName, user);
+        CacheEntry entry = mCache.get(cacheKey);
+
+        // For icon caching, do not go through DB. Just update the in-memory entry.
+        if (entry == null) {
+            entry = new CacheEntry();
+            mCache.put(cacheKey, entry);
+        }
         if (!TextUtils.isEmpty(title)) {
             entry.title = title;
         }
@@ -588,15 +595,18 @@ public class IconCache {
         }
     }
 
+    private static ComponentKey getPackageKey(String packageName, UserHandleCompat user) {
+        ComponentName cn = new ComponentName(packageName, packageName + EMPTY_CLASS_NAME);
+        return new ComponentKey(cn, user);
+    }
+
     /**
      * Gets an entry for the package, which can be used as a fallback entry for various components.
      * This method is not thread safe, it must be called from a synchronized method.
-     *
      */
     private CacheEntry getEntryForPackageLocked(String packageName, UserHandleCompat user,
             boolean useLowResIcon) {
-        ComponentName cn = new ComponentName(packageName, packageName + EMPTY_CLASS_NAME);
-        ComponentKey cacheKey = new ComponentKey(cn, user);
+        ComponentKey cacheKey = getPackageKey(packageName, user);
         CacheEntry entry = mCache.get(cacheKey);
 
         if (entry == null || (entry.isLowResIcon && !useLowResIcon)) {
@@ -604,7 +614,7 @@ public class IconCache {
             boolean entryUpdated = true;
 
             // Check the DB first.
-            if (!getEntryFromDB(cn, user, entry, useLowResIcon)) {
+            if (!getEntryFromDB(cacheKey, entry, useLowResIcon)) {
                 try {
                     PackageInfo info = mPackageManager.getPackageInfo(packageName, 0);
                     ApplicationInfo appInfo = info.applicationInfo;
@@ -622,7 +632,8 @@ public class IconCache {
                     // package updates.
                     ContentValues values =
                             newContentValues(entry.icon, entry.title.toString(), mPackageBgColor);
-                    addIconToDB(values, cn, info, mUserManager.getSerialNumberForUser(user));
+                    addIconToDB(values, cacheKey.componentName, info,
+                            mUserManager.getSerialNumberForUser(user));
 
                 } catch (NameNotFoundException e) {
                     if (DEBUG) Log.d(TAG, "Application not installed " + packageName);
@@ -669,14 +680,13 @@ public class IconCache {
                 SQLiteDatabase.CONFLICT_REPLACE);
     }
 
-    private boolean getEntryFromDB(ComponentName component, UserHandleCompat user,
-            CacheEntry entry, boolean lowRes) {
+    private boolean getEntryFromDB(ComponentKey cacheKey, CacheEntry entry, boolean lowRes) {
         Cursor c = mIconDb.getReadableDatabase().query(IconDB.TABLE_NAME,
                 new String[] {lowRes ? IconDB.COLUMN_ICON_LOW_RES : IconDB.COLUMN_ICON,
                         IconDB.COLUMN_LABEL},
                 IconDB.COLUMN_COMPONENT + " = ? AND " + IconDB.COLUMN_USER + " = ?",
-                new String[] {component.flattenToString(),
-                    Long.toString(mUserManager.getSerialNumberForUser(user))},
+                new String[] {cacheKey.componentName.flattenToString(),
+                    Long.toString(mUserManager.getSerialNumberForUser(cacheKey.user))},
                 null, null, null);
         try {
             if (c.moveToNext()) {
@@ -687,7 +697,8 @@ public class IconCache {
                     entry.title = "";
                     entry.contentDescription = "";
                 } else {
-                    entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);
+                    entry.contentDescription = mUserManager.getBadgedLabelForUser(
+                            entry.title, cacheKey.user);
                 }
                 return true;
             }
