@@ -32,7 +32,7 @@
     <skip />
     <string name="announce_selection" msgid="123723511662250539">"තෝරාගත්තේ <xliff:g id="LABEL">%1$s</xliff:g>"</string>
     <string name="wallpaper_delete" msgid="1459353972739215344">"මකන්න"</string>
-    <string name="pick_image" msgid="6704438906027442697">"පින්තූරයක් තෝරන්න"</string>
+    <string name="pick_image" msgid="3189640419551368385">"මගේ ඡායාරූප"</string>
     <string name="pick_wallpaper" msgid="4628969645948454559">"වෝල්පේපර"</string>
     <string name="crop_wallpaper" msgid="4882870800623585836">"වෝල්පේපරය කප්පාදු කිරීම"</string>
 </resources>

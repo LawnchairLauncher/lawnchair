@@ -27,7 +27,6 @@ import java.util.WeakHashMap;
 // If a BasicTexture is loaded into GL memory, it has a GL texture id.
 public abstract class BasicTexture implements Texture {
 
-    @SuppressWarnings("unused")
     private static final String TAG = "BasicTexture";
     protected static final int UNSPECIFIED = -1;
 

@@ -21,6 +21,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.view.View;
 
+import com.android.launcher3.util.Thunk;
+
 /**
  * A convenience class for two-way animations, e.g. a fadeIn/fadeOut animation.
  * With a regular ValueAnimator, if you call reverse to show the 'out' animation, you'll get
@@ -43,7 +45,7 @@ public class InterruptibleInOutAnimator {
     private static final int OUT = 2;
 
     // TODO: This isn't really necessary, but is here to help diagnose a bug in the drag viz
-    private int mDirection = STOPPED;
+    @Thunk int mDirection = STOPPED;
 
     public InterruptibleInOutAnimator(View view, long duration, float fromValue, float toValue) {
         mAnimator = LauncherAnimUtils.ofFloat(view, fromValue, toValue).setDuration(duration);

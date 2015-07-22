@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
@@ -25,11 +26,16 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-import android.graphics.Region.Op;
+import android.graphics.drawable.Drawable;
+import android.util.SparseArray;
 
+/**
+ * Utility class to generate shadow and outline effect, which are used for click feedback
+ * and drag-n-drop respectively.
+ */
 public class HolographicOutlineHelper {
 
-    private static final Rect sTempRect = new Rect();
+    private static HolographicOutlineHelper sInstance;
 
     private final Canvas mCanvas = new Canvas();
     private final Paint mDrawPaint = new Paint();
@@ -40,26 +46,23 @@ public class HolographicOutlineHelper {
     private final BlurMaskFilter mThinOuterBlurMaskFilter;
     private final BlurMaskFilter mMediumInnerBlurMaskFilter;
 
-    private final BlurMaskFilter mShaowBlurMaskFilter;
-    private final int mShadowOffset;
+    private final BlurMaskFilter mShadowBlurMaskFilter;
 
-    /**
-     * Padding used when creating shadow bitmap;
-     */
-    final int shadowBitmapPadding;
-
-    static HolographicOutlineHelper INSTANCE;
+    // We have 4 different icon sizes: homescreen, hotseat, folder & all-apps
+    private final SparseArray<Bitmap> mBitmapCache = new SparseArray<>(4);
 
     private HolographicOutlineHelper(Context context) {
-        final float scale = LauncherAppState.getInstance().getScreenDensity();
+        Resources res = context.getResources();
 
-        mMediumOuterBlurMaskFilter = new BlurMaskFilter(scale * 2.0f, BlurMaskFilter.Blur.OUTER);
-        mThinOuterBlurMaskFilter = new BlurMaskFilter(scale * 1.0f, BlurMaskFilter.Blur.OUTER);
-        mMediumInnerBlurMaskFilter = new BlurMaskFilter(scale * 2.0f, BlurMaskFilter.Blur.NORMAL);
+        float mediumBlur = res.getDimension(R.dimen.blur_size_medium_outline);
+        mMediumOuterBlurMaskFilter = new BlurMaskFilter(mediumBlur, BlurMaskFilter.Blur.OUTER);
+        mMediumInnerBlurMaskFilter = new BlurMaskFilter(mediumBlur, BlurMaskFilter.Blur.NORMAL);
 
-        mShaowBlurMaskFilter = new BlurMaskFilter(scale * 4.0f, BlurMaskFilter.Blur.NORMAL);
-        mShadowOffset = (int) (scale * 2.0f);
-        shadowBitmapPadding = (int) (scale * 4.0f);
+        mThinOuterBlurMaskFilter = new BlurMaskFilter(
+                res.getDimension(R.dimen.blur_size_thin_outline), BlurMaskFilter.Blur.OUTER);
+
+        mShadowBlurMaskFilter = new BlurMaskFilter(
+                res.getDimension(R.dimen.blur_size_click_shadow), BlurMaskFilter.Blur.NORMAL);
 
         mDrawPaint.setFilterBitmap(true);
         mDrawPaint.setAntiAlias(true);
@@ -71,10 +74,10 @@ public class HolographicOutlineHelper {
     }
 
     public static HolographicOutlineHelper obtain(Context context) {
-        if (INSTANCE == null) {
-            INSTANCE = new HolographicOutlineHelper(context);
+        if (sInstance == null) {
+            sInstance = new HolographicOutlineHelper(context);
         }
-        return INSTANCE;
+        return sInstance;
     }
 
     /**
@@ -153,51 +156,34 @@ public class HolographicOutlineHelper {
     }
 
     Bitmap createMediumDropShadow(BubbleTextView view) {
-        final Bitmap result = Bitmap.createBitmap(
-                view.getWidth() + shadowBitmapPadding + shadowBitmapPadding,
-                view.getHeight() + shadowBitmapPadding + shadowBitmapPadding + mShadowOffset,
-                Bitmap.Config.ARGB_8888);
+        Drawable icon = view.getIcon();
+        if (icon == null) {
+            return null;
+        }
+        Rect rect = icon.getBounds();
 
-        mCanvas.setBitmap(result);
+        int bitmapWidth = (int) (rect.width() * view.getScaleX());
+        int bitmapHeight = (int) (rect.height() * view.getScaleY());
 
-        final Rect clipRect = sTempRect;
-        view.getDrawingRect(sTempRect);
-        // adjust the clip rect so that we don't include the text label
-        clipRect.bottom = view.getExtendedPaddingTop() - (int) BubbleTextView.PADDING_V
-                + view.getLayout().getLineTop(0);
+        int key = (bitmapWidth << 16) | bitmapHeight;
+        Bitmap cache = mBitmapCache.get(key);
+        if (cache == null) {
+            cache = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
+            mCanvas.setBitmap(cache);
+            mBitmapCache.put(key, cache);
+        } else {
+            mCanvas.setBitmap(cache);
+            mCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+        }
 
-        // Draw the View into the bitmap.
-        // The translate of scrollX and scrollY is necessary when drawing TextViews, because
-        // they set scrollX and scrollY to large values to achieve centered text
-        mCanvas.save();
-        mCanvas.scale(view.getScaleX(), view.getScaleY(),
-                view.getWidth() / 2 + shadowBitmapPadding,
-                view.getHeight() / 2 + shadowBitmapPadding);
-        mCanvas.translate(-view.getScrollX() + shadowBitmapPadding,
-                -view.getScrollY() + shadowBitmapPadding);
-        mCanvas.clipRect(clipRect, Op.REPLACE);
-        view.draw(mCanvas);
+        mCanvas.save(Canvas.MATRIX_SAVE_FLAG);
+        mCanvas.scale(view.getScaleX(), view.getScaleY());
+        mCanvas.translate(-rect.left, -rect.top);
+        icon.draw(mCanvas);
         mCanvas.restore();
-
-        int[] blurOffst = new int[2];
-        mBlurPaint.setMaskFilter(mShaowBlurMaskFilter);
-        Bitmap blurBitmap = result.extractAlpha(mBlurPaint, blurOffst);
-
-        mCanvas.save();
-        mCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-        mCanvas.translate(blurOffst[0], blurOffst[1]);
-
-        mDrawPaint.setColor(Color.BLACK);
-        mDrawPaint.setAlpha(30);
-        mCanvas.drawBitmap(blurBitmap, 0, 0, mDrawPaint);
-
-        mDrawPaint.setAlpha(60);
-        mCanvas.drawBitmap(blurBitmap, 0, mShadowOffset, mDrawPaint);
-        mCanvas.restore();
-
         mCanvas.setBitmap(null);
-        blurBitmap.recycle();
 
-        return result;
+        mBlurPaint.setMaskFilter(mShadowBlurMaskFilter);
+        return cache.extractAlpha(mBlurPaint, null);
     }
 }

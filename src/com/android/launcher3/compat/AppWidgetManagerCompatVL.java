@@ -38,6 +38,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.android.launcher3.IconCache;
+import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
 
 import java.util.ArrayList;
@@ -65,8 +66,8 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
     }
 
     @Override
-    public String loadLabel(AppWidgetProviderInfo info) {
-        return info.loadLabel(mPm);
+    public String loadLabel(LauncherAppWidgetProviderInfo info) {
+        return info.getLabel(mPm);
     }
 
     @Override
@@ -77,7 +78,10 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
     }
 
     @Override
-    public UserHandleCompat getUser(AppWidgetProviderInfo info) {
+    public UserHandleCompat getUser(LauncherAppWidgetProviderInfo info) {
+        if (info.isCustomWidget) {
+            return UserHandleCompat.myUserHandle();
+        }
         return UserHandleCompat.fromUser(info.getProfile());
     }
 
@@ -99,27 +103,28 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
     }
 
     @Override
-    public Drawable loadIcon(AppWidgetProviderInfo info, IconCache cache) {
-        return info.loadIcon(mContext, cache.getFullResIconDpi());
+    public Drawable loadIcon(LauncherAppWidgetProviderInfo info, IconCache cache) {
+        return info.getIcon(mContext, cache);
     }
 
     @Override
-    public Bitmap getBadgeBitmap(AppWidgetProviderInfo info, Bitmap bitmap) {
-        if (info.getProfile().equals(android.os.Process.myUserHandle())) {
+    public Bitmap getBadgeBitmap(LauncherAppWidgetProviderInfo info, Bitmap bitmap,
+            int imageHeight) {
+        if (info.isCustomWidget || info.getProfile().equals(android.os.Process.myUserHandle())) {
             return bitmap;
         }
 
         // Add a user badge in the bottom right of the image.
         final Resources res = mContext.getResources();
         final int badgeSize = res.getDimensionPixelSize(R.dimen.profile_badge_size);
-        final int badgeMargin = res.getDimensionPixelSize(R.dimen.profile_badge_margin);
+        final int badgeMinTop = res.getDimensionPixelSize(R.dimen.profile_badge_minimum_top);
         final Rect badgeLocation = new Rect(0, 0, badgeSize, badgeSize);
 
-        final int top = bitmap.getHeight() - badgeSize - badgeMargin;
+        final int top = Math.max(imageHeight - badgeSize, badgeMinTop);
         if (res.getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
-            badgeLocation.offset(badgeMargin, top);
+            badgeLocation.offset(0, top);
         } else {
-            badgeLocation.offset(bitmap.getWidth() - badgeSize - badgeMargin, top);
+            badgeLocation.offset(bitmap.getWidth() - badgeSize, top);
         }
 
         Drawable drawable = mPm.getUserBadgedDrawableForDensity(

@@ -24,6 +24,7 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -38,7 +39,8 @@ import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.android.launcher3.InsettableFrameLayout.LayoutParams;
+import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
+import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
 
@@ -46,30 +48,34 @@ import java.util.ArrayList;
  * A ViewGroup that coordinates dragging across its descendants
  */
 public class DragLayer extends InsettableFrameLayout {
-    private DragController mDragController;
-    private int[] mTmpXY = new int[2];
+
+    public static final int ANIMATION_END_DISAPPEAR = 0;
+    public static final int ANIMATION_END_REMAIN_VISIBLE = 2;
+
+    // Scrim color without any alpha component.
+    private static final int SCRIM_COLOR = Color.BLACK & 0x00FFFFFF;
+
+    private final int[] mTmpXY = new int[2];
+
+    @Thunk DragController mDragController;
 
     private int mXDown, mYDown;
     private Launcher mLauncher;
 
     // Variables relating to resizing widgets
-    private final ArrayList<AppWidgetResizeFrame> mResizeFrames =
-            new ArrayList<AppWidgetResizeFrame>();
+    private final ArrayList<AppWidgetResizeFrame> mResizeFrames = new ArrayList<>();
+    private final boolean mIsRtl;
     private AppWidgetResizeFrame mCurrentResizeFrame;
 
     // Variables relating to animation of views after drop
     private ValueAnimator mDropAnim = null;
-    private ValueAnimator mFadeOutAnim = null;
-    private TimeInterpolator mCubicEaseOutInterpolator = new DecelerateInterpolator(1.5f);
-    private DragView mDropView = null;
-    private int mAnchorViewInitialScrollX = 0;
-    private View mAnchorView = null;
+    private final TimeInterpolator mCubicEaseOutInterpolator = new DecelerateInterpolator(1.5f);
+    @Thunk DragView mDropView = null;
+    @Thunk int mAnchorViewInitialScrollX = 0;
+    @Thunk View mAnchorView = null;
 
     private boolean mHoverPointClosesFolder = false;
-    private Rect mHitRect = new Rect();
-    public static final int ANIMATION_END_DISAPPEAR = 0;
-    public static final int ANIMATION_END_FADE_OUT = 1;
-    public static final int ANIMATION_END_REMAIN_VISIBLE = 2;
+    private final Rect mHitRect = new Rect();
 
     private TouchCompleteListener mTouchCompleteListener;
 
@@ -78,10 +84,10 @@ public class DragLayer extends InsettableFrameLayout {
     private int mChildCountOnLastUpdate = -1;
 
     // Darkening scrim
-    private Drawable mBackground;
     private float mBackgroundAlpha = 0;
 
     // Related to adjacent page hints
+    private final Rect mScrollChildPosition = new Rect();
     private boolean mInScrollArea;
     private boolean mShowPageHints;
     private Drawable mLeftHoverDrawable;
@@ -109,7 +115,7 @@ public class DragLayer extends InsettableFrameLayout {
         mRightHoverDrawable = res.getDrawable(R.drawable.page_hover_right);
         mLeftHoverDrawableActive = res.getDrawable(R.drawable.page_hover_left_active);
         mRightHoverDrawableActive = res.getDrawable(R.drawable.page_hover_right_active);
-        mBackground = res.getDrawable(R.drawable.apps_customize_bg);
+        mIsRtl = Utilities.isRtl(res);
     }
 
     public void setup(Launcher launcher, DragController controller) {
@@ -152,6 +158,14 @@ public class DragLayer extends InsettableFrameLayout {
         return false;
     }
 
+    private boolean isEventOverDropTargetBar(MotionEvent ev) {
+        getDescendantRectRelativeToSelf(mLauncher.getSearchBar(), mHitRect);
+        if (mHitRect.contains((int) ev.getX(), (int) ev.getY())) {
+            return true;
+        }
+        return false;
+    }
+
     public void setBlockTouch(boolean block) {
         mBlockTouches = block;
     }
@@ -187,10 +201,16 @@ public class DragLayer extends InsettableFrameLayout {
                 }
             }
 
-            getDescendantRectRelativeToSelf(currentFolder, hitRect);
             if (!isEventOverFolder(currentFolder, ev)) {
-                mLauncher.closeFolder();
-                return true;
+                if (isInAccessibleDrag()) {
+                    // Do not close the folder if in drag and drop.
+                    if (!isEventOverDropTargetBar(ev)) {
+                        return true;
+                    }
+                } else {
+                    mLauncher.closeFolder();
+                    return true;
+                }
             }
         }
         return false;
@@ -227,11 +247,12 @@ public class DragLayer extends InsettableFrameLayout {
                         getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
             if (accessibilityManager.isTouchExplorationEnabled()) {
                 final int action = ev.getAction();
-                boolean isOverFolder;
+                boolean isOverFolderOrSearchBar;
                 switch (action) {
                     case MotionEvent.ACTION_HOVER_ENTER:
-                        isOverFolder = isEventOverFolder(currentFolder, ev);
-                        if (!isOverFolder) {
+                        isOverFolderOrSearchBar = isEventOverFolder(currentFolder, ev) ||
+                            (isInAccessibleDrag() && isEventOverDropTargetBar(ev));
+                        if (!isOverFolderOrSearchBar) {
                             sendTapOutsideFolderAccessibilityEvent(currentFolder.isEditingName());
                             mHoverPointClosesFolder = true;
                             return true;
@@ -239,12 +260,13 @@ public class DragLayer extends InsettableFrameLayout {
                         mHoverPointClosesFolder = false;
                         break;
                     case MotionEvent.ACTION_HOVER_MOVE:
-                        isOverFolder = isEventOverFolder(currentFolder, ev);
-                        if (!isOverFolder && !mHoverPointClosesFolder) {
+                        isOverFolderOrSearchBar = isEventOverFolder(currentFolder, ev) ||
+                            (isInAccessibleDrag() && isEventOverDropTargetBar(ev));
+                        if (!isOverFolderOrSearchBar && !mHoverPointClosesFolder) {
                             sendTapOutsideFolderAccessibilityEvent(currentFolder.isEditingName());
                             mHoverPointClosesFolder = true;
                             return true;
-                        } else if (!isOverFolder) {
+                        } else if (!isOverFolderOrSearchBar) {
                             return true;
                         }
                         mHoverPointClosesFolder = false;
@@ -267,11 +289,21 @@ public class DragLayer extends InsettableFrameLayout {
         }
     }
 
+    private boolean isInAccessibleDrag() {
+        LauncherAccessibilityDelegate delegate = LauncherAppState
+                .getInstance().getAccessibilityDelegate();
+        return delegate != null && delegate.isInAccessibleDrag();
+    }
+
     @Override
     public boolean onRequestSendAccessibilityEvent(View child, AccessibilityEvent event) {
         Folder currentFolder = mLauncher.getWorkspace().getOpenFolder();
         if (currentFolder != null) {
             if (child == currentFolder) {
+                return super.onRequestSendAccessibilityEvent(child, event);
+            }
+
+            if (isInAccessibleDrag() && child instanceof SearchDropTargetBar) {
                 return super.onRequestSendAccessibilityEvent(child, event);
             }
             // Skip propagating onRequestSendAccessibilityEvent all for other children
@@ -287,6 +319,10 @@ public class DragLayer extends InsettableFrameLayout {
         if (currentFolder != null) {
             // Only add the folder as a child for accessibility when it is open
             childrenForAccessibility.add(currentFolder);
+
+            if (isInAccessibleDrag()) {
+                childrenForAccessibility.add(mLauncher.getSearchBar());
+            }
         } else {
             super.addChildrenForAccessibility(childrenForAccessibility);
         }
@@ -656,8 +692,7 @@ public class DragLayer extends InsettableFrameLayout {
             final Runnable onCompleteRunnable, final int animationEndStyle, View anchorView) {
 
         // Calculate the duration of the animation based on the object's distance
-        final float dist = (float) Math.sqrt(Math.pow(to.left - from.left, 2) +
-                Math.pow(to.top - from.top, 2));
+        final float dist = (float) Math.hypot(to.left - from.left, to.top - from.top);
         final Resources res = getResources();
         final float maxDist = (float) res.getInteger(R.integer.config_dropAnimMaxDist);
 
@@ -725,7 +760,6 @@ public class DragLayer extends InsettableFrameLayout {
             final int animationEndStyle, View anchorView) {
         // Clean up the previous animations
         if (mDropAnim != null) mDropAnim.cancel();
-        if (mFadeOutAnim != null) mFadeOutAnim.cancel();
 
         // Show the drop view if it was previously hidden
         mDropView = view;
@@ -753,9 +787,6 @@ public class DragLayer extends InsettableFrameLayout {
                 case ANIMATION_END_DISAPPEAR:
                     clearAnimatedView();
                     break;
-                case ANIMATION_END_FADE_OUT:
-                    fadeOutDragView();
-                    break;
                 case ANIMATION_END_REMAIN_VISIBLE:
                     break;
                 }
@@ -777,31 +808,6 @@ public class DragLayer extends InsettableFrameLayout {
 
     public View getAnimatedView() {
         return mDropView;
-    }
-
-    private void fadeOutDragView() {
-        mFadeOutAnim = new ValueAnimator();
-        mFadeOutAnim.setDuration(150);
-        mFadeOutAnim.setFloatValues(0f, 1f);
-        mFadeOutAnim.removeAllUpdateListeners();
-        mFadeOutAnim.addUpdateListener(new AnimatorUpdateListener() {
-            public void onAnimationUpdate(ValueAnimator animation) {
-                final float percent = (Float) animation.getAnimatedValue();
-
-                float alpha = 1 - percent;
-                mDropView.setAlpha(alpha);
-            }
-        });
-        mFadeOutAnim.addListener(new AnimatorListenerAdapter() {
-            public void onAnimationEnd(Animator animation) {
-                if (mDropView != null) {
-                    mDragController.onDeferredEndDrag(mDropView);
-                }
-                mDropView = null;
-                invalidate();
-            }
-        });
-        mFadeOutAnim.start();
     }
 
     @Override
@@ -880,6 +886,9 @@ public class DragLayer extends InsettableFrameLayout {
 
     void showPageHints() {
         mShowPageHints = true;
+        Workspace workspace = mLauncher.getWorkspace();
+        getDescendantRectRelativeToSelf(workspace.getChildAt(workspace.numCustomPages()),
+                mScrollChildPosition);
         invalidate();
     }
 
@@ -888,21 +897,12 @@ public class DragLayer extends InsettableFrameLayout {
         invalidate();
     }
 
-    /**
-     * Note: this is a reimplementation of View.isLayoutRtl() since that is currently hidden api.
-     */
-    private boolean isLayoutRtl() {
-        return (getLayoutDirection() == LAYOUT_DIRECTION_RTL);
-    }
-
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        // Draw the background gradient below children.
-        if (mBackground != null && mBackgroundAlpha > 0.0f) {
+        // Draw the background below children.
+        if (mBackgroundAlpha > 0.0f) {
             int alpha = (int) (mBackgroundAlpha * 255);
-            mBackground.setAlpha(alpha);
-            mBackground.setBounds(0, 0, getMeasuredWidth(), getMeasuredHeight());
-            mBackground.draw(canvas);
+            canvas.drawColor((alpha << 24) | SCRIM_COLOR);
         }
 
         super.dispatchDraw(canvas);
@@ -912,27 +912,22 @@ public class DragLayer extends InsettableFrameLayout {
         if (mShowPageHints) {
             Workspace workspace = mLauncher.getWorkspace();
             int width = getMeasuredWidth();
-            Rect childRect = new Rect();
-            getDescendantRectRelativeToSelf(workspace.getChildAt(workspace.getChildCount() - 1),
-                    childRect);
-
             int page = workspace.getNextPage();
-            final boolean isRtl = isLayoutRtl();
-            CellLayout leftPage = (CellLayout) workspace.getChildAt(isRtl ? page + 1 : page - 1);
-            CellLayout rightPage = (CellLayout) workspace.getChildAt(isRtl ? page - 1 : page + 1);
+            CellLayout leftPage = (CellLayout) workspace.getChildAt(mIsRtl ? page + 1 : page - 1);
+            CellLayout rightPage = (CellLayout) workspace.getChildAt(mIsRtl ? page - 1 : page + 1);
 
             if (leftPage != null && leftPage.isDragTarget()) {
                 Drawable left = mInScrollArea && leftPage.getIsDragOverlapping() ?
                         mLeftHoverDrawableActive : mLeftHoverDrawable;
-                left.setBounds(0, childRect.top,
-                        left.getIntrinsicWidth(), childRect.bottom);
+                left.setBounds(0, mScrollChildPosition.top,
+                        left.getIntrinsicWidth(), mScrollChildPosition.bottom);
                 left.draw(canvas);
             }
             if (rightPage != null && rightPage.isDragTarget()) {
                 Drawable right = mInScrollArea && rightPage.getIsDragOverlapping() ?
                         mRightHoverDrawableActive : mRightHoverDrawable;
                 right.setBounds(width - right.getIntrinsicWidth(),
-                        childRect.top, width, childRect.bottom);
+                        mScrollChildPosition.top, width, mScrollChildPosition.bottom);
                 right.draw(canvas);
             }
         }

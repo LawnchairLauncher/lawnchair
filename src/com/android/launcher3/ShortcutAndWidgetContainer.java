@@ -23,6 +23,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 
 public class ShortcutAndWidgetContainer extends ViewGroup {
     static final String TAG = "CellLayoutChildren";
@@ -44,10 +45,13 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
     private int mCountX;
     private int mCountY;
 
+    private Launcher mLauncher;
+
     private boolean mInvertIfRtl = false;
 
     public ShortcutAndWidgetContainer(Context context) {
         super(context);
+        mLauncher = (Launcher) context;
         mWallpaperManager = WallpaperManager.getInstance(context);
     }
 
@@ -124,22 +128,19 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
     }
 
     int getCellContentWidth() {
-        final LauncherAppState app = LauncherAppState.getInstance();
-        final DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        final DeviceProfile grid = mLauncher.getDeviceProfile();
         return Math.min(getMeasuredHeight(), mIsHotseatLayout ?
                 grid.hotseatCellWidthPx: grid.cellWidthPx);
     }
 
     int getCellContentHeight() {
-        final LauncherAppState app = LauncherAppState.getInstance();
-        final DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        final DeviceProfile grid = mLauncher.getDeviceProfile();
         return Math.min(getMeasuredHeight(), mIsHotseatLayout ?
                 grid.hotseatCellHeightPx : grid.cellHeightPx);
     }
 
     public void measureChild(View child) {
-        final LauncherAppState app = LauncherAppState.getInstance();
-        final DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+        final DeviceProfile grid = mLauncher.getDeviceProfile();
         final int cellWidth = mCellWidth;
         final int cellHeight = mCellHeight;
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
@@ -168,12 +169,8 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
         child.measure(childWidthMeasureSpec, childheightMeasureSpec);
     }
 
-    private boolean invertLayoutHorizontally() {
-        return mInvertIfRtl && isLayoutRtl();
-    }
-
-    public boolean isLayoutRtl() {
-        return (getLayoutDirection() == LAYOUT_DIRECTION_RTL);
+    public boolean invertLayoutHorizontally() {
+        return mInvertIfRtl && Utilities.isRtl(getResources());
     }
 
     @Override

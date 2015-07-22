@@ -20,57 +20,27 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
-    <string name="home" msgid="7658288663002113681">"Accueil"</string>
-    <string name="uid_name" msgid="7820867637514617527">"Applications de base Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
+    <string name="work_folder_name" msgid="3753320833950115786">"Android Work"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"L\'application n\'est pas installée."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Application indisponible"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"L\'application téléchargée est désactivée en mode sécurisé."</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Les widgets sont désactivés en mode sécurisé."</string>
-    <string name="widgets_tab_label" msgid="2921133187116603919">"Widgets"</string>
-    <string name="widget_adder" msgid="3201040140710381657">"Widgets"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Afficher la mémoire"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"App. de manière prolongée pour sélectionner widget."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d x %2$d"</string>
-    <string name="external_drop_widget_error" msgid="3165821058322217155">"Impossible de déposer élément sur écran d\'accueil."</string>
-    <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"Sélectionner le widget à créer"</string>
-    <string name="rename_folder_label" msgid="3727762225964550653">"Nom du dossier"</string>
-    <string name="rename_folder_title" msgid="3771389277707820891">"Renommer le dossier"</string>
-    <string name="rename_action" msgid="5559600076028658757">"OK"</string>
-    <string name="cancel_action" msgid="7009134900002915310">"Annuler"</string>
-    <string name="menu_item_add_item" msgid="1264911265836810421">"Ajouter à l\'écran d\'accueil"</string>
-    <string name="group_applications" msgid="3797214114206693605">"Applications"</string>
-    <string name="group_shortcuts" msgid="6012256992764410535">"Raccourcis"</string>
-    <string name="group_widgets" msgid="1569030723286851002">"Widgets"</string>
-    <string name="completely_out_of_space" msgid="6106288382070760318">"Vous n\'avez plus d\'espace libre sur vos écrans d\'accueil."</string>
+    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Rechercher dans les applications"</string>
+    <string name="all_apps_loading_message" msgid="7557140873644765180">"Chargement des applications en cours…"</string>
+    <string name="all_apps_no_search_results" msgid="6332185285860416787">"Aucune application ne correspond à la requête \"<xliff:g id="QUERY">%1$s</xliff:g>\"."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Pas d\'espace libre sur cet écran d\'accueil."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Plus d\'espace disponible dans la zone de favoris."</string>
-    <string name="invalid_hotseat_item" msgid="5779907847267573691">"Ce widget est trop volumineux pour la zone de favoris."</string>
-    <string name="shortcut_installed" msgid="1701742129426969556">"Le raccourci \"<xliff:g id="NAME">%s</xliff:g>\" a été créé."</string>
-    <string name="shortcut_uninstalled" msgid="8176767991305701821">"Le raccourci \"<xliff:g id="NAME">%s</xliff:g>\" a été supprimé."</string>
-    <string name="shortcut_duplicate" msgid="9167217446062498127">"Le raccourci \"<xliff:g id="NAME">%s</xliff:g>\" existe déjà."</string>
-    <string name="title_select_shortcut" msgid="6680642571148153868">"Sélectionner un raccourci"</string>
-    <string name="title_select_application" msgid="3280812711670683644">"Sélectionner une application"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Applications"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Accueil"</string>
-    <string name="delete_zone_label_workspace" msgid="4009607676751398685">"Supprimer"</string>
-    <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"Désinstaller"</string>
     <string name="delete_target_label" msgid="1822697352535677073">"Supprimer"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"Désinstaller"</string>
     <string name="info_target_label" msgid="8053346143994679532">"Informations sur l\'application"</string>
-    <string name="accessibility_all_apps_button" msgid="2603132375383800483">"Applications"</string>
-    <string name="accessibility_delete_button" msgid="6466114477993744621">"Supprimer"</string>
-    <string name="delete_zone_label_all_apps_system_app" msgid="449755632749610895">"Désinstaller la mise à jour"</string>
-    <string name="cab_menu_delete_app" msgid="7435191475867183689">"Désinstaller l\'application"</string>
-    <string name="cab_menu_app_info" msgid="8593722221450362342">"Informations sur l\'application"</string>
-    <string name="cab_app_selection_text" msgid="374688303047985416">"1 application sélectionnée"</string>
-    <string name="cab_widget_selection_text" msgid="1833458597831541241">"1 widget sélectionné"</string>
-    <string name="cab_folder_selection_text" msgid="7999992513806132118">"1 dossier sélectionné"</string>
-    <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"1 raccourci sélectionné"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"installer des raccourcis"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Permettre à une application d\'ajouter des raccourcis sans l\'intervention de l\'utilisateur"</string>
-    <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"désinstaller des raccourcis"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="5134129545001836849">"Permettre à l\'application de supprimer des raccourcis sans l\'intervention de l\'utilisateur"</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"lire les paramètres et les raccourcis de l\'écran d\'accueil"</string>
     <string name="permdesc_read_settings" msgid="5833423719057558387">"Permettre à l\'application de lire les paramètres et les raccourcis de l\'écran d\'accueil"</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"modifier les paramètres et les raccourcis de l\'écran d\'accueil"</string>
@@ -78,30 +48,17 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"Problème lors du chargement du widget."</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"Configuration"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Impossible de désinstaller cette application, car il s\'agit d\'une application système."</string>
-    <string name="dream_name" msgid="1530253749244328964">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Dossier sans nom"</string>
-    <string name="workspace_description_format" msgid="2950174241104043327">"Écran d\'accueil %1$d"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Page %1$d sur %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Écran d\'accueil %1$d sur %2$d"</string>
-    <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"Page des applications %1$d sur %2$d"</string>
-    <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"Page des widgets %1$d sur %2$d"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"Bienvenue"</string>
-    <string name="first_run_cling_description" msgid="6447072552696253358">"Familiarisez-vous avec l\'écran d\'accueil."</string>
-    <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
-    <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
-    <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Créez des écrans personnalisés pour vos applis et dossiers"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"Copier les icônes de vos applis"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"Importer les icônes et dossiers des anciens écrans d\'accueil ?"</string>
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"COPIER LES ICÔNES"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"DISPOSITION PAR DÉFAUT"</string>
-    <string name="workspace_cling_title" msgid="5626202359865825661">"Organisez votre espace"</string>
-    <string name="workspace_cling_move_item" msgid="528201129978005352">"Appuyez de manière prolongée sur l\'arrière-plan pour gérer les fonds d\'écran, les widgets et les paramètres."</string>
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Fonds d\'écran, widgets et paramètres"</string>
     <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Appuyez de manière prolongée sur l\'arrière-plan pour le personnaliser."</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"OK"</string>
-    <string name="folder_cling_title" msgid="3894908818693254164">"Voici un dossier"</string>
-    <string name="folder_cling_create_folder" msgid="6158215559475836131">"Pour en créer un, appuyez de manière prolongée sur une application, puis déplacez-la vers une autre."</string>
-    <string name="cling_dismiss" msgid="8962359497601507581">"OK"</string>
     <string name="folder_opened" msgid="94695026776264709">"Dossier ouvert, <xliff:g id="WIDTH">%1$d</xliff:g> par <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1884479294466410023">"Appuyez pour fermer le dossier."</string>
     <string name="folder_tap_to_rename" msgid="9191075570492871147">"Appuyez pour enregistrer le nouveau nom."</string>
@@ -111,14 +68,34 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Widgets"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Fonds d\'écran"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"Paramètres"</string>
-    <string name="package_state_enqueued" msgid="6227252464303085641">"En attente"</string>
-    <string name="package_state_downloading" msgid="4088770468458724721">"Téléchargement…"</string>
-    <string name="package_state_installing" msgid="7588193972189849870">"Installation…"</string>
+    <string name="allow_rotation_title" msgid="2118706734511831751">"Autoriser la rotation"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Inconnu"</string>
-    <string name="package_state_error" msgid="7672093962724223588">"Non restauré"</string>
-    <string name="abandoned_clean_all" msgid="5256770727689657618">"Tout supprimer"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Supprimer"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Rechercher"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Cette application n\'est pas installée"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"L\'application correspondant à cette icône n\'est pas installée. Vous pouvez supprimer cette dernière, ou essayer de rechercher l\'application et de l\'installer manuellement."</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"Ajouter à l\'écran d\'accueil"</string>
+    <string name="action_move_here" msgid="2170188780612570250">"Déplacer l\'élément ici"</string>
+    <string name="item_added_to_workspace" msgid="4211073925752213539">"L\'élément a bien été ajouté à l\'écran d\'accueil."</string>
+    <string name="item_removed" msgid="851119963877842327">"L\'élément a bien été supprimé."</string>
+    <string name="action_move" msgid="4339390619886385032">"Déplacer l\'élément"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"Déplacer vers la ligne <xliff:g id="NUMBER_0">%1$s</xliff:g>, colonne <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="move_to_position" msgid="6750008980455459790">"Déplacer vers la position <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
+    <string name="move_to_hotseat_position" msgid="6295412897075147808">"Déplacer vers la position <xliff:g id="NUMBER">%1$s</xliff:g> dans les favoris"</string>
+    <string name="item_moved" msgid="4606538322571412879">"Élément déplacé"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"Ajouter au dossier \"<xliff:g id="NAME">%1$s</xliff:g>\""</string>
+    <string name="add_to_folder_with_app" msgid="4534929978967147231">"Ajouter au dossier contenant \"<xliff:g id="NAME">%1$s</xliff:g>\""</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"Élément ajouté au dossier"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"Créer un dossier avec \"<xliff:g id="NAME">%1$s</xliff:g>\""</string>
+    <string name="folder_created" msgid="6409794597405184510">"Dossier créé"</string>
+    <string name="action_move_to_workspace" msgid="1603837886334246317">"Déplacer vers l\'écran d\'accueil"</string>
+    <string name="action_move_screen_left" msgid="8854216831569401665">"Déplacer l\'écran vers la gauche"</string>
+    <string name="action_move_screen_right" msgid="329334910274311123">"Déplacer l\'écran vers la droite"</string>
+    <string name="screen_moved" msgid="266230079505650577">"L\'écran a bien été déplacé."</string>
+    <string name="action_resize" msgid="1802976324781771067">"Redimensionner"</string>
+    <string name="action_increase_width" msgid="8773715375078513326">"Augmenter la largeur"</string>
+    <string name="action_increase_height" msgid="459390020612501122">"Augmenter la hauteur"</string>
+    <string name="action_decrease_width" msgid="1374549771083094654">"Diminuer la largeur"</string>
+    <string name="action_decrease_height" msgid="282377193880900022">"Diminuer la hauteur"</string>
+    <string name="widget_resized" msgid="9130327887929620">"Le widget a bien été redimensionné (largeur : <xliff:g id="NUMBER_0">%1$s</xliff:g>, hauteur : <xliff:g id="NUMBER_1">%2$s</xliff:g>)."</string>
 </resources>

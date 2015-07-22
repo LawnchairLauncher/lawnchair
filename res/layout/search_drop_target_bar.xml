@@ -17,8 +17,7 @@
 <com.android.launcher3.SearchDropTargetBar xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:focusable="false"
-    android:orientation="horizontal" >
+    android:focusable="false" >
 
     <!-- Drag specific targets container -->
 
@@ -37,8 +36,7 @@
             <com.android.launcher3.DeleteDropTarget
                 android:id="@+id/delete_target_text"
                 style="@style/DropTargetButton"
-                android:drawableStart="@drawable/remove_target_selector"
-                android:text="@string/delete_zone_label_workspace" />
+                android:text="@string/delete_target_label" />
         </FrameLayout>
 
         <FrameLayout
@@ -50,8 +48,19 @@
             <com.android.launcher3.InfoDropTarget
                 android:id="@+id/info_target_text"
                 style="@style/DropTargetButton"
-                android:drawableStart="@drawable/info_target_selector"
                 android:text="@string/info_target_label" />
+        </FrameLayout>
+
+        <FrameLayout
+            style="@style/DropTargetButtonContainer"
+            android:layout_weight="1" >
+
+            <!-- Uninstall target -->
+
+            <com.android.launcher3.UninstallDropTarget
+                android:id="@+id/uninstall_target_text"
+                style="@style/DropTargetButton"
+                android:text="@string/delete_target_uninstall_label" />
         </FrameLayout>
     </LinearLayout>
 

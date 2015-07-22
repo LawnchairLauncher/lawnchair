@@ -23,7 +23,8 @@ import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.View;
-import android.view.ViewParent;
+
+import com.android.launcher3.util.Thunk;
 
 public class FocusIndicatorView extends View implements View.OnFocusChangeListener {
 
@@ -31,9 +32,6 @@ public class FocusIndicatorView extends View implements View.OnFocusChangeListen
     static final int DEFAULT_LAYOUT_SIZE = 100;
     private static final float MIN_VISIBLE_ALPHA = 0.2f;
     private static final long ANIM_DURATION = 150;
-
-    private static final int[] sTempPos = new int[2];
-    private static final int[] sTempShift = new int[2];
 
     private final int[] mIndicatorPos = new int[2];
     private final int[] mTargetViewPos = new int[2];
@@ -80,7 +78,8 @@ public class FocusIndicatorView extends View implements View.OnFocusChangeListen
         }
 
         if (!mInitiated) {
-            getLocationRelativeToParentPagedView(this, mIndicatorPos);
+            // The parent view should always the a parent of the target view.
+            computeLocationRelativeToParent(this, (View) getParent(), mIndicatorPos);
             mInitiated = true;
         }
 
@@ -93,7 +92,7 @@ public class FocusIndicatorView extends View implements View.OnFocusChangeListen
             nextState.scaleX = v.getScaleX() * v.getWidth() / indicatorWidth;
             nextState.scaleY = v.getScaleY() * v.getHeight() / indicatorHeight;
 
-            getLocationRelativeToParentPagedView(v, mTargetViewPos);
+            computeLocationRelativeToParent(v, (View) getParent(), mTargetViewPos);
             nextState.x = mTargetViewPos[0] - mIndicatorPos[0] - (1 - nextState.scaleX) * indicatorWidth / 2;
             nextState.y = mTargetViewPos[1] - mIndicatorPos[1] - (1 - nextState.scaleY) * indicatorHeight / 2;
 
@@ -150,31 +149,36 @@ public class FocusIndicatorView extends View implements View.OnFocusChangeListen
     }
 
     /**
-     * Gets the location of a view relative in the window, off-setting any shift due to
-     * page view scroll
+     * Computes the location of a view relative to {@param parent}, off-setting
+     * any shift due to page view scroll.
+     * @param pos an array of two integers in which to hold the coordinates
      */
-    private static void getLocationRelativeToParentPagedView(View v, int[] pos) {
-        getPagedViewScrollShift(v, sTempShift);
-        v.getLocationInWindow(sTempPos);
-        pos[0] = sTempPos[0] + sTempShift[0];
-        pos[1] = sTempPos[1] + sTempShift[1];
+    private static void computeLocationRelativeToParent(View v, View parent, int[] pos) {
+        pos[0] = pos[1] = 0;
+        computeLocationRelativeToParentHelper(v, parent, pos);
+
+        // If a view is scaled, its position will also shift accordingly. For optimization, only
+        // consider this for the last node.
+        pos[0] += (1 - v.getScaleX()) * v.getWidth() / 2;
+        pos[1] += (1 - v.getScaleY()) * v.getHeight() / 2;
     }
 
-    private static void getPagedViewScrollShift(View child, int[] shift) {
-        ViewParent parent = child.getParent();
+    private static void computeLocationRelativeToParentHelper(View child,
+            View commonParent, int[] shift) {
+        View parent = (View) child.getParent();
+        shift[0] += child.getLeft();
+        shift[1] += child.getTop();
         if (parent instanceof PagedView) {
-            View parentView = (View) parent;
-            child.getLocationInWindow(sTempPos);
-            shift[0] = parentView.getPaddingLeft() - sTempPos[0];
-            shift[1] = -(int) child.getTranslationY();
-        } else if (parent instanceof View) {
-            getPagedViewScrollShift((View) parent, shift);
-        } else {
-            shift[0] = shift[1] = 0;
+            PagedView page = (PagedView) parent;
+            shift[0] -= page.getScrollForPage(page.indexOfChild(child));
+        }
+
+        if (parent != commonParent) {
+            computeLocationRelativeToParentHelper(parent, commonParent, shift);
         }
     }
 
-    private static final class ViewAnimState {
+    @Thunk static final class ViewAnimState {
         float x, y, scaleX, scaleY;
     }
 }

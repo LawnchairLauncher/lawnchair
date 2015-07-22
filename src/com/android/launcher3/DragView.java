@@ -16,25 +16,35 @@
 
 package com.android.launcher3;
 
+import android.animation.FloatArrayEvaluator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.annotation.TargetApi;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
+import android.os.Build;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
+import com.android.launcher3.util.Thunk;
+
+import java.util.Arrays;
+
 public class DragView extends View {
-    private static float sDragAlpha = 1f;
+    public static int COLOR_CHANGE_DURATION = 120;
+
+    @Thunk static float sDragAlpha = 1f;
 
     private Bitmap mBitmap;
     private Bitmap mCrossFadeBitmap;
-    private Paint mPaint;
+    @Thunk Paint mPaint;
     private int mRegistrationX;
     private int mRegistrationY;
 
@@ -42,15 +52,18 @@ public class DragView extends View {
     private Rect mDragRegion = null;
     private DragLayer mDragLayer = null;
     private boolean mHasDrawn = false;
-    private float mCrossFadeProgress = 0f;
+    @Thunk float mCrossFadeProgress = 0f;
 
     ValueAnimator mAnim;
-    private float mOffsetX = 0.0f;
-    private float mOffsetY = 0.0f;
+    @Thunk float mOffsetX = 0.0f;
+    @Thunk float mOffsetY = 0.0f;
     private float mInitialScale = 1f;
     // The intrinsic icon scale factor is the scale factor for a drag icon over the workspace
     // size.  This is ignored for non-icons.
     private float mIntrinsicIconScale = 1f;
+
+    @Thunk float[] mCurrentFilter;
+    private ValueAnimator mFilterAnimator;
 
     /**
      * Construct the drag view.
@@ -63,6 +76,7 @@ public class DragView extends View {
      * @param registrationX The x coordinate of the registration point.
      * @param registrationY The y coordinate of the registration point.
      */
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public DragView(Launcher launcher, Bitmap bitmap, int registrationX, int registrationY,
             int left, int top, int width, int height, final float initialScale) {
         super(launcher);
@@ -70,8 +84,6 @@ public class DragView extends View {
         mInitialScale = initialScale;
 
         final Resources res = getResources();
-        final float offsetX = res.getDimensionPixelSize(R.dimen.dragViewOffsetX);
-        final float offsetY = res.getDimensionPixelSize(R.dimen.dragViewOffsetY);
         final float scaleDps = res.getDimensionPixelSize(R.dimen.dragViewScale);
         final float scale = (width + scaleDps) / width;
 
@@ -87,8 +99,8 @@ public class DragView extends View {
             public void onAnimationUpdate(ValueAnimator animation) {
                 final float value = (Float) animation.getAnimatedValue();
 
-                final int deltaX = (int) ((value * offsetX) - mOffsetX);
-                final int deltaY = (int) ((value * offsetY) - mOffsetY);
+                final int deltaX = (int) (-mOffsetX);
+                final int deltaY = (int) (-mOffsetY);
 
                 mOffsetX += deltaX;
                 mOffsetY += deltaY;
@@ -118,6 +130,10 @@ public class DragView extends View {
         int ms = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         measure(ms, ms);
         mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
+
+        if (Utilities.isLmpOrAbove()) {
+            setElevation(getResources().getDimension(R.dimen.drag_elevation));
+        }
     }
 
     /** Sets the scale of the view over the normal workspace icon size. */
@@ -229,11 +245,49 @@ public class DragView extends View {
             mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
         }
         if (color != 0) {
-            mPaint.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP));
+            ColorMatrix m1 = new ColorMatrix();
+            m1.setSaturation(0);
+
+            ColorMatrix m2 = new ColorMatrix();
+            setColorScale(color, m2);
+            m1.postConcat(m2);
+
+            if (Utilities.isLmpOrAbove()) {
+                animateFilterTo(m1.getArray());
+            } else {
+                mPaint.setColorFilter(new ColorMatrixColorFilter(m1));
+                invalidate();
+            }
         } else {
-            mPaint.setColorFilter(null);
+            if (!Utilities.isLmpOrAbove() || mCurrentFilter == null) {
+                mPaint.setColorFilter(null);
+                invalidate();
+            } else {
+                animateFilterTo(new ColorMatrix().getArray());
+            }
         }
-        invalidate();
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void animateFilterTo(float[] targetFilter) {
+        float[] oldFilter = mCurrentFilter == null ? new ColorMatrix().getArray() : mCurrentFilter;
+        mCurrentFilter = Arrays.copyOf(oldFilter, oldFilter.length);
+
+        if (mFilterAnimator != null) {
+            mFilterAnimator.cancel();
+        }
+        mFilterAnimator = ValueAnimator.ofObject(new FloatArrayEvaluator(mCurrentFilter),
+                oldFilter, targetFilter);
+        mFilterAnimator.setDuration(COLOR_CHANGE_DURATION);
+        mFilterAnimator.addUpdateListener(new AnimatorUpdateListener() {
+
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mPaint.setColorFilter(new ColorMatrixColorFilter(mCurrentFilter));
+                invalidate();
+            }
+        });
+        mFilterAnimator.start();
     }
 
     public boolean hasDrawn() {
@@ -300,5 +354,9 @@ public class DragView extends View {
             mDragLayer.removeView(DragView.this);
         }
     }
-}
 
+    public static void setColorScale(int color, ColorMatrix target) {
+        target.setScale(Color.red(color) / 255f, Color.green(color) / 255f,
+                Color.blue(color) / 255f, Color.alpha(color) / 255f);
+    }
+}

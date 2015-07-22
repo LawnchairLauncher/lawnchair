@@ -18,7 +18,7 @@
 -->
 
 <resources>
-    <style name="Theme" parent="android:Theme.Holo.Wallpaper.NoTitleBar">
+    <style name="Theme" parent="@android:style/Theme.DeviceDefault.Wallpaper.NoTitleBar">
         <item name="android:windowActionModeOverlay">true</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
