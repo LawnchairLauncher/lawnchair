@@ -7,10 +7,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import com.android.launcher3.allapps.AllAppsSearchBarController;
+import com.android.launcher3.util.ComponentKey;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * LauncherCallbacks is an interface used to extend the Launcher activity. It includes many hooks
@@ -37,11 +40,14 @@ public interface LauncherCallbacks {
     public void onPostCreate(Bundle savedInstanceState);
     public void onNewIntent(Intent intent);
     public void onActivityResult(int requestCode, int resultCode, Intent data);
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            int[] grantResults);
     public void onWindowFocusChanged(boolean hasFocus);
     public boolean onPrepareOptionsMenu(Menu menu);
     public void dump(String prefix, FileDescriptor fd, PrintWriter w, String[] args);
     public void onHomeIntent();
     public boolean handleBackPressed();
+    public void onTrimMemory(int level);
 
     /*
      * Extension points for providing custom behavior on certain user interactions.
@@ -52,6 +58,7 @@ public interface LauncherCallbacks {
     public void bindAllApplications(ArrayList<AppInfo> apps);
     public void onClickFolderIcon(View v);
     public void onClickAppShortcut(View v);
+    @Deprecated
     public void onClickPagedViewIcon(View v);
     public void onClickWallpaperPicker(View v);
     public void onClickSettingsButton(View v);
@@ -65,10 +72,12 @@ public interface LauncherCallbacks {
     /*
      * Extension points for replacing the search experience
      */
+    @Deprecated
     public boolean forceDisableVoiceButtonProxy();
     public boolean providesSearch();
     public boolean startSearch(String initialQuery, boolean selectInitialQuery,
             Bundle appSearchData, Rect sourceBounds);
+    @Deprecated
     public void startVoice();
     public boolean hasCustomContentToLeft();
     public void populateCustomContentContainer();
@@ -83,9 +92,12 @@ public interface LauncherCallbacks {
     public View getIntroScreen();
     public boolean shouldMoveToDefaultScreenOnHomeIntent();
     public boolean hasSettings();
+    @Deprecated
     public ComponentName getWallpaperPickerComponent();
     public boolean overrideWallpaperDimensions();
     public boolean isLauncherPreinstalled();
+    public AllAppsSearchBarController getAllAppsSearchBarController();
+    public List<ComponentKey> getPredictedApps();
 
     /**
      * Returning true will immediately result in a call to {@link #setLauncherOverlayView(ViewGroup,
@@ -105,4 +117,11 @@ public interface LauncherCallbacks {
     public Launcher.LauncherOverlay setLauncherOverlayView(InsettableFrameLayout container,
             Launcher.LauncherOverlayCallbacks callbacks);
 
+    /**
+     * Sets the callbacks to allow reacting the actions of search overlays of the launcher.
+     *
+     * @param callbacks A set of callbacks to the Launcher, is actually a LauncherSearchCallback,
+     *                  but for implementation purposes is passed around as an object.
+     */
+    public void setLauncherSearchCallback(Object callbacks);
 }

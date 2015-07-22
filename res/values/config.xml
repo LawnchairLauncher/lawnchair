@@ -1,8 +1,5 @@
 <resources>
 <!-- Dynamic Grid -->
-    <integer name="config_dynamic_grid_max_long_edge_cell_count">6</integer>
-    <integer name="config_dynamic_grid_max_short_edge_cell_count">5</integer>
-    <integer name="config_dynamic_grid_min_edge_cell_count">3</integer>
     <!-- Out of 100, the percent of space the overview bar should try and take vertically. -->
     <integer name="config_dynamic_grid_overview_icon_zone_percentage">20</integer>
     <!-- Out of 100, the percent to shrink the workspace during overview mode. -->
@@ -23,28 +20,22 @@
 
 <!-- DragController -->
     <integer name="config_flingToDeleteMinVelocity">-1500</integer>
+    <item type="id" name="drag_event_parity" />
 
-<!-- AllApps/Customize/AppsCustomize -->
+<!-- AllApps & Launcher transitions -->
     <!-- The alpha of the AppsCustomize bg in spring loaded mode -->
     <integer name="config_workspaceScrimAlpha">55</integer>
-    <integer name="config_workspaceUnshrinkTime">300</integer>
+    <integer name="config_allAppsTransitionTime">100</integer>
     <integer name="config_overviewTransitionTime">250</integer>
 
     <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
     <integer name="config_workspaceSpringLoadShrinkPercentage">80</integer>
 
-    <!-- Fade/zoom in/out duration & scale in the AllApps transition.
-         Note: This should be less than the workspaceShrinkTime as they happen together. -->
-    <integer name="config_appsCustomizeRevealTime">220</integer>
-    <integer name="config_appsCustomizeZoomInTime">350</integer>
-    <integer name="config_appsCustomizeZoomOutTime">600</integer>
-    <integer name="config_appsCustomizeZoomScaleFactor">7</integer>
-    <integer name="config_appsCustomizeFadeInTime">250</integer>
-    <integer name="config_appsCustomizeFadeOutTime">200</integer>
-    <integer name="config_appsCustomizeWorkspaceShrinkTime">300</integer>
-
-    <integer name="config_appsCustomizeConcealTime">250</integer>
-    <integer name="config_appsCustomizeItemsAlphaStagger">60</integer>
+    <!-- Fade/zoom in/out duration & scale in a Launcher overlay transition.
+         Note: This should be less than the config_overlayTransitionTime as they happen together. -->
+    <integer name="config_overlayRevealTime">220</integer>
+    <integer name="config_overlayTransitionTime">300</integer>
+    <integer name="config_overlayItemsAlphaStagger">60</integer>
 
     <!-- This constant stores the ratio of the all apps button drawable which
          is used for internal (baked-in) padding -->
@@ -52,20 +43,7 @@
 
     <integer name="config_workspaceDefaultScreen">0</integer>
 
-    <!-- Tab transition animation duration -->
-    <integer name="config_tabTransitionDuration">250</integer>
-
-    <!-- The slope, in percent, of the drag movement needed to drag an item out of
-         AppsCustomize (y / x * 100%)  -->
-    <integer name="config_appsCustomizeDragSlopeThreshold">150</integer>
-
 <!-- Workspace -->
-    <!-- Whether or not the drop targets drop down as opposed to fade in -->
-    <bool name="config_useDropTargetDownTransition">false</bool>
-
-    <!-- The transition duration for the background of the drop targets -->
-    <integer name="config_dropTargetBgTransitionDuration">0</integer>
-
     <!-- The duration (in ms) of the fade animation on the object outlines, used when
          we are dragging objects around on the home screen. -->
     <integer name="config_dragOutlineFadeTime">900</integer>
@@ -86,13 +64,6 @@
     <!-- The distance at which the animation should take the max duration -->
     <integer name="config_dropAnimMaxDist">800</integer>
 
-    <!-- Properties controlling the workspace fade-out during dragging -->
-    <integer name="config_dragFadeOutAlpha">80</integer>
-    <integer name="config_dragFadeOutDuration">250</integer>
-
-    <!-- Camera distance for the overscroll effect -->
-    <integer name="config_cameraDistance">8000</integer>
-
 <!-- Hotseat -->
     <bool name="hotseat_transpose_layout_with_orientation">true</bool>
 
@@ -106,4 +77,15 @@
     <!-- Name of a subclass of com.android.launcher3.BuildInfo used to
          get build information. Can be empty. -->
     <string name="build_info_class" translatable="false"></string>
+
+<!-- Accessibility actions -->
+    <item type="id" name="action_remove" />
+    <item type="id" name="action_uninstall" />
+    <item type="id" name="action_info" />
+    <item type="id" name="action_add_to_workspace" />
+    <item type="id" name="action_move" />
+    <item type="id" name="action_move_to_workspace" />
+    <item type="id" name="action_move_screen_backwards" />
+    <item type="id" name="action_move_screen_forwards" />
+    <item type="id" name="action_resize" />
 </resources>

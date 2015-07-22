@@ -47,8 +47,6 @@ public class Partner {
     public static final String RES_REQUIRE_FIRST_RUN_FLOW = "requires_first_run_flow";
 
     /** These resources are used to override the device profile  */
-    public static final String RES_GRID_AA_SHORT_EDGE_COUNT = "grid_aa_short_edge_count";
-    public static final String RES_GRID_AA_LONG_EDGE_COUNT = "grid_aa_long_edge_count";
     public static final String RES_GRID_NUM_ROWS = "grid_num_rows";
     public static final String RES_GRID_NUM_COLUMNS = "grid_num_columns";
     public static final String RES_GRID_ICON_SIZE_DP = "grid_icon_size_dp";
@@ -116,56 +114,42 @@ public class Partner {
         return resId != 0 && getResources().getBoolean(resId);
     }
 
-    public DeviceProfile getDeviceProfileOverride(DisplayMetrics dm) {
-        boolean containsProfileOverrides = false;
-
-        DeviceProfile dp = new DeviceProfile();
-
-        // We initialize customizable fields to be invalid
-        dp.numRows = -1;
-        dp.numColumns = -1;
-        dp.allAppsShortEdgeCount = -1;
-        dp.allAppsLongEdgeCount = -1;
+    public void applyInvariantDeviceProfileOverrides(InvariantDeviceProfile inv, DisplayMetrics dm) {
+        int numRows = -1;
+        int numColumns = -1;
+        float iconSize = -1;
 
         try {
             int resId = getResources().getIdentifier(RES_GRID_NUM_ROWS,
                     "integer", getPackageName());
             if (resId > 0) {
-                containsProfileOverrides = true;
-                dp.numRows = getResources().getInteger(resId);
+                numRows = getResources().getInteger(resId);
             }
 
             resId = getResources().getIdentifier(RES_GRID_NUM_COLUMNS,
                     "integer", getPackageName());
             if (resId > 0) {
-                containsProfileOverrides = true;
-                dp.numColumns = getResources().getInteger(resId);
-            }
-
-            resId = getResources().getIdentifier(RES_GRID_AA_SHORT_EDGE_COUNT,
-                    "integer", getPackageName());
-            if (resId > 0) {
-                containsProfileOverrides = true;
-                dp.allAppsShortEdgeCount = getResources().getInteger(resId);
-            }
-
-            resId = getResources().getIdentifier(RES_GRID_AA_LONG_EDGE_COUNT,
-                    "integer", getPackageName());
-            if (resId > 0) {
-                containsProfileOverrides = true;
-                dp.allAppsLongEdgeCount = getResources().getInteger(resId);
+                numColumns = getResources().getInteger(resId);
             }
 
             resId = getResources().getIdentifier(RES_GRID_ICON_SIZE_DP,
                     "dimen", getPackageName());
             if (resId > 0) {
-                containsProfileOverrides = true;
                 int px = getResources().getDimensionPixelSize(resId);
-                dp.iconSize = DynamicGrid.dpiFromPx(px, dm);
+                iconSize = Utilities.dpiFromPx(px, dm);
             }
         } catch (Resources.NotFoundException ex) {
             Log.e(TAG, "Invalid Partner grid resource!", ex);
+            return;
         }
-        return containsProfileOverrides ? dp : null;
+
+        if (numRows > 0 && numColumns > 0) {
+            inv.numRows = numRows;
+            inv.numColumns = numColumns;
+        }
+
+        if (iconSize > 0) {
+            inv.iconSize = iconSize;
+        }
     }
 }

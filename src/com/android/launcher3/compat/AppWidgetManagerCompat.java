@@ -26,6 +26,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import com.android.launcher3.IconCache;
+import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Utilities;
 
 import java.util.List;
@@ -63,20 +64,21 @@ public abstract class AppWidgetManagerCompat {
 
     public abstract List<AppWidgetProviderInfo> getAllProviders();
 
-    public abstract String loadLabel(AppWidgetProviderInfo info);
+    public abstract String loadLabel(LauncherAppWidgetProviderInfo info);
 
     public abstract boolean bindAppWidgetIdIfAllowed(
             int appWidgetId, AppWidgetProviderInfo info, Bundle options);
 
-    public abstract UserHandleCompat getUser(AppWidgetProviderInfo info);
+    public abstract UserHandleCompat getUser(LauncherAppWidgetProviderInfo info);
 
     public abstract void startConfigActivity(AppWidgetProviderInfo info, int widgetId,
             Activity activity, AppWidgetHost host, int requestCode);
 
     public abstract Drawable loadPreview(AppWidgetProviderInfo info);
 
-    public abstract Drawable loadIcon(AppWidgetProviderInfo info, IconCache cache);
+    public abstract Drawable loadIcon(LauncherAppWidgetProviderInfo info, IconCache cache);
 
-    public abstract Bitmap getBadgeBitmap(AppWidgetProviderInfo info, Bitmap bitmap);
+    public abstract Bitmap getBadgeBitmap(LauncherAppWidgetProviderInfo info, Bitmap bitmap,
+            int imageHeight);
 
 }

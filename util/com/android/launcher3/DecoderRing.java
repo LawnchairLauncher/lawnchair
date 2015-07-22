@@ -220,9 +220,6 @@ class DecoderRing {
                     if (widget.icon != null) {
                         writeImageData(widget.icon.data, prefix + "_icon.png");
                     }
-                    if (widget.preview != null) {
-                        writeImageData(widget.preview.data, prefix + "_preview.png");
-                    }
                 }
             }
         }

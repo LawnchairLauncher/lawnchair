@@ -16,14 +16,12 @@
 
 package com.android.launcher3.compat;
 
+import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.os.UserHandle;
+import android.os.Build;
 import android.os.UserManager;
 
-import java.util.ArrayList;
-import java.util.List;
-
+@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 public class UserManagerCompatV17 extends UserManagerCompatV16 {
     protected UserManager mUserManager;
 

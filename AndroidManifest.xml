@@ -29,12 +29,6 @@
         android:label="@string/permlab_install_shortcut"
         android:description="@string/permdesc_install_shortcut" />
     <permission
-        android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT"
-        android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
-        android:protectionLevel="dangerous"
-        android:label="@string/permlab_uninstall_shortcut"
-        android:description="@string/permdesc_uninstall_shortcut"/>
-    <permission
         android:name="com.android.launcher3.permission.READ_SETTINGS"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
         android:protectionLevel="normal"
@@ -71,7 +65,6 @@
     <uses-permission android:name="com.android.launcher3.permission.RECEIVE_FIRST_LOAD_BROADCAST" />
 
     <application
-        android:name="com.android.launcher3.LauncherApplication"
         android:allowBackup="@bool/enable_backup"
         android:backupAgent="com.android.launcher3.LauncherBackupAgentHelper"
         android:hardwareAccelerated="true"
@@ -89,6 +82,8 @@
             android:theme="@style/Theme"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="nosensor"
+            android:resumeWhilePausing="true"
+            android:taskAffinity=""
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -98,8 +93,10 @@
             </intent-filter>
         </activity>
 
+        <!-- ENABLE_FOR_TESTING
+
         <activity
-            android:name="com.android.launcher3.LauncherExtension"
+            android:name="com.android.launcher3.testing.LauncherExtension"
             android:launchMode="singleTask"
             android:clearTaskOnLaunch="true"
             android:stateNotNeeded="true"
@@ -115,6 +112,8 @@
             </intent-filter>
         </activity>
 
+        -->
+
         <activity
             android:name="com.android.launcher3.ToggleWeightWatcher"
             android:label="@string/toggle_weight_watcher"
@@ -128,7 +127,7 @@
         </activity>
 
         <activity
-            android:name="com.android.launcher3.LauncherWallpaperPickerActivity"
+            android:name="com.android.launcher3.WallpaperPickerActivity"
             android:theme="@style/Theme.WallpaperPicker"
             android:label="@string/pick_wallpaper"
             android:icon="@mipmap/ic_launcher_wallpaper"
@@ -152,6 +151,13 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="image/*" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.android.launcher3.SettingsActivity"
+            android:label="@string/settings_button_text"
+            android:autoRemoveFromRecents="true"
+            android:process=":settings_process">
         </activity>
 
         <!-- Debugging tools -->
@@ -191,37 +197,10 @@
             </intent-filter>
         </receiver>
 
-        <!-- Intent received used to uninstall shortcuts from other applications -->
-        <receiver
-            android:name="com.android.launcher3.UninstallShortcutReceiver"
-            android:permission="com.android.launcher.permission.UNINSTALL_SHORTCUT">
-            <intent-filter>
-                <action android:name="com.android.launcher.action.UNINSTALL_SHORTCUT" />
-            </intent-filter>
-        </receiver>
-
         <!-- Intent received used to initialize a restored widget -->
         <receiver android:name="com.android.launcher3.AppWidgetsRestoredReceiver" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_HOST_RESTORED"/>
-            </intent-filter>
-        </receiver>
-
-        <!-- New user initialization; set up initial wallpaper -->
-        <receiver
-            android:name="com.android.launcher3.UserInitializeReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.intent.action.USER_INITIALIZE" />
-            </intent-filter>
-        </receiver>
-
-        <receiver android:name="com.android.launcher3.PackageChangedReceiver" >
-            <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_CHANGED"/>
-                <action android:name="android.intent.action.PACKAGE_REPLACED"/>
-                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
-                <data android:scheme="package"></data>
             </intent-filter>
         </receiver>
 

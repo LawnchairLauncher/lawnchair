@@ -16,6 +16,7 @@
 
 package com.android.launcher3.compat;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
@@ -28,6 +29,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import com.android.launcher3.IconCache;
+import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Utilities;
 
 import java.util.List;
@@ -44,10 +46,11 @@ class AppWidgetManagerCompatV16 extends AppWidgetManagerCompat {
     }
 
     @Override
-    public String loadLabel(AppWidgetProviderInfo info) {
-        return info.label.trim();
+    public String loadLabel(LauncherAppWidgetProviderInfo info) {
+        return Utilities.trim(info.label);
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public boolean bindAppWidgetIdIfAllowed(int appWidgetId, AppWidgetProviderInfo info,
             Bundle options) {
@@ -59,7 +62,7 @@ class AppWidgetManagerCompatV16 extends AppWidgetManagerCompat {
     }
 
     @Override
-    public UserHandleCompat getUser(AppWidgetProviderInfo info) {
+    public UserHandleCompat getUser(LauncherAppWidgetProviderInfo info) {
         return UserHandleCompat.myUserHandle();
     }
 
@@ -79,12 +82,13 @@ class AppWidgetManagerCompatV16 extends AppWidgetManagerCompat {
     }
 
     @Override
-    public Drawable loadIcon(AppWidgetProviderInfo info, IconCache cache) {
+    public Drawable loadIcon(LauncherAppWidgetProviderInfo info, IconCache cache) {
         return cache.getFullResIcon(info.provider.getPackageName(), info.icon);
     }
 
     @Override
-    public Bitmap getBadgeBitmap(AppWidgetProviderInfo info, Bitmap bitmap) {
+    public Bitmap getBadgeBitmap(LauncherAppWidgetProviderInfo info, Bitmap bitmap,
+            int imageHeight) {
         return bitmap;
     }
 }

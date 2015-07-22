@@ -23,27 +23,22 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_STATIC_JAVA_LIBRARIES := android-support-v13
-
 LOCAL_SRC_FILES := $(call all-java-files-under, src) \
     $(call all-java-files-under, WallpaperPicker/src) \
-    $(call all-renderscript-files-under, src) \
     $(call all-proto-files-under, protos)
 LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/WallpaperPicker/res $(LOCAL_PATH)/res
-
-LOCAL_AAPT_FLAGS := --auto-add-overlay
+LOCAL_PROGUARD_FLAG_FILES := proguard.flags
+LOCAL_STATIC_JAVA_LIBRARIES := android-support-v4 android-support-v7-recyclerview
 
 LOCAL_PROTOC_OPTIMIZE_TYPE := nano
 LOCAL_PROTOC_FLAGS := --proto_path=$(LOCAL_PATH)/protos/
+LOCAL_AAPT_FLAGS := --auto-add-overlay
 
-LOCAL_SDK_VERSION := 21
-
+LOCAL_SDK_VERSION := current
 LOCAL_PACKAGE_NAME := Launcher3
 #LOCAL_CERTIFICATE := shared
 
 LOCAL_OVERRIDES_PACKAGES := Home Launcher2
-
-LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 
 include $(BUILD_PACKAGE)
 
@@ -82,5 +77,7 @@ $(LOCAL_BUILT_MODULE): $(LOCAL_PATH)/util/etc/launcher_protoutil | $(ACP)
 	@echo "Copy: $(PRIVATE_MODULE) ($@)"
 	$(copy-file-to-new-target)
 	$(hide) chmod 755 $@
+
+INTERNAL_DALVIK_MODULES += $(LOCAL_INSTALLED_MODULE)
 
 include $(call all-makefiles-under,$(LOCAL_PATH))

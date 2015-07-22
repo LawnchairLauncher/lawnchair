@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import android.appwidget.AppWidgetHostView;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -35,6 +36,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
     LayoutInflater mInflater;
 
     private CheckLongPressHelper mLongPressHelper;
+    private StylusEventHelper mStylusEventHelper;
     private Context mContext;
     private int mPreviousOrientation;
     private DragLayer mDragLayer;
@@ -45,8 +47,10 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
         super(context);
         mContext = context;
         mLongPressHelper = new CheckLongPressHelper(this);
+        mStylusEventHelper = new StylusEventHelper(this);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mDragLayer = ((Launcher) context).getDragLayer();
+        setAccessibilityDelegate(LauncherAppState.getInstance().getAccessibilityDelegate());
     }
 
     @Override
@@ -54,10 +58,14 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
         return mInflater.inflate(R.layout.appwidget_error, this, false);
     }
 
+    public void updateLastInflationOrientation() {
+        mPreviousOrientation = mContext.getResources().getConfiguration().orientation;
+    }
+
     @Override
     public void updateAppWidget(RemoteViews remoteViews) {
         // Store the orientation in which the widget was inflated
-        mPreviousOrientation = mContext.getResources().getConfiguration().orientation;
+        updateLastInflationOrientation();
         super.updateAppWidget(remoteViews);
     }
 
@@ -83,11 +91,17 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
             return true;
         }
 
-        // Watch for longpress events at this level to make sure
-        // users can always pick up this widget
+        // Watch for longpress or stylus button press events at this level to
+        // make sure users can always pick up this widget
+        if (mStylusEventHelper.checkAndPerformStylusEvent(ev)) {
+            mLongPressHelper.cancelLongPress();
+            return true;
+        }
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN: {
-                mLongPressHelper.postCheckForLongPress();
+                if (!mStylusEventHelper.inStylusButtonPressed()) {
+                    mLongPressHelper.postCheckForLongPress();
+                }
                 mDragLayer.setTouchCompleteListener(this);
                 break;
             }
@@ -134,6 +148,20 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
     public void cancelLongPress() {
         super.cancelLongPress();
         mLongPressHelper.cancelLongPress();
+    }
+
+    @Override
+    public AppWidgetProviderInfo getAppWidgetInfo() {
+        AppWidgetProviderInfo info = super.getAppWidgetInfo();
+        if (info != null && !(info instanceof LauncherAppWidgetProviderInfo)) {
+            throw new IllegalStateException("Launcher widget must have"
+                    + " LauncherAppWidgetProviderInfo");
+        }
+        return info;
+    }
+
+    public LauncherAppWidgetProviderInfo getLauncherAppWidgetProviderInfo() {
+        return (LauncherAppWidgetProviderInfo) getAppWidgetInfo();
     }
 
     @Override

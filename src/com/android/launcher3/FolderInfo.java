@@ -29,19 +29,38 @@ import java.util.Arrays;
  */
 public class FolderInfo extends ItemInfo {
 
+    public static final int NO_FLAGS = 0x00000000;
+
+    /**
+     * The folder is locked in sorted mode
+     */
+    public static final int FLAG_ITEMS_SORTED = 0x00000001;
+
+    /**
+     * It is a work folder
+     */
+    public static final int FLAG_WORK_FOLDER = 0x00000002;
+
+    /**
+     * The multi-page animation has run for this folder
+     */
+    public static final int FLAG_MULTI_PAGE_ANIMATION = 0x00000004;
+
     /**
      * Whether this folder has been opened
      */
     boolean opened;
 
+    public int options;
+
     /**
      * The apps and shortcuts
      */
-    ArrayList<ShortcutInfo> contents = new ArrayList<ShortcutInfo>();
+    public ArrayList<ShortcutInfo> contents = new ArrayList<ShortcutInfo>();
 
     ArrayList<FolderListener> listeners = new ArrayList<FolderListener>();
 
-    FolderInfo() {
+    public FolderInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
         user = UserHandleCompat.myUserHandle();
     }
@@ -83,6 +102,8 @@ public class FolderInfo extends ItemInfo {
     void onAddToDatabase(Context context, ContentValues values) {
         super.onAddToDatabase(context, values);
         values.put(LauncherSettings.Favorites.TITLE, title.toString());
+        values.put(LauncherSettings.Favorites.OPTIONS, options);
+
     }
 
     void addListener(FolderListener listener) {
@@ -120,5 +141,26 @@ public class FolderInfo extends ItemInfo {
                 + " container=" + this.container + " screen=" + screenId
                 + " cellX=" + cellX + " cellY=" + cellY + " spanX=" + spanX
                 + " spanY=" + spanY + " dropPos=" + Arrays.toString(dropPos) + ")";
+    }
+
+    public boolean hasOption(int optionFlag) {
+        return (options & optionFlag) != 0;
+    }
+
+    /**
+     * @param option flag to set or clear
+     * @param isEnabled whether to set or clear the flag
+     * @param context if not null, save changes to the db.
+     */
+    public void setOption(int option, boolean isEnabled, Context context) {
+        int oldOptions = options;
+        if (isEnabled) {
+            options |= option;
+        } else {
+            options &= ~option;
+        }
+        if (context != null && oldOptions != options) {
+            LauncherModel.updateItemInDatabase(context, this);
+        }
     }
 }

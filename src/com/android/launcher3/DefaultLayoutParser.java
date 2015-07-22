@@ -13,13 +13,13 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.util.Thunk;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,17 +29,15 @@ import java.util.List;
 public class DefaultLayoutParser extends AutoInstallsLayout {
     private static final String TAG = "DefaultLayoutParser";
 
-    private static final String TAG_RESOLVE = "resolve";
+    protected static final String TAG_RESOLVE = "resolve";
     private static final String TAG_FAVORITES = "favorites";
-    private static final String TAG_FAVORITE = "favorite";
+    protected static final String TAG_FAVORITE = "favorite";
     private static final String TAG_APPWIDGET = "appwidget";
     private static final String TAG_SHORTCUT = "shortcut";
     private static final String TAG_FOLDER = "folder";
     private static final String TAG_PARTNER_FOLDER = "partner-folder";
-    private static final String TAG_INCLUDE = "include";
 
-    private static final String ATTR_URI = "uri";
-    private static final String ATTR_WORKSPACE = "workspace";
+    protected static final String ATTR_URI = "uri";
     private static final String ATTR_CONTAINER = "container";
     private static final String ATTR_SCREEN = "screen";
     private static final String ATTR_FOLDER_ITEMS = "folderItems";
@@ -47,7 +45,12 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     public DefaultLayoutParser(Context context, AppWidgetHost appWidgetHost,
             LayoutParserCallback callback, Resources sourceRes, int layoutId) {
         super(context, appWidgetHost, callback, sourceRes, layoutId, TAG_FAVORITES);
-        Log.e(TAG, "Default layout parser initialized");
+    }
+
+    public DefaultLayoutParser(Context context, AppWidgetHost appWidgetHost,
+            LayoutParserCallback callback, Resources sourceRes, int layoutId, String rootTag,
+            int hotseatAllAppsRank) {
+        super(context, appWidgetHost, callback, sourceRes, layoutId, rootTag, hotseatAllAppsRank);
     }
 
     @Override
@@ -55,7 +58,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
         return getFolderElementsMap(mSourceRes);
     }
 
-    private HashMap<String, TagParser> getFolderElementsMap(Resources res) {
+    @Thunk HashMap<String, TagParser> getFolderElementsMap(Resources res) {
         HashMap<String, TagParser> parsers = new HashMap<String, TagParser>();
         parsers.put(TAG_FAVORITE, new AppShortcutWithUriParser());
         parsers.put(TAG_SHORTCUT, new UriShortcutParser(res));
@@ -84,29 +87,10 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
         out[1] = Long.parseLong(getAttributeValue(parser, ATTR_SCREEN));
     }
 
-    @Override
-    protected int parseAndAddNode(
-            XmlResourceParser parser,
-            HashMap<String, TagParser> tagParserMap,
-            ArrayList<Long> screenIds)
-                    throws XmlPullParserException, IOException {
-        if (TAG_INCLUDE.equals(parser.getName())) {
-            final int resId = getAttributeResourceValue(parser, ATTR_WORKSPACE, 0);
-            if (resId != 0) {
-                // recursively load some more favorites, why not?
-                return parseLayout(resId, screenIds);
-            } else {
-                return 0;
-            }
-        } else {
-            return super.parseAndAddNode(parser, tagParserMap, screenIds);
-        }
-    }
-
     /**
      * AppShortcutParser which also supports adding URI based intents
      */
-    private class AppShortcutWithUriParser extends AppShortcutParser {
+    @Thunk class AppShortcutWithUriParser extends AppShortcutParser {
 
         @Override
         protected long invalidPackageOrClass(XmlResourceParser parser) {
@@ -218,7 +202,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     /**
      * Contains a list of <favorite> nodes, and accepts the first successfully parsed node.
      */
-    private class ResolveParser implements TagParser {
+    protected class ResolveParser implements TagParser {
 
         private final AppShortcutWithUriParser mChildParser = new AppShortcutWithUriParser();
 
@@ -248,7 +232,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     /**
      * A parser which adds a folder whose contents come from partner apk.
      */
-    private class PartnerFolderParser implements TagParser {
+    @Thunk class PartnerFolderParser implements TagParser {
 
         @Override
         public long parseAndAdd(XmlResourceParser parser) throws XmlPullParserException,
@@ -274,7 +258,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     /**
      * An extension of FolderParser which allows adding items from a different xml.
      */
-    private class MyFolderParser extends FolderParser {
+    @Thunk class MyFolderParser extends FolderParser {
 
         @Override
         public long parseAndAdd(XmlResourceParser parser) throws XmlPullParserException,

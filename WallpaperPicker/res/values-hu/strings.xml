@@ -30,7 +30,7 @@
     <string name="wallpaper_accessibility_name" msgid="4093221025304876354">"%1$d/%2$d. háttérkép"</string>
     <string name="announce_selection" msgid="123723511662250539">"<xliff:g id="LABEL">%1$s</xliff:g> kiválasztva"</string>
     <string name="wallpaper_delete" msgid="1459353972739215344">"Törlés"</string>
-    <string name="pick_image" msgid="6704438906027442697">"Kép kiválasztása"</string>
+    <string name="pick_image" msgid="3189640419551368385">"Saját fotók"</string>
     <string name="pick_wallpaper" msgid="4628969645948454559">"Háttérképek"</string>
     <string name="crop_wallpaper" msgid="4882870800623585836">"Háttérkép körbevágása"</string>
 </resources>

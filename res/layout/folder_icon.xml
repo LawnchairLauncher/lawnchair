@@ -26,9 +26,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:antialias="true"
-        android:src="@drawable/portal_ring_inner_holo"/>
+        android:src="@drawable/portal_ring_inner"/>
     <com.android.launcher3.BubbleTextView
-        style="@style/WorkspaceIcon"
+        style="@style/Icon"
         android:id="@+id/folder_icon_name"
         android:layout_gravity="top"
         android:layout_width="match_parent"

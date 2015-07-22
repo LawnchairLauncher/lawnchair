@@ -32,7 +32,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.SparseArray;
 
-class FastBitmapDrawable extends Drawable {
+public class FastBitmapDrawable extends Drawable {
 
     static final TimeInterpolator CLICK_FEEDBACK_INTERPOLATOR = new TimeInterpolator() {
 
@@ -72,7 +72,7 @@ class FastBitmapDrawable extends Drawable {
     private boolean mPressed = false;
     private ObjectAnimator mPressedAnimator;
 
-    FastBitmapDrawable(Bitmap b) {
+    public FastBitmapDrawable(Bitmap b) {
         mAlpha = 255;
         mBitmap = b;
         setBounds(0, 0, b.getWidth(), b.getHeight());

@@ -30,7 +30,7 @@
     <string name="wallpaper_accessibility_name" msgid="4093221025304876354">"Imazhi i sfondit: %1$d nga gjithsej %2$d"</string>
     <string name="announce_selection" msgid="123723511662250539">"<xliff:g id="LABEL">%1$s</xliff:g> u përzgjodh"</string>
     <string name="wallpaper_delete" msgid="1459353972739215344">"Fshi"</string>
-    <string name="pick_image" msgid="6704438906027442697">"Zgjidh imazhin"</string>
+    <string name="pick_image" msgid="3189640419551368385">"Fotografitë e mia"</string>
     <string name="pick_wallpaper" msgid="4628969645948454559">"Imazhet e sfondit"</string>
     <string name="crop_wallpaper" msgid="4882870800623585836">"Prit imazhin e sfondit"</string>
 </resources>
