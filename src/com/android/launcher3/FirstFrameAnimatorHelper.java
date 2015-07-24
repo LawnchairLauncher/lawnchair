@@ -24,6 +24,8 @@ import android.view.View;
 import android.view.ViewPropertyAnimator;
 import android.view.ViewTreeObserver;
 
+import com.android.launcher3.util.Thunk;
+
 /*
  *  This is a helper class that listens to updates from the corresponding animation.
  *  For the first two frames, it adjusts the current play time of the animation to
@@ -41,7 +43,7 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
     private boolean mAdjustedSecondFrameTime;
 
     private static ViewTreeObserver.OnDrawListener sGlobalDrawListener;
-    private static long sGlobalFrameCounter;
+    @Thunk static long sGlobalFrameCounter;
     private static boolean sVisible;
 
     public FirstFrameAnimatorHelper(ValueAnimator animator, View target) {

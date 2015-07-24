@@ -20,57 +20,27 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
-    <string name="home" msgid="7658288663002113681">"Головний екран"</string>
-    <string name="uid_name" msgid="7820867637514617527">"Базові програми Android"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
+    <string name="work_folder_name" msgid="3753320833950115786">"Робоча папка"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Додаток видалено."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Додаток недоступний"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Завантажений додаток вимкнено в безпечному режимі"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"У безпечному режимі віджети вимкнено"</string>
-    <string name="widgets_tab_label" msgid="2921133187116603919">"Віджети"</string>
-    <string name="widget_adder" msgid="3201040140710381657">"Віджети"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Показати пам’ять"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Натисніть і утримуйте, щоб вибрати віджет."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <string name="external_drop_widget_error" msgid="3165821058322217155">"Не вдалося додати елемент на цей головний екран."</string>
-    <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"Вибрати віджет для створення"</string>
-    <string name="rename_folder_label" msgid="3727762225964550653">"Назва папки"</string>
-    <string name="rename_folder_title" msgid="3771389277707820891">"Перейменувати папку"</string>
-    <string name="rename_action" msgid="5559600076028658757">"OК"</string>
-    <string name="cancel_action" msgid="7009134900002915310">"Скасувати"</string>
-    <string name="menu_item_add_item" msgid="1264911265836810421">"Додати на головний екран"</string>
-    <string name="group_applications" msgid="3797214114206693605">"Додатки"</string>
-    <string name="group_shortcuts" msgid="6012256992764410535">"Ярлики"</string>
-    <string name="group_widgets" msgid="1569030723286851002">"Віджети"</string>
-    <string name="completely_out_of_space" msgid="6106288382070760318">"На головних екранах більше немає місця."</string>
+    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Пошук додатків"</string>
+    <string name="all_apps_loading_message" msgid="7557140873644765180">"Завантаження додатків…"</string>
+    <string name="all_apps_no_search_results" msgid="6332185285860416787">"Немає додатків для запиту \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="out_of_space" msgid="4691004494942118364">"На цьому головному екрані більше немає місця."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"В області \"Вибране\" немає місця"</string>
-    <string name="invalid_hotseat_item" msgid="5779907847267573691">"Цей віджет завеликий для області \"Вибране\""</string>
-    <string name="shortcut_installed" msgid="1701742129426969556">"Ярлик \"<xliff:g id="NAME">%s</xliff:g>\" створено."</string>
-    <string name="shortcut_uninstalled" msgid="8176767991305701821">"Ярлик \"<xliff:g id="NAME">%s</xliff:g>\" вилучено."</string>
-    <string name="shortcut_duplicate" msgid="9167217446062498127">"Ярлик \"<xliff:g id="NAME">%s</xliff:g>\" уже існує."</string>
-    <string name="title_select_shortcut" msgid="6680642571148153868">"Вибрати ярлик"</string>
-    <string name="title_select_application" msgid="3280812711670683644">"Вибрати програму"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Додатки"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Головний екран"</string>
-    <string name="delete_zone_label_workspace" msgid="4009607676751398685">"Вилучити"</string>
-    <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"Видалити"</string>
     <string name="delete_target_label" msgid="1822697352535677073">"Вилучити"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"Видалити"</string>
     <string name="info_target_label" msgid="8053346143994679532">"Про програму"</string>
-    <string name="accessibility_all_apps_button" msgid="2603132375383800483">"Додатки"</string>
-    <string name="accessibility_delete_button" msgid="6466114477993744621">"Вилучити"</string>
-    <string name="delete_zone_label_all_apps_system_app" msgid="449755632749610895">"Видалити оновлення"</string>
-    <string name="cab_menu_delete_app" msgid="7435191475867183689">"Видалити програму"</string>
-    <string name="cab_menu_app_info" msgid="8593722221450362342">"Відомості про програму"</string>
-    <string name="cab_app_selection_text" msgid="374688303047985416">"Вибрано 1 програму"</string>
-    <string name="cab_widget_selection_text" msgid="1833458597831541241">"Вибрано 1 віджет"</string>
-    <string name="cab_folder_selection_text" msgid="7999992513806132118">"Вибрано 1 папку"</string>
-    <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"Вибрано 1 ярлик"</string>
-    <string name="permlab_install_shortcut" msgid="5632423390354674437">"установлювати ярлики"</string>
+    <string name="permlab_install_shortcut" msgid="5632423390354674437">"створення ярликів"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Дозволяє програмі самостійно додавати ярлики."</string>
-    <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"видаляти ярлики"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="5134129545001836849">"Дозволяє програмі самостійно вилучати ярлики."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"читати налаштування та ярлики головного екрана"</string>
     <string name="permdesc_read_settings" msgid="5833423719057558387">"Дозволяє програмі читати налаштування та ярлики на головному екрані."</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"записувати налаштування та ярлики головного екрана"</string>
@@ -78,30 +48,17 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"Проблема із завантаженням віджета"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"Налаштування"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Це системна програма, її неможливо видалити."</string>
-    <string name="dream_name" msgid="1530253749244328964">"Rocket Launcher"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Папка без назви"</string>
-    <string name="workspace_description_format" msgid="2950174241104043327">"Головний екран %1$d"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Сторінка %1$d з %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Головний екран %1$d з %2$d"</string>
-    <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"Сторінка програм %1$d з %2$d"</string>
-    <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"Сторінка віджетів %1$d з %2$d"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"Вітаємо"</string>
-    <string name="first_run_cling_description" msgid="6447072552696253358">"Будьте як удома."</string>
-    <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
-    <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
-    <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"Створюйте нові екрани для програм і папок"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"Копіювати значки програм"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"Імпортувати значки та папки зі старих головних екранів?"</string>
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"КОПІЮВАТИ ЗНАЧКИ"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"ПАНЕЛЬ ЗАПУСКУ ЗА УМОВЧАННЯМ"</string>
-    <string name="workspace_cling_title" msgid="5626202359865825661">"Організуйте робочий простір"</string>
-    <string name="workspace_cling_move_item" msgid="528201129978005352">"Натисніть і утримуйте фон, щоб керувати фоновим малюнком, віджетами та налаштуваннями."</string>
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Фонові малюнки, віджети й налаштування"</string>
     <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Натисніть і втримуйте фон, щоб налаштувати робочу область"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"ЗРОЗУМІЛО"</string>
-    <string name="folder_cling_title" msgid="3894908818693254164">"Це папка"</string>
-    <string name="folder_cling_create_folder" msgid="6158215559475836131">"Щоб створити папку, натисніть і утримуйте програму, а потім перетягніть її на іншу."</string>
-    <string name="cling_dismiss" msgid="8962359497601507581">"OК"</string>
     <string name="folder_opened" msgid="94695026776264709">"Папку відкрито (<xliff:g id="WIDTH">%1$d</xliff:g> х <xliff:g id="HEIGHT">%2$d</xliff:g>)"</string>
     <string name="folder_tap_to_close" msgid="1884479294466410023">"Торкніться, щоб закрити папку"</string>
     <string name="folder_tap_to_rename" msgid="9191075570492871147">"Торкніться, щоб зберегти нову назву"</string>
@@ -111,14 +68,34 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Віджети"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Фонові малюнки"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"Налаштування"</string>
-    <string name="package_state_enqueued" msgid="6227252464303085641">"Очікування"</string>
-    <string name="package_state_downloading" msgid="4088770468458724721">"Завантаження"</string>
-    <string name="package_state_installing" msgid="7588193972189849870">"Встановлення"</string>
+    <string name="allow_rotation_title" msgid="2118706734511831751">"Дозволити обертання"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Невідомо"</string>
-    <string name="package_state_error" msgid="7672093962724223588">"Не відновлено"</string>
-    <string name="abandoned_clean_all" msgid="5256770727689657618">"Видалити всі"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Видалити"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Шукати"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Цей додаток не встановлено"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Додаток для цього значка не встановлено. Можна видалити значок або знайти додаток і встановити його вручну."</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"Додати на головний екран"</string>
+    <string name="action_move_here" msgid="2170188780612570250">"Перемістити елемент сюди"</string>
+    <string name="item_added_to_workspace" msgid="4211073925752213539">"Елемент додано на головний екран"</string>
+    <string name="item_removed" msgid="851119963877842327">"Елемент вилучено"</string>
+    <string name="action_move" msgid="4339390619886385032">"Перемістити елемент"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"Перемістити в рядок <xliff:g id="NUMBER_0">%1$s</xliff:g>, стовпець <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="move_to_position" msgid="6750008980455459790">"Перемістити на <xliff:g id="NUMBER">%1$s</xliff:g> місце"</string>
+    <string name="move_to_hotseat_position" msgid="6295412897075147808">"Перемістити у вибране на <xliff:g id="NUMBER">%1$s</xliff:g> місце"</string>
+    <string name="item_moved" msgid="4606538322571412879">"Елемент переміщено"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"Додати в папку \"<xliff:g id="NAME">%1$s</xliff:g>\""</string>
+    <string name="add_to_folder_with_app" msgid="4534929978967147231">"Додати в папку з додатком <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"Елемент додано в папку"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"Створити папку з: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_created" msgid="6409794597405184510">"Папку створено"</string>
+    <string name="action_move_to_workspace" msgid="1603837886334246317">"Перемістити на головний екран"</string>
+    <string name="action_move_screen_left" msgid="8854216831569401665">"Перемістити екран ліворуч"</string>
+    <string name="action_move_screen_right" msgid="329334910274311123">"Перемістити екран праворуч"</string>
+    <string name="screen_moved" msgid="266230079505650577">"Екран переміщено"</string>
+    <string name="action_resize" msgid="1802976324781771067">"Змінити розміри"</string>
+    <string name="action_increase_width" msgid="8773715375078513326">"Збільшити ширину"</string>
+    <string name="action_increase_height" msgid="459390020612501122">"Збільшити висоту"</string>
+    <string name="action_decrease_width" msgid="1374549771083094654">"Зменшити ширину"</string>
+    <string name="action_decrease_height" msgid="282377193880900022">"Зменшити висоту"</string>
+    <string name="widget_resized" msgid="9130327887929620">"Розміри віджета змінено на <xliff:g id="NUMBER_0">%1$s</xliff:g> завширшки та <xliff:g id="NUMBER_1">%2$s</xliff:g> заввишки"</string>
 </resources>

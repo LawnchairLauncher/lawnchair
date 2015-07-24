@@ -16,8 +16,6 @@
 
 package com.android.photos.views;
 
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -28,35 +26,26 @@ import android.graphics.Paint.Align;
 import android.graphics.RectF;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.Choreographer;
 import android.view.Choreographer.FrameCallback;
-import android.view.View;
 import android.widget.FrameLayout;
 
 import com.android.gallery3d.glrenderer.BasicTexture;
 import com.android.gallery3d.glrenderer.GLES20Canvas;
+import com.android.launcher3.util.Thunk;
 import com.android.photos.views.TiledImageRenderer.TileSource;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 /**
- * Shows an image using {@link TiledImageRenderer} using either {@link GLSurfaceView}
- * or {@link BlockingGLTextureView}.
+ * Shows an image using {@link TiledImageRenderer} using either {@link GLSurfaceView}.
  */
 public class TiledImageView extends FrameLayout {
 
-    private static final boolean USE_TEXTURE_VIEW = false;
-    private static final boolean IS_SUPPORTED =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
-    private static final boolean USE_CHOREOGRAPHER =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
-
-    private BlockingGLTextureView mTextureView;
-    private GLSurfaceView mGLSurfaceView;
-    private boolean mInvalPending = false;
+    @Thunk GLSurfaceView mGLSurfaceView;
+    @Thunk boolean mInvalPending = false;
     private FrameCallback mFrameCallback;
 
     protected static class ImageRendererWrapper {
@@ -79,35 +68,19 @@ public class TiledImageView extends FrameLayout {
     protected Object mLock = new Object();
     protected ImageRendererWrapper mRenderer;
 
-    public static boolean isTilingSupported() {
-        return IS_SUPPORTED;
-    }
-
     public TiledImageView(Context context) {
         this(context, null);
     }
 
     public TiledImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        if (!IS_SUPPORTED) {
-            return;
-        }
-
         mRenderer = new ImageRendererWrapper();
         mRenderer.image = new TiledImageRenderer(this);
-        View view;
-        if (USE_TEXTURE_VIEW) {
-            mTextureView = new BlockingGLTextureView(context);
-            mTextureView.setRenderer(new TileRenderer());
-            view = mTextureView;
-        } else {
-            mGLSurfaceView = new GLSurfaceView(context);
-            mGLSurfaceView.setEGLContextClientVersion(2);
-            mGLSurfaceView.setRenderer(new TileRenderer());
-            mGLSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-            view = mGLSurfaceView;
-        }
-        addView(view, new LayoutParams(
+        mGLSurfaceView = new GLSurfaceView(context);
+        mGLSurfaceView.setEGLContextClientVersion(2);
+        mGLSurfaceView.setRenderer(new TileRenderer());
+        mGLSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        addView(mGLSurfaceView, new LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         //setTileSource(new ColoredTiles());
     }
@@ -117,22 +90,11 @@ public class TiledImageView extends FrameLayout {
         super.setVisibility(visibility);
         // need to update inner view's visibility because it seems like we're causing it to draw
         // from {@link #dispatchDraw} or {@link #invalidate} even if we are invisible.
-        if (USE_TEXTURE_VIEW) {
-            mTextureView.setVisibility(visibility);
-        } else {
-            mGLSurfaceView.setVisibility(visibility);
-        }
+        mGLSurfaceView.setVisibility(visibility);
     }
 
     public void destroy() {
-        if (!IS_SUPPORTED) {
-            return;
-        }
-        if (USE_TEXTURE_VIEW) {
-            mTextureView.destroy();
-        } else {
-            mGLSurfaceView.queueEvent(mFreeTextures);
-        }
+        mGLSurfaceView.queueEvent(mFreeTextures);
     }
 
     private Runnable mFreeTextures = new Runnable() {
@@ -144,27 +106,14 @@ public class TiledImageView extends FrameLayout {
     };
 
     public void onPause() {
-        if (!IS_SUPPORTED) {
-            return;
-        }
-        if (!USE_TEXTURE_VIEW) {
-            mGLSurfaceView.onPause();
-        }
+        mGLSurfaceView.onPause();
     }
 
     public void onResume() {
-        if (!IS_SUPPORTED) {
-            return;
-        }
-        if (!USE_TEXTURE_VIEW) {
-            mGLSurfaceView.onResume();
-        }
+        mGLSurfaceView.onResume();
     }
 
     public void setTileSource(TileSource source, Runnable isReadyCallback) {
-        if (!IS_SUPPORTED) {
-            return;
-        }
         synchronized (mLock) {
             mRenderer.source = source;
             mRenderer.isReadyCallback = isReadyCallback;
@@ -177,13 +126,14 @@ public class TiledImageView extends FrameLayout {
         invalidate();
     }
 
+    public TileSource getTileSource() {
+        return mRenderer.source;
+    }
+
     @Override
     protected void onLayout(boolean changed, int left, int top, int right,
             int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        if (!IS_SUPPORTED) {
-            return;
-        }
         synchronized (mLock) {
             updateScaleIfNecessaryLocked(mRenderer);
         }
@@ -200,43 +150,10 @@ public class TiledImageView extends FrameLayout {
     }
 
     @Override
-    protected void dispatchDraw(Canvas canvas) {
-        if (!IS_SUPPORTED) {
-            return;
-        }
-        if (USE_TEXTURE_VIEW) {
-            mTextureView.render();
-        }
-        super.dispatchDraw(canvas);
-    }
-
-    @SuppressLint("NewApi")
-    @Override
-    public void setTranslationX(float translationX) {
-        if (!IS_SUPPORTED) {
-            return;
-        }
-        super.setTranslationX(translationX);
-    }
-
-    @Override
     public void invalidate() {
-        if (!IS_SUPPORTED) {
-            return;
-        }
-        if (USE_TEXTURE_VIEW) {
-            super.invalidate();
-            mTextureView.invalidate();
-        } else {
-            if (USE_CHOREOGRAPHER) {
-                invalOnVsync();
-            } else {
-                mGLSurfaceView.requestRender();
-            }
-        }
+        invalOnVsync();
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void invalOnVsync() {
         if (!mInvalPending) {
             mInvalPending = true;
@@ -255,9 +172,6 @@ public class TiledImageView extends FrameLayout {
 
     private RectF mTempRectF = new RectF();
     public void positionFromMatrix(Matrix matrix) {
-        if (!IS_SUPPORTED) {
-            return;
-        }
         if (mRenderer.source != null) {
             final int rotation = mRenderer.source.getRotation();
             final boolean swap = !(rotation % 180 == 0);
@@ -290,7 +204,7 @@ public class TiledImageView extends FrameLayout {
         }
     }
 
-    private class TileRenderer implements Renderer {
+    @Thunk class TileRenderer implements Renderer {
 
         private GLES20Canvas mCanvas;
 

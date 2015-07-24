@@ -30,7 +30,7 @@
     <string name="wallpaper_accessibility_name" msgid="4093221025304876354">"%1$d/%2$d taustapildist"</string>
     <string name="announce_selection" msgid="123723511662250539">"Valitud on <xliff:g id="LABEL">%1$s</xliff:g>"</string>
     <string name="wallpaper_delete" msgid="1459353972739215344">"Kustuta"</string>
-    <string name="pick_image" msgid="6704438906027442697">"Vali kujutis"</string>
+    <string name="pick_image" msgid="3189640419551368385">"Minu fotod"</string>
     <string name="pick_wallpaper" msgid="4628969645948454559">"Taustapildid"</string>
     <string name="crop_wallpaper" msgid="4882870800623585836">"Taustapildi kärpimine"</string>
 </resources>

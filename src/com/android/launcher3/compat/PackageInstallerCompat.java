@@ -20,7 +20,7 @@ import android.content.Context;
 
 import com.android.launcher3.Utilities;
 
-import java.util.HashSet;
+import java.util.HashMap;
 
 public abstract class PackageInstallerCompat {
 
@@ -37,24 +37,19 @@ public abstract class PackageInstallerCompat {
                 if (Utilities.isLmpOrAbove()) {
                     sInstance = new PackageInstallerCompatVL(context);
                 } else {
-                    sInstance = new PackageInstallerCompatV16(context) { };
+                    sInstance = new PackageInstallerCompatV16();
                 }
             }
             return sInstance;
         }
     }
 
-    public abstract HashSet<String> updateAndGetActiveSessionCache();
-
-    public abstract void onPause();
-
-    public abstract void onResume();
-
-    public abstract void onFinishBind();
+    /**
+     * @return a map of active installs to their progress
+     */
+    public abstract HashMap<String, Integer> updateAndGetActiveSessionCache();
 
     public abstract void onStop();
-
-    public abstract void recordPackageUpdate(String packageName, int state, int progress);
 
     public static final class PackageInstallInfo {
         public final String packageName;

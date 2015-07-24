@@ -29,13 +29,15 @@ import android.graphics.drawable.Drawable;
 
 
 public class LauncherActivityInfoCompatV16 extends LauncherActivityInfoCompat {
-    private ActivityInfo mActivityInfo;
-    private ComponentName mComponentName;
-    private PackageManager mPm;
+    private final ResolveInfo mResolveInfo;
+    private final ActivityInfo mActivityInfo;
+    private final ComponentName mComponentName;
+    private final PackageManager mPm;
 
     LauncherActivityInfoCompatV16(Context context, ResolveInfo info) {
         super();
-        this.mActivityInfo = info.activityInfo;
+        mResolveInfo = info;
+        mActivityInfo = info.activityInfo;
         mComponentName = new ComponentName(mActivityInfo.packageName, mActivityInfo.name);
         mPm = context.getPackageManager();
     }
@@ -49,31 +51,30 @@ public class LauncherActivityInfoCompatV16 extends LauncherActivityInfoCompat {
     }
 
     public CharSequence getLabel() {
-        return mActivityInfo.loadLabel(mPm);
+        return mResolveInfo.loadLabel(mPm);
     }
 
     public Drawable getIcon(int density) {
-        Drawable d = null;
-        if (mActivityInfo.getIconResource() != 0) {
-            Resources resources;
+        int iconRes = mResolveInfo.getIconResource();
+        Resources resources = null;
+        Drawable icon = null;
+        // Get the preferred density icon from the app's resources
+        if (density != 0 && iconRes != 0) {
             try {
-                resources = mPm.getResourcesForApplication(mActivityInfo.packageName);
-            } catch (PackageManager.NameNotFoundException e) {
-                resources = null;
-            }
-            if (resources != null) {
-                try {
-                    d = resources.getDrawableForDensity(mActivityInfo.getIconResource(), density);
-                } catch (Resources.NotFoundException e) {
-                    // Return default icon below.
-                }
+                resources = mPm.getResourcesForApplication(mActivityInfo.applicationInfo);
+                icon = resources.getDrawableForDensity(iconRes, density);
+            } catch (NameNotFoundException | Resources.NotFoundException exc) {
             }
         }
-        if (d == null) {
-            Resources resources = Resources.getSystem();
-            d = resources.getDrawableForDensity(android.R.mipmap.sym_def_app_icon, density);
+        // Get the default density icon
+        if (icon == null) {
+            icon = mResolveInfo.loadIcon(mPm);
         }
-        return d;
+        if (icon == null) {
+            resources = Resources.getSystem();
+            icon = resources.getDrawableForDensity(android.R.mipmap.sym_def_app_icon, density);
+        }
+        return icon;
     }
 
     public ApplicationInfo getApplicationInfo() {

@@ -17,7 +17,7 @@
 */
 -->
 
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
     <style name="Theme.WallpaperCropper" parent="@android:style/Theme.DeviceDefault">
         <item name="android:actionBarStyle">@style/WallpaperCropperActionBar</item>
         <item name="android:windowFullscreen">true</item>
@@ -40,5 +40,6 @@
 
     <style name="ActionBarSetWallpaperStyle" parent="@android:style/Widget.DeviceDefault.ActionButton">
         <item name="android:textColor">#ffffffff</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
     </style>
 </resources>

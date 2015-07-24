@@ -56,6 +56,11 @@ public class LauncherAppWidgetInfo extends ItemInfo {
     static final int NO_ID = -1;
 
     /**
+     * Indicates that this is a locally defined widget and hence has no system allocated id.
+     */
+    static final int CUSTOM_WIDGET_ID = -100;
+
+    /**
      * Identifier for this widget when talking with
      * {@link android.appwidget.AppWidgetManager} for updates.
      */
@@ -86,7 +91,12 @@ public class LauncherAppWidgetInfo extends ItemInfo {
     AppWidgetHostView hostView = null;
 
     LauncherAppWidgetInfo(int appWidgetId, ComponentName providerName) {
-        itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
+        if (appWidgetId == CUSTOM_WIDGET_ID) {
+            itemType = LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
+        } else {
+            itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
+        }
+
         this.appWidgetId = appWidgetId;
         this.providerName = providerName;
 
@@ -97,6 +107,10 @@ public class LauncherAppWidgetInfo extends ItemInfo {
         // We only support app widgets on current user.
         user = UserHandleCompat.myUserHandle();
         restoreStatus = RESTORE_COMPLETED;
+    }
+
+    public boolean isCustomWidget() {
+        return appWidgetId == CUSTOM_WIDGET_ID;
     }
 
     @Override

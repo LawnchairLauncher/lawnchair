@@ -19,14 +19,16 @@ import android.app.backup.BackupDataInputStream;
 import android.app.backup.BackupDataOutput;
 import android.app.backup.BackupHelper;
 import android.app.backup.BackupManager;
-import android.appwidget.AppWidgetManager;
-import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
+import android.content.res.XmlResourceParser;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -49,18 +51,20 @@ import com.android.launcher3.backup.BackupProtos.Screen;
 import com.android.launcher3.backup.BackupProtos.Widget;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.util.Thunk;
 import com.google.protobuf.nano.InvalidProtocolBufferNanoException;
 import com.google.protobuf.nano.MessageNano;
 
-import java.io.ByteArrayOutputStream;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.zip.CRC32;
 
 /**
@@ -71,7 +75,7 @@ public class LauncherBackupHelper implements BackupHelper {
     private static final boolean VERBOSE = LauncherBackupAgentHelper.VERBOSE;
     private static final boolean DEBUG = LauncherBackupAgentHelper.DEBUG;
 
-    private static final int BACKUP_VERSION = 2;
+    private static final int BACKUP_VERSION = 3;
     private static final int MAX_JOURNAL_SIZE = 1000000;
 
     // Journal key is such that it is always smaller than any dynamically generated
@@ -83,11 +87,6 @@ public class LauncherBackupHelper implements BackupHelper {
 
     /** widgets contain previews, which are very large, dribble them out */
     private static final int MAX_WIDGETS_PER_PASS = 5;
-
-    private static final int IMAGE_COMPRESSION_QUALITY = 75;
-
-    private static final Bitmap.CompressFormat IMAGE_FORMAT =
-            android.graphics.Bitmap.CompressFormat.PNG;
 
     private static final String[] FAVORITE_PROJECTION = {
         Favorites._ID,                     // 0
@@ -136,24 +135,33 @@ public class LauncherBackupHelper implements BackupHelper {
 
     private static final int SCREEN_RANK_INDEX = 2;
 
-    private final Context mContext;
+    @Thunk final Context mContext;
     private final HashSet<String> mExistingKeys;
     private final ArrayList<Key> mKeys;
+    private final ItemTypeMatcher[] mItemTypeMatchers;
+    private final long mUserSerial;
 
-    private IconCache mIconCache;
     private BackupManager mBackupManager;
-    private HashMap<ComponentName, AppWidgetProviderInfo> mWidgetMap;
     private byte[] mBuffer = new byte[512];
     private long mLastBackupRestoreTime;
+    private boolean mBackupDataWasUpdated;
 
-    private DeviceProfieData mCurrentProfile;
+    private IconCache mIconCache;
+    private DeviceProfieData mDeviceProfileData;
+    private InvariantDeviceProfile mIdp;
+
     boolean restoreSuccessful;
+    int restoredBackupVersion = 1;
 
     public LauncherBackupHelper(Context context) {
         mContext = context;
         mExistingKeys = new HashSet<String>();
         mKeys = new ArrayList<Key>();
         restoreSuccessful = true;
+        mItemTypeMatchers = new ItemTypeMatcher[CommonAppTypeParser.SUPPORTED_TYPE_COUNT];
+
+        UserManagerCompat userManager = UserManagerCompat.getInstance(mContext);
+        mUserSerial = userManager.getSerialNumberForUser(UserHandleCompat.myUserHandle());
     }
 
     private void dataChanged() {
@@ -171,6 +179,7 @@ public class LauncherBackupHelper implements BackupHelper {
                 mExistingKeys.add(keyToBackupKey(key));
             }
         }
+        restoredBackupVersion = journal.backupVersion;
     }
 
     /**
@@ -191,10 +200,19 @@ public class LauncherBackupHelper implements BackupHelper {
 
         Journal in = readJournal(oldState);
         if (!launcherIsReady()) {
+            dataChanged();
             // Perform backup later.
             writeJournal(newState, in);
             return;
         }
+
+        if (mDeviceProfileData == null) {
+            LauncherAppState app = LauncherAppState.getInstance();
+            mIdp = app.getInvariantDeviceProfile();
+            mDeviceProfileData = initDeviceProfileData(mIdp);
+            mIconCache = app.getIconCache();
+        }
+
         Log.v(TAG, "lastBackupTime = " + in.t);
         mKeys.clear();
         applyJournal(in);
@@ -202,7 +220,7 @@ public class LauncherBackupHelper implements BackupHelper {
         // Record the time before performing backup so that entries edited while the backup
         // was going on, do not get missed in next backup.
         long newBackupTime = System.currentTimeMillis();
-
+        mBackupDataWasUpdated = false;
         try {
             backupFavorites(data);
             backupScreens(data);
@@ -220,16 +238,30 @@ public class LauncherBackupHelper implements BackupHelper {
             for (String deleted: mExistingKeys) {
                 if (VERBOSE) Log.v(TAG, "dropping deleted item " + deleted);
                 data.writeEntityHeader(deleted, -1);
+                mBackupDataWasUpdated = true;
             }
 
             mExistingKeys.clear();
-            mLastBackupRestoreTime = newBackupTime;
+            if (!mBackupDataWasUpdated) {
+                // Check if any metadata has changed
+                mBackupDataWasUpdated = (in.profile == null)
+                        || !Arrays.equals(DeviceProfieData.toByteArray(in.profile),
+                            DeviceProfieData.toByteArray(mDeviceProfileData))
+                        || (in.backupVersion != BACKUP_VERSION)
+                        || (in.appVersion != getAppVersion());
+            }
 
-            // We store the journal at two places.
-            //   1) Storing it in newState allows us to do partial backups by comparing old state
-            //   2) Storing it in backup data allows us to validate keys during restore
-            Journal state = getCurrentStateJournal();
-            writeRowToBackup(JOURNAL_KEY, state, data);
+            if (mBackupDataWasUpdated) {
+                mLastBackupRestoreTime = newBackupTime;
+
+                // We store the journal at two places.
+                //   1) Storing it in newState allows us to do partial backups by comparing old state
+                //   2) Storing it in backup data allows us to validate keys during restore
+                Journal state = getCurrentStateJournal();
+                writeRowToBackup(JOURNAL_KEY, state, data);
+            } else {
+                if (DEBUG) Log.d(TAG, "Nothing was written during backup");
+            }
         } catch (IOException e) {
             Log.e(TAG, "launcher backup has failed", e);
         }
@@ -242,8 +274,7 @@ public class LauncherBackupHelper implements BackupHelper {
      * to this device.
      */
     private boolean isBackupCompatible(Journal oldState) {
-        DeviceProfieData currentProfile = getDeviceProfieData();
-
+        DeviceProfieData currentProfile = mDeviceProfileData;
         DeviceProfieData oldProfile = oldState.profile;
 
         if (oldProfile == null || oldProfile.desktopCols == 0) {
@@ -275,6 +306,14 @@ public class LauncherBackupHelper implements BackupHelper {
     public void restoreEntity(BackupDataInputStream data) {
         if (!restoreSuccessful) {
             return;
+        }
+
+        if (mDeviceProfileData == null) {
+            // This call does not happen on a looper thread. So LauncherAppState
+            // can't be created . Instead initialize required dependencies directly.
+            mIdp = new InvariantDeviceProfile(mContext);
+            mDeviceProfileData = initDeviceProfileData(mIdp);
+            mIconCache = new IconCache(mContext, mIdp);
         }
 
         int dataSize = data.size();
@@ -351,7 +390,7 @@ public class LauncherBackupHelper implements BackupHelper {
         journal.key = mKeys.toArray(new BackupProtos.Key[mKeys.size()]);
         journal.appVersion = getAppVersion();
         journal.backupVersion = BACKUP_VERSION;
-        journal.profile = getDeviceProfieData();
+        journal.profile = mDeviceProfileData;
         return journal;
     }
 
@@ -364,23 +403,13 @@ public class LauncherBackupHelper implements BackupHelper {
         }
     }
 
-    /**
-     * @return the current device profile information.
-     */
-    private DeviceProfieData getDeviceProfieData() {
-        if (mCurrentProfile != null) {
-            return mCurrentProfile;
-        }
-        final Context applicationContext = mContext.getApplicationContext();
-        DeviceProfile profile = LauncherAppState.createDynamicGrid(applicationContext, null)
-                .getDeviceProfile();
-
-        mCurrentProfile = new DeviceProfieData();
-        mCurrentProfile.desktopRows = profile.numRows;
-        mCurrentProfile.desktopCols = profile.numColumns;
-        mCurrentProfile.hotseatCount = profile.numHotseatIcons;
-        mCurrentProfile.allappsRank = profile.hotseatAllAppsRank;
-        return mCurrentProfile;
+    private DeviceProfieData initDeviceProfileData(InvariantDeviceProfile profile) {
+        DeviceProfieData data = new DeviceProfieData();
+        data.desktopRows = profile.numRows;
+        data.desktopCols = profile.numColumns;
+        data.hotseatCount = profile.numHotseatIcons;
+        data.allappsRank = profile.hotseatAllAppsRank;
+        return data;
     }
 
     /**
@@ -430,7 +459,7 @@ public class LauncherBackupHelper implements BackupHelper {
 
         ContentResolver cr = mContext.getContentResolver();
         ContentValues values = unpackFavorite(buffer, dataSize);
-        cr.insert(Favorites.CONTENT_URI_NO_NOTIFICATION, values);
+        cr.insert(Favorites.CONTENT_URI, values);
     }
 
     /**
@@ -491,11 +520,6 @@ public class LauncherBackupHelper implements BackupHelper {
      */
     private void backupIcons(BackupDataOutput data) throws IOException {
         // persist icons that haven't been persisted yet
-        if (!initializeIconCache()) {
-            dataChanged(); // try again later
-            if (DEBUG) Log.d(TAG, "Launcher is not initialized, delaying icon backup");
-            return;
-        }
         final ContentResolver cr = mContext.getContentResolver();
         final int dpi = mContext.getResources().getDisplayMetrics().densityDpi;
         final UserHandleCompat myUserHandle = UserHandleCompat.myUserHandle();
@@ -579,7 +603,8 @@ public class LauncherBackupHelper implements BackupHelper {
             Log.w(TAG, "failed to unpack icon for " + key.name);
         }
         if (VERBOSE) Log.v(TAG, "saving restored icon as: " + key.name);
-        IconCache.preloadIcon(mContext, ComponentName.unflattenFromString(key.name), icon, res.dpi);
+        mIconCache.preloadIcon(ComponentName.unflattenFromString(key.name), icon, res.dpi,
+                "" /* label */, mUserSerial);
     }
 
     /**
@@ -591,17 +616,8 @@ public class LauncherBackupHelper implements BackupHelper {
      */
     private void backupWidgets(BackupDataOutput data) throws IOException {
         // persist static widget info that hasn't been persisted yet
-        final LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
-        if (appState == null || !initializeIconCache()) {
-            Log.w(TAG, "Failed to get icon cache during restore");
-            return;
-        }
         final ContentResolver cr = mContext.getContentResolver();
-        final WidgetPreviewLoader previewLoader = new WidgetPreviewLoader(mContext);
-        final PagedViewCellLayout widgetSpacingLayout = new PagedViewCellLayout(mContext);
         final int dpi = mContext.getResources().getDisplayMetrics().densityDpi;
-        final DeviceProfile profile = appState.getDynamicGrid().getDeviceProfile();
-        if (DEBUG) Log.d(TAG, "cellWidthPx: " + profile.cellWidthPx);
         int backupWidgetCount = 0;
 
         String where = Favorites.ITEM_TYPE + "=" + Favorites.ITEM_TYPE_APPWIDGET + " AND "
@@ -613,8 +629,6 @@ public class LauncherBackupHelper implements BackupHelper {
             while(cursor.moveToNext()) {
                 final long id = cursor.getLong(ID_INDEX);
                 final String providerName = cursor.getString(APPWIDGET_PROVIDER_INDEX);
-                final int spanX = cursor.getInt(SPANX_INDEX);
-                final int spanY = cursor.getInt(SPANY_INDEX);
                 final ComponentName provider = ComponentName.unflattenFromString(providerName);
                 Key key = null;
                 String backupKey = null;
@@ -624,7 +638,7 @@ public class LauncherBackupHelper implements BackupHelper {
                 } else {
                     Log.w(TAG, "empty intent on appwidget: " + id);
                 }
-                if (mExistingKeys.contains(backupKey)) {
+                if (mExistingKeys.contains(backupKey) && restoredBackupVersion >= BACKUP_VERSION) {
                     if (DEBUG) Log.d(TAG, "already saved widget " + backupKey);
 
                     // remember that we already backed this up previously
@@ -633,9 +647,8 @@ public class LauncherBackupHelper implements BackupHelper {
                     if (DEBUG) Log.d(TAG, "I can count this high: " + backupWidgetCount);
                     if (backupWidgetCount < MAX_WIDGETS_PER_PASS) {
                         if (DEBUG) Log.d(TAG, "saving widget " + backupKey);
-                        previewLoader.setPreviewSize(spanX * profile.cellWidthPx,
-                                spanY * profile.cellHeightPx, widgetSpacingLayout);
-                        writeRowToBackup(key, packWidget(dpi, previewLoader, mIconCache, provider), data);
+                        UserHandleCompat user = UserHandleCompat.myUserHandle();
+                        writeRowToBackup(key, packWidget(dpi, provider, user), data);
                         mKeys.add(key);
                         backupWidgetCount ++;
                     } else {
@@ -671,8 +684,8 @@ public class LauncherBackupHelper implements BackupHelper {
             if (icon == null) {
                 Log.w(TAG, "failed to unpack widget icon for " + key.name);
             } else {
-                IconCache.preloadIcon(mContext, ComponentName.unflattenFromString(widget.provider),
-                        icon, widget.icon.dpi);
+                mIconCache.preloadIcon(ComponentName.unflattenFromString(widget.provider),
+                        icon, widget.icon.dpi, widget.label, mUserSerial);
             }
         }
 
@@ -738,6 +751,17 @@ public class LauncherBackupHelper implements BackupHelper {
         return checksum.getValue();
     }
 
+    /**
+     * @return true if its an hotseat item, that can be replaced during restore.
+     * TODO: Extend check for folders in hotseat.
+     */
+    private boolean isReplaceableHotseatItem(Favorite favorite) {
+        return favorite.container == Favorites.CONTAINER_HOTSEAT
+                && favorite.intent != null
+                && (favorite.itemType == Favorites.ITEM_TYPE_APPLICATION
+                || favorite.itemType == Favorites.ITEM_TYPE_SHORTCUT);
+    }
+
     /** Serialize a Favorite for persistence, including a checksum wrapper. */
     private Favorite packFavorite(Cursor c) {
         Favorite favorite = new Favorite();
@@ -749,30 +773,16 @@ public class LauncherBackupHelper implements BackupHelper {
         favorite.spanX = c.getInt(SPANX_INDEX);
         favorite.spanY = c.getInt(SPANY_INDEX);
         favorite.iconType = c.getInt(ICON_TYPE_INDEX);
-        if (favorite.iconType == Favorites.ICON_TYPE_RESOURCE) {
-            String iconPackage = c.getString(ICON_PACKAGE_INDEX);
-            if (!TextUtils.isEmpty(iconPackage)) {
-                favorite.iconPackage = iconPackage;
-            }
-            String iconResource = c.getString(ICON_RESOURCE_INDEX);
-            if (!TextUtils.isEmpty(iconResource)) {
-                favorite.iconResource = iconResource;
-            }
-        }
-        if (favorite.iconType == Favorites.ICON_TYPE_BITMAP) {
-            byte[] blob = c.getBlob(ICON_INDEX);
-            if (blob != null && blob.length > 0) {
-                favorite.icon = blob;
-            }
-        }
+
         String title = c.getString(TITLE_INDEX);
         if (!TextUtils.isEmpty(title)) {
             favorite.title = title;
         }
         String intentDescription = c.getString(INTENT_INDEX);
+        Intent intent = null;
         if (!TextUtils.isEmpty(intentDescription)) {
             try {
-                Intent intent = Intent.parseUri(intentDescription, 0);
+                intent = Intent.parseUri(intentDescription, 0);
                 intent.removeExtra(ItemInfo.EXTRA_PROFILE);
                 favorite.intent = intent.toUri(0);
             } catch (URISyntaxException e) {
@@ -786,6 +796,47 @@ public class LauncherBackupHelper implements BackupHelper {
             if (!TextUtils.isEmpty(appWidgetProvider)) {
                 favorite.appWidgetProvider = appWidgetProvider;
             }
+        } else if (favorite.itemType == Favorites.ITEM_TYPE_SHORTCUT) {
+            if (favorite.iconType == Favorites.ICON_TYPE_RESOURCE) {
+                String iconPackage = c.getString(ICON_PACKAGE_INDEX);
+                if (!TextUtils.isEmpty(iconPackage)) {
+                    favorite.iconPackage = iconPackage;
+                }
+                String iconResource = c.getString(ICON_RESOURCE_INDEX);
+                if (!TextUtils.isEmpty(iconResource)) {
+                    favorite.iconResource = iconResource;
+                }
+            }
+
+            byte[] blob = c.getBlob(ICON_INDEX);
+            if (blob != null && blob.length > 0) {
+                favorite.icon = blob;
+            }
+        }
+
+        if (isReplaceableHotseatItem(favorite)) {
+            if (intent != null && intent.getComponent() != null) {
+                PackageManager pm = mContext.getPackageManager();
+                ActivityInfo activity = null;;
+                try {
+                    activity = pm.getActivityInfo(intent.getComponent(), 0);
+                } catch (NameNotFoundException e) {
+                    Log.e(TAG, "Target not found", e);
+                }
+                if (activity == null) {
+                    return favorite;
+                }
+                for (int i = 0; i < mItemTypeMatchers.length; i++) {
+                    if (mItemTypeMatchers[i] == null) {
+                        mItemTypeMatchers[i] = new ItemTypeMatcher(
+                                CommonAppTypeParser.getResourceForItemType(i));
+                    }
+                    if (mItemTypeMatchers[i].matches(activity, pm)) {
+                        favorite.targetType = i;
+                        break;
+                    }
+                }
+            }
         }
 
         return favorite;
@@ -795,6 +846,7 @@ public class LauncherBackupHelper implements BackupHelper {
     private ContentValues unpackFavorite(byte[] buffer, int dataSize)
             throws IOException {
         Favorite favorite = unpackProto(new Favorite(), buffer, dataSize);
+
         ContentValues values = new ContentValues();
         values.put(Favorites._ID, favorite.id);
         values.put(Favorites.SCREEN, favorite.screen);
@@ -803,14 +855,16 @@ public class LauncherBackupHelper implements BackupHelper {
         values.put(Favorites.CELLY, favorite.cellY);
         values.put(Favorites.SPANX, favorite.spanX);
         values.put(Favorites.SPANY, favorite.spanY);
-        values.put(Favorites.ICON_TYPE, favorite.iconType);
-        if (favorite.iconType == Favorites.ICON_TYPE_RESOURCE) {
-            values.put(Favorites.ICON_PACKAGE, favorite.iconPackage);
-            values.put(Favorites.ICON_RESOURCE, favorite.iconResource);
-        }
-        if (favorite.iconType == Favorites.ICON_TYPE_BITMAP) {
+
+        if (favorite.itemType == Favorites.ITEM_TYPE_SHORTCUT) {
+            values.put(Favorites.ICON_TYPE, favorite.iconType);
+            if (favorite.iconType == Favorites.ICON_TYPE_RESOURCE) {
+                values.put(Favorites.ICON_PACKAGE, favorite.iconPackage);
+                values.put(Favorites.ICON_RESOURCE, favorite.iconResource);
+            }
             values.put(Favorites.ICON, favorite.icon);
         }
+
         if (!TextUtils.isEmpty(favorite.title)) {
             values.put(Favorites.TITLE, favorite.title);
         } else {
@@ -826,7 +880,7 @@ public class LauncherBackupHelper implements BackupHelper {
                 UserManagerCompat.getInstance(mContext).getSerialNumberForUser(myUserHandle);
         values.put(LauncherSettings.Favorites.PROFILE_ID, userSerialNumber);
 
-        DeviceProfieData currentProfile = getDeviceProfieData();
+        DeviceProfieData currentProfile = mDeviceProfileData;
 
         if (favorite.itemType == Favorites.ITEM_TYPE_APPWIDGET) {
             if (!TextUtils.isEmpty(favorite.appWidgetProvider)) {
@@ -845,8 +899,17 @@ public class LauncherBackupHelper implements BackupHelper {
                 throw new InvalidBackupException("Widget not in screen bounds, aborting restore");
             }
         } else {
-            // Let LauncherModel know we've been here.
-            values.put(LauncherSettings.Favorites.RESTORED, 1);
+            // Check if it is an hotseat item, that can be replaced.
+            if (isReplaceableHotseatItem(favorite)
+                    && favorite.targetType != Favorite.TARGET_NONE
+                    && favorite.targetType < CommonAppTypeParser.SUPPORTED_TYPE_COUNT) {
+                Log.e(TAG, "Added item type flag");
+                values.put(LauncherSettings.Favorites.RESTORED,
+                        1 | CommonAppTypeParser.encodeItemTypeToFlag(favorite.targetType));
+            } else {
+                // Let LauncherModel know we've been here.
+                values.put(LauncherSettings.Favorites.RESTORED, 1);
+            }
 
             // Verify placement
             if (favorite.container == Favorites.CONTAINER_HOTSEAT) {
@@ -889,40 +952,35 @@ public class LauncherBackupHelper implements BackupHelper {
     private Resource packIcon(int dpi, Bitmap icon) {
         Resource res = new Resource();
         res.dpi = dpi;
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        if (icon.compress(IMAGE_FORMAT, IMAGE_COMPRESSION_QUALITY, os)) {
-            res.data = os.toByteArray();
-        }
+        res.data = Utilities.flattenBitmap(icon);
         return res;
     }
 
     /** Serialize a widget for persistence, including a checksum wrapper. */
-    private Widget packWidget(int dpi, WidgetPreviewLoader previewLoader, IconCache iconCache,
-            ComponentName provider) {
-        final AppWidgetProviderInfo info = findAppWidgetProviderInfo(provider);
+    private Widget packWidget(int dpi, ComponentName provider, UserHandleCompat user) {
+        final LauncherAppWidgetProviderInfo info =
+                LauncherModel.getProviderInfo(mContext, provider, user);
         Widget widget = new Widget();
         widget.provider = provider.flattenToShortString();
         widget.label = info.label;
         widget.configure = info.configure != null;
         if (info.icon != 0) {
             widget.icon = new Resource();
-            Drawable fullResIcon = iconCache.getFullResIcon(provider.getPackageName(), info.icon);
+            Drawable fullResIcon = mIconCache.getFullResIcon(provider.getPackageName(), info.icon);
             Bitmap icon = Utilities.createIconBitmap(fullResIcon, mContext);
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
-            if (icon.compress(IMAGE_FORMAT, IMAGE_COMPRESSION_QUALITY, os)) {
-                widget.icon.data = os.toByteArray();
-                widget.icon.dpi = dpi;
-            }
+            widget.icon.data = Utilities.flattenBitmap(icon);
+            widget.icon.dpi = dpi;
         }
-        if (info.previewImage != 0) {
-            widget.preview = new Resource();
-            Bitmap preview = previewLoader.generateWidgetPreview(info, null);
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
-            if (preview.compress(IMAGE_FORMAT, IMAGE_COMPRESSION_QUALITY, os)) {
-                widget.preview.data = os.toByteArray();
-                widget.preview.dpi = dpi;
-            }
-        }
+
+        // Calculate the spans corresponding to any one of the orientations as it should not change
+        // based on orientation.
+        int[] minSpans = CellLayout.rectToCell(
+                mIdp.portraitProfile, mContext, info.minResizeWidth, info.minResizeHeight, null);
+        widget.minSpanX = (info.resizeMode & LauncherAppWidgetProviderInfo.RESIZE_HORIZONTAL) != 0
+                ? minSpans[0] : -1;
+        widget.minSpanY = (info.resizeMode & LauncherAppWidgetProviderInfo.RESIZE_VERTICAL) != 0
+                ? minSpans[1] : -1;
+
         return widget;
     }
 
@@ -1019,6 +1077,7 @@ public class LauncherBackupHelper implements BackupHelper {
         byte[] blob = writeCheckedBytes(proto);
         data.writeEntityHeader(backupKey, blob.length);
         data.writeEntityData(blob, blob.length);
+        mBackupDataWasUpdated = true;
         if (VERBOSE) Log.v(TAG, "Writing New entry " + backupKey);
     }
 
@@ -1067,36 +1126,6 @@ public class LauncherBackupHelper implements BackupHelper {
         return wrapper.payload;
     }
 
-    private AppWidgetProviderInfo findAppWidgetProviderInfo(ComponentName component) {
-        if (mWidgetMap == null) {
-            List<AppWidgetProviderInfo> widgets =
-                    AppWidgetManager.getInstance(mContext).getInstalledProviders();
-            mWidgetMap = new HashMap<ComponentName, AppWidgetProviderInfo>(widgets.size());
-            for (AppWidgetProviderInfo info : widgets) {
-                mWidgetMap.put(info.provider, info);
-            }
-        }
-        return mWidgetMap.get(component);
-    }
-
-
-    private boolean initializeIconCache() {
-        if (mIconCache != null) {
-            return true;
-        }
-
-        final LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
-        if (appState == null) {
-            Throwable stackTrace = new Throwable();
-            stackTrace.fillInStackTrace();
-            Log.w(TAG, "Failed to get app state during backup/restore", stackTrace);
-            return false;
-        }
-        mIconCache = appState.getIconCache();
-        return mIconCache != null;
-    }
-
-
     /**
      * @return true if the launcher is in a state to support backup
      */
@@ -1109,9 +1138,8 @@ public class LauncherBackupHelper implements BackupHelper {
         }
         cursor.close();
 
-        if (!initializeIconCache()) {
+        if (LauncherAppState.getInstanceNoCreate() == null) {
             // launcher services are unavailable, try again later
-            dataChanged();
             return false;
         }
 
@@ -1123,13 +1151,66 @@ public class LauncherBackupHelper implements BackupHelper {
                 .getSerialNumberForUser(UserHandleCompat.myUserHandle());
     }
 
-    private class InvalidBackupException extends IOException {
-        private InvalidBackupException(Throwable cause) {
+    @Thunk class InvalidBackupException extends IOException {
+
+        private static final long serialVersionUID = 8931456637211665082L;
+
+        @Thunk InvalidBackupException(Throwable cause) {
             super(cause);
         }
 
-        public InvalidBackupException(String reason) {
+        @Thunk InvalidBackupException(String reason) {
             super(reason);
+        }
+    }
+
+    /**
+     * A class to check if an activity can handle one of the intents from a list of
+     * predefined intents.
+     */
+    private class ItemTypeMatcher {
+
+        private final ArrayList<Intent> mIntents;
+
+        ItemTypeMatcher(int xml_res) {
+            mIntents = xml_res == 0 ? new ArrayList<Intent>() : parseIntents(xml_res);
+        }
+
+        private ArrayList<Intent> parseIntents(int xml_res) {
+            ArrayList<Intent> intents = new ArrayList<Intent>();
+            XmlResourceParser parser = mContext.getResources().getXml(xml_res);
+            try {
+                DefaultLayoutParser.beginDocument(parser, DefaultLayoutParser.TAG_RESOLVE);
+                final int depth = parser.getDepth();
+                int type;
+                while (((type = parser.next()) != XmlPullParser.END_TAG ||
+                        parser.getDepth() > depth) && type != XmlPullParser.END_DOCUMENT) {
+                    if (type != XmlPullParser.START_TAG) {
+                        continue;
+                    } else if (DefaultLayoutParser.TAG_FAVORITE.equals(parser.getName())) {
+                        final String uri = DefaultLayoutParser.getAttributeValue(
+                                parser, DefaultLayoutParser.ATTR_URI);
+                        intents.add(Intent.parseUri(uri, 0));
+                    }
+                }
+            } catch (URISyntaxException | XmlPullParserException | IOException e) {
+                Log.e(TAG, "Unable to parse " + xml_res, e);
+            } finally {
+                parser.close();
+            }
+            return intents;
+        }
+
+        public boolean matches(ActivityInfo activity, PackageManager pm) {
+            for (Intent intent : mIntents) {
+                intent.setPackage(activity.packageName);
+                ResolveInfo info = pm.resolveActivity(intent, 0);
+                if (info != null && (info.activityInfo.name.equals(activity.name)
+                        || info.activityInfo.name.equals(activity.targetActivity))) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

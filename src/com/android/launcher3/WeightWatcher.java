@@ -34,6 +34,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.launcher3.util.Thunk;
+
 public class WeightWatcher extends LinearLayout {
     private static final int RAM_GRAPH_RSS_COLOR = 0xFF990000;
     private static final int RAM_GRAPH_PSS_COLOR = 0xFF99CC00;
@@ -81,7 +83,7 @@ public class WeightWatcher extends LinearLayout {
             }
         }
     };
-    private MemoryTracker mMemoryService;
+    @Thunk MemoryTracker mMemoryService;
 
     public WeightWatcher(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -134,7 +136,7 @@ public class WeightWatcher extends LinearLayout {
         GraphView mRamGraph;
         TextView mText;
         int mPid;
-        private MemoryTracker.ProcessMemInfo mMemInfo;
+        @Thunk MemoryTracker.ProcessMemInfo mMemInfo;
 
         public ProcessWatcher(Context context) {
             this(context, null);

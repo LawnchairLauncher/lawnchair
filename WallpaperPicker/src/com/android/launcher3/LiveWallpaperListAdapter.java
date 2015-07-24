@@ -30,10 +30,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+
+import com.android.launcher3.util.Thunk;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -50,7 +51,7 @@ public class LiveWallpaperListAdapter extends BaseAdapter implements ListAdapter
     private final LayoutInflater mInflater;
     private final PackageManager mPackageManager;
 
-    private List<LiveWallpaperTile> mWallpapers;
+    @Thunk List<LiveWallpaperTile> mWallpapers;
 
     @SuppressWarnings("unchecked")
     public LiveWallpaperListAdapter(Context context) {
@@ -90,8 +91,6 @@ public class LiveWallpaperListAdapter extends BaseAdapter implements ListAdapter
             view = convertView;
         }
 
-        WallpaperPickerActivity.setWallpaperItemPaddingToZero((FrameLayout) view);
-
         LiveWallpaperTile wallpaperInfo = mWallpapers.get(position);
         wallpaperInfo.setView(view);
         ImageView image = (ImageView) view.findViewById(R.id.wallpaper_image);
@@ -111,8 +110,8 @@ public class LiveWallpaperListAdapter extends BaseAdapter implements ListAdapter
     }
 
     public static class LiveWallpaperTile extends WallpaperPickerActivity.WallpaperTileInfo {
-        private Drawable mThumbnail;
-        private WallpaperInfo mInfo;
+        @Thunk Drawable mThumbnail;
+        @Thunk WallpaperInfo mInfo;
         public LiveWallpaperTile(Drawable thumbnail, WallpaperInfo info, Intent intent) {
             mThumbnail = thumbnail;
             mInfo = info;
@@ -122,8 +121,8 @@ public class LiveWallpaperListAdapter extends BaseAdapter implements ListAdapter
             Intent preview = new Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER);
             preview.putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
                     mInfo.getComponent());
-            a.onLiveWallpaperPickerLaunch(mInfo);
-            a.startActivityForResultSafely(preview, WallpaperPickerActivity.PICK_LIVE_WALLPAPER);
+            a.startActivityForResultSafely(preview,
+                    WallpaperPickerActivity.PICK_WALLPAPER_THIRD_PARTY_ACTIVITY);
         }
     }
 

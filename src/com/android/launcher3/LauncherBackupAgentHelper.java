@@ -32,7 +32,7 @@ public class LauncherBackupAgentHelper extends BackupAgentHelper {
 
     private static final String LAUNCHER_DATA_PREFIX = "L";
 
-    static final boolean VERBOSE = true;
+    static final boolean VERBOSE = false;
     static final boolean DEBUG = false;
 
     private static BackupManager sBackupManager;
@@ -78,7 +78,7 @@ public class LauncherBackupAgentHelper extends BackupAgentHelper {
             super.onRestore(data, appVersionCode, newState);
             // If no favorite was migrated, clear the data and start fresh.
             final Cursor c = getContentResolver().query(
-                    LauncherSettings.Favorites.CONTENT_URI_NO_NOTIFICATION, null, null, null, null);
+                    LauncherSettings.Favorites.CONTENT_URI, null, null, null, null);
             hasData = c.moveToNext();
             c.close();
         } catch (Exception e) {
@@ -90,6 +90,12 @@ public class LauncherBackupAgentHelper extends BackupAgentHelper {
         if (hasData && mHelper.restoreSuccessful) {
             LauncherAppState.getLauncherProvider().clearFlagEmptyDbCreated();
             LauncherClings.synchonouslyMarkFirstRunClingDismissed(this);
+
+            // TODO: Update the backup set to include rank.
+            if (mHelper.restoredBackupVersion <= 3) {
+                LauncherAppState.getLauncherProvider().updateFolderItemsRank();
+                LauncherAppState.getLauncherProvider().convertShortcutsToLauncherActivities();
+            }
         } else {
             if (VERBOSE) Log.v(TAG, "Nothing was restored, clearing DB");
             LauncherAppState.getLauncherProvider().createEmptyDB();

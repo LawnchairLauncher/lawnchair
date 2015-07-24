@@ -20,10 +20,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.MessageQueue;
-import android.util.Pair;
+
+import com.android.launcher3.util.Thunk;
 
 import java.util.LinkedList;
-import java.util.ListIterator;
 
 /**
  * Queue of things to run on a looper thread.  Items posted with {@link #post} will not
@@ -33,20 +33,18 @@ import java.util.ListIterator;
  * This class is fifo.
  */
 public class DeferredHandler {
-    private LinkedList<Pair<Runnable, Integer>> mQueue = new LinkedList<Pair<Runnable, Integer>>();
+    @Thunk LinkedList<Runnable> mQueue = new LinkedList<>();
     private MessageQueue mMessageQueue = Looper.myQueue();
     private Impl mHandler = new Impl();
 
-    private class Impl extends Handler implements MessageQueue.IdleHandler {
+    @Thunk class Impl extends Handler implements MessageQueue.IdleHandler {
         public void handleMessage(Message msg) {
-            Pair<Runnable, Integer> p;
             Runnable r;
             synchronized (mQueue) {
                 if (mQueue.size() == 0) {
                     return;
                 }
-                p = mQueue.removeFirst();
-                r = p.first;
+                r = mQueue.removeFirst();
             }
             r.run();
             synchronized (mQueue) {
@@ -77,11 +75,8 @@ public class DeferredHandler {
 
     /** Schedule runnable to run after everything that's on the queue right now. */
     public void post(Runnable runnable) {
-        post(runnable, 0);
-    }
-    public void post(Runnable runnable, int type) {
         synchronized (mQueue) {
-            mQueue.add(new Pair<Runnable, Integer>(runnable, type));
+            mQueue.add(runnable);
             if (mQueue.size() == 1) {
                 scheduleNextLocked();
             }
@@ -90,31 +85,10 @@ public class DeferredHandler {
 
     /** Schedule runnable to run when the queue goes idle. */
     public void postIdle(final Runnable runnable) {
-        postIdle(runnable, 0);
-    }
-    public void postIdle(final Runnable runnable, int type) {
-        post(new IdleRunnable(runnable), type);
+        post(new IdleRunnable(runnable));
     }
 
-    public void cancelRunnable(Runnable runnable) {
-        synchronized (mQueue) {
-            while (mQueue.remove(runnable)) { }
-        }
-    }
-    public void cancelAllRunnablesOfType(int type) {
-        synchronized (mQueue) {
-            ListIterator<Pair<Runnable, Integer>> iter = mQueue.listIterator();
-            Pair<Runnable, Integer> p;
-            while (iter.hasNext()) {
-                p = iter.next();
-                if (p.second == type) {
-                    iter.remove();
-                }
-            }
-        }
-    }
-
-    public void cancel() {
+    public void cancelAll() {
         synchronized (mQueue) {
             mQueue.clear();
         }
@@ -122,20 +96,19 @@ public class DeferredHandler {
 
     /** Runs all queued Runnables from the calling thread. */
     public void flush() {
-        LinkedList<Pair<Runnable, Integer>> queue = new LinkedList<Pair<Runnable, Integer>>();
+        LinkedList<Runnable> queue = new LinkedList<>();
         synchronized (mQueue) {
             queue.addAll(mQueue);
             mQueue.clear();
         }
-        for (Pair<Runnable, Integer> p : queue) {
-            p.first.run();
+        for (Runnable r : queue) {
+            r.run();
         }
     }
 
     void scheduleNextLocked() {
         if (mQueue.size() > 0) {
-            Pair<Runnable, Integer> p = mQueue.getFirst();
-            Runnable peek = p.first;
+            Runnable peek = mQueue.getFirst();
             if (peek instanceof IdleRunnable) {
                 mMessageQueue.addIdleHandler(mHandler);
             } else {

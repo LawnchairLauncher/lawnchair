@@ -8,29 +8,42 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Rect;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 public class AppWidgetResizeFrame extends FrameLayout {
-    private LauncherAppWidgetHostView mWidgetView;
-    private CellLayout mCellLayout;
-    private DragLayer mDragLayer;
-    private ImageView mLeftHandle;
-    private ImageView mRightHandle;
-    private ImageView mTopHandle;
-    private ImageView mBottomHandle;
+    private static final int SNAP_DURATION = 150;
+    private static final float DIMMED_HANDLE_ALPHA = 0f;
+    private static final float RESIZE_THRESHOLD = 0.66f;
+
+    private static Rect sTmpRect = new Rect();
+
+    private final Launcher mLauncher;
+    private final LauncherAppWidgetHostView mWidgetView;
+    private final CellLayout mCellLayout;
+    private final DragLayer mDragLayer;
+
+    private final ImageView mLeftHandle;
+    private final ImageView mRightHandle;
+    private final ImageView mTopHandle;
+    private final ImageView mBottomHandle;
+
+    private final Rect mWidgetPadding;
+
+    private final int mBackgroundPadding;
+    private final int mTouchTargetWidth;
+
+    private final int[] mDirectionVector = new int[2];
+    private final int[] mLastDirectionVector = new int[2];
+    private final int[] mTmpPt = new int[2];
 
     private boolean mLeftBorderActive;
     private boolean mRightBorderActive;
     private boolean mTopBorderActive;
     private boolean mBottomBorderActive;
-
-    private int mWidgetPaddingLeft;
-    private int mWidgetPaddingRight;
-    private int mWidgetPaddingTop;
-    private int mWidgetPaddingBottom;
 
     private int mBaselineWidth;
     private int mBaselineHeight;
@@ -47,29 +60,8 @@ public class AppWidgetResizeFrame extends FrameLayout {
     private int mDeltaXAddOn;
     private int mDeltaYAddOn;
 
-    private int mBackgroundPadding;
-    private int mTouchTargetWidth;
-
     private int mTopTouchRegionAdjustment = 0;
     private int mBottomTouchRegionAdjustment = 0;
-
-    int[] mDirectionVector = new int[2];
-    int[] mLastDirectionVector = new int[2];
-    int[] mTmpPt = new int[2];
-
-    final int SNAP_DURATION = 150;
-    final int BACKGROUND_PADDING = 24;
-    final float DIMMED_HANDLE_ALPHA = 0f;
-    final float RESIZE_THRESHOLD = 0.66f;
-
-    private static Rect mTmpRect = new Rect();
-
-    public static final int LEFT = 0;
-    public static final int TOP = 1;
-    public static final int RIGHT = 2;
-    public static final int BOTTOM = 3;
-
-    private Launcher mLauncher;
 
     public AppWidgetResizeFrame(Context context,
             LauncherAppWidgetHostView widgetView, CellLayout cellLayout, DragLayer dragLayer) {
@@ -78,48 +70,56 @@ public class AppWidgetResizeFrame extends FrameLayout {
         mLauncher = (Launcher) context;
         mCellLayout = cellLayout;
         mWidgetView = widgetView;
-        mResizeMode = widgetView.getAppWidgetInfo().resizeMode;
+        LauncherAppWidgetProviderInfo info = (LauncherAppWidgetProviderInfo)
+                widgetView.getAppWidgetInfo();
+        mResizeMode = info.resizeMode;
         mDragLayer = dragLayer;
 
-        final AppWidgetProviderInfo info = widgetView.getAppWidgetInfo();
-        int[] result = Launcher.getMinSpanForWidget(mLauncher, info);
-        mMinHSpan = result[0];
-        mMinVSpan = result[1];
+        mMinHSpan = info.getMinSpanX(mLauncher);
+        mMinVSpan = info.getMinSpanY(mLauncher);
 
-        setBackgroundResource(R.drawable.widget_resize_frame_holo);
+        setBackgroundResource(R.drawable.widget_resize_shadow);
+        setForeground(getResources().getDrawable(R.drawable.widget_resize_frame));
         setPadding(0, 0, 0, 0);
 
+        final int handleMargin = getResources().getDimensionPixelSize(R.dimen.widget_handle_margin);
         LayoutParams lp;
         mLeftHandle = new ImageView(context);
-        mLeftHandle.setImageResource(R.drawable.widget_resize_handle_left);
-        lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 
+        mLeftHandle.setImageResource(R.drawable.ic_widget_resize_handle);
+        lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
                 Gravity.LEFT | Gravity.CENTER_VERTICAL);
+        lp.leftMargin = handleMargin;
         addView(mLeftHandle, lp);
 
         mRightHandle = new ImageView(context);
-        mRightHandle.setImageResource(R.drawable.widget_resize_handle_right);
-        lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 
+        mRightHandle.setImageResource(R.drawable.ic_widget_resize_handle);
+        lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
                 Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+        lp.rightMargin = handleMargin;
         addView(mRightHandle, lp);
 
         mTopHandle = new ImageView(context);
-        mTopHandle.setImageResource(R.drawable.widget_resize_handle_top);
-        lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 
+        mTopHandle.setImageResource(R.drawable.ic_widget_resize_handle);
+        lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
                 Gravity.CENTER_HORIZONTAL | Gravity.TOP);
+        lp.topMargin = handleMargin;
         addView(mTopHandle, lp);
 
         mBottomHandle = new ImageView(context);
-        mBottomHandle.setImageResource(R.drawable.widget_resize_handle_bottom);
-        lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 
+        mBottomHandle.setImageResource(R.drawable.ic_widget_resize_handle);
+        lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
                 Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
+        lp.bottomMargin = handleMargin;
         addView(mBottomHandle, lp);
 
-        Rect p = AppWidgetHostView.getDefaultPaddingForWidget(context,
-                widgetView.getAppWidgetInfo().provider, null);
-        mWidgetPaddingLeft = p.left;
-        mWidgetPaddingTop = p.top;
-        mWidgetPaddingRight = p.right;
-        mWidgetPaddingBottom = p.bottom;
+        if (!info.isCustomWidget) {
+            mWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(context,
+                    widgetView.getAppWidgetInfo().provider, null);
+        } else {
+            Resources r = context.getResources();
+            int padding = r.getDimensionPixelSize(R.dimen.default_widget_padding);
+            mWidgetPadding = new Rect(padding, padding, padding, padding);
+        }
 
         if (mResizeMode == AppWidgetProviderInfo.RESIZE_HORIZONTAL) {
             mTopHandle.setVisibility(GONE);
@@ -129,8 +129,8 @@ public class AppWidgetResizeFrame extends FrameLayout {
             mRightHandle.setVisibility(GONE);
         }
 
-        final float density = mLauncher.getResources().getDisplayMetrics().density;
-        mBackgroundPadding = (int) Math.ceil(density * BACKGROUND_PADDING);
+        mBackgroundPadding = getResources()
+                .getDimensionPixelSize(R.dimen.resize_frame_background_padding);
         mTouchTargetWidth = 2 * mBackgroundPadding;
 
         // When we create the resize frame, we first mark all cells as unoccupied. The appropriate
@@ -335,13 +335,12 @@ public class AppWidgetResizeFrame extends FrameLayout {
 
     static void updateWidgetSizeRanges(AppWidgetHostView widgetView, Launcher launcher,
             int spanX, int spanY) {
-
-        getWidgetSizeRanges(launcher, spanX, spanY, mTmpRect);
-        widgetView.updateAppWidgetSize(null, mTmpRect.left, mTmpRect.top,
-                mTmpRect.right, mTmpRect.bottom);
+        getWidgetSizeRanges(launcher, spanX, spanY, sTmpRect);
+        widgetView.updateAppWidgetSize(null, sTmpRect.left, sTmpRect.top,
+                sTmpRect.right, sTmpRect.bottom);
     }
 
-    static Rect getWidgetSizeRanges(Launcher launcher, int spanX, int spanY, Rect rect) {
+    public static Rect getWidgetSizeRanges(Launcher launcher, int spanX, int spanY, Rect rect) {
         if (rect == null) {
             rect = new Rect();
         }
@@ -396,19 +395,19 @@ public class AppWidgetResizeFrame extends FrameLayout {
 
     public void snapToWidget(boolean animate) {
         final DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
-        int newWidth = mWidgetView.getWidth() + 2 * mBackgroundPadding - mWidgetPaddingLeft -
-                mWidgetPaddingRight;
-        int newHeight = mWidgetView.getHeight() + 2 * mBackgroundPadding - mWidgetPaddingTop -
-                mWidgetPaddingBottom;
+        int newWidth = mWidgetView.getWidth() + 2 * mBackgroundPadding
+                - mWidgetPadding.left - mWidgetPadding.right;
+        int newHeight = mWidgetView.getHeight() + 2 * mBackgroundPadding
+                - mWidgetPadding.top - mWidgetPadding.bottom;
 
         mTmpPt[0] = mWidgetView.getLeft();
         mTmpPt[1] = mWidgetView.getTop();
         mDragLayer.getDescendantCoordRelativeToSelf(mCellLayout.getShortcutsAndWidgets(), mTmpPt);
 
-        int newX = mTmpPt[0] - mBackgroundPadding + mWidgetPaddingLeft;
-        int newY = mTmpPt[1] - mBackgroundPadding + mWidgetPaddingTop;
+        int newX = mTmpPt[0] - mBackgroundPadding + mWidgetPadding.left;
+        int newY = mTmpPt[1] - mBackgroundPadding + mWidgetPadding.top;
 
-        // We need to make sure the frame's touchable regions lie fully within the bounds of the 
+        // We need to make sure the frame's touchable regions lie fully within the bounds of the
         // DragLayer. We allow the actual handles to be clipped, but we shift the touch regions
         // down accordingly to provide a proper touch target.
         if (newY < 0) {

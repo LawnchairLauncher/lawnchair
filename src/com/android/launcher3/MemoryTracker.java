@@ -101,7 +101,7 @@ public class MemoryTracker extends Service {
 
     public void startTrackingProcess(int pid, String name, long start) {
         synchronized (mLock) {
-            final Long lpid = new Long(pid);
+            final Long lpid = Long.valueOf(pid);
 
             if (mPids.contains(lpid)) return;
 

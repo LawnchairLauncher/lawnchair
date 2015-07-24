@@ -30,7 +30,7 @@
     <string name="wallpaper_accessibility_name" msgid="4093221025304876354">"Фоновий малюнок %1$d з %2$d"</string>
     <string name="announce_selection" msgid="123723511662250539">"Вибрано <xliff:g id="LABEL">%1$s</xliff:g>"</string>
     <string name="wallpaper_delete" msgid="1459353972739215344">"Видалити"</string>
-    <string name="pick_image" msgid="6704438906027442697">"Вибрати зображення"</string>
+    <string name="pick_image" msgid="3189640419551368385">"Мої фото"</string>
     <string name="pick_wallpaper" msgid="4628969645948454559">"Фонові малюнки"</string>
     <string name="crop_wallpaper" msgid="4882870800623585836">"Обрізати фоновий малюнок"</string>
 </resources>

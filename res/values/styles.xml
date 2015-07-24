@@ -18,8 +18,15 @@
 -->
 
 <resources>
+    <style name="Theme.Light.CustomOverscroll" parent="@android:style/Theme.DeviceDefault">
+        <item name="android:colorEdgeEffect">@color/folder_edge_effect_color</item>
+    </style>
 
-    <style name="WorkspaceIcon">
+    <style name="Theme.Dark.CustomOverscroll" parent="@android:style/Theme.DeviceDefault">
+        <item name="android:colorEdgeEffect">@color/workspace_edge_effect_color</item>
+    </style>
+
+    <style name="Icon">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_gravity">center</item>
@@ -32,11 +39,7 @@
         <item name="android:fontFamily">sans-serif-condensed</item>
     </style>
 
-    <style name="WorkspaceIcon.Portrait"></style>
-
-    <style name="WorkspaceIcon.Landscape"></style>
-
-    <style name="WorkspaceIcon.AppsCustomize">
+    <style name="Icon.AllApps">
         <item name="android:background">@null</item>
         <item name="android:textColor">@color/quantum_panel_text_color</item>
         <item name="android:drawablePadding">@dimen/dynamic_grid_icon_drawable_padding</item>
@@ -44,7 +47,7 @@
         <item name="customShadows">false</item>
     </style>
 
-    <style name="WorkspaceIcon.Folder">
+    <style name="Icon.Folder">
         <item name="android:background">@null</item>
         <item name="android:textColor">@color/quantum_panel_text_color</item>
         <item name="android:shadowRadius">0</item>
@@ -58,7 +61,7 @@
         <item name="android:layout_height">match_parent</item>
     </style>
 
-    <style name="DropTargetButton.Base">
+    <style name="DropTargetButtonBase">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_gravity">center</item>
@@ -76,7 +79,7 @@
         <item name="android:shadowRadius">4.0</item>
     </style>
 
-    <style name="DropTargetButton" parent="DropTargetButton.Base"></style>
+    <style name="DropTargetButton" parent="DropTargetButtonBase" />
 
     <style name="PreloadIcon">
         <item name="background">@drawable/virtual_preload</item>
@@ -88,11 +91,6 @@
         <item name="background">@drawable/virtual_preload_folder</item>
         <item name="indicatorSize">4dp</item>
         <item name="ringOutset">4dp</item>
-    </style>
-
-    <!-- Overridden in device overlays -->
-    <style name="PagedViewWidgetImageView">
-        <item name="android:paddingLeft">@dimen/app_widget_preview_padding_left</item>
     </style>
 
 </resources>

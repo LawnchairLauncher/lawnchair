@@ -23,8 +23,6 @@ import android.opengl.GLUtils;
 import android.opengl.Matrix;
 import android.util.Log;
 
-import com.android.gallery3d.util.IntArray;
-
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -698,6 +696,7 @@ public class GLES20Canvas implements GLCanvas {
     }
 
     private void prepareTexture(BasicTexture texture, int program, ShaderParameter[] params) {
+        deleteRecycledResources();
         GLES20.glUseProgram(program);
         checkError();
         enableBlending(!texture.isOpaque() || getAlpha() < OPAQUE_ALPHA);

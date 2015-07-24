@@ -43,6 +43,7 @@ import android.widget.TextView;
 
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.FolderInfo.FolderListener;
+import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
 
@@ -50,15 +51,16 @@ import java.util.ArrayList;
  * An icon that can appear on in the workspace representing an {@link UserFolder}.
  */
 public class FolderIcon extends FrameLayout implements FolderListener {
-    private Launcher mLauncher;
-    private Folder mFolder;
+    @Thunk Launcher mLauncher;
+    @Thunk Folder mFolder;
     private FolderInfo mInfo;
-    private static boolean sStaticValuesDirty = true;
+    @Thunk static boolean sStaticValuesDirty = true;
 
     private CheckLongPressHelper mLongPressHelper;
+    private StylusEventHelper mStylusEventHelper;
 
     // The number of icons to display in the
-    private static final int NUM_ITEMS_IN_PREVIEW = 3;
+    public static final int NUM_ITEMS_IN_PREVIEW = 3;
     private static final int CONSUMPTION_ANIMATION_DURATION = 100;
     private static final int DROP_IN_ANIMATION_DURATION = 400;
     private static final int INITIAL_ITEM_ANIMATION_DURATION = 350;
@@ -88,8 +90,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     public static Drawable sSharedFolderLeaveBehind = null;
 
-    private ImageView mPreviewBackground;
-    private BubbleTextView mFolderName;
+    @Thunk ImageView mPreviewBackground;
+    @Thunk BubbleTextView mFolderName;
 
     FolderRingAnimator mFolderRingAnimator = null;
 
@@ -109,11 +111,11 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private float mSlop;
 
     private PreviewItemDrawingParams mParams = new PreviewItemDrawingParams(0, 0, 0, 0);
-    private PreviewItemDrawingParams mAnimParams = new PreviewItemDrawingParams(0, 0, 0, 0);
-    private ArrayList<ShortcutInfo> mHiddenItems = new ArrayList<ShortcutInfo>();
+    @Thunk PreviewItemDrawingParams mAnimParams = new PreviewItemDrawingParams(0, 0, 0, 0);
+    @Thunk ArrayList<ShortcutInfo> mHiddenItems = new ArrayList<ShortcutInfo>();
 
     private Alarm mOpenAlarm = new Alarm();
-    private ItemInfo mDragInfo;
+    @Thunk ItemInfo mDragInfo;
 
     public FolderIcon(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -127,6 +129,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     private void init() {
         mLongPressHelper = new CheckLongPressHelper(this);
+        mStylusEventHelper = new StylusEventHelper(this);
+        setAccessibilityDelegate(LauncherAppState.getInstance().getAccessibilityDelegate());
     }
 
     public boolean isDropEnabled() {
@@ -145,8 +149,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                     "INITIAL_ITEM_ANIMATION_DURATION, as sequencing of adding first two items " +
                     "is dependent on this");
         }
-        LauncherAppState app = LauncherAppState.getInstance();
-        DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+
+        DeviceProfile grid = launcher.getDeviceProfile();
 
         FolderIcon icon = (FolderIcon) LayoutInflater.from(launcher).inflate(resId, group, false);
         icon.setClipToPadding(false);
@@ -191,7 +195,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     public static class FolderRingAnimator {
         public int mCellX;
         public int mCellY;
-        private CellLayout mCellLayout;
+        @Thunk CellLayout mCellLayout;
         public float mOuterRingSize;
         public float mInnerRingSize;
         public FolderIcon mFolderIcon = null;
@@ -215,12 +219,11 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                             + Thread.currentThread());
                 }
 
-                LauncherAppState app = LauncherAppState.getInstance();
-                DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+                DeviceProfile grid = launcher.getDeviceProfile();
                 sPreviewSize = grid.folderIconSizePx;
                 sPreviewPadding = res.getDimensionPixelSize(R.dimen.folder_preview_padding);
-                sSharedOuterRingDrawable = res.getDrawable(R.drawable.portal_ring_outer_holo);
-                sSharedInnerRingDrawable = res.getDrawable(R.drawable.portal_ring_inner_nolip_holo);
+                sSharedOuterRingDrawable = res.getDrawable(R.drawable.portal_ring_outer);
+                sSharedInnerRingDrawable = res.getDrawable(R.drawable.portal_ring_inner_nolip);
                 sSharedFolderLeaveBehind = res.getDrawable(R.drawable.portal_ring_rest);
                 sStaticValuesDirty = false;
             }
@@ -488,8 +491,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     private void computePreviewDrawingParams(int drawableSize, int totalSize) {
         if (mIntrinsicIconSize != drawableSize || mTotalWidth != totalSize) {
-            LauncherAppState app = LauncherAppState.getInstance();
-            DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+            DeviceProfile grid = mLauncher.getDeviceProfile();
 
             mIntrinsicIconSize = drawableSize;
             mTotalWidth = totalSize;
@@ -643,9 +645,10 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             final Runnable onCompleteRunnable) {
         final PreviewItemDrawingParams finalParams = computePreviewItemDrawingParams(0, null);
 
-        final float scale0 = 1.0f;
-        final float transX0 = (mAvailableSpaceInPreview - d.getIntrinsicWidth()) / 2;
-        final float transY0 = (mAvailableSpaceInPreview - d.getIntrinsicHeight()) / 2 + getPaddingTop();
+        float iconSize = mLauncher.getDeviceProfile().iconSizePx;
+        final float scale0 = iconSize / d.getIntrinsicWidth() ;
+        final float transX0 = (mAvailableSpaceInPreview - iconSize) / 2;
+        final float transY0 = (mAvailableSpaceInPreview - iconSize) / 2 + getPaddingTop();
         mAnimParams.drawable = d;
 
         ValueAnimator va = LauncherAnimUtils.ofFloat(this, 0f, 1.0f);
@@ -708,7 +711,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     public void onTitleChanged(CharSequence title) {
-        mFolderName.setText(title.toString());
+        mFolderName.setText(title);
         setContentDescription(String.format(getContext().getString(R.string.folder_name_format),
                 title));
     }
@@ -718,6 +721,12 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         // Call the superclass onTouchEvent first, because sometimes it changes the state to
         // isPressed() on an ACTION_UP
         boolean result = super.onTouchEvent(event);
+
+        // Check for a stylus button press, if it occurs cancel any long press checks.
+        if (mStylusEventHelper.checkAndPerformStylusEvent(event)) {
+            mLongPressHelper.cancelLongPress();
+            return true;
+        }
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
