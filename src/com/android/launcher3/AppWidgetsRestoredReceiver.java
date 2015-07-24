@@ -90,5 +90,10 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
                 }
             }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
         }
+
+        LauncherAppState app = LauncherAppState.getInstanceNoCreate();
+        if (app != null) {
+            app.reloadWorkspace();
+        }
     }
 }

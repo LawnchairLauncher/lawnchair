@@ -1,1 +1,10 @@
 db_files
+*.iml
+.project
+.classpath
+.project.properties
+gen/
+tests/stress/gen/
+WallpaperPicker/gen/
+WallpaperPicker/.project.properties
+bin/

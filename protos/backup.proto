@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
- package launcher_backup;
+syntax = "proto2";
+
+package launcher_backup;
 
 option java_package = "com.android.launcher3.backup";
 option java_outer_classname = "BackupProtos";
@@ -70,6 +72,17 @@ message Journal {
 }
 
 message Favorite {
+  // Type of the app, this target represents
+  enum TargetType {
+    TARGET_NONE = 0;
+    TARGET_PHONE = 1;
+    TARGET_MESSENGER = 2;
+    TARGET_EMAIL = 3;
+    TARGET_BROWSER = 4;
+    TARGET_GALLERY = 5;
+    TARGET_CAMERA = 6;
+  }
+
   required int64 id = 1;
   required int32 itemType = 2;
   optional string title = 3;
@@ -88,17 +101,18 @@ message Favorite {
   optional string iconPackage = 16;
   optional string iconResource = 17;
   optional bytes icon = 18;
- }
+  optional TargetType targetType = 19 [default = TARGET_NONE];
+}
 
 message Screen {
   required int64 id = 1;
   optional int32 rank = 2;
- }
+}
 
 message Resource {
   required int32 dpi = 1;
   required bytes data = 2;
- }
+}
 
 message Widget {
   required string provider = 1;
@@ -106,4 +120,8 @@ message Widget {
   optional bool configure = 3;
   optional Resource icon = 4;
   optional Resource preview = 5;
- }
+
+  // Assume that a widget is resizable upto 2x2 if no data is available
+  optional int32 minSpanX = 6 [default = 2];
+  optional int32 minSpanY = 7 [default = 2];
+}

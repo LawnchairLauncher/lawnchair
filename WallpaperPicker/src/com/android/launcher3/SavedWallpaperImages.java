@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -60,13 +59,13 @@ public class SavedWallpaperImages extends BaseAdapter implements ListAdapter {
         }
     }
 
-    public SavedWallpaperImages(Activity context) {
+    public SavedWallpaperImages(Context context) {
         // We used to store the saved images in the cache directory, but that meant they'd get
         // deleted sometimes-- move them to the data directory
         ImageDb.moveFromCacheDirectoryIfNecessary(context);
         mDb = new ImageDb(context);
         mContext = context;
-        mLayoutInflater = context.getLayoutInflater();
+        mLayoutInflater = LayoutInflater.from(context);
     }
 
     public void loadThumbnailsAndImageIdList() {

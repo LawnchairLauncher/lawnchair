@@ -15,16 +15,13 @@
 -->
 
 <resources>
-    <dimen name="app_icon_size">72dp</dimen>
+<!-- All Apps -->
+    <dimen name="all_apps_search_bar_height">54dp</dimen>
+    <dimen name="all_apps_icon_top_bottom_padding">14dp</dimen>
 
 <!-- QSB -->
     <dimen name="toolbar_button_vertical_padding">8dip</dimen>
     <dimen name="toolbar_button_horizontal_padding">8dip</dimen>
-
-    <!-- When dragging items on the workspace, the number of dps by which the position of
-     the drag view should be offset from the position of the original view. -->
-    <dimen name="dragViewOffsetX">0dp</dimen>
-    <dimen name="dragViewOffsetY">0dp</dimen>
 
 <!-- Cling -->
     <dimen name="cling_migration_content_margin">96dp</dimen>
