@@ -54,12 +54,11 @@ class PreloadIconDrawable extends Drawable {
         mPaint.setStrokeCap(Paint.Cap.ROUND);
 
         setBounds(icon.getBounds());
-        applyTheme(theme);
+        applyPreloaderTheme(theme);
         onLevelChange(0);
     }
 
-    @Override
-    public void applyTheme(Theme t) {
+    public void applyPreloaderTheme(Theme t) {
         TypedArray ta = t.obtainStyledAttributes(R.styleable.PreloadIconDrawable);
         mBgDrawable = ta.getDrawable(R.styleable.PreloadIconDrawable_background);
         mBgDrawable.setFilterBitmap(true);

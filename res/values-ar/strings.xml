@@ -20,57 +20,27 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
-    <string name="home" msgid="7658288663002113681">"الرئيسية"</string>
-    <string name="uid_name" msgid="7820867637514617527">"‏تطبيقات Android الأساسية"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
+    <string name="work_folder_name" msgid="3753320833950115786">"العمل"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"لم يتم تثبيت التطبيق."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"التطبيق ليس متاحًا"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"تم تعطيل التطبيق الذي تم تنزيله في الوضع الآمن"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"الأدوات معطلة في الوضع الآمن"</string>
-    <string name="widgets_tab_label" msgid="2921133187116603919">"الأدوات"</string>
-    <string name="widget_adder" msgid="3201040140710381657">"الأدوات"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"عرض الذاكرة"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"المس مع الاستمرار لاختيار إحدى الأدوات."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <string name="external_drop_widget_error" msgid="3165821058322217155">"تعذر إسقاط العنصر على هذه الشاشة الرئيسية."</string>
-    <string name="external_drop_widget_pick_title" msgid="3486317258037690630">"اختيار أداة لإنشائها"</string>
-    <string name="rename_folder_label" msgid="3727762225964550653">"اسم المجلد"</string>
-    <string name="rename_folder_title" msgid="3771389277707820891">"إعادة تسمية المجلد"</string>
-    <string name="rename_action" msgid="5559600076028658757">"موافق"</string>
-    <string name="cancel_action" msgid="7009134900002915310">"إلغاء"</string>
-    <string name="menu_item_add_item" msgid="1264911265836810421">"إضافة إلى الشاشة الرئيسية"</string>
-    <string name="group_applications" msgid="3797214114206693605">"التطبيقات"</string>
-    <string name="group_shortcuts" msgid="6012256992764410535">"الاختصارات"</string>
-    <string name="group_widgets" msgid="1569030723286851002">"الأدوات"</string>
-    <string name="completely_out_of_space" msgid="6106288382070760318">"ليس هناك مساحة أخرى في الشاشات الرئيسية."</string>
+    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"البحث في التطبيقات"</string>
+    <string name="all_apps_loading_message" msgid="7557140873644765180">"جارٍ تحميل التطبيقات…"</string>
+    <string name="all_apps_no_search_results" msgid="6332185285860416787">"لم يتم العثور على أية تطبيقات تتطابق مع \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="out_of_space" msgid="4691004494942118364">"ليس هناك مساحة أخرى في هذه الشاشة الرئيسية."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"لا يوجد المزيد من الحقول في علبة المفضلة"</string>
-    <string name="invalid_hotseat_item" msgid="5779907847267573691">"هذه الأداة كبيرة جدًا مما يحول دون قبولها في علبة المفضّلة"</string>
-    <string name="shortcut_installed" msgid="1701742129426969556">"تم إنشاء الاختصار \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
-    <string name="shortcut_uninstalled" msgid="8176767991305701821">"تمت إزالة الاختصار \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
-    <string name="shortcut_duplicate" msgid="9167217446062498127">"الاختصار \"<xliff:g id="NAME">%s</xliff:g>\" موجود من قبل."</string>
-    <string name="title_select_shortcut" msgid="6680642571148153868">"اختيار اختصار"</string>
-    <string name="title_select_application" msgid="3280812711670683644">"اختيار تطبيق"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"التطبيقات"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"الرئيسية"</string>
-    <string name="delete_zone_label_workspace" msgid="4009607676751398685">"إزالة"</string>
-    <string name="delete_zone_label_all_apps" msgid="8083826390278958980">"إزالة"</string>
     <string name="delete_target_label" msgid="1822697352535677073">"إزالة"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"إزالة"</string>
     <string name="info_target_label" msgid="8053346143994679532">"معلومات عن التطبيق"</string>
-    <string name="accessibility_all_apps_button" msgid="2603132375383800483">"التطبيقات"</string>
-    <string name="accessibility_delete_button" msgid="6466114477993744621">"إزالة"</string>
-    <string name="delete_zone_label_all_apps_system_app" msgid="449755632749610895">"إزالة التحديث"</string>
-    <string name="cab_menu_delete_app" msgid="7435191475867183689">"إزالة التطبيق"</string>
-    <string name="cab_menu_app_info" msgid="8593722221450362342">"تفاصيل التطبيق"</string>
-    <string name="cab_app_selection_text" msgid="374688303047985416">"تم تحديد تطبيق واحد"</string>
-    <string name="cab_widget_selection_text" msgid="1833458597831541241">"تم تحديد أداة واحدة"</string>
-    <string name="cab_folder_selection_text" msgid="7999992513806132118">"تم تحديد مجلد واحد"</string>
-    <string name="cab_shortcut_selection_text" msgid="2103811025667946450">"تم تحديد اختصار واحد"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"تثبيت اختصارات"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"للسماح لتطبيق ما بإضافة اختصارات بدون تدخل المستخدم."</string>
-    <string name="permlab_uninstall_shortcut" msgid="864595034498083837">"إزالة الاختصارات"</string>
-    <string name="permdesc_uninstall_shortcut" msgid="5134129545001836849">"للسماح للتطبيق بإزالة الاختصارات بدون تدخل المستخدم."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"قراءة إعدادات واختصارات الشاشة الرئيسية"</string>
     <string name="permdesc_read_settings" msgid="5833423719057558387">"للسماح للتطبيق بقراءة الإعدادات والاختصارات في الشاشة الرئيسية."</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"كتابة إعدادات واختصارات الشاشة الرئيسية"</string>
@@ -78,30 +48,17 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"حدثت مشكلة أثناء تحميل الأداة"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"الإعداد"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"هذا تطبيق نظام وتتعذر إزالته."</string>
-    <string name="dream_name" msgid="1530253749244328964">"قاذفة صواريخ"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"مجلد بدون اسم"</string>
-    <string name="workspace_description_format" msgid="2950174241104043327">"‏الشاشة الرئيسية %1$d"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"‏الصفحة %1$d من %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"‏الشاشة الرئيسية %1$d من %2$d"</string>
-    <string name="apps_customize_apps_scroll_format" msgid="370005296147130238">"‏صفحة التطبيقات %1$d من %2$d"</string>
-    <string name="apps_customize_widgets_scroll_format" msgid="3106209519974971521">"‏صفحة الأدوات %1$d من %2$d"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"مرحبًا"</string>
-    <string name="first_run_cling_description" msgid="6447072552696253358">"تصرف على راحتك."</string>
-    <string name="first_run_cling_custom_content_hint" msgid="6090628589029352439"></string>
-    <string name="first_run_cling_search_bar_hint" msgid="5909062802402452582"></string>
-    <string name="first_run_cling_create_screens_hint" msgid="6950729526680114157">"إنشاء المزيد من الشاشات للتطبيقات والمجلدات"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"نسخ رموز التطبيقات"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"هل تريد استيراد رموز ومجلدات من الشاشات الرئيسية القديمة؟"</string>
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"نسخ الرموز"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"بداية جديدة"</string>
-    <string name="workspace_cling_title" msgid="5626202359865825661">"تنظيم مساحتك"</string>
-    <string name="workspace_cling_move_item" msgid="528201129978005352">"المس مع الاستمرار الجزء الخلفي من صورة الشاشة لإدارة الخلفية والأدوات والإعدادات."</string>
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"الخلفيات والأدوات والإعدادات"</string>
     <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"المس مع الاستمرار الخلفية لتخصيصها"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"حسنًا"</string>
-    <string name="folder_cling_title" msgid="3894908818693254164">"إليك المجلد"</string>
-    <string name="folder_cling_create_folder" msgid="6158215559475836131">"لإنشاء مجلد مثل هذا، المس أحد التطبيقات مع استمرار اللمس، ثم حركه فوق آخر."</string>
-    <string name="cling_dismiss" msgid="8962359497601507581">"موافق"</string>
     <string name="folder_opened" msgid="94695026776264709">"تم فتح المجلد، بمقاس <xliff:g id="WIDTH">%1$d</xliff:g> في <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1884479294466410023">"المس لإغلاق المجلد"</string>
     <string name="folder_tap_to_rename" msgid="9191075570492871147">"المس لحفظ إعادة التسمية"</string>
@@ -111,14 +68,34 @@
     <string name="widget_button_text" msgid="2880537293434387943">"الأدوات"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"الخلفيات"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"الإعدادات"</string>
-    <string name="package_state_enqueued" msgid="6227252464303085641">"انتظار"</string>
-    <string name="package_state_downloading" msgid="4088770468458724721">"جارٍ التنزيل"</string>
-    <string name="package_state_installing" msgid="7588193972189849870">"جارٍ التثبيت"</string>
+    <string name="allow_rotation_title" msgid="2118706734511831751">"السماح بالتدوير"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"غير معروفة"</string>
-    <string name="package_state_error" msgid="7672093962724223588">"استعادة مخفقة"</string>
-    <string name="abandoned_clean_all" msgid="5256770727689657618">"إزالة الكل"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"إزالة"</string>
     <string name="abandoned_search" msgid="891119232568284442">"بحث"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"لم يتم تثبيت هذا التطبيق"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"لم يتم تثبيت تطبيق لهذا الرمز. يمكنك إزالته أو البحث عن التطبيق وتثبيته يدويًا."</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"إضافة إلى الشاشة الرئيسية"</string>
+    <string name="action_move_here" msgid="2170188780612570250">"نقل العنصر إلى هنا"</string>
+    <string name="item_added_to_workspace" msgid="4211073925752213539">"تمت إضافة العنصر إلى الشاشة الرئيسية"</string>
+    <string name="item_removed" msgid="851119963877842327">"تم حذف العنصر"</string>
+    <string name="action_move" msgid="4339390619886385032">"نقل العنصر"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"نقل إلى الصف <xliff:g id="NUMBER_0">%1$s</xliff:g> العمود <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="move_to_position" msgid="6750008980455459790">"نقل إلى الموضع <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
+    <string name="move_to_hotseat_position" msgid="6295412897075147808">"نقل إلى الموضع المفضل <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
+    <string name="item_moved" msgid="4606538322571412879">"تم نقل العنصر"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"إضافة إلى المجلد: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="add_to_folder_with_app" msgid="4534929978967147231">"إضافة إلى المجلد الذي به <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"تمت إضافة العنصر إلى المجلد"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"إنشاء مجلد يتضمن: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_created" msgid="6409794597405184510">"تم إنشاء المجلد"</string>
+    <string name="action_move_to_workspace" msgid="1603837886334246317">"نقل إلى الشاشة الرئيسية"</string>
+    <string name="action_move_screen_left" msgid="8854216831569401665">"نقل الشاشة إلى اليسار"</string>
+    <string name="action_move_screen_right" msgid="329334910274311123">"نقل الشاشة إلى اليمين"</string>
+    <string name="screen_moved" msgid="266230079505650577">"تم نقل الشاشة"</string>
+    <string name="action_resize" msgid="1802976324781771067">"تغيير حجم"</string>
+    <string name="action_increase_width" msgid="8773715375078513326">"زيادة العرض"</string>
+    <string name="action_increase_height" msgid="459390020612501122">"زيادة الارتفاع"</string>
+    <string name="action_decrease_width" msgid="1374549771083094654">"تقليل العرض"</string>
+    <string name="action_decrease_height" msgid="282377193880900022">"تقليل الارتفاع"</string>
+    <string name="widget_resized" msgid="9130327887929620">"تم تغيير حجم الأداة إلى العرض <xliff:g id="NUMBER_0">%1$s</xliff:g> والارتفاع <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
 </resources>

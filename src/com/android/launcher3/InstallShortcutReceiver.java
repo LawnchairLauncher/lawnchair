@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.text.TextUtils;
@@ -32,6 +33,7 @@ import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.util.Thunk;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -144,10 +146,24 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             return;
         }
 
-        if (DBG) Log.d(TAG, "Got INSTALL_SHORTCUT: " + data.toUri(0));
         PendingInstallShortcutInfo info = new PendingInstallShortcutInfo(data, context);
+        if (info.launchIntent == null || info.label == null) {
+            if (DBG) Log.e(TAG, "Invalid install shortcut intent");
+            return;
+        }
 
+        info = convertToLauncherActivityIfPossible(info);
         queuePendingShortcutInfo(info, context);
+    }
+
+    public static ShortcutInfo fromShortcutIntent(Context context, Intent data) {
+        PendingInstallShortcutInfo info = new PendingInstallShortcutInfo(data, context);
+        if (info.launchIntent == null || info.label == null) {
+            if (DBG) Log.e(TAG, "Invalid install shortcut intent");
+            return null;
+        }
+        info = convertToLauncherActivityIfPossible(info);
+        return info.getShortcutInfo();
     }
 
     static void queueInstallShortcut(LauncherActivityInfoCompat info, Context context) {
@@ -186,11 +202,6 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 final PendingInstallShortcutInfo pendingInfo = iter.next();
                 final Intent intent = pendingInfo.launchIntent;
 
-                if (LauncherAppState.isDisableAllApps() && !isValidShortcutLaunchIntent(intent)) {
-                    if (DBG) Log.d(TAG, "Ignoring shortcut with launchIntent:" + intent);
-                    continue;
-                }
-
                 // If the intent specifies a package, make sure the package exists
                 String packageName = pendingInfo.getTargetPackage();
                 if (!TextUtils.isEmpty(packageName)) {
@@ -201,56 +212,28 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                     }
                 }
 
-                final boolean exists = LauncherModel.shortcutExists(context, pendingInfo.label,
-                        intent, pendingInfo.user);
-                if (!exists) {
-                    // Generate a shortcut info to add into the model
-                    addShortcuts.add(pendingInfo.getShortcutInfo());
-                }
+                // Generate a shortcut info to add into the model
+                addShortcuts.add(pendingInfo.getShortcutInfo());
             }
 
             // Add the new apps to the model and bind them
             if (!addShortcuts.isEmpty()) {
                 LauncherAppState app = LauncherAppState.getInstance();
-                app.getModel().addAndBindAddedWorkspaceApps(context, addShortcuts);
+                app.getModel().addAndBindAddedWorkspaceItems(context, addShortcuts);
             }
         }
-    }
-
-    /**
-     * Returns true if the intent is a valid launch intent for a shortcut.
-     * This is used to identify shortcuts which are different from the ones exposed by the
-     * applications' manifest file.
-     *
-     * When DISABLE_ALL_APPS is true, shortcuts exposed via the app's manifest should never be
-     * duplicated or removed(unless the app is un-installed).
-     *
-     * @param launchIntent The intent that will be launched when the shortcut is clicked.
-     */
-    static boolean isValidShortcutLaunchIntent(Intent launchIntent) {
-        if (launchIntent != null
-                && Intent.ACTION_MAIN.equals(launchIntent.getAction())
-                && launchIntent.getComponent() != null
-                && launchIntent.getCategories() != null
-                && launchIntent.getCategories().size() == 1
-                && launchIntent.hasCategory(Intent.CATEGORY_LAUNCHER)
-                && launchIntent.getExtras() == null
-                && TextUtils.isEmpty(launchIntent.getDataString())) {
-            return false;
-        }
-        return true;
     }
 
     /**
      * Ensures that we have a valid, non-null name.  If the provided name is null, we will return
      * the application name instead.
      */
-    private static CharSequence ensureValidName(Context context, Intent intent, CharSequence name) {
+    @Thunk static CharSequence ensureValidName(Context context, Intent intent, CharSequence name) {
         if (name == null) {
             try {
                 PackageManager pm = context.getPackageManager();
                 ActivityInfo info = pm.getActivityInfo(intent.getComponent(), 0);
-                name = info.loadLabel(pm).toString();
+                name = info.loadLabel(pm);
             } catch (PackageManager.NameNotFoundException nnfe) {
                 return "";
             }
@@ -335,7 +318,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                     .key(LAUNCH_INTENT_KEY).value(launchIntent.toUri(0))
                     .key(NAME_KEY).value(name);
                 if (icon != null) {
-                    byte[] iconByteArray = ItemInfo.flattenBitmap(icon);
+                    byte[] iconByteArray = Utilities.flattenBitmap(icon);
                     json = json.key(ICON_KEY).value(
                             Base64.encodeToString(
                                     iconByteArray, 0, iconByteArray.length, Base64.DEFAULT));
@@ -354,16 +337,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 
         public ShortcutInfo getShortcutInfo() {
             if (activityInfo != null) {
-                final ShortcutInfo info = new ShortcutInfo();
-                info.user = user;
-                info.title = label;
-                info.contentDescription = label;
-                info.customIcon = false;
-                info.intent = launchIntent;
-                info.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
-                info.flags = AppInfo.initFlags(activityInfo);
-                info.firstInstallTime = activityInfo.getFirstInstallTime();
-                return info;
+                return ShortcutInfo.fromActivityInfo(activityInfo, mContext);
             } else {
                 return LauncherAppState.getInstance().getModel().infoFromShortcutIntent(mContext, data);
             }
@@ -376,6 +350,10 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                     launchIntent.getComponent().getPackageName();
             }
             return packageName;
+        }
+
+        public boolean isLuncherActivity() {
+            return activityInfo != null;
         }
     }
 
@@ -423,5 +401,35 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             Log.d(TAG, "Exception reading shortcut to add: " + e);
         }
         return null;
+    }
+
+    /**
+     * Tries to create a new PendingInstallShortcutInfo which represents the same target,
+     * but is an app target and not a shortcut.
+     * @return the newly created info or the original one.
+     */
+    private static PendingInstallShortcutInfo convertToLauncherActivityIfPossible(
+            PendingInstallShortcutInfo original) {
+        if (original.isLuncherActivity()) {
+            // Already an activity target
+            return original;
+        }
+        if (!Utilities.isLauncherAppTarget(original.launchIntent)
+                || !original.user.equals(UserHandleCompat.myUserHandle())) {
+            // We can only convert shortcuts which point to a main activity in the current user.
+            return original;
+        }
+
+        PackageManager pm = original.mContext.getPackageManager();
+        ResolveInfo info = pm.resolveActivity(original.launchIntent, 0);
+
+        if (info == null) {
+            return original;
+        }
+
+        // Ignore any conflicts in the label name, as that can change based on locale.
+        LauncherActivityInfoCompat launcherInfo = LauncherActivityInfoCompat
+                .fromResolveInfo(info, original.mContext);
+        return new PendingInstallShortcutInfo(launcherInfo, original.mContext);
     }
 }

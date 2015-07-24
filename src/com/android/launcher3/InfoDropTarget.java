@@ -18,20 +18,11 @@ package com.android.launcher3;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.graphics.drawable.TransitionDrawable;
 import android.util.AttributeSet;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.android.launcher3.compat.UserHandleCompat;
 
 public class InfoDropTarget extends ButtonDropTarget {
-
-    private ColorStateList mOriginalTextColor;
-    private TransitionDrawable mDrawable;
 
     public InfoDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -44,96 +35,44 @@ public class InfoDropTarget extends ButtonDropTarget {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-
-        mOriginalTextColor = getTextColors();
-
         // Get the hover color
-        Resources r = getResources();
-        mHoverColor = r.getColor(R.color.info_target_hover_tint);
-        mDrawable = (TransitionDrawable) getCurrentDrawable();
+        mHoverColor = getResources().getColor(R.color.info_target_hover_tint);
 
-        if (mDrawable == null) {
-            // TODO: investigate why this is ever happening. Presently only on one known device.
-            mDrawable = (TransitionDrawable) r.getDrawable(R.drawable.info_target_selector);
-            setCompoundDrawablesRelativeWithIntrinsicBounds(mDrawable, null, null, null);
-        }
-
-        if (null != mDrawable) {
-            mDrawable.setCrossFadeEnabled(true);
-        }
-
-        // Remove the text in the Phone UI in landscape
-        int orientation = getResources().getConfiguration().orientation;
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            if (!LauncherAppState.getInstance().isScreenLarge()) {
-                setText("");
-            }
-        }
+        setDrawable(R.drawable.ic_info_launcher);
     }
 
-    @Override
-    public boolean acceptDrop(DragObject d) {
-        // acceptDrop is called just before onDrop. We do the work here, rather than
-        // in onDrop, because it allows us to reject the drop (by returning false)
-        // so that the object being dragged isn't removed from the drag source.
+    public static void startDetailsActivityForInfo(Object info, Launcher launcher) {
         ComponentName componentName = null;
-        if (d.dragInfo instanceof AppInfo) {
-            componentName = ((AppInfo) d.dragInfo).componentName;
-        } else if (d.dragInfo instanceof ShortcutInfo) {
-            componentName = ((ShortcutInfo) d.dragInfo).intent.getComponent();
-        } else if (d.dragInfo instanceof PendingAddItemInfo) {
-            componentName = ((PendingAddItemInfo) d.dragInfo).componentName;
+        if (info instanceof AppInfo) {
+            componentName = ((AppInfo) info).componentName;
+        } else if (info instanceof ShortcutInfo) {
+            componentName = ((ShortcutInfo) info).intent.getComponent();
+        } else if (info instanceof PendingAddItemInfo) {
+            componentName = ((PendingAddItemInfo) info).componentName;
         }
         final UserHandleCompat user;
-        if (d.dragInfo instanceof ItemInfo) {
-            user = ((ItemInfo) d.dragInfo).user;
+        if (info instanceof ItemInfo) {
+            user = ((ItemInfo) info).user;
         } else {
             user = UserHandleCompat.myUserHandle();
         }
 
         if (componentName != null) {
-            mLauncher.startApplicationDetailsActivity(componentName, user);
+            launcher.startApplicationDetailsActivity(componentName, user);
         }
-
-        // There is no post-drop animation, so clean up the DragView now
-        d.deferDragViewCleanupPostAnimation = false;
-        return false;
     }
 
     @Override
-    public void onDragStart(DragSource source, Object info, int dragAction) {
-        boolean isVisible = true;
+    protected boolean supportsDrop(DragSource source, Object info) {
+        return source.supportsAppInfoDropTarget() && supportsDrop(getContext(), info);
+    }
 
-        // Hide this button unless we are dragging something from AllApps
-        if (!source.supportsAppInfoDropTarget()) {
-            isVisible = false;
-        }
-
-        mActive = isVisible;
-        mDrawable.resetTransition();
-        setTextColor(mOriginalTextColor);
-        ((ViewGroup) getParent()).setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    public static boolean supportsDrop(Context context, Object info) {
+        return info instanceof AppInfo || info instanceof PendingAddItemInfo;
     }
 
     @Override
-    public void onDragEnd() {
-        super.onDragEnd();
-        mActive = false;
-    }
-
-    public void onDragEnter(DragObject d) {
-        super.onDragEnter(d);
-
-        mDrawable.startTransition(mTransitionDuration);
-        setTextColor(mHoverColor);
-    }
-
-    public void onDragExit(DragObject d) {
-        super.onDragExit(d);
-
-        if (!d.dragComplete) {
-            mDrawable.resetTransition();
-            setTextColor(mOriginalTextColor);
-        }
+    void completeDrop(DragObject d) {
+        startDetailsActivityForInfo(d.dragInfo, mLauncher);
     }
 }

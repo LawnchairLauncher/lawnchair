@@ -2,16 +2,9 @@
     <bool name="config_largeHeap">true</bool>
     <bool name="is_large_tablet">true</bool>
 
-<!-- AllApps/Customize/AppsCustomize -->
+<!-- All Apps & Widgets -->
     <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
     <integer name="config_workspaceSpringLoadShrinkPercentage">90</integer>
-
-<!-- Workspace -->
-    <!-- Whether or not the drop targets drop down as opposed to fade in -->
-    <bool name="config_useDropTargetDownTransition">false</bool>
-
-    <!-- Camera distance for the overscroll effect -->
-    <integer name="config_cameraDistance">18000</integer>
 
 <!-- Hotseat -->
     <bool name="hotseat_transpose_layout_with_orientation">false</bool>
