@@ -21,9 +21,13 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
+
+import com.android.launcher3.util.UiThreadCircularReveal;
 
 import java.util.HashSet;
 import java.util.WeakHashMap;
@@ -128,13 +132,12 @@ public class LauncherAnimUtils {
         return anim;
     }
 
-    public static Animator createCircularReveal(View view, int centerX,
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public static ValueAnimator createCircularReveal(View view, int centerX,
             int centerY, float startRadius, float endRadius) {
-        Animator anim = ViewAnimationUtils.createCircularReveal(view, centerX,
+        ValueAnimator anim = UiThreadCircularReveal.createCircularReveal(view, centerX,
                 centerY, startRadius, endRadius);
-        if (anim instanceof ValueAnimator) {
-            new FirstFrameAnimatorHelper((ValueAnimator) anim, view);
-        }
+        new FirstFrameAnimatorHelper(anim, view);
         return anim;
     }
 }

@@ -27,7 +27,7 @@
         <item name="android:layout_height">match_parent</item>
     </style>
 
-    <style name="DropTargetButton" parent="DropTargetButton.Base">
+    <style name="DropTargetButton" parent="DropTargetButtonBase">
         <item name="android:paddingLeft">60dp</item>
         <item name="android:paddingRight">60dp</item>
         <item name="android:shadowColor">#393939</item>

@@ -18,6 +18,19 @@
 
 <resources>
 
+    <!-- BubbleTextView specific attributes. -->
+    <declare-styleable name="BubbleTextView">
+        <attr name="layoutHorizontal" format="boolean" />
+        <attr name="iconSizeOverride" format="dimension" />
+        <attr name="iconDisplay" format="integer">
+            <enum name="workspace" value="0" />
+            <enum name="all_apps" value="1" />
+            <enum name="widget_section" value="2" />
+        </attr>
+        <attr name="deferShadowGeneration" format="boolean" />
+        <attr name="customShadows" format="boolean" />
+    </declare-styleable>
+
     <!-- Page Indicator specific attributes. -->
     <declare-styleable name="PageIndicator">
         <attr name="windowSize" format="integer"  />
@@ -59,16 +72,6 @@
         <attr name="maxGap" format="dimension" />
     </declare-styleable>
 
-    <!-- StrokedTextView specific attributes. -->
-    <declare-styleable name="StrokedTextView">
-        <!-- The color of the stroke outline -->
-        <attr name="strokeColor" format="color" />
-        <!-- The color of the text -->
-        <attr name="strokeTextColor" format="color" />
-        <!-- The width of the stroke -->
-        <attr name="strokeWidth" format="float" />
-    </declare-styleable>
-
     <!-- PagedView specific attributes. These attributes are used to customize
          a PagedView view in XML files. -->
     <declare-styleable name="PagedView">
@@ -78,28 +81,6 @@
 
         <!-- The page indicator for this workspace -->
         <attr name="pageIndicator" format="reference" />
-    </declare-styleable>
-
-    <declare-styleable name="BubbleTextView">
-        <!-- A spacing override for the icons within a page -->
-        <attr name="customShadows" format="boolean" />
-    </declare-styleable>
-
-    <!-- AppsCustomizePagedView specific attributes.  These attributes are used to
-         customize an AppsCustomizePagedView in xml files. -->
-    <declare-styleable name="AppsCustomizePagedView">
-        <!-- Max number of cells of applications horizontally -->
-        <attr name="maxAppCellCountX" format="integer" />
-        <!-- Max number of cells of applications vertically -->
-        <attr name="maxAppCellCountY" format="integer" />
-        <!-- Horizontal spacing between widgets and wallpapers -->
-        <attr name="widgetCellWidthGap" format="dimension" />
-        <!-- Vertical spacing between widgets -->
-        <attr name="widgetCellHeightGap" format="dimension" />
-        <!-- Number of widgets horizontally -->
-        <attr name="widgetCountX" format="integer" />
-        <!-- Number of widgets vertically -->
-        <attr name="widgetCountY" format="integer" />
     </declare-styleable>
 
     <!-- XML attributes used by default_workspace.xml -->

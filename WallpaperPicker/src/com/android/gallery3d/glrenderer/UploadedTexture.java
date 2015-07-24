@@ -20,7 +20,8 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.opengl.GLUtils;
 
-import junit.framework.Assert;
+import com.android.gallery3d.common.Utils;
+import com.android.launcher3.util.Thunk;
 
 import java.util.HashMap;
 
@@ -82,7 +83,7 @@ public abstract class UploadedTexture extends BasicTexture {
         return mIsUploading;
     }
 
-    private static class BorderKey implements Cloneable {
+    @Thunk static class BorderKey implements Cloneable {
         public boolean vertical;
         public Config config;
         public int length;
@@ -144,7 +145,7 @@ public abstract class UploadedTexture extends BasicTexture {
     }
 
     private void freeBitmap() {
-        Assert.assertTrue(mBitmap != null);
+        Utils.assertTrue(mBitmap != null);
         onFreeBitmap(mBitmap);
         mBitmap = null;
     }
@@ -219,7 +220,7 @@ public abstract class UploadedTexture extends BasicTexture {
                 int texWidth = getTextureWidth();
                 int texHeight = getTextureHeight();
 
-                Assert.assertTrue(bWidth <= texWidth && bHeight <= texHeight);
+                Utils.assertTrue(bWidth <= texWidth && bHeight <= texHeight);
 
                 // Upload the bitmap to a new texture.
                 mId = canvas.getGLId().generateTexture();

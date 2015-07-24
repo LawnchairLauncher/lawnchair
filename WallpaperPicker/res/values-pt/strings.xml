@@ -30,7 +30,7 @@
     <string name="wallpaper_accessibility_name" msgid="4093221025304876354">"Plano de fundo %1$d de %2$d"</string>
     <string name="announce_selection" msgid="123723511662250539">"<xliff:g id="LABEL">%1$s</xliff:g> selecionado"</string>
     <string name="wallpaper_delete" msgid="1459353972739215344">"Excluir"</string>
-    <string name="pick_image" msgid="6704438906027442697">"Escolher imagem"</string>
+    <string name="pick_image" msgid="3189640419551368385">"Minhas fotos"</string>
     <string name="pick_wallpaper" msgid="4628969645948454559">"Planos de fundo"</string>
     <string name="crop_wallpaper" msgid="4882870800623585836">"Cortar plano de fundo"</string>
 </resources>

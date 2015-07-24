@@ -20,13 +20,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -39,7 +36,7 @@ public class ItemInfo {
      */
     static final String EXTRA_PROFILE = "profile";
     
-    static final int NO_ID = -1;
+    public static final int NO_ID = -1;
     
     /**
      * The id in the settings database for this item
@@ -85,7 +82,7 @@ public class ItemInfo {
     /**
      * Indicates the Y cell span.
      */
-    int spanY = 1;
+    public int spanY = 1;
 
     /**
      * Indicates the minimum X cell span.
@@ -98,6 +95,11 @@ public class ItemInfo {
     public int minSpanY = 1;
 
     /**
+     * Indicates the position in an ordered list.
+     */
+    public int rank = 0;
+
+    /**
      * Indicates that this item needs to be updated in the db
      */
     public boolean requiresDbUpdate = false;
@@ -105,21 +107,21 @@ public class ItemInfo {
     /**
      * Title of the item
      */
-    CharSequence title;
+    public CharSequence title;
 
     /**
      * Content description of the item.
      */
-    CharSequence contentDescription;
+    public CharSequence contentDescription;
 
     /**
      * The position of the item in a drag-and-drop operation.
      */
-    int[] dropPos = null;
+    public int[] dropPos = null;
 
-    UserHandleCompat user;
+    public UserHandleCompat user;
 
-    ItemInfo() {
+    public ItemInfo() {
         user = UserHandleCompat.myUserHandle();
     }
 
@@ -135,6 +137,7 @@ public class ItemInfo {
         cellY = info.cellY;
         spanX = info.spanX;
         spanY = info.spanY;
+        rank = info.rank;
         screenId = info.screenId;
         itemType = info.itemType;
         container = info.container;
@@ -161,6 +164,7 @@ public class ItemInfo {
         values.put(LauncherSettings.Favorites.CELLY, cellY);
         values.put(LauncherSettings.Favorites.SPANX, spanX);
         values.put(LauncherSettings.Favorites.SPANY, spanY);
+        values.put(LauncherSettings.Favorites.RANK, rank);
         long serialNumber = UserManagerCompat.getInstance(context).getSerialNumberForUser(user);
         values.put(LauncherSettings.Favorites.PROFILE_ID, serialNumber);
 
@@ -170,30 +174,9 @@ public class ItemInfo {
         }
     }
 
-    void updateValuesWithCoordinates(ContentValues values, int cellX, int cellY) {
-        values.put(LauncherSettings.Favorites.CELLX, cellX);
-        values.put(LauncherSettings.Favorites.CELLY, cellY);
-    }
-
-    static byte[] flattenBitmap(Bitmap bitmap) {
-        // Try go guesstimate how much space the icon will take when serialized
-        // to avoid unnecessary allocations/copies during the write.
-        int size = bitmap.getWidth() * bitmap.getHeight() * 4;
-        ByteArrayOutputStream out = new ByteArrayOutputStream(size);
-        try {
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-            out.flush();
-            out.close();
-            return out.toByteArray();
-        } catch (IOException e) {
-            Log.w("Favorite", "Could not write icon");
-            return null;
-        }
-    }
-
     static void writeBitmap(ContentValues values, Bitmap bitmap) {
         if (bitmap != null) {
-            byte[] data = flattenBitmap(bitmap);
+            byte[] data = Utilities.flattenBitmap(bitmap);
             values.put(LauncherSettings.Favorites.ICON, data);
         }
     }

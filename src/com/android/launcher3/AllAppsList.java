@@ -24,6 +24,7 @@ import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 
@@ -98,14 +99,14 @@ class AllAppsList {
                 user);
 
         for (LauncherActivityInfoCompat info : matches) {
-            add(new AppInfo(context, info, user, mIconCache, null));
+            add(new AppInfo(context, info, user, mIconCache));
         }
     }
 
     /**
      * Remove the apps for the given apk identified by packageName.
      */
-    public void removePackage(String packageName, UserHandleCompat user, boolean clearCache) {
+    public void removePackage(String packageName, UserHandleCompat user) {
         final List<AppInfo> data = this.data;
         for (int i = data.size() - 1; i >= 0; i--) {
             AppInfo info = data.get(i);
@@ -115,8 +116,15 @@ class AllAppsList {
                 data.remove(i);
             }
         }
-        if (clearCache) {
-            mIconCache.remove(packageName, user);
+    }
+
+    public void updateIconsAndLabels(HashSet<String> packages, UserHandleCompat user,
+            ArrayList<AppInfo> outUpdates) {
+        for (AppInfo info : data) {
+            if (info.user.equals(user) && packages.contains(info.componentName.getPackageName())) {
+                mIconCache.updateTitleAndIcon(info);
+                outUpdates.add(info);
+            }
         }
     }
 
@@ -137,7 +145,6 @@ class AllAppsList {
                         && packageName.equals(component.getPackageName())) {
                     if (!findActivity(matches, component)) {
                         removed.add(applicationInfo);
-                        mIconCache.remove(component, user);
                         data.remove(i);
                     }
                 }
@@ -150,10 +157,9 @@ class AllAppsList {
                         info.getComponentName().getPackageName(), user,
                         info.getComponentName().getClassName());
                 if (applicationInfo == null) {
-                    add(new AppInfo(context, info, user, mIconCache, null));
+                    add(new AppInfo(context, info, user, mIconCache));
                 } else {
-                    mIconCache.remove(applicationInfo.componentName, user);
-                    mIconCache.getTitleAndIcon(applicationInfo, info, null);
+                    mIconCache.getTitleAndIcon(applicationInfo, info, true /* useLowResIcon */);
                     modified.add(applicationInfo);
                 }
             }

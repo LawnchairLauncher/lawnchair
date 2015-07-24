@@ -30,7 +30,7 @@
     <string name="wallpaper_accessibility_name" msgid="4093221025304876354">"‏وال پیپر ‎%1$d از ‎%2$d"</string>
     <string name="announce_selection" msgid="123723511662250539">"<xliff:g id="LABEL">%1$s</xliff:g> کو منتخب کیا گیا"</string>
     <string name="wallpaper_delete" msgid="1459353972739215344">"حذف کریں"</string>
-    <string name="pick_image" msgid="6704438906027442697">"تصویر منتخب کریں"</string>
+    <string name="pick_image" msgid="3189640419551368385">"میری تصاویر"</string>
     <string name="pick_wallpaper" msgid="4628969645948454559">"وال پیپرز"</string>
     <string name="crop_wallpaper" msgid="4882870800623585836">"وال پیپر کو تراشیں"</string>
 </resources>

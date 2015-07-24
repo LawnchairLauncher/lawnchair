@@ -15,14 +15,10 @@
 -->
 
 <resources>
-    <dimen name="app_icon_size">64dp</dimen>
-
-<!-- AppsCustomize -->
-    <dimen name="apps_customize_tab_bar_height">60dp</dimen>
-    <dimen name="apps_customize_tab_bar_margin_top">8dp</dimen>
-    <dimen name="app_widget_preview_label_margin_top">8dp</dimen>
-    <dimen name="app_widget_preview_label_margin_left">@dimen/app_widget_preview_padding_left</dimen>
-    <dimen name="app_widget_preview_label_margin_right">@dimen/app_widget_preview_padding_right</dimen>
+<!-- All Apps -->
+    <dimen name="all_apps_grid_view_start_margin">0dp</dimen>
+    <dimen name="all_apps_grid_section_text_size">26sp</dimen>
+    <dimen name="all_apps_icon_top_bottom_padding">12dp</dimen>
 
 <!-- Cling -->
     <dimen name="cling_migration_logo_height">400dp</dimen>

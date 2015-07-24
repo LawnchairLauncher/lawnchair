@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2008 The Android Open Source Project
+<!--
+     Copyright (C) 2015 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,43 +14,72 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
-<com.android.launcher3.Folder
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.launcher3.Folder xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@drawable/quantum_panel">
+    android:background="@drawable/quantum_panel"
+    android:elevation="5dp"
+    android:orientation="vertical" >
 
-    <ScrollView
-        android:id="@+id/scroll_view"
+    <FrameLayout
+        android:id="@+id/folder_content_wrapper"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-      <com.android.launcher3.CellLayout
-          android:id="@+id/folder_content"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:cacheColorHint="#ff333333"
-          android:hapticFeedbackEnabled="false" />
-    </ScrollView>
+        android:layout_height="match_parent" >
 
-    <com.android.launcher3.FolderEditText
-        android:id="@+id/folder_name"
+        <!-- Actual size of the indicator doesn't matter as it is scaled to match the view size -->
+
+        <com.android.launcher3.FocusIndicatorView
+            android:id="@+id/focus_indicator"
+            android:layout_width="20dp"
+            android:layout_height="20dp" />
+
+        <com.android.launcher3.FolderPagedView
+            android:id="@+id/folder_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:paddingTop="8dp"
+            launcher:pageIndicator="@+id/folder_page_indicator" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/folder_footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:paddingTop="@dimen/folder_name_padding"
-        android:paddingBottom="@dimen/folder_name_padding"
-        android:background="#00000000"
-        android:hint="@string/folder_hint_text"
-        android:textSize="14sp"
-        android:textColor="#ff777777"
-        android:textColorHint="#ff808080"
-        android:textColorHighlight="#ffCCCCCC"
-        android:textCursorDrawable="@null"
-        android:gravity="center_horizontal"
-        android:singleLine="true"
-        android:imeOptions="flagNoExtractUi"
-        android:fontFamily="sans-serif-condensed"/>
+        android:clipChildren="false"
+        android:orientation="horizontal"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp" >
+
+        <com.android.launcher3.FolderEditText
+            android:id="@+id/folder_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:background="#00000000"
+            android:fontFamily="sans-serif-condensed"
+            android:gravity="center_horizontal"
+            android:hint="@string/folder_hint_text"
+            android:imeOptions="flagNoExtractUi"
+            android:paddingBottom="8dp"
+            android:paddingTop="4dp"
+            android:singleLine="true"
+            android:textColor="#ff777777"
+            android:textColorHighlight="#ffCCCCCC"
+            android:textColorHint="#ff808080"
+            android:textCursorDrawable="@null"
+            android:textSize="14sp" />
+
+        <include
+            android:id="@+id/folder_page_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="12dp"
+            android:layout_gravity="center_vertical"
+            layout="@layout/page_indicator" />
+
+    </LinearLayout>
+
 </com.android.launcher3.Folder>

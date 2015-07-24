@@ -31,6 +31,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 
+import com.android.launcher3.util.Thunk;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -139,11 +141,11 @@ public class LauncherAppsCompatV16 extends LauncherAppsCompat {
         mContext.registerReceiver(mPackageMonitor, filter);
     }
 
-    private synchronized List<OnAppsChangedCallbackCompat> getCallbacks() {
+    @Thunk synchronized List<OnAppsChangedCallbackCompat> getCallbacks() {
         return new ArrayList<OnAppsChangedCallbackCompat>(mCallbacks);
     }
 
-    private class PackageMonitor extends BroadcastReceiver {
+    @Thunk class PackageMonitor extends BroadcastReceiver {
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
             final UserHandleCompat user = UserHandleCompat.myUserHandle();
