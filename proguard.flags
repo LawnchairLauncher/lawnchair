@@ -1,3 +1,7 @@
+-keep,allowshrinking,allowoptimization class com.android.launcher3.** {
+  *;
+}
+
 -keep class com.android.launcher3.BaseRecyclerViewFastScrollBar {
   public void setWidth(int);
   public int getWidth();
