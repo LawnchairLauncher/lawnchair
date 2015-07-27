@@ -32,6 +32,7 @@ import android.content.res.XmlResourceParser;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.ParcelFileDescriptor;
 import android.text.TextUtils;
@@ -151,6 +152,9 @@ public class LauncherBackupHelper implements BackupHelper {
     private IconCache mIconCache;
     private DeviceProfieData mDeviceProfileData;
     private InvariantDeviceProfile mIdp;
+
+    DeviceProfieData migrationCompatibleProfileData;
+    HashSet<String> widgetSizes = new HashSet<>();
 
     boolean restoreSuccessful;
     int restoredBackupVersion = 1;
@@ -288,9 +292,9 @@ public class LauncherBackupHelper implements BackupHelper {
             return true;
         }
 
-        boolean isHotsetCompatible = false;
+        boolean isHotseatCompatible = false;
         if (currentProfile.allappsRank >= oldProfile.hotseatCount) {
-            isHotsetCompatible = true;
+            isHotseatCompatible = true;
             mHotseatShift = 0;
         }
 
@@ -298,12 +302,28 @@ public class LauncherBackupHelper implements BackupHelper {
                 && ((currentProfile.hotseatCount - currentProfile.allappsRank) >=
                         (oldProfile.hotseatCount - oldProfile.allappsRank))) {
             // There is enough space on both sides of the hotseat.
-            isHotsetCompatible = true;
+            isHotseatCompatible = true;
             mHotseatShift = currentProfile.allappsRank - oldProfile.allappsRank;
         }
 
-        return isHotsetCompatible && (currentProfile.desktopCols >= oldProfile.desktopCols)
-                && (currentProfile.desktopRows >= oldProfile.desktopRows);
+        if (!isHotseatCompatible) {
+            return false;
+        }
+        if ((currentProfile.desktopCols >= oldProfile.desktopCols)
+                && (currentProfile.desktopRows >= oldProfile.desktopRows)) {
+            return true;
+        }
+
+        if ((oldProfile.desktopCols - currentProfile.desktopCols <= 1) &&
+                (oldProfile.desktopRows - currentProfile.desktopRows <= 1)) {
+            // Allow desktop migration when row and/or column count contracts by 1.
+
+            migrationCompatibleProfileData = initDeviceProfileData(mIdp);
+            migrationCompatibleProfileData.desktopCols = oldProfile.desktopCols;
+            migrationCompatibleProfileData.desktopRows = oldProfile.desktopRows;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -706,7 +726,8 @@ public class LauncherBackupHelper implements BackupHelper {
             }
         }
 
-        // future site of widget table mutation
+        // Cache widget min sizes incase migration is required.
+        widgetSizes.add(widget.provider + "#" + widget.minSpanX + "," + widget.minSpanY);
     }
 
     /** create a new key, with an integer ID.
@@ -904,7 +925,11 @@ public class LauncherBackupHelper implements BackupHelper {
                 UserManagerCompat.getInstance(mContext).getSerialNumberForUser(myUserHandle);
         values.put(LauncherSettings.Favorites.PROFILE_ID, userSerialNumber);
 
-        DeviceProfieData currentProfile = mDeviceProfileData;
+        // If we will attempt grid resize, use the original profile to validate grid size, as
+        // anything which fits in the original grid should fit in the current grid after
+        // grid migration.
+        DeviceProfieData currentProfile = migrationCompatibleProfileData == null
+                ? mDeviceProfileData : migrationCompatibleProfileData;
 
         if (favorite.itemType == Favorites.ITEM_TYPE_APPWIDGET) {
             if (!TextUtils.isEmpty(favorite.appWidgetProvider)) {
@@ -996,14 +1021,9 @@ public class LauncherBackupHelper implements BackupHelper {
             widget.icon.dpi = dpi;
         }
 
-        // Calculate the spans corresponding to any one of the orientations as it should not change
-        // based on orientation.
-        int[] minSpans = CellLayout.rectToCell(
-                mIdp.portraitProfile, mContext, info.minResizeWidth, info.minResizeHeight, null);
-        widget.minSpanX = (info.resizeMode & LauncherAppWidgetProviderInfo.RESIZE_HORIZONTAL) != 0
-                ? minSpans[0] : -1;
-        widget.minSpanY = (info.resizeMode & LauncherAppWidgetProviderInfo.RESIZE_VERTICAL) != 0
-                ? minSpans[1] : -1;
+        Point spans = info.getMinSpans(mIdp, mContext);
+        widget.minSpanX = spans.x;
+        widget.minSpanY = spans.y;
 
         return widget;
     }
@@ -1186,6 +1206,10 @@ public class LauncherBackupHelper implements BackupHelper {
         @Thunk InvalidBackupException(String reason) {
             super(reason);
         }
+    }
+
+    public boolean shouldAttemptWorkspaceMigration() {
+        return migrationCompatibleProfileData != null;
     }
 
     /**

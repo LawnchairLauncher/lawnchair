@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Parcel;
@@ -109,5 +110,16 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
             mMinSpanX = minResizeSpan[0];
             mMinSpanY = minResizeSpan[1];
         }
+    }
+
+    public Point getMinSpans(InvariantDeviceProfile idp, Context context) {
+        // Calculate the spans corresponding to any one of the orientations as it should not change
+        // based on orientation.
+        // TODO: Use the max of both profiles
+        int[] minSpans = CellLayout.rectToCell(
+                idp.portraitProfile, context, minResizeWidth, minResizeHeight, null);
+        return new Point(
+                (resizeMode & RESIZE_HORIZONTAL) != 0 ? minSpans[0] : -1,
+                        (resizeMode & RESIZE_VERTICAL) != 0 ? minSpans[1] : -1);
     }
  }

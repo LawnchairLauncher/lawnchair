@@ -24,6 +24,8 @@ import android.database.Cursor;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
+import com.android.launcher3.model.MigrateFromRestoreTask;
+
 import java.io.IOException;
 
 public class LauncherBackupAgentHelper extends BackupAgentHelper {
@@ -94,6 +96,13 @@ public class LauncherBackupAgentHelper extends BackupAgentHelper {
             // Rank was added in v4.
             if (mHelper.restoredBackupVersion <= 3) {
                 LauncherAppState.getLauncherProvider().updateFolderItemsRank();
+            }
+
+            if (mHelper.shouldAttemptWorkspaceMigration()) {
+                MigrateFromRestoreTask.markForMigration(getApplicationContext(),
+                        (int) mHelper.migrationCompatibleProfileData.desktopCols,
+                        (int) mHelper.migrationCompatibleProfileData.desktopRows,
+                        mHelper.widgetSizes);
             }
 
             LauncherAppState.getLauncherProvider().convertShortcutsToLauncherActivities();

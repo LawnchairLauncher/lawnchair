@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.content.pm.ResolveInfo;
@@ -55,6 +56,7 @@ import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.model.MigrateFromRestoreTask;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.CursorIconInfo;
@@ -1133,7 +1135,7 @@ public class LauncherModel extends BroadcastReceiver
      * Update the order of the workspace screens in the database. The array list contains
      * a list of screen ids in the order that they should appear.
      */
-    void updateWorkspaceScreenOrder(Context context, final ArrayList<Long> screens) {
+    public void updateWorkspaceScreenOrder(Context context, final ArrayList<Long> screens) {
         final ArrayList<Long> screensCopy = new ArrayList<Long>(screens);
         final ContentResolver cr = context.getContentResolver();
         final Uri uri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
@@ -1411,7 +1413,7 @@ public class LauncherModel extends BroadcastReceiver
     /**
      * Loads the workspace screen ids in an ordered list.
      */
-    @Thunk static ArrayList<Long> loadWorkspaceScreensDb(Context context) {
+    public static ArrayList<Long> loadWorkspaceScreensDb(Context context) {
         final ContentResolver contentResolver = context.getContentResolver();
         final Uri screensUri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
 
@@ -1756,6 +1758,22 @@ public class LauncherModel extends BroadcastReceiver
             InvariantDeviceProfile profile = app.getInvariantDeviceProfile();
             int countX = (int) profile.numColumns;
             int countY = (int) profile.numRows;
+
+
+            if (MigrateFromRestoreTask.shouldRunTask(mContext)) {
+                try {
+                    MigrateFromRestoreTask task = new MigrateFromRestoreTask(mContext);
+                    // Clear the flags before starting the task, so that we do not run the task
+                    // again, in case there was an uncaught error.
+                    MigrateFromRestoreTask.clearFlags(mContext);
+                    task.execute();
+                } catch (Exception e) {
+                    Log.e(TAG, "Error during grid migration", e);
+
+                    // Clear workspace.
+                    mFlags = mFlags | LOADER_FLAG_CLEAR_WORKSPACE;
+                }
+            }
 
             if ((mFlags & LOADER_FLAG_CLEAR_WORKSPACE) != 0) {
                 Launcher.addDumpLog(TAG, "loadWorkspace: resetting launcher database", true);

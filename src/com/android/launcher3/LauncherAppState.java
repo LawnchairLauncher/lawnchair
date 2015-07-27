@@ -17,7 +17,6 @@
 package com.android.launcher3;
 
 import android.app.SearchManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -147,7 +146,7 @@ public class LauncherAppState {
         sLauncherProvider = new WeakReference<LauncherProvider>(provider);
     }
 
-    static LauncherProvider getLauncherProvider() {
+    public static LauncherProvider getLauncherProvider() {
         return sLauncherProvider.get();
     }
 
