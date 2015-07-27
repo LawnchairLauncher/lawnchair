@@ -87,6 +87,9 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
     @Override
     public int getItemCount() {
+        if (mWidgetsModel == null) {
+            return 0;
+        }
         return mWidgetsModel.getPackageSize();
     }
 
