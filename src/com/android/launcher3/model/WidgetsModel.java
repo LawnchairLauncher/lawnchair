@@ -39,7 +39,7 @@ public class WidgetsModel {
     private ArrayList<Object> mRawList;
 
     private final AppWidgetManagerCompat mAppWidgetMgr;
-    private final Comparator mWidgetAndShortcutNameComparator;
+    private final WidgetsAndShortcutNameComparator mWidgetAndShortcutNameComparator;
     private final Comparator mAppNameComparator;
     private final IconCache mIconCache;
     private final AppFilter mAppFilter;
@@ -103,6 +103,7 @@ public class WidgetsModel {
         // clear the lists.
         mWidgetsList.clear();
         mPackageItemInfos.clear();
+        mWidgetAndShortcutNameComparator.reset();
 
         // add and update.
         for (Object o: rawWidgetsShortcuts) {
@@ -139,7 +140,7 @@ public class WidgetsModel {
             if (widgetsShortcutsList != null) {
                 widgetsShortcutsList.add(o);
             } else {
-                widgetsShortcutsList = new ArrayList<Object>();
+                widgetsShortcutsList = new ArrayList<>();
                 widgetsShortcutsList.add(o);
                 pInfo = new PackageItemInfo(packageName);
                 mIconCache.getTitleAndIconForApp(packageName, userHandle,
