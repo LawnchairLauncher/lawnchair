@@ -301,8 +301,9 @@ public class Workspace extends PagedView
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.Workspace, defStyle, 0);
         mSpringLoadedShrinkFactor =
-            res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
-        mOverviewModeShrinkFactor = grid.getOverviewModeScale(mIsRtl);
+                res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
+        mOverviewModeShrinkFactor =
+                res.getInteger(R.integer.config_workspaceOverviewShrinkPercentage) / 100f;
         mOriginalDefaultPage = mDefaultPage = a.getInt(R.styleable.Workspace_defaultScreen, 1);
         a.recycle();
 
@@ -1957,15 +1958,17 @@ public class Workspace extends PagedView
 
     int getOverviewModeTranslationY() {
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        Rect overviewBar = grid.getOverviewModeButtonBarRect();
+        Rect workspacePadding = grid.getWorkspacePadding(Utilities.isRtl(getResources()));
+        int overviewButtonBarHeight = grid.getOverviewModeButtonBarHeight();
 
-        int availableHeight = getViewportHeight();
         int scaledHeight = (int) (mOverviewModeShrinkFactor * getNormalChildHeight());
-        int offsetFromTopEdge = (availableHeight - scaledHeight) / 2;
-        int offsetToCenterInOverview = (availableHeight - mInsets.top - overviewBar.height()
-                - scaledHeight) / 2;
-
-        return -offsetFromTopEdge + mInsets.top + offsetToCenterInOverview;
+        int workspaceTop = mInsets.top + workspacePadding.top;
+        int workspaceBottom = getViewportHeight() - mInsets.bottom - workspacePadding.bottom;
+        int overviewTop = mInsets.top;
+        int overviewBottom = getViewportHeight() - mInsets.bottom - overviewButtonBarHeight;
+        int workspaceOffsetTopEdge = workspaceTop + ((workspaceBottom - workspaceTop) - scaledHeight) / 2;
+        int overviewOffsetTopEdge = overviewTop + (overviewBottom - overviewTop - scaledHeight) / 2;
+        return -workspaceOffsetTopEdge + overviewOffsetTopEdge;
     }
 
     /**
