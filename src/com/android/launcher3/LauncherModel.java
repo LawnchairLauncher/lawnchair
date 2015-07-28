@@ -55,6 +55,7 @@ import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.CursorIconInfo;
@@ -887,7 +888,7 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     private void assertWorkspaceLoaded() {
-        if (LauncherAppState.isDogfoodBuild() && (isLoadingWorkspace() || !mHasLoaderCompletedOnce)) {
+        if (ProviderConfig.IS_DOGFOOD_BUILD && (isLoadingWorkspace() || !mHasLoaderCompletedOnce)) {
             throw new RuntimeException("Trying to add shortcut while loader is running");
         }
     }
@@ -2461,7 +2462,7 @@ public class LauncherModel extends BroadcastReceiver
                                 return (int) (lhs.screenId - rhs.screenId);
                             }
                             default:
-                                if (LauncherAppState.isDogfoodBuild()) {
+                                if (ProviderConfig.IS_DOGFOOD_BUILD) {
                                     throw new RuntimeException("Unexpected container type when " +
                                             "sorting workspace items.");
                                 }

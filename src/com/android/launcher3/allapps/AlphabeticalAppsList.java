@@ -18,11 +18,12 @@ package com.android.launcher3.allapps;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.compat.UserHandleCompat;
+import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.model.AppNameComparator;
 import com.android.launcher3.util.ComponentKey;
 
@@ -393,7 +394,7 @@ public class AlphabeticalAppsList {
                 if (info != null) {
                     mPredictedApps.add(info);
                 } else {
-                    if (LauncherAppState.isDogfoodBuild()) {
+                    if (ProviderConfig.IS_DOGFOOD_BUILD) {
                         Log.e(TAG, "Predicted app not found: " + ck.flattenToString(mLauncher));
                     }
                 }

@@ -22,6 +22,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.LinearLayout;
 
+import com.android.launcher3.config.ProviderConfig;
+
 /**
  * A base container view, which supports resizing.
  */
@@ -69,7 +71,7 @@ public abstract class BaseContainerView extends LinearLayout implements Insettab
      * Sets the search bar bounds for this container view to match.
      */
     final public void setSearchBarBounds(Rect bounds) {
-        if (LauncherAppState.isDogfoodBuild() && !isValidSearchBarBounds(bounds)) {
+        if (ProviderConfig.IS_DOGFOOD_BUILD && !isValidSearchBarBounds(bounds)) {
             Log.e(TAG, "Invalid search bar bounds: " + bounds);
         }
 

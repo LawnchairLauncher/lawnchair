@@ -103,6 +103,7 @@ import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LongArrayMap;
@@ -3775,7 +3776,7 @@ public class Launcher extends Activity
                             Object tag = v.getTag();
                             String desc = "Collision while binding workspace item: " + item
                                     + ". Collides with " + tag;
-                            if (LauncherAppState.isDogfoodBuild()) {
+                            if (ProviderConfig.IS_DOGFOOD_BUILD) {
                                 throw (new RuntimeException(desc));
                             } else {
                                 Log.d(TAG, desc);
