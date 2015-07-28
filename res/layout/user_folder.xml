@@ -20,7 +20,8 @@
     android:layout_height="wrap_content"
     android:background="@drawable/quantum_panel"
     android:elevation="5dp"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:descendantFocusability="afterDescendants" >
 
     <FrameLayout
         android:id="@+id/folder_content_wrapper"
