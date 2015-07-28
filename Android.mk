@@ -36,6 +36,7 @@ LOCAL_AAPT_FLAGS := --auto-add-overlay
 
 LOCAL_SDK_VERSION := current
 LOCAL_PACKAGE_NAME := Launcher3
+LOCAL_PRIVILEGED_MODULE := true
 #LOCAL_CERTIFICATE := shared
 
 LOCAL_OVERRIDES_PACKAGES := Home Launcher2
