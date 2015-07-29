@@ -2662,6 +2662,7 @@ public class Launcher extends Activity
             throw new IllegalArgumentException("Input must be a FolderIcon");
         }
 
+        // TODO(sunnygoyal): Re-evaluate this code.
         FolderIcon folderIcon = (FolderIcon) v;
         final FolderInfo info = folderIcon.getFolderInfo();
         Folder openFolder = mWorkspace.getFolderForTag(info);

@@ -2303,6 +2303,21 @@ public class LauncherModel extends BroadcastReceiver
                     }
                 }
 
+                // Sort all the folder items and make sure the first 3 items are high resolution.
+                for (FolderInfo folder : sBgFolders) {
+                    Collections.sort(folder.contents, Folder.ITEM_POS_COMPARATOR);
+                    int pos = 0;
+                    for (ShortcutInfo info : folder.contents) {
+                        if (info.usingLowResIcon) {
+                            info.updateIcon(mIconCache, false);
+                        }
+                        pos ++;
+                        if (pos >= FolderIcon.NUM_ITEMS_IN_PREVIEW) {
+                            break;
+                        }
+                    }
+                }
+
                 if (restoredRows.size() > 0) {
                     // Update restored items that no longer require special handling
                     ContentValues values = new ContentValues();
