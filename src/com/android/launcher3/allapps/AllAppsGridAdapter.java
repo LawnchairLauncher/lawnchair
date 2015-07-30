@@ -22,12 +22,15 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Handler;
+import android.support.v4.view.accessibility.AccessibilityRecordCompat;
+import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.accessibility.AccessibilityEvent;
 import android.widget.TextView;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
@@ -65,6 +68,38 @@ class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHol
         public ViewHolder(View v) {
             super(v);
             mContent = v;
+        }
+    }
+
+    /**
+     * A subclass of GridLayoutManager that overrides accessibility values during app search.
+     */
+    public class AppsGridLayoutManager extends GridLayoutManager {
+
+        public AppsGridLayoutManager(Context context) {
+            super(context, 1, GridLayoutManager.VERTICAL, false);
+        }
+
+        @Override
+        public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
+            super.onInitializeAccessibilityEvent(event);
+            if (mApps.hasNoFilteredResults()) {
+                // Disregard the no-search-results text as a list item for accessibility
+                final AccessibilityRecordCompat record = AccessibilityEventCompat
+                        .asRecord(event);
+                record.setItemCount(0);
+            }
+        }
+
+        @Override
+        public int getRowCountForAccessibility(RecyclerView.Recycler recycler,
+                RecyclerView.State state) {
+            if (mApps.hasNoFilteredResults()) {
+                // Disregard the no-search-results text as a list item for accessibility
+                return 0;
+            } else {
+                return super.getRowCountForAccessibility(recycler, state);
+            }
         }
     }
 
@@ -305,7 +340,7 @@ class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHol
         Resources res = context.getResources();
         mApps = apps;
         mGridSizer = new GridSpanSizer();
-        mGridLayoutMgr = new GridLayoutManager(context, 1, GridLayoutManager.VERTICAL, false);
+        mGridLayoutMgr = new AppsGridLayoutManager(context);
         mGridLayoutMgr.setSpanSizeLookup(mGridSizer);
         mItemDecoration = new GridItemDecoration();
         mLayoutInflater = LayoutInflater.from(context);
