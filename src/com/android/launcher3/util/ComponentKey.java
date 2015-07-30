@@ -64,8 +64,11 @@ public class ComponentKey {
      * Encodes a component key as a string of the form [flattenedComponentString#userId].
      */
     public String flattenToString(Context context) {
-        return componentName.flattenToString() + "#" +
-                UserManagerCompat.getInstance(context).getSerialNumberForUser(user);
+        String flattened = componentName.flattenToString();
+        if (user != null) {
+            flattened += "#" + UserManagerCompat.getInstance(context).getSerialNumberForUser(user);
+        }
+        return flattened;
     }
 
     @Override
