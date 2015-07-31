@@ -38,7 +38,7 @@ import java.util.HashSet;
 public class MigrateFromRestoreTask {
 
     private static final String TAG = "MigrateFromRestoreTask";
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     private static final String KEY_MIGRATION_SOURCE_SIZE = "migration_restore_src_size";
     private static final String KEY_MIGRATION_WIDGET_MINSIZE = "migration_widget_min_size";
