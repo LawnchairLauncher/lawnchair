@@ -27,7 +27,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.content.pm.ResolveInfo;
@@ -1756,6 +1755,8 @@ public class LauncherModel extends BroadcastReceiver
 
 
             if (MigrateFromRestoreTask.shouldRunTask(mContext)) {
+                long migrationStartTime = System.currentTimeMillis();
+                Log.v(TAG, "Starting workspace migration after restore");
                 try {
                     MigrateFromRestoreTask task = new MigrateFromRestoreTask(mContext);
                     // Clear the flags before starting the task, so that we do not run the task
@@ -1768,6 +1769,8 @@ public class LauncherModel extends BroadcastReceiver
                     // Clear workspace.
                     mFlags = mFlags | LOADER_FLAG_CLEAR_WORKSPACE;
                 }
+                Log.v(TAG, "Workspace migration completed in "
+                        + (System.currentTimeMillis() - migrationStartTime));
             }
 
             if ((mFlags & LOADER_FLAG_CLEAR_WORKSPACE) != 0) {
