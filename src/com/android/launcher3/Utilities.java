@@ -60,6 +60,7 @@ import com.android.launcher3.config.ProviderConfig;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Set;
@@ -710,5 +711,19 @@ public final class Utilities {
 
     public static String createDbSelectionQuery(String columnName, Iterable<?> values) {
         return String.format(Locale.ENGLISH, "%s IN (%s)", columnName, TextUtils.join(", ", values));
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static boolean isBootCompleted() {
+        try {
+            Class clazz = Class.forName("android.os.SystemProperties");
+            Method getter = clazz.getDeclaredMethod("get", String.class);
+            String value = (String) getter.invoke(null, "sys.boot_completed");
+            return "1".equals(value);
+        } catch (Exception e) {
+            Log.d(TAG, "Unable to read system properties");
+            // Assume that boot has completed
+            return true;
+        }
     }
 }
