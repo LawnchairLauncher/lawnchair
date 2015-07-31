@@ -18,6 +18,7 @@ syntax = "proto2";
 
 package launcher_backup;
 
+option javanano_use_deprecated_package = true;
 option java_package = "com.android.launcher3.backup";
 option java_outer_classname = "BackupProtos";
 
