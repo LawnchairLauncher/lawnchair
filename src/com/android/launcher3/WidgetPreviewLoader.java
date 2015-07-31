@@ -386,7 +386,7 @@ public class WidgetPreviewLoader {
             preScaledWidthOut[0] = previewWidth;
         }
         if (previewWidth > maxPreviewWidth) {
-            scale = maxPreviewWidth / (float) previewWidth;
+            scale = (maxPreviewWidth - 2 * mProfileBadgeMargin) / (float) (previewWidth);
         }
         if (scale != 1f) {
             previewWidth = (int) (scale * previewWidth);
@@ -405,7 +405,7 @@ public class WidgetPreviewLoader {
         }
 
         // Draw the scaled preview into the final bitmap
-        int x = (preview.getWidth() - previewWidth - mProfileBadgeMargin) / 2;
+        int x = (preview.getWidth() - previewWidth) / 2;
         if (widgetPreviewExists) {
             drawable.setBounds(x, 0, x + previewWidth, previewHeight);
             drawable.draw(c);
