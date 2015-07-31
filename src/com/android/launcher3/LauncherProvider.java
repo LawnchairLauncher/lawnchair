@@ -71,7 +71,7 @@ public class LauncherProvider extends ContentProvider {
     private static final int DATABASE_VERSION = 26;
 
     static final String OLD_AUTHORITY = "com.android.launcher2.settings";
-    static final String AUTHORITY = ProviderConfig.AUTHORITY;
+    public static final String AUTHORITY = ProviderConfig.AUTHORITY;
 
     static final String TABLE_FAVORITES = LauncherSettings.Favorites.TABLE_NAME;
     static final String TABLE_WORKSPACE_SCREENS = LauncherSettings.WorkspaceScreens.TABLE_NAME;
