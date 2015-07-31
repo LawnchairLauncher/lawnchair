@@ -213,6 +213,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
         mBackground = (TransitionDrawable) res.getDrawable(R.drawable.bg_screenpanel);
         mBackground.setCallback(this);
+        mBackground.setAlpha((int) (mBackgroundAlpha * 255));
 
         mReorderPreviewAnimationMagnitude = (REORDER_PREVIEW_MAGNITUDE *
                 grid.iconSizePx);
@@ -416,7 +417,11 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             if (mIsDragOverlapping) {
                 mBackground.startTransition(BACKGROUND_ACTIVATE_DURATION);
             } else {
-                mBackground.reverseTransition(BACKGROUND_ACTIVATE_DURATION);
+                if (mBackgroundAlpha > 0f) {
+                    mBackground.reverseTransition(BACKGROUND_ACTIVATE_DURATION);
+                } else {
+                    mBackground.resetTransition();
+                }
             }
             invalidate();
         }
