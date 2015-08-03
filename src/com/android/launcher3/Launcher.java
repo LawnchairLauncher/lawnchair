@@ -1553,23 +1553,6 @@ public class Launcher extends Activity
         }
     }
 
-    private int[] getSpanForWidget(ComponentName component, int minWidth, int minHeight) {
-        Rect padding = AppWidgetHostView.getDefaultPaddingForWidget(this, component, null);
-        // We want to account for the extra amount of padding that we are adding to the widget
-        // to ensure that it gets the full amount of space that it has requested
-        int requiredWidth = minWidth + padding.left + padding.right;
-        int requiredHeight = minHeight + padding.top + padding.bottom;
-        return CellLayout.rectToCell(this, requiredWidth, requiredHeight, null);
-    }
-
-    public int[] getSpanForWidget(AppWidgetProviderInfo info) {
-        return getSpanForWidget(info.provider, info.minWidth, info.minHeight);
-    }
-
-    public int[] getMinSpanForWidget(AppWidgetProviderInfo info) {
-        return getSpanForWidget(info.provider, info.minResizeWidth, info.minResizeHeight);
-    }
-
     /**
      * Add a widget to the workspace.
      *
@@ -2218,7 +2201,7 @@ public class Launcher extends Activity
         mPendingAddInfo.screenId = -1;
         mPendingAddInfo.cellX = mPendingAddInfo.cellY = -1;
         mPendingAddInfo.spanX = mPendingAddInfo.spanY = -1;
-        mPendingAddInfo.minSpanX = mPendingAddInfo.minSpanY = -1;
+        mPendingAddInfo.minSpanX = mPendingAddInfo.minSpanY = 1;
         mPendingAddInfo.dropPos = null;
     }
 
@@ -3957,6 +3940,8 @@ public class Launcher extends Activity
             }
 
             item.hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
+            item.minSpanX = appWidgetInfo.minSpanX;
+            item.minSpanY = appWidgetInfo.minSpanY;
         } else {
             appWidgetInfo = null;
             PendingAppWidgetHostView view = new PendingAppWidgetHostView(this, item,
