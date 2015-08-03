@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.FloatArrayEvaluator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
@@ -45,18 +47,17 @@ public class DragView extends View {
     private Bitmap mBitmap;
     private Bitmap mCrossFadeBitmap;
     @Thunk Paint mPaint;
-    private int mRegistrationX;
-    private int mRegistrationY;
+    private final int mRegistrationX;
+    private final int mRegistrationY;
 
     private Point mDragVisualizeOffset = null;
     private Rect mDragRegion = null;
-    private DragLayer mDragLayer = null;
+    private final DragLayer mDragLayer;
+    private final DragController mDragController;
     private boolean mHasDrawn = false;
     @Thunk float mCrossFadeProgress = 0f;
 
     ValueAnimator mAnim;
-    @Thunk float mOffsetX = 0.0f;
-    @Thunk float mOffsetY = 0.0f;
     private float mInitialScale = 1f;
     // The intrinsic icon scale factor is the scale factor for a drag icon over the workspace
     // size.  This is ignored for non-icons.
@@ -81,6 +82,7 @@ public class DragView extends View {
             int left, int top, int width, int height, final float initialScale) {
         super(launcher);
         mDragLayer = launcher.getDragLayer();
+        mDragController = launcher.getDragController();
         mInitialScale = initialScale;
 
         final Resources res = getResources();
@@ -99,11 +101,6 @@ public class DragView extends View {
             public void onAnimationUpdate(ValueAnimator animation) {
                 final float value = (Float) animation.getAnimatedValue();
 
-                final int deltaX = (int) (-mOffsetX);
-                final int deltaY = (int) (-mOffsetY);
-
-                mOffsetX += deltaX;
-                mOffsetY += deltaY;
                 setScaleX(initialScale + (value * (scale - initialScale)));
                 setScaleY(initialScale + (value * (scale - initialScale)));
                 if (sDragAlpha != 1f) {
@@ -112,10 +109,14 @@ public class DragView extends View {
 
                 if (getParent() == null) {
                     animation.cancel();
-                } else {
-                    setTranslationX(getTranslationX() + deltaX);
-                    setTranslationY(getTranslationY() + deltaY);
                 }
+            }
+        });
+
+        mAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mDragController.onDragViewAnimationEnd();
             }
         });
 
@@ -143,10 +144,6 @@ public class DragView extends View {
 
     public float getIntrinsicIconScaleFactor() {
         return mIntrinsicIconScale;
-    }
-
-    public float getOffsetY() {
-        return mOffsetY;
     }
 
     public int getDragRegionLeft() {
@@ -181,10 +178,6 @@ public class DragView extends View {
         return mDragRegion;
     }
 
-    public float getInitialScale() {
-        return mInitialScale;
-    }
-
     public void updateInitialScaleToCurrentScale() {
         mInitialScale = getScaleX();
     }
@@ -192,6 +185,23 @@ public class DragView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         setMeasuredDimension(mBitmap.getWidth(), mBitmap.getHeight());
+    }
+
+    // Draws drag shadow for system DND.
+    public void drawDragShadow(Canvas canvas) {
+        final int saveCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
+        canvas.scale(getScaleX(), getScaleY());
+        onDraw(canvas);
+        canvas.restoreToCount(saveCount);
+    }
+
+    // Provides drag shadow metrics for system DND.
+    public void provideDragShadowMetrics(Point size, Point touch) {
+        size.set((int)(mBitmap.getWidth() * getScaleX()), (int)(mBitmap.getHeight() * getScaleY()));
+
+        final int xGrowth = (int)(mBitmap.getWidth() * (getScaleX() - mInitialScale));
+        final int yGrowth = (int)(mBitmap.getHeight() * (getScaleY() - mInitialScale));
+        touch.set(mRegistrationX + xGrowth / 2, mRegistrationY + yGrowth / 2);
     }
 
     @Override
@@ -214,12 +224,12 @@ public class DragView extends View {
         canvas.drawBitmap(mBitmap, 0.0f, 0.0f, mPaint);
         if (crossFade) {
             mPaint.setAlpha((int) (255 * mCrossFadeProgress));
-            canvas.save();
+            final int saveCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
             float sX = (mBitmap.getWidth() * 1.0f) / mCrossFadeBitmap.getWidth();
             float sY = (mBitmap.getHeight() * 1.0f) / mCrossFadeBitmap.getHeight();
             canvas.scale(sX, sY);
             canvas.drawBitmap(mCrossFadeBitmap, 0.0f, 0.0f, mPaint);
-            canvas.restore();
+            canvas.restoreToCount(saveCount);
         }
     }
 
@@ -333,11 +343,6 @@ public class DragView extends View {
         }
     }
 
-    public void resetLayoutParams() {
-        mOffsetX = mOffsetY = 0;
-        requestLayout();
-    }
-
     /**
      * Move the window containing this view.
      *
@@ -345,8 +350,8 @@ public class DragView extends View {
      * @param touchY the y coordinate the user touched in DragLayer coordinates
      */
     void move(int touchX, int touchY) {
-        setTranslationX(touchX - mRegistrationX + (int) mOffsetX);
-        setTranslationY(touchY - mRegistrationY + (int) mOffsetY);
+        setTranslationX(touchX - mRegistrationX);
+        setTranslationY(touchY - mRegistrationY);
     }
 
     void remove() {

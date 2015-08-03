@@ -28,6 +28,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -373,6 +374,11 @@ public class DragLayer extends InsettableFrameLayout {
         }
         if (handled) return true;
         return mDragController.onTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onDragEvent (DragEvent event) {
+        return mDragController.onDragEvent(event);
     }
 
     /**
@@ -764,7 +770,7 @@ public class DragLayer extends InsettableFrameLayout {
         // Show the drop view if it was previously hidden
         mDropView = view;
         mDropView.cancelAnimation();
-        mDropView.resetLayoutParams();
+        mDropView.requestLayout();
 
         // Set the anchor view if the page is scrolling
         if (anchorView != null) {

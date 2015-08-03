@@ -26,6 +26,7 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -73,8 +74,10 @@ public class DragController {
     private final int[] mCoordinatesTemp = new int[2];
     private final boolean mIsRtl;
 
-    /** Whether or not we're dragging. */
-    private boolean mDragging;
+    /**
+     * Drag driver for the current drag/drop operation, or null if there is no active DND operation.
+     */
+    private DragDriver mDragDriver = null;
 
     /** Whether or not this is an accessible drag operation */
     private boolean mIsAccessibleDrag;
@@ -161,10 +164,6 @@ public class DragController {
         mIsRtl = Utilities.isRtl(r);
     }
 
-    public boolean dragging() {
-        return mDragging;
-    }
-
     /**
      * Starts a drag.
      *
@@ -234,8 +233,8 @@ public class DragController {
         final int dragRegionLeft = dragRegion == null ? 0 : dragRegion.left;
         final int dragRegionTop = dragRegion == null ? 0 : dragRegion.top;
 
-        mDragging = true;
         mIsAccessibleDrag = accessible;
+        mLastDropTarget = null;
 
         mDragObject = new DropTarget.DragObject();
 
@@ -255,6 +254,8 @@ public class DragController {
 
         final DragView dragView = mDragObject.dragView = new DragView(mLauncher, b, registrationX,
                 registrationY, 0, 0, b.getWidth(), b.getHeight(), initialDragViewScale);
+
+        mDragDriver = DragDriver.create(this, dragInfo, dragView);
 
         if (dragOffset != null) {
             dragView.setDragVisualizeOffset(new Point(dragOffset));
@@ -318,18 +319,18 @@ public class DragController {
      * </pre>
      */
     public boolean dispatchKeyEvent(KeyEvent event) {
-        return mDragging;
+        return mDragDriver != null;
     }
 
     public boolean isDragging() {
-        return mDragging;
+        return mDragDriver != null;
     }
 
     /**
      * Stop dragging without dropping.
      */
     public void cancelDrag() {
-        if (mDragging) {
+        if (mDragDriver != null) {
             if (mLastDropTarget != null) {
                 mLastDropTarget.onDragExit(mDragObject);
             }
@@ -363,8 +364,8 @@ public class DragController {
     }
 
     private void endDrag() {
-        if (mDragging) {
-            mDragging = false;
+        if (mDragDriver != null) {
+            mDragDriver = null;
             mIsAccessibleDrag = false;
             clearScrollRunnable();
             boolean isDeferred = false;
@@ -416,7 +417,7 @@ public class DragController {
     }
 
     long getLastGestureUpTime() {
-        if (mDragging) {
+        if (mDragDriver != null) {
             return System.currentTimeMillis();
         } else {
             return mLastTouchUpTime;
@@ -428,14 +429,53 @@ public class DragController {
     }
 
     /**
+     * Call this from the drag driver.
+     */
+    public void onDriverDragMove(float x, float y) {
+        final int[] dragLayerPos = getClampedDragLayerPos(x, y);
+
+        handleMoveEvent(dragLayerPos[0], dragLayerPos[1]);
+    }
+
+    /**
+     * Call this from the drag driver.
+     */
+    public void onDriverDragEnd(float x, float y, DropTarget dropTargetOverride) {
+        final int[] dragLayerPos = getClampedDragLayerPos(x, y);
+        final int dragLayerX = dragLayerPos[0];
+        final int dragLayerY = dragLayerPos[1];
+
+        DropTarget dropTarget;
+        PointF vec = null;
+
+        if (dropTargetOverride != null) {
+            dropTarget = dropTargetOverride;
+        } else {
+            vec = isFlingingToDelete(mDragObject.dragSource);
+            if (!DeleteDropTarget.supportsDrop(mDragObject.dragInfo)) {
+                vec = null;
+            }
+            if (vec != null) {
+                dropTarget = mFlingToDeleteDropTarget;
+            } else {
+                dropTarget = findDropTarget((int) x, (int) y, mCoordinatesTemp);
+            }
+        }
+
+        drop(dropTarget, x, y, vec);
+
+        endDrag();
+    }
+
+    /**
      * Call this from a drag source view.
      */
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         @SuppressWarnings("all") // suppress dead code warning
         final boolean debug = false;
         if (debug) {
-            Log.d(Launcher.TAG, "DragController.onInterceptTouchEvent " + ev + " mDragging="
-                    + mDragging);
+            Log.d(Launcher.TAG, "DragController.onInterceptTouchEvent " + ev + " Dragging="
+                    + (mDragDriver != null));
         }
 
         if (mIsAccessibleDrag) {
@@ -451,35 +491,33 @@ public class DragController {
         final int dragLayerY = dragLayerPos[1];
 
         switch (action) {
-            case MotionEvent.ACTION_MOVE:
-                break;
             case MotionEvent.ACTION_DOWN:
                 // Remember location of down touch
                 mMotionDownX = dragLayerX;
                 mMotionDownY = dragLayerY;
-                mLastDropTarget = null;
                 break;
             case MotionEvent.ACTION_UP:
                 mLastTouchUpTime = System.currentTimeMillis();
-                if (mDragging) {
-                    PointF vec = isFlingingToDelete(mDragObject.dragSource);
-                    if (!DeleteDropTarget.supportsDrop(mDragObject.dragInfo)) {
-                        vec = null;
-                    }
-                    if (vec != null) {
-                        dropOnFlingToDeleteTarget(dragLayerX, dragLayerY, vec);
-                    } else {
-                        drop(dragLayerX, dragLayerY);
-                    }
-                }
-                endDrag();
-                break;
-            case MotionEvent.ACTION_CANCEL:
-                cancelDrag();
                 break;
         }
 
-        return mDragging;
+        return mDragDriver != null && mDragDriver.onInterceptTouchEvent(ev);
+    }
+
+    /**
+     * Call this from a drag source view.
+     */
+    public boolean onDragEvent(DragEvent event) {
+        return mDragDriver != null && mDragDriver.onDragEvent(event);
+    }
+
+    /**
+     * Call this from a drag view.
+     */
+    public void onDragViewAnimationEnd() {
+        if (mDragDriver != null ) {
+            mDragDriver.onDragViewAnimationEnd();
+        }
     }
 
     /**
@@ -579,7 +617,7 @@ public class DragController {
      * Call this from a drag source view.
      */
     public boolean onTouchEvent(MotionEvent ev) {
-        if (!mDragging || mIsAccessibleDrag) {
+        if (mDragDriver == null || mIsAccessibleDrag) {
             return false;
         }
 
@@ -592,47 +630,25 @@ public class DragController {
         final int dragLayerY = dragLayerPos[1];
 
         switch (action) {
-        case MotionEvent.ACTION_DOWN:
-            // Remember where the motion event started
-            mMotionDownX = dragLayerX;
-            mMotionDownY = dragLayerY;
+            case MotionEvent.ACTION_DOWN:
+                // Remember where the motion event started
+                mMotionDownX = dragLayerX;
+                mMotionDownY = dragLayerY;
 
-            if ((dragLayerX < mScrollZone) || (dragLayerX > mScrollView.getWidth() - mScrollZone)) {
-                mScrollState = SCROLL_WAITING_IN_ZONE;
-                mHandler.postDelayed(mScrollRunnable, SCROLL_DELAY);
-            } else {
-                mScrollState = SCROLL_OUTSIDE_ZONE;
-            }
-            handleMoveEvent(dragLayerX, dragLayerY);
-            break;
-        case MotionEvent.ACTION_MOVE:
-            handleMoveEvent(dragLayerX, dragLayerY);
-            break;
-        case MotionEvent.ACTION_UP:
-            // Ensure that we've processed a move event at the current pointer location.
-            handleMoveEvent(dragLayerX, dragLayerY);
-            mHandler.removeCallbacks(mScrollRunnable);
-
-            if (mDragging) {
-                PointF vec = isFlingingToDelete(mDragObject.dragSource);
-                if (!DeleteDropTarget.supportsDrop(mDragObject.dragInfo)) {
-                    vec = null;
-                }
-                if (vec != null) {
-                    dropOnFlingToDeleteTarget(dragLayerX, dragLayerY, vec);
+                if ((dragLayerX < mScrollZone) || (dragLayerX > mScrollView.getWidth() - mScrollZone)) {
+                    mScrollState = SCROLL_WAITING_IN_ZONE;
+                    mHandler.postDelayed(mScrollRunnable, SCROLL_DELAY);
                 } else {
-                    drop(dragLayerX, dragLayerY);
+                    mScrollState = SCROLL_OUTSIDE_ZONE;
                 }
-            }
-            endDrag();
-            break;
-        case MotionEvent.ACTION_CANCEL:
-            mHandler.removeCallbacks(mScrollRunnable);
-            cancelDrag();
-            break;
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                mHandler.removeCallbacks(mScrollRunnable);
+                break;
         }
 
-        return true;
+        return mDragDriver.onTouchEvent(ev);
     }
 
     /**
@@ -642,7 +658,6 @@ public class DragController {
     public void prepareAccessibleDrag(int x, int y) {
         mMotionDownX = x;
         mMotionDownY = y;
-        mLastDropTarget = null;
     }
 
     /**
@@ -660,7 +675,7 @@ public class DragController {
 
         dropTarget.prepareAccessibilityDrop();
         // Perform the drop
-        drop(location[0], location[1]);
+        drop(dropTarget, location[0], location[1], null);
         endDrag();
     }
 
@@ -690,49 +705,41 @@ public class DragController {
         return null;
     }
 
-    private void dropOnFlingToDeleteTarget(float x, float y, PointF vel) {
+    void drop(DropTarget dropTarget, float x, float y, PointF flingVel) {
         final int[] coordinates = mCoordinatesTemp;
 
         mDragObject.x = coordinates[0];
         mDragObject.y = coordinates[1];
 
-        // Clean up dragging on the target if it's not the current fling delete target otherwise,
-        // start dragging to it.
-        if (mLastDropTarget != null && mFlingToDeleteDropTarget != mLastDropTarget) {
-            mLastDropTarget.onDragExit(mDragObject);
+        // Move dragging to the final target.
+        if (dropTarget != mLastDropTarget) {
+            if (mLastDropTarget != null) {
+                mLastDropTarget.onDragExit(mDragObject);
+            }
+            mLastDropTarget = dropTarget;
+            if (dropTarget != null) {
+                dropTarget.onDragEnter(mDragObject);
+            }
         }
 
-        // Drop onto the fling-to-delete target
-        boolean accepted = false;
-        mFlingToDeleteDropTarget.onDragEnter(mDragObject);
-        // We must set dragComplete to true _only_ after we "enter" the fling-to-delete target for
-        // "drop"
         mDragObject.dragComplete = true;
-        mFlingToDeleteDropTarget.onDragExit(mDragObject);
-        if (mFlingToDeleteDropTarget.acceptDrop(mDragObject)) {
-            mFlingToDeleteDropTarget.onFlingToDelete(mDragObject, vel);
-            accepted = true;
-        }
-        mDragObject.dragSource.onDropCompleted((View) mFlingToDeleteDropTarget, mDragObject, true,
-                accepted);
-    }
 
-    private void drop(float x, float y) {
-        final int[] coordinates = mCoordinatesTemp;
-        final DropTarget dropTarget = findDropTarget((int) x, (int) y, coordinates);
-
-        mDragObject.x = coordinates[0];
-        mDragObject.y = coordinates[1];
+        // Drop onto the target.
         boolean accepted = false;
         if (dropTarget != null) {
-            mDragObject.dragComplete = true;
             dropTarget.onDragExit(mDragObject);
             if (dropTarget.acceptDrop(mDragObject)) {
-                dropTarget.onDrop(mDragObject);
+                if (flingVel != null) {
+                    dropTarget.onFlingToDelete(mDragObject, flingVel);
+                } else {
+                    dropTarget.onDrop(mDragObject);
+                }
                 accepted = true;
             }
         }
-        mDragObject.dragSource.onDropCompleted((View) dropTarget, mDragObject, false, accepted);
+        final View dropTargetAsView = dropTarget instanceof View ? (View) dropTarget : null;
+        mDragObject.dragSource.onDropCompleted(
+                dropTargetAsView, mDragObject, flingVel != null, accepted);
     }
 
     private DropTarget findDropTarget(int x, int y, int[] dropCoordinates) {
