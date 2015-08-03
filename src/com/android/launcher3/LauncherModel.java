@@ -204,7 +204,7 @@ public class LauncherModel extends BroadcastReceiver
         public void bindComponentsRemoved(ArrayList<String> packageNames,
                         ArrayList<AppInfo> appInfos, UserHandleCompat user, int reason);
         public void bindAllPackages(WidgetsModel model);
-        public void bindSearchablesChanged();
+        public void bindSearchProviderChanged();
         public boolean isAllAppsButtonRank(int rank);
         public void onPageBoundSynchronously(int page);
         public void dumpLogsToLocalData();
@@ -1281,11 +1281,10 @@ public class LauncherModel extends BroadcastReceiver
         if (Intent.ACTION_LOCALE_CHANGED.equals(action)) {
             // If we have changed locale we need to clear out the labels in all apps/workspace.
             forceReload();
-        } else if (SearchManager.INTENT_GLOBAL_SEARCH_ACTIVITY_CHANGED.equals(action) ||
-                   SearchManager.INTENT_ACTION_SEARCHABLES_CHANGED.equals(action)) {
+        } else if (SearchManager.INTENT_GLOBAL_SEARCH_ACTIVITY_CHANGED.equals(action)) {
             Callbacks callbacks = getCallback();
             if (callbacks != null) {
-                callbacks.bindSearchablesChanged();
+                callbacks.bindSearchProviderChanged();
             }
         } else if (LauncherAppsCompat.ACTION_MANAGED_PROFILE_ADDED.equals(action)
                 || LauncherAppsCompat.ACTION_MANAGED_PROFILE_REMOVED.equals(action)) {
