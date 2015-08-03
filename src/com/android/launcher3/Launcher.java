@@ -4101,7 +4101,7 @@ public class Launcher extends Activity
         return mDeviceProfile.getSearchBarBounds(Utilities.isRtl(getResources()));
     }
 
-    public void bindSearchablesChanged() {
+    public void bindSearchProviderChanged() {
         if (mSearchDropTargetBar == null) {
             return;
         }
