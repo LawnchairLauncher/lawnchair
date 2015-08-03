@@ -161,12 +161,12 @@ class LauncherClings implements OnClickListener {
                 ObjectAnimator anim;
                 if (TAG_CROP_TOP_AND_SIDES.equals(content.getTag())) {
                     content.setTranslationY(-content.getMeasuredHeight());
-                    anim = LauncherAnimUtils.ofFloat(content, "translationY", 0);
+                    anim = LauncherAnimUtils.ofFloat(content, View.TRANSLATION_Y, 0);
                 } else {
                     content.setScaleX(0);
                     content.setScaleY(0);
-                    PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1);
-                    PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1);
+                    PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1);
+                    PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1);
                     anim = LauncherAnimUtils.ofPropertyValuesHolder(content, scaleX, scaleY);
                 }
 

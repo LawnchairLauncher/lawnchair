@@ -20,7 +20,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -2999,10 +2998,6 @@ public class Launcher extends Activity
 
     private void growAndFadeOutFolderIcon(FolderIcon fi) {
         if (fi == null) return;
-        PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 0);
-        PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.5f);
-        PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.5f);
-
         FolderInfo info = (FolderInfo) fi.getTag();
         if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             CellLayout cl = (CellLayout) fi.getParent().getParent();
@@ -3014,8 +3009,8 @@ public class Launcher extends Activity
         copyFolderIconToImage(fi);
         fi.setVisibility(View.INVISIBLE);
 
-        ObjectAnimator oa = LauncherAnimUtils.ofPropertyValuesHolder(mFolderIconImageView, alpha,
-                scaleX, scaleY);
+        ObjectAnimator oa = LauncherAnimUtils.ofViewAlphaAndScale(
+                mFolderIconImageView, 0, 1.5f, 1.5f);
         if (Utilities.isLmpOrAbove()) {
             oa.setInterpolator(new LogDecelerateInterpolator(100, 0));
         }
@@ -3025,17 +3020,12 @@ public class Launcher extends Activity
 
     private void shrinkAndFadeInFolderIcon(final FolderIcon fi) {
         if (fi == null) return;
-        PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 1.0f);
-        PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.0f);
-        PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.0f);
-
         final CellLayout cl = (CellLayout) fi.getParent().getParent();
 
         // We remove and re-draw the FolderIcon in-case it has changed
         mDragLayer.removeView(mFolderIconImageView);
         copyFolderIconToImage(fi);
-        ObjectAnimator oa = LauncherAnimUtils.ofPropertyValuesHolder(mFolderIconImageView, alpha,
-                scaleX, scaleY);
+        ObjectAnimator oa = LauncherAnimUtils.ofViewAlphaAndScale(mFolderIconImageView, 1, 1, 1);
         oa.setDuration(getResources().getInteger(R.integer.config_folderExpandDuration));
         oa.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -4061,10 +4051,7 @@ public class Launcher extends Activity
     }
 
     private ValueAnimator createNewAppBounceAnimation(View v, int i) {
-        ValueAnimator bounceAnim = LauncherAnimUtils.ofPropertyValuesHolder(v,
-                PropertyValuesHolder.ofFloat("alpha", 1f),
-                PropertyValuesHolder.ofFloat("scaleX", 1f),
-                PropertyValuesHolder.ofFloat("scaleY", 1f));
+        ValueAnimator bounceAnim = LauncherAnimUtils.ofViewAlphaAndScale(v, 1, 1, 1);
         bounceAnim.setDuration(InstallShortcutReceiver.NEW_SHORTCUT_BOUNCE_DURATION);
         bounceAnim.setStartDelay(i * InstallShortcutReceiver.NEW_SHORTCUT_STAGGER_DELAY);
         bounceAnim.setInterpolator(new OvershootInterpolator(BOUNCE_ANIMATION_TENSION));

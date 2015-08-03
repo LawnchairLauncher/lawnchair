@@ -379,7 +379,6 @@ public class WorkspaceStateTransitionAnimation {
                             mNewBackgroundAlphas[i] != 0) {
                         ValueAnimator bgAnim = ObjectAnimator.ofFloat(cl, "backgroundAlpha",
                                 mOldBackgroundAlphas[i], mNewBackgroundAlphas[i]);
-                                LauncherAnimUtils.ofFloat(cl, 0f, 1f);
                         bgAnim.setInterpolator(mZoomInInterpolator);
                         bgAnim.setDuration(duration);
                         mStateAnimator.play(bgAnim);
@@ -554,8 +553,7 @@ public class WorkspaceStateTransitionAnimation {
             if (animated) {
                 // These properties refer to the background protection gradient used for AllApps
                 // and Widget tray.
-                ValueAnimator bgFadeOutAnimation =
-                        LauncherAnimUtils.ofFloat(mWorkspace, startAlpha, finalAlpha);
+                ValueAnimator bgFadeOutAnimation = ValueAnimator.ofFloat(startAlpha, finalAlpha);
                 bgFadeOutAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {

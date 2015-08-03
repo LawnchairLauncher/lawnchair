@@ -16,7 +16,7 @@
 
 package com.android.launcher3;
 
-import android.animation.ObjectAnimator;
+import android.animation.Animator;
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -36,7 +36,7 @@ public class FocusIndicatorView extends View implements View.OnFocusChangeListen
     private final int[] mIndicatorPos = new int[2];
     private final int[] mTargetViewPos = new int[2];
 
-    private ObjectAnimator mCurrentAnimation;
+    private Animator mCurrentAnimation;
     private ViewAnimState mTargetState;
 
     private View mLastFocusedView;
@@ -98,12 +98,12 @@ public class FocusIndicatorView extends View implements View.OnFocusChangeListen
 
             if (getAlpha() > MIN_VISIBLE_ALPHA) {
                 mTargetState = nextState;
-                mCurrentAnimation = LauncherAnimUtils.ofPropertyValuesHolder(this,
-                        PropertyValuesHolder.ofFloat(View.ALPHA, 1),
-                        PropertyValuesHolder.ofFloat(View.TRANSLATION_X, mTargetState.x),
-                        PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, mTargetState.y),
-                        PropertyValuesHolder.ofFloat(View.SCALE_X, mTargetState.scaleX),
-                        PropertyValuesHolder.ofFloat(View.SCALE_Y, mTargetState.scaleY));
+                mCurrentAnimation = new LauncherViewPropertyAnimator(this)
+                        .alpha(1)
+                        .translationX(mTargetState.x)
+                        .translationY(mTargetState.y)
+                        .scaleX(mTargetState.scaleX)
+                        .scaleY(mTargetState.scaleY);
             } else {
                 applyState(nextState);
                 mCurrentAnimation = LauncherAnimUtils.ofPropertyValuesHolder(this,

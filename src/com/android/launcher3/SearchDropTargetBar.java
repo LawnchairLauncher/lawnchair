@@ -78,7 +78,7 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
     public void setQsbSearchBar(View qsb) {
         mQSBSearchBar = qsb;
         if (mQSBSearchBar != null) {
-            mHideSearchBarAnim = LauncherAnimUtils.ofFloat(mQSBSearchBar, "alpha", 1f, 0f);
+            mHideSearchBarAnim = LauncherAnimUtils.ofFloat(mQSBSearchBar, ALPHA, 1f, 0f);
             setupAnimation(mHideSearchBarAnim, mQSBSearchBar);
         } else {
             // Create a no-op animation of the search bar is null
@@ -124,7 +124,7 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
 
         // Create the various fade animations
         mDropTargetBar.setAlpha(0f);
-        mShowDropTargetBarAnim = LauncherAnimUtils.ofFloat(mDropTargetBar, "alpha", 0f, 1f);
+        mShowDropTargetBarAnim = LauncherAnimUtils.ofFloat(mDropTargetBar, ALPHA, 0f, 1f);
         setupAnimation(mShowDropTargetBarAnim, mDropTargetBar);
     }
 

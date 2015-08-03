@@ -206,15 +206,6 @@ public class DragView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        @SuppressWarnings("all") // suppress dead code warning
-        final boolean debug = false;
-        if (debug) {
-            Paint p = new Paint();
-            p.setStyle(Paint.Style.FILL);
-            p.setColor(0x66ffffff);
-            canvas.drawRect(0, 0, getWidth(), getHeight(), p);
-        }
-
         mHasDrawn = true;
         boolean crossFade = mCrossFadeProgress > 0 && mCrossFadeBitmap != null;
         if (crossFade) {
@@ -245,6 +236,7 @@ public class DragView extends View {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 mCrossFadeProgress = animation.getAnimatedFraction();
+                invalidate();
             }
         });
         va.start();
