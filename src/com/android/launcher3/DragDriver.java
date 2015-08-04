@@ -47,10 +47,7 @@ public abstract class DragDriver {
 
     public static DragDriver create(
             DragController dragController, ItemInfo dragInfo, DragView dragView) {
-        // TODO: Replace the hardcoded constant with looking at the API version.
-        final boolean useSystemDrag = false;
-
-        if (useSystemDrag) {
+        if (Utilities.isNycOrAbove()) {
             return new SystemDragDriver(dragController, dragInfo.getIntent(), dragView);
         } else {
             return new InternalDragDriver(dragController);
@@ -108,7 +105,9 @@ class SystemDragDriver extends DragDriver {
 
         View.DragShadowBuilder shadowBuilder = new ShadowBuilder(mDragView);
         // TODO: DND flags are in flux, once settled, use the appropriate constant.
-        final int flags = mDragIntent != null ? 1 : 0;
+        final int flagGlobal = 1 << 0;
+        final int flagOpaque = 1 << 9;
+        final int flags = (mDragIntent != null ? flagGlobal : 0) | flagOpaque;
 
         mDragging = true;
 
