@@ -28,10 +28,16 @@ import android.view.View;
  * Base class for driving a drag/drop operation.
  */
 public abstract class DragDriver {
-    protected final DragController mDragController;
+    protected final EventListener mEventListener;
 
-    public DragDriver(DragController dragController) {
-        mDragController = dragController;
+    public interface EventListener {
+        void onDriverDragMove(float x, float y);
+        void onDriverDragEnd(float x, float y, DropTarget dropTargetOverride);
+        void onDriverDragCancel();
+    }
+
+    public DragDriver(EventListener eventListener) {
+        mEventListener = eventListener;
     }
 
     /**
@@ -113,7 +119,7 @@ class SystemDragDriver extends DragDriver {
 
         if (!mDragView.startDrag(dragData, shadowBuilder, null, flags)) {
             mDragging = false;
-            mDragController.cancelDrag();
+            mEventListener.onDriverDragCancel();
             return;
         }
 
@@ -151,7 +157,7 @@ class SystemDragDriver extends DragDriver {
             case DragEvent.ACTION_DRAG_LOCATION:
                 mLastX = event.getX();
                 mLastY = event.getY();
-                mDragController.onDriverDragMove(event.getX(), event.getY());
+                mEventListener.onDriverDragMove(event.getX(), event.getY());
                 return true;
 
             case DragEvent.ACTION_DROP:
@@ -172,7 +178,7 @@ class SystemDragDriver extends DragDriver {
                 final DropTarget dropTargetOverride = acceptedByAnotherWindow ?
                         new AnotherWindowDropTarget(mDragView.getContext()) : null;
 
-                mDragController.onDriverDragEnd(mLastX, mLastY, dropTargetOverride);
+                mEventListener.onDriverDragEnd(mLastX, mLastY, dropTargetOverride);
                 mDragging = false;
                 return true;
 
@@ -199,14 +205,14 @@ class InternalDragDriver extends DragDriver {
 
         switch (action) {
             case MotionEvent.ACTION_MOVE:
-                mDragController.onDriverDragMove(ev.getX(), ev.getY());
+                mEventListener.onDriverDragMove(ev.getX(), ev.getY());
                 break;
             case MotionEvent.ACTION_UP:
-                mDragController.onDriverDragMove(ev.getX(), ev.getY());
-                mDragController.onDriverDragEnd(ev.getX(), ev.getY(), null);
+                mEventListener.onDriverDragMove(ev.getX(), ev.getY());
+                mEventListener.onDriverDragEnd(ev.getX(), ev.getY(), null);
                 break;
             case MotionEvent.ACTION_CANCEL:
-                mDragController.cancelDrag();
+                mEventListener.onDriverDragCancel();
                 break;
         }
 
@@ -219,10 +225,10 @@ class InternalDragDriver extends DragDriver {
 
         switch (action) {
             case MotionEvent.ACTION_UP:
-                mDragController.onDriverDragEnd(ev.getX(), ev.getY(), null);
+                mEventListener.onDriverDragEnd(ev.getX(), ev.getY(), null);
                 break;
             case MotionEvent.ACTION_CANCEL:
-                mDragController.cancelDrag();
+                mEventListener.onDriverDragCancel();
                 break;
         }
 
