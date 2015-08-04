@@ -3750,7 +3750,11 @@ public class Workspace extends PagedView
         if (parentCell != null) {
             parentCell.removeView(v);
         } else if (ProviderConfig.IS_DOGFOOD_BUILD) {
-            throw new NullPointerException("mDragInfo.cell has null parent");
+            // When an app is uninstalled using the drop target, we wait until resume to remove
+            // the icon. We also remove all the corresponding items from the workspace at
+            // {@link Launcher#bindComponentsRemoved}. That call can come before or after
+            // {@link Launcher#mOnResumeCallbacks} depending on how busy the worker thread is.
+            Log.e(TAG, "mDragInfo.cell has null parent");
         }
         if (v instanceof DropTarget) {
             mDragController.removeDropTarget((DropTarget) v);
