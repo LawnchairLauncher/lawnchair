@@ -1381,7 +1381,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     // Compares item position based on rank and position giving priority to the rank.
-    private static final Comparator<ItemInfo> ITEM_POS_COMPARATOR = new Comparator<ItemInfo>() {
+    public static final Comparator<ItemInfo> ITEM_POS_COMPARATOR = new Comparator<ItemInfo>() {
 
         @Override
         public int compare(ItemInfo lhs, ItemInfo rhs) {
