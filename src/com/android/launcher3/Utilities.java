@@ -130,6 +130,18 @@ public final class Utilities {
         return Build.VERSION.SDK_INT == 22;
     }
 
+    public static boolean isNycOrAbove() {
+        // TODO(vadimt): Replace using reflection with looking at the API version once
+        // Build.VERSION.SDK_INT gets bumped to 24. b/22942492.
+        try {
+            View.class.getDeclaredField("DRAG_FLAG_OPAQUE");
+            // View.DRAG_FLAG_OPAQUE doesn't exist in M-release, so it's an indication of N+.
+            return true;
+        } catch (NoSuchFieldException e) {
+            return false;
+        }
+    }
+
     public static Bitmap createIconBitmap(Cursor c, int iconIndex, Context context) {
         byte[] data = c.getBlob(iconIndex);
         try {
