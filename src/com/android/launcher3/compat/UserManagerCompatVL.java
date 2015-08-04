@@ -24,7 +24,10 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.UserHandle;
+
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.util.LongArrayMap;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +46,31 @@ public class UserManagerCompatVL extends UserManagerCompatV17 {
     }
 
     @Override
+    public void enableAndResetCache() {
+        synchronized (this) {
+            mUsers = new LongArrayMap<UserHandleCompat>();
+            List<UserHandle> users = mUserManager.getUserProfiles();
+            if (users != null) {
+                for (UserHandle user : users) {
+                    mUsers.put(mUserManager.getSerialNumberForUser(user),
+                            UserHandleCompat.fromUser(user));
+                }
+            }
+        }
+    }
+
+    @Override
     public List<UserHandleCompat> getUserProfiles() {
+        synchronized (this) {
+            if (mUsers != null) {
+                List<UserHandleCompat> users = new ArrayList<>();
+                for (UserHandleCompat user : mUsers) {
+                    users.add(user);
+                }
+                return users;
+            }
+        }
+
         List<UserHandle> users = mUserManager.getUserProfiles();
         if (users == null) {
             return Collections.emptyList();
