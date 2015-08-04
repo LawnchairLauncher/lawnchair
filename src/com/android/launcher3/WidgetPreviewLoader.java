@@ -361,8 +361,8 @@ public class WidgetPreviewLoader {
         }
 
         final boolean widgetPreviewExists = (drawable != null);
-        final int spanX = info.getSpanX(launcher) < 1 ? 1 : info.getSpanX(launcher);
-        final int spanY = info.getSpanY(launcher) < 1 ? 1 : info.getSpanY(launcher);
+        final int spanX = info.spanX;
+        final int spanY = info.spanY;
 
         int previewWidth;
         int previewHeight;

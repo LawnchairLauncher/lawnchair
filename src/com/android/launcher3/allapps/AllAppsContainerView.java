@@ -528,7 +528,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                 CellLayout layout = (CellLayout) workspace.getChildAt(currentScreen);
                 ItemInfo itemInfo = (ItemInfo) d.dragInfo;
                 if (layout != null) {
-                    layout.calculateSpans(itemInfo);
                     showOutOfSpaceMessage =
                             !layout.findCellForSpan(null, itemInfo.spanX, itemInfo.spanY);
                 }

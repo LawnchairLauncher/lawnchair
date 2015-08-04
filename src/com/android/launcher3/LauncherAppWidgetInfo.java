@@ -68,10 +68,6 @@ public class LauncherAppWidgetInfo extends ItemInfo {
 
     ComponentName providerName;
 
-    // TODO: Are these necessary here?
-    int minWidth = -1;
-    int minHeight = -1;
-
     /**
      * Indicates the restore status of the widget.
      */
