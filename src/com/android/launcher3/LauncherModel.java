@@ -1288,6 +1288,7 @@ public class LauncherModel extends BroadcastReceiver
             }
         } else if (LauncherAppsCompat.ACTION_MANAGED_PROFILE_ADDED.equals(action)
                 || LauncherAppsCompat.ACTION_MANAGED_PROFILE_REMOVED.equals(action)) {
+            UserManagerCompat.getInstance(context).enableAndResetCache();
             forceReload();
         }
     }
