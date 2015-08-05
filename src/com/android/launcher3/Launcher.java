@@ -132,8 +132,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Launcher extends Activity
         implements View.OnClickListener, OnLongClickListener, LauncherModel.Callbacks,
-                   View.OnTouchListener, PageSwitchListener, LauncherProviderChangeListener,
-                   LauncherStateTransitionAnimation.Callbacks {
+                   View.OnTouchListener, PageSwitchListener, LauncherProviderChangeListener {
     static final String TAG = "Launcher";
     static final boolean LOGD = false;
 
@@ -452,7 +451,7 @@ public class Launcher extends Activity
 
         mDragController = new DragController(this);
         mInflater = getLayoutInflater();
-        mStateTransitionAnimation = new LauncherStateTransitionAnimation(this, this);
+        mStateTransitionAnimation = new LauncherStateTransitionAnimation(this);
 
         mStats = new Stats(this);
 
@@ -1827,7 +1826,7 @@ public class Launcher extends Activity
         return mOverviewPanel;
     }
 
-    public SearchDropTargetBar getSearchBar() {
+    public SearchDropTargetBar getSearchDropTargetBar() {
         return mSearchDropTargetBar;
     }
 
@@ -3249,14 +3248,6 @@ public class Launcher extends Activity
         }
     }
 
-    @Override
-    public void onStateTransitionHideSearchBar() {
-        // Hide the search bar
-        if (mSearchDropTargetBar != null) {
-            mSearchDropTargetBar.hideSearchBar(false /* animated */);
-        }
-    }
-
     public void showWorkspace(boolean animated) {
         showWorkspace(WorkspaceStateTransitionAnimation.SCROLL_TO_CURRENT_PAGE, animated, null);
     }
@@ -3274,16 +3265,9 @@ public class Launcher extends Activity
         boolean changed = mState != State.WORKSPACE ||
                 mWorkspace.getState() != Workspace.State.NORMAL;
         if (changed) {
-            boolean wasInSpringLoadedMode = (mState != State.WORKSPACE);
             mWorkspace.setVisibility(View.VISIBLE);
-            mStateTransitionAnimation.startAnimationToWorkspace(mState, Workspace.State.NORMAL,
-                    snapToPage, animated, onCompleteRunnable);
-
-            // Show the search bar (only animate if we were showing the drop target bar in spring
-            // loaded mode)
-            if (mSearchDropTargetBar != null) {
-                mSearchDropTargetBar.showSearchBar(animated && wasInSpringLoadedMode);
-            }
+            mStateTransitionAnimation.startAnimationToWorkspace(mState, mWorkspace.getState(),
+                    Workspace.State.NORMAL, snapToPage, animated, onCompleteRunnable);
 
             // Set focus to the AppsCustomize button
             if (mAllAppsButton != null) {
@@ -3307,7 +3291,8 @@ public class Launcher extends Activity
 
     void showOverviewMode(boolean animated) {
         mWorkspace.setVisibility(View.VISIBLE);
-        mStateTransitionAnimation.startAnimationToWorkspace(mState, Workspace.State.OVERVIEW,
+        mStateTransitionAnimation.startAnimationToWorkspace(mState, mWorkspace.getState(),
+                Workspace.State.OVERVIEW,
                 WorkspaceStateTransitionAnimation.SCROLL_TO_CURRENT_PAGE, animated,
                 null /* onCompleteRunnable */);
         mState = State.WORKSPACE;
@@ -3362,9 +3347,10 @@ public class Launcher extends Activity
         }
 
         if (toState == State.APPS) {
-            mStateTransitionAnimation.startAnimationToAllApps(animated, focusSearchBar);
+            mStateTransitionAnimation.startAnimationToAllApps(mWorkspace.getState(), animated,
+                    focusSearchBar);
         } else {
-            mStateTransitionAnimation.startAnimationToWidgets(animated);
+            mStateTransitionAnimation.startAnimationToWidgets(mWorkspace.getState(), animated);
         }
 
         // Change the state *after* we've called all the transition code
@@ -3386,10 +3372,9 @@ public class Launcher extends Activity
      * new state.
      */
     public Animator startWorkspaceStateChangeAnimation(Workspace.State toState, int toPage,
-            boolean animated, boolean hasOverlaySearchBar, HashMap<View, Integer> layerViews) {
+            boolean animated, HashMap<View, Integer> layerViews) {
         Workspace.State fromState = mWorkspace.getState();
-        Animator anim = mWorkspace.setStateWithAnimation(toState, toPage, animated,
-                hasOverlaySearchBar, layerViews);
+        Animator anim = mWorkspace.setStateWithAnimation(toState, toPage, animated, layerViews);
         updateInteraction(fromState, toState);
         return anim;
     }
@@ -3401,7 +3386,8 @@ public class Launcher extends Activity
             return;
         }
 
-        mStateTransitionAnimation.startAnimationToWorkspace(mState, Workspace.State.SPRING_LOADED,
+        mStateTransitionAnimation.startAnimationToWorkspace(mState, mWorkspace.getState(),
+                Workspace.State.SPRING_LOADED,
                 WorkspaceStateTransitionAnimation.SCROLL_TO_CURRENT_PAGE, true /* animated */,
                 null /* onCompleteRunnable */);
         mState = isAppsViewVisible() ? State.APPS_SPRING_LOADED : State.WIDGETS_SPRING_LOADED;
@@ -4503,14 +4489,16 @@ public class Launcher extends Activity
         if (mWorkspace != null) mWorkspace.setAlpha(1f);
         if (mHotseat != null) mHotseat.setAlpha(1f);
         if (mPageIndicators != null) mPageIndicators.setAlpha(1f);
-        if (mSearchDropTargetBar != null) mSearchDropTargetBar.showSearchBar(false);
+        if (mSearchDropTargetBar != null) mSearchDropTargetBar.animateToState(
+                SearchDropTargetBar.State.SEARCH_BAR, 0);
     }
 
     void hideWorkspaceSearchAndHotseat() {
         if (mWorkspace != null) mWorkspace.setAlpha(0f);
         if (mHotseat != null) mHotseat.setAlpha(0f);
         if (mPageIndicators != null) mPageIndicators.setAlpha(0f);
-        if (mSearchDropTargetBar != null) mSearchDropTargetBar.hideSearchBar(false);
+        if (mSearchDropTargetBar != null) mSearchDropTargetBar.animateToState(
+                SearchDropTargetBar.State.INVISIBLE, 0);
     }
 
     // TODO: These method should be a part of LauncherSearchCallback

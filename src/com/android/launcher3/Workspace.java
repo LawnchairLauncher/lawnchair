@@ -178,7 +178,24 @@ public class Workspace extends PagedView
     // State variable that indicates whether the pages are small (ie when you're
     // in all apps or customize mode)
 
-    enum State { NORMAL, NORMAL_HIDDEN, SPRING_LOADED, OVERVIEW, OVERVIEW_HIDDEN};
+    enum State {
+        NORMAL          (SearchDropTargetBar.State.SEARCH_BAR),
+        NORMAL_HIDDEN   (SearchDropTargetBar.State.INVISIBLE),
+        SPRING_LOADED   (SearchDropTargetBar.State.DROP_TARGET),
+        OVERVIEW        (SearchDropTargetBar.State.INVISIBLE),
+        OVERVIEW_HIDDEN (SearchDropTargetBar.State.INVISIBLE);
+
+        private final SearchDropTargetBar.State mBarState;
+
+        State(SearchDropTargetBar.State searchBarState) {
+            mBarState = searchBarState;
+        }
+
+        public SearchDropTargetBar.State getSearchDropTargetBarState() {
+            return mBarState;
+        }
+    };
+
     private State mState = State.NORMAL;
     private boolean mIsSwitchingState = false;
 
@@ -1567,7 +1584,7 @@ public class Workspace extends PagedView
             // Reset our click listener
             setOnClickListener(mLauncher);
         }
-        mLauncher.getSearchBar().enableAccessibleDrag(enable);
+        mLauncher.getSearchDropTargetBar().enableAccessibleDrag(enable);
         mLauncher.getHotseat().getLayout()
             .enableAccessibleDrag(enable, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG);
     }
@@ -1971,10 +1988,10 @@ public class Workspace extends PagedView
      * to that new state.
      */
     public Animator setStateWithAnimation(State toState, int toPage, boolean animated,
-            boolean hasOverlaySearchBar, HashMap<View, Integer> layerViews) {
+            HashMap<View, Integer> layerViews) {
         // Create the animation to the new state
         Animator workspaceAnim =  mStateTransitionAnimation.getAnimationToState(mState,
-                toState, toPage, animated, hasOverlaySearchBar, layerViews);
+                toState, toPage, animated, layerViews);
 
         // Update the current state
         mState = toState;
