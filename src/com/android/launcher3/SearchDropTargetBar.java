@@ -26,6 +26,8 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.FrameLayout;
 
+import com.android.launcher3.util.Thunk;
+
 /*
  * Ths bar will manage the transition between the QSB search bar and the delete drop
  * targets so that each of the individual IconDropTargets don't have to.
@@ -63,10 +65,10 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
             new AccelerateInterpolator();
 
     private State mState = State.SEARCH_BAR;
-    private View mQSB;
-    private View mDropTargetBar;
+    @Thunk View mQSB;
+    @Thunk View mDropTargetBar;
     private boolean mDeferOnDragEnd = false;
-    private boolean mAccessibilityEnabled = false;
+    @Thunk boolean mAccessibilityEnabled = false;
 
     // Drop targets
     private ButtonDropTarget mInfoDropTarget;

@@ -792,7 +792,7 @@ public class LauncherStateTransitionAnimation {
         }
     }
 
-    private void cleanupAnimation() {
+    @Thunk void cleanupAnimation() {
         mCurrentAnimation = null;
     }
 }
