@@ -3363,6 +3363,18 @@ public class Launcher extends Activity
         return anim;
     }
 
+    public void onLauncherClingShown() {
+        // When a launcher cling appears, it should cover the underlying layers, so their focus
+        // should be blocked.
+        if (mDragLayer.getDescendantFocusability() != ViewGroup.FOCUS_BLOCK_DESCENDANTS) {
+            mDragLayer.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        }
+    }
+
+    public void onLauncherClingDismissed() {
+        mDragLayer.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+    }
+
     public void enterSpringLoadedDragMode() {
         if (LOGD) Log.d(TAG, String.format("enterSpringLoadedDragMode [mState=%s", mState.name()));
         if (mState == State.WORKSPACE || mState == State.APPS_SPRING_LOADED ||

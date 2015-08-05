@@ -16,8 +16,6 @@
 
 package com.android.launcher3;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.annotation.TargetApi;
@@ -92,6 +90,7 @@ class LauncherClings implements OnClickListener {
      * package was not preinstalled and there exists a db to migrate from.
      */
     public void showMigrationCling() {
+        mLauncher.onLauncherClingShown();
         mLauncher.hideWorkspaceSearchAndHotseat();
 
         ViewGroup root = (ViewGroup) mLauncher.findViewById(R.id.launcher);
@@ -142,6 +141,7 @@ class LauncherClings implements OnClickListener {
             content.setBackground(bg);
         }
 
+        mLauncher.onLauncherClingShown();
         root.addView(cling);
 
         if (showWelcome) {
@@ -178,7 +178,12 @@ class LauncherClings implements OnClickListener {
     @Thunk void dismissLongPressCling() {
         Runnable dismissCb = new Runnable() {
             public void run() {
-                dismissCling(mLauncher.findViewById(R.id.longpress_cling), null,
+                Runnable cb = new Runnable() {
+                    public void run() {
+                        mLauncher.onLauncherClingDismissed();
+                    }
+                };
+                dismissCling(mLauncher.findViewById(R.id.longpress_cling), cb,
                         WORKSPACE_CLING_DISMISSED_KEY, DISMISS_CLING_DURATION);
             }
         };
