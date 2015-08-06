@@ -2,6 +2,7 @@ package com.android.launcher3;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.widget.EditText;
 
@@ -32,5 +33,11 @@ public class FolderEditText extends EditText {
             mFolder.doneEditingFolderName(true);
         }
         return super.onKeyPreIme(keyCode, event);
+    }
+
+    @Override
+    public boolean onDragEvent(DragEvent event) {
+        // We don't want this view to interfere with Launcher own drag and drop.
+        return false;
     }
 }
