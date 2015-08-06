@@ -27,16 +27,19 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.UserManager;
 import android.provider.Settings;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnKeyListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.accessibility.AccessibilityManager;
+
 import com.android.launcher3.util.Thunk;
 
-class LauncherClings implements OnClickListener {
+class LauncherClings implements OnClickListener, OnKeyListener {
     private static final String MIGRATION_CLING_DISMISSED_KEY = "cling_gel.migration.dismissed";
     private static final String WORKSPACE_CLING_DISMISSED_KEY = "cling_gel.workspace.dismissed";
 
@@ -81,6 +84,20 @@ class LauncherClings implements OnClickListener {
         } else if (id == R.id.cling_dismiss_longpress_info) {
             dismissLongPressCling();
         }
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        if (event.isPrintingKey()) {
+            // Should ignore all printing keys, otherwise they come to the search box.
+            return true;
+        }
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+            // Menu key goes to the overview mode similar to longpress, therefore it needs to
+            // dismiss the clings.
+            dismissLongPressCling();
+        }
+        return false;
     }
 
     /**
@@ -133,7 +150,9 @@ class LauncherClings implements OnClickListener {
         final ViewGroup content = (ViewGroup) cling.findViewById(R.id.cling_content);
         mInflater.inflate(showWelcome ? R.layout.longpress_cling_welcome_content
                 : R.layout.longpress_cling_content, content);
-        content.findViewById(R.id.cling_dismiss_longpress_info).setOnClickListener(this);
+        final View button = content.findViewById(R.id.cling_dismiss_longpress_info);
+        button.setOnClickListener(this);
+        button.setOnKeyListener(this);
 
         if (TAG_CROP_TOP_AND_SIDES.equals(content.getTag())) {
             Drawable bg = new BorderCropDrawable(mLauncher.getResources().getDrawable(R.drawable.cling_bg),
