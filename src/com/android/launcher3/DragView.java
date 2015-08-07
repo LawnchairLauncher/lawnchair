@@ -199,9 +199,11 @@ public class DragView extends View {
     public void provideDragShadowMetrics(Point size, Point touch) {
         size.set((int)(mBitmap.getWidth() * getScaleX()), (int)(mBitmap.getHeight() * getScaleY()));
 
-        final int xGrowth = (int)(mBitmap.getWidth() * (getScaleX() - mInitialScale));
-        final int yGrowth = (int)(mBitmap.getHeight() * (getScaleY() - mInitialScale));
-        touch.set(mRegistrationX + xGrowth / 2, mRegistrationY + yGrowth / 2);
+        final float xGrowth = mBitmap.getWidth() * (getScaleX() - mInitialScale);
+        final float yGrowth = mBitmap.getHeight() * (getScaleY() - mInitialScale);
+        touch.set(
+                mRegistrationX + (int)Math.round(xGrowth / 2),
+                mRegistrationY + (int)Math.round(yGrowth / 2));
     }
 
     @Override
