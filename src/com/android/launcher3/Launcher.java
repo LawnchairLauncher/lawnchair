@@ -738,6 +738,7 @@ public class Launcher extends Activity
         };
 
         if (requestCode == REQUEST_BIND_APPWIDGET) {
+            // This is called only if the user did not previously have permissions to bind widgets
             final int appWidgetId = data != null ?
                     data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1) : -1;
             if (resultCode == RESULT_CANCELED) {
@@ -747,6 +748,10 @@ public class Launcher extends Activity
             } else if (resultCode == RESULT_OK) {
                 addAppWidgetImpl(appWidgetId, mPendingAddInfo, null,
                         mPendingAddWidgetInfo, ON_ACTIVITY_RESULT_ANIMATION_DELAY);
+
+                // When the user has granted permission to bind widgets, we should check to see if
+                // we can inflate the default search bar widget.
+                getOrCreateQsbBar();
             }
             return;
         } else if (requestCode == REQUEST_PICK_WALLPAPER) {
