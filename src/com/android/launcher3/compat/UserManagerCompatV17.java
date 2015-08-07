@@ -23,10 +23,16 @@ import android.os.UserManager;
 
 import com.android.launcher3.util.LongArrayMap;
 
+import java.util.HashMap;
+
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 public class UserManagerCompatV17 extends UserManagerCompatV16 {
 
     protected LongArrayMap<UserHandleCompat> mUsers;
+    // Create a separate reverse map as LongArrayMap.indexOfValue checks if objects are same
+    // and not {@link Object#equals}
+    protected HashMap<UserHandleCompat, Long> mUserToSerialMap;
+
     protected UserManager mUserManager;
 
     UserManagerCompatV17(Context context) {
@@ -35,9 +41,9 @@ public class UserManagerCompatV17 extends UserManagerCompatV16 {
 
     public long getSerialNumberForUser(UserHandleCompat user) {
         synchronized (this) {
-            if (mUsers != null) {
-                int index = mUsers.indexOfValue(user);
-                return (index >= 0) ? mUsers.keyAt(index) : 0;
+            if (mUserToSerialMap != null) {
+                Long serial = mUserToSerialMap.get(user);
+                return serial == null ? 0 : serial;
             }
         }
         return mUserManager.getSerialNumberForUser(user.getUser());
@@ -55,9 +61,12 @@ public class UserManagerCompatV17 extends UserManagerCompatV16 {
     @Override
     public void enableAndResetCache() {
         synchronized (this) {
-            mUsers = new LongArrayMap<UserHandleCompat>();
+            mUsers = new LongArrayMap<>();
+            mUserToSerialMap = new HashMap<>();
             UserHandleCompat myUser = UserHandleCompat.myUserHandle();
-            mUsers.put(mUserManager.getSerialNumberForUser(myUser.getUser()), myUser);
+            long serial = mUserManager.getSerialNumberForUser(myUser.getUser());
+            mUsers.put(serial, myUser);
+            mUserToSerialMap.put(myUser, serial);
         }
     }
 }

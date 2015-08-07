@@ -30,6 +30,7 @@ import com.android.launcher3.util.LongArrayMap;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -48,12 +49,15 @@ public class UserManagerCompatVL extends UserManagerCompatV17 {
     @Override
     public void enableAndResetCache() {
         synchronized (this) {
-            mUsers = new LongArrayMap<UserHandleCompat>();
+            mUsers = new LongArrayMap<>();
+            mUserToSerialMap = new HashMap<>();
             List<UserHandle> users = mUserManager.getUserProfiles();
             if (users != null) {
                 for (UserHandle user : users) {
-                    mUsers.put(mUserManager.getSerialNumberForUser(user),
-                            UserHandleCompat.fromUser(user));
+                    long serial = mUserManager.getSerialNumberForUser(user);
+                    UserHandleCompat userCompat = UserHandleCompat.fromUser(user);
+                    mUsers.put(serial, userCompat);
+                    mUserToSerialMap.put(userCompat, serial);
                 }
             }
         }
@@ -64,9 +68,7 @@ public class UserManagerCompatVL extends UserManagerCompatV17 {
         synchronized (this) {
             if (mUsers != null) {
                 List<UserHandleCompat> users = new ArrayList<>();
-                for (UserHandleCompat user : mUsers) {
-                    users.add(user);
-                }
+                users.addAll(mUserToSerialMap.keySet());
                 return users;
             }
         }

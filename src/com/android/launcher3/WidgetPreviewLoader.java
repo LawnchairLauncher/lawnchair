@@ -212,7 +212,6 @@ public class WidgetPreviewLoader {
     public void removeObsoletePreviews(ArrayList<Object> list) {
         Utilities.assertWorkerThread();
 
-        LongSparseArray<UserHandleCompat> userIdCache = new LongSparseArray<>();
         LongSparseArray<HashSet<String>> validPackages = new LongSparseArray<>();
 
         for (Object obj : list) {
@@ -227,15 +226,7 @@ public class WidgetPreviewLoader {
                 pkg = info.provider.getPackageName();
             }
 
-            int userIdIndex = userIdCache.indexOfValue(user);
-            final long userId;
-            if (userIdIndex < 0) {
-                userId = mUserManager.getSerialNumberForUser(user);
-                userIdCache.put(userId, user);
-            } else {
-                userId = userIdCache.keyAt(userIdIndex);
-            }
-
+            final long userId = mUserManager.getSerialNumberForUser(user);
             HashSet<String> packages = validPackages.get(userId);
             if (packages == null) {
                 packages = new HashSet<>();
