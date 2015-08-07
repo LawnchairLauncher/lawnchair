@@ -43,7 +43,7 @@ import java.util.HashSet;
 /**
  * Class for initiating a drag within a view or across multiple views.
  */
-public class DragController {
+public class DragController implements DragDriver.EventListener {
     private static final String TAG = "Launcher.DragController";
 
     /** Indicates the drag is a move.  */
@@ -91,7 +91,7 @@ public class DragController {
     /** the area at the edge of the screen that makes the workspace go left
      *   or right while you're dragging.
      */
-    private int mScrollZone;
+    private final int mScrollZone;
 
     private DropTarget.DragObject mDragObject;
 
@@ -123,7 +123,7 @@ public class DragController {
     private int mTmpPoint[] = new int[2];
     private Rect mDragLayerRect = new Rect();
 
-    protected int mFlingToDeleteThresholdVelocity;
+    protected final int mFlingToDeleteThresholdVelocity;
     private VelocityTracker mVelocityTracker;
 
     /**
@@ -341,6 +341,7 @@ public class DragController {
         }
         endDrag();
     }
+
     public void onAppsRemoved(final ArrayList<String> packageNames, HashSet<ComponentName> cns) {
         // Cancel the current drag if we are removing an app that we are dragging
         if (mDragObject != null) {
@@ -428,18 +429,14 @@ public class DragController {
         mLastTouchUpTime = -1;
     }
 
-    /**
-     * Call this from the drag driver.
-     */
+    @Override
     public void onDriverDragMove(float x, float y) {
         final int[] dragLayerPos = getClampedDragLayerPos(x, y);
 
         handleMoveEvent(dragLayerPos[0], dragLayerPos[1]);
     }
 
-    /**
-     * Call this from the drag driver.
-     */
+    @Override
     public void onDriverDragEnd(float x, float y, DropTarget dropTargetOverride) {
         final int[] dragLayerPos = getClampedDragLayerPos(x, y);
         final int dragLayerX = dragLayerPos[0];
@@ -465,6 +462,11 @@ public class DragController {
         drop(dropTarget, x, y, vec);
 
         endDrag();
+    }
+
+    @Override
+    public void onDriverDragCancel() {
+        cancelDrag();
     }
 
     /**
