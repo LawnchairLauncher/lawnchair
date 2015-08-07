@@ -20,11 +20,13 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.UserManager;
 import android.util.Log;
 
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
+import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.Thunk;
 
 import java.lang.ref.WeakReference;
@@ -98,6 +100,7 @@ public class LauncherAppState {
         filter.addAction(LauncherAppsCompat.ACTION_MANAGED_PROFILE_REMOVED);
 
         sContext.registerReceiver(mModel, filter);
+        UserManagerCompat.getInstance(sContext).enableAndResetCache();
     }
 
     /**

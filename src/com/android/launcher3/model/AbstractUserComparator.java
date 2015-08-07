@@ -22,14 +22,12 @@ import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 
 import java.util.Comparator;
-import java.util.HashMap;
 
 /**
  * A comparator to arrange items based on user profiles.
  */
 public abstract class AbstractUserComparator<T extends ItemInfo> implements Comparator<T> {
 
-    private HashMap<UserHandleCompat, Long> mUserSerialCache = new HashMap<>();
     private final UserManagerCompat mUserManager;
     private final UserHandleCompat mMyUser;
 
@@ -43,25 +41,9 @@ public abstract class AbstractUserComparator<T extends ItemInfo> implements Comp
         if (mMyUser.equals(lhs.user)) {
             return -1;
         } else {
-            Long aUserSerial = getAndCacheUserSerial(lhs.user);
-            Long bUserSerial = getAndCacheUserSerial(rhs.user);
+            Long aUserSerial = mUserManager.getSerialNumberForUser(lhs.user);
+            Long bUserSerial = mUserManager.getSerialNumberForUser(rhs.user);
             return aUserSerial.compareTo(bUserSerial);
         }
-    }
-
-    /**
-     * Returns the user serial for this user, using a cached serial if possible.
-     */
-    private Long getAndCacheUserSerial(UserHandleCompat user) {
-        Long userSerial = mUserSerialCache.get(user);
-        if (userSerial == null) {
-            userSerial = mUserManager.getSerialNumberForUser(user);
-            mUserSerialCache.put(user, userSerial);
-        }
-        return userSerial;
-    }
-
-    public void clearUserCache() {
-        mUserSerialCache.clear();
     }
 }

@@ -21,8 +21,12 @@ import android.content.Context;
 import android.os.Build;
 import android.os.UserManager;
 
+import com.android.launcher3.util.LongArrayMap;
+
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 public class UserManagerCompatV17 extends UserManagerCompatV16 {
+
+    protected LongArrayMap<UserHandleCompat> mUsers;
     protected UserManager mUserManager;
 
     UserManagerCompatV17(Context context) {
@@ -30,11 +34,31 @@ public class UserManagerCompatV17 extends UserManagerCompatV16 {
     }
 
     public long getSerialNumberForUser(UserHandleCompat user) {
+        synchronized (this) {
+            if (mUsers != null) {
+                int index = mUsers.indexOfValue(user);
+                return (index >= 0) ? mUsers.keyAt(index) : 0;
+            }
+        }
         return mUserManager.getSerialNumberForUser(user.getUser());
     }
 
     public UserHandleCompat getUserForSerialNumber(long serialNumber) {
+        synchronized (this) {
+            if (mUsers != null) {
+                return mUsers.get(serialNumber);
+            }
+        }
         return UserHandleCompat.fromUser(mUserManager.getUserForSerialNumber(serialNumber));
+    }
+
+    @Override
+    public void enableAndResetCache() {
+        synchronized (this) {
+            mUsers = new LongArrayMap<UserHandleCompat>();
+            UserHandleCompat myUser = UserHandleCompat.myUserHandle();
+            mUsers.put(mUserManager.getSerialNumberForUser(myUser.getUser()), myUser);
+        }
     }
 }
 
