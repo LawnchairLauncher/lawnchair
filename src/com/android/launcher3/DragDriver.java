@@ -32,6 +32,7 @@ public abstract class DragDriver {
 
     public interface EventListener {
         void onDriverDragMove(float x, float y);
+        void onDriverDragExitWindow();
         void onDriverDragEnd(float x, float y, DropTarget dropTargetOverride);
         void onDriverDragCancel();
     }
@@ -165,6 +166,7 @@ class SystemDragDriver extends DragDriver {
                 return true;
 
             case DragEvent.ACTION_DRAG_EXITED:
+                mEventListener.onDriverDragExitWindow();
                 return true;
 
             case DragEvent.ACTION_DRAG_ENDED:
