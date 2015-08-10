@@ -2126,6 +2126,15 @@ public class Launcher extends Activity
         }
     }
 
+    public void startSearchFromAllApps(View v, Intent searchIntent, String searchQuery) {
+        if (mLauncherCallbacks != null && mLauncherCallbacks.startSearchFromAllApps(searchQuery)) {
+            return;
+        }
+
+        // If not handled, then just start the provided search intent
+        startActivitySafely(v, searchIntent, null);
+    }
+
     public boolean isOnCustomContent() {
         return mWorkspace.isOnOrMovingToCustomContent();
     }
@@ -2526,6 +2535,10 @@ public class Launcher extends Activity
         if (!isAppsViewVisible()) {
             showAppsView(true /* animated */, false /* resetListToTop */,
                     true /* updatePredictedApps */, false /* focusSearchBar */);
+
+            if (mLauncherCallbacks != null) {
+                mLauncherCallbacks.onClickAllAppsButton(v);
+            }
         }
     }
 
@@ -2917,7 +2930,7 @@ public class Launcher extends Activity
         return false;
     }
 
-    @Thunk boolean startActivitySafely(View v, Intent intent, Object tag) {
+    public boolean startActivitySafely(View v, Intent intent, Object tag) {
         boolean success = false;
         if (mIsSafeModeEnabled && !Utilities.isSystemApp(this, intent)) {
             Toast.makeText(this, R.string.safemode_shortcut_error, Toast.LENGTH_SHORT).show();

@@ -13,19 +13,15 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<TextView
+<ImageView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/empty_text"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="start"
-    android:paddingTop="20dp"
+    android:gravity="center"
+    android:paddingTop="16dp"
     android:paddingBottom="8dp"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:fontFamily="sans-serif-medium"
-    android:textSize="14sp"
-    android:textColor="#212121"
-    android:alpha="0.56"
-    android:focusable="false" />
-
+    android:focusable="false"
+    android:scaleType="matrix"
+    android:src="@drawable/horizontal_line" />
