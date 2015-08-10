@@ -81,12 +81,12 @@ public class AlphabeticalAppsList {
         public int position;
         // The type of this item
         public int viewType;
-        // The row that this item shows up on
-        public int rowIndex;
 
         /** Section & App properties */
         // The section for this item
         public SectionInfo sectionInfo;
+        // The row that this item shows up on
+        public int rowIndex;
 
         /** App-only properties */
         // The section name of this app.  Note that there can be multiple items with different
@@ -111,14 +111,14 @@ public class AlphabeticalAppsList {
         }
 
         public static AdapterItem asPredictedApp(int pos, SectionInfo section, String sectionName,
-                                        int sectionAppIndex, AppInfo appInfo, int appIndex) {
+                int sectionAppIndex, AppInfo appInfo, int appIndex) {
             AdapterItem item = asApp(pos, section, sectionName, sectionAppIndex, appInfo, appIndex);
             item.viewType = AllAppsGridAdapter.PREDICTION_ICON_VIEW_TYPE;
             return item;
         }
 
         public static AdapterItem asApp(int pos, SectionInfo section, String sectionName,
-                                        int sectionAppIndex, AppInfo appInfo, int appIndex) {
+                int sectionAppIndex, AppInfo appInfo, int appIndex) {
             AdapterItem item = new AdapterItem();
             item.viewType = AllAppsGridAdapter.ICON_VIEW_TYPE;
             item.position = pos;
@@ -127,6 +127,27 @@ public class AlphabeticalAppsList {
             item.sectionAppIndex = sectionAppIndex;
             item.appInfo = appInfo;
             item.appIndex = appIndex;
+            return item;
+        }
+
+        public static AdapterItem asEmptySearch(int pos) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.EMPTY_SEARCH_VIEW_TYPE;
+            item.position = pos;
+            return item;
+        }
+
+        public static AdapterItem asDivider(int pos) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.SEARCH_MARKET_DIVIDER_VIEW_TYPE;
+            item.position = pos;
+            return item;
+        }
+
+        public static AdapterItem asMarketSearch(int pos) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.SEARCH_MARKET_VIEW_TYPE;
+            item.position = pos;
             return item;
         }
     }
@@ -167,6 +188,7 @@ public class AlphabeticalAppsList {
     private int mNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
     private int mNumAppRowsInAdapter;
+    private boolean mDisableEmptyText;
 
     public AlphabeticalAppsList(Context context) {
         mLauncher = (Launcher) context;
@@ -191,6 +213,13 @@ public class AlphabeticalAppsList {
      */
     public void setAdapter(RecyclerView.Adapter adapter) {
         mAdapter = adapter;
+    }
+
+    /**
+     * Disables the empty text message when there are no search results.
+     */
+    public void disableEmptyText() {
+        mDisableEmptyText = true;
     }
 
     /**
@@ -222,17 +251,17 @@ public class AlphabeticalAppsList {
     }
 
     /**
-     * Returns the number of applications in this list.
-     */
-    public int getSize() {
-        return mFilteredApps.size();
-    }
-
-    /**
      * Returns the number of rows of applications (not including predictions)
      */
     public int getNumAppRows() {
         return mNumAppRowsInAdapter;
+    }
+
+    /**
+     * Returns the number of applications in this list.
+     */
+    public int getNumFilteredApps() {
+        return mFilteredApps.size();
     }
 
     /**
@@ -455,6 +484,16 @@ public class AlphabeticalAppsList {
             }
             mAdapterItems.add(appItem);
             mFilteredApps.add(info);
+        }
+
+        // Append the search market item if we are currently searching
+        if (hasFilter()) {
+            if (hasNoFilteredResults()) {
+                mAdapterItems.add(AdapterItem.asEmptySearch(position++));
+            } else {
+                mAdapterItems.add(AdapterItem.asDivider(position++));
+            }
+            mAdapterItems.add(AdapterItem.asMarketSearch(position++));
         }
 
         // Merge multiple sections together as requested by the merge strategy for this device
