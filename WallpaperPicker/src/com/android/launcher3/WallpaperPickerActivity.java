@@ -551,6 +551,10 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                     @Override
                     public void onClick(View v) {
                         if (mSelectedTile != null) {
+                            // Prevent user from selecting any new tile.
+                            mWallpaperStrip.setVisibility(View.GONE);
+                            actionBar.hide();
+
                             WallpaperTileInfo info = (WallpaperTileInfo) mSelectedTile.getTag();
                             info.onSave(WallpaperPickerActivity.this);
                         } else {
