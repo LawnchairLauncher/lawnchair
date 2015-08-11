@@ -52,6 +52,7 @@ import com.android.launcher3.backup.BackupProtos.Screen;
 import com.android.launcher3.backup.BackupProtos.Widget;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.model.MigrateFromRestoreTask;
 import com.android.launcher3.util.Thunk;
 import com.google.protobuf.nano.InvalidProtocolBufferNanoException;
 import com.google.protobuf.nano.MessageNano;
@@ -314,7 +315,8 @@ public class LauncherBackupHelper implements BackupHelper {
             return true;
         }
 
-        if ((oldProfile.desktopCols - currentProfile.desktopCols <= 1) &&
+        if (MigrateFromRestoreTask.ENABLED &&
+                (oldProfile.desktopCols - currentProfile.desktopCols <= 1) &&
                 (oldProfile.desktopRows - currentProfile.desktopRows <= 1)) {
             // Allow desktop migration when row and/or column count contracts by 1.
 

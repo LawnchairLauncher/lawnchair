@@ -1753,8 +1753,7 @@ public class LauncherModel extends BroadcastReceiver
             int countX = (int) profile.numColumns;
             int countY = (int) profile.numRows;
 
-
-            if (MigrateFromRestoreTask.shouldRunTask(mContext)) {
+            if (MigrateFromRestoreTask.ENABLED && MigrateFromRestoreTask.shouldRunTask(mContext)) {
                 long migrationStartTime = System.currentTimeMillis();
                 Log.v(TAG, "Starting workspace migration after restore");
                 try {

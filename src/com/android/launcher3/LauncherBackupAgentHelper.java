@@ -98,7 +98,7 @@ public class LauncherBackupAgentHelper extends BackupAgentHelper {
                 LauncherAppState.getLauncherProvider().updateFolderItemsRank();
             }
 
-            if (mHelper.shouldAttemptWorkspaceMigration()) {
+            if (MigrateFromRestoreTask.ENABLED && mHelper.shouldAttemptWorkspaceMigration()) {
                 MigrateFromRestoreTask.markForMigration(getApplicationContext(),
                         (int) mHelper.migrationCompatibleProfileData.desktopCols,
                         (int) mHelper.migrationCompatibleProfileData.desktopRows,
