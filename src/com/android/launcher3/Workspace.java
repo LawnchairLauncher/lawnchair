@@ -878,6 +878,9 @@ public class Workspace extends PagedView
             }
         }
 
+        LauncherAccessibilityDelegate delegate =
+                LauncherAppState.getInstance().getAccessibilityDelegate();
+
         // We enforce at least one page to add new items to. In the case that we remove the last
         // such screen, we convert the last screen to the empty screen
         int minScreens = 1 + numCustomPages();
@@ -892,6 +895,11 @@ public class Workspace extends PagedView
                 if (indexOfChild(cl) < currentPage) {
                     pageShift++;
                 }
+
+                if (delegate != null && delegate.isInAccessibleDrag()) {
+                    cl.enableAccessibleDrag(false, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG);
+                }
+
                 removeView(cl);
             } else {
                 // if this is the last non-custom content screen, convert it to the empty screen
