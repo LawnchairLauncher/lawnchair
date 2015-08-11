@@ -48,7 +48,7 @@
             android:gravity="fill_horizontal|center_vertical"
             android:hint="@string/all_apps_search_bar_hint"
             android:inputType="text|textNoSuggestions|textCapWords"
-            android:imeOptions="actionDone|flagNoExtractUi"
+            android:imeOptions="actionSearch|flagNoExtractUi"
             android:maxLines="1"
             android:paddingLeft="8dp"
             android:scrollHorizontally="true"
