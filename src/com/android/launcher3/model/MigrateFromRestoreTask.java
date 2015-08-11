@@ -37,6 +37,8 @@ import java.util.HashSet;
  */
 public class MigrateFromRestoreTask {
 
+    public static boolean ENABLED = false;
+
     private static final String TAG = "MigrateFromRestoreTask";
     private static final boolean DEBUG = true;
 
