@@ -4334,8 +4334,9 @@ public class Workspace extends PagedView
                         updates.contains(info)) {
                     ShortcutInfo si = (ShortcutInfo) info;
                     BubbleTextView shortcut = (BubbleTextView) v;
-                    boolean oldPromiseState = getTextViewIcon(shortcut)
-                            instanceof PreloadIconDrawable;
+                    Drawable oldIcon = getTextViewIcon(shortcut);
+                    boolean oldPromiseState = (oldIcon instanceof PreloadIconDrawable)
+                            && ((PreloadIconDrawable) oldIcon).hasNotCompleted();
                     shortcut.applyFromShortcutInfo(si, mIconCache,
                             si.isPromise() != oldPromiseState);
 
