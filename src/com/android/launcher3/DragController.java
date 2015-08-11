@@ -437,6 +437,14 @@ public class DragController implements DragDriver.EventListener {
     }
 
     @Override
+    public void onDriverDragExitWindow() {
+        if (mLastDropTarget != null) {
+            mLastDropTarget.onDragExit(mDragObject);
+            mLastDropTarget = null;
+        }
+    }
+
+    @Override
     public void onDriverDragEnd(float x, float y, DropTarget dropTargetOverride) {
         final int[] dragLayerPos = getClampedDragLayerPos(x, y);
         final int dragLayerX = dragLayerPos[0];
