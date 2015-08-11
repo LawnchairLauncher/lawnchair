@@ -166,7 +166,7 @@ final class DefaultAppSearchController extends AllAppsSearchBarController
             return false;
         }
         // Skip if it's not the right action
-        if (actionId != EditorInfo.IME_ACTION_DONE) {
+        if (actionId != EditorInfo.IME_ACTION_SEARCH) {
             return false;
         }
         // Skip if there are more than one icon

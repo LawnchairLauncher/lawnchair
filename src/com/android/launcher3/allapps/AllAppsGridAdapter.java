@@ -49,7 +49,7 @@ import java.util.List;
 /**
  * The grid view adapter of all the apps.
  */
-class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHolder> {
+public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHolder> {
 
     public static final String TAG = "AppsGridAdapter";
     private static final boolean DEBUG = false;
