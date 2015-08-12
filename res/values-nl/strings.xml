@@ -32,6 +32,7 @@
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Apps zoeken"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Apps laden…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Er zijn geen apps gevonden die overeenkomen met \'<xliff:g id="QUERY">%1$s</xliff:g>\'"</string>
+    <string name="all_apps_search_market_message" msgid="5470761048755751471">"Ga naar <xliff:g id="QUERY">%1$s</xliff:g>"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Er is geen ruimte meer op dit startscherm."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Geen ruimte meer in het vak \'Favorieten\'"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Apps"</string>

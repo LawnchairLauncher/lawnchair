@@ -32,6 +32,7 @@
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Cerca app"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Caricamento di app…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Nessuna app trovata corrispondente a \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
+    <string name="all_apps_search_market_message" msgid="5470761048755751471">"Vai a <xliff:g id="QUERY">%1$s</xliff:g>"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Spazio nella schermata Home esaurito."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Spazio esaurito nella barra dei Preferiti"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"App"</string>

@@ -32,6 +32,7 @@
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"In Apps suchen"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Apps werden geladen..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Keine Apps für \"<xliff:g id="QUERY">%1$s</xliff:g>\" gefunden"</string>
+    <string name="all_apps_search_market_message" msgid="5470761048755751471">"Gehe zu <xliff:g id="QUERY">%1$s</xliff:g>"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Auf diesem Startbildschirm ist kein Platz mehr vorhanden."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Ablage \"Favoriten\" ist voll."</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Apps"</string>
