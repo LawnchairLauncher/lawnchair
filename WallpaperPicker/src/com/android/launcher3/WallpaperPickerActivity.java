@@ -550,7 +550,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (mSelectedTile != null) {
+                        // Ensure that a tile is slelected and loaded.
+                        if (mSelectedTile != null && mCropView.getTileSource() != null) {
                             // Prevent user from selecting any new tile.
                             mWallpaperStrip.setVisibility(View.GONE);
                             actionBar.hide();
