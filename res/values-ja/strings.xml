@@ -32,6 +32,7 @@
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"アプリを検索"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"アプリを読み込んでいます…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"「<xliff:g id="QUERY">%1$s</xliff:g>」に一致するアプリは見つかりませんでした"</string>
+    <string name="all_apps_search_market_message" msgid="5470761048755751471">"<xliff:g id="QUERY">%1$s</xliff:g>にアクセス"</string>
     <string name="out_of_space" msgid="4691004494942118364">"このホーム画面に空きスペースがありません。"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"お気に入りトレイに空きスペースがありません"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"アプリ"</string>
@@ -57,7 +58,7 @@
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"アイコンをコピー"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"初期状態にリセットする"</string>
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"壁紙、ウィジェット、設定"</string>
-    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"カスタマイズするにはバックグラウンドを押し続けます"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"カスタマイズするには背景を押し続けます"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"OK"</string>
     <string name="folder_opened" msgid="94695026776264709">"フォルダが開いています。<xliff:g id="WIDTH">%1$d</xliff:g>x<xliff:g id="HEIGHT">%2$d</xliff:g>の大きさです"</string>
     <string name="folder_tap_to_close" msgid="1884479294466410023">"タップしてフォルダを閉じます"</string>

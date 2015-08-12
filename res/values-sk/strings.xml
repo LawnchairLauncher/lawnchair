@@ -32,6 +32,7 @@
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Vyhľadávanie v aplikáciách"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Načítavajú sa aplikácie..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Nenašli sa žiadne aplikácie zodpovedajúce dopytu <xliff:g id="QUERY">%1$s</xliff:g>"</string>
+    <string name="all_apps_search_market_message" msgid="5470761048755751471">"Prejsť na dopyt <xliff:g id="QUERY">%1$s</xliff:g>"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Na tejto ploche už nie je miesto"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Na paneli Obľúbené položky už nie je miesto"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Aplikácie"</string>

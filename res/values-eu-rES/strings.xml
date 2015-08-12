@@ -32,6 +32,7 @@
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Bilatu aplikazioetan"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Aplikazioak kargatzen…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Ez da aurkitu \"<xliff:g id="QUERY">%1$s</xliff:g>\" bilaketarekin bat datorren aplikaziorik"</string>
+    <string name="all_apps_search_market_message" msgid="5470761048755751471">"Joan hona: <xliff:g id="QUERY">%1$s</xliff:g>"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Hasierako pantaila honetan ez dago toki gehiago."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Ez dago toki gehiago Gogokoak erretiluan"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Aplikazioak"</string>
