@@ -76,10 +76,11 @@ public class DragController implements DragDriver.EventListener {
 
     /**
      * Drag driver for the current drag/drop operation, or null if there is no active DND operation.
+     * It's null during accessible drag operations.
      */
     private DragDriver mDragDriver = null;
 
-    /** Whether or not this is an accessible drag operation */
+    /** Whether or not an accessible drag operation is in progress. */
     private boolean mIsAccessibleDrag;
 
     /** X coordinate of the down event. */
@@ -255,7 +256,9 @@ public class DragController implements DragDriver.EventListener {
         final DragView dragView = mDragObject.dragView = new DragView(mLauncher, b, registrationX,
                 registrationY, 0, 0, b.getWidth(), b.getHeight(), initialDragViewScale);
 
-        mDragDriver = DragDriver.create(this, dragInfo, dragView);
+        if (!accessible) {
+            mDragDriver = DragDriver.create(this, dragInfo, dragView);
+        }
 
         if (dragOffset != null) {
             dragView.setDragVisualizeOffset(new Point(dragOffset));
@@ -323,14 +326,14 @@ public class DragController implements DragDriver.EventListener {
     }
 
     public boolean isDragging() {
-        return mDragDriver != null;
+        return mDragDriver != null || mIsAccessibleDrag;
     }
 
     /**
      * Stop dragging without dropping.
      */
     public void cancelDrag() {
-        if (mDragDriver != null) {
+        if (isDragging()) {
             if (mLastDropTarget != null) {
                 mLastDropTarget.onDragExit(mDragObject);
             }
@@ -365,7 +368,7 @@ public class DragController implements DragDriver.EventListener {
     }
 
     private void endDrag() {
-        if (mDragDriver != null) {
+        if (isDragging()) {
             mDragDriver = null;
             mIsAccessibleDrag = false;
             clearScrollRunnable();
@@ -525,7 +528,7 @@ public class DragController implements DragDriver.EventListener {
      * Call this from a drag view.
      */
     public void onDragViewAnimationEnd() {
-        if (mDragDriver != null ) {
+        if (mDragDriver != null) {
             mDragDriver.onDragViewAnimationEnd();
         }
     }
@@ -840,10 +843,6 @@ public class DragController implements DragDriver.EventListener {
      */
     public void setScrollView(View v) {
         mScrollView = v;
-    }
-
-    DragView getDragView() {
-        return mDragObject.dragView;
     }
 
     private class ScrollRunnable implements Runnable {
