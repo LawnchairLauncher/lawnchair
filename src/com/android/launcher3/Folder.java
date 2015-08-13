@@ -124,7 +124,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     @Thunk FolderPagedView mContent;
     @Thunk View mContentWrapper;
-    FolderEditText mFolderName;
+    ExtendedEditText mFolderName;
 
     private View mFooter;
     private int mFooterHeight;
@@ -196,8 +196,15 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mContent = (FolderPagedView) findViewById(R.id.folder_content);
         mContent.setFolder(this);
 
-        mFolderName = (FolderEditText) findViewById(R.id.folder_name);
-        mFolderName.setFolder(this);
+        mFolderName = (ExtendedEditText) findViewById(R.id.folder_name);
+        mFolderName.setOnBackKeyListener(new ExtendedEditText.OnBackKeyListener() {
+            @Override
+            public boolean onBackKey() {
+                // Close the activity on back key press
+                doneEditingFolderName(true);
+                return false;
+            }
+        });
         mFolderName.setOnFocusChangeListener(this);
 
         // We disable action mode for now since it messes up the view on phones
