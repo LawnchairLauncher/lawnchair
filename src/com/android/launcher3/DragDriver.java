@@ -150,9 +150,13 @@ class SystemDragDriver extends DragDriver {
 
         switch (action) {
             case DragEvent.ACTION_DRAG_STARTED:
+                mLastX = event.getX();
+                mLastY = event.getY();
                 return true;
 
             case DragEvent.ACTION_DRAG_ENTERED:
+                mLastX = event.getX();
+                mLastY = event.getY();
                 return true;
 
             case DragEvent.ACTION_DRAG_LOCATION:
@@ -162,10 +166,14 @@ class SystemDragDriver extends DragDriver {
                 return true;
 
             case DragEvent.ACTION_DROP:
+                mLastX = event.getX();
+                mLastY = event.getY();
                 mReceivedDropEvent = true;
                 return true;
 
             case DragEvent.ACTION_DRAG_EXITED:
+                mLastX = event.getX();
+                mLastY = event.getY();
                 mEventListener.onDriverDragExitWindow();
                 return true;
 
