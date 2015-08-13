@@ -95,8 +95,6 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
     }
 
     protected void onProvidersChanged() {
-        mLauncher.getModel().loadAndBindWidgetsAndShortcuts(mLauncher, mLauncher,
-                true /* refresh */);
         if (!mProviderChangeListeners.isEmpty()) {
             for (Runnable callback : new ArrayList<>(mProviderChangeListeners)) {
                 callback.run();

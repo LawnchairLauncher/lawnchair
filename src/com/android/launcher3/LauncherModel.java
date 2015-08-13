@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import android.app.SearchManager;
+import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -2876,8 +2877,7 @@ public class LauncherModel extends BroadcastReceiver
             // Cleanup any data stored for a deleted user.
             ManagedProfileHeuristic.processAllUsers(profiles, mContext);
 
-            loadAndBindWidgetsAndShortcuts(mApp.getContext(), tryGetCallbacks(oldCallbacks),
-                    true /* refresh */);
+            loadAndBindWidgetsAndShortcuts(tryGetCallbacks(oldCallbacks), true /* refresh */);
             if (DEBUG_LOADERS) {
                 Log.d(TAG, "Icons processed in "
                         + (SystemClock.uptimeMillis() - loadTime) + "ms");
@@ -2946,7 +2946,7 @@ public class LauncherModel extends BroadcastReceiver
         }
 
         // Reload widget list. No need to refresh, as we only want to update the icons and labels.
-        loadAndBindWidgetsAndShortcuts(mApp.getContext(), callbacks, false);
+        loadAndBindWidgetsAndShortcuts(callbacks, false);
     }
 
     void enqueuePackageUpdated(PackageUpdatedTask task) {
@@ -3288,8 +3288,36 @@ public class LauncherModel extends BroadcastReceiver
                 });
             }
 
-            // onProvidersChanged method (API >= 17) already refreshed the widget list
-            loadAndBindWidgetsAndShortcuts(context, callbacks, Build.VERSION.SDK_INT < 17);
+            // Update widgets
+            if (mOp == OP_ADD || mOp == OP_REMOVE || mOp == OP_UPDATE) {
+                // Always refresh for a package event on secondary user
+                boolean needToRefresh = !mUser.equals(UserHandleCompat.myUserHandle());
+
+                // Refresh widget list, if the package already had a widget.
+                synchronized (sBgLock) {
+                    if (sBgWidgetProviders != null) {
+                        HashSet<String> pkgSet = new HashSet<>();
+                        Collections.addAll(pkgSet, mPackages);
+
+                        for (ComponentKey key : sBgWidgetProviders.keySet()) {
+                            needToRefresh |= key.user.equals(mUser) &&
+                                    pkgSet.contains(key.componentName.getPackageName());
+                        }
+                    }
+                }
+
+                if (!needToRefresh && mOp != OP_REMOVE) {
+                    // Refresh widget list, if there is any newly added widget
+                    PackageManager pm = context.getPackageManager();
+                    for (String pkg : mPackages) {
+                        needToRefresh |= !pm.queryBroadcastReceivers(
+                                new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
+                                    .setPackage(pkg), 0).isEmpty();
+                    }
+                }
+
+                loadAndBindWidgetsAndShortcuts(callbacks, needToRefresh);
+            }
 
             // Write all the logs to disk
             mHandler.post(new Runnable() {
@@ -3363,13 +3391,12 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
-    public void loadAndBindWidgetsAndShortcuts(final Context context, final Callbacks callbacks,
-            final boolean refresh) {
+    public void loadAndBindWidgetsAndShortcuts(final Callbacks callbacks, final boolean refresh) {
 
         runOnWorkerThread(new Runnable() {
             @Override
             public void run() {
-                updateWidgetsModel(context, refresh);
+                updateWidgetsModel(refresh);
                 final WidgetsModel model = mBgWidgetsModel.clone();
 
                 mHandler.post(new Runnable() {
@@ -3393,10 +3420,10 @@ public class LauncherModel extends BroadcastReceiver
      *
      * @see #loadAndBindWidgetsAndShortcuts
      */
-    @Thunk void updateWidgetsModel(Context context, boolean refresh) {
-        PackageManager packageManager = context.getPackageManager();
+    @Thunk void updateWidgetsModel(boolean refresh) {
+        PackageManager packageManager = mApp.getContext().getPackageManager();
         final ArrayList<Object> widgetsAndShortcuts = new ArrayList<Object>();
-        widgetsAndShortcuts.addAll(getWidgetProviders(context, refresh));
+        widgetsAndShortcuts.addAll(getWidgetProviders(mApp.getContext(), refresh));
         Intent shortcutsIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
         widgetsAndShortcuts.addAll(packageManager.queryIntentActivities(shortcutsIntent, 0));
         mBgWidgetsModel.setWidgetsAndShortcuts(widgetsAndShortcuts);
