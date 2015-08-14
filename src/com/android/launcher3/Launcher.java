@@ -3889,7 +3889,8 @@ public class Launcher extends Activity
 
         if (!mIsSafeModeEnabled
                 && ((item.restoreStatus & LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY) == 0)
-                && ((item.restoreStatus & LauncherAppWidgetInfo.FLAG_ID_NOT_VALID) != 0)) {
+                && (item.restoreStatus != LauncherAppWidgetInfo.RESTORE_COMPLETED)) {
+
             if (appWidgetInfo == null) {
                 if (DEBUG_WIDGETS) {
                     Log.d(TAG, "Removing restored widget: id=" + item.appWidgetId
@@ -3899,42 +3900,51 @@ public class Launcher extends Activity
                 LauncherModel.deleteItemFromDatabase(this, item);
                 return;
             }
-            // Note: This assumes that the id remap broadcast is received before this step.
-            // If that is not the case, the id remap will be ignored and user may see the
-            // click to setup view.
-            PendingAddWidgetInfo pendingInfo = new PendingAddWidgetInfo(this, appWidgetInfo, null);
-            pendingInfo.spanX = item.spanX;
-            pendingInfo.spanY = item.spanY;
-            pendingInfo.minSpanX = item.minSpanX;
-            pendingInfo.minSpanY = item.minSpanY;
-            Bundle options = null;
-                    WidgetHostViewLoader.getDefaultOptionsForWidget(this, pendingInfo);
 
-            int newWidgetId = mAppWidgetHost.allocateAppWidgetId();
-            boolean success = mAppWidgetManager.bindAppWidgetIdIfAllowed(
-                    newWidgetId, appWidgetInfo, options);
+            // If we do not have a valid id, try to bind an id.
+            if ((item.restoreStatus & LauncherAppWidgetInfo.FLAG_ID_NOT_VALID) != 0) {
+                // Note: This assumes that the id remap broadcast is received before this step.
+                // If that is not the case, the id remap will be ignored and user may see the
+                // click to setup view.
+                PendingAddWidgetInfo pendingInfo = new PendingAddWidgetInfo(this, appWidgetInfo, null);
+                pendingInfo.spanX = item.spanX;
+                pendingInfo.spanY = item.spanY;
+                pendingInfo.minSpanX = item.minSpanX;
+                pendingInfo.minSpanY = item.minSpanY;
+                Bundle options = null;
+                        WidgetHostViewLoader.getDefaultOptionsForWidget(this, pendingInfo);
 
-            // TODO consider showing a permission dialog when the widget is clicked.
-            if (!success) {
-                mAppWidgetHost.deleteAppWidgetId(newWidgetId);
-                if (DEBUG_WIDGETS) {
-                    Log.d(TAG, "Removing restored widget: id=" + item.appWidgetId
-                            + " belongs to component " + item.providerName
-                            + ", as the launcher is unable to bing a new widget id");
+                int newWidgetId = mAppWidgetHost.allocateAppWidgetId();
+                boolean success = mAppWidgetManager.bindAppWidgetIdIfAllowed(
+                        newWidgetId, appWidgetInfo, options);
+
+                // TODO consider showing a permission dialog when the widget is clicked.
+                if (!success) {
+                    mAppWidgetHost.deleteAppWidgetId(newWidgetId);
+                    if (DEBUG_WIDGETS) {
+                        Log.d(TAG, "Removing restored widget: id=" + item.appWidgetId
+                                + " belongs to component " + item.providerName
+                                + ", as the launcher is unable to bing a new widget id");
+                    }
+                    LauncherModel.deleteItemFromDatabase(this, item);
+                    return;
                 }
-                LauncherModel.deleteItemFromDatabase(this, item);
-                return;
+
+                item.appWidgetId = newWidgetId;
+
+                // If the widget has a configure activity, it is still needs to set it up, otherwise
+                // the widget is ready to go.
+                item.restoreStatus = (appWidgetInfo.configure == null)
+                        ? LauncherAppWidgetInfo.RESTORE_COMPLETED
+                        : LauncherAppWidgetInfo.FLAG_UI_NOT_READY;
+
+                LauncherModel.updateItemInDatabase(this, item);
+            } else if (((item.restoreStatus & LauncherAppWidgetInfo.FLAG_UI_NOT_READY) != 0)
+                    && (appWidgetInfo.configure == null)) {
+                // If the ID is already valid, verify if we need to configure or not.
+                item.restoreStatus = LauncherAppWidgetInfo.RESTORE_COMPLETED;
+                LauncherModel.updateItemInDatabase(this, item);
             }
-
-            item.appWidgetId = newWidgetId;
-
-            // If the widget has a configure activity, it is still needs to set it up, otherwise
-            // the widget is ready to go.
-            item.restoreStatus = (appWidgetInfo.configure == null)
-                    ? LauncherAppWidgetInfo.RESTORE_COMPLETED
-                    : LauncherAppWidgetInfo.FLAG_UI_NOT_READY;
-
-            LauncherModel.updateItemInDatabase(this, item);
         }
 
         if (!mIsSafeModeEnabled && item.restoreStatus == LauncherAppWidgetInfo.RESTORE_COMPLETED) {
