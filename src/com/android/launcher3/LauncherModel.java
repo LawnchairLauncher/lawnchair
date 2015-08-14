@@ -2190,7 +2190,7 @@ public class LauncherModel extends BroadcastReceiver
 
                                             // Id would be valid only if the widget restore broadcast was received.
                                             if (isIdValid) {
-                                                status = LauncherAppWidgetInfo.RESTORE_COMPLETED;
+                                                status = LauncherAppWidgetInfo.FLAG_UI_NOT_READY;
                                             } else {
                                                 status &= ~LauncherAppWidgetInfo
                                                         .FLAG_PROVIDER_NOT_READY;
@@ -3209,6 +3209,12 @@ public class LauncherModel extends BroadcastReceiver
                                 widgetInfo.restoreStatus &=
                                         ~LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY &
                                         ~LauncherAppWidgetInfo.FLAG_RESTORE_STARTED;
+
+                                // adding this flag ensures that launcher shows 'click to setup'
+                                // if the widget has a config activity. In case there is no config
+                                // activity, it will be marked as 'restored' during bind.
+                                widgetInfo.restoreStatus |= LauncherAppWidgetInfo.FLAG_UI_NOT_READY;
+
                                 widgets.add(widgetInfo);
                                 updateItemInDatabase(context, widgetInfo);
                             }
