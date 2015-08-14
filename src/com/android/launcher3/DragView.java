@@ -56,6 +56,7 @@ public class DragView extends View {
     private final DragController mDragController;
     private boolean mHasDrawn = false;
     @Thunk float mCrossFadeProgress = 0f;
+    private boolean mAnimationCancelled = false;
 
     ValueAnimator mAnim;
     private float mInitialScale = 1f;
@@ -116,7 +117,9 @@ public class DragView extends View {
         mAnim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                mDragController.onDragViewAnimationEnd();
+                if (!mAnimationCancelled) {
+                    mDragController.onDragViewAnimationEnd();
+                }
             }
         });
 
@@ -332,6 +335,7 @@ public class DragView extends View {
     }
 
     public void cancelAnimation() {
+        mAnimationCancelled = true;
         if (mAnim != null && mAnim.isRunning()) {
             mAnim.cancel();
         }

@@ -46,11 +46,42 @@ public abstract class DragDriver {
      */
     public abstract void onDragViewAnimationEnd();
 
-    public abstract boolean onTouchEvent(MotionEvent ev);
+    public boolean onTouchEvent(MotionEvent ev) {
+        final int action = ev.getAction();
+
+        switch (action) {
+            case MotionEvent.ACTION_MOVE:
+                mEventListener.onDriverDragMove(ev.getX(), ev.getY());
+                break;
+            case MotionEvent.ACTION_UP:
+                mEventListener.onDriverDragMove(ev.getX(), ev.getY());
+                mEventListener.onDriverDragEnd(ev.getX(), ev.getY(), null);
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                mEventListener.onDriverDragCancel();
+                break;
+        }
+
+        return true;
+    }
 
     public abstract boolean onDragEvent (DragEvent event);
 
-    public abstract boolean onInterceptTouchEvent(MotionEvent ev);
+
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        final int action = ev.getAction();
+
+        switch (action) {
+            case MotionEvent.ACTION_UP:
+                mEventListener.onDriverDragEnd(ev.getX(), ev.getY(), null);
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                mEventListener.onDriverDragCancel();
+                break;
+        }
+
+        return true;
+    }
 
     public static DragDriver create(
             DragController dragController, ItemInfo dragInfo, DragView dragView) {
@@ -71,7 +102,7 @@ class SystemDragDriver extends DragDriver {
     private final Intent mDragIntent;
 
     private final DragView mDragView;
-    boolean mDragging = false;
+    boolean mIsFrameworkDragActive = false;
     boolean mReceivedDropEvent = false;
     float mLastX = 0;
     float mLastY = 0;
@@ -116,10 +147,10 @@ class SystemDragDriver extends DragDriver {
         final int flagOpaque = 1 << 9;
         final int flags = (mDragIntent != null ? flagGlobal : 0) | flagOpaque;
 
-        mDragging = true;
+        mIsFrameworkDragActive = true;
 
         if (!mDragView.startDrag(dragData, shadowBuilder, null, flags)) {
-            mDragging = false;
+            mIsFrameworkDragActive = false;
             mEventListener.onDriverDragCancel();
             return;
         }
@@ -131,17 +162,17 @@ class SystemDragDriver extends DragDriver {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        return false;
+        return !mIsFrameworkDragActive && super.onTouchEvent(ev);
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        return false;
+        return !mIsFrameworkDragActive && super.onInterceptTouchEvent(ev);
     }
 
     @Override
     public boolean onDragEvent (DragEvent event) {
-        if (!mDragging) {
+        if (!mIsFrameworkDragActive) {
             // We are interested only in drag events started by this driver.
             return false;
         }
@@ -189,7 +220,7 @@ class SystemDragDriver extends DragDriver {
                         new AnotherWindowDropTarget(mDragView.getContext()) : null;
 
                 mEventListener.onDriverDragEnd(mLastX, mLastY, dropTargetOverride);
-                mDragging = false;
+                mIsFrameworkDragActive = false;
                 return true;
 
             default:
@@ -208,42 +239,6 @@ class InternalDragDriver extends DragDriver {
 
     @Override
     public void onDragViewAnimationEnd() {}
-
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        final int action = ev.getAction();
-
-        switch (action) {
-            case MotionEvent.ACTION_MOVE:
-                mEventListener.onDriverDragMove(ev.getX(), ev.getY());
-                break;
-            case MotionEvent.ACTION_UP:
-                mEventListener.onDriverDragMove(ev.getX(), ev.getY());
-                mEventListener.onDriverDragEnd(ev.getX(), ev.getY(), null);
-                break;
-            case MotionEvent.ACTION_CANCEL:
-                mEventListener.onDriverDragCancel();
-                break;
-        }
-
-        return true;
-    }
-
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        final int action = ev.getAction();
-
-        switch (action) {
-            case MotionEvent.ACTION_UP:
-                mEventListener.onDriverDragEnd(ev.getX(), ev.getY(), null);
-                break;
-            case MotionEvent.ACTION_CANCEL:
-                mEventListener.onDriverDragCancel();
-                break;
-        }
-
-        return true;
-    }
 
     @Override
     public boolean onDragEvent (DragEvent event) { return false; }
