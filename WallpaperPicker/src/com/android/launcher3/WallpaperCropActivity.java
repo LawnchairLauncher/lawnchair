@@ -19,6 +19,7 @@ package com.android.launcher3;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.WallpaperManager;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -26,6 +27,7 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -116,8 +118,7 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        boolean finishActivityWhenDone = true;
-                        cropImageAndSetWallpaper(imageUri, null, finishActivityWhenDone);
+                        cropImageAndSetWallpaper(imageUri, null);
                     }
                 });
         mSetWallpaperButton = findViewById(R.id.set_wallpaper_button);
@@ -215,7 +216,7 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    protected boolean isActivityDestroyed() {
+    public boolean isActivityDestroyed() {
         return Utilities.ATLEAST_JB_MR1 && isDestroyed();
     }
 
@@ -257,6 +258,7 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
         mProgressView.setVisibility(View.GONE);
     }
 
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     public final void setCropViewTileSource(BitmapSource bitmapSource, boolean touchEnabled,
             boolean moveToLeft, CropViewScaleProvider scaleProvider, Runnable postExecute) {
         final LoadRequest req = new LoadRequest();
@@ -266,6 +268,21 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
         req.postExecute = postExecute;
         req.scaleProvider = scaleProvider;
         mCurrentLoadRequest = req;
+        if (bitmapSource == null) {
+            // Load the default wallpaper
+            Drawable defaultWallpaper = WallpaperManager.getInstance(this)
+                    .getBuiltInDrawable(mCropView.getWidth(), mCropView.getHeight(),
+                            false, 0.5f, 0.5f);
+            if (defaultWallpaper == null) {
+                Log.w(LOGTAG, "Null default wallpaper encountered.");
+                mCropView.setTileSource(null, null);
+                return;
+            }
+            req.result = new DrawableTileSource(this,
+                    defaultWallpaper, DrawableTileSource.MAX_PREVIEW_SIZE);
+            onLoadRequestComplete(req, true);
+            return;
+        }
 
         // Remove any pending requests
         mLoaderHandler.removeMessages(MSG_LOAD_IMAGE);
@@ -288,27 +305,17 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
         return getResources().getBoolean(R.bool.allow_rotation);
     }
 
-    protected void setWallpaper(Uri uri, final boolean finishActivityWhenDone) {
+    public void setWallpaper(Uri uri) {
         int rotation = BitmapUtils.getRotationFromExif(getContext(), uri);
         BitmapCropTask cropTask = new BitmapCropTask(
                 getContext(), uri, null, rotation, 0, 0, true, false, null);
-        final Point bounds = cropTask.getImageBounds();
-        Runnable onEndCrop = new Runnable() {
-            public void run() {
-                WallpaperUtils.saveWallpaperDimensions(bounds.x, bounds.y, WallpaperCropActivity.this);
-                if (finishActivityWhenDone) {
-                    setResult(Activity.RESULT_OK);
-                    finish();
-                }
-            }
-        };
+        CropAndFinishRunnable onEndCrop = new CropAndFinishRunnable(cropTask.getImageBounds());
         cropTask.setOnEndRunnable(onEndCrop);
         cropTask.setNoCrop(true);
         cropTask.execute();
     }
 
-    protected void cropImageAndSetWallpaper(
-            Resources res, int resId, final boolean finishActivityWhenDone) {
+    public void cropImageAndSetWallpaper(Resources res, int resId) {
         // crop this image and scale it down to the default wallpaper size for
         // this device
         int rotation = BitmapUtils.getRotationFromExif(res, resId, this);
@@ -317,25 +324,17 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
                 getWindowManager());
         RectF crop = Utils.getMaxCropRect(
                 inSize.x, inSize.y, outSize.x, outSize.y, false);
-        Runnable onEndCrop = new Runnable() {
-            public void run() {
-                // Passing 0, 0 will cause launcher to revert to using the
-                // default wallpaper size
-                WallpaperUtils.saveWallpaperDimensions(0, 0, WallpaperCropActivity.this);
-                if (finishActivityWhenDone) {
-                    setResult(Activity.RESULT_OK);
-                    finish();
-                }
-            }
-        };
+        // Passing 0, 0 will cause launcher to revert to using the
+        // default wallpaper size
+        CropAndFinishRunnable onEndCrop = new CropAndFinishRunnable(new Point(0, 0));
         BitmapCropTask cropTask = new BitmapCropTask(getContext(), res, resId,
                 crop, rotation, outSize.x, outSize.y, true, false, onEndCrop);
         cropTask.execute();
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    protected void cropImageAndSetWallpaper(Uri uri,
-            BitmapCropTask.OnBitmapCroppedHandler onBitmapCroppedHandler, final boolean finishActivityWhenDone) {
+    public void cropImageAndSetWallpaper(Uri uri,
+            BitmapCropTask.OnBitmapCroppedHandler onBitmapCroppedHandler) {
         boolean centerCrop = getResources().getBoolean(R.bool.center_crop);
         // Get the crop
         boolean ltr = mCropView.getLayoutDirection() == View.LAYOUT_DIRECTION_LTR;
@@ -408,24 +407,33 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
             cropRect.top -= expandHeight;
             cropRect.bottom += expandHeight;
         }
+
         final int outWidth = (int) Math.round(cropRect.width() * cropScale);
         final int outHeight = (int) Math.round(cropRect.height() * cropScale);
+        CropAndFinishRunnable onEndCrop = new CropAndFinishRunnable(new Point(outWidth, outHeight));
 
-        Runnable onEndCrop = new Runnable() {
-            public void run() {
-                WallpaperUtils.saveWallpaperDimensions(outWidth, outHeight, WallpaperCropActivity.this);
-                if (finishActivityWhenDone) {
-                    setResult(Activity.RESULT_OK);
-                    finish();
-                }
-            }
-        };
         BitmapCropTask cropTask = new BitmapCropTask(getContext(), uri,
                 cropRect, cropRotation, outWidth, outHeight, true, false, onEndCrop);
         if (onBitmapCroppedHandler != null) {
             cropTask.setOnBitmapCropped(onBitmapCroppedHandler);
         }
         cropTask.execute();
+    }
+
+    private class CropAndFinishRunnable implements Runnable {
+        private final Point mBounds;
+
+        public CropAndFinishRunnable(Point bounds) {
+            mBounds = bounds;
+        }
+
+        @Override
+        public void run() {
+            WallpaperUtils.saveWallpaperDimensions(mBounds.x, mBounds.y,
+                    WallpaperCropActivity.this);
+            setResult(Activity.RESULT_OK);
+            finish();
+        }
     }
 
     static class LoadRequest {
@@ -438,7 +446,7 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
         TileSource result;
     }
 
-    interface CropViewScaleProvider {
+    public interface CropViewScaleProvider {
         float getScale(TileSource src);
     }
 }
