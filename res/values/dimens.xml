@@ -129,4 +129,8 @@
     <dimen name="blur_size_click_shadow">4dp</dimen>
     <dimen name="click_shadow_high_shift">2dp</dimen>
 
+<!-- Pending widget -->
+    <dimen name="pending_widget_min_padding">8dp</dimen>
+    <dimen name="pending_widget_elevation">2dp</dimen>
+
 </resources>
