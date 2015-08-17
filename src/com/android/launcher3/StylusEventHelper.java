@@ -1,8 +1,5 @@
 package com.android.launcher3;
 
-import com.android.launcher3.Utilities;
-
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;

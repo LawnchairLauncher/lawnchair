@@ -21,6 +21,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.FloatArrayEvaluator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -34,9 +35,7 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
-
 import com.android.launcher3.util.Thunk;
-
 import java.util.Arrays;
 
 public class DragView extends View {
@@ -53,12 +52,11 @@ public class DragView extends View {
     private Point mDragVisualizeOffset = null;
     private Rect mDragRegion = null;
     private final DragLayer mDragLayer;
-    private final DragController mDragController;
+    @Thunk final DragController mDragController;
     private boolean mHasDrawn = false;
     @Thunk float mCrossFadeProgress = 0f;
 
     ValueAnimator mAnim;
-    private float mInitialScale = 1f;
     // The intrinsic icon scale factor is the scale factor for a drag icon over the workspace
     // size.  This is ignored for non-icons.
     private float mIntrinsicIconScale = 1f;
@@ -83,7 +81,6 @@ public class DragView extends View {
         super(launcher);
         mDragLayer = launcher.getDragLayer();
         mDragController = launcher.getDragController();
-        mInitialScale = initialScale;
 
         final Resources res = getResources();
         final float scaleDps = res.getDimensionPixelSize(R.dimen.dragViewScale);
@@ -178,16 +175,13 @@ public class DragView extends View {
         return mDragRegion;
     }
 
-    public void updateInitialScaleToCurrentScale() {
-        mInitialScale = getScaleX();
-    }
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         setMeasuredDimension(mBitmap.getWidth(), mBitmap.getHeight());
     }
 
     // Draws drag shadow for system DND.
+    @SuppressLint("WrongCall")
     public void drawDragShadow(Canvas canvas) {
         final int saveCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
         canvas.scale(getScaleX(), getScaleY());

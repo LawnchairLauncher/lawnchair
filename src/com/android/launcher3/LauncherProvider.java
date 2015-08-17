@@ -1101,10 +1101,6 @@ public class LauncherProvider extends ContentProvider {
                                 = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLX);
                         final int cellYIndex
                                 = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLY);
-                        final int uriIndex
-                                = c.getColumnIndexOrThrow(LauncherSettings.Favorites.URI);
-                        final int displayModeIndex
-                                = c.getColumnIndexOrThrow(LauncherSettings.Favorites.DISPLAY_MODE);
                         final int profileIndex
                                 = c.getColumnIndex(LauncherSettings.Favorites.PROFILE_ID);
 
@@ -1223,9 +1219,6 @@ public class LauncherProvider extends ContentProvider {
                                     c.getString(iconResourceIndex));
                             values.put(LauncherSettings.Favorites.ITEM_TYPE, itemType);
                             values.put(LauncherSettings.Favorites.APPWIDGET_ID, -1);
-                            values.put(LauncherSettings.Favorites.URI, c.getString(uriIndex));
-                            values.put(LauncherSettings.Favorites.DISPLAY_MODE,
-                                    c.getInt(displayModeIndex));
                             values.put(LauncherSettings.Favorites.PROFILE_ID, userSerialNumber);
 
                             if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {

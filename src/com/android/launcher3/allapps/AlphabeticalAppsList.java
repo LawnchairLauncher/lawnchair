@@ -16,7 +16,6 @@
 package com.android.launcher3.allapps;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.android.launcher3.AppInfo;
@@ -182,14 +181,13 @@ public class AlphabeticalAppsList {
     // The of ordered component names as a result of a search query
     private ArrayList<ComponentKey> mSearchResults;
     private HashMap<CharSequence, String> mCachedSectionNames = new HashMap<>();
-    private RecyclerView.Adapter mAdapter;
+    private AllAppsGridAdapter mAdapter;
     private AlphabeticIndexCompat mIndexer;
     private AppNameComparator mAppNameComparator;
     private MergeAlgorithm mMergeAlgorithm;
     private int mNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
     private int mNumAppRowsInAdapter;
-    private boolean mDisableEmptyText;
 
     public AlphabeticalAppsList(Context context) {
         mLauncher = (Launcher) context;
@@ -212,15 +210,8 @@ public class AlphabeticalAppsList {
     /**
      * Sets the adapter to notify when this dataset changes.
      */
-    public void setAdapter(RecyclerView.Adapter adapter) {
+    public void setAdapter(AllAppsGridAdapter adapter) {
         mAdapter = adapter;
-    }
-
-    /**
-     * Disables the empty text message when there are no search results.
-     */
-    public void disableEmptyText() {
-        mDisableEmptyText = true;
     }
 
     /**

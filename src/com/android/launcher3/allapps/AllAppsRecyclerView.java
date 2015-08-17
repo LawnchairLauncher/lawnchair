@@ -27,7 +27,6 @@ import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.BaseRecyclerViewFastScrollBar;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Stats;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Thunk;
 
 import java.util.List;
