@@ -18,12 +18,9 @@ package com.android.launcher3;
 
 import android.app.WallpaperManager;
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 
 public class ShortcutAndWidgetContainer extends ViewGroup {
     static final String TAG = "CellLayoutChildren";
@@ -43,7 +40,6 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
     private int mHeightGap;
 
     private int mCountX;
-    private int mCountY;
 
     private Launcher mLauncher;
 
@@ -62,7 +58,6 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
         mWidthGap = widthGap;
         mHeightGap = heightGap;
         mCountX = countX;
-        mCountY = countY;
     }
 
     public View getChildAt(int x, int y) {
@@ -77,24 +72,6 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
             }
         }
         return null;
-    }
-
-    @Override
-    protected void dispatchDraw(Canvas canvas) {
-        @SuppressWarnings("all") // suppress dead code warning
-        final boolean debug = false;
-        if (debug) {
-            // Debug drawing for hit space
-            Paint p = new Paint();
-            p.setColor(0x6600FF00);
-            for (int i = getChildCount() - 1; i >= 0; i--) {
-                final View child = getChildAt(i);
-                final CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
-
-                canvas.drawRect(lp.x, lp.y, lp.x + lp.width, lp.y + lp.height, p);
-            }
-        }
-        super.dispatchDraw(canvas);
     }
 
     @Override
@@ -238,7 +215,6 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
         }
     }
 
-    @Override
     protected void setChildrenDrawnWithCacheEnabled(boolean enabled) {
         super.setChildrenDrawnWithCacheEnabled(enabled);
     }

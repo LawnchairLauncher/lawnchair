@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.allapps;
 
-import android.content.ComponentName;
 import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;

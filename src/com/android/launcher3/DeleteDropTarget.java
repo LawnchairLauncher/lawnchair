@@ -111,7 +111,6 @@ public class DeleteDropTarget extends ButtonDropTarget {
     public void onFlingToDelete(final DragObject d, PointF vel) {
         // Don't highlight the icon as it's animating
         d.dragView.setColor(0);
-        d.dragView.updateInitialScaleToCurrentScale();
 
         final DragLayer dragLayer = mLauncher.getDragLayer();
         FlingAnimation fling = new FlingAnimation(d, vel,

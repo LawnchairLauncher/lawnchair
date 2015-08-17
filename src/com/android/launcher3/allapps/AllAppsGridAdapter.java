@@ -317,7 +317,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         }
     }
 
-    private Launcher mLauncher;
+    @Thunk Launcher mLauncher;
     private LayoutInflater mLayoutInflater;
     @Thunk AlphabeticalAppsList mApps;
     private GridLayoutManager mGridLayoutMgr;
@@ -340,9 +340,9 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     // each time the search query changes.
     private String mMarketSearchMessage;
     // The intent to send off to the market app, updated each time the search query changes.
-    private Intent mMarketSearchIntent;
+    @Thunk Intent mMarketSearchIntent;
     // The last query that the user entered into the search field
-    private String mLastSearchQuery;
+    @Thunk String mLastSearchQuery;
 
     // Section drawing
     @Thunk int mSectionNamesMargin;
