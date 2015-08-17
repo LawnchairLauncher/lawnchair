@@ -16,8 +16,6 @@
 
 package com.android.launcher3;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.annotation.TargetApi;
@@ -36,6 +34,7 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.accessibility.AccessibilityManager;
+
 import com.android.launcher3.util.Thunk;
 
 class LauncherClings implements OnClickListener {
@@ -225,7 +224,7 @@ class LauncherClings implements OnClickListener {
 
         // Restricted secondary users (child mode) will potentially have very few apps
         // seeded when they start up for the first time. Clings won't work well with that
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+        if (Utilities.ATLEAST_JB_MR2) {
             UserManager um = (UserManager) mLauncher.getSystemService(Context.USER_SERVICE);
             Bundle restrictions = um.getUserRestrictions();
             if (restrictions.getBoolean(UserManager.DISALLOW_MODIFY_ACCOUNTS, false)) {

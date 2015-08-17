@@ -116,8 +116,6 @@ import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -357,18 +355,6 @@ public class Launcher extends Activity
     static {
         if (ENABLE_CUSTOM_WIDGET_TEST) {
             sCustomAppWidgets.put(DummyWidget.class.getName(), new DummyWidget());
-        }
-    }
-
-    // TODO: remove this field and call method directly when Launcher3 can depend on M APIs
-    private static Method sClipRevealMethod = null;
-    static {
-        Class<?> activityOptionsClass = ActivityOptions.class;
-        try {
-            sClipRevealMethod = activityOptionsClass.getDeclaredMethod("makeClipRevealAnimation",
-                    View.class, int.class, int.class, int.class, int.class);
-        } catch (Exception e) {
-            // Earlier version
         }
     }
 
@@ -667,7 +653,7 @@ public class Launcher extends Activity
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static int generateViewId() {
-        if (Build.VERSION.SDK_INT >= 17) {
+        if (Utilities.ATLEAST_JB_MR1) {
             return View.generateViewId();
         } else {
             // View.generateViewId() is not available. The following fallback logic is a copy
@@ -1653,18 +1639,18 @@ public class Launcher extends Activity
         }
         registerReceiver(mReceiver, filter);
         FirstFrameAnimatorHelper.initializeDrawListener(getWindow().getDecorView());
-        setupTransparentSystemBarsForLmp();
+        setupTransparentSystemBarsForLollipop();
         mAttached = true;
         mVisible = true;
     }
 
     /**
-     * Sets up transparent navigation and status bars in LMP.
+     * Sets up transparent navigation and status bars in Lollipop.
      * This method is a no-op for other platform versions.
      */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void setupTransparentSystemBarsForLmp() {
-        if (Utilities.isLmpOrAbove()) {
+    private void setupTransparentSystemBarsForLollipop() {
+        if (Utilities.ATLEAST_LOLLIPOP) {
             Window window = getWindow();
             window.getAttributes().systemUiVisibility |=
                     (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -2883,8 +2869,7 @@ public class Launcher extends Activity
             Bundle optsBundle = null;
             if (useLaunchAnimation) {
                 ActivityOptions opts = null;
-                if (sClipRevealMethod != null) {
-                    // TODO: call method directly when Launcher3 can depend on M APIs
+                if (Utilities.ATLEAST_MARSHMALLOW) {
                     int left = 0, top = 0;
                     int width = v.getMeasuredWidth(), height = v.getMeasuredHeight();
                     if (v instanceof TextView) {
@@ -2898,22 +2883,12 @@ public class Launcher extends Activity
                             height = bounds.height();
                         }
                     }
-                    try {
-                        opts = (ActivityOptions) sClipRevealMethod.invoke(null, v,
-                                left, top, width, height);
-                    } catch (IllegalAccessException e) {
-                        Log.d(TAG, "Could not call makeClipRevealAnimation: " + e);
-                        sClipRevealMethod = null;
-                    } catch (InvocationTargetException e) {
-                        Log.d(TAG, "Could not call makeClipRevealAnimation: " + e);
-                        sClipRevealMethod = null;
-                    }
-                }
-                if (opts == null && !Utilities.isLmpOrAbove()) {
+                    opts = ActivityOptions.makeClipRevealAnimation(v, left, top, width, height);
+                } else if (!Utilities.ATLEAST_LOLLIPOP) {
                     // Below L, we use a scale up animation
                     opts = ActivityOptions.makeScaleUpAnimation(v, 0, 0,
                                     v.getMeasuredWidth(), v.getMeasuredHeight());
-                } else if (opts == null && Utilities.isLmpMR1()) {
+                } else if (Utilities.ATLEAST_LOLLIPOP_MR1) {
                     // On L devices, we use the device default slide-up transition.
                     // On L MR1 devices, we a custom version of the slide-up transition which
                     // doesn't have the delay present in the device default.
@@ -3028,7 +3003,7 @@ public class Launcher extends Activity
 
         ObjectAnimator oa = LauncherAnimUtils.ofPropertyValuesHolder(mFolderIconImageView, alpha,
                 scaleX, scaleY);
-        if (Utilities.isLmpOrAbove()) {
+        if (Utilities.ATLEAST_LOLLIPOP) {
             oa.setInterpolator(new LogDecelerateInterpolator(100, 0));
         }
         oa.setDuration(getResources().getInteger(R.integer.config_folderExpandDuration));
@@ -4324,13 +4299,14 @@ public class Launcher extends Activity
         return oriMap[(d.getRotation() + indexOffset) % 4];
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public void lockScreenOrientation() {
         if (mRotationEnabled) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            if (Utilities.ATLEAST_JB_MR2) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+            } else {
                 setRequestedOrientation(mapConfigurationOriActivityInfoOri(getResources()
                         .getConfiguration().orientation));
-            } else {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
             }
         }
     }
@@ -4534,7 +4510,7 @@ public class Launcher extends Activity
     public ItemInfo createAppDragInfo(Intent appLaunchIntent) {
         // Called from search suggestion
         UserHandleCompat user = null;
-        if (Utilities.isLmpOrAbove()) {
+        if (Utilities.ATLEAST_LOLLIPOP) {
             UserHandle userHandle = appLaunchIntent.getParcelableExtra(Intent.EXTRA_USER);
             if (userHandle != null) {
                 user = UserHandleCompat.fromUser(userHandle);

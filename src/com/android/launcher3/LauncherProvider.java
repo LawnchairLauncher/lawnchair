@@ -402,7 +402,7 @@ public class LauncherProvider extends ContentProvider {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     private AutoInstallsLayout createWorkspaceLoaderFromAppRestriction() {
         // UserManager.getApplicationRestrictions() requires minSdkVersion >= 18
-        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
+        if (!Utilities.ATLEAST_JB_MR2) {
             return null;
         }
 

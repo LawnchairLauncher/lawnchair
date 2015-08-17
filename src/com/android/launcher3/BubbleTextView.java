@@ -510,7 +510,7 @@ public class BubbleTextView extends TextView
             mIcon.setBounds(0, 0, iconSize, iconSize);
         }
         if (mLayoutHorizontal) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            if (Utilities.ATLEAST_JB_MR1) {
                 setCompoundDrawablesRelative(mIcon, null, null, null);
             } else {
                 setCompoundDrawables(mIcon, null, null, null);

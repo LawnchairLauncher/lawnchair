@@ -453,7 +453,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
         Animator openFolderAnim = null;
         final Runnable onCompleteRunnable;
-        if (!Utilities.isLmpOrAbove()) {
+        if (!Utilities.ATLEAST_LOLLIPOP) {
             positionAndSizeAsIcon();
             centerAboutIcon();
 
@@ -568,7 +568,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 public void onAnimationEnd(Animator animation) {
                     mFolderName.animate().setDuration(FOLDER_NAME_ANIMATION_DURATION)
                         .translationX(0)
-                        .setInterpolator(Utilities.isLmpOrAbove() ?
+                        .setInterpolator(Utilities.ATLEAST_LOLLIPOP ?
                                 AnimationUtils.loadInterpolator(mLauncher,
                                         android.R.interpolator.fast_out_slow_in)
                                 : new LogDecelerateInterpolator(100, 0));

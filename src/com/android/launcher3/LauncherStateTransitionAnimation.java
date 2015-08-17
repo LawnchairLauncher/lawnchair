@@ -205,7 +205,7 @@ public class LauncherStateTransitionAnimation {
             final boolean animated, final PrivateTransitionCallbacks pCb) {
         final AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
         final Resources res = mLauncher.getResources();
-        final boolean material = Utilities.isLmpOrAbove();
+        final boolean material = Utilities.ATLEAST_LOLLIPOP;
         final int revealDuration = res.getInteger(R.integer.config_overlayRevealTime);
         final int itemsAlphaStagger =
                 res.getInteger(R.integer.config_overlayItemsAlphaStagger);
@@ -358,12 +358,11 @@ public class LauncherStateTransitionAnimation {
                     dispatchOnLauncherTransitionStart(toView, animated, false);
 
                     // Enable all necessary layers
-                    boolean isLmpOrAbove = Utilities.isLmpOrAbove();
                     for (View v : layerViews.keySet()) {
                         if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
                             v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
                         }
-                        if (isLmpOrAbove && Utilities.isViewAttachedToWindow(v)) {
+                        if (Utilities.ATLEAST_LOLLIPOP && Utilities.isViewAttachedToWindow(v)) {
                             v.buildLayer();
                         }
                     }
@@ -486,7 +485,7 @@ public class LauncherStateTransitionAnimation {
             final PrivateTransitionCallbacks pCb) {
         final AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
         final Resources res = mLauncher.getResources();
-        final boolean material = Utilities.isLmpOrAbove();
+        final boolean material = Utilities.ATLEAST_LOLLIPOP;
         final int revealDuration = res.getInteger(R.integer.config_overlayRevealTime);
         final int itemsAlphaStagger =
                 res.getInteger(R.integer.config_overlayItemsAlphaStagger);
@@ -668,12 +667,11 @@ public class LauncherStateTransitionAnimation {
                     dispatchOnLauncherTransitionStart(toView, animated, false);
 
                     // Enable all necessary layers
-                    boolean isLmpOrAbove = Utilities.isLmpOrAbove();
                     for (View v : layerViews.keySet()) {
                         if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
                             v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
                         }
-                        if (isLmpOrAbove && Utilities.isViewAttachedToWindow(v)) {
+                        if (Utilities.ATLEAST_LOLLIPOP && Utilities.isViewAttachedToWindow(v)) {
                             v.buildLayer();
                         }
                     }
