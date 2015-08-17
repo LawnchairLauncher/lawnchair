@@ -38,7 +38,7 @@ public class UninstallDropTarget extends ButtonDropTarget {
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public static boolean supportsDrop(Context context, Object info) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+        if (Utilities.ATLEAST_JB_MR2) {
             UserManager userManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
             Bundle restrictions = userManager.getUserRestrictions();
             if (restrictions.getBoolean(UserManager.DISALLOW_APPS_CONTROL, false)

@@ -124,7 +124,7 @@ public class LauncherAppState {
     LauncherModel setLauncher(Launcher launcher) {
         getLauncherProvider().setLauncherProviderChangeListener(launcher);
         mModel.initialize(launcher);
-        mAccessibilityDelegate = ((launcher != null) && Utilities.isLmpOrAbove()) ?
+        mAccessibilityDelegate = ((launcher != null) && Utilities.ATLEAST_LOLLIPOP) ?
             new LauncherAccessibilityDelegate(launcher) : null;
         return mModel;
     }

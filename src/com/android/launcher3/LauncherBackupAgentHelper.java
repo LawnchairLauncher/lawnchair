@@ -65,7 +65,7 @@ public class LauncherBackupAgentHelper extends BackupAgentHelper {
     @Override
     public void onRestore(BackupDataInput data, int appVersionCode, ParcelFileDescriptor newState)
             throws IOException {
-        if (!Utilities.isLmpOrAbove()) {
+        if (!Utilities.ATLEAST_LOLLIPOP) {
             // No restore for old devices.
             Log.i(TAG, "You shall not pass!!!");
             Log.d(TAG, "Restore is only supported on devices running Lollipop and above.");

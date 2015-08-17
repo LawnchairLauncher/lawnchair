@@ -92,7 +92,7 @@ public abstract class ButtonDropTarget extends TextView
         // drawableLeft and drawableStart.
         mDrawable = getResources().getDrawable(resId);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        if (Utilities.ATLEAST_JB_MR1) {
             setCompoundDrawablesRelativeWithIntrinsicBounds(mDrawable, null, null, null);
         } else {
             setCompoundDrawablesWithIntrinsicBounds(mDrawable, null, null, null);
@@ -113,7 +113,7 @@ public abstract class ButtonDropTarget extends TextView
     @Override
     public final void onDragEnter(DragObject d) {
         d.dragView.setColor(mHoverColor);
-        if (Utilities.isLmpOrAbove()) {
+        if (Utilities.ATLEAST_LOLLIPOP) {
             animateTextColor(mHoverColor);
         } else {
             if (mCurrentFilter == null) {
@@ -130,8 +130,8 @@ public abstract class ButtonDropTarget extends TextView
         // Do nothing
     }
 
-	protected void resetHoverColor() {
-        if (Utilities.isLmpOrAbove()) {
+    protected void resetHoverColor() {
+        if (Utilities.ATLEAST_LOLLIPOP) {
             animateTextColor(mOriginalTextColor.getDefaultColor());
         } else {
             mDrawable.setColorFilter(null);

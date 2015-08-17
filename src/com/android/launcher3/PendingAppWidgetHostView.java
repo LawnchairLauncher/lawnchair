@@ -78,7 +78,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
         setBackgroundResource(R.drawable.quantum_panel_dark);
         setWillNotDraw(false);
 
-        if (Utilities.isLmpOrAbove()) {
+        if (Utilities.ATLEAST_LOLLIPOP) {
             setElevation(getResources().getDimension(R.dimen.pending_widget_elevation));
         }
     }

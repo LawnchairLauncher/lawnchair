@@ -2021,7 +2021,7 @@ public class Workspace extends PagedView
     }
 
     public void updateAccessibilityFlags() {
-        if (Utilities.isLmpOrAbove()) {
+        if (Utilities.ATLEAST_LOLLIPOP) {
             int total = getPageCount();
             for (int i = numCustomPages(); i < total; i++) {
                 updateAccessibilityFlags((CellLayout) getPageAt(i), i);
