@@ -19,10 +19,7 @@ package com.android.launcher3;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.WallpaperManager;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -58,9 +55,6 @@ import java.util.WeakHashMap;
 public class WallpaperCropActivity extends BaseActivity implements Handler.Callback {
     private static final String LOGTAG = "Launcher3.CropActivity";
 
-    protected static final String WALLPAPER_WIDTH_KEY = WallpaperUtils.WALLPAPER_WIDTH_KEY;
-    protected static final String WALLPAPER_HEIGHT_KEY = WallpaperUtils.WALLPAPER_HEIGHT_KEY;
-
     /**
      * The maximum bitmap size we allow to be returned through the intent.
      * Intents have a maximum of 1MB in total size. However, the Bitmap seems to
@@ -69,7 +63,6 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
      * array instead of a Bitmap instance to avoid overhead.
      */
     public static final int MAX_BMAP_IN_INTENT = 750000;
-    public static final float WALLPAPER_SCREENS_SPAN = WallpaperUtils.WALLPAPER_SCREENS_SPAN;
 
     private static final int MSG_LOAD_IMAGE = 1;
 
@@ -302,7 +295,7 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
         final Point bounds = cropTask.getImageBounds();
         Runnable onEndCrop = new Runnable() {
             public void run() {
-                updateWallpaperDimensions(bounds.x, bounds.y);
+                WallpaperUtils.saveWallpaperDimensions(bounds.x, bounds.y, WallpaperCropActivity.this);
                 if (finishActivityWhenDone) {
                     setResult(Activity.RESULT_OK);
                     finish();
@@ -328,7 +321,7 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
             public void run() {
                 // Passing 0, 0 will cause launcher to revert to using the
                 // default wallpaper size
-                updateWallpaperDimensions(0, 0);
+                WallpaperUtils.saveWallpaperDimensions(0, 0, WallpaperCropActivity.this);
                 if (finishActivityWhenDone) {
                     setResult(Activity.RESULT_OK);
                     finish();
@@ -420,7 +413,7 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
 
         Runnable onEndCrop = new Runnable() {
             public void run() {
-                updateWallpaperDimensions(outWidth, outHeight);
+                WallpaperUtils.saveWallpaperDimensions(outWidth, outHeight, WallpaperCropActivity.this);
                 if (finishActivityWhenDone) {
                     setResult(Activity.RESULT_OK);
                     finish();
@@ -433,22 +426,6 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
             cropTask.setOnBitmapCropped(onBitmapCroppedHandler);
         }
         cropTask.execute();
-    }
-
-    protected void updateWallpaperDimensions(int width, int height) {
-        String spKey = LauncherFiles.WALLPAPER_CROP_PREFERENCES_KEY;
-        SharedPreferences sp = getContext().getSharedPreferences(spKey, Context.MODE_MULTI_PROCESS);
-        SharedPreferences.Editor editor = sp.edit();
-        if (width != 0 && height != 0) {
-            editor.putInt(WALLPAPER_WIDTH_KEY, width);
-            editor.putInt(WALLPAPER_HEIGHT_KEY, height);
-        } else {
-            editor.remove(WALLPAPER_WIDTH_KEY);
-            editor.remove(WALLPAPER_HEIGHT_KEY);
-        }
-        editor.commit();
-        WallpaperUtils.suggestWallpaperDimension(getResources(),
-                sp, getWindowManager(), WallpaperManager.getInstance(getContext()), true);
     }
 
     static class LoadRequest {

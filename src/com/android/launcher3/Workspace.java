@@ -28,7 +28,6 @@ import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -1308,12 +1307,12 @@ public class Workspace extends PagedView
     protected void setWallpaperDimension() {
         new AsyncTask<Void, Void, Void>() {
             public Void doInBackground(Void ... args) {
-                String spKey = LauncherFiles.WALLPAPER_CROP_PREFERENCES_KEY;
-                SharedPreferences sp =
-                        mLauncher.getSharedPreferences(spKey, Context.MODE_MULTI_PROCESS);
-                WallpaperUtils.suggestWallpaperDimension(mLauncher.getResources(),
-                        sp, mLauncher.getWindowManager(), mWallpaperManager,
-                        mLauncher.overrideWallpaperDimensions());
+                if (Utilities.ATLEAST_KITKAT) {
+                    WallpaperUtils.suggestWallpaperDimension(mLauncher);
+                } else {
+                    WallpaperUtils.suggestWallpaperDimensionPreK(mLauncher,
+                            mLauncher.overrideWallpaperDimensions());
+                }
                 return null;
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);

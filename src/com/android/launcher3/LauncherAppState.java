@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import android.app.SearchManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -37,7 +38,7 @@ public class LauncherAppState {
     private final IconCache mIconCache;
     private final WidgetPreviewLoader mWidgetCache;
 
-    private boolean mWallpaperChangedSinceLastCheck;
+    @Thunk boolean mWallpaperChangedSinceLastCheck;
 
     private static WeakReference<LauncherProvider> sLauncherProvider;
     private static Context sContext;
@@ -100,6 +101,16 @@ public class LauncherAppState {
 
         sContext.registerReceiver(mModel, filter);
         UserManagerCompat.getInstance(sContext).enableAndResetCache();
+
+        if (!Utilities.ATLEAST_KITKAT) {
+            sContext.registerReceiver(new BroadcastReceiver() {
+
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    mWallpaperChangedSinceLastCheck = true;
+                }
+            }, new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED));
+        }
     }
 
     /**
@@ -155,10 +166,6 @@ public class LauncherAppState {
 
     public WidgetPreviewLoader getWidgetCache() {
         return mWidgetCache;
-    }
-    
-    public void onWallpaperChanged() {
-        mWallpaperChangedSinceLastCheck = true;
     }
 
     public boolean hasWallpaperChangedSinceLastCheck() {
