@@ -17,13 +17,16 @@
 package com.android.launcher3.util;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.WallpaperManager;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.os.Build;
 import android.view.WindowManager;
 
+import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.Utilities;
 
 /**
@@ -35,28 +38,59 @@ public final class WallpaperUtils {
     public static final String WALLPAPER_HEIGHT_KEY = "wallpaper.height";
     public static final float WALLPAPER_SCREENS_SPAN = 2f;
 
-    public static void suggestWallpaperDimension(Resources res,
-            final SharedPreferences sharedPrefs,
-            WindowManager windowManager,
-            final WallpaperManager wallpaperManager, boolean fallBackToDefaults) {
-        final Point defaultWallpaperSize = WallpaperUtils.getDefaultWallpaperSize(res, windowManager);
+    public static void saveWallpaperDimensions(int width, int height, Activity activity) {
+        if (Utilities.ATLEAST_KITKAT) {
+            // From Kitkat onwards, ImageWallpaper does not care about the
+            // desired width and desired height of the wallpaper.
+            return;
+        }
+        String spKey = LauncherFiles.WALLPAPER_CROP_PREFERENCES_KEY;
+        SharedPreferences sp = activity.getSharedPreferences(spKey, Context.MODE_MULTI_PROCESS);
+        SharedPreferences.Editor editor = sp.edit();
+        if (width != 0 && height != 0) {
+            editor.putInt(WALLPAPER_WIDTH_KEY, width);
+            editor.putInt(WALLPAPER_HEIGHT_KEY, height);
+        } else {
+            editor.remove(WALLPAPER_WIDTH_KEY);
+            editor.remove(WALLPAPER_HEIGHT_KEY);
+        }
+        editor.commit();
+        suggestWallpaperDimensionPreK(activity, true);
+    }
+
+    public static void suggestWallpaperDimensionPreK(
+            Activity activity, boolean fallBackToDefaults) {
+        final Point defaultWallpaperSize = getDefaultWallpaperSize(
+                activity.getResources(), activity.getWindowManager());
+
+        SharedPreferences sp = activity.getSharedPreferences(
+                LauncherFiles.WALLPAPER_CROP_PREFERENCES_KEY, Context.MODE_MULTI_PROCESS);
         // If we have saved a wallpaper width/height, use that instead
+        int width = sp.getInt(WALLPAPER_WIDTH_KEY, -1);
+        int height = sp.getInt(WALLPAPER_HEIGHT_KEY, -1);
 
-        int savedWidth = sharedPrefs.getInt(WALLPAPER_WIDTH_KEY, -1);
-        int savedHeight = sharedPrefs.getInt(WALLPAPER_HEIGHT_KEY, -1);
-
-        if (savedWidth == -1 || savedHeight == -1) {
+        if (width == -1 || height == -1) {
             if (!fallBackToDefaults) {
                 return;
             } else {
-                savedWidth = defaultWallpaperSize.x;
-                savedHeight = defaultWallpaperSize.y;
+                width = defaultWallpaperSize.x;
+                height = defaultWallpaperSize.y;
             }
         }
 
-        if (savedWidth != wallpaperManager.getDesiredMinimumWidth() ||
-                savedHeight != wallpaperManager.getDesiredMinimumHeight()) {
-            wallpaperManager.suggestDesiredDimensions(savedWidth, savedHeight);
+        WallpaperManager wm = WallpaperManager.getInstance(activity);
+        if (width != wm.getDesiredMinimumWidth() || height != wm.getDesiredMinimumHeight()) {
+            wm.suggestDesiredDimensions(width, height);
+        }
+    }
+
+    public static void suggestWallpaperDimension(Activity activity) {
+        // Only live wallpapers care about desired size. Update the size to what launcher expects.
+        final Point size = getDefaultWallpaperSize(
+                activity.getResources(), activity.getWindowManager());
+        WallpaperManager wm = WallpaperManager.getInstance(activity);
+        if (size.x != wm.getDesiredMinimumWidth() || size.y != wm.getDesiredMinimumHeight()) {
+            wm.suggestDesiredDimensions(size.x, size.y);
         }
     }
 
@@ -64,7 +98,7 @@ public final class WallpaperUtils {
      * As a ratio of screen height, the total distance we want the parallax effect to span
      * horizontally
      */
-    public static float wallpaperTravelToScreenWidthRatio(int width, int height) {
+    private static float wallpaperTravelToScreenWidthRatio(int width, int height) {
         float aspectRatio = width / (float) height;
 
         // At an aspect ratio of 16/10, the wallpaper parallax effect should span 1.5 * screen width
@@ -94,19 +128,10 @@ public final class WallpaperUtils {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static Point getDefaultWallpaperSize(Resources res, WindowManager windowManager) {
         if (sDefaultWallpaperSize == null) {
-            Point minDims = new Point();
-            Point maxDims = new Point();
-            windowManager.getDefaultDisplay().getCurrentSizeRange(minDims, maxDims);
-
-            int maxDim = Math.max(maxDims.x, maxDims.y);
-            int minDim = Math.max(minDims.x, minDims.y);
-
-            if (Utilities.ATLEAST_JB_MR1) {
-                Point realSize = new Point();
-                windowManager.getDefaultDisplay().getRealSize(realSize);
-                maxDim = Math.max(realSize.x, realSize.y);
-                minDim = Math.min(realSize.x, realSize.y);
-            }
+            Point realSize = new Point();
+            windowManager.getDefaultDisplay().getRealSize(realSize);
+            int maxDim = Math.max(realSize.x, realSize.y);
+            int minDim = Math.min(realSize.x, realSize.y);
 
             // We need to ensure that there is enough extra space in the wallpaper
             // for the intended parallax effects

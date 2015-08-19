@@ -178,13 +178,6 @@
             >
         </service>
 
-        <receiver
-            android:name="com.android.launcher3.WallpaperChangedReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.WALLPAPER_CHANGED" />
-            </intent-filter>
-        </receiver>
-
         <!-- Intent received used to install shortcuts from other applications -->
         <receiver
             android:name="com.android.launcher3.InstallShortcutReceiver"
