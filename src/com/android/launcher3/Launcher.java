@@ -996,6 +996,12 @@ public class Launcher extends Activity
         mPaused = false;
         if (mRestoring || mOnResumeNeedsLoad) {
             setWorkspaceLoading(true);
+
+            // If we're starting binding all over again, clear any bind calls we'd postponed in
+            // the past (see waitUntilResume) -- we don't need them since we're starting binding
+            // from scratch again
+            mBindOnResumeCallbacks.clear();
+
             mModel.startLoader(PagedView.INVALID_RESTORE_PAGE);
             mRestoring = false;
             mOnResumeNeedsLoad = false;
