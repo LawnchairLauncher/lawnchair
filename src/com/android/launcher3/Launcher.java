@@ -1867,28 +1867,21 @@ public class Launcher extends Activity
         super.onNewIntent(intent);
 
         // Close the menu
-        if (Intent.ACTION_MAIN.equals(intent.getAction())) {
+        Folder openFolder = mWorkspace.getOpenFolder();
+        boolean alreadyOnHome = mHasFocus && ((intent.getFlags() &
+                Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
+                != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+        boolean isActionMain = Intent.ACTION_MAIN.equals(intent.getAction());
+        if (isActionMain) {
             // also will cancel mWaitingForResult.
             closeSystemDialogs();
-
-            final boolean alreadyOnHome = mHasFocus && ((intent.getFlags() &
-                    Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
-                    != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
 
             if (mWorkspace == null) {
                 // Can be cases where mWorkspace is null, this prevents a NPE
                 return;
             }
-            Folder openFolder = mWorkspace.getOpenFolder();
             // In all these cases, only animate if we're already on home
             mWorkspace.exitWidgetResizeMode();
-
-            boolean moveToDefaultScreen = mLauncherCallbacks != null ?
-                    mLauncherCallbacks.shouldMoveToDefaultScreenOnHomeIntent() : true;
-            if (alreadyOnHome && mState == State.WORKSPACE && !mWorkspace.isTouchActive() &&
-                    openFolder == null && moveToDefaultScreen) {
-                mWorkspace.moveToDefaultScreen(true);
-            }
 
             closeFolder();
             exitSpringLoadedDragMode();
@@ -1923,12 +1916,29 @@ public class Launcher extends Activity
             }
         }
 
-        if (DEBUG_RESUME_TIME) {
-            Log.d(TAG, "Time spent in onNewIntent: " + (System.currentTimeMillis() - startTime));
-        }
-
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onNewIntent(intent);
+        }
+
+        // Defer moving to the default screen until after we callback to the LauncherCallbacks
+        // as slow logic in the callbacks eat into the time the scroller expects for the snapToPage
+        // animation.
+        if (isActionMain) {
+            boolean moveToDefaultScreen = mLauncherCallbacks != null ?
+                    mLauncherCallbacks.shouldMoveToDefaultScreenOnHomeIntent() : true;
+            if (alreadyOnHome && mState == State.WORKSPACE && !mWorkspace.isTouchActive() &&
+                    openFolder == null && moveToDefaultScreen) {
+                mWorkspace.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mWorkspace.moveToDefaultScreen(true);
+                    }
+                });
+            }
+        }
+
+        if (DEBUG_RESUME_TIME) {
+            Log.d(TAG, "Time spent in onNewIntent: " + (System.currentTimeMillis() - startTime));
         }
     }
 
