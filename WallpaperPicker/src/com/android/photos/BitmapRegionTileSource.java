@@ -25,14 +25,15 @@ import android.graphics.BitmapRegionDecoder;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.opengl.GLUtils;
 import android.os.Build;
 import android.util.Log;
 
 import com.android.gallery3d.common.BitmapUtils;
+import com.android.gallery3d.common.ExifOrientation;
 import com.android.gallery3d.common.Utils;
-import com.android.gallery3d.exif.ExifInterface;
 import com.android.gallery3d.glrenderer.BasicTexture;
 import com.android.gallery3d.glrenderer.BitmapTexture;
 import com.android.photos.views.TiledImageRenderer;
@@ -160,13 +161,7 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
         private State mState = State.NOT_LOADED;
 
         public boolean loadInBackground(InBitmapProvider bitmapProvider) {
-            ExifInterface ei = new ExifInterface();
-            if (readExif(ei)) {
-                Integer ori = ei.getTagIntValue(ExifInterface.TAG_ORIENTATION);
-                if (ori != null) {
-                    mRotation = ExifInterface.getRotationForOrientationValue(ori.shortValue());
-                }
-            }
+            mRotation = getExifRotation();
             mDecoder = loadBitmapRegionDecoder();
             if (mDecoder == null) {
                 mState = State.ERROR_LOADING;
@@ -232,7 +227,7 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
             return mRotation;
         }
 
-        public abstract boolean readExif(ExifInterface ei);
+        public abstract int getExifRotation();
         public abstract SimpleBitmapRegionDecoder loadBitmapRegionDecoder();
         public abstract Bitmap loadPreviewBitmap(BitmapFactory.Options options);
 
@@ -259,18 +254,10 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
         public Bitmap loadPreviewBitmap(BitmapFactory.Options options) {
             return BitmapFactory.decodeFile(mPath, options);
         }
+
         @Override
-        public boolean readExif(ExifInterface ei) {
-            try {
-                ei.readExif(mPath);
-                return true;
-            } catch (NullPointerException e) {
-                Log.w("BitmapRegionTileSource", "reading exif failed", e);
-                return false;
-            } catch (IOException e) {
-                Log.w("BitmapRegionTileSource", "getting decoder failed", e);
-                return false;
-            }
+        public int getExifRotation() {
+            return ExifOrientation.readRotation(mPath);
         }
     }
 
@@ -315,35 +302,22 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
                 return null;
             }
         }
+
         @Override
-        public boolean readExif(ExifInterface ei) {
-            InputStream is = null;
-            try {
-                is = regenerateInputStream();
-                ei.readExif(is);
-                Utils.closeSilently(is);
-                return true;
-            } catch (FileNotFoundException e) {
-                Log.d("BitmapRegionTileSource", "Failed to load URI " + mUri, e);
-                return false;
-            } catch (IOException e) {
-                Log.d("BitmapRegionTileSource", "Failed to load URI " + mUri, e);
-                return false;
-            } catch (NullPointerException e) {
-                Log.d("BitmapRegionTileSource", "Failed to read EXIF for URI " + mUri, e);
-                return false;
-            } finally {
-                Utils.closeSilently(is);
-            }
+        public int getExifRotation() {
+            return BitmapUtils.getRotationFromExif(mContext, mUri);
         }
     }
 
     public static class ResourceBitmapSource extends BitmapSource {
         private Resources mRes;
         private int mResId;
-        public ResourceBitmapSource(Resources res, int resId) {
+        private Context mContext;
+
+        public ResourceBitmapSource(Resources res, int resId, Context context) {
             mRes = res;
             mResId = resId;
+            mContext = context;
         }
         private InputStream regenerateInputStream() {
             InputStream is = mRes.openRawResource(mResId);
@@ -366,17 +340,10 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
         public Bitmap loadPreviewBitmap(BitmapFactory.Options options) {
             return BitmapFactory.decodeResource(mRes, mResId, options);
         }
+
         @Override
-        public boolean readExif(ExifInterface ei) {
-            try {
-                InputStream is = regenerateInputStream();
-                ei.readExif(is);
-                Utils.closeSilently(is);
-                return true;
-            } catch (IOException e) {
-                Log.e("BitmapRegionTileSource", "Error reading resource", e);
-                return false;
-            }
+        public int getExifRotation() {
+            return BitmapUtils.getRotationFromExif(mRes, mResId, mContext);
         }
     }
 

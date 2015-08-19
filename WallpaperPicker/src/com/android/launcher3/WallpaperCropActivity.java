@@ -318,7 +318,7 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
             Resources res, int resId, final boolean finishActivityWhenDone) {
         // crop this image and scale it down to the default wallpaper size for
         // this device
-        int rotation = BitmapUtils.getRotationFromExif(res, resId);
+        int rotation = BitmapUtils.getRotationFromExif(res, resId, this);
         Point inSize = mCropView.getSourceDimensions();
         Point outSize = WallpaperUtils.getDefaultWallpaperSize(getResources(),
                 getWindowManager());

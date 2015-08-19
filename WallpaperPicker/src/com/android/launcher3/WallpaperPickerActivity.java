@@ -200,8 +200,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         @Override
         public void onClick(final WallpaperPickerActivity a) {
             a.setWallpaperButtonEnabled(false);
-            final BitmapRegionTileSource.UriBitmapSource bitmapSource =
-                    new BitmapRegionTileSource.UriBitmapSource(a.getContext(), Uri.fromFile(mFile));
+            final BitmapRegionTileSource.FilePathBitmapSource bitmapSource =
+                    new BitmapRegionTileSource.FilePathBitmapSource(mFile.getAbsolutePath());
             a.setCropViewTileSource(bitmapSource, false, true, null, new Runnable() {
 
                 @Override
@@ -239,7 +239,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         public void onClick(final WallpaperPickerActivity a) {
             a.setWallpaperButtonEnabled(false);
             final BitmapRegionTileSource.ResourceBitmapSource bitmapSource =
-                    new BitmapRegionTileSource.ResourceBitmapSource(mResources, mResId);
+                    new BitmapRegionTileSource.ResourceBitmapSource(mResources, mResId, a);
             a.setCropViewTileSource(bitmapSource, false, false, new CropViewScaleProvider() {
 
                 @Override
@@ -1030,7 +1030,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         } else {
             Resources res = getResources();
             Point defaultThumbSize = getDefaultThumbnailSize(res);
-            int rotation = BitmapUtils.getRotationFromExif(res, resId);
+            int rotation = BitmapUtils.getRotationFromExif(res, resId, this);
             thumb = createThumbnail(
                     defaultThumbSize, getContext(), null, null, sysRes, resId, rotation, false);
             if (thumb != null) {
