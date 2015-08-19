@@ -102,7 +102,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
 
         getCurScrollState(mScrollPosState);
         float pos = rowCount * touchFraction;
-        int availableScrollHeight = getAvailableScrollHeight(rowCount, mScrollPosState.rowHeight, 0);
+        int availableScrollHeight = getAvailableScrollHeight(rowCount, mScrollPosState.rowHeight);
         LinearLayoutManager layoutManager = ((LinearLayoutManager) getLayoutManager());
         layoutManager.scrollToPositionWithOffset(0, (int) -(availableScrollHeight * touchFraction));
 
@@ -115,29 +115,29 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
      * Updates the bounds for the scrollbar.
      */
     @Override
-    public void onUpdateScrollbar() {
+    public void onUpdateScrollbar(int dy) {
         int rowCount = mWidgets.getPackageSize();
 
         // Skip early if, there are no items.
         if (rowCount == 0) {
-            mScrollbar.setScrollbarThumbOffset(-1, -1);
+            mScrollbar.setThumbOffset(-1, -1);
             return;
         }
 
         // Skip early if, there no child laid out in the container.
         getCurScrollState(mScrollPosState);
         if (mScrollPosState.rowIndex < 0) {
-            mScrollbar.setScrollbarThumbOffset(-1, -1);
+            mScrollbar.setThumbOffset(-1, -1);
             return;
         }
 
-        synchronizeScrollBarThumbOffsetToViewScroll(mScrollPosState, rowCount, 0);
+        synchronizeScrollBarThumbOffsetToViewScroll(mScrollPosState, rowCount);
     }
 
     /**
      * Returns the current scroll state.
      */
-    private void getCurScrollState(ScrollPositionState stateOut) {
+    protected void getCurScrollState(ScrollPositionState stateOut) {
         stateOut.rowIndex = -1;
         stateOut.rowTopOffset = -1;
         stateOut.rowHeight = -1;

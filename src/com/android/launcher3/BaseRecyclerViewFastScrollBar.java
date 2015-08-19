@@ -56,9 +56,12 @@ public class BaseRecyclerViewFastScrollBar {
     private int mThumbMaxWidth;
     @Thunk int mThumbWidth;
     @Thunk int mThumbHeight;
+    private float mLastTouchY;
     // The inset is the buffer around which a point will still register as a click on the scrollbar
     private int mTouchInset;
     private boolean mIsDragging;
+    private boolean mIsThumbDetached;
+    private boolean mCanThumbDetach;
 
     // This is the offset from the top of the scrollbar when the user first starts touching.  To
     // prevent jumping, this offset is applied as the user scrolls.
@@ -84,7 +87,15 @@ public class BaseRecyclerViewFastScrollBar {
         mTouchInset = res.getDimensionPixelSize(R.dimen.container_fastscroll_thumb_touch_inset);
     }
 
-    public void setScrollbarThumbOffset(int x, int y) {
+    public void setDetachThumbOnFastScroll() {
+        mCanThumbDetach = true;
+    }
+
+    public void reattachThumbToScroll() {
+        mIsThumbDetached = false;
+    }
+
+    public void setThumbOffset(int x, int y) {
         if (mThumbOffset.x == x && mThumbOffset.y == y) {
             return;
         }
@@ -95,8 +106,12 @@ public class BaseRecyclerViewFastScrollBar {
         mRv.invalidate(mInvalidateRect);
     }
 
+    public Point getThumbOffset() {
+        return mThumbOffset;
+    }
+
     // Setter/getter for the search bar width for animations
-    public void setWidth(int width) {
+    public void setThumbWidth(int width) {
         mInvalidateRect.set(mThumbOffset.x, 0, mThumbOffset.x + mThumbWidth, mRv.getHeight());
         mThumbWidth = width;
         mInvalidateRect.union(new Rect(mThumbOffset.x, 0, mThumbOffset.x + mThumbWidth,
@@ -104,7 +119,7 @@ public class BaseRecyclerViewFastScrollBar {
         mRv.invalidate(mInvalidateRect);
     }
 
-    public int getWidth() {
+    public int getThumbWidth() {
         return mThumbWidth;
     }
 
@@ -127,8 +142,16 @@ public class BaseRecyclerViewFastScrollBar {
         return mThumbMaxWidth;
     }
 
-    public boolean isDragging() {
+    public float getLastTouchY() {
+        return mLastTouchY;
+    }
+
+    public boolean isDraggingThumb() {
         return mIsDragging;
+    }
+
+    public boolean isThumbDetached() {
+        return mIsThumbDetached;
     }
 
     /**
@@ -152,6 +175,9 @@ public class BaseRecyclerViewFastScrollBar {
                         Math.abs(y - downY) > config.getScaledTouchSlop()) {
                     mRv.getParent().requestDisallowInterceptTouchEvent(true);
                     mIsDragging = true;
+                    if (mCanThumbDetach) {
+                        mIsThumbDetached = true;
+                    }
                     mTouchOffset += (lastY - downY);
                     mPopup.animateVisibility(true);
                     animateScrollbar(true);
@@ -166,11 +192,13 @@ public class BaseRecyclerViewFastScrollBar {
                     mPopup.setSectionName(sectionName);
                     mPopup.animateVisibility(!sectionName.isEmpty());
                     mRv.invalidate(mPopup.updateFastScrollerBounds(mRv, lastY));
+                    mLastTouchY = boundedY;
                 }
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 mTouchOffset = 0;
+                mLastTouchY = 0;
                 if (mIsDragging) {
                     mIsDragging = false;
                     mPopup.animateVisibility(false);
@@ -205,7 +233,7 @@ public class BaseRecyclerViewFastScrollBar {
         }
         ObjectAnimator trackAlphaAnim = ObjectAnimator.ofInt(this, "trackAlpha",
                 isScrolling ? MAX_TRACK_ALPHA : 0);
-        ObjectAnimator thumbWidthAnim = ObjectAnimator.ofInt(this, "width",
+        ObjectAnimator thumbWidthAnim = ObjectAnimator.ofInt(this, "thumbWidth",
                 isScrolling ? mThumbMaxWidth : mThumbMinWidth);
         ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(),
                 mThumbPaint.getColor(), isScrolling ? mThumbActiveColor : mThumbInactiveColor);

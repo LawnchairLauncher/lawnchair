@@ -43,6 +43,11 @@ public class AlphabeticalAppsList {
     private static final boolean DEBUG = false;
     private static final boolean DEBUG_PREDICTIONS = false;
 
+    private static final int FAST_SCROLL_FRACTION_DISTRIBUTE_BY_ROWS_FRACTION = 0;
+    private static final int FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS = 1;
+
+    private final int mFastScrollDistributionMode = FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS;
+
     /**
      * Info about a section in the alphabetic list
      */
@@ -85,8 +90,6 @@ public class AlphabeticalAppsList {
         /** Section & App properties */
         // The section for this item
         public SectionInfo sectionInfo;
-        // The row that this item shows up on
-        public int rowIndex;
 
         /** App-only properties */
         // The section name of this app.  Note that there can be multiple items with different
@@ -94,6 +97,8 @@ public class AlphabeticalAppsList {
         public String sectionName = null;
         // The index of this app in the section
         public int sectionAppIndex = -1;
+        // The row that this item shows up on
+        public int rowIndex;
         // The index of this app in the row
         public int rowAppIndex;
         // The associated AppInfo for the app
@@ -188,7 +193,6 @@ public class AlphabeticalAppsList {
     private int mNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
     private int mNumAppRowsInAdapter;
-    private boolean mDisableEmptyText;
 
     public AlphabeticalAppsList(Context context) {
         mLauncher = (Launcher) context;
@@ -213,13 +217,6 @@ public class AlphabeticalAppsList {
      */
     public void setAdapter(RecyclerView.Adapter adapter) {
         mAdapter = adapter;
-    }
-
-    /**
-     * Disables the empty text message when there are no search results.
-     */
-    public void disableEmptyText() {
-        mDisableEmptyText = true;
     }
 
     /**
@@ -523,18 +520,36 @@ public class AlphabeticalAppsList {
             }
             mNumAppRowsInAdapter = rowIndex + 1;
 
-            // Pre-calculate all the fast scroller fractions based on the number of rows
-            float rowFraction = 1f / mNumAppRowsInAdapter;
-            for (FastScrollSectionInfo info : mFastScrollerSections) {
-                AdapterItem item = info.fastScrollToItem;
-                if (item.viewType != AllAppsGridAdapter.ICON_VIEW_TYPE &&
-                        item.viewType != AllAppsGridAdapter.PREDICTION_ICON_VIEW_TYPE) {
-                    info.touchFraction = 0f;
-                    continue;
-                }
+            // Pre-calculate all the fast scroller fractions
+            switch (mFastScrollDistributionMode) {
+                case FAST_SCROLL_FRACTION_DISTRIBUTE_BY_ROWS_FRACTION:
+                    float rowFraction = 1f / mNumAppRowsInAdapter;
+                    for (FastScrollSectionInfo info : mFastScrollerSections) {
+                        AdapterItem item = info.fastScrollToItem;
+                        if (item.viewType != AllAppsGridAdapter.ICON_VIEW_TYPE &&
+                                item.viewType != AllAppsGridAdapter.PREDICTION_ICON_VIEW_TYPE) {
+                            info.touchFraction = 0f;
+                            continue;
+                        }
 
-                float subRowFraction = item.rowAppIndex * (rowFraction / mNumAppsPerRow);
-                info.touchFraction = item.rowIndex * rowFraction + subRowFraction;
+                        float subRowFraction = item.rowAppIndex * (rowFraction / mNumAppsPerRow);
+                        info.touchFraction = item.rowIndex * rowFraction + subRowFraction;
+                    }
+                    break;
+                case FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS:
+                    float perSectionTouchFraction = 1f / mFastScrollerSections.size();
+                    float cumulativeTouchFraction = 0f;
+                    for (FastScrollSectionInfo info : mFastScrollerSections) {
+                        AdapterItem item = info.fastScrollToItem;
+                        if (item.viewType != AllAppsGridAdapter.ICON_VIEW_TYPE &&
+                                item.viewType != AllAppsGridAdapter.PREDICTION_ICON_VIEW_TYPE) {
+                            info.touchFraction = 0f;
+                            continue;
+                        }
+                        info.touchFraction = cumulativeTouchFraction;
+                        cumulativeTouchFraction += perSectionTouchFraction;
+                    }
+                    break;
             }
         }
 
