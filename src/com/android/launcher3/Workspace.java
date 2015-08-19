@@ -2325,14 +2325,14 @@ public class Workspace extends PagedView
             throw new IllegalStateException(msg);
         }
 
+        if (child.getParent() instanceof ShortcutAndWidgetContainer) {
+            mDragSourceInternal = (ShortcutAndWidgetContainer) child.getParent();
+        }
+
         DragView dv = mDragController.startDrag(b, dragLayerX, dragLayerY, source,
                 (ItemInfo) dragObject, DragController.DRAG_ACTION_MOVE, dragVisualizeOffset,
                 dragRect, scale, accessible);
         dv.setIntrinsicIconScaleFactor(source.getIntrinsicIconScaleFactor());
-
-        if (child.getParent() instanceof ShortcutAndWidgetContainer) {
-            mDragSourceInternal = (ShortcutAndWidgetContainer) child.getParent();
-        }
 
         b.recycle();
     }
