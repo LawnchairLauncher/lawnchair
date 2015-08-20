@@ -20,7 +20,6 @@ import com.android.launcher3.AppInfo;
 import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeleteDropTarget;
-import com.android.launcher3.DragController.DragListener;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.Folder;
 import com.android.launcher3.FolderInfo;
@@ -36,6 +35,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.UninstallDropTarget;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;

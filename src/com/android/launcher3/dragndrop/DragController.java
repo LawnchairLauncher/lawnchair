@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.dragndrop;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -35,7 +35,17 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.inputmethod.InputMethodManager;
 
+import com.android.launcher3.DeleteDropTarget;
+import com.android.launcher3.DragSource;
+import com.android.launcher3.DropTarget;
+import com.android.launcher3.ItemInfo;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.PagedView;
+import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Thunk;
+
+import com.android.launcher3.R;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -60,9 +70,9 @@ public class DragController implements DragDriver.EventListener {
     private static final int SCROLL_OUTSIDE_ZONE = 0;
     private static final int SCROLL_WAITING_IN_ZONE = 1;
 
-    static final int SCROLL_NONE = -1;
-    static final int SCROLL_LEFT = 0;
-    static final int SCROLL_RIGHT = 1;
+    public static final int SCROLL_NONE = -1;
+    public static final int SCROLL_LEFT = 0;
+    public static final int SCROLL_RIGHT = 1;
 
     private static final float MAX_FLING_DEGREES = 35f;
 
@@ -420,7 +430,7 @@ public class DragController implements DragDriver.EventListener {
         return mTmpPoint;
     }
 
-    long getLastGestureUpTime() {
+    public long getLastGestureUpTime() {
         if (mDragDriver != null) {
             return System.currentTimeMillis();
         } else {
@@ -428,7 +438,7 @@ public class DragController implements DragDriver.EventListener {
         }
     }
 
-    void resetLastGestureUpTime() {
+    public void resetLastGestureUpTime() {
         mLastTouchUpTime = -1;
     }
 
@@ -536,7 +546,7 @@ public class DragController implements DragDriver.EventListener {
     /**
      * Sets the view that should handle move events.
      */
-    void setMoveTarget(View view) {
+    public void setMoveTarget(View view) {
         mMoveTarget = view;
     }    
 

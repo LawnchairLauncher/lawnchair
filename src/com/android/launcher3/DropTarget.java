@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import com.android.launcher3.dragndrop.DragView;
+
 import android.graphics.PointF;
 import android.graphics.Rect;
 

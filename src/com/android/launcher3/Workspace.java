@@ -68,6 +68,11 @@ import com.android.launcher3.accessibility.LauncherAccessibilityDelegate.Accessi
 import com.android.launcher3.accessibility.OverviewScreenAccessibilityDelegate;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.dragndrop.DragController;
+import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.dragndrop.DragScroller;
+import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.dragndrop.SpringLoadedDragController;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.WallpaperUtils;

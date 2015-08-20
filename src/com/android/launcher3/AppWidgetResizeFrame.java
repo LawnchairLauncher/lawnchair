@@ -1,5 +1,7 @@
 package com.android.launcher3;
 
+import com.android.launcher3.dragndrop.DragLayer;
+
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;

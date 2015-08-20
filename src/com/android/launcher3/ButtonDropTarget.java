@@ -38,6 +38,9 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
 
+import com.android.launcher3.dragndrop.DragController;
+import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.util.Thunk;
 
 /**

@@ -10,14 +10,14 @@ import android.os.Handler;
 import android.view.View;
 
 import com.android.launcher3.AppWidgetResizeFrame;
-import com.android.launcher3.DragController.DragListener;
-import com.android.launcher3.DragLayer;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
+import com.android.launcher3.dragndrop.DragController.DragListener;
+import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.Thunk;
 
 public class WidgetHostViewLoader implements DragListener {

@@ -32,7 +32,6 @@ import com.android.launcher3.BaseContainerView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeleteDropTarget;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.DragController;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.Folder;
@@ -45,6 +44,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.util.Thunk;
 

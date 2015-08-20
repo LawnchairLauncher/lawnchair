@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.dragndrop;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -35,7 +35,14 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+
+import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAnimUtils;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Thunk;
+
+import com.android.launcher3.R;
+
 import java.util.Arrays;
 
 public class DragView extends View {

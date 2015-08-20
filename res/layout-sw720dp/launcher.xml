@@ -23,7 +23,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <com.android.launcher3.DragLayer
+    <com.android.launcher3.dragndrop.DragLayer
         android:id="@+id/drag_layer"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -76,7 +76,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible" />
-    </com.android.launcher3.DragLayer>
+    </com.android.launcher3.dragndrop.DragLayer>
 
     <ViewStub
         android:id="@+id/launcher_overlay_stub"

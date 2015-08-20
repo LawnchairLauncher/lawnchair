@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.dragndrop;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -40,8 +40,23 @@ import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.android.launcher3.AppWidgetResizeFrame;
+import com.android.launcher3.CellLayout;
+import com.android.launcher3.Folder;
+import com.android.launcher3.FolderIcon;
+import com.android.launcher3.InsettableFrameLayout;
+import com.android.launcher3.ItemInfo;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherAppWidgetHostView;
+import com.android.launcher3.SearchDropTargetBar;
+import com.android.launcher3.ShortcutAndWidgetContainer;
+import com.android.launcher3.Utilities;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.util.Thunk;
+
+import com.android.launcher3.R;
 
 import java.util.ArrayList;
 
@@ -890,7 +905,7 @@ public class DragLayer extends InsettableFrameLayout {
         invalidate();
     }
 
-    void showPageHints() {
+    public void showPageHints() {
         mShowPageHints = true;
         Workspace workspace = mLauncher.getWorkspace();
         getDescendantRectRelativeToSelf(workspace.getChildAt(workspace.numCustomPages()),
@@ -898,7 +913,7 @@ public class DragLayer extends InsettableFrameLayout {
         invalidate();
     }
 
-    void hidePageHints() {
+    public void hidePageHints() {
         mShowPageHints = false;
         invalidate();
     }
