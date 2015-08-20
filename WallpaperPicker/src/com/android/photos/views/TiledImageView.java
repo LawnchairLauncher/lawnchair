@@ -17,12 +17,7 @@
 package com.android.photos.views;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.Paint.Align;
 import android.graphics.RectF;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
@@ -82,7 +77,6 @@ public class TiledImageView extends FrameLayout {
         mGLSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         addView(mGLSurfaceView, new LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        //setTileSource(new ColoredTiles());
     }
 
     @Override
@@ -246,67 +240,5 @@ public class TiledImageView extends FrameLayout {
             }
         }
 
-    }
-
-    @SuppressWarnings("unused")
-    private static class ColoredTiles implements TileSource {
-        private static final int[] COLORS = new int[] {
-            Color.RED,
-            Color.BLUE,
-            Color.YELLOW,
-            Color.GREEN,
-            Color.CYAN,
-            Color.MAGENTA,
-            Color.WHITE,
-        };
-
-        private Paint mPaint = new Paint();
-        private Canvas mCanvas = new Canvas();
-
-        @Override
-        public int getTileSize() {
-            return 256;
-        }
-
-        @Override
-        public int getImageWidth() {
-            return 16384;
-        }
-
-        @Override
-        public int getImageHeight() {
-            return 8192;
-        }
-
-        @Override
-        public int getRotation() {
-            return 0;
-        }
-
-        @Override
-        public Bitmap getTile(int level, int x, int y, Bitmap bitmap) {
-            int tileSize = getTileSize();
-            if (bitmap == null) {
-                bitmap = Bitmap.createBitmap(tileSize, tileSize,
-                        Bitmap.Config.ARGB_8888);
-            }
-            mCanvas.setBitmap(bitmap);
-            mCanvas.drawColor(COLORS[level]);
-            mPaint.setColor(Color.BLACK);
-            mPaint.setTextSize(20);
-            mPaint.setTextAlign(Align.CENTER);
-            mCanvas.drawText(x + "x" + y, 128, 128, mPaint);
-            tileSize <<= level;
-            x /= tileSize;
-            y /= tileSize;
-            mCanvas.drawText(x + "x" + y + " @ " + level, 128, 30, mPaint);
-            mCanvas.setBitmap(null);
-            return bitmap;
-        }
-
-        @Override
-        public BasicTexture getPreview() {
-            return null;
-        }
     }
 }

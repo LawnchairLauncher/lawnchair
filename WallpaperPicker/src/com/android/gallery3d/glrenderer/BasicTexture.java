@@ -46,8 +46,6 @@ public abstract class BasicTexture implements Texture {
     protected int mTextureWidth;
     protected int mTextureHeight;
 
-    private boolean mHasBorder;
-
     protected GLCanvas mCanvasRef = null;
     private static WeakHashMap<BasicTexture, Object> sAllTextures
             = new WeakHashMap<BasicTexture, Object>();
@@ -85,10 +83,6 @@ public abstract class BasicTexture implements Texture {
         }
     }
 
-    public boolean isFlippedVertically() {
-      return false;
-    }
-
     public int getId() {
         return mId;
     }
@@ -113,25 +107,6 @@ public abstract class BasicTexture implements Texture {
         return mTextureHeight;
     }
 
-    // Returns true if the texture has one pixel transparent border around the
-    // actual content. This is used to avoid jigged edges.
-    //
-    // The jigged edges appear because we use GL_CLAMP_TO_EDGE for texture wrap
-    // mode (GL_CLAMP is not available in OpenGL ES), so a pixel partially
-    // covered by the texture will use the color of the edge texel. If we add
-    // the transparent border, the color of the edge texel will be mixed with
-    // appropriate amount of transparent.
-    //
-    // Currently our background is black, so we can draw the thumbnails without
-    // enabling blending.
-    public boolean hasBorder() {
-        return mHasBorder;
-    }
-
-    protected void setBorder(boolean hasBorder) {
-        mHasBorder = hasBorder;
-    }
-
     @Override
     public void draw(GLCanvas canvas, int x, int y) {
         canvas.drawTexture(this, x, y, getWidth(), getHeight());
@@ -145,9 +120,6 @@ public abstract class BasicTexture implements Texture {
     // onBind is called before GLCanvas binds this texture.
     // It should make sure the data is uploaded to GL memory.
     abstract protected boolean onBind(GLCanvas canvas);
-
-    // Returns the GL texture target for this texture (e.g. GL_TEXTURE_2D).
-    abstract protected int getTarget();
 
     public boolean isLoaded() {
         return mState == STATE_LOADED;
@@ -183,13 +155,6 @@ public abstract class BasicTexture implements Texture {
         sInFinalizer.set(BasicTexture.class);
         recycle();
         sInFinalizer.set(null);
-    }
-
-    // This is for deciding if we can call Bitmap's recycle().
-    // We cannot call Bitmap's recycle() in finalizer because at that point
-    // the finalizer of Bitmap may already be called so recycle() will crash.
-    public static boolean inFinalizer() {
-        return sInFinalizer.get() != null;
     }
 
     public static void yieldAllTextures() {
