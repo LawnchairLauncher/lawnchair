@@ -137,15 +137,8 @@ public class ItemInfo {
         return null;
     }
 
-    /**
-     * Write the fields of this item to the DB
-     * 
-     * @param context A context object to use for getting UserManagerCompat
-     * @param values
-     */
-
-    void onAddToDatabase(Context context, ContentValues values) {
-        values.put(LauncherSettings.BaseLauncherColumns.ITEM_TYPE, itemType);
+    public void writeToValues(ContentValues values) {
+        values.put(LauncherSettings.Favorites.ITEM_TYPE, itemType);
         values.put(LauncherSettings.Favorites.CONTAINER, container);
         values.put(LauncherSettings.Favorites.SCREEN, screenId);
         values.put(LauncherSettings.Favorites.CELLX, cellX);
@@ -153,6 +146,27 @@ public class ItemInfo {
         values.put(LauncherSettings.Favorites.SPANX, spanX);
         values.put(LauncherSettings.Favorites.SPANY, spanY);
         values.put(LauncherSettings.Favorites.RANK, rank);
+    }
+
+    public void readFromValues(ContentValues values) {
+        itemType = values.getAsInteger(LauncherSettings.Favorites.ITEM_TYPE);
+        container = values.getAsLong(LauncherSettings.Favorites.CONTAINER);
+        screenId = values.getAsLong(LauncherSettings.Favorites.SCREEN);
+        cellX = values.getAsInteger(LauncherSettings.Favorites.ITEM_TYPE);
+        cellY = values.getAsInteger(LauncherSettings.Favorites.ITEM_TYPE);
+        spanX = values.getAsInteger(LauncherSettings.Favorites.ITEM_TYPE);
+        spanY = values.getAsInteger(LauncherSettings.Favorites.ITEM_TYPE);
+        rank = values.getAsInteger(LauncherSettings.Favorites.ITEM_TYPE);
+    }
+
+    /**
+     * Write the fields of this item to the DB
+     *
+     * @param context A context object to use for getting UserManagerCompat
+     * @param values
+     */
+    void onAddToDatabase(Context context, ContentValues values) {
+        writeToValues(values);
         long serialNumber = UserManagerCompat.getInstance(context).getSerialNumberForUser(user);
         values.put(LauncherSettings.Favorites.PROFILE_ID, serialNumber);
 

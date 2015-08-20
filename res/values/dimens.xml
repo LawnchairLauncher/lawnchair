@@ -85,6 +85,7 @@
     <dimen name="widget_section_icon_size">40dp</dimen>
     <dimen name="widget_section_vertical_padding">8dp</dimen>
     <dimen name="widget_section_horizontal_padding">16dp</dimen>
+    <dimen name="widget_section_indent">0dp</dimen>
 
     <dimen name="widget_row_padding">8dp</dimen>
     <dimen name="widget_row_divider">2dp</dimen>
@@ -110,6 +111,8 @@
     <!-- Elevation for the drag view. It should be larger than elevation of all other drag sources
          and drop targets like all-apps and folders -->
     <dimen name="drag_elevation">30dp</dimen>
+
+    <dimen name="drag_flingToDeleteMinVelocity">-1500dp</dimen>
 
 <!-- Theme -->
     <dimen name="quantum_panel_outer_padding">4dp</dimen>

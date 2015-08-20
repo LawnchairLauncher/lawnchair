@@ -28,4 +28,10 @@
     <dimen name="cling_migration_content_margin">64dp</dimen>
     <dimen name="cling_migration_content_width">280dp</dimen>
 
+<!-- Widget tray -->
+    <dimen name="widget_section_indent">56dp</dimen>
+
+
+<!-- DragController -->
+    <dimen name="drag_flingToDeleteMinVelocity">-1000dp</dimen>
 </resources>

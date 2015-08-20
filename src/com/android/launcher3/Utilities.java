@@ -529,16 +529,6 @@ public final class Utilities {
         return null;
     }
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
-    public static boolean isViewAttachedToWindow(View v) {
-        if (ATLEAST_KITKAT) {
-            return v.isAttachedToWindow();
-        } else {
-            // A proxy call which returns null, if the view is not attached to the window.
-            return v.getKeyDispatcherState() != null;
-        }
-    }
-
     /**
      * Returns a widget with category {@link AppWidgetProviderInfo#WIDGET_CATEGORY_SEARCHBOX}
      * provided by the same package which is set to be global search activity.

@@ -35,6 +35,7 @@ import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentCallbacks2;
 import android.content.ComponentName;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -73,7 +74,6 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -177,18 +177,8 @@ public class Launcher extends Activity
     private static final String RUNTIME_STATE_CURRENT_SCREEN = "launcher.current_screen";
     // Type: int
     private static final String RUNTIME_STATE = "launcher.state";
-    // Type: int
-    private static final String RUNTIME_STATE_PENDING_ADD_CONTAINER = "launcher.add_container";
-    // Type: int
-    private static final String RUNTIME_STATE_PENDING_ADD_SCREEN = "launcher.add_screen";
-    // Type: int
-    private static final String RUNTIME_STATE_PENDING_ADD_CELL_X = "launcher.add_cell_x";
-    // Type: int
-    private static final String RUNTIME_STATE_PENDING_ADD_CELL_Y = "launcher.add_cell_y";
-    // Type: int
-    private static final String RUNTIME_STATE_PENDING_ADD_SPAN_X = "launcher.add_span_x";
-    // Type: int
-    private static final String RUNTIME_STATE_PENDING_ADD_SPAN_Y = "launcher.add_span_y";
+    // Type: Content Values / parcelable
+    private static final String RUNTIME_STATE_PENDING_ADD_ITEM = "launcher.add_item";
     // Type: parcelable
     private static final String RUNTIME_STATE_PENDING_ADD_WIDGET_INFO = "launcher.add_widget_info";
     // Type: parcelable
@@ -239,8 +229,6 @@ public class Launcher extends Activity
     private final BroadcastReceiver mCloseSystemDialogsReceiver
             = new CloseSystemDialogsIntentReceiver();
 
-    private LayoutInflater mInflater;
-
     @Thunk Workspace mWorkspace;
     private View mLauncherView;
     private View mPageIndicators;
@@ -272,7 +260,6 @@ public class Launcher extends Activity
     @Thunk WidgetsContainerView mWidgetsView;
     @Thunk WidgetsModel mWidgetsModel;
 
-    private boolean mAutoAdvanceRunning = false;
     private AppWidgetHostView mQsb;
 
     private Bundle mSavedState;
@@ -306,16 +293,17 @@ public class Launcher extends Activity
 
     // Related to the auto-advancing of widgets
     private final int ADVANCE_MSG = 1;
-    private final int mAdvanceInterval = 20000;
-    private final int mAdvanceStagger = 250;
+    private static final int ADVANCE_INTERVAL = 20000;
+    private static final int ADVANCE_STAGGER = 250;
+
+    private boolean mAutoAdvanceRunning = false;
     private long mAutoAdvanceSentTime;
     private long mAutoAdvanceTimeLeft = -1;
-    @Thunk HashMap<View, AppWidgetProviderInfo> mWidgetsToAdvance =
-        new HashMap<View, AppWidgetProviderInfo>();
+    @Thunk HashMap<View, AppWidgetProviderInfo> mWidgetsToAdvance = new HashMap<>();
 
     // Determines how long to wait after a rotation before restoring the screen orientation to
     // match the sensor state.
-    private final int mRestoreScreenOrientationDelay = 500;
+    private static final int RESTORE_SCREEN_ORIENTATION_DELAY = 500;
 
     @Thunk Drawable mWorkspaceBackgroundDrawable;
 
@@ -435,7 +423,6 @@ public class Launcher extends Activity
         mIconCache = app.getIconCache();
 
         mDragController = new DragController(this);
-        mInflater = getLayoutInflater();
         mStateTransitionAnimation = new LauncherStateTransitionAnimation(this);
 
         mStats = new Stats(this);
@@ -638,10 +625,6 @@ public class Launcher extends Activity
 
     public Stats getStats() {
         return mStats;
-    }
-
-    public LayoutInflater getInflater() {
-        return mInflater;
     }
 
     public boolean isDraggingEnabled() {
@@ -1307,16 +1290,9 @@ public class Launcher extends Activity
             mWorkspace.setRestorePage(currentScreen);
         }
 
-        final long pendingAddContainer = savedState.getLong(RUNTIME_STATE_PENDING_ADD_CONTAINER, -1);
-        final long pendingAddScreen = savedState.getLong(RUNTIME_STATE_PENDING_ADD_SCREEN, -1);
-
-        if (pendingAddContainer != ItemInfo.NO_ID && pendingAddScreen > -1) {
-            mPendingAddInfo.container = pendingAddContainer;
-            mPendingAddInfo.screenId = pendingAddScreen;
-            mPendingAddInfo.cellX = savedState.getInt(RUNTIME_STATE_PENDING_ADD_CELL_X);
-            mPendingAddInfo.cellY = savedState.getInt(RUNTIME_STATE_PENDING_ADD_CELL_Y);
-            mPendingAddInfo.spanX = savedState.getInt(RUNTIME_STATE_PENDING_ADD_SPAN_X);
-            mPendingAddInfo.spanY = savedState.getInt(RUNTIME_STATE_PENDING_ADD_SPAN_Y);
+        ContentValues itemValues = savedState.getParcelable(RUNTIME_STATE_PENDING_ADD_ITEM);
+        if (itemValues != null) {
+            mPendingAddInfo.readFromValues(itemValues);
             AppWidgetProviderInfo info = savedState.getParcelable(
                     RUNTIME_STATE_PENDING_ADD_WIDGET_INFO);
             mPendingAddWidgetInfo = info == null ?
@@ -1475,7 +1451,7 @@ public class Launcher extends Activity
      * @return A View inflated from layoutResId.
      */
     public View createShortcut(ViewGroup parent, ShortcutInfo info) {
-        BubbleTextView favorite = (BubbleTextView) mInflater.inflate(R.layout.app_icon,
+        BubbleTextView favorite = (BubbleTextView) getLayoutInflater().inflate(R.layout.app_icon,
                 parent, false);
         favorite.applyFromShortcutInfo(info, mIconCache);
         favorite.setCompoundDrawablePadding(mDeviceProfile.iconDrawablePaddingPx);
@@ -1721,11 +1697,11 @@ public class Launcher extends Activity
         if (autoAdvanceRunning != mAutoAdvanceRunning) {
             mAutoAdvanceRunning = autoAdvanceRunning;
             if (autoAdvanceRunning) {
-                long delay = mAutoAdvanceTimeLeft == -1 ? mAdvanceInterval : mAutoAdvanceTimeLeft;
+                long delay = mAutoAdvanceTimeLeft == -1 ? ADVANCE_INTERVAL : mAutoAdvanceTimeLeft;
                 sendAdvanceMessage(delay);
             } else {
                 if (!mWidgetsToAdvance.isEmpty()) {
-                    mAutoAdvanceTimeLeft = Math.max(0, mAdvanceInterval -
+                    mAutoAdvanceTimeLeft = Math.max(0, ADVANCE_INTERVAL -
                             (System.currentTimeMillis() - mAutoAdvanceSentTime));
                 }
                 mHandler.removeMessages(ADVANCE_MSG);
@@ -1742,7 +1718,7 @@ public class Launcher extends Activity
                 int i = 0;
                 for (View key: mWidgetsToAdvance.keySet()) {
                     final View v = key.findViewById(mWidgetsToAdvance.get(key).autoAdvanceViewId);
-                    final int delay = mAdvanceStagger * i;
+                    final int delay = ADVANCE_STAGGER * i;
                     if (v instanceof Advanceable) {
                         mHandler.postDelayed(new Runnable() {
                            public void run() {
@@ -1752,7 +1728,7 @@ public class Launcher extends Activity
                     }
                     i++;
                 }
-                sendAdvanceMessage(mAdvanceInterval);
+                sendAdvanceMessage(ADVANCE_INTERVAL);
             }
             return true;
         }
@@ -1943,12 +1919,9 @@ public class Launcher extends Activity
 
         if (mPendingAddInfo.container != ItemInfo.NO_ID && mPendingAddInfo.screenId > -1 &&
                 mWaitingForResult) {
-            outState.putLong(RUNTIME_STATE_PENDING_ADD_CONTAINER, mPendingAddInfo.container);
-            outState.putLong(RUNTIME_STATE_PENDING_ADD_SCREEN, mPendingAddInfo.screenId);
-            outState.putInt(RUNTIME_STATE_PENDING_ADD_CELL_X, mPendingAddInfo.cellX);
-            outState.putInt(RUNTIME_STATE_PENDING_ADD_CELL_Y, mPendingAddInfo.cellY);
-            outState.putInt(RUNTIME_STATE_PENDING_ADD_SPAN_X, mPendingAddInfo.spanX);
-            outState.putInt(RUNTIME_STATE_PENDING_ADD_SPAN_Y, mPendingAddInfo.spanY);
+            ContentValues itemValues = new ContentValues();
+            mPendingAddInfo.writeToValues(itemValues);
+            outState.putParcelable(RUNTIME_STATE_PENDING_ADD_ITEM, itemValues);
             outState.putParcelable(RUNTIME_STATE_PENDING_ADD_WIDGET_INFO, mPendingAddWidgetInfo);
             outState.putInt(RUNTIME_STATE_PENDING_ADD_WIDGET_ID, mPendingAddWidgetId);
         }
@@ -4309,7 +4282,7 @@ public class Launcher extends Activity
                     public void run() {
                         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
                     }
-                }, mRestoreScreenOrientationDelay);
+                }, RESTORE_SCREEN_ORIENTATION_DELAY);
             }
         }
     }

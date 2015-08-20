@@ -64,20 +64,17 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
     private View.OnClickListener mIconClickListener;
     private View.OnLongClickListener mIconLongClickListener;
 
-    private static final int PRESET_INDENT_SIZE_TABLET = 56;
-    private int mIndent = 0;
+    private final int mIndent;
 
-    public WidgetsListAdapter(Context context,
-            View.OnClickListener iconClickListener,
+    public WidgetsListAdapter(View.OnClickListener iconClickListener,
             View.OnLongClickListener iconLongClickListener,
             Launcher launcher) {
-        mLayoutInflater = LayoutInflater.from(context);
+        mLayoutInflater = launcher.getLayoutInflater();
 
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
         mLauncher = launcher;
-
-        setContainerHeight();
+        mIndent = launcher.getResources().getDimensionPixelSize(R.dimen.widget_section_indent);
     }
 
     public void setWidgetsModel(WidgetsModel w) {
@@ -205,13 +202,5 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
             mWidgetPreviewLoader = LauncherAppState.getInstance().getWidgetCache();
         }
         return mWidgetPreviewLoader;
-    }
-
-    private void setContainerHeight() {
-        Resources r = mLauncher.getResources();
-        DeviceProfile profile = mLauncher.getDeviceProfile();
-        if (profile.isLargeTablet || profile.isTablet) {
-            mIndent = Utilities.pxFromDp(PRESET_INDENT_SIZE_TABLET, r.getDisplayMetrics());
-        }
     }
 }

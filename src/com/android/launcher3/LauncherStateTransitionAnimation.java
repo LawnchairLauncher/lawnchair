@@ -23,7 +23,9 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.TimeInterpolator;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.res.Resources;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -361,7 +363,7 @@ public class LauncherStateTransitionAnimation {
                         if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
                             v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
                         }
-                        if (Utilities.ATLEAST_LOLLIPOP && Utilities.isViewAttachedToWindow(v)) {
+                        if (Utilities.ATLEAST_LOLLIPOP && v.isAttachedToWindow()) {
                             v.buildLayer();
                         }
                     }
@@ -656,6 +658,7 @@ public class LauncherStateTransitionAnimation {
 
             final AnimatorSet stateAnimation = animation;
             final Runnable startAnimRunnable = new Runnable() {
+                @TargetApi(Build.VERSION_CODES.LOLLIPOP)
                 public void run() {
                     // Check that mCurrentAnimation hasn't changed while
                     // we waited for a layout/draw pass
@@ -670,7 +673,7 @@ public class LauncherStateTransitionAnimation {
                         if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
                             v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
                         }
-                        if (Utilities.ATLEAST_LOLLIPOP && Utilities.isViewAttachedToWindow(v)) {
+                        if (Utilities.ATLEAST_LOLLIPOP && v.isAttachedToWindow()) {
                             v.buildLayer();
                         }
                     }

@@ -280,6 +280,18 @@ public class DeviceProfile {
         return bounds;
     }
 
+    public Point getCellSize() {
+        Point result = new Point();
+        // Since we are only concerned with the overall padding, layout direction does
+        // not matter.
+        Rect padding = getWorkspacePadding(false /* isLayoutRtl */ );
+        result.x = calculateCellWidth(availableWidthPx - padding.left - padding.right,
+                inv.numColumns);
+        result.y = calculateCellHeight(availableHeightPx - padding.top - padding.bottom,
+                inv.numRows);
+        return result;
+    }
+
     /** Returns the workspace padding in the specified orientation */
     Rect getWorkspacePadding(boolean isLayoutRtl) {
         Rect searchBarBounds = getSearchBarBounds(isLayoutRtl);
