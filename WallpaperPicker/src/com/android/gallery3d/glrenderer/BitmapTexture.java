@@ -29,11 +29,7 @@ public class BitmapTexture extends UploadedTexture {
     protected Bitmap mContentBitmap;
 
     public BitmapTexture(Bitmap bitmap) {
-        this(bitmap, false);
-    }
-
-    public BitmapTexture(Bitmap bitmap, boolean hasBorder) {
-        super(hasBorder);
+        super();
         Utils.assertTrue(bitmap != null && !bitmap.isRecycled());
         mContentBitmap = bitmap;
     }

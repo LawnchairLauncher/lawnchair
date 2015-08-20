@@ -24,21 +24,14 @@ package com.android.gallery3d.glrenderer;
 // This is the current texture hierarchy:
 //
 // Texture
-// -- ColorTexture
-// -- FadeInTexture
 // -- BasicTexture
 //    -- UploadedTexture
 //       -- BitmapTexture
 //       -- Tile
-//       -- ResourceTexture
-//          -- NinePatchTexture
-//       -- CanvasTexture
-//          -- StringTexture
 //
 public interface Texture {
     public int getWidth();
     public int getHeight();
     public void draw(GLCanvas canvas, int x, int y);
     public void draw(GLCanvas canvas, int x, int y, int w, int h);
-    public boolean isOpaque();
 }
