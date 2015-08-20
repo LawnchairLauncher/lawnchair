@@ -555,8 +555,9 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     @Override
     public void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace) {
         if (toWorkspace) {
-            // Reset the search bar after transitioning home
+            // Reset the search bar and base recycler view after transitioning home
             mSearchBarController.reset();
+            mAppsRecyclerView.reset();
         }
     }
 
