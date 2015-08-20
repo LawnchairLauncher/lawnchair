@@ -48,7 +48,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Choreographer;
-import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -139,9 +138,6 @@ public class Workspace extends PagedView
     @Thunk int[] mTargetCell = new int[2];
     private int mDragOverX = -1;
     private int mDragOverY = -1;
-
-    private static Rect mLandscapeCellLayoutMetrics = null;
-    private static Rect mPortraitCellLayoutMetrics = null;
 
     CustomContentCallbacks mCustomContentCallbacks;
     boolean mCustomContentShowing;
@@ -2849,45 +2845,6 @@ public class Workspace extends PagedView
         if (!workspaceInModalState()) {
             mLauncher.getDragLayer().showPageHints();
         }
-    }
-
-    /** Return a rect that has the cellWidth/cellHeight (left, top), and
-     * widthGap/heightGap (right, bottom) */
-    static Rect getCellLayoutMetrics(Launcher launcher, int orientation) {
-        LauncherAppState app = LauncherAppState.getInstance();
-        InvariantDeviceProfile inv = app.getInvariantDeviceProfile();
-
-        Display display = launcher.getWindowManager().getDefaultDisplay();
-        Point smallestSize = new Point();
-        Point largestSize = new Point();
-        display.getCurrentSizeRange(smallestSize, largestSize);
-        int countX = (int) inv.numColumns;
-        int countY = (int) inv.numRows;
-        boolean isLayoutRtl = Utilities.isRtl(launcher.getResources());
-        if (orientation == CellLayout.LANDSCAPE) {
-            if (mLandscapeCellLayoutMetrics == null) {
-                Rect padding = inv.landscapeProfile.getWorkspacePadding(isLayoutRtl);
-                int width = largestSize.x - padding.left - padding.right;
-                int height = smallestSize.y - padding.top - padding.bottom;
-                mLandscapeCellLayoutMetrics = new Rect();
-                mLandscapeCellLayoutMetrics.set(
-                        DeviceProfile.calculateCellWidth(width, countX),
-                        DeviceProfile.calculateCellHeight(height, countY), 0, 0);
-            }
-            return mLandscapeCellLayoutMetrics;
-        } else if (orientation == CellLayout.PORTRAIT) {
-            if (mPortraitCellLayoutMetrics == null) {
-                Rect padding = inv.portraitProfile.getWorkspacePadding(isLayoutRtl);
-                int width = smallestSize.x - padding.left - padding.right;
-                int height = largestSize.y - padding.top - padding.bottom;
-                mPortraitCellLayoutMetrics = new Rect();
-                mPortraitCellLayoutMetrics.set(
-                        DeviceProfile.calculateCellWidth(width, countX),
-                        DeviceProfile.calculateCellHeight(height, countY), 0, 0);
-            }
-            return mPortraitCellLayoutMetrics;
-        }
-        return null;
     }
 
     @Override

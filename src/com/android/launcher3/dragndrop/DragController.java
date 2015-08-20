@@ -169,9 +169,8 @@ public class DragController implements DragDriver.EventListener {
         mScrollZone = r.getDimensionPixelSize(R.dimen.scroll_zone);
         mVelocityTracker = VelocityTracker.obtain();
 
-        float density = r.getDisplayMetrics().density;
         mFlingToDeleteThresholdVelocity =
-                (int) (r.getInteger(R.integer.config_flingToDeleteMinVelocity) * density);
+                r.getDimensionPixelSize(R.dimen.drag_flingToDeleteMinVelocity);
         mIsRtl = Utilities.isRtl(r);
     }
 
