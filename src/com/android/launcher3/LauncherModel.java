@@ -34,7 +34,6 @@ import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -259,25 +258,12 @@ public class LauncherModel extends BroadcastReceiver
 
     /** Runs the specified runnable immediately if called from the worker thread, otherwise it is
      * posted on the worker thread handler. */
-    private static void runOnWorkerThread(Runnable r) {
+    @Thunk static void runOnWorkerThread(Runnable r) {
         if (sWorkerThread.getThreadId() == Process.myTid()) {
             r.run();
         } else {
             // If we are not on the worker thread, then post to the worker handler
             sWorker.post(r);
-        }
-    }
-
-    /**
-     * Runs the specified runnable after the loader is complete
-     */
-    @Thunk void runAfterBindCompletes(Runnable r) {
-        if (isLoadingWorkspace() || !mHasLoaderCompletedOnce) {
-            synchronized (mBindCompleteRunnables) {
-                mBindCompleteRunnables.add(r);
-            }
-        } else {
-            runOnWorkerThread(r);
         }
     }
 
@@ -894,8 +880,13 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     private void assertWorkspaceLoaded() {
-        if (LauncherAppState.isDogfoodBuild() && (isLoadingWorkspace() || !mHasLoaderCompletedOnce)) {
-            throw new RuntimeException("Trying to add shortcut while loader is running");
+        if (LauncherAppState.isDogfoodBuild()) {
+            synchronized (mLock) {
+                if (!mHasLoaderCompletedOnce ||
+                        (mLoaderTask != null && mLoaderTask.mIsLoadingAndBindingWorkspace)) {
+                    throw new RuntimeException("Trying to add shortcut while loader is running");
+                }
+            }
         }
     }
 
@@ -1390,16 +1381,6 @@ public class LauncherModel extends BroadcastReceiver
                 mHandler.post(r);
             }
         }
-
-        // Run all the bind complete runnables after workspace is bound.
-        if (!mBindCompleteRunnables.isEmpty()) {
-            synchronized (mBindCompleteRunnables) {
-                for (final Runnable r : mBindCompleteRunnables) {
-                    runOnWorkerThread(r);
-                }
-                mBindCompleteRunnables.clear();
-            }
-        }
     }
 
     public void stopLoader() {
@@ -1441,15 +1422,6 @@ public class LauncherModel extends BroadcastReceiver
         return mAllAppsLoaded;
     }
 
-    boolean isLoadingWorkspace() {
-        synchronized (mLock) {
-            if (mLoaderTask != null) {
-                return mLoaderTask.isLoadingWorkspace();
-            }
-        }
-        return false;
-    }
-
     /**
      * Runnable for the thread that loads the contents of the launcher:
      *   - workspace icons
@@ -1466,10 +1438,6 @@ public class LauncherModel extends BroadcastReceiver
         LoaderTask(Context context, int flags) {
             mContext = context;
             mFlags = flags;
-        }
-
-        boolean isLoadingWorkspace() {
-            return mIsLoadingAndBindingWorkspace;
         }
 
         private void loadAndBindWorkspace() {
@@ -2697,13 +2665,24 @@ public class LauncherModel extends BroadcastReceiver
                         callbacks.finishBindingItems();
                     }
 
+                    mIsLoadingAndBindingWorkspace = false;
+
+                    // Run all the bind complete runnables after workspace is bound.
+                    if (!mBindCompleteRunnables.isEmpty()) {
+                        synchronized (mBindCompleteRunnables) {
+                            for (final Runnable r : mBindCompleteRunnables) {
+                                runOnWorkerThread(r);
+                            }
+                            mBindCompleteRunnables.clear();
+                        }
+                    }
+
                     // If we're profiling, ensure this is the last thing in the queue.
                     if (DEBUG_LOADERS) {
                         Log.d(TAG, "bound workspace in "
                             + (SystemClock.uptimeMillis()-t) + "ms");
                     }
 
-                    mIsLoadingAndBindingWorkspace = false;
                 }
             };
             if (isLoadingSynchronously) {
@@ -2832,11 +2811,26 @@ public class LauncherModel extends BroadcastReceiver
 
                 final ManagedProfileHeuristic heuristic = ManagedProfileHeuristic.get(mContext, user);
                 if (heuristic != null) {
-                    runAfterBindCompletes(new Runnable() {
+                    final Runnable r = new Runnable() {
 
                         @Override
                         public void run() {
                             heuristic.processUserApps(apps);
+                        }
+                    };
+                    runOnMainThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            // Check isLoadingWorkspace on the UI thread, as it is updated on
+                            // the UI thread.
+                            if (mIsLoadingAndBindingWorkspace) {
+                                synchronized (mBindCompleteRunnables) {
+                                    mBindCompleteRunnables.add(r);
+                                }
+                            } else {
+                                runOnWorkerThread(r);
+                            }
                         }
                     });
                 }
