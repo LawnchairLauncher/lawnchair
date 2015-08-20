@@ -5,8 +5,8 @@
 -keep class com.android.launcher3.BaseRecyclerViewFastScrollBar {
   public void setThumbWidth(int);
   public int getThumbWidth();
-  public void setTrackAlpha(int);
-  public int getTrackAlpha();
+  public void setTrackWidth(int);
+  public int getTrackWidth();
 }
 
 -keep class com.android.launcher3.BaseRecyclerViewFastScrollPopup {

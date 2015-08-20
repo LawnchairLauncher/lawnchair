@@ -23,6 +23,7 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.view.MotionEvent;
@@ -51,11 +52,14 @@ public class BaseRecyclerViewFastScrollBar {
     private int mThumbActiveColor;
     @Thunk Point mThumbOffset = new Point(-1, -1);
     @Thunk Paint mThumbPaint;
-    private Paint mTrackPaint;
     private int mThumbMinWidth;
     private int mThumbMaxWidth;
     @Thunk int mThumbWidth;
     @Thunk int mThumbHeight;
+    private int mThumbCurvature;
+    private Path mThumbPath = new Path();
+    private Paint mTrackPaint;
+    private int mTrackWidth;
     private float mLastTouchY;
     // The inset is the buffer around which a point will still register as a click on the scrollbar
     private int mTouchInset;
@@ -75,15 +79,18 @@ public class BaseRecyclerViewFastScrollBar {
         mPopup = new BaseRecyclerViewFastScrollPopup(rv, res);
         mTrackPaint = new Paint();
         mTrackPaint.setColor(rv.getFastScrollerTrackColor(Color.BLACK));
-        mTrackPaint.setAlpha(0);
+        mTrackPaint.setAlpha(MAX_TRACK_ALPHA);
         mThumbInactiveColor = rv.getFastScrollerThumbInactiveColor(
                 res.getColor(R.color.container_fastscroll_thumb_inactive_color));
         mThumbActiveColor = res.getColor(R.color.container_fastscroll_thumb_active_color);
         mThumbPaint = new Paint();
+        mThumbPaint.setAntiAlias(true);
         mThumbPaint.setColor(mThumbInactiveColor);
+        mThumbPaint.setStyle(Paint.Style.FILL);
         mThumbWidth = mThumbMinWidth = res.getDimensionPixelSize(R.dimen.container_fastscroll_thumb_min_width);
         mThumbMaxWidth = res.getDimensionPixelSize(R.dimen.container_fastscroll_thumb_max_width);
         mThumbHeight = res.getDimensionPixelSize(R.dimen.container_fastscroll_thumb_height);
+        mThumbCurvature = mThumbMaxWidth - mThumbMinWidth;
         mTouchInset = res.getDimensionPixelSize(R.dimen.container_fastscroll_thumb_touch_inset);
     }
 
@@ -99,10 +106,12 @@ public class BaseRecyclerViewFastScrollBar {
         if (mThumbOffset.x == x && mThumbOffset.y == y) {
             return;
         }
-        mInvalidateRect.set(mThumbOffset.x, 0, mThumbOffset.x + mThumbWidth, mRv.getHeight());
+        mInvalidateRect.set(mThumbOffset.x - mThumbCurvature, mThumbOffset.y,
+                mThumbOffset.x + mThumbWidth, mThumbOffset.y + mThumbHeight);
         mThumbOffset.set(x, y);
-        mInvalidateRect.union(new Rect(mThumbOffset.x, 0, mThumbOffset.x + mThumbWidth,
-                mRv.getHeight()));
+        updateThumbPath();
+        mInvalidateRect.union(mThumbOffset.x - mThumbCurvature, mThumbOffset.y,
+                mThumbOffset.x + mThumbWidth, mThumbOffset.y + mThumbHeight);
         mRv.invalidate(mInvalidateRect);
     }
 
@@ -110,12 +119,14 @@ public class BaseRecyclerViewFastScrollBar {
         return mThumbOffset;
     }
 
-    // Setter/getter for the search bar width for animations
+    // Setter/getter for the thumb bar width for animations
     public void setThumbWidth(int width) {
-        mInvalidateRect.set(mThumbOffset.x, 0, mThumbOffset.x + mThumbWidth, mRv.getHeight());
+        mInvalidateRect.set(mThumbOffset.x - mThumbCurvature, mThumbOffset.y,
+                mThumbOffset.x + mThumbWidth, mThumbOffset.y + mThumbHeight);
         mThumbWidth = width;
-        mInvalidateRect.union(new Rect(mThumbOffset.x, 0, mThumbOffset.x + mThumbWidth,
-                mRv.getHeight()));
+        updateThumbPath();
+        mInvalidateRect.union(mThumbOffset.x - mThumbCurvature, mThumbOffset.y,
+                mThumbOffset.x + mThumbWidth, mThumbOffset.y + mThumbHeight);
         mRv.invalidate(mInvalidateRect);
     }
 
@@ -123,15 +134,19 @@ public class BaseRecyclerViewFastScrollBar {
         return mThumbWidth;
     }
 
-    // Setter/getter for the track background alpha for animations
-    public void setTrackAlpha(int alpha) {
-        mTrackPaint.setAlpha(alpha);
-        mInvalidateRect.set(mThumbOffset.x, 0, mThumbOffset.x + mThumbWidth, mRv.getHeight());
+    // Setter/getter for the track bar width for animations
+    public void setTrackWidth(int width) {
+        mInvalidateRect.set(mThumbOffset.x - mThumbCurvature, 0, mThumbOffset.x + mThumbWidth,
+                mRv.getHeight());
+        mTrackWidth = width;
+        updateThumbPath();
+        mInvalidateRect.union(mThumbOffset.x - mThumbCurvature, 0, mThumbOffset.x + mThumbWidth,
+                mRv.getHeight());
         mRv.invalidate(mInvalidateRect);
     }
 
-    public int getTrackAlpha() {
-        return mTrackPaint.getAlpha();
+    public int getTrackWidth() {
+        return mTrackWidth;
     }
 
     public int getThumbHeight() {
@@ -217,8 +232,7 @@ public class BaseRecyclerViewFastScrollBar {
         if (mTrackPaint.getAlpha() > 0) {
             canvas.drawRect(mThumbOffset.x, 0, mThumbOffset.x + mThumbWidth, mRv.getHeight(), mTrackPaint);
         }
-        canvas.drawRect(mThumbOffset.x, mThumbOffset.y, mThumbOffset.x + mThumbWidth,
-                mThumbOffset.y + mThumbHeight, mThumbPaint);
+        canvas.drawPath(mThumbPath, mThumbPaint);
 
         // Draw the popup
         mPopup.draw(canvas);
@@ -231,24 +245,43 @@ public class BaseRecyclerViewFastScrollBar {
         if (mScrollbarAnimator != null) {
             mScrollbarAnimator.cancel();
         }
-        ObjectAnimator trackAlphaAnim = ObjectAnimator.ofInt(this, "trackAlpha",
-                isScrolling ? MAX_TRACK_ALPHA : 0);
+
+        mScrollbarAnimator = new AnimatorSet();
+        ObjectAnimator trackWidthAnim = ObjectAnimator.ofInt(this, "trackWidth",
+                isScrolling ? mThumbMaxWidth : mThumbMinWidth);
         ObjectAnimator thumbWidthAnim = ObjectAnimator.ofInt(this, "thumbWidth",
                 isScrolling ? mThumbMaxWidth : mThumbMinWidth);
-        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(),
-                mThumbPaint.getColor(), isScrolling ? mThumbActiveColor : mThumbInactiveColor);
-        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animator) {
-                mThumbPaint.setColor((Integer) animator.getAnimatedValue());
-                mRv.invalidate(mThumbOffset.x, mThumbOffset.y, mThumbOffset.x + mThumbWidth,
-                        mThumbOffset.y + mThumbHeight);
-            }
-        });
-        mScrollbarAnimator = new AnimatorSet();
-        mScrollbarAnimator.playTogether(trackAlphaAnim, thumbWidthAnim, colorAnimation);
+        mScrollbarAnimator.playTogether(trackWidthAnim, thumbWidthAnim);
+        if (mThumbActiveColor != mThumbInactiveColor) {
+            ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(),
+                    mThumbPaint.getColor(), isScrolling ? mThumbActiveColor : mThumbInactiveColor);
+            colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animator) {
+                    mThumbPaint.setColor((Integer) animator.getAnimatedValue());
+                    mRv.invalidate(mThumbOffset.x, mThumbOffset.y, mThumbOffset.x + mThumbWidth,
+                            mThumbOffset.y + mThumbHeight);
+                }
+            });
+            mScrollbarAnimator.play(colorAnimation);
+        }
         mScrollbarAnimator.setDuration(SCROLL_BAR_VIS_DURATION);
         mScrollbarAnimator.start();
+    }
+
+    /**
+     * Updates the path for the thumb drawable.
+     */
+    private void updateThumbPath() {
+        mThumbCurvature = mThumbMaxWidth - mThumbWidth;
+        mThumbPath.reset();
+        mThumbPath.moveTo(mThumbOffset.x + mThumbWidth, mThumbOffset.y);                    // tr
+        mThumbPath.lineTo(mThumbOffset.x + mThumbWidth, mThumbOffset.y + mThumbHeight);     // br
+        mThumbPath.lineTo(mThumbOffset.x, mThumbOffset.y + mThumbHeight);                   // bl
+        mThumbPath.cubicTo(mThumbOffset.x, mThumbOffset.y + mThumbHeight,
+                mThumbOffset.x - mThumbCurvature, mThumbOffset.y + mThumbHeight / 2,
+                mThumbOffset.x, mThumbOffset.y);                                            // bl2tl
+        mThumbPath.close();
     }
 
     /**
