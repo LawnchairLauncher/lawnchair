@@ -186,7 +186,12 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
      */
     private void animateViewAlpha(LauncherViewPropertyAnimator animator, View v, float alpha,
             int duration) {
-        if (v != null && Float.compare(v.getAlpha(), alpha) != 0) {
+        if (v == null) {
+            return;
+        }
+
+        animator.cancel();
+        if (Float.compare(v.getAlpha(), alpha) != 0) {
             if (duration > 0) {
                 animator.alpha(alpha).withLayer().setDuration(duration).start();
             } else {
