@@ -19,7 +19,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="start"
-    android:paddingTop="20dp"
+    android:paddingTop="@dimen/all_apps_empty_search_message_top_offset"
     android:paddingBottom="8dp"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"

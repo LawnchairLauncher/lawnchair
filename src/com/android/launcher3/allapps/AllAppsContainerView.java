@@ -615,13 +615,14 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         if (apps != null) {
             mApps.setOrderedFilter(apps);
             mAdapter.setLastSearchQuery(query);
-            mAppsRecyclerView.scrollToTop();
+            mAppsRecyclerView.onSearchResultsChanged();
         }
     }
 
     @Override
     public void clearSearchResult() {
         mApps.setOrderedFilter(null);
+        mAppsRecyclerView.onSearchResultsChanged();
 
         // Clear the search query
         mSearchQueryBuilder.clear();
