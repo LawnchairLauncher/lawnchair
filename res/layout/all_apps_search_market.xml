@@ -23,7 +23,7 @@
     android:paddingRight="16dp"
     android:fontFamily="sans-serif-medium"
     android:textSize="14sp"
-    android:textColor="#009688"
+    android:textColor="@color/launcher_accent_color"
     android:textAllCaps="true"
     android:focusable="false"
     android:background="@drawable/all_apps_search_market_bg" />

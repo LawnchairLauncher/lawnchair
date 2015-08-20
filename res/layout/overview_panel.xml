@@ -32,6 +32,7 @@
         android:gravity="center_horizontal"
         android:text="@string/wallpaper_button_text"
         android:textAllCaps="true"
+        android:textColor="@android:color/white"
         android:textSize="12sp" />
 
     <TextView
@@ -45,6 +46,7 @@
         android:gravity="center_horizontal"
         android:text="@string/widget_button_text"
         android:textAllCaps="true"
+        android:textColor="@android:color/white"
         android:textSize="12sp" />
 
     <TextView
@@ -58,6 +60,7 @@
         android:gravity="center_horizontal"
         android:text="@string/settings_button_text"
         android:textAllCaps="true"
+        android:textColor="@android:color/white"
         android:textSize="12sp" />
 
 </LinearLayout>
