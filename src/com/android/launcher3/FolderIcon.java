@@ -43,6 +43,8 @@ import android.widget.TextView;
 
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.FolderInfo.FolderListener;
+import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;

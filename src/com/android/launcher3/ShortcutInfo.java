@@ -70,7 +70,7 @@ public class ShortcutInfo extends ItemInfo {
     /**
      * The intent used to start the application.
      */
-    Intent intent;
+    public Intent intent;
 
     /**
      * Indicates whether the icon comes from an application's resource (if false)

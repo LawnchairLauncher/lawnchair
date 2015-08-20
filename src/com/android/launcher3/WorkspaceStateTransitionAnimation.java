@@ -30,6 +30,7 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.DecelerateInterpolator;
 
+import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.Thunk;
 
 import java.util.HashMap;

@@ -26,7 +26,8 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.RemoteViews;
 
-import com.android.launcher3.DragLayer.TouchCompleteListener;
+import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.dragndrop.DragLayer.TouchCompleteListener;
 
 /**
  * {@inheritDoc}

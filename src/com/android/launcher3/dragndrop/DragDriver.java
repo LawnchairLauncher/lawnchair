@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.dragndrop;
+
+import com.android.launcher3.AnotherWindowDropTarget;
+import com.android.launcher3.DropTarget;
+import com.android.launcher3.ItemInfo;
+import com.android.launcher3.Utilities;
 
 import android.content.ClipData;
 import android.content.Intent;

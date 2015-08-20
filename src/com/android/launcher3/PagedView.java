@@ -63,7 +63,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     // the min drag distance for a fling to register, to prevent random page shifts
     private static final int MIN_LENGTH_FOR_FLING = 25;
 
-    protected static final int PAGE_SNAP_ANIMATION_DURATION = 750;
+    public static final int PAGE_SNAP_ANIMATION_DURATION = 750;
     protected static final int SLOW_PAGE_SNAP_ANIMATION_DURATION = 950;
 
     private static final float RETURN_TO_ORIGINAL_PAGE_THRESHOLD = 0.33f;
@@ -381,7 +381,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     /**
      * Returns the index of page to be shown immediately afterwards.
      */
-    int getNextPage() {
+    public int getNextPage() {
         return (mNextPage != INVALID_PAGE) ? mNextPage : mCurrentPage;
     }
 

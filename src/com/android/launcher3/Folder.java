@@ -52,11 +52,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.launcher3.CellLayout.CellInfo;
-import com.android.launcher3.DragController.DragListener;
 import com.android.launcher3.FolderInfo.FolderListener;
 import com.android.launcher3.UninstallDropTarget.UninstallSource;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate.AccessibilityDragSource;
+import com.android.launcher3.dragndrop.DragController;
+import com.android.launcher3.dragndrop.DragController.DragListener;
+import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.UiThreadCircularReveal;
 
