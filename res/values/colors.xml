@@ -39,7 +39,7 @@
     <color name="outline_color">#FFFFFFFF</color>
 
     <!-- Containers -->
-    <color name="container_fastscroll_thumb_inactive_color">#42000000</color>
+    <color name="container_fastscroll_thumb_inactive_color">#009688</color>
     <color name="container_fastscroll_thumb_active_color">#009688</color>
 
     <!-- All Apps -->
