@@ -277,7 +277,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap,
                 mCountX, mCountY);
 
-        mStylusEventHelper = new StylusEventHelper(this);
+        mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
 
         mTouchFeedbackView = new ClickShadowView(context);
         addView(mTouchFeedbackView);
@@ -339,7 +339,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         // enabled to allow rearranging the different home screens. So check what mode
         // the workspace is in, and only perform stylus button presses while in overview mode.
         if (mLauncher.mWorkspace.isInOverviewMode()
-                && mStylusEventHelper.checkAndPerformStylusEvent(ev)) {
+                && mStylusEventHelper.onMotionEvent(ev)) {
             return true;
         }
         return handled;
