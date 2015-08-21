@@ -46,6 +46,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -4675,6 +4676,18 @@ public class Launcher extends Activity
             Bitmap icon) {
         return new ShortcutInfo(shortcutIntent, caption, caption, icon,
                 UserHandleCompat.myUserHandle());
+    }
+
+    /**
+     * Generates a dummy AppInfo for us to use to calculate BubbleTextView sizes.
+     */
+    public AppInfo createDummyAppInfo() {
+        Intent intent = new Intent();
+        intent.setComponent(new ComponentName(this, Launcher.class));
+        PackageManager pm = getPackageManager();
+        ResolveInfo info = pm.resolveActivity(intent, 0);
+        return new AppInfo(this, LauncherActivityInfoCompat.fromResolveInfo(info, this),
+                UserHandleCompat.myUserHandle(), mIconCache);
     }
 
     // TODO: This method should be a part of LauncherSearchCallback

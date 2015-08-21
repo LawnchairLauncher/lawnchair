@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -25,7 +24,6 @@ import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -37,8 +35,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewParent;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
 import com.android.launcher3.IconCache.IconLoadRequest;
@@ -63,13 +59,6 @@ public class BubbleTextView extends TextView
     private static final int DISPLAY_WORKSPACE = 0;
     private static final int DISPLAY_ALL_APPS = 1;
 
-    private static final float FAST_SCROLL_FOCUS_MAX_SCALE = 1.15f;
-    private static final int FAST_SCROLL_FOCUS_MODE_NONE = 0;
-    private static final int FAST_SCROLL_FOCUS_MODE_SCALE_ICON = 1;
-    private static final int FAST_SCROLL_FOCUS_MODE_DRAW_CIRCLE_BG = 2;
-    private static final int FAST_SCROLL_FOCUS_FADE_IN_DURATION = 175;
-    private static final int FAST_SCROLL_FOCUS_FADE_OUT_DURATION = 125;
-
     private final Launcher mLauncher;
     private Drawable mIcon;
     private final Drawable mBackground;
@@ -92,12 +81,6 @@ public class BubbleTextView extends TextView
     private boolean mStayPressed;
     private boolean mIgnorePressedStateChange;
     private boolean mDisableRelayout = false;
-
-    private ObjectAnimator mFastScrollFocusAnimator;
-    private Paint mFastScrollFocusBgPaint;
-    private float mFastScrollFocusFraction;
-    private boolean mFastScrollFocused;
-    private final int mFastScrollMode = FAST_SCROLL_FOCUS_MODE_SCALE_ICON;
 
     private IconLoadRequest mIconLoadRequest;
 
@@ -151,13 +134,6 @@ public class BubbleTextView extends TextView
             setShadowLayer(SHADOW_LARGE_RADIUS, 0.0f, SHADOW_Y_OFFSET, SHADOW_LARGE_COLOUR);
         }
 
-        if (mFastScrollMode == FAST_SCROLL_FOCUS_MODE_DRAW_CIRCLE_BG) {
-            mFastScrollFocusBgPaint = new Paint();
-            mFastScrollFocusBgPaint.setAntiAlias(true);
-            mFastScrollFocusBgPaint.setColor(
-                    getResources().getColor(R.color.container_fastscroll_thumb_active_color));
-        }
-
         setAccessibilityDelegate(LauncherAppState.getInstance().getAccessibilityDelegate());
     }
 
@@ -170,8 +146,9 @@ public class BubbleTextView extends TextView
         Bitmap b = info.getIcon(iconCache);
 
         FastBitmapDrawable iconDrawable = mLauncher.createIconDrawable(b);
-        iconDrawable.setGhostModeEnabled(info.isDisabled != 0);
-
+        if (info.isDisabled != 0) {
+            iconDrawable.setState(FastBitmapDrawable.State.DISABLED);
+        }
         setIcon(iconDrawable, mIconSize);
         if (info.contentDescription != null) {
             setContentDescription(info.contentDescription);
@@ -259,7 +236,12 @@ public class BubbleTextView extends TextView
 
     private void updateIconState() {
         if (mIcon instanceof FastBitmapDrawable) {
-            ((FastBitmapDrawable) mIcon).setPressed(isPressed() || mStayPressed);
+            FastBitmapDrawable d = (FastBitmapDrawable) mIcon;
+            if (isPressed() || mStayPressed) {
+                d.animateState(FastBitmapDrawable.State.PRESSED);
+            } else {
+                d.animateState(FastBitmapDrawable.State.NORMAL);
+            }
         }
     }
 
@@ -362,18 +344,7 @@ public class BubbleTextView extends TextView
     @Override
     public void draw(Canvas canvas) {
         if (!mCustomShadowsEnabled) {
-            // Draw the fast scroll focus bg if we have one
-            if (mFastScrollMode == FAST_SCROLL_FOCUS_MODE_DRAW_CIRCLE_BG &&
-                    mFastScrollFocusFraction > 0f) {
-                DeviceProfile grid = mLauncher.getDeviceProfile();
-                int iconCenterX = getScrollX() + (getWidth() / 2);
-                int iconCenterY = getScrollY() + getPaddingTop() + (grid.iconSizePx / 2);
-                canvas.drawCircle(iconCenterX, iconCenterY,
-                        mFastScrollFocusFraction * (getWidth() / 2), mFastScrollFocusBgPaint);
-            }
-
             super.draw(canvas);
-
             return;
         }
 
@@ -533,8 +504,13 @@ public class BubbleTextView extends TextView
      */
     public void reapplyItemInfo(final ItemInfo info) {
         if (getTag() == info) {
+            FastBitmapDrawable.State prevState = FastBitmapDrawable.State.NORMAL;
+            if (mIcon instanceof FastBitmapDrawable) {
+                prevState = ((FastBitmapDrawable) mIcon).getCurrentState();
+            }
             mIconLoadRequest = null;
             mDisableRelayout = true;
+
             if (info instanceof AppInfo) {
                 applyFromApplicationInfo((AppInfo) info);
             } else if (info instanceof ShortcutInfo) {
@@ -550,6 +526,13 @@ public class BubbleTextView extends TextView
             } else if (info instanceof PackageItemInfo) {
                 applyFromPackageItemInfo((PackageItemInfo) info);
             }
+
+            // If we are reapplying over an old icon, then we should update the new icon to the same
+            // state as the old icon
+            if (mIcon instanceof FastBitmapDrawable) {
+                ((FastBitmapDrawable) mIcon).setState(prevState);
+            }
+
             mDisableRelayout = false;
         }
     }
@@ -583,55 +566,53 @@ public class BubbleTextView extends TextView
         }
     }
 
-    // Setters & getters for the animation
-    public void setFastScrollFocus(float fraction) {
-        mFastScrollFocusFraction = fraction;
-        if (mFastScrollMode == FAST_SCROLL_FOCUS_MODE_SCALE_ICON) {
-            setScaleX(1f + fraction * (FAST_SCROLL_FOCUS_MAX_SCALE - 1f));
-            setScaleY(1f + fraction * (FAST_SCROLL_FOCUS_MAX_SCALE - 1f));
-        } else {
-            invalidate();
-        }
-    }
-
-    public float getFastScrollFocus() {
-        return mFastScrollFocusFraction;
-    }
-
     @Override
-    public void setFastScrollFocused(final boolean focused, boolean animated) {
-        if (mFastScrollMode == FAST_SCROLL_FOCUS_MODE_NONE) {
+    public void setFastScrollFocusState(final FastBitmapDrawable.State focusState, boolean animated) {
+        // We can only set the fast scroll focus state on a FastBitmapDrawable
+        if (!(mIcon instanceof FastBitmapDrawable)) {
             return;
         }
 
-        if (mFastScrollFocused != focused) {
-            mFastScrollFocused = focused;
-
-            if (animated) {
-                // Clean up the previous focus animator
-                if (mFastScrollFocusAnimator != null) {
-                    mFastScrollFocusAnimator.cancel();
-                }
-                mFastScrollFocusAnimator = ObjectAnimator.ofFloat(this, "fastScrollFocus",
-                        focused ? 1f : 0f);
-                if (focused) {
-                    mFastScrollFocusAnimator.setInterpolator(new DecelerateInterpolator());
-                } else {
-                    mFastScrollFocusAnimator.setInterpolator(new AccelerateInterpolator());
-                }
-                mFastScrollFocusAnimator.setDuration(focused ?
-                        FAST_SCROLL_FOCUS_FADE_IN_DURATION : FAST_SCROLL_FOCUS_FADE_OUT_DURATION);
-                mFastScrollFocusAnimator.start();
-            } else {
-                mFastScrollFocusFraction = focused ? 1f : 0f;
+        FastBitmapDrawable d = (FastBitmapDrawable) mIcon;
+        if (animated) {
+            FastBitmapDrawable.State prevState = d.getCurrentState();
+            if (d.animateState(focusState)) {
+                // If the state was updated, then update the view accordingly
+                animate().scaleX(focusState.viewScale)
+                        .scaleY(focusState.viewScale)
+                        .setStartDelay(getStartDelayForStateChange(prevState, focusState))
+                        .setDuration(d.getDurationForStateChange(prevState, focusState))
+                        .start();
+            }
+        } else {
+            if (d.setState(focusState)) {
+                // If the state was updated, then update the view accordingly
+                animate().cancel();
+                setScaleX(focusState.viewScale);
+                setScaleY(focusState.viewScale);
             }
         }
     }
 
     /**
+     * Returns the start delay when animating between certain {@link FastBitmapDrawable} states.
+     */
+    private static int getStartDelayForStateChange(final FastBitmapDrawable.State fromState,
+            final FastBitmapDrawable.State toState) {
+        switch (toState) {
+            case NORMAL:
+                switch (fromState) {
+                    case FAST_SCROLL_HIGHLIGHTED:
+                        return FastBitmapDrawable.FAST_SCROLL_INACTIVE_DURATION / 4;
+                }
+        }
+        return 0;
+    }
+
+    /**
      * Interface to be implemented by the grand parent to allow click shadow effect.
      */
-    public static interface BubbleTextShadowHandler {
+    public interface BubbleTextShadowHandler {
         void setPressedIcon(BubbleTextView icon, Bitmap background);
     }
 }

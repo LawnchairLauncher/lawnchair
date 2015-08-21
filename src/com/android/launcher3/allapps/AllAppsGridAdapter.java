@@ -69,6 +69,10 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     // The message to continue to a market search when there are no filtered results
     public static final int SEARCH_MARKET_VIEW_TYPE = 5;
 
+    public interface BindViewCallback {
+        public void onBindView(ViewHolder holder);
+    }
+
     /**
      * ViewHolder for each icon.
      */
@@ -328,6 +332,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     private View.OnTouchListener mTouchListener;
     private View.OnClickListener mIconClickListener;
     private View.OnLongClickListener mIconLongClickListener;
+    private BindViewCallback mBindViewCallback;
     @Thunk final Rect mBackgroundPadding = new Rect();
     @Thunk int mPredictionBarDividerOffset;
     @Thunk int mAppsPerRow;
@@ -422,6 +427,13 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                     mMarketAppName);
             mMarketSearchIntent = createMarketSearchIntent(query);
         }
+    }
+
+    /**
+     * Sets the callback for when views are bound.
+     */
+    public void setBindViewCallback(BindViewCallback cb) {
+        mBindViewCallback = cb;
     }
 
     /**
@@ -529,6 +541,15 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 }
                 break;
         }
+        if (mBindViewCallback != null) {
+            mBindViewCallback.onBindView(holder);
+        }
+    }
+
+    @Override
+    public boolean onFailedToRecycleView(ViewHolder holder) {
+        // Always recycle and we will reset the view when it is bound
+        return true;
     }
 
     @Override

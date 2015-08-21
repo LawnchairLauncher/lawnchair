@@ -27,6 +27,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 
 import com.android.launcher3.util.Thunk;
@@ -37,7 +38,7 @@ import com.android.launcher3.util.Thunk;
 public class BaseRecyclerViewFastScrollBar {
 
     public interface FastScrollFocusableView {
-        void setFastScrollFocused(boolean focused, boolean animated);
+        void setFastScrollFocusState(final FastBitmapDrawable.State focusState, boolean animated);
     }
 
     private final static int MAX_TRACK_ALPHA = 30;
@@ -199,7 +200,7 @@ public class BaseRecyclerViewFastScrollBar {
                     }
                     mTouchOffset += (lastY - downY);
                     mPopup.animateVisibility(true);
-                    animateScrollbar(true);
+                    showActiveScrollbar(true);
                 }
                 if (mIsDragging) {
                     // Update the fastscroller section name at this touch position
@@ -210,7 +211,7 @@ public class BaseRecyclerViewFastScrollBar {
                             (bottom - top));
                     mPopup.setSectionName(sectionName);
                     mPopup.animateVisibility(!sectionName.isEmpty());
-                    mRv.invalidate(mPopup.updateFastScrollerBounds(mRv, lastY));
+                    mRv.invalidate(mPopup.updateFastScrollerBounds(lastY));
                     mLastTouchY = boundedY;
                 }
                 break;
@@ -222,7 +223,7 @@ public class BaseRecyclerViewFastScrollBar {
                 if (mIsDragging) {
                     mIsDragging = false;
                     mPopup.animateVisibility(false);
-                    animateScrollbar(false);
+                    showActiveScrollbar(false);
                 }
                 break;
         }
@@ -246,7 +247,7 @@ public class BaseRecyclerViewFastScrollBar {
     /**
      * Animates the width and color of the scrollbar.
      */
-    private void animateScrollbar(boolean isScrolling) {
+    private void showActiveScrollbar(boolean isScrolling) {
         if (mScrollbarAnimator != null) {
             mScrollbarAnimator.cancel();
         }

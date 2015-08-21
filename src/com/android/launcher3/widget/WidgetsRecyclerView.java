@@ -102,9 +102,9 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
         // Stop the scroller if it is scrolling
         stopScroll();
 
-        getCurScrollState(mScrollPosState);
+        getCurScrollState(mScrollPosState, -1);
         float pos = rowCount * touchFraction;
-        int availableScrollHeight = getAvailableScrollHeight(rowCount, mScrollPosState.rowHeight);
+        int availableScrollHeight = getAvailableScrollHeight(rowCount);
         LinearLayoutManager layoutManager = ((LinearLayoutManager) getLayoutManager());
         layoutManager.scrollToPositionWithOffset(0, (int) -(availableScrollHeight * touchFraction));
 
@@ -131,7 +131,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
         }
 
         // Skip early if, there no child laid out in the container.
-        getCurScrollState(mScrollPosState);
+        getCurScrollState(mScrollPosState, -1);
         if (mScrollPosState.rowIndex < 0) {
             mScrollbar.setThumbOffset(-1, -1);
             return;
@@ -143,10 +143,10 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
     /**
      * Returns the current scroll state.
      */
-    protected void getCurScrollState(ScrollPositionState stateOut) {
+    protected void getCurScrollState(ScrollPositionState stateOut, int viewTypeMask) {
         stateOut.rowIndex = -1;
         stateOut.rowTopOffset = -1;
-        stateOut.rowHeight = -1;
+        stateOut.itemPos = -1;
 
         // Skip early if widgets are not bound.
         if (mWidgets == null) {
@@ -163,6 +163,17 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
 
         stateOut.rowIndex = position;
         stateOut.rowTopOffset = getLayoutManager().getDecoratedTop(child);
-        stateOut.rowHeight = child.getHeight();
+        stateOut.itemPos = position;
+    }
+
+    @Override
+    protected int getTop(int rowIndex) {
+        if (getChildCount() == 0) {
+            return 0;
+        }
+
+        // All the rows are the same height, return any child height
+        View child = getChildAt(0);
+        return child.getMeasuredHeight() * rowIndex;
     }
 }
