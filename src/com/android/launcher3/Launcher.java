@@ -479,7 +479,7 @@ public class Launcher extends Activity
         // In case we are on a device with locked rotation, we should look at preferences to check
         // if the user has specifically allowed rotation.
         if (!mRotationEnabled) {
-            mRotationEnabled = Utilities.isAllowRotationPrefEnabled(getApplicationContext(), false);
+            mRotationEnabled = Utilities.isAllowRotationPrefEnabled(getApplicationContext());
         }
 
         // On large interfaces, or on devices that a user has specifically enabled screen rotation,

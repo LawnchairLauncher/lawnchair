@@ -119,10 +119,9 @@ public final class Utilities {
         return Log.isLoggable(propertyName, Log.VERBOSE);
     }
 
-    public static boolean isAllowRotationPrefEnabled(Context context, boolean multiProcess) {
+    public static boolean isAllowRotationPrefEnabled(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(
-                LauncherAppState.getSharedPreferencesKey(), Context.MODE_PRIVATE | (multiProcess ?
-                        Context.MODE_MULTI_PROCESS : 0));
+                LauncherAppState.getSharedPreferencesKey(), Context.MODE_PRIVATE);
         boolean allowRotationPref = sharedPrefs.getBoolean(ALLOW_ROTATION_PREFERENCE_KEY, false);
         return sForceEnableRotation || allowRotationPref;
     }

@@ -1159,11 +1159,10 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
     @Override
     public boolean enableRotation() {
-        // Check if rotation is enabled for this device.
-        if (Utilities.isRotationAllowedForDevice(getContext()))
-            return true;
-
-        // Check if the user has specifically enabled rotation via preferences.
-        return Utilities.isAllowRotationPrefEnabled(getApplicationContext(), true);
+        return super.enableRotation() ||
+                getContentResolver().call(LauncherSettings.Settings.CONTENT_URI,
+                        LauncherSettings.Settings.METHOD_GET_BOOLEAN,
+                        Utilities.ALLOW_ROTATION_PREFERENCE_KEY, new Bundle())
+                .getBoolean(LauncherSettings.Settings.EXTRA_VALUE);
     }
 }
