@@ -64,10 +64,6 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
         return Color.WHITE;
     }
 
-    public int getFastScrollerThumbInactiveColor(int defaultInactiveThumbColor) {
-        return getResources().getColor(R.color.widgets_view_fastscroll_thumb_inactive_color);
-    }
-
     /**
      * Sets the widget model in this view, used to determine the fast scroll position.
      */
