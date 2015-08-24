@@ -267,8 +267,18 @@ public class AllAppsRecyclerView extends BaseRecyclerView
                 int diffScrollY = scrollBarY - thumbScrollY;
                 if (diffScrollY * dy > 0f) {
                     // User is scrolling in the same direction the thumb needs to catch up to the
-                    // current scroll position.
-                    thumbScrollY += dy < 0 ? Math.max(dy, diffScrollY) : Math.min(dy, diffScrollY);
+                    // current scroll position.  We do this by mapping the difference in movement
+                    // from the original scroll bar position to the difference in movement necessary
+                    // in the detached thumb position to ensure that both speed towards the same
+                    // position at either end of the list.
+                    if (dy < 0) {
+                        int offset = (int) ((dy * thumbScrollY) / (float) scrollBarY);
+                        thumbScrollY += Math.max(offset, diffScrollY);
+                    } else {
+                        int offset = (int) ((dy * (availableScrollBarHeight - thumbScrollY)) /
+                                (float) (availableScrollBarHeight - scrollBarY));
+                        thumbScrollY += Math.min(offset, diffScrollY);
+                    }
                     thumbScrollY = Math.max(0, Math.min(availableScrollBarHeight, thumbScrollY));
                     mScrollbar.setThumbOffset(scrollBarX, thumbScrollY);
                     if (scrollBarY == thumbScrollY) {
