@@ -301,6 +301,8 @@ public class Launcher extends Activity
     private boolean mHasFocus = false;
     private boolean mAttached = false;
 
+    private LauncherClings mClings;
+
     private static LongArrayMap<FolderInfo> sFolders = new LongArrayMap<>();
 
     private View.OnTouchListener mHapticFeedbackTouchListener;
@@ -648,7 +650,7 @@ public class Launcher extends Activity
     public boolean isDraggingEnabled() {
         // We prevent dragging when we are loading the workspace as it is possible to pick up a view
         // that is subsequently removed from the workspace in startBinding().
-        return !mModel.isLoadingWorkspace();
+        return !isWorkspaceLoading();
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -3755,11 +3757,12 @@ public class Launcher extends Activity
                 continue;
             }
 
+            final View view;
             switch (item.itemType) {
                 case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                 case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                     ShortcutInfo info = (ShortcutInfo) item;
-                    View shortcut = createShortcut(info);
+                    view = createShortcut(info);
 
                     /*
                      * TODO: FIX collision case
@@ -3778,27 +3781,25 @@ public class Launcher extends Activity
                             }
                         }
                     }
-
-                    workspace.addInScreenFromBind(shortcut, item.container, item.screenId, item.cellX,
-                            item.cellY, 1, 1);
-                    if (animateIcons) {
-                        // Animate all the applications up now
-                        shortcut.setAlpha(0f);
-                        shortcut.setScaleX(0f);
-                        shortcut.setScaleY(0f);
-                        bounceAnims.add(createNewAppBounceAnimation(shortcut, i));
-                        newShortcutsScreenId = item.screenId;
-                    }
                     break;
                 case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
-                    FolderIcon newFolder = FolderIcon.fromXml(R.layout.folder_icon, this,
+                    view = FolderIcon.fromXml(R.layout.folder_icon, this,
                             (ViewGroup) workspace.getChildAt(workspace.getCurrentPage()),
                             (FolderInfo) item, mIconCache);
-                    workspace.addInScreenFromBind(newFolder, item.container, item.screenId, item.cellX,
-                            item.cellY, 1, 1);
                     break;
                 default:
                     throw new RuntimeException("Invalid Item Type");
+            }
+
+            workspace.addInScreenFromBind(view, item.container, item.screenId, item.cellX,
+                    item.cellY, 1, 1);
+            if (animateIcons) {
+                // Animate all the applications up now
+                view.setAlpha(0f);
+                view.setScaleX(0f);
+                view.setScaleY(0f);
+                bounceAnims.add(createNewAppBounceAnimation(view, i));
+                newShortcutsScreenId = item.screenId;
             }
         }
 
@@ -4064,7 +4065,8 @@ public class Launcher extends Activity
 
     private boolean canRunNewAppsAnimation() {
         long diff = System.currentTimeMillis() - mDragController.getLastGestureUpTime();
-        return diff > (NEW_APPS_ANIMATION_INACTIVE_TIMEOUT_SECONDS * 1000);
+        return diff > (NEW_APPS_ANIMATION_INACTIVE_TIMEOUT_SECONDS * 1000)
+                && (mClings == null || !mClings.isVisible());
     }
 
     private ValueAnimator createNewAppBounceAnimation(View v, int i) {
@@ -4491,6 +4493,7 @@ public class Launcher extends Activity
         // launcher2). Otherwise, we prompt the user upon started for migration
         LauncherClings launcherClings = new LauncherClings(this);
         if (launcherClings.shouldShowFirstRunOrMigrationClings()) {
+            mClings = launcherClings;
             if (mModel.canMigrateFromOldLauncherDb(this)) {
                 launcherClings.showMigrationCling();
             } else {
