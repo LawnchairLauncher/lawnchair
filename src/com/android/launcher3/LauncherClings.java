@@ -53,6 +53,7 @@ class LauncherClings implements OnClickListener, OnKeyListener {
 
     @Thunk Launcher mLauncher;
     private LayoutInflater mInflater;
+    @Thunk boolean mIsVisible;
 
     /** Ctor */
     public LauncherClings(Launcher launcher) {
@@ -108,6 +109,7 @@ class LauncherClings implements OnClickListener, OnKeyListener {
      */
     public void showMigrationCling() {
         mLauncher.onLauncherClingShown();
+        mIsVisible = true;
         mLauncher.hideWorkspaceSearchAndHotseat();
 
         ViewGroup root = (ViewGroup) mLauncher.findViewById(R.id.launcher);
@@ -134,6 +136,7 @@ class LauncherClings implements OnClickListener, OnKeyListener {
     }
 
     public void showLongPressCling(boolean showWelcome) {
+        mIsVisible = true;
         ViewGroup root = (ViewGroup) mLauncher.findViewById(R.id.launcher);
         View cling = mInflater.inflate(R.layout.longpress_cling, root, false);
 
@@ -221,6 +224,7 @@ class LauncherClings implements OnClickListener, OnKeyListener {
                     mLauncher.getSharedPrefs().edit()
                         .putBoolean(flag, true)
                         .apply();
+                    mIsVisible = false;
                     if (postAnimationCb != null) {
                         postAnimationCb.run();
                     }
@@ -232,6 +236,10 @@ class LauncherClings implements OnClickListener, OnKeyListener {
                 cling.animate().alpha(0).setDuration(duration).withEndAction(cleanUpClingCb);
             }
         }
+    }
+
+    public boolean isVisible() {
+        return mIsVisible;
     }
 
     /** Returns whether the clings are enabled or should be shown */
