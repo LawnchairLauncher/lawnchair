@@ -36,6 +36,7 @@ import android.text.Spannable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ActionMode;
+import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -358,9 +359,24 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     @Override
+    protected void onAttachedToWindow() {
+        // requestFocus() causes the focus onto the folder itself, which doesn't cause visual
+        // effect but the next arrow key can start the keyboard focus inside of the folder, not
+        // the folder itself.
+        requestFocus();
+        super.onAttachedToWindow();
+    }
+
+    @Override
     public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
         // When the folder gets focus, we don't want to announce the list of items.
         return true;
+    }
+
+    @Override
+    public View focusSearch(int direction) {
+        // When the folder is focused, further focus search should be within the folder contents.
+        return FocusFinder.getInstance().findNextFocus(this, null, direction);
     }
 
     /**
