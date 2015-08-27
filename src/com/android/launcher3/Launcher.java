@@ -207,8 +207,6 @@ public class Launcher extends Activity
 
     private static final String QSB_WIDGET_ID = "qsb_widget_id";
     private static final String QSB_WIDGET_PROVIDER = "qsb_widget_provider";
-    // Item id to use for QSB widget.
-    private static final int QSB_ITEM_ID = -1;
 
     public static final String USER_HAS_MIGRATED = "launcher.user_migrated_from_old_data";
 
@@ -676,10 +674,7 @@ public class Launcher extends Activity
 
     public int getViewIdForItem(ItemInfo info) {
         // This cast is safe given the > 2B range for int.
-        return getViewIdForItemId((int) info.id);
-    }
-
-    public int getViewIdForItemId(int itemId) {
+        int itemId = (int) info.id;
         if (mItemIdToViewId.containsKey(itemId)) {
             return mItemIdToViewId.get(itemId);
         }
@@ -3512,9 +3507,9 @@ public class Launcher extends Activity
             mAppWidgetHost.setQsbWidgetId(widgetId);
             if (widgetId != -1) {
                 mQsb = mAppWidgetHost.createView(this, widgetId, searchProvider);
+                mQsb.setId(R.id.qsb_widget);
                 mQsb.updateAppWidgetOptions(opts);
                 mQsb.setPadding(0, 0, 0, 0);
-                mQsb.setId(getViewIdForItemId(QSB_ITEM_ID));
                 mSearchDropTargetBar.addView(mQsb);
                 mSearchDropTargetBar.setQsbSearchBar(mQsb);
             }

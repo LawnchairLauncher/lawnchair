@@ -78,6 +78,9 @@
          get build information. Can be empty. -->
     <string name="build_info_class" translatable="false"></string>
 
+    <!-- View ID to use for QSB widget -->
+    <item type="id" name="qsb_widget" />
+
 <!-- Accessibility actions -->
     <item type="id" name="action_remove" />
     <item type="id" name="action_uninstall" />
