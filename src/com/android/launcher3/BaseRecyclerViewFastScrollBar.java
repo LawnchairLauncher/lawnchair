@@ -66,6 +66,7 @@ public class BaseRecyclerViewFastScrollBar {
     private boolean mIsDragging;
     private boolean mIsThumbDetached;
     private boolean mCanThumbDetach;
+    private boolean mIgnoreDragGesture;
 
     // This is the offset from the top of the scrollbar when the user first starts touching.  To
     // prevent jumping, this offset is applied as the user scrolls.
@@ -180,13 +181,15 @@ public class BaseRecyclerViewFastScrollBar {
         int y = (int) ev.getY();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                if (isNearPoint(downX, downY)) {
+                if (isNearThumb(downX, downY)) {
                     mTouchOffset = downY - mThumbOffset.y;
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
-                // Check if we should start scrolling
-                if (!mIsDragging && isNearPoint(downX, downY) &&
+                // Check if we should start scrolling, but ignore this fastscroll gesture if we have
+                // exceeded some fixed movement
+                mIgnoreDragGesture |= Math.abs(y - downY) > config.getScaledPagingTouchSlop();
+                if (!mIsDragging && !mIgnoreDragGesture && isNearThumb(downX, lastY) &&
                         Math.abs(y - downY) > config.getScaledTouchSlop()) {
                     mRv.getParent().requestDisallowInterceptTouchEvent(true);
                     mIsDragging = true;
@@ -214,6 +217,7 @@ public class BaseRecyclerViewFastScrollBar {
             case MotionEvent.ACTION_CANCEL:
                 mTouchOffset = 0;
                 mLastTouchY = 0;
+                mIgnoreDragGesture = false;
                 if (mIsDragging) {
                     mIsDragging = false;
                     mPopup.animateVisibility(false);
@@ -287,7 +291,7 @@ public class BaseRecyclerViewFastScrollBar {
     /**
      * Returns whether the specified points are near the scroll bar bounds.
      */
-    private boolean isNearPoint(int x, int y) {
+    private boolean isNearThumb(int x, int y) {
         mTmpRect.set(mThumbOffset.x, mThumbOffset.y, mThumbOffset.x + mThumbWidth,
                 mThumbOffset.y + mThumbHeight);
         mTmpRect.inset(mTouchInset, mTouchInset);
