@@ -73,6 +73,9 @@
          filter the activities shown in the launcher. Can be empty. -->
     <string name="app_filter_class" translatable="false"></string>
 
+    <!-- View ID to use for QSB widget -->
+    <item type="id" name="qsb_widget" />
+
 <!-- Accessibility actions -->
     <item type="id" name="action_remove" />
     <item type="id" name="action_uninstall" />
