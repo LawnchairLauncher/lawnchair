@@ -102,6 +102,10 @@ public class AllAppsRecyclerView extends BaseRecyclerView
      * Scrolls this recycler view to the top.
      */
     public void scrollToTop() {
+        // Ensure we reattach the scrollbar if it was previously detached while fast-scrolling
+        if (mScrollbar.isThumbDetached()) {
+            mScrollbar.reattachThumbToScroll();
+        }
         scrollToPosition(0);
     }
 
