@@ -19,6 +19,8 @@
     <dimen name="all_apps_grid_view_start_margin">0dp</dimen>
     <dimen name="all_apps_grid_section_text_size">26sp</dimen>
     <dimen name="all_apps_icon_top_bottom_padding">12dp</dimen>
+    <dimen name="all_apps_background_canvas_width">850dp</dimen>
+    <dimen name="all_apps_background_canvas_height">525dp</dimen>
 
 <!-- Cling -->
     <dimen name="cling_migration_logo_height">400dp</dimen>

@@ -74,6 +74,10 @@
     <dimen name="all_apps_prediction_icon_top_padding">8dp</dimen>
     <dimen name="all_apps_prediction_icon_bottom_padding">18dp</dimen>
     <dimen name="all_apps_list_top_bottom_padding">8dp</dimen>
+    <dimen name="all_apps_empty_search_message_top_offset">40dp</dimen>
+    <dimen name="all_apps_empty_search_bg_top_offset">144dp</dimen>
+    <dimen name="all_apps_background_canvas_width">700dp</dimen>
+    <dimen name="all_apps_background_canvas_height">475dp</dimen>
 
 <!-- Widget tray -->
     <dimen name="widget_container_inset">8dp</dimen>

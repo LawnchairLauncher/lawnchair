@@ -24,11 +24,13 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.support.v4.view.accessibility.AccessibilityRecordCompat;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.net.Uri;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -511,14 +513,17 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case EMPTY_SEARCH_VIEW_TYPE:
                 TextView emptyViewText = (TextView) holder.mContent;
                 emptyViewText.setText(mEmptySearchMessage);
+                emptyViewText.setGravity(mApps.hasNoFilteredResults() ? Gravity.CENTER :
+                        Gravity.START | Gravity.CENTER_VERTICAL);
                 break;
             case SEARCH_MARKET_VIEW_TYPE:
-                View searchView = holder.mContent;
+                TextView searchView = (TextView) holder.mContent;
                 if (mMarketSearchIntent != null) {
                     searchView.setVisibility(View.VISIBLE);
                     searchView.setContentDescription(mMarketSearchMessage);
-                    ((TextView) searchView.findViewById(R.id.search_market_text))
-                            .setText(mMarketSearchMessage);
+                    searchView.setGravity(mApps.hasNoFilteredResults() ? Gravity.CENTER :
+                            Gravity.START | Gravity.CENTER_VERTICAL);
+                    searchView.setText(mMarketSearchMessage);
                 } else {
                     searchView.setVisibility(View.GONE);
                 }
