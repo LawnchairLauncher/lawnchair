@@ -616,7 +616,9 @@ public class IconCache {
             // Check the DB first.
             if (!getEntryFromDB(cacheKey, entry, useLowResIcon)) {
                 try {
-                    PackageInfo info = mPackageManager.getPackageInfo(packageName, 0);
+                    int flags = UserHandleCompat.myUserHandle().equals(user) ? 0 :
+                        PackageManager.GET_UNINSTALLED_PACKAGES;
+                    PackageInfo info = mPackageManager.getPackageInfo(packageName, flags);
                     ApplicationInfo appInfo = info.applicationInfo;
                     if (appInfo == null) {
                         throw new NameNotFoundException("ApplicationInfo is null");
@@ -787,7 +789,7 @@ public class IconCache {
     }
 
     private static final class IconDB extends SQLiteOpenHelper {
-        private final static int DB_VERSION = 6;
+        private final static int DB_VERSION = 7;
 
         private final static String TABLE_NAME = "icons";
         private final static String COLUMN_ROWID = "rowid";
