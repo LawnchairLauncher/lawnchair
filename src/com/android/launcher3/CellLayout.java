@@ -24,7 +24,6 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -54,6 +53,7 @@ import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
 import com.android.launcher3.accessibility.FolderAccessibilityHelper;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.util.ParcelableSparseArray;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
@@ -85,6 +85,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     private int mMaxGap;
     private boolean mDropPending = false;
     private boolean mIsDragTarget = true;
+    private boolean mJailContent = true;
 
     // These are temporary variables to prevent having to allocate a new object just to
     // return an (x, y) value from helper functions. Do NOT use them to maintain other state.
@@ -188,7 +189,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         mLauncher = (Launcher) context;
 
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CellLayout, defStyle, 0);
 
         mCellWidth = mCellHeight = -1;
         mFixedCellWidth = mFixedCellHeight = -1;
@@ -202,10 +202,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         mPreviousReorderDirection[0] = INVALID_DIRECTION;
         mPreviousReorderDirection[1] = INVALID_DIRECTION;
 
-        a.recycle();
-
         setAlwaysDrawnWithCacheEnabled(false);
-
         final Resources res = getResources();
         mHotseatScale = (float) grid.hotseatIconSizePx / grid.iconSizePx;
 
@@ -423,6 +420,32 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             }
             invalidate();
         }
+    }
+
+    public void disableJailContent() {
+        mJailContent = false;
+    }
+
+    @Override
+    protected void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
+        if (mJailContent) {
+            ParcelableSparseArray jail = getJailedArray(container);
+            super.dispatchSaveInstanceState(jail);
+            container.put(R.id.cell_layout_jail_id, jail);
+        } else {
+            super.dispatchSaveInstanceState(container);
+        }
+    }
+
+    @Override
+    protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
+        super.dispatchRestoreInstanceState(mJailContent ? getJailedArray(container) : container);
+    }
+
+    private ParcelableSparseArray getJailedArray(SparseArray<Parcelable> container) {
+        final Parcelable parcelable = container.get(R.id.cell_layout_jail_id);
+        return parcelable instanceof ParcelableSparseArray ?
+                (ParcelableSparseArray) parcelable : new ParcelableSparseArray();
     }
 
     public boolean getIsDragOverlapping() {
