@@ -841,12 +841,31 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     }
 
     private void addTemporaryWallpaperTile(final Uri uri, boolean fromRestore) {
-        mTempWallpaperTiles.add(uri);
-        // Add a tile for the image picked from Gallery
-        final FrameLayout pickedImageThumbnail = (FrameLayout) getLayoutInflater().
-                inflate(R.layout.wallpaper_picker_item, mWallpapersView, false);
-        pickedImageThumbnail.setVisibility(View.GONE);
-        mWallpapersView.addView(pickedImageThumbnail, 0);
+        // Add a tile for the image picked from Gallery, reusing the existing tile if there is one.
+        FrameLayout existingImageThumbnail = null;
+        int indexOfExistingTile = 0;
+        for (; indexOfExistingTile < mWallpapersView.getChildCount(); indexOfExistingTile++) {
+            FrameLayout thumbnail = (FrameLayout) mWallpapersView.getChildAt(indexOfExistingTile);
+            Object tag = thumbNail.getTag();
+            if (tag instanceof UriWallpaperInfo && ((UriWallpaperInfo) tag).mUri.equals(uri)) {
+                existingImageThumbnail = thumbNail;
+                break;
+            }
+        }
+        final FrameLayout pickedImageThumbnail;
+        if (existingImageThumbnail != null) {
+            pickedImageThumbnail = existingImageThumbnail;
+            // Always move the existing wallpaper to the front so user can see it without scrolling.
+            mWallpapersView.removeViewAt(indexOfExistingTile);
+            mWallpapersView.addView(existingImageThumbnail, 0);
+        } else {
+            // This is the first time this temporary wallpaper has been added
+            pickedImageThumbnail = (FrameLayout) getLayoutInflater()
+                    .inflate(R.layout.wallpaper_picker_item, mWallpapersView, false);
+            pickedImageThumbnail.setVisibility(View.GONE);
+            mWallpapersView.addView(pickedImageThumbnail, 0);
+            mTempWallpaperTiles.add(uri);
+        }
 
         // Load the thumbnail
         final ImageView image = (ImageView) pickedImageThumbnail.findViewById(R.id.wallpaper_image);
@@ -856,7 +875,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             protected Bitmap doInBackground(Void...args) {
                 try {
                     int rotation = BitmapUtils.getRotationFromExif(context, uri);
-                    return createThumbnail(defaultSize, context, uri, null, null, 0, rotation, false);
+                    return createThumbnail(defaultSize, context, uri, null, null, 0, rotation,
+                            false);
                 } catch (SecurityException securityException) {
                     if (isActivityDestroyed()) {
                         // Temporarily granted permissions are revoked when the activity
