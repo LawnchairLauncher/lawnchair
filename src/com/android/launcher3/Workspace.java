@@ -579,6 +579,7 @@ public class Workspace extends PagedView
         CellLayout customScreen = (CellLayout)
                 mLauncher.getLayoutInflater().inflate(R.layout.workspace_screen, this, false);
         customScreen.disableDragTarget();
+        customScreen.disableJailContent();
 
         mWorkspaceScreens.put(CUSTOM_CONTENT_SCREEN_ID, customScreen);
         mScreenOrder.add(0, CUSTOM_CONTENT_SCREEN_ID);

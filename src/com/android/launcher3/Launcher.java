@@ -124,7 +124,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Default launcher application.
@@ -193,8 +192,6 @@ public class Launcher extends Activity
     private static final String RUNTIME_STATE_PENDING_ADD_WIDGET_INFO = "launcher.add_widget_info";
     // Type: parcelable
     private static final String RUNTIME_STATE_PENDING_ADD_WIDGET_ID = "launcher.add_widget_id";
-    // Type: int[]
-    private static final String RUNTIME_STATE_VIEW_IDS = "launcher.view_ids";
 
     static final String INTRO_SCREEN_DISMISSED = "launcher.intro_screen_dismissed";
     static final String FIRST_RUN_ACTIVITY_DISPLAYED = "launcher.first_run_activity_displayed";
@@ -227,9 +224,6 @@ public class Launcher extends Activity
     public static final int EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT = 300;
     private static final int ON_ACTIVITY_RESULT_ANIMATION_DELAY = 500;
     private static final int ACTIVITY_START_DELAY = 1000;
-
-    private HashMap<Integer, Integer> mItemIdToViewId = new HashMap<Integer, Integer>();
-    private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);
 
     // How long to wait before the new-shortcut animation automatically pans the workspace
     private static int NEW_APPS_PAGE_MOVE_DELAY = 500;
@@ -656,34 +650,12 @@ public class Launcher extends Activity
         return !isWorkspaceLoading();
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    public static int generateViewId() {
-        if (Utilities.ATLEAST_JB_MR1) {
-            return View.generateViewId();
-        } else {
-            // View.generateViewId() is not available. The following fallback logic is a copy
-            // of its implementation.
-            for (;;) {
-                final int result = sNextGeneratedId.get();
-                // aapt-generated IDs have the high byte nonzero; clamp to the range under that.
-                int newValue = result + 1;
-                if (newValue > 0x00FFFFFF) newValue = 1; // Roll over to 1, not 0.
-                if (sNextGeneratedId.compareAndSet(result, newValue)) {
-                    return result;
-                }
-            }
-        }
-    }
-
     public int getViewIdForItem(ItemInfo info) {
-        // This cast is safe given the > 2B range for int.
-        int itemId = (int) info.id;
-        if (mItemIdToViewId.containsKey(itemId)) {
-            return mItemIdToViewId.get(itemId);
-        }
-        int viewId = generateViewId();
-        mItemIdToViewId.put(itemId, viewId);
-        return viewId;
+        // aapt-generated IDs have the high byte nonzero; clamp to the range under that.
+        // This cast is safe as long as the id < 0x00FFFFFF
+        // Since we jail all the dynamically generated views, there should be no clashes
+        // with any other views.
+        return (int) info.id;
     }
 
     /**
@@ -1337,7 +1309,6 @@ public class Launcher extends Activity
      *
      * @param savedState The previous state.
      */
-    @SuppressWarnings("unchecked")
     private void restoreState(Bundle savedState) {
         if (savedState == null) {
             return;
@@ -1373,9 +1344,6 @@ public class Launcher extends Activity
             setWaitingForResult(true);
             mRestoring = true;
         }
-
-        mItemIdToViewId = (HashMap<Integer, Integer>)
-                savedState.getSerializable(RUNTIME_STATE_VIEW_IDS);
     }
 
     /**
@@ -2019,7 +1987,6 @@ public class Launcher extends Activity
 
         // Save the current widgets tray?
         // TODO(hyunyoungs)
-        outState.putSerializable(RUNTIME_STATE_VIEW_IDS, mItemIdToViewId);
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onSaveInstanceState(outState);
