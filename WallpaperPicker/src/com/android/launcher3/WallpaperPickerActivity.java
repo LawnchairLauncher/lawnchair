@@ -847,9 +847,9 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         int indexOfExistingTile = 0;
         for (; indexOfExistingTile < mWallpapersView.getChildCount(); indexOfExistingTile++) {
             FrameLayout thumbnail = (FrameLayout) mWallpapersView.getChildAt(indexOfExistingTile);
-            Object tag = thumbNail.getTag();
+            Object tag = thumbnail.getTag();
             if (tag instanceof UriWallpaperInfo && ((UriWallpaperInfo) tag).mUri.equals(uri)) {
-                existingImageThumbnail = thumbNail;
+                existingImageThumbnail = thumbnail;
                 break;
             }
         }
