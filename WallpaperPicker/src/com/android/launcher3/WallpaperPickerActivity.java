@@ -30,6 +30,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -478,17 +479,15 @@ public class WallpaperPickerActivity extends WallpaperCropActivity
             }
         }
 
-        // Context.getPackageName() may return the "original" package name,
-        // com.android.launcher3; Resources needs the real package name,
-        // com.android.launcher3. So we ask Resources for what it thinks the
-        // package name should be.
-        try {
-            final String packageName = getResources().getResourcePackageName(R.array.wallpapers);
-            ApplicationInfo info = getPackageManager().getApplicationInfo(packageName, 0);
-            Resources wallpaperRes = getContext().getPackageManager()
-                    .getResourcesForApplication(info);
-            addWallpapers(bundled, wallpaperRes, info.packageName, R.array.wallpapers);
-        } catch (PackageManager.NameNotFoundException e) { }
+        Pair<ApplicationInfo, Integer> r = getWallpaperArrayResourceId();
+        if (r != null) {
+            try {
+                Resources wallpaperRes = getContext().getPackageManager()
+                        .getResourcesForApplication(r.first);
+                addWallpapers(bundled, wallpaperRes, r.first.packageName, r.second);
+            } catch (PackageManager.NameNotFoundException e) {
+            }
+        }
 
         if (partner == null || !partner.hideDefaultWallpaper()) {
             // Add an entry for the default wallpaper (stored in system resources)
@@ -498,6 +497,20 @@ public class WallpaperPickerActivity extends WallpaperCropActivity
             }
         }
         return bundled;
+    }
+
+    public Pair<ApplicationInfo, Integer> getWallpaperArrayResourceId() {
+        // Context.getPackageName() may return the "original" package name,
+        // com.android.launcher3; Resources needs the real package name,
+        // com.android.launcher3. So we ask Resources for what it thinks the
+        // package name should be.
+        final String packageName = getResources().getResourcePackageName(R.array.wallpapers);
+        try {
+            ApplicationInfo info = getContext().getPackageManager().getApplicationInfo(packageName, 0);
+            return new Pair<ApplicationInfo, Integer>(info, R.array.wallpapers);
+        } catch (PackageManager.NameNotFoundException e) {
+            return null;
+        }
     }
 
     private void addWallpapers(ArrayList<WallpaperTileInfo> known, Resources res,
