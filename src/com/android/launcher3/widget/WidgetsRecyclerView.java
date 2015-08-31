@@ -88,6 +88,12 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
      */
     @Override
     public String scrollToPositionAtProgress(float touchFraction) {
+        // Skip early if widgets are not bound.
+        if (mWidgets == null) {
+            return "";
+        }
+
+        // Skip early if there are no widgets.
         int rowCount = mWidgets.getPackageSize();
         if (rowCount == 0) {
             return "";
@@ -112,9 +118,13 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
      */
     @Override
     public void onUpdateScrollbar(int dy) {
-        int rowCount = mWidgets.getPackageSize();
+        // Skip early if widgets are not bound.
+        if (mWidgets == null) {
+            return;
+        }
 
-        // Skip early if, there are no items.
+        // Skip early if there are no widgets.
+        int rowCount = mWidgets.getPackageSize();
         if (rowCount == 0) {
             mScrollbar.setThumbOffset(-1, -1);
             return;
@@ -138,9 +148,13 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
         stateOut.rowTopOffset = -1;
         stateOut.rowHeight = -1;
 
-        int rowCount = mWidgets.getPackageSize();
+        // Skip early if widgets are not bound.
+        if (mWidgets == null) {
+            return;
+        }
 
         // Return early if there are no items
+        int rowCount = mWidgets.getPackageSize();
         if (rowCount == 0) {
             return;
         }
