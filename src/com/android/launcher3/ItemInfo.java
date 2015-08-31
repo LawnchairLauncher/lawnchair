@@ -152,11 +152,11 @@ public class ItemInfo {
         itemType = values.getAsInteger(LauncherSettings.Favorites.ITEM_TYPE);
         container = values.getAsLong(LauncherSettings.Favorites.CONTAINER);
         screenId = values.getAsLong(LauncherSettings.Favorites.SCREEN);
-        cellX = values.getAsInteger(LauncherSettings.Favorites.ITEM_TYPE);
-        cellY = values.getAsInteger(LauncherSettings.Favorites.ITEM_TYPE);
-        spanX = values.getAsInteger(LauncherSettings.Favorites.ITEM_TYPE);
-        spanY = values.getAsInteger(LauncherSettings.Favorites.ITEM_TYPE);
-        rank = values.getAsInteger(LauncherSettings.Favorites.ITEM_TYPE);
+        cellX = values.getAsInteger(LauncherSettings.Favorites.CELLX);
+        cellY = values.getAsInteger(LauncherSettings.Favorites.CELLY);
+        spanX = values.getAsInteger(LauncherSettings.Favorites.SPANX);
+        spanY = values.getAsInteger(LauncherSettings.Favorites.SPANY);
+        rank = values.getAsInteger(LauncherSettings.Favorites.RANK);
     }
 
     /**
