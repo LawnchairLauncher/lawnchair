@@ -1857,6 +1857,8 @@ public class Launcher extends Activity
         boolean alreadyOnHome = mHasFocus && ((intent.getFlags() &
                 Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
                 != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+        boolean moveToDefaultScreen = mLauncherCallbacks != null ?
+                mLauncherCallbacks.shouldMoveToDefaultScreenOnHomeIntent() : true;
         boolean isActionMain = Intent.ACTION_MAIN.equals(intent.getAction());
         if (isActionMain) {
             // also will cancel mWaitingForResult.
@@ -1910,8 +1912,6 @@ public class Launcher extends Activity
         // as slow logic in the callbacks eat into the time the scroller expects for the snapToPage
         // animation.
         if (isActionMain) {
-            boolean moveToDefaultScreen = mLauncherCallbacks != null ?
-                    mLauncherCallbacks.shouldMoveToDefaultScreenOnHomeIntent() : true;
             if (alreadyOnHome && mState == State.WORKSPACE && !mWorkspace.isTouchActive() &&
                     openFolder == null && moveToDefaultScreen) {
                 mWorkspace.post(new Runnable() {
