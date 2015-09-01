@@ -17,7 +17,7 @@ import android.util.Log;
 import com.android.gallery3d.common.BitmapUtils;
 import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.WallpaperCropActivity.CropViewScaleProvider;
+import com.android.launcher3.WallpaperCropActivity.CropViewScaleAndOffsetProvider;
 import com.android.launcher3.WallpaperPickerActivity;
 import com.android.photos.views.TiledImageRenderer.TileSource;
 
@@ -35,11 +35,16 @@ public class DefaultWallpaperInfo extends DrawableThumbWallpaperInfo {
 
     @Override
     public void onClick(WallpaperPickerActivity a) {
-        a.setCropViewTileSource(null, false, false, new CropViewScaleProvider() {
+        a.setCropViewTileSource(null, false, false, new CropViewScaleAndOffsetProvider() {
 
             @Override
             public float getScale(TileSource src) {
                 return 1f;
+            }
+
+            @Override
+            public float getParallaxOffset() {
+                return 0;
             }
         }, null);
     }

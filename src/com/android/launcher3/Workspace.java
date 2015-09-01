@@ -1401,7 +1401,7 @@ public class Workspace extends PagedView
             return false;
         }
 
-        private float wallpaperOffsetForCurrentScroll() {
+        public float wallpaperOffsetForScroll(int scroll) {
             // TODO: do different behavior if it's  a live wallpaper?
             // Don't use up all the wallpaper parallax until you have at least
             // MIN_PARALLAX_PAGE_SPAN pages
@@ -1440,7 +1440,7 @@ public class Workspace extends PagedView
                 // Sometimes the left parameter of the pages is animated during a layout transition;
                 // this parameter offsets it to keep the wallpaper from animating as well
                 int adjustedScroll =
-                        getScrollX() - firstPageScrollX - getLayoutTransitionOffsetForPage(0);
+                        scroll - firstPageScrollX - getLayoutTransitionOffsetForPage(0);
                 float offset = Math.min(1, adjustedScroll / (float) scrollRange);
                 offset = Math.max(0, offset);
 
@@ -1452,6 +1452,10 @@ public class Workspace extends PagedView
                 }
                 return offset * (numScrollingPages - 1) / parallaxPageSpan;
             }
+        }
+
+        private float wallpaperOffsetForCurrentScroll() {
+            return wallpaperOffsetForScroll(getScrollX());
         }
 
         private int numEmptyScreensToIgnore() {

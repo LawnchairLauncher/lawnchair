@@ -27,7 +27,6 @@ import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.ViewConfiguration;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-
 import com.android.photos.views.TiledImageRenderer.TileSource;
 import com.android.photos.views.TiledImageView;
 
@@ -187,6 +186,16 @@ public class CropView extends TiledImageView implements OnScaleGestureListener {
 
     @Override
     public void onScaleEnd(ScaleGestureDetector detector) {
+    }
+
+    /**
+     * Offsets wallpaper preview according to the state it will be displayed in upon returning home.
+     * @param offset Ranges from 0 to 1, where 0 is the leftmost parallax and 1 is the rightmost.
+     */
+    public void addParallaxOffset(float offset) {
+        offset = Math.max(0, Math.min(offset, 1)); // Make sure the offset is in the correct range.
+        mCenterX += offset * (getSourceDimensions().x - getWidth() / mRenderer.scale);
+        updateCenter();
     }
 
     public void moveToLeft() {

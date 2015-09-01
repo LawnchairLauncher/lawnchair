@@ -22,7 +22,6 @@ import android.app.Activity;
 import android.app.WallpaperManager;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
@@ -250,8 +249,9 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
             if (req.moveToLeft) {
                 mCropView.moveToLeft();
             }
-            if (req.scaleProvider != null) {
-                mCropView.setScale(req.scaleProvider.getScale(req.result));
+            if (req.scaleAndOffsetProvider != null) {
+                mCropView.setScale(req.scaleAndOffsetProvider.getScale(req.result));
+                mCropView.addParallaxOffset(req.scaleAndOffsetProvider.getParallaxOffset());
             }
 
             // Free last image
@@ -270,13 +270,14 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public final void setCropViewTileSource(BitmapSource bitmapSource, boolean touchEnabled,
-            boolean moveToLeft, CropViewScaleProvider scaleProvider, Runnable postExecute) {
+            boolean moveToLeft, CropViewScaleAndOffsetProvider scaleAndOffsetProvider,
+            Runnable postExecute) {
         final LoadRequest req = new LoadRequest();
         req.moveToLeft = moveToLeft;
         req.src = bitmapSource;
         req.touchEnabled = touchEnabled;
         req.postExecute = postExecute;
-        req.scaleProvider = scaleProvider;
+        req.scaleAndOffsetProvider = scaleAndOffsetProvider;
         mCurrentLoadRequest = req;
 
         // Remove any pending requests
@@ -436,12 +437,13 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
         boolean touchEnabled;
         boolean moveToLeft;
         Runnable postExecute;
-        CropViewScaleProvider scaleProvider;
+        CropViewScaleAndOffsetProvider scaleAndOffsetProvider;
 
         TileSource result;
     }
 
-    public interface CropViewScaleProvider {
+    public interface CropViewScaleAndOffsetProvider {
         float getScale(TileSource src);
+        float getParallaxOffset();
     }
 }

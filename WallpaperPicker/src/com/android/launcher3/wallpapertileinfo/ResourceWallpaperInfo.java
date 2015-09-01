@@ -4,9 +4,8 @@ import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
-
 import com.android.gallery3d.common.Utils;
-import com.android.launcher3.WallpaperCropActivity.CropViewScaleProvider;
+import com.android.launcher3.WallpaperCropActivity.CropViewScaleAndOffsetProvider;
 import com.android.launcher3.WallpaperPickerActivity;
 import com.android.launcher3.util.WallpaperUtils;
 import com.android.photos.BitmapRegionTileSource;
@@ -29,7 +28,7 @@ public class ResourceWallpaperInfo extends DrawableThumbWallpaperInfo {
         a.setWallpaperButtonEnabled(false);
         final BitmapRegionTileSource.ResourceBitmapSource bitmapSource =
                 new BitmapRegionTileSource.ResourceBitmapSource(mResources, mResId, a);
-        a.setCropViewTileSource(bitmapSource, false, false, new CropViewScaleProvider() {
+        a.setCropViewTileSource(bitmapSource, false, true, new CropViewScaleAndOffsetProvider() {
 
             @Override
             public float getScale(TileSource src) {
@@ -39,6 +38,11 @@ public class ResourceWallpaperInfo extends DrawableThumbWallpaperInfo {
                         src.getImageWidth(), src.getImageHeight(),
                         wallpaperSize.x, wallpaperSize.y, false);
                 return wallpaperSize.x / crop.width();
+            }
+
+            @Override
+            public float getParallaxOffset() {
+                return a.getWallpaperParallaxOffset();
             }
         }, new Runnable() {
 

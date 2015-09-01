@@ -46,6 +46,7 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.WindowManager;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.wallpapertileinfo.DefaultWallpaperInfo;
 import com.android.launcher3.wallpapertileinfo.FileWallpaperInfo;
@@ -55,6 +56,7 @@ import com.android.launcher3.wallpapertileinfo.ResourceWallpaperInfo;
 import com.android.launcher3.wallpapertileinfo.ThirdPartyWallpaperInfo;
 import com.android.launcher3.wallpapertileinfo.UriWallpaperInfo;
 import com.android.launcher3.wallpapertileinfo.WallpaperTileInfo;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,11 +67,14 @@ public class WallpaperPickerActivity extends WallpaperCropActivity
 
     public static final int IMAGE_PICK = 5;
     public static final int PICK_WALLPAPER_THIRD_PARTY_ACTIVITY = 6;
+    /** An Intent extra used when opening the wallpaper picker from the workspace overlay. */
+    public static final String EXTRA_WALLPAPER_OFFSET = "com.android.launcher3.WALLPAPER_OFFSET";
     private static final String TEMP_WALLPAPER_TILES = "TEMP_WALLPAPER_TILES";
     private static final String SELECTED_INDEX = "SELECTED_INDEX";
     private static final int FLAG_POST_DELAY_MILLIS = 200;
 
-    @Thunk View mSelectedTile;
+    @Thunk
+    View mSelectedTile;
 
     @Thunk LinearLayout mWallpapersView;
     @Thunk HorizontalScrollView mWallpaperScrollContainer;
@@ -80,6 +85,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity
     ArrayList<Uri> mTempWallpaperTiles = new ArrayList<Uri>();
     private SavedWallpaperImages mSavedImages;
     @Thunk int mSelectedIndex = -1;
+    private float mWallpaperParallaxOffset;
+
     /**
      * shows the system wallpaper behind the window and hides the {@link #mCropView} if visible
      * @param visible should the system wallpaper be shown
@@ -136,6 +143,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity
         mWallpaperScrollContainer = (HorizontalScrollView) findViewById(R.id.wallpaper_scroll_container);
         mWallpaperStrip = findViewById(R.id.wallpaper_strip);
         mCropView.setTouchCallback(new ToggleOnTapCallback(mWallpaperStrip));
+
+        mWallpaperParallaxOffset = getIntent().getFloatExtra(EXTRA_WALLPAPER_OFFSET, 0);
 
         mWallpapersView = (LinearLayout) findViewById(R.id.wallpaper_list);
         // Populate the saved wallpapers
@@ -264,6 +273,10 @@ public class WallpaperPickerActivity extends WallpaperCropActivity
 
     public void setWallpaperButtonEnabled(boolean enabled) {
         mSetWallpaperButton.setEnabled(enabled);
+    }
+
+    public float getWallpaperParallaxOffset() {
+        return mWallpaperParallaxOffset;
     }
 
     public void selectTile(View v) {
