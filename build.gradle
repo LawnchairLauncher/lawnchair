@@ -1,0 +1,55 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.3.0'
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.7.0'
+    }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.protobuf'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "22.0.1"
+
+    defaultConfig {
+        applicationId "com.android.launcher3"
+        minSdkVersion 16
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        debug {
+            minifyEnabled false
+        }
+    }
+    sourceSets {
+        main {
+            res.srcDirs = ['res', 'WallpaperPicker/res']
+            main.java.srcDirs = ['src', 'WallpaperPicker/src']
+            manifest.srcFile 'AndroidManifest.xml'
+            proto.srcDirs 'protos/'
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.android.support:support-v4:+'
+    compile 'com.android.support:recyclerview-v7:+'
+    compile 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-2'
+}
+
+protobuf {
+    // Configure the protoc executable
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.0.0-alpha-3'
+    }
+}
