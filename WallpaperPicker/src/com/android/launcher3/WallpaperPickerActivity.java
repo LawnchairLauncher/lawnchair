@@ -360,36 +360,33 @@ public class WallpaperPickerActivity extends WallpaperCropActivity
     private void addTemporaryWallpaperTile(final Uri uri, boolean fromRestore) {
 
         // Add a tile for the image picked from Gallery, reusing the existing tile if there is one.
-        View existingTile = null;
+        View imageTile = null;
         int indexOfExistingTile = 0;
         for (; indexOfExistingTile < mWallpapersView.getChildCount(); indexOfExistingTile++) {
             View thumbnail = mWallpapersView.getChildAt(indexOfExistingTile);
             Object tag = thumbnail.getTag();
             if (tag instanceof UriWallpaperInfo && ((UriWallpaperInfo) tag).mUri.equals(uri)) {
-                existingTile = thumbnail;
+                imageTile = thumbnail;
                 break;
             }
         }
-        final View pickedImageThumbnail;
         final UriWallpaperInfo info;
-        if (existingTile != null) {
-            pickedImageThumbnail = existingTile;
+        if (imageTile != null) {
             // Always move the existing wallpaper to the front so user can see it without scrolling.
             mWallpapersView.removeViewAt(indexOfExistingTile);
-            mWallpapersView.addView(pickedImageThumbnail, 0);
-            info = (UriWallpaperInfo) pickedImageThumbnail.getTag();
+            info = (UriWallpaperInfo) imageTile.getTag();
         } else {
             // This is the first time this temporary wallpaper has been added
             info = new UriWallpaperInfo(uri);
-            pickedImageThumbnail = createTileView(mWallpapersView, info, true);
-            mWallpapersView.addView(pickedImageThumbnail, 0);
+            imageTile = createTileView(mWallpapersView, info, true);
             mTempWallpaperTiles.add(uri);
         }
+        mWallpapersView.addView(imageTile, 0);
         info.loadThumbnaleAsync(this);
 
         updateTileIndices();
         if (!fromRestore) {
-            onClick(existingTile);
+            onClick(imageTile);
         }
     }
 
