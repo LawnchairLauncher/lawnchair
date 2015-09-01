@@ -21,6 +21,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.WallpaperManager;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -57,20 +58,10 @@ import java.util.WeakHashMap;
 public class WallpaperCropActivity extends BaseActivity implements Handler.Callback {
     private static final String LOGTAG = "Launcher3.CropActivity";
 
-    /**
-     * The maximum bitmap size we allow to be returned through the intent.
-     * Intents have a maximum of 1MB in total size. However, the Bitmap seems to
-     * have some overhead to hit so that we go way below the limit here to make
-     * sure the intent stays below 1MB.We should consider just returning a byte
-     * array instead of a Bitmap instance to avoid overhead.
-     */
-    public static final int MAX_BMAP_IN_INTENT = 750000;
-
     private static final int MSG_LOAD_IMAGE = 1;
 
     protected CropView mCropView;
     protected View mProgressView;
-    protected Uri mUri;
     protected View mSetWallpaperButton;
 
     private HandlerThread mLoaderThread;
@@ -91,7 +82,7 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
 
         init();
         if (!enableRotation()) {
-            setRequestedOrientation(Configuration.ORIENTATION_PORTRAIT);
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
     }
 
@@ -159,52 +150,71 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
     public boolean handleMessage(Message msg) {
         if (msg.what == MSG_LOAD_IMAGE) {
             final LoadRequest req = (LoadRequest) msg.obj;
-            try {
-                req.src.loadInBackground(new InBitmapProvider() {
+            final boolean loadSuccess;
 
-                    @Override
-                    public Bitmap forPixelCount(int count) {
-                        Bitmap bitmapToReuse = null;
-                        // Find the smallest bitmap that satisfies the pixel count limit
-                        synchronized (mReusableBitmaps) {
-                            int currentBitmapSize = Integer.MAX_VALUE;
-                            for (Bitmap b : mReusableBitmaps) {
-                                int bitmapSize = b.getWidth() * b.getHeight();
-                                if ((bitmapSize >= count) && (bitmapSize < currentBitmapSize)) {
-                                    bitmapToReuse = b;
-                                    currentBitmapSize = bitmapSize;
+            if (req.src == null) {
+                Drawable defaultWallpaper = WallpaperManager.getInstance(this)
+                        .getBuiltInDrawable(mCropView.getWidth(), mCropView.getHeight(),
+                                false, 0.5f, 0.5f);
+
+                if (defaultWallpaper == null) {
+                    loadSuccess = false;
+                    Log.w(LOGTAG, "Null default wallpaper encountered.");
+                } else {
+                    loadSuccess = true;
+                    req.result = new DrawableTileSource(this,
+                            defaultWallpaper, DrawableTileSource.MAX_PREVIEW_SIZE);
+                }
+            } else {
+                try {
+                    req.src.loadInBackground(new InBitmapProvider() {
+
+                        @Override
+                        public Bitmap forPixelCount(int count) {
+                            Bitmap bitmapToReuse = null;
+                            // Find the smallest bitmap that satisfies the pixel count limit
+                            synchronized (mReusableBitmaps) {
+                                int currentBitmapSize = Integer.MAX_VALUE;
+                                for (Bitmap b : mReusableBitmaps) {
+                                    int bitmapSize = b.getWidth() * b.getHeight();
+                                    if ((bitmapSize >= count) && (bitmapSize < currentBitmapSize)) {
+                                        bitmapToReuse = b;
+                                        currentBitmapSize = bitmapSize;
+                                    }
+                                }
+
+                                if (bitmapToReuse != null) {
+                                    mReusableBitmaps.remove(bitmapToReuse);
                                 }
                             }
-
-                            if (bitmapToReuse != null) {
-                                mReusableBitmaps.remove(bitmapToReuse);
-                            }
+                            return bitmapToReuse;
                         }
-                        return bitmapToReuse;
+                    });
+                } catch (SecurityException securityException) {
+                    if (isActivityDestroyed()) {
+                        // Temporarily granted permissions are revoked when the activity
+                        // finishes, potentially resulting in a SecurityException here.
+                        // Even though {@link #isDestroyed} might also return true in different
+                        // situations where the configuration changes, we are fine with
+                        // catching these cases here as well.
+                        return true;
+                    } else {
+                        // otherwise it had a different cause and we throw it further
+                        throw securityException;
                     }
-                });
-            } catch (SecurityException securityException) {
-                if (isActivityDestroyed()) {
-                    // Temporarily granted permissions are revoked when the activity
-                    // finishes, potentially resulting in a SecurityException here.
-                    // Even though {@link #isDestroyed} might also return true in different
-                    // situations where the configuration changes, we are fine with
-                    // catching these cases here as well.
-                    return true;
-                } else {
-                    // otherwise it had a different cause and we throw it further
-                    throw securityException;
                 }
+
+                req.result = new BitmapRegionTileSource(getContext(), req.src,
+                        mTempStorageForDecoding);
+                loadSuccess = req.src.getLoadingState() == BitmapSource.State.LOADED;
             }
 
-            req.result = new BitmapRegionTileSource(getContext(), req.src, mTempStorageForDecoding);
             runOnUiThread(new Runnable() {
 
                 @Override
                 public void run() {
                     if (req == mCurrentLoadRequest) {
-                        onLoadRequestComplete(req,
-                                req.src.getLoadingState() == BitmapSource.State.LOADED);
+                        onLoadRequestComplete(req, loadSuccess);
                     } else {
                         addReusableBitmap(req.result);
                     }
@@ -268,21 +278,6 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
         req.postExecute = postExecute;
         req.scaleProvider = scaleProvider;
         mCurrentLoadRequest = req;
-        if (bitmapSource == null) {
-            // Load the default wallpaper
-            Drawable defaultWallpaper = WallpaperManager.getInstance(this)
-                    .getBuiltInDrawable(mCropView.getWidth(), mCropView.getHeight(),
-                            false, 0.5f, 0.5f);
-            if (defaultWallpaper == null) {
-                Log.w(LOGTAG, "Null default wallpaper encountered.");
-                mCropView.setTileSource(null, null);
-                return;
-            }
-            req.result = new DrawableTileSource(this,
-                    defaultWallpaper, DrawableTileSource.MAX_PREVIEW_SIZE);
-            onLoadRequestComplete(req, true);
-            return;
-        }
 
         // Remove any pending requests
         mLoaderHandler.removeMessages(MSG_LOAD_IMAGE);
