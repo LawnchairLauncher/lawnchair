@@ -60,7 +60,8 @@ public class UriWallpaperInfo extends DrawableThumbWallpaperInfo {
                 a.getSavedImages().writeImage(thumb, imageBytes);
             }
         };
-        a.cropImageAndSetWallpaper(mUri, h);
+        boolean shouldFadeOutOnFinish = a.getWallpaperParallaxOffset() == 0f;
+        a.cropImageAndSetWallpaper(mUri, h, shouldFadeOutOnFinish);
     }
 
     @Override

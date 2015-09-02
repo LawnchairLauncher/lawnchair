@@ -108,7 +108,9 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        cropImageAndSetWallpaper(imageUri, null);
+                        // Never fade on finish because we return to the app that started us (e.g.
+                        // Photos), not the home screen.
+                        cropImageAndSetWallpaper(imageUri, null, false /* shouldFadeOutOnFinish */);
                     }
                 });
         mSetWallpaperButton = findViewById(R.id.set_wallpaper_button);
@@ -306,17 +308,18 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
         return getResources().getBoolean(R.bool.allow_rotation);
     }
 
-    public void setWallpaper(Uri uri) {
+    public void setWallpaper(Uri uri, boolean shouldFadeOutOnFinish) {
         int rotation = BitmapUtils.getRotationFromExif(getContext(), uri);
         BitmapCropTask cropTask = new BitmapCropTask(
                 getContext(), uri, null, rotation, 0, 0, true, false, null);
-        CropAndFinishRunnable onEndCrop = new CropAndFinishRunnable(cropTask.getImageBounds());
-        cropTask.setOnEndRunnable(onEndCrop);
+        BitmapCropTask.OnEndCropHandler onEndCrop = new CropAndFinishHandler(
+                cropTask.getImageBounds(), shouldFadeOutOnFinish);
+        cropTask.setOnEndCropHandler(onEndCrop);
         cropTask.setNoCrop(true);
         cropTask.execute();
     }
 
-    public void cropImageAndSetWallpaper(Resources res, int resId) {
+    public void cropImageAndSetWallpaper(Resources res, int resId, boolean shouldFadeOutOnFinish) {
         // crop this image and scale it down to the default wallpaper size for
         // this device
         int rotation = BitmapUtils.getRotationFromExif(res, resId, this);
@@ -327,7 +330,8 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
                 inSize.x, inSize.y, outSize.x, outSize.y, false);
         // Passing 0, 0 will cause launcher to revert to using the
         // default wallpaper size
-        CropAndFinishRunnable onEndCrop = new CropAndFinishRunnable(new Point(0, 0));
+        CropAndFinishHandler onEndCrop = new CropAndFinishHandler(new Point(0, 0),
+                shouldFadeOutOnFinish);
         BitmapCropTask cropTask = new BitmapCropTask(getContext(), res, resId,
                 crop, rotation, outSize.x, outSize.y, true, false, onEndCrop);
         cropTask.execute();
@@ -335,7 +339,8 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void cropImageAndSetWallpaper(Uri uri,
-            BitmapCropTask.OnBitmapCroppedHandler onBitmapCroppedHandler) {
+            BitmapCropTask.OnBitmapCroppedHandler onBitmapCroppedHandler,
+            boolean shouldFadeOutOnFinish) {
         boolean centerCrop = getResources().getBoolean(R.bool.center_crop);
         // Get the crop
         boolean ltr = mCropView.getLayoutDirection() == View.LAYOUT_DIRECTION_LTR;
@@ -411,7 +416,8 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
 
         final int outWidth = (int) Math.round(cropRect.width() * cropScale);
         final int outHeight = (int) Math.round(cropRect.height() * cropScale);
-        CropAndFinishRunnable onEndCrop = new CropAndFinishRunnable(new Point(outWidth, outHeight));
+        CropAndFinishHandler onEndCrop = new CropAndFinishHandler(new Point(outWidth, outHeight),
+                shouldFadeOutOnFinish);
 
         BitmapCropTask cropTask = new BitmapCropTask(getContext(), uri,
                 cropRect, cropRotation, outWidth, outHeight, true, false, onEndCrop);
@@ -421,19 +427,29 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
         cropTask.execute();
     }
 
-    private class CropAndFinishRunnable implements Runnable {
+    public class CropAndFinishHandler implements BitmapCropTask.OnEndCropHandler {
         private final Point mBounds;
+        private boolean mShouldFadeOutOnFinish;
 
-        public CropAndFinishRunnable(Point bounds) {
+        /**
+         * @param shouldFadeOutOnFinish Whether the wallpaper picker should override the default
+         * exit animation to fade out instead. This should only be set to true if the wallpaper
+         * preview will exactly match the actual wallpaper on the page we are returning to.
+         */
+        public CropAndFinishHandler(Point bounds, boolean shouldFadeOutOnFinish) {
             mBounds = bounds;
+            mShouldFadeOutOnFinish = shouldFadeOutOnFinish;
         }
 
         @Override
-        public void run() {
+        public void run(boolean cropSucceeded) {
             WallpaperUtils.saveWallpaperDimensions(mBounds.x, mBounds.y,
                     WallpaperCropActivity.this);
             setResult(Activity.RESULT_OK);
             finish();
+            if (cropSucceeded && mShouldFadeOutOnFinish) {
+                overridePendingTransition(0, R.anim.fade_out);
+            }
         }
     }
 

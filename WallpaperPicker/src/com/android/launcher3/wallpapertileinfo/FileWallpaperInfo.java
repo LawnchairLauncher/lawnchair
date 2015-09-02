@@ -36,7 +36,8 @@ public class FileWallpaperInfo extends DrawableThumbWallpaperInfo {
 
     @Override
     public void onSave(WallpaperPickerActivity a) {
-        a.setWallpaper(Uri.fromFile(mFile));
+        boolean shouldFadeOutOnFinish = a.getWallpaperParallaxOffset() == 0f;
+        a.setWallpaper(Uri.fromFile(mFile), shouldFadeOutOnFinish);
     }
 
     @Override

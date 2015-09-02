@@ -169,7 +169,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity
 
         // Populate the third-party wallpaper pickers
         populateWallpapers((LinearLayout) findViewById(R.id.third_party_wallpaper_list),
-                ThirdPartyWallpaperInfo.getAll(this), false);
+                ThirdPartyWallpaperInfo.getAll(this), false /* addLongPressHandler */);
 
         // Add a tile for the Gallery
         LinearLayout masterWallpaperList = (LinearLayout) findViewById(R.id.master_wallpaper_list);

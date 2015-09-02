@@ -45,6 +45,10 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Boolean> {
         public void onBitmapCropped(byte[] imageBytes);
     }
 
+    public interface OnEndCropHandler {
+        public void run(boolean cropSucceeded);
+    }
+
     private static final int DEFAULT_COMPRESS_QUALITY = 90;
     private static final String LOGTAG = "BitmapCropTask";
 
@@ -59,56 +63,56 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Boolean> {
     boolean mSetWallpaper;
     boolean mSaveCroppedBitmap;
     Bitmap mCroppedBitmap;
-    Runnable mOnEndRunnable;
+    BitmapCropTask.OnEndCropHandler mOnEndCropHandler;
     Resources mResources;
     BitmapCropTask.OnBitmapCroppedHandler mOnBitmapCroppedHandler;
     boolean mNoCrop;
 
     public BitmapCropTask(Context c, String filePath,
             RectF cropBounds, int rotation, int outWidth, int outHeight,
-            boolean setWallpaper, boolean saveCroppedBitmap, Runnable onEndRunnable) {
+            boolean setWallpaper, boolean saveCroppedBitmap, OnEndCropHandler onEndCropHandler) {
         mContext = c;
         mInFilePath = filePath;
         init(cropBounds, rotation,
-                outWidth, outHeight, setWallpaper, saveCroppedBitmap, onEndRunnable);
+                outWidth, outHeight, setWallpaper, saveCroppedBitmap, onEndCropHandler);
     }
 
     public BitmapCropTask(byte[] imageBytes,
             RectF cropBounds, int rotation, int outWidth, int outHeight,
-            boolean setWallpaper, boolean saveCroppedBitmap, Runnable onEndRunnable) {
+            boolean setWallpaper, boolean saveCroppedBitmap, OnEndCropHandler onEndCropHandler) {
         mInImageBytes = imageBytes;
         init(cropBounds, rotation,
-                outWidth, outHeight, setWallpaper, saveCroppedBitmap, onEndRunnable);
+                outWidth, outHeight, setWallpaper, saveCroppedBitmap, onEndCropHandler);
     }
 
     public BitmapCropTask(Context c, Uri inUri,
             RectF cropBounds, int rotation, int outWidth, int outHeight,
-            boolean setWallpaper, boolean saveCroppedBitmap, Runnable onEndRunnable) {
+            boolean setWallpaper, boolean saveCroppedBitmap, OnEndCropHandler onEndCropHandler) {
         mContext = c;
         mInUri = inUri;
         init(cropBounds, rotation,
-                outWidth, outHeight, setWallpaper, saveCroppedBitmap, onEndRunnable);
+                outWidth, outHeight, setWallpaper, saveCroppedBitmap, onEndCropHandler);
     }
 
     public BitmapCropTask(Context c, Resources res, int inResId,
             RectF cropBounds, int rotation, int outWidth, int outHeight,
-            boolean setWallpaper, boolean saveCroppedBitmap, Runnable onEndRunnable) {
+            boolean setWallpaper, boolean saveCroppedBitmap, OnEndCropHandler onEndCropHandler) {
         mContext = c;
         mInResId = inResId;
         mResources = res;
         init(cropBounds, rotation,
-                outWidth, outHeight, setWallpaper, saveCroppedBitmap, onEndRunnable);
+                outWidth, outHeight, setWallpaper, saveCroppedBitmap, onEndCropHandler);
     }
 
     private void init(RectF cropBounds, int rotation, int outWidth, int outHeight,
-            boolean setWallpaper, boolean saveCroppedBitmap, Runnable onEndRunnable) {
+            boolean setWallpaper, boolean saveCroppedBitmap, OnEndCropHandler onEndCropHandler) {
         mCropBounds = cropBounds;
         mRotation = rotation;
         mOutWidth = outWidth;
         mOutHeight = outHeight;
         mSetWallpaper = setWallpaper;
         mSaveCroppedBitmap = saveCroppedBitmap;
-        mOnEndRunnable = onEndRunnable;
+        mOnEndCropHandler = onEndCropHandler;
     }
 
     public void setOnBitmapCropped(BitmapCropTask.OnBitmapCroppedHandler handler) {
@@ -119,8 +123,8 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Boolean> {
         mNoCrop = value;
     }
 
-    public void setOnEndRunnable(Runnable onEndRunnable) {
-        mOnEndRunnable = onEndRunnable;
+    public void setOnEndCropHandler(OnEndCropHandler onEndCropHandler) {
+        mOnEndCropHandler = onEndCropHandler;
     }
 
     // Helper to setup input stream
@@ -398,8 +402,8 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean result) {
-        if (mOnEndRunnable != null) {
-            mOnEndRunnable.run();
+        if (mOnEndCropHandler != null) {
+            mOnEndCropHandler.run(result);
         }
     }
 }
