@@ -1310,38 +1310,48 @@ public class Launcher extends Activity
         }
 
         mOverviewPanel = (ViewGroup) findViewById(R.id.overview_panel);
+        // Long-clicking buttons in the overview panel does the same thing as clicking them.
+        OnLongClickListener performClickOnLongClick = new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return v.performClick();
+            }
+        };
         mWidgetsButton = findViewById(R.id.widget_button);
         mWidgetsButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View arg0) {
+            public void onClick(View view) {
                 if (!mWorkspace.isSwitchingState()) {
-                    onClickAddWidgetButton(arg0);
+                    onClickAddWidgetButton(view);
                 }
             }
         });
+        mWidgetsButton.setOnLongClickListener(performClickOnLongClick);
         mWidgetsButton.setOnTouchListener(getHapticFeedbackTouchListener());
 
         View wallpaperButton = findViewById(R.id.wallpaper_button);
         wallpaperButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View arg0) {
+            public void onClick(View view) {
                 if (!mWorkspace.isSwitchingState()) {
-                    onClickWallpaperPicker(arg0);
+                    onClickWallpaperPicker(view);
                 }
             }
         });
+        wallpaperButton.setOnLongClickListener(performClickOnLongClick);
         wallpaperButton.setOnTouchListener(getHapticFeedbackTouchListener());
 
         View settingsButton = findViewById(R.id.settings_button);
         if (hasSettings()) {
             settingsButton.setOnClickListener(new OnClickListener() {
                 @Override
-                public void onClick(View arg0) {
+                public void onClick(View view) {
                     if (!mWorkspace.isSwitchingState()) {
-                        onClickSettingsButton(arg0);
+                        onClickSettingsButton(view);
                     }
                 }
             });
+            settingsButton.setOnLongClickListener(performClickOnLongClick);
             settingsButton.setOnTouchListener(getHapticFeedbackTouchListener());
         } else {
             settingsButton.setVisibility(View.GONE);
