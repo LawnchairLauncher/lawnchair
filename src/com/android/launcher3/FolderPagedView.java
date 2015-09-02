@@ -436,8 +436,7 @@ public class FolderPagedView extends PagedView {
     }
 
     public String getAccessibilityDescription() {
-        return String.format(getContext().getString(R.string.folder_opened),
-                mGridCountX, mGridCountY);
+        return getContext().getString(R.string.folder_opened, mGridCountX, mGridCountY);
     }
 
     /**

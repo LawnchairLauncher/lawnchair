@@ -173,8 +173,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         icon.setOnClickListener(launcher);
         icon.mInfo = folderInfo;
         icon.mLauncher = launcher;
-        icon.setContentDescription(String.format(launcher.getString(R.string.folder_name_format),
-                folderInfo.title));
+        icon.setContentDescription(launcher.getString(R.string.folder_name_format, folderInfo.title));
         Folder folder = Folder.fromXml(launcher);
         folder.setDragController(launcher.getDragController());
         folder.setFolderIcon(icon);
@@ -714,8 +713,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     public void onTitleChanged(CharSequence title) {
         mFolderName.setText(title);
-        setContentDescription(String.format(getContext().getString(R.string.folder_name_format),
-                title));
+        setContentDescription(getContext().getString(R.string.folder_name_format, title));
     }
 
     @Override

@@ -4382,7 +4382,7 @@ public class Workspace extends PagedView
 
     private String getPageDescription(int page) {
         int delta = numCustomPages();
-        return String.format(getContext().getString(R.string.workspace_scroll_format),
+        return getContext().getString(R.string.workspace_scroll_format,
                 page + 1 - delta, getChildCount() - delta);
     }
 

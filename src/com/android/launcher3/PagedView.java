@@ -2300,7 +2300,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     protected String getCurrentPageDescription() {
-        return String.format(getContext().getString(R.string.default_scroll_format),
+        return getContext().getString(R.string.default_scroll_format,
                 getNextPage() + 1, getChildCount());
     }
 

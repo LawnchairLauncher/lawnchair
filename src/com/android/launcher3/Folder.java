@@ -319,7 +319,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
         if (commit) {
             sendCustomAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
-                    String.format(getContext().getString(R.string.folder_renamed), newTitle));
+                    getContext().getString(R.string.folder_renamed, newTitle));
         }
         // In order to clear the focus from the text field, we set the focus on ourself. This
         // ensures that every time the field is clicked, focus is gained, giving reliable behavior.

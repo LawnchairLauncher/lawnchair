@@ -414,11 +414,10 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
      */
     public void setLastSearchQuery(String query) {
         Resources res = mLauncher.getResources();
-        String formatStr = res.getString(R.string.all_apps_no_search_results);
         mLastSearchQuery = query;
-        mEmptySearchMessage = String.format(formatStr, query);
+        mEmptySearchMessage = res.getString(R.string.all_apps_no_search_results, query);
         if (mMarketAppName != null) {
-            mMarketSearchMessage = String.format(res.getString(R.string.all_apps_search_market_message),
+            mMarketSearchMessage = res.getString(R.string.all_apps_search_market_message,
                     mMarketAppName);
             mMarketSearchIntent = createMarketSearchIntent(query);
         }
