@@ -37,6 +37,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
 import android.os.Parcelable;
+import android.os.PowerManager;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -47,6 +48,7 @@ import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.Toast;
 
 import com.android.launcher3.BubbleTextView.BubbleTextShadowHandler;
 import com.android.launcher3.FolderIcon.FolderRingAnimator;
@@ -2133,8 +2135,18 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             }
             ValueAnimator va = LauncherAnimUtils.ofFloat(child, 0f, 1f);
             a = va;
-            va.setRepeatMode(ValueAnimator.REVERSE);
-            va.setRepeatCount(ValueAnimator.INFINITE);
+
+            // Animations are disabled in power save mode, causing the repeated animation to jump
+            // spastically between beginning and end states. Since this looks bad, we don't repeat
+            // the animation in power save mode.
+            PowerManager powerManager = (PowerManager) getContext()
+                    .getSystemService(Context.POWER_SERVICE);
+            boolean powerSaverOn = Utilities.ATLEAST_LOLLIPOP && powerManager.isPowerSaveMode();
+            if (!powerSaverOn) {
+                va.setRepeatMode(ValueAnimator.REVERSE);
+                va.setRepeatCount(ValueAnimator.INFINITE);
+            }
+
             va.setDuration(mode == MODE_HINT ? HINT_DURATION : PREVIEW_DURATION);
             va.setStartDelay((int) (Math.random() * 60));
             va.addUpdateListener(new AnimatorUpdateListener() {
