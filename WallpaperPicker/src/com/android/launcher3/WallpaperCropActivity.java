@@ -250,8 +250,13 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
                 mCropView.moveToLeft();
             }
             if (req.scaleAndOffsetProvider != null) {
-                mCropView.setScale(req.scaleAndOffsetProvider.getScale(req.result));
-                mCropView.setParallaxOffset(req.scaleAndOffsetProvider.getParallaxOffset());
+                TileSource src = req.result;
+                Point wallpaperSize = WallpaperUtils.getDefaultWallpaperSize(
+                        getResources(), getWindowManager());
+                RectF crop = Utils.getMaxCropRect(src.getImageWidth(), src.getImageHeight(),
+                        wallpaperSize.x, wallpaperSize.y, false /* leftAligned */);
+                mCropView.setScale(req.scaleAndOffsetProvider.getScale(wallpaperSize, crop));
+                mCropView.setParallaxOffset(req.scaleAndOffsetProvider.getParallaxOffset(), crop);
             }
 
             // Free last image
@@ -443,7 +448,7 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
     }
 
     public interface CropViewScaleAndOffsetProvider {
-        float getScale(TileSource src);
+        float getScale(Point wallpaperSize, RectF crop);
         float getParallaxOffset();
     }
 }

@@ -4,13 +4,11 @@ import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
-import com.android.gallery3d.common.Utils;
+
 import com.android.launcher3.WallpaperCropActivity.CropViewScaleAndOffsetProvider;
 import com.android.launcher3.WallpaperPickerActivity;
-import com.android.launcher3.util.WallpaperUtils;
 import com.android.photos.BitmapRegionTileSource;
 import com.android.photos.BitmapRegionTileSource.BitmapSource;
-import com.android.photos.views.TiledImageRenderer.TileSource;
 
 public class ResourceWallpaperInfo extends DrawableThumbWallpaperInfo {
 
@@ -28,16 +26,11 @@ public class ResourceWallpaperInfo extends DrawableThumbWallpaperInfo {
         a.setWallpaperButtonEnabled(false);
         final BitmapRegionTileSource.ResourceBitmapSource bitmapSource =
                 new BitmapRegionTileSource.ResourceBitmapSource(mResources, mResId, a);
-        a.setCropViewTileSource(bitmapSource, false, true, new CropViewScaleAndOffsetProvider() {
+        a.setCropViewTileSource(bitmapSource, false, false, new CropViewScaleAndOffsetProvider() {
 
             @Override
-            public float getScale(TileSource src) {
-                Point wallpaperSize = WallpaperUtils.getDefaultWallpaperSize(
-                        a.getResources(), a.getWindowManager());
-                RectF crop = Utils.getMaxCropRect(
-                        src.getImageWidth(), src.getImageHeight(),
-                        wallpaperSize.x, wallpaperSize.y, false);
-                return wallpaperSize.x / crop.width();
+            public float getScale(Point wallpaperSize, RectF crop) {
+                return wallpaperSize.x /crop.width();
             }
 
             @Override
