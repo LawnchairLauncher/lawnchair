@@ -251,7 +251,7 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
             }
             if (req.scaleAndOffsetProvider != null) {
                 mCropView.setScale(req.scaleAndOffsetProvider.getScale(req.result));
-                mCropView.addParallaxOffset(req.scaleAndOffsetProvider.getParallaxOffset());
+                mCropView.setParallaxOffset(req.scaleAndOffsetProvider.getParallaxOffset());
             }
 
             // Free last image
