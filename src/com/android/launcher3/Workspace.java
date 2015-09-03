@@ -4089,7 +4089,7 @@ public class Workspace extends PagedView
 
             @Override
             public boolean evaluate(ItemInfo info, View v, View parent) {
-                return info.id == id;
+                return info != null && info.id == id;
             }
         });
     }
