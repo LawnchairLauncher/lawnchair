@@ -189,7 +189,8 @@ public class BaseRecyclerViewFastScrollBar {
                 // Check if we should start scrolling, but ignore this fastscroll gesture if we have
                 // exceeded some fixed movement
                 mIgnoreDragGesture |= Math.abs(y - downY) > config.getScaledPagingTouchSlop();
-                if (!mIsDragging && !mIgnoreDragGesture && isNearThumb(downX, lastY) &&
+                if (!mIsDragging && !mIgnoreDragGesture && mRv.supportsFastScrolling() &&
+                        isNearThumb(downX, lastY) &&
                         Math.abs(y - downY) > config.getScaledTouchSlop()) {
                     mRv.getParent().requestDisallowInterceptTouchEvent(true);
                     mIsDragging = true;

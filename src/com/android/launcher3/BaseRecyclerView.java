@@ -268,6 +268,13 @@ public abstract class BaseRecyclerView extends RecyclerView
     }
 
     /**
+     * Returns whether fast scrolling is supported in the current state.
+     */
+    protected boolean supportsFastScrolling() {
+        return true;
+    }
+
+    /**
      * Maps the touch (from 0..1) to the adapter position that should be visible.
      * <p>Override in each subclass of this base class.
      */
