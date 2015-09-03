@@ -1614,7 +1614,10 @@ public class Launcher extends Activity
                 // processing a multi-step drop
                 if (mAppsView != null && mWidgetsView != null &&
                         mPendingAddInfo.container == ItemInfo.NO_ID) {
-                    showWorkspace(false);
+                    if (!showWorkspace(false)) {
+                        // If we are already on the workspace, then manually reset all apps
+                        mAppsView.reset();
+                    }
                 }
             } else if (Intent.ACTION_USER_PRESENT.equals(action)) {
                 mUserPresent = true;
@@ -3259,20 +3262,32 @@ public class Launcher extends Activity
         }
     }
 
-    public void showWorkspace(boolean animated) {
-        showWorkspace(WorkspaceStateTransitionAnimation.SCROLL_TO_CURRENT_PAGE, animated, null);
+    /**
+     * @return whether or not the Launcher state changed.
+     */
+    public boolean showWorkspace(boolean animated) {
+        return showWorkspace(WorkspaceStateTransitionAnimation.SCROLL_TO_CURRENT_PAGE, animated, null);
     }
 
-    public void showWorkspace(boolean animated, Runnable onCompleteRunnable) {
-        showWorkspace(WorkspaceStateTransitionAnimation.SCROLL_TO_CURRENT_PAGE, animated,
+    /**
+     * @return whether or not the Launcher state changed.
+     */
+    public boolean showWorkspace(boolean animated, Runnable onCompleteRunnable) {
+        return showWorkspace(WorkspaceStateTransitionAnimation.SCROLL_TO_CURRENT_PAGE, animated,
                 onCompleteRunnable);
     }
 
-    protected void showWorkspace(int snapToPage, boolean animated) {
-        showWorkspace(snapToPage, animated, null);
+    /**
+     * @return whether or not the Launcher state changed.
+     */
+    protected boolean showWorkspace(int snapToPage, boolean animated) {
+        return showWorkspace(snapToPage, animated, null);
     }
 
-    void showWorkspace(int snapToPage, boolean animated, Runnable onCompleteRunnable) {
+    /**
+     * @return whether or not the Launcher state changed.
+     */
+    boolean showWorkspace(int snapToPage, boolean animated, Runnable onCompleteRunnable) {
         boolean changed = mState != State.WORKSPACE ||
                 mWorkspace.getState() != Workspace.State.NORMAL;
         if (changed) {
@@ -3298,6 +3313,7 @@ public class Launcher extends Activity
             getWindow().getDecorView()
                     .sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
         }
+        return changed;
     }
 
     void showOverviewMode(boolean animated) {
