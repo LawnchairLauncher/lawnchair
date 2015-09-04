@@ -1611,11 +1611,12 @@ public class LauncherModel extends BroadcastReceiver
         }
 
         // check & update map of what's occupied; used to discard overlapping/invalid items
-        private boolean checkItemPlacement(LongArrayMap<ItemInfo[][]> occupied, ItemInfo item) {
+        private boolean checkItemPlacement(LongArrayMap<ItemInfo[][]> occupied, ItemInfo item,
+                   ArrayList<Long> workspaceScreens) {
             LauncherAppState app = LauncherAppState.getInstance();
             InvariantDeviceProfile profile = app.getInvariantDeviceProfile();
-            final int countX = (int) profile.numColumns;
-            final int countY = (int) profile.numRows;
+            final int countX = profile.numColumns;
+            final int countY = profile.numRows;
 
             long containerIndex = item.screenId;
             if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
@@ -1657,7 +1658,12 @@ public class LauncherModel extends BroadcastReceiver
                     occupied.put((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT, items);
                     return true;
                 }
-            } else if (item.container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+            } else if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                if (!workspaceScreens.contains((Long) item.screenId)) {
+                    // The item has an invalid screen id.
+                    return false;
+                }
+            } else {
                 // Skip further checking if it is not the hotseat or workspace container
                 return true;
             }
@@ -1724,8 +1730,8 @@ public class LauncherModel extends BroadcastReceiver
 
             LauncherAppState app = LauncherAppState.getInstance();
             InvariantDeviceProfile profile = app.getInvariantDeviceProfile();
-            int countX = (int) profile.numColumns;
-            int countY = (int) profile.numRows;
+            int countX = profile.numColumns;
+            int countY = profile.numRows;
 
             if (MigrateFromRestoreTask.ENABLED && MigrateFromRestoreTask.shouldRunTask(mContext)) {
                 long migrationStartTime = System.currentTimeMillis();
@@ -1765,6 +1771,7 @@ public class LauncherModel extends BroadcastReceiver
                 clearSBgDataStructures();
                 final HashMap<String, Integer> installingPkgs = PackageInstallerCompat
                         .getInstance(mContext).updateAndGetActiveSessionCache();
+                sBgWorkspaceScreens.addAll(loadWorkspaceScreensDb(mContext));
 
                 final ArrayList<Long> itemsToRemove = new ArrayList<Long>();
                 final ArrayList<Long> restoredRows = new ArrayList<Long>();
@@ -1966,6 +1973,7 @@ public class LauncherModel extends BroadcastReceiver
                                 } catch (URISyntaxException e) {
                                     Launcher.addDumpLog(TAG,
                                             "Invalid uri: " + intentDescription, true);
+                                    itemsToRemove.add(id);
                                     continue;
                                 }
 
@@ -2036,7 +2044,7 @@ public class LauncherModel extends BroadcastReceiver
                                     }
 
                                     // check & update map of what's occupied
-                                    if (!checkItemPlacement(occupied, info)) {
+                                    if (!checkItemPlacement(occupied, info, sBgWorkspaceScreens)) {
                                         itemsToRemove.add(id);
                                         break;
                                     }
@@ -2087,7 +2095,7 @@ public class LauncherModel extends BroadcastReceiver
                                 folderInfo.options = c.getInt(optionsIndex);
 
                                 // check & update map of what's occupied
-                                if (!checkItemPlacement(occupied, folderInfo)) {
+                                if (!checkItemPlacement(occupied, folderInfo, sBgWorkspaceScreens)) {
                                     itemsToRemove.add(id);
                                     break;
                                 }
@@ -2207,13 +2215,14 @@ public class LauncherModel extends BroadcastReceiver
                                     if (container != LauncherSettings.Favorites.CONTAINER_DESKTOP &&
                                         container != LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
                                         Log.e(TAG, "Widget found where container != " +
-                                            "CONTAINER_DESKTOP nor CONTAINER_HOTSEAT - ignoring!");
+                                                "CONTAINER_DESKTOP nor CONTAINER_HOTSEAT - ignoring!");
+                                        itemsToRemove.add(id);
                                         continue;
                                     }
 
                                     appWidgetInfo.container = container;
                                     // check & update map of what's occupied
-                                    if (!checkItemPlacement(occupied, appWidgetInfo)) {
+                                    if (!checkItemPlacement(occupied, appWidgetInfo, sBgWorkspaceScreens)) {
                                         itemsToRemove.add(id);
                                         break;
                                     }
@@ -2301,8 +2310,6 @@ public class LauncherModel extends BroadcastReceiver
                             new IntentFilter(StartupReceiver.SYSTEM_READY),
                             null, sWorker);
                 }
-
-                sBgWorkspaceScreens.addAll(loadWorkspaceScreensDb(mContext));
 
                 // Remove any empty screens
                 ArrayList<Long> unusedScreens = new ArrayList<Long>(sBgWorkspaceScreens);
