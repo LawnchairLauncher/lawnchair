@@ -271,6 +271,7 @@ public class Workspace extends PagedView
     boolean mStartedSendingScrollEvents;
     boolean mShouldSendPageSettled;
     int mLastOverlaySroll = 0;
+    private boolean mForceDrawAdjacentPages = false;
 
     // Handles workspace state transitions
     private WorkspaceStateTransitionAnimation mStateTransitionAnimation;
@@ -1854,10 +1855,10 @@ public class Workspace extends PagedView
     @Override
     protected void getVisiblePages(int[] range) {
         super.getVisiblePages(range);
-        if (mState == State.OVERVIEW || mState == State.SPRING_LOADED) {
+        if (mForceDrawAdjacentPages) {
             // In overview mode, make sure that the two side pages are visible.
-            range[0] = Math.min(range[0], Math.max(getCurrentPage() - 1, numCustomPages()));
-            range[1] = Math.max(range[0], Math.min(getCurrentPage() + 1, getPageCount() - 1));
+            range[0] = Utilities.boundInRange(getCurrentPage() - 1, numCustomPages(), range[1]);
+            range[1] = Utilities.boundInRange(getCurrentPage() + 1, range[0], getPageCount() - 1);
         }
     }
 
@@ -2015,7 +2016,8 @@ public class Workspace extends PagedView
         updateAccessibilityFlags();
         if (mState == State.OVERVIEW || mState == State.SPRING_LOADED) {
             // Redraw pages, as we might want to draw pages which were not visible.
-            invalidate();
+            mForceDrawAdjacentPages = true;
+            invalidate(); // This will call dispatchDraw(), which calls getVisiblePages().
         }
 
         return workspaceAnim;
@@ -2089,6 +2091,7 @@ public class Workspace extends PagedView
         mIsSwitchingState = false;
         updateChildrenLayersEnabled(false);
         showCustomContentIfNecessary();
+        mForceDrawAdjacentPages = false;
     }
 
     void updateCustomContentVisibility() {
