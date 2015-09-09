@@ -1122,16 +1122,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                             mInfo.screenId, mInfo.cellX, mInfo.cellY);
                 }
                 if (getItemCount() <= 1) {
-                    // Remove the folder
-                    LauncherModel.deleteItemFromDatabase(mLauncher, mInfo);
-                    if (cellLayout != null) {
-                        // b/12446428 -- sometimes the cell layout has already gone away?
-                        cellLayout.removeView(mFolderIcon);
-                    }
+                    mLauncher.removeItem(mFolderIcon, mInfo, true /* deleteFromDb */);
                     if (mFolderIcon instanceof DropTarget) {
                         mDragController.removeDropTarget((DropTarget) mFolderIcon);
                     }
-                    mLauncher.removeFolder(mInfo);
                 }
                 // We add the child after removing the folder to prevent both from existing at
                 // the same time in the CellLayout.  We need to add the new item with addInScreenFromBind()

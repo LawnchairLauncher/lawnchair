@@ -70,40 +70,9 @@ public class DeleteDropTarget extends ButtonDropTarget {
      * @return true if the item was removed.
      */
     public static boolean removeWorkspaceOrFolderItem(Launcher launcher, ItemInfo item, View view) {
-        if (item instanceof ShortcutInfo) {
-            LauncherModel.deleteItemFromDatabase(launcher, item);
-        } else if (item instanceof FolderInfo) {
-            FolderInfo folder = (FolderInfo) item;
-            launcher.removeFolder(folder);
-            LauncherModel.deleteFolderContentsFromDatabase(launcher, folder);
-        } else if (item instanceof LauncherAppWidgetInfo) {
-            final LauncherAppWidgetInfo widget = (LauncherAppWidgetInfo) item;
-
-            // Remove the widget from the workspace
-            launcher.removeAppWidget(widget);
-            LauncherModel.deleteItemFromDatabase(launcher, widget);
-
-            final LauncherAppWidgetHost appWidgetHost = launcher.getAppWidgetHost();
-
-            if (appWidgetHost != null && !widget.isCustomWidget()
-                    && widget.isWidgetIdValid()) {
-                // Deleting an app widget ID is a void call but writes to disk before returning
-                // to the caller...
-                new AsyncTask<Void, Void, Void>() {
-                    public Void doInBackground(Void ... args) {
-                        appWidgetHost.deleteAppWidgetId(widget.appWidgetId);
-                        return null;
-                    }
-                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            }
-        } else {
-            return false;
-        }
-
-        if (view != null) {
-            launcher.getWorkspace().removeWorkspaceItem(view);
-            launcher.getWorkspace().stripEmptyScreens();
-        }
+        // Remove the item from launcher and the db
+        launcher.removeItem(view, item, true /* deleteFromDb */);
+        launcher.getWorkspace().stripEmptyScreens();
         return true;
     }
 

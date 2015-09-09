@@ -185,7 +185,8 @@ public class FocusHelper {
             return consume;
         }
 
-        DeviceProfile profile = ((Launcher) v.getContext()).getDeviceProfile();
+        final Launcher launcher = (Launcher) v.getContext();
+        final DeviceProfile profile = launcher.getDeviceProfile();
 
         if (DEBUG) {
             Log.v(TAG, String.format(
@@ -196,7 +197,6 @@ public class FocusHelper {
         // Initialize the variables.
         final ShortcutAndWidgetContainer hotseatParent = (ShortcutAndWidgetContainer) v.getParent();
         final CellLayout hotseatLayout = (CellLayout) hotseatParent.getParent();
-        Hotseat hotseat = (Hotseat) hotseatLayout.getParent();
 
         Workspace workspace = (Workspace) v.getRootView().findViewById(R.id.workspace);
         int pageIndex = workspace.getNextPage();
@@ -240,7 +240,10 @@ public class FocusHelper {
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT &&
                 profile.isVerticalBarLayout()) {
             keyCode = KeyEvent.KEYCODE_PAGE_DOWN;
-        }else {
+        } else if (keyCode == KeyEvent.KEYCODE_DEL || keyCode == KeyEvent.KEYCODE_FORWARD_DEL) {
+            ItemInfo info = (ItemInfo) v.getTag();
+            launcher.removeItem(v, info, true /* deleteFromDb */);
+        } else {
             // For other KEYCODE_DPAD_LEFT and KEYCODE_DPAD_RIGHT navigation, do not use the
             // matrix extended with hotseat.
             matrix = FocusLogic.createSparseMatrix(hotseatLayout);
@@ -326,7 +329,8 @@ public class FocusHelper {
                     !hotseat.hasIcons() /* ignore all apps icon, unless there are no other icons */);
             countX = countX + 1;
         } else if (keyCode == KeyEvent.KEYCODE_DEL || keyCode == KeyEvent.KEYCODE_FORWARD_DEL) {
-            workspace.removeWorkspaceItem(v);
+            ItemInfo info = (ItemInfo) v.getTag();
+            launcher.removeItem(v, info, true /* deleteFromDb */);
             return consume;
         } else {
             matrix = FocusLogic.createSparseMatrix(iconLayout);

@@ -1068,8 +1068,6 @@ public class LauncherModel extends BroadcastReceiver
 
     /**
      * Removes the specified item from the database
-     * @param context
-     * @param item
      */
     public static void deleteItemFromDatabase(Context context, final ItemInfo item) {
         ArrayList<ItemInfo> items = new ArrayList<ItemInfo>();
@@ -1079,8 +1077,6 @@ public class LauncherModel extends BroadcastReceiver
 
     /**
      * Removes the specified items from the database
-     * @param context
-     * @param item
      */
     static void deleteItemsFromDatabase(Context context, final ArrayList<? extends ItemInfo> items) {
         final ContentResolver cr = context.getContentResolver();
@@ -1171,9 +1167,9 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     /**
-     * Remove the contents of the specified folder from the database
+     * Remove the specified folder and all its contents from the database.
      */
-    public static void deleteFolderContentsFromDatabase(Context context, final FolderInfo info) {
+    public static void deleteFolderAndContentsFromDatabase(Context context, final FolderInfo info) {
         final ContentResolver cr = context.getContentResolver();
 
         Runnable r = new Runnable() {
