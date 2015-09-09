@@ -1927,6 +1927,17 @@ public class Workspace extends PagedView
     }
 
     public void onDragStartedWithItem(PendingAddItemInfo info, Bitmap b, boolean clipAlpha) {
+        // Find a page that has enough space to place this widget (after rearranging/resizing).
+        // Start at the current page and search right (on LTR) until finding a page with enough
+        // space. Since an empty screen is the furthest right, a page must be found.
+        for (int pageIndex = getCurrentPage(); pageIndex <= getPageCount(); pageIndex++) {
+            CellLayout page = (CellLayout) getPageAt(pageIndex);
+            if (page.hasReorderSolution(info)) {
+                setCurrentPage(pageIndex);
+                break;
+            }
+        }
+
         int[] size = estimateItemSize(info, false);
 
         // The outline is used to visualize where the item will land if dropped

@@ -441,7 +441,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                     Math.min(newPage, mTempVisiblePagesRange[1]));
         }
         // Ensure that it is clamped by the actual set of children in all cases
-        validatedPage = Math.max(0, Math.min(validatedPage, getPageCount() - 1));
+        validatedPage = Utilities.boundInRange(validatedPage, 0, getPageCount() - 1);
         return validatedPage;
     }
 

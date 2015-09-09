@@ -253,9 +253,11 @@ public class WidgetsContainerView extends BaseContainerView
 
         // Start the drag
         mLauncher.lockScreenOrientation();
-        mLauncher.getWorkspace().onDragStartedWithItem(createItemInfo, preview, clipAlpha);
         mDragController.startDrag(image, preview, this, createItemInfo,
                 bounds, DragController.DRAG_ACTION_COPY, scale);
+        // This call expects the extra empty screen to already be created, which is why we call it
+        // after mDragController.startDrag().
+        mLauncher.getWorkspace().onDragStartedWithItem(createItemInfo, preview, clipAlpha);
 
         preview.recycle();
         return true;

@@ -2966,6 +2966,26 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         return Utilities.findVacantCell(outXY, spanX, spanY, mCountX, mCountY, mOccupied);
     }
 
+    /**
+     * Returns whether an item can be placed in this CellLayout (after rearranging and/or resizing
+     * if necessary).
+     */
+    public boolean hasReorderSolution(ItemInfo itemInfo) {
+        int[] cellPoint = new int[2];
+        // Check for a solution starting at every cell.
+        for (int cellX = 0; cellX < getCountX(); cellX++) {
+            for (int cellY = 0; cellY < getCountY(); cellY++) {
+                cellToPoint(cellX, cellY, cellPoint);
+                if (findReorderSolution(cellPoint[0], cellPoint[1], itemInfo.minSpanX,
+                        itemInfo.minSpanY, itemInfo.spanX, itemInfo.spanY, mDirectionVector, null,
+                        true, new ItemConfiguration()).isSolution) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public boolean isRegionVacant(int x, int y, int spanX, int spanY) {
         int x2 = x + spanX - 1;
         int y2 = y + spanY - 1;
