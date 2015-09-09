@@ -65,12 +65,11 @@ import java.util.HashSet;
 import java.util.List;
 
 public class LauncherProvider extends ContentProvider {
-    private static final String TAG = "Launcher.LauncherProvider";
+    private static final String TAG = "LauncherProvider";
     private static final boolean LOGD = false;
 
     private static final int DATABASE_VERSION = 26;
 
-    static final String OLD_AUTHORITY = "com.android.launcher2.settings";
     public static final String AUTHORITY = ProviderConfig.AUTHORITY;
 
     static final String TABLE_FAVORITES = LauncherSettings.Favorites.TABLE_NAME;
@@ -139,7 +138,7 @@ public class LauncherProvider extends ContentProvider {
     }
 
     private void reloadLauncherIfExternal() {
-        if (Binder.getCallingPid() != Process.myPid()) {
+        if (Utilities.ATLEAST_MARSHMALLOW && Binder.getCallingPid() != Process.myPid()) {
             LauncherAppState app = LauncherAppState.getInstanceNoCreate();
             if (app != null) {
                 app.reloadWorkspace();
@@ -166,7 +165,20 @@ public class LauncherProvider extends ContentProvider {
         uri = ContentUris.withAppendedId(uri, rowId);
         notifyListeners();
 
-        reloadLauncherIfExternal();
+        if (Utilities.ATLEAST_MARSHMALLOW) {
+            reloadLauncherIfExternal();
+        } else {
+            // Deprecated behavior to support legacy devices which rely on provider callbacks.
+            LauncherAppState app = LauncherAppState.getInstanceNoCreate();
+            if (app != null && "true".equals(uri.getQueryParameter("isExternalAdd"))) {
+                app.reloadWorkspace();
+            }
+
+            String notify = uri.getQueryParameter("notify");
+            if (notify == null || "true".equals(notify)) {
+                getContext().getContentResolver().notifyChange(uri, null);
+            }
+        }
         return uri;
     }
 
