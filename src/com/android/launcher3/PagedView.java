@@ -372,7 +372,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     /**
-     * Returns the index of the currently displayed page.
+     * Returns the index of the currently displayed page. When in free scroll mode, this is the page
+     * that the user was on before entering free scroll mode (e.g. the home screen page they
+     * long-pressed on to enter the overview). Try using {@link #getPageNearestToCenterOfScreen()}
+     * to get the page the user is currently scrolling over.
      */
     public int getCurrentPage() {
         return mCurrentPage;
@@ -1039,11 +1042,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
         if (pageCount > 0) {
             int viewportWidth = getViewportWidth();
-            int curScreen = 0;
+            int lastVisiblePageIndex = 0;
 
-            int count = getChildCount();
-            for (int i = 0; i < count; i++) {
-                View currPage = getPageAt(i);
+            for (int currPageIndex = 0; currPageIndex < pageCount; currPageIndex++) {
+                View currPage = getPageAt(currPageIndex);
 
                 sTmpIntPoint[0] = 0;
                 Utilities.getDescendantCoordRelativeToParent(currPage, this, sTmpIntPoint, false);
@@ -1064,13 +1066,13 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                         break;
                     }
                 }
-                curScreen = i;
                 if (range[0] < 0) {
-                    range[0] = curScreen;
+                    range[0] = currPageIndex;
                 }
+                lastVisiblePageIndex = currPageIndex;
             }
 
-            range[1] = curScreen;
+            range[1] = lastVisiblePageIndex;
         } else {
             range[0] = -1;
             range[1] = -1;
