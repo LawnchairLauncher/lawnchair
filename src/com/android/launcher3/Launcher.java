@@ -1723,7 +1723,7 @@ public class Launcher extends Activity
         }
     });
 
-    void addWidgetToAutoAdvanceIfNeeded(View hostView, AppWidgetProviderInfo appWidgetInfo) {
+    private void addWidgetToAutoAdvanceIfNeeded(View hostView, AppWidgetProviderInfo appWidgetInfo) {
         if (appWidgetInfo == null || appWidgetInfo.autoAdvanceViewId == -1) return;
         View v = hostView.findViewById(appWidgetInfo.autoAdvanceViewId);
         if (v instanceof Advanceable) {
@@ -1733,16 +1733,11 @@ public class Launcher extends Activity
         }
     }
 
-    void removeWidgetToAutoAdvance(View hostView) {
+    private void removeWidgetToAutoAdvance(View hostView) {
         if (mWidgetsToAdvance.containsKey(hostView)) {
             mWidgetsToAdvance.remove(hostView);
             updateAutoAdvanceState();
         }
-    }
-
-    public void removeAppWidget(LauncherAppWidgetInfo launcherInfo) {
-        removeWidgetToAutoAdvance(launcherInfo.hostView);
-        launcherInfo.hostView = null;
     }
 
     public void showOutOfSpaceMessage(boolean isHotseatLayout) {
@@ -2323,8 +2318,61 @@ public class Launcher extends Activity
         return newFolder;
     }
 
-    void removeFolder(FolderInfo folder) {
+    /**
+     * Unbinds the view for the specified item, and removes the item and all its children items
+     * from the database.  For folders, this incl udes the folder contents.  AppWidgets will also
+     * have their widget ids deleted.
+     */
+    public boolean removeItem(View v, ItemInfo itemInfo, boolean deleteFromDb) {
+        if (itemInfo instanceof ShortcutInfo) {
+            mWorkspace.removeWorkspaceItem(v);
+            if (deleteFromDb) {
+                LauncherModel.deleteItemFromDatabase(this, itemInfo);
+            }
+        } else if (itemInfo instanceof FolderInfo) {
+            final FolderInfo folderInfo = (FolderInfo) itemInfo;
+            unbindFolder(folderInfo);
+            mWorkspace.removeWorkspaceItem(v);
+            if (deleteFromDb) {
+                LauncherModel.deleteFolderAndContentsFromDatabase(this, folderInfo);
+            }
+        } else if (itemInfo instanceof LauncherAppWidgetInfo) {
+            final LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) itemInfo;
+            unbindAppWidget(widgetInfo, deleteFromDb);
+            if (deleteFromDb) {
+                LauncherModel.deleteItemFromDatabase(this, widgetInfo);
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Unbinds any launcher references to the folder.
+     */
+    private void unbindFolder(FolderInfo folder) {
         sFolders.remove(folder.id);
+    }
+
+    /**
+     * Unbinds any launcher references to the widget and deletes the app widget id.
+     */
+    private void unbindAppWidget(final LauncherAppWidgetInfo widgetInfo, boolean deleteAppWidgetId) {
+        final LauncherAppWidgetHost appWidgetHost = getAppWidgetHost();
+        if (deleteAppWidgetId && appWidgetHost != null &&
+                !widgetInfo.isCustomWidget() && widgetInfo.isWidgetIdValid()) {
+            // Deleting an app widget ID is a void call but writes to disk before returning
+            // to the caller...
+            new AsyncTask<Void, Void, Void>() {
+                public Void doInBackground(Void ... args) {
+                    appWidgetHost.deleteAppWidgetId(widgetInfo.appWidgetId);
+                    return null;
+                }
+            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+        removeWidgetToAutoAdvance(widgetInfo.hostView);
+        widgetInfo.hostView = null;
     }
 
     @Override

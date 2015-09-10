@@ -1110,9 +1110,9 @@ public class Workspace extends PagedView
                     LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) v.getTag();
                     LauncherAppWidgetHostView lahv = (LauncherAppWidgetHostView) info.hostView;
                     if (lahv != null && lahv.isReinflateRequired()) {
-                        mLauncher.removeAppWidget(info);
-                        // Remove the current widget which is inflated with the wrong orientation
-                        cl.removeView(lahv);
+                        // Remove and rebind the current widget (which was inflated in the wrong
+                        // orientation), but don't delete it from the database
+                        mLauncher.removeItem(lahv, info, false  /* deleteFromDb */);
                         mLauncher.bindAppWidget(info);
                     }
                 }
@@ -4448,12 +4448,9 @@ public class Workspace extends PagedView
 
             for (LauncherAppWidgetInfo info : mInfos) {
                 if (info.hostView instanceof PendingAppWidgetHostView) {
+                    // Remove and rebind the current widget, but don't delete it from the database
                     PendingAppWidgetHostView view = (PendingAppWidgetHostView) info.hostView;
-                    mLauncher.removeAppWidget(info);
-
-                    CellLayout cl = (CellLayout) view.getParent().getParent();
-                    // Remove the current widget
-                    cl.removeView(view);
+                    mLauncher.removeItem(view, info, false /* deleteFromDb */);
                     mLauncher.bindAppWidget(info);
                 }
             }
