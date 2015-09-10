@@ -748,6 +748,9 @@ public class Launcher extends Activity
             return;
         } else if (requestCode == REQUEST_PICK_WALLPAPER) {
             if (resultCode == RESULT_OK && mWorkspace.isInOverviewMode()) {
+                // User could have free-scrolled between pages before picking a wallpaper; make sure
+                // we move to the closest one now to avoid visual jump.
+                mWorkspace.setCurrentPage(mWorkspace.getPageNearestToCenterOfScreen());
                 showWorkspace(false);
             }
             return;
@@ -2744,7 +2747,10 @@ public class Launcher extends Activity
      */
     protected void onClickWallpaperPicker(View v) {
         if (LOGD) Log.d(TAG, "onClickWallpaperPicker");
-        startActivityForResult(new Intent(Intent.ACTION_SET_WALLPAPER).setPackage(getPackageName()),
+        int pageScroll = mWorkspace.getScrollForPage(mWorkspace.getPageNearestToCenterOfScreen());
+        float offset = mWorkspace.mWallpaperOffset.wallpaperOffsetForScroll(pageScroll);
+        startActivityForResult(new Intent(Intent.ACTION_SET_WALLPAPER).setPackage(getPackageName())
+                        .putExtra(WallpaperPickerActivity.EXTRA_WALLPAPER_OFFSET, offset),
                 REQUEST_PICK_WALLPAPER);
 
         if (mLauncherCallbacks != null) {
