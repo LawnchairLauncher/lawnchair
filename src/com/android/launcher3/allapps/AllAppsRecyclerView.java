@@ -431,6 +431,13 @@ public class AllAppsRecyclerView extends BaseRecyclerView
         }
     }
 
+    @Override
+    protected boolean supportsFastScrolling() {
+        // Only allow fast scrolling when the user is not searching, since the results are not
+        // grouped in a meaningful order
+        return !mApps.hasFilter();
+    }
+
     /**
      * Returns the scrollY for the given position in the adapter.
      */
