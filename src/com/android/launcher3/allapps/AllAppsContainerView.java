@@ -16,34 +16,26 @@
 package com.android.launcher3.allapps;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.InsetDrawable;
-import android.os.Build;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.method.TextKeyListener;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BaseContainerView;
-import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
-import com.android.launcher3.CheckLongPressHelper;
 import com.android.launcher3.DeleteDropTarget;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragSource;
@@ -53,7 +45,6 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherTransitionable;
 import com.android.launcher3.R;
-import com.android.launcher3.Stats;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.util.ComponentKey;
@@ -155,6 +146,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     @Thunk AllAppsSearchBarController mSearchBarController;
     private ViewGroup mSearchBarContainerView;
     private View mSearchBarView;
+    private SpannableStringBuilder mSearchQueryBuilder = null;
 
     private int mSectionNamesMargin;
     private int mNumAppsPerRow;
@@ -165,7 +157,13 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     // This coordinate is relative to its parent
     private final Point mIconLastTouchPos = new Point();
 
-    private SpannableStringBuilder mSearchQueryBuilder = null;
+    private View.OnClickListener mSearchClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent searchIntent = (Intent) v.getTag();
+            mLauncher.startActivitySafely(v, searchIntent, null);
+        }
+    };
 
     public AllAppsContainerView(Context context) {
         this(context, null);
@@ -182,8 +180,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mLauncher = (Launcher) context;
         mSectionNamesMargin = res.getDimensionPixelSize(R.dimen.all_apps_grid_view_start_margin);
         mApps = new AlphabeticalAppsList(context);
-        mAdapter = new AllAppsGridAdapter(context, mApps, this, mLauncher, this);
-        mAdapter.setEmptySearchText(res.getString(R.string.all_apps_loading_message));
+        mAdapter = new AllAppsGridAdapter(mLauncher, mApps, this, mLauncher, this);
         mApps.setAdapter(mAdapter);
         mLayoutManager = mAdapter.getLayoutManager();
         mItemDecoration = mAdapter.getItemDecoration();
@@ -528,7 +525,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                 CellLayout layout = (CellLayout) workspace.getChildAt(currentScreen);
                 ItemInfo itemInfo = (ItemInfo) d.dragInfo;
                 if (layout != null) {
-                    layout.calculateSpans(itemInfo);
                     showOutOfSpaceMessage =
                             !layout.findCellForSpan(null, itemInfo.spanX, itemInfo.spanY);
                 }
@@ -559,8 +555,9 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     @Override
     public void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace) {
         if (toWorkspace) {
-            // Reset the search bar after transitioning home
+            // Reset the search bar and base recycler view after transitioning home
             mSearchBarController.reset();
+            mAppsRecyclerView.reset();
         }
     }
 
@@ -616,19 +613,16 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     @Override
     public void onSearchResult(String query, ArrayList<ComponentKey> apps) {
         if (apps != null) {
-            if (apps.isEmpty()) {
-                String formatStr = getResources().getString(R.string.all_apps_no_search_results);
-                mAdapter.setEmptySearchText(String.format(formatStr, query));
-            } else {
-                mAppsRecyclerView.scrollToTop();
-            }
             mApps.setOrderedFilter(apps);
+            mAdapter.setLastSearchQuery(query);
+            mAppsRecyclerView.onSearchResultsChanged();
         }
     }
 
     @Override
     public void clearSearchResult() {
         mApps.setOrderedFilter(null);
+        mAppsRecyclerView.onSearchResultsChanged();
 
         // Clear the search query
         mSearchQueryBuilder.clear();

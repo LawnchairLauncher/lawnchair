@@ -24,10 +24,10 @@
     <!-- URI used to import old favorites. [DO NOT TRANSLATE] -->
     <string name="old_launcher_provider_uri" translatable="false">content://com.android.launcher2.settings/favorites?notify=true</string>
 
-    <!-- Permission to receive the com.android.launcher3.action.LAUNCH intent -->
+    <!-- Permission to receive the com.android.launcher3.action.LAUNCH intent. [DO NOT TRANSLATE] -->
     <string name="receive_launch_broadcasts_permission" translatable="false">com.android.launcher3.permission.RECEIVE_LAUNCH_BROADCASTS</string>
 
-    <!-- Permission to receive the com.android.launcher3.action.FIRST_LOAD_COMPLETE intent -->
+    <!-- Permission to receive the com.android.launcher3.action.FIRST_LOAD_COMPLETE intent. [DO NOT TRANSLATE] -->
     <string name="receive_first_load_broadcast_permission" translatable="false">com.android.launcher3.permission.RECEIVE_FIRST_LOAD_BROADCAST</string>
 
     <!-- Application name -->
@@ -61,6 +61,9 @@
     <string name="all_apps_loading_message">Loading Apps&#8230;</string>
     <!-- No-search-results text. [CHAR_LIMIT=50] -->
     <string name="all_apps_no_search_results">No Apps found matching \"<xliff:g id="query" example="Android">%1$s</xliff:g>\"</string>
+    <!-- Search market text.  This is a format string where the first argument is the name of the activity
+         handling the search.  The format string does not need to handle both of these arguments. [CHAR_LIMIT=50] -->
+    <string name="all_apps_search_market_message">Go to <xliff:g id="query" example="Play Store">%1$s</xliff:g></string>
 
     <!-- Drag and drop -->
     <skip />

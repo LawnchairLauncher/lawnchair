@@ -143,7 +143,7 @@ public class LauncherSettings {
          *
          * @return The unique content URL for the specified row.
          */
-        static Uri getContentUri(long id) {
+        public static Uri getContentUri(long id) {
             return Uri.parse("content://" + ProviderConfig.AUTHORITY +
                     "/" + TABLE_NAME + "/" + id);
         }

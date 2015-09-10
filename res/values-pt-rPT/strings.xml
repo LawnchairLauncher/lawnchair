@@ -32,6 +32,7 @@
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Pesquisar aplicações"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"A carregar aplicações..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Não foram encontradas aplic. que correspondam a \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
+    <string name="all_apps_search_market_message" msgid="5470761048755751471">"Aceder a <xliff:g id="QUERY">%1$s</xliff:g>"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Sem espaço suficiente neste Ecrã principal."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Não existe mais espaço no tabuleiro de Favoritos"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Aplicações"</string>

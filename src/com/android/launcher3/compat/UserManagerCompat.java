@@ -28,15 +28,28 @@ public abstract class UserManagerCompat {
     protected UserManagerCompat() {
     }
 
+    private static final Object sInstanceLock = new Object();
+    private static UserManagerCompat sInstance;
+
     public static UserManagerCompat getInstance(Context context) {
-        if (Utilities.isLmpOrAbove()) {
-            return new UserManagerCompatVL(context);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            return new UserManagerCompatV17(context);
-        } else {
-            return new UserManagerCompatV16();
+        synchronized (sInstanceLock) {
+            if (sInstance == null) {
+                if (Utilities.ATLEAST_LOLLIPOP) {
+                    sInstance = new UserManagerCompatVL(context.getApplicationContext());
+                } else if (Utilities.ATLEAST_JB_MR1) {
+                    sInstance = new UserManagerCompatV17(context.getApplicationContext());
+                } else {
+                    sInstance = new UserManagerCompatV16();
+                }
+            }
+            return sInstance;
         }
     }
+
+    /**
+     * Creates a cache for users.
+     */
+    public abstract void enableAndResetCache();
 
     public abstract List<UserHandleCompat> getUserProfiles();
     public abstract long getSerialNumberForUser(UserHandleCompat user);

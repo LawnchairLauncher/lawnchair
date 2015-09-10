@@ -16,13 +16,17 @@
 
 package com.android.launcher3;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources.Theme;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Layout;
 import android.text.StaticLayout;
@@ -32,6 +36,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implements OnClickListener {
+    private static final float SETUP_ICON_SIZE_FACTOR = 2f / 5;
+    private static final float MIN_SATUNATION = 0.7f;
 
     private static Theme sPreloaderTheme;
 
@@ -47,13 +53,14 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
     private Bitmap mIcon;
 
     private Drawable mCenterDrawable;
-    private Drawable mTopCornerDrawable;
+    private Drawable mSettingIconDrawable;
 
     private boolean mDrawableSizeChanged;
 
     private final TextPaint mPaint;
     private Layout mSetupTextLayout;
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public PendingAppWidgetHostView(Context context, LauncherAppWidgetInfo info,
             boolean disabledForSafeMode) {
         super(context);
@@ -70,6 +77,10 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
                 mLauncher.getDeviceProfile().iconTextSizePx, getResources().getDisplayMetrics()));
         setBackgroundResource(R.drawable.quantum_panel_dark);
         setWillNotDraw(false);
+
+        if (Utilities.ATLEAST_LOLLIPOP) {
+            setElevation(getResources().getDimension(R.dimen.pending_widget_elevation));
+        }
     }
 
     @Override
@@ -124,10 +135,12 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
                 FastBitmapDrawable disabledIcon = mLauncher.createIconDrawable(mIcon);
                 disabledIcon.setGhostModeEnabled(true);
                 mCenterDrawable = disabledIcon;
-                mTopCornerDrawable = null;
+                mSettingIconDrawable = null;
             } else if (isReadyForClickSetup()) {
-                mCenterDrawable = getResources().getDrawable(R.drawable.ic_setting);
-                mTopCornerDrawable = new FastBitmapDrawable(mIcon);
+                mCenterDrawable = new FastBitmapDrawable(mIcon);
+                mSettingIconDrawable = getResources().getDrawable(R.drawable.ic_setting).mutate();
+
+                updateSettingColor();
             } else {
                 if (sPreloaderTheme == null) {
                     sPreloaderTheme = getResources().newTheme();
@@ -137,11 +150,23 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
                 FastBitmapDrawable drawable = mLauncher.createIconDrawable(mIcon);
                 mCenterDrawable = new PreloadIconDrawable(drawable, sPreloaderTheme);
                 mCenterDrawable.setCallback(this);
-                mTopCornerDrawable = null;
+                mSettingIconDrawable = null;
                 applyState();
             }
             mDrawableSizeChanged = true;
         }
+    }
+
+    private void updateSettingColor() {
+        int color = Utilities.findDominantColorByHue(mIcon, 20);
+        // Make the dominant color bright.
+        float[] hsv = new float[3];
+        Color.colorToHSV(color, hsv);
+        hsv[1] = Math.min(hsv[1], MIN_SATUNATION);
+        hsv[2] = 1;
+        color = Color.HSVToColor(hsv);
+
+        mSettingIconDrawable.setColorFilter(color,  PorterDuff.Mode.SRC_IN);
     }
 
     @Override
@@ -169,6 +194,83 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
                 && (mInfo.restoreStatus & LauncherAppWidgetInfo.FLAG_UI_NOT_READY) != 0;
     }
 
+    private void updateDrawableBounds() {
+        DeviceProfile grid = mLauncher.getDeviceProfile();
+        int paddingTop = getPaddingTop();
+        int paddingBottom = getPaddingBottom();
+        int paddingLeft = getPaddingLeft();
+        int paddingRight = getPaddingRight();
+
+        int minPadding = getResources()
+                .getDimensionPixelSize(R.dimen.pending_widget_min_padding);
+
+        int availableWidth = getWidth() - paddingLeft - paddingRight - 2 * minPadding;
+        int availableHeight = getHeight() - paddingTop - paddingBottom - 2 * minPadding;
+
+        if (mSettingIconDrawable == null) {
+            int outset = (mCenterDrawable instanceof PreloadIconDrawable) ?
+                    ((PreloadIconDrawable) mCenterDrawable).getOutset() : 0;
+            int maxSize = grid.iconSizePx + 2 * outset;
+            int size = Math.min(maxSize, Math.min(availableWidth, availableHeight));
+
+            mRect.set(0, 0, size, size);
+            mRect.inset(outset, outset);
+            mRect.offsetTo((getWidth() - mRect.width()) / 2, (getHeight() - mRect.height()) / 2);
+            mCenterDrawable.setBounds(mRect);
+        } else  {
+            float iconSize = Math.min(availableWidth, availableHeight);
+
+            // Use twice the setting size factor, as the setting is drawn at a corner and the
+            // icon is drawn in the center.
+            float settingIconScaleFactor = 1 + SETUP_ICON_SIZE_FACTOR * 2;
+            int maxSize = Math.max(availableWidth, availableHeight);
+            if (iconSize * settingIconScaleFactor > maxSize) {
+                // There is an overlap
+                iconSize = maxSize / settingIconScaleFactor;
+            }
+
+            int actualIconSize = (int) Math.min(iconSize, grid.iconSizePx);
+
+            // Recreate the setup text.
+            mSetupTextLayout = new StaticLayout(
+                    getResources().getText(R.string.gadget_setup_text), mPaint, availableWidth,
+                    Layout.Alignment.ALIGN_CENTER, 1, 0, true);
+            int textHeight = mSetupTextLayout.getHeight();
+
+            // Extra icon size due to the setting icon
+            float minHeightWithText = textHeight + actualIconSize * settingIconScaleFactor
+                    + grid.iconDrawablePaddingPx;
+
+            int iconTop;
+            if (minHeightWithText < availableHeight) {
+                // We can draw the text as well
+                iconTop =  (getHeight() - textHeight -
+                        grid.iconDrawablePaddingPx - actualIconSize) / 2;
+
+            } else {
+                // The text will not fit. Only draw the icons.
+                iconTop = (getHeight() - actualIconSize) / 2;
+                mSetupTextLayout = null;
+            }
+
+            mRect.set(0, 0, actualIconSize, actualIconSize);
+            mRect.offset((getWidth() - actualIconSize) / 2, iconTop);
+            mCenterDrawable.setBounds(mRect);
+
+            mRect.left = paddingLeft + minPadding;
+            mRect.right = mRect.left + (int) (SETUP_ICON_SIZE_FACTOR * actualIconSize);
+            mRect.top = paddingTop + minPadding;
+            mRect.bottom = mRect.top + (int) (SETUP_ICON_SIZE_FACTOR * actualIconSize);
+            mSettingIconDrawable.setBounds(mRect);
+
+            if (mSetupTextLayout != null) {
+                // Set up position for dragging the text
+                mRect.left = paddingLeft + minPadding;
+                mRect.top = mCenterDrawable.getBounds().bottom + grid.iconDrawablePaddingPx;
+            }
+        }
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         if (mCenterDrawable == null) {
@@ -176,81 +278,21 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
             return;
         }
 
-        DeviceProfile grid = mLauncher.getDeviceProfile();
-        if (mTopCornerDrawable == null) {
-            if (mDrawableSizeChanged) {
-                int outset = (mCenterDrawable instanceof PreloadIconDrawable) ?
-                        ((PreloadIconDrawable) mCenterDrawable).getOutset() : 0;
-                int maxSize = grid.iconSizePx + 2 * outset;
-                int size = Math.min(maxSize, Math.min(
-                        getWidth() - getPaddingLeft() - getPaddingRight(),
-                        getHeight() - getPaddingTop() - getPaddingBottom()));
-
-                mRect.set(0, 0, size, size);
-                mRect.inset(outset, outset);
-                mRect.offsetTo((getWidth() - mRect.width()) / 2, (getHeight() - mRect.height()) / 2);
-                mCenterDrawable.setBounds(mRect);
-                mDrawableSizeChanged = false;
-            }
-            mCenterDrawable.draw(canvas);
-        } else  {
-            // Draw the top corner icon and "Setup" text is possible
-            if (mDrawableSizeChanged) {
-                int iconSize = grid.iconSizePx;
-                int paddingTop = getPaddingTop();
-                int paddingBottom = getPaddingBottom();
-                int paddingLeft = getPaddingLeft();
-                int paddingRight = getPaddingRight();
-
-                int availableWidth = getWidth() - paddingLeft - paddingRight;
-                int availableHeight = getHeight() - paddingTop - paddingBottom;
-
-                // Recreate the setup text.
-                mSetupTextLayout = new StaticLayout(
-                        getResources().getText(R.string.gadget_setup_text), mPaint, availableWidth,
-                        Layout.Alignment.ALIGN_CENTER, 1, 0, true);
-                if (mSetupTextLayout.getLineCount() == 1) {
-                    // The text fits in a single line. No need to draw the setup icon.
-                    int size = Math.min(iconSize, Math.min(availableWidth,
-                            availableHeight - mSetupTextLayout.getHeight()));
-                    mRect.set(0, 0, size, size);
-                    mRect.offsetTo((getWidth() - mRect.width()) / 2,
-                            (getHeight() - mRect.height() - mSetupTextLayout.getHeight()
-                                    - grid.iconDrawablePaddingPx) / 2);
-
-                    mTopCornerDrawable.setBounds(mRect);
-
-                    // Update left and top to indicate the position where the text will be drawn.
-                    mRect.left = paddingLeft;
-                    mRect.top = mRect.bottom + grid.iconDrawablePaddingPx;
-                } else {
-                    // The text can't be drawn in a single line. Draw a setup icon instead.
-                    mSetupTextLayout = null;
-                    int size = Math.min(iconSize, Math.min(
-                            getWidth() - paddingLeft - paddingRight,
-                            getHeight() - paddingTop - paddingBottom));
-                    mRect.set(0, 0, size, size);
-                    mRect.offsetTo((getWidth() - mRect.width()) / 2, (getHeight() - mRect.height()) / 2);
-                    mCenterDrawable.setBounds(mRect);
-
-                    size = Math.min(size / 2,
-                            Math.max(mRect.top - paddingTop, mRect.left - paddingLeft));
-                    mTopCornerDrawable.setBounds(paddingLeft, paddingTop,
-                            paddingLeft + size, paddingTop + size);
-                }
-                mDrawableSizeChanged = false;
-            }
-
-            if (mSetupTextLayout == null) {
-                mCenterDrawable.draw(canvas);
-                mTopCornerDrawable.draw(canvas);
-            } else {
-                canvas.save();
-                canvas.translate(mRect.left, mRect.top);
-                mSetupTextLayout.draw(canvas);
-                canvas.restore();
-                mTopCornerDrawable.draw(canvas);
-            }
+        if (mDrawableSizeChanged) {
+            updateDrawableBounds();
+            mDrawableSizeChanged = false;
         }
+
+        mCenterDrawable.draw(canvas);
+        if (mSettingIconDrawable != null) {
+            mSettingIconDrawable.draw(canvas);
+        }
+        if (mSetupTextLayout != null) {
+            canvas.save();
+            canvas.translate(mRect.left, mRect.top);
+            mSetupTextLayout.draw(canvas);
+            canvas.restore();
+        }
+
     }
 }

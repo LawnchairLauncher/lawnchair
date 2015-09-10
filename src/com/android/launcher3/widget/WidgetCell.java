@@ -146,8 +146,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         mInfo = info;
         // TODO(hyunyoungs): setup a cache for these labels.
         mWidgetName.setText(AppWidgetManagerCompat.getInstance(getContext()).loadLabel(info));
-        int hSpan = Math.min(info.getSpanX(mLauncher), profile.numColumns);
-        int vSpan = Math.min(info.getSpanY(mLauncher), profile.numRows);
+        int hSpan = Math.min(info.spanX, profile.numColumns);
+        int vSpan = Math.min(info.spanY, profile.numRows);
         mWidgetDims.setText(String.format(mDimensionsFormatString, hSpan, vSpan));
         mWidgetPreviewLoader = loader;
     }

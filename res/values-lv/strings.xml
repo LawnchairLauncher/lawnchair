@@ -32,6 +32,7 @@
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Meklēt lietotnes"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Notiek lietotņu ielāde…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Vaicājumam “<xliff:g id="QUERY">%1$s</xliff:g>” neatbilda neviena lietotne."</string>
+    <string name="all_apps_search_market_message" msgid="5470761048755751471">"Doties uz: <xliff:g id="QUERY">%1$s</xliff:g>"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Šajā sākuma ekrānā vairs nav vietas."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Izlases joslā vairs nav vietas."</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Lietotnes"</string>

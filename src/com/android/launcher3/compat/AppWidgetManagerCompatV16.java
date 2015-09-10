@@ -54,10 +54,10 @@ class AppWidgetManagerCompatV16 extends AppWidgetManagerCompat {
     @Override
     public boolean bindAppWidgetIdIfAllowed(int appWidgetId, AppWidgetProviderInfo info,
             Bundle options) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            return mAppWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId, info.provider);
-        } else {
+        if (Utilities.ATLEAST_JB_MR1) {
             return mAppWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId, info.provider, options);
+        } else {
+            return mAppWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId, info.provider);
         }
     }
 

@@ -32,6 +32,7 @@
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Sovellushaku"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Ladataan sovelluksia…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"”<xliff:g id="QUERY">%1$s</xliff:g>” ei palauttanut sovelluksia."</string>
+    <string name="all_apps_search_market_message" msgid="5470761048755751471">"Siirry: <xliff:g id="QUERY">%1$s</xliff:g>"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Tässä aloitusruudussa ei ole enää tilaa."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Suosikit-valikossa ei ole enää tilaa"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Sovellukset"</string>

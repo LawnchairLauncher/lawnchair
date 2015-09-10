@@ -105,7 +105,7 @@ public class WidgetPreviewLoader {
      * sizes (landscape vs portrait).
      */
     private static class CacheDb extends SQLiteOpenHelper {
-        private static final int DB_VERSION = 3;
+        private static final int DB_VERSION = 4;
 
         private static final String TABLE_NAME = "shortcut_and_widget_previews";
         private static final String COLUMN_COMPONENT = "componentName";
@@ -212,7 +212,6 @@ public class WidgetPreviewLoader {
     public void removeObsoletePreviews(ArrayList<Object> list) {
         Utilities.assertWorkerThread();
 
-        LongSparseArray<UserHandleCompat> userIdCache = new LongSparseArray<>();
         LongSparseArray<HashSet<String>> validPackages = new LongSparseArray<>();
 
         for (Object obj : list) {
@@ -227,15 +226,7 @@ public class WidgetPreviewLoader {
                 pkg = info.provider.getPackageName();
             }
 
-            int userIdIndex = userIdCache.indexOfValue(user);
-            final long userId;
-            if (userIdIndex < 0) {
-                userId = mUserManager.getSerialNumberForUser(user);
-                userIdCache.put(userId, user);
-            } else {
-                userId = userIdCache.keyAt(userIdIndex);
-            }
-
+            final long userId = mUserManager.getSerialNumberForUser(user);
             HashSet<String> packages = validPackages.get(userId);
             if (packages == null) {
                 packages = new HashSet<>();
@@ -361,8 +352,8 @@ public class WidgetPreviewLoader {
         }
 
         final boolean widgetPreviewExists = (drawable != null);
-        final int spanX = info.getSpanX(launcher) < 1 ? 1 : info.getSpanX(launcher);
-        final int spanY = info.getSpanY(launcher) < 1 ? 1 : info.getSpanY(launcher);
+        final int spanX = info.spanX;
+        final int spanY = info.spanY;
 
         int previewWidth;
         int previewHeight;
@@ -386,7 +377,7 @@ public class WidgetPreviewLoader {
             preScaledWidthOut[0] = previewWidth;
         }
         if (previewWidth > maxPreviewWidth) {
-            scale = maxPreviewWidth / (float) previewWidth;
+            scale = (maxPreviewWidth - 2 * mProfileBadgeMargin) / (float) (previewWidth);
         }
         if (scale != 1f) {
             previewWidth = (int) (scale * previewWidth);
@@ -405,7 +396,7 @@ public class WidgetPreviewLoader {
         }
 
         // Draw the scaled preview into the final bitmap
-        int x = (preview.getWidth() - previewWidth - mProfileBadgeMargin) / 2;
+        int x = (preview.getWidth() - previewWidth) / 2;
         if (widgetPreviewExists) {
             drawable.setBounds(x, 0, x + previewWidth, previewHeight);
             drawable.draw(c);

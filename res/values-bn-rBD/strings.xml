@@ -32,6 +32,7 @@
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"অ্যাপ্লিকেশানগুলি অনুসন্ধান করুন"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"অ্যাপ্লিকেশানগুলি লোড হচ্ছে..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" এর সাথে মেলে এমন কোনো অ্যাপ্লিকেশান পাওয়া যায়নি"</string>
+    <string name="all_apps_search_market_message" msgid="5470761048755751471">"<xliff:g id="QUERY">%1$s</xliff:g> এ যান"</string>
     <string name="out_of_space" msgid="4691004494942118364">"এই হোম স্ক্রীনে আর কোনো জায়গা নেই৷"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"পছন্দসই ট্রে-তে আর কোনো জায়গা নেই"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"অ্যাপ্লিকেশানগুলি"</string>

@@ -32,6 +32,7 @@
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Deursoek programme"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Laai tans programme …"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Geen programme gevind wat met \"<xliff:g id="QUERY">%1$s</xliff:g>\" ooreenstem nie"</string>
+    <string name="all_apps_search_market_message" msgid="5470761048755751471">"Gaan na <xliff:g id="QUERY">%1$s</xliff:g>"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Niks meer spasie op die tuisskerm nie."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Geen plek meer in die Gunstelinge-laai nie"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Programme"</string>

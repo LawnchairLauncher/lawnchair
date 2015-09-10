@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.allapps;
+package com.android.launcher3;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -22,28 +22,28 @@ import android.widget.EditText;
 
 
 /**
- * The edit text for the search container
+ * The edit text that reports back when the back key has been pressed.
  */
-public class AllAppsSearchEditView extends EditText {
+public class ExtendedEditText extends EditText {
 
     /**
      * Implemented by listeners of the back key.
      */
     public interface OnBackKeyListener {
-        public void onBackKey();
+        public boolean onBackKey();
     }
 
     private OnBackKeyListener mBackKeyListener;
 
-    public AllAppsSearchEditView(Context context) {
-        this(context, null);
+    public ExtendedEditText(Context context) {
+        super(context);
     }
 
-    public AllAppsSearchEditView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+    public ExtendedEditText(Context context, AttributeSet attrs) {
+        super(context, attrs);
     }
 
-    public AllAppsSearchEditView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ExtendedEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -56,7 +56,7 @@ public class AllAppsSearchEditView extends EditText {
         // If this is a back key, propagate the key back to the listener
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
             if (mBackKeyListener != null) {
-                mBackKeyListener.onBackKey();
+                return mBackKeyListener.onBackKey();
             }
             return false;
         }

@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
+import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Thunk;
@@ -54,7 +55,8 @@ final class DefaultAppSearchController extends AllAppsSearchBarController
     @Thunk View mSearchBarContainerView;
     private View mSearchButtonView;
     private View mDismissSearchButtonView;
-    @Thunk AllAppsSearchEditView mSearchBarEditView;
+    @Thunk
+    ExtendedEditText mSearchBarEditView;
     @Thunk AllAppsRecyclerView mAppsRecyclerView;
     @Thunk Runnable mFocusRecyclerViewRunnable = new Runnable() {
         @Override
@@ -82,21 +84,23 @@ final class DefaultAppSearchController extends AllAppsSearchBarController
         mSearchBarContainerView = mSearchView.findViewById(R.id.search_container);
         mDismissSearchButtonView = mSearchBarContainerView.findViewById(R.id.dismiss_search_button);
         mDismissSearchButtonView.setOnClickListener(this);
-        mSearchBarEditView = (AllAppsSearchEditView)
+        mSearchBarEditView = (ExtendedEditText)
                 mSearchBarContainerView.findViewById(R.id.search_box_input);
         mSearchBarEditView.addTextChangedListener(this);
         mSearchBarEditView.setOnEditorActionListener(this);
         mSearchBarEditView.setOnBackKeyListener(
-                new AllAppsSearchEditView.OnBackKeyListener() {
+                new ExtendedEditText.OnBackKeyListener() {
                     @Override
-                    public void onBackKey() {
+                    public boolean onBackKey() {
                         // Only hide the search field if there is no query, or if there
                         // are no filtered results
                         String query = Utilities.trim(
                                 mSearchBarEditView.getEditableText().toString());
                         if (query.isEmpty() || mApps.hasNoFilteredResults()) {
                             hideSearchField(true, mFocusRecyclerViewRunnable);
+                            return true;
                         }
+                        return false;
                     }
                 });
         return mSearchView;
@@ -166,22 +170,24 @@ final class DefaultAppSearchController extends AllAppsSearchBarController
             return false;
         }
         // Skip if it's not the right action
-        if (actionId != EditorInfo.IME_ACTION_DONE) {
+        if (actionId != EditorInfo.IME_ACTION_SEARCH) {
             return false;
         }
-        // Skip if there isn't exactly one item
-        if (mApps.getSize() != 1) {
+        // Skip if there are more than one icon
+        if (mApps.getNumFilteredApps() > 1) {
             return false;
         }
-        // If there is exactly one icon, then quick-launch it
+        // Otherwise, find the first icon, or fallback to the search-market-view and launch it
         List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
         for (int i = 0; i < items.size(); i++) {
             AlphabeticalAppsList.AdapterItem item = items.get(i);
-            if (item.viewType == AllAppsGridAdapter.ICON_VIEW_TYPE) {
-                mAppsRecyclerView.getChildAt(i).performClick();
-                mInputMethodManager.hideSoftInputFromWindow(
-                        mContainerView.getWindowToken(), 0);
-                return true;
+            switch (item.viewType) {
+                case AllAppsGridAdapter.ICON_VIEW_TYPE:
+                case AllAppsGridAdapter.SEARCH_MARKET_VIEW_TYPE:
+                    mAppsRecyclerView.getChildAt(i).performClick();
+                    mInputMethodManager.hideSoftInputFromWindow(
+                            mContainerView.getWindowToken(), 0);
+                    return true;
             }
         }
         return false;
