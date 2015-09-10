@@ -106,7 +106,6 @@ public class IconCache {
     private final BitmapFactory.Options mLowResOptions;
 
     private String mSystemState;
-    private Bitmap mLowResBitmap;
     private Canvas mLowResCanvas;
     private Paint mLowResPaint;
 
@@ -117,6 +116,8 @@ public class IconCache {
         mLauncherApps = LauncherAppsCompat.getInstance(mContext);
         mIconDpi = inv.fillResIconDpi;
         mIconDb = new IconDB(context);
+        mLowResCanvas = new Canvas();
+        mLowResPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
 
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
 
@@ -239,7 +240,7 @@ public class IconCache {
         long userSerial = mUserManager.getSerialNumberForUser(user);
         mIconDb.getWritableDatabase().delete(IconDB.TABLE_NAME,
                 IconDB.COLUMN_COMPONENT + " LIKE ? AND " + IconDB.COLUMN_USER + " = ?",
-                new String[] {packageName + "/%", Long.toString(userSerial)});
+                new String[]{packageName + "/%", Long.toString(userSerial)});
     }
 
     public void updateDbIcons(Set<String> ignorePackagesForMainUser) {
@@ -386,7 +387,8 @@ public class IconCache {
         entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, app.getUser());
         mCache.put(new ComponentKey(app.getComponentName(), app.getUser()), entry);
 
-        return newContentValues(entry.icon, entry.title.toString(), mActivityBgColor);
+        Bitmap lowResIcon = generateLowResIcon(entry.icon, mActivityBgColor);
+        return newContentValues(entry.icon, lowResIcon, entry.title.toString());
     }
 
     /**
@@ -623,17 +625,22 @@ public class IconCache {
                     if (appInfo == null) {
                         throw new NameNotFoundException("ApplicationInfo is null");
                     }
+
+                    // Load the full res icon for the application, but if useLowResIcon is set, then
+                    // only keep the low resolution icon instead of the larger full-sized icon
                     Drawable drawable = mUserManager.getBadgedDrawableForUser(
                             appInfo.loadIcon(mPackageManager), user);
-                    entry.icon = Utilities.createIconBitmap(drawable, mContext);
+                    Bitmap icon = Utilities.createIconBitmap(drawable, mContext);
+                    Bitmap lowResIcon =  generateLowResIcon(icon, mPackageBgColor);
                     entry.title = appInfo.loadLabel(mPackageManager);
                     entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);
-                    entry.isLowResIcon = false;
+                    entry.icon = useLowResIcon ? lowResIcon : icon;
+                    entry.isLowResIcon = useLowResIcon;
 
                     // Add the icon in the DB here, since these do not get written during
                     // package updates.
                     ContentValues values =
-                            newContentValues(entry.icon, entry.title.toString(), mPackageBgColor);
+                            newContentValues(icon, lowResIcon, entry.title.toString());
                     addIconToDB(values, cacheKey.componentName, info,
                             mUserManager.getSerialNumberForUser(user));
 
@@ -673,9 +680,9 @@ public class IconCache {
             // pass
         }
 
-        ContentValues values = newContentValues(
-                Bitmap.createScaledBitmap(icon, idp.iconBitmapSize, idp.iconBitmapSize, true),
-                label, Color.TRANSPARENT);
+        icon = Bitmap.createScaledBitmap(icon, idp.iconBitmapSize, idp.iconBitmapSize, true);
+        Bitmap lowResIcon = generateLowResIcon(icon, Color.TRANSPARENT);
+        ContentValues values = newContentValues(icon, lowResIcon, label);
         values.put(IconDB.COLUMN_COMPONENT, componentName.flattenToString());
         values.put(IconDB.COLUMN_USER, userSerial);
         mIconDb.getWritableDatabase().insertWithOnConflict(IconDB.TABLE_NAME, null, values,
@@ -841,34 +848,37 @@ public class IconCache {
         }
     }
 
-    private ContentValues newContentValues(Bitmap icon, String label, int lowResBackgroundColor) {
+    private ContentValues newContentValues(Bitmap icon, Bitmap lowResIcon, String label) {
         ContentValues values = new ContentValues();
         values.put(IconDB.COLUMN_ICON, Utilities.flattenBitmap(icon));
+        values.put(IconDB.COLUMN_ICON_LOW_RES, Utilities.flattenBitmap(lowResIcon));
 
         values.put(IconDB.COLUMN_LABEL, label);
         values.put(IconDB.COLUMN_SYSTEM_STATE, mSystemState);
 
+        return values;
+    }
+
+    /**
+     * Generates a new low-res icon given a high-res icon.
+     */
+    private Bitmap generateLowResIcon(Bitmap icon, int lowResBackgroundColor) {
         if (lowResBackgroundColor == Color.TRANSPARENT) {
-          values.put(IconDB.COLUMN_ICON_LOW_RES, Utilities.flattenBitmap(
-          Bitmap.createScaledBitmap(icon,
-                  icon.getWidth() / LOW_RES_SCALE_FACTOR,
-                  icon.getHeight() / LOW_RES_SCALE_FACTOR, true)));
+            return Bitmap.createScaledBitmap(icon,
+                            icon.getWidth() / LOW_RES_SCALE_FACTOR,
+                            icon.getHeight() / LOW_RES_SCALE_FACTOR, true);
         } else {
+            Bitmap lowResIcon = Bitmap.createBitmap(icon.getWidth() / LOW_RES_SCALE_FACTOR,
+                    icon.getHeight() / LOW_RES_SCALE_FACTOR, Bitmap.Config.RGB_565);
             synchronized (this) {
-                if (mLowResBitmap == null) {
-                    mLowResBitmap = Bitmap.createBitmap(icon.getWidth() / LOW_RES_SCALE_FACTOR,
-                            icon.getHeight() / LOW_RES_SCALE_FACTOR, Bitmap.Config.RGB_565);
-                    mLowResCanvas = new Canvas(mLowResBitmap);
-                    mLowResPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
-                }
                 mLowResCanvas.drawColor(lowResBackgroundColor);
                 mLowResCanvas.drawBitmap(icon, new Rect(0, 0, icon.getWidth(), icon.getHeight()),
-                        new Rect(0, 0, mLowResBitmap.getWidth(), mLowResBitmap.getHeight()),
+                        new Rect(0, 0, lowResIcon.getWidth(), lowResIcon.getHeight()),
                         mLowResPaint);
-                values.put(IconDB.COLUMN_ICON_LOW_RES, Utilities.flattenBitmap(mLowResBitmap));
+                mLowResCanvas.setBitmap(null);
             }
+            return lowResIcon;
         }
-        return values;
     }
 
     private static Bitmap loadIconNoResize(Cursor c, int iconIndex, BitmapFactory.Options options) {
