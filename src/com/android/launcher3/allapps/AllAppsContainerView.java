@@ -290,6 +290,15 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         }
     }
 
+    /**
+     * Resets the state of AllApps.
+     */
+    public void reset() {
+        // Reset the search bar and base recycler view after transitioning home
+        mSearchBarController.reset();
+        mAppsRecyclerView.reset();
+    }
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -555,9 +564,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     @Override
     public void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace) {
         if (toWorkspace) {
-            // Reset the search bar and base recycler view after transitioning home
-            mSearchBarController.reset();
-            mAppsRecyclerView.reset();
+            reset();
         }
     }
 

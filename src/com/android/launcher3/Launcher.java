@@ -1560,7 +1560,10 @@ public class Launcher extends Activity
                 // processing a multi-step drop
                 if (mAppsView != null && mWidgetsView != null &&
                         mPendingAddInfo.container == ItemInfo.NO_ID) {
-                    showWorkspace(false);
+                    if (!showWorkspace(false)) {
+                        // If we are already on the workspace, then manually reset all apps
+                        mAppsView.reset();
+                    }
                 }
             } else if (Intent.ACTION_USER_PRESENT.equals(action)) {
                 mUserPresent = true;
@@ -3194,11 +3197,11 @@ public class Launcher extends Activity
         }
     }
 
-    public void showWorkspace(boolean animated) {
-        showWorkspace(animated, null);
+    public boolean showWorkspace(boolean animated) {
+        return showWorkspace(animated, null);
     }
 
-    public void showWorkspace(boolean animated, Runnable onCompleteRunnable) {
+    public boolean showWorkspace(boolean animated, Runnable onCompleteRunnable) {
         boolean changed = mState != State.WORKSPACE ||
                 mWorkspace.getState() != Workspace.State.NORMAL;
         if (changed) {
@@ -3224,6 +3227,7 @@ public class Launcher extends Activity
             getWindow().getDecorView()
                     .sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
         }
+        return changed;
     }
 
     void showOverviewMode(boolean animated) {
