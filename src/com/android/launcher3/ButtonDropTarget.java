@@ -49,11 +49,11 @@ import com.android.launcher3.util.Thunk;
 public abstract class ButtonDropTarget extends TextView
         implements DropTarget, DragController.DragListener, OnClickListener {
 
-    private static int DRAG_VIEW_DROP_DURATION = 285;
+    private static final int DRAG_VIEW_DROP_DURATION = 285;
 
     protected Launcher mLauncher;
     private int mBottomDragPadding;
-    protected SearchDropTargetBar mSearchDropTargetBar;
+    protected BaseDropTargetBar mDropTargetBar;
 
     /** Whether this drop target is active for the current drag */
     protected boolean mActive;
@@ -106,8 +106,8 @@ public abstract class ButtonDropTarget extends TextView
         mLauncher = launcher;
     }
 
-    public void setSearchDropTargetBar(SearchDropTargetBar searchDropTargetBar) {
-        mSearchDropTargetBar = searchDropTargetBar;
+    public void setDropTargetBar(BaseDropTargetBar dropTargetBar) {
+        mDropTargetBar = dropTargetBar;
     }
 
     @Override
@@ -230,13 +230,13 @@ public abstract class ButtonDropTarget extends TextView
         final Rect to = getIconRect(d.dragView.getMeasuredWidth(), d.dragView.getMeasuredHeight(),
                 width, height);
         final float scale = (float) to.width() / from.width();
-        mSearchDropTargetBar.deferOnDragEnd();
+        mDropTargetBar.deferOnDragEnd();
 
         Runnable onAnimationEndRunnable = new Runnable() {
             @Override
             public void run() {
                 completeDrop(d);
-                mSearchDropTargetBar.onDragEnd();
+                mDropTargetBar.onDragEnd();
                 mLauncher.exitSpringLoadedDragModeDelayed(true, 0, null);
             }
         };
