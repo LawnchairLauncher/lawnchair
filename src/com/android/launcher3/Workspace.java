@@ -2356,6 +2356,8 @@ public class Workspace extends PagedView
         dv.setIntrinsicIconScaleFactor(source.getIntrinsicIconScaleFactor());
 
         b.recycle();
+
+        mLauncher.enterSpringLoadedDragMode();
     }
 
     public void beginExternalDragShared(View child, DragSource source) {
@@ -2404,6 +2406,8 @@ public class Workspace extends PagedView
 
         // Recycle temporary bitmaps
         tmpB.recycle();
+
+        mLauncher.enterSpringLoadedDragMode();
     }
 
     public boolean transitionStateShouldAllowDrop() {
@@ -2861,10 +2865,6 @@ public class Workspace extends PagedView
         CellLayout layout = getCurrentDropLayout();
         setCurrentDropLayout(layout);
         setCurrentDragOverlappingLayout(layout);
-
-        if (!workspaceInModalState()) {
-            mLauncher.getDragLayer().showPageHints();
-        }
     }
 
     @Override
@@ -2899,8 +2899,6 @@ public class Workspace extends PagedView
         setCurrentDragOverlappingLayout(null);
 
         mSpringLoadedDragController.cancel();
-
-        mLauncher.getDragLayer().hidePageHints();
     }
 
     private void enfoceDragParity(String event, int update, int expectedValue) {
@@ -3735,6 +3733,9 @@ public class Workspace extends PagedView
         }
         mDragOutline = null;
         mDragInfo = null;
+
+        mLauncher.exitSpringLoadedDragModeDelayed(success,
+                Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
     }
 
     /**
