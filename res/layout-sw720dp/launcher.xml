@@ -50,6 +50,10 @@
             android:layout_height="match_parent" />
 
         <include
+            android:id="@+id/app_info_drop_target_bar"
+            layout="@layout/app_info_drop_target_bar" />
+
+        <include
             android:id="@+id/search_drop_target_bar"
             layout="@layout/search_drop_target_bar" />
 

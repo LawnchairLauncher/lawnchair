@@ -165,6 +165,11 @@ public class DragLayer extends InsettableFrameLayout {
         if (mHitRect.contains((int) ev.getX(), (int) ev.getY())) {
             return true;
         }
+
+        getDescendantRectRelativeToSelf(mLauncher.getAppInfoDropTargetBar(), mHitRect);
+        if (mHitRect.contains((int) ev.getX(), (int) ev.getY())) {
+            return true;
+        }
         return false;
     }
 
@@ -324,6 +329,7 @@ public class DragLayer extends InsettableFrameLayout {
 
             if (isInAccessibleDrag()) {
                 childrenForAccessibility.add(mLauncher.getSearchDropTargetBar());
+                childrenForAccessibility.add(mLauncher.getAppInfoDropTargetBar());
             }
         } else {
             super.addChildrenForAccessibility(childrenForAccessibility);

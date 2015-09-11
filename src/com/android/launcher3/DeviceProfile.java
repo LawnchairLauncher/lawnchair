@@ -397,28 +397,14 @@ public class DeviceProfile {
 
         // Layout the search bar space
         View searchBar = launcher.getSearchDropTargetBar();
-        lp = (FrameLayout.LayoutParams) searchBar.getLayoutParams();
-        if (hasVerticalBarLayout) {
-            // Vertical search bar space -- The search bar is fixed in the layout to be on the left
-            //                              of the screen regardless of RTL
-            lp.gravity = Gravity.LEFT;
-            lp.width = searchBarSpaceHeightPx;
-
-            LinearLayout targets = (LinearLayout) searchBar.findViewById(R.id.drag_target_bar);
-            targets.setOrientation(LinearLayout.VERTICAL);
-            FrameLayout.LayoutParams targetsLp = (FrameLayout.LayoutParams) targets.getLayoutParams();
-            targetsLp.gravity = Gravity.TOP;
-            targetsLp.height = LayoutParams.WRAP_CONTENT;
-
-        } else {
-            // Horizontal search bar space
-            lp.gravity = Gravity.TOP;
-            lp.height = searchBarSpaceHeightPx;
-
-            LinearLayout targets = (LinearLayout) searchBar.findViewById(R.id.drag_target_bar);
-            targets.getLayoutParams().width = searchBarSpaceWidthPx;
-        }
+        lp = getDropTargetBarLayoutParams(hasVerticalBarLayout, searchBar, Gravity.TOP);
         searchBar.setLayoutParams(lp);
+
+        // Layout the app info bar space
+        View appInfoBar = launcher.getAppInfoDropTargetBar();
+        lp = getDropTargetBarLayoutParams(hasVerticalBarLayout, appInfoBar, Gravity.BOTTOM);
+        lp.bottomMargin = hotseatBarHeightPx;
+        appInfoBar.setLayoutParams(lp);
 
         // Layout the workspace
         PagedView workspace = (PagedView) launcher.findViewById(R.id.workspace);
@@ -478,7 +464,6 @@ public class DeviceProfile {
         // Layout the Overview Mode
         ViewGroup overviewMode = launcher.getOverviewPanel();
         if (overviewMode != null) {
-            int overviewButtonBarHeight = getOverviewModeButtonBarHeight();
             lp = (FrameLayout.LayoutParams) overviewMode.getLayoutParams();
             lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
 
@@ -487,7 +472,7 @@ public class DeviceProfile {
             int maxWidth = totalItemWidth + (visibleChildCount-1) * overviewModeBarSpacerWidthPx;
 
             lp.width = Math.min(availableWidthPx, maxWidth);
-            lp.height = overviewButtonBarHeight;
+            lp.height = getOverviewModeButtonBarHeight();
             overviewMode.setLayoutParams(lp);
 
             if (lp.width > totalItemWidth && visibleChildCount > 1) {
@@ -514,6 +499,31 @@ public class DeviceProfile {
                 }
             }
         }
+    }
+
+    private FrameLayout.LayoutParams getDropTargetBarLayoutParams(boolean hasVerticalBarLayout,
+            View dropTargetBar, int verticalGravity) {
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) dropTargetBar.getLayoutParams();
+        if (hasVerticalBarLayout) {
+            // Vertical drop target bar space -- The drop target bar is fixed in the layout to be on
+            //                                   the left of the screen regardless of RTL
+            lp.gravity = Gravity.LEFT;
+            lp.width = searchBarSpaceHeightPx;
+
+            LinearLayout targets = (LinearLayout) dropTargetBar.findViewById(R.id.drag_target_bar);
+            targets.setOrientation(LinearLayout.VERTICAL);
+            FrameLayout.LayoutParams targetsLp = (FrameLayout.LayoutParams) targets.getLayoutParams();
+            targetsLp.gravity = verticalGravity;
+            targetsLp.height = LayoutParams.WRAP_CONTENT;
+        } else {
+            // Horizontal drop target bar space
+            lp.gravity = verticalGravity;
+            lp.height = searchBarSpaceHeightPx;
+
+            LinearLayout targets = (LinearLayout) dropTargetBar.findViewById(R.id.drag_target_bar);
+            targets.getLayoutParams().width = searchBarSpaceWidthPx;
+        }
+        return lp;
     }
 
     private int getCurrentWidth() {

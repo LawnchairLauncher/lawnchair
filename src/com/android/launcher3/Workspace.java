@@ -1589,6 +1589,7 @@ public class Workspace extends PagedView
             setOnClickListener(mLauncher);
         }
         mLauncher.getSearchDropTargetBar().enableAccessibleDrag(enable);
+        mLauncher.getAppInfoDropTargetBar().enableAccessibleDrag(enable);
         mLauncher.getHotseat().getLayout()
             .enableAccessibleDrag(enable, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG);
     }
@@ -2011,6 +2012,10 @@ public class Workspace extends PagedView
         int workspaceOffsetTopEdge = workspaceTop + ((workspaceBottom - workspaceTop) - scaledHeight) / 2;
         int overviewOffsetTopEdge = overviewTop + (overviewBottom - overviewTop - scaledHeight) / 2;
         return -workspaceOffsetTopEdge + overviewOffsetTopEdge;
+    }
+
+    int getSpringLoadedTranslationY() {
+        return getOverviewModeTranslationY();
     }
 
     /**
@@ -3825,7 +3830,7 @@ public class Workspace extends PagedView
 
     @Override
     public boolean supportsAppInfoDropTarget() {
-        return false;
+        return true;
     }
 
     @Override

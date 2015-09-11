@@ -247,6 +247,7 @@ public class Launcher extends Activity
     private View mWidgetsButton;
 
     private SearchDropTargetBar mSearchDropTargetBar;
+    private AppInfoDropTargetBar mAppInfoDropTargetBar;
 
     // Main container view for the all apps screen.
     @Thunk AllAppsContainerView mAppsView;
@@ -1366,9 +1367,12 @@ public class Launcher extends Activity
         mWorkspace.setup(dragController);
         dragController.addDragListener(mWorkspace);
 
-        // Get the search/delete bar
+        // Get the search/delete/uninstall bar
         mSearchDropTargetBar = (SearchDropTargetBar)
                 mDragLayer.findViewById(R.id.search_drop_target_bar);
+        // Get the app info bar
+        mAppInfoDropTargetBar = (AppInfoDropTargetBar)
+                mDragLayer.findViewById(R.id.app_info_drop_target_bar);
 
         // Setup Apps and Widgets
         mAppsView = (AllAppsContainerView) findViewById(R.id.apps_view);
@@ -1386,6 +1390,9 @@ public class Launcher extends Activity
         if (mSearchDropTargetBar != null) {
             mSearchDropTargetBar.setup(this, dragController);
             mSearchDropTargetBar.setQsbSearchBar(getOrCreateQsbBar());
+        }
+        if (mAppInfoDropTargetBar != null) {
+            mAppInfoDropTargetBar.setup(this, dragController);
         }
 
         if (getResources().getBoolean(R.bool.debug_memory_enabled)) {
@@ -1771,6 +1778,10 @@ public class Launcher extends Activity
 
     public SearchDropTargetBar getSearchDropTargetBar() {
         return mSearchDropTargetBar;
+    }
+
+    public AppInfoDropTargetBar getAppInfoDropTargetBar() {
+        return mAppInfoDropTargetBar;
     }
 
     public LauncherAppWidgetHost getAppWidgetHost() {

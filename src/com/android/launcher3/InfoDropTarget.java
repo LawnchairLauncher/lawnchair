@@ -59,7 +59,8 @@ public class InfoDropTarget extends ButtonDropTarget {
     }
 
     public static boolean supportsDrop(Context context, ItemInfo info) {
-        return info instanceof AppInfo || info instanceof PendingAddItemInfo;
+        return info instanceof AppInfo || info instanceof ShortcutInfo
+                || info instanceof PendingAddItemInfo;
     }
 
     @Override

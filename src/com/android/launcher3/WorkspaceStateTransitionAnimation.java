@@ -285,8 +285,13 @@ public class WorkspaceStateTransitionAnimation {
         float finalHotseatAndPageIndicatorAlpha = (states.stateIsNormal || states.stateIsSpringLoaded) ?
                 1f : 0f;
         float finalOverviewPanelAlpha = states.stateIsOverview ? 1f : 0f;
-        float finalWorkspaceTranslationY = states.stateIsOverview || states.stateIsOverviewHidden ?
-                mWorkspace.getOverviewModeTranslationY() : 0;
+
+        float finalWorkspaceTranslationY = 0;
+        if (states.stateIsOverview || states.stateIsOverviewHidden) {
+            finalWorkspaceTranslationY = mWorkspace.getOverviewModeTranslationY();
+        } else if (states.stateIsSpringLoaded) {
+            finalWorkspaceTranslationY = mWorkspace.getSpringLoadedTranslationY();
+        }
 
         final int childCount = mWorkspace.getChildCount();
         final int customPageCount = mWorkspace.numCustomPages();
