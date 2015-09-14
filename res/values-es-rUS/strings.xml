@@ -32,6 +32,7 @@
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Buscar aplicaciones"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Cargando aplicaciones…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"No hay aplicaciones que coincidan con <xliff:g id="QUERY">%1$s</xliff:g>."</string>
+    <string name="all_apps_search_market_message" msgid="5470761048755751471">"Ir a <xliff:g id="QUERY">%1$s</xliff:g>"</string>
     <string name="out_of_space" msgid="4691004494942118364">"No hay más espacio en esta pantalla principal."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"La bandeja de favoritos está llena."</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Aplicaciones"</string>

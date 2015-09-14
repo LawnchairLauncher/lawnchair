@@ -25,7 +25,7 @@
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
-    <style name="Theme" parent="@android:style/Theme.DeviceDefault.Wallpaper.NoTitleBar">
+    <style name="Theme" parent="@style/BaseWallpaperTheme">
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
     </style>

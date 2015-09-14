@@ -32,14 +32,13 @@
             android:id="@+id/dismiss_search_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
-            android:layout_marginStart="4dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:contentDescription="@string/all_apps_button_label"
-            android:paddingBottom="13dp"
-            android:paddingTop="13dp"
             android:src="@drawable/ic_arrow_back_grey" />
 
-        <com.android.launcher3.allapps.AllAppsSearchEditView
+        <com.android.launcher3.ExtendedEditText
             android:id="@+id/search_box_input"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -48,7 +47,7 @@
             android:gravity="fill_horizontal|center_vertical"
             android:hint="@string/all_apps_search_bar_hint"
             android:inputType="text|textNoSuggestions|textCapWords"
-            android:imeOptions="actionDone|flagNoExtractUi"
+            android:imeOptions="actionSearch|flagNoExtractUi"
             android:maxLines="1"
             android:paddingLeft="8dp"
             android:scrollHorizontally="true"
@@ -63,10 +62,8 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/all_apps_search_bar_height"
         android:layout_gravity="end|center_vertical"
-        android:layout_marginEnd="4dp"
-        android:layout_marginRight="4dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:contentDescription="@string/all_apps_search_bar_hint"
-        android:paddingBottom="13dp"
-        android:paddingTop="13dp"
         android:src="@drawable/ic_search_grey" />
 </FrameLayout>

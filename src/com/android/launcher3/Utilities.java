@@ -87,6 +87,24 @@ public final class Utilities {
     private static final int[] sLoc0 = new int[2];
     private static final int[] sLoc1 = new int[2];
 
+    // TODO: use Build.VERSION_CODES when available
+    public static final boolean ATLEAST_MARSHMALLOW = Build.VERSION.SDK_INT >= 23;
+
+    public static final boolean ATLEAST_LOLLIPOP_MR1 =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1;
+
+    public static final boolean ATLEAST_LOLLIPOP =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+
+    public static final boolean ATLEAST_KITKAT =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+
+    public static final boolean ATLEAST_JB_MR1 =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1;
+
+    public static final boolean ATLEAST_JB_MR2 =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2;
+
     // To turn on these properties, type
     // adb shell setprop log.tag.PROPERTY_NAME [VERBOSE | SUPPRESS]
     private static final String FORCE_ENABLE_ROTATION_PROPERTY = "launcher_force_rotate";
@@ -108,23 +126,6 @@ public final class Utilities {
 
     public static boolean isRotationAllowedForDevice(Context context) {
         return sForceEnableRotation || context.getResources().getBoolean(R.bool.allow_rotation);
-    }
-
-    /**
-     * Indicates if the device is running LMP or higher.
-     */
-    public static boolean isLmpOrAbove() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
-    }
-
-    public static boolean isLmpMR1OrAbove() {
-        // TODO(adamcohen): update to Build.VERSION_CODES.LOLLIPOP_MR1 once building against 22;
-        return Build.VERSION.SDK_INT >= 22;
-    }
-
-    public static boolean isLmpMR1() {
-        // TODO(adamcohen): update to Build.VERSION_CODES.LOLLIPOP_MR1 once building against 22;
-        return Build.VERSION.SDK_INT == 22;
     }
 
     public static Bitmap createIconBitmap(Cursor c, int iconIndex, Context context) {
@@ -517,7 +518,7 @@ public final class Utilities {
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public static boolean isViewAttachedToWindow(View v) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (ATLEAST_KITKAT) {
             return v.isAttachedToWindow();
         } else {
             // A proxy call which returns null, if the view is not attached to the window.
@@ -544,7 +545,7 @@ public final class Utilities {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         for (AppWidgetProviderInfo info : appWidgetManager.getInstalledProviders()) {
             if (info.provider.getPackageName().equals(providerPkg)) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                if (ATLEAST_JB_MR1) {
                     if ((info.widgetCategory & AppWidgetProviderInfo.WIDGET_CATEGORY_SEARCHBOX) != 0) {
                         return info;
                     } else if (defaultWidgetForSearchPackage == null) {
@@ -655,7 +656,7 @@ public final class Utilities {
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static boolean isRtl(Resources res) {
-        return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) &&
+        return ATLEAST_JB_MR1 &&
                 (res.getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL);
     }
 

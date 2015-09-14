@@ -15,8 +15,11 @@
  */
 package com.android.launcher3.allapps;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,6 +29,7 @@ import android.view.View;
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.BaseRecyclerViewFastScrollBar;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.R;
 import com.android.launcher3.Stats;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Thunk;
@@ -57,6 +61,9 @@ public class AllAppsRecyclerView extends BaseRecyclerView
 
     private ScrollPositionState mScrollPosState = new ScrollPositionState();
 
+    private AllAppsBackgroundDrawable mEmptySearchBackground;
+    private int mEmptySearchBackgroundTopOffset;
+
     public AllAppsRecyclerView(Context context) {
         this(context, null);
     }
@@ -72,6 +79,11 @@ public class AllAppsRecyclerView extends BaseRecyclerView
     public AllAppsRecyclerView(Context context, AttributeSet attrs, int defStyleAttr,
             int defStyleRes) {
         super(context, attrs, defStyleAttr);
+
+        Resources res = getResources();
+        mScrollbar.setDetachThumbOnFastScroll();
+        mEmptySearchBackgroundTopOffset = res.getDimensionPixelSize(
+                R.dimen.all_apps_empty_search_bg_top_offset);
     }
 
     /**
@@ -90,6 +102,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView
         RecyclerView.RecycledViewPool pool = getRecycledViewPool();
         int approxRows = (int) Math.ceil(grid.availableHeightPx / grid.allAppsIconSizePx);
         pool.setMaxRecycledViews(AllAppsGridAdapter.EMPTY_SEARCH_VIEW_TYPE, 1);
+        pool.setMaxRecycledViews(AllAppsGridAdapter.SEARCH_MARKET_DIVIDER_VIEW_TYPE, 1);
+        pool.setMaxRecycledViews(AllAppsGridAdapter.SEARCH_MARKET_VIEW_TYPE, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.ICON_VIEW_TYPE, approxRows * mNumAppsPerRow);
         pool.setMaxRecycledViews(AllAppsGridAdapter.PREDICTION_ICON_VIEW_TYPE, mNumAppsPerRow);
         pool.setMaxRecycledViews(AllAppsGridAdapter.SECTION_BREAK_VIEW_TYPE, approxRows);
@@ -99,6 +113,10 @@ public class AllAppsRecyclerView extends BaseRecyclerView
      * Scrolls this recycler view to the top.
      */
     public void scrollToTop() {
+        // Ensure we reattach the scrollbar if it was previously detached while fast-scrolling
+        if (mScrollbar.isThumbDetached()) {
+            mScrollbar.reattachThumbToScroll();
+        }
         scrollToPosition(0);
     }
 
@@ -112,6 +130,30 @@ public class AllAppsRecyclerView extends BaseRecyclerView
                 getWidth() - mBackgroundPadding.right,
                 getHeight() - mBackgroundPadding.bottom);
         super.dispatchDraw(canvas);
+    }
+
+    @Override
+    public void onDraw(Canvas c) {
+        // Draw the background
+        if (mEmptySearchBackground != null && mEmptySearchBackground.getAlpha() > 0) {
+            c.clipRect(mBackgroundPadding.left, mBackgroundPadding.top,
+                    getWidth() - mBackgroundPadding.right,
+                    getHeight() - mBackgroundPadding.bottom);
+
+            mEmptySearchBackground.draw(c);
+        }
+
+        super.onDraw(c);
+    }
+
+    @Override
+    protected boolean verifyDrawable(Drawable who) {
+        return who == mEmptySearchBackground || super.verifyDrawable(who);
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        updateEmptySearchBackgroundBounds();
     }
 
     @Override
@@ -131,6 +173,25 @@ public class AllAppsRecyclerView extends BaseRecyclerView
         } else {
             sourceData.putString(Stats.SOURCE_EXTRA_SUB_CONTAINER,
                     Stats.SUB_CONTAINER_ALL_APPS_A_Z);
+        }
+    }
+
+    public void onSearchResultsChanged() {
+        // Always scroll the view to the top so the user can see the changed results
+        scrollToTop();
+
+        if (mApps.hasNoFilteredResults()) {
+            if (mEmptySearchBackground == null) {
+                mEmptySearchBackground = new AllAppsBackgroundDrawable(getContext());
+                mEmptySearchBackground.setAlpha(0);
+                mEmptySearchBackground.setCallback(this);
+                updateEmptySearchBackgroundBounds();
+            }
+            mEmptySearchBackground.animateBgAlpha(1f, 150);
+        } else if (mEmptySearchBackground != null) {
+            // For the time being, we just immediately hide the background to ensure that it does
+            // not overlap with the results
+            mEmptySearchBackground.setBgAlpha(0f);
         }
     }
 
@@ -166,8 +227,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView
         }
 
         // Map the touch position back to the scroll of the recycler view
-        getCurScrollState(mScrollPosState, mApps.getAdapterItems());
-        int availableScrollHeight = getAvailableScrollHeight(rowCount, mScrollPosState.rowHeight, 0);
+        getCurScrollState(mScrollPosState);
+        int availableScrollHeight = getAvailableScrollHeight(rowCount, mScrollPosState.rowHeight);
         LinearLayoutManager layoutManager = (LinearLayoutManager) getLayoutManager();
         if (mFastScrollMode == FAST_SCROLL_MODE_FREE_SCROLL) {
             layoutManager.scrollToPositionWithOffset(0, (int) -(availableScrollHeight * touchFraction));
@@ -214,24 +275,83 @@ public class AllAppsRecyclerView extends BaseRecyclerView
      * Updates the bounds for the scrollbar.
      */
     @Override
-    public void onUpdateScrollbar() {
+    public void onUpdateScrollbar(int dy) {
         List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
 
         // Skip early if there are no items or we haven't been measured
         if (items.isEmpty() || mNumAppsPerRow == 0) {
-            mScrollbar.setScrollbarThumbOffset(-1, -1);
+            mScrollbar.setThumbOffset(-1, -1);
             return;
         }
 
         // Find the index and height of the first visible row (all rows have the same height)
         int rowCount = mApps.getNumAppRows();
-        getCurScrollState(mScrollPosState, items);
+        getCurScrollState(mScrollPosState);
         if (mScrollPosState.rowIndex < 0) {
-            mScrollbar.setScrollbarThumbOffset(-1, -1);
+            mScrollbar.setThumbOffset(-1, -1);
             return;
         }
 
-        synchronizeScrollBarThumbOffsetToViewScroll(mScrollPosState, rowCount, 0);
+        // Only show the scrollbar if there is height to be scrolled
+        int availableScrollBarHeight = getAvailableScrollBarHeight();
+        int availableScrollHeight = getAvailableScrollHeight(mApps.getNumAppRows(), mScrollPosState.rowHeight);
+        if (availableScrollHeight <= 0) {
+            mScrollbar.setThumbOffset(-1, -1);
+            return;
+        }
+
+        // Calculate the current scroll position, the scrollY of the recycler view accounts for the
+        // view padding, while the scrollBarY is drawn right up to the background padding (ignoring
+        // padding)
+        int scrollY = getPaddingTop() +
+                (mScrollPosState.rowIndex * mScrollPosState.rowHeight) - mScrollPosState.rowTopOffset;
+        int scrollBarY = mBackgroundPadding.top +
+                (int) (((float) scrollY / availableScrollHeight) * availableScrollBarHeight);
+
+        if (mScrollbar.isThumbDetached()) {
+            int scrollBarX;
+            if (Utilities.isRtl(getResources())) {
+                scrollBarX = mBackgroundPadding.left;
+            } else {
+                scrollBarX = getWidth() - mBackgroundPadding.right - mScrollbar.getThumbWidth();
+            }
+
+            if (mScrollbar.isDraggingThumb()) {
+                // If the thumb is detached, then just update the thumb to the current
+                // touch position
+                mScrollbar.setThumbOffset(scrollBarX, (int) mScrollbar.getLastTouchY());
+            } else {
+                int thumbScrollY = mScrollbar.getThumbOffset().y;
+                int diffScrollY = scrollBarY - thumbScrollY;
+                if (diffScrollY * dy > 0f) {
+                    // User is scrolling in the same direction the thumb needs to catch up to the
+                    // current scroll position.  We do this by mapping the difference in movement
+                    // from the original scroll bar position to the difference in movement necessary
+                    // in the detached thumb position to ensure that both speed towards the same
+                    // position at either end of the list.
+                    if (dy < 0) {
+                        int offset = (int) ((dy * thumbScrollY) / (float) scrollBarY);
+                        thumbScrollY += Math.max(offset, diffScrollY);
+                    } else {
+                        int offset = (int) ((dy * (availableScrollBarHeight - thumbScrollY)) /
+                                (float) (availableScrollBarHeight - scrollBarY));
+                        thumbScrollY += Math.min(offset, diffScrollY);
+                    }
+                    thumbScrollY = Math.max(0, Math.min(availableScrollBarHeight, thumbScrollY));
+                    mScrollbar.setThumbOffset(scrollBarX, thumbScrollY);
+                    if (scrollBarY == thumbScrollY) {
+                        mScrollbar.reattachThumbToScroll();
+                    }
+                } else {
+                    // User is scrolling in an opposite direction to the direction that the thumb
+                    // needs to catch up to the scroll position.  Do nothing except for updating
+                    // the scroll bar x to match the thumb width.
+                    mScrollbar.setThumbOffset(scrollBarX, thumbScrollY);
+                }
+            }
+        } else {
+            synchronizeScrollBarThumbOffsetToViewScroll(mScrollPosState, rowCount);
+        }
     }
 
     /**
@@ -283,13 +403,13 @@ public class AllAppsRecyclerView extends BaseRecyclerView
     /**
      * Returns the current scroll state of the apps rows.
      */
-    private void getCurScrollState(ScrollPositionState stateOut,
-            List<AlphabeticalAppsList.AdapterItem> items) {
+    protected void getCurScrollState(ScrollPositionState stateOut) {
         stateOut.rowIndex = -1;
         stateOut.rowTopOffset = -1;
         stateOut.rowHeight = -1;
 
         // Return early if there are no items or we haven't been measured
+        List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
         if (items.isEmpty() || mNumAppsPerRow == 0) {
             return;
         }
@@ -323,5 +443,21 @@ public class AllAppsRecyclerView extends BaseRecyclerView
         } else {
             return 0;
         }
+    }
+
+    /**
+     * Updates the bounds of the empty search background.
+     */
+    private void updateEmptySearchBackgroundBounds() {
+        if (mEmptySearchBackground == null) {
+            return;
+        }
+
+        // Center the empty search background on this new view bounds
+        int x = (getMeasuredWidth() - mEmptySearchBackground.getIntrinsicWidth()) / 2;
+        int y = mEmptySearchBackgroundTopOffset;
+        mEmptySearchBackground.setBounds(x, y,
+                x + mEmptySearchBackground.getIntrinsicWidth(),
+                y + mEmptySearchBackground.getIntrinsicHeight());
     }
 }

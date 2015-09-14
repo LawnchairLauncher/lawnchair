@@ -35,8 +35,14 @@
         <item name="android:background">#88000000</item>
     </style>
 
-    <style name="Theme" parent="@android:style/Theme.DeviceDefault.Wallpaper.NoTitleBar">
+    <style name="BaseWallpaperTheme" parent="@android:style/Theme.DeviceDefault.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowShowWallpaper">true</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
+
+    <style name="Theme" parent="@style/BaseWallpaperTheme"></style>
 
     <style name="ActionBarSetWallpaperStyle" parent="@android:style/Widget.DeviceDefault.ActionButton">
         <item name="android:textColor">#ffffffff</item>

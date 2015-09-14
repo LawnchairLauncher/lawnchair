@@ -39,14 +39,14 @@
     <color name="outline_color">#FFFFFFFF</color>
 
     <!-- Containers -->
-    <color name="container_fastscroll_thumb_inactive_color">#42000000</color>
+    <color name="container_fastscroll_thumb_inactive_color">#009688</color>
     <color name="container_fastscroll_thumb_active_color">#009688</color>
 
     <!-- All Apps -->
     <color name="all_apps_grid_section_text_color">#009688</color>
+    <color name="all_apps_search_market_button_focused_bg_color">#DDDDDD</color>
 
     <!-- Widgets view -->
-    <color name="widgets_view_fastscroll_thumb_inactive_color">#42FFFFFF</color>
     <color name="widgets_view_section_text_color">#FFFFFF</color>
     <color name="widgets_view_item_text_color">#C4C4C4</color>
     <color name="widgets_cell_color">#263238</color>

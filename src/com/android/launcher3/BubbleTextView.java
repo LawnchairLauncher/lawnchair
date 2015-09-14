@@ -34,11 +34,13 @@ import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewParent;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
+
 import com.android.launcher3.IconCache.IconLoadRequest;
 import com.android.launcher3.model.PackageItemInfo;
 
@@ -508,7 +510,7 @@ public class BubbleTextView extends TextView
             mIcon.setBounds(0, 0, iconSize, iconSize);
         }
         if (mLayoutHorizontal) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            if (Utilities.ATLEAST_JB_MR1) {
                 setCompoundDrawablesRelative(mIcon, null, null, null);
             } else {
                 setCompoundDrawables(mIcon, null, null, null);
@@ -538,6 +540,13 @@ public class BubbleTextView extends TextView
             } else if (info instanceof ShortcutInfo) {
                 applyFromShortcutInfo((ShortcutInfo) info,
                         LauncherAppState.getInstance().getIconCache());
+                if ((info.rank < FolderIcon.NUM_ITEMS_IN_PREVIEW) && (info.container >= 0)) {
+                    View folderIcon =
+                            mLauncher.getWorkspace().getHomescreenIconByItemId(info.container);
+                    if (folderIcon != null) {
+                        folderIcon.invalidate();
+                    }
+                }
             } else if (info instanceof PackageItemInfo) {
                 applyFromPackageItemInfo((PackageItemInfo) info);
             }

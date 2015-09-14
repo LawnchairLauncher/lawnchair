@@ -53,7 +53,7 @@ public abstract class LauncherAppsCompat {
     public static LauncherAppsCompat getInstance(Context context) {
         synchronized (sInstanceLock) {
             if (sInstance == null) {
-                if (Utilities.isLmpOrAbove()) {
+                if (Utilities.ATLEAST_LOLLIPOP) {
                     sInstance = new LauncherAppsCompatVL(context.getApplicationContext());
                 } else {
                     sInstance = new LauncherAppsCompatV16(context.getApplicationContext());

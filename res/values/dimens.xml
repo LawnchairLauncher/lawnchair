@@ -55,9 +55,9 @@
     <!-- Notes: container_bounds_inset - quantum_panel_outer_padding -->
     <dimen name="container_bounds_minus_quantum_panel_padding_inset">4dp</dimen>
 
-    <dimen name="container_fastscroll_thumb_min_width">4dp</dimen>
-    <dimen name="container_fastscroll_thumb_max_width">8dp</dimen>
-    <dimen name="container_fastscroll_thumb_height">64dp</dimen>
+    <dimen name="container_fastscroll_thumb_min_width">5dp</dimen>
+    <dimen name="container_fastscroll_thumb_max_width">9dp</dimen>
+    <dimen name="container_fastscroll_thumb_height">72dp</dimen>
     <dimen name="container_fastscroll_thumb_touch_inset">-24dp</dimen>
     <dimen name="container_fastscroll_popup_size">72dp</dimen>
     <dimen name="container_fastscroll_popup_text_size">48dp</dimen>
@@ -74,6 +74,10 @@
     <dimen name="all_apps_prediction_icon_top_padding">8dp</dimen>
     <dimen name="all_apps_prediction_icon_bottom_padding">18dp</dimen>
     <dimen name="all_apps_list_top_bottom_padding">8dp</dimen>
+    <dimen name="all_apps_empty_search_message_top_offset">40dp</dimen>
+    <dimen name="all_apps_empty_search_bg_top_offset">144dp</dimen>
+    <dimen name="all_apps_background_canvas_width">700dp</dimen>
+    <dimen name="all_apps_background_canvas_height">475dp</dimen>
 
 <!-- Widget tray -->
     <dimen name="widget_container_inset">8dp</dimen>
@@ -128,5 +132,9 @@
     <dimen name="blur_size_medium_outline">2dp</dimen>
     <dimen name="blur_size_click_shadow">4dp</dimen>
     <dimen name="click_shadow_high_shift">2dp</dimen>
+
+<!-- Pending widget -->
+    <dimen name="pending_widget_min_padding">8dp</dimen>
+    <dimen name="pending_widget_elevation">2dp</dimen>
 
 </resources>

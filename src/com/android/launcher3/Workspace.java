@@ -178,7 +178,24 @@ public class Workspace extends PagedView
     // State variable that indicates whether the pages are small (ie when you're
     // in all apps or customize mode)
 
-    enum State { NORMAL, NORMAL_HIDDEN, SPRING_LOADED, OVERVIEW, OVERVIEW_HIDDEN};
+    enum State {
+        NORMAL          (SearchDropTargetBar.State.SEARCH_BAR),
+        NORMAL_HIDDEN   (SearchDropTargetBar.State.INVISIBLE),
+        SPRING_LOADED   (SearchDropTargetBar.State.DROP_TARGET),
+        OVERVIEW        (SearchDropTargetBar.State.INVISIBLE),
+        OVERVIEW_HIDDEN (SearchDropTargetBar.State.INVISIBLE);
+
+        private final SearchDropTargetBar.State mBarState;
+
+        State(SearchDropTargetBar.State searchBarState) {
+            mBarState = searchBarState;
+        }
+
+        public SearchDropTargetBar.State getSearchDropTargetBarState() {
+            return mBarState;
+        }
+    };
+
     private State mState = State.NORMAL;
     private boolean mIsSwitchingState = false;
 
@@ -306,8 +323,9 @@ public class Workspace extends PagedView
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.Workspace, defStyle, 0);
         mSpringLoadedShrinkFactor =
-            res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
-        mOverviewModeShrinkFactor = grid.getOverviewModeScale(mIsRtl);
+                res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
+        mOverviewModeShrinkFactor =
+                res.getInteger(R.integer.config_workspaceOverviewShrinkPercentage) / 100f;
         mOriginalDefaultPage = mDefaultPage = a.getInt(R.styleable.Workspace_defaultScreen, 1);
         a.recycle();
 
@@ -869,6 +887,9 @@ public class Workspace extends PagedView
             }
         }
 
+        LauncherAccessibilityDelegate delegate =
+                LauncherAppState.getInstance().getAccessibilityDelegate();
+
         // We enforce at least one page to add new items to. In the case that we remove the last
         // such screen, we convert the last screen to the empty screen
         int minScreens = 1 + numCustomPages();
@@ -883,6 +904,11 @@ public class Workspace extends PagedView
                 if (indexOfChild(cl) < currentPage) {
                     pageShift++;
                 }
+
+                if (delegate != null && delegate.isInAccessibleDrag()) {
+                    cl.enableAccessibleDrag(false, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG);
+                }
+
                 removeView(cl);
             } else {
                 // if this is the last non-custom content screen, convert it to the empty screen
@@ -1566,7 +1592,7 @@ public class Workspace extends PagedView
             // Reset our click listener
             setOnClickListener(mLauncher);
         }
-        mLauncher.getSearchBar().enableAccessibleDrag(enable);
+        mLauncher.getSearchDropTargetBar().enableAccessibleDrag(enable);
         mLauncher.getHotseat().getLayout()
             .enableAccessibleDrag(enable, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG);
     }
@@ -1952,15 +1978,17 @@ public class Workspace extends PagedView
 
     int getOverviewModeTranslationY() {
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        Rect overviewBar = grid.getOverviewModeButtonBarRect();
+        Rect workspacePadding = grid.getWorkspacePadding(Utilities.isRtl(getResources()));
+        int overviewButtonBarHeight = grid.getOverviewModeButtonBarHeight();
 
-        int availableHeight = getViewportHeight();
         int scaledHeight = (int) (mOverviewModeShrinkFactor * getNormalChildHeight());
-        int offsetFromTopEdge = (availableHeight - scaledHeight) / 2;
-        int offsetToCenterInOverview = (availableHeight - mInsets.top - overviewBar.height()
-                - scaledHeight) / 2;
-
-        return -offsetFromTopEdge + mInsets.top + offsetToCenterInOverview;
+        int workspaceTop = mInsets.top + workspacePadding.top;
+        int workspaceBottom = getViewportHeight() - mInsets.bottom - workspacePadding.bottom;
+        int overviewTop = mInsets.top;
+        int overviewBottom = getViewportHeight() - mInsets.bottom - overviewButtonBarHeight;
+        int workspaceOffsetTopEdge = workspaceTop + ((workspaceBottom - workspaceTop) - scaledHeight) / 2;
+        int overviewOffsetTopEdge = overviewTop + (overviewBottom - overviewTop - scaledHeight) / 2;
+        return -workspaceOffsetTopEdge + overviewOffsetTopEdge;
     }
 
     /**
@@ -1968,10 +1996,10 @@ public class Workspace extends PagedView
      * to that new state.
      */
     public Animator setStateWithAnimation(State toState, int toPage, boolean animated,
-            boolean hasOverlaySearchBar, HashMap<View, Integer> layerViews) {
+            HashMap<View, Integer> layerViews) {
         // Create the animation to the new state
         Animator workspaceAnim =  mStateTransitionAnimation.getAnimationToState(mState,
-                toState, toPage, animated, hasOverlaySearchBar, layerViews);
+                toState, toPage, animated, layerViews);
 
         // Update the current state
         mState = toState;
@@ -1985,7 +2013,7 @@ public class Workspace extends PagedView
     }
 
     public void updateAccessibilityFlags() {
-        if (Utilities.isLmpOrAbove()) {
+        if (Utilities.ATLEAST_LOLLIPOP) {
             int total = getPageCount();
             for (int i = numCustomPages(); i < total; i++) {
                 updateAccessibilityFlags((CellLayout) getPageAt(i), i);
@@ -2273,6 +2301,8 @@ public class Workspace extends PagedView
             dragRect = new Rect(left, top, right, bottom);
         } else if (child instanceof FolderIcon) {
             int previewSize = grid.folderIconSizePx;
+            dragVisualizeOffset = new Point(-padding.get() / 2,
+                    padding.get() / 2 - child.getPaddingTop());
             dragRect = new Rect(0, child.getPaddingTop(), child.getWidth(), previewSize);
         }
 
@@ -2289,13 +2319,13 @@ public class Workspace extends PagedView
             throw new IllegalStateException(msg);
         }
 
-        DragView dv = mDragController.startDrag(b, dragLayerX, dragLayerY, source, child.getTag(),
-                DragController.DRAG_ACTION_MOVE, dragVisualizeOffset, dragRect, scale, accessible);
-        dv.setIntrinsicIconScaleFactor(source.getIntrinsicIconScaleFactor());
-
         if (child.getParent() instanceof ShortcutAndWidgetContainer) {
             mDragSourceInternal = (ShortcutAndWidgetContainer) child.getParent();
         }
+
+        DragView dv = mDragController.startDrag(b, dragLayerX, dragLayerY, source, child.getTag(),
+                DragController.DRAG_ACTION_MOVE, dragVisualizeOffset, dragRect, scale, accessible);
+        dv.setIntrinsicIconScaleFactor(source.getIntrinsicIconScaleFactor());
 
         b.recycle();
     }
@@ -3763,7 +3793,11 @@ public class Workspace extends PagedView
         if (parentCell != null) {
             parentCell.removeView(v);
         } else if (LauncherAppState.isDogfoodBuild()) {
-            throw new NullPointerException("mDragInfo.cell has null parent");
+            // When an app is uninstalled using the drop target, we wait until resume to remove
+            // the icon. We also remove all the corresponding items from the workspace at
+            // {@link Launcher#bindComponentsRemoved}. That call can come before or after
+            // {@link Launcher#mOnResumeCallbacks} depending on how busy the worker thread is.
+            Log.e(TAG, "mDragInfo.cell has null parent");
         }
         if (v instanceof DropTarget) {
             mDragController.removeDropTarget((DropTarget) v);
@@ -4050,6 +4084,16 @@ public class Workspace extends PagedView
         });
     }
 
+    public View getHomescreenIconByItemId(final long id) {
+        return getFirstMatch(new ItemOperator() {
+
+            @Override
+            public boolean evaluate(ItemInfo info, View v, View parent) {
+                return info != null && info.id == id;
+            }
+        });
+    }
+
     public View getViewForTag(final Object tag) {
         return getFirstMatch(new ItemOperator() {
 
@@ -4298,8 +4342,9 @@ public class Workspace extends PagedView
                         updates.contains(info)) {
                     ShortcutInfo si = (ShortcutInfo) info;
                     BubbleTextView shortcut = (BubbleTextView) v;
-                    boolean oldPromiseState = getTextViewIcon(shortcut)
-                            instanceof PreloadIconDrawable;
+                    Drawable oldIcon = getTextViewIcon(shortcut);
+                    boolean oldPromiseState = (oldIcon instanceof PreloadIconDrawable)
+                            && ((PreloadIconDrawable) oldIcon).hasNotCompleted();
                     shortcut.applyFromShortcutInfo(si, mIconCache,
                             si.isPromise() != oldPromiseState);
 

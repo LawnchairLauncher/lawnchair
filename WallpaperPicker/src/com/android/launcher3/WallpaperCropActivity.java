@@ -223,14 +223,12 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     protected boolean isActivityDestroyed() {
-        return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
-                && isDestroyed();
+        return Utilities.ATLEAST_JB_MR1 && isDestroyed();
     }
 
     @Thunk void addReusableBitmap(TileSource src) {
         synchronized (mReusableBitmaps) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
-                    && src instanceof BitmapRegionTileSource) {
+            if (Utilities.ATLEAST_KITKAT && src instanceof BitmapRegionTileSource) {
                 Bitmap preview = ((BitmapRegionTileSource) src).getBitmap();
                 if (preview != null && preview.isMutable()) {
                     mReusableBitmaps.add(preview);

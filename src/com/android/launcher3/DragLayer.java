@@ -159,7 +159,7 @@ public class DragLayer extends InsettableFrameLayout {
     }
 
     private boolean isEventOverDropTargetBar(MotionEvent ev) {
-        getDescendantRectRelativeToSelf(mLauncher.getSearchBar(), mHitRect);
+        getDescendantRectRelativeToSelf(mLauncher.getSearchDropTargetBar(), mHitRect);
         if (mHitRect.contains((int) ev.getX(), (int) ev.getY())) {
             return true;
         }
@@ -321,7 +321,7 @@ public class DragLayer extends InsettableFrameLayout {
             childrenForAccessibility.add(currentFolder);
 
             if (isInAccessibleDrag()) {
-                childrenForAccessibility.add(mLauncher.getSearchBar());
+                childrenForAccessibility.add(mLauncher.getSearchDropTargetBar());
             }
         } else {
             super.addChildrenForAccessibility(childrenForAccessibility);

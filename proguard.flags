@@ -1,8 +1,13 @@
+-keep class com.android.launcher3.allapps.AllAppsBackgroundDrawable {
+  public void setAlpha(int);
+  public int getAlpha();
+}
+
 -keep class com.android.launcher3.BaseRecyclerViewFastScrollBar {
-  public void setWidth(int);
-  public int getWidth();
-  public void setTrackAlpha(int);
-  public int getTrackAlpha();
+  public void setThumbWidth(int);
+  public int getThumbWidth();
+  public void setTrackWidth(int);
+  public int getTrackWidth();
 }
 
 -keep class com.android.launcher3.BaseRecyclerViewFastScrollPopup {
