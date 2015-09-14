@@ -355,7 +355,7 @@ public class AutoInstallsLayout {
                     return addShortcut(info.loadLabel(mPackageManager).toString(),
                             intent, Favorites.ITEM_TYPE_APPLICATION);
                 } catch (PackageManager.NameNotFoundException e) {
-                    if (LOGD) Log.w(TAG, "Unable to add favorite: " + packageName + "/" + className, e);
+                    Log.e(TAG, "Unable to add favorite: " + packageName + "/" + className, e);
                 }
                 return -1;
             } else {
@@ -367,7 +367,7 @@ public class AutoInstallsLayout {
          * Helper method to allow extending the parser capabilities
          */
         protected long invalidPackageOrClass(XmlResourceParser parser) {
-            if (LOGD) Log.d(TAG, "Skipping invalid <favorite> with no component");
+            Log.w(TAG, "Skipping invalid <favorite> with no component");
             return -1;
         }
     }

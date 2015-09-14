@@ -32,6 +32,7 @@
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"ایپس تلاش کریں"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"ایپس لوڈ ہو رہی ہیں…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" سے مماثل کوئی ایپس نہیں ملیں"</string>
+    <string name="all_apps_search_market_message" msgid="5470761048755751471">"<xliff:g id="QUERY">%1$s</xliff:g> پر جائیں"</string>
     <string name="out_of_space" msgid="4691004494942118364">"اس ہوم اسکرین پر مزید کوئی گنجائش نہیں ہے۔"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"پسندیدہ ٹرے میں مزید کوئی گنجائش نہیں ہے"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"ایپس"</string>

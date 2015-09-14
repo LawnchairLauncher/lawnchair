@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 public class LauncherViewPropertyAnimator extends Animator implements AnimatorListener {
+
     enum Properties {
             TRANSLATION_X,
             TRANSLATION_Y,
@@ -51,13 +52,12 @@ public class LauncherViewPropertyAnimator extends Animator implements AnimatorLi
     long mStartDelay;
     long mDuration;
     TimeInterpolator mInterpolator;
-    ArrayList<Animator.AnimatorListener> mListeners;
+    ArrayList<Animator.AnimatorListener> mListeners = new ArrayList<>();
     boolean mRunning = false;
     FirstFrameAnimatorHelper mFirstFrameHelper;
 
     public LauncherViewPropertyAnimator(View target) {
         mTarget = target;
-        mListeners = new ArrayList<Animator.AnimatorListener>();
     }
 
     @Override

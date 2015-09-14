@@ -32,6 +32,7 @@
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"აპების ძიება"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"აპები იტვირთება..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"„<xliff:g id="QUERY">%1$s</xliff:g>“-ის თანხვედრი აპები არ მოიძებნა"</string>
+    <string name="all_apps_search_market_message" msgid="5470761048755751471">"გადადი <xliff:g id="QUERY">%1$s</xliff:g>-ში"</string>
     <string name="out_of_space" msgid="4691004494942118364">"ამ მთავარ ეკრანზე ადგილი აღარ არის."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"რჩეულების თაროზე ადგილი არ არის"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"აპები"</string>

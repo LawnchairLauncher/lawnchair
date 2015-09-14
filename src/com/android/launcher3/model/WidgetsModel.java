@@ -8,6 +8,9 @@ import android.util.Log;
 
 import com.android.launcher3.AppFilter;
 import com.android.launcher3.IconCache;
+import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.ItemInfo;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
@@ -39,8 +42,8 @@ public class WidgetsModel {
     private ArrayList<Object> mRawList;
 
     private final AppWidgetManagerCompat mAppWidgetMgr;
-    private final Comparator mWidgetAndShortcutNameComparator;
-    private final Comparator mAppNameComparator;
+    private final WidgetsAndShortcutNameComparator mWidgetAndShortcutNameComparator;
+    private final Comparator<ItemInfo> mAppNameComparator;
     private final IconCache mIconCache;
     private final AppFilter mAppFilter;
     private AlphabeticIndexCompat mIndexer;
@@ -54,6 +57,7 @@ public class WidgetsModel {
         mIndexer = new AlphabeticIndexCompat(context);
     }
 
+    @SuppressWarnings("unchecked")
     private WidgetsModel(WidgetsModel model) {
         mAppWidgetMgr = model.mAppWidgetMgr;
         mPackageItemInfos = (ArrayList<PackageItemInfo>) model.mPackageItemInfos.clone();
@@ -103,6 +107,9 @@ public class WidgetsModel {
         // clear the lists.
         mWidgetsList.clear();
         mPackageItemInfos.clear();
+        mWidgetAndShortcutNameComparator.reset();
+
+        InvariantDeviceProfile idp = LauncherAppState.getInstance().getInvariantDeviceProfile();
 
         // add and update.
         for (Object o: rawWidgetsShortcuts) {
@@ -111,9 +118,23 @@ public class WidgetsModel {
             ComponentName componentName = null;
             if (o instanceof LauncherAppWidgetProviderInfo) {
                 LauncherAppWidgetProviderInfo widgetInfo = (LauncherAppWidgetProviderInfo) o;
-                componentName = widgetInfo.provider;
-                packageName = widgetInfo.provider.getPackageName();
-                userHandle = mAppWidgetMgr.getUser(widgetInfo);
+
+                // Ensure that all widgets we show can be added on a workspace of this size
+                int minSpanX = Math.min(widgetInfo.spanX, widgetInfo.minSpanX);
+                int minSpanY = Math.min(widgetInfo.spanY, widgetInfo.minSpanY);
+                if (minSpanX <= (int) idp.numColumns &&
+                    minSpanY <= (int) idp.numRows) {
+                    componentName = widgetInfo.provider;
+                    packageName = widgetInfo.provider.getPackageName();
+                    userHandle = mAppWidgetMgr.getUser(widgetInfo);
+                } else {
+                    if (DEBUG) {
+                        Log.d(TAG, String.format(
+                                "Widget %s : (%d X %d) can't fit on this device",
+                                widgetInfo.provider, minSpanX, minSpanY));
+                    }
+                    continue;
+                }
             } else if (o instanceof ResolveInfo) {
                 ResolveInfo resolveInfo = (ResolveInfo) o;
                 componentName = new ComponentName(resolveInfo.activityInfo.packageName,
@@ -139,7 +160,7 @@ public class WidgetsModel {
             if (widgetsShortcutsList != null) {
                 widgetsShortcutsList.add(o);
             } else {
-                widgetsShortcutsList = new ArrayList<Object>();
+                widgetsShortcutsList = new ArrayList<>();
                 widgetsShortcutsList.add(o);
                 pInfo = new PackageItemInfo(packageName);
                 mIconCache.getTitleAndIconForApp(packageName, userHandle,

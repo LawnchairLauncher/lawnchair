@@ -33,4 +33,11 @@
         <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
     </style>
 
+    <style name="Theme" parent="@style/BaseWallpaperTheme">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:colorControlActivated">@color/launcher_accent_color</item>
+        <item name="android:colorAccent">@color/launcher_accent_color</item>
+        <item name="android:colorPrimary">@color/launcher_accent_color</item>
+    </style>
 </resources>

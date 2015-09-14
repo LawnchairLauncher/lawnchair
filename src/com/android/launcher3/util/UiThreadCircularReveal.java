@@ -47,7 +47,7 @@ public class UiThreadCircularReveal {
                 float progress = arg0.getAnimatedFraction();
                 outlineProvider.setProgress(progress);
                 revealView.invalidateOutline();
-                if (!Utilities.isLmpMR1OrAbove()) {
+                if (!Utilities.ATLEAST_LOLLIPOP_MR1) {
                     revealView.invalidate();
                 }
             }

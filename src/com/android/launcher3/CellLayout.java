@@ -54,7 +54,6 @@ import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
 import com.android.launcher3.accessibility.FolderAccessibilityHelper;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.util.Thunk;
-import com.android.launcher3.widget.PendingAddWidgetInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -211,6 +210,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
         mBackground = (TransitionDrawable) res.getDrawable(R.drawable.bg_screenpanel);
         mBackground.setCallback(this);
+        mBackground.setAlpha((int) (mBackgroundAlpha * 255));
 
         mReorderPreviewAnimationMagnitude = (REORDER_PREVIEW_MAGNITUDE *
                 grid.iconSizePx);
@@ -414,7 +414,11 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             if (mIsDragOverlapping) {
                 mBackground.startTransition(BACKGROUND_ACTIVATE_DURATION);
             } else {
-                mBackground.reverseTransition(BACKGROUND_ACTIVATE_DURATION);
+                if (mBackgroundAlpha > 0f) {
+                    mBackground.reverseTransition(BACKGROUND_ACTIVATE_DURATION);
+                } else {
+                    mBackground.resetTransition();
+                }
             }
             invalidate();
         }
@@ -2679,65 +2683,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         int y = vStartPadding + cellY * (cellHeight + heightGap);
 
         resultRect.set(x, y, x + width, y + height);
-    }
-
-    /**
-     * Computes the required horizontal and vertical cell spans to always
-     * fit the given rectangle.
-     *
-     * @param width Width in pixels
-     * @param height Height in pixels
-     * @param result An array of length 2 in which to store the result (may be null).
-     */
-    public static int[] rectToCell(Launcher launcher, int width, int height, int[] result) {
-        return rectToCell(launcher.getDeviceProfile(), launcher, width, height, result);
-    }
-
-    public static int[] rectToCell(DeviceProfile grid, Context context, int width, int height,
-            int[] result) {
-        Rect padding = grid.getWorkspacePadding(Utilities.isRtl(context.getResources()));
-
-        // Always assume we're working with the smallest span to make sure we
-        // reserve enough space in both orientations.
-        int parentWidth = DeviceProfile.calculateCellWidth(grid.widthPx
-                - padding.left - padding.right, (int) grid.inv.numColumns);
-        int parentHeight = DeviceProfile.calculateCellHeight(grid.heightPx
-                - padding.top - padding.bottom, (int) grid.inv.numRows);
-        int smallerSize = Math.min(parentWidth, parentHeight);
-
-        // Always round up to next largest cell
-        int spanX = (int) Math.ceil(width / (float) smallerSize);
-        int spanY = (int) Math.ceil(height / (float) smallerSize);
-
-        if (result == null) {
-            return new int[] { spanX, spanY };
-        }
-        result[0] = spanX;
-        result[1] = spanY;
-        return result;
-    }
-
-    /**
-     * Calculate the grid spans needed to fit given item
-     */
-    public void calculateSpans(ItemInfo info) {
-        final int minWidth;
-        final int minHeight;
-
-        if (info instanceof LauncherAppWidgetInfo) {
-            minWidth = ((LauncherAppWidgetInfo) info).minWidth;
-            minHeight = ((LauncherAppWidgetInfo) info).minHeight;
-        } else if (info instanceof PendingAddWidgetInfo) {
-            minWidth = ((PendingAddWidgetInfo) info).minWidth;
-            minHeight = ((PendingAddWidgetInfo) info).minHeight;
-        } else {
-            // It's not a widget, so it must be 1x1
-            info.spanX = info.spanY = 1;
-            return;
-        }
-        int[] spans = rectToCell(mLauncher, minWidth, minHeight, null);
-        info.spanX = spans[0];
-        info.spanY = spans[1];
     }
 
     private void clearOccupiedCells() {
