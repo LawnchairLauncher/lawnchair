@@ -16,7 +16,7 @@
 
 package com.android.launcher3;
 
-import android.Manifest.permission;
+import android.Manifest;
 import android.animation.LayoutTransition;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -38,7 +38,6 @@ import android.graphics.PorterDuff;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.Manifest;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -75,10 +74,8 @@ import com.android.gallery3d.common.BitmapCropTask;
 import com.android.gallery3d.common.BitmapUtils;
 import com.android.gallery3d.common.Utils;
 import com.android.launcher3.util.Thunk;
-import com.android.launcher3.util.WallpaperUtils;
 import com.android.photos.BitmapRegionTileSource;
 import com.android.photos.BitmapRegionTileSource.BitmapSource;
-import com.android.photos.views.TiledImageRenderer.TileSource;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -90,6 +87,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
     public static final int IMAGE_PICK = 5;
     public static final int PICK_WALLPAPER_THIRD_PARTY_ACTIVITY = 6;
+    /** An Intent extra used when opening the wallpaper picker from the workspace overlay. */
+    public static final String EXTRA_WALLPAPER_OFFSET = "com.android.launcher3.WALLPAPER_OFFSET";
     private static final String TEMP_WALLPAPER_TILES = "TEMP_WALLPAPER_TILES";
     private static final String SELECTED_INDEX = "SELECTED_INDEX";
     private static final int FLAG_POST_DELAY_MILLIS = 200;
@@ -110,6 +109,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     ArrayList<Uri> mTempWallpaperTiles = new ArrayList<Uri>();
     private SavedWallpaperImages mSavedImages;
     @Thunk int mSelectedIndex = -1;
+    private float mWallpaperParallaxOffset;
 
     public static abstract class WallpaperTileInfo {
         protected View mView;
@@ -179,7 +179,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                     a.getSavedImages().writeImage(thumb, imageBytes);
                 }
             };
-            a.cropImageAndSetWallpaper(mUri, h, finishActivityWhenDone);
+            boolean shouldFadeOutOnFinish = a.getWallpaperParallaxOffset() == 0f;
+            a.cropImageAndSetWallpaper(mUri, h, finishActivityWhenDone, shouldFadeOutOnFinish);
         }
         @Override
         public boolean isSelectable() {
@@ -207,7 +208,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
                 @Override
                 public void run() {
-                    if (bitmapSource.getLoadingState() == BitmapSource.State.LOADED) { 
+                    if (bitmapSource.getLoadingState() == BitmapSource.State.LOADED) {
                         a.setWallpaperButtonEnabled(true);
                     }
                 }
@@ -215,7 +216,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         }
         @Override
         public void onSave(WallpaperPickerActivity a) {
-            a.setWallpaper(Uri.fromFile(mFile), true);
+            boolean shouldFadeOutOnFinish = a.getWallpaperParallaxOffset() == 0f;
+            a.setWallpaper(Uri.fromFile(mFile), true, shouldFadeOutOnFinish);
         }
         @Override
         public boolean isSelectable() {
@@ -241,16 +243,16 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             a.setWallpaperButtonEnabled(false);
             final BitmapRegionTileSource.ResourceBitmapSource bitmapSource =
                     new BitmapRegionTileSource.ResourceBitmapSource(mResources, mResId);
-            a.setCropViewTileSource(bitmapSource, false, false, new CropViewScaleProvider() {
+            a.setCropViewTileSource(bitmapSource, false, false, new CropViewScaleAndOffsetProvider() {
 
                 @Override
-                public float getScale(TileSource src) {
-                    Point wallpaperSize = WallpaperUtils.getDefaultWallpaperSize(
-                            a.getResources(), a.getWindowManager());
-                    RectF crop = Utils.getMaxCropRect(
-                            src.getImageWidth(), src.getImageHeight(),
-                            wallpaperSize.x, wallpaperSize.y, false);
-                    return wallpaperSize.x / crop.width();
+                public float getScale(Point wallpaperSize, RectF crop) {
+                    return wallpaperSize.x /crop.width();
+                }
+
+                @Override
+                public float getParallaxOffset() {
+                    return a.getWallpaperParallaxOffset();
                 }
             }, new Runnable() {
 
@@ -265,7 +267,9 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         @Override
         public void onSave(WallpaperPickerActivity a) {
             boolean finishActivityWhenDone = true;
-            a.cropImageAndSetWallpaper(mResources, mResId, finishActivityWhenDone);
+            boolean shouldFadeOutOnFinish = true;
+            a.cropImageAndSetWallpaper(mResources, mResId, finishActivityWhenDone,
+                    shouldFadeOutOnFinish);
         }
         @Override
         public boolean isSelectable() {
@@ -296,11 +300,16 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             LoadRequest req = new LoadRequest();
             req.moveToLeft = false;
             req.touchEnabled = false;
-            req.scaleProvider = new CropViewScaleProvider() {
+            req.scaleAndOffsetProvider = new CropViewScaleAndOffsetProvider() {
 
                 @Override
-                public float getScale(TileSource src) {
+                public float getScale(Point wallpaperSize, RectF crop) {
                     return 1f;
+                }
+
+                @Override
+                public float getParallaxOffset() {
+                    return 0;
                 }
             };
             req.result = new DrawableTileSource(a.getContext(),
@@ -460,6 +469,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                 return true;
             }
         };
+
+        mWallpaperParallaxOffset = getIntent().getFloatExtra(EXTRA_WALLPAPER_OFFSET, 0);
 
         // Populate the built-in wallpapers
         ArrayList<WallpaperTileInfo> wallpapers = findBundledWallpapers();
@@ -659,6 +670,10 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
     public void setWallpaperButtonEnabled(boolean enabled) {
         mSetWallpaperButton.setEnabled(enabled);
+    }
+
+    public float getWallpaperParallaxOffset() {
+        return mWallpaperParallaxOffset;
     }
 
     @Thunk void selectTile(View v) {
