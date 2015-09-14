@@ -2,8 +2,6 @@
 <!-- Dynamic Grid -->
     <!-- Out of 100, the percent of space the overview bar should try and take vertically. -->
     <integer name="config_dynamic_grid_overview_icon_zone_percentage">20</integer>
-    <!-- Out of 100, the percent to shrink the workspace during overview mode. -->
-    <integer name="config_dynamic_grid_overview_scale_percentage">80</integer>
 
 <!-- Miscellaneous -->
     <bool name="config_largeHeap">false</bool>
@@ -30,6 +28,8 @@
 
     <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
     <integer name="config_workspaceSpringLoadShrinkPercentage">80</integer>
+    <!-- Out of 100, the percent to shrink the workspace during overview mode. -->
+    <integer name="config_workspaceOverviewShrinkPercentage">70</integer>
 
     <!-- Fade/zoom in/out duration & scale in a Launcher overlay transition.
          Note: This should be less than the config_overlayTransitionTime as they happen together. -->
@@ -77,6 +77,9 @@
     <!-- Name of a subclass of com.android.launcher3.BuildInfo used to
          get build information. Can be empty. -->
     <string name="build_info_class" translatable="false"></string>
+
+    <!-- View ID to use for QSB widget -->
+    <item type="id" name="qsb_widget" />
 
 <!-- Accessibility actions -->
     <item type="id" name="action_remove" />

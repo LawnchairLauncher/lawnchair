@@ -32,6 +32,7 @@
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Kërko për aplikacione"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Po ngarkon aplikacionet..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Nuk u gjet asnjë aplikacion që përputhet me \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
+    <string name="all_apps_search_market_message" msgid="5470761048755751471">"Shko te <xliff:g id="QUERY">%1$s</xliff:g>"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Nuk ka më hapësirë në këtë ekran bazë."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Nuk ka më hapësirë në tabakanë \"Të preferuarat\""</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Aplikacionet"</string>

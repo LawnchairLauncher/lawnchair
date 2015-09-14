@@ -1,8 +1,5 @@
 package com.android.launcher3;
 
-import com.android.launcher3.Utilities;
-
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -77,8 +74,9 @@ public class StylusEventHelper {
      * @param event The event to check.
      * @return Whether a stylus button press occurred.
      */
-    public static boolean isStylusButtonPressed(MotionEvent event) {
+    private static boolean isStylusButtonPressed(MotionEvent event) {
         return event.getToolType(0) == MotionEvent.TOOL_TYPE_STYLUS
-                && event.isButtonPressed(MotionEvent.BUTTON_SECONDARY);
+                && ((event.getButtonState() & MotionEvent.BUTTON_SECONDARY)
+                        == MotionEvent.BUTTON_SECONDARY);
     }
 }

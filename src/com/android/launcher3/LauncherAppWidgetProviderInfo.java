@@ -1,10 +1,13 @@
 package com.android.launcher3;
 
 import android.annotation.TargetApi;
+import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Parcel;
@@ -19,10 +22,10 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
 
     public boolean isCustomWidget = false;
 
-    private int mSpanX = -1;
-    private int mSpanY = -1;
-    private int mMinSpanX = -1;
-    private int mMinSpanY = -1;
+    public int spanX;
+    public int spanY;
+    public int minSpanX;
+    public int minSpanY;
 
     public static LauncherAppWidgetProviderInfo fromProviderInfo(Context context,
             AppWidgetProviderInfo info) {
@@ -41,6 +44,7 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
 
     public LauncherAppWidgetProviderInfo(Parcel in) {
         super(in);
+        initSpans();
     }
 
     public LauncherAppWidgetProviderInfo(Context context, CustomAppWidget widget) {
@@ -52,6 +56,41 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
         previewImage = widget.getPreviewImage();
         initialLayout = widget.getWidgetLayout();
         resizeMode = widget.getResizeMode();
+        initSpans();
+    }
+
+    private void initSpans() {
+        LauncherAppState app = LauncherAppState.getInstance();
+        InvariantDeviceProfile idp = app.getInvariantDeviceProfile();
+
+        // We only care out the cell size, which is independent of the the layout direction.
+        Rect paddingLand = idp.landscapeProfile.getWorkspacePadding(false /* isLayoutRtl */);
+        Rect paddingPort = idp.portraitProfile.getWorkspacePadding(false /* isLayoutRtl */);
+
+        // Always assume we're working with the smallest span to make sure we
+        // reserve enough space in both orientations.
+        float smallestCellWidth = DeviceProfile.calculateCellWidth(Math.min(
+                idp.landscapeProfile.widthPx - paddingLand.left - paddingLand.right,
+                idp.portraitProfile.widthPx - paddingPort.left - paddingPort.right),
+                idp.numColumns);
+        float smallestCellHeight = DeviceProfile.calculateCellWidth(Math.min(
+                idp.landscapeProfile.heightPx - paddingLand.top - paddingLand.bottom,
+                idp.portraitProfile.heightPx - paddingPort.top - paddingPort.bottom),
+                idp.numRows);
+
+        // We want to account for the extra amount of padding that we are adding to the widget
+        // to ensure that it gets the full amount of space that it has requested.
+        Rect widgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(
+                app.getContext(), provider, null);
+        spanX = Math.max(1, (int) Math.ceil(
+                        (minWidth + widgetPadding.left + widgetPadding.right) / smallestCellWidth));
+        spanY = Math.max(1, (int) Math.ceil(
+                (minHeight + widgetPadding.top + widgetPadding.bottom) / smallestCellHeight));
+
+        minSpanX = Math.max(1, (int) Math.ceil(
+                (minResizeWidth + widgetPadding.left + widgetPadding.right) / smallestCellWidth));
+        minSpanY = Math.max(1, (int) Math.ceil(
+                (minResizeHeight + widgetPadding.top + widgetPadding.bottom) / smallestCellHeight));
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -79,35 +118,9 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
                 provider.toString(), provider.getPackageName(), provider.getShortClassName(), getLabel(pm));
     }
 
-    public int getSpanX(Launcher launcher) {
-        lazyLoadSpans(launcher);
-        return mSpanX;
-    }
-
-    public int getSpanY(Launcher launcher) {
-        lazyLoadSpans(launcher);
-        return mSpanY;
-    }
-
-    public int getMinSpanX(Launcher launcher) {
-        lazyLoadSpans(launcher);
-        return mMinSpanX;
-    }
-
-    public int getMinSpanY(Launcher launcher) {
-        lazyLoadSpans(launcher);
-        return mMinSpanY;
-    }
-
-    private void lazyLoadSpans(Launcher launcher) {
-        if (mSpanX < 0 || mSpanY < 0 || mMinSpanX < 0 || mMinSpanY < 0) {
-            int[] minResizeSpan = launcher.getMinSpanForWidget(this);
-            int[] span = launcher.getSpanForWidget(this);
-
-            mSpanX = span[0];
-            mSpanY = span[1];
-            mMinSpanX = minResizeSpan[0];
-            mMinSpanY = minResizeSpan[1];
-        }
+    public Point getMinSpans(InvariantDeviceProfile idp, Context context) {
+        return new Point(
+                (resizeMode & RESIZE_HORIZONTAL) != 0 ? minSpanX : -1,
+                        (resizeMode & RESIZE_VERTICAL) != 0 ? minSpanY : -1);
     }
  }

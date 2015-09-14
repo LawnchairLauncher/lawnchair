@@ -34,10 +34,12 @@ public abstract class BaseContainerView extends LinearLayout implements Insettab
     // The bounds of the search bar.  Only the left, top, right are used to inset the
     // search bar and the height is determined by the measurement of the layout
     private Rect mFixedSearchBarBounds = new Rect();
-    // The bounds of the container
+    // The computed bounds of the search bar
+    private Rect mSearchBarBounds = new Rect();
+    // The computed bounds of the container
     protected Rect mContentBounds = new Rect();
-    // The padding to apply to the container to achieve the bounds
-    protected Rect mContentPadding = new Rect();
+    // The computed padding to apply to the container to achieve the container bounds
+    private Rect mContentPadding = new Rect();
     // The inset to apply to the edges and between the search bar and the container
     private int mContainerBoundsInset;
     private boolean mHasSearchBar;
@@ -90,7 +92,7 @@ public abstract class BaseContainerView extends LinearLayout implements Insettab
      */
     protected void updateBackgroundAndPaddings() {
         Rect padding;
-        Rect searchBarBounds = new Rect(mFixedSearchBarBounds);
+        Rect searchBarBounds = new Rect();
         if (!isValidSearchBarBounds(mFixedSearchBarBounds)) {
             // Use the default bounds
             padding = new Rect(mInsets.left + mContainerBoundsInset,
@@ -110,14 +112,20 @@ public abstract class BaseContainerView extends LinearLayout implements Insettab
                     (mHasSearchBar ? 0 : (mInsets.top + mContainerBoundsInset)),
                     getMeasuredWidth() - mFixedSearchBarBounds.right,
                     mInsets.bottom + mContainerBoundsInset);
+
+            // Use the search bounds
+            searchBarBounds.set(mFixedSearchBarBounds);
         }
-        if (!padding.equals(mContentPadding) || !searchBarBounds.equals(mFixedSearchBarBounds)) {
+
+        // If either the computed container padding has changed, or the computed search bar bounds
+        // has changed, then notify the container
+        if (!padding.equals(mContentPadding) || !searchBarBounds.equals(mSearchBarBounds)) {
             mContentPadding.set(padding);
             mContentBounds.set(padding.left, padding.top,
                     getMeasuredWidth() - padding.right,
                     getMeasuredHeight() - padding.bottom);
-            mFixedSearchBarBounds.set(searchBarBounds);
-            onUpdateBackgroundAndPaddings(mFixedSearchBarBounds, padding);
+            mSearchBarBounds.set(searchBarBounds);
+            onUpdateBackgroundAndPaddings(mSearchBarBounds, padding);
         }
     }
 
