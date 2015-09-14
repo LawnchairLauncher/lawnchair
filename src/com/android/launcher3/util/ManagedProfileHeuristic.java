@@ -68,7 +68,7 @@ public class ManagedProfileHeuristic {
     private static final long AUTO_ADD_TO_FOLDER_DURATION = 8 * 60 * 60 * 1000;
 
     public static ManagedProfileHeuristic get(Context context, UserHandleCompat user) {
-        if (Utilities.isLmpOrAbove() && !UserHandleCompat.myUserHandle().equals(user)) {
+        if (Utilities.ATLEAST_LOLLIPOP && !UserHandleCompat.myUserHandle().equals(user)) {
             return new ManagedProfileHeuristic(context, user);
         }
         return null;
@@ -296,7 +296,7 @@ public class ManagedProfileHeuristic {
      * Verifies that entries corresponding to {@param users} exist and removes all invalid entries.
      */
     public static void processAllUsers(List<UserHandleCompat> users, Context context) {
-        if (!Utilities.isLmpOrAbove()) {
+        if (!Utilities.ATLEAST_LOLLIPOP) {
             return;
         }
         UserManagerCompat userManager = UserManagerCompat.getInstance(context);

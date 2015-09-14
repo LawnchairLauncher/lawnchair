@@ -32,6 +32,7 @@ import android.content.res.XmlResourceParser;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.ParcelFileDescriptor;
 import android.text.TextUtils;
@@ -51,6 +52,7 @@ import com.android.launcher3.backup.BackupProtos.Screen;
 import com.android.launcher3.backup.BackupProtos.Widget;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.model.MigrateFromRestoreTask;
 import com.android.launcher3.util.Thunk;
 import com.google.protobuf.nano.InvalidProtocolBufferNanoException;
 import com.google.protobuf.nano.MessageNano;
@@ -75,7 +77,7 @@ public class LauncherBackupHelper implements BackupHelper {
     private static final boolean VERBOSE = LauncherBackupAgentHelper.VERBOSE;
     private static final boolean DEBUG = LauncherBackupAgentHelper.DEBUG;
 
-    private static final int BACKUP_VERSION = 3;
+    private static final int BACKUP_VERSION = 4;
     private static final int MAX_JOURNAL_SIZE = 1000000;
 
     // Journal key is such that it is always smaller than any dynamically generated
@@ -107,6 +109,7 @@ public class LauncherBackupHelper implements BackupHelper {
         Favorites.SPANY,                   // 15
         Favorites.TITLE,                   // 16
         Favorites.PROFILE_ID,              // 17
+        Favorites.RANK,                    // 18
     };
 
     private static final int ID_INDEX = 0;
@@ -126,6 +129,7 @@ public class LauncherBackupHelper implements BackupHelper {
     private static final int SPANX_INDEX = 14;
     private static final int SPANY_INDEX = 15;
     private static final int TITLE_INDEX = 16;
+    private static final int RANK_INDEX = 18;
 
     private static final String[] SCREEN_PROJECTION = {
         WorkspaceScreens._ID,              // 0
@@ -150,8 +154,15 @@ public class LauncherBackupHelper implements BackupHelper {
     private DeviceProfieData mDeviceProfileData;
     private InvariantDeviceProfile mIdp;
 
+    DeviceProfieData migrationCompatibleProfileData;
+    HashSet<String> widgetSizes = new HashSet<>();
+
     boolean restoreSuccessful;
     int restoredBackupVersion = 1;
+
+    // When migrating from a device which different hotseat configuration, the icons are shifted
+    // to center along the new all-apps icon.
+    private int mHotseatShift = 0;
 
     public LauncherBackupHelper(Context context) {
         mContext = context;
@@ -282,17 +293,39 @@ public class LauncherBackupHelper implements BackupHelper {
             return true;
         }
 
-        boolean isHotsetCompatible = false;
+        boolean isHotseatCompatible = false;
         if (currentProfile.allappsRank >= oldProfile.hotseatCount) {
-            isHotsetCompatible = true;
-        }
-        if ((currentProfile.hotseatCount >= oldProfile.hotseatCount) &&
-                (currentProfile.allappsRank == oldProfile.allappsRank)) {
-            isHotsetCompatible = true;
+            isHotseatCompatible = true;
+            mHotseatShift = 0;
         }
 
-        return isHotsetCompatible && (currentProfile.desktopCols >= oldProfile.desktopCols)
-                && (currentProfile.desktopRows >= oldProfile.desktopRows);
+        if ((currentProfile.allappsRank >= oldProfile.allappsRank)
+                && ((currentProfile.hotseatCount - currentProfile.allappsRank) >=
+                        (oldProfile.hotseatCount - oldProfile.allappsRank))) {
+            // There is enough space on both sides of the hotseat.
+            isHotseatCompatible = true;
+            mHotseatShift = currentProfile.allappsRank - oldProfile.allappsRank;
+        }
+
+        if (!isHotseatCompatible) {
+            return false;
+        }
+        if ((currentProfile.desktopCols >= oldProfile.desktopCols)
+                && (currentProfile.desktopRows >= oldProfile.desktopRows)) {
+            return true;
+        }
+
+        if (MigrateFromRestoreTask.ENABLED &&
+                (oldProfile.desktopCols - currentProfile.desktopCols <= 1) &&
+                (oldProfile.desktopRows - currentProfile.desktopRows <= 1)) {
+            // Allow desktop migration when row and/or column count contracts by 1.
+
+            migrationCompatibleProfileData = initDeviceProfileData(mIdp);
+            migrationCompatibleProfileData.desktopCols = oldProfile.desktopCols;
+            migrationCompatibleProfileData.desktopRows = oldProfile.desktopRows;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -432,7 +465,10 @@ public class LauncherBackupHelper implements BackupHelper {
                 Key key = getKey(Key.FAVORITE, id);
                 mKeys.add(key);
                 final String backupKey = keyToBackupKey(key);
-                if (!mExistingKeys.contains(backupKey) || updateTime >= mLastBackupRestoreTime) {
+
+                // Favorite proto changed in v4. Backup again if the version is old.
+                if (!mExistingKeys.contains(backupKey) || updateTime >= mLastBackupRestoreTime
+                        || restoredBackupVersion < 4) {
                     writeRowToBackup(key, packFavorite(cursor), data);
                 } else {
                     if (DEBUG) Log.d(TAG, "favorite already backup up: " + id);
@@ -601,10 +637,11 @@ public class LauncherBackupHelper implements BackupHelper {
         Bitmap icon = BitmapFactory.decodeByteArray(res.data, 0, res.data.length);
         if (icon == null) {
             Log.w(TAG, "failed to unpack icon for " + key.name);
+        } else {
+            if (VERBOSE) Log.v(TAG, "saving restored icon as: " + key.name);
+            mIconCache.preloadIcon(ComponentName.unflattenFromString(key.name), icon, res.dpi,
+                    "" /* label */, mUserSerial, mIdp);
         }
-        if (VERBOSE) Log.v(TAG, "saving restored icon as: " + key.name);
-        mIconCache.preloadIcon(ComponentName.unflattenFromString(key.name), icon, res.dpi,
-                "" /* label */, mUserSerial);
     }
 
     /**
@@ -638,7 +675,9 @@ public class LauncherBackupHelper implements BackupHelper {
                 } else {
                     Log.w(TAG, "empty intent on appwidget: " + id);
                 }
-                if (mExistingKeys.contains(backupKey) && restoredBackupVersion >= BACKUP_VERSION) {
+
+                // Widget backup proto changed in v3. So add it again if the original backup is old.
+                if (mExistingKeys.contains(backupKey) && restoredBackupVersion >= 3) {
                     if (DEBUG) Log.d(TAG, "already saved widget " + backupKey);
 
                     // remember that we already backed this up previously
@@ -685,11 +724,12 @@ public class LauncherBackupHelper implements BackupHelper {
                 Log.w(TAG, "failed to unpack widget icon for " + key.name);
             } else {
                 mIconCache.preloadIcon(ComponentName.unflattenFromString(widget.provider),
-                        icon, widget.icon.dpi, widget.label, mUserSerial);
+                        icon, widget.icon.dpi, widget.label, mUserSerial, mIdp);
             }
         }
 
-        // future site of widget table mutation
+        // Cache widget min sizes incase migration is required.
+        widgetSizes.add(widget.provider + "#" + widget.minSpanX + "," + widget.minSpanY);
     }
 
     /** create a new key, with an integer ID.
@@ -773,6 +813,7 @@ public class LauncherBackupHelper implements BackupHelper {
         favorite.spanX = c.getInt(SPANX_INDEX);
         favorite.spanY = c.getInt(SPANY_INDEX);
         favorite.iconType = c.getInt(ICON_TYPE_INDEX);
+        favorite.rank = c.getInt(RANK_INDEX);
 
         String title = c.getString(TITLE_INDEX);
         if (!TextUtils.isEmpty(title)) {
@@ -847,6 +888,11 @@ public class LauncherBackupHelper implements BackupHelper {
             throws IOException {
         Favorite favorite = unpackProto(new Favorite(), buffer, dataSize);
 
+        // If it is a hotseat item, move it accordingly.
+        if (favorite.container == Favorites.CONTAINER_HOTSEAT) {
+            favorite.screen += mHotseatShift;
+        }
+
         ContentValues values = new ContentValues();
         values.put(Favorites._ID, favorite.id);
         values.put(Favorites.SCREEN, favorite.screen);
@@ -855,6 +901,7 @@ public class LauncherBackupHelper implements BackupHelper {
         values.put(Favorites.CELLY, favorite.cellY);
         values.put(Favorites.SPANX, favorite.spanX);
         values.put(Favorites.SPANY, favorite.spanY);
+        values.put(Favorites.RANK, favorite.rank);
 
         if (favorite.itemType == Favorites.ITEM_TYPE_SHORTCUT) {
             values.put(Favorites.ICON_TYPE, favorite.iconType);
@@ -880,7 +927,11 @@ public class LauncherBackupHelper implements BackupHelper {
                 UserManagerCompat.getInstance(mContext).getSerialNumberForUser(myUserHandle);
         values.put(LauncherSettings.Favorites.PROFILE_ID, userSerialNumber);
 
-        DeviceProfieData currentProfile = mDeviceProfileData;
+        // If we will attempt grid resize, use the original profile to validate grid size, as
+        // anything which fits in the original grid should fit in the current grid after
+        // grid migration.
+        DeviceProfieData currentProfile = migrationCompatibleProfileData == null
+                ? mDeviceProfileData : migrationCompatibleProfileData;
 
         if (favorite.itemType == Favorites.ITEM_TYPE_APPWIDGET) {
             if (!TextUtils.isEmpty(favorite.appWidgetProvider)) {
@@ -972,14 +1023,9 @@ public class LauncherBackupHelper implements BackupHelper {
             widget.icon.dpi = dpi;
         }
 
-        // Calculate the spans corresponding to any one of the orientations as it should not change
-        // based on orientation.
-        int[] minSpans = CellLayout.rectToCell(
-                mIdp.portraitProfile, mContext, info.minResizeWidth, info.minResizeHeight, null);
-        widget.minSpanX = (info.resizeMode & LauncherAppWidgetProviderInfo.RESIZE_HORIZONTAL) != 0
-                ? minSpans[0] : -1;
-        widget.minSpanY = (info.resizeMode & LauncherAppWidgetProviderInfo.RESIZE_VERTICAL) != 0
-                ? minSpans[1] : -1;
+        Point spans = info.getMinSpans(mIdp, mContext);
+        widget.minSpanX = spans.x;
+        widget.minSpanY = spans.y;
 
         return widget;
     }
@@ -1162,6 +1208,10 @@ public class LauncherBackupHelper implements BackupHelper {
         @Thunk InvalidBackupException(String reason) {
             super(reason);
         }
+    }
+
+    public boolean shouldAttemptWorkspaceMigration() {
+        return migrationCompatibleProfileData != null;
     }
 
     /**

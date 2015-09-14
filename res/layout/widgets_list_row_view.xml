@@ -51,6 +51,7 @@
 
     <HorizontalScrollView
         android:id="@+id/widgets_scroll_container"
+        android:theme="@style/Theme.Dark.CustomOverscroll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:scrollbars="none">

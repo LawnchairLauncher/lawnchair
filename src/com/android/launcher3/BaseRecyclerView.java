@@ -92,7 +92,13 @@ public abstract class BaseRecyclerView extends RecyclerView
             // TODO(winsonc): If we want to animate the section heads while scrolling, we can
             //                initiate that here if the recycler view scroll state is not
             //                RecyclerView.SCROLL_STATE_IDLE.
+
+            onUpdateScrollbar(dy);
         }
+    }
+
+    public void reset() {
+        mScrollbar.reattachThumbToScroll();
     }
 
     @Override
@@ -143,7 +149,7 @@ public abstract class BaseRecyclerView extends RecyclerView
                 mScrollbar.handleTouchEvent(ev, mDownX, mDownY, mLastY);
                 break;
         }
-        return mScrollbar.isDragging();
+        return mScrollbar.isDraggingThumb();
     }
 
     public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
@@ -185,12 +191,10 @@ public abstract class BaseRecyclerView extends RecyclerView
      *   AvailableScrollHeight = Total height of the all items - last page height
      *
      * This assumes that all rows are the same height.
-     *
-     * @param yOffset the offset from the top of the recycler view to start tracking.
      */
-    protected int getAvailableScrollHeight(int rowCount, int rowHeight, int yOffset) {
+    protected int getAvailableScrollHeight(int rowCount, int rowHeight) {
         int visibleHeight = getHeight() - mBackgroundPadding.top - mBackgroundPadding.bottom;
-        int scrollHeight = getPaddingTop() + yOffset + rowCount * rowHeight + getPaddingBottom();
+        int scrollHeight = getPaddingTop() + rowCount * rowHeight + getPaddingBottom();
         int availableScrollHeight = scrollHeight - visibleHeight;
         return availableScrollHeight;
     }
@@ -222,7 +226,7 @@ public abstract class BaseRecyclerView extends RecyclerView
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
-        onUpdateScrollbar();
+        onUpdateScrollbar(0);
         mScrollbar.draw(canvas);
     }
 
@@ -234,24 +238,21 @@ public abstract class BaseRecyclerView extends RecyclerView
      * @param scrollPosState the current scroll position
      * @param rowCount the number of rows, used to calculate the total scroll height (assumes that
      *                 all rows are the same height)
-     * @param yOffset the offset to start tracking in the recycler view (only used for all apps)
      */
     protected void synchronizeScrollBarThumbOffsetToViewScroll(ScrollPositionState scrollPosState,
-            int rowCount, int yOffset) {
-        int availableScrollHeight = getAvailableScrollHeight(rowCount, scrollPosState.rowHeight,
-                yOffset);
-        int availableScrollBarHeight = getAvailableScrollBarHeight();
-
+            int rowCount) {
         // Only show the scrollbar if there is height to be scrolled
+        int availableScrollBarHeight = getAvailableScrollBarHeight();
+        int availableScrollHeight = getAvailableScrollHeight(rowCount, scrollPosState.rowHeight);
         if (availableScrollHeight <= 0) {
-            mScrollbar.setScrollbarThumbOffset(-1, -1);
+            mScrollbar.setThumbOffset(-1, -1);
             return;
         }
 
         // Calculate the current scroll position, the scrollY of the recycler view accounts for the
         // view padding, while the scrollBarY is drawn right up to the background padding (ignoring
         // padding)
-        int scrollY = getPaddingTop() + yOffset +
+        int scrollY = getPaddingTop() +
                 (scrollPosState.rowIndex * scrollPosState.rowHeight) - scrollPosState.rowTopOffset;
         int scrollBarY = mBackgroundPadding.top +
                 (int) (((float) scrollY / availableScrollHeight) * availableScrollBarHeight);
@@ -261,9 +262,9 @@ public abstract class BaseRecyclerView extends RecyclerView
         if (Utilities.isRtl(getResources())) {
             scrollBarX = mBackgroundPadding.left;
         } else {
-            scrollBarX = getWidth() - mBackgroundPadding.right - mScrollbar.getWidth();
+            scrollBarX = getWidth() - mBackgroundPadding.right - mScrollbar.getThumbWidth();
         }
-        mScrollbar.setScrollbarThumbOffset(scrollBarX, scrollBarY);
+        mScrollbar.setThumbOffset(scrollBarX, scrollBarY);
     }
 
     /**
@@ -276,10 +277,15 @@ public abstract class BaseRecyclerView extends RecyclerView
      * Updates the bounds for the scrollbar.
      * <p>Override in each subclass of this base class.
      */
-    public abstract void onUpdateScrollbar();
+    public abstract void onUpdateScrollbar(int dy);
 
     /**
      * <p>Override in each subclass of this base class.
      */
     public void onFastScrollCompleted() {}
+
+    /**
+     * Returns information about the item that the recycler view is currently scrolled to.
+     */
+    protected abstract void getCurScrollState(ScrollPositionState stateOut);
 }

@@ -32,6 +32,7 @@
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"搜尋應用程式"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"正在載入應用程式…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"找不到符合「<xliff:g id="QUERY">%1$s</xliff:g>」的應用程式"</string>
+    <string name="all_apps_search_market_message" msgid="5470761048755751471">"前往 <xliff:g id="QUERY">%1$s</xliff:g>"</string>
     <string name="out_of_space" msgid="4691004494942118364">"這個主螢幕已無空間。"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"「我的最愛」匣已無可用空間"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"應用程式"</string>

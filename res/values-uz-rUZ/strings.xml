@@ -32,6 +32,7 @@
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Ilovalarni qidirish"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Ilovalar yuklanmoqda…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"“<xliff:g id="QUERY">%1$s</xliff:g>” bilan mos hech qanday ilova topilmadi"</string>
+    <string name="all_apps_search_market_message" msgid="5470761048755751471">"O‘tish: <xliff:g id="QUERY">%1$s</xliff:g>"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Uy ekranida bitta ham xona yo‘q."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Ajratilganlarda birorta ham xona yo‘q"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Ilovalar"</string>

@@ -53,7 +53,7 @@
         android:paddingLeft="8dp"
         android:paddingRight="8dp" >
 
-        <com.android.launcher3.FolderEditText
+        <com.android.launcher3.ExtendedEditText
             android:id="@+id/folder_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -70,7 +70,6 @@
             android:textColor="#ff777777"
             android:textColorHighlight="#ffCCCCCC"
             android:textColorHint="#ff808080"
-            android:textCursorDrawable="@null"
             android:textSize="14sp" />
 
         <include

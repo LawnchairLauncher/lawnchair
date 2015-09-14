@@ -319,7 +319,6 @@ public class WidgetsContainerView extends BaseContainerView
                 CellLayout layout = (CellLayout) workspace.getChildAt(currentScreen);
                 ItemInfo itemInfo = (ItemInfo) d.dragInfo;
                 if (layout != null) {
-                    layout.calculateSpans(itemInfo);
                     showOutOfSpaceMessage =
                             !layout.findCellForSpan(null, itemInfo.spanX, itemInfo.spanY);
                 }

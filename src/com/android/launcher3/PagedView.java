@@ -2293,7 +2293,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         // Besides disabling the accessibility long-click, this also prevents this view from getting
         // accessibility focus.
         info.setLongClickable(false);
-        if (Utilities.isLmpOrAbove()) {
+        if (Utilities.ATLEAST_LOLLIPOP) {
             info.removeAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_LONG_CLICK);
         }
     }

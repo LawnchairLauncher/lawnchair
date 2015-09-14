@@ -15,101 +15,23 @@
 -->
 
 <favorites xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3">
-    <!-- Far-left screen [0] -->
 
-    <!-- Left screen [1] -->
-    <appwidget
-        launcher:packageName="com.android.settings"
-        launcher:className="com.android.settings.widget.SettingsAppWidgetProvider"
-        launcher:screen="1"
+    <!-- Hotseat -->
+    <include launcher:workspace="@xml/dw_tablet_hotseat" />
+
+    <!-- Bottom row -->
+    <favorite
+        launcher:screen="0"
         launcher:x="0"
-        launcher:y="3"
-        launcher:spanX="4"
-        launcher:spanY="1" />
-
-    <!-- Middle screen [2] -->
-    <appwidget
-        launcher:packageName="com.android.deskclock"
-        launcher:className="com.android.alarmclock.AnalogAppWidgetProvider"
-        launcher:screen="2"
-        launcher:x="1"
-        launcher:y="0"
-        launcher:spanX="2"
-        launcher:spanY="2" />
-    <favorite
-        launcher:packageName="com.android.camera"
-        launcher:className="com.android.camera.Camera"
-        launcher:screen="2"
-        launcher:x="0"
-        launcher:y="3" />
-
-    <!-- Right screen [3] -->
-    <favorite
-        launcher:packageName="com.android.gallery3d"
-        launcher:className="com.android.gallery3d.app.Gallery"
-        launcher:screen="3"
-        launcher:x="1"
-        launcher:y="3" />
-    <favorite
-        launcher:packageName="com.android.settings"
-        launcher:className="com.android.settings.Settings"
-        launcher:screen="3"
-        launcher:x="2"
-        launcher:y="3" />
-
-    <!-- Far-right screen [4] -->
-
-    <!-- Hotseat (We use the screen as the position of the item in the hotseat) -->
-    <!-- Dialer, Contacts, [All Apps], Messaging, Browser -->
-    <resolve
-        launcher:container="-101"
-        launcher:screen="1"
-        launcher:x="1"
-        launcher:y="0" >
-        <favorite launcher:uri="#Intent;action=android.intent.action.DIAL;end" />
-        <favorite launcher:uri="tel:123" />
-        <favorite launcher:uri="#Intent;action=android.intent.action.CALL_BUTTON;end" />
-
-        <favorite
-            launcher:packageName="com.android.dialer"
-            launcher:className="com.android.dialer.DialtactsActivity" />
-    </resolve>
-
-    <favorite
-        launcher:packageName="com.android.contacts"
-        launcher:className="com.android.contacts.activities.PeopleActivity"
-        launcher:container="-101"
-        launcher:screen="2"
-        launcher:x="2"
-        launcher:y="0" />
+        launcher:y="4"
+        launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_CONTACTS;end" />
 
     <resolve
-        launcher:container="-101"
-        launcher:screen="4"
-        launcher:x="4"
-        launcher:y="0" >
-        <favorite
-            launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_MESSAGING;end" />
-        <favorite launcher:uri="sms:" />
-        <favorite launcher:uri="smsto:" />
-        <favorite launcher:uri="mms:" />
-        <favorite launcher:uri="mmsto:" />
-
-        <favorite
-            launcher:packageName="com.android.mms"
-            launcher:className="com.android.mms.ui.ConversationList" />
-    </resolve>
-    <resolve
-        launcher:container="-101"
-        launcher:screen="5"
+        launcher:screen="0"
         launcher:x="5"
-        launcher:y="0" >
-        <favorite
-            launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_BROWSER;end" />
-        <favorite launcher:uri="http://www.example.com/" />
-
-        <favorite
-            launcher:packageName="com.android.browser"
-            launcher:className="com.android.browser.BrowserActivity" />
+        launcher:y="4" >
+        <favorite launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_MARKET;end" />
+        <favorite launcher:uri="market://details?id=com.android.launcher" />
     </resolve>
+
 </favorites>

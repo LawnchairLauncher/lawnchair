@@ -32,6 +32,7 @@
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Search Apps"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Loading Apps…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"No Apps found matching \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
+    <string name="all_apps_search_market_message" msgid="5470761048755751471">"Go to <xliff:g id="QUERY">%1$s</xliff:g>"</string>
     <string name="out_of_space" msgid="4691004494942118364">"No more room on this Home screen."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"No more room in the Favourites tray"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Apps"</string>

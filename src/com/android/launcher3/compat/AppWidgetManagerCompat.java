@@ -40,7 +40,7 @@ public abstract class AppWidgetManagerCompat {
     public static AppWidgetManagerCompat getInstance(Context context) {
         synchronized (sInstanceLock) {
             if (sInstance == null) {
-                if (Utilities.isLmpOrAbove()) {
+                if (Utilities.ATLEAST_LOLLIPOP) {
                     sInstance = new AppWidgetManagerCompatVL(context.getApplicationContext());
                 } else {
                     sInstance = new AppWidgetManagerCompatV16(context.getApplicationContext());

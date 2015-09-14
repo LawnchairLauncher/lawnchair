@@ -329,6 +329,10 @@ public class FolderPagedView extends PagedView {
                 lp.cellY = info.cellY;
                 currentPage.addViewToCellLayout(
                         v, -1, mFolder.mLauncher.getViewIdForItem(info), lp, true);
+
+                if (rank < FolderIcon.NUM_ITEMS_IN_PREVIEW && v instanceof BubbleTextView) {
+                    ((BubbleTextView) v).verifyHighRes();
+                }
             }
 
             rank ++;

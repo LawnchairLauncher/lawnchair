@@ -101,7 +101,10 @@ message Favorite {
   optional string iconPackage = 16;
   optional string iconResource = 17;
   optional bytes icon = 18;
+
+  // Added in backup version 4
   optional TargetType targetType = 19 [default = TARGET_NONE];
+  optional int32 rank = 20;
 }
 
 message Screen {
@@ -121,6 +124,7 @@ message Widget {
   optional Resource icon = 4;
   optional Resource preview = 5;
 
+  // Added in backup version 3
   // Assume that a widget is resizable upto 2x2 if no data is available
   optional int32 minSpanX = 6 [default = 2];
   optional int32 minSpanY = 7 [default = 2];

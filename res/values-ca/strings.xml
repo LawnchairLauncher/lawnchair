@@ -32,6 +32,7 @@
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Cerca a les aplicacions"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"S\'estan carregant les aplicacions..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"No s\'ha trobat cap aplicació que coincideixi amb <xliff:g id="QUERY">%1$s</xliff:g>"</string>
+    <string name="all_apps_search_market_message" msgid="5470761048755751471">"Vés a <xliff:g id="QUERY">%1$s</xliff:g>"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Ja no queda espai en aquesta pantalla d\'inici."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"No hi ha més espai a la safata Preferits."</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Aplicacions"</string>
