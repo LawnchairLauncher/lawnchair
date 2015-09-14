@@ -4,6 +4,7 @@ import cgi
 import codecs
 import os
 import pprint
+import re
 import shutil
 import sys
 import sqlite3
@@ -22,9 +23,10 @@ AUTO_FILE = DIR + "/launcher.db"
 INDEX_FILE = DIR + "/index.html"
 
 def usage():
-  print "usage: print_db.py launcher.db <sw600|sw720> -- prints a launcher.db"
-  print "usage: print_db.py <sw600|sw720> -- adb pulls a launcher.db from a device"
-  print "       and prints it"
+  print "usage: print_db.py launcher.db <4x4|5x5|5x6|...> -- prints a launcher.db with"
+  print "       the specified grid size (rows x cols)"
+  print "usage: print_db.py <4x4|5x5|5x6|...> -- adb pulls a launcher.db from a device"
+  print "       and prints it with the specified grid size (rows x cols)"
   print
   print "The dump will be created in a directory called db_files in cwd."
   print "This script will delete any db_files directory you have now"
@@ -41,7 +43,7 @@ def adb_root_remount():
 def pull_file(fn):
   print "pull_file: " + fn
   rv = os.system("adb pull"
-    + " /data/data/com.google.android.googlequicksearchbox/databases/launcher.db"
+    + " /data/data/com.android.launcher3/databases/launcher.db"
     + " " + fn);
   if rv != 0:
     print "adb pull failed"
@@ -287,16 +289,11 @@ def process_file(fn):
 
 def updateDeviceClassConstants(str):
   global SCREENS, COLUMNS, ROWS, HOTSEAT_SIZE
-  devClass = str.lower()
-  if devClass == "sw600":
-    COLUMNS = 6
-    ROWS = 6
-    HOTSEAT_SIZE = 6
-    return True
-  elif devClass == "sw720":
-    COLUMNS = 8
-    ROWS = 6
-    HOTSEAT_SIZE = 8
+  match = re.search(r"(\d+)x(\d+)", str)
+  if match:
+    COLUMNS = int(match.group(1))
+    ROWS = int(match.group(2))
+    HOTSEAT_SIZE = 2 * int(COLUMNS / 2)
     return True
   return False
 
