@@ -32,6 +32,7 @@
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Հավելվածների որոնում"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Հավելվածների բեռնում…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"«<xliff:g id="QUERY">%1$s</xliff:g>» հարցմանը համապատասխանող հավելվածներ չեն գտնվել"</string>
+    <string name="all_apps_search_market_message" msgid="5470761048755751471">"Գնալ <xliff:g id="QUERY">%1$s</xliff:g>"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Այլևս տեղ չկա այս հիմնական էկրանին:"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Ընտրյալների ցուցակում այլևս ազատ տեղ չկա"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Ծրագրեր"</string>
@@ -59,11 +60,11 @@
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Պաստառներ, վիջեթներ և կարգավորումներ"</string>
     <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Հարմարեցնելու համար հպեք և պահեք հետնաշերտի վրա"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"ՀԱՍԿԱՆԱԼԻ Է"</string>
-    <string name="folder_opened" msgid="94695026776264709">"Թղթապանակը բաց է, <xliff:g id="WIDTH">%1$d</xliff:g>-ից <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
+    <string name="folder_opened" msgid="94695026776264709">"Պանակը բաց է, <xliff:g id="WIDTH">%1$d</xliff:g>-ից <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1884479294466410023">"Հպեք՝ պանակը փակելու համար"</string>
     <string name="folder_tap_to_rename" msgid="9191075570492871147">"Հպեք՝ վերանվանումը պահելու համար"</string>
-    <string name="folder_closed" msgid="4100806530910930934">"Թղթապանակը փակ է"</string>
-    <string name="folder_renamed" msgid="1794088362165669656">"Թղթապանակը վերանվանվեց <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_closed" msgid="4100806530910930934">"Պանակը փակ է"</string>
+    <string name="folder_renamed" msgid="1794088362165669656">"Պանակը վերանվանվեց <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format" msgid="6629239338071103179">"Թղթապանակ՝ <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Վիջեթներ"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Պաստառներ"</string>
@@ -87,7 +88,7 @@
     <string name="add_to_folder_with_app" msgid="4534929978967147231">"Ավելացնել «<xliff:g id="NAME">%1$s</xliff:g>» պանակին"</string>
     <string name="added_to_folder" msgid="4793259502305558003">"Տարրն ավելացվեց թղթապանակում"</string>
     <string name="create_folder_with" msgid="4050141361160214248">"Ստեղծել թղթապանակ, օգտագործելով՝ <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="folder_created" msgid="6409794597405184510">"Թղթապանակը ստեղծվեց"</string>
+    <string name="folder_created" msgid="6409794597405184510">"Պանակը ստեղծվեց"</string>
     <string name="action_move_to_workspace" msgid="1603837886334246317">"Տեղափոխել Հիմնական էկրան"</string>
     <string name="action_move_screen_left" msgid="8854216831569401665">"Տեղափոխել էկրանը ձախ"</string>
     <string name="action_move_screen_right" msgid="329334910274311123">"Տեղափոխել էկրանը աջ"</string>

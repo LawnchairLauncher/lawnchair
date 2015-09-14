@@ -32,6 +32,7 @@
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Tətbiq Axtarın"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Tətbiqlər endirilir..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" sorğusuna uyğun Tətbiqlər tapılmadı"</string>
+    <string name="all_apps_search_market_message" msgid="5470761048755751471">"<xliff:g id="QUERY">%1$s</xliff:g> daxil olun"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Bu Əsas ekranda boş yer yoxdur."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Favoritlər-də yer yoxdur"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Tətbiqlər"</string>

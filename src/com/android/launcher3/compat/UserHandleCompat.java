@@ -34,7 +34,7 @@ public class UserHandleCompat {
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static UserHandleCompat myUserHandle() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        if (Utilities.ATLEAST_JB_MR1) {
             return new UserHandleCompat(android.os.Process.myUserHandle());
         } else {
             return new UserHandleCompat();
@@ -55,7 +55,7 @@ public class UserHandleCompat {
 
     @Override
     public String toString() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        if (Utilities.ATLEAST_JB_MR1) {
             return mUser.toString();
         } else {
             return "";
@@ -67,7 +67,7 @@ public class UserHandleCompat {
         if (!(other instanceof UserHandleCompat)) {
             return false;
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        if (Utilities.ATLEAST_JB_MR1) {
             return mUser.equals(((UserHandleCompat) other).mUser);
         } else {
             return true;
@@ -76,7 +76,7 @@ public class UserHandleCompat {
 
     @Override
     public int hashCode() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        if (Utilities.ATLEAST_JB_MR1) {
             return mUser.hashCode();
         } else {
             return 0;
@@ -89,7 +89,7 @@ public class UserHandleCompat {
      * profiles so this is a no-op.
      */
     public void addToIntent(Intent intent, String name) {
-        if (Utilities.isLmpOrAbove() && mUser != null) {
+        if (Utilities.ATLEAST_LOLLIPOP && mUser != null) {
             intent.putExtra(name, mUser);
         }
     }

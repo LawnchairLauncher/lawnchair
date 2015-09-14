@@ -43,6 +43,11 @@ public class AlphabeticalAppsList {
     private static final boolean DEBUG = false;
     private static final boolean DEBUG_PREDICTIONS = false;
 
+    private static final int FAST_SCROLL_FRACTION_DISTRIBUTE_BY_ROWS_FRACTION = 0;
+    private static final int FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS = 1;
+
+    private final int mFastScrollDistributionMode = FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS;
+
     /**
      * Info about a section in the alphabetic list
      */
@@ -81,8 +86,6 @@ public class AlphabeticalAppsList {
         public int position;
         // The type of this item
         public int viewType;
-        // The row that this item shows up on
-        public int rowIndex;
 
         /** Section & App properties */
         // The section for this item
@@ -94,6 +97,8 @@ public class AlphabeticalAppsList {
         public String sectionName = null;
         // The index of this app in the section
         public int sectionAppIndex = -1;
+        // The row that this item shows up on
+        public int rowIndex;
         // The index of this app in the row
         public int rowAppIndex;
         // The associated AppInfo for the app
@@ -111,14 +116,14 @@ public class AlphabeticalAppsList {
         }
 
         public static AdapterItem asPredictedApp(int pos, SectionInfo section, String sectionName,
-                                        int sectionAppIndex, AppInfo appInfo, int appIndex) {
+                int sectionAppIndex, AppInfo appInfo, int appIndex) {
             AdapterItem item = asApp(pos, section, sectionName, sectionAppIndex, appInfo, appIndex);
             item.viewType = AllAppsGridAdapter.PREDICTION_ICON_VIEW_TYPE;
             return item;
         }
 
         public static AdapterItem asApp(int pos, SectionInfo section, String sectionName,
-                                        int sectionAppIndex, AppInfo appInfo, int appIndex) {
+                int sectionAppIndex, AppInfo appInfo, int appIndex) {
             AdapterItem item = new AdapterItem();
             item.viewType = AllAppsGridAdapter.ICON_VIEW_TYPE;
             item.position = pos;
@@ -127,6 +132,27 @@ public class AlphabeticalAppsList {
             item.sectionAppIndex = sectionAppIndex;
             item.appInfo = appInfo;
             item.appIndex = appIndex;
+            return item;
+        }
+
+        public static AdapterItem asEmptySearch(int pos) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.EMPTY_SEARCH_VIEW_TYPE;
+            item.position = pos;
+            return item;
+        }
+
+        public static AdapterItem asDivider(int pos) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.SEARCH_MARKET_DIVIDER_VIEW_TYPE;
+            item.position = pos;
+            return item;
+        }
+
+        public static AdapterItem asMarketSearch(int pos) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.SEARCH_MARKET_VIEW_TYPE;
+            item.position = pos;
             return item;
         }
     }
@@ -222,17 +248,17 @@ public class AlphabeticalAppsList {
     }
 
     /**
-     * Returns the number of applications in this list.
-     */
-    public int getSize() {
-        return mFilteredApps.size();
-    }
-
-    /**
      * Returns the number of rows of applications (not including predictions)
      */
     public int getNumAppRows() {
         return mNumAppRowsInAdapter;
+    }
+
+    /**
+     * Returns the number of applications in this list.
+     */
+    public int getNumFilteredApps() {
+        return mFilteredApps.size();
     }
 
     /**
@@ -457,6 +483,16 @@ public class AlphabeticalAppsList {
             mFilteredApps.add(info);
         }
 
+        // Append the search market item if we are currently searching
+        if (hasFilter()) {
+            if (hasNoFilteredResults()) {
+                mAdapterItems.add(AdapterItem.asEmptySearch(position++));
+            } else {
+                mAdapterItems.add(AdapterItem.asDivider(position++));
+            }
+            mAdapterItems.add(AdapterItem.asMarketSearch(position++));
+        }
+
         // Merge multiple sections together as requested by the merge strategy for this device
         mergeSections();
 
@@ -484,18 +520,36 @@ public class AlphabeticalAppsList {
             }
             mNumAppRowsInAdapter = rowIndex + 1;
 
-            // Pre-calculate all the fast scroller fractions based on the number of rows
-            float rowFraction = 1f / mNumAppRowsInAdapter;
-            for (FastScrollSectionInfo info : mFastScrollerSections) {
-                AdapterItem item = info.fastScrollToItem;
-                if (item.viewType != AllAppsGridAdapter.ICON_VIEW_TYPE &&
-                        item.viewType != AllAppsGridAdapter.PREDICTION_ICON_VIEW_TYPE) {
-                    info.touchFraction = 0f;
-                    continue;
-                }
+            // Pre-calculate all the fast scroller fractions
+            switch (mFastScrollDistributionMode) {
+                case FAST_SCROLL_FRACTION_DISTRIBUTE_BY_ROWS_FRACTION:
+                    float rowFraction = 1f / mNumAppRowsInAdapter;
+                    for (FastScrollSectionInfo info : mFastScrollerSections) {
+                        AdapterItem item = info.fastScrollToItem;
+                        if (item.viewType != AllAppsGridAdapter.ICON_VIEW_TYPE &&
+                                item.viewType != AllAppsGridAdapter.PREDICTION_ICON_VIEW_TYPE) {
+                            info.touchFraction = 0f;
+                            continue;
+                        }
 
-                float subRowFraction = item.rowAppIndex * (rowFraction / mNumAppsPerRow);
-                info.touchFraction = item.rowIndex * rowFraction + subRowFraction;
+                        float subRowFraction = item.rowAppIndex * (rowFraction / mNumAppsPerRow);
+                        info.touchFraction = item.rowIndex * rowFraction + subRowFraction;
+                    }
+                    break;
+                case FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS:
+                    float perSectionTouchFraction = 1f / mFastScrollerSections.size();
+                    float cumulativeTouchFraction = 0f;
+                    for (FastScrollSectionInfo info : mFastScrollerSections) {
+                        AdapterItem item = info.fastScrollToItem;
+                        if (item.viewType != AllAppsGridAdapter.ICON_VIEW_TYPE &&
+                                item.viewType != AllAppsGridAdapter.PREDICTION_ICON_VIEW_TYPE) {
+                            info.touchFraction = 0f;
+                            continue;
+                        }
+                        info.touchFraction = cumulativeTouchFraction;
+                        cumulativeTouchFraction += perSectionTouchFraction;
+                    }
+                    break;
             }
         }
 
