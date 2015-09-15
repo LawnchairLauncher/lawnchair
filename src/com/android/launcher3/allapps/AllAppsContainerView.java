@@ -477,8 +477,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         // Start the drag
         mLauncher.getWorkspace().beginDragShared(v, mIconLastTouchPos, this, false);
-        // Enter spring loaded mode
-        mLauncher.enterSpringLoadedDragMode();
 
         return false;
     }

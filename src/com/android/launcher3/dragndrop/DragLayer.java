@@ -102,15 +102,6 @@ public class DragLayer extends InsettableFrameLayout {
     // Darkening scrim
     private float mBackgroundAlpha = 0;
 
-    // Related to adjacent page hints
-    private final Rect mScrollChildPosition = new Rect();
-    private boolean mInScrollArea;
-    private boolean mShowPageHints;
-    private Drawable mLeftHoverDrawable;
-    private Drawable mRightHoverDrawable;
-    private Drawable mLeftHoverDrawableActive;
-    private Drawable mRightHoverDrawableActive;
-
     private boolean mBlockTouches = false;
 
     /**
@@ -126,12 +117,7 @@ public class DragLayer extends InsettableFrameLayout {
         setMotionEventSplittingEnabled(false);
         setChildrenDrawingOrderEnabled(true);
 
-        final Resources res = getResources();
-        mLeftHoverDrawable = res.getDrawable(R.drawable.page_hover_left);
-        mRightHoverDrawable = res.getDrawable(R.drawable.page_hover_right);
-        mLeftHoverDrawableActive = res.getDrawable(R.drawable.page_hover_left_active);
-        mRightHoverDrawableActive = res.getDrawable(R.drawable.page_hover_right_active);
-        mIsRtl = Utilities.isRtl(res);
+        mIsRtl = Utilities.isRtl(getResources());
     }
 
     public void setup(Launcher launcher, DragController controller) {
@@ -895,29 +881,6 @@ public class DragLayer extends InsettableFrameLayout {
         }
     }
 
-    void onEnterScrollArea(int direction) {
-        mInScrollArea = true;
-        invalidate();
-    }
-
-    void onExitScrollArea() {
-        mInScrollArea = false;
-        invalidate();
-    }
-
-    public void showPageHints() {
-        mShowPageHints = true;
-        Workspace workspace = mLauncher.getWorkspace();
-        getDescendantRectRelativeToSelf(workspace.getChildAt(workspace.numCustomPages()),
-                mScrollChildPosition);
-        invalidate();
-    }
-
-    public void hidePageHints() {
-        mShowPageHints = false;
-        invalidate();
-    }
-
     @Override
     protected void dispatchDraw(Canvas canvas) {
         // Draw the background below children.
@@ -927,41 +890,6 @@ public class DragLayer extends InsettableFrameLayout {
         }
 
         super.dispatchDraw(canvas);
-    }
-
-    private void drawPageHints(Canvas canvas) {
-        if (mShowPageHints) {
-            Workspace workspace = mLauncher.getWorkspace();
-            int width = getMeasuredWidth();
-            int page = workspace.getNextPage();
-            CellLayout leftPage = (CellLayout) workspace.getChildAt(mIsRtl ? page + 1 : page - 1);
-            CellLayout rightPage = (CellLayout) workspace.getChildAt(mIsRtl ? page - 1 : page + 1);
-
-            if (leftPage != null && leftPage.isDragTarget()) {
-                Drawable left = mInScrollArea && leftPage.getIsDragOverlapping() ?
-                        mLeftHoverDrawableActive : mLeftHoverDrawable;
-                left.setBounds(0, mScrollChildPosition.top,
-                        left.getIntrinsicWidth(), mScrollChildPosition.bottom);
-                left.draw(canvas);
-            }
-            if (rightPage != null && rightPage.isDragTarget()) {
-                Drawable right = mInScrollArea && rightPage.getIsDragOverlapping() ?
-                        mRightHoverDrawableActive : mRightHoverDrawable;
-                right.setBounds(width - right.getIntrinsicWidth(),
-                        mScrollChildPosition.top, width, mScrollChildPosition.bottom);
-                right.draw(canvas);
-            }
-        }
-    }
-
-    protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
-        boolean ret = super.drawChild(canvas, child, drawingTime);
-
-        // We want to draw the page hints above the workspace, but below the drag view.
-        if (child instanceof Workspace) {
-            drawPageHints(canvas);
-        }
-        return ret;
     }
 
     public void setBackgroundAlpha(float alpha) {

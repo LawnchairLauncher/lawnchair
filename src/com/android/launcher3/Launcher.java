@@ -199,7 +199,8 @@ public class Launcher extends Activity
     public static final String USER_HAS_MIGRATED = "launcher.user_migrated_from_old_data";
 
     /** The different states that Launcher can be in. */
-    enum State { NONE, WORKSPACE, APPS, APPS_SPRING_LOADED, WIDGETS, WIDGETS_SPRING_LOADED }
+    enum State { NONE, WORKSPACE, WORKSPACE_SPRING_LOADED, APPS, APPS_SPRING_LOADED,
+        WIDGETS, WIDGETS_SPRING_LOADED }
 
     @Thunk State mState = State.WORKSPACE;
     @Thunk LauncherStateTransitionAnimation mStateTransitionAnimation;
@@ -1380,7 +1381,6 @@ public class Launcher extends Activity
 
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
         dragController.setDragScoller(mWorkspace);
-        dragController.setScrollView(mDragLayer);
         dragController.setMoveTarget(mWorkspace);
         dragController.addDropTarget(mWorkspace);
         if (mSearchDropTargetBar != null) {
@@ -3380,20 +3380,26 @@ public class Launcher extends Activity
 
     public void enterSpringLoadedDragMode() {
         if (LOGD) Log.d(TAG, String.format("enterSpringLoadedDragMode [mState=%s", mState.name()));
-        if (mState == State.WORKSPACE || mState == State.APPS_SPRING_LOADED ||
-                mState == State.WIDGETS_SPRING_LOADED) {
+        if (isStateSpringLoaded()) {
             return;
         }
 
         mStateTransitionAnimation.startAnimationToWorkspace(mState, mWorkspace.getState(),
                 Workspace.State.SPRING_LOADED, true /* animated */,
                 null /* onCompleteRunnable */);
-        mState = isAppsViewVisible() ? State.APPS_SPRING_LOADED : State.WIDGETS_SPRING_LOADED;
+
+        if (isAppsViewVisible()) {
+            mState = State.APPS_SPRING_LOADED;
+        } else if (isWidgetsViewVisible()) {
+            mState = State.WIDGETS_SPRING_LOADED;
+        } else {
+            mState = State.WORKSPACE_SPRING_LOADED;
+        }
     }
 
     public void exitSpringLoadedDragModeDelayed(final boolean successfulDrop, int delay,
             final Runnable onCompleteRunnable) {
-        if (mState != State.APPS_SPRING_LOADED && mState != State.WIDGETS_SPRING_LOADED) return;
+        if (!isStateSpringLoaded()) return;
 
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -3413,12 +3419,19 @@ public class Launcher extends Activity
         }, delay);
     }
 
+    private boolean isStateSpringLoaded() {
+        return mState == State.WORKSPACE_SPRING_LOADED || mState == State.APPS_SPRING_LOADED
+                || mState == State.WIDGETS_SPRING_LOADED;
+    }
+
     void exitSpringLoadedDragMode() {
         if (mState == State.APPS_SPRING_LOADED) {
             showAppsView(true /* animated */, false /* resetListToTop */,
                     false /* updatePredictedApps */, false /* focusSearchBar */);
         } else if (mState == State.WIDGETS_SPRING_LOADED) {
             showWidgetsView(true, false);
+        } else if (mState == State.WORKSPACE_SPRING_LOADED) {
+            showWorkspace(true);
         }
     }
 
