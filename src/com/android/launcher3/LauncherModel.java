@@ -34,6 +34,7 @@ import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.DeadObjectException;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -3305,9 +3306,14 @@ public class LauncherModel extends BroadcastReceiver
                     // Refresh widget list, if there is any newly added widget
                     PackageManager pm = context.getPackageManager();
                     for (String pkg : mPackages) {
-                        needToRefresh |= !pm.queryBroadcastReceivers(
-                                new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
-                                    .setPackage(pkg), 0).isEmpty();
+                        try {
+                            needToRefresh |= !pm.queryBroadcastReceivers(
+                                    new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
+                                            .setPackage(pkg), 0).isEmpty();
+                        } catch (RuntimeException e) {
+                            // Ignore the crash. We can live with a state widget list.
+                            Log.e(TAG, "PM call failed for " + pkg, e);
+                        }
                     }
                 }
 
@@ -3359,7 +3365,8 @@ public class LauncherModel extends BroadcastReceiver
                 return results;
             }
         } catch (Exception e) {
-            if (e.getCause() instanceof TransactionTooLargeException) {
+            if (e.getCause() instanceof TransactionTooLargeException ||
+                    e.getCause() instanceof DeadObjectException) {
                 // the returned value may be incomplete and will not be refreshed until the next
                 // time Launcher starts.
                 // TODO: after figuring out a repro step, introduce a dirty bit to check when
