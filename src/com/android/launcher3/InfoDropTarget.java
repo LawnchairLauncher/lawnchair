@@ -20,7 +20,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.util.AttributeSet;
 
-public class InfoDropTarget extends ButtonDropTarget {
+public class InfoDropTarget extends UninstallDropTarget {
 
     public InfoDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -39,7 +39,10 @@ public class InfoDropTarget extends ButtonDropTarget {
         setDrawable(R.drawable.ic_info_launcher);
     }
 
-    public static void startDetailsActivityForInfo(ItemInfo info, Launcher launcher) {
+    /**
+     * @return Whether the activity was started.
+     */
+    public static boolean startDetailsActivityForInfo(ItemInfo info, Launcher launcher) {
         ComponentName componentName = null;
         if (info instanceof AppInfo) {
             componentName = ((AppInfo) info).componentName;
@@ -50,7 +53,14 @@ public class InfoDropTarget extends ButtonDropTarget {
         }
         if (componentName != null) {
             launcher.startApplicationDetailsActivity(componentName, info.user);
+            return true;
         }
+        return false;
+    }
+
+    @Override
+    protected boolean startActivityWithUninstallAffordance(DragObject d) {
+        return startDetailsActivityForInfo(d.dragInfo, mLauncher);
     }
 
     @Override
@@ -61,10 +71,5 @@ public class InfoDropTarget extends ButtonDropTarget {
     public static boolean supportsDrop(Context context, ItemInfo info) {
         return info instanceof AppInfo || info instanceof ShortcutInfo
                 || info instanceof PendingAddItemInfo;
-    }
-
-    @Override
-    void completeDrop(DragObject d) {
-        startDetailsActivityForInfo(d.dragInfo, mLauncher);
     }
 }
