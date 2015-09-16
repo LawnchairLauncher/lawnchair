@@ -82,7 +82,7 @@ public class UninstallDropTarget extends ButtonDropTarget {
     void completeDrop(final DragObject d) {
         final Pair<ComponentName, Integer> componentInfo = getAppInfoFlags(d.dragInfo);
         final UserHandleCompat user = d.dragInfo.user;
-        if (startUninstallActivity(mLauncher, d.dragInfo)) {
+        if (startActivityWithUninstallAffordance(d)) {
 
             final Runnable checkIfUninstallWasSuccess = new Runnable() {
                 @Override
@@ -97,6 +97,10 @@ public class UninstallDropTarget extends ButtonDropTarget {
         } else {
             sendUninstallResult(d.dragSource, false);
         }
+    }
+
+    protected boolean startActivityWithUninstallAffordance(DragObject d) {
+        return startUninstallActivity(mLauncher, d.dragInfo);
     }
 
     public static boolean startUninstallActivity(Launcher launcher, ItemInfo info) {
@@ -115,7 +119,7 @@ public class UninstallDropTarget extends ButtonDropTarget {
     /**
      * Interface defining an object that can provide uninstallable drag objects.
      */
-    public static interface UninstallSource {
+    public interface UninstallSource {
 
         /**
          * A pending uninstall operation was complete.
