@@ -176,7 +176,7 @@ public class LauncherStateTransitionAnimation {
     }
 
     /**
-     * Starts and animation to the workspace from the current overlay view.
+     * Starts an animation to the workspace from the current overlay view.
      */
     public void startAnimationToWorkspace(final Launcher.State fromState,
             final Workspace.State fromWorkspaceState, final Workspace.State toWorkspaceState,
@@ -190,8 +190,12 @@ public class LauncherStateTransitionAnimation {
         if (fromState == Launcher.State.APPS || fromState == Launcher.State.APPS_SPRING_LOADED) {
             startAnimationToWorkspaceFromAllApps(fromWorkspaceState, toWorkspaceState,
                     animated, onCompleteRunnable);
-        } else {
+        } else if (fromState == Launcher.State.WIDGETS ||
+                fromState == Launcher.State.WIDGETS_SPRING_LOADED) {
             startAnimationToWorkspaceFromWidgets(fromWorkspaceState, toWorkspaceState,
+                    animated, onCompleteRunnable);
+        } else {
+            startAnimationToNewWorkspaceState(fromWorkspaceState, toWorkspaceState,
                     animated, onCompleteRunnable);
         }
     }
@@ -403,7 +407,7 @@ public class LauncherStateTransitionAnimation {
     }
 
     /**
-     * Starts and animation to the workspace from the apps view.
+     * Starts an animation to the workspace from the apps view.
      */
     private void startAnimationToWorkspaceFromAllApps(final Workspace.State fromWorkspaceState,
             final Workspace.State toWorkspaceState, final boolean animated, 
@@ -448,10 +452,10 @@ public class LauncherStateTransitionAnimation {
     }
 
     /**
-     * Starts and animation to the workspace from the widgets view.
+     * Starts an animation to the workspace from the widgets view.
      */
     private void startAnimationToWorkspaceFromWidgets(final Workspace.State fromWorkspaceState,
-            final Workspace.State toWorkspaceState, final boolean animated, 
+            final Workspace.State toWorkspaceState, final boolean animated,
             final Runnable onCompleteRunnable) {
         final WidgetsContainerView widgetsView = mLauncher.getWidgetsView();
         PrivateTransitionCallbacks cb = new PrivateTransitionCallbacks() {
@@ -474,6 +478,95 @@ public class LauncherStateTransitionAnimation {
                 toWorkspaceState, mLauncher.getWidgetsButton(), widgetsView,
                 widgetsView.getContentView(), widgetsView.getRevealView(), null, animated,
                 onCompleteRunnable, cb);
+    }
+
+    /**
+     * Starts an animation to the workspace from another workspace state, e.g. normal to overview.
+     */
+    private void startAnimationToNewWorkspaceState(final Workspace.State fromWorkspaceState,
+            final Workspace.State toWorkspaceState, final boolean animated,
+            final Runnable onCompleteRunnable) {
+        final View fromWorkspace = mLauncher.getWorkspace();
+        final HashMap<View, Integer> layerViews = new HashMap<>();
+        final AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
+        final int revealDuration = mLauncher.getResources()
+                .getInteger(R.integer.config_overlayRevealTime);
+
+        // Cancel the current animation
+        cancelAnimation();
+
+        // Create the workspace animation.
+        // NOTE: this call apparently also sets the state for the workspace if !animated
+        Animator workspaceAnim = mLauncher.startWorkspaceStateChangeAnimation(toWorkspaceState,
+                animated, layerViews);
+
+        startWorkspaceSearchBarAnimation(animation, fromWorkspaceState, toWorkspaceState,
+                animated ? revealDuration : 0, null);
+
+        if (animated) {
+            if (workspaceAnim != null) {
+                animation.play(workspaceAnim);
+            }
+            dispatchOnLauncherTransitionPrepare(fromWorkspace, animated, true);
+
+            final AnimatorSet stateAnimation = animation;
+            final Runnable startAnimRunnable = new Runnable() {
+                @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+                public void run() {
+                    // Check that mCurrentAnimation hasn't changed while
+                    // we waited for a layout/draw pass
+                    if (mCurrentAnimation != stateAnimation)
+                        return;
+
+                    dispatchOnLauncherTransitionStart(fromWorkspace, animated, true);
+
+                    // Enable all necessary layers
+                    for (View v : layerViews.keySet()) {
+                        if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
+                            v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+                        }
+                        if (Utilities.ATLEAST_LOLLIPOP && v.isAttachedToWindow()) {
+                            v.buildLayer();
+                        }
+                    }
+                    stateAnimation.start();
+                }
+            };
+            animation.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    dispatchOnLauncherTransitionEnd(fromWorkspace, animated, true);
+
+                    // Run any queued runnables
+                    if (onCompleteRunnable != null) {
+                        onCompleteRunnable.run();
+                    }
+
+                    // Disable all necessary layers
+                    for (View v : layerViews.keySet()) {
+                        if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
+                            v.setLayerType(View.LAYER_TYPE_NONE, null);
+                        }
+                    }
+
+                    // This can hold unnecessary references to views.
+                    cleanupAnimation();
+                }
+            });
+            fromWorkspace.post(startAnimRunnable);
+            mCurrentAnimation = animation;
+        } else /* if (!animated) */ {
+            dispatchOnLauncherTransitionPrepare(fromWorkspace, animated, true);
+            dispatchOnLauncherTransitionStart(fromWorkspace, animated, true);
+            dispatchOnLauncherTransitionEnd(fromWorkspace, animated, true);
+
+            // Run any queued runnables
+            if (onCompleteRunnable != null) {
+                onCompleteRunnable.run();
+            }
+
+            mCurrentAnimation = null;
+        }
     }
 
     /**
@@ -683,7 +776,7 @@ public class LauncherStateTransitionAnimation {
             fromView.post(startAnimRunnable);
 
             return animation;
-        } else {
+        } else /* if (!(animated && initialized)) */ {
             fromView.setVisibility(View.GONE);
             dispatchOnLauncherTransitionPrepare(fromView, animated, true);
             dispatchOnLauncherTransitionStart(fromView, animated, true);
