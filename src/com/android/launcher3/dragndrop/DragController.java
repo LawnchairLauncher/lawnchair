@@ -42,7 +42,6 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.ShortcutInfo;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Thunk;
 
 import com.android.launcher3.R;
@@ -657,19 +656,27 @@ public class DragController implements DragDriver.EventListener {
 
         ViewConfiguration config = ViewConfiguration.get(mLauncher);
         mVelocityTracker.computeCurrentVelocity(1000, config.getScaledMaximumFlingVelocity());
-
+        PointF vel = new PointF(mVelocityTracker.getXVelocity(), mVelocityTracker.getYVelocity());
+        float theta = MAX_FLING_DEGREES + 1;
         if (mVelocityTracker.getYVelocity() < mFlingToDeleteThresholdVelocity) {
             // Do a quick dot product test to ensure that we are flinging upwards
-            PointF vel = new PointF(mVelocityTracker.getXVelocity(),
-                    mVelocityTracker.getYVelocity());
             PointF upVec = new PointF(0f, -1f);
-            float theta = (float) Math.acos(((vel.x * upVec.x) + (vel.y * upVec.y)) /
-                    (vel.length() * upVec.length()));
-            if (theta <= Math.toRadians(MAX_FLING_DEGREES)) {
-                return vel;
-            }
+            theta = getAngleBetweenVectors(vel, upVec);
+        } else if (mLauncher.getDeviceProfile().isVerticalBarLayout() &&
+                mVelocityTracker.getXVelocity() < mFlingToDeleteThresholdVelocity) {
+            // Remove icon is on left side instead of top, so check if we are flinging to the left.
+            PointF leftVec = new PointF(-1f, 0f);
+            theta = getAngleBetweenVectors(vel, leftVec);
+        }
+        if (theta <= Math.toRadians(MAX_FLING_DEGREES)) {
+            return vel;
         }
         return null;
+    }
+
+    private float getAngleBetweenVectors(PointF vec1, PointF vec2) {
+        return (float) Math.acos(((vec1.x * vec2.x) + (vec1.y * vec2.y)) /
+                (vec1.length() * vec2.length()));
     }
 
     void drop(DropTarget dropTarget, float x, float y, PointF flingVel) {

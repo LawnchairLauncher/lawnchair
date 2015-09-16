@@ -372,7 +372,7 @@ public class DeviceProfile {
      * When {@code true}, hotseat is on the bottom row when in landscape mode.
      * If {@code false}, hotseat is on the right column when in landscape mode.
      */
-    boolean isVerticalBarLayout() {
+    public boolean isVerticalBarLayout() {
         return isLandscape && transposeLayoutWithOrientation;
     }
 

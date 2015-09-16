@@ -19,7 +19,6 @@ package com.android.launcher3;
 import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.graphics.PointF;
-import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.AnimationUtils;

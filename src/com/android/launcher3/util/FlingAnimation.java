@@ -51,7 +51,7 @@ public class FlingAnimation implements AnimatorUpdateListener {
         mFrom.top += yOffset;
         mFrom.bottom -= yOffset;
 
-        mDuration = initDuration();
+        mDuration = Math.abs(vel.y) > Math.abs(vel.x) ? initFlingUpDuration() : initFlingLeftDuration();
         mAnimationTimeFraction = ((float) mDuration) / (mDuration + DRAG_END_DELAY);
     }
 
@@ -62,7 +62,7 @@ public class FlingAnimation implements AnimatorUpdateListener {
      *   - Calculate a constant acceleration in x direction such that the object reaches
      *     {@link #mIconRect} in the given time.
      */
-    protected int initDuration() {
+    protected int initFlingUpDuration() {
         float sY = -mFrom.bottom;
 
         float d = mUY * mUY + 2 * sY * MAX_ACCELERATION;
@@ -80,6 +80,34 @@ public class FlingAnimation implements AnimatorUpdateListener {
 
         // Find horizontal acceleration such that: u*t + a*t*t/2 = s
         mAX = (float) ((sX - t * mUX) * 2 / (t * t));
+        return (int) Math.round(t);
+    }
+
+    /**
+     * The fling animation is based on the following system
+     *   - Apply a constant force in the x direction to causing the fling to decelerate.
+     *   - The animation runs for the time taken by the object to go out of the screen.
+     *   - Calculate a constant acceleration in y direction such that the object reaches
+     *     {@link #mIconRect} in the given time.
+     */
+    protected int initFlingLeftDuration() {
+        float sX = -mFrom.right;
+
+        float d = mUX * mUX + 2 * sX * MAX_ACCELERATION;
+        if (d >= 0) {
+            // sX can be reached under the MAX_ACCELERATION. Use MAX_ACCELERATION for x direction.
+            mAX = MAX_ACCELERATION;
+        } else {
+            // sX is not reachable, decrease the acceleration so that sX is almost reached.
+            d = 0;
+            mAX = mUX * mUX / (2 * -sX);
+        }
+        double t = (-mUX - Math.sqrt(d)) / mAX;
+
+        float sY = -mFrom.exactCenterY() + mIconRect.exactCenterY();
+
+        // Find vertical acceleration such that: u*t + a*t*t/2 = s
+        mAY = (float) ((sY - t * mUY) * 2 / (t * t));
         return (int) Math.round(t);
     }
 
