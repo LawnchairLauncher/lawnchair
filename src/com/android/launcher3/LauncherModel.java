@@ -3319,6 +3319,9 @@ public class LauncherModel extends BroadcastReceiver
                                     new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
                                             .setPackage(pkg), 0).isEmpty();
                         } catch (RuntimeException e) {
+                            if (LauncherAppState.isDogfoodBuild()) {
+                                throw e;
+                            }
                             // Ignore the crash. We can live with a state widget list.
                             Log.e(TAG, "PM call failed for " + pkg, e);
                         }
@@ -3373,8 +3376,9 @@ public class LauncherModel extends BroadcastReceiver
                 return results;
             }
         } catch (Exception e) {
-            if (e.getCause() instanceof TransactionTooLargeException ||
-                    e.getCause() instanceof DeadObjectException) {
+            if (!LauncherAppState.isDogfoodBuild() &&
+                    (e.getCause() instanceof TransactionTooLargeException ||
+                    e.getCause() instanceof DeadObjectException)) {
                 // the returned value may be incomplete and will not be refreshed until the next
                 // time Launcher starts.
                 // TODO: after figuring out a repro step, introduce a dirty bit to check when
