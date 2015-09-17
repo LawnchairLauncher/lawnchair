@@ -65,10 +65,10 @@ public class InvariantDeviceProfile {
      */
     public int numFolderRows;
     public int numFolderColumns;
-    float iconSize;
-    int iconBitmapSize;
-    int fillResIconDpi;
-    float iconTextSize;
+    public float iconSize;
+    public int iconBitmapSize;
+    public int fillResIconDpi;
+    public float iconTextSize;
 
     /**
      * Number of icons inside the hotseat area.

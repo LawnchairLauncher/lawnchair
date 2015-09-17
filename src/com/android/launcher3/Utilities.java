@@ -61,6 +61,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.android.launcher3.compat.UserHandleCompat;
+import com.android.launcher3.util.IconNormalizer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -197,12 +198,15 @@ public final class Utilities {
     }
 
     /**
-     * Returns a bitmap suitable for the all apps view. The icon is badged for {@param user}
+     * Returns a bitmap suitable for the all apps view. The icon is badged for {@param user}.
+     * The bitmap is also visually normalized with other icons.
      */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static Bitmap createBadgedIconBitmap(
             Drawable icon, UserHandleCompat user, Context context) {
-        Bitmap bitmap = createIconBitmap(icon, context);
+        float scale = LauncherAppState.isDogfoodBuild() ?
+                IconNormalizer.getInstance().getScale(icon) : 1;
+        Bitmap bitmap = createIconBitmap(icon, context, scale);
         if (Utilities.ATLEAST_LOLLIPOP && user != null
                 && !UserHandleCompat.myUserHandle().equals(user)) {
             BitmapDrawable drawable = new BitmapDrawable(context.getResources(), bitmap);
@@ -222,6 +226,13 @@ public final class Utilities {
      * Returns a bitmap suitable for the all apps view.
      */
     public static Bitmap createIconBitmap(Drawable icon, Context context) {
+        return createIconBitmap(icon, context, 1.0f /* scale */);
+    }
+
+    /**
+     * @param scale the scale to apply before drawing {@param icon} on the canvas
+     */
+    public static Bitmap createIconBitmap(Drawable icon, Context context, float scale) {
         synchronized (sCanvas) {
             final int iconBitmapSize = getIconBitmapSize();
 
@@ -277,7 +288,10 @@ public final class Utilities {
 
             sOldBounds.set(icon.getBounds());
             icon.setBounds(left, top, left+width, top+height);
+            canvas.save(Canvas.MATRIX_SAVE_FLAG);
+            canvas.scale(scale, scale, textureWidth / 2, textureHeight / 2);
             icon.draw(canvas);
+            canvas.restore();
             icon.setBounds(sOldBounds);
             canvas.setBitmap(null);
 
@@ -334,7 +348,7 @@ public final class Utilities {
     }
 
     /**
-     * Inverse of {@link #getDescendantCoordRelativeToSelf(View, int[])}.
+     * Inverse of {@link #getDescendantCoordRelativeToParent(View, View, int[], boolean)}.
      */
     public static float mapCoordInSelfToDescendent(View descendant, View root,
                                                    int[] coord) {

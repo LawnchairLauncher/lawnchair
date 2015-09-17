@@ -782,7 +782,7 @@ public class IconCache {
     }
 
     private static final class IconDB extends SQLiteOpenHelper {
-        private final static int DB_VERSION = 7;
+        private final static int DB_VERSION = 8;
 
         private final static String TABLE_NAME = "icons";
         private final static String COLUMN_ROWID = "rowid";
