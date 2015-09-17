@@ -2667,6 +2667,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
             lp.dropped = true;
             child.requestLayout();
+            markCellsAsOccupiedForView(child);
         }
     }
 
