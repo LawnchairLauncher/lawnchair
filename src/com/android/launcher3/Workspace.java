@@ -3739,8 +3739,11 @@ public class Workspace extends PagedView
         mDragOutline = null;
         mDragInfo = null;
 
-        mLauncher.exitSpringLoadedDragModeDelayed(success,
-                Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
+        if (!isFlingToDelete) {
+            // Fling to delete already exits spring loaded mode after the animation finishes.
+            mLauncher.exitSpringLoadedDragModeDelayed(success,
+                    Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
+        }
     }
 
     /**
