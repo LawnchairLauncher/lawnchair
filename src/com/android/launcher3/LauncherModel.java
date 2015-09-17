@@ -3307,9 +3307,10 @@ public class LauncherModel extends BroadcastReceiver
                     PackageManager pm = context.getPackageManager();
                     for (String pkg : mPackages) {
                         try {
-                            needToRefresh |= !pm.queryBroadcastReceivers(
+                            List<ResolveInfo> widgets = pm.queryBroadcastReceivers(
                                     new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
-                                            .setPackage(pkg), 0).isEmpty();
+                                            .setPackage(pkg), 0);
+                            needToRefresh |= widgets != null && !widgets.isEmpty();
                         } catch (RuntimeException e) {
                             // Ignore the crash. We can live with a state widget list.
                             Log.e(TAG, "PM call failed for " + pkg, e);
