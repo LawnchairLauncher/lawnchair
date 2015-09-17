@@ -3320,7 +3320,7 @@ public class LauncherModel extends BroadcastReceiver
                                             .setPackage(pkg), 0);
                             needToRefresh |= widgets != null && !widgets.isEmpty();
                         } catch (RuntimeException e) {
-                            if (LauncherAppState.isDogfoodBuild()) {
+                            if (ProviderConfig.IS_DOGFOOD_BUILD) {
                                 throw e;
                             }
                             // Ignore the crash. We can live with a state widget list.
@@ -3377,7 +3377,7 @@ public class LauncherModel extends BroadcastReceiver
                 return results;
             }
         } catch (Exception e) {
-            if (!LauncherAppState.isDogfoodBuild() &&
+            if (!ProviderConfig.IS_DOGFOOD_BUILD &&
                     (e.getCause() instanceof TransactionTooLargeException ||
                     e.getCause() instanceof DeadObjectException)) {
                 // the returned value may be incomplete and will not be refreshed until the next
