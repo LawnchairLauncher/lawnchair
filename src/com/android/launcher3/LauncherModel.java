@@ -3450,7 +3450,7 @@ public class LauncherModel extends BroadcastReceiver
                 List<ResolveInfo> providers = packageManager.queryIntentActivities(shortcutsIntent, 0);
                 sBgShortcutProviders = providers;
             } catch (RuntimeException e) {
-                if (!LauncherAppState.isDogfoodBuild() &&
+                if (!ProviderConfig.IS_DOGFOOD_BUILD &&
                         (e.getCause() instanceof TransactionTooLargeException ||
                                 e.getCause() instanceof DeadObjectException)) {
                     /**
