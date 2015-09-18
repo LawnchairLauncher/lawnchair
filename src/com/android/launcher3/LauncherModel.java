@@ -170,6 +170,9 @@ public class LauncherModel extends BroadcastReceiver
     // sBgWidgetProviders is the set of widget providers including custom internal widgets
     public static HashMap<ComponentKey, LauncherAppWidgetProviderInfo> sBgWidgetProviders;
 
+    // sBgShortcutProviders is the set of custom shortcut providers
+    public static List<ResolveInfo> sBgShortcutProviders;
+
     // sPendingPackages is a set of packages which could be on sdcard and are not available yet
     static final HashMap<UserHandleCompat, HashSet<String>> sPendingPackages =
             new HashMap<UserHandleCompat, HashSet<String>>();
@@ -3427,8 +3430,29 @@ public class LauncherModel extends BroadcastReceiver
         PackageManager packageManager = mApp.getContext().getPackageManager();
         final ArrayList<Object> widgetsAndShortcuts = new ArrayList<Object>();
         widgetsAndShortcuts.addAll(getWidgetProviders(mApp.getContext(), refresh));
-        Intent shortcutsIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
-        widgetsAndShortcuts.addAll(packageManager.queryIntentActivities(shortcutsIntent, 0));
+
+        // Update shortcut providers
+        synchronized (sBgLock) {
+            try {
+                Intent shortcutsIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
+                List<ResolveInfo> providers = packageManager.queryIntentActivities(shortcutsIntent, 0);
+                sBgShortcutProviders = providers;
+            } catch (RuntimeException e) {
+                if (!LauncherAppState.isDogfoodBuild() &&
+                        (e.getCause() instanceof TransactionTooLargeException ||
+                                e.getCause() instanceof DeadObjectException)) {
+                    /**
+                     * Ignore exception and use the cached list if available.
+                     * Refer to {@link #getWidgetProviders(Context, boolean}} for more info.
+                     */
+                } else {
+                    throw e;
+                }
+            }
+            if (sBgShortcutProviders != null) {
+                widgetsAndShortcuts.addAll(sBgShortcutProviders);
+            }
+        }
         mBgWidgetsModel.setWidgetsAndShortcuts(widgetsAndShortcuts);
     }
 
