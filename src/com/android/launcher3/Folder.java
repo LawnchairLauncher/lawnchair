@@ -1123,26 +1123,29 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             public void run() {
                 CellLayout cellLayout = mLauncher.getCellLayout(mInfo.container, mInfo.screenId);
 
-                View child = null;
-                // Move the item from the folder to the workspace, in the position of the folder
-                if (getItemCount() == 1) {
-                    ShortcutInfo finalItem = mInfo.contents.get(0);
-                    child = mLauncher.createShortcut(cellLayout, finalItem);
-                    LauncherModel.addOrMoveItemInDatabase(mLauncher, finalItem, mInfo.container,
-                            mInfo.screenId, mInfo.cellX, mInfo.cellY);
-                }
+                // Remove the folder
                 if (getItemCount() <= 1) {
-                    mLauncher.removeItem(mFolderIcon, mInfo, true /* deleteFromDb */);
+                    mLauncher.removeItem(mFolderIcon, null, mInfo, true /* deleteFromDb */);
                     if (mFolderIcon instanceof DropTarget) {
                         mDragController.removeDropTarget((DropTarget) mFolderIcon);
                     }
                 }
-                // We add the child after removing the folder to prevent both from existing at
-                // the same time in the CellLayout.  We need to add the new item with addInScreenFromBind()
-                // to ensure that hotseat items are placed correctly.
-                if (child != null) {
+
+                // Move the item from the folder to the workspace, in the position of the folder
+                if (getItemCount() == 1) {
+                    ShortcutInfo finalItem = mInfo.contents.get(0);
+                    View child = mLauncher.createShortcut(cellLayout, finalItem);
+                    LauncherModel.addOrMoveItemInDatabase(mLauncher, finalItem, mInfo.container,
+                            mInfo.screenId, mInfo.cellX, mInfo.cellY);
+
+                    // We add the child after removing the folder to prevent both from existing at
+                    // the same time in the CellLayout.  We need to add the new item with addInScreenFromBind()
+                    // to ensure that hotseat items are placed correctly.
                     mLauncher.getWorkspace().addInScreenFromBind(child, mInfo.container, mInfo.screenId,
                             mInfo.cellX, mInfo.cellY, mInfo.spanX, mInfo.spanY);
+
+                    // Focus the newly created child
+                    child.requestFocus();
                 }
             }
         };

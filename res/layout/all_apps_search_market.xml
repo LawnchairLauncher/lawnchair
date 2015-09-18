@@ -25,5 +25,5 @@
     android:textSize="14sp"
     android:textColor="@color/launcher_accent_color"
     android:textAllCaps="true"
-    android:focusable="false"
+    android:focusable="true"
     android:background="@drawable/all_apps_search_market_bg" />
