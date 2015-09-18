@@ -706,6 +706,9 @@ public class Launcher extends Activity
             return;
         } else if (requestCode == REQUEST_PICK_WALLPAPER) {
             if (resultCode == RESULT_OK && mWorkspace.isInOverviewMode()) {
+                // User could have free-scrolled between pages before picking a wallpaper; make sure
+                // we move to the closest one now.
+                mWorkspace.setCurrentPage(mWorkspace.getPageNearestToCenterOfScreen());
                 showWorkspace(false);
             }
             return;
