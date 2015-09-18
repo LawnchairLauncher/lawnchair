@@ -87,9 +87,12 @@ public class UninstallDropTarget extends ButtonDropTarget {
             final Runnable checkIfUninstallWasSuccess = new Runnable() {
                 @Override
                 public void run() {
-                    String packageName = componentInfo.first.getPackageName();
-                    boolean uninstallSuccessful = !AllAppsList.packageHasActivities(
-                            getContext(), packageName, user);
+                    boolean uninstallSuccessful = false;
+                    if (componentInfo != null) {
+                        String packageName = componentInfo.first.getPackageName();
+                        uninstallSuccessful = !AllAppsList.packageHasActivities(
+                                getContext(), packageName, user);
+                    }
                     sendUninstallResult(d.dragSource, uninstallSuccessful);
                 }
             };

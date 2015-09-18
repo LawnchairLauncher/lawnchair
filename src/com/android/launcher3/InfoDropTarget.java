@@ -50,6 +50,8 @@ public class InfoDropTarget extends UninstallDropTarget {
             componentName = ((ShortcutInfo) info).intent.getComponent();
         } else if (info instanceof PendingAddItemInfo) {
             componentName = ((PendingAddItemInfo) info).componentName;
+        } else if (info instanceof LauncherAppWidgetInfo) {
+            componentName = ((LauncherAppWidgetInfo) info).providerName;
         }
         if (componentName != null) {
             launcher.startApplicationDetailsActivity(componentName, info.user);
@@ -70,6 +72,6 @@ public class InfoDropTarget extends UninstallDropTarget {
 
     public static boolean supportsDrop(Context context, ItemInfo info) {
         return info instanceof AppInfo || info instanceof ShortcutInfo
-                || info instanceof PendingAddItemInfo;
+                || info instanceof PendingAddItemInfo || info instanceof LauncherAppWidgetInfo;
     }
 }
