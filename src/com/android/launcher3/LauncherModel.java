@@ -64,6 +64,7 @@ import com.android.launcher3.util.CursorIconInfo;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.ManagedProfileHeuristic;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.util.ViewOnDrawExecutor;
 
 import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
@@ -79,6 +80,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.Executor;
 
 /**
  * Maintains in-memory state of the Launcher. It is expected that there should be only one
@@ -123,12 +125,6 @@ public class LauncherModel extends BroadcastReceiver
     // need to do a requery.  These are only ever touched from the loader thread.
     @Thunk boolean mWorkspaceLoaded;
     @Thunk boolean mAllAppsLoaded;
-
-    // When we are loading pages synchronously, we can't just post the binding of items on the side
-    // pages as this delays the rotation process.  Instead, we wait for a callback from the first
-    // draw (in Workspace) to initiate the binding of the remaining side pages.  Any time we start
-    // a normal load, we also clear this set of Runnables.
-    static final ArrayList<Runnable> mDeferredBindRunnables = new ArrayList<Runnable>();
 
     /**
      * Set of runnables to be called on the background thread after the workspace binding
@@ -188,6 +184,7 @@ public class LauncherModel extends BroadcastReceiver
     public interface Callbacks {
         public boolean setLoadOnResume();
         public int getCurrentWorkspaceScreen();
+        public void clearPendingBinds();
         public void startBinding();
         public void bindItems(ArrayList<ItemInfo> shortcuts, int start, int end,
                               boolean forceAnimateIcons);
@@ -212,6 +209,7 @@ public class LauncherModel extends BroadcastReceiver
         public void bindSearchProviderChanged();
         public boolean isAllAppsButtonRank(int rank);
         public void onPageBoundSynchronously(int page);
+        public void executeOnNextDraw(ViewOnDrawExecutor executor);
         public void dumpLogsToLocalData();
     }
 
@@ -588,11 +586,6 @@ public class LauncherModel extends BroadcastReceiver
         if (sWorkerThread.getThreadId() == Process.myTid()) {
             throw new RuntimeException("Expected unbindLauncherItemInfos() to be called from the " +
                     "main thread");
-        }
-
-        // Clear any deferred bind runnables
-        synchronized (mDeferredBindRunnables) {
-            mDeferredBindRunnables.clear();
         }
 
         // Remove any queued UI runnables
@@ -1342,14 +1335,16 @@ public class LauncherModel extends BroadcastReceiver
         // Enable queue before starting loader. It will get disabled in Launcher#finishBindingItems
         InstallShortcutReceiver.enableInstallQueue();
         synchronized (mLock) {
-            // Clear any deferred bind-runnables from the synchronized load process
-            // We must do this before any loading/binding is scheduled below.
-            synchronized (mDeferredBindRunnables) {
-                mDeferredBindRunnables.clear();
-            }
-
             // Don't bother to start the thread if we know it's not going to do anything
             if (mCallbacks != null && mCallbacks.get() != null) {
+                final Callbacks oldCallbacks = mCallbacks.get();
+                // Clear any pending bind-runnables from the synchronized load process.
+                runOnMainThread(new Runnable() {
+                    public void run() {
+                        oldCallbacks.clearPendingBinds();
+                    }
+                });
+
                 // If there is already one running, tell it to stop.
                 stopLoaderLocked();
                 mLoaderTask = new LoaderTask(mApp.getContext(), loadFlags);
@@ -1360,21 +1355,6 @@ public class LauncherModel extends BroadcastReceiver
                     sWorkerThread.setPriority(Thread.NORM_PRIORITY);
                     sWorker.post(mLoaderTask);
                 }
-            }
-        }
-    }
-
-    void bindRemainingSynchronousPages() {
-        // Post the remaining side pages to be loaded
-        if (!mDeferredBindRunnables.isEmpty()) {
-            Runnable[] deferredBindRunnables = null;
-            synchronized (mDeferredBindRunnables) {
-                deferredBindRunnables = mDeferredBindRunnables.toArray(
-                        new Runnable[mDeferredBindRunnables.size()]);
-                mDeferredBindRunnables.clear();
-            }
-            for (final Runnable r : deferredBindRunnables) {
-                mHandler.post(r);
             }
         }
     }
@@ -2504,9 +2484,7 @@ public class LauncherModel extends BroadcastReceiver
                 final ArrayList<ItemInfo> workspaceItems,
                 final ArrayList<LauncherAppWidgetInfo> appWidgets,
                 final LongArrayMap<FolderInfo> folders,
-                ArrayList<Runnable> deferredBindRunnables) {
-
-            final boolean postOnMainThread = (deferredBindRunnables != null);
+                final Executor executor) {
 
             // Bind the workspace items
             int N = workspaceItems.size();
@@ -2523,13 +2501,7 @@ public class LauncherModel extends BroadcastReceiver
                         }
                     }
                 };
-                if (postOnMainThread) {
-                    synchronized (deferredBindRunnables) {
-                        deferredBindRunnables.add(r);
-                    }
-                } else {
-                    runOnMainThread(r);
-                }
+                executor.execute(r);
             }
 
             // Bind the folders
@@ -2542,13 +2514,7 @@ public class LauncherModel extends BroadcastReceiver
                         }
                     }
                 };
-                if (postOnMainThread) {
-                    synchronized (deferredBindRunnables) {
-                        deferredBindRunnables.add(r);
-                    }
-                } else {
-                    runOnMainThread(r);
-                }
+                executor.execute(r);
             }
 
             // Bind the widgets, one at a time
@@ -2563,11 +2529,7 @@ public class LauncherModel extends BroadcastReceiver
                         }
                     }
                 };
-                if (postOnMainThread) {
-                    deferredBindRunnables.add(r);
-                } else {
-                    runOnMainThread(r);
-                }
+                executor.execute(r);
             }
         }
 
@@ -2645,6 +2607,7 @@ public class LauncherModel extends BroadcastReceiver
                 public void run() {
                     Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                     if (callbacks != null) {
+                        callbacks.clearPendingBinds();
                         callbacks.startBinding();
                     }
                 }
@@ -2653,28 +2616,20 @@ public class LauncherModel extends BroadcastReceiver
 
             bindWorkspaceScreens(oldCallbacks, orderedScreenIds);
 
-            // Load items on the current page
+            Executor mainExecutor = new DeferredMainThreadExecutor();
+            // Load items on the current page.
             bindWorkspaceItems(oldCallbacks, currentWorkspaceItems, currentAppWidgets,
-                    currentFolders, null);
-            if (isLoadingSynchronously) {
-                r = new Runnable() {
-                    public void run() {
-                        Callbacks callbacks = tryGetCallbacks(oldCallbacks);
-                        if (callbacks != null && currentScreen != PagedView.INVALID_RESTORE_PAGE) {
-                            callbacks.onPageBoundSynchronously(currentScreen);
-                        }
-                    }
-                };
-                runOnMainThread(r);
-            }
+                    currentFolders, mainExecutor);
 
-            // Load all the remaining pages (if we are loading synchronously, we want to defer this
-            // work until after the first render)
-            synchronized (mDeferredBindRunnables) {
-                mDeferredBindRunnables.clear();
-            }
-            bindWorkspaceItems(oldCallbacks, otherWorkspaceItems, otherAppWidgets, otherFolders,
-                    (isLoadingSynchronously ? mDeferredBindRunnables : null));
+            // In case of isLoadingSynchronously, only bind the first screen, and defer binding the
+            // remaining screens after first onDraw is called. This ensures that the first screen
+            // is immediately visible (eg. during rotation)
+            // In case of !isLoadingSynchronously, bind all pages one after other.
+            final Executor deferredExecutor = isLoadingSynchronously ?
+                    new ViewOnDrawExecutor(mHandler) : mainExecutor;
+
+            bindWorkspaceItems(oldCallbacks, otherWorkspaceItems, otherAppWidgets,
+                    otherFolders, deferredExecutor);
 
             // Tell the workspace that we're done binding items
             r = new Runnable() {
@@ -2704,11 +2659,23 @@ public class LauncherModel extends BroadcastReceiver
 
                 }
             };
+            deferredExecutor.execute(r);
+
             if (isLoadingSynchronously) {
-                synchronized (mDeferredBindRunnables) {
-                    mDeferredBindRunnables.add(r);
-                }
-            } else {
+                r = new Runnable() {
+                    public void run() {
+                        Callbacks callbacks = tryGetCallbacks(oldCallbacks);
+                        if (callbacks != null) {
+                            // We are loading synchronously, which means, some of the pages will be
+                            // bound after first draw. Inform the callbacks that page binding is
+                            // not complete, and schedule the remaining pages.
+                            if (currentScreen != PagedView.INVALID_RESTORE_PAGE) {
+                                callbacks.onPageBoundSynchronously(currentScreen);
+                            }
+                            callbacks.executeOnNextDraw((ViewOnDrawExecutor) deferredExecutor);
+                        }
+                    }
+                };
                 runOnMainThread(r);
             }
         }
@@ -3763,6 +3730,14 @@ public class LauncherModel extends BroadcastReceiver
     public FolderInfo findFolderById(Long folderId) {
         synchronized (sBgLock) {
             return sBgFolders.get(folderId);
+        }
+    }
+
+    @Thunk class DeferredMainThreadExecutor implements Executor {
+
+        @Override
+        public void execute(Runnable command) {
+            runOnMainThread(command);
         }
     }
 

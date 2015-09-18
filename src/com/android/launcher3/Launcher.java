@@ -110,6 +110,7 @@ import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.util.ViewOnDrawExecutor;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetsContainerView;
@@ -275,6 +276,7 @@ public class Launcher extends Activity
 
     private ArrayList<Runnable> mBindOnResumeCallbacks = new ArrayList<Runnable>();
     private ArrayList<Runnable> mOnResumeCallbacks = new ArrayList<Runnable>();
+    private ViewOnDrawExecutor mPendingExecutor;
 
     private LauncherModel mModel;
     private IconCache mIconCache;
@@ -950,12 +952,6 @@ public class Launcher extends Activity
         mPaused = false;
         if (mRestoring || mOnResumeNeedsLoad) {
             setWorkspaceLoading(true);
-
-            // If we're starting binding all over again, clear any bind calls we'd postponed in
-            // the past (see waitUntilResume) -- we don't need them since we're starting binding
-            // from scratch again
-            mBindOnResumeCallbacks.clear();
-
             mModel.startLoader(PagedView.INVALID_RESTORE_PAGE);
             mRestoring = false;
             mOnResumeNeedsLoad = false;
@@ -3636,17 +3632,25 @@ public class Launcher extends Activity
     }
 
     /**
+     * Clear any pending bind callbacks. This is called when is loader is planning to
+     * perform a full rebind from scratch.
+     */
+    @Override
+    public void clearPendingBinds() {
+        mBindOnResumeCallbacks.clear();
+        if (mPendingExecutor != null) {
+            mPendingExecutor.markCompleted();
+            mPendingExecutor = null;
+        }
+    }
+
+    /**
      * Refreshes the shortcuts shown on the workspace.
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void startBinding() {
         setWorkspaceLoading(true);
-
-        // If we're starting binding all over again, clear any bind calls we'd postponed in
-        // the past (see waitUntilResume) -- we don't need them since we're starting binding
-        // from scratch again
-        mBindOnResumeCallbacks.clear();
 
         // Clear the workspace because it's going to be rebound
         mWorkspace.clearDropTargets();
@@ -4010,6 +4014,21 @@ public class Launcher extends Activity
 
     public void onPageBoundSynchronously(int page) {
         mSynchronouslyBoundPages.add(page);
+    }
+
+    @Override
+    public void executeOnNextDraw(ViewOnDrawExecutor executor) {
+        if (mPendingExecutor != null) {
+            mPendingExecutor.markCompleted();
+        }
+        mPendingExecutor = executor;
+        executor.attachTo(this);
+    }
+
+    public void clearPendingExecutor(ViewOnDrawExecutor executor) {
+        if (mPendingExecutor == executor) {
+            mPendingExecutor = null;
+        }
     }
 
     /**

@@ -278,13 +278,6 @@ public class Workspace extends PagedView
 
     private AccessibilityDelegate mPagesAccessibilityDelegate;
 
-    private final Runnable mBindPages = new Runnable() {
-        @Override
-        public void run() {
-            mLauncher.getModel().bindRemainingSynchronousPages();
-        }
-    };
-
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -1717,14 +1710,6 @@ public class Workspace extends PagedView
             mWallpaperOffset.jumpToFinal();
         }
         super.onLayout(changed, left, top, right, bottom);
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-
-        // Call back to LauncherModel to finish binding after the first draw
-        post(mBindPages);
     }
 
     @Override
