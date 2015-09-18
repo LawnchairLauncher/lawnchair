@@ -1120,7 +1120,7 @@ public class Workspace extends PagedView
                     if (lahv != null && lahv.isReinflateRequired()) {
                         // Remove and rebind the current widget (which was inflated in the wrong
                         // orientation), but don't delete it from the database
-                        mLauncher.removeItem(lahv, info, false  /* deleteFromDb */);
+                        mLauncher.removeItem(lahv, null, info, false  /* deleteFromDb */);
                         mLauncher.bindAppWidget(info);
                     }
                 }
@@ -4525,7 +4525,7 @@ public class Workspace extends PagedView
                 if (info.hostView instanceof PendingAppWidgetHostView) {
                     // Remove and rebind the current widget, but don't delete it from the database
                     PendingAppWidgetHostView view = (PendingAppWidgetHostView) info.hostView;
-                    mLauncher.removeItem(view, info, false /* deleteFromDb */);
+                    mLauncher.removeItem(view, null, info, false /* deleteFromDb */);
                     mLauncher.bindAppWidget(info);
                 }
             }

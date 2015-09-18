@@ -2390,13 +2390,22 @@ public class Launcher extends Activity
     }
 
     /**
-     * Unbinds the view for the specified item, and removes the item and all its children items
-     * from the database.  For folders, this incl udes the folder contents.  AppWidgets will also
-     * have their widget ids deleted.
+     * Unbinds the view for the specified item, and removes the item and all its children.
+     *
+     * @param v the view being removed.
+     * @param containerInfo the {@link FolderInfo} container of this view (can be null).
+     * @param itemInfo the {@link ItemInfo} for this view.
+     * @param deleteFromDb whether or not to delete this item from the db.
      */
-    public boolean removeItem(View v, ItemInfo itemInfo, boolean deleteFromDb) {
+    public boolean removeItem(View v, FolderInfo containerInfo, ItemInfo itemInfo,
+            boolean deleteFromDb) {
         if (itemInfo instanceof ShortcutInfo) {
-            mWorkspace.removeWorkspaceItem(v);
+            // Remove the shortcut from the folder before removing it from launcher
+            if (containerInfo != null) {
+                containerInfo.remove((ShortcutInfo) itemInfo);
+            } else {
+                mWorkspace.removeWorkspaceItem(v);
+            }
             if (deleteFromDb) {
                 LauncherModel.deleteItemFromDatabase(this, itemInfo);
             }
