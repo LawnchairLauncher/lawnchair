@@ -361,6 +361,9 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
     protected void cropImageAndSetWallpaper(Uri uri,
             BitmapCropTask.OnBitmapCroppedHandler onBitmapCroppedHandler,
             final boolean finishActivityWhenDone, final boolean shouldFadeOutOnFinish) {
+        // Give some feedback so user knows something is happening.
+        mProgressView.setVisibility(View.VISIBLE);
+
         boolean centerCrop = getResources().getBoolean(R.bool.center_crop);
         // Get the crop
         boolean ltr = mCropView.getLayoutDirection() == View.LAYOUT_DIRECTION_LTR;
