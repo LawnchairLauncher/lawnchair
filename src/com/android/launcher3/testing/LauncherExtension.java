@@ -5,11 +5,13 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.InsettableFrameLayout;
@@ -210,13 +212,39 @@ public class LauncherExtension extends Launcher {
         public void startVoice() {
         }
 
+        CustomContentCallbacks mCustomContentCallbacks = new CustomContentCallbacks() {
+
+            // Custom content is completely shown. {@code fromResume} indicates whether this was caused
+            // by a onResume or by scrolling otherwise.
+            public void onShow(boolean fromResume) {
+            }
+
+            // Custom content is completely hidden
+            public void onHide() {
+            }
+
+            // Custom content scroll progress changed. From 0 (not showing) to 1 (fully showing).
+            public void onScrollProgressChanged(float progress) {
+
+            }
+
+            // Indicates whether the user is allowed to scroll away from the custom content.
+            public boolean isScrollingAllowed() {
+                return true;
+            }
+
+        };
+
         @Override
         public boolean hasCustomContentToLeft() {
-            return false;
+            return true;
         }
 
         @Override
         public void populateCustomContentContainer() {
+            FrameLayout customContent = new FrameLayout(LauncherExtension.this);
+            customContent.setBackgroundColor(Color.GRAY);
+            addToCustomContentPage(customContent, mCustomContentCallbacks, "");
         }
 
         @Override
@@ -281,7 +309,7 @@ public class LauncherExtension extends Launcher {
 
         @Override
         public boolean hasLauncherOverlay() {
-            return true;
+            return false;
         }
 
         @Override
