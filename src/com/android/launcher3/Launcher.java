@@ -330,6 +330,8 @@ public class Launcher extends Activity
 
     private DeviceProfile mDeviceProfile;
 
+    private boolean mMoveToDefaultScreenFromNewIntent;
+
     // This is set to the view that launched the activity that navigated the user away from
     // launcher. Since there is no callback for when the activity has finished launching, enable
     // the press state and keep this reference to reset the press state when we return to launcher.
@@ -1001,14 +1003,21 @@ public class Launcher extends Activity
             Log.d(TAG, "Time spent in onResume: " + (System.currentTimeMillis() - startTime));
         }
 
-        if (mWorkspace.getCustomContentCallbacks() != null) {
+        // We want to suppress callbacks about CustomContent being shown if we have just received
+        // onNewIntent while the user was present within launcher. In that case, we post a call
+        // to move the user to the main screen (which will occur after onResume). We don't want to
+        // have onHide (from onPause), then onShow, then onHide again, which we get if we don't
+        // suppress here.
+        if (mWorkspace.getCustomContentCallbacks() != null
+                && !mMoveToDefaultScreenFromNewIntent) {
             // If we are resuming and the custom content is the current page, we call onShow().
-            // It is also poassible that onShow will instead be called slightly after first layout
+            // It is also possible that onShow will instead be called slightly after first layout
             // if PagedView#setRestorePage was set to the custom content page in onCreate().
             if (mWorkspace.isOnOrMovingToCustomContent()) {
                 mWorkspace.getCustomContentCallbacks().onShow(true);
             }
         }
+        mMoveToDefaultScreenFromNewIntent = false;
         updateInteraction(Workspace.State.NORMAL, mWorkspace.getState());
         mWorkspace.onResume();
 
@@ -1876,6 +1885,10 @@ public class Launcher extends Activity
                     mLauncherCallbacks.shouldMoveToDefaultScreenOnHomeIntent() : true;
             if (alreadyOnHome && mState == State.WORKSPACE && !mWorkspace.isTouchActive() &&
                     openFolder == null && moveToDefaultScreen) {
+
+                // We use this flag to suppress noisy callbacks above custom content state
+                // from onResume.
+                mMoveToDefaultScreenFromNewIntent = true;
                 mWorkspace.post(new Runnable() {
                     @Override
                     public void run() {
