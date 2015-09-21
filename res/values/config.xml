@@ -66,9 +66,6 @@
 <!-- Hotseat -->
     <bool name="hotseat_transpose_layout_with_orientation">true</bool>
 
-    <!-- Memory debugging, including a memory dump icon -->
-    <bool name="debug_memory_enabled">false</bool>
-
     <!-- Name of a subclass of com.android.launcher3.AppFilter used to
          filter the activities shown in the launcher. Can be empty. -->
     <string name="app_filter_class" translatable="false"></string>

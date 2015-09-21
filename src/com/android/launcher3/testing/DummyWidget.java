@@ -1,6 +1,9 @@
-package com.android.launcher3;
+package com.android.launcher3.testing;
 
 import android.appwidget.AppWidgetProviderInfo;
+
+import com.android.launcher3.CustomAppWidget;
+import com.android.launcher3.R;
 
 public class DummyWidget implements CustomAppWidget {
     @Override
@@ -20,7 +23,7 @@ public class DummyWidget implements CustomAppWidget {
 
     @Override
     public int getWidgetLayout() {
-        return R.layout.dummy_widget;
+        return R.layout.zzz_dummy_widget;
     }
 
     @Override
