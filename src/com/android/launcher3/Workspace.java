@@ -1610,7 +1610,7 @@ public class Workspace extends PagedView
     }
 
     public boolean isOnOrMovingToCustomContent() {
-        return hasCustomContent() && getNextPage() == 0;
+        return hasCustomContent() && getNextPage() == 0 && mRestorePage == INVALID_RESTORE_PAGE;
     }
 
     private void updateStateForCustomContent(int screenCenter) {
