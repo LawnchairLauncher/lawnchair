@@ -293,22 +293,16 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Boolean> {
                         roundedTrueCrop.right = roundedTrueCrop.left + fullSize.getWidth();
                     }
                     if (roundedTrueCrop.right > fullSize.getWidth()) {
-                        // Adjust the left value
-                        int adjustment = roundedTrueCrop.left -
-                                Math.max(0, roundedTrueCrop.right - roundedTrueCrop.width());
-                        roundedTrueCrop.left -= adjustment;
-                        roundedTrueCrop.right -= adjustment;
+                        // Adjust the left and right values.
+                        roundedTrueCrop.offset(-(roundedTrueCrop.right - fullSize.getWidth()), 0);
                     }
                     if (roundedTrueCrop.height() > fullSize.getHeight()) {
                         // Adjust the height
                         roundedTrueCrop.bottom = roundedTrueCrop.top + fullSize.getHeight();
                     }
                     if (roundedTrueCrop.bottom > fullSize.getHeight()) {
-                        // Adjust the top value
-                        int adjustment = roundedTrueCrop.top -
-                                Math.max(0, roundedTrueCrop.bottom - roundedTrueCrop.height());
-                        roundedTrueCrop.top -= adjustment;
-                        roundedTrueCrop.bottom -= adjustment;
+                        // Adjust the top and bottom values.
+                        roundedTrueCrop.offset(0, -(roundedTrueCrop.bottom - fullSize.getHeight()));
                     }
 
                     crop = Bitmap.createBitmap(fullSize, roundedTrueCrop.left,
