@@ -2396,7 +2396,7 @@ public class Launcher extends Activity
                     appWidgetHost.deleteAppWidgetId(widgetInfo.appWidgetId);
                     return null;
                 }
-            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }.executeOnExecutor(Utilities.THREAD_POOL_EXECUTOR);
         }
         removeWidgetToAutoAdvance(widgetInfo.hostView);
         widgetInfo.hostView = null;
@@ -4723,7 +4723,7 @@ public class Launcher extends Activity
                     }
                     return null;
                 }
-            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+            }.executeOnExecutor(Utilities.THREAD_POOL_EXECUTOR);
         }
     }
 }
