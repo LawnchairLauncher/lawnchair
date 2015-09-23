@@ -1326,7 +1326,7 @@ public class Workspace extends PagedView
                         mLauncher.overrideWallpaperDimensions());
                 return null;
             }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+        }.executeOnExecutor(Utilities.THREAD_POOL_EXECUTOR);
     }
 
     protected void snapToPage(int whichPage, Runnable r) {

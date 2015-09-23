@@ -4735,7 +4735,7 @@ public class Launcher extends Activity
                     }
                     return null;
                 }
-            }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void) null);
+            }.executeOnExecutor(Utilities.THREAD_POOL_EXECUTOR);
         }
     }
 }

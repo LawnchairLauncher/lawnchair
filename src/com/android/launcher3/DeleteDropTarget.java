@@ -94,7 +94,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
                         appWidgetHost.deleteAppWidgetId(widget.appWidgetId);
                         return null;
                     }
-                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                }.executeOnExecutor(Utilities.THREAD_POOL_EXECUTOR);
             }
         } else {
             return false;
