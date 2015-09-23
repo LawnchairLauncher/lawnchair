@@ -1228,6 +1228,29 @@ public class Launcher extends Activity
         return handled;
     }
 
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+            // Ignore the menu key if we are currently dragging or are on the custom content screen
+            if (!isOnCustomContent() && !mDragController.isDragging()) {
+                // Close any open folders
+                closeFolder();
+
+                // Stop resizing any widgets
+                mWorkspace.exitWidgetResizeMode();
+
+                // Show the overview mode if we are on the workspace
+                if (mState == State.WORKSPACE && !mWorkspace.isInOverviewMode() &&
+                        !mWorkspace.isSwitchingState()) {
+                    mOverviewPanel.requestFocus();
+                    showOverviewMode(true);
+                }
+            }
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
+    }
+
     private String getTypedText() {
         return mDefaultKeySsb.toString();
     }
@@ -2105,22 +2128,9 @@ public class Launcher extends Activity
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        if (!isOnCustomContent()) {
-            // Close any open folders
-            closeFolder();
-            // Stop resizing any widgets
-            mWorkspace.exitWidgetResizeMode();
-            if (!mWorkspace.isInOverviewMode()) {
-                // Show the overview mode
-                showOverviewMode(true);
-            } else {
-                showWorkspace(true);
-            }
-        }
         if (mLauncherCallbacks != null) {
             return mLauncherCallbacks.onPrepareOptionsMenu(menu);
         }
-
         return false;
     }
 
