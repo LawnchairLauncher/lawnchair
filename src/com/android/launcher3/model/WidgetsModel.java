@@ -34,19 +34,19 @@ public class WidgetsModel {
     private static final boolean DEBUG = false;
 
     /* List of packages that is tracked by this model. */
-    private ArrayList<PackageItemInfo> mPackageItemInfos = new ArrayList<>();
+    private final ArrayList<PackageItemInfo> mPackageItemInfos;
 
     /* Map of widgets and shortcuts that are tracked per package. */
-    private HashMap<PackageItemInfo, ArrayList<Object>> mWidgetsList = new HashMap<>();
-
-    private ArrayList<Object> mRawList;
+    private final HashMap<PackageItemInfo, ArrayList<Object>> mWidgetsList;
 
     private final AppWidgetManagerCompat mAppWidgetMgr;
     private final WidgetsAndShortcutNameComparator mWidgetAndShortcutNameComparator;
     private final Comparator<ItemInfo> mAppNameComparator;
     private final IconCache mIconCache;
     private final AppFilter mAppFilter;
-    private AlphabeticIndexCompat mIndexer;
+    private final AlphabeticIndexCompat mIndexer;
+
+    private ArrayList<Object> mRawList;
 
     public WidgetsModel(Context context,  IconCache iconCache, AppFilter appFilter) {
         mAppWidgetMgr = AppWidgetManagerCompat.getInstance(context);
@@ -55,6 +55,10 @@ public class WidgetsModel {
         mIconCache = iconCache;
         mAppFilter = appFilter;
         mIndexer = new AlphabeticIndexCompat(context);
+        mPackageItemInfos = new ArrayList<>();
+        mWidgetsList = new HashMap<>();
+
+        mRawList = new ArrayList<>();
     }
 
     @SuppressWarnings("unchecked")
@@ -62,18 +66,16 @@ public class WidgetsModel {
         mAppWidgetMgr = model.mAppWidgetMgr;
         mPackageItemInfos = (ArrayList<PackageItemInfo>) model.mPackageItemInfos.clone();
         mWidgetsList = (HashMap<PackageItemInfo, ArrayList<Object>>) model.mWidgetsList.clone();
-        mRawList = (ArrayList<Object>) model.mRawList.clone();
         mWidgetAndShortcutNameComparator = model.mWidgetAndShortcutNameComparator;
         mAppNameComparator = model.mAppNameComparator;
         mIconCache = model.mIconCache;
         mAppFilter = model.mAppFilter;
+        mIndexer = model.mIndexer;
+        mRawList = (ArrayList<Object>) model.mRawList.clone();
     }
 
     // Access methods that may be deleted if the private fields are made package-private.
     public int getPackageSize() {
-        if (mPackageItemInfos == null) {
-            return 0;
-        }
         return mPackageItemInfos.size();
     }
 
