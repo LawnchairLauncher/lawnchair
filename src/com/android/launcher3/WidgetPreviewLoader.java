@@ -43,11 +43,24 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class WidgetPreviewLoader {
 
     private static final String TAG = "WidgetPreviewLoader";
     private static final boolean DEBUG = false;
+
+    // These values are same as that in {@link AsyncTask}.
+    private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
+    private static final int CORE_POOL_SIZE = CPU_COUNT + 1;
+    private static final int MAXIMUM_POOL_SIZE = CPU_COUNT * 2 + 1;
+    private static final int KEEP_ALIVE = 1;
+    private static final Executor PREVIEW_LOAD_EXECUTOR = new ThreadPoolExecutor(
+            CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
+            TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
     private static final float WIDGET_PREVIEW_ICON_PADDING_PERCENTAGE = 0.25f;
 
@@ -96,7 +109,7 @@ public class WidgetPreviewLoader {
         WidgetCacheKey key = getObjectKey(o, size);
 
         PreviewLoadTask task = new PreviewLoadTask(key, o, previewWidth, previewHeight, caller);
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        task.executeOnExecutor(PREVIEW_LOAD_EXECUTOR);
         return new PreviewLoadRequest(task);
     }
 
