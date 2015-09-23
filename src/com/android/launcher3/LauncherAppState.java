@@ -134,7 +134,7 @@ public class LauncherAppState {
     }
 
     LauncherModel setLauncher(Launcher launcher) {
-        getLauncherProvider().setLauncherProviderChangeListener(launcher);
+        sLauncherProvider.get().setLauncherProviderChangeListener(launcher);
         mModel.initialize(launcher);
         mAccessibilityDelegate = ((launcher != null) && Utilities.ATLEAST_LOLLIPOP) ?
             new LauncherAccessibilityDelegate(launcher) : null;
@@ -155,10 +155,6 @@ public class LauncherAppState {
 
     static void setLauncherProvider(LauncherProvider provider) {
         sLauncherProvider = new WeakReference<LauncherProvider>(provider);
-    }
-
-    public static LauncherProvider getLauncherProvider() {
-        return sLauncherProvider.get();
     }
 
     public WidgetPreviewLoader getWidgetCache() {

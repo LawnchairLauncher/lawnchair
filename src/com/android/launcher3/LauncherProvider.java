@@ -62,7 +62,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 
 public class LauncherProvider extends ContentProvider {
     private static final String TAG = "LauncherProvider";
@@ -89,10 +88,6 @@ public class LauncherProvider extends ContentProvider {
         StrictMode.setThreadPolicy(oldPolicy);
         LauncherAppState.setLauncherProvider(this);
         return true;
-    }
-
-    public boolean wasNewDbCreated() {
-        return mOpenHelper.wasNewDbCreated();
     }
 
     public void setLauncherProviderChangeListener(LauncherProviderChangeListener listener) {
@@ -271,6 +266,50 @@ public class LauncherProvider extends ContentProvider {
                 result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE, value);
                 return result;
             }
+            case LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG: {
+                clearFlagEmptyDbCreated();
+                return null;
+            }
+            case LauncherSettings.Settings.METHOD_DELETE_EMPTY_FOLDERS: {
+                Bundle result = new Bundle();
+                result.putSerializable(LauncherSettings.Settings.EXTRA_VALUE, deleteEmptyFolders());
+                return result;
+            }
+            case LauncherSettings.Settings.METHOD_NEW_ITEM_ID: {
+                Bundle result = new Bundle();
+                result.putLong(LauncherSettings.Settings.EXTRA_VALUE, mOpenHelper.generateNewItemId());
+                return result;
+            }
+            case LauncherSettings.Settings.METHOD_NEW_SCREEN_ID: {
+                Bundle result = new Bundle();
+                result.putLong(LauncherSettings.Settings.EXTRA_VALUE, mOpenHelper.generateNewScreenId());
+                return result;
+            }
+            case LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB: {
+                createEmptyDB();
+                return null;
+            }
+            case LauncherSettings.Settings.METHOD_LOAD_DEFAULT_FAVORITES: {
+                loadDefaultFavoritesIfNecessary();
+                return null;
+            }
+            case LauncherSettings.Settings.METHOD_MIGRATE_LAUNCHER2_SHORTCUTS: {
+                mOpenHelper.migrateLauncher2Shortcuts(mOpenHelper.getWritableDatabase(),
+                        Uri.parse(getContext().getString(R.string.old_launcher_provider_uri)));
+                return null;
+            }
+            case LauncherSettings.Settings.METHOD_UPDATE_FOLDER_ITEMS_RANK: {
+                mOpenHelper.updateFolderItemsRank(mOpenHelper.getWritableDatabase(), false);
+                return null;
+            }
+            case LauncherSettings.Settings.METHOD_CONVERT_SHORTCUTS_TO_ACTIVITIES: {
+                mOpenHelper.convertShortcutsToLauncherActivities(mOpenHelper.getWritableDatabase());
+                return null;
+            }
+            case LauncherSettings.Settings.METHOD_DELETE_DB: {
+                deleteDatabase();
+                return null;
+            }
         }
         return null;
     }
@@ -279,8 +318,8 @@ public class LauncherProvider extends ContentProvider {
      * Deletes any empty folder from the DB.
      * @return Ids of deleted folders.
      */
-    public List<Long> deleteEmptyFolders() {
-        ArrayList<Long> folderIds = new ArrayList<Long>();
+    private ArrayList<Long> deleteEmptyFolders() {
+        ArrayList<Long> folderIds = new ArrayList<>();
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         db.beginTransaction();
         try {
@@ -297,7 +336,7 @@ public class LauncherProvider extends ContentProvider {
                 folderIds.add(c.getLong(0));
             }
             c.close();
-            if (folderIds.size() > 0) {
+            if (!folderIds.isEmpty()) {
                 db.delete(TABLE_FAVORITES, Utilities.createDbSelectionQuery(
                         LauncherSettings.Favorites._ID, folderIds), null);
             }
@@ -323,22 +362,14 @@ public class LauncherProvider extends ContentProvider {
         values.put(LauncherSettings.ChangeLogColumns.MODIFIED, System.currentTimeMillis());
     }
 
-    public long generateNewItemId() {
-        return mOpenHelper.generateNewItemId();
-    }
-
-    public long generateNewScreenId() {
-        return mOpenHelper.generateNewScreenId();
-    }
-
     /**
      * Clears all the data for a fresh start.
      */
-    synchronized public void createEmptyDB() {
+    synchronized private void createEmptyDB() {
         mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
     }
 
-    public void clearFlagEmptyDbCreated() {
+    private void clearFlagEmptyDbCreated() {
         Utilities.getPrefs(getContext()).edit().remove(EMPTY_DATABASE_CREATED).commit();
     }
 
@@ -349,7 +380,7 @@ public class LauncherProvider extends ContentProvider {
      *   3) From a partner configuration APK, already in the system image
      *   4) The default configuration for the particular device
      */
-    synchronized public void loadDefaultFavoritesIfNecessary() {
+    synchronized private void loadDefaultFavoritesIfNecessary() {
         SharedPreferences sp = Utilities.getPrefs(getContext());
 
         if (sp.getBoolean(EMPTY_DATABASE_CREATED, false)) {
@@ -434,21 +465,7 @@ public class LauncherProvider extends ContentProvider {
                 mOpenHelper, getContext().getResources(), defaultLayout);
     }
 
-    public void migrateLauncher2Shortcuts() {
-        mOpenHelper.migrateLauncher2Shortcuts(mOpenHelper.getWritableDatabase(),
-                Uri.parse(getContext().getString(R.string.old_launcher_provider_uri)));
-    }
-
-    public void updateFolderItemsRank() {
-        mOpenHelper.updateFolderItemsRank(mOpenHelper.getWritableDatabase(), false);
-    }
-
-    public void convertShortcutsToLauncherActivities() {
-        mOpenHelper.convertShortcutsToLauncherActivities(mOpenHelper.getWritableDatabase());
-    }
-
-
-    public void deleteDatabase() {
+    private void deleteDatabase() {
         // Are you sure? (y/n)
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final File dbFile = new File(db.getPath());

@@ -799,7 +799,9 @@ public class Workspace extends PagedView
         mWorkspaceScreens.remove(EXTRA_EMPTY_SCREEN_ID);
         mScreenOrder.remove(EXTRA_EMPTY_SCREEN_ID);
 
-        long newId = LauncherAppState.getLauncherProvider().generateNewScreenId();
+        long newId = LauncherSettings.Settings.call(getContext().getContentResolver(),
+                LauncherSettings.Settings.METHOD_NEW_SCREEN_ID)
+                .getLong(LauncherSettings.Settings.EXTRA_VALUE);
         mWorkspaceScreens.put(newId, cl);
         mScreenOrder.add(newId);
 
