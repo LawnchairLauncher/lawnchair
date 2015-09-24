@@ -32,8 +32,10 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.accessibility.AccessibilityManager;
 import android.view.inputmethod.InputMethodManager;
 
+import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
@@ -145,8 +147,6 @@ public class DragController {
     
     /**
      * Used to create a new DragLayer from XML.
-     *
-     * @param context The application's context.
      */
     public DragController(Launcher launcher) {
         Resources r = launcher.getResources();
@@ -239,6 +239,9 @@ public class DragController {
 
         mDragObject = new DropTarget.DragObject();
 
+        final DragView dragView = mDragObject.dragView = new DragView(mLauncher, b, registrationX,
+                registrationY, 0, 0, b.getWidth(), b.getHeight(), initialDragViewScale);
+
         mDragObject.dragComplete = false;
         if (mIsAccessibleDrag) {
             // For an accessible drag, we assume the view is being dragged from the center.
@@ -248,13 +251,11 @@ public class DragController {
         } else {
             mDragObject.xOffset = mMotionDownX - (dragLayerX + dragRegionLeft);
             mDragObject.yOffset = mMotionDownY - (dragLayerY + dragRegionTop);
+            mDragObject.stateAnnouncer = DragViewStateAnnouncer.createFor(dragView);
         }
 
         mDragObject.dragSource = source;
         mDragObject.dragInfo = dragInfo;
-
-        final DragView dragView = mDragObject.dragView = new DragView(mLauncher, b, registrationX,
-                registrationY, 0, 0, b.getWidth(), b.getHeight(), initialDragViewScale);
 
         if (dragOffset != null) {
             dragView.setDragVisualizeOffset(new Point(dragOffset));

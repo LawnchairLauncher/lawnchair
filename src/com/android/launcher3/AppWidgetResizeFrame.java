@@ -14,6 +14,8 @@ import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.android.launcher3.accessibility.DragViewStateAnnouncer;
+
 public class AppWidgetResizeFrame extends FrameLayout {
     private static final int SNAP_DURATION = 150;
     private static final float DIMMED_HANDLE_ALPHA = 0f;
@@ -39,6 +41,8 @@ public class AppWidgetResizeFrame extends FrameLayout {
     private final int[] mDirectionVector = new int[2];
     private final int[] mLastDirectionVector = new int[2];
     private final int[] mTmpPt = new int[2];
+
+    private final DragViewStateAnnouncer mStateAnnouncer;
 
     private boolean mLeftBorderActive;
     private boolean mRightBorderActive;
@@ -77,6 +81,8 @@ public class AppWidgetResizeFrame extends FrameLayout {
 
         mMinHSpan = info.minSpanX;
         mMinVSpan = info.minSpanY;
+
+        mStateAnnouncer = DragViewStateAnnouncer.createFor(this);
 
         setBackgroundResource(R.drawable.widget_resize_shadow);
         setForeground(getResources().getDrawable(R.drawable.widget_resize_frame));
@@ -320,12 +326,18 @@ public class AppWidgetResizeFrame extends FrameLayout {
 
         if (mCellLayout.createAreaForResize(cellX, cellY, spanX, spanY, mWidgetView,
                 mDirectionVector, onDismiss)) {
+            if (mStateAnnouncer != null && (lp.cellHSpan != spanX || lp.cellVSpan != spanY) ) {
+                mStateAnnouncer.announce(
+                        mLauncher.getString(R.string.widget_resized, spanX, spanY));
+            }
+
             lp.tmpCellX = cellX;
             lp.tmpCellY = cellY;
             lp.cellHSpan = spanX;
             lp.cellVSpan = spanY;
             mRunningVInc += vSpanDelta;
             mRunningHInc += hSpanDelta;
+
             if (!onDismiss) {
                 updateWidgetSizeRanges(mWidgetView, mLauncher, spanX, spanY);
             }

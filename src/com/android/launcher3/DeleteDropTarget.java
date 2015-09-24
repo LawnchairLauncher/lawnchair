@@ -19,7 +19,6 @@ package com.android.launcher3;
 import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.graphics.PointF;
-import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -67,15 +66,14 @@ public class DeleteDropTarget extends ButtonDropTarget {
 
     /**
      * Removes the item from the workspace. If the view is not null, it also removes the view.
-     * @return true if the item was removed.
      */
-    public static boolean removeWorkspaceOrFolderItem(Launcher launcher, ItemInfo item, View view) {
+    public static void removeWorkspaceOrFolderItem(Launcher launcher, ItemInfo item, View view) {
         // Remove the item from launcher and the db, we can ignore the containerInfo in this call
         // because we already remove the drag view from the folder (if the drag originated from
         // a folder) in Folder.beginDrag()
         launcher.removeItem(view, item, true /* deleteFromDb */);
         launcher.getWorkspace().stripEmptyScreens();
-        return true;
+        launcher.getDragLayer().announceForAccessibility(launcher.getString(R.string.item_removed));
     }
 
     @Override

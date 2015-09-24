@@ -148,8 +148,11 @@ public class WidgetsContainerView extends BaseContainerView
         if (mWidgetInstructionToast != null) {
             mWidgetInstructionToast.cancel();
         }
-        mWidgetInstructionToast = Toast.makeText(getContext(),R.string.long_press_widget_to_add,
-                Toast.LENGTH_SHORT);
+
+        CharSequence msg = Utilities.wrapForTts(
+                getContext().getText(R.string.long_press_widget_to_add),
+                getContext().getString(R.string.long_accessible_way_to_add));
+        mWidgetInstructionToast = Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT);
         mWidgetInstructionToast.show();
     }
 
@@ -164,7 +167,6 @@ public class WidgetsContainerView extends BaseContainerView
         if (!mLauncher.isWidgetsViewVisible() ||
                 mLauncher.getWorkspace().isSwitchingState()) return false;
         // Return if global dragging is not enabled
-        Log.d(TAG, String.format("onLonglick dragging enabled?.", v));
         if (!mLauncher.isDraggingEnabled()) return false;
 
         boolean status = beginDragging(v);
