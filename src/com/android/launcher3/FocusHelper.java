@@ -247,7 +247,7 @@ public class FocusHelper {
             }
         } else if (isDeleteKeyChord(e)) {
             matrix = FocusLogic.createSparseMatrix(iconLayout);
-            launcher.removeItem(v, null, itemInfo, true /* deleteFromDb */);
+            launcher.removeItem(v, itemInfo, true /* deleteFromDb */);
         } else {
             // For other KEYCODE_DPAD_LEFT and KEYCODE_DPAD_RIGHT navigation, do not use the
             // matrix extended with hotseat.
@@ -341,7 +341,7 @@ public class FocusHelper {
             }
         } else if (isDeleteKeyChord(e)) {
             matrix = FocusLogic.createSparseMatrix(iconLayout);
-            launcher.removeItem(v, null, itemInfo, true /* deleteFromDb */);
+            launcher.removeItem(v, itemInfo, true /* deleteFromDb */);
         } else {
             matrix = FocusLogic.createSparseMatrix(iconLayout);
         }

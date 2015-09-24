@@ -1115,7 +1115,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
                 // Remove the folder
                 if (getItemCount() <= 1) {
-                    mLauncher.removeItem(mFolderIcon, null, mInfo, true /* deleteFromDb */);
+                    mLauncher.removeItem(mFolderIcon, mInfo, true /* deleteFromDb */);
                     if (mFolderIcon instanceof DropTarget) {
                         mDragController.removeDropTarget((DropTarget) mFolderIcon);
                     }
