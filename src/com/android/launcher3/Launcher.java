@@ -2340,16 +2340,15 @@ public class Launcher extends Activity
      * Unbinds the view for the specified item, and removes the item and all its children.
      *
      * @param v the view being removed.
-     * @param containerInfo the {@link FolderInfo} container of this view (can be null).
      * @param itemInfo the {@link ItemInfo} for this view.
      * @param deleteFromDb whether or not to delete this item from the db.
      */
-    public boolean removeItem(View v, FolderInfo containerInfo, ItemInfo itemInfo,
-            boolean deleteFromDb) {
+    public boolean removeItem(View v, ItemInfo itemInfo, boolean deleteFromDb) {
         if (itemInfo instanceof ShortcutInfo) {
             // Remove the shortcut from the folder before removing it from launcher
-            if (containerInfo != null) {
-                containerInfo.remove((ShortcutInfo) itemInfo);
+            FolderInfo folderInfo = sFolders.get(itemInfo.container);
+            if (folderInfo != null) {
+                folderInfo.remove((ShortcutInfo) itemInfo);
             } else {
                 mWorkspace.removeWorkspaceItem(v);
             }
