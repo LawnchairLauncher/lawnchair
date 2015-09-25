@@ -805,26 +805,27 @@ public class LauncherStateTransitionAnimation {
                 toWorkspaceState.getSearchDropTargetBarState();
 
         if (overlaySearchBar != null) {
-            if ((toWorkspaceState == Workspace.State.NORMAL) &&
-                    (fromWorkspaceState == Workspace.State.NORMAL_HIDDEN)) {
-                // If we are transitioning from the overlay to the workspace, then show the
-                // workspace search bar immediately and let the overlay search bar fade out on top
-                mLauncher.getSearchDropTargetBar().animateToState(toSearchBarState, 0);
-            } else if (fromWorkspaceState == Workspace.State.NORMAL) {
-                // If we are transitioning from the workspace to the overlay, then keep the
-                // workspace search bar visible until the overlay search bar fades in on top
-                animation.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mLauncher.getSearchDropTargetBar().animateToState(toSearchBarState, 0);
-                    }
-                });
-            } else {
-                // Otherwise, then just animate the workspace search bar normally
-                mLauncher.getSearchDropTargetBar().animateToState(toSearchBarState, duration);
+            if (mLauncher.launcherCallbacksProvidesSearch()) {
+                if ((toWorkspaceState == Workspace.State.NORMAL) &&
+                        (fromWorkspaceState == Workspace.State.NORMAL_HIDDEN)) {
+                    // If we are transitioning from the overlay to the workspace, then show the
+                    // workspace search bar immediately and let the overlay search bar fade out on
+                    // top
+                    mLauncher.getSearchDropTargetBar().animateToState(toSearchBarState, 0);
+                    return;
+                } else if (fromWorkspaceState == Workspace.State.NORMAL) {
+                    // If we are transitioning from the workspace to the overlay, then keep the
+                    // workspace search bar visible until the overlay search bar fades in on top
+                    animation.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            mLauncher.getSearchDropTargetBar().animateToState(toSearchBarState, 0);
+                        }
+                    });
+                    return;
+                }
             }
-        } else {
-            // If there is no overlay search bar, then just animate the workspace search bar
+            // Fallback to the default search bar animation otherwise
             mLauncher.getSearchDropTargetBar().animateToState(toSearchBarState, duration);
         }
     }

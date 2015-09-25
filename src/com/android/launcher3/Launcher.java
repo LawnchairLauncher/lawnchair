@@ -3471,8 +3471,12 @@ public class Launcher extends Activity
         // NO-OP
     }
 
+    public boolean launcherCallbacksProvidesSearch() {
+        return (mLauncherCallbacks != null && mLauncherCallbacks.providesSearch());
+    }
+
     public View getOrCreateQsbBar() {
-        if (mLauncherCallbacks != null && mLauncherCallbacks.providesSearch()) {
+        if (launcherCallbacksProvidesSearch()) {
             return mLauncherCallbacks.getQsbBar();
         }
 
