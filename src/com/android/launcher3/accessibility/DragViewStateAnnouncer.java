@@ -41,6 +41,10 @@ public class DragViewStateAnnouncer implements Runnable {
         mTargetView.postDelayed(this, TIMEOUT_SEND_ACCESSIBILITY_EVENT);
     }
 
+    public void cancel() {
+        mTargetView.removeCallbacks(this);
+    }
+
     @Override
     public void run() {
         mTargetView.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
