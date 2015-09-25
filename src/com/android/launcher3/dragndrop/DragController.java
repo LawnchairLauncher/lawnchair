@@ -41,10 +41,10 @@ import com.android.launcher3.DropTarget;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.PagedView;
-import com.android.launcher3.ShortcutInfo;
-import com.android.launcher3.util.Thunk;
-
 import com.android.launcher3.R;
+import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.accessibility.DragViewStateAnnouncer;
+import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -233,6 +233,9 @@ public class DragController implements DragDriver.EventListener {
 
         mDragObject = new DropTarget.DragObject();
 
+        final DragView dragView = mDragObject.dragView = new DragView(mLauncher, b, registrationX,
+                registrationY, 0, 0, b.getWidth(), b.getHeight(), initialDragViewScale);
+
         mDragObject.dragComplete = false;
         if (mIsAccessibleDrag) {
             // For an accessible drag, we assume the view is being dragged from the center.
@@ -242,17 +245,13 @@ public class DragController implements DragDriver.EventListener {
         } else {
             mDragObject.xOffset = mMotionDownX - (dragLayerX + dragRegionLeft);
             mDragObject.yOffset = mMotionDownY - (dragLayerY + dragRegionTop);
+            mDragObject.stateAnnouncer = DragViewStateAnnouncer.createFor(dragView);
+
+            mDragDriver = DragDriver.create(this, dragInfo, dragView);
         }
 
         mDragObject.dragSource = source;
         mDragObject.dragInfo = dragInfo;
-
-        final DragView dragView = mDragObject.dragView = new DragView(mLauncher, b, registrationX,
-                registrationY, 0, 0, b.getWidth(), b.getHeight(), initialDragViewScale);
-
-        if (!accessible) {
-            mDragDriver = DragDriver.create(this, dragInfo, dragView);
-        }
 
         if (dragOffset != null) {
             dragView.setDragVisualizeOffset(new Point(dragOffset));

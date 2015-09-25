@@ -21,6 +21,8 @@ import com.android.launcher3.dragndrop.DragView;
 import android.graphics.PointF;
 import android.graphics.Rect;
 
+import com.android.launcher3.accessibility.DragViewStateAnnouncer;
+
 /**
  * Interface defining an object that can receive a drag.
  *
@@ -65,6 +67,8 @@ public interface DropTarget {
 
         /** Defers removing the DragView from the DragLayer until after the drop animation. */
         public boolean deferDragViewCleanupPostAnimation = true;
+
+        public DragViewStateAnnouncer stateAnnouncer;
 
         public DragObject() {
         }

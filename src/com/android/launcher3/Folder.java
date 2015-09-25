@@ -716,6 +716,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             mReorderAlarm.setOnAlarmListener(mReorderAlarmListener);
             mReorderAlarm.setAlarm(REORDER_DELAY);
             mPrevTargetRank = mTargetRank;
+
+            if (d.stateAnnouncer != null) {
+                d.stateAnnouncer.announce(getContext().getString(R.string.move_to_position,
+                        mTargetRank + 1));
+            }
         }
 
         float x = r[0];

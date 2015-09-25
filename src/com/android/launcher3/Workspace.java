@@ -64,6 +64,7 @@ import com.android.launcher3.UninstallDropTarget.UninstallSource;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate.AccessibilityDragSource;
 import com.android.launcher3.accessibility.OverviewScreenAccessibilityDelegate;
+import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.dragndrop.DragController;
@@ -2037,7 +2038,7 @@ public class Workspace extends PagedView
             }
             setImportantForAccessibility((mState == State.NORMAL || mState == State.OVERVIEW)
                     ? IMPORTANT_FOR_ACCESSIBILITY_AUTO
-                            : IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
+                    : IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
         } else {
             int accessible = mState == State.NORMAL ?
                     IMPORTANT_FOR_ACCESSIBILITY_AUTO :
@@ -2492,11 +2493,14 @@ public class Workspace extends PagedView
         return true;
     }
 
-    boolean willCreateUserFolder(ItemInfo info, CellLayout target, int[] targetCell, float
-            distance, boolean considerTimeout) {
+    boolean willCreateUserFolder(ItemInfo info, CellLayout target, int[] targetCell,
+            float distance, boolean considerTimeout) {
         if (distance > mMaxDistanceForFolderCreation) return false;
         View dropOverView = target.getChildAt(targetCell[0], targetCell[1]);
+        return willCreateUserFolder(info, dropOverView, considerTimeout);
+    }
 
+    boolean willCreateUserFolder(ItemInfo info, View dropOverView, boolean considerTimeout) {
         if (dropOverView != null) {
             CellLayout.LayoutParams lp = (CellLayout.LayoutParams) dropOverView.getLayoutParams();
             if (lp.useTmpCoords && (lp.tmpCellX != lp.cellX || lp.tmpCellY != lp.tmpCellY)) {
@@ -2516,7 +2520,7 @@ public class Workspace extends PagedView
         boolean aboveShortcut = (dropOverView.getTag() instanceof ShortcutInfo);
         boolean willBecomeShortcut =
                 (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
-                info.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT);
+                        info.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT);
 
         return (aboveShortcut && willBecomeShortcut);
     }
@@ -2525,7 +2529,10 @@ public class Workspace extends PagedView
             float distance) {
         if (distance > mMaxDistanceForFolderCreation) return false;
         View dropOverView = target.getChildAt(targetCell[0], targetCell[1]);
+        return willAddToExistingUserFolder(dragInfo, dropOverView);
 
+    }
+    boolean willAddToExistingUserFolder(ItemInfo dragInfo, View dropOverView) {
         if (dropOverView != null) {
             CellLayout.LayoutParams lp = (CellLayout.LayoutParams) dropOverView.getLayoutParams();
             if (lp.useTmpCoords && (lp.tmpCellX != lp.cellX || lp.tmpCellY != lp.tmpCellY)) {
@@ -3163,8 +3170,6 @@ public class Workspace extends PagedView
                 mapPointFromSelfToChild(mDragTargetLayout, mDragViewVisualCenter);
             }
 
-            ItemInfo info = d.dragInfo;
-
             int minSpanX = item.spanX;
             int minSpanY = item.spanY;
             if (item.minSpanX > 0 && item.minSpanY > 0) {
@@ -3183,11 +3188,7 @@ public class Workspace extends PagedView
             float targetCellDistance = mDragTargetLayout.getDistanceFromCell(
                     mDragViewVisualCenter[0], mDragViewVisualCenter[1], mTargetCell);
 
-            final View dragOverView = mDragTargetLayout.getChildAt(mTargetCell[0],
-                    mTargetCell[1]);
-
-            manageFolderFeedback(info, mDragTargetLayout, mTargetCell,
-                    targetCellDistance, dragOverView, d.accessibleDrag);
+            manageFolderFeedback(mDragTargetLayout, mTargetCell, targetCellDistance, d);
 
             boolean nearestDropOccupied = mDragTargetLayout.isNearestDropLocationOccupied((int)
                     mDragViewVisualCenter[0], (int) mDragViewVisualCenter[1], item.spanX,
@@ -3196,8 +3197,7 @@ public class Workspace extends PagedView
             if (!nearestDropOccupied) {
                 mDragTargetLayout.visualizeDropLocation(child, mDragOutline,
                         (int) mDragViewVisualCenter[0], (int) mDragViewVisualCenter[1],
-                        mTargetCell[0], mTargetCell[1], item.spanX, item.spanY, false,
-                        d.dragView.getDragVisualizeOffset(), d.dragView.getDragRegion());
+                        mTargetCell[0], mTargetCell[1], item.spanX, item.spanY, false, d);
             } else if ((mDragMode == DRAG_MODE_NONE || mDragMode == DRAG_MODE_REORDER)
                     && !mReorderAlarm.alarmPending() && (mLastReorderX != reorderX ||
                     mLastReorderY != reorderY)) {
@@ -3210,7 +3210,7 @@ public class Workspace extends PagedView
                 // Otherwise, if we aren't adding to or creating a folder and there's no pending
                 // reorder, then we schedule a reorder
                 ReorderAlarmListener listener = new ReorderAlarmListener(mDragViewVisualCenter,
-                        minSpanX, minSpanY, item.spanX, item.spanY, d.dragView, child);
+                        minSpanX, minSpanY, item.spanX, item.spanY, d, child);
                 mReorderAlarm.setOnAlarmListener(listener);
                 mReorderAlarm.setAlarm(REORDER_TIMEOUT);
             }
@@ -3224,28 +3224,34 @@ public class Workspace extends PagedView
         }
     }
 
-    private void manageFolderFeedback(ItemInfo info, CellLayout targetLayout,
-            int[] targetCell, float distance, View dragOverView, boolean accessibleDrag) {
-        boolean userFolderPending = willCreateUserFolder(info, targetLayout, targetCell, distance,
-                false);
+    private void manageFolderFeedback(CellLayout targetLayout,
+            int[] targetCell, float distance, DragObject dragObject) {
+        if (distance > mMaxDistanceForFolderCreation) return;
+
+        final View dragOverView = mDragTargetLayout.getChildAt(mTargetCell[0], mTargetCell[1]);
+        ItemInfo info = dragObject.dragInfo;
+        boolean userFolderPending = willCreateUserFolder(info, dragOverView, false);
         if (mDragMode == DRAG_MODE_NONE && userFolderPending &&
                 !mFolderCreationAlarm.alarmPending()) {
 
             FolderCreationAlarmListener listener = new
                     FolderCreationAlarmListener(targetLayout, targetCell[0], targetCell[1]);
 
-            if (!accessibleDrag) {
+            if (!dragObject.accessibleDrag) {
                 mFolderCreationAlarm.setOnAlarmListener(listener);
                 mFolderCreationAlarm.setAlarm(FOLDER_CREATION_TIMEOUT);
             } else {
                 listener.onAlarm(mFolderCreationAlarm);
             }
+
+            if (dragObject.stateAnnouncer != null) {
+                dragObject.stateAnnouncer.announce(WorkspaceAccessibilityHelper
+                        .getDescriptionForDropOver(dragOverView, getContext()));
+            }
             return;
         }
 
-        boolean willAddToFolder =
-                willAddToExistingUserFolder(info, targetLayout, targetCell, distance);
-
+        boolean willAddToFolder = willAddToExistingUserFolder(info, dragOverView);
         if (willAddToFolder && mDragMode == DRAG_MODE_NONE) {
             mDragOverFolderIcon = ((FolderIcon) dragOverView);
             mDragOverFolderIcon.onDragEnter(info);
@@ -3253,6 +3259,11 @@ public class Workspace extends PagedView
                 targetLayout.clearDragOutlines();
             }
             setDragMode(DRAG_MODE_ADD_TO_FOLDER);
+
+            if (dragObject.stateAnnouncer != null) {
+                dragObject.stateAnnouncer.announce(WorkspaceAccessibilityHelper
+                        .getDescriptionForDropOver(dragOverView, getContext()));
+            }
             return;
         }
 
@@ -3262,8 +3273,6 @@ public class Workspace extends PagedView
         if (mDragMode == DRAG_MODE_CREATE_FOLDER && !userFolderPending) {
             setDragMode(DRAG_MODE_NONE);
         }
-
-        return;
     }
 
     class FolderCreationAlarmListener implements OnAlarmListener {
@@ -3295,18 +3304,18 @@ public class Workspace extends PagedView
     class ReorderAlarmListener implements OnAlarmListener {
         float[] dragViewCenter;
         int minSpanX, minSpanY, spanX, spanY;
-        DragView dragView;
+        DragObject dragObject;
         View child;
 
         public ReorderAlarmListener(float[] dragViewCenter, int minSpanX, int minSpanY, int spanX,
-                int spanY, DragView dragView, View child) {
+                int spanY, DragObject dragObject, View child) {
             this.dragViewCenter = dragViewCenter;
             this.minSpanX = minSpanX;
             this.minSpanY = minSpanY;
             this.spanX = spanX;
             this.spanY = spanY;
             this.child = child;
-            this.dragView = dragView;
+            this.dragObject = dragObject;
         }
 
         public void onAlarm(Alarm alarm) {
@@ -3330,8 +3339,7 @@ public class Workspace extends PagedView
             boolean resize = resultSpan[0] != spanX || resultSpan[1] != spanY;
             mDragTargetLayout.visualizeDropLocation(child, mDragOutline,
                 (int) mDragViewVisualCenter[0], (int) mDragViewVisualCenter[1],
-                mTargetCell[0], mTargetCell[1], resultSpan[0], resultSpan[1], resize,
-                dragView.getDragVisualizeOffset(), dragView.getDragRegion());
+                mTargetCell[0], mTargetCell[1], resultSpan[0], resultSpan[1], resize, dragObject);
         }
     }
 
@@ -4388,8 +4396,16 @@ public class Workspace extends PagedView
 
     private String getPageDescription(int page) {
         int delta = numCustomPages();
-        return getContext().getString(R.string.workspace_scroll_format,
-                page + 1 - delta, getChildCount() - delta);
+        int nScreens = getChildCount() - delta;
+        int extraScreenId = mScreenOrder.indexOf(EXTRA_EMPTY_SCREEN_ID);
+        if (extraScreenId >= 0 && nScreens > 1) {
+            if (page == extraScreenId) {
+                return getContext().getString(R.string.workspace_new_page);
+            }
+            nScreens--;
+        }
+        return String.format(getContext().getString(R.string.workspace_scroll_format),
+                page + 1 - delta, nScreens);
     }
 
     public void getLocationInDragLayer(int[] loc) {

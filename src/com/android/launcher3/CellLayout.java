@@ -1042,7 +1042,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     }
 
     void visualizeDropLocation(View v, Bitmap dragOutline, int originX, int originY, int cellX,
-            int cellY, int spanX, int spanY, boolean resize, Point dragOffset, Rect dragRegion) {
+            int cellY, int spanX, int spanY, boolean resize, DropTarget.DragObject dragObject) {
         final int oldDragCellX = mDragCell[0];
         final int oldDragCellY = mDragCell[1];
 
@@ -1051,6 +1051,9 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         }
 
         if (cellX != oldDragCellX || cellY != oldDragCellY) {
+            Point dragOffset = dragObject.dragView.getDragVisualizeOffset();
+            Rect dragRegion = dragObject.dragView.getDragRegion();
+
             mDragCell[0] = cellX;
             mDragCell[1] = cellY;
 
@@ -1106,6 +1109,18 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             Utilities.scaleRectAboutCenter(r, getChildrenScale());
             mDragOutlineAnims[mDragOutlineCurrent].setTag(dragOutline);
             mDragOutlineAnims[mDragOutlineCurrent].animateIn();
+
+            if (dragObject.stateAnnouncer != null) {
+                String msg;
+                if (isHotseat()) {
+                    msg = getContext().getString(R.string.move_to_hotseat_position,
+                            Math.max(cellX, cellY) + 1);
+                } else {
+                    msg = getContext().getString(R.string.move_to_empty_cell,
+                            cellY + 1, cellX + 1);
+                }
+                dragObject.stateAnnouncer.announce(msg);
+            }
         }
     }
 

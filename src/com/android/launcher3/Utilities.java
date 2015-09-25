@@ -47,7 +47,10 @@ import android.graphics.drawable.PaintDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.TtsSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
@@ -729,7 +732,6 @@ public final class Utilities {
         return String.format(Locale.ENGLISH, "%s IN (%s)", columnName, TextUtils.join(", ", values));
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public static boolean isBootCompleted() {
         try {
             Class clazz = Class.forName("android.os.SystemProperties");
@@ -750,5 +752,23 @@ public final class Utilities {
      */
     public static int boundInRange(int value, int lowerBound, int upperBound) {
         return Math.max(lowerBound, Math.min(value, upperBound));
+    }
+
+    /**
+     * Wraps a message with a TTS span, so that a different message is spoken than
+     * what is getting displayed.
+     * @param msg original message
+     * @param ttsMsg message to be spoken
+     */
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public static CharSequence wrapForTts(CharSequence msg, String ttsMsg) {
+        if (Utilities.ATLEAST_LOLLIPOP) {
+            SpannableString spanned = new SpannableString(msg);
+            spanned.setSpan(new TtsSpan.TextBuilder(ttsMsg).build(),
+                    0, spanned.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            return spanned;
+        } else {
+            return msg;
+        }
     }
 }
