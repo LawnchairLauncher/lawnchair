@@ -127,6 +127,9 @@ public abstract class ButtonDropTarget extends TextView
             mDrawable.setColorFilter(new ColorMatrixColorFilter(mCurrentFilter));
             setTextColor(mHoverColor);
         }
+        if (d.stateAnnouncer != null) {
+            d.stateAnnouncer.cancel();
+        }
         sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
     }
 
