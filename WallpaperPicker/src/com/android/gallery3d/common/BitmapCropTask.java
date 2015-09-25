@@ -31,6 +31,9 @@ import android.graphics.RectF;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.android.launcher3.R;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -395,9 +398,12 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Boolean> {
     }
 
     @Override
-    protected void onPostExecute(Boolean result) {
+    protected void onPostExecute(Boolean cropSucceeded) {
+        if (!cropSucceeded) {
+            Toast.makeText(mContext, R.string.wallpaper_set_fail, Toast.LENGTH_SHORT).show();
+        }
         if (mOnEndCropHandler != null) {
-            mOnEndCropHandler.run(result);
+            mOnEndCropHandler.run(cropSucceeded);
         }
     }
 }
