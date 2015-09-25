@@ -4404,7 +4404,7 @@ public class Workspace extends PagedView
             }
             nScreens--;
         }
-        return String.format(getContext().getString(R.string.workspace_scroll_format),
+        return getContext().getString(R.string.workspace_scroll_format,
                 page + 1 - delta, nScreens);
     }
 
