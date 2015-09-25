@@ -28,6 +28,9 @@
          usually see this when using another app and trying to set
          an image as the wallpaper -->
     <string name="wallpaper_load_fail">Couldn\'t load image as wallpaper</string>
+    <!-- Error message when an image is selected as a wallpaper,
+         but something goes wrong when the user clicks "Set wallpaper" -->
+    <string name="wallpaper_set_fail">Couldn\'t set image as wallpaper</string>
     <!-- Shown when wallpapers are selected in Wallpaper picker -->
     <!-- String indicating how many media item(s) is(are) selected
             eg. 1 selected [CHAR LIMIT=30] -->
