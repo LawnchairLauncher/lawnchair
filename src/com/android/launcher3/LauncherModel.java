@@ -2387,7 +2387,7 @@ public class LauncherModel extends BroadcastReceiver
             Collections.sort(allWorkspaceItems, new Comparator<ItemInfo>() {
                 @Override
                 public int compare(ItemInfo lhs, ItemInfo rhs) {
-                    return (int) (lhs.container - rhs.container);
+                    return Long.compare(lhs.container, rhs.container);
                 }
             });
             for (ItemInfo info : allWorkspaceItems) {
