@@ -252,8 +252,8 @@ public class InvariantDeviceProfile {
         ArrayList<InvariantDeviceProfile> pointsByNearness = points;
         Collections.sort(pointsByNearness, new Comparator<InvariantDeviceProfile>() {
             public int compare(InvariantDeviceProfile a, InvariantDeviceProfile b) {
-                return (int) (dist(width, height, a.minWidthDps, a.minHeightDps)
-                        - dist(width, height, b.minWidthDps, b.minHeightDps));
+                return Float.compare(dist(width, height, a.minWidthDps, a.minHeightDps),
+                        dist(width, height, b.minWidthDps, b.minHeightDps));
             }
         });
 

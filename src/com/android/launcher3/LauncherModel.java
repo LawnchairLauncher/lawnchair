@@ -2469,7 +2469,7 @@ public class LauncherModel extends BroadcastReceiver
                             lhs.cellY * cellCountX + lhs.cellX);
                     long rr = (rhs.container * containerOffset + rhs.screenId * screenOffset +
                             rhs.cellY * cellCountX + rhs.cellX);
-                    return (int) (lr - rr);
+                    return Long.compare(lr, rr);
                 }
             });
         }
