@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.graphics.Bitmap;
@@ -28,13 +29,40 @@ import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.SparseArray;
+import android.view.animation.DecelerateInterpolator;
 
 public class FastBitmapDrawable extends Drawable {
 
-    static final TimeInterpolator CLICK_FEEDBACK_INTERPOLATOR = new TimeInterpolator() {
+    /**
+     * The possible states that a FastBitmapDrawable can be in.
+     */
+    public enum State {
+
+        NORMAL                      (0f, 0f, 1f, new DecelerateInterpolator()),
+        PRESSED                     (0f, 100f / 255f, 1f, CLICK_FEEDBACK_INTERPOLATOR),
+        FAST_SCROLL_HIGHLIGHTED     (0f, 0f, 1.1f, new DecelerateInterpolator()),
+        FAST_SCROLL_UNHIGHLIGHTED   (0.8f, 0.35f, 1f, new DecelerateInterpolator()),
+        DISABLED                    (1f, 0.5f, 1f, new DecelerateInterpolator());
+
+        public final float desaturation;
+        public final float brightness;
+        /**
+         * Used specifically by the view drawing this FastBitmapDrawable.
+         */
+        public final float viewScale;
+        public final TimeInterpolator interpolator;
+
+        State(float desaturation, float brightness, float viewScale, TimeInterpolator interpolator) {
+            this.desaturation = desaturation;
+            this.brightness = brightness;
+            this.viewScale = viewScale;
+            this.interpolator = interpolator;
+        }
+    }
+
+    public static final TimeInterpolator CLICK_FEEDBACK_INTERPOLATOR = new TimeInterpolator() {
 
         @Override
         public float getInterpolation(float input) {
@@ -47,42 +75,46 @@ public class FastBitmapDrawable extends Drawable {
             }
         }
     };
-    static final long CLICK_FEEDBACK_DURATION = 2000;
+    public static final int CLICK_FEEDBACK_DURATION = 2000;
+    public static final int FAST_SCROLL_HIGHLIGHT_DURATION = 225;
+    public static final int FAST_SCROLL_UNHIGHLIGHT_DURATION = 150;
+    public static final int FAST_SCROLL_UNHIGHLIGHT_FROM_NORMAL_DURATION = 225;
+    public static final int FAST_SCROLL_INACTIVE_DURATION = 275;
 
-    private static final int PRESSED_BRIGHTNESS = 100;
-    private static ColorMatrix sGhostModeMatrix;
-    private static final ColorMatrix sTempMatrix = new ColorMatrix();
+    // Since we don't need 256^2 values for combinations of both the brightness and saturation, we
+    // reduce the value space to a smaller value V, which reduces the number of cached
+    // ColorMatrixColorFilters that we need to keep to V^2
+    private static final int REDUCED_FILTER_VALUE_SPACE = 48;
 
-    /**
-     * Store the brightness colors filters to optimize animations during icon press. This
-     * only works for non-ghost-mode icons.
-     */
-    private static final SparseArray<ColorFilter> sCachedBrightnessFilter =
-            new SparseArray<ColorFilter>();
+    // A cache of ColorFilters for optimizing brightness and saturation animations
+    private static final SparseArray<ColorFilter> sCachedFilter = new SparseArray<>();
 
-    private static final int GHOST_MODE_MIN_COLOR_RANGE = 130;
+    // Temporary matrices used for calculation
+    private static final ColorMatrix sTempBrightnessMatrix = new ColorMatrix();
+    private static final ColorMatrix sTempFilterMatrix = new ColorMatrix();
 
     private final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
     private final Bitmap mBitmap;
-    private int mAlpha;
+    private State mState = State.NORMAL;
 
+    // The saturation and brightness are values that are mapped to REDUCED_FILTER_VALUE_SPACE and
+    // as a result, can be used to compose the key for the cached ColorMatrixColorFilters
+    private int mDesaturation = 0;
     private int mBrightness = 0;
-    private boolean mGhostModeEnabled = false;
+    private int mAlpha = 255;
+    private int mPrevUpdateKey = Integer.MAX_VALUE;
 
-    private boolean mPressed = false;
-    private ObjectAnimator mPressedAnimator;
+    // Animators for the fast bitmap drawable's properties
+    private AnimatorSet mPropertyAnimator;
 
     public FastBitmapDrawable(Bitmap b) {
-        mAlpha = 255;
         mBitmap = b;
         setBounds(0, 0, b.getWidth(), b.getHeight());
     }
 
     @Override
     public void draw(Canvas canvas) {
-        final Rect r = getBounds();
-        // Draw the bitmap into the bounding rect
-        canvas.drawBitmap(mBitmap, null, r, mPaint);
+        canvas.drawBitmap(mBitmap, null, getBounds(), mPaint);
     }
 
     @Override
@@ -136,96 +168,191 @@ public class FastBitmapDrawable extends Drawable {
     }
 
     /**
-     * When enabled, the icon is grayed out and the contrast is increased to give it a 'ghost'
-     * appearance.
+     * Animates this drawable to a new state.
+     *
+     * @return whether the state has changed.
      */
-    public void setGhostModeEnabled(boolean enabled) {
-        if (mGhostModeEnabled != enabled) {
-            mGhostModeEnabled = enabled;
+    public boolean animateState(State newState) {
+        State prevState = mState;
+        if (mState != newState) {
+            mState = newState;
+
+            mPropertyAnimator = cancelAnimator(mPropertyAnimator);
+            mPropertyAnimator = new AnimatorSet();
+            mPropertyAnimator.playTogether(
+                    ObjectAnimator
+                            .ofFloat(this, "desaturation", newState.desaturation),
+                    ObjectAnimator
+                            .ofFloat(this, "brightness", newState.brightness));
+            mPropertyAnimator.setInterpolator(newState.interpolator);
+            mPropertyAnimator.setDuration(getDurationForStateChange(prevState, newState));
+            mPropertyAnimator.setStartDelay(getStartDelayForStateChange(prevState, newState));
+            mPropertyAnimator.start();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Immediately sets this drawable to a new state.
+     *
+     * @return whether the state has changed.
+     */
+    public boolean setState(State newState) {
+        if (mState != newState) {
+            mState = newState;
+
+            mPropertyAnimator = cancelAnimator(mPropertyAnimator);
+
+            setDesaturation(newState.desaturation);
+            setBrightness(newState.brightness);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Returns the current state.
+     */
+    public State getCurrentState() {
+        return mState;
+    }
+
+    /**
+     * Returns the duration for the state change animation.
+     */
+    public static int getDurationForStateChange(State fromState, State toState) {
+        switch (toState) {
+            case NORMAL:
+                switch (fromState) {
+                    case PRESSED:
+                        return 0;
+                    case FAST_SCROLL_HIGHLIGHTED:
+                    case FAST_SCROLL_UNHIGHLIGHTED:
+                        return FAST_SCROLL_INACTIVE_DURATION;
+                }
+            case PRESSED:
+                return CLICK_FEEDBACK_DURATION;
+            case FAST_SCROLL_HIGHLIGHTED:
+                return FAST_SCROLL_HIGHLIGHT_DURATION;
+            case FAST_SCROLL_UNHIGHLIGHTED:
+                switch (fromState) {
+                    case NORMAL:
+                        // When animating from normal state, take a little longer
+                        return FAST_SCROLL_UNHIGHLIGHT_FROM_NORMAL_DURATION;
+                    default:
+                        return FAST_SCROLL_UNHIGHLIGHT_DURATION;
+                }
+        }
+        return 0;
+    }
+
+    /**
+     * Returns the start delay when animating between certain fast scroll states.
+     */
+    public static int getStartDelayForStateChange(State fromState, State toState) {
+        switch (toState) {
+            case FAST_SCROLL_UNHIGHLIGHTED:
+                switch (fromState) {
+                    case NORMAL:
+                        return FAST_SCROLL_UNHIGHLIGHT_DURATION / 4;
+                }
+        }
+        return 0;
+    }
+
+    /**
+     * Sets the saturation of this icon, 0 [full color] -> 1 [desaturated]
+     */
+    public void setDesaturation(float desaturation) {
+        int newDesaturation = (int) Math.floor(desaturation * REDUCED_FILTER_VALUE_SPACE);
+        if (mDesaturation != newDesaturation) {
+            mDesaturation = newDesaturation;
             updateFilter();
         }
     }
 
-    public void setPressed(boolean pressed) {
-        if (mPressed != pressed) {
-            mPressed = pressed;
-            if (mPressed) {
-                mPressedAnimator = ObjectAnimator
-                        .ofInt(this, "brightness", PRESSED_BRIGHTNESS)
-                        .setDuration(CLICK_FEEDBACK_DURATION);
-                mPressedAnimator.setInterpolator(CLICK_FEEDBACK_INTERPOLATOR);
-                mPressedAnimator.start();
-            } else if (mPressedAnimator != null) {
-                mPressedAnimator.cancel();
-                setBrightness(0);
-            }
-        }
-        invalidateSelf();
+    public float getDesaturation() {
+        return (float) mDesaturation / REDUCED_FILTER_VALUE_SPACE;
     }
 
-    public boolean isGhostModeEnabled() {
-        return mGhostModeEnabled;
-    }
-
-    public int getBrightness() {
-        return mBrightness;
-    }
-
-    public void setBrightness(int brightness) {
-        if (mBrightness != brightness) {
-            mBrightness = brightness;
+    /**
+     * Sets the brightness of this icon, 0 [no add. brightness] -> 1 [2bright2furious]
+     */
+    public void setBrightness(float brightness) {
+        int newBrightness = (int) Math.floor(brightness * REDUCED_FILTER_VALUE_SPACE);
+        if (mBrightness != newBrightness) {
+            mBrightness = newBrightness;
             updateFilter();
-            invalidateSelf();
         }
     }
 
+    public float getBrightness() {
+        return (float) mBrightness / REDUCED_FILTER_VALUE_SPACE;
+    }
+
+    /**
+     * Updates the paint to reflect the current brightness and saturation.
+     */
     private void updateFilter() {
-        if (mGhostModeEnabled) {
-            if (sGhostModeMatrix == null) {
-                sGhostModeMatrix = new ColorMatrix();
-                sGhostModeMatrix.setSaturation(0);
+        boolean usePorterDuffFilter = false;
+        int key = -1;
+        if (mDesaturation > 0) {
+            key = (mDesaturation << 16) | mBrightness;
+        } else if (mBrightness > 0) {
+            // Compose a key with a fully saturated icon if we are just animating brightness
+            key = (1 << 16) | mBrightness;
 
-                // For ghost mode, set the color range to [GHOST_MODE_MIN_COLOR_RANGE, 255]
-                float range = (255 - GHOST_MODE_MIN_COLOR_RANGE) / 255.0f;
-                sTempMatrix.set(new float[] {
-                        range, 0, 0, 0, GHOST_MODE_MIN_COLOR_RANGE,
-                        0, range, 0, 0, GHOST_MODE_MIN_COLOR_RANGE,
-                        0, 0, range, 0, GHOST_MODE_MIN_COLOR_RANGE,
-                        0, 0, 0, 1, 0 });
-                sGhostModeMatrix.preConcat(sTempMatrix);
-            }
+            // We found that in L, ColorFilters cause drawing artifacts with shadows baked into
+            // icons, so just use a PorterDuff filter when we aren't animating saturation
+            usePorterDuffFilter = true;
+        }
 
-            if (mBrightness == 0) {
-                mPaint.setColorFilter(new ColorMatrixColorFilter(sGhostModeMatrix));
-            } else {
-                setBrightnessMatrix(sTempMatrix, mBrightness);
-                sTempMatrix.postConcat(sGhostModeMatrix);
-                mPaint.setColorFilter(new ColorMatrixColorFilter(sTempMatrix));
-            }
-        } else if (mBrightness != 0) {
-            ColorFilter filter = sCachedBrightnessFilter.get(mBrightness);
+        // Debounce multiple updates on the same frame
+        if (key == mPrevUpdateKey) {
+            return;
+        }
+        mPrevUpdateKey = key;
+
+        if (key != -1) {
+            ColorFilter filter = sCachedFilter.get(key);
             if (filter == null) {
-                filter = new PorterDuffColorFilter(Color.argb(mBrightness, 255, 255, 255),
-                        PorterDuff.Mode.SRC_ATOP);
-                sCachedBrightnessFilter.put(mBrightness, filter);
+                float brightnessF = getBrightness();
+                int brightnessI = (int) (255 * brightnessF);
+                if (usePorterDuffFilter) {
+                    filter = new PorterDuffColorFilter(Color.argb(brightnessI, 255, 255, 255),
+                            PorterDuff.Mode.SRC_ATOP);
+                } else {
+                    float saturationF = 1f - getDesaturation();
+                    sTempFilterMatrix.setSaturation(saturationF);
+                    if (mBrightness > 0) {
+                        // Brightness: C-new = C-old*(1-amount) + amount
+                        float scale = 1f - brightnessF;
+                        float[] mat = sTempBrightnessMatrix.getArray();
+                        mat[0] = scale;
+                        mat[6] = scale;
+                        mat[12] = scale;
+                        mat[4] = brightnessI;
+                        mat[9] = brightnessI;
+                        mat[14] = brightnessI;
+                        sTempFilterMatrix.preConcat(sTempBrightnessMatrix);
+                    }
+                    filter = new ColorMatrixColorFilter(sTempFilterMatrix);
+                }
+                sCachedFilter.append(key, filter);
             }
             mPaint.setColorFilter(filter);
         } else {
             mPaint.setColorFilter(null);
         }
+        invalidateSelf();
     }
 
-    private static void setBrightnessMatrix(ColorMatrix matrix, int brightness) {
-        // Brightness: C-new = C-old*(1-amount) + amount
-        float scale = 1 - brightness / 255.0f;
-        matrix.setScale(scale, scale, scale, 1);
-        float[] array = matrix.getArray();
-
-        // Add the amount to RGB components of the matrix, as per the above formula.
-        // Fifth elements in the array correspond to the constant being added to
-        // red, blue, green, and alpha channel respectively.
-        array[4] = brightness;
-        array[9] = brightness;
-        array[14] = brightness;
+    private AnimatorSet cancelAnimator(AnimatorSet animator) {
+        if (animator != null) {
+            animator.removeAllListeners();
+            animator.cancel();
+        }
+        return null;
     }
 }

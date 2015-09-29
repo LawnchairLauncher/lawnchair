@@ -19,11 +19,6 @@
   public float getAlpha();
 }
 
--keep class com.android.launcher3.BubbleTextView {
-  public void setFastScrollFocus(float);
-  public float getFastScrollFocus();
-}
-
 -keep class com.android.launcher3.ButtonDropTarget {
   public int getTextColor();
 }
@@ -56,8 +51,10 @@
 }
 
 -keep class com.android.launcher3.FastBitmapDrawable {
-  public int getBrightness();
-  public void setBrightness(int);
+  public void setDesaturation(float);
+  public float getDesaturation();
+  public void setBrightness(float);
+  public float getBrightness();
 }
 
 -keep class com.android.launcher3.MemoryDumpActivity {

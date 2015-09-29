@@ -521,7 +521,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     class PreviewItemDrawingParams {
-        PreviewItemDrawingParams(float transX, float transY, float scale, int overlayAlpha) {
+        PreviewItemDrawingParams(float transX, float transY, float scale, float overlayAlpha) {
             this.transX = transX;
             this.transY = transY;
             this.scale = scale;
@@ -530,7 +530,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         float transX;
         float transY;
         float scale;
-        int overlayAlpha;
+        float overlayAlpha;
         Drawable drawable;
     }
 
@@ -562,7 +562,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         float transY = mAvailableSpaceInPreview - (offset + scaledSize + scaleOffsetCorrection) + getPaddingTop();
         float transX = (mAvailableSpaceInPreview - scaledSize) / 2;
         float totalScale = mBaselineIconScale * scale;
-        final int overlayAlpha = (int) (80 * (1 - r));
+        final float overlayAlpha = (80 * (1 - r)) / 255f;
 
         if (params == null) {
             params = new PreviewItemDrawingParams(transX, transY, totalScale, overlayAlpha);
@@ -586,12 +586,12 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             d.setBounds(0, 0, mIntrinsicIconSize, mIntrinsicIconSize);
             if (d instanceof FastBitmapDrawable) {
                 FastBitmapDrawable fd = (FastBitmapDrawable) d;
-                int oldBrightness = fd.getBrightness();
+                float oldBrightness = fd.getBrightness();
                 fd.setBrightness(params.overlayAlpha);
                 d.draw(canvas);
                 fd.setBrightness(oldBrightness);
             } else {
-                d.setColorFilter(Color.argb(params.overlayAlpha, 255, 255, 255),
+                d.setColorFilter(Color.argb((int) (params.overlayAlpha * 255), 255, 255, 255),
                         PorterDuff.Mode.SRC_ATOP);
                 d.draw(canvas);
                 d.clearColorFilter();
