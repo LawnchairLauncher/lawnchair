@@ -2445,11 +2445,11 @@ public class LauncherModel extends BroadcastReceiver
                                         lhs.cellY * screenCols + lhs.cellX);
                                 long rr = (rhs.screenId * screenCellCount +
                                         rhs.cellY * screenCols + rhs.cellX);
-                                return (int) (lr - rr);
+                                return Long.compare(lr, rr);
                             }
                             case LauncherSettings.Favorites.CONTAINER_HOTSEAT: {
                                 // We currently use the screen id as the rank
-                                return (int) (lhs.screenId - rhs.screenId);
+                                return Long.compare(lhs.screenId, rhs.screenId);
                             }
                             default:
                                 if (ProviderConfig.IS_DOGFOOD_BUILD) {
@@ -2460,7 +2460,7 @@ public class LauncherModel extends BroadcastReceiver
                         }
                     } else {
                         // Between containers, order by hotseat, desktop
-                        return (int) (lhs.container - rhs.container);
+                        return Long.compare(lhs.container, rhs.container);
                     }
                 }
             });
