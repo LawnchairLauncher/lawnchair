@@ -28,6 +28,7 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"Wijeti zimezimwa katika hali ya Usalama"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Onyesha Kumbukumbu"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Gusa na ushikilie ili kuteua wijeti."</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Gonga mara mbili na ushikilie ile uchague wijeti au utumie vitendo maalum."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Tafuta Programu"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Inapakia Programu..."</string>
@@ -54,6 +55,7 @@
     <!-- String.format failed for translation -->
     <!-- no translation found for workspace_scroll_format (8458889198184077399) -->
     <skip />
+    <string name="workspace_new_page" msgid="257366611030256142">"Ukurasa mpya wa skrini ya kwanza"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"Karibu"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"Nakili ikoni za programu yako"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"Je, ungependa kuingiza ikoni na folda kutoka kwenye skrini zako za Mwanzo za zamani?"</string>

@@ -28,6 +28,7 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"လုံခြုံရေး မုဒ်ထဲမှာ ဝီဂျက်များကို ပိတ်ထား"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Mem ကိုပြရန်"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"ဝဒ်ဂျက်တစ်ခုကို ကောက်ယူရန် ဖိနှိပ်ထားပါ"</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"ဝစ်ဂျက်တစ်ခုကိုရယူရန် သို့မဟုတ် စိတ်ကြိုက်လုပ်ဆောင်မှုများကို အသုံးပြုရန် နှစ်ချက်တို့ပြီး ကိုင်ထားပါ။"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"ရှာဖွေမှု Appများ"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"App များ ရယူနေစဉ်..."</string>
@@ -52,6 +53,7 @@
     <string name="folder_hint_text" msgid="6617836969016293992">"အမည်မရှိအကန့်"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"စာမျက်နှာ %1$d မှ %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"ပင်မစာမျက်နှာ %1$d မှ %2$d"</string>
+    <string name="workspace_new_page" msgid="257366611030256142">"ပင်မမျက်နှာပြင် စာမျက်နှာသစ်"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"မင်္ဂလာပါ"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"အပ်ပလီကေးရှင်းပုံညွှန်းများကို ကူးယူပါ"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"ပင်မစာမျက်နှာအဟောင်းမှ ပုံညွှန်းများ နှင့် အကန့်များကို ယူလာပါမလား"</string>

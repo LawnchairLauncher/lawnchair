@@ -28,6 +28,7 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"V nouzovém režimu jsou widgety zakázány."</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Zobrazit Mem"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Widget vyberete dotykem a podržením."</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Dvojitým klepnutím a podržením vyberte widget, případně použijte vlastní akce."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Hledat aplikace"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Načítání aplikací…"</string>
@@ -52,6 +53,7 @@
     <string name="folder_hint_text" msgid="6617836969016293992">"Složka bez názvu"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Strana %1$d z %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Plocha %1$d z %2$d"</string>
+    <string name="workspace_new_page" msgid="257366611030256142">"Nová stránka plochy"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"Vítejte"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"Zkopírování ikon aplikací"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"Chcete importovat ikony a složky ze svých starých ploch?"</string>

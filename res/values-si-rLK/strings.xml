@@ -28,6 +28,7 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"සුරක්ෂිත ආකාරය තුළ විජටය අබල කරන ලදි"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Mem පෙන්වන්න"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"විජට් එක ස්පර්ශ කර අහුලා ගැනීමට අල්ලාගෙන සිටින්න."</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"විජට් එකක් අහුලා ගැනීමට හෝ අභිරුචි ක්‍රියා කිරීමට ඩබල් ටැප් කර අල්ලා ගෙන සිටින්න."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"යෙදුම් සෙවීම"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"යෙදුම් පූරණය වෙමින්…"</string>
@@ -52,6 +53,7 @@
     <string name="folder_hint_text" msgid="6617836969016293992">"නම් නොකළ ෆෝල්ඩරය"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"%2$d හි %1$d පිටුව"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"මුල් පිටු තිරය %2$d හි %1$d"</string>
+    <string name="workspace_new_page" msgid="257366611030256142">"නව මුල් පිටුව"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"සාදරයෙන් පිළිගනිමු"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"ඔබේ යෙදුම් නිරූපක පිටපත් කිරීම"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"ඔබගේ පැරණි මුල් තිර වල නිරූපක සහ ෆෝල්ඩර ආයාත කරන්නද?"</string>

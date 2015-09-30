@@ -28,6 +28,7 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"Naka-disable ang mga widget sa Safe mode"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Ipakita ang Mem"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Pindutin nang matagal upang kumuha ng widget."</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"I-double tap nang matagal upang pumili ng widget o gumamit ng mga custom na pagkilos."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Mga App sa Paghahanap"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Nilo-load ang Mga App…"</string>
@@ -52,6 +53,7 @@
     <string name="folder_hint_text" msgid="6617836969016293992">"Walang Pangalang Folder"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Pahina %1$d ng %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Home screen %1$d ng %2$d"</string>
+    <string name="workspace_new_page" msgid="257366611030256142">"Bagong page ng home screen"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"Maligayang Pagdating"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"Kopyahin ang mga icon ng app"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"I-import ang icon at folder mula sa luma mong Home screen?"</string>

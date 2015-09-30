@@ -28,6 +28,7 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"विजेट सुरक्षित मोड में अक्षम हैं"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"मेमोरी दिखाएं"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"विजेट को चुनने के लिए स्‍पर्श करके रखें."</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"कोई विजेट चुनने के लिए डबल टैप करके रखें या कस्‍टम कार्रवाइयां चुनें."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"ऐप्‍स खोजें"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"ऐप्स लोड हो रहे हैं..."</string>
@@ -52,6 +53,7 @@
     <string name="folder_hint_text" msgid="6617836969016293992">"अनामित फ़ोल्डर"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"पृष्ठ %2$d में से %1$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"होम स्क्रीन %2$d में से %1$d"</string>
+    <string name="workspace_new_page" msgid="257366611030256142">"नया होम स्‍क्रीन पृष्‍ठ"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"स्वागत है"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"ऐप्स आइकन की प्रतिलिपि बनाएं"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"अपनी पुरानी होम स्क्रीन से आइकन और फ़ोल्डर आयात करें?"</string>

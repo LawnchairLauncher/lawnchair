@@ -28,6 +28,7 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"Widgetak desgaitu egin dira modu seguruan"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Erakutsi memoria"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Eduki ukituta widgeta aukeratzeko."</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Sakatu birritan eta eduki sakatuta widgeta hartzeko edo ekintza pertsonalizatuak erabiltzeko."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Bilatu aplikazioetan"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Aplikazioak kargatzen…"</string>
@@ -52,6 +53,7 @@
     <string name="folder_hint_text" msgid="6617836969016293992">"Izenik gabeko karpeta"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"%1$d/%2$d orria"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"%1$d/%2$d hasierako pantaila"</string>
+    <string name="workspace_new_page" msgid="257366611030256142">"Hasierako pantailaren orri berria"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"Ongi etorri"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"Kopiatu aplikazioen ikonoak"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"Ikonoak eta karpetak aurreko hasierako pantailatik inportatu?"</string>

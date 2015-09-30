@@ -28,6 +28,7 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"Tiện ích con bị vô hiệu hóa ở chế độ an toàn"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Hiển thị bộ nhớ"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Chạm và giữ để chọn tiện ích con."</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Nhấn đúp &amp; giữ để chọn tiện ích con hoặc sử dụng tác vụ tùy chỉnh."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Tìm kiếm ứng dụng"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Đang tải ứng dụng..."</string>
@@ -52,6 +53,7 @@
     <string name="folder_hint_text" msgid="6617836969016293992">"Thư mục chưa đặt tên"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Trang %1$d / %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Màn hình chính %1$d / %2$d"</string>
+    <string name="workspace_new_page" msgid="257366611030256142">"Trang màn hình chính mới"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"Chào mừng"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"Sao chép biểu tượng ứng dụng của bạn"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"Nhập biểu tượng và thư mục từ Màn hình chính cũ của bạn?"</string>

@@ -28,6 +28,7 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"Додатоците се оневозможени во безбеден режим"</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Прикажи „Мени“"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Допри и задржи за да се избере виџетот."</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Допрете двапати и задржете за да изберете додаток или да користите приспособени дејства."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Пребарување апликации"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Се вчитуваат апликации…"</string>
@@ -52,6 +53,7 @@
     <string name="folder_hint_text" msgid="6617836969016293992">"Неименувана папка"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Страница %1$d од %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Екран на почетна страница %1$d од %2$d"</string>
+    <string name="workspace_new_page" msgid="257366611030256142">"Нова страница на почетен екран"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"Добредојдовте"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"Копирај икони за апликација"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"Зачувај икони и папки од твоите стари почетни страни?"</string>
