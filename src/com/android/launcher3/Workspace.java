@@ -1201,7 +1201,7 @@ public class Workspace extends PagedView
             }
         }
 
-        if (mDelayedResizeRunnable != null) {
+        if (mDelayedResizeRunnable != null && !mIsSwitchingState) {
             mDelayedResizeRunnable.run();
             mDelayedResizeRunnable = null;
         }
@@ -2650,7 +2650,6 @@ public class Workspace extends PagedView
         } else if (mDragInfo != null) {
             final View cell = mDragInfo.cell;
 
-            Runnable resizeRunnable = null;
             if (dropTargetLayout != null && !d.cancelled) {
                 // Move internally
                 boolean hasMovedLayouts = (getParentCellLayoutForView(cell) != dropTargetLayout);
@@ -2747,21 +2746,14 @@ public class Workspace extends PagedView
                         AppWidgetProviderInfo pInfo = hostView.getAppWidgetInfo();
                         if (pInfo != null && pInfo.resizeMode != AppWidgetProviderInfo.RESIZE_NONE
                                 && !d.accessibleDrag) {
-                            final Runnable addResizeFrame = new Runnable() {
+                            mDelayedResizeRunnable = new Runnable() {
                                 public void run() {
-                                    DragLayer dragLayer = mLauncher.getDragLayer();
-                                    dragLayer.addResizeFrame(info, hostView, cellLayout);
-                                }
-                            };
-                            resizeRunnable = (new Runnable() {
-                                public void run() {
-                                    if (!isPageMoving()) {
-                                        addResizeFrame.run();
-                                    } else {
-                                        mDelayedResizeRunnable = addResizeFrame;
+                                    if (!isPageMoving() && !mIsSwitchingState) {
+                                        DragLayer dragLayer = mLauncher.getDragLayer();
+                                        dragLayer.addResizeFrame(info, hostView, cellLayout);
                                     }
                                 }
-                            });
+                            };
                         }
                     }
 
@@ -2778,7 +2770,6 @@ public class Workspace extends PagedView
             }
 
             final CellLayout parent = (CellLayout) cell.getParent().getParent();
-            final Runnable finalResizeRunnable = resizeRunnable;
             // Prepare it to be animated into its new position
             // This must be called after the view has been re-parented
             final Runnable onCompleteRunnable = new Runnable() {
@@ -2786,9 +2777,6 @@ public class Workspace extends PagedView
                 public void run() {
                     mAnimatingViewIntoPlace = false;
                     updateChildrenLayersEnabled(false);
-                    if (finalResizeRunnable != null) {
-                        finalResizeRunnable.run();
-                    }
                 }
             };
             mAnimatingViewIntoPlace = true;
@@ -3735,7 +3723,8 @@ public class Workspace extends PagedView
         if (!isFlingToDelete) {
             // Fling to delete already exits spring loaded mode after the animation finishes.
             mLauncher.exitSpringLoadedDragModeDelayed(success,
-                    Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
+                    Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, mDelayedResizeRunnable);
+            mDelayedResizeRunnable = null;
         }
     }
 
