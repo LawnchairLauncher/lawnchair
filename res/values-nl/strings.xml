@@ -53,8 +53,8 @@
     <string name="default_scroll_format" msgid="7475544710230993317">"Pagina %1$d van %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Startscherm %1$d van %2$d"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"Welkom"</string>
-    <string name="migration_cling_title" msgid="9181776667882933767">"Uw app-pictogrammen kopiëren"</string>
-    <string name="migration_cling_description" msgid="2752413805582227644">"Pictogrammen en mappen importeren uit uw oude startschermen?"</string>
+    <string name="migration_cling_title" msgid="9181776667882933767">"Je app-pictogrammen kopiëren"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"Pictogrammen en mappen importeren uit je oude startschermen?"</string>
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"PICTOGRAMMEN KOPIËREN"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"OPNIEUW BEGINNEN"</string>
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Achtergronden, widgets en instellingen"</string>
@@ -74,7 +74,7 @@
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Verwijderen"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Zoeken"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Deze app is niet geïnstalleerd"</string>
-    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"De app voor dit pictogram is niet geïnstalleerd. U kunt het pictogram verwijderen of de app zoeken en handmatig installeren."</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"De app voor dit pictogram is niet geïnstalleerd. Je kunt het pictogram verwijderen of de app zoeken en handmatig installeren."</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Toevoegen aan startpagina"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Item hier naartoe verplaatsen"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Item toegevoegd aan startscherm"</string>
