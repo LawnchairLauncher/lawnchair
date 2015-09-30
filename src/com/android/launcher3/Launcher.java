@@ -4678,18 +4678,6 @@ public class Launcher extends Activity
                 UserHandleCompat.myUserHandle());
     }
 
-    /**
-     * Generates a dummy AppInfo for us to use to calculate BubbleTextView sizes.
-     */
-    public AppInfo createDummyAppInfo() {
-        Intent intent = new Intent();
-        intent.setComponent(new ComponentName(this, Launcher.class));
-        PackageManager pm = getPackageManager();
-        ResolveInfo info = pm.resolveActivity(intent, 0);
-        return new AppInfo(this, LauncherActivityInfoCompat.fromResolveInfo(info, this),
-                UserHandleCompat.myUserHandle(), mIconCache);
-    }
-
     // TODO: This method should be a part of LauncherSearchCallback
     public void startDrag(View dragView, ItemInfo dragInfo, DragSource source) {
         dragView.setTag(dragInfo);
@@ -4721,8 +4709,9 @@ public class Launcher extends Activity
     /**
      * Resizes an icon drawable to the correct icon size.
      */
-    public void resizeIconDrawable(Drawable icon) {
+    public Drawable resizeIconDrawable(Drawable icon) {
         icon.setBounds(0, 0, mDeviceProfile.iconSizePx, mDeviceProfile.iconSizePx);
+        return icon;
     }
 
     /**
