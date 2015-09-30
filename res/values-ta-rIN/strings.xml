@@ -26,8 +26,8 @@
     <string name="activity_not_available" msgid="7456344436509528827">"பயன்பாடு இல்லை"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"இறக்கிய பயன்பாடு பாதுகாப்பு முறையில் முடக்கப்பட்டது"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"பாதுகாப்புப் பயன்முறையில் விட்ஜெட்கள் முடக்கப்பட்டுள்ளன"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"நினைவகத்தைக் காட்டு"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"விட்ஜெட்டைத் தேர்வுசெய்ய தொட்டுப் பிடிக்கவும்."</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"விட்ஜெட்டைத் தேர்ந்தெடுக்க இருமுறை தட்டிப் பிடிக்கவும் அல்லது தனிப்பயன் செயல்களைப் பயன்படுத்தவும்."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"பயன்பாடுகளில் தேடுக"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"பயன்பாடுகளை ஏற்றுகிறது..."</string>
@@ -52,6 +52,7 @@
     <string name="folder_hint_text" msgid="6617836969016293992">"பெயரிடப்படாத கோப்புறை"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"பக்கம் %1$d / %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"முகப்புத் திரை %1$d of %2$d"</string>
+    <string name="workspace_new_page" msgid="257366611030256142">"புதிய முகப்புத் திரை பக்கம்"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"நல்வரவு"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"பயன்பாட்டின் ஐகான்களை நகலெடுக்கவும்"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"பழைய முகப்புத் திரைகளிலிருந்து ஐகான்களையும் கோப்புறைகளையும் இறக்குமதி செய்யவா?"</string>

@@ -22,6 +22,7 @@
     <string name="wallpaper_instructions" msgid="3524143401182707094">"設定桌布"</string>
     <string name="image_load_fail" msgid="7538534580694411837">"無法載入圖片"</string>
     <string name="wallpaper_load_fail" msgid="4800700444605404650">"無法載入圖片設為桌布"</string>
+    <string name="wallpaper_set_fail" msgid="7023180794008631780">"無法將圖片設為桌布"</string>
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="9015111147509924344">"已選取 %1$d 張"</item>
     <item quantity="one" msgid="8409622005831789373">"已選取 %1$d 張"</item>

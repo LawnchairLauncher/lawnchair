@@ -26,8 +26,8 @@
     <string name="activity_not_available" msgid="7456344436509528827">"Apl tidak tersedia"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Apl yang dimuat turun dilumpuhkan dalam mod Selamat"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Widget dilumpuhkan dalam mod Selamat"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Papar Mem"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Sentuh &amp; tahan untuk mengambil widget."</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Ketik dua kali &amp; tahan untuk mengambil widget atau menggunakan tindakan tersuai"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Cari Apl"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Memuatkan Apl…"</string>
@@ -52,6 +52,7 @@
     <string name="folder_hint_text" msgid="6617836969016293992">"Folder Tanpa Nama"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Halaman %1$d daripada %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Skrin Laman Utama %1$d daripada %2$d"</string>
+    <string name="workspace_new_page" msgid="257366611030256142">"Halaman skrin utama baharu"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"Selamat datang"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"Salin ikon apl anda"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"Import ikon dan folder dari skrin Laman Utama lama anda?"</string>

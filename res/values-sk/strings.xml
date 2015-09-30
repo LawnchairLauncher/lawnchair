@@ -26,8 +26,8 @@
     <string name="activity_not_available" msgid="7456344436509528827">"Aplikácia nie je k dispozícii"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Stiahnutá aplikácia je v núdzovom režime zakázaná"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Miniaplikácie sú v núdzovom režime zakázané"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Zobraziť pamäť"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Miniaplikáciu pridáte stlačením a podržaním."</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Miniaplikáciu pridáte dvojitým klepnutím a pridržaním alebo pomocou vlastných akcií."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Vyhľadávanie v aplikáciách"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Načítavajú sa aplikácie..."</string>
@@ -52,6 +52,7 @@
     <string name="folder_hint_text" msgid="6617836969016293992">"Nepomenovaný priečinok"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Stránka %1$d z %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Plocha %1$d z %2$d"</string>
+    <string name="workspace_new_page" msgid="257366611030256142">"Nová stránka plochy"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"Vitajte!"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"Kopírovanie ikon aplikácií"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"Chcete importovať ikony a priečinky zo starých plôch?"</string>

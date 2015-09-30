@@ -22,6 +22,7 @@
     <string name="wallpaper_instructions" msgid="3524143401182707094">"Ханын зургийг тохируулах"</string>
     <string name="image_load_fail" msgid="7538534580694411837">"Зургийг ачаалж чадсангүй"</string>
     <string name="wallpaper_load_fail" msgid="4800700444605404650">"Зургийг ханын зураг болгож ачаалж чадсангүй"</string>
+    <string name="wallpaper_set_fail" msgid="7023180794008631780">"Зургийг ханын зураг болгож чадсангүй"</string>
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="9015111147509924344">"%1$d сонгогдсон"</item>
     <item quantity="one" msgid="8409622005831789373">"%1$d сонгогдсон"</item>
