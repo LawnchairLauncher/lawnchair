@@ -883,6 +883,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             mInfo.setOption(FolderInfo.FLAG_MULTI_PAGE_ANIMATION, false, mLauncher);
         }
 
+        if (!isFlingToDelete) {
+            // Fling to delete already exits spring loaded mode after the animation finishes.
+            mLauncher.exitSpringLoadedDragModeDelayed(successfulDrop,
+                    Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
+        }
     }
 
     @Override
