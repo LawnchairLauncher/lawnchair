@@ -336,15 +336,18 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         // Precalculate the prediction icon and normal icon sizes
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
-        BubbleTextView icon = (BubbleTextView) layoutInflater.inflate(R.layout.all_apps_icon, this, false);
-        icon.applyFromApplicationInfo(mLauncher.createDummyAppInfo());
+        BubbleTextView icon = (BubbleTextView) layoutInflater.inflate(
+                R.layout.all_apps_icon, this, false);
+        icon.applyDummyInfo();
         icon.measure(MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE, MeasureSpec.AT_MOST),
                 MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE, MeasureSpec.AT_MOST));
-        BubbleTextView predIcon = (BubbleTextView) layoutInflater.inflate(R.layout.all_apps_prediction_bar_icon, this, false);
-        predIcon.applyFromApplicationInfo(mLauncher.createDummyAppInfo());
+        BubbleTextView predIcon = (BubbleTextView) layoutInflater.inflate(
+                R.layout.all_apps_prediction_bar_icon, this, false);
+        predIcon.applyDummyInfo();
         predIcon.measure(MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE, MeasureSpec.AT_MOST),
                 MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE, MeasureSpec.AT_MOST));
-        mAppsRecyclerView.setPremeasuredIconHeights(predIcon.getMeasuredHeight(), icon.getMeasuredHeight());
+        mAppsRecyclerView.setPremeasuredIconHeights(predIcon.getMeasuredHeight(),
+                icon.getMeasuredHeight());
 
         updateBackgroundAndPaddings();
     }

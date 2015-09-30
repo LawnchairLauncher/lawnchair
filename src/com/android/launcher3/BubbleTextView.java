@@ -25,6 +25,8 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Region;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -185,6 +187,15 @@ public class BubbleTextView extends TextView
 
         // Verify high res immediately
         verifyHighRes();
+    }
+
+    /**
+     * Used for measurement only, sets some dummy values on this view.
+     */
+    public void applyDummyInfo() {
+        ColorDrawable d = new ColorDrawable();
+        setIcon(mLauncher.resizeIconDrawable(d), mIconSize);
+        setText("");
     }
 
     /**
