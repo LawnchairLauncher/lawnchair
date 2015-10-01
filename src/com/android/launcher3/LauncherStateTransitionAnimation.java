@@ -279,7 +279,7 @@ public class LauncherStateTransitionAnimation {
             if (overlaySearchBarView != null) {
                 overlaySearchBarView.setAlpha(0f);
                 ObjectAnimator searchBarAlpha = ObjectAnimator.ofFloat(overlaySearchBarView, "alpha", 0f, 1f);
-                searchBarAlpha.setDuration(100);
+                searchBarAlpha.setDuration(revealDuration / 2);
                 searchBarAlpha.setInterpolator(new AccelerateInterpolator(1.5f));
                 layerViews.put(overlaySearchBarView, BUILD_AND_SET_LAYER);
                 animation.play(searchBarAlpha);
@@ -687,8 +687,8 @@ public class LauncherStateTransitionAnimation {
                 if (overlaySearchBarView != null) {
                     overlaySearchBarView.setAlpha(1f);
                     ObjectAnimator searchAlpha = ObjectAnimator.ofFloat(overlaySearchBarView, "alpha", 1f, 0f);
-                    searchAlpha.setDuration(material ? 100 : 150);
-                    searchAlpha.setInterpolator(decelerateInterpolator);
+                    searchAlpha.setDuration(revealDuration / 2);
+                    searchAlpha.setInterpolator(new AccelerateInterpolator(1.5f));
                     searchAlpha.setStartDelay(material ? 0 : itemsAlphaStagger + SINGLE_FRAME_DELAY);
                     layerViews.put(overlaySearchBarView, BUILD_AND_SET_LAYER);
                     animation.play(searchAlpha);
@@ -825,9 +825,9 @@ public class LauncherStateTransitionAnimation {
                     return;
                 }
             }
-            // Fallback to the default search bar animation otherwise
-            mLauncher.getSearchDropTargetBar().animateToState(toSearchBarState, duration);
         }
+        // Fallback to the default search bar animation otherwise
+        mLauncher.getSearchDropTargetBar().animateToState(toSearchBarState, duration);
     }
 
     /**
