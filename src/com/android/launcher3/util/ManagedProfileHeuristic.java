@@ -156,7 +156,7 @@ public class ManagedProfileHeuristic {
 
             @Override
             public int compare(ShortcutInfo lhs, ShortcutInfo rhs) {
-                return Long.compare(lhs.firstInstallTime, rhs.firstInstallTime);
+                return Utilities.longCompare(lhs.firstInstallTime, rhs.firstInstallTime);
             }
         });
 

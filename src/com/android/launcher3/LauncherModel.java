@@ -2387,7 +2387,7 @@ public class LauncherModel extends BroadcastReceiver
             Collections.sort(allWorkspaceItems, new Comparator<ItemInfo>() {
                 @Override
                 public int compare(ItemInfo lhs, ItemInfo rhs) {
-                    return Long.compare(lhs.container, rhs.container);
+                    return Utilities.longCompare(lhs.container, rhs.container);
                 }
             });
             for (ItemInfo info : allWorkspaceItems) {
@@ -2469,7 +2469,7 @@ public class LauncherModel extends BroadcastReceiver
                             lhs.cellY * cellCountX + lhs.cellX);
                     long rr = (rhs.container * containerOffset + rhs.screenId * screenOffset +
                             rhs.cellY * cellCountX + rhs.cellX);
-                    return Long.compare(lr, rr);
+                    return Utilities.longCompare(lr, rr);
                 }
             });
         }
