@@ -306,14 +306,10 @@ public abstract class ButtonDropTarget extends TextView
         setOnClickListener(enable ? this : null);
     }
 
-    protected String getAccessibilityDropConfirmation() {
-        return null;
-    }
-
     @Override
     public void onClick(View v) {
         LauncherAppState.getInstance().getAccessibilityDelegate()
-            .handleAccessibleDrop(this, null, getAccessibilityDropConfirmation());
+            .handleAccessibleDrop(this, null, null);
     }
 
     public int getTextColor() {
