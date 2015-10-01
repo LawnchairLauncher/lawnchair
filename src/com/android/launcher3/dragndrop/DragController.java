@@ -233,8 +233,10 @@ public class DragController implements DragDriver.EventListener {
 
         mDragObject = new DropTarget.DragObject();
 
+        float finalDragViewScale = mLauncher.getWorkspace().getSpringLoadedShrinkFactor();
         final DragView dragView = mDragObject.dragView = new DragView(mLauncher, b, registrationX,
-                registrationY, 0, 0, b.getWidth(), b.getHeight(), initialDragViewScale);
+                registrationY, 0, 0, b.getWidth(), b.getHeight(),
+                initialDragViewScale, finalDragViewScale);
 
         mDragObject.dragComplete = false;
         if (mIsAccessibleDrag) {

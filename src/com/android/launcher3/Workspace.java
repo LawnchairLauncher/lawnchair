@@ -415,6 +415,10 @@ public class Workspace extends PagedView
         mLauncher.onInteractionEnd();
     }
 
+    public float getSpringLoadedShrinkFactor() {
+        return mSpringLoadedShrinkFactor;
+    }
+
     /**
      * Initializes various states for this workspace.
      */
