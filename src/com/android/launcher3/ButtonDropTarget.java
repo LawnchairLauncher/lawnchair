@@ -65,6 +65,8 @@ public abstract class ButtonDropTarget extends TextView
     protected ColorStateList mOriginalTextColor;
     protected Drawable mDrawable;
 
+    protected DeviceProfile mDeviceProfile;
+
     private AnimatorSet mCurrentColorAnim;
     @Thunk ColorMatrix mSrcFilter, mDstFilter, mCurrentFilter;
 
@@ -84,8 +86,8 @@ public abstract class ButtonDropTarget extends TextView
         mOriginalTextColor = getTextColors();
 
         // Remove the text in the Phone UI in landscape
-        DeviceProfile grid = ((Launcher) getContext()).getDeviceProfile();
-        if (grid.isVerticalBarLayout()) {
+        mDeviceProfile = ((Launcher) getContext()).getDeviceProfile();
+        if (mDeviceProfile.isVerticalBarLayout()) {
             setText("");
         }
     }
@@ -193,7 +195,7 @@ public abstract class ButtonDropTarget extends TextView
     }
 
     @Override
-    public final void onDragStart(DragSource source, ItemInfo info, int dragAction) {
+    public void onDragStart(DragSource source, ItemInfo info, int dragAction) {
         mActive = supportsDrop(source, info);
         mDrawable.setColorFilter(null);
         if (mCurrentColorAnim != null) {

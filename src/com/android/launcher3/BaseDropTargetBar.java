@@ -101,7 +101,7 @@ public abstract class BaseDropTargetBar extends FrameLayout implements DragContr
      */
     @Override
     public void onDragStart(DragSource source, ItemInfo info, int dragAction) {
-        showDropTarget();
+        showDropTargets();
     }
 
     /**
@@ -115,15 +115,15 @@ public abstract class BaseDropTargetBar extends FrameLayout implements DragContr
     @Override
     public void onDragEnd() {
         if (!mDeferOnDragEnd) {
-            hideDropTarget();
+            hideDropTargets();
         } else {
             mDeferOnDragEnd = false;
         }
     }
 
-    public abstract void showDropTarget();
+    public abstract void showDropTargets();
 
-    public abstract void hideDropTarget();
+    public abstract void hideDropTargets();
 
     public abstract void enableAccessibleDrag(boolean enable);
 

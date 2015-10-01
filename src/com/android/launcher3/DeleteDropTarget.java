@@ -46,7 +46,14 @@ public class DeleteDropTarget extends ButtonDropTarget {
         setDrawable(R.drawable.ic_remove_launcher);
     }
 
-    public static boolean supportsDrop(ItemInfo info) {
+    @Override
+    public void onDragStart(DragSource source, ItemInfo info, int dragAction) {
+        super.onDragStart(source, info, dragAction);
+        setTextBasedOnDragSource(source);
+    }
+
+    /** @return true for items that should have a "Remove" action in accessibility. */
+    public static boolean supportsAccessibleDrop(ItemInfo info) {
         return (info instanceof ShortcutInfo)
                 || (info instanceof LauncherAppWidgetInfo)
                 || (info instanceof FolderInfo);
@@ -54,7 +61,17 @@ public class DeleteDropTarget extends ButtonDropTarget {
 
     @Override
     protected boolean supportsDrop(DragSource source, ItemInfo info) {
-        return source.supportsDeleteDropTarget() && supportsDrop(info);
+        return true;
+    }
+
+    /**
+     * Set the drop target's text to either "Remove" or "Cancel" depending on the drag source.
+     */
+    public void setTextBasedOnDragSource(DragSource dragSource) {
+        if (!mDeviceProfile.isVerticalBarLayout()) {
+            setText(dragSource.supportsDeleteDropTarget() ? R.string.remove_drop_target_label
+                    : android.R.string.cancel);
+        }
     }
 
     @Override

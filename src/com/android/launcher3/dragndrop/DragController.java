@@ -455,9 +455,6 @@ public class DragController implements DragDriver.EventListener {
             dropTarget = dropTargetOverride;
         } else {
             vec = isFlingingToDelete(mDragObject.dragSource);
-            if (!DeleteDropTarget.supportsDrop(mDragObject.dragInfo)) {
-                vec = null;
-            }
             if (vec != null) {
                 dropTarget = mFlingToDeleteDropTarget;
             } else {

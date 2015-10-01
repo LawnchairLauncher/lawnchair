@@ -54,12 +54,12 @@ public class AppInfoDropTargetBar extends BaseDropTargetBar {
     }
 
     @Override
-    public void showDropTarget() {
+    public void showDropTargets() {
         animateDropTargetBarToAlpha(1f, DEFAULT_DRAG_FADE_DURATION);
     }
 
     @Override
-    public void hideDropTarget() {
+    public void hideDropTargets() {
         animateDropTargetBarToAlpha(0f, DEFAULT_DRAG_FADE_DURATION);
     }
 

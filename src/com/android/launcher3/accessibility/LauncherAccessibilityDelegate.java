@@ -75,11 +75,11 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         mLauncher = launcher;
 
         mActions.put(REMOVE, new AccessibilityAction(REMOVE,
-                launcher.getText(R.string.delete_target_label)));
+                launcher.getText(R.string.remove_drop_target_label)));
         mActions.put(INFO, new AccessibilityAction(INFO,
-                launcher.getText(R.string.info_target_label)));
+                launcher.getText(R.string.app_info_drop_target_label)));
         mActions.put(UNINSTALL, new AccessibilityAction(UNINSTALL,
-                launcher.getText(R.string.delete_target_uninstall_label)));
+                launcher.getText(R.string.uninstall_drop_target_label)));
         mActions.put(ADD_TO_WORKSPACE, new AccessibilityAction(ADD_TO_WORKSPACE,
                 launcher.getText(R.string.action_add_to_workspace)));
         mActions.put(MOVE, new AccessibilityAction(MOVE,
@@ -96,7 +96,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         if (!(host.getTag() instanceof ItemInfo)) return;
         ItemInfo item = (ItemInfo) host.getTag();
 
-        if (DeleteDropTarget.supportsDrop(item)) {
+        if (DeleteDropTarget.supportsAccessibleDrop(item)) {
             info.addAction(mActions.get(REMOVE));
         }
         if (UninstallDropTarget.supportsDrop(host.getContext(), item)) {

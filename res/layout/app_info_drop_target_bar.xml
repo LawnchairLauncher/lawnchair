@@ -35,7 +35,7 @@
             <com.android.launcher3.InfoDropTarget
                 android:id="@+id/info_target_text"
                 style="@style/DropTargetButton"
-                android:text="@string/info_target_label" />
+                android:text="@string/app_info_drop_target_label" />
         </FrameLayout>
     </LinearLayout>
 

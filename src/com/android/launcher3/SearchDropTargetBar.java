@@ -103,12 +103,12 @@ public class SearchDropTargetBar extends BaseDropTargetBar {
     }
 
     @Override
-    public void showDropTarget() {
+    public void showDropTargets() {
         animateToState(State.DROP_TARGET, DEFAULT_DRAG_FADE_DURATION);
     }
 
     @Override
-    public void hideDropTarget() {
+    public void hideDropTargets() {
         animateToState(State.SEARCH_BAR, DEFAULT_DRAG_FADE_DURATION);
     }
 

@@ -37,7 +37,7 @@ public interface DragSource {
 
     /**
      * @return whether items dragged from this source supports 'Delete' drop target (e.g. to remove
-     * a shortcut.
+     * a shortcut.) If this returns false, the drop target will say "Cancel" instead of "Remove."
      */
     boolean supportsDeleteDropTarget();
 

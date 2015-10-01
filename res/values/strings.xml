@@ -78,12 +78,12 @@
          for accessibilty (spoken when the button gets focus). -->
     <string name="all_apps_home_button_label">Home</string>
 
-    <!-- Label for delete drop target. [CHAR_LIMIT=20] -->
-    <string name="delete_target_label">Remove</string>
+    <!-- Label for remove drop target. [CHAR_LIMIT=20] -->
+    <string name="remove_drop_target_label">Remove</string>
     <!-- Label for uninstall drop target. [CHAR_LIMIT=20]-->
-    <string name="delete_target_uninstall_label">Uninstall</string>
-    <!-- Label for the info icon. [CHAR_LIMIT=20] -->
-    <string name="info_target_label">App info</string>
+    <string name="uninstall_drop_target_label">Uninstall</string>
+    <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
+    <string name="app_info_drop_target_label">App info</string>
 
     <!-- Permissions: -->
     <skip />
