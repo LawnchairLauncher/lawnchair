@@ -1160,16 +1160,9 @@ public class LauncherProvider extends ContentProvider {
                             }
 
                             if (userHandle == null) {
-                                Launcher.addDumpLog(TAG, "skipping deleted user", true);
+                                Log.d(TAG, "skipping deleted user");
                                 continue;
                             }
-
-                            Launcher.addDumpLog(TAG, "migrating \""
-                                + c.getString(titleIndex) + "\" ("
-                                + cellX + "," + cellY + "@"
-                                + LauncherSettings.Favorites.containerToString(container)
-                                + "/" + screen
-                                + "): " + intentStr, true);
 
                             if (itemType != Favorites.ITEM_TYPE_FOLDER) {
 
@@ -1179,22 +1172,20 @@ public class LauncherProvider extends ContentProvider {
                                     intent = Intent.parseUri(intentStr, 0);
                                 } catch (URISyntaxException e) {
                                     // bogus intent?
-                                    Launcher.addDumpLog(TAG,
-                                            "skipping invalid intent uri", true);
+                                    Log.d(TAG, "skipping invalid intent uri");
                                     continue;
                                 }
 
                                 cn = intent.getComponent();
                                 if (TextUtils.isEmpty(intentStr)) {
                                     // no intent? no icon
-                                    Launcher.addDumpLog(TAG, "skipping empty intent", true);
+                                    Log.d(TAG, "skipping empty intent");
                                     continue;
                                 } else if (cn != null &&
                                         !LauncherModel.isValidPackageActivity(mContext, cn,
                                                 userHandle)) {
                                     // component no longer exists.
-                                    Launcher.addDumpLog(TAG, "skipping item whose component " +
-                                            "no longer exists.", true);
+                                    Log.d(TAG, "skipping item whose component no longer exists.");
                                     continue;
                                 } else if (container ==
                                         LauncherSettings.Favorites.CONTAINER_DESKTOP) {
@@ -1210,7 +1201,7 @@ public class LauncherProvider extends ContentProvider {
                                     final String key = intent.toUri(0);
                                     intent.setFlags(flags);
                                     if (seenIntents.contains(key)) {
-                                        Launcher.addDumpLog(TAG, "skipping duplicate", true);
+                                        Log.d(TAG, "skipping duplicate");
                                         continue;
                                     } else {
                                         seenIntents.add(key);
@@ -1350,8 +1341,8 @@ public class LauncherProvider extends ContentProvider {
                 }
             }
 
-            Launcher.addDumpLog(TAG, "migrated " + count + " icons from Launcher2 into "
-                    + (curScreen+1) + " screens", true);
+            Log.d(TAG, "migrated " + count + " icons from Launcher2 into "
+                    + (curScreen+1) + " screens");
 
             // ensure that new screens are created to hold these icons
             setFlagJustLoadedOldDb();

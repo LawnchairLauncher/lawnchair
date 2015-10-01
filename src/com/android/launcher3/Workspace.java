@@ -682,7 +682,6 @@ public class Workspace extends PagedView
     private void convertFinalScreenToEmptyScreenIfNecessary() {
         if (mLauncher.isWorkspaceLoading()) {
             // Invalid and dangerous operation if workspace is loading
-            Launcher.addDumpLog(TAG, "    - workspace loading, skip", true);
             return;
         }
 
@@ -715,7 +714,6 @@ public class Workspace extends PagedView
             final int delay, final boolean stripEmptyScreens) {
         if (mLauncher.isWorkspaceLoading()) {
             // Don't strip empty screens if the workspace is still loading
-            Launcher.addDumpLog(TAG, "    - workspace loading, skip", true);
             return;
         }
 
@@ -801,7 +799,6 @@ public class Workspace extends PagedView
     public long commitExtraEmptyScreen() {
         if (mLauncher.isWorkspaceLoading()) {
             // Invalid and dangerous operation if workspace is loading
-            Launcher.addDumpLog(TAG, "    - workspace loading, skip", true);
             return -1;
         }
 
@@ -857,7 +854,6 @@ public class Workspace extends PagedView
         if (mLauncher.isWorkspaceLoading()) {
             // Don't strip empty screens if the workspace is still loading.
             // This is dangerous and can result in data loss.
-            Launcher.addDumpLog(TAG, "    - workspace loading, skip", true);
             return;
         }
 
@@ -1017,7 +1013,7 @@ public class Workspace extends PagedView
             // TODO: This branch occurs when the workspace is adding views
             // outside of the defined grid
             // maybe we should be deleting these items from the LauncherModel?
-            Launcher.addDumpLog(TAG, "Failed to add to item at (" + lp.cellX + "," + lp.cellY + ") to CellLayout", true);
+            Log.e(TAG, "Failed to add to item at (" + lp.cellX + "," + lp.cellY + ") to CellLayout");
         }
 
         if (!(child instanceof Folder)) {

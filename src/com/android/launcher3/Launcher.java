@@ -141,7 +141,6 @@ public class Launcher extends Activity
     static final boolean DEBUG_WIDGETS = true;
     static final boolean DEBUG_STRICT_MODE = false;
     static final boolean DEBUG_RESUME_TIME = false;
-    static final boolean DEBUG_DUMP_LOG = false;
 
     static final boolean ENABLE_DEBUG_INTENTS = false; // allow DebugIntents to run
 
@@ -308,12 +307,10 @@ public class Launcher extends Activity
     private final ArrayList<Integer> mSynchronouslyBoundPages = new ArrayList<Integer>();
     private static final boolean DISABLE_SYNCHRONOUS_BINDING_CURRENT_PAGE = false;
 
-    static final ArrayList<String> sDumpLogs = new ArrayList<String>();
-    static Date sDateStamp = new Date();
-    static DateFormat sDateFormat =
+    private static final ArrayList<String> sDumpLogs = new ArrayList<String>();
+    private static final Date sDateStamp = new Date();
+    private static final DateFormat sDateFormat =
             DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
-    static long sRunStart = System.currentTimeMillis();
-    static final String CORRUPTION_EMAIL_SENT_KEY = "corruptionEmailSent";
 
     // We only want to get the SharedPreferences once since it does an FS stat each time we get
     // it from the context.
@@ -4629,51 +4626,47 @@ public class Launcher extends Activity
     @Override
     public void dump(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
         super.dump(prefix, fd, writer, args);
-        synchronized (sDumpLogs) {
-            writer.println(" ");
-            writer.println("Debug logs: ");
-            for (int i = 0; i < sDumpLogs.size(); i++) {
-                writer.println("  " + sDumpLogs.get(i));
+        // Dump workspace
+        writer.println(prefix + "Workspace Items");
+        for (int i = mWorkspace.numCustomPages(); i < mWorkspace.getPageCount(); i++) {
+            writer.println(prefix + "  Homescreen " + i);
+
+            ViewGroup layout = ((CellLayout) mWorkspace.getPageAt(i)).getShortcutsAndWidgets();
+            for (int j = 0; j < layout.getChildCount(); j++) {
+                Object tag = layout.getChildAt(j).getTag();
+                if (tag != null) {
+                    writer.println(prefix + "    " + tag.toString());
+                }
             }
         }
+
+        writer.println(prefix + "  Hotseat");
+        ViewGroup layout = mHotseat.getLayout().getShortcutsAndWidgets();
+        for (int j = 0; j < layout.getChildCount(); j++) {
+            Object tag = layout.getChildAt(j).getTag();
+            if (tag != null) {
+                writer.println(prefix + "    " + tag.toString());
+            }
+        }
+
+        synchronized (sDumpLogs) {
+            writer.println();
+            writer.println(prefix + "Debug logs");
+            for (String log : sDumpLogs) {
+                writer.println(prefix + "  " + log);
+            }
+        }
+
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.dump(prefix, fd, writer, args);
         }
     }
 
-    public static void dumpDebugLogsToConsole() {
-        if (DEBUG_DUMP_LOG) {
-            synchronized (sDumpLogs) {
-                Log.d(TAG, "");
-                Log.d(TAG, "*********************");
-                Log.d(TAG, "Launcher debug logs: ");
-                for (int i = 0; i < sDumpLogs.size(); i++) {
-                    Log.d(TAG, "  " + sDumpLogs.get(i));
-                }
-                Log.d(TAG, "*********************");
-                Log.d(TAG, "");
-            }
-        }
-    }
-
-    public static void addDumpLog(String tag, String log, boolean debugLog) {
-        addDumpLog(tag, log, null, debugLog);
-    }
-
-    public static void addDumpLog(String tag, String log, Exception e, boolean debugLog) {
-        if (debugLog) {
-            if (e != null) {
-                Log.d(tag, log, e);
-            } else {
-                Log.d(tag, log);
-            }
-        }
-        if (DEBUG_DUMP_LOG) {
+    public static void addDumpLog(String tag, String log) {
+        Log.d(tag, log);
+        synchronized(sDumpLogs) {
             sDateStamp.setTime(System.currentTimeMillis());
-            synchronized (sDumpLogs) {
-                sDumpLogs.add(sDateFormat.format(sDateStamp) + ": " + tag + ", " + log
-                    + (e == null ? "" : (", Exception: " + e)));
-            }
+            sDumpLogs.add(sDateFormat.format(sDateStamp) + ": " + tag + ", " + log);
         }
     }
 
@@ -4683,53 +4676,6 @@ public class Launcher extends Activity
 
     public static HashMap<String, CustomAppWidget> getCustomAppWidgets() {
         return sCustomAppWidgets;
-    }
-
-    public void dumpLogsToLocalData() {
-        if (DEBUG_DUMP_LOG) {
-            new AsyncTask<Void, Void, Void>() {
-                public Void doInBackground(Void ... args) {
-                    boolean success = false;
-                    sDateStamp.setTime(sRunStart);
-                    String FILENAME = sDateStamp.getMonth() + "-"
-                            + sDateStamp.getDay() + "_"
-                            + sDateStamp.getHours() + "-"
-                            + sDateStamp.getMinutes() + "_"
-                            + sDateStamp.getSeconds() + ".txt";
-
-                    FileOutputStream fos = null;
-                    File outFile = null;
-                    try {
-                        outFile = new File(getFilesDir(), FILENAME);
-                        outFile.createNewFile();
-                        fos = new FileOutputStream(outFile);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    if (fos != null) {
-                        PrintWriter writer = new PrintWriter(fos);
-
-                        writer.println(" ");
-                        writer.println("Debug logs: ");
-                        synchronized (sDumpLogs) {
-                            for (int i = 0; i < sDumpLogs.size(); i++) {
-                                writer.println("  " + sDumpLogs.get(i));
-                            }
-                        }
-                        writer.close();
-                    }
-                    try {
-                        if (fos != null) {
-                            fos.close();
-                            success = true;
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                }
-            }.executeOnExecutor(Utilities.THREAD_POOL_EXECUTOR);
-        }
     }
 }
 
