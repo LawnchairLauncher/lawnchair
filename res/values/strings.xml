@@ -191,6 +191,10 @@
     <string name="abandoned_promise_explanation">The app for this icon isn\'t installed.
         You can remove it, or search for the app and install it manually.
     </string>
+    <!-- Title for an app which is being downloaded. -->
+    <string name="app_downloading_title"><xliff:g id="name" example="Messenger">%1$s</xliff:g> downloading, <xliff:g id="progress" example="30%">%2$s</xliff:g> complete</string>
+    <!-- Title for an app whose download has been started. -->
+    <string name="app_waiting_download_title"><xliff:g id="name" example="Messenger">%1$s</xliff:g> waiting to install</string>
 
 <!-- Strings for accessibility actions -->
     <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
