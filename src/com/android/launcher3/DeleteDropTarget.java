@@ -125,9 +125,4 @@ public class DeleteDropTarget extends ButtonDropTarget {
         dragLayer.animateView(d.dragView, fling, duration, tInterpolator, onAnimationEndRunnable,
                 DragLayer.ANIMATION_END_DISAPPEAR, null);
     }
-
-    @Override
-    protected String getAccessibilityDropConfirmation() {
-        return getResources().getString(R.string.item_removed);
-    }
 }
