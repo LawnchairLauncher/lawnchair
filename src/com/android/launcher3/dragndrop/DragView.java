@@ -77,7 +77,6 @@ public class DragView extends View {
      * <p>
      * The registration point is the point inside our view that the touch events should
      * be centered upon.
-     *
      * @param launcher The Launcher instance
      * @param bitmap The view that we're dragging around.  We scale it up when we draw it.
      * @param registrationX The x coordinate of the registration point.
@@ -85,14 +84,15 @@ public class DragView extends View {
      */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public DragView(Launcher launcher, Bitmap bitmap, int registrationX, int registrationY,
-            int left, int top, int width, int height, final float initialScale) {
+            int left, int top, int width, int height, final float initialScale,
+            float finalDragViewScale) {
         super(launcher);
         mDragLayer = launcher.getDragLayer();
         mDragController = launcher.getDragController();
 
         final Resources res = getResources();
         final float scaleDps = res.getDimensionPixelSize(R.dimen.dragViewScale);
-        final float scale = (width + scaleDps) / width;
+        final float scale = finalDragViewScale * (width + scaleDps) / width;
 
         // Set the initial scale to avoid any jumps
         setScaleX(initialScale);
