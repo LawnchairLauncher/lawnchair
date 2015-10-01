@@ -42,6 +42,8 @@ import android.widget.TextView;
 import com.android.launcher3.IconCache.IconLoadRequest;
 import com.android.launcher3.model.PackageItemInfo;
 
+import java.text.NumberFormat;
+
 /**
  * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan
  * because we want to make the bubble taller than the text and TextView's clip is
@@ -450,6 +452,11 @@ public class BubbleTextView extends TextView
             final int progressLevel = isPromise ?
                     ((info.hasStatusFlag(ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE) ?
                             info.getInstallProgress() : 0)) : 100;
+
+            setContentDescription(progressLevel > 0 ?
+                getContext().getString(R.string.app_downloading_title, info.title,
+                        NumberFormat.getPercentInstance().format(progressLevel * 0.01)) :
+                    getContext().getString(R.string.app_waiting_download_title, info.title));
 
             if (mIcon != null) {
                 final PreloadIconDrawable preloadDrawable;
