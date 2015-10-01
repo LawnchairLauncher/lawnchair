@@ -15,8 +15,6 @@
 -->
 
 <resources>
-    <dimen name="app_icon_size">64dp</dimen>
-
 <!-- Dynamic Grid -->
     <dimen name="dynamic_grid_edge_margin">6dp</dimen>
     <dimen name="dynamic_grid_search_bar_max_width">500dp</dimen>
@@ -42,9 +40,6 @@
     <dimen name="cling_migration_content_margin">16dp</dimen>
     <dimen name="cling_migration_content_width">280dp</dimen>
 
-<!-- Workspace -->
-    <dimen name="workspace_max_gap">16dp</dimen>
-
 <!-- QSB -->
     <dimen name="toolbar_button_vertical_padding">4dip</dimen>
     <dimen name="toolbar_button_horizontal_padding">12dip</dimen>
@@ -67,7 +62,6 @@
     <dimen name="all_apps_grid_section_y_offset">8dp</dimen>
     <dimen name="all_apps_grid_section_text_size">24sp</dimen>
     <dimen name="all_apps_search_bar_height">48dp</dimen>
-    <dimen name="all_apps_search_bar_prediction_bar_padding">8dp</dimen>
     <dimen name="all_apps_icon_top_bottom_padding">8dp</dimen>
     <dimen name="all_apps_icon_width_gap">24dp</dimen>
     <!-- The top padding should account for the existing all_apps_list_top_bottom_padding -->
@@ -80,10 +74,8 @@
     <dimen name="all_apps_background_canvas_height">475dp</dimen>
 
 <!-- Widget tray -->
-    <dimen name="widget_container_inset">8dp</dimen>
     <dimen name="widget_preview_label_vertical_padding">8dp</dimen>
     <dimen name="widget_preview_label_horizontal_padding">8dp</dimen>
-    <dimen name="widget_preview_horizontal_padding">8dp</dimen>
 
     <dimen name="widget_section_height">56dp</dimen>
     <dimen name="widget_section_icon_size">40dp</dimen>
@@ -103,10 +95,6 @@
     <!-- Drag padding to add to the bottom of drop targets -->
     <dimen name="drop_target_drag_padding">14dp</dimen>
     <dimen name="drop_target_text_size">14sp</dimen>
-
-    <!-- the area at the edge of the screen that makes the workspace go left
-         or right while you're dragging. -->
-    <dimen name="scroll_zone">20dp</dimen>
 
     <!-- When dragging an item, how much bigger (fixed dps) the dragged view
          should be. If 0, it will not be scaled at all. -->

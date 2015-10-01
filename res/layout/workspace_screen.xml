@@ -17,9 +17,6 @@
 <com.android.launcher3.CellLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
-
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:hapticFeedbackEnabled="false"
-
-    launcher:maxGap="@dimen/workspace_max_gap" />
+    android:hapticFeedbackEnabled="false" />

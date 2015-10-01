@@ -36,42 +36,6 @@
         <attr name="windowSize" format="integer"  />
     </declare-styleable>
 
-    <!-- Workspace specific attributes. These attributes are used to customize
-         the workspace in XML files. -->
-    <declare-styleable name="Workspace">
-        <!-- The first screen the workspace should display. -->
-        <attr name="defaultScreen" format="integer"  />
-        <!-- The number of horizontal cells in the CellLayout -->
-        <attr name="cellCountX" format="integer"  />
-        <!-- The number of vertical cells in the CellLayout -->
-        <attr name="cellCountY" format="integer"  />
-    </declare-styleable>
-    
-    <!-- Hotseat specific attributes. These attributes are used to customize
-         the hotseat in XML files. -->
-    <declare-styleable name="Hotseat">
-        <!-- The number of horizontal cells in the CellLayout -->
-        <attr name="cellCountX" />
-        <!-- The number of vertical cells in the CellLayout -->
-        <attr name="cellCountY" />
-    </declare-styleable>
-
-    <!-- CellLayout specific attributes. These attributes are used to customize
-         a CellLayout view in XML files. -->
-    <declare-styleable name="CellLayout">
-        <!-- The width of a single cell -->
-        <attr name="cellWidth" format="dimension"  />
-        <!-- The height of a single cell -->
-        <attr name="cellHeight" format="dimension"  />
-        <!-- An override for the width and height gap to allow users to specify
-             a specific size for the page using spacing instead of resolving the
-             spacing from the width of the page -->
-        <attr name="widthGap" format="dimension" />
-        <attr name="heightGap" format="dimension" />
-        <!-- The max gap size for each dimension -->
-        <attr name="maxGap" format="dimension" />
-    </declare-styleable>
-
     <!-- PagedView specific attributes. These attributes are used to customize
          a PagedView view in XML files. -->
     <declare-styleable name="PagedView">

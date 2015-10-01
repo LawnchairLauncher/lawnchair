@@ -39,8 +39,7 @@
             android:id="@+id/workspace"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            launcher:defaultScreen="@integer/config_workspaceDefaultScreen" />
+            android:layout_gravity="center" />
 
         <!-- DO NOT CHANGE THE ID -->
         <include layout="@layout/hotseat"

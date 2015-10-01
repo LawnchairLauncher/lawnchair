@@ -40,8 +40,6 @@
          is used for internal (baked-in) padding -->
     <integer name="config_allAppsButtonPaddingPercent">17</integer>
 
-    <integer name="config_workspaceDefaultScreen">0</integer>
-
 <!-- Workspace -->
     <!-- The duration (in ms) of the fade animation on the object outlines, used when
          we are dragging objects around on the home screen. -->

@@ -19,9 +19,6 @@
 
 <resources>
 
-    <!-- Search Bar -->
-    <style name="SearchButton"></style>
-
     <style name="DropTargetButtonContainer">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

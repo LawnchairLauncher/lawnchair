@@ -116,9 +116,6 @@ public class Workspace extends PagedView
     @Thunk final WallpaperManager mWallpaperManager;
     @Thunk IBinder mWindowToken;
 
-    private int mOriginalDefaultPage;
-    private int mDefaultPage;
-
     private ShortcutAndWidgetContainer mDragSourceInternal;
 
     @Thunk LongArrayMap<CellLayout> mWorkspaceScreens = new LongArrayMap<>();
@@ -309,14 +306,10 @@ public class Workspace extends PagedView
         mFadeInAdjacentScreens = false;
         mWallpaperManager = WallpaperManager.getInstance(context);
 
-        TypedArray a = context.obtainStyledAttributes(attrs,
-                R.styleable.Workspace, defStyle, 0);
         mSpringLoadedShrinkFactor =
                 res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
         mOverviewModeShrinkFactor =
                 res.getInteger(R.integer.config_workspaceOverviewShrinkPercentage) / 100f;
-        mOriginalDefaultPage = mDefaultPage = a.getInt(R.styleable.Workspace_defaultScreen, 1);
-        a.recycle();
 
         setOnHierarchyChangeListener(this);
         setHapticFeedbackEnabled(false);
@@ -423,7 +416,7 @@ public class Workspace extends PagedView
      * Initializes various states for this workspace.
      */
     protected void initWorkspace() {
-        mCurrentPage = mDefaultPage;
+        mCurrentPage = getDefaultPage();
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = mLauncher.getDeviceProfile();
         mIconCache = app.getIconCache();
@@ -443,6 +436,10 @@ public class Workspace extends PagedView
         setWallpaperDimension();
 
         setEdgeGlowColor(getResources().getColor(R.color.workspace_edge_effect_color));
+    }
+
+    private int getDefaultPage() {
+        return numCustomPages();
     }
 
     private void setupLayoutTransition() {
@@ -577,9 +574,6 @@ public class Workspace extends PagedView
 
         addFullScreenPage(customScreen);
 
-        // Ensure that the current page and default page are maintained.
-        mDefaultPage = mOriginalDefaultPage + 1;
-
         // Update the custom content hint
         if (mRestorePage != INVALID_RESTORE_PAGE) {
             mRestorePage = mRestorePage + 1;
@@ -604,9 +598,6 @@ public class Workspace extends PagedView
         }
 
         mCustomContentCallbacks = null;
-
-        // Ensure that the current page and default page are maintained.
-        mDefaultPage = mOriginalDefaultPage - 1;
 
         // Update the custom content hint
         if (mRestorePage != INVALID_RESTORE_PAGE) {
@@ -4340,7 +4331,7 @@ public class Workspace extends PagedView
     }
 
     void moveToDefaultScreen(boolean animate) {
-        moveToScreen(mDefaultPage, animate);
+        moveToScreen(getDefaultPage(), animate);
     }
 
     void moveToCustomContentScreen(boolean animate) {
