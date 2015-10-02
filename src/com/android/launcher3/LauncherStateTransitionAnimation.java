@@ -22,6 +22,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.TimeInterpolator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.res.Resources;
 import android.util.Log;
@@ -229,6 +230,8 @@ public class LauncherStateTransitionAnimation {
         startWorkspaceSearchBarAnimation(animation, fromWorkspaceState, toWorkspaceState,
                 animated ? revealDuration : 0, overlaySearchBarView);
 
+        Animator updateTransitionStepAnim = dispatchOnLauncherTransitionStepAnim(fromView, toView);
+
         if (animated && initialized) {
             // Setup the reveal view animation
             int width = revealView.getMeasuredWidth();
@@ -342,10 +345,11 @@ public class LauncherStateTransitionAnimation {
                 animation.play(workspaceAnim);
             }
 
+            animation.play(updateTransitionStepAnim);
+
             // Dispatch the prepare transition signal
             dispatchOnLauncherTransitionPrepare(fromView, animated, false);
             dispatchOnLauncherTransitionPrepare(toView, animated, false);
-
 
             final AnimatorSet stateAnimation = animation;
             final Runnable startAnimRunnable = new Runnable() {
@@ -399,6 +403,24 @@ public class LauncherStateTransitionAnimation {
 
             return null;
         }
+    }
+
+    /**
+     * Returns an Animator that calls {@link #dispatchOnLauncherTransitionStep(View, float)} on
+     * {@param fromView} and {@param toView} as the animation interpolates.
+     *
+     * This is a bit hacky: we create a dummy ValueAnimator just for the AnimatorUpdateListener.
+     */
+    private Animator dispatchOnLauncherTransitionStepAnim(final View fromView, final View toView) {
+        ValueAnimator updateAnimator = ValueAnimator.ofFloat(0, 1);
+        updateAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                dispatchOnLauncherTransitionStep(fromView, animation.getAnimatedFraction());
+                dispatchOnLauncherTransitionStep(toView, animation.getAnimatedFraction());
+            }
+        });
+        return updateAnimator;
     }
 
     /**
@@ -509,11 +531,15 @@ public class LauncherStateTransitionAnimation {
         startWorkspaceSearchBarAnimation(animation, fromWorkspaceState, toWorkspaceState,
                 animated ? revealDuration : 0, overlaySearchBarView);
 
+        Animator updateTransitionStepAnim = dispatchOnLauncherTransitionStepAnim(fromView, toView);
+
         if (animated && initialized) {
             // Play the workspace animation
             if (workspaceAnim != null) {
                 animation.play(workspaceAnim);
             }
+
+            animation.play(updateTransitionStepAnim);
 
             // hideAppsCustomizeHelper is called in some cases when it is already hidden
             // don't perform all these no-op animations. In particularly, this was causing
