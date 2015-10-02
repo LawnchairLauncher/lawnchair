@@ -218,7 +218,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
             mRect.offsetTo((getWidth() - mRect.width()) / 2, (getHeight() - mRect.height()) / 2);
             mCenterDrawable.setBounds(mRect);
         } else  {
-            float iconSize = Math.min(availableWidth, availableHeight);
+            float iconSize = Math.max(0, Math.min(availableWidth, availableHeight));
 
             // Use twice the setting size factor, as the setting is drawn at a corner and the
             // icon is drawn in the center.
