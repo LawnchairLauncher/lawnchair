@@ -2447,6 +2447,7 @@ public class Launcher extends Activity
         } else if (itemInfo instanceof LauncherAppWidgetInfo) {
             final LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) itemInfo;
             unbindAppWidget(widgetInfo, deleteFromDb);
+            mWorkspace.removeWorkspaceItem(v);
             if (deleteFromDb) {
                 LauncherModel.deleteItemFromDatabase(this, widgetInfo);
             }
