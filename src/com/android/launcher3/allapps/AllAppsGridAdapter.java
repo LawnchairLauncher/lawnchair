@@ -40,6 +40,7 @@ import android.widget.TextView;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Thunk;
@@ -473,6 +474,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 icon.setLongPressTimeout(ViewConfiguration.get(parent.getContext())
                         .getLongPressTimeout());
                 icon.setFocusable(true);
+                icon.setAccessibilityDelegate(
+                        LauncherAppState.getInstance().getAccessibilityDelegate());
                 return new ViewHolder(icon);
             }
             case PREDICTION_ICON_VIEW_TYPE: {
@@ -484,6 +487,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 icon.setLongPressTimeout(ViewConfiguration.get(parent.getContext())
                         .getLongPressTimeout());
                 icon.setFocusable(true);
+                icon.setAccessibilityDelegate(
+                        LauncherAppState.getInstance().getAccessibilityDelegate());
                 return new ViewHolder(icon);
             }
             case EMPTY_SEARCH_VIEW_TYPE:
