@@ -28,7 +28,7 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"En Mode segur, els widgets estan desactivats."</string>
     <string name="toggle_weight_watcher" msgid="5645299835184636119">"Mostra la memòria"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Mantén premut un widget per triar-lo."</string>
-    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Fes doble toc i mantén premut per seleccionar un widget o per utilitzar les accions predeterminades."</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Fes doble toc i mantén premut per seleccionar un widget o per utilitzar les accions personalitzades."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Cerca a les aplicacions"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"S\'estan carregant les aplicacions..."</string>
@@ -77,6 +77,8 @@
     <string name="abandoned_search" msgid="891119232568284442">"Cerca"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Aquesta aplicació no està instal·lada"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"L\'aplicació d\'aquesta icona no està instal·lada. Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment."</string>
+    <string name="app_downloading_title" msgid="8336702962104482644">"S\'està baixant <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="PROGRESS">%2$s</xliff:g> completat"</string>
+    <string name="app_waiting_download_title" msgid="7053938513995617849">"S\'està esperant per instal·lar <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Afegeix a la pantalla d\'inici"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Mou l\'element aquí"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"S\'ha afegit l\'element a la pantalla d\'inici"</string>

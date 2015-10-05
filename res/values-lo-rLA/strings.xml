@@ -77,6 +77,8 @@
     <string name="abandoned_search" msgid="891119232568284442">"ຊອກຫາ"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"ແອັບຯ​ນີ້​ຍັງ​ບໍ່​ໄດ້​ຕິດ​ຕັ້ງ​ເທື່ອ"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"​ແອັບຯ​ສຳ​ລັບ​ໄອ​ຄອນ​ນີ້​ຍັງ​ບໍ່ໄດ້​ຕິດ​ຕັ້ງ​ເທື່ອ. ທ່ານ​ສາ​ມາດ​ລຶບ​ມັນ​ອອກ ຫຼື​ຊອກ​ຫາ​ແອັບຯ ແລ້ວ​ຕິດ​ຕັ້ງ​ມັນ​ໄດ້​ດ້ວຍ​ຕົນ​ເອງ."</string>
+    <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ກຳ​ລັງ​ດາວ​ໂຫຼດ, <xliff:g id="PROGRESS">%2$s</xliff:g> ສຳ​ເລັດ"</string>
+    <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ກຳ​ລັງ​ລໍ​ຖ້າ​ຕິດ​ຕັ້ງ"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"ເພີ່ມໃສ່ໜ້າຈໍຫຼັກ"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Move item here"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"ເພີ່ມ​ລາຍ​ການ​ໃສ່​ໜ້າ​ຈໍ​ຫຼັກ​ແລ້ວ"</string>

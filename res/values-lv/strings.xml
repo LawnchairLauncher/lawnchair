@@ -77,6 +77,8 @@
     <string name="abandoned_search" msgid="891119232568284442">"Meklēt"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Šī lietotne nav instalēta"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Šai ikonai paredzētā lietotne nav instalēta. Varat noņemt ikonu vai meklēt lietotni un instalēt to manuāli."</string>
+    <string name="app_downloading_title" msgid="8336702962104482644">"Lietotnes <xliff:g id="NAME">%1$s</xliff:g> lejupielāde (<xliff:g id="PROGRESS">%2$s</xliff:g> pabeigti)"</string>
+    <string name="app_waiting_download_title" msgid="7053938513995617849">"Notiek <xliff:g id="NAME">%1$s</xliff:g> instalēšana"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Pievienot sākuma ekrānam"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Pārvietot vienumu šeit"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Vienums pievienots sākuma ekrānam"</string>

@@ -77,6 +77,8 @@
     <string name="abandoned_search" msgid="891119232568284442">"검색"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"이 앱이 설치되어 있지 않음"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"이 아이콘의 앱이 설치되어 있지 않습니다. 아이콘을 삭제하거나 앱을 검색하여 수동으로 설치하세요."</string>
+    <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> 다운로드 중, <xliff:g id="PROGRESS">%2$s</xliff:g> 완료"</string>
+    <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> 설치 대기 중"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"메인 스크린에 추가"</string>
     <string name="action_move_here" msgid="2170188780612570250">"여기에 항목을 이동"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"메인 스크린에 항목 추가됨"</string>

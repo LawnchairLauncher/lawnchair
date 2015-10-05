@@ -77,6 +77,8 @@
     <string name="abandoned_search" msgid="891119232568284442">"Traži"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Ta aplikacija nije instalirana"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Aplikacija ove ikone nije instalirana. Možete je ukloniti ili potražiti aplikaciju i instalirati je ručno."</string>
+    <string name="app_downloading_title" msgid="8336702962104482644">"Preuzimanje aplikacije <xliff:g id="NAME">%1$s</xliff:g>, dovršeno <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
+    <string name="app_waiting_download_title" msgid="7053938513995617849">"Čekanje na instaliranje aplikacije <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Dodavanje na početni zaslon"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Premjesti stavku ovdje"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Stavka je dodana na početni zaslon"</string>

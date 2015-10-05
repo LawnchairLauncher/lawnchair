@@ -39,7 +39,7 @@
     <string name="all_apps_button_label" msgid="9110807029020582876">"अनुप्रयोगहरू"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"गृह"</string>
     <string name="delete_target_label" msgid="1822697352535677073">"हटाउनुहोस्"</string>
-    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"हटाउनुहोस्"</string>
+    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"स्थापना हटाउनुहोस्"</string>
     <string name="info_target_label" msgid="8053346143994679532">"अनुप्रयोग जानकारी"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"सर्टकट स्थापना गर्नेहोस्"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"प्रयोगकर्ताको हस्तक्षेप बिना एउटा अनुप्रयोगलाई सर्टकटमा थप्नको लागि अनुमति दिनुहोस्।"</string>
@@ -77,6 +77,8 @@
     <string name="abandoned_search" msgid="891119232568284442">"खोजी गर्नुहोस्"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"यो अनुप्रयोग स्थापित छैन"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"यो प्रतिमाका लागि अनुप्रयोगलाई स्थापना गरिएको छैन। तपाईँ यसलाई हटाउन, वा अनुप्रयोग खोजी र स्वयं यो स्थापित गर्न सक्नुहुन्छ।"</string>
+    <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> डाउनलोड गर्दै, <xliff:g id="PROGRESS">%2$s</xliff:g> सम्पन्‍न"</string>
+    <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> स्थापना गर्न प्रतीक्षा गर्दै"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"गृह स्क्रिनमा थप्नुहोस्"</string>
     <string name="action_move_here" msgid="2170188780612570250">"वस्तु यहाँ सार्नुहोस्"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"वस्तु गृह स्क्रिनमा थपियो"</string>
