@@ -210,7 +210,6 @@ public class LauncherModel extends BroadcastReceiver
         public boolean isAllAppsButtonRank(int rank);
         public void onPageBoundSynchronously(int page);
         public void executeOnNextDraw(ViewOnDrawExecutor executor);
-        public void dumpLogsToLocalData();
     }
 
     public interface ItemInfoFilter {
@@ -1384,8 +1383,7 @@ public class LauncherModel extends BroadcastReceiver
                 try {
                     screenIds.add(sc.getLong(idIndex));
                 } catch (Exception e) {
-                    Launcher.addDumpLog(TAG, "Desktop items loading interrupted"
-                            + " - invalid screens: " + e, true);
+                    addDumpLog("Invalid screen id: " + e);
                 }
             }
         } finally {
@@ -1728,17 +1726,17 @@ public class LauncherModel extends BroadcastReceiver
             }
 
             if ((mFlags & LOADER_FLAG_CLEAR_WORKSPACE) != 0) {
-                Launcher.addDumpLog(TAG, "loadWorkspace: resetting launcher database", true);
+                Log.d(TAG, "loadWorkspace: resetting launcher database");
                 LauncherAppState.getLauncherProvider().deleteDatabase();
             }
 
             if ((mFlags & LOADER_FLAG_MIGRATE_SHORTCUTS) != 0) {
                 // append the user's Launcher2 shortcuts
-                Launcher.addDumpLog(TAG, "loadWorkspace: migrating from launcher2", true);
+                Log.d(TAG, "loadWorkspace: migrating from launcher2");
                 LauncherAppState.getLauncherProvider().migrateLauncher2Shortcuts();
             } else {
                 // Make sure the default workspace is loaded
-                Launcher.addDumpLog(TAG, "loadWorkspace: loading default favorites", false);
+                Log.d(TAG, "loadWorkspace: loading default favorites");
                 LauncherAppState.getLauncherProvider().loadDefaultFavoritesIfNecessary();
             }
 
@@ -1862,8 +1860,7 @@ public class LauncherModel extends BroadcastReceiver
                                             if (intent == null) {
                                                 // The app is installed but the component is no
                                                 // longer available.
-                                                Launcher.addDumpLog(TAG,
-                                                        "Invalid component removed: " + cn, true);
+                                                addDumpLog("Invalid component removed: " + cn);
                                                 itemsToRemove.add(id);
                                                 continue;
                                             } else {
@@ -1874,8 +1871,7 @@ public class LauncherModel extends BroadcastReceiver
                                         } else if (restored) {
                                             // Package is not yet available but might be
                                             // installed later.
-                                            Launcher.addDumpLog(TAG,
-                                                    "package not yet restored: " + cn, true);
+                                            addDumpLog("package not yet restored: " + cn);
 
                                             if ((promiseType & ShortcutInfo.FLAG_RESTORE_STARTED) != 0) {
                                                 // Restore has started once.
@@ -1901,14 +1897,12 @@ public class LauncherModel extends BroadcastReceiver
                                                     itemReplaced = true;
 
                                                 } else if (REMOVE_UNRESTORED_ICONS) {
-                                                    Launcher.addDumpLog(TAG,
-                                                            "Unrestored package removed: " + cn, true);
+                                                    addDumpLog("Unrestored package removed: " + cn);
                                                     itemsToRemove.add(id);
                                                     continue;
                                                 }
                                             } else if (REMOVE_UNRESTORED_ICONS) {
-                                                Launcher.addDumpLog(TAG,
-                                                        "Unrestored package removed: " + cn, true);
+                                                addDumpLog("Unrestored package removed: " + cn);
                                                 itemsToRemove.add(id);
                                                 continue;
                                             }
@@ -1921,8 +1915,7 @@ public class LauncherModel extends BroadcastReceiver
                                         } else if (!isSdCardReady) {
                                             // SdCard is not ready yet. Package might get available,
                                             // once it is ready.
-                                            Launcher.addDumpLog(TAG, "Invalid package: " + cn
-                                                    + " (check again later)", true);
+                                            Log.d(TAG, "Invalid package: " + cn + " (check again later)");
                                             HashSet<String> pkgs = sPendingPackages.get(user);
                                             if (pkgs == null) {
                                                 pkgs = new HashSet<String>();
@@ -1935,8 +1928,7 @@ public class LauncherModel extends BroadcastReceiver
                                         } else {
                                             // Do not wait for external media load anymore.
                                             // Log the invalid package, and remove it
-                                            Launcher.addDumpLog(TAG,
-                                                    "Invalid package removed: " + cn, true);
+                                            addDumpLog("Invalid package removed: " + cn);
                                             itemsToRemove.add(id);
                                             continue;
                                         }
@@ -1946,8 +1938,7 @@ public class LauncherModel extends BroadcastReceiver
                                         restored = false;
                                     }
                                 } catch (URISyntaxException e) {
-                                    Launcher.addDumpLog(TAG,
-                                            "Invalid uri: " + intentDescription, true);
+                                    addDumpLog("Invalid uri: " + intentDescription);
                                     itemsToRemove.add(id);
                                     continue;
                                 }
@@ -1967,9 +1958,6 @@ public class LauncherModel extends BroadcastReceiver
                                     }
                                 } else if (restored) {
                                     if (user.equals(UserHandleCompat.myUserHandle())) {
-                                        Launcher.addDumpLog(TAG,
-                                                "constructing info for partially restored package",
-                                                true);
                                         info = getRestoredItemInfo(c, titleIndex, intent,
                                                 promiseType, itemType, cursorIconInfo, context);
                                         intent = getRestoredItemIntent(c, context, intent);
@@ -2124,11 +2112,8 @@ public class LauncherModel extends BroadcastReceiver
                                 final boolean isProviderReady = isValidProvider(provider);
                                 if (!isSafeMode && !customWidget &&
                                         wasProviderReady && !isProviderReady) {
-                                    String log = "Deleting widget that isn't installed anymore: "
-                                            + "id=" + id + " appWidgetId=" + appWidgetId;
-
-                                    Log.e(TAG, log);
-                                    Launcher.addDumpLog(TAG, log, false);
+                                    addDumpLog("Deleting widget that isn't installed anymore: "
+                                            + provider);
                                     itemsToRemove.add(id);
                                 } else {
                                     if (isProviderReady) {
@@ -2169,8 +2154,7 @@ public class LauncherModel extends BroadcastReceiver
                                             appWidgetInfo.restoreStatus |=
                                                     LauncherAppWidgetInfo.FLAG_RESTORE_STARTED;
                                         } else if (REMOVE_UNRESTORED_ICONS && !isSafeMode) {
-                                            Launcher.addDumpLog(TAG,
-                                                    "Unrestored widget removed: " + component, true);
+                                            addDumpLog("Unrestored widget removed: " + component);
                                             itemsToRemove.add(id);
                                             continue;
                                         }
@@ -2222,7 +2206,7 @@ public class LauncherModel extends BroadcastReceiver
                                 break;
                             }
                         } catch (Exception e) {
-                            Launcher.addDumpLog(TAG, "Desktop items loading interrupted", e, true);
+                            Log.e(TAG, "Desktop items loading interrupted", e);
                         }
                     }
                 } finally {
@@ -2940,10 +2924,8 @@ public class LauncherModel extends BroadcastReceiver
                             boolean packageOnSdcard = launcherApps.isAppEnabled(
                                     manager, pkg, PackageManager.GET_UNINSTALLED_PACKAGES);
                             if (packageOnSdcard) {
-                                Launcher.addDumpLog(TAG, "Package found on sd-card: " + pkg, true);
                                 packagesUnavailable.add(pkg);
                             } else {
-                                Launcher.addDumpLog(TAG, "Package not found: " + pkg, true);
                                 packagesRemoved.add(pkg);
                             }
                         }
@@ -3301,16 +3283,6 @@ public class LauncherModel extends BroadcastReceiver
 
                 loadAndBindWidgetsAndShortcuts(callbacks, needToRefresh);
             }
-
-            // Write all the logs to disk
-            mHandler.post(new Runnable() {
-                public void run() {
-                    Callbacks cb = getCallback();
-                    if (callbacks == cb && cb != null) {
-                        callbacks.dumpLogsToLocalData();
-                    }
-                }
-            });
         }
     }
 
@@ -3746,5 +3718,9 @@ public class LauncherModel extends BroadcastReceiver
      */
     public static Looper getWorkerLooper() {
         return sWorkerThread.getLooper();
+    }
+
+    @Thunk static final void addDumpLog(String log) {
+        Launcher.addDumpLog(TAG, log);
     }
 }
