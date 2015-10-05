@@ -36,7 +36,7 @@
             <com.android.launcher3.DeleteDropTarget
                 android:id="@+id/delete_target_text"
                 style="@style/DropTargetButton"
-                android:text="@string/delete_target_label" />
+                android:text="@string/remove_drop_target_label" />
         </FrameLayout>
 
         <FrameLayout
@@ -48,7 +48,7 @@
             <com.android.launcher3.UninstallDropTarget
                 android:id="@+id/uninstall_target_text"
                 style="@style/DropTargetButton"
-                android:text="@string/delete_target_uninstall_label" />
+                android:text="@string/uninstall_drop_target_label" />
         </FrameLayout>
     </LinearLayout>
 

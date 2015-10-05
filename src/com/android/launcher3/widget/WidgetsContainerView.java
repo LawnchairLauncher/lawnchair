@@ -271,7 +271,7 @@ public class WidgetsContainerView extends BaseContainerView
 
     @Override
     public boolean supportsFlingToDelete() {
-        return false;
+        return true;
     }
 
     @Override
