@@ -76,6 +76,8 @@
     <string name="abandoned_search" msgid="891119232568284442">"සොයන්න"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"මෙම යෙදුම ස්ථාපනය කර නොමැත"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"මෙම නිරුපකයට යෙදුම ස්ථාපනය කර නොමැත. ඔබට එය ඉවත් කළ හැක, හෝ යෙදුම් සඳහා සොයන්න සහ අතින් ස්ථාපනය කරන්න."</string>
+    <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> බාගත කරමින්, <xliff:g id="PROGRESS">%2$s</xliff:g> සම්පූර්ණයි"</string>
+    <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ස්ථාපනය කිරීමට බලා සිටිමින්"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"මුල් තිරය වෙත එක් කරන්න"</string>
     <string name="action_move_here" msgid="2170188780612570250">"මෙතනට අයිතමය ගෙන එන්න"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"අයිතමය මුල් තිරය වෙත එකතු කරන ලදි"</string>

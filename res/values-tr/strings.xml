@@ -76,6 +76,8 @@
     <string name="abandoned_search" msgid="891119232568284442">"Ara"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Bu uygulama yüklü değil"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Bu simgenin uygulaması yüklü değil. Uygulamayı kaldırabilir veya arayıp manuel olarak yükleyebilirsiniz."</string>
+    <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> indiriliyor, <xliff:g id="PROGRESS">%2$s</xliff:g> tamamlandı"</string>
+    <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> uygulaması yüklenmek için bekliyor"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Ana ekrana ekle"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Öğeyi buraya taşı"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Öğe ana ekrana eklendi"</string>

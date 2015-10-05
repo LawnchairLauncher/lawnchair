@@ -76,6 +76,8 @@
     <string name="abandoned_search" msgid="891119232568284442">"શોધો"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"આ એપ્લિકેશન ઇન્સ્ટોલ થયેલ નથી"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"આ આયકન માટેની એપ્લિકેશન ઇન્સ્ટોલ થયેલ નથી. તમે તેને દૂર કરી શકો છો અથવા એપ્લિકેશન માટે શોધ કરી અને તેને મેન્યુઅલી ઇન્સ્ટોલ કરી શકો છો."</string>
+    <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ડાઉનલોડ કરી રહ્યાં છે, <xliff:g id="PROGRESS">%2$s</xliff:g> પૂર્ણ"</string>
+    <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g>, ઇન્સ્ટૉલ થવાની રાહ જોઈ રહ્યું છે"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"હોમ સ્ક્રીન પર ઉમેરો"</string>
     <string name="action_move_here" msgid="2170188780612570250">"આઇટમ અહીં ખસેડો"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"હોમ સ્ક્રીનમાં આઇટમ ઉમેરી"</string>

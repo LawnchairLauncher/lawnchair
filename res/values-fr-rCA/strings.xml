@@ -27,7 +27,7 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"L\'application téléchargée est désactivée en mode sécurisé."</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Widgets désactivés en mode sans échec"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Maintenez un doigt sur le widget pour l\'ajouter."</string>
-    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Touchez 2X un widget et maintenez le doigt dessus pour l’ajouter ou utiliser des actions personnalisées"</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Touchez 2x un widget et maintenez doigt dessus pour l’ajouter ou utiliser des actions personnalisées"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Rechercher des applications"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Chargement des applications en cours..."</string>
@@ -76,6 +76,8 @@
     <string name="abandoned_search" msgid="891119232568284442">"Rechercher"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Cette application n\'est pas installée"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"L\'application liée à cette icône n\'est pas installée. Vous pouvez la supprimer ou rechercher l\'application et l\'installer manuellement."</string>
+    <string name="app_downloading_title" msgid="8336702962104482644">"Téléchargement de <xliff:g id="NAME">%1$s</xliff:g> : <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
+    <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> en attente d\'installation"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Ajouter à l\'écran d\'accueil"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Déplacer l\'élément ici"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Élément ajouté à l\'écran d\'accueil"</string>
