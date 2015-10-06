@@ -38,7 +38,7 @@
     <string name="all_apps_button_label" msgid="9110807029020582876">"अनुप्रयोगहरू"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"गृह"</string>
     <string name="delete_target_label" msgid="1822697352535677073">"हटाउनुहोस्"</string>
-    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"हटाउनुहोस्"</string>
+    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"स्थापना हटाउनुहोस्"</string>
     <string name="info_target_label" msgid="8053346143994679532">"अनुप्रयोग जानकारी"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"सर्टकट स्थापना गर्नेहोस्"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"प्रयोगकर्ताको हस्तक्षेप बिना एउटा अनुप्रयोगलाई सर्टकटमा थप्नको लागि अनुमति दिनुहोस्।"</string>
