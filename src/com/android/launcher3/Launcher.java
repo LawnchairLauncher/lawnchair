@@ -430,8 +430,8 @@ public class Launcher extends Activity
         // Load configuration-specific DeviceProfile
         mDeviceProfile = getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE ?
-                        app.getInvariantDeviceProfile().landscapeProfile
-                            : app.getInvariantDeviceProfile().portraitProfile;
+                app.getInvariantDeviceProfile().landscapeProfile
+                : app.getInvariantDeviceProfile().portraitProfile;
 
         mSharedPrefs = getSharedPreferences(LauncherAppState.getSharedPreferencesKey(),
                 Context.MODE_PRIVATE);
@@ -3494,6 +3494,28 @@ public class Launcher extends Activity
             opts.putInt(AppWidgetManager.OPTION_APPWIDGET_HOST_CATEGORY,
                     AppWidgetProviderInfo.WIDGET_CATEGORY_SEARCHBOX);
 
+            // Determine the min and max dimensions of the widget.
+            LauncherAppState app = LauncherAppState.getInstance();
+            DeviceProfile portraitProfile = app.getInvariantDeviceProfile().portraitProfile;
+            DeviceProfile landscapeProfile = app.getInvariantDeviceProfile().landscapeProfile;
+            float density = getResources().getDisplayMetrics().density;
+            Rect searchBounds = portraitProfile.getSearchBarBounds(Utilities.isRtl(getResources()));
+            int maxHeight = (int) (searchBounds.height() / density);
+            int minHeight = maxHeight;
+            int maxWidth = (int) (searchBounds.width() / density);
+            int minWidth = maxWidth;
+            if (!landscapeProfile.isVerticalBarLayout()) {
+                searchBounds = landscapeProfile.getSearchBarBounds(Utilities.isRtl(getResources()));
+                maxHeight = (int) Math.max(maxHeight, searchBounds.height() / density);
+                minHeight = (int) Math.min(minHeight, searchBounds.height() / density);
+                maxWidth = (int) Math.max(maxWidth, searchBounds.width() / density);
+                minWidth = (int) Math.min(minWidth, searchBounds.width() / density);
+            }
+            opts.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, maxHeight);
+            opts.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, minHeight);
+            opts.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, maxWidth);
+            opts.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, minWidth);
+
             SharedPreferences sp = getSharedPreferences(
                     LauncherAppState.getSharedPreferencesKey(), MODE_PRIVATE);
             int widgetId = sp.getInt(QSB_WIDGET_ID, -1);
@@ -4110,6 +4132,7 @@ public class Launcher extends Activity
         return mDeviceProfile.isVerticalBarLayout();
     }
 
+    /** Returns the search bar bounds in pixels. */
     protected Rect getSearchBarBounds() {
         return mDeviceProfile.getSearchBarBounds(Utilities.isRtl(getResources()));
     }

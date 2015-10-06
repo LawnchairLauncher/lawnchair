@@ -250,7 +250,7 @@ public class DeviceProfile {
     /** Returns the search bar bounds in the current orientation */
     public Rect getSearchBarBounds(boolean isLayoutRtl) {
         Rect bounds = new Rect();
-        if (isLandscape && transposeLayoutWithOrientation) {
+        if (isVerticalBarLayout()) {
             if (isLayoutRtl) {
                 bounds.set(availableWidthPx - searchBarSpaceHeightPx, edgeMarginPx,
                         availableWidthPx, availableHeightPx - edgeMarginPx);
@@ -284,7 +284,7 @@ public class DeviceProfile {
     Rect getWorkspacePadding(boolean isLayoutRtl) {
         Rect searchBarBounds = getSearchBarBounds(isLayoutRtl);
         Rect padding = new Rect();
-        if (isLandscape && transposeLayoutWithOrientation) {
+        if (isVerticalBarLayout()) {
             // Pad the left and right of the workspace with search/hotseat bar sizes
             if (isLayoutRtl) {
                 padding.set(hotseatBarHeightPx, edgeMarginPx,
@@ -320,7 +320,7 @@ public class DeviceProfile {
     }
 
     private int getWorkspacePageSpacing(boolean isLayoutRtl) {
-        if ((isLandscape && transposeLayoutWithOrientation) || isLargeTablet) {
+        if (isVerticalBarLayout() || isLargeTablet) {
             // In landscape mode the page spacing is set to the default.
             return defaultPageSpacingPx;
         } else {
