@@ -37,9 +37,9 @@
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"आवडीच्या ट्रे मध्ये आणखी जागा नाही"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"अॅप्स"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"मुख्‍यपृष्‍ठ"</string>
-    <string name="delete_target_label" msgid="1822697352535677073">"काढा"</string>
-    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"विस्थापित करा"</string>
-    <string name="info_target_label" msgid="8053346143994679532">"अॅप माहिती"</string>
+    <string name="remove_drop_target_label" msgid="7812859488053230776">"काढा"</string>
+    <string name="uninstall_drop_target_label" msgid="4722034217958379417">"विस्थापित करा"</string>
+    <string name="app_info_drop_target_label" msgid="692894985365717661">"अॅप माहिती"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"शॉर्टकट स्‍थापित करा"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"वापरकर्ता हस्तक्षेपाशिवाय शॉर्टकट जोडण्यास अॅप ला अनुमती देते."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"मुख्यपृष्ठ सेटिंग्ज आणि शॉर्टकट वाचा"</string>

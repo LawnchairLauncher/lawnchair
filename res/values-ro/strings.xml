@@ -37,9 +37,9 @@
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Spațiu epuizat în bara Preferate"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Aplicații"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Ecran de pornire"</string>
-    <string name="delete_target_label" msgid="1822697352535677073">"Eliminați"</string>
-    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"Dezinstalați"</string>
-    <string name="info_target_label" msgid="8053346143994679532">"Informații despre aplicație"</string>
+    <string name="remove_drop_target_label" msgid="7812859488053230776">"Eliminați"</string>
+    <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Dezinstalați"</string>
+    <string name="app_info_drop_target_label" msgid="692894985365717661">"Informații aplicație"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"instalează comenzi rapide"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Permite unei aplicații să adauge comenzi rapide fără intervenția utilizatorului."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"citește setări și comenzi rapide pentru ecranul de pornire"</string>
