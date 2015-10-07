@@ -187,6 +187,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected final Rect mInsets = new Rect();
     protected final boolean mIsRtl;
 
+    // When set to true, full screen content and overscroll effect is shited inside by right inset.
+    protected boolean mIgnoreRightInset;
+
     // Edge effect
     private final LauncherEdgeEffect mEdgeGlowLeft = new LauncherEdgeEffect();
     private final LauncherEdgeEffect mEdgeGlowRight = new LauncherEdgeEffect();
@@ -798,7 +801,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                     childWidthMode = MeasureSpec.EXACTLY;
                     childHeightMode = MeasureSpec.EXACTLY;
 
-                    childWidth = getViewportWidth() - mInsets.left - mInsets.right;
+                    childWidth = getViewportWidth() - mInsets.left
+                            - (mIgnoreRightInset ? mInsets.right : 0);
                     childHeight = getViewportHeight();
                 }
                 if (referenceChildWidth == 0) {
@@ -1152,8 +1156,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 canvas.rotate(90);
 
                 getEdgeVerticalPostion(sTmpIntPoint);
-                canvas.translate(sTmpIntPoint[0] - display.top, -display.width());
-                mEdgeGlowRight.setSize(sTmpIntPoint[1] - sTmpIntPoint[0], display.width());
+
+                int width = mIgnoreRightInset ? (display.width() - mInsets.right) : display.width();
+                canvas.translate(sTmpIntPoint[0] - display.top, -width);
+                mEdgeGlowRight.setSize(sTmpIntPoint[1] - sTmpIntPoint[0], width);
                 if (mEdgeGlowRight.draw(canvas)) {
                     postInvalidateOnAnimation();
                 }
