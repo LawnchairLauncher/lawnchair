@@ -2346,7 +2346,7 @@ public class LauncherModel extends BroadcastReceiver
             Collections.sort(allWorkspaceItems, new Comparator<ItemInfo>() {
                 @Override
                 public int compare(ItemInfo lhs, ItemInfo rhs) {
-                    return Long.compare(lhs.container, rhs.container);
+                    return Utilities.longCompare(lhs.container, rhs.container);
                 }
             });
             for (ItemInfo info : allWorkspaceItems) {
@@ -2429,11 +2429,11 @@ public class LauncherModel extends BroadcastReceiver
                                         lhs.cellY * screenCols + lhs.cellX);
                                 long rr = (rhs.screenId * screenCellCount +
                                         rhs.cellY * screenCols + rhs.cellX);
-                                return Long.compare(lr, rr);
+                                return Utilities.longCompare(lr, rr);
                             }
                             case LauncherSettings.Favorites.CONTAINER_HOTSEAT: {
                                 // We currently use the screen id as the rank
-                                return Long.compare(lhs.screenId, rhs.screenId);
+                                return Utilities.longCompare(lhs.screenId, rhs.screenId);
                             }
                             default:
                                 if (ProviderConfig.IS_DOGFOOD_BUILD) {
@@ -2444,7 +2444,7 @@ public class LauncherModel extends BroadcastReceiver
                         }
                     } else {
                         // Between containers, order by hotseat, desktop
-                        return Long.compare(lhs.container, rhs.container);
+                        return Utilities.longCompare(lhs.container, rhs.container);
                     }
                 }
             });

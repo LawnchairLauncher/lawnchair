@@ -771,4 +771,11 @@ public final class Utilities {
             return msg;
         }
     }
+
+    /**
+     * Replacement for Long.compare() which was added in API level 19.
+     */
+    public static int longCompare(long lhs, long rhs) {
+        return lhs < rhs ? -1 : (lhs == rhs ? 0 : 1);
+    }
 }
