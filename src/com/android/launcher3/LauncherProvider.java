@@ -331,10 +331,6 @@ public class LauncherProvider extends ContentProvider {
         return mOpenHelper.generateNewItemId();
     }
 
-    public void updateMaxItemId(long id) {
-        mOpenHelper.updateMaxItemId(id);
-    }
-
     public long generateNewScreenId() {
         return mOpenHelper.generateNewScreenId();
     }
@@ -488,6 +484,16 @@ public class LauncherProvider extends ContentProvider {
             mContext = context;
             mAppWidgetHost = new AppWidgetHost(context, Launcher.APPWIDGET_HOST_ID);
 
+            // Table creation sometimes fails silently, which leads to a crash loop.
+            // This way, we will try to create a table every time after crash, so the device
+            // would eventually be able to recover.
+            if (!tableExists(TABLE_FAVORITES) || !tableExists(TABLE_WORKSPACE_SCREENS)) {
+                Log.e(TAG, "Tables are missing after onCreate has been called. Trying to recreate");
+                // This operation is a no-op if the table already exists.
+                addFavoritesTable(getWritableDatabase(), true);
+                addWorkspacesTable(getWritableDatabase(), true);
+            }
+
             // In the case where neither onCreate nor onUpgrade gets called, we read the maxId from
             // the DB here
             if (mMaxItemId == -1) {
@@ -495,6 +501,18 @@ public class LauncherProvider extends ContentProvider {
             }
             if (mMaxScreenId == -1) {
                 mMaxScreenId = initializeMaxScreenId(getWritableDatabase());
+            }
+        }
+
+        private boolean tableExists(String tableName) {
+            Cursor c = getReadableDatabase().query(
+                    true, "sqlite_master", new String[] {"tbl_name"},
+                    "tbl_name = ?", new String[] {tableName},
+                    null, null, null, null, null);
+            try {
+                return c.getCount() > 0;
+            } finally {
+                c.close();
             }
         }
 
@@ -510,37 +528,8 @@ public class LauncherProvider extends ContentProvider {
             mMaxScreenId = 0;
             mNewDbCreated = true;
 
-            UserManagerCompat userManager = UserManagerCompat.getInstance(mContext);
-            long userSerialNumber = userManager.getSerialNumberForUser(
-                    UserHandleCompat.myUserHandle());
-
-            db.execSQL("CREATE TABLE favorites (" +
-                    "_id INTEGER PRIMARY KEY," +
-                    "title TEXT," +
-                    "intent TEXT," +
-                    "container INTEGER," +
-                    "screen INTEGER," +
-                    "cellX INTEGER," +
-                    "cellY INTEGER," +
-                    "spanX INTEGER," +
-                    "spanY INTEGER," +
-                    "itemType INTEGER," +
-                    "appWidgetId INTEGER NOT NULL DEFAULT -1," +
-                    "isShortcut INTEGER," +
-                    "iconType INTEGER," +
-                    "iconPackage TEXT," +
-                    "iconResource TEXT," +
-                    "icon BLOB," +
-                    "uri TEXT," +
-                    "displayMode INTEGER," +
-                    "appWidgetProvider TEXT," +
-                    "modified INTEGER NOT NULL DEFAULT 0," +
-                    "restored INTEGER NOT NULL DEFAULT 0," +
-                    "profileId INTEGER DEFAULT " + userSerialNumber + "," +
-                    "rank INTEGER NOT NULL DEFAULT 0," +
-                    "options INTEGER NOT NULL DEFAULT 0" +
-                    ");");
-            addWorkspacesTable(db);
+            addFavoritesTable(db, false);
+            addWorkspacesTable(db, false);
 
             // Database was just created, so wipe any previous widgets
             if (mAppWidgetHost != null) {
@@ -571,8 +560,43 @@ public class LauncherProvider extends ContentProvider {
             ManagedProfileHeuristic.processAllUsers(Collections.<UserHandleCompat>emptyList(), mContext);
         }
 
-        private void addWorkspacesTable(SQLiteDatabase db) {
-            db.execSQL("CREATE TABLE " + TABLE_WORKSPACE_SCREENS + " (" +
+        private void addFavoritesTable(SQLiteDatabase db, boolean optional) {
+            UserManagerCompat userManager = UserManagerCompat.getInstance(mContext);
+            long userSerialNumber = userManager.getSerialNumberForUser(
+                    UserHandleCompat.myUserHandle());
+            String ifNotExists = optional ? " IF NOT EXISTS " : "";
+
+            db.execSQL("CREATE TABLE " + ifNotExists + TABLE_FAVORITES + " (" +
+                    "_id INTEGER PRIMARY KEY," +
+                    "title TEXT," +
+                    "intent TEXT," +
+                    "container INTEGER," +
+                    "screen INTEGER," +
+                    "cellX INTEGER," +
+                    "cellY INTEGER," +
+                    "spanX INTEGER," +
+                    "spanY INTEGER," +
+                    "itemType INTEGER," +
+                    "appWidgetId INTEGER NOT NULL DEFAULT -1," +
+                    "isShortcut INTEGER," +
+                    "iconType INTEGER," +
+                    "iconPackage TEXT," +
+                    "iconResource TEXT," +
+                    "icon BLOB," +
+                    "uri TEXT," +
+                    "displayMode INTEGER," +
+                    "appWidgetProvider TEXT," +
+                    "modified INTEGER NOT NULL DEFAULT 0," +
+                    "restored INTEGER NOT NULL DEFAULT 0," +
+                    "profileId INTEGER DEFAULT " + userSerialNumber + "," +
+                    "rank INTEGER NOT NULL DEFAULT 0," +
+                    "options INTEGER NOT NULL DEFAULT 0" +
+                    ");");
+        }
+
+        private void addWorkspacesTable(SQLiteDatabase db, boolean optional) {
+            String ifNotExists = optional ? " IF NOT EXISTS " : "";
+            db.execSQL("CREATE TABLE " + ifNotExists + TABLE_WORKSPACE_SCREENS + " (" +
                     LauncherSettings.WorkspaceScreens._ID + " INTEGER PRIMARY KEY," +
                     LauncherSettings.WorkspaceScreens.SCREEN_RANK + " INTEGER," +
                     LauncherSettings.ChangeLogColumns.MODIFIED + " INTEGER NOT NULL DEFAULT 0" +
@@ -632,7 +656,7 @@ public class LauncherProvider extends ContentProvider {
                     // With the new shrink-wrapped and re-orderable workspaces, it makes sense
                     // to persist workspace screens and their relative order.
                     mMaxScreenId = 0;
-                    addWorkspacesTable(db);
+                    addWorkspacesTable(db, false);
                 }
                 case 13: {
                     db.beginTransaction();
@@ -828,7 +852,7 @@ public class LauncherProvider extends ContentProvider {
                 }
 
                 db.execSQL("DROP TABLE IF EXISTS " + TABLE_WORKSPACE_SCREENS);
-                addWorkspacesTable(db);
+                addWorkspacesTable(db, false);
 
                 // Add all screen ids back
                 int total = sortedIDs.size();
@@ -924,10 +948,6 @@ public class LauncherProvider extends ContentProvider {
         @Override
         public long insertAndCheck(SQLiteDatabase db, ContentValues values) {
             return dbInsertAndCheck(this, db, TABLE_FAVORITES, null, values);
-        }
-
-        public void updateMaxItemId(long id) {
-            mMaxItemId = id + 1;
         }
 
         public void checkId(String table, ContentValues values) {
