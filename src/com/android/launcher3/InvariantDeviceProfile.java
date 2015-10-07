@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Point;
 import android.os.Build;
@@ -84,6 +85,9 @@ public class InvariantDeviceProfile {
     DeviceProfile landscapeProfile;
     DeviceProfile portraitProfile;
 
+    // On Marshmallow the status bar is no longer opaque, when drawn on the right.
+    public boolean isRightInsetOpaque;
+
     InvariantDeviceProfile() {
     }
 
@@ -116,7 +120,7 @@ public class InvariantDeviceProfile {
         defaultLayoutId = dlId;
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    @TargetApi(Build.VERSION_CODES.M)
     InvariantDeviceProfile(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
@@ -167,6 +171,9 @@ public class InvariantDeviceProfile {
                 largeSide, smallSide, true /* isLandscape */);
         portraitProfile = new DeviceProfile(context, this, smallestSize, largestSize,
                 smallSide, largeSide, false /* isLandscape */);
+
+        isRightInsetOpaque = !Utilities.ATLEAST_MARSHMALLOW ||
+                context.getSystemService(ActivityManager.class).isLowRamDevice();
     }
 
     ArrayList<InvariantDeviceProfile> getPredefinedDeviceProfiles() {

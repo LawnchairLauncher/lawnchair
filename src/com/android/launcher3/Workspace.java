@@ -455,6 +455,7 @@ public class Workspace extends PagedView
         setWallpaperDimension();
 
         setEdgeGlowColor(getResources().getColor(R.color.workspace_edge_effect_color));
+        mIgnoreRightInset = app.getInvariantDeviceProfile().isRightInsetOpaque;
     }
 
     private void setupLayoutTransition() {
