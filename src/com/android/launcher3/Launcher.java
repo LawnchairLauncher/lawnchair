@@ -990,7 +990,9 @@ public class Launcher extends Activity
         // Consequently, the widgets will be inflated in the orientation of the foreground activity
         // (framework issue). On resuming, we ensure that any widgets are inflated for the current
         // orientation.
-        getWorkspace().reinflateWidgetsIfNecessary();
+        if (!isWorkspaceLoading()) {
+            getWorkspace().reinflateWidgetsIfNecessary();
+        }
         reinflateQSBIfNecessary();
 
         if (DEBUG_RESUME_TIME) {
