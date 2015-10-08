@@ -2364,11 +2364,13 @@ public class Launcher extends Activity
             }
         } else if (itemInfo instanceof LauncherAppWidgetInfo) {
             final LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) itemInfo;
-            unbindAppWidget(widgetInfo, deleteFromDb);
             mWorkspace.removeWorkspaceItem(v);
+            removeWidgetToAutoAdvance(widgetInfo.hostView);
+            widgetInfo.hostView = null;
             if (deleteFromDb) {
-                LauncherModel.deleteItemFromDatabase(this, widgetInfo);
+                deleteWidgetInfo(widgetInfo);
             }
+
         } else {
             return false;
         }
@@ -2383,12 +2385,11 @@ public class Launcher extends Activity
     }
 
     /**
-     * Unbinds any launcher references to the widget and deletes the app widget id.
+     * Deletes the widget info and the widget id.
      */
-    private void unbindAppWidget(final LauncherAppWidgetInfo widgetInfo, boolean deleteAppWidgetId) {
+    private void deleteWidgetInfo(final LauncherAppWidgetInfo widgetInfo) {
         final LauncherAppWidgetHost appWidgetHost = getAppWidgetHost();
-        if (deleteAppWidgetId && appWidgetHost != null &&
-                !widgetInfo.isCustomWidget() && widgetInfo.isWidgetIdValid()) {
+        if (appWidgetHost != null && !widgetInfo.isCustomWidget() && widgetInfo.isWidgetIdValid()) {
             // Deleting an app widget ID is a void call but writes to disk before returning
             // to the caller...
             new AsyncTask<Void, Void, Void>() {
@@ -2398,8 +2399,7 @@ public class Launcher extends Activity
                 }
             }.executeOnExecutor(Utilities.THREAD_POOL_EXECUTOR);
         }
-        removeWidgetToAutoAdvance(widgetInfo.hostView);
-        widgetInfo.hostView = null;
+        LauncherModel.deleteItemFromDatabase(this, widgetInfo);
     }
 
     @Override
@@ -3967,6 +3967,15 @@ public class Launcher extends Activity
             if (DEBUG_WIDGETS) {
                 Log.d(TAG, "bindAppWidget: id=" + item.appWidgetId + " belongs to component "
                         + appWidgetInfo.provider);
+            }
+
+            // Verify that we own the widget
+            AppWidgetProviderInfo info = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
+            if (info == null || appWidgetInfo == null ||
+                    !info.provider.equals(appWidgetInfo.provider)) {
+                Log.e(TAG, "Removing invalid widget: id=" + item.appWidgetId);
+                deleteWidgetInfo(item);
+                return;
             }
 
             item.hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
