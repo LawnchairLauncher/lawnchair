@@ -20,7 +20,6 @@ import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Point;
-import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
@@ -120,7 +119,7 @@ public class InvariantDeviceProfile {
         defaultLayoutId = dlId;
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
+    @TargetApi(23)
     InvariantDeviceProfile(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
