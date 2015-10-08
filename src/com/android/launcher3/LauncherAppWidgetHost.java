@@ -125,5 +125,8 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         LauncherAppWidgetProviderInfo info = LauncherAppWidgetProviderInfo.fromProviderInfo(
                 mLauncher, appWidget);
         super.onProviderChanged(appWidgetId, info);
+        // The super method updates the dimensions of the providerInfo. Update the
+        // launcher spans accordingly.
+        info.initSpans();
     }
 }
