@@ -59,7 +59,7 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
         initSpans();
     }
 
-    private void initSpans() {
+    public void initSpans() {
         LauncherAppState app = LauncherAppState.getInstance();
         InvariantDeviceProfile idp = app.getInvariantDeviceProfile();
 
