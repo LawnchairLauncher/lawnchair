@@ -63,6 +63,7 @@
     <dimen name="container_fastscroll_popup_text_size">48dp</dimen>
 
 <!-- All Apps -->
+    <dimen name="all_apps_button_scale_down">0dp</dimen>
     <dimen name="all_apps_grid_view_start_margin">0dp</dimen>
     <dimen name="all_apps_grid_section_y_offset">8dp</dimen>
     <dimen name="all_apps_grid_section_text_size">24sp</dimen>

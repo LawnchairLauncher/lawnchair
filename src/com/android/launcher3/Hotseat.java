@@ -17,8 +17,7 @@
 package com.android.launcher3;
 
 import android.content.Context;
-import android.content.res.Configuration;
-import android.content.res.Resources;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -118,6 +117,10 @@ public class Hotseat extends FrameLayout
         Drawable d = context.getResources().getDrawable(R.drawable.all_apps_button_icon);
 
         mLauncher.resizeIconDrawable(d);
+        int scaleDownPx = getResources().getDimensionPixelSize(R.dimen.all_apps_button_scale_down);
+        Rect bounds = d.getBounds();
+        d.setBounds(bounds.left, bounds.top + scaleDownPx / 2, bounds.right - scaleDownPx,
+                bounds.bottom - scaleDownPx / 2);
         allAppsButton.setCompoundDrawables(null, d, null, null);
 
         allAppsButton.setContentDescription(context.getString(R.string.all_apps_button_label));
