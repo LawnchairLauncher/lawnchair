@@ -90,7 +90,8 @@ public class DeviceProfile {
     public int hotseatCellWidthPx;
     public int hotseatCellHeightPx;
     public int hotseatIconSizePx;
-    private int hotseatBarHeightPx;
+    private int hotseatBarHeightNormalPx, hotseatBarHeightShortPx;
+    private int hotseatBarHeightPx; // One of the above.
 
     // All apps
     public int allAppsNumCols;
@@ -101,7 +102,9 @@ public class DeviceProfile {
 
     // QSB
     private int searchBarSpaceWidthPx;
-    private int searchBarSpaceHeightPx;
+    private int searchBarSpaceHeightNormalPx, searchBarSpaceHeightTallPx;
+    private int searchBarSpaceHeightPx; // One of the above.
+    private int searchBarHeight = LauncherCallbacks.SEARCH_BAR_HEIGHT_NORMAL;
 
     public DeviceProfile(Context context, InvariantDeviceProfile inv,
             Point minSize, Point maxSize,
@@ -205,8 +208,10 @@ public class DeviceProfile {
         // Search Bar
         searchBarSpaceWidthPx = Math.min(widthPx,
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_search_bar_max_width));
-        searchBarSpaceHeightPx = getSearchBarTopOffset()
+        searchBarSpaceHeightNormalPx = getSearchBarTopOffset()
                 + res.getDimensionPixelSize(R.dimen.dynamic_grid_search_bar_height);
+        searchBarSpaceHeightTallPx = getSearchBarTopOffset()
+                + res.getDimensionPixelSize(R.dimen.dynamic_grid_search_bar_height_tall);
 
         // Calculate the actual text height
         Paint textPaint = new Paint();
@@ -218,7 +223,8 @@ public class DeviceProfile {
         dragViewScale = (iconSizePx + scaleDps) / iconSizePx;
 
         // Hotseat
-        hotseatBarHeightPx = iconSizePx + 4 * edgeMarginPx;
+        hotseatBarHeightNormalPx = iconSizePx + 4 * edgeMarginPx;
+        hotseatBarHeightShortPx = iconSizePx + 2 * edgeMarginPx;
         hotseatCellWidthPx = iconSizePx;
         hotseatCellHeightPx = iconSizePx;
 
@@ -259,10 +265,10 @@ public class DeviceProfile {
         Rect bounds = new Rect();
         if (isVerticalBarLayout()) {
             if (isLayoutRtl) {
-                bounds.set(availableWidthPx - searchBarSpaceHeightPx, edgeMarginPx,
+                bounds.set(availableWidthPx - searchBarSpaceHeightNormalPx, edgeMarginPx,
                         availableWidthPx, availableHeightPx - edgeMarginPx);
             } else {
-                bounds.set(0, edgeMarginPx, searchBarSpaceHeightPx,
+                bounds.set(0, edgeMarginPx, searchBarSpaceHeightNormalPx,
                         availableHeightPx - edgeMarginPx);
             }
         } else {
@@ -306,11 +312,11 @@ public class DeviceProfile {
         if (isVerticalBarLayout()) {
             // Pad the left and right of the workspace with search/hotseat bar sizes
             if (isLayoutRtl) {
-                padding.set(hotseatBarHeightPx, edgeMarginPx,
+                padding.set(hotseatBarHeightNormalPx, edgeMarginPx,
                         searchBarBounds.width(), edgeMarginPx);
             } else {
                 padding.set(searchBarBounds.width(), edgeMarginPx,
-                        hotseatBarHeightPx, edgeMarginPx);
+                        hotseatBarHeightNormalPx, edgeMarginPx);
             }
         } else {
             if (isTablet) {
@@ -379,8 +385,9 @@ public class DeviceProfile {
     }
 
     /**
-     * When {@code true}, hotseat is on the bottom row when in landscape mode.
-     * If {@code false}, hotseat is on the right column when in landscape mode.
+     * When {@code true}, the device is in landscape mode and the hotseat is on the right column.
+     * When {@code false}, either device is in portrait mode or the device is in landscape mode and
+     * the hotseat is on the bottom row.
      */
     public boolean isVerticalBarLayout() {
         return isLandscape && transposeLayoutWithOrientation;
@@ -406,6 +413,14 @@ public class DeviceProfile {
         final boolean isLayoutRtl = Utilities.isRtl(launcher.getResources());
 
         // Layout the search bar space
+        searchBarHeight = launcher.getSearchBarHeight();
+        if (searchBarHeight == LauncherCallbacks.SEARCH_BAR_HEIGHT_TALL) {
+            hotseatBarHeightPx = hotseatBarHeightShortPx;
+            searchBarSpaceHeightPx = searchBarSpaceHeightTallPx;
+        } else {
+            hotseatBarHeightPx = hotseatBarHeightNormalPx;
+            searchBarSpaceHeightPx = searchBarSpaceHeightNormalPx;
+        }
         View searchBar = launcher.getSearchDropTargetBar();
         lp = getDropTargetBarLayoutParams(hasVerticalBarLayout, searchBar, Gravity.TOP);
         searchBar.setLayoutParams(lp);
@@ -439,7 +454,7 @@ public class DeviceProfile {
             // Vertical hotseat -- The hotseat is fixed in the layout to be on the right of the
             //                     screen regardless of RTL
             lp.gravity = Gravity.RIGHT;
-            lp.width = hotseatBarHeightPx;
+            lp.width = hotseatBarHeightNormalPx;
             lp.height = LayoutParams.MATCH_PARENT;
             hotseat.findViewById(R.id.layout).setPadding(0, 2 * edgeMarginPx, 0, 2 * edgeMarginPx);
         } else if (isTablet) {

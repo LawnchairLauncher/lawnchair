@@ -303,6 +303,11 @@ public class LauncherExtension extends Launcher {
         }
 
         @Override
+        public int getSearchBarHeight() {
+            return SEARCH_BAR_HEIGHT_NORMAL;
+        }
+
+        @Override
         public boolean isLauncherPreinstalled() {
             return false;
         }
