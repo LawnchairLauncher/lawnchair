@@ -4159,6 +4159,13 @@ public class Launcher extends Activity
         return mDeviceProfile.getSearchBarBounds(Utilities.isRtl(getResources()));
     }
 
+    public int getSearchBarHeight() {
+        if (mLauncherCallbacks != null) {
+            return mLauncherCallbacks.getSearchBarHeight();
+        }
+        return LauncherCallbacks.SEARCH_BAR_HEIGHT_NORMAL;
+    }
+
     public void bindSearchProviderChanged() {
         if (mSearchDropTargetBar == null) {
             return;
