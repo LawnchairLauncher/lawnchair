@@ -99,6 +99,9 @@ public interface LauncherCallbacks {
     public boolean isLauncherPreinstalled();
     public AllAppsSearchBarController getAllAppsSearchBarController();
     public List<ComponentKey> getPredictedApps();
+    public static final int SEARCH_BAR_HEIGHT_NORMAL = 0, SEARCH_BAR_HEIGHT_TALL = 1;
+    /** Must return one of {@link #SEARCH_BAR_HEIGHT_NORMAL} or {@link #SEARCH_BAR_HEIGHT_TALL} */
+    public int getSearchBarHeight();
 
     /**
      * Returning true will immediately result in a call to {@link #setLauncherOverlayView(ViewGroup,

@@ -21,6 +21,9 @@
     <dimen name="dynamic_grid_edge_margin">6dp</dimen>
     <dimen name="dynamic_grid_search_bar_max_width">500dp</dimen>
     <dimen name="dynamic_grid_search_bar_height">56dp</dimen>
+    <!-- We want 32dp extra for the tall search bar, but 10dp comes from unwanted padding between
+         the search bar and workspace. -->
+    <dimen name="dynamic_grid_search_bar_height_tall">78dp</dimen>
     <dimen name="dynamic_grid_page_indicator_height">20dp</dimen>
     <dimen name="dynamic_grid_icon_drawable_padding">4dp</dimen>
     <dimen name="dynamic_grid_workspace_page_spacing">8dp</dimen>
