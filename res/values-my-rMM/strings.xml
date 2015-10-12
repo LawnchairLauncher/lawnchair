@@ -26,7 +26,6 @@
     <string name="activity_not_available" msgid="7456344436509528827">"App လက်လှမ်း မမှီပါ"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"ဒေါင်းလုဒ် appကို လုံခြုံရေး မုဒ်ထဲမှာ ပိတ်ထား"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"လုံခြုံရေး မုဒ်ထဲမှာ ဝီဂျက်များကို ပိတ်ထား"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Mem ကိုပြရန်"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"ဝဒ်ဂျက်တစ်ခုကို ကောက်ယူရန် ဖိနှိပ်ထားပါ"</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"ဝစ်ဂျက်တစ်ခုကိုရယူရန် သို့မဟုတ် စိတ်ကြိုက်လုပ်ဆောင်မှုများကို အသုံးပြုရန် နှစ်ချက်တို့ပြီး ကိုင်ထားပါ။"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>

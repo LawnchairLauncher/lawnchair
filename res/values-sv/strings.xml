@@ -26,7 +26,6 @@
     <string name="activity_not_available" msgid="7456344436509528827">"Appen är inte tillgänglig"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Den hämtade appen inaktiverades i säkert läge"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Widgets är inaktiverade i felsäkert läge"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Visa Mem"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Tryck länge om du vill flytta en widget."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Tryck två gånger och håll kvar om du vill ta upp en widget eller använda anpassade åtgärder."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>

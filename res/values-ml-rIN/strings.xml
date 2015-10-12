@@ -26,7 +26,6 @@
     <string name="activity_not_available" msgid="7456344436509528827">"അപ്ലിക്കേഷൻ ലഭ്യമല്ല"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"ഡൗൺലോഡുചെയ്‌ത അപ്ലിക്കേഷൻ സുരക്ഷാ മോഡിൽ പ്രവർത്തനരഹിതമാക്കി"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"സുരക്ഷിത മോഡിൽ വിജറ്റുകൾ പ്രവർത്തനരഹിതമാക്കി"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"മെമ്മറി കാണിക്കുക"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"ഒരു വിജറ്റ് ചേർക്കുന്നതിന് അത് സ്‌പർശിച്ച് പിടിക്കുക."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"വിജറ്റ് തിരഞ്ഞെടുക്കാനോ ഇഷ്ടാനുസൃത പ്രവർത്തനങ്ങൾ ഉപയോഗിക്കാനോ രണ്ടുതവണ ടാപ്പുചെയ്ത് പിടിക്കുക."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>

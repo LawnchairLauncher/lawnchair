@@ -26,7 +26,6 @@
     <string name="activity_not_available" msgid="7456344436509528827">"अनुप्रयोग उपलब्ध छैन"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"सुरक्षित मोडमा डाउनलोड गरेको अनुप्रयोग अक्षम गरिएको छ"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"सुरक्षित मोडमा विगेटहरू अक्षम गरियो"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Mem देखाउनुहोस्"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"एउटा विजेटलाई टिप्नको लागि टच गरेर होल्ड गर्नुहोस्।"</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"विजेटलाई छान्न वा अनुकूलन कार्यहरू प्रयोग गर्न डबल ट्याप गरी होल्ड गर्नुहोस्।"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>

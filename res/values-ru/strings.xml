@@ -26,7 +26,6 @@
     <string name="activity_not_available" msgid="7456344436509528827">"Приложение недоступно"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Скачанное приложение отключено в безопасном режиме"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Виджеты отключены в безопасном режиме"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Сведения о памяти"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Чтобы выбрать виджет, нажмите на значок и удерживайте его."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Чтобы выбрать виджет, нажмите на него дважды и не отпускайте или выполните предложенные действия."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d x %2$d"</string>
@@ -77,8 +76,8 @@
     <string name="abandoned_search" msgid="891119232568284442">"Найти"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Приложение не установлено"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Приложение не установлено. Вы можете удалить значок или найти приложение и установить его вручную."</string>
-    <string name="app_downloading_title" msgid="8336702962104482644">"Скачиваем \"<xliff:g id="NAME">%1$s</xliff:g>\" (<xliff:g id="PROGRESS">%2$s</xliff:g>)"</string>
-    <string name="app_waiting_download_title" msgid="7053938513995617849">"Скоро установим \"<xliff:g id="NAME">%1$s</xliff:g>\""</string>
+    <string name="app_downloading_title" msgid="8336702962104482644">"Скачивается \"<xliff:g id="NAME">%1$s</xliff:g>\" (<xliff:g id="PROGRESS">%2$s</xliff:g>)"</string>
+    <string name="app_waiting_download_title" msgid="7053938513995617849">"Ожидание установки \"<xliff:g id="NAME">%1$s</xliff:g>\""</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Добавить на главный экран"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Переместить элемент сюда"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Элемент добавлен на главный экран"</string>

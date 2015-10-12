@@ -26,7 +26,6 @@
     <string name="activity_not_available" msgid="7456344436509528827">"应用不可用"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"安全模式下不允许使用下载的此应用"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"安全模式下不允许使用小部件"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"显示内存空间"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"触摸并按住小部件即可选择。"</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"点按两次并按住小部件即可选择小部件，您也可以使用自定义操作。"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>

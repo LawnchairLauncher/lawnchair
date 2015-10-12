@@ -26,7 +26,6 @@
     <string name="activity_not_available" msgid="7456344436509528827">"Қолданба қол жетімді емес"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Жүктелген қолданба қауіпсіз режимде өшірілген"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Қауіпсіз режимде виджеттер өшіріледі"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Жадты көрсету"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Виджетті таңдау үшін түртіп, мықтап ұстаңыз."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Виджетті таңдау немесе арнаулы әрекеттерді таңдау үшін екі рет түртіп, ұстап тұрыңыз."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>

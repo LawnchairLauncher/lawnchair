@@ -26,7 +26,6 @@
     <string name="activity_not_available" msgid="7456344436509528827">"Aplikace není k dispozici."</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Stažená aplikace je v nouzovém režimu zakázána"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"V nouzovém režimu jsou widgety zakázány."</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Zobrazit Mem"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Widget vyberete dotykem a podržením."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Dvojitým klepnutím a podržením vyberte widget, případně použijte vlastní akce."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>

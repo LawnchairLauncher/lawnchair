@@ -26,7 +26,6 @@
     <string name="activity_not_available" msgid="7456344436509528827">"ແອັບຯ​ໃຊ້​ບໍ່​ໄດ້"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"ແອັບຯ​ທີ່​ດາວ​ໂຫລດ​ແລ້ວ​ຖືກ​ປິດ​ການ​ນຳ​ໃຊ້​ໃນ Safe mode"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"​ວິດ​ເຈັດ​ຖືກ​ປິດ​ໃນ Safe mode"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"ສະແດງຄວາມຈຳ"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"ສຳພັດຄ້າງໄວ້ ເພື່ອຈັບວິດເຈັດ."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"ແຕະ​ຄ້າງ​ໄວ້ ເພື່ອ​ເລືອກວິດ​ເຈັດ ຫຼື ໃຊ້​ການ​ດຳ​ເນີນ​ການ​ກຳ​ນົດ​ເອງ."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>

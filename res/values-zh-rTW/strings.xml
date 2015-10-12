@@ -26,7 +26,6 @@
     <string name="activity_not_available" msgid="7456344436509528827">"應用程式目前無法使用"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"在安全模式中無法使用「已下載的應用程式」功能"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"在安全模式下無法使用小工具"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"顯示記憶體"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"輕觸並按住小工具即可選取。"</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"輕按兩下並按住小工具即可選取，您也可以使用自訂動作。"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>

@@ -26,7 +26,6 @@
     <string name="activity_not_available" msgid="7456344436509528827">"अॅप उपलब्ध नाही"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"डाउनलोड केलेला अ‍ॅप सुरक्षित मोड मध्‍ये अक्षम केला"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"विजेट सुरक्षित मोडमध्ये अक्षम झाले"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Mem दर्शवा"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"विजेट निवडण्यासाठी स्पर्श करा आणि धरून ठेवा."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"एक विजेट निवडण्यासाठी दोनदा टॅप करा आणि धरून ठेवा किंवा सानुकूल क्रिया वापरा."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>

@@ -26,7 +26,6 @@
     <string name="activity_not_available" msgid="7456344436509528827">"앱을 사용할 수 없음"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"다운로드한 앱은 안전 모드에서 사용할 수 없습니다."</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"안전 모드에서 위젯 사용 중지됨"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"메모리 표시"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"위젯을 선택하려면 길게 터치하세요."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"위젯을 선택하려면 두 번 탭한 다음 길게 터치하거나 맞춤 액션을 사용합니다."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d×%2$d"</string>

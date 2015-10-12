@@ -26,7 +26,6 @@
     <string name="activity_not_available" msgid="7456344436509528827">"App nicht verfügbar"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Heruntergeladene App im abgesicherten Modus deaktiviert"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Widgets im abgesicherten Modus deaktiviert"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Speicher anzeigen"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Zum Hinzufügen Widget berühren und halten"</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Zum Hinzufügen auf Widget doppeltippen und gedrückt halten oder benutzerdefinierte Aktionen verwenden."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>

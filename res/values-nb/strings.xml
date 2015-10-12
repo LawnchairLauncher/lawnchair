@@ -26,7 +26,6 @@
     <string name="activity_not_available" msgid="7456344436509528827">"Appen er ikke tilgjengelig"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"En nedlastet app er deaktivert i sikker modus"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Moduler er deaktivert i sikker modus"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Vis minne"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Trykk og hold inne for å plukke opp en modul."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Dobbelttrykk og hold inne for å velge en modul eller bruke tilpassede handlinger."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>

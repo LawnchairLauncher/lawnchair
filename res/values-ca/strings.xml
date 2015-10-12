@@ -26,7 +26,6 @@
     <string name="activity_not_available" msgid="7456344436509528827">"L\'aplicació no està disponible."</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"L\'aplicació que has baixat està desactivada al mode segur."</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"En Mode segur, els widgets estan desactivats."</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Mostra la memòria"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Mantén premut un widget per triar-lo."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Fes doble toc i mantén premut per seleccionar un widget o per utilitzar les accions personalitzades."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>

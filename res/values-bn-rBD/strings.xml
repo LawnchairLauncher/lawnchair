@@ -26,7 +26,6 @@
     <string name="activity_not_available" msgid="7456344436509528827">"অ্যাপ্লিকেশান অনুপলব্ধ"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"ডাউনলোড করা অ্যাপ্লিকেশান নিরাপদ মোডে অক্ষম রয়েছে"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"সুরক্ষিত মোডে উইজেট নিষ্ক্রিয় থাকে"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"মেম দেখান"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"একটি উইজেট তুলতে তা স্পর্শ করে ধরে রাখুন৷"</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"কোনো উইজেট বেছে নিতে দুবার-আলতো চেপে ধরে থাকুন অথবা কাস্টম ক্রিয়াগুলি ব্যবহার করুন৷"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>

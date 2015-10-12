@@ -26,7 +26,6 @@
     <string name="activity_not_available" msgid="7456344436509528827">"Апп-г ашиглах боломжгүй"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Татаж авсан апп-г Аюулгүй горим дотроос идэвхгүйжүүлсэн"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Safe горимд виджетүүдийг идэвхгүйжүүлсэн"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Мем харуулах"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Виджетийг авах бол хүрээд барина уу."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Жижиг хэрэгсэл авах болон тохируулсан үйлдлийг ашиглахын тулд 2 удаа товшоод барина уу."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>

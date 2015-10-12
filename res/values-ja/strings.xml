@@ -26,7 +26,6 @@
     <string name="activity_not_available" msgid="7456344436509528827">"このアプリは使用できません"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"ダウンロードしたアプリは、セーフモードでは無効です"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"セーフモードではウィジェットは無効です"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"メモリーを表示"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"ウィジェットを追加するには押し続けます。"</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"ダブルタップ後に押し続けてウィジェットを選択するか、カスタム操作を使用してください。"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$dx%2$d"</string>

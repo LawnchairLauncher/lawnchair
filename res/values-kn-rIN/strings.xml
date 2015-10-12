@@ -26,7 +26,6 @@
     <string name="activity_not_available" msgid="7456344436509528827">"ಅಪ್ಲಿಕೇಶನ್ ಲಭ್ಯವಿಲ್ಲ"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"ಡೌನ್‌ಲೋಡ್ ಮಾಡಲಾದ ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು ಸುರಕ್ಷಿತ ಮೋಡ್‌ನಲ್ಲಿ ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"ಸುರಕ್ಷಿತ ಮೋಡ್‌ನಲ್ಲಿ ವಿಜೆಟ್‌ಗಳನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"ಸ್ಮರಣೆ ತೋರಿಸು"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"ವಿಜೆಟ್ ಅನ್ನು ಆರಿಸಿಕೊಳ್ಳಲು ಸ್ಪರ್ಶಿಸಿ &amp; ಹಿಡಿದುಕೊಳ್ಳಿ."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"ಡಬಲ್ ಟ್ಯಾಪ್ ಮಾಡಿ ಮತ್ತು ವಿಜೆಟ್ ಆರಿಸಿಕೊಳ್ಳಲು ಹೋಲ್ಡ್ ಮಾಡಿ ಅಥವಾ ಕಸ್ಟಮ್ ಕ್ರಿಯೆಗಳನ್ನು ಬಳಸಿ"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>

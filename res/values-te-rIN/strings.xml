@@ -26,7 +26,6 @@
     <string name="activity_not_available" msgid="7456344436509528827">"అనువర్తనం అందుబాటులో లేదు"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"డౌన్‌లోడ్ చేసిన అనువర్తనం సురక్షిత మోడ్‌లో నిలిపివేయబడింది"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"సురక్షిత మోడ్‌లో విడ్జెట్‌లు నిలిపివేయబడ్డాయి"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"మెమరీ చూపు"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"విడ్జెట్‌ను ఎంచుకోవడానికి తాకి &amp; నొక్కి పెట్టండి."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"విడ్జెట్‌ను ఎంచుకోవడానికి లేదా అనుకూల చర్యలను ఉపయోగించడానికి రెండుసార్లు నొక్కి, ఉంచండి."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>

@@ -26,7 +26,6 @@
     <string name="activity_not_available" msgid="7456344436509528827">"Sovellus ei ole käytettävissä"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Ladattu sovellus poistettiin käytöstä suojatussa tilassa"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Widgetit poistettu käytöstä vikasietotilassa"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Näytä muisti"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Valitse widget painamalla sitä pitkään."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Valitse widget tai käytä muokattuja toimintoja kaksoisnapauttamalla ja painamalla kohdetta pitkään."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>

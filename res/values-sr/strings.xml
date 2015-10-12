@@ -26,7 +26,6 @@
     <string name="activity_not_available" msgid="7456344436509528827">"Апликација није доступна"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Преузета апликација је онемогућена у Безбедном режиму"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Виџети су онемогућени у Безбедном режиму"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Прикажи меморију"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Додирните и задржите да бисте изабрали виџет."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Двапут додирните и задржите да бисте изабрали виџет или користите прилагођене радње."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d×%2$d"</string>

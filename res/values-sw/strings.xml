@@ -26,7 +26,6 @@
     <string name="activity_not_available" msgid="7456344436509528827">"Programu haipatikani"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Programu iliyopakuliwa imezimwa katika Hali Salama"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Wijeti zimezimwa katika hali ya Usalama"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Onyesha Kumbukumbu"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Gusa na ushikilie ili kuteua wijeti."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Gonga mara mbili na ushikilie ile uchague wijeti au utumie vitendo maalum."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
