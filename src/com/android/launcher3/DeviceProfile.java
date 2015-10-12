@@ -229,7 +229,8 @@ public class DeviceProfile {
         hotseatCellHeightPx = iconSizePx;
 
         // Folder
-        folderCellWidthPx = cellWidthPx + 3 * edgeMarginPx;
+        folderCellWidthPx = Math.min(cellWidthPx + 6 * edgeMarginPx,
+                (availableWidthPx - 4 * edgeMarginPx) / inv.numFolderColumns);
         folderCellHeightPx = cellHeightPx + edgeMarginPx;
         folderBackgroundOffset = -edgeMarginPx;
         folderIconSizePx = iconSizePx + 2 * -folderBackgroundOffset;
