@@ -1906,7 +1906,7 @@ public class Launcher extends Activity
             // In all these cases, only animate if we're already on home
             mWorkspace.exitWidgetResizeMode();
 
-            closeFolder();
+            closeFolder(alreadyOnHome);
             exitSpringLoadedDragMode();
 
             // If we are already on home, then just animate back to the workspace,
@@ -1988,7 +1988,7 @@ public class Launcher extends Activity
         outState.putInt(RUNTIME_STATE, mState.ordinal());
         // We close any open folder since it will not be re-opened, and we need to make sure
         // this state is reflected.
-        closeFolder();
+        closeFolder(false);
 
         if (mPendingAddInfo.container != ItemInfo.NO_ID && mPendingAddInfo.screenId > -1 &&
                 mWaitingForResult) {
@@ -2782,7 +2782,7 @@ public class Launcher extends Activity
             if (openFolder != null) {
                 folderScreen = mWorkspace.getPageForView(openFolder);
                 // .. and close it
-                closeFolder(openFolder);
+                closeFolder(openFolder, true);
                 if (folderScreen != mWorkspace.getCurrentPage()) {
                     // Close any folder open on the current screen
                     closeFolder();
@@ -3122,7 +3122,7 @@ public class Launcher extends Activity
         oa.start();
     }
 
-    private void shrinkAndFadeInFolderIcon(final FolderIcon fi) {
+    private void shrinkAndFadeInFolderIcon(final FolderIcon fi, boolean animate) {
         if (fi == null) return;
         PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 1.0f);
         PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.0f);
@@ -3148,6 +3148,9 @@ public class Launcher extends Activity
             }
         });
         oa.start();
+        if (!animate) {
+            oa.end();
+        }
     }
 
     /**
@@ -3191,30 +3194,38 @@ public class Launcher extends Activity
     }
 
     public void closeFolder() {
+        closeFolder(true);
+    }
+
+    public void closeFolder(boolean animate) {
         Folder folder = mWorkspace != null ? mWorkspace.getOpenFolder() : null;
         if (folder != null) {
             if (folder.isEditingName()) {
                 folder.dismissEditingName();
             }
-            closeFolder(folder);
+            closeFolder(folder, animate);
         }
     }
 
-    public void closeFolder(Folder folder) {
+    public void closeFolder(Folder folder, boolean animate) {
         folder.getInfo().opened = false;
 
         ViewGroup parent = (ViewGroup) folder.getParent().getParent();
         if (parent != null) {
             FolderIcon fi = (FolderIcon) mWorkspace.getViewForTag(folder.mInfo);
-            shrinkAndFadeInFolderIcon(fi);
+            shrinkAndFadeInFolderIcon(fi, animate);
             if (fi != null) {
                 ((CellLayout.LayoutParams) fi.getLayoutParams()).canReorder = true;
             }
         }
-        folder.animateClosed();
+        if (animate) {
+            folder.animateClosed();
+        } else {
+            folder.close();
+        }
 
-        // Notify the accessibility manager that this folder "window" has disappeard and no
-        // longer occludeds the workspace items
+        // Notify the accessibility manager that this folder "window" has disappeared and no
+        // longer occludes the workspace items
         getDragLayer().sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
     }
 
