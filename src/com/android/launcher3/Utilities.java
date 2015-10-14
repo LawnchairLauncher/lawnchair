@@ -87,6 +87,8 @@ public final class Utilities {
     private static final int[] sLoc0 = new int[2];
     private static final int[] sLoc1 = new int[2];
 
+    public static final boolean ATLEAST_MARSHMALLOW = Build.VERSION.SDK_INT >= 23;
+
     // To turn on these properties, type
     // adb shell setprop log.tag.PROPERTY_NAME [VERBOSE | SUPPRESS]
     private static final String FORCE_ENABLE_ROTATION_PROPERTY = "launcher_force_rotate";
