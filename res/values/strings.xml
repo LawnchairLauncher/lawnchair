@@ -31,7 +31,7 @@
     <string name="receive_first_load_broadcast_permission" translatable="false">com.android.launcher3.permission.RECEIVE_FIRST_LOAD_BROADCAST</string>
 
     <!-- Application name -->
-    <string name="application_name">Launcher3</string>
+    <string name="app_name">Launcher3</string>
     <!-- Default folder name -->
     <string name="folder_name"></string>
     <!-- Work folder name -->
@@ -102,6 +102,9 @@
     <!-- Permission description -->
     <string name="permdesc_write_settings">Allows the app to change the settings and
         shortcuts in Home.</string>
+
+    <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
+    <string name="msg_no_phone_permission"><xliff:g id="app_name" example="Launcher3">%1$s</xliff:g> is not allowed to make phone calls</string>
 
     <!-- Widgets: -->
     <skip />    
