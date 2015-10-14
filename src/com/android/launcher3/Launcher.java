@@ -46,7 +46,6 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -1243,7 +1242,7 @@ public class Launcher extends Activity
                 if (mState == State.WORKSPACE && !mWorkspace.isInOverviewMode() &&
                         !mWorkspace.isSwitchingState()) {
                     mOverviewPanel.requestFocus();
-                    showOverviewMode(true);
+                    showOverviewMode(true, true /* requestButtonFocus */);
                 }
             }
             return true;
@@ -1338,55 +1337,8 @@ public class Launcher extends Activity
             mHotseat.setOnLongClickListener(this);
         }
 
-        mOverviewPanel = (ViewGroup) findViewById(R.id.overview_panel);
-        // Long-clicking buttons in the overview panel does the same thing as clicking them.
-        OnLongClickListener performClickOnLongClick = new OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                return v.performClick();
-            }
-        };
-        mWidgetsButton = findViewById(R.id.widget_button);
-        mWidgetsButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!mWorkspace.isSwitchingState()) {
-                    onClickAddWidgetButton(view);
-                }
-            }
-        });
-        mWidgetsButton.setOnLongClickListener(performClickOnLongClick);
-        mWidgetsButton.setOnTouchListener(getHapticFeedbackTouchListener());
-
-        View wallpaperButton = findViewById(R.id.wallpaper_button);
-        wallpaperButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!mWorkspace.isSwitchingState()) {
-                    onClickWallpaperPicker(view);
-                }
-            }
-        });
-        wallpaperButton.setOnLongClickListener(performClickOnLongClick);
-        wallpaperButton.setOnTouchListener(getHapticFeedbackTouchListener());
-
-        View settingsButton = findViewById(R.id.settings_button);
-        if (hasSettings()) {
-            settingsButton.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (!mWorkspace.isSwitchingState()) {
-                        onClickSettingsButton(view);
-                    }
-                }
-            });
-            settingsButton.setOnLongClickListener(performClickOnLongClick);
-            settingsButton.setOnTouchListener(getHapticFeedbackTouchListener());
-        } else {
-            settingsButton.setVisibility(View.GONE);
-        }
-
-        mOverviewPanel.setAlpha(0f);
+        // Setup the overview panel
+        setupOverviewPanel();
 
         // Setup the workspace
         mWorkspace.setHapticFeedbackEnabled(false);
@@ -1425,6 +1377,64 @@ public class Launcher extends Activity
         if (TestingUtils.MEMORY_DUMP_ENABLED) {
             TestingUtils.addWeightWatcher(this);
         }
+    }
+
+    private void setupOverviewPanel() {
+        mOverviewPanel = (ViewGroup) findViewById(R.id.overview_panel);
+
+        // Long-clicking buttons in the overview panel does the same thing as clicking them.
+        OnLongClickListener performClickOnLongClick = new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return v.performClick();
+            }
+        };
+
+        // Bind wallpaper button actions
+        View wallpaperButton = findViewById(R.id.wallpaper_button);
+        wallpaperButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!mWorkspace.isSwitchingState()) {
+                    onClickWallpaperPicker(view);
+                }
+            }
+        });
+        wallpaperButton.setOnLongClickListener(performClickOnLongClick);
+        wallpaperButton.setOnTouchListener(getHapticFeedbackTouchListener());
+
+        // Bind widget button actions
+        mWidgetsButton = findViewById(R.id.widget_button);
+        mWidgetsButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!mWorkspace.isSwitchingState()) {
+                    onClickAddWidgetButton(view);
+                }
+            }
+        });
+        mWidgetsButton.setOnLongClickListener(performClickOnLongClick);
+        mWidgetsButton.setOnTouchListener(getHapticFeedbackTouchListener());
+
+        // Bind settings actions
+        View settingsButton = findViewById(R.id.settings_button);
+        boolean hasSettings = hasSettings();
+        if (hasSettings) {
+            settingsButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (!mWorkspace.isSwitchingState()) {
+                        onClickSettingsButton(view);
+                    }
+                }
+            });
+            settingsButton.setOnLongClickListener(performClickOnLongClick);
+            settingsButton.setOnTouchListener(getHapticFeedbackTouchListener());
+        } else {
+            settingsButton.setVisibility(View.GONE);
+        }
+
+        mOverviewPanel.setAlpha(0f);
     }
 
     /**
@@ -3290,10 +3300,33 @@ public class Launcher extends Activity
         return changed;
     }
 
+    /**
+     * Shows the overview button.
+     */
     void showOverviewMode(boolean animated) {
+        showOverviewMode(animated, false);
+    }
+
+    /**
+     * Shows the overview button, and if {@param requestButtonFocus} is set, will force the focus
+     * onto one of the overview panel buttons.
+     */
+    void showOverviewMode(boolean animated, boolean requestButtonFocus) {
+        Runnable postAnimRunnable = null;
+        if (requestButtonFocus) {
+            postAnimRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    // Hitting the menu button when in touch mode does not trigger touch mode to
+                    // be disabled, so if requested, force focus on one of the overview panel
+                    // buttons.
+                    mOverviewPanel.requestFocusFromTouch();
+                }
+            };
+        }
         mWorkspace.setVisibility(View.VISIBLE);
         mStateTransitionAnimation.startAnimationToWorkspace(mState, mWorkspace.getState(),
-                Workspace.State.OVERVIEW, animated, null /* onCompleteRunnable */);
+                Workspace.State.OVERVIEW, animated, postAnimRunnable);
         mState = State.WORKSPACE;
     }
 
