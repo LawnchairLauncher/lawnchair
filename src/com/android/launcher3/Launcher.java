@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -149,6 +150,8 @@ public class Launcher extends Activity
 
     private static final int REQUEST_BIND_APPWIDGET = 11;
     private static final int REQUEST_RECONFIGURE_APPWIDGET = 12;
+
+    private static final int REQUEST_PERMISSION_CALL_PHONE = 13;
 
     private static final int WORKSPACE_BACKGROUND_GRADIENT = 0;
     private static final int WORKSPACE_BACKGROUND_TRANSPARENT = 1;
@@ -867,6 +870,24 @@ public class Launcher extends Activity
     /** @Override for MNC */
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
             int[] grantResults) {
+        if (requestCode == REQUEST_PERMISSION_CALL_PHONE && sPendingAddItem != null
+                && sPendingAddItem.requestCode == REQUEST_PERMISSION_CALL_PHONE) {
+            View v = null;
+            CellLayout layout = getCellLayout(sPendingAddItem.container, sPendingAddItem.screenId);
+            if (layout != null) {
+                v = layout.getChildAt(sPendingAddItem.cellX, sPendingAddItem.cellY);
+            }
+            Intent intent = sPendingAddItem.intent;
+            sPendingAddItem = null;
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startActivity(v, intent, null);
+            } else {
+                // TODO: Show a snack bar with link to settings
+                Toast.makeText(this, getString(R.string.msg_no_phone_permission,
+                        getString(R.string.app_name)), Toast.LENGTH_SHORT).show();
+            }
+        }
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onRequestPermissionsResult(requestCode, permissions,
                     grantResults);
@@ -2926,6 +2947,22 @@ public class Launcher extends Activity
             }
             return true;
         } catch (SecurityException e) {
+            if (Utilities.ATLEAST_MARSHMALLOW && tag instanceof ItemInfo) {
+                // Due to legacy reasons, direct call shortcuts require Launchers to have the
+                // corresponding permission. Show the appropriate permission prompt if that
+                // is the case.
+                if (intent.getComponent() == null
+                        && Intent.ACTION_CALL.equals(intent.getAction())
+                        && checkSelfPermission(Manifest.permission.CALL_PHONE) !=
+                            PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Rename sPendingAddItem to a generic name.
+                    sPendingAddItem = preparePendingAddArgs(REQUEST_PERMISSION_CALL_PHONE, intent,
+                            0, (ItemInfo) tag);
+                    requestPermissions(new String[]{Manifest.permission.CALL_PHONE},
+                            REQUEST_PERMISSION_CALL_PHONE);
+                    return false;
+                }
+            }
             Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Launcher does not have the permission to launch " + intent +
                     ". Make sure to create a MAIN intent-filter for the corresponding activity " +
