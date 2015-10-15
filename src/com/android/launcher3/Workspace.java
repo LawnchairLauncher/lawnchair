@@ -2061,6 +2061,7 @@ public class Workspace extends PagedView
     @Override
     public void onLauncherTransitionPrepare(Launcher l, boolean animated, boolean toWorkspace) {
         mIsSwitchingState = true;
+        mTransitionProgress = 0;
 
         // Invalidate here to ensure that the pages are rendered during the state change transition.
         invalidate();
@@ -3659,11 +3660,6 @@ public class Workspace extends PagedView
 
         Resources res = mLauncher.getResources();
         final int duration = res.getInteger(R.integer.config_dropAnimMaxDuration) - 200;
-
-        // In the case where we've prebound the widget, we remove it from the DragLayer
-        if (finalView instanceof AppWidgetHostView && external) {
-            mLauncher.getDragLayer().removeView(finalView);
-        }
 
         boolean isWidget = info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET ||
                 info.itemType == LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;

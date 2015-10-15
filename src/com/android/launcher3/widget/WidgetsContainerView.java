@@ -52,10 +52,9 @@ import com.android.launcher3.util.Thunk;
  * The widgets list view container.
  */
 public class WidgetsContainerView extends BaseContainerView
-        implements View.OnLongClickListener, View.OnClickListener, DragSource{
-
+        implements View.OnLongClickListener, View.OnClickListener, DragSource {
     private static final String TAG = "WidgetsContainerView";
-    private static final boolean DEBUG = false;
+    private static final boolean LOGD = false;
 
     /* Coefficient multiplied to the screen height for preloading widgets. */
     private static final int PRELOAD_SCREEN_HEIGHT_MULTIPLE = 1;
@@ -92,13 +91,14 @@ public class WidgetsContainerView extends BaseContainerView
         mDragController = mLauncher.getDragController();
         mAdapter = new WidgetsListAdapter(context, this, this, mLauncher);
         mIconCache = (LauncherAppState.getInstance()).getIconCache();
-        if (DEBUG) {
+        if (LOGD) {
             Log.d(TAG, "WidgetsContainerView constructor");
         }
     }
 
     @Override
     protected void onFinishInflate() {
+        super.onFinishInflate();
         mContent = findViewById(R.id.content);
         mView = (WidgetsRecyclerView) findViewById(R.id.widgets_list_view);
         mView.setAdapter(mAdapter);
@@ -158,7 +158,7 @@ public class WidgetsContainerView extends BaseContainerView
 
     @Override
     public boolean onLongClick(View v) {
-        if (DEBUG) {
+        if (LOGD) {
             Log.d(TAG, String.format("onLonglick [v=%s]", v));
         }
         // Return early if this is not initiated from a touch
@@ -173,7 +173,7 @@ public class WidgetsContainerView extends BaseContainerView
         if (status && v.getTag() instanceof PendingAddWidgetInfo) {
             WidgetHostViewLoader hostLoader = new WidgetHostViewLoader(mLauncher, v);
             boolean preloadStatus = hostLoader.preloadWidget();
-            if (DEBUG) {
+            if (LOGD) {
                 Log.d(TAG, String.format("preloading widget [status=%s]", preloadStatus));
             }
             mLauncher.getDragController().addDragListener(hostLoader);
@@ -302,6 +302,9 @@ public class WidgetsContainerView extends BaseContainerView
     @Override
     public void onDropCompleted(View target, DragObject d, boolean isFlingToDelete,
             boolean success) {
+        if (LOGD) {
+            Log.d(TAG, "onDropCompleted");
+        }
         if (isFlingToDelete || !success || (target != mLauncher.getWorkspace() &&
                 !(target instanceof DeleteDropTarget) && !(target instanceof Folder))) {
             // Exit spring loaded mode if we have not successfully dropped or have not handled the
