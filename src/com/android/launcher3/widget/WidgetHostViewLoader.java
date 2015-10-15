@@ -4,9 +4,9 @@ import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 
 import com.android.launcher3.AppWidgetResizeFrame;
@@ -16,11 +16,13 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
-import com.android.launcher3.dragndrop.DragController.DragListener;
+import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.Thunk;
 
-public class WidgetHostViewLoader implements DragListener {
+public class WidgetHostViewLoader implements DragController.DragListener {
+    private static final String TAG = "WidgetHostViewLoader";
+    private static final boolean LOGD = false;
 
     /* Runnables to handle inflation and binding. */
     @Thunk Runnable mInflateWidgetRunnable = null;
@@ -49,6 +51,10 @@ public class WidgetHostViewLoader implements DragListener {
 
     @Override
     public void onDragEnd() {
+        if (LOGD) {
+            Log.d(TAG, "Cleaning up in onDragEnd()...");
+        }
+
         // Cleanup up preloading state.
         mLauncher.getDragController().removeDragListener(this);
 
@@ -63,6 +69,9 @@ public class WidgetHostViewLoader implements DragListener {
 
         // The widget was inflated and added to the DragLayer -- remove it.
         if (mInfo.boundWidget != null) {
+            if (LOGD) {
+                Log.d(TAG, "...removing widget from drag layer");
+            }
             mLauncher.getDragLayer().removeView(mInfo.boundWidget);
             mLauncher.getAppWidgetHost().deleteAppWidgetId(mInfo.boundWidget.getAppWidgetId());
             mInfo.boundWidget = null;
@@ -90,6 +99,9 @@ public class WidgetHostViewLoader implements DragListener {
             @Override
             public void run() {
                 mWidgetLoadingId = mLauncher.getAppWidgetHost().allocateAppWidgetId();
+                if (LOGD) {
+                    Log.d(TAG, "Binding widget, id: " + mWidgetLoadingId);
+                }
                 if(AppWidgetManagerCompat.getInstance(mLauncher).bindAppWidgetIdIfAllowed(
                         mWidgetLoadingId, pInfo, options)) {
 
@@ -102,6 +114,9 @@ public class WidgetHostViewLoader implements DragListener {
         mInflateWidgetRunnable = new Runnable() {
             @Override
             public void run() {
+                if (LOGD) {
+                    Log.d(TAG, "Inflating widget, id: " + mWidgetLoadingId);
+                }
                 if (mWidgetLoadingId == -1) {
                     return;
                 }
@@ -121,11 +136,17 @@ public class WidgetHostViewLoader implements DragListener {
                 lp.x = lp.y = 0;
                 lp.customPosition = true;
                 hostView.setLayoutParams(lp);
+                if (LOGD) {
+                    Log.d(TAG, "Adding host view to drag layer");
+                }
                 mLauncher.getDragLayer().addView(hostView);
                 mView.setTag(mInfo);
             }
         };
 
+        if (LOGD) {
+            Log.d(TAG, "About to bind/inflate widget");
+        }
         mHandler.post(mBindWidgetRunnable);
         return true;
     }

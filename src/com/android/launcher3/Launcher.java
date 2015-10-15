@@ -1712,14 +1712,14 @@ public class Launcher extends Activity
                         mWorkspace.postDelayed(mBuildLayersRunnable, 500);
                         final ViewTreeObserver.OnDrawListener listener = this;
                         mWorkspace.post(new Runnable() {
-                                public void run() {
-                                    if (mWorkspace != null &&
-                                            mWorkspace.getViewTreeObserver() != null) {
-                                        mWorkspace.getViewTreeObserver().
-                                                removeOnDrawListener(listener);
-                                    }
+                            public void run() {
+                                if (mWorkspace != null &&
+                                        mWorkspace.getViewTreeObserver() != null) {
+                                    mWorkspace.getViewTreeObserver().
+                                            removeOnDrawListener(listener);
                                 }
-                            });
+                            }
+                        });
                         return;
                     }
                 });
@@ -2210,8 +2210,11 @@ public class Launcher extends Activity
         mPendingAddInfo.minSpanX = mPendingAddInfo.minSpanY = 1;
     }
 
-    void addAppWidgetImpl(final int appWidgetId, final ItemInfo info, final
+    void addAppWidgetFromDropImpl(final int appWidgetId, final ItemInfo info, final
             AppWidgetHostView boundWidget, final LauncherAppWidgetProviderInfo appWidgetInfo) {
+        if (LOGD) {
+            Log.d(TAG, "Adding widget from drop");
+        }
         addAppWidgetImpl(appWidgetId, info, boundWidget, appWidgetInfo, 0);
     }
 
@@ -2317,8 +2320,14 @@ public class Launcher extends Activity
         AppWidgetHostView hostView = info.boundWidget;
         int appWidgetId;
         if (hostView != null) {
+            // In the case where we've prebound the widget, we remove it from the DragLayer
+            if (LOGD) {
+                Log.d(TAG, "Removing widget view from drag layer and setting boundWidget to null");
+            }
+            getDragLayer().removeView(hostView);
+
             appWidgetId = hostView.getAppWidgetId();
-            addAppWidgetImpl(appWidgetId, info, hostView, info.info);
+            addAppWidgetFromDropImpl(appWidgetId, info, hostView, info.info);
 
             // Clear the boundWidget so that it doesn't get destroyed.
             info.boundWidget = null;
@@ -2331,7 +2340,7 @@ public class Launcher extends Activity
             boolean success = mAppWidgetManager.bindAppWidgetIdIfAllowed(
                     appWidgetId, info.info, options);
             if (success) {
-                addAppWidgetImpl(appWidgetId, info, null, info.info);
+                addAppWidgetFromDropImpl(appWidgetId, info, null, info.info);
             } else {
                 mPendingAddWidgetInfo = info.info;
                 Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);

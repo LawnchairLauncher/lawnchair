@@ -69,7 +69,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     public static final int WORKSPACE_ACCESSIBILITY_DRAG = 2;
     public static final int FOLDER_ACCESSIBILITY_DRAG = 1;
 
-    static final String TAG = "CellLayout";
+    private static final String TAG = "CellLayout";
+    private static final boolean LOGD = false;
 
     private Launcher mLauncher;
     @Thunk int mCellWidth;
@@ -244,9 +245,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                     // If an animation is started and then stopped very quickly, we can still
                     // get spurious updates we've cleared the tag. Guard against this.
                     if (outline == null) {
-                        @SuppressWarnings("all") // suppress dead code warning
-                        final boolean debug = false;
-                        if (debug) {
+                        if (LOGD) {
                             Object val = animation.getAnimatedValue();
                             Log.d(TAG, "anim " + thisIndex + " update: " + val +
                                      ", isStopped " + anim.isStopped());
@@ -653,6 +652,9 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             if (lp.cellVSpan < 0) lp.cellVSpan = mCountY;
 
             child.setId(childId);
+            if (LOGD) {
+                Log.d(TAG, "Adding view to ShortcutsAndWidgetsContainer: " + child);
+            }
             mShortcutsAndWidgets.addView(child, index, lp);
 
             if (markCells) markCellsAsOccupiedForView(child);
