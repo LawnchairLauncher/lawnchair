@@ -4393,7 +4393,7 @@ public class Workspace extends PagedView
     }
 
     @Override
-    public void fillInLaunchSourceData(Bundle sourceData) {
+    public void fillInLaunchSourceData(View v, Bundle sourceData) {
         sourceData.putString(Stats.SOURCE_EXTRA_CONTAINER, Stats.CONTAINER_HOMESCREEN);
         sourceData.putInt(Stats.SOURCE_EXTRA_CONTAINER_PAGE, getCurrentPage());
     }
