@@ -632,9 +632,9 @@ public class MigrateFromRestoreTask {
                mEntryToRemove.add(entry.id);
                continue;
            }
-
            entries.add(entry);
        }
+       c.close();
        return entries;
     }
 
@@ -655,7 +655,7 @@ public class MigrateFromRestoreTask {
                 mEntryToRemove.add(c.getLong(0));
             }
         }
-
+        c.close();
         return total;
     }
 

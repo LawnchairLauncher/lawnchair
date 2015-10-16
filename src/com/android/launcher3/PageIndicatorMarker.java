@@ -45,6 +45,7 @@ public class PageIndicatorMarker extends FrameLayout {
     }
 
     protected void onFinishInflate() {
+        super.onFinishInflate();
         mActiveMarker = (ImageView) findViewById(R.id.active);
         mInactiveMarker = (ImageView) findViewById(R.id.inactive);
     }
