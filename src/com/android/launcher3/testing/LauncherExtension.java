@@ -253,6 +253,11 @@ public class LauncherExtension extends Launcher {
         }
 
         @Override
+        public Bundle getAdditionalSearchWidgetOptions() {
+            return new Bundle();
+        }
+
+        @Override
         public Intent getFirstRunActivity() {
             return null;
         }
