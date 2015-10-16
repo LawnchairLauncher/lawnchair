@@ -25,6 +25,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.android.launcher3.BaseRecyclerView;
+import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Stats;
@@ -155,12 +156,25 @@ public class AllAppsRecyclerView extends BaseRecyclerView
     }
 
     @Override
-    public void fillInLaunchSourceData(Bundle sourceData) {
+    public void fillInLaunchSourceData(View v, Bundle sourceData) {
         sourceData.putString(Stats.SOURCE_EXTRA_CONTAINER, Stats.CONTAINER_ALL_APPS);
         if (mApps.hasFilter()) {
             sourceData.putString(Stats.SOURCE_EXTRA_SUB_CONTAINER,
                     Stats.SUB_CONTAINER_ALL_APPS_SEARCH);
         } else {
+            if (v instanceof BubbleTextView) {
+                BubbleTextView icon = (BubbleTextView) v;
+                int position = getChildPosition(icon);
+                if (position != NO_POSITION) {
+                    List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
+                    AlphabeticalAppsList.AdapterItem item = items.get(position);
+                    if (item.viewType == AllAppsGridAdapter.PREDICTION_ICON_VIEW_TYPE) {
+                        sourceData.putString(Stats.SOURCE_EXTRA_SUB_CONTAINER,
+                                Stats.SUB_CONTAINER_ALL_APPS_PREDICTION);
+                        return;
+                    }
+                }
+            }
             sourceData.putString(Stats.SOURCE_EXTRA_SUB_CONTAINER,
                     Stats.SUB_CONTAINER_ALL_APPS_A_Z);
         }

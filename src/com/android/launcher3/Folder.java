@@ -1347,7 +1347,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     @Override
-    public void fillInLaunchSourceData(Bundle sourceData) {
+    public void fillInLaunchSourceData(View v, Bundle sourceData) {
         // Fill in from the folder icon's launch source provider first
         Stats.LaunchSourceUtils.populateSourceDataFromAncestorProvider(mFolderIcon, sourceData);
         sourceData.putString(Stats.SOURCE_EXTRA_SUB_CONTAINER, Stats.SUB_CONTAINER_FOLDER);
