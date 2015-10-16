@@ -29,7 +29,6 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -59,7 +58,6 @@ import android.widget.TextView;
 import com.android.launcher3.FolderIcon.FolderRingAnimator;
 import com.android.launcher3.Launcher.CustomContentCallbacks;
 import com.android.launcher3.Launcher.LauncherOverlay;
-import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.UninstallDropTarget.UninstallSource;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate.AccessibilityDragSource;
@@ -74,6 +72,7 @@ import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dragndrop.SpringLoadedDragController;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.util.WallpaperOffsetInterpolator;
 import com.android.launcher3.util.WallpaperUtils;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
@@ -114,7 +113,6 @@ public class Workspace extends PagedView
 
     private LayoutTransition mLayoutTransition;
     @Thunk final WallpaperManager mWallpaperManager;
-    @Thunk IBinder mWindowToken;
 
     private ShortcutAndWidgetContainer mDragSourceInternal;
 
@@ -209,10 +207,7 @@ public class Workspace extends PagedView
     public static final int DRAG_BITMAP_PADDING = 2;
     private boolean mWorkspaceFadeInAdjacentScreens;
 
-    WallpaperOffsetInterpolator mWallpaperOffset;
-    @Thunk boolean mWallpaperIsLiveWallpaper;
-    @Thunk int mNumPagesForWallpaperParallax;
-    @Thunk float mLastSetWallpaperOffsetSteps = 0;
+    final WallpaperOffsetInterpolator mWallpaperOffset;
 
     @Thunk Runnable mDelayedResizeRunnable;
     private Runnable mDelayedSnapToPageRunnable;
@@ -305,6 +300,8 @@ public class Workspace extends PagedView
         mWorkspaceFadeInAdjacentScreens = grid.shouldFadeAdjacentWorkspaceScreens();
         mFadeInAdjacentScreens = false;
         mWallpaperManager = WallpaperManager.getInstance(context);
+
+        mWallpaperOffset = new WallpaperOffsetInterpolator(this);
 
         mSpringLoadedShrinkFactor =
                 res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
@@ -427,8 +424,6 @@ public class Workspace extends PagedView
 
         setMinScale(mOverviewModeShrinkFactor);
         setupLayoutTransition();
-
-        mWallpaperOffset = new WallpaperOffsetInterpolator();
 
         mMaxDistanceForFolderCreation = (0.55f * grid.iconSizePx);
 
@@ -815,8 +810,7 @@ public class Workspace extends PagedView
     }
 
     public CellLayout getScreenWithId(long screenId) {
-        CellLayout layout = mWorkspaceScreens.get(screenId);
-        return layout;
+        return mWorkspaceScreens.get(screenId);
     }
 
     public long getIdForScreen(CellLayout layout) {
@@ -1327,191 +1321,6 @@ public class Workspace extends PagedView
         snapToPage(getPageIndexForScreenId(screenId), r);
     }
 
-    class WallpaperOffsetInterpolator implements Choreographer.FrameCallback {
-        float mFinalOffset = 0.0f;
-        float mCurrentOffset = 0.5f; // to force an initial update
-        boolean mWaitingForUpdate;
-        Choreographer mChoreographer;
-        Interpolator mInterpolator;
-        boolean mAnimating;
-        long mAnimationStartTime;
-        float mAnimationStartOffset;
-        private final int ANIMATION_DURATION = 250;
-        // Don't use all the wallpaper for parallax until you have at least this many pages
-        private final int MIN_PARALLAX_PAGE_SPAN = 3;
-        int mNumScreens;
-
-        public WallpaperOffsetInterpolator() {
-            mChoreographer = Choreographer.getInstance();
-            mInterpolator = new DecelerateInterpolator(1.5f);
-        }
-
-        @Override
-        public void doFrame(long frameTimeNanos) {
-            updateOffset(false);
-        }
-
-        private void updateOffset(boolean force) {
-            if (mWaitingForUpdate || force) {
-                mWaitingForUpdate = false;
-                if (computeScrollOffset() && mWindowToken != null) {
-                    try {
-                        mWallpaperManager.setWallpaperOffsets(mWindowToken,
-                                mWallpaperOffset.getCurrX(), 0.5f);
-                        setWallpaperOffsetSteps();
-                    } catch (IllegalArgumentException e) {
-                        Log.e(TAG, "Error updating wallpaper offset: " + e);
-                    }
-                }
-            }
-        }
-
-        public boolean computeScrollOffset() {
-            final float oldOffset = mCurrentOffset;
-            if (mAnimating) {
-                long durationSinceAnimation = System.currentTimeMillis() - mAnimationStartTime;
-                float t0 = durationSinceAnimation / (float) ANIMATION_DURATION;
-                float t1 = mInterpolator.getInterpolation(t0);
-                mCurrentOffset = mAnimationStartOffset +
-                        (mFinalOffset - mAnimationStartOffset) * t1;
-                mAnimating = durationSinceAnimation < ANIMATION_DURATION;
-            } else {
-                mCurrentOffset = mFinalOffset;
-            }
-
-            if (Math.abs(mCurrentOffset - mFinalOffset) > 0.0000001f) {
-                scheduleUpdate();
-            }
-            if (Math.abs(oldOffset - mCurrentOffset) > 0.0000001f) {
-                return true;
-            }
-            return false;
-        }
-
-        public float wallpaperOffsetForScroll(int scroll) {
-            // TODO: do different behavior if it's  a live wallpaper?
-            // Don't use up all the wallpaper parallax until you have at least
-            // MIN_PARALLAX_PAGE_SPAN pages
-            int numScrollingPages = getNumScreensExcludingEmptyAndCustom();
-            int parallaxPageSpan;
-            if (mWallpaperIsLiveWallpaper) {
-                parallaxPageSpan = numScrollingPages - 1;
-            } else {
-                parallaxPageSpan = Math.max(MIN_PARALLAX_PAGE_SPAN, numScrollingPages - 1);
-            }
-            mNumPagesForWallpaperParallax = parallaxPageSpan;
-
-            if (getChildCount() <= 1) {
-                if (mIsRtl) {
-                    return 1 - 1.0f/mNumPagesForWallpaperParallax;
-                }
-                return 0;
-            }
-
-            // Exclude the leftmost page
-            int emptyExtraPages = numEmptyScreensToIgnore();
-            int firstIndex = numCustomPages();
-            // Exclude the last extra empty screen (if we have > MIN_PARALLAX_PAGE_SPAN pages)
-            int lastIndex = getChildCount() - 1 - emptyExtraPages;
-            if (mIsRtl) {
-                int temp = firstIndex;
-                firstIndex = lastIndex;
-                lastIndex = temp;
-            }
-
-            int firstPageScrollX = getScrollForPage(firstIndex);
-            int scrollRange = getScrollForPage(lastIndex) - firstPageScrollX;
-            if (scrollRange == 0) {
-                return 0;
-            } else {
-                // Sometimes the left parameter of the pages is animated during a layout transition;
-                // this parameter offsets it to keep the wallpaper from animating as well
-                int adjustedScroll =
-                        scroll - firstPageScrollX - getLayoutTransitionOffsetForPage(0);
-                float offset = Math.min(1, adjustedScroll / (float) scrollRange);
-                offset = Math.max(0, offset);
-
-                // On RTL devices, push the wallpaper offset to the right if we don't have enough
-                // pages (ie if numScrollingPages < MIN_PARALLAX_PAGE_SPAN)
-                if (!mWallpaperIsLiveWallpaper && numScrollingPages < MIN_PARALLAX_PAGE_SPAN
-                        && mIsRtl) {
-                    return offset * (parallaxPageSpan - numScrollingPages + 1) / parallaxPageSpan;
-                }
-                return offset * (numScrollingPages - 1) / parallaxPageSpan;
-            }
-        }
-
-        private float wallpaperOffsetForCurrentScroll() {
-            return wallpaperOffsetForScroll(getScrollX());
-        }
-
-        private int numEmptyScreensToIgnore() {
-            int numScrollingPages = getChildCount() - numCustomPages();
-            if (numScrollingPages >= MIN_PARALLAX_PAGE_SPAN && hasExtraEmptyScreen()) {
-                return 1;
-            } else {
-                return 0;
-            }
-        }
-
-        private int getNumScreensExcludingEmptyAndCustom() {
-            int numScrollingPages = getChildCount() - numEmptyScreensToIgnore() - numCustomPages();
-            return numScrollingPages;
-        }
-
-        public void syncWithScroll() {
-            float offset = wallpaperOffsetForCurrentScroll();
-            mWallpaperOffset.setFinalX(offset);
-            updateOffset(true);
-        }
-
-        public float getCurrX() {
-            return mCurrentOffset;
-        }
-
-        public float getFinalX() {
-            return mFinalOffset;
-        }
-
-        private void animateToFinal() {
-            mAnimating = true;
-            mAnimationStartOffset = mCurrentOffset;
-            mAnimationStartTime = System.currentTimeMillis();
-        }
-
-        private void setWallpaperOffsetSteps() {
-            // Set wallpaper offset steps (1 / (number of screens - 1))
-            float xOffset = 1.0f / mNumPagesForWallpaperParallax;
-            if (xOffset != mLastSetWallpaperOffsetSteps) {
-                mWallpaperManager.setWallpaperOffsetSteps(xOffset, 1.0f);
-                mLastSetWallpaperOffsetSteps = xOffset;
-            }
-        }
-
-        public void setFinalX(float x) {
-            scheduleUpdate();
-            mFinalOffset = Math.max(0f, Math.min(x, 1.0f));
-            if (getNumScreensExcludingEmptyAndCustom() != mNumScreens) {
-                if (mNumScreens > 0) {
-                    // Don't animate if we're going from 0 screens
-                    animateToFinal();
-                }
-                mNumScreens = getNumScreensExcludingEmptyAndCustom();
-            }
-        }
-
-        private void scheduleUpdate() {
-            if (!mWaitingForUpdate) {
-                mChoreographer.postFrameCallback(this);
-                mWaitingForUpdate = true;
-            }
-        }
-
-        public void jumpToFinal() {
-            mCurrentOffset = mFinalOffset;
-        }
-    }
-
     @Override
     public void computeScroll() {
         super.computeScroll();
@@ -1529,18 +1338,6 @@ public class Workspace extends PagedView
     public void showOutlinesTemporarily() {
         if (!mIsPageMoving && !isTouchActive()) {
             snapToPage(mCurrentPage);
-        }
-    }
-
-    float backgroundAlphaInterpolator(float r) {
-        float pivotA = 0.1f;
-        float pivotB = 0.4f;
-        if (r < pivotA) {
-            return 0;
-        } else if (r > pivotB) {
-            return 1.0f;
-        } else {
-            return (r - pivotA)/(pivotB - pivotA);
         }
     }
 
@@ -1647,13 +1444,12 @@ public class Workspace extends PagedView
         if (!am.isTouchExplorationEnabled()) {
             return null;
         }
-        OnClickListener listener = new OnClickListener() {
+        return new OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 mLauncher.showOverviewMode(true);
             }
         };
-        return listener;
     }
 
     @Override
@@ -1665,14 +1461,15 @@ public class Workspace extends PagedView
 
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mWindowToken = getWindowToken();
+        IBinder windowToken = getWindowToken();
+        mWallpaperOffset.setWindowToken(windowToken);
         computeScroll();
-        mDragController.setWindowToken(mWindowToken);
+        mDragController.setWindowToken(windowToken);
     }
 
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mWindowToken = null;
+        mWallpaperOffset.setWindowToken(null);
     }
 
     protected void onResume() {
@@ -1690,10 +1487,7 @@ public class Workspace extends PagedView
         if (LauncherAppState.getInstance().hasWallpaperChangedSinceLastCheck()) {
             setWallpaperDimension();
         }
-        mWallpaperIsLiveWallpaper = mWallpaperManager.getWallpaperInfo() != null;
-        // Force the wallpaper offset steps to be set again, because another app might have changed
-        // them
-        mLastSetWallpaperOffsetSteps = 0f;
+        mWallpaperOffset.onResume();
     }
 
     @Override
@@ -2816,19 +2610,6 @@ public class Workspace extends PagedView
                 (int) (mTempXY[1] + scale * boundingLayout.getMeasuredHeight()));
     }
 
-    public void getViewLocationRelativeToSelf(View v, int[] location) {
-        getLocationInWindow(location);
-        int x = location[0];
-        int y = location[1];
-
-        v.getLocationInWindow(location);
-        int vX = location[0];
-        int vY = location[1];
-
-        location[0] = vX - x;
-        location[1] = vY - y;
-    }
-
     @Override
     public void onDragEnter(DragObject d) {
         if (ENFORCE_DRAG_EVENT_ORDER) {
@@ -3754,47 +3535,6 @@ public class Workspace extends PagedView
         }
     }
 
-    void saveWorkspaceToDb() {
-        saveWorkspaceScreenToDb((CellLayout) mLauncher.getHotseat().getLayout());
-        int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            CellLayout cl = (CellLayout) getChildAt(i);
-            saveWorkspaceScreenToDb(cl);
-        }
-    }
-
-    void saveWorkspaceScreenToDb(CellLayout cl) {
-        int count = cl.getShortcutsAndWidgets().getChildCount();
-
-        long screenId = getIdForScreen(cl);
-        int container = Favorites.CONTAINER_DESKTOP;
-
-        Hotseat hotseat = mLauncher.getHotseat();
-        if (mLauncher.isHotseatLayout(cl)) {
-            screenId = -1;
-            container = Favorites.CONTAINER_HOTSEAT;
-        }
-
-        for (int i = 0; i < count; i++) {
-            View v = cl.getShortcutsAndWidgets().getChildAt(i);
-            ItemInfo info = (ItemInfo) v.getTag();
-            // Null check required as the AllApps button doesn't have an item info
-            if (info != null) {
-                int cellX = info.cellX;
-                int cellY = info.cellY;
-                if (container == Favorites.CONTAINER_HOTSEAT) {
-                    cellX = hotseat.getCellXFromOrder((int) info.screenId);
-                    cellY = hotseat.getCellYFromOrder((int) info.screenId);
-                }
-                LauncherModel.addItemToDatabase(mLauncher, info, container, screenId, cellX, cellY);
-            }
-            if (v instanceof FolderIcon) {
-                FolderIcon fi = (FolderIcon) v;
-                fi.getFolder().addItemLocationsInDatabase();
-            }
-        }
-    }
-
     @Override
     public float getIntrinsicIconScaleFactor() {
         return 1f;
@@ -4390,10 +4130,6 @@ public class Workspace extends PagedView
         }
         return getContext().getString(R.string.workspace_scroll_format,
                 page + 1 - delta, nScreens);
-    }
-
-    public void getLocationInDragLayer(int[] loc) {
-        mLauncher.getDragLayer().getLocationInDragLayer(this, loc);
     }
 
     @Override

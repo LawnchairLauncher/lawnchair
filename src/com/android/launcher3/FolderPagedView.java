@@ -227,12 +227,6 @@ public class FolderPagedView extends PagedView {
         return (CellLayout) getChildAt(index);
     }
 
-    public void removeCellLayoutView(View view) {
-        for (int i = getChildCount() - 1; i >= 0; i --) {
-            getPageAt(i).removeView(view);
-        }
-    }
-
     public CellLayout getCurrentCellLayout() {
         return getPageAt(getNextPage());
     }

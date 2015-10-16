@@ -302,11 +302,6 @@ public abstract class ButtonDropTarget extends TextView
         return to;
     }
 
-    @Override
-    public void getLocationInDragLayer(int[] loc) {
-        mLauncher.getDragLayer().getLocationInDragLayer(this, loc);
-    }
-
     public void enableAccessibleDrag(boolean enable) {
         setOnClickListener(enable ? this : null);
     }

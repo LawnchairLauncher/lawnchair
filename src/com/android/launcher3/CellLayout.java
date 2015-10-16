@@ -152,9 +152,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     private static final boolean DESTRUCTIVE_REORDER = false;
     private static final boolean DEBUG_VISUALIZE_OCCUPIED = false;
 
-    static final int LANDSCAPE = 0;
-    static final int PORTRAIT = 1;
-
     private static final float REORDER_PREVIEW_MAGNITUDE = 0.12f;
     private static final int REORDER_ANIMATION_DURATION = 150;
     @Thunk float mReorderPreviewAnimationMagnitude;
@@ -404,10 +401,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         mIsDragTarget = false;
     }
 
-    public boolean isDragTarget() {
-        return mIsDragTarget;
-    }
-
     void setIsDragOverlapping(boolean isDragOverlapping) {
         if (mIsDragOverlapping != isDragOverlapping) {
             mIsDragOverlapping = isDragOverlapping;
@@ -448,10 +441,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         final Parcelable parcelable = container.get(R.id.cell_layout_jail_id);
         return parcelable instanceof ParcelableSparseArray ?
                 (ParcelableSparseArray) parcelable : new ParcelableSparseArray();
-    }
-
-    public boolean getIsDragOverlapping() {
-        return mIsDragOverlapping;
     }
 
     @Override
@@ -1311,9 +1300,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
      * @param spanX Horizontal span of the object.
      * @param spanY Vertical span of the object.
      * @param direction The favored direction in which the views should move from x, y
-     * @param exactDirectionOnly If this parameter is true, then only solutions where the direction
-     *        matches exactly. Otherwise we find the best matching direction.
-     * @param occoupied The array which represents which cells in the CellLayout are occupied
+     * @param occupied The array which represents which cells in the CellLayout are occupied
      * @param blockOccupied The array which represents which cells in the specified block (cellX,
      *        cellY, spanX, spanY) are occupied. This is used when try to move a group of views.
      * @param result Array in which to place the result, or null (in which case a new array will

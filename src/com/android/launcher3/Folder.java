@@ -947,16 +947,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         LauncherModel.moveItemsInDatabase(mLauncher, items, mInfo.id, 0);
     }
 
-    public void addItemLocationsInDatabase() {
-        ArrayList<View> list = getItemsInReadingOrder();
-        for (int i = 0; i < list.size(); i++) {
-            View v = list.get(i);
-            ItemInfo info = (ItemInfo) v.getTag();
-            LauncherModel.addItemToDatabase(mLauncher, info, mInfo.id, 0,
-                    info.cellX, info.cellY);
-        }
-    }
-
     public void notifyDrop() {
         if (mDragInProgress) {
             mItemAddedBackToSelfViaIcon = true;
@@ -1091,11 +1081,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         ArrayList<View> views = getItemsInReadingOrder();
         mContent.arrangeChildren(views, Math.max(itemCount, views.size()));
         mItemsInvalidated = true;
-    }
-
-    // TODO remove this once GSA code fix is submitted
-    public ViewGroup getContent() {
-        return (ViewGroup) mContent;
     }
 
     public int getItemCount() {
@@ -1342,10 +1327,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             mItemsInvalidated = false;
         }
         return mItemsInReadingOrder;
-    }
-
-    public void getLocationInDragLayer(int[] loc) {
-        mLauncher.getDragLayer().getLocationInDragLayer(this, loc);
     }
 
     public void onFocusChange(View v, boolean hasFocus) {

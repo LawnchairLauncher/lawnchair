@@ -164,40 +164,6 @@ public class TiledImageView extends FrameLayout {
         }
     }
 
-    private RectF mTempRectF = new RectF();
-    public void positionFromMatrix(Matrix matrix) {
-        if (mRenderer.source != null) {
-            final int rotation = mRenderer.source.getRotation();
-            final boolean swap = !(rotation % 180 == 0);
-            final int width = swap ? mRenderer.source.getImageHeight()
-                    : mRenderer.source.getImageWidth();
-            final int height = swap ? mRenderer.source.getImageWidth()
-                    : mRenderer.source.getImageHeight();
-            mTempRectF.set(0, 0, width, height);
-            matrix.mapRect(mTempRectF);
-            matrix.getValues(mValues);
-            int cx = width / 2;
-            int cy = height / 2;
-            float scale = mValues[Matrix.MSCALE_X];
-            int xoffset = Math.round((getWidth() - mTempRectF.width()) / 2 / scale);
-            int yoffset = Math.round((getHeight() - mTempRectF.height()) / 2 / scale);
-            if (rotation == 90 || rotation == 180) {
-                cx += (mTempRectF.left / scale) - xoffset;
-            } else {
-                cx -= (mTempRectF.left / scale) - xoffset;
-            }
-            if (rotation == 180 || rotation == 270) {
-                cy += (mTempRectF.top / scale) - yoffset;
-            } else {
-                cy -= (mTempRectF.top / scale) - yoffset;
-            }
-            mRenderer.scale = scale;
-            mRenderer.centerX = swap ? cy : cx;
-            mRenderer.centerY = swap ? cx : cy;
-            invalidate();
-        }
-    }
-
     @Thunk class TileRenderer implements Renderer {
 
         private GLES20Canvas mCanvas;
