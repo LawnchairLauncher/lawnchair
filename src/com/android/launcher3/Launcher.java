@@ -3632,6 +3632,10 @@ public class Launcher extends Activity
             opts.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, maxWidth);
             opts.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, minWidth);
 
+            if (mLauncherCallbacks != null) {
+                opts.putAll(mLauncherCallbacks.getAdditionalSearchWidgetOptions());
+            }
+
             SharedPreferences sp = getSharedPreferences(
                     LauncherAppState.getSharedPreferencesKey(), MODE_PRIVATE);
             int widgetId = sp.getInt(QSB_WIDGET_ID, -1);

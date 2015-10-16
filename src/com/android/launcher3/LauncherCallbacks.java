@@ -83,6 +83,7 @@ public interface LauncherCallbacks {
     public boolean hasCustomContentToLeft();
     public void populateCustomContentContainer();
     public View getQsbBar();
+    public Bundle getAdditionalSearchWidgetOptions();
 
     /*
      * Extensions points for adding / replacing some other aspects of the Launcher experience.
