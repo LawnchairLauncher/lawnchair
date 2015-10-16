@@ -31,7 +31,7 @@ public class Stats {
      * Implemented by containers to provide a launch source for a given child.
      */
     public interface LaunchSourceProvider {
-        void fillInLaunchSourceData(Bundle sourceData);
+        void fillInLaunchSourceData(View v, Bundle sourceData);
     }
 
     /**
@@ -70,7 +70,7 @@ public class Stats {
             }
 
             if (provider != null) {
-                provider.fillInLaunchSourceData(sourceData);
+                provider.fillInLaunchSourceData(v, sourceData);
             } else if (LauncherAppState.isDogfoodBuild()) {
                 throw new RuntimeException("Expected LaunchSourceProvider");
             }
