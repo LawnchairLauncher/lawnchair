@@ -52,9 +52,12 @@ public class InvariantDeviceProfileTest extends AndroidTestCase {
 
     public void testFindClosestDeviceProfile2() {
         for (InvariantDeviceProfile idf: mPredefinedDeviceProfiles) {
+            ArrayList<InvariantDeviceProfile> predefinedProfilesCopy =
+                    new ArrayList<>(mPredefinedDeviceProfiles);
             ArrayList<InvariantDeviceProfile> closestProfiles =
                     mInvariantProfile.findClosestDeviceProfiles(
-                            idf.minWidthDps, idf.minHeightDps, mPredefinedDeviceProfiles);
+                            idf.minWidthDps, idf.minHeightDps, predefinedProfilesCopy
+                    );
             assertTrue(closestProfiles.get(0).equals(idf));
         }
     }
