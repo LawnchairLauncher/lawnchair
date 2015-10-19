@@ -19,7 +19,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
+    <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"කාර්යාලය"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"යෙදුම ස්ථාපනය කර නැත."</string>
@@ -46,6 +46,7 @@
     <string name="permdesc_read_settings" msgid="5833423719057558387">"මුල් පිටුවේ ඇති සැකසීම් සහ කෙටිමං කියවීමට යෙදුමකට අවසර දෙයි."</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"මුල් පිටු සැකසීම් සහ කෙටිමං ලියන්න"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"මුල් පිටුවේ සැකසීම් සහ කෙටිමං ඉවත් කිරීමට යෙදුමට අවසර දෙයි."</string>
+    <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට දුරකථන ඇමතුම් සිදු කිරීමට ඉඩ නොදේ"</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"ගැටලු පූරණ විජට් එක"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"ස්ථාපනය කරන්න"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"මෙය පද්ධති යෙදුමක් වන අතර අස්ථාපනය කළ නොහැක."</string>
