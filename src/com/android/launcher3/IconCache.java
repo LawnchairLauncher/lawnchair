@@ -179,15 +179,7 @@ public class IconCache {
 
     private Bitmap makeDefaultIcon(UserHandleCompat user) {
         Drawable unbadged = getFullResDefaultActivityIcon();
-        Drawable d = mUserManager.getBadgedDrawableForUser(unbadged, user);
-        Bitmap b = Bitmap.createBitmap(Math.max(d.getIntrinsicWidth(), 1),
-                Math.max(d.getIntrinsicHeight(), 1),
-                Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(b);
-        d.setBounds(0, 0, b.getWidth(), b.getHeight());
-        d.draw(c);
-        c.setBitmap(null);
-        return b;
+        return Utilities.createBadgedIconBitmap(unbadged, user, mContext);
     }
 
     /**
@@ -380,7 +372,8 @@ public class IconCache {
         }
         if (entry == null) {
             entry = new CacheEntry();
-            entry.icon = Utilities.createIconBitmap(app.getBadgedIcon(mIconDpi), mContext);
+            entry.icon = Utilities.createBadgedIconBitmap(
+                    app.getIcon(mIconDpi), app.getUser(), mContext);
         }
         entry.title = app.getLabel();
         entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, app.getUser());
@@ -542,7 +535,8 @@ public class IconCache {
             // Check the DB first.
             if (!getEntryFromDB(cacheKey, entry, useLowResIcon)) {
                 if (info != null) {
-                    entry.icon = Utilities.createIconBitmap(info.getBadgedIcon(mIconDpi), mContext);
+                    entry.icon = Utilities.createBadgedIconBitmap(
+                            info.getIcon(mIconDpi), info.getUser(), mContext);
                 } else {
                     if (usePackageIcon) {
                         CacheEntry packageEntry = getEntryForPackageLocked(
@@ -623,9 +617,8 @@ public class IconCache {
                     if (appInfo == null) {
                         throw new NameNotFoundException("ApplicationInfo is null");
                     }
-                    Drawable drawable = mUserManager.getBadgedDrawableForUser(
-                            appInfo.loadIcon(mPackageManager), user);
-                    entry.icon = Utilities.createIconBitmap(drawable, mContext);
+                    entry.icon = Utilities.createBadgedIconBitmap(
+                            appInfo.loadIcon(mPackageManager), user, mContext);
                     entry.title = appInfo.loadLabel(mPackageManager);
                     entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);
                     entry.isLowResIcon = false;

@@ -16,8 +16,6 @@
 
 package com.android.launcher3.compat;
 
-import android.graphics.drawable.Drawable;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,11 +32,6 @@ public class UserManagerCompatV16 extends UserManagerCompat {
 
     public UserHandleCompat getUserForSerialNumber(long serialNumber) {
         return UserHandleCompat.myUserHandle();
-    }
-
-    public Drawable getBadgedDrawableForUser(Drawable unbadged,
-            UserHandleCompat user) {
-        return unbadged;
     }
 
     public long getSerialNumberForUser(UserHandleCompat user) {
