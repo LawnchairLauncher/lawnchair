@@ -19,7 +19,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
+    <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"Darbs"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Lietotne nav instalēta."</string>
@@ -46,6 +46,7 @@
     <string name="permdesc_read_settings" msgid="5833423719057558387">"Ļauj lietotnei lasīt iestatījumus un saīsnes sākuma ekrānā."</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"rakstīt sākuma ekrāna iestatījumus un saīsnes"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Ļauj lietotnei mainīt iestatījumus un saīsnes sākuma ekrānā."</string>
+    <string name="msg_no_phone_permission" msgid="9208659281529857371">"Lietotnei <xliff:g id="APP_NAME">%1$s</xliff:g> nav atļauts veikt tālruņa zvanus."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Ielādējot logrīku, radās problēma."</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"Notiek iestatīšana"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Šī ir sistēmas lietotne, un to nevar atinstalēt."</string>
