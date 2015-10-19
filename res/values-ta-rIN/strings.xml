@@ -19,7 +19,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name" msgid="5181331383435256801">"லாஞ்சர்3"</string>
+    <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"பணியிடம்"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"பயன்பாடு நிறுவப்படவில்லை."</string>
@@ -46,6 +46,7 @@
     <string name="permdesc_read_settings" msgid="5833423719057558387">"முகப்பில் உள்ள அமைப்பு மற்றும் குறுக்குவழிகளைப் படிக்க பயன்பாட்டை அனுமதிக்கிறது."</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"முகப்பின் அமைப்பு மற்றும் குறுக்குவழிகளை எழுதுதல்"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"முகப்பில் உள்ள அமைப்பு மற்றும் குறுக்குவழிகளை மாற்ற பயன்பாட்டை அனுமதிக்கிறது."</string>
+    <string name="msg_no_phone_permission" msgid="9208659281529857371">"ஃபோன் அழைப்புகள் செய்ய, <xliff:g id="APP_NAME">%1$s</xliff:g> அனுமதிக்கப்படவில்லை"</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"விட்ஜெட்டை ஏற்றுவதில் சிக்கல்"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"அமைவு"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"இது அமைப்பு பயன்பாடு என்பதால் நிறுவல் நீக்கம் செய்ய முடியாது."</string>
