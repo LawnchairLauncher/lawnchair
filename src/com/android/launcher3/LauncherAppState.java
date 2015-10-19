@@ -153,14 +153,10 @@ public class LauncherAppState {
         return sLauncherProvider.get();
     }
 
-    public static String getSharedPreferencesKey() {
-        return LauncherFiles.SHARED_PREFERENCES_KEY;
-    }
-
     public WidgetPreviewLoader getWidgetCache() {
         return mWidgetCache;
     }
-    
+
     public void onWallpaperChanged() {
         mWallpaperChangedSinceLastCheck = true;
     }
