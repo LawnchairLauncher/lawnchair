@@ -21,7 +21,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.UserHandle;
 
@@ -84,11 +83,6 @@ public class UserManagerCompatVL extends UserManagerCompatV17 {
             compatUsers.add(UserHandleCompat.fromUser(user));
         }
         return compatUsers;
-    }
-
-    @Override
-    public Drawable getBadgedDrawableForUser(Drawable unbadged, UserHandleCompat user) {
-        return mPm.getUserBadgedIcon(unbadged, user.getUser());
     }
 
     @Override

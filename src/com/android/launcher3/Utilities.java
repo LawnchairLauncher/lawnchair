@@ -59,6 +59,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.Toast;
 
+import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.config.ProviderConfig;
 
 import java.io.ByteArrayOutputStream;
@@ -205,6 +206,28 @@ public final class Utilities {
             return icon;
         }
         return createIconBitmap(new BitmapDrawable(context.getResources(), icon), context);
+    }
+
+    /**
+     * Returns a bitmap suitable for the all apps view. The icon is badged for {@param user}
+     */
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public static Bitmap createBadgedIconBitmap(
+            Drawable icon, UserHandleCompat user, Context context) {
+        Bitmap bitmap = createIconBitmap(icon, context);
+        if (Utilities.ATLEAST_LOLLIPOP && user != null
+                && !UserHandleCompat.myUserHandle().equals(user)) {
+            BitmapDrawable drawable = new BitmapDrawable(context.getResources(), bitmap);
+            Drawable badged = context.getPackageManager().getUserBadgedIcon(
+                    drawable, user.getUser());
+            if (badged instanceof BitmapDrawable) {
+                return ((BitmapDrawable) badged).getBitmap();
+            } else {
+                return createIconBitmap(badged, context);
+            }
+        } else {
+            return bitmap;
+        }
     }
 
     /**
