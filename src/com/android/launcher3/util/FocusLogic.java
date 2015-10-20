@@ -48,7 +48,7 @@ public class FocusLogic {
     private static final String TAG = "FocusLogic";
     private static final boolean DEBUG = false;
 
-    // Item and page index related constant used by {@link #handleKeyEvent}.
+    /** Item and page index related constant used by {@link #handleKeyEvent}. */
     public static final int NOOP = -1;
 
     public static final int PREVIOUS_PAGE_RIGHT_COLUMN  = -2;
@@ -91,7 +91,7 @@ public class FocusLogic {
         switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_LEFT:
                 newIndex = handleDpadHorizontal(iconIdx, cntX, cntY, map, -1 /*increment*/);
-                if (isRtl && newIndex == NOOP && pageIndex > 0) {
+                if (!isRtl && newIndex == NOOP && pageIndex > 0) {
                     newIndex = PREVIOUS_PAGE_RIGHT_COLUMN;
                 } else if (isRtl && newIndex == NOOP && pageIndex < pageCount - 1) {
                     newIndex = NEXT_PAGE_RIGHT_COLUMN;
@@ -99,7 +99,7 @@ public class FocusLogic {
                 break;
             case KeyEvent.KEYCODE_DPAD_RIGHT:
                 newIndex = handleDpadHorizontal(iconIdx, cntX, cntY, map, 1 /*increment*/);
-                if (isRtl && newIndex == NOOP && pageIndex < pageCount - 1) {
+                if (!isRtl && newIndex == NOOP && pageIndex < pageCount - 1) {
                     newIndex = NEXT_PAGE_LEFT_COLUMN;
                 } else if (isRtl && newIndex == NOOP && pageIndex > 0) {
                     newIndex = PREVIOUS_PAGE_LEFT_COLUMN;
