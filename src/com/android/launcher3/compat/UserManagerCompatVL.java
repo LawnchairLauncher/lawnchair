@@ -24,7 +24,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.UserHandle;
 
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.LongArrayMap;
 
@@ -98,8 +97,7 @@ public class UserManagerCompatVL extends UserManagerCompatV17 {
         if (Utilities.ATLEAST_MARSHMALLOW) {
             return mUserManager.getUserCreationTime(user.getUser());
         }
-        SharedPreferences prefs = mContext.getSharedPreferences(
-                LauncherAppState.getSharedPreferencesKey(), Context.MODE_PRIVATE);
+        SharedPreferences prefs = Utilities.getPrefs(mContext);
         String key = USER_CREATION_TIME_KEY + getSerialNumberForUser(user);
         if (!prefs.contains(key)) {
             prefs.edit().putLong(key, System.currentTimeMillis()).apply();

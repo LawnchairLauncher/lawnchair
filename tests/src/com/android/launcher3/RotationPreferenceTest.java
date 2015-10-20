@@ -28,8 +28,7 @@ public class RotationPreferenceTest extends InstrumentationTestCase {
         mDevice = UiDevice.getInstance(getInstrumentation());
         mTargetContext = getInstrumentation().getTargetContext();
         mTargetPackage = mTargetContext.getPackageName();
-        mPrefs = mTargetContext.getSharedPreferences(
-                LauncherAppState.getSharedPreferencesKey(), Context.MODE_PRIVATE);
+        mPrefs = Utilities.getPrefs(mTargetContext);
         mOriginalRotationValue = mPrefs.getBoolean(Utilities.ALLOW_ROTATION_PREFERENCE_KEY, false);
     }
 

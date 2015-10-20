@@ -140,9 +140,8 @@ public final class Utilities {
     }
 
     public static boolean isAllowRotationPrefEnabled(Context context) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(
-                LauncherAppState.getSharedPreferencesKey(), Context.MODE_PRIVATE);
-        boolean allowRotationPref = sharedPrefs.getBoolean(ALLOW_ROTATION_PREFERENCE_KEY, false);
+        boolean allowRotationPref = getPrefs(context)
+                .getBoolean(ALLOW_ROTATION_PREFERENCE_KEY, false);
         return sForceEnableRotation || allowRotationPref;
     }
 
@@ -800,5 +799,10 @@ public final class Utilities {
      */
     public static int longCompare(long lhs, long rhs) {
         return lhs < rhs ? -1 : (lhs == rhs ? 0 : 1);
+    }
+
+    public static SharedPreferences getPrefs(Context context) {
+        return context.getSharedPreferences(
+                LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 }

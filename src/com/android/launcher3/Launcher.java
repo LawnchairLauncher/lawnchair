@@ -414,8 +414,7 @@ public class Launcher extends Activity
                 app.getInvariantDeviceProfile().landscapeProfile
                 : app.getInvariantDeviceProfile().portraitProfile;
 
-        mSharedPrefs = getSharedPreferences(LauncherAppState.getSharedPreferencesKey(),
-                Context.MODE_PRIVATE);
+        mSharedPrefs = Utilities.getPrefs(this);
         mIsSafeModeEnabled = getPackageManager().isSafeMode();
         mModel = app.setLauncher(this);
         mIconCache = app.getIconCache();
@@ -3596,12 +3595,10 @@ public class Launcher extends Activity
                 opts.putAll(mLauncherCallbacks.getAdditionalSearchWidgetOptions());
             }
 
-            SharedPreferences sp = getSharedPreferences(
-                    LauncherAppState.getSharedPreferencesKey(), MODE_PRIVATE);
-            int widgetId = sp.getInt(QSB_WIDGET_ID, -1);
+            int widgetId = mSharedPrefs.getInt(QSB_WIDGET_ID, -1);
             AppWidgetProviderInfo widgetInfo = mAppWidgetManager.getAppWidgetInfo(widgetId);
             if (!searchProvider.provider.flattenToString().equals(
-                    sp.getString(QSB_WIDGET_PROVIDER, null))
+                    mSharedPrefs.getString(QSB_WIDGET_PROVIDER, null))
                     || (widgetInfo == null)
                     || !widgetInfo.provider.equals(searchProvider.provider)) {
                 // A valid widget is not already bound.
@@ -3619,7 +3616,7 @@ public class Launcher extends Activity
                     widgetId = -1;
                 }
 
-                sp.edit()
+                mSharedPrefs.edit()
                     .putInt(QSB_WIDGET_ID, widgetId)
                     .putString(QSB_WIDGET_PROVIDER, searchProvider.provider.flattenToString())
                     .commit();
