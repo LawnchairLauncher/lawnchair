@@ -4,9 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
-import android.support.test.uiautomator.By;
 import android.support.test.uiautomator.UiDevice;
-import android.support.test.uiautomator.Until;
+import android.support.test.uiautomator.UiObject;
+import android.support.test.uiautomator.UiSelector;
 import android.test.InstrumentationTestCase;
 
 /**
@@ -73,15 +73,17 @@ public class RotationPreferenceTest extends InstrumentationTestCase {
                 .setPackage(mTargetPackage)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getInstrumentation().getContext().startActivity(homeIntent);
-        mDevice.wait(Until.hasObject(By.pkg(mTargetPackage).depth(0)), 3000);
+        mDevice.findObject(new UiSelector().packageName(mTargetPackage)).waitForExists(6000);
     }
 
     private void setRotationEnabled(boolean enabled) {
         mPrefs.edit().putBoolean(Utilities.ALLOW_ROTATION_PREFERENCE_KEY, enabled).commit();
     }
 
-    private Rect getHotseatBounds() {
-        mDevice.wait(Until.hasObject(By.res(mTargetPackage, "hotseat")), 3000);
-        return mDevice.findObject(By.res(mTargetPackage, "hotseat")).getVisibleBounds();
+    private Rect getHotseatBounds() throws Exception {
+        UiObject hotseat = mDevice.findObject(
+                new UiSelector().resourceId(mTargetPackage + ":id/hotseat"));
+        hotseat.waitForExists(6000);
+        return hotseat.getVisibleBounds();
     }
 }
