@@ -257,17 +257,13 @@ public class LauncherProvider extends ContentProvider {
             case LauncherSettings.Settings.METHOD_GET_BOOLEAN: {
                 Bundle result = new Bundle();
                 result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
-                        getContext().getSharedPreferences(
-                                LauncherAppState.getSharedPreferencesKey(), Context.MODE_PRIVATE)
-                                .getBoolean(arg, extras.getBoolean(
-                                        LauncherSettings.Settings.EXTRA_DEFAULT_VALUE)));
+                        Utilities.getPrefs(getContext()).getBoolean(arg, extras.getBoolean(
+                                LauncherSettings.Settings.EXTRA_DEFAULT_VALUE)));
                 return result;
             }
             case LauncherSettings.Settings.METHOD_SET_BOOLEAN: {
                 boolean value = extras.getBoolean(LauncherSettings.Settings.EXTRA_VALUE);
-                getContext().getSharedPreferences(
-                        LauncherAppState.getSharedPreferencesKey(), Context.MODE_PRIVATE)
-                        .edit().putBoolean(arg, value).apply();
+                Utilities.getPrefs(getContext()).edit().putBoolean(arg, value).apply();
                 if (mListener != null) {
                     mListener.onSettingsChanged(arg, value);
                 }
@@ -343,11 +339,7 @@ public class LauncherProvider extends ContentProvider {
     }
 
     public void clearFlagEmptyDbCreated() {
-        String spKey = LauncherAppState.getSharedPreferencesKey();
-        getContext().getSharedPreferences(spKey, Context.MODE_PRIVATE)
-            .edit()
-            .remove(EMPTY_DATABASE_CREATED)
-            .commit();
+        Utilities.getPrefs(getContext()).edit().remove(EMPTY_DATABASE_CREATED).commit();
     }
 
     /**
@@ -358,8 +350,7 @@ public class LauncherProvider extends ContentProvider {
      *   4) The default configuration for the particular device
      */
     synchronized public void loadDefaultFavoritesIfNecessary() {
-        String spKey = LauncherAppState.getSharedPreferencesKey();
-        SharedPreferences sp = getContext().getSharedPreferences(spKey, Context.MODE_PRIVATE);
+        SharedPreferences sp = Utilities.getPrefs(getContext());
 
         if (sp.getBoolean(EMPTY_DATABASE_CREATED, false)) {
             Log.d(TAG, "loading default workspace");
@@ -635,15 +626,11 @@ public class LauncherProvider extends ContentProvider {
         }
 
         private void setFlagJustLoadedOldDb() {
-            String spKey = LauncherAppState.getSharedPreferencesKey();
-            SharedPreferences sp = mContext.getSharedPreferences(spKey, Context.MODE_PRIVATE);
-            sp.edit().putBoolean(EMPTY_DATABASE_CREATED, false).commit();
+            Utilities.getPrefs(mContext).edit().putBoolean(EMPTY_DATABASE_CREATED, false).commit();
         }
 
         private void setFlagEmptyDbCreated() {
-            String spKey = LauncherAppState.getSharedPreferencesKey();
-            SharedPreferences sp = mContext.getSharedPreferences(spKey, Context.MODE_PRIVATE);
-            sp.edit().putBoolean(EMPTY_DATABASE_CREATED, true).commit();
+            Utilities.getPrefs(mContext).edit().putBoolean(EMPTY_DATABASE_CREATED, true).commit();
         }
 
         @Override

@@ -71,7 +71,7 @@ public class MigrateFromRestoreTask {
     public MigrateFromRestoreTask(Context context) {
         mContext = context;
 
-        SharedPreferences prefs = prefs(context);
+        SharedPreferences prefs = Utilities.getPrefs(context);
         Point sourceSize = parsePoint(prefs.getString(KEY_MIGRATION_SOURCE_SIZE, ""));
         mSrcX = sourceSize.x;
         mSrcY = sourceSize.y;
@@ -745,23 +745,19 @@ public class MigrateFromRestoreTask {
 
     public static void markForMigration(Context context, int srcX, int srcY,
             HashSet<String> widgets) {
-        prefs(context).edit()
+        Utilities.getPrefs(context).edit()
                 .putString(KEY_MIGRATION_SOURCE_SIZE, srcX + "," + srcY)
                 .putStringSet(KEY_MIGRATION_WIDGET_MINSIZE, widgets)
                 .apply();
     }
 
     public static boolean shouldRunTask(Context context) {
-        return !TextUtils.isEmpty(prefs(context).getString(KEY_MIGRATION_SOURCE_SIZE, ""));
+        return !TextUtils.isEmpty(Utilities.getPrefs(context).getString(KEY_MIGRATION_SOURCE_SIZE, ""));
     }
 
     public static void clearFlags(Context context) {
-        prefs(context).edit().remove(KEY_MIGRATION_SOURCE_SIZE)
+        Utilities.getPrefs(context).edit().remove(KEY_MIGRATION_SOURCE_SIZE)
                 .remove(KEY_MIGRATION_WIDGET_MINSIZE).commit();
     }
 
-    private static SharedPreferences prefs(Context context) {
-        return context.getSharedPreferences(LauncherAppState.getSharedPreferencesKey(),
-                Context.MODE_PRIVATE);
-    }
 }

@@ -92,8 +92,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         if (packageNames.isEmpty()) {
             return;
         }
-        String spKey = LauncherAppState.getSharedPreferencesKey();
-        SharedPreferences sp = context.getSharedPreferences(spKey, Context.MODE_PRIVATE);
+        SharedPreferences sp = Utilities.getPrefs(context);
         synchronized(sLock) {
             Set<String> strings = sp.getStringSet(APPS_PENDING_INSTALL, null);
             if (DBG) {
@@ -176,9 +175,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         LauncherAppState app = LauncherAppState.getInstance();
         boolean launcherNotLoaded = app.getModel().getCallback() == null;
 
-        String spKey = LauncherAppState.getSharedPreferencesKey();
-        SharedPreferences sp = context.getSharedPreferences(spKey, Context.MODE_PRIVATE);
-        addToInstallQueue(sp, info);
+        addToInstallQueue(Utilities.getPrefs(context), info);
         if (!mUseInstallQueue && !launcherNotLoaded) {
             flushInstallQueue(context);
         }
@@ -192,8 +189,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         flushInstallQueue(context);
     }
     static void flushInstallQueue(Context context) {
-        String spKey = LauncherAppState.getSharedPreferencesKey();
-        SharedPreferences sp = context.getSharedPreferences(spKey, Context.MODE_PRIVATE);
+        SharedPreferences sp = Utilities.getPrefs(context);
         ArrayList<PendingInstallShortcutInfo> installQueue = getAndClearInstallQueue(sp, context);
         if (!installQueue.isEmpty()) {
             Iterator<PendingInstallShortcutInfo> iter = installQueue.iterator();

@@ -13,6 +13,7 @@ import com.android.launcher3.CustomAppWidget;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 
 import java.util.HashMap;
 
@@ -39,9 +40,7 @@ public class TestingUtils {
 
     public static void addWeightWatcher(Launcher launcher) {
         if (MEMORY_DUMP_ENABLED) {
-            String spKey = LauncherAppState.getSharedPreferencesKey();
-            SharedPreferences sp = launcher.getSharedPreferences(spKey, Context.MODE_PRIVATE);
-            boolean show = sp.getBoolean(SHOW_WEIGHT_WATCHER, true);
+            boolean show = Utilities.getPrefs(launcher).getBoolean(SHOW_WEIGHT_WATCHER, true);
 
             int id = launcher.getResources().getIdentifier("zzz_weight_watcher", "layout",
                     launcher.getPackageName());
