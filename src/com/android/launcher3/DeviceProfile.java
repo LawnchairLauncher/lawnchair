@@ -104,7 +104,6 @@ public class DeviceProfile {
     private int searchBarSpaceWidthPx;
     private int searchBarSpaceHeightNormalPx, searchBarSpaceHeightTallPx;
     private int searchBarSpaceHeightPx; // One of the above.
-    private int searchBarHeight = LauncherCallbacks.SEARCH_BAR_HEIGHT_NORMAL;
 
     public DeviceProfile(Context context, InvariantDeviceProfile inv,
             Point minSize, Point maxSize,
@@ -396,6 +395,17 @@ public class DeviceProfile {
         return visibleChildren;
     }
 
+    // TODO(twickham): b/25154513
+    public void setSearchBarHeight(int searchBarHeight) {
+        if (searchBarHeight == LauncherCallbacks.SEARCH_BAR_HEIGHT_TALL) {
+            hotseatBarHeightPx = hotseatBarHeightShortPx;
+            searchBarSpaceHeightPx = searchBarSpaceHeightTallPx;
+        } else {
+            hotseatBarHeightPx = hotseatBarHeightNormalPx;
+            searchBarSpaceHeightPx = searchBarSpaceHeightNormalPx;
+        }
+    }
+
     public void layout(Launcher launcher) {
         FrameLayout.LayoutParams lp;
         boolean hasVerticalBarLayout = isVerticalBarLayout();
@@ -404,14 +414,6 @@ public class DeviceProfile {
         // Layout the search bar space
         View searchBar = launcher.getSearchDropTargetBar();
         lp = (FrameLayout.LayoutParams) searchBar.getLayoutParams();
-        searchBarHeight = launcher.getSearchBarHeight();
-        if (searchBarHeight == LauncherCallbacks.SEARCH_BAR_HEIGHT_TALL) {
-            hotseatBarHeightPx = hotseatBarHeightShortPx;
-            searchBarSpaceHeightPx = searchBarSpaceHeightTallPx;
-        } else {
-            hotseatBarHeightPx = hotseatBarHeightNormalPx;
-            searchBarSpaceHeightPx = searchBarSpaceHeightNormalPx;
-        }
         if (hasVerticalBarLayout) {
             // Vertical search bar space -- The search bar is fixed in the layout to be on the left
             //                              of the screen regardless of RTL

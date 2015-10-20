@@ -454,6 +454,8 @@ public class Launcher extends Activity
 
         setContentView(R.layout.launcher);
 
+        app.getInvariantDeviceProfile().landscapeProfile.setSearchBarHeight(getSearchBarHeight());
+        app.getInvariantDeviceProfile().portraitProfile.setSearchBarHeight(getSearchBarHeight());
         setupViews();
         mDeviceProfile.layout(this);
 
@@ -3630,6 +3632,10 @@ public class Launcher extends Activity
             opts.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, minHeight);
             opts.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, maxWidth);
             opts.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, minWidth);
+            if (LOGD) {
+                Log.d(TAG, "QSB widget options: maxHeight=" + maxHeight + " minHeight=" + minHeight
+                        + " maxWidth=" + maxWidth + " minWidth=" + minWidth);
+            }
 
             if (mLauncherCallbacks != null) {
                 opts.putAll(mLauncherCallbacks.getAdditionalSearchWidgetOptions());
