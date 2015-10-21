@@ -252,6 +252,9 @@ public class BubbleTextView extends TextView
             FastBitmapDrawable d = (FastBitmapDrawable) mIcon;
             if (isPressed() || mStayPressed) {
                 d.animateState(FastBitmapDrawable.State.PRESSED);
+            } else if (getTag() instanceof ShortcutInfo
+                    && ((ShortcutInfo) getTag()).isDisabled != 0) {
+                d.animateState(FastBitmapDrawable.State.DISABLED);
             } else {
                 d.animateState(FastBitmapDrawable.State.NORMAL);
             }
