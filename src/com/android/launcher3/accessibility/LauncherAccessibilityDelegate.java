@@ -172,7 +172,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
             return true;
         } else if (action == MOVE_TO_WORKSPACE) {
             Folder folder = mLauncher.getWorkspace().getOpenFolder();
-            mLauncher.closeFolder(folder);
+            mLauncher.closeFolder(folder, true);
             ShortcutInfo info = (ShortcutInfo) item;
             folder.getInfo().remove(info);
 

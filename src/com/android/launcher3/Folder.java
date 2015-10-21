@@ -432,7 +432,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     /**
      * Creates a new UserFolder, inflated from R.layout.user_folder.
      *
-     * @param context The application's context.
+     * @param launcher The main activity.
      *
      * @return A new UserFolder.
      */
@@ -649,9 +649,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         oa.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                onCloseComplete();
                 setLayerType(LAYER_TYPE_NONE, null);
-                mState = STATE_SMALL;
+                close();
             }
             @Override
             public void onAnimationStart(Animator animation) {
@@ -663,6 +662,32 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         oa.setDuration(mExpandDuration);
         setLayerType(LAYER_TYPE_HARDWARE, null);
         oa.start();
+    }
+
+    public void close() {
+        // TODO: Clear all active animations.
+        DragLayer parent = (DragLayer) getParent();
+        if (parent != null) {
+            parent.removeView(this);
+        }
+        mDragController.removeDropTarget(this);
+        clearFocus();
+        mFolderIcon.requestFocus();
+
+        if (mRearrangeOnClose) {
+            rearrangeChildren();
+            mRearrangeOnClose = false;
+        }
+        if (getItemCount() <= 1) {
+            if (!mDragInProgress && !mSuppressFolderDeletion) {
+                replaceFolderWithFinalItem();
+            } else if (mDragInProgress) {
+                mDeleteFolderOnDropCompleted = true;
+            }
+        }
+        mSuppressFolderDeletion = false;
+        clearDragInfo();
+        mState = STATE_SMALL;
     }
 
     public boolean acceptDrop(DragObject d) {
@@ -1100,30 +1125,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     public int getItemCount() {
         return mContent.getItemCount();
-    }
-
-    @Thunk void onCloseComplete() {
-        DragLayer parent = (DragLayer) getParent();
-        if (parent != null) {
-            parent.removeView(this);
-        }
-        mDragController.removeDropTarget((DropTarget) this);
-        clearFocus();
-        mFolderIcon.requestFocus();
-
-        if (mRearrangeOnClose) {
-            rearrangeChildren();
-            mRearrangeOnClose = false;
-        }
-        if (getItemCount() <= 1) {
-            if (!mDragInProgress && !mSuppressFolderDeletion) {
-                replaceFolderWithFinalItem();
-            } else if (mDragInProgress) {
-                mDeleteFolderOnDropCompleted = true;
-            }
-        }
-        mSuppressFolderDeletion = false;
-        clearDragInfo();
     }
 
     @Thunk void replaceFolderWithFinalItem() {
