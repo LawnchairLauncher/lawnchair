@@ -108,6 +108,7 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        actionBar.hide();
                         // Never fade on finish because we return to the app that started us (e.g.
                         // Photos), not the home screen.
                         cropImageAndSetWallpaper(imageUri, null, false /* shouldFadeOutOnFinish */);
