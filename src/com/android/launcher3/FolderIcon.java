@@ -373,7 +373,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 item = (ShortcutInfo) mDragInfo;
             }
             mFolder.beginExternalDrag(item);
-            mLauncher.openFolder(FolderIcon.this);
+            mLauncher.openFolder(FolderIcon.this, true);
         }
     };
 

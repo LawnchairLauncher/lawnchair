@@ -612,8 +612,30 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             mDragController.forceTouchMove();
         }
 
-        FolderPagedView pages = (FolderPagedView) mContent;
-        pages.verifyVisibleHighResIcons(pages.getNextPage());
+        mContent.verifyVisibleHighResIcons(mContent.getNextPage());
+    }
+
+    /**
+     * Opens the folder without any animation
+     */
+    public void open() {
+        if (!(getParent() instanceof DragLayer)) return;
+
+        mContent.completePendingPageChanges();
+        if (!mDragInProgress) {
+            // Open on the first page.
+            mContent.snapToPageImmediately(0);
+        }
+        centerAboutIcon();
+        mFolderName.setTranslationX(0);
+        mContent.setMarkerScale(1);
+
+        // Make sure the folder picks up the last drag move even if the finger doesn't move.
+        if (mDragController.isDragging()) {
+            mDragController.forceTouchMove();
+        }
+
+        mContent.verifyVisibleHighResIcons(mContent.getNextPage());
     }
 
     public void beginExternalDrag(ShortcutInfo item) {

@@ -3727,8 +3727,7 @@ public class Workspace extends PagedView
      * the hotseat and workspace pages
      */
     ArrayList<ShortcutAndWidgetContainer> getAllShortcutAndWidgetContainers() {
-        ArrayList<ShortcutAndWidgetContainer> childrenLayouts =
-                new ArrayList<ShortcutAndWidgetContainer>();
+        ArrayList<ShortcutAndWidgetContainer> childrenLayouts = new ArrayList<>();
         int screenCount = getChildCount();
         for (int screen = 0; screen < screenCount; screen++) {
             childrenLayouts.add(((CellLayout) getChildAt(screen)).getShortcutsAndWidgets());
@@ -3737,17 +3736,6 @@ public class Workspace extends PagedView
             childrenLayouts.add(mLauncher.getHotseat().getLayout().getShortcutsAndWidgets());
         }
         return childrenLayouts;
-    }
-
-    public Folder getFolderForTag(final Object tag) {
-        return (Folder) getFirstMatch(new ItemOperator() {
-
-            @Override
-            public boolean evaluate(ItemInfo info, View v, View parent) {
-                return (v instanceof Folder) && (((Folder) v).getInfo() == tag)
-                        && ((Folder) v).getInfo().opened;
-            }
-        });
     }
 
     public View getHomescreenIconByItemId(final long id) {
