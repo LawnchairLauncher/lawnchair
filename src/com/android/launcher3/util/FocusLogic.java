@@ -165,8 +165,12 @@ public class FocusLogic {
 
         // Iterate thru the children.
         for (int i = 0; i < parent.getChildCount(); i++ ) {
-            int cx = ((CellLayout.LayoutParams) parent.getChildAt(i).getLayoutParams()).cellX;
-            int cy = ((CellLayout.LayoutParams) parent.getChildAt(i).getLayoutParams()).cellY;
+            View cell = parent.getChildAt(i);
+            if (!cell.isFocusable()) {
+                continue;
+            }
+            int cx = ((CellLayout.LayoutParams) cell.getLayoutParams()).cellX;
+            int cy = ((CellLayout.LayoutParams) cell.getLayoutParams()).cellY;
             matrix[invert ? (m - cx - 1) : cx][cy] = i;
         }
         if (DEBUG) {
@@ -199,8 +203,12 @@ public class FocusLogic {
 
         // Iterate thru the children of the top parent.
         for (int i = 0; i < iconParent.getChildCount(); i++) {
-            int cx = ((CellLayout.LayoutParams) iconParent.getChildAt(i).getLayoutParams()).cellX;
-            int cy = ((CellLayout.LayoutParams) iconParent.getChildAt(i).getLayoutParams()).cellY;
+            View cell = iconParent.getChildAt(i);
+            if (!cell.isFocusable()) {
+                continue;
+            }
+            int cx = ((CellLayout.LayoutParams) cell.getLayoutParams()).cellX;
+            int cy = ((CellLayout.LayoutParams) cell.getLayoutParams()).cellY;
             matrix[cx][cy] = i;
         }
 
@@ -253,8 +261,12 @@ public class FocusLogic {
 
         // Iterate thru the children of the top parent.
         for (int i = 0; i < iconParent.getChildCount(); i++) {
-            int cx = ((CellLayout.LayoutParams) iconParent.getChildAt(i).getLayoutParams()).cellX;
-            int cy = ((CellLayout.LayoutParams) iconParent.getChildAt(i).getLayoutParams()).cellY;
+            View cell = iconParent.getChildAt(i);
+            if (!cell.isFocusable()) {
+                continue;
+            }
+            int cx = ((CellLayout.LayoutParams) cell.getLayoutParams()).cellX;
+            int cy = ((CellLayout.LayoutParams) cell.getLayoutParams()).cellY;
             if (pivotX < 0) {
                 matrix[cx - pivotX][cy] = i;
             } else {
