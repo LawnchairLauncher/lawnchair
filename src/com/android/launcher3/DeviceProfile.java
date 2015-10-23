@@ -104,7 +104,6 @@ public class DeviceProfile {
     private int searchBarSpaceWidthPx;
     private int searchBarSpaceHeightNormalPx, searchBarSpaceHeightTallPx;
     private int searchBarSpaceHeightPx; // One of the above.
-    private int searchBarHeight = LauncherCallbacks.SEARCH_BAR_HEIGHT_NORMAL;
 
     public DeviceProfile(Context context, InvariantDeviceProfile inv,
             Point minSize, Point maxSize,
@@ -408,13 +407,8 @@ public class DeviceProfile {
         return visibleChildren;
     }
 
-    public void layout(Launcher launcher) {
-        FrameLayout.LayoutParams lp;
-        boolean hasVerticalBarLayout = isVerticalBarLayout();
-        final boolean isLayoutRtl = Utilities.isRtl(launcher.getResources());
-
-        // Layout the search bar space
-        searchBarHeight = launcher.getSearchBarHeight();
+    // TODO(twickham): b/25154513
+    public void setSearchBarHeight(int searchBarHeight) {
         if (searchBarHeight == LauncherCallbacks.SEARCH_BAR_HEIGHT_TALL) {
             hotseatBarHeightPx = hotseatBarHeightShortPx;
             searchBarSpaceHeightPx = searchBarSpaceHeightTallPx;
@@ -422,6 +416,14 @@ public class DeviceProfile {
             hotseatBarHeightPx = hotseatBarHeightNormalPx;
             searchBarSpaceHeightPx = searchBarSpaceHeightNormalPx;
         }
+    }
+
+    public void layout(Launcher launcher) {
+        FrameLayout.LayoutParams lp;
+        boolean hasVerticalBarLayout = isVerticalBarLayout();
+        final boolean isLayoutRtl = Utilities.isRtl(launcher.getResources());
+
+        // Layout the search bar space
         View searchBar = launcher.getSearchDropTargetBar();
         lp = getDropTargetBarLayoutParams(hasVerticalBarLayout, searchBar, Gravity.TOP);
         searchBar.setLayoutParams(lp);
@@ -542,7 +544,7 @@ public class DeviceProfile {
             // Vertical drop target bar space -- The drop target bar is fixed in the layout to be on
             //                                   the left of the screen regardless of RTL
             lp.gravity = Gravity.LEFT;
-            lp.width = searchBarSpaceHeightPx;
+            lp.width = searchBarSpaceHeightNormalPx;
 
             LinearLayout targets = (LinearLayout) dropTargetBar.findViewById(R.id.drag_target_bar);
             targets.setOrientation(LinearLayout.VERTICAL);
