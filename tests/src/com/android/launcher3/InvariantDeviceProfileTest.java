@@ -15,14 +15,13 @@
  */
 package com.android.launcher3;
 
+import android.content.res.Resources;
+import android.graphics.Point;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 import android.util.Log;
-
-import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.util.FocusLogic;
 
 import java.util.ArrayList;
 
@@ -123,4 +122,72 @@ public class InvariantDeviceProfileTest extends AndroidTestCase {
     // Add more tests for other devices, however, running them once on a single device is enough
     // for verifying that for a platform version, the WindowManager and DisplayMetrics is
     // working as intended.
+
+    /**
+     * Make sure that the height for the QSB is what we expect in normal mode.
+     */
+    public void testQsbNormalHeight() {
+        Resources resources = getContext().getResources();
+        DeviceProfile landscapeProfile = mInvariantProfile.landscapeProfile;
+        DeviceProfile portraitProfile = mInvariantProfile.portraitProfile;
+        landscapeProfile.setSearchBarHeight(LauncherCallbacks.SEARCH_BAR_HEIGHT_NORMAL);
+        portraitProfile.setSearchBarHeight(LauncherCallbacks.SEARCH_BAR_HEIGHT_NORMAL);
+        Rect portraitBounds = portraitProfile.getSearchBarBounds(true); // RTL shouldn't matter.
+        int portraitHeight = (int) Utilities.dpiFromPx(portraitBounds.height(),
+                resources.getDisplayMetrics());
+        Rect landscapeBounds = landscapeProfile.getSearchBarBounds(true); // RTL shouldn't matter.
+        int landscapeHeight = (int) Utilities.dpiFromPx(landscapeBounds.height(),
+                resources.getDisplayMetrics());
+        if (portraitProfile.isTablet) {
+            assertEquals(8 + 48 + 24, portraitHeight);
+        } else {
+            assertEquals(8 + 48 + 12, portraitHeight);
+        }
+        // Make sure the height that we pass in the widget options bundle is the height of the
+        // search bar + 8dps padding top and bottom.
+        Point portraitDimens = portraitProfile.getSearchBarDimensForWidgetOpts(resources);
+        int portraitWidgetOptsHeight = portraitDimens.y;
+        Point landscapeDimens = landscapeProfile.getSearchBarDimensForWidgetOpts(resources);
+        int landscapeWidgetOptsHeight = landscapeDimens.y;
+        assertEquals(8 + 48 + 8, (int) Utilities.dpiFromPx(portraitWidgetOptsHeight,
+                resources.getDisplayMetrics()));
+        if (!landscapeProfile.isVerticalBarLayout()) {
+            assertEquals(portraitHeight, landscapeHeight);
+            assertEquals(portraitWidgetOptsHeight, landscapeWidgetOptsHeight);
+        }
+    }
+
+    /**
+     * Make sure that the height for the QSB is what we expect in tall mode.
+     */
+    public void testQsbTallHeight() {
+        Resources resources = getContext().getResources();
+        DeviceProfile landscapeProfile = mInvariantProfile.landscapeProfile;
+        DeviceProfile portraitProfile = mInvariantProfile.portraitProfile;
+        landscapeProfile.setSearchBarHeight(LauncherCallbacks.SEARCH_BAR_HEIGHT_TALL);
+        portraitProfile.setSearchBarHeight(LauncherCallbacks.SEARCH_BAR_HEIGHT_TALL);
+        Rect portraitBounds = portraitProfile.getSearchBarBounds(true); // RTL shouldn't matter.
+        int portraitHeight = (int) Utilities.dpiFromPx(portraitBounds.height(),
+                resources.getDisplayMetrics());
+        Rect landscapeBounds = landscapeProfile.getSearchBarBounds(true); // RTL shouldn't matter.
+        int landscapeHeight = (int) Utilities.dpiFromPx(landscapeBounds.height(),
+                resources.getDisplayMetrics());
+        if (portraitProfile.isTablet) {
+            assertEquals(8 + 80 + 24, portraitHeight);
+        } else {
+            assertEquals(8 + 80 + 2, portraitHeight);
+        }
+        // Make sure the height that we pass in the widget options bundle is the height of the
+        // search bar + 8dps padding top and bottom.
+        Point portraitDimens = portraitProfile.getSearchBarDimensForWidgetOpts(resources);
+        int portraitWidgetOptsHeight = portraitDimens.y;
+        Point landscapeDimens = landscapeProfile.getSearchBarDimensForWidgetOpts(resources);
+        int landscapeWidgetOptsHeight = landscapeDimens.y;
+        assertEquals(8 + 80 + 8, (int) Utilities.dpiFromPx(portraitWidgetOptsHeight,
+                resources.getDisplayMetrics()));
+        if (!landscapeProfile.isVerticalBarLayout()) {
+            assertEquals(portraitHeight, landscapeHeight);
+            assertEquals(portraitWidgetOptsHeight, landscapeWidgetOptsHeight);
+        }
+    }
 }
