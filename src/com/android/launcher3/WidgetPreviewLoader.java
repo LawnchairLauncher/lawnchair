@@ -428,8 +428,9 @@ public class WidgetPreviewLoader {
             float iconScale = Math.min((float) smallestSide / (appIconSize + 2 * minOffset), scale);
 
             try {
-                Drawable icon = mutateOnMainThread(mManager.loadIcon(info, mIconCache));
+                Drawable icon = mManager.loadIcon(info, mIconCache);
                 if (icon != null) {
+                    icon = mutateOnMainThread(icon);
                     int hoffset = (int) ((tileW - appIconSize * iconScale) / 2) + x;
                     int yoffset = (int) ((tileH - appIconSize * iconScale) / 2);
                     icon.setBounds(hoffset, yoffset,
