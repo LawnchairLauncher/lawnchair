@@ -27,7 +27,7 @@ import java.util.HashSet;
 
 public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallback {
 
-    private static final int INITIAL_TOUCH_SETTLING_DURATION = 300;
+    private static final int INITIAL_TOUCH_SETTLING_DURATION = 100;
     private static final int REPEAT_TOUCH_SETTLING_DURATION = 200;
     private static final float FAST_SCROLL_TOUCH_VELOCITY_BARRIER = 1900f;
 
@@ -219,7 +219,9 @@ public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallb
         FastBitmapDrawable.State newState = FastBitmapDrawable.State.NORMAL;
         if (mCurrentFastScrollSection != null && pos > -1) {
             AlphabeticalAppsList.AdapterItem item = mApps.getAdapterItems().get(pos);
-            newState = item.sectionName.equals(mCurrentFastScrollSection) ?
+            boolean highlight = item.sectionName.equals(mCurrentFastScrollSection) &&
+                    item.position == mTargetFastScrollPosition;
+            newState = highlight ?
                     FastBitmapDrawable.State.FAST_SCROLL_HIGHLIGHTED :
                     FastBitmapDrawable.State.FAST_SCROLL_UNHIGHLIGHTED;
         }
