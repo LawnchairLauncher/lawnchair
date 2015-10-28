@@ -84,7 +84,6 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.ViewTreeObserver;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.OvershootInterpolator;
@@ -1683,29 +1682,8 @@ public class Launcher extends Activity
         }
         registerReceiver(mReceiver, filter);
         FirstFrameAnimatorHelper.initializeDrawListener(getWindow().getDecorView());
-        setupTransparentSystemBarsForLollipop();
         mAttached = true;
         mVisible = true;
-    }
-
-    /**
-     * Sets up transparent navigation and status bars in Lollipop.
-     * This method is a no-op for other platform versions.
-     */
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void setupTransparentSystemBarsForLollipop() {
-        if (Utilities.ATLEAST_LOLLIPOP) {
-            Window window = getWindow();
-            window.getAttributes().systemUiVisibility |=
-                    (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
-                    | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.TRANSPARENT);
-            window.setNavigationBarColor(Color.TRANSPARENT);
-        }
     }
 
     @Override
