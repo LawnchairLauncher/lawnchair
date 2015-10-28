@@ -42,8 +42,8 @@ public class FastBitmapDrawable extends Drawable {
 
         NORMAL                      (0f, 0f, 1f, new DecelerateInterpolator()),
         PRESSED                     (0f, 100f / 255f, 1f, CLICK_FEEDBACK_INTERPOLATOR),
-        FAST_SCROLL_HIGHLIGHTED     (0f, 0f, 1.1f, new DecelerateInterpolator()),
-        FAST_SCROLL_UNHIGHLIGHTED   (0.8f, 0.35f, 1f, new DecelerateInterpolator()),
+        FAST_SCROLL_HIGHLIGHTED     (0f, 0f, 1.15f, new DecelerateInterpolator()),
+        FAST_SCROLL_UNHIGHLIGHTED   (0f, 0f, 1f, new DecelerateInterpolator()),
         DISABLED                    (1f, 0.5f, 1f, new DecelerateInterpolator());
 
         public final float desaturation;
