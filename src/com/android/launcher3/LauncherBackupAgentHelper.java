@@ -73,7 +73,8 @@ public class LauncherBackupAgentHelper extends BackupAgentHelper {
         }
 
         // Clear dB before restore
-        LauncherAppState.getLauncherProvider().createEmptyDB();
+        LauncherSettings.Settings.call(getContentResolver(),
+                LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
 
         boolean hasData;
         try {
@@ -90,12 +91,14 @@ public class LauncherBackupAgentHelper extends BackupAgentHelper {
         }
 
         if (hasData && mHelper.restoreSuccessful) {
-            LauncherAppState.getLauncherProvider().clearFlagEmptyDbCreated();
+            LauncherSettings.Settings.call(getContentResolver(),
+                    LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG);
             LauncherClings.synchonouslyMarkFirstRunClingDismissed(this);
 
             // Rank was added in v4.
             if (mHelper.restoredBackupVersion <= 3) {
-                LauncherAppState.getLauncherProvider().updateFolderItemsRank();
+                LauncherSettings.Settings.call(getContentResolver(),
+                        LauncherSettings.Settings.METHOD_UPDATE_FOLDER_ITEMS_RANK);
             }
 
             if (MigrateFromRestoreTask.ENABLED && mHelper.shouldAttemptWorkspaceMigration()) {
@@ -105,10 +108,12 @@ public class LauncherBackupAgentHelper extends BackupAgentHelper {
                         mHelper.widgetSizes);
             }
 
-            LauncherAppState.getLauncherProvider().convertShortcutsToLauncherActivities();
+            LauncherSettings.Settings.call(getContentResolver(),
+                    LauncherSettings.Settings.METHOD_CONVERT_SHORTCUTS_TO_ACTIVITIES);
         } else {
             if (VERBOSE) Log.v(TAG, "Nothing was restored, clearing DB");
-            LauncherAppState.getLauncherProvider().createEmptyDB();
+            LauncherSettings.Settings.call(getContentResolver(),
+                    LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
         }
     }
 }

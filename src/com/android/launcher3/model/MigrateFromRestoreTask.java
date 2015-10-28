@@ -135,7 +135,10 @@ public class MigrateFromRestoreTask {
                         new boolean[mTrgX][mTrgY], deepCopy(mCarryOver), true);
                 placement.find();
                 if (placement.finalPlacedItems.size() > 0) {
-                    long newScreenId = LauncherAppState.getLauncherProvider().generateNewScreenId();
+                    long newScreenId = LauncherSettings.Settings.call(
+                            mContext.getContentResolver(),
+                            LauncherSettings.Settings.METHOD_NEW_SCREEN_ID)
+                            .getLong(LauncherSettings.Settings.EXTRA_VALUE);
                     allScreens.add(newScreenId);
                     for (DbEntry item : placement.finalPlacedItems) {
                         if (!mCarryOver.remove(itemMap.get(item.id))) {

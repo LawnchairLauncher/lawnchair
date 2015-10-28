@@ -481,7 +481,9 @@ public class LauncherModel extends BroadcastReceiver
 
         if (!found) {
             // Still no position found. Add a new screen to the end.
-            screenId = LauncherAppState.getLauncherProvider().generateNewScreenId();
+            screenId = LauncherSettings.Settings.call(context.getContentResolver(),
+                    LauncherSettings.Settings.METHOD_NEW_SCREEN_ID)
+                    .getLong(LauncherSettings.Settings.EXTRA_VALUE);
 
             // Save the screen id for binding in the workspace
             workspaceScreens.add(screenId);
@@ -990,7 +992,9 @@ public class LauncherModel extends BroadcastReceiver
         final ContentResolver cr = context.getContentResolver();
         item.onAddToDatabase(context, values);
 
-        item.id = LauncherAppState.getLauncherProvider().generateNewItemId();
+        item.id = LauncherSettings.Settings.call(cr, LauncherSettings.Settings.METHOD_NEW_ITEM_ID)
+                .getLong(LauncherSettings.Settings.EXTRA_VALUE);
+
         values.put(LauncherSettings.Favorites._ID, item.id);
 
         final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
@@ -1727,17 +1731,20 @@ public class LauncherModel extends BroadcastReceiver
 
             if ((mFlags & LOADER_FLAG_CLEAR_WORKSPACE) != 0) {
                 Log.d(TAG, "loadWorkspace: resetting launcher database");
-                LauncherAppState.getLauncherProvider().deleteDatabase();
+                LauncherSettings.Settings.call(contentResolver,
+                        LauncherSettings.Settings.METHOD_DELETE_DB);
             }
 
             if ((mFlags & LOADER_FLAG_MIGRATE_SHORTCUTS) != 0) {
                 // append the user's Launcher2 shortcuts
                 Log.d(TAG, "loadWorkspace: migrating from launcher2");
-                LauncherAppState.getLauncherProvider().migrateLauncher2Shortcuts();
+                LauncherSettings.Settings.call(contentResolver,
+                        LauncherSettings.Settings.METHOD_MIGRATE_LAUNCHER2_SHORTCUTS);
             } else {
                 // Make sure the default workspace is loaded
                 Log.d(TAG, "loadWorkspace: loading default favorites");
-                LauncherAppState.getLauncherProvider().loadDefaultFavoritesIfNecessary();
+                LauncherSettings.Settings.call(contentResolver,
+                        LauncherSettings.Settings.METHOD_LOAD_DEFAULT_FAVORITES);
             }
 
             synchronized (sBgLock) {
@@ -2232,8 +2239,11 @@ public class LauncherModel extends BroadcastReceiver
                     }
 
                     // Remove any empty folder
-                    for (long folderId : LauncherAppState.getLauncherProvider()
-                            .deleteEmptyFolders()) {
+                    ArrayList<Long> deletedFolderIds = (ArrayList<Long>) LauncherSettings.Settings
+                            .call(contentResolver,
+                                    LauncherSettings.Settings.METHOD_DELETE_EMPTY_FOLDERS)
+                            .getSerializable(LauncherSettings.Settings.EXTRA_VALUE);
+                    for (long folderId : deletedFolderIds) {
                         sBgWorkspaceItems.remove(sBgFolders.get(folderId));
                         sBgFolders.remove(folderId);
                         sBgItemsIdMap.remove(folderId);
