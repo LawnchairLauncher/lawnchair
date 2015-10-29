@@ -77,26 +77,23 @@ public class LauncherProvider extends ContentProvider {
 
     private static final String RESTRICTION_PACKAGE_NAME = "workspace.configuration.package.name";
 
+    private static final Object LISTENER_LOCK = new Object();
     @Thunk LauncherProviderChangeListener mListener;
     @Thunk DatabaseHelper mOpenHelper;
 
     @Override
     public boolean onCreate() {
-        final Context context = getContext();
-        // The content provider exists for the entire duration of the launcher main process and
-        // is the first component to get created. Initializing application context here ensures
-        // that LauncherAppState always exists in the main process.
-        LauncherAppState.setApplicationContext(context.getApplicationContext());
-        StrictMode.ThreadPolicy oldPolicy = StrictMode.allowThreadDiskWrites();
-        mOpenHelper = new DatabaseHelper(context);
-        StrictMode.setThreadPolicy(oldPolicy);
         LauncherAppState.setLauncherProvider(this);
         return true;
     }
 
+    /**
+     * Sets a provider listener.
+     */
     public void setLauncherProviderChangeListener(LauncherProviderChangeListener listener) {
-        mListener = listener;
-        mOpenHelper.mListener = mListener;
+        synchronized (LISTENER_LOCK) {
+            mListener = listener;
+        }
     }
 
     @Override
@@ -109,9 +106,16 @@ public class LauncherProvider extends ContentProvider {
         }
     }
 
+    private synchronized void createDbIfNotExists() {
+        if (mOpenHelper == null) {
+            mOpenHelper = new DatabaseHelper(getContext(), this);
+        }
+    }
+
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
             String[] selectionArgs, String sortOrder) {
+        createDbIfNotExists();
 
         SqlArguments args = new SqlArguments(uri, selection, selectionArgs);
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
@@ -147,6 +151,7 @@ public class LauncherProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues initialValues) {
+        createDbIfNotExists();
         SqlArguments args = new SqlArguments(uri);
 
         // In very limited cases, we support system|signature permission apps to modify the db.
@@ -181,9 +186,9 @@ public class LauncherProvider extends ContentProvider {
         return uri;
     }
 
-
     @Override
     public int bulkInsert(Uri uri, ContentValues[] values) {
+        createDbIfNotExists();
         SqlArguments args = new SqlArguments(uri);
 
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
@@ -209,6 +214,7 @@ public class LauncherProvider extends ContentProvider {
     @Override
     public ContentProviderResult[] applyBatch(ArrayList<ContentProviderOperation> operations)
             throws OperationApplicationException {
+        createDbIfNotExists();
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         db.beginTransaction();
         try {
@@ -223,6 +229,7 @@ public class LauncherProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
+        createDbIfNotExists();
         SqlArguments args = new SqlArguments(uri, selection, selectionArgs);
 
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
@@ -235,6 +242,7 @@ public class LauncherProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        createDbIfNotExists();
         SqlArguments args = new SqlArguments(uri, selection, selectionArgs);
 
         addModifiedTime(values);
@@ -251,6 +259,7 @@ public class LauncherProvider extends ContentProvider {
         if (Binder.getCallingUid() != Process.myUid()) {
             return null;
         }
+        createDbIfNotExists();
 
         switch (method) {
             case LauncherSettings.Settings.METHOD_GET_BOOLEAN: {
@@ -263,8 +272,10 @@ public class LauncherProvider extends ContentProvider {
             case LauncherSettings.Settings.METHOD_SET_BOOLEAN: {
                 boolean value = extras.getBoolean(LauncherSettings.Settings.EXTRA_VALUE);
                 Utilities.getPrefs(getContext()).edit().putBoolean(arg, value).apply();
-                if (mListener != null) {
-                    mListener.onSettingsChanged(arg, value);
+                synchronized (LISTENER_LOCK) {
+                    if (mListener != null) {
+                        mListener.onSettingsChanged(arg, value);
+                    }
                 }
                 Bundle result = new Bundle();
                 result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE, value);
@@ -357,8 +368,10 @@ public class LauncherProvider extends ContentProvider {
     private void notifyListeners() {
         // always notify the backup agent
         LauncherBackupAgentHelper.dataChanged(getContext());
-        if (mListener != null) {
-            mListener.onLauncherProviderChange();
+        synchronized (LISTENER_LOCK) {
+            if (mListener != null) {
+                mListener.onLauncherProviderChange();
+            }
         }
     }
 
@@ -477,23 +490,41 @@ public class LauncherProvider extends ContentProvider {
         if (dbFile.exists()) {
             SQLiteDatabase.deleteDatabase(dbFile);
         }
-        mOpenHelper = new DatabaseHelper(getContext());
-        mOpenHelper.mListener = mListener;
+        mOpenHelper = new DatabaseHelper(getContext(), this);
+    }
+
+    /**
+     * Send notification that we've deleted the {@link AppWidgetHost},
+     * probably as part of the initial database creation. The receiver may
+     * want to re-call {@link AppWidgetHost#startListening()} to ensure
+     * callbacks are correctly set.
+     */
+    @Thunk void notifyAppHostReset() {
+        new MainThreadExecutor().execute(new Runnable() {
+
+            @Override
+            public void run() {
+                synchronized (LISTENER_LOCK) {
+                    if (mListener != null) {
+                        mListener.onAppWidgetHostReset();
+                    }
+                }
+            }
+        });
     }
 
     private static class DatabaseHelper extends SQLiteOpenHelper implements LayoutParserCallback {
+        private final LauncherProvider mProvider;
         private final Context mContext;
         @Thunk final AppWidgetHost mAppWidgetHost;
         private long mMaxItemId = -1;
         private long mMaxScreenId = -1;
 
-        private boolean mNewDbCreated = false;
-
-        @Thunk LauncherProviderChangeListener mListener;
-
-        DatabaseHelper(Context context) {
+        DatabaseHelper(Context context, LauncherProvider provider) {
             super(context, LauncherFiles.LAUNCHER_DB, null, DATABASE_VERSION);
             mContext = context;
+            mProvider = provider;
+
             mAppWidgetHost = new AppWidgetHost(context, Launcher.APPWIDGET_HOST_ID);
 
             // Table creation sometimes fails silently, which leads to a crash loop.
@@ -528,17 +559,12 @@ public class LauncherProvider extends ContentProvider {
             }
         }
 
-        public boolean wasNewDbCreated() {
-            return mNewDbCreated;
-        }
-
         @Override
         public void onCreate(SQLiteDatabase db) {
             if (LOGD) Log.d(TAG, "creating new launcher database");
 
             mMaxItemId = 1;
             mMaxScreenId = 0;
-            mNewDbCreated = true;
 
             addFavoritesTable(db, false);
             addWorkspacesTable(db, false);
@@ -546,22 +572,7 @@ public class LauncherProvider extends ContentProvider {
             // Database was just created, so wipe any previous widgets
             if (mAppWidgetHost != null) {
                 mAppWidgetHost.deleteHost();
-
-                /**
-                 * Send notification that we've deleted the {@link AppWidgetHost},
-                 * probably as part of the initial database creation. The receiver may
-                 * want to re-call {@link AppWidgetHost#startListening()} to ensure
-                 * callbacks are correctly set.
-                 */
-                new MainThreadExecutor().execute(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        if (mListener != null) {
-                            mListener.onAppWidgetHostReset();
-                        }
-                    }
-                });
+                mProvider.notifyAppHostReset();
             }
 
             // Fresh and clean launcher DB.

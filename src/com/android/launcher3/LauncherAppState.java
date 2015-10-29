@@ -65,11 +65,17 @@ public class LauncherAppState {
         return sContext;
     }
 
-    public static void setApplicationContext(Context context) {
-        if (sContext != null) {
-            Log.w(Launcher.TAG, "setApplicationContext called twice! old=" + sContext + " new=" + context);
+    static void setLauncherProvider(LauncherProvider provider) {
+        if (sLauncherProvider != null) {
+            Log.w(Launcher.TAG, "setLauncherProvider called twice! old=" +
+                    sLauncherProvider.get() + " new=" + provider);
         }
-        sContext = context.getApplicationContext();
+        sLauncherProvider = new WeakReference<>(provider);
+
+        // The content provider exists for the entire duration of the launcher main process and
+        // is the first component to get created. Initializing application context here ensures
+        // that LauncherAppState always exists in the main process.
+        sContext = provider.getContext().getApplicationContext();
     }
 
     private LauncherAppState() {
@@ -151,10 +157,6 @@ public class LauncherAppState {
 
     public LauncherModel getModel() {
         return mModel;
-    }
-
-    static void setLauncherProvider(LauncherProvider provider) {
-        sLauncherProvider = new WeakReference<LauncherProvider>(provider);
     }
 
     public WidgetPreviewLoader getWidgetCache() {
