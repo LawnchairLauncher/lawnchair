@@ -44,7 +44,7 @@ public class DefaultWallpaperInfo extends DrawableThumbWallpaperInfo {
 
             @Override
             public float getParallaxOffset() {
-                return 0;
+                return 0.5f;
             }
         }, null);
     }
