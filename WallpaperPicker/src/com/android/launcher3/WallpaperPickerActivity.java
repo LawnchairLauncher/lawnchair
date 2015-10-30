@@ -309,7 +309,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
 
                 @Override
                 public float getParallaxOffset() {
-                    return 0;
+                    return 0.5f;
                 }
             };
             req.result = new DrawableTileSource(a.getContext(),
