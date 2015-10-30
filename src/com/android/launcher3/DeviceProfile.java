@@ -582,7 +582,7 @@ public class DeviceProfile {
             targetsLp.height = LayoutParams.WRAP_CONTENT;
         } else {
             // Horizontal drop target bar space
-            lp.gravity = verticalGravity;
+            lp.gravity = verticalGravity | Gravity.CENTER_HORIZONTAL;
             lp.height = searchBarSpaceHeightPx;
         }
         return lp;
