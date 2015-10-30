@@ -431,6 +431,7 @@ public class LauncherModel extends BroadcastReceiver
      * @return screenId and the coordinates for the item.
      */
     @Thunk Pair<Long, int[]> findSpaceForItem(
+            Context context,
             ArrayList<Long> workspaceScreens,
             ArrayList<Long> addedWorkspaceScreensFinal,
             int spanX, int spanY) {
@@ -526,7 +527,7 @@ public class LauncherModel extends BroadcastReceiver
                         }
 
                         // Find appropriate space for the item.
-                        Pair<Long, int[]> coords = findSpaceForItem(
+                        Pair<Long, int[]> coords = findSpaceForItem(context,
                                 workspaceScreens, addedWorkspaceScreensFinal, 1, 1);
                         long screenId = coords.first;
                         int[] cordinates = coords.second;
