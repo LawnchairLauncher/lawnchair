@@ -29,9 +29,7 @@ import com.android.launcher3.accessibility.DragViewStateAnnouncer;
  */
 public interface DropTarget {
 
-    public static final String TAG = "DropTarget";
-
-    public static class DragObject {
+    class DragObject {
         public int x = -1;
         public int y = -1;
 
@@ -154,7 +152,4 @@ public interface DropTarget {
 
     // These methods are implemented in Views
     void getHitRectRelativeToDragLayer(Rect outRect);
-    void getLocationInDragLayer(int[] loc);
-    int getLeft();
-    int getTop();
 }

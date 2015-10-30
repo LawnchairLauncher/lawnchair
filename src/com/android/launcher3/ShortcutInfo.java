@@ -247,15 +247,6 @@ public class ShortcutInfo extends ItemInfo {
                 + " user=" + user + ")";
     }
 
-    public static void dumpShortcutInfoList(String tag, String label,
-            ArrayList<ShortcutInfo> list) {
-        Log.d(tag, label + " size=" + list.size());
-        for (ShortcutInfo info: list) {
-            Log.d(tag, "   title=\"" + info.title + " icon=" + info.mIcon
-                    + " customIcon=" + info.customIcon);
-        }
-    }
-
     public ComponentName getTargetComponent() {
         return promisedIntent != null ? promisedIntent.getComponent() : intent.getComponent();
     }

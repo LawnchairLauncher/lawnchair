@@ -61,13 +61,4 @@ public class AnotherWindowDropTarget implements DropTarget {
     // These methods are implemented in Views
     @Override
     public void getHitRectRelativeToDragLayer(Rect outRect) {}
-
-    @Override
-    public void getLocationInDragLayer(int[] loc) {}
-
-    @Override
-    public int getLeft() { return 0; }
-
-    @Override
-    public int getTop() { return 0; }
 }

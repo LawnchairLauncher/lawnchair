@@ -360,9 +360,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         mDragInfo = dragInfo;
     }
 
-    public void onDragOver(Object dragInfo) {
-    }
-
     OnAlarmListener mOnOpenListener = new OnAlarmListener() {
         public void onAlarm(Alarm alarm) {
             ShortcutInfo item;

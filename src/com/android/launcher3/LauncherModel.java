@@ -431,7 +431,6 @@ public class LauncherModel extends BroadcastReceiver
      * @return screenId and the coordinates for the item.
      */
     @Thunk Pair<Long, int[]> findSpaceForItem(
-            Context context,
             ArrayList<Long> workspaceScreens,
             ArrayList<Long> addedWorkspaceScreensFinal,
             int spanX, int spanY) {
@@ -527,9 +526,8 @@ public class LauncherModel extends BroadcastReceiver
                         }
 
                         // Find appropriate space for the item.
-                        Pair<Long, int[]> coords = findSpaceForItem(context,
-                                workspaceScreens, addedWorkspaceScreensFinal,
-                                1, 1);
+                        Pair<Long, int[]> coords = findSpaceForItem(
+                                workspaceScreens, addedWorkspaceScreensFinal, 1, 1);
                         long screenId = coords.first;
                         int[] cordinates = coords.second;
 
@@ -926,51 +924,6 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     /**
-     * Find a folder in the db, creating the FolderInfo if necessary, and adding it to folderList.
-     */
-    FolderInfo getFolderById(Context context, LongArrayMap<FolderInfo> folderList, long id) {
-        final ContentResolver cr = context.getContentResolver();
-        Cursor c = cr.query(LauncherSettings.Favorites.CONTENT_URI, null,
-                "_id=? and (itemType=? or itemType=?)",
-                new String[] { String.valueOf(id),
-                        String.valueOf(LauncherSettings.Favorites.ITEM_TYPE_FOLDER)}, null);
-
-        try {
-            if (c.moveToFirst()) {
-                final int itemTypeIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ITEM_TYPE);
-                final int titleIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.TITLE);
-                final int containerIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CONTAINER);
-                final int screenIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.SCREEN);
-                final int cellXIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLX);
-                final int cellYIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.CELLY);
-                final int optionsIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.OPTIONS);
-
-                FolderInfo folderInfo = null;
-                switch (c.getInt(itemTypeIndex)) {
-                    case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
-                        folderInfo = findOrMakeFolder(folderList, id);
-                        break;
-                }
-
-                // Do not trim the folder label, as is was set by the user.
-                folderInfo.title = c.getString(titleIndex);
-                folderInfo.id = id;
-                folderInfo.container = c.getInt(containerIndex);
-                folderInfo.screenId = c.getInt(screenIndex);
-                folderInfo.cellX = c.getInt(cellXIndex);
-                folderInfo.cellY = c.getInt(cellYIndex);
-                folderInfo.options = c.getInt(optionsIndex);
-
-                return folderInfo;
-            }
-        } finally {
-            c.close();
-        }
-
-        return null;
-    }
-
-    /**
      * Add an item to the database in a specified container. Sets the container, screen, cellX and
      * cellY fields of the item. Also assigns an ID to the item.
      */
@@ -1032,15 +985,6 @@ public class LauncherModel extends BroadcastReceiver
             }
         };
         runOnWorkerThread(r);
-    }
-
-    /**
-     * Creates a new unique child id, for a given cell span across all layouts.
-     */
-    static int getCellLayoutChildId(
-            long container, long screen, int localCellX, int localCellY, int spanX, int spanY) {
-        return (((int) container & 0xFF) << 24)
-                | ((int) screen & 0xFF) << 16 | (localCellX & 0xFF) << 8 | (localCellY & 0xFF);
     }
 
     private static ArrayList<ItemInfo> getItemsByPackageName(
@@ -1394,10 +1338,6 @@ public class LauncherModel extends BroadcastReceiver
             sc.close();
         }
         return screenIds;
-    }
-
-    public boolean isAllAppsLoaded() {
-        return mAllAppsLoaded;
     }
 
     /**

@@ -166,11 +166,9 @@ public class DragController implements DragDriver.EventListener {
      * @param bmp The bitmap that represents the view being dragged
      * @param source An object representing where the drag originated
      * @param dragInfo The data associated with the object that is being dragged
+     * @param viewImageBounds the position of the image inside the view
      * @param dragAction The drag action: either {@link #DRAG_ACTION_MOVE} or
      *        {@link #DRAG_ACTION_COPY}
-     * @param viewImageBounds the position of the image inside the view
-     * @param dragRegion Coordinates within the bitmap b for the position of item being dragged.
-     *          Makes dragging feel more precise, e.g. you can clip out a transparent border
      */
     public void startDrag(View v, Bitmap bmp, DragSource source, ItemInfo dragInfo,
             Rect viewImageBounds, int dragAction, float initialDragViewScale) {
@@ -266,44 +264,6 @@ public class DragController implements DragDriver.EventListener {
         dragView.show(mMotionDownX, mMotionDownY);
         handleMoveEvent(mMotionDownX, mMotionDownY);
         return dragView;
-    }
-
-    /**
-     * Draw the view into a bitmap.
-     */
-    Bitmap getViewBitmap(View v) {
-        v.clearFocus();
-        v.setPressed(false);
-
-        boolean willNotCache = v.willNotCacheDrawing();
-        v.setWillNotCacheDrawing(false);
-
-        // Reset the drawing cache background color to fully transparent
-        // for the duration of this operation
-        int color = v.getDrawingCacheBackgroundColor();
-        v.setDrawingCacheBackgroundColor(0);
-        float alpha = v.getAlpha();
-        v.setAlpha(1.0f);
-
-        if (color != 0) {
-            v.destroyDrawingCache();
-        }
-        v.buildDrawingCache();
-        Bitmap cacheBitmap = v.getDrawingCache();
-        if (cacheBitmap == null) {
-            Log.e(TAG, "failed getViewBitmap(" + v + ")", new RuntimeException());
-            return null;
-        }
-
-        Bitmap bitmap = Bitmap.createBitmap(cacheBitmap);
-
-        // Restore the view
-        v.destroyDrawingCache();
-        v.setAlpha(alpha);
-        v.setWillNotCacheDrawing(willNotCache);
-        v.setDrawingCacheBackgroundColor(color);
-
-        return bitmap;
     }
 
     /**
