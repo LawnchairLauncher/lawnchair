@@ -52,6 +52,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
@@ -3589,17 +3590,17 @@ public class Launcher extends Activity
             DeviceProfile portraitProfile = app.getInvariantDeviceProfile().portraitProfile;
             DeviceProfile landscapeProfile = app.getInvariantDeviceProfile().landscapeProfile;
             float density = getResources().getDisplayMetrics().density;
-            Rect searchBounds = portraitProfile.getSearchBarBounds(Utilities.isRtl(getResources()));
-            int maxHeight = (int) (searchBounds.height() / density);
+            Point searchDimens = portraitProfile.getSearchBarDimensForWidgetOpts(getResources());
+            int maxHeight = (int) (searchDimens.y / density);
             int minHeight = maxHeight;
-            int maxWidth = (int) (searchBounds.width() / density);
+            int maxWidth = (int) (searchDimens.x / density);
             int minWidth = maxWidth;
             if (!landscapeProfile.isVerticalBarLayout()) {
-                searchBounds = landscapeProfile.getSearchBarBounds(Utilities.isRtl(getResources()));
-                maxHeight = (int) Math.max(maxHeight, searchBounds.height() / density);
-                minHeight = (int) Math.min(minHeight, searchBounds.height() / density);
-                maxWidth = (int) Math.max(maxWidth, searchBounds.width() / density);
-                minWidth = (int) Math.min(minWidth, searchBounds.width() / density);
+                searchDimens = landscapeProfile.getSearchBarDimensForWidgetOpts(getResources());
+                maxHeight = (int) Math.max(maxHeight, searchDimens.y / density);
+                minHeight = (int) Math.min(minHeight, searchDimens.y / density);
+                maxWidth = (int) Math.max(maxWidth, searchDimens.x / density);
+                minWidth = (int) Math.min(minWidth, searchDimens.x / density);
             }
             opts.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, maxHeight);
             opts.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, minHeight);
