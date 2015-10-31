@@ -210,8 +210,26 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         });
         mFolderName.setOnFocusChangeListener(this);
 
-        // We disable action mode for now since it messes up the view on phones
-        mFolderName.setCustomSelectionActionModeCallback(mActionModeCallback);
+        if (!Utilities.ATLEAST_MARSHMALLOW) {
+            // We disable action mode in older OSes where floating selection menu is not yet
+            // available.
+            mFolderName.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
+                public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                    return false;
+                }
+
+                public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                    return false;
+                }
+
+                public void onDestroyActionMode(ActionMode mode) {
+                }
+
+                public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                    return false;
+                }
+            });
+        }
         mFolderName.setOnEditorActionListener(this);
         mFolderName.setSelectAllOnFocus(true);
         mFolderName.setInputType(mFolderName.getInputType() |
@@ -225,23 +243,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mFooter.measure(measureSpec, measureSpec);
         mFooterHeight = mFooter.getMeasuredHeight();
     }
-
-    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            return false;
-        }
-
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            return false;
-        }
-
-        public void onDestroyActionMode(ActionMode mode) {
-        }
-
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return false;
-        }
-    };
 
     public void onClick(View v) {
         Object tag = v.getTag();
