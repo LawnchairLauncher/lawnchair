@@ -2047,11 +2047,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         whichPage = validateNewPage(whichPage);
 
         mNextPage = whichPage;
-        View focusedChild = getFocusedChild();
-        if (focusedChild != null && whichPage != mCurrentPage &&
-                focusedChild == getPageAt(mCurrentPage)) {
-            focusedChild.clearFocus();
-        }
 
         pageBeginMoving();
         awakenScrollBars(duration);

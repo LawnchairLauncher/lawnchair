@@ -398,7 +398,6 @@ public class FocusHelper {
                 if (newIconIndex == FocusLogic.PREVIOUS_PAGE_LEFT_COLUMN) {
                     newPageIndex = pageIndex - 1;
                 }
-                workspace.snapToPage(newPageIndex);
                 row = ((CellLayout.LayoutParams) v.getLayoutParams()).cellY;
                 parent = getCellLayoutChildrenForIndex(workspace, newPageIndex);
                 if (parent != null) {
