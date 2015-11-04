@@ -159,6 +159,7 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
         public enum State { NOT_LOADED, LOADED, ERROR_LOADING };
         private State mState = State.NOT_LOADED;
 
+        /** Returns whether loading was successful. */
         public boolean loadInBackground(InBitmapProvider bitmapProvider) {
             ExifInterface ei = new ExifInterface();
             if (readExif(ei)) {
@@ -193,7 +194,7 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
                         try {
                             mPreview = loadPreviewBitmap(opts);
                         } catch (IllegalArgumentException e) {
-                            Log.d(TAG, "Unable to reusage bitmap", e);
+                            Log.d(TAG, "Unable to reuse bitmap", e);
                             opts.inBitmap = null;
                             mPreview = null;
                         }
@@ -201,6 +202,10 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
                 }
                 if (mPreview == null) {
                     mPreview = loadPreviewBitmap(opts);
+                }
+                if (mPreview == null) {
+                    mState = State.ERROR_LOADING;
+                    return false;
                 }
 
                 // Verify that the bitmap can be used on GL surface
@@ -212,7 +217,7 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
                     Log.d(TAG, "Image cannot be rendered on a GL surface", e);
                     mState = State.ERROR_LOADING;
                 }
-                return true;
+                return mState == State.LOADED;
             }
         }
 
@@ -310,7 +315,7 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
                 Bitmap b = BitmapFactory.decodeStream(is, null, options);
                 Utils.closeSilently(is);
                 return b;
-            } catch (FileNotFoundException e) {
+            } catch (FileNotFoundException | OutOfMemoryError e) {
                 Log.e("BitmapRegionTileSource", "Failed to load URI " + mUri, e);
                 return null;
             }
@@ -412,7 +417,8 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
                         "Failed to create preview of apropriate size! "
                         + " in: %dx%d, out: %dx%d",
                         mWidth, mHeight,
-                        preview.getWidth(), preview.getHeight()));
+                        preview == null ? -1 : preview.getWidth(),
+                        preview == null ? -1 : preview.getHeight()));
             }
         }
     }
