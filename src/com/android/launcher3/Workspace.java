@@ -359,7 +359,7 @@ public class Workspace extends PagedView
         if (getChildCount() > 0) {
             // Use the first non-custom page to estimate the child position
             CellLayout cl = (CellLayout) getChildAt(numCustomPages());
-            Rect r = estimateItemPosition(cl, itemInfo, 0, 0, itemInfo.spanX, itemInfo.spanY);
+            Rect r = estimateItemPosition(cl, 0, 0, itemInfo.spanX, itemInfo.spanY);
             size[0] = r.width();
             size[1] = r.height();
             if (springLoaded) {
@@ -374,8 +374,7 @@ public class Workspace extends PagedView
         }
     }
 
-    public Rect estimateItemPosition(CellLayout cl, ItemInfo pendingInfo,
-            int hCell, int vCell, int hSpan, int vSpan) {
+    public Rect estimateItemPosition(CellLayout cl, int hCell, int vCell, int hSpan, int vSpan) {
         Rect r = new Rect();
         cl.cellToRect(hCell, vCell, hSpan, vSpan, r);
         return r;
@@ -3251,7 +3250,6 @@ public class Workspace extends PagedView
 
             if (!nearestDropOccupied) {
                 mDragTargetLayout.visualizeDropLocation(child, mDragOutline,
-                        (int) mDragViewVisualCenter[0], (int) mDragViewVisualCenter[1],
                         mTargetCell[0], mTargetCell[1], item.spanX, item.spanY, false, d);
             } else if ((mDragMode == DRAG_MODE_NONE || mDragMode == DRAG_MODE_REORDER)
                     && !mReorderAlarm.alarmPending() && (mLastReorderX != reorderX ||
@@ -3393,7 +3391,6 @@ public class Workspace extends PagedView
 
             boolean resize = resultSpan[0] != spanX || resultSpan[1] != spanY;
             mDragTargetLayout.visualizeDropLocation(child, mDragOutline,
-                (int) mDragViewVisualCenter[0], (int) mDragViewVisualCenter[1],
                 mTargetCell[0], mTargetCell[1], resultSpan[0], resultSpan[1], resize, dragObject);
         }
     }
@@ -3617,14 +3614,13 @@ public class Workspace extends PagedView
     }
 
     private void getFinalPositionForDropAnimation(int[] loc, float[] scaleXY,
-            DragView dragView, CellLayout layout, ItemInfo info, int[] targetCell,
-            boolean external, boolean scale) {
+            DragView dragView, CellLayout layout, ItemInfo info, int[] targetCell, boolean scale) {
         // Now we animate the dragView, (ie. the widget or shortcut preview) into its final
         // location and size on the home screen.
         int spanX = info.spanX;
         int spanY = info.spanY;
 
-        Rect r = estimateItemPosition(layout, info, targetCell[0], targetCell[1], spanX, spanY);
+        Rect r = estimateItemPosition(layout, targetCell[0], targetCell[1], spanX, spanY);
         loc[0] = r.left;
         loc[1] = r.top;
 
@@ -3645,14 +3641,15 @@ public class Workspace extends PagedView
 
         // The animation will scale the dragView about its center, so we need to center about
         // the final location.
-        loc[0] -= (dragView.getMeasuredWidth() - cellLayoutScale * r.width()) / 2;
+        loc[0] -= (dragView.getMeasuredWidth() - cellLayoutScale * r.width()) / 2
+                - Math.ceil(layout.getUnusedHorizontalSpace() / 2f);
         loc[1] -= (dragView.getMeasuredHeight() - cellLayoutScale * r.height()) / 2;
 
         scaleXY[0] = dragViewScaleX * cellLayoutScale;
         scaleXY[1] = dragViewScaleY * cellLayoutScale;
     }
 
-    public void animateWidgetDrop(ItemInfo info, CellLayout cellLayout, DragView dragView,
+    public void animateWidgetDrop(ItemInfo info, CellLayout cellLayout, final DragView dragView,
             final Runnable onCompleteRunnable, int animationType, final View finalView,
             boolean external) {
         Rect from = new Rect();
@@ -3662,7 +3659,7 @@ public class Workspace extends PagedView
         float scaleXY[] = new float[2];
         boolean scalePreview = !(info instanceof PendingAddShortcutInfo);
         getFinalPositionForDropAnimation(finalPos, scaleXY, dragView, cellLayout, info, mTargetCell,
-                external, scalePreview);
+                scalePreview);
 
         Resources res = mLauncher.getResources();
         final int duration = res.getInteger(R.integer.config_dropAnimMaxDuration) - 200;
@@ -3686,7 +3683,7 @@ public class Workspace extends PagedView
             if (animationType == ANIMATE_INTO_POSITION_AND_REMAIN) {
                 endStyle = DragLayer.ANIMATION_END_REMAIN_VISIBLE;
             } else {
-                endStyle = DragLayer.ANIMATION_END_DISAPPEAR;;
+                endStyle = DragLayer.ANIMATION_END_DISAPPEAR;
             }
 
             Runnable onComplete = new Runnable() {

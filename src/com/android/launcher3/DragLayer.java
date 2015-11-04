@@ -565,10 +565,6 @@ public class DragLayer extends InsettableFrameLayout {
         resizeFrame.snapToWidget(false);
     }
 
-    public void animateViewIntoPosition(DragView dragView, final View child) {
-        animateViewIntoPosition(dragView, child, null, null);
-    }
-
     public void animateViewIntoPosition(DragView dragView, final int[] pos, float alpha,
             float scaleX, float scaleY, int animationEndStyle, Runnable onFinishRunnable,
             int duration) {
