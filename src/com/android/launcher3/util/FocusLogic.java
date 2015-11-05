@@ -346,6 +346,18 @@ public class FocusLogic {
                 }
             }
         }
+
+        // Rule 3: if switching between pages, do a brute-force search to find an item that was
+        //         missed by rules 1 and 2 (such as when going from a bottom right icon to top left)
+        if (iconIdx == PIVOT) {
+            for (int x = xPos + increment; 0 <= x && x < cntX; x = x + increment) {
+                for (int y = 0; y < cntY; y++) {
+                    if ((newIconIndex = inspectMatrix(x, y, cntX, cntY, matrix)) != NOOP) {
+                        return newIconIndex;
+                    }
+                }
+            }
+        }
         return newIconIndex;
     }
 
