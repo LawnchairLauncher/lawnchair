@@ -142,7 +142,8 @@ public class FocusHelper {
                     newParent = getCellLayoutChildrenForIndex(pagedView, pageIndex + 1);
                     if (newParent != null) {
                         pagedView.snapToPage(pageIndex + 1);
-                        child = FocusLogic.getAdjacentChildInNextPage(newParent, v, newIconIndex);
+                        child = FocusLogic.getAdjacentChildInNextFolderPage(
+                                newParent, v, newIconIndex);
                     }
                     break;
                 case FocusLogic.CURRENT_PAGE_FIRST_ITEM:
@@ -364,9 +365,7 @@ public class FocusHelper {
                 }
                 int row = ((CellLayout.LayoutParams) v.getLayoutParams()).cellY;
                 parent = getCellLayoutChildrenForIndex(workspace, newPageIndex);
-                workspace.snapToPage(newPageIndex);
                 if (parent != null) {
-                    workspace.snapToPage(newPageIndex);
                     iconLayout = (CellLayout) parent.getParent();
                     matrix = FocusLogic.createSparseMatrix(iconLayout,
                         iconLayout.getCountX(), row);
@@ -379,17 +378,14 @@ public class FocusHelper {
             case FocusLogic.PREVIOUS_PAGE_FIRST_ITEM:
                 parent = getCellLayoutChildrenForIndex(workspace, pageIndex - 1);
                 newIcon = parent.getChildAt(0);
-                workspace.snapToPage(pageIndex - 1);
                 break;
             case FocusLogic.PREVIOUS_PAGE_LAST_ITEM:
                 parent = getCellLayoutChildrenForIndex(workspace, pageIndex - 1);
                 newIcon = parent.getChildAt(parent.getChildCount() - 1);
-                workspace.snapToPage(pageIndex - 1);
                 break;
             case FocusLogic.NEXT_PAGE_FIRST_ITEM:
                 parent = getCellLayoutChildrenForIndex(workspace, pageIndex + 1);
                 newIcon = parent.getChildAt(0);
-                workspace.snapToPage(pageIndex + 1);
                 break;
             case FocusLogic.NEXT_PAGE_LEFT_COLUMN:
             case FocusLogic.PREVIOUS_PAGE_LEFT_COLUMN:
@@ -400,7 +396,6 @@ public class FocusHelper {
                 row = ((CellLayout.LayoutParams) v.getLayoutParams()).cellY;
                 parent = getCellLayoutChildrenForIndex(workspace, newPageIndex);
                 if (parent != null) {
-                    workspace.snapToPage(newPageIndex);
                     iconLayout = (CellLayout) parent.getParent();
                     matrix = FocusLogic.createSparseMatrix(iconLayout, -1, row);
                     newIconIndex = FocusLogic.handleKeyEvent(keyCode, countX + 1, countY,

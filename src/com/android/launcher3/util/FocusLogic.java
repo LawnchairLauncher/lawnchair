@@ -494,9 +494,9 @@ public class FocusLogic {
     /**
      * @param edgeColumn the column of the new icon. either {@link #NEXT_PAGE_LEFT_COLUMN} or
      * {@link #NEXT_PAGE_RIGHT_COLUMN}
-     * @return the view adjacent to {@param oldView} in the {@param nextPage}.
+     * @return the view adjacent to {@param oldView} in the {@param nextPage} of the folder.
      */
-    public static View getAdjacentChildInNextPage(
+    public static View getAdjacentChildInNextFolderPage(
             ShortcutAndWidgetContainer nextPage, View oldView, int edgeColumn) {
         final int newRow = ((CellLayout.LayoutParams) oldView.getLayoutParams()).cellY;
 
