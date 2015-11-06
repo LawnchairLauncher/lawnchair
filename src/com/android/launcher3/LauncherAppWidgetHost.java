@@ -20,6 +20,7 @@ import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
+import android.os.DeadObjectException;
 import android.os.TransactionTooLargeException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,7 +70,8 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         try {
             super.startListening();
         } catch (Exception e) {
-            if (e.getCause() instanceof TransactionTooLargeException) {
+            if (e.getCause() instanceof TransactionTooLargeException ||
+                    e.getCause() instanceof DeadObjectException) {
                 // We're willing to let this slide. The exception is being caused by the list of
                 // RemoteViews which is being passed back. The startListening relationship will
                 // have been established by this point, and we will end up populating the
