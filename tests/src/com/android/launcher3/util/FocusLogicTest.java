@@ -57,4 +57,39 @@ public final class FocusLogicTest extends AndroidTestCase {
          // may get created in real world to test this method. OR 2) Move all the matrix
          // management routine to celllayout and write tests for them.
     }
+
+    public void testMoveFromBottomRightToBottomLeft() {
+        int[][] map = transpose(new int[][] {
+                {-1, 0, -1, -1, -1, -1},
+                {-1, -1, -1, -1, -1, -1},
+                {-1, -1, -1, -1, -1, -1},
+                {-1, -1, -1, -1, -1, -1},
+                {100, 1, -1, -1, -1, -1},
+        });
+        int i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, 6, 5, map, 100, 1, 2, false);
+        assertEquals(1, i);
+    }
+
+    public void testMoveFromBottomRightToTopLeft() {
+        int[][] map = transpose(new int[][] {
+                {-1, 0, -1, -1, -1, -1},
+                {-1, -1, -1, -1, -1, -1},
+                {-1, -1, -1, -1, -1, -1},
+                {-1, -1, -1, -1, -1, -1},
+                {100, -1, -1, -1, -1, -1},
+        });
+        int i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, 6, 5, map, 100, 1, 2, false);
+        assertEquals(0, i);
+    }
+
+    /** Transposes the matrix so that we can write it in human-readable format in the tests. */
+    private int[][] transpose(int[][] m) {
+        int[][] t = new int[m[0].length][m.length];
+        for (int i = 0; i < m.length; i++) {
+            for (int j = 0; j < m[0].length; j++) {
+                t[j][i] = m[i][j];
+            }
+        }
+        return t;
+    }
 }
