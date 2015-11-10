@@ -63,6 +63,8 @@ public class FocusLogic {
     public static final int NEXT_PAGE_LEFT_COLUMN       = -9;
     public static final int NEXT_PAGE_RIGHT_COLUMN      = -10;
 
+    public static final int ALL_APPS_COLUMN = -11;
+
     // Matrix related constant.
     public static final int EMPTY = -1;
     public static final int PIVOT = 100;
@@ -186,22 +188,36 @@ public class FocusLogic {
      */
     // TODO: get rid of the dynamic matrix creation
     public static int[][] createSparseMatrix(CellLayout iconLayout, CellLayout hotseatLayout,
-            boolean isHorizontal, int allappsiconRank, boolean includeAllappsicon) {
+            boolean isHotseatHorizontal, int allappsiconRank) {
 
         ViewGroup iconParent = iconLayout.getShortcutsAndWidgets();
         ViewGroup hotseatParent = hotseatLayout.getShortcutsAndWidgets();
 
+        boolean moreIconsInHotseatThanWorkspace = isHotseatHorizontal ?
+                hotseatLayout.getCountX() > iconLayout.getCountX() :
+                hotseatLayout.getCountY() > iconLayout.getCountY();
+
         int m, n;
-        if (isHorizontal) {
-            m = iconLayout.getCountX();
+        if (isHotseatHorizontal) {
+            m = hotseatLayout.getCountX();
             n = iconLayout.getCountY() + hotseatLayout.getCountY();
         } else {
             m = iconLayout.getCountX() + hotseatLayout.getCountX();
-            n = iconLayout.getCountY();
+            n = hotseatLayout.getCountY();
         }
         int[][] matrix = createFullMatrix(m, n);
-
-        // Iterate thru the children of the top parent.
+        if (moreIconsInHotseatThanWorkspace) {
+            if (isHotseatHorizontal) {
+                for (int j = 0; j < n; j++) {
+                    matrix[allappsiconRank][j] = ALL_APPS_COLUMN;
+                }
+            } else {
+                for (int j = 0; j < m; j++) {
+                    matrix[j][allappsiconRank] = ALL_APPS_COLUMN;
+                }
+            }
+        }
+        // Iterate thru the children of the workspace.
         for (int i = 0; i < iconParent.getChildCount(); i++) {
             View cell = iconParent.getChildAt(i);
             if (!cell.isFocusable()) {
@@ -209,31 +225,29 @@ public class FocusLogic {
             }
             int cx = ((CellLayout.LayoutParams) cell.getLayoutParams()).cellX;
             int cy = ((CellLayout.LayoutParams) cell.getLayoutParams()).cellY;
+            if (moreIconsInHotseatThanWorkspace) {
+                if (isHotseatHorizontal && cx >= allappsiconRank) {
+                    // Add 1 to account for the All Apps button.
+                    cx++;
+                }
+                if (!isHotseatHorizontal && cy >= allappsiconRank) {
+                    // Add 1 to account for the All Apps button.
+                    cy++;
+                }
+            }
             matrix[cx][cy] = i;
         }
 
-        // Iterate thru the children of the bottom parent
-        // The hotseat view group contains one more item than iconLayout column count.
-        // If {@param allappsiconRank} not negative, then the last icon in the hotseat
-        // is truncated. If it is negative, then all apps icon index is not inserted.
-        for(int i = hotseatParent.getChildCount() - 1; i >= (includeAllappsicon ? 0 : 1); i--) {
-            int delta = 0;
-            if (isHorizontal) {
+        // Iterate thru the children of the hotseat.
+        for (int i = hotseatParent.getChildCount() - 1; i >= 0; i--) {
+            if (isHotseatHorizontal) {
                 int cx = ((CellLayout.LayoutParams)
                         hotseatParent.getChildAt(i).getLayoutParams()).cellX;
-                if ((includeAllappsicon && cx >= allappsiconRank) ||
-                        (!includeAllappsicon && cx > allappsiconRank)) {
-                        delta = -1;
-                }
-                matrix[cx + delta][iconLayout.getCountY()] = iconParent.getChildCount() + i;
+                matrix[cx][iconLayout.getCountY()] = iconParent.getChildCount() + i;
             } else {
                 int cy = ((CellLayout.LayoutParams)
                         hotseatParent.getChildAt(i).getLayoutParams()).cellY;
-                if ((includeAllappsicon && cy >= allappsiconRank) ||
-                        (!includeAllappsicon && cy > allappsiconRank)) {
-                        delta = -1;
-                }
-                matrix[iconLayout.getCountX()][cy + delta] = iconParent.getChildCount() + i;
+                matrix[iconLayout.getCountX()][cy] = iconParent.getChildCount() + i;
             }
         }
         if (DEBUG) {
@@ -323,8 +337,9 @@ public class FocusLogic {
         }
 
         // Rule1: check first in the horizontal direction
-        for (int i = xPos + increment; 0 <= i && i < cntX; i = i + increment) {
-            if ((newIconIndex = inspectMatrix(i, yPos, cntX, cntY, matrix)) != NOOP) {
+        for (int x = xPos + increment; 0 <= x && x < cntX; x += increment) {
+            if ((newIconIndex = inspectMatrix(x, yPos, cntX, cntY, matrix)) != NOOP
+                    && newIconIndex != ALL_APPS_COLUMN) {
                 return newIconIndex;
             }
         }
@@ -333,15 +348,23 @@ public class FocusLogic {
         //              (x2-n, yPos + 2*increment), (x2-n, yPos - 2*increment)
         int nextYPos1;
         int nextYPos2;
-        int i = -1;
+        int x = -1;
         for (int coeff = 1; coeff < cntY; coeff++) {
             nextYPos1 = yPos + coeff * increment;
             nextYPos2 = yPos - coeff * increment;
-            for (i = xPos + increment * coeff; 0 <= i && i < cntX; i = i + increment) {
-                if ((newIconIndex = inspectMatrix(i, nextYPos1, cntX, cntY, matrix)) != NOOP) {
+            x = xPos + increment * coeff;
+            if (inspectMatrix(x, nextYPos1, cntX, cntY, matrix) == ALL_APPS_COLUMN) {
+                nextYPos1 += increment;
+
+            }
+            if (inspectMatrix(x, nextYPos2, cntX, cntY, matrix) == ALL_APPS_COLUMN) {
+                nextYPos2 -= increment;
+            }
+            for (; 0 <= x && x < cntX; x += increment) {
+                if ((newIconIndex = inspectMatrix(x, nextYPos1, cntX, cntY, matrix)) != NOOP) {
                     return newIconIndex;
                 }
-                if ((newIconIndex = inspectMatrix(i, nextYPos2, cntX, cntY, matrix)) != NOOP) {
+                if ((newIconIndex = inspectMatrix(x, nextYPos2, cntX, cntY, matrix)) != NOOP) {
                     return newIconIndex;
                 }
             }
@@ -350,9 +373,10 @@ public class FocusLogic {
         // Rule 3: if switching between pages, do a brute-force search to find an item that was
         //         missed by rules 1 and 2 (such as when going from a bottom right icon to top left)
         if (iconIdx == PIVOT) {
-            for (int x = xPos + increment; 0 <= x && x < cntX; x = x + increment) {
+            for (x = xPos + increment; 0 <= x && x < cntX; x += increment) {
                 for (int y = 0; y < cntY; y++) {
-                    if ((newIconIndex = inspectMatrix(x, y, cntX, cntY, matrix)) != NOOP) {
+                    if ((newIconIndex = inspectMatrix(x, y, cntX, cntY, matrix)) != NOOP
+                            && newIconIndex != ALL_APPS_COLUMN) {
                         return newIconIndex;
                     }
                 }
@@ -396,8 +420,9 @@ public class FocusLogic {
         }
 
         // Rule1: check first in the dpad direction
-        for (int j = yPos + increment; 0 <= j && j <cntY && 0 <= j; j = j + increment) {
-            if ((newIconIndex = inspectMatrix(xPos, j, cntX, cntY, matrix)) != NOOP) {
+        for (int y = yPos + increment; 0 <= y && y <cntY && 0 <= y; y += increment) {
+            if ((newIconIndex = inspectMatrix(xPos, y, cntX, cntY, matrix)) != NOOP
+                    && newIconIndex != ALL_APPS_COLUMN) {
                 return newIconIndex;
             }
         }
@@ -406,15 +431,23 @@ public class FocusLogic {
         //              (xPos + 2*increment, y_(2-n))), (xPos - 2*increment, y_(2-n))
         int nextXPos1;
         int nextXPos2;
-        int j = -1;
+        int y = -1;
         for (int coeff = 1; coeff < cntX; coeff++) {
             nextXPos1 = xPos + coeff * increment;
             nextXPos2 = xPos - coeff * increment;
-            for (j = yPos + increment * coeff; 0 <= j && j < cntY; j = j + increment) {
-                if ((newIconIndex = inspectMatrix(nextXPos1, j, cntX, cntY, matrix)) != NOOP) {
+            y = yPos + increment * coeff;
+            if (inspectMatrix(nextXPos1, y, cntX, cntY, matrix) == ALL_APPS_COLUMN) {
+                nextXPos1 += increment;
+
+            }
+            if (inspectMatrix(nextXPos2, y, cntX, cntY, matrix) == ALL_APPS_COLUMN) {
+                nextXPos2 -= increment;
+            }
+            for (; 0 <= y && y < cntY; y = y + increment) {
+                if ((newIconIndex = inspectMatrix(nextXPos1, y, cntX, cntY, matrix)) != NOOP) {
                     return newIconIndex;
                 }
-                if ((newIconIndex = inspectMatrix(nextXPos2, j, cntX, cntY, matrix)) != NOOP) {
+                if ((newIconIndex = inspectMatrix(nextXPos2, y, cntX, cntY, matrix)) != NOOP) {
                     return newIconIndex;
                 }
             }
@@ -481,6 +514,7 @@ public class FocusLogic {
             case CURRENT_PAGE_LAST_ITEM:    return "CURRENT_PAGE_LAST";
             case NEXT_PAGE_FIRST_ITEM:      return "NEXT_PAGE_FIRST";
             case NEXT_PAGE_LEFT_COLUMN:     return "NEXT_PAGE_LEFT_COLUMN";
+            case ALL_APPS_COLUMN:           return "ALL_APPS_COLUMN";
             default:
                 return Integer.toString(index);
         }
