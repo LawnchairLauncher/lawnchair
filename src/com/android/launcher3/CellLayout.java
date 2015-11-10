@@ -887,9 +887,14 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        int offset = getMeasuredWidth() - getPaddingLeft() - getPaddingRight() -
-                (mCountX * mCellWidth);
-        int left = getPaddingLeft() + (int) Math.ceil(offset / 2f);
+        boolean isFullscreen = mShortcutsAndWidgets.getChildCount() > 0 &&
+                ((LayoutParams) mShortcutsAndWidgets.getChildAt(0).getLayoutParams()).isFullscreen;
+        int left = getPaddingLeft();
+        if (!isFullscreen) {
+            int offset = getMeasuredWidth() - getPaddingLeft() - getPaddingRight() -
+                    (mCountX * mCellWidth);
+            left += (int) Math.ceil(offset / 2f);
+        }
         int top = getPaddingTop();
 
         mTouchFeedbackView.layout(left, top,
