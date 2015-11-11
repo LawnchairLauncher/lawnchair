@@ -226,16 +226,8 @@ public class LauncherStateTransitionAnimation {
         // Cancel the current animation
         cancelAnimation();
 
-        // Create the workspace animation.
-        // NOTE: this call apparently also sets the state for the workspace if !animated
-        Animator workspaceAnim = mLauncher.startWorkspaceStateChangeAnimation(toWorkspaceState,
-                animated, layerViews);
-
-        // Animate the search bar
-        startWorkspaceSearchBarAnimation(animation, fromWorkspaceState, toWorkspaceState,
-                animated ? revealDuration : 0, overlaySearchBarView);
-
-        Animator updateTransitionStepAnim = dispatchOnLauncherTransitionStepAnim(fromView, toView);
+        playCommonTransitionAnimations(fromWorkspaceState, toWorkspaceState, fromView, toView,
+                overlaySearchBarView, animated, initialized, animation, revealDuration, layerViews);
 
         if (animated && initialized) {
             // Setup the reveal view animation
@@ -345,13 +337,6 @@ public class LauncherStateTransitionAnimation {
 
             });
 
-            // Play the workspace animation
-            if (workspaceAnim != null) {
-                animation.play(workspaceAnim);
-            }
-
-            animation.play(updateTransitionStepAnim);
-
             // Dispatch the prepare transition signal
             dispatchOnLauncherTransitionPrepare(fromView, animated, false);
             dispatchOnLauncherTransitionPrepare(toView, animated, false);
@@ -407,6 +392,32 @@ public class LauncherStateTransitionAnimation {
             pCb.onTransitionComplete();
 
             return null;
+        }
+    }
+
+    /**
+     * Plays animations used by various transitions.
+     */
+    private void playCommonTransitionAnimations(Workspace.State fromWorkspaceState,
+            Workspace.State toWorkspaceState, View fromView, View toView, View overlaySearchBarView,
+            boolean animated, boolean initialized, AnimatorSet animation, int revealDuration,
+            HashMap<View, Integer> layerViews) {
+        // Create the workspace animation.
+        // NOTE: this call apparently also sets the state for the workspace if !animated
+        Animator workspaceAnim = mLauncher.startWorkspaceStateChangeAnimation(toWorkspaceState,
+                animated, layerViews);
+
+        // Animate the search bar
+        startWorkspaceSearchBarAnimation(animation, fromWorkspaceState, toWorkspaceState,
+                animated ? revealDuration : 0, overlaySearchBarView);
+
+        if (animated && initialized) {
+            // Play the workspace animation
+            if (workspaceAnim != null) {
+                animation.play(workspaceAnim);
+            }
+            // Dispatch onLauncherTransitionStep() as the animation interpolates.
+            animation.play(dispatchOnLauncherTransitionStepAnim(fromView, toView));
         }
     }
 
@@ -517,18 +528,10 @@ public class LauncherStateTransitionAnimation {
         // Cancel the current animation
         cancelAnimation();
 
-        // Create the workspace animation.
-        // NOTE: this call apparently also sets the state for the workspace if !animated
-        Animator workspaceAnim = mLauncher.startWorkspaceStateChangeAnimation(toWorkspaceState,
-                animated, layerViews);
-
-        startWorkspaceSearchBarAnimation(animation, fromWorkspaceState, toWorkspaceState,
-                animated ? revealDuration : 0, null);
+        playCommonTransitionAnimations(fromWorkspaceState, toWorkspaceState, fromWorkspace, null,
+                null, animated, animated, animation, revealDuration, layerViews);
 
         if (animated) {
-            if (workspaceAnim != null) {
-                animation.play(workspaceAnim);
-            }
             dispatchOnLauncherTransitionPrepare(fromWorkspace, animated, true);
 
             final AnimatorSet stateAnimation = animation;
@@ -616,25 +619,10 @@ public class LauncherStateTransitionAnimation {
         // Cancel the current animation
         cancelAnimation();
 
-        // Create the workspace animation.
-        // NOTE: this call apparently also sets the state for the workspace if !animated
-        Animator workspaceAnim = mLauncher.startWorkspaceStateChangeAnimation(toWorkspaceState,
-                animated, layerViews);
-
-        // Animate the search bar
-        startWorkspaceSearchBarAnimation(animation, fromWorkspaceState, toWorkspaceState,
-                animated ? revealDuration : 0, overlaySearchBarView);
-
-        Animator updateTransitionStepAnim = dispatchOnLauncherTransitionStepAnim(fromView, toView);
+        playCommonTransitionAnimations(fromWorkspaceState, toWorkspaceState, fromView, toView,
+                overlaySearchBarView, animated, initialized, animation, revealDuration, layerViews);
 
         if (animated && initialized) {
-            // Play the workspace animation
-            if (workspaceAnim != null) {
-                animation.play(workspaceAnim);
-            }
-
-            animation.play(updateTransitionStepAnim);
-
             // hideAppsCustomizeHelper is called in some cases when it is already hidden
             // don't perform all these no-op animations. In particularly, this was causing
             // the all-apps button to pop in and out.
