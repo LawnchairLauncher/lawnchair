@@ -175,7 +175,7 @@ public class FocusHelper {
     }
 
     /**
-     * Handles key events in the workspace hot seat (bottom of the screen).
+     * Handles key events in the workspace hotseat (bottom of the screen).
      * <p>Currently we don't special case for the phone UI in different orientations, even though
      * the hotseat is on the side in landscape mode. This is to ensure that accessibility
      * consistency is maintained across rotations.
@@ -264,12 +264,38 @@ public class FocusHelper {
                 countY, matrix, iconIndex, pageIndex, pageCount, Utilities.isRtl(v.getResources()));
 
         View newIcon = null;
-        if (newIconIndex == FocusLogic.NEXT_PAGE_FIRST_ITEM) {
-            parent = getCellLayoutChildrenForIndex(workspace, pageIndex + 1);
-            newIcon = parent.getChildAt(0);
-            // TODO(hyunyoungs): handle cases where the child is not an icon but
-            // a folder or a widget.
-            workspace.snapToPage(pageIndex + 1);
+        switch (newIconIndex) {
+            case FocusLogic.NEXT_PAGE_FIRST_ITEM:
+                parent = getCellLayoutChildrenForIndex(workspace, pageIndex + 1);
+                newIcon = parent.getChildAt(0);
+                // TODO(hyunyoungs): handle cases where the child is not an icon but
+                // a folder or a widget.
+                workspace.snapToPage(pageIndex + 1);
+                break;
+            case FocusLogic.PREVIOUS_PAGE_FIRST_ITEM:
+                parent = getCellLayoutChildrenForIndex(workspace, pageIndex - 1);
+                newIcon = parent.getChildAt(0);
+                // TODO(hyunyoungs): handle cases where the child is not an icon but
+                // a folder or a widget.
+                workspace.snapToPage(pageIndex - 1);
+                break;
+            case FocusLogic.PREVIOUS_PAGE_LAST_ITEM:
+                parent = getCellLayoutChildrenForIndex(workspace, pageIndex - 1);
+                newIcon = parent.getChildAt(parent.getChildCount() - 1);
+                // TODO(hyunyoungs): handle cases where the child is not an icon but
+                // a folder or a widget.
+                workspace.snapToPage(pageIndex - 1);
+                break;
+            case FocusLogic.PREVIOUS_PAGE_LEFT_COLUMN:
+            case FocusLogic.PREVIOUS_PAGE_RIGHT_COLUMN:
+                // Go to the previous page but keep the focus on the same hotseat icon.
+                workspace.snapToPage(pageIndex - 1);
+                break;
+            case FocusLogic.NEXT_PAGE_LEFT_COLUMN:
+            case FocusLogic.NEXT_PAGE_RIGHT_COLUMN:
+                // Go to the next page but keep the focus on the same hotseat icon.
+                workspace.snapToPage(pageIndex + 1);
+                break;
         }
         if (parent == iconParent && newIconIndex >= iconParent.getChildCount()) {
             newIconIndex -= iconParent.getChildCount();
@@ -369,7 +395,7 @@ public class FocusHelper {
                 if (parent != null) {
                     iconLayout = (CellLayout) parent.getParent();
                     matrix = FocusLogic.createSparseMatrix(iconLayout,
-                        iconLayout.getCountX(), row);
+                            iconLayout.getCountX(), row);
                     newIconIndex = FocusLogic.handleKeyEvent(keyCode, countX + 1, countY,
                             matrix, FocusLogic.PIVOT, newPageIndex, pageCount,
                             Utilities.isRtl(v.getResources()));
