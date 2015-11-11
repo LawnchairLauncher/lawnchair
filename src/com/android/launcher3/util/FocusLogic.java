@@ -92,7 +92,7 @@ public class FocusLogic {
         int newIndex = NOOP;
         switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_LEFT:
-                newIndex = handleDpadHorizontal(iconIdx, cntX, cntY, map, -1 /*increment*/);
+                newIndex = handleDpadHorizontal(iconIdx, cntX, cntY, map, -1 /*increment*/, isRtl);
                 if (!isRtl && newIndex == NOOP && pageIndex > 0) {
                     newIndex = PREVIOUS_PAGE_RIGHT_COLUMN;
                 } else if (isRtl && newIndex == NOOP && pageIndex < pageCount - 1) {
@@ -100,7 +100,7 @@ public class FocusLogic {
                 }
                 break;
             case KeyEvent.KEYCODE_DPAD_RIGHT:
-                newIndex = handleDpadHorizontal(iconIdx, cntX, cntY, map, 1 /*increment*/);
+                newIndex = handleDpadHorizontal(iconIdx, cntX, cntY, map, 1 /*increment*/, isRtl);
                 if (!isRtl && newIndex == NOOP && pageIndex < pageCount - 1) {
                     newIndex = NEXT_PAGE_LEFT_COLUMN;
                 } else if (isRtl && newIndex == NOOP && pageIndex > 0) {
@@ -314,7 +314,7 @@ public class FocusLogic {
      */
     // TODO: add unit tests to verify all permutation.
     private static int handleDpadHorizontal(int iconIdx, int cntX, int cntY,
-            int[][] matrix, int increment) {
+            int[][] matrix, int increment, boolean isRtl) {
         if(matrix == null) {
             throw new IllegalStateException("Dpad navigation requires a matrix.");
         }
@@ -370,17 +370,13 @@ public class FocusLogic {
             }
         }
 
-        // Rule 3: if switching between pages, do a brute-force search to find an item that was
-        //         missed by rules 1 and 2 (such as when going from a bottom right icon to top left)
+        // Rule3: if switching between pages, do a brute-force search to find an item that was
+        //        missed by rules 1 and 2 (such as when going from a bottom right icon to top left)
         if (iconIdx == PIVOT) {
-            for (x = xPos + increment; 0 <= x && x < cntX; x += increment) {
-                for (int y = 0; y < cntY; y++) {
-                    if ((newIconIndex = inspectMatrix(x, y, cntX, cntY, matrix)) != NOOP
-                            && newIconIndex != ALL_APPS_COLUMN) {
-                        return newIconIndex;
-                    }
-                }
+            if (isRtl) {
+                return increment < 0 ? NEXT_PAGE_FIRST_ITEM : PREVIOUS_PAGE_LAST_ITEM;
             }
+            return increment < 0 ? PREVIOUS_PAGE_LAST_ITEM : NEXT_PAGE_FIRST_ITEM;
         }
         return newIconIndex;
     }
