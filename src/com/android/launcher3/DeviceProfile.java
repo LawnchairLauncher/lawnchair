@@ -245,7 +245,9 @@ public class DeviceProfile {
         hotseatCellHeightPx = iconSizePx;
 
         // Folder
-        folderCellWidthPx = Math.min(cellWidthPx + 6 * edgeMarginPx,
+        int folderCellPadding = isTablet || isLandscape ? 6 * edgeMarginPx : 3 * edgeMarginPx;
+        // Don't let the folder get too close to the edges of the screen.
+        folderCellWidthPx = Math.min(cellWidthPx + folderCellPadding,
                 (availableWidthPx - 4 * edgeMarginPx) / inv.numFolderColumns);
         folderCellHeightPx = cellHeightPx + edgeMarginPx;
         folderBackgroundOffset = -edgeMarginPx;
