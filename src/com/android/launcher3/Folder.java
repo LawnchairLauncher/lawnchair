@@ -1144,10 +1144,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                         // addInScreenFromBind() to ensure that hotseat items are placed correctly.
                         mLauncher.getWorkspace().addInScreenFromBind(newIcon, mInfo.container,
                                 mInfo.screenId, mInfo.cellX, mInfo.cellY, mInfo.spanX, mInfo.spanY);
-                    }
 
-                    // Focus the newly created child
-                    newIcon.requestFocus();
+                        // Focus the newly created child
+                        newIcon.requestFocus();
+                    }
                 }
             }
         };
@@ -1293,7 +1293,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             rearrangeChildren();
         }
         if (getItemCount() <= 1) {
-            replaceFolderWithFinalItem();
+            if (mInfo.opened) {
+                mLauncher.closeFolder(this, true);
+            } else {
+                replaceFolderWithFinalItem();
+            }
         }
     }
 
