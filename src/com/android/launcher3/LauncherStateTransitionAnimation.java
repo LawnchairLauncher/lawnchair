@@ -641,10 +641,10 @@ public class LauncherStateTransitionAnimation {
                     }
                     animation.play(reveal);
                 }
-
-                dispatchOnLauncherTransitionPrepare(fromView, animated, true);
-                dispatchOnLauncherTransitionPrepare(toView, animated, true);
             }
+
+            dispatchOnLauncherTransitionPrepare(fromView, animated, true);
+            dispatchOnLauncherTransitionPrepare(toView, animated, true);
 
             animation.addListener(new AnimatorListenerAdapter() {
                 @Override
