@@ -3226,7 +3226,7 @@ public class Launcher extends Activity
         if (animate) {
             folder.animateClosed();
         } else {
-            folder.close();
+            folder.close(false);
         }
 
         // Notify the accessibility manager that this folder "window" has disappeared and no
