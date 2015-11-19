@@ -651,7 +651,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             @Override
             public void onAnimationEnd(Animator animation) {
                 setLayerType(LAYER_TYPE_NONE, null);
-                close();
+                close(true);
             }
             @Override
             public void onAnimationStart(Animator animation) {
@@ -665,7 +665,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         oa.start();
     }
 
-    public void close() {
+    public void close(boolean wasAnimated) {
         // TODO: Clear all active animations.
         DragLayer parent = (DragLayer) getParent();
         if (parent != null) {
@@ -673,7 +673,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         }
         mDragController.removeDropTarget(this);
         clearFocus();
-        mFolderIcon.requestFocus();
+        if (wasAnimated) {
+            mFolderIcon.requestFocus();
+        }
 
         if (mRearrangeOnClose) {
             rearrangeChildren();
