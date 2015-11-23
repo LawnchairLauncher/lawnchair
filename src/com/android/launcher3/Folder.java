@@ -322,9 +322,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             sendCustomAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
                     getContext().getString(R.string.folder_renamed, newTitle));
         }
-        // In order to clear the focus from the text field, we set the focus on ourself. This
-        // ensures that every time the field is clicked, focus is gained, giving reliable behavior.
-        requestFocus();
+
+        // This ensures that focus is gained every time the field is clicked, which selects all
+        // the text and brings up the soft keyboard if necessary.
+        mFolderName.clearFocus();
 
         Selection.setSelection((Spannable) mFolderName.getText(), 0, 0);
         mIsEditingName = false;
@@ -1167,15 +1168,37 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         return mDestroyed;
     }
 
-    // This method keeps track of the last item in the folder for the purposes
+    // This method keeps track of the first and last item in the folder for the purposes
     // of keyboard focus
     public void updateTextViewFocus() {
-        View lastChild = mContent.getLastItem();
-        if (lastChild != null) {
+        final View firstChild = mContent.getFirstItem();
+        final View lastChild = mContent.getLastItem();
+        if (firstChild != null && lastChild != null) {
             mFolderName.setNextFocusDownId(lastChild.getId());
             mFolderName.setNextFocusRightId(lastChild.getId());
             mFolderName.setNextFocusLeftId(lastChild.getId());
             mFolderName.setNextFocusUpId(lastChild.getId());
+            // Hitting TAB from the folder name wraps around to the first item on the current
+            // folder page, and hitting SHIFT+TAB from that item wraps back to the folder name.
+            mFolderName.setNextFocusForwardId(firstChild.getId());
+            // When clicking off the folder when editing the name, this Folder gains focus. When
+            // pressing an arrow key from that state, give the focus to the first item.
+            this.setNextFocusDownId(firstChild.getId());
+            this.setNextFocusRightId(firstChild.getId());
+            this.setNextFocusLeftId(firstChild.getId());
+            this.setNextFocusUpId(firstChild.getId());
+            // When pressing shift+tab in the above state, give the focus to the last item.
+            setOnKeyListener(new OnKeyListener() {
+                @Override
+                public boolean onKey(View v, int keyCode, KeyEvent event) {
+                    boolean isShiftPlusTab = keyCode == KeyEvent.KEYCODE_TAB &&
+                            event.hasModifiers(KeyEvent.META_SHIFT_ON);
+                    if (isShiftPlusTab && Folder.this.isFocused()) {
+                        return lastChild.requestFocus();
+                    }
+                    return false;
+                }
+            });
         }
     }
 
@@ -1340,6 +1363,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     public void onFocusChange(View v, boolean hasFocus) {
         if (v == mFolderName && hasFocus) {
             startEditingFolderName();
+        } else if (v == mFolderName && !hasFocus) {
+            dismissEditingName();
         }
     }
 
