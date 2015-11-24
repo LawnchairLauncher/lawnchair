@@ -84,6 +84,10 @@ public class LauncherProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         final Context context = getContext();
+        // The content provider exists for the entire duration of the launcher main process and
+        // is the first component to get created. Initializing application context here ensures
+        // that LauncherAppState always exists in the main process.
+        LauncherAppState.setApplicationContext(context.getApplicationContext());
         StrictMode.ThreadPolicy oldPolicy = StrictMode.allowThreadDiskWrites();
         mOpenHelper = new DatabaseHelper(context);
         StrictMode.setThreadPolicy(oldPolicy);

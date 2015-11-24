@@ -417,7 +417,6 @@ public class Launcher extends Activity
 
         super.onCreate(savedInstanceState);
 
-        LauncherAppState.setApplicationContext(getApplicationContext());
         LauncherAppState app = LauncherAppState.getInstance();
 
         // Load configuration-specific DeviceProfile
