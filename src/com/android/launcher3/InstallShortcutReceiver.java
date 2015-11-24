@@ -171,7 +171,6 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 
     private static void queuePendingShortcutInfo(PendingInstallShortcutInfo info, Context context) {
         // Queue the item up for adding if launcher has not loaded properly yet
-        LauncherAppState.setApplicationContext(context.getApplicationContext());
         LauncherAppState app = LauncherAppState.getInstance();
         boolean launcherNotLoaded = app.getModel().getCallback() == null;
 
