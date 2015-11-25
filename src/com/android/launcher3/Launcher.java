@@ -1621,16 +1621,26 @@ public class Launcher extends Activity
                 // The AppWidgetHostView has already been inflated and instantiated
                 launcherInfo.hostView = hostView;
             }
-            launcherInfo.hostView.setTag(launcherInfo);
             launcherInfo.hostView.setVisibility(View.VISIBLE);
-            launcherInfo.notifyWidgetSizeChanged(this);
-
-            mWorkspace.addInScreen(launcherInfo.hostView, container, screenId, info.cellX,
-                    info.cellY, launcherInfo.spanX, launcherInfo.spanY, isWorkspaceLocked());
-
-            addWidgetToAutoAdvanceIfNeeded(launcherInfo.hostView, appWidgetInfo);
+            addAppWidgetToWorkspace(launcherInfo, appWidgetInfo, isWorkspaceLocked());
         }
         resetAddInfo();
+    }
+
+    private void addAppWidgetToWorkspace(LauncherAppWidgetInfo item,
+            LauncherAppWidgetProviderInfo appWidgetInfo, boolean insert) {
+        item.hostView.setTag(item);
+        item.onBindAppWidget(this);
+
+        item.hostView.setFocusable(true);
+        item.hostView.setOnFocusChangeListener(mFocusHandler);
+
+        mWorkspace.addInScreen(item.hostView, item.container, item.screenId,
+                item.cellX, item.cellY, item.spanX, item.spanY, insert);
+
+        if (!item.isCustomWidget()) {
+            addWidgetToAutoAdvanceIfNeeded(item.hostView, appWidgetInfo);
+        }
     }
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -4105,15 +4115,7 @@ public class Launcher extends Activity
             item.hostView.setOnClickListener(this);
         }
 
-        item.hostView.setTag(item);
-        item.onBindAppWidget(this);
-
-        workspace.addInScreen(item.hostView, item.container, item.screenId, item.cellX,
-                item.cellY, item.spanX, item.spanY, false);
-        if (!item.isCustomWidget()) {
-            addWidgetToAutoAdvanceIfNeeded(item.hostView, appWidgetInfo);
-        }
-
+        addAppWidgetToWorkspace(item, appWidgetInfo, false);
         workspace.requestLayout();
 
         if (DEBUG_WIDGETS) {
