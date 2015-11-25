@@ -471,6 +471,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             mContent.snapToPageImmediately(0);
         }
 
+        // This is set to true in close(), but isn't reset to false until onDropCompleted(). This
+        // leads to an consistent state if you drag out of the folder and drag back in without
+        // dropping. One resulting issue is that replaceFolderWithFinalItem() can be called twice.
+        mDeleteFolderOnDropCompleted = false;
+
         Animator openFolderAnim = null;
         final Runnable onCompleteRunnable;
         if (!Utilities.ATLEAST_LOLLIPOP) {
