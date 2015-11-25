@@ -19,6 +19,8 @@ package com.android.launcher3;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
+import android.graphics.Rect;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,6 +30,8 @@ import android.widget.RemoteViews;
 
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragLayer.TouchCompleteListener;
+
+import java.util.ArrayList;
 
 /**
  * {@inheritDoc}
@@ -43,6 +47,8 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
     private DragLayer mDragLayer;
 
     private float mSlop;
+
+    private boolean mChildrenFocused;
 
     public LauncherAppWidgetHostView(Context context) {
         super(context);
@@ -176,6 +182,67 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
 
     @Override
     public int getDescendantFocusability() {
-        return ViewGroup.FOCUS_BLOCK_DESCENDANTS;
+        return mChildrenFocused ? ViewGroup.FOCUS_BEFORE_DESCENDANTS
+                : ViewGroup.FOCUS_BLOCK_DESCENDANTS;
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (mChildrenFocused && event.getKeyCode() == KeyEvent.KEYCODE_ESCAPE
+                && event.getAction() == KeyEvent.ACTION_UP) {
+            mChildrenFocused = false;
+            requestFocus();
+            return true;
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (!mChildrenFocused && keyCode == KeyEvent.KEYCODE_ENTER) {
+            event.startTracking();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (event.isTracking()) {
+            if (!mChildrenFocused && keyCode == KeyEvent.KEYCODE_ENTER) {
+                mChildrenFocused = true;
+                ArrayList<View> focusableChildren = getFocusables(FOCUS_FORWARD);
+                focusableChildren.remove(this);
+                int childrenCount = focusableChildren.size();
+                switch (childrenCount) {
+                    case 0:
+                        mChildrenFocused = false;
+                        break;
+                    case 1: {
+                        if (getTag() instanceof ItemInfo) {
+                            ItemInfo item = (ItemInfo) getTag();
+                            if (item.spanX == 1 && item.spanY == 1) {
+                                focusableChildren.get(0).performClick();
+                                mChildrenFocused = false;
+                                return true;
+                            }
+                        }
+                        // continue;
+                    }
+                    default:
+                        focusableChildren.get(0).requestFocus();
+                        return true;
+                }
+            }
+        }
+        return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
+        if (gainFocus) {
+            mChildrenFocused = false;
+        }
+        super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
     }
 }
