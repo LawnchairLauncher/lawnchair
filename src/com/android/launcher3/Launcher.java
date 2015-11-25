@@ -3066,6 +3066,10 @@ public class Launcher extends Activity
         }
         oa.setDuration(getResources().getInteger(R.integer.config_folderExpandDuration));
         oa.start();
+        if (Utilities.isPowerSaverOn(this)) {
+            // Animations are disabled in battery saver mode, so just skip to the end state.
+            oa.end();
+        }
     }
 
     private void shrinkAndFadeInFolderIcon(final FolderIcon fi, boolean animate) {

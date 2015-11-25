@@ -46,6 +46,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.os.Process;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -804,5 +805,11 @@ public final class Utilities {
     public static SharedPreferences getPrefs(Context context) {
         return context.getSharedPreferences(
                 LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public static boolean isPowerSaverOn(Context context) {
+        PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        return ATLEAST_LOLLIPOP && powerManager.isPowerSaveMode();
     }
 }

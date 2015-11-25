@@ -35,7 +35,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
 import android.os.Parcelable;
-import android.os.PowerManager;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -2156,10 +2155,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             // Animations are disabled in power save mode, causing the repeated animation to jump
             // spastically between beginning and end states. Since this looks bad, we don't repeat
             // the animation in power save mode.
-            PowerManager powerManager = (PowerManager) getContext()
-                    .getSystemService(Context.POWER_SERVICE);
-            boolean powerSaverOn = Utilities.ATLEAST_LOLLIPOP && powerManager.isPowerSaveMode();
-            if (!powerSaverOn) {
+            if (!Utilities.isPowerSaverOn(getContext())) {
                 va.setRepeatMode(ValueAnimator.REVERSE);
                 va.setRepeatCount(ValueAnimator.INFINITE);
             }
