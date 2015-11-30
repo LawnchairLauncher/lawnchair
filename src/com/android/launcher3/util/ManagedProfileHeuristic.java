@@ -42,6 +42,7 @@ import com.android.launcher3.compat.UserManagerCompat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -85,6 +86,7 @@ public class ManagedProfileHeuristic {
 
     private ArrayList<ShortcutInfo> mHomescreenApps;
     private ArrayList<ShortcutInfo> mWorkFolderApps;
+    private HashMap<ShortcutInfo, Long> mShortcutToInstallTimeMap;
 
     private ManagedProfileHeuristic(Context context, UserHandleCompat user) {
         mContext = context;
@@ -100,32 +102,29 @@ public class ManagedProfileHeuristic {
                 Context.MODE_PRIVATE);
     }
 
+    private void initVars() {
+        mHomescreenApps = new ArrayList<>();
+        mWorkFolderApps = new ArrayList<>();
+        mShortcutToInstallTimeMap = new HashMap<>();
+    }
+
     /**
      * Checks the list of user apps and adds icons for newly installed apps on the homescreen or
      * workfolder.
      */
     public void processUserApps(List<LauncherActivityInfoCompat> apps) {
-        mHomescreenApps = new ArrayList<>();
-        mWorkFolderApps = new ArrayList<>();
+        initVars();
 
         HashSet<String> packageSet = new HashSet<>();
         final boolean userAppsExisted = getUserApps(packageSet);
 
         boolean newPackageAdded = false;
-
         for (LauncherActivityInfoCompat info : apps) {
             String packageName = info.getComponentName().getPackageName();
             if (!packageSet.contains(packageName)) {
                 packageSet.add(packageName);
                 newPackageAdded = true;
-
-                try {
-                    PackageInfo pkgInfo = mContext.getPackageManager()
-                            .getPackageInfo(packageName, PackageManager.GET_UNINSTALLED_PACKAGES);
-                    markForAddition(info, pkgInfo.firstInstallTime);
-                } catch (NameNotFoundException e) {
-                    Log.e(TAG, "Unknown package " + packageName, e);
-                }
+                markForAddition(info, info.getFirstInstallTime());
             }
         }
 
@@ -142,7 +141,22 @@ public class ManagedProfileHeuristic {
         ArrayList<ShortcutInfo> targetList =
                 (installTime <= mUserCreationTime + AUTO_ADD_TO_FOLDER_DURATION) ?
                         mWorkFolderApps : mHomescreenApps;
-        targetList.add(ShortcutInfo.fromActivityInfo(info, mContext));
+        ShortcutInfo si = ShortcutInfo.fromActivityInfo(info, mContext);
+        mShortcutToInstallTimeMap.put(si, installTime);
+        targetList.add(si);
+    }
+
+    private void sortList(ArrayList<ShortcutInfo> infos) {
+        Collections.sort(infos, new Comparator<ShortcutInfo>() {
+
+            @Override
+            public int compare(ShortcutInfo lhs, ShortcutInfo rhs) {
+                Long lhsTime = mShortcutToInstallTimeMap.get(lhs);
+                Long rhsTime = mShortcutToInstallTimeMap.get(rhs);
+                return Utilities.longCompare(lhsTime == null ? 0 : lhsTime,
+                        rhsTime == null ? 0 : rhsTime);
+            }
+        });
     }
 
     /**
@@ -152,13 +166,7 @@ public class ManagedProfileHeuristic {
         if (mWorkFolderApps.isEmpty()) {
             return;
         }
-        Collections.sort(mWorkFolderApps, new Comparator<ShortcutInfo>() {
-
-            @Override
-            public int compare(ShortcutInfo lhs, ShortcutInfo rhs) {
-                return Utilities.longCompare(lhs.firstInstallTime, rhs.firstInstallTime);
-            }
-        });
+        sortList(mWorkFolderApps);
 
         // Try to get a work folder.
         String folderIdKey = USER_FOLDER_ID_PREFIX + mUserSerial;
@@ -222,6 +230,7 @@ public class ManagedProfileHeuristic {
         finalizeWorkFolder();
 
         if (addHomeScreenShortcuts && !mHomescreenApps.isEmpty()) {
+            sortList(mHomescreenApps);
             mModel.addAndBindAddedWorkspaceItems(mContext, mHomescreenApps);
         }
     }
@@ -230,9 +239,7 @@ public class ManagedProfileHeuristic {
      * Updates the list of installed apps and adds any new icons on homescreen or work folder.
      */
     public void processPackageAdd(String[] packages) {
-        mHomescreenApps = new ArrayList<>();
-        mWorkFolderApps = new ArrayList<>();
-
+        initVars();
         HashSet<String> packageSet = new HashSet<>();
         final boolean userAppsExisted = getUserApps(packageSet);
 

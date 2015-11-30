@@ -49,11 +49,6 @@ public class AppInfo extends ItemInfo {
      */
     boolean usingLowResIcon;
 
-    /**
-     * The time at which the app was first installed.
-     */
-    long firstInstallTime;
-
     public ComponentName componentName;
 
     static final int DOWNLOADED_FLAG = 1;
@@ -82,7 +77,6 @@ public class AppInfo extends ItemInfo {
         this.container = ItemInfo.NO_ID;
 
         flags = initFlags(info);
-        firstInstallTime = info.getFirstInstallTime();
         iconCache.getTitleAndIcon(this, info, true /* useLowResIcon */);
         intent = makeLaunchIntent(context, info, user);
         this.user = user;
@@ -107,7 +101,6 @@ public class AppInfo extends ItemInfo {
         title = Utilities.trim(info.title);
         intent = new Intent(info.intent);
         flags = info.flags;
-        firstInstallTime = info.firstInstallTime;
         iconBitmap = info.iconBitmap;
     }
 
@@ -126,7 +119,6 @@ public class AppInfo extends ItemInfo {
         Log.d(tag, label + " size=" + list.size());
         for (AppInfo info: list) {
             Log.d(tag, "   title=\"" + info.title + "\" iconBitmap=" + info.iconBitmap
-                    + " firstInstallTime=" + info.firstInstallTime
                     + " componentName=" + info.componentName.getPackageName());
         }
     }

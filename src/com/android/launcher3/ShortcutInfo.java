@@ -51,7 +51,7 @@ public class ShortcutInfo extends ItemInfo {
     public static final int FLAG_AUTOINTALL_ICON = 2; //0B10;
 
     /**
-     * The icon is being installed. If {@link FLAG_RESTORED_ICON} or {@link FLAG_AUTOINTALL_ICON}
+     * The icon is being installed. If {@link #FLAG_RESTORED_ICON} or {@link #FLAG_AUTOINTALL_ICON}
      * is set, then the icon is either being installed or is in a broken state.
      */
     public static final int FLAG_INSTALL_SESSION_ACTIVE = 4; // 0B100;
@@ -125,19 +125,14 @@ public class ShortcutInfo extends ItemInfo {
     private int mInstallProgress;
 
     /**
-     * Refer {@link AppInfo#firstInstallTime}.
-     */
-    public long firstInstallTime;
-
-    /**
-     * TODO move this to {@link status}
+     * TODO move this to {@link #status}
      */
     int flags = 0;
 
     /**
      * If this shortcut is a placeholder, then intent will be a market intent for the package, and
      * this will hold the original intent from the database.  Otherwise, null.
-     * Refer {@link #FLAG_RESTORE_PENDING}, {@link #FLAG_INSTALL_PENDING}
+     * Refer {@link #FLAG_RESTORED_ICON}, {@link #FLAG_AUTOINTALL_ICON}
      */
     Intent promisedIntent;
 
@@ -171,7 +166,6 @@ public class ShortcutInfo extends ItemInfo {
         mIcon = info.mIcon; // TODO: should make a copy here.  maybe we don't need this ctor at all
         customIcon = info.customIcon;
         flags = info.flags;
-        firstInstallTime = info.firstInstallTime;
         user = info.user;
         status = info.status;
     }
@@ -183,7 +177,6 @@ public class ShortcutInfo extends ItemInfo {
         intent = new Intent(info.intent);
         customIcon = false;
         flags = info.flags;
-        firstInstallTime = info.firstInstallTime;
     }
 
     public void setIcon(Bitmap b) {
@@ -283,7 +276,6 @@ public class ShortcutInfo extends ItemInfo {
         shortcut.intent = AppInfo.makeLaunchIntent(context, info, info.getUser());
         shortcut.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
         shortcut.flags = AppInfo.initFlags(info);
-        shortcut.firstInstallTime = info.getFirstInstallTime();
         return shortcut;
     }
 }
