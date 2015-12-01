@@ -1220,7 +1220,17 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     @Override
     public boolean dispatchUnhandledMove(View focused, int direction) {
-        // XXX-RTL: This will be fixed in a future CL
+        if (super.dispatchUnhandledMove(focused, direction)) {
+            return true;
+        }
+
+        if (mIsRtl) {
+            if (direction == View.FOCUS_LEFT) {
+                direction = View.FOCUS_RIGHT;
+            } else if (direction == View.FOCUS_RIGHT) {
+                direction = View.FOCUS_LEFT;
+            }
+        }
         if (direction == View.FOCUS_LEFT) {
             if (getCurrentPage() > 0) {
                 snapToPage(getCurrentPage() - 1);
@@ -1232,7 +1242,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 return true;
             }
         }
-        return super.dispatchUnhandledMove(focused, direction);
+        return false;
     }
 
     @Override
