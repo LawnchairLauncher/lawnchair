@@ -244,4 +244,27 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
         }
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
     }
+
+    @Override
+    public void requestChildFocus(View child, View focused) {
+        super.requestChildFocus(child, focused);
+        dispatchChildFocus(focused != null);
+    }
+
+    @Override
+    public void clearChildFocus(View child) {
+        super.clearChildFocus(child);
+        dispatchChildFocus(false);
+    }
+
+    @Override
+    public boolean dispatchUnhandledMove(View focused, int direction) {
+        return mChildrenFocused;
+    }
+
+    private void dispatchChildFocus(boolean focused) {
+        if (getOnFocusChangeListener() != null) {
+            getOnFocusChangeListener().onFocusChange(this, focused || isFocused());
+        }
+    }
 }
