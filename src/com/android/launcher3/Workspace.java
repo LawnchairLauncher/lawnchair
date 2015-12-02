@@ -1329,6 +1329,13 @@ public class Workspace extends PagedView
     }
 
     @Override
+    protected void determineScrollingStart(MotionEvent ev, float touchSlopScale) {
+        if (!isSwitchingState()) {
+            super.determineScrollingStart(ev, touchSlopScale);
+        }
+    }
+
+    @Override
     public void announceForAccessibility(CharSequence text) {
         // Don't announce if apps is on top of us.
         if (!mLauncher.isAppsViewVisible()) {
