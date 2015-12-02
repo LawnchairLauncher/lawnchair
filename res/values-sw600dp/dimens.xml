@@ -21,6 +21,7 @@
     <dimen name="all_apps_icon_top_bottom_padding">12dp</dimen>
     <dimen name="all_apps_background_canvas_width">850dp</dimen>
     <dimen name="all_apps_background_canvas_height">525dp</dimen>
+    <dimen name="all_apps_icon_width_gap">36dp</dimen>
 
 <!-- Cling -->
     <dimen name="cling_migration_logo_height">400dp</dimen>
