@@ -1384,6 +1384,7 @@ public class Launcher extends Activity
 
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
         dragController.setDragScoller(mWorkspace);
+        dragController.setScrollView(mDragLayer);
         dragController.setMoveTarget(mWorkspace);
         dragController.addDropTarget(mWorkspace);
         if (mSearchDropTargetBar != null) {
@@ -3488,8 +3489,10 @@ public class Launcher extends Activity
             mState = State.APPS_SPRING_LOADED;
         } else if (isWidgetsViewVisible()) {
             mState = State.WIDGETS_SPRING_LOADED;
-        } else {
+        } else if (Workspace.IS_SPRING_LOADED) {
             mState = State.WORKSPACE_SPRING_LOADED;
+        } else {
+            mState = State.WORKSPACE;
         }
     }
 

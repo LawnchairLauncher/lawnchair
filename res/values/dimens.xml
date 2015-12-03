@@ -104,6 +104,10 @@
     <dimen name="drop_target_drag_padding">14dp</dimen>
     <dimen name="drop_target_text_size">14sp</dimen>
 
+    <!-- the area at the edge of the screen that makes the workspace go left
+         or right while you're dragging. -->
+    <dimen name="scroll_zone">20dp</dimen>
+
     <!-- When dragging an item, how much bigger (fixed dps) the dragged view
          should be. If 0, it will not be scaled at all. -->
     <dimen name="dragViewScale">12dp</dimen>

@@ -399,6 +399,10 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         mIsDragTarget = false;
     }
 
+    public boolean isDragTarget() {
+        return mIsDragTarget;
+    }
+
     void setIsDragOverlapping(boolean isDragOverlapping) {
         if (mIsDragOverlapping != isDragOverlapping) {
             mIsDragOverlapping = isDragOverlapping;
@@ -439,6 +443,10 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         final Parcelable parcelable = container.get(R.id.cell_layout_jail_id);
         return parcelable instanceof ParcelableSparseArray ?
                 (ParcelableSparseArray) parcelable : new ParcelableSparseArray();
+    }
+
+    public boolean getIsDragOverlapping() {
+        return mIsDragOverlapping;
     }
 
     @Override

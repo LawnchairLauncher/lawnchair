@@ -46,13 +46,10 @@ import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.Choreographer;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityManager;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.Interpolator;
 import android.widget.TextView;
 
 import com.android.launcher3.FolderIcon.FolderRingAnimator;
@@ -93,6 +90,7 @@ public class Workspace extends PagedView
         Insettable, UninstallSource, AccessibilityDragSource, Stats.LaunchSourceProvider {
     private static final String TAG = "Launcher.Workspace";
 
+    public static final boolean IS_SPRING_LOADED = true;
     private static boolean ENFORCE_DRAG_EVENT_ORDER = false;
 
     private static final int SNAP_OFF_EMPTY_SCREEN_DURATION = 400;
@@ -404,8 +402,9 @@ public class Workspace extends PagedView
         mLauncher.onInteractionEnd();
     }
 
-    public float getSpringLoadedShrinkFactor() {
-        return mSpringLoadedShrinkFactor;
+    /** Returns a scale factor to apply to workspace icons when dragging them from the workspace. */
+    public float getDragShrinkFactor() {
+        return IS_SPRING_LOADED ? mSpringLoadedShrinkFactor : 1f;
     }
 
     /**
@@ -2146,7 +2145,9 @@ public class Workspace extends PagedView
 
         b.recycle();
 
-        mLauncher.enterSpringLoadedDragMode();
+        if (IS_SPRING_LOADED) {
+            mLauncher.enterSpringLoadedDragMode();
+        }
     }
 
     public void beginExternalDragShared(View child, DragSource source) {
@@ -2196,7 +2197,9 @@ public class Workspace extends PagedView
         // Recycle temporary bitmaps
         tmpB.recycle();
 
-        mLauncher.enterSpringLoadedDragMode();
+        if (IS_SPRING_LOADED) {
+            mLauncher.enterSpringLoadedDragMode();
+        }
     }
 
     public boolean transitionStateShouldAllowDrop() {
@@ -2635,6 +2638,10 @@ public class Workspace extends PagedView
         CellLayout layout = getCurrentDropLayout();
         setCurrentDropLayout(layout);
         setCurrentDragOverlappingLayout(layout);
+
+        if (!workspaceInModalState() && !IS_SPRING_LOADED) {
+            mLauncher.getDragLayer().showPageHints();
+        }
     }
 
     @Override
@@ -2669,6 +2676,8 @@ public class Workspace extends PagedView
         setCurrentDragOverlappingLayout(null);
 
         mSpringLoadedDragController.cancel();
+
+        mLauncher.getDragLayer().hidePageHints();
     }
 
     private void enfoceDragParity(String event, int update, int expectedValue) {
@@ -3552,7 +3561,7 @@ public class Workspace extends PagedView
 
     @Override
     public boolean supportsAppInfoDropTarget() {
-        return true;
+        return IS_SPRING_LOADED;
     }
 
     @Override
