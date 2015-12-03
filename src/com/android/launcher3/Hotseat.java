@@ -70,7 +70,7 @@ public class Hotseat extends FrameLayout
     public void setOnLongClickListener(OnLongClickListener l) {
         mContent.setOnLongClickListener(l);
     }
-  
+
     /* Get the orientation invariant order of the item in the hotseat for persistence. */
     int getOrderInHotseat(int x, int y) {
         return mHasVerticalHotseat ? (mContent.getCountY() - y - 1) : x;
