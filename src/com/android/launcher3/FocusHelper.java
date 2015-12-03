@@ -46,6 +46,23 @@ class HotseatIconKeyEventListener implements View.OnKeyListener {
     }
 }
 
+/**
+ * A keyboard listener we set on full screen pages (e.g. custom content).
+ */
+class FullscreenKeyEventListener implements View.OnKeyListener {
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT
+                || keyCode == KeyEvent.KEYCODE_PAGE_DOWN || keyCode == KeyEvent.KEYCODE_PAGE_UP) {
+            // Handle the key event just like a workspace icon would in these cases. In this case,
+            // it will basically act as if there is a single icon in the top left (so you could
+            // think of the fullscreen page as a focusable fullscreen widget).
+            return FocusHelper.handleIconKeyEvent(v, keyCode, event);
+        }
+        return false;
+    }
+}
+
 public class FocusHelper {
 
     private static final String TAG = "FocusHelper";
@@ -288,18 +305,32 @@ public class FocusHelper {
             case FocusLogic.PREVIOUS_PAGE_RIGHT_COLUMN:
                 // Go to the previous page but keep the focus on the same hotseat icon.
                 workspace.snapToPage(pageIndex - 1);
+                // If the page we are going to is fullscreen, have it take the focus from hotseat.
+                CellLayout prevPage = (CellLayout) workspace.getPageAt(pageIndex - 1);
+                boolean isPrevPageFullscreen = ((CellLayout.LayoutParams) prevPage
+                        .getShortcutsAndWidgets().getChildAt(0).getLayoutParams()).isFullscreen;
+                if (isPrevPageFullscreen) {
+                    workspace.getPageAt(pageIndex - 1).requestFocus();
+                }
                 break;
             case FocusLogic.NEXT_PAGE_LEFT_COLUMN:
             case FocusLogic.NEXT_PAGE_RIGHT_COLUMN:
                 // Go to the next page but keep the focus on the same hotseat icon.
                 workspace.snapToPage(pageIndex + 1);
+                // If the page we are going to is fullscreen, have it take the focus from hotseat.
+                CellLayout nextPage = (CellLayout) workspace.getPageAt(pageIndex + 1);
+                boolean isNextPageFullscreen = ((CellLayout.LayoutParams) nextPage
+                        .getShortcutsAndWidgets().getChildAt(0).getLayoutParams()).isFullscreen;
+                if (isNextPageFullscreen) {
+                    workspace.getPageAt(pageIndex + 1).requestFocus();
+                }
                 break;
         }
         if (parent == iconParent && newIconIndex >= iconParent.getChildCount()) {
             newIconIndex -= iconParent.getChildCount();
         }
         if (parent != null) {
-            if (newIcon == null && newIconIndex >=0) {
+            if (newIcon == null && newIconIndex >= 0) {
                 newIcon = parent.getChildAt(newIconIndex);
             }
             if (newIcon != null) {
@@ -414,6 +445,7 @@ public class FocusHelper {
                 workspaceLayout = (CellLayout) workspace.getChildAt(pageIndex - 1);
                 newIcon = getFirstFocusableIconInReadingOrder(workspaceLayout, isRtl);
                 if (newIcon == null) {
+                    // Check the hotseat if no focusable item was found on the workspace.
                     newIcon = getFirstFocusableIconInReadingOrder(hotseatLayout, isRtl);
                     workspace.snapToPage(pageIndex - 1);
                 }
@@ -452,12 +484,14 @@ public class FocusHelper {
             case FocusLogic.CURRENT_PAGE_FIRST_ITEM:
                 newIcon = getFirstFocusableIconInReadingOrder(workspaceLayout, isRtl);
                 if (newIcon == null) {
+                    // Check the hotseat if no focusable item was found on the workspace.
                     newIcon = getFirstFocusableIconInReadingOrder(hotseatLayout, isRtl);
                 }
                 break;
             case FocusLogic.CURRENT_PAGE_LAST_ITEM:
                 newIcon = getFirstFocusableIconInReverseReadingOrder(workspaceLayout, isRtl);
                 if (newIcon == null) {
+                    // Check the hotseat if no focusable item was found on the workspace.
                     newIcon = getFirstFocusableIconInReverseReadingOrder(hotseatLayout, isRtl);
                 }
                 break;
@@ -537,9 +571,13 @@ public class FocusHelper {
 
     private static View handlePreviousPageLastItem(Workspace workspace, CellLayout hotseatLayout,
             int pageIndex, boolean isRtl) {
+        if (pageIndex - 1 < 0) {
+            return null;
+        }
         CellLayout workspaceLayout = (CellLayout) workspace.getChildAt(pageIndex - 1);
         View newIcon = getFirstFocusableIconInReverseReadingOrder(workspaceLayout, isRtl);
         if (newIcon == null) {
+            // Check the hotseat if no focusable item was found on the workspace.
             newIcon = getFirstFocusableIconInReverseReadingOrder(hotseatLayout,isRtl);
             workspace.snapToPage(pageIndex - 1);
         }
@@ -548,9 +586,13 @@ public class FocusHelper {
 
     private static View handleNextPageFirstItem(Workspace workspace, CellLayout hotseatLayout,
             int pageIndex, boolean isRtl) {
+        if (pageIndex + 1 >= workspace.getPageCount()) {
+            return null;
+        }
         CellLayout workspaceLayout = (CellLayout) workspace.getChildAt(pageIndex + 1);
         View newIcon = getFirstFocusableIconInReadingOrder(workspaceLayout, isRtl);
         if (newIcon == null) {
+            // Check the hotseat if no focusable item was found on the workspace.
             newIcon = getFirstFocusableIconInReadingOrder(hotseatLayout, isRtl);
             workspace.snapToPage(pageIndex + 1);
         }
