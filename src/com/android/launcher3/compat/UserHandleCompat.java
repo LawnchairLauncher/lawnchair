@@ -49,7 +49,7 @@ public class UserHandleCompat {
         }
     }
 
-    UserHandle getUser() {
+    public UserHandle getUser() {
         return mUser;
     }
 
