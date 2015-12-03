@@ -30,6 +30,7 @@ public class FocusIndicatorView extends View implements View.OnFocusChangeListen
 
     // It can be any number >0. The view is resized using scaleX and scaleY.
     static final int DEFAULT_LAYOUT_SIZE = 100;
+
     private static final float MIN_VISIBLE_ALPHA = 0.2f;
     private static final long ANIM_DURATION = 150;
 
@@ -41,6 +42,7 @@ public class FocusIndicatorView extends View implements View.OnFocusChangeListen
 
     private View mLastFocusedView;
     private boolean mInitiated;
+    private final OnFocusChangeListener mHideIndicatorOnFocusListener;
 
     private Pair<View, Boolean> mPendingCall;
 
@@ -52,6 +54,16 @@ public class FocusIndicatorView extends View implements View.OnFocusChangeListen
         super(context, attrs);
         setAlpha(0);
         setBackgroundColor(getResources().getColor(R.color.focused_background));
+
+        mHideIndicatorOnFocusListener = new OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    endCurrentAnimation();
+                    setAlpha(0);
+                }
+            }
+        };
     }
 
     @Override
@@ -64,6 +76,13 @@ public class FocusIndicatorView extends View implements View.OnFocusChangeListen
             mPendingCall = Pair.create(mLastFocusedView, Boolean.TRUE);
             invalidate();
         }
+    }
+
+    /**
+     * Sets the alpha of this FocusIndicatorView to 0 when a view with this listener receives focus.
+     */
+    public View.OnFocusChangeListener getHideIndicatorOnFocusListener() {
+        return mHideIndicatorOnFocusListener;
     }
 
     @Override

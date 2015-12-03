@@ -627,6 +627,8 @@ public class Workspace extends PagedView
         customScreen.removeAllViews();
         customContent.setFocusable(true);
         customContent.setOnKeyListener(new FullscreenKeyEventListener());
+        customContent.setOnFocusChangeListener(mLauncher.mFocusHandler
+                .getHideIndicatorOnFocusListener());
         customScreen.addViewToCellLayout(customContent, 0, 0, lp, true);
         mCustomContentDescription = description;
 
