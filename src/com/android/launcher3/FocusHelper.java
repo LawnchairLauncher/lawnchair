@@ -375,7 +375,9 @@ public class FocusHelper {
         // Process the focus.
         int newIconIndex = FocusLogic.handleKeyEvent(keyCode, countX,
                 countY, matrix, iconIndex, pageIndex, pageCount, Utilities.isRtl(v.getResources()));
+        boolean isRtl = Utilities.isRtl(v.getResources());
         View newIcon = null;
+        CellLayout workspaceLayout = (CellLayout) workspace.getChildAt(pageIndex);
         switch (newIconIndex) {
             case FocusLogic.NOOP:
                 if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
@@ -397,20 +399,30 @@ public class FocusHelper {
                     newIconIndex = FocusLogic.handleKeyEvent(keyCode, countX + 1, countY,
                             matrix, FocusLogic.PIVOT, newPageIndex, pageCount,
                             Utilities.isRtl(v.getResources()));
-                    newIcon = parent.getChildAt(newIconIndex);
+                    if (newIconIndex == FocusLogic.NEXT_PAGE_FIRST_ITEM) {
+                        newIcon = handleNextPageFirstItem(workspace, hotseatLayout, pageIndex,
+                                isRtl);
+                    } else if (newIconIndex == FocusLogic.PREVIOUS_PAGE_LAST_ITEM) {
+                        newIcon = handlePreviousPageLastItem(workspace, hotseatLayout, pageIndex,
+                                isRtl);
+                    } else {
+                        newIcon = parent.getChildAt(newIconIndex);
+                    }
                 }
                 break;
             case FocusLogic.PREVIOUS_PAGE_FIRST_ITEM:
-                parent = getCellLayoutChildrenForIndex(workspace, pageIndex - 1);
-                newIcon = parent.getChildAt(0);
+                workspaceLayout = (CellLayout) workspace.getChildAt(pageIndex - 1);
+                newIcon = getFirstFocusableIconInReadingOrder(workspaceLayout, isRtl);
+                if (newIcon == null) {
+                    newIcon = getFirstFocusableIconInReadingOrder(hotseatLayout, isRtl);
+                    workspace.snapToPage(pageIndex - 1);
+                }
                 break;
             case FocusLogic.PREVIOUS_PAGE_LAST_ITEM:
-                parent = getCellLayoutChildrenForIndex(workspace, pageIndex - 1);
-                newIcon = parent.getChildAt(parent.getChildCount() - 1);
+                newIcon = handlePreviousPageLastItem(workspace, hotseatLayout, pageIndex, isRtl);
                 break;
             case FocusLogic.NEXT_PAGE_FIRST_ITEM:
-                parent = getCellLayoutChildrenForIndex(workspace, pageIndex + 1);
-                newIcon = parent.getChildAt(0);
+                newIcon = handleNextPageFirstItem(workspace, hotseatLayout, pageIndex, isRtl);
                 break;
             case FocusLogic.NEXT_PAGE_LEFT_COLUMN:
             case FocusLogic.PREVIOUS_PAGE_LEFT_COLUMN:
@@ -426,14 +438,28 @@ public class FocusHelper {
                     newIconIndex = FocusLogic.handleKeyEvent(keyCode, countX + 1, countY,
                             matrix, FocusLogic.PIVOT, newPageIndex, pageCount,
                             Utilities.isRtl(v.getResources()));
-                    newIcon = parent.getChildAt(newIconIndex);
+                    if (newIconIndex == FocusLogic.NEXT_PAGE_FIRST_ITEM) {
+                        newIcon = handleNextPageFirstItem(workspace, hotseatLayout, pageIndex,
+                                isRtl);
+                    } else if (newIconIndex == FocusLogic.PREVIOUS_PAGE_LAST_ITEM) {
+                        newIcon = handlePreviousPageLastItem(workspace, hotseatLayout, pageIndex,
+                                isRtl);
+                    } else {
+                        newIcon = parent.getChildAt(newIconIndex);
+                    }
                 }
                 break;
             case FocusLogic.CURRENT_PAGE_FIRST_ITEM:
-                newIcon = parent.getChildAt(0);
+                newIcon = getFirstFocusableIconInReadingOrder(workspaceLayout, isRtl);
+                if (newIcon == null) {
+                    newIcon = getFirstFocusableIconInReadingOrder(hotseatLayout, isRtl);
+                }
                 break;
             case FocusLogic.CURRENT_PAGE_LAST_ITEM:
-                newIcon = parent.getChildAt(parent.getChildCount() - 1);
+                newIcon = getFirstFocusableIconInReverseReadingOrder(workspaceLayout, isRtl);
+                if (newIcon == null) {
+                    newIcon = getFirstFocusableIconInReverseReadingOrder(hotseatLayout, isRtl);
+                }
                 break;
             default:
                 // current page, some item.
@@ -507,5 +533,56 @@ public class FocusHelper {
         int keyCode = event.getKeyCode();
         return (keyCode == KeyEvent.KEYCODE_DEL || keyCode == KeyEvent.KEYCODE_FORWARD_DEL) &&
                 event.hasModifiers(KeyEvent.META_CTRL_ON);
+    }
+
+    private static View handlePreviousPageLastItem(Workspace workspace, CellLayout hotseatLayout,
+            int pageIndex, boolean isRtl) {
+        CellLayout workspaceLayout = (CellLayout) workspace.getChildAt(pageIndex - 1);
+        View newIcon = getFirstFocusableIconInReverseReadingOrder(workspaceLayout, isRtl);
+        if (newIcon == null) {
+            newIcon = getFirstFocusableIconInReverseReadingOrder(hotseatLayout,isRtl);
+            workspace.snapToPage(pageIndex - 1);
+        }
+        return newIcon;
+    }
+
+    private static View handleNextPageFirstItem(Workspace workspace, CellLayout hotseatLayout,
+            int pageIndex, boolean isRtl) {
+        CellLayout workspaceLayout = (CellLayout) workspace.getChildAt(pageIndex + 1);
+        View newIcon = getFirstFocusableIconInReadingOrder(workspaceLayout, isRtl);
+        if (newIcon == null) {
+            newIcon = getFirstFocusableIconInReadingOrder(hotseatLayout, isRtl);
+            workspace.snapToPage(pageIndex + 1);
+        }
+        return newIcon;
+    }
+
+    private static View getFirstFocusableIconInReadingOrder(CellLayout cellLayout, boolean isRtl) {
+        View icon;
+        int countX = cellLayout.getCountX();
+        for (int y = 0; y < cellLayout.getCountY(); y++) {
+            int increment = isRtl ? -1 : 1;
+            for (int x = isRtl ? countX - 1 : 0; 0 <= x && x < countX; x += increment) {
+                if ((icon = cellLayout.getChildAt(x, y)) != null && icon.isFocusable()) {
+                    return icon;
+                }
+            }
+        }
+        return null;
+    }
+
+    private static View getFirstFocusableIconInReverseReadingOrder(CellLayout cellLayout,
+            boolean isRtl) {
+        View icon;
+        int countX = cellLayout.getCountX();
+        for (int y = cellLayout.getCountY() - 1; y >= 0; y--) {
+            int increment = isRtl ? 1 : -1;
+            for (int x = isRtl ? 0 : countX - 1; 0 <= x && x < countX; x += increment) {
+                if ((icon = cellLayout.getChildAt(x, y)) != null && icon.isFocusable()) {
+                    return icon;
+                }
+            }
+        }
+        return null;
     }
 }

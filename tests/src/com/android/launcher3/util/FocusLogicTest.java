@@ -80,7 +80,7 @@ public final class FocusLogicTest extends AndroidTestCase {
                 {100, -1, -1, -1, -1, -1},
         });
         int i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, 6, 5, map, 100, 1, 2, false);
-        assertEquals(0, i);
+        assertEquals(FocusLogic.NEXT_PAGE_FIRST_ITEM, i);
     }
 
     public void testMoveIntoHotseatWithEqualHotseatAndWorkspaceColumns() {
