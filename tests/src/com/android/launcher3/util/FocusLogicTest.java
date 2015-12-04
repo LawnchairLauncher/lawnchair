@@ -67,7 +67,7 @@ public final class FocusLogicTest extends AndroidTestCase {
                 {-1, -1, -1, -1, -1, -1},
                 {100, 1, -1, -1, -1, -1},
         });
-        int i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, 6, 5, map, 100, 1, 2, false);
+        int i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, map, 100, 1, 2, false);
         assertEquals(1, i);
     }
 
@@ -79,7 +79,7 @@ public final class FocusLogicTest extends AndroidTestCase {
                 {-1, -1, -1, -1, -1, -1},
                 {100, -1, -1, -1, -1, -1},
         });
-        int i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, 6, 5, map, 100, 1, 2, false);
+        int i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, map, 100, 1, 2, false);
         assertEquals(FocusLogic.NEXT_PAGE_FIRST_ITEM, i);
     }
 
@@ -92,7 +92,7 @@ public final class FocusLogicTest extends AndroidTestCase {
                 {-1, -1,  0, -1, -1},
                 { 2,  3,  1,  4,  5},
         });
-        int i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, 5, 5, map, 0, 1, 1, true);
+        int i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, map, 0, 1, 1, true);
         assertEquals(1, i);
         // Test going from an icon above and to the right of the All Apps
         // button to an icon to the right of the All Apps button.
@@ -103,7 +103,7 @@ public final class FocusLogicTest extends AndroidTestCase {
                 {-1, -1, -1,  0, -1},
                 { 2,  3,  1,  4,  5},
         });
-        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, 5, 5, map, 0, 1, 1, true);
+        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, map, 0, 1, 1, true);
         assertEquals(4, i);
     }
 
@@ -118,7 +118,7 @@ public final class FocusLogicTest extends AndroidTestCase {
                 {-1, -1,  0,-11, -1, -1, -1},
                 {-1, -1, -1,  1,  1, -1, -1},
         });
-        int i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, 7, 6, map, 0, 1, 1, true);
+        int i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, map, 0, 1, 1, true);
         assertEquals(1, i);
         // Test going from an icon above and to the right
         // of the All Apps button to the All Apps button.
@@ -130,7 +130,7 @@ public final class FocusLogicTest extends AndroidTestCase {
                 {-1, -1, -1,-11,  0, -1, -1},
                 {-1, -1, -1,  1, -1, -1, -1},
         });
-        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, 7, 6, map, 0, 1, 1, true);
+        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, map, 0, 1, 1, true);
         assertEquals(1, i);
         // Test going from the All Apps button to an icon
         // above and to the right of the All Apps button.
@@ -142,7 +142,7 @@ public final class FocusLogicTest extends AndroidTestCase {
                 {-1, -1, -1,-11,  0, -1, -1},
                 {-1, -1, -1,  1, -1, -1, -1},
         });
-        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_UP, 7, 6, map, 1, 1, 1, true);
+        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_UP, map, 1, 1, 1, true);
         assertEquals(0, i);
         // Test going from an icon above and to the left of the
         // All Apps button in landscape to the All Apps button.
@@ -153,7 +153,7 @@ public final class FocusLogicTest extends AndroidTestCase {
                 { -1, -1, -1, -1, -1},
                 { -1, -1, -1, -1, -1},
         });
-        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, 5, 5, map, 0, 1, 1, true);
+        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, map, 0, 1, 1, true);
         assertEquals(1, i);
         // Test going from the All Apps button in landscape to
         // an icon above and to the left of the All Apps button.
@@ -164,7 +164,7 @@ public final class FocusLogicTest extends AndroidTestCase {
                 { -1, -1, -1, -1, -1},
                 { -1, -1, -1, -1, -1},
         });
-        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_LEFT, 5, 5, map, 1, 1, 1, true);
+        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_LEFT, map, 1, 1, 1, true);
         assertEquals(0, i);
         // Test that going to the hotseat always goes to the same row as the original icon.
         map = transpose(new int[][]{
@@ -175,17 +175,17 @@ public final class FocusLogicTest extends AndroidTestCase {
                 {-1, -1, -1,-11, -1, -1, -1},
                 { 7,  8,  9,  6, 10, 11, 12},
         });
-        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, 7, 6, map, 0, 1, 1, true);
+        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, map, 0, 1, 1, true);
         assertEquals(7, i);
-        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, 7, 6, map, 1, 1, 1, true);
+        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, map, 1, 1, 1, true);
         assertEquals(8, i);
-        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, 7, 6, map, 2, 1, 1, true);
+        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, map, 2, 1, 1, true);
         assertEquals(9, i);
-        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, 7, 6, map, 3, 1, 1, true);
+        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, map, 3, 1, 1, true);
         assertEquals(10, i);
-        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, 7, 6, map, 4, 1, 1, true);
+        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, map, 4, 1, 1, true);
         assertEquals(11, i);
-        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, 7, 6, map, 5, 1, 1, true);
+        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, map, 5, 1, 1, true);
         assertEquals(12, i);
     }
 
@@ -198,7 +198,7 @@ public final class FocusLogicTest extends AndroidTestCase {
                 {-1, -1,-11, -1, -1},
                 {-1, -1,  2, -1, -1},
         });
-        int i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, 5, 5, map, 0, 1, 1, true);
+        int i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, map, 0, 1, 1, true);
         assertEquals(1, i);
         // Test crossing from right to left in portrait.
         map = transpose(new int[][] {
@@ -208,7 +208,7 @@ public final class FocusLogicTest extends AndroidTestCase {
                 {-1, -1,-11, -1, -1},
                 {-1, -1,  2, -1, -1},
         });
-        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, 5, 5, map, 0, 1, 1, true);
+        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_DOWN, map, 0, 1, 1, true);
         assertEquals(1, i);
         // Test crossing from left to right in landscape.
         map = transpose(new int[][] {
@@ -216,9 +216,9 @@ public final class FocusLogicTest extends AndroidTestCase {
                 { -1, -1, -1,  0, -1},
                 {-11,-11,-11,-11,  2},
                 { -1,  1, -1, -1, -1},
-                { -1, -1, -1, -1, -1},
+                { -1, -1  -1, -1, -1},
         });
-        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_LEFT, 5, 5, map, 0, 1, 1, true);
+        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_LEFT, map, 0, 1, 1, true);
         assertEquals(1, i);
         // Test crossing from right to left in landscape.
         map = transpose(new int[][] {
@@ -228,8 +228,20 @@ public final class FocusLogicTest extends AndroidTestCase {
                 { -1, -1,  1, -1, -1},
                 { -1, -1, -1, -1, -1},
         });
-        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, 5, 5, map, 0, 1, 1, true);
+        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, map, 0, 1, 1, true);
         assertEquals(1, i);
+        // Test NOT crossing it, if the All Apps button is the only suitable candidate.
+        map = transpose(new int[][]{
+                {-1, 0, -1, -1, -1},
+                {-1, 1, -1, -1, -1},
+                {-11, -11, -11, -11, 4},
+                {-1, 2, -1, -1, -1},
+                {-1, 3, -1, -1, -1},
+        });
+        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, map, 1, 1, 1, true);
+        assertEquals(4, i);
+        i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, map, 2, 1, 1, true);
+        assertEquals(4, i);
     }
 
     /** Transposes the matrix so that we can write it in human-readable format in the tests. */
