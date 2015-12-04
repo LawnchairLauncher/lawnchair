@@ -902,9 +902,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 ((LayoutParams) mShortcutsAndWidgets.getChildAt(0).getLayoutParams()).isFullscreen;
         int left = getPaddingLeft();
         if (!isFullscreen) {
-            int offset = getMeasuredWidth() - getPaddingLeft() - getPaddingRight() -
-                    (mCountX * mCellWidth);
-            left += (int) Math.ceil(offset / 2f);
+            left += (int) Math.ceil(getUnusedHorizontalSpace() / 2f);
         }
         int top = getPaddingTop();
 
@@ -914,6 +912,15 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         mShortcutsAndWidgets.layout(left, top,
                 left + r - l,
                 top + b - t);
+    }
+
+    /**
+     * Returns the amount of space left over after subtracting padding and cells. This space will be
+     * very small, a few pixels at most, and is a result of rounding down when calculating the cell
+     * width in {@link DeviceProfile#calculateCellWidth(int, int)}.
+     */
+    public int getUnusedHorizontalSpace() {
+        return getMeasuredWidth() - getPaddingLeft() - getPaddingRight() - (mCountX * mCellWidth);
     }
 
     @Override
@@ -1048,8 +1055,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         return false;
     }
 
-    void visualizeDropLocation(View v, Bitmap dragOutline, int originX, int originY, int cellX,
-            int cellY, int spanX, int spanY, boolean resize, DropTarget.DragObject dragObject) {
+    void visualizeDropLocation(View v, Bitmap dragOutline, int cellX, int cellY, int spanX,
+            int spanY, boolean resize, DropTarget.DragObject dragObject) {
         final int oldDragCellX = mDragCell[0];
         final int oldDragCellY = mDragCell[1];
 

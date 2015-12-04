@@ -900,8 +900,7 @@ public class Launcher extends Activity
     }
 
     @Thunk void completeTwoStageWidgetDrop(final int resultCode, final int appWidgetId) {
-        CellLayout cellLayout =
-                (CellLayout) mWorkspace.getScreenWithId(mPendingAddInfo.screenId);
+        CellLayout cellLayout = mWorkspace.getScreenWithId(mPendingAddInfo.screenId);
         Runnable onCompleteRunnable = null;
         int animationType = 0;
 
