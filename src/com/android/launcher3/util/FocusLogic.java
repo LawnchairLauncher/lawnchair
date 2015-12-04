@@ -80,8 +80,11 @@ public class FocusLogic {
                 keyCode == KeyEvent.KEYCODE_DEL || keyCode == KeyEvent.KEYCODE_FORWARD_DEL);
     }
 
-    public static int handleKeyEvent(int keyCode, int cntX, int cntY,
-            int [][] map, int iconIdx, int pageIndex, int pageCount, boolean isRtl) {
+    public static int handleKeyEvent(int keyCode, int [][] map, int iconIdx, int pageIndex,
+            int pageCount, boolean isRtl) {
+
+        int cntX = map == null ? -1 : map.length;
+        int cntY = map == null ? -1 : map[0].length;
 
         if (DEBUG) {
             Log.v(TAG, String.format(
@@ -187,8 +190,8 @@ public class FocusLogic {
      * in portrait orientation. In landscape, [(icon + hotseat) column count x (icon row count)]
      */
     // TODO: get rid of the dynamic matrix creation
-    public static int[][] createSparseMatrix(CellLayout iconLayout, CellLayout hotseatLayout,
-            boolean isHotseatHorizontal, int allappsiconRank) {
+    public static int[][] createSparseMatrixWithHotseat(CellLayout iconLayout,
+            CellLayout hotseatLayout, boolean isHotseatHorizontal, int allappsiconRank) {
 
         ViewGroup iconParent = iconLayout.getShortcutsAndWidgets();
         ViewGroup hotseatParent = hotseatLayout.getShortcutsAndWidgets();
@@ -267,7 +270,8 @@ public class FocusLogic {
      * @param pivotY    y coordinate of the focused item in the current page
      */
     // TODO: get rid of the dynamic matrix creation
-    public static int[][] createSparseMatrix(CellLayout iconLayout, int pivotX, int pivotY) {
+    public static int[][] createSparseMatrixWithPivotColumn(CellLayout iconLayout,
+            int pivotX, int pivotY) {
 
         ViewGroup iconParent = iconLayout.getShortcutsAndWidgets();
 
@@ -348,23 +352,28 @@ public class FocusLogic {
         //              (x2-n, yPos + 2*increment), (x2-n, yPos - 2*increment)
         int nextYPos1;
         int nextYPos2;
+        boolean haveCrossedAllAppsColumn1 = false;
+        boolean haveCrossedAllAppsColumn2 = false;
         int x = -1;
         for (int coeff = 1; coeff < cntY; coeff++) {
             nextYPos1 = yPos + coeff * increment;
             nextYPos2 = yPos - coeff * increment;
             x = xPos + increment * coeff;
             if (inspectMatrix(x, nextYPos1, cntX, cntY, matrix) == ALL_APPS_COLUMN) {
-                nextYPos1 += increment;
-
+                haveCrossedAllAppsColumn1 = true;
             }
             if (inspectMatrix(x, nextYPos2, cntX, cntY, matrix) == ALL_APPS_COLUMN) {
-                nextYPos2 -= increment;
+                haveCrossedAllAppsColumn2 = true;
             }
             for (; 0 <= x && x < cntX; x += increment) {
-                if ((newIconIndex = inspectMatrix(x, nextYPos1, cntX, cntY, matrix)) != NOOP) {
+                int offset1 = haveCrossedAllAppsColumn1 && x < cntX - 1 ? increment : 0;
+                newIconIndex = inspectMatrix(x, nextYPos1 + offset1, cntX, cntY, matrix);
+                if (newIconIndex != NOOP) {
                     return newIconIndex;
                 }
-                if ((newIconIndex = inspectMatrix(x, nextYPos2, cntX, cntY, matrix)) != NOOP) {
+                int offset2 = haveCrossedAllAppsColumn2 && x < cntX - 1 ? -increment : 0;
+                newIconIndex = inspectMatrix(x, nextYPos2 + offset2, cntX, cntY, matrix);
+                if (newIconIndex != NOOP) {
                     return newIconIndex;
                 }
             }
@@ -427,23 +436,28 @@ public class FocusLogic {
         //              (xPos + 2*increment, y_(2-n))), (xPos - 2*increment, y_(2-n))
         int nextXPos1;
         int nextXPos2;
+        boolean haveCrossedAllAppsColumn1 = false;
+        boolean haveCrossedAllAppsColumn2 = false;
         int y = -1;
         for (int coeff = 1; coeff < cntX; coeff++) {
             nextXPos1 = xPos + coeff * increment;
             nextXPos2 = xPos - coeff * increment;
             y = yPos + increment * coeff;
             if (inspectMatrix(nextXPos1, y, cntX, cntY, matrix) == ALL_APPS_COLUMN) {
-                nextXPos1 += increment;
-
+                haveCrossedAllAppsColumn1 = true;
             }
             if (inspectMatrix(nextXPos2, y, cntX, cntY, matrix) == ALL_APPS_COLUMN) {
-                nextXPos2 -= increment;
+                haveCrossedAllAppsColumn2 = true;
             }
             for (; 0 <= y && y < cntY; y = y + increment) {
-                if ((newIconIndex = inspectMatrix(nextXPos1, y, cntX, cntY, matrix)) != NOOP) {
+                int offset1 = haveCrossedAllAppsColumn1 && y < cntY - 1 ? increment : 0;
+                newIconIndex = inspectMatrix(nextXPos1 + offset1, y, cntX, cntY, matrix);
+                if (newIconIndex != NOOP) {
                     return newIconIndex;
                 }
-                if ((newIconIndex = inspectMatrix(nextXPos2, y, cntX, cntY, matrix)) != NOOP) {
+                int offset2 = haveCrossedAllAppsColumn2 && y < cntY - 1 ? -increment : 0;
+                newIconIndex = inspectMatrix(nextXPos2 + offset2, y, cntX, cntY, matrix);
+                if (newIconIndex != NOOP) {
                     return newIconIndex;
                 }
             }
