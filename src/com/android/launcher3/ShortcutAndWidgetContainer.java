@@ -141,8 +141,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
             lp.height = getMeasuredHeight();
         }
         int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(lp.width, MeasureSpec.EXACTLY);
-        int childheightMeasureSpec = MeasureSpec.makeMeasureSpec(lp.height,
-                MeasureSpec.EXACTLY);
+        int childheightMeasureSpec = MeasureSpec.makeMeasureSpec(lp.height, MeasureSpec.EXACTLY);
         child.measure(childWidthMeasureSpec, childheightMeasureSpec);
     }
 
