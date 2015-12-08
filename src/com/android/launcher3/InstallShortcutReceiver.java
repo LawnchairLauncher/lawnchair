@@ -144,29 +144,45 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         if (!ACTION_INSTALL_SHORTCUT.equals(data.getAction())) {
             return;
         }
-
-        PendingInstallShortcutInfo info = new PendingInstallShortcutInfo(data, context);
-        if (info.launchIntent == null || info.label == null) {
-            if (DBG) Log.e(TAG, "Invalid install shortcut intent");
-            return;
+        PendingInstallShortcutInfo info = createPendingInfo(context, data);
+        if (info != null) {
+            queuePendingShortcutInfo(info, context);
         }
-
-        info = convertToLauncherActivityIfPossible(info);
-        queuePendingShortcutInfo(info, context);
     }
 
-    public static ShortcutInfo fromShortcutIntent(Context context, Intent data) {
+    /**
+     * @return true is the extra is either null or is of type {@param type}
+     */
+    private static boolean isValidExtraType(Intent intent, String key, Class type) {
+        Object extra = intent.getParcelableExtra(key);
+        return extra == null || type.isInstance(extra);
+    }
+
+    /**
+     * Verifies the intent and creates a {@link PendingInstallShortcutInfo}
+     */
+    private static PendingInstallShortcutInfo createPendingInfo(Context context, Intent data) {
+        if (!isValidExtraType(data, Intent.EXTRA_SHORTCUT_INTENT, Intent.class) ||
+                !(isValidExtraType(data, Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
+                        Intent.ShortcutIconResource.class)) ||
+                !(isValidExtraType(data, Intent.EXTRA_SHORTCUT_ICON, Bitmap.class))) {
+
+            if (DBG) Log.e(TAG, "Invalid install shortcut intent");
+            return null;
+        }
+
         PendingInstallShortcutInfo info = new PendingInstallShortcutInfo(data, context);
         if (info.launchIntent == null || info.label == null) {
             if (DBG) Log.e(TAG, "Invalid install shortcut intent");
             return null;
         }
-        info = convertToLauncherActivityIfPossible(info);
-        return info.getShortcutInfo();
+
+        return convertToLauncherActivityIfPossible(info);
     }
 
-    static void queueInstallShortcut(LauncherActivityInfoCompat info, Context context) {
-        queuePendingShortcutInfo(new PendingInstallShortcutInfo(info, context), context);
+    public static ShortcutInfo fromShortcutIntent(Context context, Intent data) {
+        PendingInstallShortcutInfo info = createPendingInfo(context, data);
+        return info == null ? null : info.getShortcutInfo();
     }
 
     private static void queuePendingShortcutInfo(PendingInstallShortcutInfo info, Context context) {
