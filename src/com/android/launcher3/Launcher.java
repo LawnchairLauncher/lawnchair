@@ -2529,6 +2529,9 @@ public class Launcher extends Activity
         if (mAppWidgetHost != null) {
             mAppWidgetHost.startListening();
         }
+
+        // Recreate the QSB, as the widget has been reset.
+        bindSearchProviderChanged();
     }
 
     /**
