@@ -27,6 +27,7 @@ import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.util.ConfigMonitor;
 import com.android.launcher3.util.TestingUtils;
 import com.android.launcher3.util.Thunk;
 
@@ -108,7 +109,6 @@ public class LauncherAppState {
 
         sContext.registerReceiver(mModel, filter);
         UserManagerCompat.getInstance(sContext).enableAndResetCache();
-
         if (!Utilities.ATLEAST_KITKAT) {
             sContext.registerReceiver(new BroadcastReceiver() {
 
@@ -118,6 +118,7 @@ public class LauncherAppState {
                 }
             }, new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED));
         }
+        new ConfigMonitor(sContext).register();
     }
 
     /**
