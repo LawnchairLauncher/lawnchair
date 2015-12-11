@@ -43,7 +43,6 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
-import android.os.StrictMode;
 import android.os.UserManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -57,7 +56,6 @@ import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.util.ManagedProfileHeuristic;
 import com.android.launcher3.util.Thunk;
 
-import java.io.File;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -322,7 +320,8 @@ public class LauncherProvider extends ContentProvider {
                 return null;
             }
             case LauncherSettings.Settings.METHOD_DELETE_DB: {
-                deleteDatabase();
+                // Are you sure? (y/n)
+                mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
                 return null;
             }
         }
@@ -480,17 +479,6 @@ public class LauncherProvider extends ContentProvider {
                 .getInvariantDeviceProfile().defaultLayoutId;
         return new DefaultLayoutParser(getContext(), mOpenHelper.mAppWidgetHost,
                 mOpenHelper, getContext().getResources(), defaultLayout);
-    }
-
-    private void deleteDatabase() {
-        // Are you sure? (y/n)
-        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        final File dbFile = new File(db.getPath());
-        mOpenHelper.close();
-        if (dbFile.exists()) {
-            SQLiteDatabase.deleteDatabase(dbFile);
-        }
-        mOpenHelper = new DatabaseHelper(getContext(), this);
     }
 
     /**
