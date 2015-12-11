@@ -98,7 +98,7 @@ public class DeviceProfile {
     public int allAppsNumPredictiveCols;
     public int allAppsButtonVisualSize;
     public final int allAppsIconSizePx;
-    public final int allAppsIconTextSizePx;
+    public final float allAppsIconTextSizeSp;
 
     // QSB
     private int searchBarWidgetInternalPaddingTop, searchBarWidgetInternalPaddingBottom;
@@ -150,7 +150,7 @@ public class DeviceProfile {
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_icon_drawable_padding);
 
         // AllApps uses the original non-scaled icon text size
-        allAppsIconTextSizePx = Utilities.pxFromDp(inv.iconTextSize, dm);
+        allAppsIconTextSizeSp = inv.iconTextSize;
 
         // AllApps uses the original non-scaled icon size
         allAppsIconSizePx = Utilities.pxFromDp(inv.iconSize, dm);
@@ -203,7 +203,7 @@ public class DeviceProfile {
     private void updateIconSize(float scale, int drawablePadding, Resources res,
                                 DisplayMetrics dm) {
         iconSizePx = (int) (Utilities.pxFromDp(inv.iconSize, dm) * scale);
-        iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * scale);
+        iconTextSizePx = (int) (Utilities.pxFromDp(inv.iconTextSize, dm) * scale);
         iconDrawablePaddingPx = drawablePadding;
         hotseatIconSizePx = (int) (Utilities.pxFromDp(inv.hotseatIconSize, dm) * scale);
 
