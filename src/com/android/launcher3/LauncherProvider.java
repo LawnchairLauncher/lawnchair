@@ -454,14 +454,7 @@ public class LauncherProvider extends ContentProvider {
 
     public void deleteDatabase() {
         // Are you sure? (y/n)
-        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        final File dbFile = new File(db.getPath());
-        mOpenHelper.close();
-        if (dbFile.exists()) {
-            SQLiteDatabase.deleteDatabase(dbFile);
-        }
-        mOpenHelper = new DatabaseHelper(getContext());
-        mOpenHelper.mListener = mListener;
+        mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
     }
 
     private static class DatabaseHelper extends SQLiteOpenHelper implements LayoutParserCallback {
