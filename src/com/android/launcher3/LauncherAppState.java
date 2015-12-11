@@ -27,6 +27,7 @@ import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.util.ConfigMonitor;
 import com.android.launcher3.util.TestingUtils;
 import com.android.launcher3.util.Thunk;
 
@@ -104,6 +105,7 @@ public class LauncherAppState {
 
         sContext.registerReceiver(mModel, filter);
         UserManagerCompat.getInstance(sContext).enableAndResetCache();
+        new ConfigMonitor(sContext).register();
     }
 
     /**
