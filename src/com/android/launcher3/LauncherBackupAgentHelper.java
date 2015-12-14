@@ -25,7 +25,7 @@ import android.database.Cursor;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
-import com.android.launcher3.model.MigrateFromRestoreTask;
+import com.android.launcher3.model.GridSizeMigrationTask;
 
 import java.io.IOException;
 
@@ -118,8 +118,9 @@ public class LauncherBackupAgentHelper extends BackupAgentHelper {
                 LauncherAppState.getLauncherProvider().updateFolderItemsRank();
             }
 
-            if (MigrateFromRestoreTask.ENABLED && mHelper.shouldAttemptWorkspaceMigration()) {
-                MigrateFromRestoreTask.markForMigration(getApplicationContext(),
+            // TODO: Update this logic to handle grid difference of 2. as well as hotseat difference
+            if (GridSizeMigrationTask.ENABLED && mHelper.shouldAttemptWorkspaceMigration()) {
+                GridSizeMigrationTask.markForMigration(getApplicationContext(),
                         (int) mHelper.migrationCompatibleProfileData.desktopCols,
                         (int) mHelper.migrationCompatibleProfileData.desktopRows,
                         mHelper.widgetSizes);

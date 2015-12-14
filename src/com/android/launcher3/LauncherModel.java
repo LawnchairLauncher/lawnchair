@@ -56,7 +56,7 @@ import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.model.MigrateFromRestoreTask;
+import com.android.launcher3.model.GridSizeMigrationTask;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.CursorIconInfo;
@@ -1751,14 +1751,14 @@ public class LauncherModel extends BroadcastReceiver
             int countX = profile.numColumns;
             int countY = profile.numRows;
 
-            if (MigrateFromRestoreTask.ENABLED && MigrateFromRestoreTask.shouldRunTask(mContext)) {
+            if (GridSizeMigrationTask.ENABLED && GridSizeMigrationTask.shouldRunTask(mContext)) {
                 long migrationStartTime = System.currentTimeMillis();
                 Log.v(TAG, "Starting workspace migration after restore");
                 try {
-                    MigrateFromRestoreTask task = new MigrateFromRestoreTask(mContext);
+                    GridSizeMigrationTask task = new GridSizeMigrationTask(mContext);
                     // Clear the flags before starting the task, so that we do not run the task
                     // again, in case there was an uncaught error.
-                    MigrateFromRestoreTask.clearFlags(mContext);
+                    GridSizeMigrationTask.clearFlags(mContext);
                     task.execute();
                 } catch (Exception e) {
                     Log.e(TAG, "Error during grid migration", e);
@@ -1768,6 +1768,8 @@ public class LauncherModel extends BroadcastReceiver
                 }
                 Log.v(TAG, "Workspace migration completed in "
                         + (System.currentTimeMillis() - migrationStartTime));
+
+                GridSizeMigrationTask.saveCurrentConfig(mContext);
             }
 
             if ((mFlags & LOADER_FLAG_CLEAR_WORKSPACE) != 0) {
