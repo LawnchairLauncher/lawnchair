@@ -73,12 +73,12 @@ public class InvariantDeviceProfile {
     /**
      * Number of icons inside the hotseat area.
      */
-    int numHotseatIcons;
+    public int numHotseatIcons;
     float hotseatIconSize;
     int defaultLayoutId;
 
     // Derived invariant properties
-    int hotseatAllAppsRank;
+    public int hotseatAllAppsRank;
 
     DeviceProfile landscapeProfile;
     DeviceProfile portraitProfile;
