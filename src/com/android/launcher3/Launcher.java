@@ -115,10 +115,7 @@ import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetsContainerView;
 
-import java.io.File;
 import java.io.FileDescriptor;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -178,6 +175,8 @@ public class Launcher extends Activity
     private static final String RUNTIME_STATE_CURRENT_SCREEN = "launcher.current_screen";
     // Type: int
     private static final String RUNTIME_STATE = "launcher.state";
+    // Type: long
+    private static final String RUNTIME_STATE_OPEN_FOLDER_ID = "launcher.open_folder_id";
     // Type: Content Values / parcelable
     private static final String RUNTIME_STATE_PENDING_ADD_ITEM = "launcher.add_item";
     // Type: parcelable
@@ -537,7 +536,7 @@ public class Launcher extends Activity
                     return;
                 }
                 // The underlying workspace and hotseat are temporarily suppressed by the search
-                // overlay. So they sholudn't be accessible.
+                // overlay. So they shouldn't be accessible.
                 if (mWorkspace != null) {
                     mWorkspaceImportanceForAccessibility =
                             mWorkspace.getImportantForAccessibility();
@@ -1950,9 +1949,10 @@ public class Launcher extends Activity
         super.onSaveInstanceState(outState);
 
         outState.putInt(RUNTIME_STATE, mState.ordinal());
-        // We close any open folder since it will not be re-opened, and we need to make sure
-        // this state is reflected.
-        closeFolder(false);
+        Folder openFolder = mWorkspace.getOpenFolder();
+        if (openFolder != null) {
+            outState.putLong(RUNTIME_STATE_OPEN_FOLDER_ID, openFolder.mInfo.id);
+        }
 
         if (mPendingAddInfo.container != ItemInfo.NO_ID && mPendingAddInfo.screenId > -1 &&
                 mWaitingForResult) {
@@ -2721,38 +2721,10 @@ public class Launcher extends Activity
             throw new IllegalArgumentException("Input must be a FolderIcon");
         }
 
-        // TODO(sunnygoyal): Re-evaluate this code.
         FolderIcon folderIcon = (FolderIcon) v;
-        final FolderInfo info = folderIcon.getFolderInfo();
-        Folder openFolder = mWorkspace.getFolderForTag(info);
-
-        // If the folder info reports that the associated folder is open, then verify that
-        // it is actually opened. There have been a few instances where this gets out of sync.
-        if (info.opened && openFolder == null) {
-            Log.d(TAG, "Folder info marked as open, but associated folder is not open. Screen: "
-                    + info.screenId + " (" + info.cellX + ", " + info.cellY + ")");
-            info.opened = false;
-        }
-
-        if (!info.opened && !folderIcon.getFolder().isDestroyed()) {
-            // Close any open folder
-            closeFolder();
+        if (!folderIcon.getFolderInfo().opened && !folderIcon.getFolder().isDestroyed()) {
             // Open the requested folder
-            openFolder(folderIcon);
-        } else {
-            // Find the open folder...
-            int folderScreen;
-            if (openFolder != null) {
-                folderScreen = mWorkspace.getPageForView(openFolder);
-                // .. and close it
-                closeFolder(openFolder, true);
-                if (folderScreen != mWorkspace.getCurrentPage()) {
-                    // Close any folder open on the current screen
-                    closeFolder();
-                    // Pull the folder onto this screen
-                    openFolder(folderIcon);
-                }
-            }
+            openFolder(folderIcon, true);
         }
 
         if (mLauncherCallbacks != null) {
@@ -3059,7 +3031,7 @@ public class Launcher extends Activity
         }
     }
 
-    private void growAndFadeOutFolderIcon(FolderIcon fi) {
+    private void growAndFadeOutFolderIcon(FolderIcon fi, boolean animate) {
         if (fi == null) return;
         FolderInfo info = (FolderInfo) fi.getTag();
         if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
@@ -3079,8 +3051,7 @@ public class Launcher extends Activity
         }
         oa.setDuration(getResources().getInteger(R.integer.config_folderExpandDuration));
         oa.start();
-        if (Utilities.isPowerSaverOn(this)) {
-            // Animations are disabled in battery saver mode, so just skip to the end state.
+        if (!animate) {
             oa.end();
         }
     }
@@ -3116,9 +3087,11 @@ public class Launcher extends Activity
      * is animated relative to the specified View. If the View is null, no animation
      * is played.
      *
-     * @param folderInfo The FolderInfo describing the folder to open.
+     * @param folderIcon The FolderIcon describing the folder to open.
      */
-    public void openFolder(FolderIcon folderIcon) {
+    public void openFolder(FolderIcon folderIcon, boolean animate) {
+        animate &= !Utilities.isPowerSaverOn(this);
+
         Folder folder = folderIcon.getFolder();
         Folder openFolder = mWorkspace != null ? mWorkspace.getOpenFolder() : null;
         if (openFolder != null && openFolder != folder) {
@@ -3137,13 +3110,17 @@ public class Launcher extends Activity
         // There was a one-off crash where the folder had a parent already.
         if (folder.getParent() == null) {
             mDragLayer.addView(folder);
-            mDragController.addDropTarget((DropTarget) folder);
+            mDragController.addDropTarget(folder);
         } else {
             Log.w(TAG, "Opening folder (" + folder + ") which already has a parent (" +
                     folder.getParent() + ").");
         }
-        folder.animateOpen();
-        growAndFadeOutFolderIcon(folderIcon);
+        if (animate) {
+            folder.animateOpen();
+        } else {
+            folder.open();
+        }
+        growAndFadeOutFolderIcon(folderIcon, animate);
 
         // Notify the accessibility manager that this folder "window" has appeared and occluded
         // the workspace items
@@ -3166,6 +3143,8 @@ public class Launcher extends Activity
     }
 
     public void closeFolder(Folder folder, boolean animate) {
+        animate &= !Utilities.isPowerSaverOn(this);
+
         folder.getInfo().opened = false;
 
         ViewGroup parent = (ViewGroup) folder.getParent().getParent();
@@ -4154,6 +4133,26 @@ public class Launcher extends Activity
             if (!mWorkspace.hasFocus()) {
                 mWorkspace.getChildAt(mWorkspace.getCurrentPage()).requestFocus();
             }
+
+            long folderId = mSavedState.getLong(RUNTIME_STATE_OPEN_FOLDER_ID);
+            if (folderId != 0) {
+                View view = mWorkspace.getHomescreenIconByItemId(folderId);
+                if (view instanceof FolderIcon) {
+                    FolderIcon icon = (FolderIcon) view;
+                    FolderInfo info = icon.getFolderInfo();
+                    long currentScreenId = mWorkspace.getScreenIdForPageIndex(
+                            mWorkspace.getNextPage());
+                    if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT
+                        || info.screenId == currentScreenId) {
+                        // We can show the folder
+                        openFolder(icon, false);
+                    } else {
+                        Launcher.addDumpLog(TAG, "Saved state contains folder " + info +
+                                " but current screen is " + currentScreenId);
+                    }
+                }
+            }
+
             mSavedState = null;
         }
 

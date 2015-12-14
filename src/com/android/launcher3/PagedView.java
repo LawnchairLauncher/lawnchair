@@ -2092,20 +2092,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         if (getNextPage() < getChildCount() -1) snapToPage(getNextPage() + 1);
     }
 
-    public int getPageForView(View v) {
-        int result = -1;
-        if (v != null) {
-            ViewParent vp = v.getParent();
-            int count = getChildCount();
-            for (int i = 0; i < count; i++) {
-                if (vp == getPageAt(i)) {
-                    return i;
-                }
-            }
-        }
-        return result;
-    }
-
     @Override
     public boolean performLongClick() {
         mCancelTap = true;
