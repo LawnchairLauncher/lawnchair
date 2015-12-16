@@ -48,9 +48,8 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     }
 
     public DefaultLayoutParser(Context context, AppWidgetHost appWidgetHost,
-            LayoutParserCallback callback, Resources sourceRes, int layoutId, String rootTag,
-            int hotseatAllAppsRank) {
-        super(context, appWidgetHost, callback, sourceRes, layoutId, rootTag, hotseatAllAppsRank);
+            LayoutParserCallback callback, Resources sourceRes, int layoutId, String rootTag) {
+        super(context, appWidgetHost, callback, sourceRes, layoutId, rootTag);
     }
 
     @Override
