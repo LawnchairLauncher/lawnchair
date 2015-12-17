@@ -45,6 +45,7 @@ import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.Thunk;
@@ -791,6 +792,9 @@ public class IconCache {
     private static final class IconDB extends SQLiteOpenHelper {
         private final static int DB_VERSION = 7;
 
+        private final static int RELEASE_VERSION = DB_VERSION +
+                (FeatureFlags.LAUNCHER3_ICON_NORMALIZATION ? 1 : 0);
+
         private final static String TABLE_NAME = "icons";
         private final static String COLUMN_ROWID = "rowid";
         private final static String COLUMN_COMPONENT = "componentName";
@@ -803,7 +807,7 @@ public class IconCache {
         private final static String COLUMN_SYSTEM_STATE = "system_state";
 
         public IconDB(Context context) {
-            super(context, LauncherFiles.APP_ICONS_DB, null, DB_VERSION);
+            super(context, LauncherFiles.APP_ICONS_DB, null, RELEASE_VERSION);
         }
 
         @Override

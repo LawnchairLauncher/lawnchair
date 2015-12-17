@@ -61,6 +61,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.android.launcher3.compat.UserHandleCompat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.util.IconNormalizer;
 
@@ -216,7 +217,7 @@ public final class Utilities {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static Bitmap createBadgedIconBitmap(
             Drawable icon, UserHandleCompat user, Context context) {
-        float scale = ProviderConfig.IS_DOGFOOD_BUILD ?
+        float scale = FeatureFlags.LAUNCHER3_ICON_NORMALIZATION ?
                 IconNormalizer.getInstance().getScale(icon) : 1;
         Bitmap bitmap = createIconBitmap(icon, context, scale);
         if (Utilities.ATLEAST_LOLLIPOP && user != null
