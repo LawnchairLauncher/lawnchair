@@ -709,7 +709,7 @@ public class LauncherProvider extends ContentProvider {
                     // available (tablet users). Because one of the possible cling flows (migration)
                     // is very destructive (wipes out workspaces), we want to prevent this from showing
                     // until clear data. We do so by marking that the clings have been shown.
-                    LauncherClings.synchonouslyMarkFirstRunClingDismissed(mContext);
+                    LauncherClings.markFirstRunClingDismissed(mContext);
                 }
                 case 17: {
                     // No-op
