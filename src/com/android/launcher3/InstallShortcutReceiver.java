@@ -211,14 +211,14 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             ArrayList<ItemInfo> addShortcuts = new ArrayList<ItemInfo>();
             while (iter.hasNext()) {
                 final PendingInstallShortcutInfo pendingInfo = iter.next();
-                final Intent intent = pendingInfo.launchIntent;
 
                 // If the intent specifies a package, make sure the package exists
                 String packageName = pendingInfo.getTargetPackage();
                 if (!TextUtils.isEmpty(packageName)) {
                     UserHandleCompat myUserHandle = UserHandleCompat.myUserHandle();
                     if (!LauncherModel.isValidPackage(context, packageName, myUserHandle)) {
-                        if (DBG) Log.d(TAG, "Ignoring shortcut for absent package:" + intent);
+                        if (DBG) Log.d(TAG, "Ignoring shortcut for absent package: "
+                                + pendingInfo.launchIntent);
                         continue;
                     }
                 }
@@ -363,7 +363,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             return packageName;
         }
 
-        public boolean isLuncherActivity() {
+        public boolean isLauncherActivity() {
             return activityInfo != null;
         }
     }
@@ -406,9 +406,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             }
 
             return new PendingInstallShortcutInfo(data, context);
-        } catch (JSONException e) {
-            Log.d(TAG, "Exception reading shortcut to add: " + e);
-        } catch (URISyntaxException e) {
+        } catch (JSONException | URISyntaxException e) {
             Log.d(TAG, "Exception reading shortcut to add: " + e);
         }
         return null;
@@ -421,7 +419,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
      */
     private static PendingInstallShortcutInfo convertToLauncherActivityIfPossible(
             PendingInstallShortcutInfo original) {
-        if (original.isLuncherActivity()) {
+        if (original.isLauncherActivity()) {
             // Already an activity target
             return original;
         }

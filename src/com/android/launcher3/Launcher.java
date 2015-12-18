@@ -4002,8 +4002,7 @@ public class Launcher extends Activity
                 pendingInfo.spanY = item.spanY;
                 pendingInfo.minSpanX = item.minSpanX;
                 pendingInfo.minSpanY = item.minSpanY;
-                Bundle options = null;
-                        WidgetHostViewLoader.getDefaultOptionsForWidget(this, pendingInfo);
+                Bundle options = WidgetHostViewLoader.getDefaultOptionsForWidget(this, pendingInfo);
 
                 int newWidgetId = mAppWidgetHost.allocateAppWidgetId();
                 boolean success = mAppWidgetManager.bindAppWidgetIdIfAllowed(

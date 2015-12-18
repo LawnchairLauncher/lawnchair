@@ -768,13 +768,10 @@ public class LauncherBackupHelper implements BackupHelper {
         try {
             Key key = Key.parseFrom(Base64.decode(backupKey, Base64.DEFAULT));
             if (key.checksum != checkKey(key)) {
-                key = null;
                 throw new InvalidBackupException("invalid key read from stream" + backupKey);
             }
             return key;
-        } catch (InvalidProtocolBufferNanoException e) {
-            throw new InvalidBackupException(e);
-        } catch (IllegalArgumentException e) {
+        } catch (InvalidProtocolBufferNanoException | IllegalArgumentException e) {
             throw new InvalidBackupException(e);
         }
     }
@@ -1137,9 +1134,8 @@ public class LauncherBackupHelper implements BackupHelper {
      * @param journal a Journal protocol buffer
      */
     private void writeJournal(ParcelFileDescriptor newState, Journal journal) {
-        FileOutputStream outStream = null;
         try {
-            outStream = new FileOutputStream(newState.getFileDescriptor());
+            FileOutputStream outStream = new FileOutputStream(newState.getFileDescriptor());
             final byte[] journalBytes = writeCheckedBytes(journal);
             outStream.write(journalBytes);
             outStream.close();

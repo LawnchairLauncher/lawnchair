@@ -3455,7 +3455,7 @@ public class LauncherModel extends BroadcastReceiver
 
         ComponentName componentName = intent.getComponent();
         if (componentName == null) {
-            Log.d(TAG, "Missing component found in getShortcutInfo: " + componentName);
+            Log.d(TAG, "Missing component found in getShortcutInfo");
             return null;
         }
 
