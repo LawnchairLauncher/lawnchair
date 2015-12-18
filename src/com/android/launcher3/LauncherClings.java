@@ -251,9 +251,9 @@ class LauncherClings implements OnClickListener {
             !sharedPrefs.getBoolean(MIGRATION_CLING_DISMISSED_KEY, false);
     }
 
-    public static void synchonouslyMarkFirstRunClingDismissed(Context ctx) {
-        SharedPreferences.Editor editor = Utilities.getPrefs(ctx).edit();
-        editor.putBoolean(WORKSPACE_CLING_DISMISSED_KEY, true);
-        editor.commit();
+    public static void markFirstRunClingDismissed(Context ctx) {
+        Utilities.getPrefs(ctx).edit()
+                .putBoolean(WORKSPACE_CLING_DISMISSED_KEY, true)
+                .apply();
     }
 }

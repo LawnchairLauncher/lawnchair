@@ -30,7 +30,7 @@ import java.io.IOException;
 
 public class LauncherBackupAgentHelper extends BackupAgentHelper {
 
-    private static final String TAG = "LauncherBackupAgentHelper";
+    private static final String TAG = "LauncherBAHelper";
 
     private static final String LAUNCHER_DATA_PREFIX = "L";
 
@@ -91,7 +91,7 @@ public class LauncherBackupAgentHelper extends BackupAgentHelper {
 
         if (hasData && mHelper.restoreSuccessful) {
             LauncherAppState.getLauncherProvider().clearFlagEmptyDbCreated();
-            LauncherClings.synchonouslyMarkFirstRunClingDismissed(this);
+            LauncherClings.markFirstRunClingDismissed(this);
 
             // Rank was added in v4.
             if (mHelper.restoredBackupVersion <= 3) {

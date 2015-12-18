@@ -3672,7 +3672,7 @@ public class Launcher extends Activity
                 mSharedPrefs.edit()
                     .putInt(QSB_WIDGET_ID, widgetId)
                     .putString(QSB_WIDGET_PROVIDER, searchProvider.provider.flattenToString())
-                    .commit();
+                    .apply();
             }
 
             mAppWidgetHost.setQsbWidgetId(widgetId);

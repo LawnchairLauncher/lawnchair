@@ -471,7 +471,7 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
             editor.remove(WALLPAPER_WIDTH_KEY);
             editor.remove(WALLPAPER_HEIGHT_KEY);
         }
-        editor.commit();
+        editor.apply();
         WallpaperUtils.suggestWallpaperDimension(getResources(),
                 sp, getWindowManager(), WallpaperManager.getInstance(getContext()), true);
     }
