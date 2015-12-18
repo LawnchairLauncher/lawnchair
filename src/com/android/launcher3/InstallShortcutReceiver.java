@@ -82,7 +82,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                     strings = new HashSet<String>(strings);
                 }
                 strings.add(encoded);
-                sharedPrefs.edit().putStringSet(APPS_PENDING_INSTALL, strings).commit();
+                sharedPrefs.edit().putStringSet(APPS_PENDING_INSTALL, strings).apply();
             }
         }
     }
@@ -110,7 +110,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                         newStringsIter.remove();
                     }
                 }
-                sp.edit().putStringSet(APPS_PENDING_INSTALL, newStrings).commit();
+                sp.edit().putStringSet(APPS_PENDING_INSTALL, newStrings).apply();
             }
         }
     }
@@ -131,7 +131,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                     infos.add(info);
                 }
             }
-            sharedPrefs.edit().putStringSet(APPS_PENDING_INSTALL, new HashSet<String>()).commit();
+            sharedPrefs.edit().putStringSet(APPS_PENDING_INSTALL, new HashSet<String>()).apply();
             return infos;
         }
     }
