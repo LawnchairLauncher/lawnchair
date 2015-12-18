@@ -348,8 +348,7 @@ public class DragController {
             if (rawDragInfo instanceof ShortcutInfo) {
                 ShortcutInfo dragInfo = (ShortcutInfo) rawDragInfo;
                 for (ComponentName componentName : cns) {
-                    // Added null checks to prevent NPE we've seen in the wild
-                    if (dragInfo != null && dragInfo.intent != null) {
+                    if (dragInfo.intent != null) {
                         ComponentName cn = dragInfo.intent.getComponent();
                         boolean isSameComponent = cn != null && (cn.equals(componentName) ||
                                 packageNames.contains(cn.getPackageName()));

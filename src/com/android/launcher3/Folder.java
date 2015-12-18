@@ -547,10 +547,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             public void onAnimationEnd(Animator animation) {
                 mState = STATE_OPEN;
 
-                if (onCompleteRunnable != null) {
-                    onCompleteRunnable.run();
-                }
-
+                onCompleteRunnable.run();
                 mContent.setFocusOnFirstChild();
             }
         });
@@ -1369,10 +1366,12 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     public void onFocusChange(View v, boolean hasFocus) {
-        if (v == mFolderName && hasFocus) {
-            startEditingFolderName();
-        } else if (v == mFolderName && !hasFocus) {
-            dismissEditingName();
+        if (v == mFolderName) {
+            if (hasFocus) {
+                startEditingFolderName();
+            } else {
+                dismissEditingName();
+            }
         }
     }
 
