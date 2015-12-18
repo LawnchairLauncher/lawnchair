@@ -1144,7 +1144,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         Runnable onCompleteRunnable = new Runnable() {
             @Override
             public void run() {
-                int itemCount = getItemCount();
+                int itemCount = mInfo.contents.size();
                 if (itemCount <= 1) {
                     View newIcon = null;
 
