@@ -1103,12 +1103,6 @@ public class LauncherBackupHelper implements BackupHelper {
             }
         } catch (IOException e) {
             Log.w(TAG, "failed to close the journal", e);
-        } finally {
-            try {
-                inStream.close();
-            } catch (IOException e) {
-                Log.w(TAG, "failed to close the journal", e);
-            }
         }
         return journal;
     }
@@ -1142,7 +1136,6 @@ public class LauncherBackupHelper implements BackupHelper {
             outStream = new FileOutputStream(newState.getFileDescriptor());
             final byte[] journalBytes = writeCheckedBytes(journal);
             outStream.write(journalBytes);
-            outStream.close();
             if (VERBOSE) Log.v(TAG, "wrote " + journalBytes.length + " bytes of journal");
         } catch (IOException e) {
             Log.w(TAG, "failed to write backup journal", e);
