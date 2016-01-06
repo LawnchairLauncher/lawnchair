@@ -266,9 +266,9 @@ public class AutoInstallsLayout {
         mValues.put(Favorites.SCREEN, screenId);
 
         mValues.put(Favorites.CELLX,
-                convertToDistanceFromEnd(getAttributeValue(parser, ATTR_X), mColumnCount);
+                convertToDistanceFromEnd(getAttributeValue(parser, ATTR_X), mColumnCount));
         mValues.put(Favorites.CELLY,
-                convertToDistanceFromEnd(getAttributeValue(parser, ATTR_Y), mRowCount);
+                convertToDistanceFromEnd(getAttributeValue(parser, ATTR_Y), mRowCount));
 
         TagParser tagParser = tagParserMap.get(parser.getName());
         if (tagParser == null) {
