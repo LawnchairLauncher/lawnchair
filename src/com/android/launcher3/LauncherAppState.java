@@ -20,13 +20,13 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.UserManager;
 import android.util.Log;
 
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.ConfigMonitor;
 import com.android.launcher3.util.TestingUtils;
 import com.android.launcher3.util.Thunk;
@@ -36,7 +36,6 @@ import java.lang.ref.WeakReference;
 public class LauncherAppState {
 
     private final AppFilter mAppFilter;
-    private final BuildInfo mBuildInfo;
     @Thunk final LauncherModel mModel;
     private final IconCache mIconCache;
     private final WidgetPreviewLoader mWidgetCache;
@@ -90,7 +89,6 @@ public class LauncherAppState {
         mWidgetCache = new WidgetPreviewLoader(sContext, mIconCache);
 
         mAppFilter = AppFilter.loadByName(sContext.getString(R.string.app_filter_class));
-        mBuildInfo = BuildInfo.loadByName(sContext.getString(R.string.build_info_class));
         mModel = new LauncherModel(this, mIconCache, mAppFilter);
 
         LauncherAppsCompat.getInstance(sContext).addOnAppsChangedCallback(mModel);
@@ -174,6 +172,6 @@ public class LauncherAppState {
     }
 
     public static boolean isDogfoodBuild() {
-        return getInstance().mBuildInfo.isDogfoodBuild();
+        return FeatureFlags.IS_ALPHA_BUILD || FeatureFlags.IS_DEV_BUILD;
     }
 }
