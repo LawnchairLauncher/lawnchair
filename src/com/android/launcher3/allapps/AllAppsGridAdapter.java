@@ -473,8 +473,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 icon.setLongPressTimeout(ViewConfiguration.get(parent.getContext())
                         .getLongPressTimeout());
                 icon.setFocusable(true);
-                icon.setAccessibilityDelegate(
-                        LauncherAppState.getInstance().getAccessibilityDelegate());
                 return new ViewHolder(icon);
             }
             case PREDICTION_ICON_VIEW_TYPE: {
@@ -486,8 +484,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 icon.setLongPressTimeout(ViewConfiguration.get(parent.getContext())
                         .getLongPressTimeout());
                 icon.setFocusable(true);
-                icon.setAccessibilityDelegate(
-                        LauncherAppState.getInstance().getAccessibilityDelegate());
                 return new ViewHolder(icon);
             }
             case EMPTY_SEARCH_VIEW_TYPE:
