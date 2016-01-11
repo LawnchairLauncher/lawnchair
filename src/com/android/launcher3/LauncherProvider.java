@@ -78,7 +78,7 @@ public class LauncherProvider extends ContentProvider {
     private static final String RESTRICTION_PACKAGE_NAME = "workspace.configuration.package.name";
 
     @Thunk LauncherProviderChangeListener mListener;
-    @Thunk DatabaseHelper mOpenHelper;
+    protected DatabaseHelper mOpenHelper;
 
     @Override
     public boolean onCreate() {
@@ -110,6 +110,15 @@ public class LauncherProvider extends ContentProvider {
             return "vnd.android.cursor.dir/" + args.table;
         } else {
             return "vnd.android.cursor.item/" + args.table;
+        }
+    }
+
+    /**
+     * Overridden in tests
+     */
+    protected synchronized void createDbIfNotExists() {
+        if (mOpenHelper == null) {
+            mOpenHelper = new DatabaseHelper(getContext());
         }
     }
 
@@ -317,7 +326,10 @@ public class LauncherProvider extends ContentProvider {
         return folderIds;
     }
 
-    private void notifyListeners() {
+    /**
+     * Overridden in tests
+     */
+    protected void notifyListeners() {
         // always notify the backup agent
         LauncherBackupAgentHelper.dataChanged(getContext());
         if (mListener != null) {
@@ -459,7 +471,10 @@ public class LauncherProvider extends ContentProvider {
         mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
     }
 
-    private static class DatabaseHelper extends SQLiteOpenHelper implements LayoutParserCallback {
+    /**
+     * The class is subclassed in tests to create an in-memory db.
+     */
+    protected static class DatabaseHelper extends SQLiteOpenHelper implements LayoutParserCallback {
         private final Context mContext;
         @Thunk final AppWidgetHost mAppWidgetHost;
         private long mMaxItemId = -1;
@@ -492,6 +507,18 @@ public class LauncherProvider extends ContentProvider {
             if (mMaxScreenId == -1) {
                 mMaxScreenId = initializeMaxScreenId(getWritableDatabase());
             }
+        }
+
+        /**
+         * Constructor used only in tests.
+         */
+        public DatabaseHelper(Context context, String tableName) {
+            super(context, tableName, null, DATABASE_VERSION);
+            mContext = context;
+
+            mAppWidgetHost = null;
+            mMaxItemId = initializeMaxItemId(getWritableDatabase());
+            mMaxScreenId = initializeMaxScreenId(getWritableDatabase());
         }
 
         private boolean tableExists(String tableName) {
@@ -544,18 +571,28 @@ public class LauncherProvider extends ContentProvider {
 
             // Fresh and clean launcher DB.
             mMaxItemId = initializeMaxItemId(db);
-            setFlagEmptyDbCreated();
+            onEmptyDbCreated();
+        }
+
+        /**
+         * Overriden in tests.
+         */
+        protected void onEmptyDbCreated() {
+            // Set the flag for empty DB
+            Utilities.getPrefs(mContext).edit().putBoolean(EMPTY_DATABASE_CREATED, true).commit();
 
             // When a new DB is created, remove all previously stored managed profile information.
-            ManagedProfileHeuristic.processAllUsers(Collections.<UserHandleCompat>emptyList(), mContext);
+            ManagedProfileHeuristic.processAllUsers(Collections.<UserHandleCompat>emptyList(),
+                    mContext);
+        }
+
+        protected long getDefaultUserSerial() {
+            return UserManagerCompat.getInstance(mContext).getSerialNumberForUser(
+                    UserHandleCompat.myUserHandle());
         }
 
         private void addFavoritesTable(SQLiteDatabase db, boolean optional) {
-            UserManagerCompat userManager = UserManagerCompat.getInstance(mContext);
-            long userSerialNumber = userManager.getSerialNumberForUser(
-                    UserHandleCompat.myUserHandle());
             String ifNotExists = optional ? " IF NOT EXISTS " : "";
-
             db.execSQL("CREATE TABLE " + ifNotExists + TABLE_FAVORITES + " (" +
                     "_id INTEGER PRIMARY KEY," +
                     "title TEXT," +
@@ -578,7 +615,7 @@ public class LauncherProvider extends ContentProvider {
                     "appWidgetProvider TEXT," +
                     "modified INTEGER NOT NULL DEFAULT 0," +
                     "restored INTEGER NOT NULL DEFAULT 0," +
-                    "profileId INTEGER DEFAULT " + userSerialNumber + "," +
+                    "profileId INTEGER DEFAULT " + getDefaultUserSerial() + "," +
                     "rank INTEGER NOT NULL DEFAULT 0," +
                     "options INTEGER NOT NULL DEFAULT 0" +
                     ");");
@@ -626,10 +663,6 @@ public class LauncherProvider extends ContentProvider {
 
         private void setFlagJustLoadedOldDb() {
             Utilities.getPrefs(mContext).edit().putBoolean(EMPTY_DATABASE_CREATED, false).commit();
-        }
-
-        private void setFlagEmptyDbCreated() {
-            Utilities.getPrefs(mContext).edit().putBoolean(EMPTY_DATABASE_CREATED, true).commit();
         }
 
         @Override

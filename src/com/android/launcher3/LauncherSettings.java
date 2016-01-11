@@ -113,7 +113,7 @@ public class LauncherSettings {
         /**
          * The content:// style URL for this table
          */
-        static final Uri CONTENT_URI = Uri.parse("content://" +
+        public static final Uri CONTENT_URI = Uri.parse("content://" +
                 ProviderConfig.AUTHORITY + "/" + TABLE_NAME);
 
         /**

@@ -1751,25 +1751,10 @@ public class LauncherModel extends BroadcastReceiver
             int countX = profile.numColumns;
             int countY = profile.numRows;
 
-            if (GridSizeMigrationTask.ENABLED && GridSizeMigrationTask.shouldRunTask(mContext)) {
-                long migrationStartTime = System.currentTimeMillis();
-                Log.v(TAG, "Starting workspace migration after restore");
-                try {
-                    GridSizeMigrationTask task = new GridSizeMigrationTask(mContext);
-                    // Clear the flags before starting the task, so that we do not run the task
-                    // again, in case there was an uncaught error.
-                    GridSizeMigrationTask.clearFlags(mContext);
-                    task.execute();
-                } catch (Exception e) {
-                    Log.e(TAG, "Error during grid migration", e);
-
-                    // Clear workspace.
-                    mFlags = mFlags | LOADER_FLAG_CLEAR_WORKSPACE;
-                }
-                Log.v(TAG, "Workspace migration completed in "
-                        + (System.currentTimeMillis() - migrationStartTime));
-
-                GridSizeMigrationTask.saveCurrentConfig(mContext);
+            if (GridSizeMigrationTask.ENABLED &&
+                    !GridSizeMigrationTask.migrateGridIfNeeded(mContext)) {
+                // Migration failed. Clear workspace.
+                mFlags = mFlags | LOADER_FLAG_CLEAR_WORKSPACE;
             }
 
             if ((mFlags & LOADER_FLAG_CLEAR_WORKSPACE) != 0) {
