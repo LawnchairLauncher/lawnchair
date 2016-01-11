@@ -83,7 +83,7 @@ public class InvariantDeviceProfile {
     DeviceProfile landscapeProfile;
     DeviceProfile portraitProfile;
 
-    InvariantDeviceProfile() {
+    public InvariantDeviceProfile() {
     }
 
     public InvariantDeviceProfile(InvariantDeviceProfile p) {

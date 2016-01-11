@@ -315,14 +315,13 @@ public class LauncherBackupHelper implements BackupHelper {
             return true;
         }
 
-        if (GridSizeMigrationTask.ENABLED &&
-                (oldProfile.desktopCols - currentProfile.desktopCols <= 1) &&
-                (oldProfile.desktopRows - currentProfile.desktopRows <= 1)) {
-            // Allow desktop migration when row and/or column count contracts by 1.
-
+        if (GridSizeMigrationTask.ENABLED) {
+            // One time migrate the workspace when launcher starts.
             migrationCompatibleProfileData = initDeviceProfileData(mIdp);
             migrationCompatibleProfileData.desktopCols = oldProfile.desktopCols;
             migrationCompatibleProfileData.desktopRows = oldProfile.desktopRows;
+            migrationCompatibleProfileData.hotseatCount = oldProfile.hotseatCount;
+            migrationCompatibleProfileData.allappsRank = oldProfile.allappsRank;
             return true;
         }
         return false;
