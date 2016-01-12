@@ -222,7 +222,7 @@ public final class Utilities {
         Bitmap bitmap = createIconBitmap(icon, context, scale);
         if (Utilities.ATLEAST_LOLLIPOP && user != null
                 && !UserHandleCompat.myUserHandle().equals(user)) {
-            BitmapDrawable drawable = new BitmapDrawable(context.getResources(), bitmap);
+            BitmapDrawable drawable = new FixedSizeBitmapDrawable(bitmap);
             Drawable badged = context.getPackageManager().getUserBadgedIcon(
                     drawable, user.getUser());
             if (badged instanceof BitmapDrawable) {
@@ -826,5 +826,27 @@ public final class Utilities {
     public static boolean isPowerSaverOn(Context context) {
         PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         return ATLEAST_LOLLIPOP && powerManager.isPowerSaveMode();
+    }
+
+    /**
+     * An extension of {@link BitmapDrawable} which returns the bitmap pixel size as intrinsic size.
+     * This allows the badging to be done based on the action bitmap size rather than
+     * the scaled bitmap size.
+     */
+    private static class FixedSizeBitmapDrawable extends BitmapDrawable {
+
+        public FixedSizeBitmapDrawable(Bitmap bitmap) {
+            super(null, bitmap);
+        }
+
+        @Override
+        public int getIntrinsicHeight() {
+            return getBitmap().getWidth();
+        }
+
+        @Override
+        public int getIntrinsicWidth() {
+            return getBitmap().getWidth();
+        }
     }
 }
