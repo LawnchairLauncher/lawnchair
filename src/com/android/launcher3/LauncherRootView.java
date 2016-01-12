@@ -14,6 +14,7 @@ public class LauncherRootView extends InsettableFrameLayout {
 
     private final Paint mOpaquePaint;
     private boolean mDrawRightInsetBar;
+    private int mRightInsetBarWidth;
 
     private View mAlignedView;
 
@@ -41,9 +42,10 @@ public class LauncherRootView extends InsettableFrameLayout {
         mDrawRightInsetBar = insets.right > 0 &&
                 (!Utilities.ATLEAST_MARSHMALLOW ||
                 getContext().getSystemService(ActivityManager.class).isLowRamDevice());
+        mRightInsetBarWidth = insets.right;
         setInsets(mDrawRightInsetBar ? new Rect(0, insets.top, 0, insets.bottom) : insets);
 
-        if (mAlignedView != null) {
+        if (mAlignedView != null && mDrawRightInsetBar) {
             // Apply margins on aligned view to handle left/right insets.
             MarginLayoutParams lp = (MarginLayoutParams) mAlignedView.getLayoutParams();
             if (lp.leftMargin != insets.left || lp.rightMargin != insets.right) {
@@ -63,7 +65,7 @@ public class LauncherRootView extends InsettableFrameLayout {
         // If the right inset is opaque, draw a black rectangle to ensure that is stays opaque.
         if (mDrawRightInsetBar) {
             int width = getWidth();
-            canvas.drawRect(width - mInsets.right, 0, width, getHeight(), mOpaquePaint);
+            canvas.drawRect(width - mRightInsetBarWidth, 0, width, getHeight(), mOpaquePaint);
         }
     }
 }
