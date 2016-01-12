@@ -798,7 +798,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                     childWidthMode = MeasureSpec.EXACTLY;
                     childHeightMode = MeasureSpec.EXACTLY;
 
-                    childWidth = getViewportWidth() - mInsets.left - mInsets.right;
+                    childWidth = getViewportWidth();
                     childHeight = getViewportHeight();
                 }
                 if (referenceChildWidth == 0) {
