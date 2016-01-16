@@ -25,7 +25,6 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Region;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -41,6 +40,7 @@ import android.view.ViewParent;
 import android.widget.TextView;
 
 import com.android.launcher3.IconCache.IconLoadRequest;
+import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.PackageItemInfo;
 
 import java.text.NumberFormat;

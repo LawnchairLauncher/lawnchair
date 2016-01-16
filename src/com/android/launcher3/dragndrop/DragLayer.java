@@ -42,21 +42,20 @@ import android.widget.TextView;
 
 import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.CellLayout;
-import com.android.launcher3.Folder;
-import com.android.launcher3.FolderIcon;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetHostView;
+import com.android.launcher3.R;
 import com.android.launcher3.SearchDropTargetBar;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
+import com.android.launcher3.folder.Folder;
+import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.util.Thunk;
-
-import com.android.launcher3.R;
 
 import java.util.ArrayList;
 

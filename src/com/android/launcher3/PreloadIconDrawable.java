@@ -12,7 +12,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 
-class PreloadIconDrawable extends Drawable {
+public class PreloadIconDrawable extends Drawable {
 
     private static final float ANIMATION_PROGRESS_STOPPED = -1.0f;
     private static final float ANIMATION_PROGRESS_STARTED = 0f;
@@ -30,7 +30,7 @@ class PreloadIconDrawable extends Drawable {
     private boolean mIndicatorRectDirty;
 
     private final Paint mPaint;
-    final Drawable mIcon;
+    public final Drawable mIcon;
 
     private Drawable mBgDrawable;
     private int mRingOutset;

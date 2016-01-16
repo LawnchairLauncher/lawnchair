@@ -57,6 +57,8 @@ import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.folder.Folder;
+import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.GridSizeMigrationTask;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.util.ComponentKey;
@@ -621,7 +623,7 @@ public class LauncherModel extends BroadcastReceiver
      * Adds an item to the DB if it was not created previously, or move it to a new
      * <container, screen, cellX, cellY>
      */
-    static void addOrMoveItemInDatabase(Context context, ItemInfo item, long container,
+    public static void addOrMoveItemInDatabase(Context context, ItemInfo item, long container,
             long screenId, int cellX, int cellY) {
         if (item.container == ItemInfo.NO_ID) {
             // From all apps
@@ -802,7 +804,7 @@ public class LauncherModel extends BroadcastReceiver
      * Move items in the DB to a new <container, screen, cellX, cellY>. We assume that the
      * cellX, cellY have already been updated on the ItemInfos.
      */
-    static void moveItemsInDatabase(Context context, final ArrayList<ItemInfo> items,
+    public static void moveItemsInDatabase(Context context, final ArrayList<ItemInfo> items,
             final long container, final int screen) {
 
         ArrayList<ContentValues> contentValues = new ArrayList<ContentValues>();

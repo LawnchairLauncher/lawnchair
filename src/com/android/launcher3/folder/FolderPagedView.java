@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.folder;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -28,8 +28,24 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.OvershootInterpolator;
 
+import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.CellLayout;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.FocusHelper.PagedFolderKeyEventListener;
+import com.android.launcher3.FocusIndicatorView;
+import com.android.launcher3.IconCache;
+import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.ItemInfo;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherModel;
+import com.android.launcher3.PageIndicator;
 import com.android.launcher3.PageIndicator.PageMarkerResources;
+import com.android.launcher3.PagedView;
+import com.android.launcher3.R;
+import com.android.launcher3.ShortcutAndWidgetContainer;
+import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.util.Thunk;

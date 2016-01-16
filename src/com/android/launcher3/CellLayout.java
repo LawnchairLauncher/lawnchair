@@ -48,13 +48,14 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.DecelerateInterpolator;
 
 import com.android.launcher3.BubbleTextView.BubbleTextShadowHandler;
-import com.android.launcher3.FolderIcon.FolderRingAnimator;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
 import com.android.launcher3.accessibility.FolderAccessibilityHelper;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.folder.FolderIcon.FolderRingAnimator;
 import com.android.launcher3.util.ParcelableSparseArray;
 import com.android.launcher3.util.Thunk;
 
@@ -815,7 +816,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         return (float) Math.hypot(x - mTmpPoint[0], y - mTmpPoint[1]);
     }
 
-    int getCellWidth() {
+    public int getCellWidth() {
         return mCellWidth;
     }
 
@@ -2623,7 +2624,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
      * @return The X, Y cell of a vacant area that can contain this object,
      *         nearest the requested location.
      */
-    int[] findNearestArea(int pixelX, int pixelY, int spanX, int spanY, int[] result) {
+    public int[] findNearestArea(int pixelX, int pixelY, int spanX, int spanY, int[] result) {
         return findNearestArea(pixelX, pixelY, spanX, spanY, spanX, spanY, false, result, null);
     }
 
@@ -2967,7 +2968,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     //    cellX and cellY coordinates and which page was clicked. We then set this as a tag on
     //    the CellLayout that was long clicked
     public static final class CellInfo {
-        View cell;
+        public View cell;
         int cellX = -1;
         int cellY = -1;
         int spanX;

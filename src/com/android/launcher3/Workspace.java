@@ -53,7 +53,9 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.TextView;
 
-import com.android.launcher3.FolderIcon.FolderRingAnimator;
+import com.android.launcher3.folder.Folder;
+import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.folder.FolderIcon.FolderRingAnimator;
 import com.android.launcher3.Launcher.CustomContentCallbacks;
 import com.android.launcher3.Launcher.LauncherOverlay;
 import com.android.launcher3.UninstallDropTarget.UninstallSource;
@@ -908,7 +910,7 @@ public class Workspace extends PagedView
 
     // At bind time, we use the rank (screenId) to compute x and y for hotseat items.
     // See implementation for parameter definition.
-    void addInScreenFromBind(View child, long container, long screenId, int x, int y,
+    public void addInScreenFromBind(View child, long container, long screenId, int x, int y,
             int spanX, int spanY) {
         addInScreen(child, container, screenId, x, y, spanX, spanY, false, true);
     }
@@ -3942,7 +3944,7 @@ public class Workspace extends PagedView
         stripEmptyScreens();
     }
 
-    interface ItemOperator {
+    public interface ItemOperator {
         /**
          * Process the next itemInfo, possibly with side-effect on {@link ItemOperator#value}.
          *

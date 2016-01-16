@@ -48,7 +48,7 @@ public class FolderInfo extends ItemInfo {
     /**
      * Whether this folder has been opened
      */
-    boolean opened;
+    public boolean opened;
 
     public int options;
 
@@ -105,7 +105,7 @@ public class FolderInfo extends ItemInfo {
 
     }
 
-    void addListener(FolderListener listener) {
+    public void addListener(FolderListener listener) {
         listeners.add(listener);
     }
 
@@ -127,7 +127,7 @@ public class FolderInfo extends ItemInfo {
         listeners.clear();
     }
 
-    interface FolderListener {
+    public interface FolderListener {
         public void onAdd(ShortcutInfo item);
         public void onRemove(ShortcutInfo item);
         public void onTitleChanged(CharSequence title);
