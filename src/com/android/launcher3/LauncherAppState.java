@@ -27,6 +27,7 @@ import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.ConfigMonitor;
 import com.android.launcher3.util.TestingUtils;
 import com.android.launcher3.util.Thunk;
@@ -172,5 +173,9 @@ public class LauncherAppState {
 
     public InvariantDeviceProfile getInvariantDeviceProfile() {
         return mInvariantDeviceProfile;
+    }
+
+    public static boolean isDogfoodBuild() {
+        return FeatureFlags.IS_ALPHA_BUILD || FeatureFlags.IS_DEV_BUILD;
     }
 }
