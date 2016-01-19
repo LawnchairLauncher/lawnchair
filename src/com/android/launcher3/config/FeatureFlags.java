@@ -19,7 +19,7 @@ package com.android.launcher3.config;
 /**
  * Defines a set of flags used to control various launcher behaviors
  * All the flags must be defined as
- *   public static final boolean LAUNCHER3_FLAG_NAME = true/false;
+ *   public static boolean LAUNCHER3_FLAG_NAME = true/false;
  *
  * Use LAUNCHER3_ prefix for prevent namespace conflicts.
  */
@@ -27,11 +27,11 @@ public final class FeatureFlags {
 
     private FeatureFlags() {}
 
-    public static final boolean IS_DEV_BUILD = false;
-    public static final boolean IS_ALPHA_BUILD = false;
-    public static final boolean IS_RELEASE_BUILD = true;
+    public static boolean IS_DEV_BUILD = false;
+    public static boolean IS_ALPHA_BUILD = false;
+    public static boolean IS_RELEASE_BUILD = true;
 
     // Custom flags go below this
-    public static final boolean LAUNCHER3_ICON_NORMALIZATION = false;
+    public static boolean LAUNCHER3_ICON_NORMALIZATION = false;
 
 }
