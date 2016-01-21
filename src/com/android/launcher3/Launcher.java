@@ -2652,12 +2652,16 @@ public class Launcher extends Activity
         final ShortcutInfo shortcut = (ShortcutInfo) tag;
 
         if (shortcut.isDisabled != 0) {
-            int error = R.string.activity_not_available;
-            if ((shortcut.isDisabled & ShortcutInfo.FLAG_DISABLED_SAFEMODE) != 0) {
-                error = R.string.safemode_shortcut_error;
+            if ((shortcut.isDisabled & ShortcutInfo.FLAG_DISABLED_SUSPENDED) != 0) {
+                // Launch activity anyway, framework will tell the user why the app is suspended.
+            } else {
+                int error = R.string.activity_not_available;
+                if ((shortcut.isDisabled & ShortcutInfo.FLAG_DISABLED_SAFEMODE) != 0) {
+                    error = R.string.safemode_shortcut_error;
+                }
+                Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+                return;
             }
-            Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
-            return;
         }
 
         // Check for abandoned promise

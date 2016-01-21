@@ -198,4 +198,11 @@ public class ItemInfo {
             + " screen=" + screenId + " cellX=" + cellX + " cellY=" + cellY + " spanX=" + spanX
             + " spanY=" + spanY + " user=" + user + ")";
     }
+
+    /**
+     * Whether this item is disabled.
+     */
+    public boolean isDisabled() {
+        return false;
+    }
 }

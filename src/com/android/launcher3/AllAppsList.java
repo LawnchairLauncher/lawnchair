@@ -118,6 +118,25 @@ class AllAppsList {
         }
     }
 
+    /**
+     * Suspend the apps for the given apk identified by packageName.
+     */
+    public void suspendPackage(String packageName, UserHandleCompat user, boolean suspend) {
+        final List<AppInfo> data = this.data;
+        for (int i = data.size() - 1; i >= 0; i--) {
+            AppInfo info = data.get(i);
+            final ComponentName component = info.intent.getComponent();
+            if (info.user.equals(user) && packageName.equals(component.getPackageName())) {
+                if (suspend) {
+                    info.isDisabled |= ShortcutInfo.FLAG_DISABLED_SUSPENDED;
+                } else {
+                    info.isDisabled &= ~ShortcutInfo.FLAG_DISABLED_SUSPENDED;
+                }
+                modified.add(info);
+            }
+        }
+    }
+
     public void updateIconsAndLabels(HashSet<String> packages, UserHandleCompat user,
             ArrayList<AppInfo> outUpdates) {
         for (AppInfo info : data) {

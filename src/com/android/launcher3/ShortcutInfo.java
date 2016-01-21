@@ -112,6 +112,11 @@ public class ShortcutInfo extends ItemInfo {
     public static final int FLAG_DISABLED_NOT_AVAILABLE = 2;
 
     /**
+     * Indicates that the icon is disabled as the app is suspended
+     */
+    public static final int FLAG_DISABLED_SUSPENDED = 4;
+
+    /**
      * Could be disabled, if the the app is installed but unavailable (eg. in safe mode or when
      * sd-card is not available).
      */
@@ -177,6 +182,7 @@ public class ShortcutInfo extends ItemInfo {
         intent = new Intent(info.intent);
         customIcon = false;
         flags = info.flags;
+        isDisabled = info.isDisabled;
     }
 
     public void setIcon(Bitmap b) {
@@ -277,6 +283,11 @@ public class ShortcutInfo extends ItemInfo {
         shortcut.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
         shortcut.flags = AppInfo.initFlags(info);
         return shortcut;
+    }
+
+    @Override
+    public boolean isDisabled() {
+        return isDisabled != 0;
     }
 }
 

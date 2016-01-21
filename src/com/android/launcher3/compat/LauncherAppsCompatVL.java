@@ -36,7 +36,7 @@ import java.util.Map;
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class LauncherAppsCompatVL extends LauncherAppsCompat {
 
-    private LauncherApps mLauncherApps;
+    protected LauncherApps mLauncherApps;
 
     private Map<OnAppsChangedCallbackCompat, WrappedCallback> mCallbacks
             = new HashMap<OnAppsChangedCallbackCompat, WrappedCallback>();
@@ -106,6 +106,10 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
         return mLauncherApps.isActivityEnabled(component, user.getUser());
     }
 
+    public boolean isPackageSuspendedForProfile(String packageName, UserHandleCompat user) {
+        return false;
+    }
+
     private static class WrappedCallback extends LauncherApps.Callback {
         private LauncherAppsCompat.OnAppsChangedCallbackCompat mCallback;
 
@@ -133,6 +137,14 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
                 boolean replacing) {
             mCallback.onPackagesUnavailable(packageNames, UserHandleCompat.fromUser(user),
                     replacing);
+        }
+
+        public void onPackagesSuspended(String[] packageNames, UserHandle user) {
+            mCallback.onPackagesSuspended(packageNames, UserHandleCompat.fromUser(user));
+        }
+
+        public void onPackagesUnsuspended(String[] packageNames, UserHandle user) {
+            mCallback.onPackagesUnsuspended(packageNames, UserHandleCompat.fromUser(user));
         }
     }
 }

@@ -56,6 +56,11 @@ public class AppInfo extends ItemInfo {
 
     int flags = 0;
 
+    /**
+     * {@see ShortcutInfo#isDisabled}
+     */
+    int isDisabled = ShortcutInfo.DEFAULT;
+
     AppInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
     }
@@ -75,8 +80,10 @@ public class AppInfo extends ItemInfo {
             IconCache iconCache) {
         this.componentName = info.getComponentName();
         this.container = ItemInfo.NO_ID;
-
         flags = initFlags(info);
+        if ((info.getApplicationInfo().flags & LauncherActivityInfoCompat.FLAG_SUSPENDED) != 0) {
+            isDisabled |= ShortcutInfo.FLAG_DISABLED_SUSPENDED;
+        }
         iconCache.getTitleAndIcon(this, info, true /* useLowResIcon */);
         intent = makeLaunchIntent(context, info, user);
         this.user = user;
@@ -101,6 +108,7 @@ public class AppInfo extends ItemInfo {
         title = Utilities.trim(info.title);
         intent = new Intent(info.intent);
         flags = info.flags;
+        isDisabled = info.isDisabled;
         iconBitmap = info.iconBitmap;
     }
 
@@ -139,5 +147,10 @@ public class AppInfo extends ItemInfo {
             .setComponent(info.getComponentName())
             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
             .putExtra(EXTRA_PROFILE, serialNumber);
+    }
+
+    @Override
+    public boolean isDisabled() {
+        return isDisabled != 0;
     }
 }
