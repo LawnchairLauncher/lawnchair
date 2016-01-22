@@ -78,12 +78,22 @@ public class AppInfo extends ItemInfo {
      */
     public AppInfo(Context context, LauncherActivityInfoCompat info, UserHandleCompat user,
             IconCache iconCache) {
+        this(context, info, user, iconCache,
+                UserManagerCompat.getInstance(context).isQuietModeEnabled(user));
+    }
+
+    public AppInfo(Context context, LauncherActivityInfoCompat info, UserHandleCompat user,
+            IconCache iconCache, boolean quietModeEnabled) {
         this.componentName = info.getComponentName();
         this.container = ItemInfo.NO_ID;
         flags = initFlags(info);
         if ((info.getApplicationInfo().flags & LauncherActivityInfoCompat.FLAG_SUSPENDED) != 0) {
             isDisabled |= ShortcutInfo.FLAG_DISABLED_SUSPENDED;
         }
+        if (quietModeEnabled) {
+            isDisabled |= ShortcutInfo.FLAG_DISABLED_QUIET_USER;
+        }
+
         iconCache.getTitleAndIcon(this, info, true /* useLowResIcon */);
         intent = makeLaunchIntent(context, info, user);
         this.user = user;

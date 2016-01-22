@@ -32,7 +32,9 @@ public abstract class UserManagerCompat {
     public static UserManagerCompat getInstance(Context context) {
         synchronized (sInstanceLock) {
             if (sInstance == null) {
-                if (Utilities.ATLEAST_LOLLIPOP) {
+                if (Utilities.isNycOrAbove()) {
+                    sInstance = new UserManagerCompatVN(context.getApplicationContext());
+                } else if (Utilities.ATLEAST_LOLLIPOP) {
                     sInstance = new UserManagerCompatVL(context.getApplicationContext());
                 } else if (Utilities.ATLEAST_JB_MR1) {
                     sInstance = new UserManagerCompatV17(context.getApplicationContext());
@@ -54,4 +56,5 @@ public abstract class UserManagerCompat {
     public abstract UserHandleCompat getUserForSerialNumber(long serialNumber);
     public abstract CharSequence getBadgedLabelForUser(CharSequence label, UserHandleCompat user);
     public abstract long getUserCreationTime(UserHandleCompat user);
+    public abstract boolean isQuietModeEnabled(UserHandleCompat user);
 }
