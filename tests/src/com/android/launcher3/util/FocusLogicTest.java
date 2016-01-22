@@ -216,7 +216,7 @@ public final class FocusLogicTest extends AndroidTestCase {
                 { -1, -1, -1,  0, -1},
                 {-11,-11,-11,-11,  2},
                 { -1,  1, -1, -1, -1},
-                { -1, -1  -1, -1, -1},
+                { -1, -1, -1, -1, -1},
         });
         i = FocusLogic.handleKeyEvent(KeyEvent.KEYCODE_DPAD_LEFT, map, 0, 1, 1, true);
         assertEquals(1, i);
