@@ -18,6 +18,10 @@ import java.util.List;
  * Add an arbitrary widget from the widget picker very quickly to test potential race conditions.
  */
 public class QuickAddWidgetTest extends InstrumentationTestCase {
+    // Disabled because it's flaky and not particularly useful. But this class could still be useful
+    // as an example if we want other UI tests in the future.
+    private static final boolean DISABLED = true;
+
     private UiDevice mDevice;
     private String mTargetPackage;
 
@@ -38,14 +42,15 @@ public class QuickAddWidgetTest extends InstrumentationTestCase {
     }
 
     public void testAddWidgetQuickly() throws Exception {
+        if (DISABLED) return;
         mDevice.pressMenu(); // Enter overview mode.
         mDevice.wait(Until.findObject(By.text("Widgets")), 3000).click();
-        UiObject2 calendarWidget = getWidgetByName("Calendar");
+        UiObject2 calendarWidget = getWidgetByName("Clock");
         Point center = calendarWidget.getVisibleCenter();
         // Touch widget just long enough to pick it up (longPressTimeout), then let go immediately.
         getInstrumentation().sendPointerSync(MotionEvent.obtain(SystemClock.uptimeMillis(),
                 SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN, center.x, center.y, 0));
-        Thread.sleep(ViewConfiguration.getLongPressTimeout());
+        Thread.sleep(ViewConfiguration.getLongPressTimeout() + 50);
         getInstrumentation().sendPointerSync(MotionEvent.obtain(SystemClock.uptimeMillis(),
                 SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, center.x, center.y, 0));
 
