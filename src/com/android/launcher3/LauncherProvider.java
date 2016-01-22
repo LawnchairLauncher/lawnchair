@@ -270,6 +270,9 @@ public class LauncherProvider extends ContentProvider {
                 if (mListener != null) {
                     mListener.onSettingsChanged(arg, value);
                 }
+                if (extras.getBoolean(LauncherSettings.Settings.NOTIFY_BACKUP)) {
+                    LauncherBackupAgentHelper.dataChanged(getContext());
+                }
                 Bundle result = new Bundle();
                 result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE, value);
                 return result;

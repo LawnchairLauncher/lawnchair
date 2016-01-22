@@ -324,5 +324,8 @@ public class LauncherSettings {
 
         public static final String EXTRA_VALUE = "value";
         public static final String EXTRA_DEFAULT_VALUE = "default_value";
+
+        // Extra for set_boolean method to also notify the backup manager of the change.
+        public static final String NOTIFY_BACKUP = "notify_backup";
     }
 }
