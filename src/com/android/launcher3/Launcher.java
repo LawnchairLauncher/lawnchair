@@ -2652,7 +2652,8 @@ public class Launcher extends Activity
         final ShortcutInfo shortcut = (ShortcutInfo) tag;
 
         if (shortcut.isDisabled != 0) {
-            if ((shortcut.isDisabled & ShortcutInfo.FLAG_DISABLED_SUSPENDED) != 0) {
+            if ((shortcut.isDisabled & ShortcutInfo.FLAG_DISABLED_SUSPENDED) != 0
+                || (shortcut.isDisabled & ShortcutInfo.FLAG_DISABLED_QUIET_USER) != 0) {
                 // Launch activity anyway, framework will tell the user why the app is suspended.
             } else {
                 int error = R.string.activity_not_available;

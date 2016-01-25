@@ -35,6 +35,8 @@ public abstract class LauncherAppsCompat {
             "android.intent.action.MANAGED_PROFILE_ADDED";
     public static final String ACTION_MANAGED_PROFILE_REMOVED =
             "android.intent.action.MANAGED_PROFILE_REMOVED";
+    public static final String ACTION_MANAGED_PROFILE_AVAILABILITY_CHANGED =
+            "android.intent.action.MANAGED_PROFILE_AVAILABILITY_CHANGED";
 
     public interface OnAppsChangedCallbackCompat {
         void onPackageRemoved(String packageName, UserHandleCompat user);

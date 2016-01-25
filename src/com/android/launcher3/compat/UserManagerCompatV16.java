@@ -50,4 +50,9 @@ public class UserManagerCompatV16 extends UserManagerCompat {
     @Override
     public void enableAndResetCache() {
     }
+
+    @Override
+    public boolean isQuietModeEnabled(UserHandleCompat user) {
+        return false;
+    }
 }

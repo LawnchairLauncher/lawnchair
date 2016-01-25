@@ -117,6 +117,11 @@ public class ShortcutInfo extends ItemInfo {
     public static final int FLAG_DISABLED_SUSPENDED = 4;
 
     /**
+     * Indicates that the icon is disabled as the user is in quiet mode.
+     */
+    public static final int FLAG_DISABLED_QUIET_USER = 8;
+
+    /**
      * Could be disabled, if the the app is installed but unavailable (eg. in safe mode or when
      * sd-card is not available).
      */

@@ -1230,7 +1230,8 @@ public class LauncherModel extends BroadcastReceiver
                 callbacks.bindSearchProviderChanged();
             }
         } else if (LauncherAppsCompat.ACTION_MANAGED_PROFILE_ADDED.equals(action)
-                || LauncherAppsCompat.ACTION_MANAGED_PROFILE_REMOVED.equals(action)) {
+                || LauncherAppsCompat.ACTION_MANAGED_PROFILE_REMOVED.equals(action)
+                || LauncherAppsCompat.ACTION_MANAGED_PROFILE_AVAILABILITY_CHANGED.equals(action)) {
             UserManagerCompat.getInstance(context).enableAndResetCache();
             forceReload();
         }
@@ -1741,8 +1742,11 @@ public class LauncherModel extends BroadcastReceiver
                     final CursorIconInfo cursorIconInfo = new CursorIconInfo(c);
 
                     final LongSparseArray<UserHandleCompat> allUsers = new LongSparseArray<>();
+                    final LongSparseArray<Boolean> quietMode = new LongSparseArray<>();
                     for (UserHandleCompat user : mUserManager.getUserProfiles()) {
-                        allUsers.put(mUserManager.getSerialNumberForUser(user), user);
+                        long serialNo = mUserManager.getSerialNumberForUser(user);
+                        allUsers.put(serialNo, user);
+                        quietMode.put(serialNo, mUserManager.isQuietModeEnabled(user));
                     }
 
                     ShortcutInfo info;
@@ -1795,6 +1799,9 @@ public class LauncherModel extends BroadcastReceiver
                                                     cn.getPackageName(), user);
                                             if (isSuspended) {
                                                 disabledState = ShortcutInfo.FLAG_DISABLED_SUSPENDED;
+                                            }
+                                            if (quietMode.get(serialNumber)) {
+                                                disabledState |= ShortcutInfo.FLAG_DISABLED_QUIET_USER;
                                             }
                                         } else if (validPkg) {
                                             intent = null;
@@ -2728,12 +2735,12 @@ public class LauncherModel extends BroadcastReceiver
                 if (apps == null || apps.isEmpty()) {
                     return;
                 }
-
+                boolean quietMode = mUserManager.isQuietModeEnabled(user);
                 // Create the ApplicationInfos
                 for (int i = 0; i < apps.size(); i++) {
                     LauncherActivityInfoCompat app = apps.get(i);
                     // This builds the icon bitmaps.
-                    mBgAllAppsList.add(new AppInfo(mContext, app, user, mIconCache));
+                    mBgAllAppsList.add(new AppInfo(mContext, app, user, mIconCache, quietMode));
                 }
 
                 final ManagedProfileHeuristic heuristic = ManagedProfileHeuristic.get(mContext, user);
