@@ -126,6 +126,10 @@ public class LauncherAppsCompatV16 extends LauncherAppsCompat {
         }
     }
 
+    public boolean isPackageSuspendedForProfile(String packageName, UserHandleCompat user) {
+        return false;
+    }
+
     private void unregisterForPackageIntents() {
         mContext.unregisterReceiver(mPackageMonitor);
     }

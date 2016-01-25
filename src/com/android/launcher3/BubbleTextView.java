@@ -150,7 +150,7 @@ public class BubbleTextView extends TextView
         Bitmap b = info.getIcon(iconCache);
 
         FastBitmapDrawable iconDrawable = mLauncher.createIconDrawable(b);
-        if (info.isDisabled != 0) {
+        if (info.isDisabled()) {
             iconDrawable.setState(FastBitmapDrawable.State.DISABLED);
         }
         setIcon(iconDrawable, mIconSize);
@@ -166,7 +166,11 @@ public class BubbleTextView extends TextView
     }
 
     public void applyFromApplicationInfo(AppInfo info) {
-        setIcon(mLauncher.createIconDrawable(info.iconBitmap), mIconSize);
+        FastBitmapDrawable iconDrawable = mLauncher.createIconDrawable(info.iconBitmap);
+        if (info.isDisabled()) {
+            iconDrawable.setState(FastBitmapDrawable.State.DISABLED);
+        }
+        setIcon(iconDrawable, mIconSize);
         setText(info.title);
         if (info.contentDescription != null) {
             setContentDescription(info.contentDescription);
@@ -250,11 +254,11 @@ public class BubbleTextView extends TextView
     private void updateIconState() {
         if (mIcon instanceof FastBitmapDrawable) {
             FastBitmapDrawable d = (FastBitmapDrawable) mIcon;
-            if (isPressed() || mStayPressed) {
-                d.animateState(FastBitmapDrawable.State.PRESSED);
-            } else if (getTag() instanceof ShortcutInfo
-                    && ((ShortcutInfo) getTag()).isDisabled != 0) {
+            if (getTag() instanceof ItemInfo
+                    && ((ItemInfo) getTag()).isDisabled()) {
                 d.animateState(FastBitmapDrawable.State.DISABLED);
+            } else if (isPressed() || mStayPressed) {
+                d.animateState(FastBitmapDrawable.State.PRESSED);
             } else {
                 d.animateState(FastBitmapDrawable.State.NORMAL);
             }

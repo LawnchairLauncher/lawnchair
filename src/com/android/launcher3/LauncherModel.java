@@ -1198,6 +1198,20 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
+    @Override
+    public void onPackagesSuspended(String[] packageNames, UserHandleCompat user) {
+        enqueuePackageUpdated(new PackageUpdatedTask(
+                PackageUpdatedTask.OP_SUSPEND, packageNames,
+                user));
+    }
+
+    @Override
+    public void onPackagesUnsuspended(String[] packageNames, UserHandleCompat user) {
+        enqueuePackageUpdated(new PackageUpdatedTask(
+                PackageUpdatedTask.OP_UNSUSPEND, packageNames,
+                user));
+    }
+
     /**
      * Call from the handler for ACTION_PACKAGE_ADDED, ACTION_PACKAGE_REMOVED and
      * ACTION_PACKAGE_CHANGED.
@@ -1776,6 +1790,11 @@ public class LauncherModel extends BroadcastReceiver
                                                 // no special handling necessary for this item
                                                 restoredRows.add(id);
                                                 restored = false;
+                                            }
+                                            boolean isSuspended = launcherApps.isPackageSuspendedForProfile(
+                                                    cn.getPackageName(), user);
+                                            if (isSuspended) {
+                                                disabledState = ShortcutInfo.FLAG_DISABLED_SUSPENDED;
                                             }
                                         } else if (validPkg) {
                                             intent = null;
@@ -2892,6 +2911,8 @@ public class LauncherModel extends BroadcastReceiver
         public static final int OP_UPDATE = 2;
         public static final int OP_REMOVE = 3; // uninstlled
         public static final int OP_UNAVAILABLE = 4; // external media unmounted
+        public static final int OP_SUSPEND = 5; // package suspended
+        public static final int OP_UNSUSPEND = 6; // package unsuspended
 
 
         public PackageUpdatedTask(int op, String[] packages, UserHandleCompat user) {
@@ -2949,6 +2970,15 @@ public class LauncherModel extends BroadcastReceiver
                         mApp.getWidgetCache().removePackage(packages[i], mUser);
                     }
                     break;
+                case OP_SUSPEND:
+                case OP_UNSUSPEND:
+                    boolean suspend = mOp == OP_SUSPEND;
+                    for (int i=0; i<N; i++) {
+                        if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.suspendPackage "
+                                + suspend + " " + packages[i]);
+                        mBgAllAppsList.suspendPackage(packages[i], mUser, suspend);
+                    }
+                    break;
             }
 
             ArrayList<AppInfo> added = null;
@@ -3001,7 +3031,7 @@ public class LauncherModel extends BroadcastReceiver
             }
 
             // Update shortcut infos
-            if (mOp == OP_ADD || mOp == OP_UPDATE) {
+            if (mOp == OP_ADD || mOp == OP_UPDATE || mOp == OP_UNSUSPEND) {
                 final ArrayList<ShortcutInfo> updatedShortcuts = new ArrayList<ShortcutInfo>();
                 final ArrayList<ShortcutInfo> removedShortcuts = new ArrayList<ShortcutInfo>();
                 final ArrayList<LauncherAppWidgetInfo> widgets = new ArrayList<LauncherAppWidgetInfo>();
@@ -3013,6 +3043,11 @@ public class LauncherModel extends BroadcastReceiver
                             ShortcutInfo si = (ShortcutInfo) info;
                             boolean infoUpdated = false;
                             boolean shortcutUpdated = false;
+
+                            if (mOp == OP_UNSUSPEND) {
+                                si.isDisabled &= ~ ShortcutInfo.FLAG_DISABLED_SUSPENDED;
+                                infoUpdated = true;
+                            }
 
                             // Update shortcuts which use iconResource.
                             if ((si.iconResource != null)
@@ -3139,7 +3174,7 @@ public class LauncherModel extends BroadcastReceiver
 
             final ArrayList<String> removedPackageNames =
                     new ArrayList<String>();
-            if (mOp == OP_REMOVE || mOp == OP_UNAVAILABLE) {
+            if (mOp == OP_REMOVE || mOp == OP_UNAVAILABLE || mOp == OP_SUSPEND) {
                 // Mark all packages in the broadcast to be removed
                 removedPackageNames.addAll(Arrays.asList(packages));
             } else if (mOp == OP_UPDATE) {
@@ -3155,6 +3190,8 @@ public class LauncherModel extends BroadcastReceiver
                 final int removeReason;
                 if (mOp == OP_UNAVAILABLE) {
                     removeReason = ShortcutInfo.FLAG_DISABLED_NOT_AVAILABLE;
+                } else if (mOp == OP_SUSPEND) {
+                    removeReason = ShortcutInfo.FLAG_DISABLED_SUSPENDED;
                 } else {
                     // Remove all the components associated with this package
                     for (String pn : removedPackageNames) {

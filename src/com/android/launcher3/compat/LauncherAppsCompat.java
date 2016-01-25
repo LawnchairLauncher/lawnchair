@@ -42,6 +42,8 @@ public abstract class LauncherAppsCompat {
         void onPackageChanged(String packageName, UserHandleCompat user);
         void onPackagesAvailable(String[] packageNames, UserHandleCompat user, boolean replacing);
         void onPackagesUnavailable(String[] packageNames, UserHandleCompat user, boolean replacing);
+        void onPackagesSuspended(String[] packageNames, UserHandleCompat user);
+        void onPackagesUnsuspended(String[] packageNames, UserHandleCompat user);
     }
 
     protected LauncherAppsCompat() {
@@ -53,7 +55,9 @@ public abstract class LauncherAppsCompat {
     public static LauncherAppsCompat getInstance(Context context) {
         synchronized (sInstanceLock) {
             if (sInstance == null) {
-                if (Utilities.ATLEAST_LOLLIPOP) {
+                if (Utilities.isNycOrAbove()) {
+                    sInstance = new LauncherAppsCompatVN(context.getApplicationContext());
+                } else if (Utilities.ATLEAST_LOLLIPOP) {
                     sInstance = new LauncherAppsCompatVL(context.getApplicationContext());
                 } else {
                     sInstance = new LauncherAppsCompatV16(context.getApplicationContext());
@@ -75,6 +79,7 @@ public abstract class LauncherAppsCompat {
     public abstract boolean isPackageEnabledForProfile(String packageName, UserHandleCompat user);
     public abstract boolean isActivityEnabledForProfile(ComponentName component,
             UserHandleCompat user);
+    public abstract boolean isPackageSuspendedForProfile(String packageName, UserHandleCompat user);
 
     public boolean isAppEnabled(PackageManager pm, String packageName, int flags) {
         try {
