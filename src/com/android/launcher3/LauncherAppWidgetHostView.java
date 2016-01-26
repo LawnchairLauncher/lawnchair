@@ -267,4 +267,19 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
             getOnFocusChangeListener().onFocusChange(this, focused || isFocused());
         }
     }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        try {
+            super.onLayout(changed, left, top, right, bottom);
+        } catch (final RuntimeException e) {
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    // Update the widget with 0 Layout id, to reset the view to error view.
+                    updateAppWidget(new RemoteViews(getAppWidgetInfo().provider.getPackageName(), 0));
+                }
+            });
+        }
+    }
 }
