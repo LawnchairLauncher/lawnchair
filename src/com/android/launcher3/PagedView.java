@@ -28,6 +28,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -131,8 +132,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     protected int mTouchSlop;
     private int mMaximumVelocity;
-    protected int mCellCountX = 0;
-    protected int mCellCountY = 0;
     protected boolean mAllowOverScroll = true;
     protected int[] mTempVisiblePagesRange = new int[2];
 
@@ -183,6 +182,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     private static final float[] sTmpPoint = new float[2];
     private static final int[] sTmpIntPoint = new int[2];
     private static final Rect sTmpRect = new Rect();
+    private static final RectF sTmpRectF = new RectF();
 
     protected final Rect mInsets = new Rect();
     protected final boolean mIsRtl;
@@ -1035,31 +1035,25 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     protected void getVisiblePages(int[] range) {
         final int pageCount = getChildCount();
-        sTmpIntPoint[0] = sTmpIntPoint[1] = 0;
-
         range[0] = -1;
         range[1] = -1;
 
         if (pageCount > 0) {
-            int viewportWidth = getViewportWidth();
             int lastVisiblePageIndex = 0;
+            final int visibleLeft = -getLeft();
+            final int visibleRight = visibleLeft + getViewportWidth();
 
             for (int currPageIndex = 0; currPageIndex < pageCount; currPageIndex++) {
                 View currPage = getPageAt(currPageIndex);
 
-                sTmpIntPoint[0] = 0;
-                Utilities.getDescendantCoordRelativeToParent(currPage, this, sTmpIntPoint, false);
-                if (sTmpIntPoint[0] > viewportWidth) {
-                    if (range[0] == -1) {
-                        continue;
-                    } else {
-                        break;
-                    }
-                }
+                // Verify if the page bounds are within the visible range.
+                sTmpRectF.left = 0;
+                sTmpRectF.right = currPage.getMeasuredWidth();
+                currPage.getMatrix().mapRect(sTmpRectF);
+                sTmpRectF.offset(currPage.getLeft() - getScrollX(), 0);
+                getMatrix().mapRect(sTmpRectF);
 
-                sTmpIntPoint[0] = currPage.getMeasuredWidth();
-                Utilities.getDescendantCoordRelativeToParent(currPage, this, sTmpIntPoint, false);
-                if (sTmpIntPoint[0] < 0) {
+                if (sTmpRectF.left > visibleRight || sTmpRectF.right < visibleLeft) {
                     if (range[0] == -1) {
                         continue;
                     } else {
