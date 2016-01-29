@@ -77,7 +77,7 @@
     <dimen name="all_apps_grid_view_start_margin">0dp</dimen>
     <dimen name="all_apps_grid_section_y_offset">8dp</dimen>
     <dimen name="all_apps_grid_section_text_size">24sp</dimen>
-    <dimen name="all_apps_search_bar_height">48dp</dimen>
+    <dimen name="all_apps_search_bar_height">60dp</dimen>
     <dimen name="all_apps_search_bar_prediction_bar_padding">8dp</dimen>
     <dimen name="all_apps_icon_top_bottom_padding">8dp</dimen>
     <dimen name="all_apps_icon_width_gap">24dp</dimen>
@@ -90,7 +90,20 @@
     <dimen name="all_apps_background_canvas_width">700dp</dimen>
     <dimen name="all_apps_background_canvas_height">475dp</dimen>
 
-<!-- Widget tray -->
+    <!-- Search bar in All Apps -->
+    <dimen name="all_apps_header_max_elevation">4dp</dimen>
+    <dimen name="all_apps_header_scroll_to_elevation">16dp</dimen>
+    <dimen name="all_apps_header_shadow_height">6dp</dimen>
+
+    <!-- The overflow is used to create a bottom border, by drawing other three sides
+        outside the bounds. Ensure that:
+            all_apps_search_bar_bg_overflow < (-3 * all_apps_search_bar_divider_width)
+        -6dp is picked at random, any smaller value would do.
+    -->
+    <dimen name="all_apps_search_bar_bg_overflow">-6dp</dimen>
+    <dimen name="all_apps_search_bar_divider_width">1dp</dimen>
+
+    <!-- Widget tray -->
     <dimen name="widget_container_inset">8dp</dimen>
     <dimen name="widget_preview_label_vertical_padding">8dp</dimen>
     <dimen name="widget_preview_label_horizontal_padding">8dp</dimen>
