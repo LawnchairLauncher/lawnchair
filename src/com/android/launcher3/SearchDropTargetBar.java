@@ -116,6 +116,8 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
 
         // Create the various fade animations
         mDropTargetBar.setAlpha(0f);
+        AlphaUpdateListener.updateVisibility(mDropTargetBar, mAccessibilityEnabled);
+
         mDropTargetBarAnimator = new LauncherViewPropertyAnimator(mDropTargetBar);
         mDropTargetBarAnimator.setInterpolator(sAccelerateInterpolator);
         mDropTargetBarAnimator.addListener(new AnimatorListenerAdapter() {
