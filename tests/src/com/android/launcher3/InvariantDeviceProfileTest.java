@@ -108,15 +108,9 @@ public class InvariantDeviceProfileTest extends AndroidTestCase {
         if (!android.os.Build.DEVICE.equals("hammerhead")) {
             return;
         }
-        assertEquals(mInvariantProfile.numRows, 4);
-        assertEquals(mInvariantProfile.numColumns, 4);
-        assertEquals((int) mInvariantProfile.numHotseatIcons, 5);
-
-        DeviceProfile landscapeProfile = mInvariantProfile.landscapeProfile;
-        DeviceProfile portraitProfile = mInvariantProfile.portraitProfile;
-
-        assertEquals(portraitProfile.allAppsNumCols, 3);
-        assertEquals(landscapeProfile.allAppsNumCols, 5); // not used
+        assertEquals(4, mInvariantProfile.numRows);
+        assertEquals(4, mInvariantProfile.numColumns);
+        assertEquals(5, mInvariantProfile.numHotseatIcons);
     }
 
     // Add more tests for other devices, however, running them once on a single device is enough
@@ -172,10 +166,11 @@ public class InvariantDeviceProfileTest extends AndroidTestCase {
         Rect landscapeBounds = landscapeProfile.getSearchBarBounds(true); // RTL shouldn't matter.
         int landscapeHeight = (int) Utilities.dpiFromPx(landscapeBounds.height(),
                 resources.getDisplayMetrics());
-        if (portraitProfile.isTablet) {
-            assertEquals(8 + 80 + 24, portraitHeight);
+        if (portraitProfile.isPhone) {
+            // This fails on some devices due to http://b/26884580 (portraitHeight is 101, not 100).
+            assertEquals(4 + 94 + 2, portraitHeight);
         } else {
-            assertEquals(8 + 80 + 2, portraitHeight);
+            assertEquals(8 + 94 + 24, portraitHeight);
         }
         // Make sure the height that we pass in the widget options bundle is the height of the
         // search bar + 8dps padding top and bottom.
@@ -183,7 +178,7 @@ public class InvariantDeviceProfileTest extends AndroidTestCase {
         int portraitWidgetOptsHeight = portraitDimens.y;
         Point landscapeDimens = landscapeProfile.getSearchBarDimensForWidgetOpts(resources);
         int landscapeWidgetOptsHeight = landscapeDimens.y;
-        assertEquals(8 + 80 + 8, (int) Utilities.dpiFromPx(portraitWidgetOptsHeight,
+        assertEquals(8 + 94 + 8, (int) Utilities.dpiFromPx(portraitWidgetOptsHeight,
                 resources.getDisplayMetrics()));
         if (!landscapeProfile.isVerticalBarLayout()) {
             assertEquals(portraitHeight, landscapeHeight);
