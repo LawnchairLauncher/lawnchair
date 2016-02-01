@@ -103,6 +103,8 @@ public class DeviceProfile {
     // QSB
     private int searchBarWidgetInternalPaddingTop, searchBarWidgetInternalPaddingBottom;
     private int searchBarTopPaddingPx;
+    private int tallSearchBarNegativeTopPaddingPx, normalSearchBarTopExtraPaddingPx;
+    private int searchBarTopExtraPaddingPx; // One of the above.
     private int normalSearchBarBottomPaddingPx, tallSearchBarBottomPaddingPx;
     private int searchBarBottomPaddingPx; // One of the above.
     private int normalSearchBarSpaceHeightPx, tallSearchBarSpaceHeightPx;
@@ -216,6 +218,10 @@ public class DeviceProfile {
                 R.dimen.qsb_internal_padding_top);
         searchBarWidgetInternalPaddingBottom = res.getDimensionPixelSize(
                 R.dimen.qsb_internal_padding_bottom);
+        normalSearchBarTopExtraPaddingPx = res.getDimensionPixelSize(
+                R.dimen.dynamic_grid_search_bar_extra_top_padding);
+        tallSearchBarNegativeTopPaddingPx = res.getDimensionPixelSize(
+                R.dimen.dynamic_grid_search_bar_negative_top_padding_short);
         if (isTablet && !isVerticalBarLayout()) {
             searchBarTopPaddingPx = searchBarWidgetInternalPaddingTop;
             normalSearchBarBottomPaddingPx = searchBarWidgetInternalPaddingBottom +
@@ -225,8 +231,9 @@ public class DeviceProfile {
             searchBarTopPaddingPx = searchBarWidgetInternalPaddingTop;
             normalSearchBarBottomPaddingPx = searchBarWidgetInternalPaddingBottom +
                     res.getDimensionPixelSize(R.dimen.dynamic_grid_search_bar_bottom_padding);
-            tallSearchBarBottomPaddingPx = searchBarWidgetInternalPaddingBottom +
-                    res.getDimensionPixelSize(R.dimen.dynamic_grid_search_bar_bottom_padding_short);
+            tallSearchBarBottomPaddingPx = searchBarWidgetInternalPaddingBottom
+                    + res.getDimensionPixelSize(
+                    R.dimen.dynamic_grid_search_bar_bottom_negative_padding_short);
         }
 
         // Calculate the actual text height
@@ -272,7 +279,7 @@ public class DeviceProfile {
 
     /** Returns the amount of extra space to allocate to the search bar for vertical padding. */
     private int getSearchBarTotalVerticalPadding() {
-        return searchBarTopPaddingPx + searchBarBottomPaddingPx;
+        return searchBarTopPaddingPx + searchBarTopExtraPaddingPx + searchBarBottomPaddingPx;
     }
 
     /** Returns the width and height of the search bar, ignoring any padding. */
@@ -427,10 +434,13 @@ public class DeviceProfile {
             hotseatBarHeightPx = shortHotseatBarHeightPx;
             searchBarSpaceHeightPx = tallSearchBarSpaceHeightPx;
             searchBarBottomPaddingPx = tallSearchBarBottomPaddingPx;
+            searchBarTopExtraPaddingPx = isPhone ? tallSearchBarNegativeTopPaddingPx
+                    : normalSearchBarTopExtraPaddingPx;
         } else {
             hotseatBarHeightPx = normalHotseatBarHeightPx;
             searchBarSpaceHeightPx = normalSearchBarSpaceHeightPx;
             searchBarBottomPaddingPx = normalSearchBarBottomPaddingPx;
+            searchBarTopExtraPaddingPx = normalSearchBarTopExtraPaddingPx;
         }
     }
 
@@ -445,6 +455,7 @@ public class DeviceProfile {
         lp = (FrameLayout.LayoutParams) searchBar.getLayoutParams();
         lp.width = searchBarBounds.width();
         lp.height = searchBarBounds.height();
+        lp.topMargin = searchBarTopExtraPaddingPx;
         if (hasVerticalBarLayout) {
             // Vertical search bar space -- The search bar is fixed in the layout to be on the left
             //                              of the screen regardless of RTL
