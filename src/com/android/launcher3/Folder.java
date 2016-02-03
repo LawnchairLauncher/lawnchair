@@ -56,6 +56,7 @@ import com.android.launcher3.FolderInfo.FolderListener;
 import com.android.launcher3.UninstallDropTarget.UninstallSource;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate.AccessibilityDragSource;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -439,7 +440,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
      */
     @SuppressLint("InflateParams")
     static Folder fromXml(Launcher launcher) {
-        return (Folder) launcher.getLayoutInflater().inflate(R.layout.user_folder, null);
+        return (Folder) launcher.getLayoutInflater().inflate(
+                FeatureFlags.LAUNCHER3_ICON_NORMALIZATION
+                        ? R.layout.user_folder_icon_normalized : R.layout.user_folder, null);
     }
 
     /**
