@@ -4098,7 +4098,8 @@ public class Launcher extends Activity
             AppWidgetProviderInfo info = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
             if (info == null || appWidgetInfo == null ||
                     !info.provider.equals(appWidgetInfo.provider)) {
-                Log.e(TAG, "Removing invalid widget: id=" + item.appWidgetId);
+                Log.e(TAG, "Removing invalid widget: id=" + item.appWidgetId + " info=" + info
+                        + " appWidgetInfo=" + appWidgetInfo);
                 deleteWidgetInfo(item);
                 return;
             }
