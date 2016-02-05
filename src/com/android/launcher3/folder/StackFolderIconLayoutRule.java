@@ -16,11 +16,13 @@
 
 package com.android.launcher3.folder;
 
+import android.graphics.Path;
+
 import com.android.launcher3.folder.FolderIcon.PreviewItemDrawingParams;
 
 public class StackFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule {
 
-    public static final int NUM_ITEMS_IN_PREVIEW = 3;
+    static final int MAX_NUM_ITEMS_IN_PREVIEW = 3;
 
     // The degree to which the item in the back of the stack is scaled [0...1]
     // (0 means it's not scaled at all, 1 means it's scaled to nothing)
@@ -29,13 +31,13 @@ public class StackFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule {
     // The amount of vertical spread between items in the stack [0...1]
     private static final float PERSPECTIVE_SHIFT_FACTOR = 0.18f;
 
-    //private int mIntrinsicIconSize;
     private float mBaselineIconScale;
     private int mBaselineIconSize;
     private int mAvailableSpaceInPreview;
     private float mMaxPerspectiveShift;
 
-    public void init(int availableSpace, int intrinsicIconSize) {
+    @Override
+    public void init(int availableSpace, int intrinsicIconSize, boolean rtl) {
         mAvailableSpaceInPreview = availableSpace;
 
         // cos(45) = 0.707  + ~= 0.1) = 0.8f
@@ -50,11 +52,11 @@ public class StackFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule {
     }
 
     @Override
-    public PreviewItemDrawingParams computePreviewItemDrawingParams(int index,
+    public PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
             PreviewItemDrawingParams params) {
 
-        index = NUM_ITEMS_IN_PREVIEW - index - 1;
-        float r = (index * 1.0f) / (NUM_ITEMS_IN_PREVIEW - 1);
+        index = MAX_NUM_ITEMS_IN_PREVIEW - index - 1;
+        float r = (index * 1.0f) / (MAX_NUM_ITEMS_IN_PREVIEW - 1);
         float scale = (1 - PERSPECTIVE_SCALE_FACTOR * (1 - r));
 
         float offset = (1 - r) * mMaxPerspectiveShift;
@@ -81,6 +83,11 @@ public class StackFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule {
 
     @Override
     public int numItems() {
-        return NUM_ITEMS_IN_PREVIEW;
+        return MAX_NUM_ITEMS_IN_PREVIEW;
+    }
+
+    @Override
+    public Path getClipPath() {
+        return null;
     }
 }

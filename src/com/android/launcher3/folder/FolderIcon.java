@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -65,6 +66,7 @@ import com.android.launcher3.SimpleOnStylusPressListener;
 import com.android.launcher3.StylusEventHelper;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.util.Thunk;
@@ -81,8 +83,9 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private FolderInfo mInfo;
     @Thunk static boolean sStaticValuesDirty = true;
 
-    // TODO(adamcohen): remove this
-    public static final int NUM_ITEMS_IN_PREVIEW = 3;
+    public static final int NUM_ITEMS_IN_PREVIEW = FeatureFlags.LAUNCHER3_CLIPPED_FOLDER_ICON ?
+            ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW :
+            StackFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 
     private CheckLongPressHelper mLongPressHelper;
     private StylusEventHelper mStylusEventHelper;
@@ -152,7 +155,10 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private void init() {
         mLongPressHelper = new CheckLongPressHelper(this);
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
-        mPreviewLayoutRule = new StackFolderIconLayoutRule();
+        mPreviewLayoutRule = FeatureFlags.LAUNCHER3_CLIPPED_FOLDER_ICON ?
+                new ClippedFolderIconLayoutRule() :
+                new StackFolderIconLayoutRule();
+
         setAccessibilityDelegate(LauncherAppState.getInstance().getAccessibilityDelegate());
     }
 
@@ -468,7 +474,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             }
 
             int[] center = new int[2];
-            float scale = getLocalCenterForIndex(index, center);
+            float scale = getLocalCenterForIndex(index, index + 1, center);
             center[0] = (int) Math.round(scaleRelativeToDragLayer * center[0]);
             center[1] = (int) Math.round(scaleRelativeToDragLayer * center[1]);
 
@@ -516,7 +522,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             mIntrinsicIconSize = drawableSize;
             mTotalWidth = totalSize;
 
-            final int previewSize = mPreviewBackground.getLayoutParams().height;
+            final int previewSize = FolderRingAnimator.sPreviewSize;
             final int previewPadding = FolderRingAnimator.sPreviewPadding;
 
             mAvailableSpaceInPreview = (previewSize - 2 * previewPadding);
@@ -524,8 +530,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             mPreviewOffsetX = (mTotalWidth - mAvailableSpaceInPreview) / 2;
             mPreviewOffsetY = previewPadding + grid.folderBackgroundOffset + getPaddingTop();
 
-            // Initialize the preview layout rule
-            mPreviewLayoutRule.init(mAvailableSpaceInPreview, mIntrinsicIconSize);
+            mPreviewLayoutRule.init(mAvailableSpaceInPreview, mIntrinsicIconSize,
+                    Utilities.isRtl(getResources()));
         }
     }
 
@@ -547,9 +553,9 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         Drawable drawable;
     }
 
-    private float getLocalCenterForIndex(int index, int[] center) {
+    private float getLocalCenterForIndex(int index, int curNumItems, int[] center) {
         mParams = computePreviewItemDrawingParams(Math.min(mPreviewLayoutRule.numItems(), index),
-                mParams);
+                curNumItems, mParams);
 
         mParams.transX += mPreviewOffsetX;
         mParams.transY += mPreviewOffsetY;
@@ -561,14 +567,14 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         return mParams.scale;
     }
 
-    private PreviewItemDrawingParams computePreviewItemDrawingParams(int index,
+    private PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
             PreviewItemDrawingParams params) {
-        return mPreviewLayoutRule.computePreviewItemDrawingParams(index, params);
+        return mPreviewLayoutRule.computePreviewItemDrawingParams(index, curNumItems, params);
     }
 
     private void drawPreviewItem(Canvas canvas, PreviewItemDrawingParams params) {
         canvas.save();
-        canvas.translate(params.transX + mPreviewOffsetX, params.transY + mPreviewOffsetY);
+        canvas.translate(params.transX, params.transY);
         canvas.scale(params.scale, params.scale);
         Drawable d = params.drawable;
 
@@ -612,13 +618,20 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             computePreviewDrawingParams(d);
         }
 
+        canvas.save();
+        canvas.translate(mPreviewOffsetX, mPreviewOffsetY);
+        Path clipPath = mPreviewLayoutRule.getClipPath();
+        if (clipPath != null) {
+            canvas.clipPath(clipPath);
+        }
+
         int nItemsInPreview = Math.min(items.size(), mPreviewLayoutRule.numItems());
         if (!mAnimating) {
             for (int i = nItemsInPreview - 1; i >= 0; i--) {
                 v = (TextView) items.get(i);
                 if (!mHiddenItems.contains(v.getTag())) {
                     d = getTopDrawable(v);
-                    mParams = computePreviewItemDrawingParams(i, mParams);
+                    mParams = computePreviewItemDrawingParams(i, nItemsInPreview, mParams);
                     mParams.drawable = d;
                     drawPreviewItem(canvas, mParams);
                 }
@@ -626,6 +639,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         } else {
             drawPreviewItem(canvas, mAnimParams);
         }
+        canvas.restore();
     }
 
     private Drawable getTopDrawable(TextView v) {
@@ -635,7 +649,9 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     private void animateFirstItem(final Drawable d, int duration, final boolean reverse,
             final Runnable onCompleteRunnable) {
-        final PreviewItemDrawingParams finalParams = computePreviewItemDrawingParams(0, null);
+
+        final PreviewItemDrawingParams finalParams =
+            computePreviewItemDrawingParams(0, reverse ? 1 : 2, null);
 
         float iconSize = mLauncher.getDeviceProfile().iconSizePx;
         final float scale0 = iconSize / d.getIntrinsicWidth() ;
@@ -749,11 +765,12 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     public interface PreviewLayoutRule {
-        public PreviewItemDrawingParams computePreviewItemDrawingParams(int index,
+        public PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
             PreviewItemDrawingParams params);
 
-        public void init(int availableSpace, int intrinsicIconSize);
+        public void init(int availableSpace, int intrinsicIconSize, boolean rtl);
 
         public int numItems();
+        public Path getClipPath();
     }
 }
