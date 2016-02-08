@@ -39,6 +39,7 @@ import android.view.animation.DecelerateInterpolator;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Thunk;
 
 import com.android.launcher3.R;
@@ -84,15 +85,15 @@ public class DragView extends View {
      */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public DragView(Launcher launcher, Bitmap bitmap, int registrationX, int registrationY,
-            int left, int top, int width, int height, final float initialScale,
-            float finalDragViewScale) {
+            int left, int top, int width, int height, final float initialScale) {
         super(launcher);
         mDragLayer = launcher.getDragLayer();
         mDragController = launcher.getDragController();
 
         final Resources res = getResources();
-        final float scaleDps = res.getDimensionPixelSize(R.dimen.dragViewScale);
-        final float scale = finalDragViewScale * (width + scaleDps) / width;
+        final float scaleDps = !FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND ? 0f
+                : res.getDimensionPixelSize(R.dimen.dragViewScale);
+        final float scale = (width + scaleDps) / width;
 
         // Set the initial scale to avoid any jumps
         setScaleX(initialScale);

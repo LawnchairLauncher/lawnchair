@@ -33,6 +33,8 @@ import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.android.launcher3.config.FeatureFlags;
+
 public class DeviceProfile {
 
     public final InvariantDeviceProfile inv;
@@ -242,7 +244,8 @@ public class DeviceProfile {
         FontMetrics fm = textPaint.getFontMetrics();
         cellWidthPx = iconSizePx;
         cellHeightPx = iconSizePx + iconDrawablePaddingPx + (int) Math.ceil(fm.bottom - fm.top);
-        final float scaleDps = res.getDimensionPixelSize(R.dimen.dragViewScale);
+        final float scaleDps = !FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND ? 0f
+                : res.getDimensionPixelSize(R.dimen.dragViewScale);
         dragViewScale = (iconSizePx + scaleDps) / iconSizePx;
 
         // Hotseat

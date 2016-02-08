@@ -897,7 +897,7 @@ public class DragLayer extends InsettableFrameLayout {
         }
     }
 
-    void onEnterScrollArea(int direction) {
+    void onEnterScrollArea() {
         mInScrollArea = true;
         invalidate();
     }

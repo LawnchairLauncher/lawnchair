@@ -292,7 +292,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         }
 
         mFooter.setImportantForAccessibility(enable ? IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS :
-            IMPORTANT_FOR_ACCESSIBILITY_AUTO);
+                IMPORTANT_FOR_ACCESSIBILITY_AUTO);
         mLauncher.getWorkspace().setAddNewPageOnDrag(!enable);
     }
 
@@ -971,7 +971,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     @Override
     public boolean supportsAppInfoDropTarget() {
-        return Workspace.IS_SPRING_LOADED;
+        return !FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND;
     }
 
     @Override

@@ -32,6 +32,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
 import android.os.Parcelable;
@@ -45,7 +46,6 @@ import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.Toast;
 
 import com.android.launcher3.BubbleTextView.BubbleTextShadowHandler;
 import com.android.launcher3.FolderIcon.FolderRingAnimator;
@@ -53,6 +53,7 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
 import com.android.launcher3.accessibility.FolderAccessibilityHelper;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.util.ParcelableSparseArray;
 import com.android.launcher3.util.Thunk;
@@ -205,7 +206,9 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         final Resources res = getResources();
         mHotseatScale = (float) grid.hotseatIconSizePx / grid.iconSizePx;
 
-        mBackground = (TransitionDrawable) res.getDrawable(R.drawable.bg_screenpanel);
+        mBackground = (TransitionDrawable) res.getDrawable(
+                FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND ? R.drawable.bg_screenpanel
+                        : R.drawable.bg_celllayout);
         mBackground.setCallback(this);
         mBackground.setAlpha((int) (mBackgroundAlpha * 255));
 

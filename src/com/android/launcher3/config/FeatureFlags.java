@@ -24,7 +24,6 @@ package com.android.launcher3.config;
  * Use LAUNCHER3_ prefix for prevent namespace conflicts.
  */
 public final class FeatureFlags {
-
     private FeatureFlags() {}
 
     public static boolean IS_DEV_BUILD = false;
@@ -33,5 +32,6 @@ public final class FeatureFlags {
 
     // Custom flags go below this
     public static boolean LAUNCHER3_ICON_NORMALIZATION = false;
-
+    // As opposed to the new spring-loaded workspace.
+    public static boolean LAUNCHER3_LEGACY_WORKSPACE_DND = false;
 }

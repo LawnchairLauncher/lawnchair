@@ -101,6 +101,7 @@ import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -3476,7 +3477,7 @@ public class Launcher extends Activity
             mState = State.APPS_SPRING_LOADED;
         } else if (isWidgetsViewVisible()) {
             mState = State.WIDGETS_SPRING_LOADED;
-        } else if (Workspace.IS_SPRING_LOADED) {
+        } else if (!FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND) {
             mState = State.WORKSPACE_SPRING_LOADED;
         } else {
             mState = State.WORKSPACE;
@@ -3505,7 +3506,7 @@ public class Launcher extends Activity
         }, delay);
     }
 
-    private boolean isStateSpringLoaded() {
+    boolean isStateSpringLoaded() {
         return mState == State.WORKSPACE_SPRING_LOADED || mState == State.APPS_SPRING_LOADED
                 || mState == State.WIDGETS_SPRING_LOADED;
     }
