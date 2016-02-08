@@ -138,6 +138,8 @@ public class LauncherModel extends BroadcastReceiver
     AllAppsList mBgAllAppsList;
     // Entire list of widgets.
     WidgetsModel mBgWidgetsModel;
+    // Keep a clone of widgets that can be accessed from non-worker thread.
+    WidgetsModel mFgWidgetsModel;
 
     // The lock that must be acquired before referencing any static bg data structures.  Unlike
     // other locks, this one can generally be held long-term because we never expect any of these
@@ -241,6 +243,7 @@ public class LauncherModel extends BroadcastReceiver
         mApp = app;
         mBgAllAppsList = new AllAppsList(iconCache, appFilter);
         mBgWidgetsModel = new WidgetsModel(context, iconCache, appFilter);
+        mFgWidgetsModel = mBgWidgetsModel.clone();
         mIconCache = iconCache;
 
         mLauncherApps = LauncherAppsCompat.getInstance(context);
@@ -2684,18 +2687,17 @@ public class LauncherModel extends BroadcastReceiver
             @SuppressWarnings("unchecked")
             final ArrayList<AppInfo> list
                     = (ArrayList<AppInfo>) mBgAllAppsList.data.clone();
-            final WidgetsModel widgetList = mBgWidgetsModel.clone();
             Runnable r = new Runnable() {
                 public void run() {
                     final long t = SystemClock.uptimeMillis();
                     final Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                     if (callbacks != null) {
                         callbacks.bindAllApplications(list);
-                        callbacks.bindAllPackages(widgetList);
+                        callbacks.bindAllPackages(mFgWidgetsModel);
                     }
                     if (DEBUG_LOADERS) {
                         Log.d(TAG, "bound all " + list.size() + " apps from cache in "
-                                + (SystemClock.uptimeMillis()-t) + "ms");
+                                + (SystemClock.uptimeMillis() - t) + "ms");
                     }
                 }
             };
@@ -3336,20 +3338,18 @@ public class LauncherModel extends BroadcastReceiver
             @Override
             public void run() {
                 updateWidgetsModel(refresh);
-                final WidgetsModel model = mBgWidgetsModel.clone();
-
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         Callbacks cb = getCallback();
                         if (callbacks == cb && cb != null) {
-                            callbacks.bindAllPackages(model);
+                            callbacks.bindAllPackages(mFgWidgetsModel);
                         }
                     }
                 });
                 // update the Widget entries inside DB on the worker thread.
                 LauncherAppState.getInstance().getWidgetCache().removeObsoletePreviews(
-                        model.getRawList());
+                        mFgWidgetsModel.getRawList());
             }
         });
     }
@@ -3360,6 +3360,7 @@ public class LauncherModel extends BroadcastReceiver
      * @see #loadAndBindWidgetsAndShortcuts
      */
     @Thunk void updateWidgetsModel(boolean refresh) {
+        Utilities.assertWorkerThread();
         PackageManager packageManager = mApp.getContext().getPackageManager();
         final ArrayList<Object> widgetsAndShortcuts = new ArrayList<Object>();
         widgetsAndShortcuts.addAll(getWidgetProviders(mApp.getContext(), refresh));
@@ -3387,6 +3388,7 @@ public class LauncherModel extends BroadcastReceiver
             }
         }
         mBgWidgetsModel.setWidgetsAndShortcuts(widgetsAndShortcuts);
+        mFgWidgetsModel = mBgWidgetsModel.clone();
     }
 
     @Thunk static boolean isPackageDisabled(Context context, String packageName,
