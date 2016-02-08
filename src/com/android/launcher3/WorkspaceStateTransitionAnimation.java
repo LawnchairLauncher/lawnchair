@@ -198,6 +198,7 @@ public class WorkspaceStateTransitionAnimation {
     @Thunk int mAllAppsTransitionTime;
     @Thunk int mOverviewTransitionTime;
     @Thunk int mOverlayTransitionTime;
+    @Thunk int mSpringLoadedTransitionTime;
     @Thunk boolean mWorkspaceFadeInAdjacentScreens;
 
     public WorkspaceStateTransitionAnimation(Launcher launcher, Workspace workspace) {
@@ -209,6 +210,7 @@ public class WorkspaceStateTransitionAnimation {
         mAllAppsTransitionTime = res.getInteger(R.integer.config_allAppsTransitionTime);
         mOverviewTransitionTime = res.getInteger(R.integer.config_overviewTransitionTime);
         mOverlayTransitionTime = res.getInteger(R.integer.config_overlayTransitionTime);
+        mSpringLoadedTransitionTime = mOverlayTransitionTime / 2;
         mSpringLoadedShrinkFactor =
                 res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100f;
         mOverviewModeShrinkFactor =
@@ -259,6 +261,9 @@ public class WorkspaceStateTransitionAnimation {
             return mAllAppsTransitionTime;
         } else if (states.workspaceToOverview || states.overviewToWorkspace) {
             return mOverviewTransitionTime;
+        } else if (mLauncher.mState == Launcher.State.WORKSPACE_SPRING_LOADED
+                || states.oldStateIsNormal && states.stateIsSpringLoaded) {
+            return mSpringLoadedTransitionTime;
         } else {
             return mOverlayTransitionTime;
         }
@@ -282,8 +287,8 @@ public class WorkspaceStateTransitionAnimation {
         // Update the workspace state
         float finalBackgroundAlpha = (states.stateIsSpringLoaded || states.stateIsOverview) ?
                 1.0f : 0f;
-        float finalHotseatAndPageIndicatorAlpha = (states.stateIsNormal || states.stateIsSpringLoaded) ?
-                1f : 0f;
+        float finalHotseatAlpha = (states.stateIsNormal || states.stateIsSpringLoaded) ? 1f : 0f;
+        float finalPageIndicatorAlpha = states.stateIsNormal ? 1f : 0f;
         float finalOverviewPanelAlpha = states.stateIsOverview ? 1f : 0f;
 
         float finalWorkspaceTranslationY = 0;
@@ -393,7 +398,7 @@ public class WorkspaceStateTransitionAnimation {
             Animator pageIndicatorAlpha;
             if (pageIndicator != null) {
                 pageIndicatorAlpha = new LauncherViewPropertyAnimator(pageIndicator)
-                        .alpha(finalHotseatAndPageIndicatorAlpha).withLayer();
+                        .alpha(finalPageIndicatorAlpha).withLayer();
                 pageIndicatorAlpha.addListener(new AlphaUpdateListener(pageIndicator,
                         accessibilityEnabled));
             } else {
@@ -402,7 +407,7 @@ public class WorkspaceStateTransitionAnimation {
             }
 
             LauncherViewPropertyAnimator hotseatAlpha = new LauncherViewPropertyAnimator(hotseat)
-                    .alpha(finalHotseatAndPageIndicatorAlpha);
+                    .alpha(finalHotseatAlpha);
             hotseatAlpha.addListener(new AlphaUpdateListener(hotseat, accessibilityEnabled));
 
             LauncherViewPropertyAnimator overviewPanelAlpha =
@@ -456,10 +461,10 @@ public class WorkspaceStateTransitionAnimation {
         } else {
             overviewPanel.setAlpha(finalOverviewPanelAlpha);
             AlphaUpdateListener.updateVisibility(overviewPanel, accessibilityEnabled);
-            hotseat.setAlpha(finalHotseatAndPageIndicatorAlpha);
+            hotseat.setAlpha(finalHotseatAlpha);
             AlphaUpdateListener.updateVisibility(hotseat, accessibilityEnabled);
             if (pageIndicator != null) {
-                pageIndicator.setAlpha(finalHotseatAndPageIndicatorAlpha);
+                pageIndicator.setAlpha(finalPageIndicatorAlpha);
                 AlphaUpdateListener.updateVisibility(pageIndicator, accessibilityEnabled);
             }
             mWorkspace.updateCustomContentVisibility();

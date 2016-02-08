@@ -61,6 +61,7 @@ import com.android.launcher3.accessibility.LauncherAccessibilityDelegate.Accessi
 import com.android.launcher3.accessibility.OverviewScreenAccessibilityDelegate;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.compat.UserHandleCompat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -90,7 +91,6 @@ public class Workspace extends PagedView
         Insettable, UninstallSource, AccessibilityDragSource, Stats.LaunchSourceProvider {
     private static final String TAG = "Launcher.Workspace";
 
-    public static final boolean IS_SPRING_LOADED = true;
     private static boolean ENFORCE_DRAG_EVENT_ORDER = false;
 
     private static final int SNAP_OFF_EMPTY_SCREEN_DURATION = 400;
@@ -400,11 +400,6 @@ public class Workspace extends PagedView
 
         mDragSourceInternal = null;
         mLauncher.onInteractionEnd();
-    }
-
-    /** Returns a scale factor to apply to workspace icons when dragging them from the workspace. */
-    public float getDragShrinkFactor() {
-        return IS_SPRING_LOADED ? mSpringLoadedShrinkFactor : 1f;
     }
 
     /**
@@ -1797,7 +1792,14 @@ public class Workspace extends PagedView
     }
 
     int getSpringLoadedTranslationY() {
-        return getOverviewModeTranslationY();
+        DeviceProfile grid = mLauncher.getDeviceProfile();
+        Rect workspacePadding = grid.getWorkspacePadding(Utilities.isRtl(getResources()));
+        int scaledHeight = (int) (mSpringLoadedShrinkFactor * getNormalChildHeight());
+        int workspaceTop = mInsets.top + workspacePadding.top;
+        int workspaceBottom = getViewportHeight() - mInsets.bottom - workspacePadding.bottom;
+        int workspaceHeight = workspaceBottom - workspaceTop;
+        // Center the spring-loaded pages by translating it up by half of the reduced height.
+        return -(workspaceHeight - scaledHeight) / 2;
     }
 
     /**
@@ -2145,7 +2147,7 @@ public class Workspace extends PagedView
 
         b.recycle();
 
-        if (IS_SPRING_LOADED) {
+        if (!FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND) {
             mLauncher.enterSpringLoadedDragMode();
         }
     }
@@ -2197,7 +2199,7 @@ public class Workspace extends PagedView
         // Recycle temporary bitmaps
         tmpB.recycle();
 
-        if (IS_SPRING_LOADED) {
+        if (!FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND) {
             mLauncher.enterSpringLoadedDragMode();
         }
     }
@@ -2639,7 +2641,7 @@ public class Workspace extends PagedView
         setCurrentDropLayout(layout);
         setCurrentDragOverlappingLayout(layout);
 
-        if (!workspaceInModalState() && !IS_SPRING_LOADED) {
+        if (!workspaceInModalState() && FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND) {
             mLauncher.getDragLayer().showPageHints();
         }
     }
@@ -3561,7 +3563,7 @@ public class Workspace extends PagedView
 
     @Override
     public boolean supportsAppInfoDropTarget() {
-        return IS_SPRING_LOADED;
+        return !FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND;
     }
 
     @Override

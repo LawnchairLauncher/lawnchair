@@ -43,6 +43,7 @@ import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.util.Thunk;
 
@@ -245,10 +246,9 @@ public class DragController implements DragDriver.EventListener {
 
         mDragObject = new DropTarget.DragObject();
 
-        float finalDragViewScale = mLauncher.getWorkspace().getDragShrinkFactor();
         final DragView dragView = mDragObject.dragView = new DragView(mLauncher, b, registrationX,
                 registrationY, 0, 0, b.getWidth(), b.getHeight(),
-                initialDragViewScale, finalDragViewScale);
+                initialDragViewScale);
 
         mDragObject.dragComplete = false;
         if (mIsAccessibleDrag) {
@@ -572,7 +572,7 @@ public class DragController implements DragDriver.EventListener {
             if (mScrollState == SCROLL_OUTSIDE_ZONE) {
                 mScrollState = SCROLL_WAITING_IN_ZONE;
                 if (mDragScroller.onEnterScrollArea(x, y, forwardDirection)) {
-                    dragLayer.onEnterScrollArea(forwardDirection);
+                    dragLayer.onEnterScrollArea();
                     mScrollRunnable.setDirection(forwardDirection);
                     mHandler.postDelayed(mScrollRunnable, delay);
                 }
@@ -581,7 +581,7 @@ public class DragController implements DragDriver.EventListener {
             if (mScrollState == SCROLL_OUTSIDE_ZONE) {
                 mScrollState = SCROLL_WAITING_IN_ZONE;
                 if (mDragScroller.onEnterScrollArea(x, y, backwardsDirection)) {
-                    dragLayer.onEnterScrollArea(backwardsDirection);
+                    dragLayer.onEnterScrollArea();
                     mScrollRunnable.setDirection(backwardsDirection);
                     mHandler.postDelayed(mScrollRunnable, delay);
                 }

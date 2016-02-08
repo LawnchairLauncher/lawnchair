@@ -56,6 +56,7 @@ import com.android.launcher3.FolderInfo.FolderListener;
 import com.android.launcher3.UninstallDropTarget.UninstallSource;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate.AccessibilityDragSource;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -291,7 +292,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         }
 
         mFooter.setImportantForAccessibility(enable ? IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS :
-            IMPORTANT_FOR_ACCESSIBILITY_AUTO);
+                IMPORTANT_FOR_ACCESSIBILITY_AUTO);
         mLauncher.getWorkspace().setAddNewPageOnDrag(!enable);
     }
 
@@ -968,7 +969,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     @Override
     public boolean supportsAppInfoDropTarget() {
-        return Workspace.IS_SPRING_LOADED;
+        return !FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND;
     }
 
     @Override
