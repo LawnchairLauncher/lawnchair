@@ -25,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.RemoteViews;
 
@@ -43,11 +44,13 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
     private CheckLongPressHelper mLongPressHelper;
     private StylusEventHelper mStylusEventHelper;
     private Context mContext;
+    @ViewDebug.ExportedProperty(category = "launcher")
     private int mPreviousOrientation;
     private DragLayer mDragLayer;
 
     private float mSlop;
 
+    @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mChildrenFocused;
 
     public LauncherAppWidgetHostView(Context context) {

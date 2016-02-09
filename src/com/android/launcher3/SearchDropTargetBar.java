@@ -22,6 +22,7 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewDebug;
 import android.view.accessibility.AccessibilityManager;
 
 import com.android.launcher3.dragndrop.DragController;
@@ -59,6 +60,7 @@ public class SearchDropTargetBar extends BaseDropTargetBar {
 
     private LauncherViewPropertyAnimator mQSBSearchBarAnimator;
 
+    @ViewDebug.ExportedProperty(category = "launcher")
     private State mState = State.SEARCH_BAR;
     @Thunk View mQSB;
 

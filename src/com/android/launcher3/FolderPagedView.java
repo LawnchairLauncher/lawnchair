@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewDebug;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.OvershootInterpolator;
@@ -69,12 +70,17 @@ public class FolderPagedView extends PagedView {
 
     @Thunk final HashMap<View, Runnable> mPendingAnimations = new HashMap<>();
 
+    @ViewDebug.ExportedProperty(category = "launcher")
     private final int mMaxCountX;
+    @ViewDebug.ExportedProperty(category = "launcher")
     private final int mMaxCountY;
+    @ViewDebug.ExportedProperty(category = "launcher")
     private final int mMaxItemsPerPage;
 
     private int mAllocatedContentSize;
+    @ViewDebug.ExportedProperty(category = "launcher")
     private int mGridCountX;
+    @ViewDebug.ExportedProperty(category = "launcher")
     private int mGridCountY;
 
     private Folder mFolder;

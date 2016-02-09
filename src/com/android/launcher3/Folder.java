@@ -42,6 +42,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewDebug;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.AccelerateInterpolator;
@@ -135,7 +136,15 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     // Cell ranks used for drag and drop
     @Thunk int mTargetRank, mPrevTargetRank, mEmptyCellRank;
 
+    @ViewDebug.ExportedProperty(category = "launcher",
+            mapping = {
+                    @ViewDebug.IntToString(from = STATE_NONE, to = "STATE_NONE"),
+                    @ViewDebug.IntToString(from = STATE_SMALL, to = "STATE_SMALL"),
+                    @ViewDebug.IntToString(from = STATE_ANIMATING, to = "STATE_ANIMATING"),
+                    @ViewDebug.IntToString(from = STATE_OPEN, to = "STATE_OPEN"),
+            })
     @Thunk int mState = STATE_NONE;
+    @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mRearrangeOnClose = false;
     boolean mItemsInvalidated = false;
     private ShortcutInfo mCurrentDragInfo;
@@ -150,6 +159,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     @Thunk float mFolderIconPivotY;
     private boolean mIsEditingName = false;
 
+    @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mDestroyed;
 
     @Thunk Runnable mDeferredAction;

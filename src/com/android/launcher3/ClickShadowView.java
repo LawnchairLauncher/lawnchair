@@ -22,6 +22,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.View;
+import android.view.ViewDebug;
 import android.view.ViewGroup;
 
 public class ClickShadowView extends View {
@@ -32,7 +33,9 @@ public class ClickShadowView extends View {
 
     private final Paint mPaint;
 
+    @ViewDebug.ExportedProperty(category = "launcher")
     private final float mShadowOffset;
+    @ViewDebug.ExportedProperty(category = "launcher")
     private final float mShadowPadding;
 
     private Bitmap mBitmap;

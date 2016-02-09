@@ -42,6 +42,7 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
@@ -92,10 +93,12 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected boolean mFirstLayout = true;
     private int mNormalChildHeight;
 
+    @ViewDebug.ExportedProperty(category = "launcher")
     protected int mCurrentPage;
     protected int mRestorePage = INVALID_RESTORE_PAGE;
     private int mChildCountOnLastLayout;
 
+    @ViewDebug.ExportedProperty(category = "launcher")
     protected int mNextPage = INVALID_PAGE;
     private int mMaxScrollX;
     protected LauncherScroller mScroller;
@@ -153,6 +156,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     @Thunk PageIndicator mPageIndicator;
     // The viewport whether the pages are to be contained (the actual view may be larger than the
     // viewport)
+    @ViewDebug.ExportedProperty(category = "launcher")
     private Rect mViewport = new Rect();
 
     // Reordering

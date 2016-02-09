@@ -36,6 +36,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewDebug;
 import android.view.ViewParent;
 import android.widget.TextView;
 
@@ -80,10 +81,14 @@ public class BubbleTextView extends TextView
     private final boolean mCustomShadowsEnabled;
     private final boolean mLayoutHorizontal;
     private final int mIconSize;
+    @ViewDebug.ExportedProperty(category = "launcher")
     private int mTextColor;
 
+    @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mStayPressed;
+    @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mIgnorePressedStateChange;
+    @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mDisableRelayout = false;
 
     private IconLoadRequest mIconLoadRequest;
