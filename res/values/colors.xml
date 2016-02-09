@@ -37,6 +37,7 @@
     <color name="quantum_panel_bg_color_dark">#FF374248</color>
 
     <color name="outline_color">#FFFFFFFF</color>
+    <color name="launcher_accent_color">#ff009688</color>
 
     <!-- Containers -->
     <color name="container_fastscroll_thumb_inactive_color">#009688</color>

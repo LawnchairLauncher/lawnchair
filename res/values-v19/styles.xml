@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /*
-* Copyright (C) 2013 The Android Open Source Project
+* Copyright (C) 2016 The Android Open Source Project
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -16,12 +16,11 @@
 * limitations under the License.
 */
 -->
-
 <resources>
-    <style name="Theme.WallpaperCropper" parent="@android:style/Theme.DeviceDefault">
-        <item name="android:actionBarStyle">@style/WallpaperCropperActionBar</item>
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowActionBarOverlay">true</item>
+
+    <style name="LauncherTheme" parent="@style/BaseLauncherTheme">
+        <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
+
 </resources>
