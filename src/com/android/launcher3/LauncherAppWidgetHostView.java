@@ -57,6 +57,8 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mDragLayer = ((Launcher) context).getDragLayer();
         setAccessibilityDelegate(LauncherAppState.getInstance().getAccessibilityDelegate());
+
+        setBackgroundResource(R.drawable.widget_internal_focus_bg);
     }
 
     @Override
@@ -241,6 +243,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
     protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
         if (gainFocus) {
             mChildrenFocused = false;
+            dispatchChildFocus(false);
         }
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
     }
@@ -249,6 +252,9 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
     public void requestChildFocus(View child, View focused) {
         super.requestChildFocus(child, focused);
         dispatchChildFocus(focused != null);
+        if (focused != null) {
+            focused.setFocusableInTouchMode(false);
+        }
     }
 
     @Override
@@ -262,10 +268,9 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
         return mChildrenFocused;
     }
 
-    private void dispatchChildFocus(boolean focused) {
-        if (getOnFocusChangeListener() != null) {
-            getOnFocusChangeListener().onFocusChange(this, focused || isFocused());
-        }
+    private void dispatchChildFocus(boolean childIsFocused) {
+        // The host view's background changes when selected, to indicate the focus is inside.
+        setSelected(childIsFocused);
     }
 
     @Override
