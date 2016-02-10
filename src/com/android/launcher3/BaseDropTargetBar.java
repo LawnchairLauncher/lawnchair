@@ -18,9 +18,13 @@ package com.android.launcher3;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.accessibility.AccessibilityManager;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.FrameLayout;
 
@@ -31,14 +35,12 @@ import com.android.launcher3.dragndrop.DragController;
  */
 public abstract class BaseDropTargetBar extends FrameLayout implements DragController.DragListener {
     protected static final int DEFAULT_DRAG_FADE_DURATION = 175;
+    protected static final TimeInterpolator DEFAULT_INTERPOLATOR = new AccelerateInterpolator();
 
     protected View mDropTargetBar;
-
-    protected LauncherViewPropertyAnimator mDropTargetBarAnimator;
-    protected static final AccelerateInterpolator sAccelerateInterpolator =
-            new AccelerateInterpolator();
     protected boolean mAccessibilityEnabled = false;
 
+    protected AnimatorSet mCurrentAnimation;
     protected boolean mDeferOnDragEnd;
 
     public BaseDropTargetBar(Context context, AttributeSet attrs) {
@@ -57,42 +59,35 @@ public abstract class BaseDropTargetBar extends FrameLayout implements DragContr
 
         // Create the various fade animations
         mDropTargetBar.setAlpha(0f);
-        mDropTargetBarAnimator = new LauncherViewPropertyAnimator(mDropTargetBar);
-        mDropTargetBarAnimator.setInterpolator(sAccelerateInterpolator);
-        mDropTargetBarAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                // Ensure that the view is visible for the animation
-                mDropTargetBar.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (mDropTargetBar != null) {
-                    AlphaUpdateListener.updateVisibility(mDropTargetBar, mAccessibilityEnabled);
-                }
-            }
-        });
     }
 
-
     /**
-     * Convenience method to animate the alpha of a view using hardware layers.
+     * Convenience method to animate the alpha of a view.
      */
-    protected void animateViewAlpha(LauncherViewPropertyAnimator animator, View v, float alpha,
-                                  int duration) {
-        if (v == null) {
-            return;
+    protected void animateAlpha(View v, float alpha, TimeInterpolator interpolator) {
+        if (Float.compare(v.getAlpha(), alpha) != 0) {
+            ObjectAnimator anim = ObjectAnimator.ofFloat(v, View.ALPHA, alpha);
+            anim.setInterpolator(interpolator);
+            anim.addListener(new ViewVisiblilyUpdateHandler(v));
+            mCurrentAnimation.play(anim);
+        }
+    }
+
+    protected void resetAnimation(int newAnimationDuration) {
+        // Update the accessibility state
+        AccessibilityManager am = (AccessibilityManager)
+                getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
+        mAccessibilityEnabled = am.isEnabled();
+
+        // Cancel any existing animation
+        if (mCurrentAnimation != null) {
+            mCurrentAnimation.cancel();
+            mCurrentAnimation = null;
         }
 
-        animator.cancel();
-        if (Float.compare(v.getAlpha(), alpha) != 0) {
-            if (duration > 0) {
-                animator.alpha(alpha).withLayer().setDuration(duration).start();
-            } else {
-                v.setAlpha(alpha);
-                AlphaUpdateListener.updateVisibility(v, mAccessibilityEnabled);
-            }
+        if (newAnimationDuration > 0) {
+            mCurrentAnimation = new AnimatorSet();
+            mCurrentAnimation.setDuration(newAnimationDuration);
         }
     }
 
@@ -128,4 +123,24 @@ public abstract class BaseDropTargetBar extends FrameLayout implements DragContr
     public abstract void enableAccessibleDrag(boolean enable);
 
     public abstract void setup(Launcher launcher, DragController dragController);
+
+    private class ViewVisiblilyUpdateHandler extends AnimatorListenerAdapter {
+        private final View mView;
+
+        ViewVisiblilyUpdateHandler(View v) {
+            mView = v;
+        }
+
+        @Override
+        public void onAnimationStart(Animator animation) {
+            // Ensure that the view is visible for the animation
+            mView.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation){
+            AlphaUpdateListener.updateVisibility(mView, mAccessibilityEnabled);
+        }
+
+    }
 }

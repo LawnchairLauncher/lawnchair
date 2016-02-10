@@ -65,7 +65,6 @@ public class WidgetsContainerView extends BaseContainerView
     private IconCache mIconCache;
 
     /* Recycler view related member variables */
-    private View mContent;
     private WidgetsRecyclerView mView;
     private WidgetsListAdapter mAdapter;
 
@@ -99,8 +98,7 @@ public class WidgetsContainerView extends BaseContainerView
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mContent = findViewById(R.id.content);
-        mView = (WidgetsRecyclerView) findViewById(R.id.widgets_list_view);
+        mView = (WidgetsRecyclerView) getContentView();
         mView.setAdapter(mAdapter);
 
         // This extends the layout space so that preloading happen for the {@link RecyclerView}
@@ -119,15 +117,6 @@ public class WidgetsContainerView extends BaseContainerView
     //
     // Returns views used for launcher transitions.
     //
-
-    public View getContentView() {
-        return mView;
-    }
-
-    public View getRevealView() {
-        // TODO(hyunyoungs): temporarily use apps view transition.
-        return findViewById(R.id.widgets_reveal_view);
-    }
 
     public void scrollToTop() {
         mView.scrollToPosition(0);
@@ -340,21 +329,8 @@ public class WidgetsContainerView extends BaseContainerView
     //
     // Container rendering related.
     //
-
     @Override
-    protected void onUpdateBackgroundAndPaddings(Rect searchBarBounds, Rect padding) {
-        // Apply the top-bottom padding to the content itself so that the launcher transition is
-        // clipped correctly
-        mContent.setPadding(0, padding.top, 0, padding.bottom);
-
-        // TODO: Use quantum_panel_dark instead of quantum_panel_shape_dark.
-        InsetDrawable background = new InsetDrawable(
-                getResources().getDrawable(R.drawable.quantum_panel_shape_dark), padding.left, 0,
-                padding.right, 0);
-        Rect bgPadding = new Rect();
-        background.getPadding(bgPadding);
-        mView.setBackground(background);
-        getRevealView().setBackground(background.getConstantState().newDrawable());
+    protected void onUpdateBgPadding(Rect padding, Rect bgPadding) {
         mView.updateBackgroundPadding(bgPadding);
     }
 

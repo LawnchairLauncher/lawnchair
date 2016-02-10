@@ -18,11 +18,16 @@ package com.android.launcher3;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.util.Thunk;
@@ -33,31 +38,28 @@ import com.android.launcher3.util.Thunk;
  */
 public class SearchDropTargetBar extends BaseDropTargetBar {
 
+    private static final TimeInterpolator MOVE_DOWN_INTERPOLATOR = new DecelerateInterpolator(0.6f);
+    private static final TimeInterpolator MOVE_UP_INTERPOLATOR = new DecelerateInterpolator(1.5f);
+
     /** The different states that the search bar space can be in. */
     public enum State {
-        INVISIBLE   (0f, 0f),
-        SEARCH_BAR  (1f, 0f),
-        DROP_TARGET (0f, 1f);
+        INVISIBLE             (0f, 0f, 0f),
+        INVISIBLE_TRANSLATED  (0f, 0f, -1f),
+        SEARCH_BAR            (1f, 0f, 0f),
+        DROP_TARGET           (0f, 1f, 0f);
 
         private final float mSearchBarAlpha;
         private final float mDropTargetBarAlpha;
+        private final float mTranslation;
 
-        State(float sbAlpha, float dtbAlpha) {
+        State(float sbAlpha, float dtbAlpha, float translation) {
             mSearchBarAlpha = sbAlpha;
             mDropTargetBarAlpha = dtbAlpha;
+            mTranslation = translation;
         }
 
-        float getSearchBarAlpha() {
-            return mSearchBarAlpha;
-        }
-
-        float getDropTargetBarAlpha() {
-            return mDropTargetBarAlpha;
-        }
     }
 
-
-    private LauncherViewPropertyAnimator mQSBSearchBarAnimator;
 
     private State mState = State.SEARCH_BAR;
     @Thunk View mQSB;
@@ -114,29 +116,6 @@ public class SearchDropTargetBar extends BaseDropTargetBar {
 
     public void setQsbSearchBar(View qsb) {
         mQSB = qsb;
-        if (mQSB != null) {
-            // Update the search bar animation
-            mQSBSearchBarAnimator = new LauncherViewPropertyAnimator(mQSB);
-            mQSBSearchBarAnimator.setInterpolator(sAccelerateInterpolator);
-            mQSBSearchBarAnimator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    // Ensure that the view is visible for the animation
-                    if (mQSB != null) {
-                        mQSB.setVisibility(View.VISIBLE);
-                    }
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    if (mQSB != null) {
-                        AlphaUpdateListener.updateVisibility(mQSB, mAccessibilityEnabled);
-                    }
-                }
-            });
-        } else {
-            mQSBSearchBarAnimator = null;
-        }
     }
 
     /**
@@ -144,18 +123,53 @@ public class SearchDropTargetBar extends BaseDropTargetBar {
      * the state is applied immediately.
      */
     public void animateToState(State newState, int duration) {
+        animateToState(newState, duration, null);
+    }
+
+    public void animateToState(State newState, int duration, AnimatorSet animation) {
         if (mState != newState) {
             mState = newState;
 
-            // Update the accessibility state
-            AccessibilityManager am = (AccessibilityManager)
-                    getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
-            mAccessibilityEnabled = am.isEnabled();
+            resetAnimation(duration);
+            if (duration > 0) {
+                animateAlpha(mDropTargetBar, mState.mDropTargetBarAlpha, DEFAULT_INTERPOLATOR);
+            } else {
+                mDropTargetBar.setAlpha(mState.mDropTargetBarAlpha);
+                AlphaUpdateListener.updateVisibility(mDropTargetBar, mAccessibilityEnabled);
+            }
 
-            animateViewAlpha(mQSBSearchBarAnimator, mQSB, newState.getSearchBarAlpha(),
-                    duration);
-            animateViewAlpha(mDropTargetBarAnimator, mDropTargetBar, newState.getDropTargetBarAlpha(),
-                    duration);
+            if (mQSB != null) {
+                boolean isVertical = ((Launcher) getContext()).getDeviceProfile()
+                        .isVerticalBarLayout();
+                float translation = isVertical ? 0 : mState.mTranslation * getMeasuredHeight();
+
+                if (duration > 0) {
+                    int translationChange = Float.compare(mQSB.getTranslationY(), translation);
+
+                    animateAlpha(mQSB, mState.mSearchBarAlpha,
+                            translationChange == 0 ? DEFAULT_INTERPOLATOR
+                                    : (translationChange < 0 ? MOVE_DOWN_INTERPOLATOR
+                                    : MOVE_UP_INTERPOLATOR));
+
+                    if (translationChange != 0) {
+                        mCurrentAnimation.play(
+                                ObjectAnimator.ofFloat(mQSB, View.TRANSLATION_Y, translation));
+                    }
+                } else {
+                    mQSB.setTranslationY(translation);
+                    mQSB.setAlpha(mState.mSearchBarAlpha);
+                    AlphaUpdateListener.updateVisibility(mQSB, mAccessibilityEnabled);
+                }
+            }
+
+            // Start the final animation
+            if (duration > 0) {
+                if (animation != null) {
+                    animation.play(mCurrentAnimation);
+                } else {
+                    mCurrentAnimation.start();
+                }
+            }
         }
     }
 

@@ -173,7 +173,7 @@ public class Workspace extends PagedView
 
     enum State {
         NORMAL          (SearchDropTargetBar.State.SEARCH_BAR),
-        NORMAL_HIDDEN   (SearchDropTargetBar.State.INVISIBLE),
+        NORMAL_HIDDEN   (SearchDropTargetBar.State.INVISIBLE_TRANSLATED),
         SPRING_LOADED   (SearchDropTargetBar.State.DROP_TARGET),
         OVERVIEW        (SearchDropTargetBar.State.INVISIBLE),
         OVERVIEW_HIDDEN (SearchDropTargetBar.State.INVISIBLE);

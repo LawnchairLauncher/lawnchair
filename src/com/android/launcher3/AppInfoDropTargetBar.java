@@ -47,7 +47,6 @@ public class AppInfoDropTargetBar extends BaseDropTargetBar {
         dragController.addDragListener(this);
 
         dragController.addDragListener(mAppInfoDropTarget);
-
         dragController.addDropTarget(mAppInfoDropTarget);
 
         mAppInfoDropTarget.setLauncher(launcher);
@@ -64,7 +63,14 @@ public class AppInfoDropTargetBar extends BaseDropTargetBar {
     }
 
     private void animateDropTargetBarToAlpha(float alpha, int duration) {
-        animateViewAlpha(mDropTargetBarAnimator, mDropTargetBar, alpha,duration);
+        resetAnimation(duration);
+        if (duration > 0) {
+            animateAlpha(mDropTargetBar, alpha, DEFAULT_INTERPOLATOR);
+            mCurrentAnimation.start();
+        } else {
+            mDropTargetBar.setAlpha(alpha);
+            AlphaUpdateListener.updateVisibility(mDropTargetBar, mAccessibilityEnabled);
+        }
     }
 
     @Override

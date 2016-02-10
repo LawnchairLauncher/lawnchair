@@ -18,34 +18,29 @@
      will bake the left/right padding into that view's background itself. -->
 <com.android.launcher3.widget.WidgetsContainerView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:id="@+id/widgets_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:descendantFocusability="afterDescendants">
+    android:descendantFocusability="afterDescendants"
+    launcher:revealBackground="@drawable/quantum_panel_shape_dark">
 
-    <FrameLayout
-        android:id="@+id/content"
+    <View
+        android:id="@+id/reveal_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <FrameLayout
-            android:id="@+id/widgets_reveal_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:focusable="false"
-            android:elevation="2dp"
-            android:visibility="invisible" />
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:focusable="false"
+        android:elevation="2dp"
+        android:visibility="invisible" />
 
-        <!-- DO NOT CHANGE THE ID -->
-        <com.android.launcher3.widget.WidgetsRecyclerView
-            android:id="@+id/widgets_list_view"
-            android:theme="@style/Theme.Dark.CustomOverscroll"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:elevation="15dp"
-            android:visibility="gone" />
-    </FrameLayout>
+    <com.android.launcher3.widget.WidgetsRecyclerView
+        android:id="@+id/main_content"
+        android:theme="@style/Theme.Dark.CustomOverscroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:elevation="15dp"
+        android:visibility="gone" />
 
 </com.android.launcher3.widget.WidgetsContainerView>

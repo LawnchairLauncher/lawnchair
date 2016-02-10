@@ -17,11 +17,9 @@ package com.android.launcher3.allapps;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.drawable.InsetDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
@@ -32,8 +30,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
+
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BaseContainerView;
 import com.android.launcher3.BubbleTextView;
@@ -42,6 +39,7 @@ import com.android.launcher3.DeleteDropTarget;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
+import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Folder;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
@@ -50,7 +48,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.util.ComponentKey;
-import com.android.launcher3.util.Thunk;
 
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
@@ -135,19 +132,19 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     private static final int MIN_ROWS_IN_MERGED_SECTION_PHONE = 3;
     private static final int MAX_NUM_MERGES_PHONE = 2;
 
-    @Thunk Launcher mLauncher;
-    @Thunk AlphabeticalAppsList mApps;
-    private AllAppsGridAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private RecyclerView.ItemDecoration mItemDecoration;
+    private final Launcher mLauncher;
+    private final AlphabeticalAppsList mApps;
+    private final AllAppsGridAdapter mAdapter;
+    private final RecyclerView.LayoutManager mLayoutManager;
+    private final RecyclerView.ItemDecoration mItemDecoration;
 
-    @Thunk View mContent;
-    @Thunk View mContainerView;
-    @Thunk View mRevealView;
-    @Thunk AllAppsRecyclerView mAppsRecyclerView;
-    @Thunk AllAppsSearchBarController mSearchBarController;
-    private ViewGroup mSearchBarContainerView;
-    private View mSearchBarView;
+    private AllAppsRecyclerView mAppsRecyclerView;
+    private AllAppsSearchBarController mSearchBarController;
+
+    private View mSearchContainer;
+    private ExtendedEditText mSearchInput;
+    private HeaderElevationController mElevationController;
+
     private SpannableStringBuilder mSearchQueryBuilder = null;
 
     private int mSectionNamesMargin;
@@ -158,14 +155,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     private final Point mBoundsCheckLastTouchDownPos = new Point(-1, -1);
     // This coordinate is relative to its parent
     private final Point mIconLastTouchPos = new Point();
-
-    private View.OnClickListener mSearchClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Intent searchIntent = (Intent) v.getTag();
-            mLauncher.startActivitySafely(v, searchIntent, null);
-        }
-    };
 
     public AllAppsContainerView(Context context) {
         this(context, null);
@@ -236,14 +225,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             throw new RuntimeException("Expected search bar controller to only be set once");
         }
         mSearchBarController = searchController;
-        mSearchBarController.initialize(mApps, this);
-
-        // Add the new search view to the layout
-        View searchBarView = searchController.getView(mSearchBarContainerView);
-        mSearchBarContainerView.addView(searchBarView);
-        mSearchBarContainerView.setVisibility(View.VISIBLE);
-        mSearchBarView = searchBarView;
-        setHasSearchBar();
+        mSearchBarController.initialize(mApps, mSearchInput, mAppsRecyclerView, this);
 
         updateBackgroundAndPaddings();
     }
@@ -253,34 +235,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
      */
     public void scrollToTop() {
         mAppsRecyclerView.scrollToTop();
-    }
-
-    /**
-     * Returns the content view used for the launcher transitions.
-     */
-    public View getContentView() {
-        return mContainerView;
-    }
-
-    /**
-     * Returns the all apps search view.
-     */
-    public View getSearchBarView() {
-        return mSearchBarView;
-    }
-
-    /**
-     * Returns the reveal view used for the launcher transitions.
-     */
-    public View getRevealView() {
-        return mRevealView;
-    }
-
-    /**
-     * Returns an new instance of the default app search controller.
-     */
-    public AllAppsSearchBarController newDefaultAppSearchController() {
-        return new DefaultAppSearchController(getContext(), this, mAppsRecyclerView);
     }
 
     /**
@@ -304,25 +258,24 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        boolean isRtl = Utilities.isRtl(getResources());
-        mAdapter.setRtl(isRtl);
-        mContent = findViewById(R.id.content);
+        mAdapter.setRtl(Utilities.isRtl(getResources()));
 
         // This is a focus listener that proxies focus from a view into the list view.  This is to
         // work around the search box from getting first focus and showing the cursor.
-        View.OnFocusChangeListener focusProxyListener = new View.OnFocusChangeListener() {
+        getContentView().setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     mAppsRecyclerView.requestFocus();
                 }
             }
-        };
-        mSearchBarContainerView = (ViewGroup) findViewById(R.id.search_box_container);
-        mSearchBarContainerView.setOnFocusChangeListener(focusProxyListener);
-        mContainerView = findViewById(R.id.all_apps_container);
-        mContainerView.setOnFocusChangeListener(focusProxyListener);
-        mRevealView = findViewById(R.id.all_apps_reveal);
+        });
+
+        mSearchContainer = findViewById(R.id.search_container);
+        mSearchInput = (ExtendedEditText) findViewById(R.id.search_box_input);
+        mElevationController = Utilities.ATLEAST_LOLLIPOP
+                ? new HeaderElevationController.ControllerVL(mSearchContainer)
+                : new HeaderElevationController.ControllerV16(mSearchContainer);
 
         // Load the all apps recycler view
         mAppsRecyclerView = (AllAppsRecyclerView) findViewById(R.id.apps_list_view);
@@ -330,22 +283,28 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mAppsRecyclerView.setLayoutManager(mLayoutManager);
         mAppsRecyclerView.setAdapter(mAdapter);
         mAppsRecyclerView.setHasFixedSize(true);
+        mAppsRecyclerView.addOnScrollListener(mElevationController);
+        mAppsRecyclerView.setElevationController(mElevationController);
+
         if (mItemDecoration != null) {
             mAppsRecyclerView.addItemDecoration(mItemDecoration);
         }
 
         // Precalculate the prediction icon and normal icon sizes
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
+        final int widthMeasureSpec = MeasureSpec.makeMeasureSpec(
+                getResources().getDisplayMetrics().widthPixels, MeasureSpec.AT_MOST);
+        final int heightMeasureSpec = MeasureSpec.makeMeasureSpec(
+                getResources().getDisplayMetrics().heightPixels, MeasureSpec.AT_MOST);
+
         BubbleTextView icon = (BubbleTextView) layoutInflater.inflate(
                 R.layout.all_apps_icon, this, false);
         icon.applyDummyInfo();
-        icon.measure(MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE, MeasureSpec.AT_MOST),
-                MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE, MeasureSpec.AT_MOST));
+        icon.measure(widthMeasureSpec, heightMeasureSpec);
         BubbleTextView predIcon = (BubbleTextView) layoutInflater.inflate(
                 R.layout.all_apps_prediction_bar_icon, this, false);
         predIcon.applyDummyInfo();
-        predIcon.measure(MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE, MeasureSpec.AT_MOST),
-                MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE, MeasureSpec.AT_MOST));
+        predIcon.measure(widthMeasureSpec, heightMeasureSpec);
         mAppsRecyclerView.setPremeasuredIconHeights(predIcon.getMeasuredHeight(),
                 icon.getMeasuredHeight());
 
@@ -360,8 +319,11 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // Update the number of items in the grid before we measure the view
-        int availableWidth = !mContentBounds.isEmpty() ? mContentBounds.width() :
-                MeasureSpec.getSize(widthMeasureSpec);
+        // TODO: mSectionNamesMargin is currently 0, but also account for it,
+        // if it's enabled in the future.
+        int availableWidth = (!mContentBounds.isEmpty() ? mContentBounds.width() :
+                MeasureSpec.getSize(widthMeasureSpec))
+                    - 2 * mAppsRecyclerView.getMaxScrollbarWidth();
         DeviceProfile grid = mLauncher.getDeviceProfile();
         grid.updateAppsViewNumCols(getResources(), availableWidth);
         if (mNumAppsPerRow != grid.allAppsNumCols ||
@@ -380,6 +342,12 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             mAppsRecyclerView.setNumAppsPerRow(grid, mNumAppsPerRow);
             mAdapter.setNumAppsPerRow(mNumAppsPerRow);
             mApps.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow, mergeAlgorithm);
+
+            if (mNumAppsPerRow > 0) {
+                int iconSize = availableWidth / mNumAppsPerRow;
+                int iconSpacing = (iconSize - grid.allAppsIconSizePx) / 2;
+                mSearchInput.setPaddingRelative(iconSpacing, 0, iconSpacing, 0);
+            }
         }
 
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -391,51 +359,33 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
      * recycler view to handle touch events (for fast scrolling) all the way to the edge.
      */
     @Override
-    protected void onUpdateBackgroundAndPaddings(Rect searchBarBounds, Rect padding) {
-        boolean isRtl = Utilities.isRtl(getResources());
-
-        // TODO: Use quantum_panel instead of quantum_panel_shape
-        InsetDrawable background = new InsetDrawable(
-                getResources().getDrawable(R.drawable.quantum_panel_shape), padding.left, 0,
-                padding.right, 0);
-        Rect bgPadding = new Rect();
-        background.getPadding(bgPadding);
-        mContainerView.setBackground(background);
-        mRevealView.setBackground(background.getConstantState().newDrawable());
+    protected void onUpdateBgPadding(Rect padding, Rect bgPadding) {
         mAppsRecyclerView.updateBackgroundPadding(bgPadding);
         mAdapter.updateBackgroundPadding(bgPadding);
+        mElevationController.updateBackgroundPadding(bgPadding);
 
         // Hack: We are going to let the recycler view take the full width, so reset the padding on
         // the container to zero after setting the background and apply the top-bottom padding to
         // the content view instead so that the launcher transition clips correctly.
-        mContent.setPadding(0, padding.top, 0, padding.bottom);
-        mContainerView.setPadding(0, 0, 0, 0);
+        getContentView().setPadding(0, 0, 0, 0);
 
         // Pad the recycler view by the background padding plus the start margin (for the section
         // names)
-        int startInset = Math.max(mSectionNamesMargin, mAppsRecyclerView.getMaxScrollbarWidth());
+        int maxScrollBarWidth = mAppsRecyclerView.getMaxScrollbarWidth();
+        int startInset = Math.max(mSectionNamesMargin, maxScrollBarWidth);
         int topBottomPadding = mRecyclerViewTopBottomPadding;
-        if (isRtl) {
-            mAppsRecyclerView.setPadding(padding.left + mAppsRecyclerView.getMaxScrollbarWidth(),
+        if (Utilities.isRtl(getResources())) {
+            mAppsRecyclerView.setPadding(padding.left + maxScrollBarWidth,
                     topBottomPadding, padding.right + startInset, topBottomPadding);
         } else {
             mAppsRecyclerView.setPadding(padding.left + startInset, topBottomPadding,
-                    padding.right + mAppsRecyclerView.getMaxScrollbarWidth(), topBottomPadding);
+                    padding.right + maxScrollBarWidth, topBottomPadding);
         }
 
-        // Inset the search bar to fit its bounds above the container
-        if (mSearchBarView != null) {
-            Rect backgroundPadding = new Rect();
-            if (mSearchBarView.getBackground() != null) {
-                mSearchBarView.getBackground().getPadding(backgroundPadding);
-            }
-            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams)
-                    mSearchBarContainerView.getLayoutParams();
-            lp.leftMargin = searchBarBounds.left - backgroundPadding.left;
-            lp.topMargin = searchBarBounds.top - backgroundPadding.top;
-            lp.rightMargin = (getMeasuredWidth() - searchBarBounds.right) - backgroundPadding.right;
-            mSearchBarContainerView.requestLayout();
-        }
+        MarginLayoutParams lp = (MarginLayoutParams) mSearchContainer.getLayoutParams();
+        lp.leftMargin = padding.left;
+        lp.rightMargin = padding.right;
+        mSearchContainer.setLayoutParams(lp);
     }
 
     @Override
