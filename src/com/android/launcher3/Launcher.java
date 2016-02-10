@@ -97,6 +97,7 @@ import android.widget.Toast;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.PagedView.PageSwitchListener;
 import com.android.launcher3.allapps.AllAppsContainerView;
+import com.android.launcher3.allapps.DefaultAppSearchController;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -1408,7 +1409,7 @@ public class Launcher extends Activity
         if (mLauncherCallbacks != null && mLauncherCallbacks.getAllAppsSearchBarController() != null) {
             mAppsView.setSearchBarController(mLauncherCallbacks.getAllAppsSearchBarController());
         } else {
-            mAppsView.setSearchBarController(mAppsView.newDefaultAppSearchController());
+            mAppsView.setSearchBarController(new DefaultAppSearchController());
         }
 
         // Setup the drag controller (drop targets have to be added in reverse order in priority)

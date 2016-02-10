@@ -17,32 +17,38 @@
 package com.android.launcher3;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.InsetDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.widget.LinearLayout;
+import android.view.View;
+import android.widget.FrameLayout;
 
 /**
  * A base container view, which supports resizing.
  */
-public abstract class BaseContainerView extends LinearLayout implements Insettable {
+public abstract class BaseContainerView extends FrameLayout implements Insettable {
 
     private final static String TAG = "BaseContainerView";
 
     // The window insets
-    private Rect mInsets = new Rect();
+    private final Rect mInsets = new Rect();
     // The bounds of the search bar.  Only the left, top, right are used to inset the
     // search bar and the height is determined by the measurement of the layout
-    private Rect mFixedSearchBarBounds = new Rect();
-    // The computed bounds of the search bar
-    private Rect mSearchBarBounds = new Rect();
+    private final Rect mFixedSearchBarBounds = new Rect();
     // The computed bounds of the container
-    protected Rect mContentBounds = new Rect();
+    protected final Rect mContentBounds = new Rect();
     // The computed padding to apply to the container to achieve the container bounds
-    private Rect mContentPadding = new Rect();
+    private final Rect mContentPadding = new Rect();
     // The inset to apply to the edges and between the search bar and the container
-    private int mContainerBoundsInset;
-    private boolean mHasSearchBar;
+    private final int mContainerBoundsInset;
+
+    private final Drawable mRevealDrawable;
+
+    private View mRevealView;
+    private View mContent;
 
     public BaseContainerView(Context context) {
         this(context, null);
@@ -55,16 +61,25 @@ public abstract class BaseContainerView extends LinearLayout implements Insettab
     public BaseContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContainerBoundsInset = getResources().getDimensionPixelSize(R.dimen.container_bounds_inset);
+
+        TypedArray a = context.obtainStyledAttributes(attrs,
+                R.styleable.BaseContainerView, defStyleAttr, 0);
+        mRevealDrawable = a.getDrawable(R.styleable.BaseContainerView_revealBackground);
+        a.recycle();
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+        mContent = findViewById(R.id.main_content);
+        mRevealView = findViewById(R.id.reveal_view);
     }
 
     @Override
     final public void setInsets(Rect insets) {
         mInsets.set(insets);
         updateBackgroundAndPaddings();
-    }
-
-    protected void setHasSearchBar() {
-        mHasSearchBar = true;
     }
 
     /**
@@ -92,47 +107,48 @@ public abstract class BaseContainerView extends LinearLayout implements Insettab
      */
     protected void updateBackgroundAndPaddings() {
         Rect padding;
-        Rect searchBarBounds = new Rect();
-        if (!isValidSearchBarBounds(mFixedSearchBarBounds)) {
-            // Use the default bounds
-            padding = new Rect(mInsets.left + mContainerBoundsInset,
-                    (mHasSearchBar ? 0 : (mInsets.top + mContainerBoundsInset)),
-                    mInsets.right + mContainerBoundsInset,
-                    mInsets.bottom + mContainerBoundsInset);
-
-            // Special case -- we have the search bar, but no specific bounds, so just give it
-            // the inset bounds without a height.
-            searchBarBounds.set(mInsets.left + mContainerBoundsInset,
+        if (isValidSearchBarBounds(mFixedSearchBarBounds)) {
+            padding = new Rect(
+                    mFixedSearchBarBounds.left,
                     mInsets.top + mContainerBoundsInset,
-                    getMeasuredWidth() - (mInsets.right + mContainerBoundsInset), 0);
-        } else {
-            // Use the search bounds, if there is a search bar, the bounds will contain
-            // the offsets for the insets so we can ignore that
-            padding = new Rect(mFixedSearchBarBounds.left,
-                    (mHasSearchBar ? 0 : (mInsets.top + mContainerBoundsInset)),
                     getMeasuredWidth() - mFixedSearchBarBounds.right,
-                    mInsets.bottom + mContainerBoundsInset);
-
-            // Use the search bounds
-            searchBarBounds.set(mFixedSearchBarBounds);
+                    mInsets.bottom + mContainerBoundsInset
+            );
+        } else {
+            padding = new Rect(
+                    mInsets.left + mContainerBoundsInset,
+                    mInsets.top + mContainerBoundsInset,
+                    mInsets.right + mContainerBoundsInset,
+                    mInsets.bottom + mContainerBoundsInset
+            );
         }
 
-        // If either the computed container padding has changed, or the computed search bar bounds
-        // has changed, then notify the container
-        if (!padding.equals(mContentPadding) || !searchBarBounds.equals(mSearchBarBounds)) {
+        // The container padding changed, notify the container.
+        if (!padding.equals(mContentPadding)) {
             mContentPadding.set(padding);
             mContentBounds.set(padding.left, padding.top,
                     getMeasuredWidth() - padding.right,
                     getMeasuredHeight() - padding.bottom);
-            mSearchBarBounds.set(searchBarBounds);
-            onUpdateBackgroundAndPaddings(mSearchBarBounds, padding);
+            onUpdateBackgroundAndPaddings(padding);
         }
     }
 
-    /**
-     * To be implemented by container views to update themselves when the bounds changes.
-     */
-    protected abstract void onUpdateBackgroundAndPaddings(Rect searchBarBounds, Rect padding);
+    private void onUpdateBackgroundAndPaddings(Rect padding) {
+        // Apply the top-bottom padding to itself so that the launcher transition is
+        // clipped correctly
+        setPadding(0, padding.top, 0, padding.bottom);
+
+        InsetDrawable background = new InsetDrawable(mRevealDrawable,
+                padding.left, 0, padding.right, 0);
+        mRevealView.setBackground(background.getConstantState().newDrawable());
+        mContent.setBackground(background);
+
+        Rect bgPadding = new Rect();
+        background.getPadding(bgPadding);
+        onUpdateBgPadding(padding, bgPadding);
+    }
+
+    protected abstract void onUpdateBgPadding(Rect padding, Rect bgPadding);
 
     /**
      * Returns whether the search bar bounds we got are considered valid.
@@ -141,5 +157,13 @@ public abstract class BaseContainerView extends LinearLayout implements Insettab
         return !searchBarBounds.isEmpty() &&
                 searchBarBounds.right <= getMeasuredWidth() &&
                 searchBarBounds.bottom <= getMeasuredHeight();
+    }
+
+    public final View getContentView() {
+        return mContent;
+    }
+
+    public final View getRevealView() {
+        return mRevealView;
     }
 }

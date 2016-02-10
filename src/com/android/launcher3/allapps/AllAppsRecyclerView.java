@@ -53,6 +53,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView
     private AllAppsBackgroundDrawable mEmptySearchBackground;
     private int mEmptySearchBackgroundTopOffset;
 
+    private HeaderElevationController mElevationController;
+
     public AllAppsRecyclerView(Context context) {
         this(context, null);
     }
@@ -81,6 +83,10 @@ public class AllAppsRecyclerView extends BaseRecyclerView
     public void setApps(AlphabeticalAppsList apps) {
         mApps = apps;
         mFastScrollHelper = new AllAppsFastScrollHelper(this, apps);
+    }
+
+    public void setElevationController(HeaderElevationController elevationController) {
+        mElevationController = elevationController;
     }
 
     /**
@@ -116,6 +122,9 @@ public class AllAppsRecyclerView extends BaseRecyclerView
             mScrollbar.reattachThumbToScroll();
         }
         scrollToPosition(0);
+        if (mElevationController != null) {
+            mElevationController.reset();
+        }
     }
 
     /**
