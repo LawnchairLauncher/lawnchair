@@ -48,6 +48,7 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.TextView;
@@ -189,6 +190,7 @@ public class Workspace extends PagedView
         }
     };
 
+    @ViewDebug.ExportedProperty(category = "launcher")
     private State mState = State.NORMAL;
     private boolean mIsSwitchingState = false;
 

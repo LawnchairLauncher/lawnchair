@@ -9,11 +9,14 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewDebug;
 
 public class LauncherRootView extends InsettableFrameLayout {
 
     private final Paint mOpaquePaint;
+    @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mDrawRightInsetBar;
+    @ViewDebug.ExportedProperty(category = "launcher")
     private int mRightInsetBarWidth;
 
     private View mAlignedView;

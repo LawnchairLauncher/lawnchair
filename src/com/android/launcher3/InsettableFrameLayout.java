@@ -5,12 +5,14 @@ import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 public class InsettableFrameLayout extends FrameLayout implements
     ViewGroup.OnHierarchyChangeListener, Insettable {
 
+    @ViewDebug.ExportedProperty(category = "launcher")
     protected Rect mInsets = new Rect();
 
     public InsettableFrameLayout(Context context, AttributeSet attrs) {

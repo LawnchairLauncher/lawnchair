@@ -24,6 +24,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewDebug;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -34,8 +35,10 @@ public class Hotseat extends FrameLayout
 
     private Launcher mLauncher;
 
+    @ViewDebug.ExportedProperty(category = "launcher")
     private int mAllAppsButtonRank;
 
+    @ViewDebug.ExportedProperty(category = "launcher")
     private final boolean mHasVerticalHotseat;
 
     public Hotseat(Context context) {

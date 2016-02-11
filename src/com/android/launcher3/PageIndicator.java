@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.ViewDebug;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class PageIndicator extends LinearLayout {
 
     private ArrayList<PageIndicatorMarker> mMarkers =
             new ArrayList<PageIndicatorMarker>();
+    @ViewDebug.ExportedProperty(category = "launcher")
     private int mActiveMarkerIndex;
 
     public static class PageMarkerResources {

@@ -73,17 +73,23 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     private static final boolean LOGD = false;
 
     private Launcher mLauncher;
+    @ViewDebug.ExportedProperty(category = "launcher")
     @Thunk int mCellWidth;
+    @ViewDebug.ExportedProperty(category = "launcher")
     @Thunk int mCellHeight;
     private int mFixedCellWidth;
     private int mFixedCellHeight;
 
+    @ViewDebug.ExportedProperty(category = "launcher")
     @Thunk int mCountX;
+    @ViewDebug.ExportedProperty(category = "launcher")
     @Thunk int mCountY;
 
     private int mOriginalWidthGap;
     private int mOriginalHeightGap;
+    @ViewDebug.ExportedProperty(category = "launcher")
     @Thunk int mWidthGap;
+    @ViewDebug.ExportedProperty(category = "launcher")
     @Thunk int mHeightGap;
     private int mMaxGap;
     private boolean mDropPending = false;
