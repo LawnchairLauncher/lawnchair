@@ -11,12 +11,15 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
+import com.android.launcher3.util.FocusLogic;
 
-public class AppWidgetResizeFrame extends FrameLayout {
+public class AppWidgetResizeFrame extends FrameLayout implements View.OnKeyListener {
     private static final int SNAP_DURATION = 150;
     private static final float DIMMED_HANDLE_ALPHA = 0f;
     private static final float RESIZE_THRESHOLD = 0.66f;
@@ -143,6 +146,8 @@ public class AppWidgetResizeFrame extends FrameLayout {
         // cells (same if not resized, or different) will be marked as occupied when the resize
         // frame is dismissed.
         mCellLayout.markCellsAsUnoccupiedForView(mWidgetView);
+
+        setOnKeyListener(this);
     }
 
     public boolean beginResizeIfPointInRegion(int x, int y) {
@@ -474,5 +479,19 @@ public class AppWidgetResizeFrame extends FrameLayout {
             set.setDuration(SNAP_DURATION);
             set.start();
         }
+
+        setFocusableInTouchMode(true);
+        requestFocus();
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        // Clear the frame and give focus to the widget host view when a directional key is pressed.
+        if (FocusLogic.shouldConsume(keyCode)) {
+            mDragLayer.clearAllResizeFrames();
+            mWidgetView.requestFocus();
+            return true;
+        }
+        return false;
     }
 }
