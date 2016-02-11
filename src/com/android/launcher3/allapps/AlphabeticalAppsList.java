@@ -278,11 +278,14 @@ public class AlphabeticalAppsList {
     /**
      * Sets the sorted list of filtered components.
      */
-    public void setOrderedFilter(ArrayList<ComponentKey> f) {
+    public boolean setOrderedFilter(ArrayList<ComponentKey> f) {
         if (mSearchResults != f) {
+            boolean same = mSearchResults != null && mSearchResults.equals(f);
             mSearchResults = f;
             updateAdapterItems();
+            return !same;
         }
+        return false;
     }
 
     /**
