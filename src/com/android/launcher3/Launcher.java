@@ -113,6 +113,7 @@ import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.TestingUtils;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.ViewOnDrawExecutor;
+import com.android.launcher3.util.WallpaperUtils;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetsContainerView;
@@ -2767,7 +2768,7 @@ public class Launcher extends Activity
         int pageScroll = mWorkspace.getScrollForPage(mWorkspace.getPageNearestToCenterOfScreen());
         float offset = mWorkspace.mWallpaperOffset.wallpaperOffsetForScroll(pageScroll);
         startActivityForResult(new Intent(Intent.ACTION_SET_WALLPAPER).setPackage(getPackageName())
-                        .putExtra(WallpaperPickerActivity.EXTRA_WALLPAPER_OFFSET, offset),
+                        .putExtra(WallpaperUtils.EXTRA_WALLPAPER_OFFSET, offset),
                 REQUEST_PICK_WALLPAPER);
 
         if (mLauncherCallbacks != null) {

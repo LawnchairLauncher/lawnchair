@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /*
-* Copyright (C) 2013 The Android Open Source Project
+* Copyright (C) 2016 The Android Open Source Project
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -16,13 +16,13 @@
 * limitations under the License.
 */
 -->
-
 <resources>
-    <style name="BaseWallpaperTheme" parent="@android:style/Theme.DeviceDefault.Light.NoActionBar">
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:colorBackgroundCacheHint">@null</item>
-        <item name="android:windowShowWallpaper">true</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowActionModeOverlay">true</item>
+
+    <style name="LauncherTheme" parent="@style/BaseLauncherTheme">
+        <item name="android:statusBarColor">#00000000</item>
+        <item name="android:navigationBarColor">#00000000</item>
+        <item name="android:colorControlActivated">@color/launcher_accent_color</item>
+        <item name="android:colorAccent">@color/launcher_accent_color</item>
+        <item name="android:colorPrimary">@color/launcher_accent_color</item>
     </style>
 </resources>

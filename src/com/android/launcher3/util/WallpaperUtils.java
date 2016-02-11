@@ -38,6 +38,8 @@ public final class WallpaperUtils {
     public static final String WALLPAPER_HEIGHT_KEY = "wallpaper.height";
     public static final float WALLPAPER_SCREENS_SPAN = 2f;
 
+    public static final String EXTRA_WALLPAPER_OFFSET = "com.android.launcher3.WALLPAPER_OFFSET";
+
     public static void saveWallpaperDimensions(int width, int height, Activity activity) {
         if (Utilities.ATLEAST_KITKAT) {
             // From Kitkat onwards, ImageWallpaper does not care about the

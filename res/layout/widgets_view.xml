@@ -36,7 +36,7 @@
 
     <com.android.launcher3.widget.WidgetsRecyclerView
         android:id="@+id/main_content"
-        android:theme="@style/Theme.Dark.CustomOverscroll"
+        android:theme="@style/CustomOverscroll.Dark"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"

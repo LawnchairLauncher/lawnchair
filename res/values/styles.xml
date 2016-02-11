@@ -18,14 +18,26 @@
 -->
 
 <resources>
-    <style name="Theme.Light.CustomOverscroll" parent="@android:style/Theme.DeviceDefault">
+    <!-- Launcher theme -->
+    <style name="BaseLauncherTheme" parent="@android:style/Theme.DeviceDefault.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowShowWallpaper">true</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="LauncherTheme" parent="@style/BaseLauncherTheme"></style>
+
+    <!-- Overscroll effect -->
+    <style name="CustomOverscroll.Light" parent="@android:style/Theme.DeviceDefault">
         <item name="android:colorEdgeEffect">@color/folder_edge_effect_color</item>
     </style>
 
-    <style name="Theme.Dark.CustomOverscroll" parent="@android:style/Theme.DeviceDefault">
+    <style name="CustomOverscroll.Dark" parent="@android:style/Theme.DeviceDefault">
         <item name="android:colorEdgeEffect">@color/workspace_edge_effect_color</item>
     </style>
 
+    <!-- Different icons -->
     <style name="Icon">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
@@ -56,6 +68,7 @@
         <item name="customShadows">false</item>
     </style>
 
+    <!-- Drop targets -->
     <style name="DropTargetButtonContainer">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>
@@ -81,6 +94,7 @@
 
     <style name="DropTargetButton" parent="DropTargetButtonBase" />
 
+    <!-- Virtual preloaders -->
     <style name="PreloadIcon">
         <item name="background">@drawable/virtual_preload</item>
         <item name="indicatorSize">4dp</item>

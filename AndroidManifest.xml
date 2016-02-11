@@ -76,7 +76,7 @@
             android:launchMode="singleTask"
             android:clearTaskOnLaunch="true"
             android:stateNotNeeded="true"
-            android:theme="@style/Theme"
+            android:theme="@style/LauncherTheme"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="nosensor"
             android:configChanges="keyboard|keyboardHidden|navigation"
