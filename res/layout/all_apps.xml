@@ -39,6 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/main_content"
+        android:saveEnabled="false"
         android:visibility="gone"
         android:layout_gravity="center"
         android:focusable="true"
@@ -60,6 +61,7 @@
         <LinearLayout
             android:id="@+id/search_container"
             android:layout_width="match_parent"
+            android:saveEnabled="false"
             android:layout_height="@dimen/all_apps_search_bar_height"
             android:layout_gravity="start|top"
             android:orientation="horizontal"
