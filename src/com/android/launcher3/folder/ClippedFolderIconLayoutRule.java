@@ -42,29 +42,34 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
     public FolderIcon.PreviewItemDrawingParams computePreviewItemDrawingParams(int index,
             int curNumItems, FolderIcon.PreviewItemDrawingParams params) {
 
-        getPosition(index, curNumItems, mTmpPoint);
 
-        float transX = mTmpPoint[0];
-        float transY = mTmpPoint[1];
         float totalScale = scaleForNumItems(curNumItems);
+        float transX;
+        float transY;
         float overlayAlpha = 0;
+
+        // Items beyond those displayed in the preview are animated to the center
+        if (index >= MAX_NUM_ITEMS_IN_PREVIEW) {
+            transX = transY = mAvailableSpace / 2 - (mIconSize * totalScale) / 2;
+        } else {
+            getPosition(index, curNumItems, mTmpPoint);
+            transX = mTmpPoint[0];
+            transY = mTmpPoint[1];
+            totalScale = scaleForNumItems(curNumItems);
+        }
 
         if (params == null) {
             params = new FolderIcon.PreviewItemDrawingParams(transX, transY, totalScale, overlayAlpha);
         } else {
-            params.transX = transX;
-            params.transY = transY;
-            params.scale = totalScale;
+            params.update(transX, transY, totalScale);
             params.overlayAlpha = overlayAlpha;
         }
-
         return params;
     }
 
     private void getPosition(int index, int curNumItems, float[] result) {
         // The case of two items is homomorphic to the case of one.
         curNumItems = Math.max(curNumItems, 2);
-
 
         // We model the preview as a circle of items starting in the appropriate piece of the
         // upper left quadrant (to achieve horizontal and vertical symmetry).
