@@ -27,9 +27,9 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"在安全模式中無法使用「已下載的應用程式」功能"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"在安全模式下無法使用小工具"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"輕觸並按住小工具即可選取。"</string>
-    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"輕按兩下並按住小工具即可選取，您也可以使用自訂動作。"</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"輕觸兩下並按住小工具即可選取，您也可以使用自訂動作。"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"搜尋應用程式"</string>
+    <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"搜尋應用程式…"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"正在載入應用程式…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"找不到符合「<xliff:g id="QUERY">%1$s</xliff:g>」的應用程式"</string>
     <string name="all_apps_search_market_message" msgid="5470761048755751471">"前往 <xliff:g id="QUERY">%1$s</xliff:g>"</string>
