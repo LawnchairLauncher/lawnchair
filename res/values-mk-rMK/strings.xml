@@ -29,7 +29,7 @@
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Допри и задржи за да се избере виџетот."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Допрете двапати и задржете за да изберете додаток или да користите приспособени дејства."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Пребарување апликации"</string>
+    <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"Пребарувај апликации…"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Се вчитуваат апликации…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Не се најдени апликации што одговараат на „<xliff:g id="QUERY">%1$s</xliff:g>“"</string>
     <string name="all_apps_search_market_message" msgid="5470761048755751471">"Оди на <xliff:g id="QUERY">%1$s</xliff:g>"</string>
@@ -70,7 +70,7 @@
     <string name="folder_name_format" msgid="6629239338071103179">"Папка: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Виџети"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Тапети"</string>
-    <string name="settings_button_text" msgid="8119458837558863227">"Подесувања"</string>
+    <string name="settings_button_text" msgid="8119458837558863227">"Поставки"</string>
     <string name="allow_rotation_title" msgid="2118706734511831751">"Дозволи ротација"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Непознато"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Отстрани"</string>
