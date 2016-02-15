@@ -29,7 +29,7 @@
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"ವಿಜೆಟ್ ಅನ್ನು ಆರಿಸಿಕೊಳ್ಳಲು ಸ್ಪರ್ಶಿಸಿ &amp; ಹಿಡಿದುಕೊಳ್ಳಿ."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"ಡಬಲ್ ಟ್ಯಾಪ್ ಮಾಡಿ ಮತ್ತು ವಿಜೆಟ್ ಆರಿಸಿಕೊಳ್ಳಲು ಹೋಲ್ಡ್ ಮಾಡಿ ಅಥವಾ ಕಸ್ಟಮ್ ಕ್ರಿಯೆಗಳನ್ನು ಬಳಸಿ"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"ಅಪ್ಲಿಕೇಷನ್‌ಗಳನ್ನು ಹುಡುಕಿ"</string>
+    <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"ಅಪ್ಲಿಕೇಷನ್‌ಗಳನ್ನು ಹುಡುಕಿ..."</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"ಅಪ್ಲಿಕೇಶನ್‌ಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" ಹೊಂದಿಕೆಯ ಯಾವುದೇ ಅಪ್ಲಿಕೇಶನ್‌ಗಳು ಕಂಡುಬಂದಿಲ್ಲ"</string>
     <string name="all_apps_search_market_message" msgid="5470761048755751471">"<xliff:g id="QUERY">%1$s</xliff:g> ಗೆ ಹೋಗಿ"</string>

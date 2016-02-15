@@ -24,12 +24,12 @@
     <string name="work_folder_name" msgid="3753320833950115786">"کاری"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"برنامه نصب نشده است."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"برنامه در دسترس نیست"</string>
-    <string name="safemode_shortcut_error" msgid="9160126848219158407">"برنامه دانلود شده در حالت ایمن غیرفعال شد"</string>
+    <string name="safemode_shortcut_error" msgid="9160126848219158407">"برنامه بارگیری شده در حالت ایمن غیرفعال شد"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"ابزارک‌ها در حالت ایمن غیرفعال هستند"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"برای انتخاب ابزارک لمس کنید و نگه دارید."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"برای انتخاب یک ابزارک، دو ضربه سریع بزنید و نگه‌دارید یا از اقدامات سفارشی استفاده کنید."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"جستجوی برنامه‌ها"</string>
+    <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"جستجوی برنامه‌ها…‏‏"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"در حال بارگیری برنامه‌ها..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"هیچ برنامه‌ای مطابق با «<xliff:g id="QUERY">%1$s</xliff:g>» پیدا نشد"</string>
     <string name="all_apps_search_market_message" msgid="5470761048755751471">"رفتن به <xliff:g id="QUERY">%1$s</xliff:g>"</string>
@@ -77,7 +77,7 @@
     <string name="abandoned_search" msgid="891119232568284442">"جستجو"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"این برنامه نصب نشده است."</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"برنامه برای این نماد نصب نشده است. می‌توانید آن را حذف کنید یا سعی کنید برنامه را جستجو کنید و آن را به صورت دستی نصب کنید."</string>
-    <string name="app_downloading_title" msgid="8336702962104482644">"درحال دانلود <xliff:g id="NAME">%1$s</xliff:g>، <xliff:g id="PROGRESS">%2$s</xliff:g> کامل شد"</string>
+    <string name="app_downloading_title" msgid="8336702962104482644">"درحال بارگیری <xliff:g id="NAME">%1$s</xliff:g>، <xliff:g id="PROGRESS">%2$s</xliff:g> کامل شد"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> درانتظار نصب"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"افزودن به صفحه اصلی"</string>
     <string name="action_move_here" msgid="2170188780612570250">"انتقال مورد به اینجا"</string>
