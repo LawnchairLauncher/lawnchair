@@ -273,7 +273,7 @@ public class DeviceProfile {
         int allAppsCellWidthGap =
                 res.getDimensionPixelSize(R.dimen.all_apps_icon_width_gap);
         int availableAppsWidthPx = (recyclerViewWidth > 0) ? recyclerViewWidth : availableWidthPx;
-        int numAppsCols = (availableAppsWidthPx - appsViewLeftMarginPx) /
+        int numAppsCols = (availableAppsWidthPx + allAppsCellWidthGap - appsViewLeftMarginPx) /
                 (allAppsIconSizePx + allAppsCellWidthGap);
         int numPredictiveAppCols = Math.max(inv.minAllAppsPredictionColumns, numAppsCols);
         allAppsNumCols = numAppsCols;

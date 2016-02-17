@@ -40,10 +40,8 @@ public abstract class BaseContainerView extends FrameLayout implements Insettabl
     // The bounds of the search bar.  Only the left, top, right are used to inset the
     // search bar and the height is determined by the measurement of the layout
     private final Rect mFixedSearchBarBounds = new Rect();
-    // The computed bounds of the container
-    protected final Rect mContentBounds = new Rect();
     // The computed padding to apply to the container to achieve the container bounds
-    private final Rect mContentPadding = new Rect();
+    protected final Rect mContentPadding = new Rect();
     // The inset to apply to the edges and between the search bar and the container
     private final int mContainerBoundsInset;
 
@@ -128,9 +126,6 @@ public abstract class BaseContainerView extends FrameLayout implements Insettabl
         // The container padding changed, notify the container.
         if (!padding.equals(mContentPadding)) {
             mContentPadding.set(padding);
-            mContentBounds.set(padding.left, padding.top,
-                    getMeasuredWidth() - padding.right,
-                    getMeasuredHeight() - padding.bottom);
             onUpdateBackgroundAndPaddings(padding);
         }
     }
