@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 
-<com.android.launcher3.folder.FolderIcon
+<com.android.launcher3.FolderIcon
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -33,4 +33,4 @@
         android:layout_gravity="top"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-</com.android.launcher3.folder.FolderIcon>
+</com.android.launcher3.FolderIcon>

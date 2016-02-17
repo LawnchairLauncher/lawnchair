@@ -53,8 +53,8 @@ import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
-import com.android.launcher3.folder.Folder;
-import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.Folder;
+import com.android.launcher3.FolderIcon;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;

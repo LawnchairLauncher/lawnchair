@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.folder;
+package com.android.launcher3;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -42,33 +42,13 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.launcher3.Alarm;
-import com.android.launcher3.AppInfo;
-import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.CellLayout;
-import com.android.launcher3.CheckLongPressHelper;
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DropTarget.DragObject;
-import com.android.launcher3.FastBitmapDrawable;
-import com.android.launcher3.FolderInfo;
 import com.android.launcher3.FolderInfo.FolderListener;
-import com.android.launcher3.IconCache;
-import com.android.launcher3.ItemInfo;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAnimUtils;
-import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.OnAlarmListener;
-import com.android.launcher3.PreloadIconDrawable;
-import com.android.launcher3.R;
-import com.android.launcher3.ShortcutInfo;
-import com.android.launcher3.SimpleOnStylusPressListener;
-import com.android.launcher3.StylusEventHelper;
-import com.android.launcher3.Utilities;
-import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.folder.ClippedFolderIconLayoutRule;
+import com.android.launcher3.folder.StackFolderIconLayoutRule;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
@@ -539,18 +519,18 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         computePreviewDrawingParams(d.getIntrinsicWidth(), getMeasuredWidth());
     }
 
-    static class PreviewItemDrawingParams {
-        PreviewItemDrawingParams(float transX, float transY, float scale, float overlayAlpha) {
+    public static class PreviewItemDrawingParams {
+        public PreviewItemDrawingParams(float transX, float transY, float scale, float overlayAlpha) {
             this.transX = transX;
             this.transY = transY;
             this.scale = scale;
             this.overlayAlpha = overlayAlpha;
         }
-        float transX;
-        float transY;
-        float scale;
-        float overlayAlpha;
-        Drawable drawable;
+        public float transX;
+        public float transY;
+        public float scale;
+        public float overlayAlpha;
+        public Drawable drawable;
     }
 
     private float getLocalCenterForIndex(int index, int curNumItems, int[] center) {

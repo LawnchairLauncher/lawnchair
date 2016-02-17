@@ -21,15 +21,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.folder.FolderIcon;
-
-import java.util.ArrayList;
 
 /**
  * Represents a launchable icon on the workspaces and in folders.

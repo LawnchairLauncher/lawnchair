@@ -18,11 +18,12 @@ package com.android.launcher3.folder;
 
 import android.graphics.Path;
 
-import com.android.launcher3.folder.FolderIcon.PreviewItemDrawingParams;
+import com.android.launcher3.FolderIcon;
+import com.android.launcher3.FolderIcon.PreviewItemDrawingParams;
 
 public class StackFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule {
 
-    static final int MAX_NUM_ITEMS_IN_PREVIEW = 3;
+    public static final int MAX_NUM_ITEMS_IN_PREVIEW = 3;
 
     // The degree to which the item in the back of the stack is scaled [0...1]
     // (0 means it's not scaled at all, 1 means it's scaled to nothing)

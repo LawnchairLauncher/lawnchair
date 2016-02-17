@@ -23,7 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.launcher3.config.ProviderConfig;
-import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderPagedView;
 import com.android.launcher3.util.FocusLogic;
 import com.android.launcher3.util.Thunk;
