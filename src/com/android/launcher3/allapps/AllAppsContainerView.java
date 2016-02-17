@@ -138,6 +138,9 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     private final RecyclerView.LayoutManager mLayoutManager;
     private final RecyclerView.ItemDecoration mItemDecoration;
 
+    // The computed bounds of the container
+    private final Rect mContentBounds = new Rect();
+
     private AllAppsRecyclerView mAppsRecyclerView;
     private AllAppsSearchBarController mSearchBarController;
 
@@ -318,6 +321,10 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        mContentBounds.set(mContentPadding.left, mContentPadding.top,
+                MeasureSpec.getSize(widthMeasureSpec) - mContentPadding.right,
+                MeasureSpec.getSize(heightMeasureSpec) - mContentPadding.bottom);
+
         // Update the number of items in the grid before we measure the view
         // TODO: mSectionNamesMargin is currently 0, but also account for it,
         // if it's enabled in the future.
