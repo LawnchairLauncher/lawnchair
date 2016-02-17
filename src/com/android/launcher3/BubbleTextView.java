@@ -40,7 +40,6 @@ import android.view.ViewParent;
 import android.widget.TextView;
 
 import com.android.launcher3.IconCache.IconLoadRequest;
-import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.PackageItemInfo;
 
 import java.text.NumberFormat;
