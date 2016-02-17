@@ -31,7 +31,8 @@ public final class FeatureFlags {
     public static boolean IS_RELEASE_BUILD = true;
 
     // Custom flags go below this
-    public static boolean LAUNCHER3_ICON_NORMALIZATION = false;
     // As opposed to the new spring-loaded workspace.
     public static boolean LAUNCHER3_LEGACY_WORKSPACE_DND = false;
+    public static boolean LAUNCHER3_ICON_NORMALIZATION = true;
+    public static boolean LAUNCHER3_CLIPPED_FOLDER_ICON = false;
 }

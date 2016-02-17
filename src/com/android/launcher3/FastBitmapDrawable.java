@@ -93,7 +93,7 @@ public class FastBitmapDrawable extends Drawable {
     private static final ColorMatrix sTempBrightnessMatrix = new ColorMatrix();
     private static final ColorMatrix sTempFilterMatrix = new ColorMatrix();
 
-    private final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
+    private final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
     private final Bitmap mBitmap;
     private State mState = State.NORMAL;
 
