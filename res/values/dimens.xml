@@ -138,8 +138,8 @@
     <dimen name="quantum_panel_outer_padding">4dp</dimen>
 
 <!-- Folders -->
-    <!-- The amount that the preview contents are inset from the preview background -->
-    <dimen name="folder_preview_padding">4dp</dimen>
+    <!-- The size of the padding on the preview background drawable -->
+    <dimen name="folder_preview_padding">6dp</dimen>
 
 <!-- Sizes for managed profile badges -->
     <dimen name="profile_badge_size">24dp</dimen>
