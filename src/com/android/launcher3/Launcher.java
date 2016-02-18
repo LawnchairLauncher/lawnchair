@@ -120,6 +120,7 @@ import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -4876,6 +4877,14 @@ public class Launcher extends Activity
                     return null;
                 }
             }.executeOnExecutor(Utilities.THREAD_POOL_EXECUTOR);
+        }
+    }
+
+    public static List<View> getFolderContents(View icon) {
+        if (icon instanceof FolderIcon) {
+            return ((FolderIcon) icon).getFolder().getItemsInReadingOrder();
+        } else {
+            return Collections.EMPTY_LIST;
         }
     }
 }
