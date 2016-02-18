@@ -113,10 +113,10 @@ import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.TestingUtils;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.ViewOnDrawExecutor;
-import com.android.launcher3.util.WallpaperUtils;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetsContainerView;
+import com.android.wallpaperpicker.WallpaperUtils;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
