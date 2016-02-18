@@ -21,7 +21,7 @@ import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeleteDropTarget;
 import com.android.launcher3.DragSource;
-import com.android.launcher3.Folder;
+import com.android.launcher3.folder.Folder;
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.InfoDropTarget;
 import com.android.launcher3.ItemInfo;

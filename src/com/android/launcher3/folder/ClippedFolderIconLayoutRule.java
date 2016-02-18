@@ -1,12 +1,15 @@
 package com.android.launcher3.folder;
 
 import android.graphics.Path;
+import android.graphics.Point;
 
-import com.android.launcher3.FolderIcon;
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.Utilities;
 
 public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule {
 
-    public static final int MAX_NUM_ITEMS_IN_PREVIEW = 4;
+    static final int MAX_NUM_ITEMS_IN_PREVIEW = 4;
     private static final int MIN_NUM_ITEMS_IN_PREVIEW = 2;
 
     final float MIN_SCALE = 0.48f;

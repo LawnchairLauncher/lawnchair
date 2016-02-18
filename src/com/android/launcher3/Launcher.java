@@ -107,6 +107,8 @@ import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.folder.Folder;
+import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.userevent.Logger;
 import com.android.launcher3.util.ComponentKey;
