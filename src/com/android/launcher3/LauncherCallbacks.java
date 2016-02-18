@@ -77,6 +77,7 @@ public interface LauncherCallbacks {
     public boolean providesSearch();
     public boolean startSearch(String initialQuery, boolean selectInitialQuery,
             Bundle appSearchData, Rect sourceBounds);
+    @Deprecated
     public boolean startSearchFromAllApps(String query);
     @Deprecated
     public void startVoice();

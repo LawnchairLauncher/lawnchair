@@ -2138,15 +2138,6 @@ public class Launcher extends Activity
         }
     }
 
-    public void startSearchFromAllApps(View v, Intent searchIntent, String searchQuery) {
-        if (mLauncherCallbacks != null && mLauncherCallbacks.startSearchFromAllApps(searchQuery)) {
-            return;
-        }
-
-        // If not handled, then just start the provided search intent
-        startActivitySafely(v, searchIntent, null);
-    }
-
     public boolean isOnCustomContent() {
         return mWorkspace.isOnOrMovingToCustomContent();
     }
