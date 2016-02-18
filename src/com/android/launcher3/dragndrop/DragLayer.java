@@ -26,6 +26,7 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.DragEvent;
@@ -42,6 +43,7 @@ import android.widget.TextView;
 
 import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.CellLayout;
+import com.android.launcher3.Hotseat;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
@@ -92,6 +94,7 @@ public class DragLayer extends InsettableFrameLayout {
 
     private boolean mHoverPointClosesFolder = false;
     private final Rect mHitRect = new Rect();
+    private final Rect mHighlightRect = new Rect();
 
     private TouchCompleteListener mTouchCompleteListener;
 
@@ -922,12 +925,29 @@ public class DragLayer extends InsettableFrameLayout {
         invalidate();
     }
 
+    public void invalidateScrim() {
+        if (mBackgroundAlpha > 0.0f) {
+            invalidate();
+        }
+    }
+
     @Override
     protected void dispatchDraw(Canvas canvas) {
         // Draw the background below children.
         if (mBackgroundAlpha > 0.0f) {
+            // Update the scroll position first to ensure scrim cutout is in the right place.
+            mLauncher.getWorkspace().computeScrollWithoutInvalidation();
+
             int alpha = (int) (mBackgroundAlpha * 255);
+            CellLayout currCellLayout = mLauncher.getWorkspace().getCurrentDragOverlappingLayout();
+            canvas.save();
+            if (currCellLayout != null && currCellLayout != mLauncher.getHotseat().getLayout()) {
+                // Cut a hole in the darkening scrim on the page that should be highlighted, if any.
+                getDescendantRectRelativeToSelf(currCellLayout, mHighlightRect);
+                canvas.clipRect(mHighlightRect, Region.Op.DIFFERENCE);
+            }
             canvas.drawColor((alpha << 24) | SCRIM_COLOR);
+            canvas.restore();
         }
 
         super.dispatchDraw(canvas);

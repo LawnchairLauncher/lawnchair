@@ -22,13 +22,14 @@
 
     <item>
         <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle" >
-            <solid android:color="#3fffffff" />
+            <solid android:color="@color/spring_loaded_panel_color" />
         </shape>
     </item>
     <item>
         <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle" >
-            <solid android:color="#3fffffff" />
-            <stroke android:width="1dp" android:color="#fff" />
+            <stroke
+                android:width="@dimen/spring_loaded_panel_border"
+                android:color="@color/spring_loaded_highlighted_panel_border_color" />
         </shape>
     </item>
 

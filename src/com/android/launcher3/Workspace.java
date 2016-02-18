@@ -149,7 +149,7 @@ public class Workspace extends PagedView
      */
     @Thunk CellLayout mDragTargetLayout = null;
     /**
-     * The CellLayout that we will show as glowing
+     * The CellLayout that we will show as highlighted
      */
     private CellLayout mDragOverlappingLayout = null;
 
@@ -1419,6 +1419,10 @@ public class Workspace extends PagedView
     public void computeScroll() {
         super.computeScroll();
         mWallpaperOffset.syncWithScroll();
+    }
+
+    public void computeScrollWithoutInvalidation() {
+        computeScrollHelper(false);
     }
 
     @Override
@@ -2836,7 +2840,13 @@ public class Workspace extends PagedView
         if (mDragOverlappingLayout != null) {
             mDragOverlappingLayout.setIsDragOverlapping(true);
         }
-        invalidate();
+        // Invalidating the scrim will also force this CellLayout
+        // to be invalidated so that it is highlighted if necessary.
+        mLauncher.getDragLayer().invalidateScrim();
+    }
+
+    public CellLayout getCurrentDragOverlappingLayout() {
+        return mDragOverlappingLayout;
     }
 
     void setCurrentDropOverCell(int x, int y) {
