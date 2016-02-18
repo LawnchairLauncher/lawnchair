@@ -1378,14 +1378,11 @@ public class Launcher extends Activity
         // Setup Apps and Widgets
         mAppsView = (AllAppsContainerView) findViewById(R.id.apps_view);
         mWidgetsView = (WidgetsContainerView) findViewById(R.id.widgets_view);
-        mAppsView.setSearchBarController(new DefaultAppSearchController());
-
-        // TODO: Reenable this
-//        if (mLauncherCallbacks != null && mLauncherCallbacks.getAllAppsSearchBarController() != null) {
-//            mAppsView.setSearchBarController(mLauncherCallbacks.getAllAppsSearchBarController());
-//        } else {
-//            mAppsView.setSearchBarController(new DefaultAppSearchController());
-//        }
+        if (mLauncherCallbacks != null && mLauncherCallbacks.getAllAppsSearchBarController() != null) {
+            mAppsView.setSearchBarController(mLauncherCallbacks.getAllAppsSearchBarController());
+        } else {
+            mAppsView.setSearchBarController(new DefaultAppSearchController());
+        }
 
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
         dragController.setDragScoller(mWorkspace);
