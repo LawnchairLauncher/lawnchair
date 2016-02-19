@@ -32,8 +32,8 @@ android {
     }
     sourceSets {
         main {
-            res.srcDirs = ['res', 'WallpaperPicker/res']
-            java.srcDirs = ['src', 'WallpaperPicker/src']
+            res.srcDirs = ['res']
+            java.srcDirs = ['src']
             manifest.srcFile 'AndroidManifest.xml'
             proto.srcDirs 'protos/'
         }
@@ -54,6 +54,7 @@ dependencies {
     compile 'com.android.support:support-v4:23.0.1'
     compile 'com.android.support:recyclerview-v7:23.0.1'
     compile 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-2'
+    compile project(":WallpaperPicker-Lib")
 
     testCompile 'junit:junit:4.12'
     androidTestCompile 'com.android.support.test:runner:+'

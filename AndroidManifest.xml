@@ -93,7 +93,7 @@
 
         <activity
             android:name="com.android.launcher3.WallpaperPickerActivity"
-            android:theme="@style/Theme.WallpaperPicker"
+            android:theme="@style/WallpaperTheme.Picker"
             android:label="@string/pick_wallpaper"
             android:icon="@mipmap/ic_launcher_wallpaper"
             android:finishOnCloseSystemDialogs="true"
@@ -105,8 +105,8 @@
         </activity>
 
         <activity
-            android:name="com.android.launcher3.WallpaperCropActivity"
-            android:theme="@style/Theme.WallpaperCropper"
+            android:name="com.android.wallpaperpicker.WallpaperCropActivity"
+            android:theme="@style/WallpaperTheme"
             android:label="@string/crop_wallpaper"
             android:icon="@mipmap/ic_launcher_wallpaper"
             android:finishOnCloseSystemDialogs="true"
