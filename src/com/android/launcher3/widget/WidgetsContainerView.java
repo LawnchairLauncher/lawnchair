@@ -20,7 +20,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.InsetDrawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView.State;
 import android.util.AttributeSet;
@@ -65,7 +64,7 @@ public class WidgetsContainerView extends BaseContainerView
     private IconCache mIconCache;
 
     /* Recycler view related member variables */
-    private WidgetsRecyclerView mView;
+    private WidgetsRecyclerView mRecyclerView;
     private WidgetsListAdapter mAdapter;
 
     /* Touch handling related member variables. */
@@ -73,8 +72,6 @@ public class WidgetsContainerView extends BaseContainerView
 
     /* Rendering related. */
     private WidgetPreviewLoader mWidgetPreviewLoader;
-
-    private Rect mPadding = new Rect();
 
     public WidgetsContainerView(Context context) {
         this(context, null);
@@ -98,11 +95,11 @@ public class WidgetsContainerView extends BaseContainerView
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mView = (WidgetsRecyclerView) getContentView();
-        mView.setAdapter(mAdapter);
+        mRecyclerView = (WidgetsRecyclerView) getContentView().findViewById(R.id.widgets_list_view);
+        mRecyclerView.setAdapter(mAdapter);
 
         // This extends the layout space so that preloading happen for the {@link RecyclerView}
-        mView.setLayoutManager(new LinearLayoutManager(getContext()) {
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()) {
             @Override
             protected int getExtraLayoutSpace(State state) {
                 DeviceProfile grid = mLauncher.getDeviceProfile();
@@ -110,8 +107,6 @@ public class WidgetsContainerView extends BaseContainerView
                         + grid.availableHeightPx * PRELOAD_SCREEN_HEIGHT_MULTIPLE;
             }
         });
-        mPadding.set(getPaddingLeft(), getPaddingTop(), getPaddingRight(),
-                getPaddingBottom());
     }
 
     //
@@ -119,7 +114,7 @@ public class WidgetsContainerView extends BaseContainerView
     //
 
     public void scrollToTop() {
-        mView.scrollToPosition(0);
+        mRecyclerView.scrollToPosition(0);
     }
 
     //
@@ -329,14 +324,14 @@ public class WidgetsContainerView extends BaseContainerView
     //
     @Override
     protected void onUpdateBgPadding(Rect padding, Rect bgPadding) {
-        mView.updateBackgroundPadding(bgPadding);
+        mRecyclerView.updateBackgroundPadding(bgPadding);
     }
 
     /**
      * Initialize the widget data model.
      */
     public void addWidgets(WidgetsModel model) {
-        mView.setWidgets(model);
+        mRecyclerView.setWidgets(model);
         mAdapter.setWidgetsModel(model);
         mAdapter.notifyDataSetChanged();
     }

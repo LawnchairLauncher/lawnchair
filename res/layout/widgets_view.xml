@@ -34,13 +34,20 @@
         android:elevation="2dp"
         android:visibility="invisible" />
 
-    <com.android.launcher3.widget.WidgetsRecyclerView
+    <FrameLayout
         android:id="@+id/main_content"
-        android:theme="@style/Theme.Dark.CustomOverscroll"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:elevation="15dp"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.android.launcher3.widget.WidgetsRecyclerView
+            android:id="@+id/widgets_list_view"
+            android:theme="@style/Theme.Dark.CustomOverscroll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+
 
 </com.android.launcher3.widget.WidgetsContainerView>

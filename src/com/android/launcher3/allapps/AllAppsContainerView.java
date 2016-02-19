@@ -371,11 +371,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mAdapter.updateBackgroundPadding(bgPadding);
         mElevationController.updateBackgroundPadding(bgPadding);
 
-        // Hack: We are going to let the recycler view take the full width, so reset the padding on
-        // the container to zero after setting the background and apply the top-bottom padding to
-        // the content view instead so that the launcher transition clips correctly.
-        getContentView().setPadding(0, 0, 0, 0);
-
         // Pad the recycler view by the background padding plus the start margin (for the section
         // names)
         int maxScrollBarWidth = mAppsRecyclerView.getMaxScrollbarWidth();
