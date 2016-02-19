@@ -72,9 +72,9 @@ import com.android.launcher3.dragndrop.SpringLoadedDragController;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.WallpaperOffsetInterpolator;
-import com.android.launcher3.util.WallpaperUtils;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
+import com.android.wallpaperpicker.WallpaperUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

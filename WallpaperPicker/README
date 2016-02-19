@@ -1,4 +1,0 @@
-This project contains the wallpaper picker for Launcher3. It's in a separate
-folder to organize the code separately from the rest of the launcher, and has
-a manifest so that a separate Eclipse project can exist for the wallpaper
-picker (necessary to have the Eclipse build work)
