@@ -108,6 +108,7 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.model.WidgetsModel;
+import com.android.launcher3.userevent.Logger;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.TestingUtils;
@@ -367,6 +368,8 @@ public class Launcher extends Activity
     }
 
     private Stats mStats;
+    private Logger mUserEventLogger;
+
     public FocusIndicatorView mFocusHandler;
     private boolean mRotationEnabled = false;
 
@@ -424,6 +427,7 @@ public class Launcher extends Activity
         mDragController = new DragController(this);
         mStateTransitionAnimation = new LauncherStateTransitionAnimation(this);
 
+        mUserEventLogger = new Logger(this);
         mStats = new Stats(this);
 
         mAppWidgetManager = AppWidgetManagerCompat.getInstance(this);
@@ -627,6 +631,7 @@ public class Launcher extends Activity
     public Stats getStats() {
         return mStats;
     }
+    public Logger getLogger() {return mUserEventLogger; }
 
     public boolean isDraggingEnabled() {
         // We prevent dragging when we are loading the workspace as it is possible to pick up a view
@@ -950,6 +955,7 @@ public class Launcher extends Activity
         }
 
         super.onResume();
+        mUserEventLogger.resetElapsedSessionMillis();
 
         // Restore the previous launcher state
         if (mOnResumeState == State.WORKSPACE) {
@@ -3331,6 +3337,7 @@ public class Launcher extends Activity
             getWindow().getDecorView()
                     .sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
         }
+        mUserEventLogger.resetElapsedContainerMillis();
         return changed;
     }
 

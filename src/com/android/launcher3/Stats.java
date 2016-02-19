@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewParent;
 
 import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.userevent.Logger;
 
 public class Stats {
 
@@ -145,5 +146,6 @@ public class Stats {
         LaunchSourceUtils.populateSourceDataFromAncestorProvider(v, sourceExtras);
         broadcastIntent.putExtra(EXTRA_SOURCE, sourceExtras);
         mLauncher.sendBroadcast(broadcastIntent, mLaunchBroadcastPermission);
+        mLauncher.getLogger().logAppLaunch(intent.getComponent().getPackageName(), shortcut, sourceExtras);
     }
 }
