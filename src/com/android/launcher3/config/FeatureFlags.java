@@ -35,4 +35,5 @@ public final class FeatureFlags {
     public static boolean LAUNCHER3_LEGACY_WORKSPACE_DND = false;
     public static boolean LAUNCHER3_ICON_NORMALIZATION = true;
     public static boolean LAUNCHER3_CLIPPED_FOLDER_ICON = false;
+    public static boolean LAUNCHER3_LEGACY_LOGGING = false;
 }
