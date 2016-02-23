@@ -139,13 +139,17 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
         }
         for (int i=0; i < infoList.size(); i++) {
             WidgetCell widget = (WidgetCell) row.getChildAt(i);
-            Object info = infoList.get(i);
-            if (info instanceof LauncherAppWidgetProviderInfo) {
-                widget.setTag(new PendingAddWidgetInfo(mLauncher, (LauncherAppWidgetProviderInfo)info, null));
-            } else if (info instanceof ResolveInfo) {
-                widget.setTag(new PendingAddShortcutInfo(((ResolveInfo) info).activityInfo));
+            if (infoList.get(i) instanceof LauncherAppWidgetProviderInfo) {
+                LauncherAppWidgetProviderInfo info = (LauncherAppWidgetProviderInfo) infoList.get(i);
+                PendingAddWidgetInfo pawi = new PendingAddWidgetInfo(mLauncher, info, null);
+                widget.setTag(pawi);
+                widget.applyFromAppWidgetProviderInfo(info, mWidgetPreviewLoader);
+            } else if (infoList.get(i) instanceof ResolveInfo) {
+                ResolveInfo info = (ResolveInfo) infoList.get(i);
+                PendingAddShortcutInfo pasi = new PendingAddShortcutInfo(info.activityInfo);
+                widget.setTag(pasi);
+                widget.applyFromResolveInfo(mLauncher.getPackageManager(), info, mWidgetPreviewLoader);
             }
-            widget.applyFromInfo(info, mWidgetsModel.getLabel(info), mWidgetPreviewLoader);
             widget.ensurePreview();
             widget.setVisibility(View.VISIBLE);
         }
