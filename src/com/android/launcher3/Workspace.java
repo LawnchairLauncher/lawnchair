@@ -53,7 +53,9 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.TextView;
 
-import com.android.launcher3.FolderIcon.FolderRingAnimator;
+import com.android.launcher3.folder.Folder;
+import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.folder.FolderIcon.FolderRingAnimator;
 import com.android.launcher3.Launcher.CustomContentCallbacks;
 import com.android.launcher3.Launcher.LauncherOverlay;
 import com.android.launcher3.UninstallDropTarget.UninstallSource;

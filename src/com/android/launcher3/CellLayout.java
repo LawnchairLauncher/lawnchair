@@ -32,6 +32,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
 import android.os.Parcelable;
@@ -53,7 +54,8 @@ import com.android.launcher3.accessibility.FolderAccessibilityHelper;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.ProviderConfig;
-import com.android.launcher3.FolderIcon.FolderRingAnimator;
+import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.folder.FolderIcon.FolderRingAnimator;
 import com.android.launcher3.util.ParcelableSparseArray;
 import com.android.launcher3.util.Thunk;
 

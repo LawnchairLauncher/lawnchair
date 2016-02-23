@@ -33,8 +33,6 @@ import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.FocusHelper.PagedFolderKeyEventListener;
 import com.android.launcher3.FocusIndicatorView;
-import com.android.launcher3.Folder;
-import com.android.launcher3.FolderIcon;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
