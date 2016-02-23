@@ -3,6 +3,7 @@ package com.android.launcher3.model;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.util.Log;
 
@@ -16,6 +17,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.UserHandleCompat;
+import com.android.launcher3.util.ComponentKey;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,7 +41,11 @@ public class WidgetsModel {
     /* Map of widgets and shortcuts that are tracked per package. */
     private final HashMap<PackageItemInfo, ArrayList<Object>> mWidgetsList;
 
+    /* Labels of widgets */
+    private final HashMap<ComponentKey, CharSequence> mLabels;
+
     private final AppWidgetManagerCompat mAppWidgetMgr;
+    private final PackageManager mPackageMgr;
     private final WidgetsAndShortcutNameComparator mWidgetAndShortcutNameComparator;
     private final Comparator<ItemInfo> mAppNameComparator;
     private final IconCache mIconCache;
@@ -50,6 +56,7 @@ public class WidgetsModel {
 
     public WidgetsModel(Context context,  IconCache iconCache, AppFilter appFilter) {
         mAppWidgetMgr = AppWidgetManagerCompat.getInstance(context);
+        mPackageMgr = context.getPackageManager();
         mWidgetAndShortcutNameComparator = new WidgetsAndShortcutNameComparator(context);
         mAppNameComparator = (new AppNameComparator(context)).getAppInfoComparator();
         mIconCache = iconCache;
@@ -57,13 +64,14 @@ public class WidgetsModel {
         mIndexer = new AlphabeticIndexCompat(context);
         mPackageItemInfos = new ArrayList<>();
         mWidgetsList = new HashMap<>();
-
         mRawList = new ArrayList<>();
+        mLabels = new HashMap<>();
     }
 
     @SuppressWarnings("unchecked")
     private WidgetsModel(WidgetsModel model) {
         mAppWidgetMgr = model.mAppWidgetMgr;
+        mPackageMgr = model.mPackageMgr;
         mPackageItemInfos = (ArrayList<PackageItemInfo>) model.mPackageItemInfos.clone();
         mWidgetsList = (HashMap<PackageItemInfo, ArrayList<Object>>) model.mWidgetsList.clone();
         mWidgetAndShortcutNameComparator = model.mWidgetAndShortcutNameComparator;
@@ -72,6 +80,7 @@ public class WidgetsModel {
         mAppFilter = model.mAppFilter;
         mIndexer = model.mIndexer;
         mRawList = (ArrayList<Object>) model.mRawList.clone();
+        mLabels = (HashMap<ComponentKey, CharSequence>) model.mLabels.clone();
     }
 
     // Access methods that may be deleted if the private fields are made package-private.
@@ -85,6 +94,22 @@ public class WidgetsModel {
             return null;
         }
         return mPackageItemInfos.get(pos);
+    }
+
+    public CharSequence getLabel(Object info) {
+        ComponentKey key;
+        if (info instanceof LauncherAppWidgetProviderInfo) {
+            key = new ComponentKey(((LauncherAppWidgetProviderInfo) info).provider,
+                    mAppWidgetMgr.getUser(((LauncherAppWidgetProviderInfo) info)));
+            return mLabels.get(key);
+        } else if (info instanceof ResolveInfo) {
+            ResolveInfo ri = (ResolveInfo) info;
+            ComponentName componentName = new ComponentName(ri.activityInfo.packageName,
+                    ri.activityInfo.name);
+            key = new ComponentKey(componentName, UserHandleCompat.myUserHandle());
+            return mLabels.get(key);
+        }
+        return null;
     }
 
     public List<Object> getSortedWidgets(int pos) {
@@ -109,6 +134,7 @@ public class WidgetsModel {
         // clear the lists.
         mWidgetsList.clear();
         mPackageItemInfos.clear();
+        mLabels.clear();
         mWidgetAndShortcutNameComparator.reset();
 
         InvariantDeviceProfile idp = LauncherAppState.getInstance().getInvariantDeviceProfile();
@@ -118,6 +144,7 @@ public class WidgetsModel {
             String packageName = "";
             UserHandleCompat userHandle = null;
             ComponentName componentName = null;
+            ComponentKey key = null;
             if (o instanceof LauncherAppWidgetProviderInfo) {
                 LauncherAppWidgetProviderInfo widgetInfo = (LauncherAppWidgetProviderInfo) o;
 
@@ -137,12 +164,16 @@ public class WidgetsModel {
                     }
                     continue;
                 }
+                key = new ComponentKey(componentName, userHandle);
+                mLabels.put(key, mAppWidgetMgr.loadLabel(widgetInfo));
             } else if (o instanceof ResolveInfo) {
                 ResolveInfo resolveInfo = (ResolveInfo) o;
                 componentName = new ComponentName(resolveInfo.activityInfo.packageName,
                         resolveInfo.activityInfo.name);
                 packageName = resolveInfo.activityInfo.packageName;
                 userHandle = UserHandleCompat.myUserHandle();
+                key = new ComponentKey(componentName, userHandle);
+                mLabels.put(key, resolveInfo.loadLabel(mPackageMgr));
             }
 
             if (componentName == null || userHandle == null) {
