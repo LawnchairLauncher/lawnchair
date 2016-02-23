@@ -488,11 +488,11 @@ public class Launcher extends Activity
         IntentFilter filter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         registerReceiver(mCloseSystemDialogsReceiver, filter);
 
-        mRotationEnabled = Utilities.isRotationAllowedForDevice(getApplicationContext());
+        mRotationEnabled = getResources().getBoolean(R.bool.allow_rotation);
         // In case we are on a device with locked rotation, we should look at preferences to check
         // if the user has specifically allowed rotation.
         if (!mRotationEnabled) {
-            mRotationEnabled = Utilities.isAllowRotationPrefEnabled(getApplicationContext(), false);
+            mRotationEnabled = Utilities.isAllowRotationPrefEnabled(getApplicationContext());
         }
 
         // On large interfaces, or on devices that a user has specifically enabled screen rotation,
@@ -1205,7 +1205,7 @@ public class Launcher extends Activity
         } else {
             // On devices with a locked orientation, we will at least have the allow rotation
             // setting.
-            return !Utilities.isRotationAllowedForDevice(this);
+            return !getResources().getBoolean(R.bool.allow_rotation);
         }
     }
 
