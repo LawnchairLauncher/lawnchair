@@ -60,8 +60,12 @@
         <attr name="y" format="string" />
         <attr name="spanX" format="string" />
         <attr name="spanY" format="string" />
+        <!--
+          Temporarily disabling attr format definitions to prevent conflicts with support libs.
+           Re-enable it once AAPT starts supporting multiple definitions of same attr.
         <attr name="icon" format="reference" />  
         <attr name="title" format="reference" />
+        -->
         <attr name="uri" format="string" />
     </declare-styleable>
 
@@ -75,7 +79,7 @@
     </declare-styleable>
 
     <declare-styleable name="PreloadIconDrawable">
-        <attr name="background" format="reference" />
+        <attr name="ringBackground" format="reference" />
         <attr name="ringOutset" format="dimension" />
         <attr name="indicatorSize" format="dimension" />
     </declare-styleable>
