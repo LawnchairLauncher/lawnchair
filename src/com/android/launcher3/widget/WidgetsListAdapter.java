@@ -16,9 +16,7 @@
 package com.android.launcher3.widget;
 
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.pm.ResolveInfo;
-import android.content.res.Resources;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
@@ -31,7 +29,6 @@ import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
@@ -140,17 +137,13 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
         }
         for (int i=0; i < infoList.size(); i++) {
             WidgetCell widget = (WidgetCell) row.getChildAt(i);
-            if (infoList.get(i) instanceof LauncherAppWidgetProviderInfo) {
-                LauncherAppWidgetProviderInfo info = (LauncherAppWidgetProviderInfo) infoList.get(i);
-                PendingAddWidgetInfo pawi = new PendingAddWidgetInfo(mLauncher, info, null);
-                widget.setTag(pawi);
-                widget.applyFromAppWidgetProviderInfo(info, mWidgetPreviewLoader);
-            } else if (infoList.get(i) instanceof ResolveInfo) {
-                ResolveInfo info = (ResolveInfo) infoList.get(i);
-                PendingAddShortcutInfo pasi = new PendingAddShortcutInfo(info.activityInfo);
-                widget.setTag(pasi);
-                widget.applyFromResolveInfo(mLauncher.getPackageManager(), info, mWidgetPreviewLoader);
+            Object info = infoList.get(i);
+            if (info instanceof LauncherAppWidgetProviderInfo) {
+                widget.setTag(new PendingAddWidgetInfo(mLauncher, (LauncherAppWidgetProviderInfo)info, null));
+            } else if (info instanceof ResolveInfo) {
+                widget.setTag(new PendingAddShortcutInfo(((ResolveInfo) info).activityInfo));
             }
+            widget.applyFromInfo(info, mWidgetsModel.getLabel(info), mWidgetPreviewLoader);
             widget.ensurePreview();
             widget.setVisibility(View.VISIBLE);
         }
