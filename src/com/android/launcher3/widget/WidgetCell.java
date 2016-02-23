@@ -137,32 +137,23 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     }
 
     /**
-     * Apply the widget provider info to the view.
+     * Apply the widget provider info or the resolve info to the view.
      */
-    public void applyFromAppWidgetProviderInfo(LauncherAppWidgetProviderInfo info,
-            WidgetPreviewLoader loader) {
-
-        InvariantDeviceProfile profile =
-                LauncherAppState.getInstance().getInvariantDeviceProfile();
+    public void applyFromInfo(Object info, CharSequence label,
+                                               WidgetPreviewLoader loader) {
         mInfo = info;
-        // TODO(hyunyoungs): setup a cache for these labels.
-        mWidgetName.setText(AppWidgetManagerCompat.getInstance(getContext()).loadLabel(info));
-        int hSpan = Math.min(info.spanX, profile.numColumns);
-        int vSpan = Math.min(info.spanY, profile.numRows);
-        mWidgetDims.setText(String.format(mDimensionsFormatString, hSpan, vSpan));
-        mWidgetPreviewLoader = loader;
-    }
-
-    /**
-     * Apply the resolve info to the view.
-     */
-    public void applyFromResolveInfo(
-            PackageManager pm, ResolveInfo info, WidgetPreviewLoader loader) {
-        mInfo = info;
-        CharSequence label = info.loadLabel(pm);
         mWidgetName.setText(label);
-        mWidgetDims.setText(String.format(mDimensionsFormatString, 1, 1));
         mWidgetPreviewLoader = loader;
+        if (info instanceof LauncherAppWidgetProviderInfo) {
+            InvariantDeviceProfile profile =
+                    LauncherAppState.getInstance().getInvariantDeviceProfile();
+            int hSpan = Math.min(((LauncherAppWidgetProviderInfo)info).spanX, profile.numColumns);
+            int vSpan = Math.min(((LauncherAppWidgetProviderInfo)info).spanY, profile.numRows);
+            mWidgetDims.setText(String.format(mDimensionsFormatString, hSpan, vSpan));
+        }
+        if (info instanceof ResolveInfo) {
+            mWidgetDims.setText(String.format(mDimensionsFormatString, 1, 1));
+        }
     }
 
     public int[] getPreviewSize() {
