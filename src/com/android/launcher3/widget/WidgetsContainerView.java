@@ -55,9 +55,6 @@ public class WidgetsContainerView extends BaseContainerView
     private static final String TAG = "WidgetsContainerView";
     private static final boolean LOGD = false;
 
-    /* Coefficient multiplied to the screen height for preloading widgets. */
-    private static final int PRELOAD_SCREEN_HEIGHT_MULTIPLE = 1;
-
     /* Global instances that are used inside this container. */
     @Thunk Launcher mLauncher;
     private DragController mDragController;
@@ -97,16 +94,7 @@ public class WidgetsContainerView extends BaseContainerView
         super.onFinishInflate();
         mRecyclerView = (WidgetsRecyclerView) getContentView().findViewById(R.id.widgets_list_view);
         mRecyclerView.setAdapter(mAdapter);
-
-        // This extends the layout space so that preloading happen for the {@link RecyclerView}
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()) {
-            @Override
-            protected int getExtraLayoutSpace(State state) {
-                DeviceProfile grid = mLauncher.getDeviceProfile();
-                return super.getExtraLayoutSpace(state)
-                        + grid.availableHeightPx * PRELOAD_SCREEN_HEIGHT_MULTIPLE;
-            }
-        });
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
     //
