@@ -1900,6 +1900,10 @@ public class Workspace extends PagedView
         return -(workspaceHeight - scaledHeight) / 2;
     }
 
+    float getOverviewModeShrinkFactor() {
+        return mOverviewModeShrinkFactor;
+    }
+
     /**
      * Sets the current workspace {@link State}, returning an animation transitioning the workspace
      * to that new state.
@@ -1996,6 +2000,10 @@ public class Workspace extends PagedView
 
     void updateCustomContentVisibility() {
         int visibility = mState == Workspace.State.NORMAL ? VISIBLE : INVISIBLE;
+        setCustomContentVisibility(visibility);
+    }
+
+    void setCustomContentVisibility(int visibility) {
         if (hasCustomContent()) {
             mWorkspaceScreens.get(CUSTOM_CONTENT_SCREEN_ID).setVisibility(visibility);
         }
@@ -3524,6 +3532,10 @@ public class Workspace extends PagedView
             setScaleX(mCurrentScale);
             setScaleY(mCurrentScale);
         }
+    }
+
+    public WorkspaceStateTransitionAnimation getStateTransitionAnimation() {
+        return mStateTransitionAnimation;
     }
 
     /**
