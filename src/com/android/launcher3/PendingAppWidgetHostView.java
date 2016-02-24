@@ -231,26 +231,30 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
 
             int actualIconSize = (int) Math.min(iconSize, grid.iconSizePx);
 
-            // Recreate the setup text.
-            mSetupTextLayout = new StaticLayout(
-                    getResources().getText(R.string.gadget_setup_text), mPaint, availableWidth,
-                    Layout.Alignment.ALIGN_CENTER, 1, 0, true);
-            int textHeight = mSetupTextLayout.getHeight();
+            // Icon top when we do not draw the text
+            int iconTop = (getHeight() - actualIconSize) / 2;
+            mSetupTextLayout = null;
 
-            // Extra icon size due to the setting icon
-            float minHeightWithText = textHeight + actualIconSize * settingIconScaleFactor
-                    + grid.iconDrawablePaddingPx;
+            if (availableWidth > 0) {
+                // Recreate the setup text.
+                mSetupTextLayout = new StaticLayout(
+                        getResources().getText(R.string.gadget_setup_text), mPaint, availableWidth,
+                        Layout.Alignment.ALIGN_CENTER, 1, 0, true);
+                int textHeight = mSetupTextLayout.getHeight();
 
-            int iconTop;
-            if (minHeightWithText < availableHeight) {
-                // We can draw the text as well
-                iconTop =  (getHeight() - textHeight -
-                        grid.iconDrawablePaddingPx - actualIconSize) / 2;
+                // Extra icon size due to the setting icon
+                float minHeightWithText = textHeight + actualIconSize * settingIconScaleFactor
+                        + grid.iconDrawablePaddingPx;
 
-            } else {
-                // The text will not fit. Only draw the icons.
-                iconTop = (getHeight() - actualIconSize) / 2;
-                mSetupTextLayout = null;
+                if (minHeightWithText < availableHeight) {
+                    // We can draw the text as well
+                    iconTop = (getHeight() - textHeight -
+                            grid.iconDrawablePaddingPx - actualIconSize) / 2;
+
+                } else {
+                    // We can't draw the text. Let the iconTop be same as before.
+                    mSetupTextLayout = null;
+                }
             }
 
             mRect.set(0, 0, actualIconSize, actualIconSize);
