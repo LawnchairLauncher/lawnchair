@@ -293,5 +293,13 @@ public class LauncherExtension extends Launcher {
         public void setLauncherSearchCallback(Object callbacks) {
             // Do nothing
         }
+
+        @Override
+        public void onAttachedToWindow() {
+        }
+
+        @Override
+        public void onDetachedFromWindow() {
+        };
     }
 }

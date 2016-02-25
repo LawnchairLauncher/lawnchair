@@ -43,6 +43,8 @@ public interface LauncherCallbacks {
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
             int[] grantResults);
     public void onWindowFocusChanged(boolean hasFocus);
+    public void onAttachedToWindow();
+    public void onDetachedFromWindow();
     public boolean onPrepareOptionsMenu(Menu menu);
     public void dump(String prefix, FileDescriptor fd, PrintWriter w, String[] args);
     public void onHomeIntent();
