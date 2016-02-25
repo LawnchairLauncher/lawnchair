@@ -1123,12 +1123,7 @@ public class Launcher extends Activity
          * Scroll progress, between 0 and 100, when the user scrolls beyond the leftmost
          * screen (or in the case of RTL, the rightmost screen).
          */
-        public void onScrollChange(int progress, boolean rtl);
-
-        /**
-         * Screen has stopped scrolling
-         */
-        public void onScrollSettled();
+        public void onScrollChange(float progress, boolean rtl);
 
         /**
          * Called when the launcher is ready to use the overlay
@@ -1150,11 +1145,16 @@ public class Launcher extends Activity
     }
 
     public interface LauncherOverlayCallbacks {
-
+        public void onScrollChanged(float progress);
     }
 
     class LauncherOverlayCallbacksImpl implements LauncherOverlayCallbacks {
 
+        public void onScrollChanged(float progress) {
+            if (mWorkspace != null) {
+                mWorkspace.onOverlayScrollChanged(progress);
+            }
+        }
     }
 
     protected boolean hasSettings() {
@@ -1653,6 +1653,10 @@ public class Launcher extends Activity
         FirstFrameAnimatorHelper.initializeDrawListener(getWindow().getDecorView());
         mAttached = true;
         mVisible = true;
+
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onAttachedToWindow();
+        }
     }
 
     @Override
@@ -1665,6 +1669,10 @@ public class Launcher extends Activity
             mAttached = false;
         }
         updateAutoAdvanceState();
+
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onDetachedFromWindow();
+        }
     }
 
     public void onWindowVisibilityChanged(int visibility) {
