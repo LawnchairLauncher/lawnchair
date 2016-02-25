@@ -134,9 +134,9 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     private float mSlop;
 
-    private PreviewItemDrawingParams mParams = new PreviewItemDrawingParams(0, 0, 0, 0);
-    @Thunk PreviewItemDrawingParams mAnimParams = new PreviewItemDrawingParams(0, 0, 0, 0);
-    @Thunk ArrayList<ShortcutInfo> mHiddenItems = new ArrayList<ShortcutInfo>();
+    private PreviewItemDrawingParams mTmpParams = new PreviewItemDrawingParams(0, 0, 0, 0);
+    private ArrayList<PreviewItemDrawingParams> mDrawingParams = new ArrayList<PreviewItemDrawingParams>();
+    private Drawable mReferenceDrawable = null;
 
     private Alarm mOpenAlarm = new Alarm();
     @Thunk
@@ -158,7 +158,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         mPreviewLayoutRule = FeatureFlags.LAUNCHER3_CLIPPED_FOLDER_ICON ?
                 new ClippedFolderIconLayoutRule() :
                 new StackFolderIconLayoutRule();
-
         setAccessibilityDelegate(LauncherAppState.getInstance().getAccessibilityDelegate());
     }
 
@@ -205,7 +204,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         folder.setDragController(launcher.getDragController());
         folder.setFolderIcon(icon);
         folder.bind(folderInfo);
-        icon.mFolder = folder;
+        icon.setFolder(folder);
 
         icon.mFolderRingAnimator = new FolderRingAnimator(launcher, icon);
         folderInfo.addListener(icon);
@@ -268,7 +267,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             final int previewSize = sPreviewSize;
             mAcceptAnimator.addUpdateListener(new AnimatorUpdateListener() {
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    final float percent = (Float) animation.getAnimatedValue();
+                    final float percent = animation.getAnimatedFraction();
                     mOuterRingSize = (1 + percent * OUTER_RING_GROWTH_FACTOR) * previewSize;
                     mInnerRingSize = (1 + percent * INNER_RING_GROWTH_FACTOR) * previewSize;
                     if (mCellLayout != null) {
@@ -348,6 +347,11 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         return mFolder;
     }
 
+    private void setFolder(Folder folder) {
+        mFolder = folder;
+        updateItemDrawingParams(false);
+    }
+
     public FolderInfo getFolderInfo() {
         return mInfo;
     }
@@ -414,10 +418,12 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         computePreviewDrawingParams(animateDrawable.getIntrinsicWidth(),
                 destView.getMeasuredWidth());
 
+        mReferenceDrawable = animateDrawable;
+
+        addItem(destInfo);
         // This will animate the first item from it's position as an icon into its
         // position as the first item in the preview
         animateFirstItem(animateDrawable, INITIAL_ITEM_ANIMATION_DURATION, false, null);
-        addItem(destInfo);
 
         // This will animate the dragView (srcView) into the new folder
         onDrop(srcInfo, srcView, dstRect, scaleRelativeToDragLayer, 1, postAnimationRunnable, null);
@@ -489,11 +495,14 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                     new DecelerateInterpolator(2), new AccelerateInterpolator(2),
                     postAnimationRunnable, DragLayer.ANIMATION_END_DISAPPEAR, null);
             addItem(item);
-            mHiddenItems.add(item);
             mFolder.hideItem(item);
+
+            final PreviewItemDrawingParams params = index < mDrawingParams.size() ?
+                    mDrawingParams.get(index) : null;
+            if (params != null) params.hidden = true;
             postDelayed(new Runnable() {
                 public void run() {
-                    mHiddenItems.remove(item);
+                    if (params != null) params.hidden = false;
                     mFolder.showItem(item);
                     invalidate();
                 }
@@ -532,6 +541,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
             mPreviewLayoutRule.init(mAvailableSpaceInPreview, mIntrinsicIconSize,
                     Utilities.isRtl(getResources()));
+            updateItemDrawingParams(false);
         }
     }
 
@@ -546,30 +556,64 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             this.scale = scale;
             this.overlayAlpha = overlayAlpha;
         }
+
+        public void update(float transX, float transY, float scale) {
+            // We ensure the update will not interfere with an animation on the layout params
+            // If the final values differ, we cancel the animation.
+            if (anim != null) {
+                if (anim.finalTransX == transX || anim.finalTransY == transY
+                        || anim.finalScale == scale) {
+                    return;
+                }
+                anim.cancel();
+            }
+
+            this.transX = transX;
+            this.transY = transY;
+            this.scale = scale;
+        }
+
         float transX;
         float transY;
         float scale;
-        float overlayAlpha;
+        public float overlayAlpha;
+        boolean hidden;
+        FolderPreviewItemAnim anim;
         Drawable drawable;
     }
 
     private float getLocalCenterForIndex(int index, int curNumItems, int[] center) {
-        mParams = computePreviewItemDrawingParams(Math.min(mPreviewLayoutRule.numItems(), index),
-                curNumItems, mParams);
+        mTmpParams = computePreviewItemDrawingParams(Math.min(mPreviewLayoutRule.numItems(), index),
+                curNumItems, mTmpParams);
 
-        mParams.transX += mPreviewOffsetX;
-        mParams.transY += mPreviewOffsetY;
-        float offsetX = mParams.transX + (mParams.scale * mIntrinsicIconSize) / 2;
-        float offsetY = mParams.transY + (mParams.scale * mIntrinsicIconSize) / 2;
+        mTmpParams.transX += mPreviewOffsetX;
+        mTmpParams.transY += mPreviewOffsetY;
+        float offsetX = mTmpParams.transX + (mTmpParams.scale * mIntrinsicIconSize) / 2;
+        float offsetY = mTmpParams.transY + (mTmpParams.scale * mIntrinsicIconSize) / 2;
 
         center[0] = (int) Math.round(offsetX);
         center[1] = (int) Math.round(offsetY);
-        return mParams.scale;
+        return mTmpParams.scale;
     }
 
     private PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
             PreviewItemDrawingParams params) {
+        // We use an index of -1 to represent an icon on the workspace for the destroy and
+        // create animations
+        if (index == -1) {
+            return getFinalIconParams(params);
+        }
         return mPreviewLayoutRule.computePreviewItemDrawingParams(index, curNumItems, params);
+    }
+
+    private PreviewItemDrawingParams getFinalIconParams(PreviewItemDrawingParams params) {
+        float iconSize = mLauncher.getDeviceProfile().iconSizePx;
+
+        final float scale = iconSize / mReferenceDrawable.getIntrinsicWidth();
+        final float trans = (mAvailableSpaceInPreview - iconSize) / 2;
+
+        params.update(trans, trans, scale);
+        return params;
     }
 
     private void drawPreviewItem(Canvas canvas, PreviewItemDrawingParams params) {
@@ -605,17 +649,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         if (mFolder == null) return;
         if (mFolder.getItemCount() == 0 && !mAnimating) return;
 
-        ArrayList<View> items = mFolder.getItemsInReadingOrder();
-        Drawable d;
-        TextView v;
-
-        // Update our drawing parameters if necessary
-        if (mAnimating) {
-            computePreviewDrawingParams(mAnimParams.drawable);
-        } else {
-            v = (TextView) items.get(0);
-            d = getTopDrawable(v);
-            computePreviewDrawingParams(d);
+        if (mReferenceDrawable != null) {
+            computePreviewDrawingParams(mReferenceDrawable);
         }
 
         canvas.save();
@@ -625,19 +660,12 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             canvas.clipPath(clipPath);
         }
 
-        int nItemsInPreview = Math.min(items.size(), mPreviewLayoutRule.numItems());
-        if (!mAnimating) {
-            for (int i = nItemsInPreview - 1; i >= 0; i--) {
-                v = (TextView) items.get(i);
-                if (!mHiddenItems.contains(v.getTag())) {
-                    d = getTopDrawable(v);
-                    mParams = computePreviewItemDrawingParams(i, nItemsInPreview, mParams);
-                    mParams.drawable = d;
-                    drawPreviewItem(canvas, mParams);
-                }
+        // The first item should be drawn last (ie. on top of later items)
+        for (int i = mDrawingParams.size() - 1; i >= 0; i--) {
+            PreviewItemDrawingParams p = mDrawingParams.get(i);
+            if (!p.hidden) {
+                drawPreviewItem(canvas, p);
             }
-        } else {
-            drawPreviewItem(canvas, mAnimParams);
         }
         canvas.restore();
     }
@@ -647,48 +675,92 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         return (d instanceof PreloadIconDrawable) ? ((PreloadIconDrawable) d).mIcon : d;
     }
 
+    class FolderPreviewItemAnim {
+        ValueAnimator mValueAnimator;
+        float finalScale;
+        float finalTransX;
+        float finalTransY;
+
+        /**
+         *
+         * @param params layout params to animate
+         * @param index0 original index of the item to be animated
+         * @param nItems0 original number of items in the preview
+         * @param index1 new index of the item to be animated
+         * @param nItems1 new number of items in the preview
+         * @param duration duration in ms of the animation
+         * @param onCompleteRunnable runnable to execute upon animation completion
+         */
+        public FolderPreviewItemAnim(final PreviewItemDrawingParams params, int index0, int nItems0,
+                int index1, int nItems1, int duration, final Runnable onCompleteRunnable) {
+
+            computePreviewItemDrawingParams(index1, nItems1, mTmpParams);
+
+            finalScale = mTmpParams.scale;
+            finalTransX = mTmpParams.transX;
+            finalTransY = mTmpParams.transY;
+
+            computePreviewItemDrawingParams(index0, nItems0, mTmpParams);
+
+            final float scale0 = mTmpParams.scale;
+            final float transX0 = mTmpParams.transX;
+            final float transY0 = mTmpParams.transY;
+
+            mValueAnimator = LauncherAnimUtils.ofFloat(FolderIcon.this, 0f, 1.0f);
+            mValueAnimator.addUpdateListener(new AnimatorUpdateListener(){
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float progress = animation.getAnimatedFraction();
+
+                    params.transX = transX0 + progress * (finalTransX - transX0);
+                    params.transY = transY0 + progress * (finalTransY - transY0);
+                    params.scale = scale0 + progress * (finalScale - scale0);
+                    invalidate();
+                }
+            });
+
+            mValueAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    if (onCompleteRunnable != null) {
+                        onCompleteRunnable.run();
+                    }
+                    params.anim = null;
+                }
+            });
+            mValueAnimator.setDuration(duration);
+        }
+
+        public void start() {
+            mValueAnimator.start();
+        }
+
+        public void cancel() {
+            mValueAnimator.cancel();
+        }
+
+        public boolean hasEqualFinalState(FolderPreviewItemAnim anim) {
+            return finalTransY == anim.finalTransY && finalTransX == anim.finalTransX &&
+                    finalScale == anim.finalScale;
+
+        }
+    }
+
     private void animateFirstItem(final Drawable d, int duration, final boolean reverse,
             final Runnable onCompleteRunnable) {
 
-        final PreviewItemDrawingParams finalParams =
-            computePreviewItemDrawingParams(0, reverse ? 1 : 2, null);
-
-        float iconSize = mLauncher.getDeviceProfile().iconSizePx;
-        final float scale0 = iconSize / d.getIntrinsicWidth() ;
-        final float transX0 = (mAvailableSpaceInPreview - iconSize) / 2;
-        final float transY0 = (mAvailableSpaceInPreview - iconSize) / 2;
-        mAnimParams.drawable = d;
-
-        ValueAnimator va = LauncherAnimUtils.ofFloat(this, 0f, 1.0f);
-        va.addUpdateListener(new AnimatorUpdateListener(){
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float progress = (Float) animation.getAnimatedValue();
-                if (reverse) {
-                    progress = 1 - progress;
-                    mPreviewBackground.setAlpha(progress);
-                }
-
-                mAnimParams.transX = transX0 + progress * (finalParams.transX - transX0);
-                mAnimParams.transY = transY0 + progress * (finalParams.transY - transY0);
-                mAnimParams.scale = scale0 + progress * (finalParams.scale - scale0);
-                invalidate();
-            }
-        });
-        va.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                mAnimating = true;
-            }
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mAnimating = false;
-                if (onCompleteRunnable != null) {
-                    onCompleteRunnable.run();
-                }
-            }
-        });
-        va.setDuration(duration);
-        va.start();
+        FolderPreviewItemAnim anim;
+        if (!reverse) {
+            anim = new FolderPreviewItemAnim(mDrawingParams.get(0), -1, -1, 0, 2, duration,
+                    onCompleteRunnable);
+        } else {
+            anim = new FolderPreviewItemAnim(mDrawingParams.get(0), 0, 2, -1, -1, duration,
+                    onCompleteRunnable);
+        }
+        anim.start();
     }
 
     public void setTextVisible(boolean visible) {
@@ -703,7 +775,48 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         return mFolderName.getVisibility() == VISIBLE;
     }
 
+    private void updateItemDrawingParams(boolean animate) {
+        ArrayList<View> items = mFolder.getItemsInReadingOrder();
+        int nItemsInPreview = Math.min(items.size(), mPreviewLayoutRule.numItems());
+
+        int prevNumItems = mDrawingParams.size();
+
+        // We adjust the size of the list to match the number of items in the preview
+        while (nItemsInPreview < mDrawingParams.size()) {
+            mDrawingParams.remove(mDrawingParams.size() - 1);
+        }
+        while (nItemsInPreview > mDrawingParams.size()) {
+            mDrawingParams.add(new PreviewItemDrawingParams(0, 0, 0, 0));
+        }
+
+        for (int i = 0; i < mDrawingParams.size(); i++) {
+            PreviewItemDrawingParams p = mDrawingParams.get(i);
+            p.drawable = getTopDrawable((TextView) items.get(i));
+
+            if (!animate || !FeatureFlags.LAUNCHER3_CLIPPED_FOLDER_ICON) {
+                computePreviewItemDrawingParams(i, nItemsInPreview, p);
+                if (mReferenceDrawable == null) {
+                    mReferenceDrawable = p.drawable;
+                }
+            } else {
+                FolderPreviewItemAnim anim = new FolderPreviewItemAnim(p, i, prevNumItems, i,
+                        nItemsInPreview, DROP_IN_ANIMATION_DURATION, null);
+
+                if (p.anim != null) {
+                    if (p.anim.hasEqualFinalState(anim)) {
+                        // do nothing, let the current animation finish
+                        continue;
+                    }
+                    p.anim.cancel();
+                }
+                p.anim = anim;
+                p.anim.start();
+            }
+        }
+    }
+
     public void onItemsChanged() {
+        updateItemDrawingParams(true);
         invalidate();
         requestLayout();
     }

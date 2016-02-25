@@ -73,9 +73,7 @@ public class StackFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule {
         if (params == null) {
             params = new PreviewItemDrawingParams(transX, transY, totalScale, overlayAlpha);
         } else {
-            params.transX = transX;
-            params.transY = transY;
-            params.scale = totalScale;
+            params.update(transX, transY, totalScale);
             params.overlayAlpha = overlayAlpha;
         }
         return params;
