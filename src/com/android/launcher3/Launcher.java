@@ -1951,13 +1951,11 @@ public class Launcher extends Activity
         mWorkspace.removeCallbacks(mBuildLayersRunnable);
 
         // Stop callbacks from LauncherModel
-        LauncherAppState app = (LauncherAppState.getInstance());
-
         // It's possible to receive onDestroy after a new Launcher activity has
         // been created. In this case, don't interfere with the new Launcher.
         if (mModel.isCurrentCallbacks(this)) {
             mModel.stopLoader();
-            app.setLauncher(null);
+            LauncherAppState.getInstance().setLauncher(null);
         }
 
         try {
@@ -1972,12 +1970,6 @@ public class Launcher extends Activity
         TextKeyListener.getInstance().release();
 
         unregisterReceiver(mCloseSystemDialogsReceiver);
-
-        mDragLayer.clearAllResizeFrames();
-        ((ViewGroup) mWorkspace.getParent()).removeAllViews();
-        mWorkspace.removeAllWorkspaceScreens();
-        mWorkspace = null;
-        mDragController = null;
 
         LauncherAnimUtils.onDestroyActivity();
 
