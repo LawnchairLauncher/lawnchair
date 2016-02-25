@@ -3029,13 +3029,17 @@ public class Launcher extends Activity
         // We remove and re-draw the FolderIcon in-case it has changed
         mDragLayer.removeView(mFolderIconImageView);
         copyFolderIconToImage(fi);
+
+        if (cl != null) {
+            cl.clearFolderLeaveBehind();
+        }
+
         ObjectAnimator oa = LauncherAnimUtils.ofViewAlphaAndScale(mFolderIconImageView, 1, 1, 1);
         oa.setDuration(getResources().getInteger(R.integer.config_folderExpandDuration));
         oa.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 if (cl != null) {
-                    cl.clearFolderLeaveBehind();
                     // Remove the ImageView copy of the FolderIcon and make the original visible.
                     mDragLayer.removeView(mFolderIconImageView);
                     fi.setVisibility(View.VISIBLE);

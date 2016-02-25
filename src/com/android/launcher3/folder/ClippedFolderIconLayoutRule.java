@@ -15,6 +15,7 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
     final float MIN_SCALE = 0.48f;
     final float MAX_SCALE = 0.58f;
     final float MAX_RADIUS_DILATION = 0.15f;
+    final float ITEM_RADIUS_SCALE_FACTOR = 1.33f;
 
     private float[] mTmpPoint = new float[2];
 
@@ -22,26 +23,18 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
     private float mRadius;
     private float mIconSize;
     private boolean mIsRtl;
-    private Path mClipPath = new Path();
 
     @Override
     public void init(int availableSpace, int intrinsicIconSize, boolean rtl) {
         mAvailableSpace = availableSpace;
-        mRadius = 0.66f * availableSpace;
+        mRadius = ITEM_RADIUS_SCALE_FACTOR * availableSpace / 2f;
         mIconSize = intrinsicIconSize;
         mIsRtl = rtl;
-
-        // We make the clip radius just slightly smaller than the background drawable
-        // TODO(adamcohen): this is hacky, needs cleanup (likely through programmatic drawing).
-        int clipRadius = (int) mAvailableSpace / 2 - 1;
-
-        mClipPath.addCircle(mAvailableSpace / 2, mAvailableSpace / 2, clipRadius, Path.Direction.CW);
     }
 
     @Override
     public FolderIcon.PreviewItemDrawingParams computePreviewItemDrawingParams(int index,
             int curNumItems, FolderIcon.PreviewItemDrawingParams params) {
-
 
         float totalScale = scaleForNumItems(curNumItems);
         float transX;
@@ -55,7 +48,6 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
             getPosition(index, curNumItems, mTmpPoint);
             transX = mTmpPoint[0];
             transY = mTmpPoint[1];
-            totalScale = scaleForNumItems(curNumItems);
         }
 
         if (params == null) {
@@ -126,8 +118,8 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
     }
 
     @Override
-    public Path getClipPath() {
-        return mClipPath;
+    public boolean clipToBackground() {
+        return true;
     }
 
 }

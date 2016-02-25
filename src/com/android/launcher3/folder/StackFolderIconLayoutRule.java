@@ -85,7 +85,7 @@ public class StackFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule {
     }
 
     @Override
-    public Path getClipPath() {
-        return null;
+    public boolean clipToBackground() {
+        return false;
     }
 }
