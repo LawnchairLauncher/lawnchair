@@ -265,9 +265,14 @@ public class LauncherProvider extends ContentProvider {
         switch (method) {
             case LauncherSettings.Settings.METHOD_GET_BOOLEAN: {
                 Bundle result = new Bundle();
-                result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
-                        Utilities.getPrefs(getContext()).getBoolean(arg, extras.getBoolean(
-                                LauncherSettings.Settings.EXTRA_DEFAULT_VALUE)));
+                if (Utilities.ALLOW_ROTATION_PREFERENCE_KEY.equals(arg)) {
+                    result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
+                            Utilities.isAllowRotationPrefEnabled(getContext()));
+                } else {
+                    result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
+                            Utilities.getPrefs(getContext()).getBoolean(arg, extras.getBoolean(
+                                    LauncherSettings.Settings.EXTRA_DEFAULT_VALUE)));
+                }
                 return result;
             }
             case LauncherSettings.Settings.METHOD_SET_BOOLEAN: {

@@ -131,11 +131,6 @@ public final class Utilities {
             CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
             TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
-    // To turn on these properties, type
-    // adb shell setprop log.tag.PROPERTY_NAME [VERBOSE | SUPPRESS]
-    private static final String FORCE_ENABLE_ROTATION_PROPERTY = "launcher_force_rotate";
-    private static boolean sForceEnableRotation = isPropertyEnabled(FORCE_ENABLE_ROTATION_PROPERTY);
-
     public static final String ALLOW_ROTATION_PREFERENCE_KEY = "pref_allowRotation";
 
     public static boolean isPropertyEnabled(String propertyName) {
@@ -143,13 +138,24 @@ public final class Utilities {
     }
 
     public static boolean isAllowRotationPrefEnabled(Context context) {
-        boolean allowRotationPref = getPrefs(context)
-                .getBoolean(ALLOW_ROTATION_PREFERENCE_KEY, false);
-        return sForceEnableRotation || allowRotationPref;
-    }
+        boolean allowRotationPref = false;
+        if (isNycOrAbove()) {
+            // If the device was scaled, used the original dimensions to determine if rotation
+            // is allowed of not.
+            try {
+                // TODO: Use the actual field when the API is finalized.
+                int originalDensity =
+                        DisplayMetrics.class.getField("DENSITY_DEVICE_STABLE").getInt(null);
+                Resources res = context.getResources();
+                int originalSmallestWidth = res.getConfiguration().smallestScreenWidthDp
+                        * res.getDisplayMetrics().densityDpi / originalDensity;
+                allowRotationPref = originalSmallestWidth >= 600;
+            } catch (Exception e) {
+                // Ignore
+            }
+        }
 
-    public static boolean isRotationAllowedForDevice(Context context) {
-        return sForceEnableRotation || context.getResources().getBoolean(R.bool.allow_rotation);
+        return getPrefs(context).getBoolean(ALLOW_ROTATION_PREFERENCE_KEY, allowRotationPref);
     }
 
     public static boolean isNycOrAbove() {
