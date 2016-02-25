@@ -110,8 +110,6 @@ public class DragLayer extends InsettableFrameLayout {
     private Drawable mLeftHoverDrawableActive;
     private Drawable mRightHoverDrawableActive;
 
-    private boolean mBlockTouches = false;
-
     /**
      * Used to create a new DragLayer from XML.
      *
@@ -186,18 +184,10 @@ public class DragLayer extends InsettableFrameLayout {
         return false;
     }
 
-    public void setBlockTouch(boolean block) {
-        mBlockTouches = block;
-    }
-
     private boolean handleTouchDown(MotionEvent ev, boolean intercept) {
         Rect hitRect = new Rect();
         int x = (int) ev.getX();
         int y = (int) ev.getY();
-
-        if (mBlockTouches) {
-            return true;
-        }
 
         for (AppWidgetResizeFrame child: mResizeFrames) {
             child.getHitRect(hitRect);
@@ -363,10 +353,6 @@ public class DragLayer extends InsettableFrameLayout {
 
         int x = (int) ev.getX();
         int y = (int) ev.getY();
-
-        if (mBlockTouches) {
-            return true;
-        }
 
         if (action == MotionEvent.ACTION_DOWN) {
             if (handleTouchDown(ev, false)) {
