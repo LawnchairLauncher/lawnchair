@@ -20,6 +20,7 @@ import com.android.launcher3.AnotherWindowDropTarget;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
 
 import android.content.ClipData;
 import android.content.Intent;
@@ -90,7 +91,7 @@ public abstract class DragDriver {
 
     public static DragDriver create(
             DragController dragController, ItemInfo dragInfo, DragView dragView) {
-        if (Utilities.isNycOrAbove()) {
+        if (FeatureFlags.LAUNCHER3_USE_SYSTEM_DRAG_DRIVER && Utilities.isNycOrAbove()) {
             return new SystemDragDriver(dragController, dragInfo.getIntent(), dragView);
         } else {
             return new InternalDragDriver(dragController);
