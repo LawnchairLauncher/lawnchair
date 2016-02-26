@@ -38,14 +38,15 @@ public class HolographicOutlineHelper {
     private static HolographicOutlineHelper sInstance;
 
     private final Canvas mCanvas = new Canvas();
-    private final Paint mDrawPaint = new Paint();
-    private final Paint mBlurPaint = new Paint();
-    private final Paint mErasePaint = new Paint();
+    private final Paint mDrawPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+    private final Paint mBlurPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+    private final Paint mErasePaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
 
     private final BlurMaskFilter mMediumOuterBlurMaskFilter;
     private final BlurMaskFilter mThinOuterBlurMaskFilter;
     private final BlurMaskFilter mMediumInnerBlurMaskFilter;
 
+    private final float mShadowBitmapShift;
     private final BlurMaskFilter mShadowBlurMaskFilter;
 
     // We have 4 different icon sizes: homescreen, hotseat, folder & all-apps
@@ -61,16 +62,10 @@ public class HolographicOutlineHelper {
         mThinOuterBlurMaskFilter = new BlurMaskFilter(
                 res.getDimension(R.dimen.blur_size_thin_outline), BlurMaskFilter.Blur.OUTER);
 
-        mShadowBlurMaskFilter = new BlurMaskFilter(
-                res.getDimension(R.dimen.blur_size_click_shadow), BlurMaskFilter.Blur.NORMAL);
+        mShadowBitmapShift = res.getDimension(R.dimen.blur_size_click_shadow);
+        mShadowBlurMaskFilter = new BlurMaskFilter(mShadowBitmapShift, BlurMaskFilter.Blur.NORMAL);
 
-        mDrawPaint.setFilterBitmap(true);
-        mDrawPaint.setAntiAlias(true);
-        mBlurPaint.setFilterBitmap(true);
-        mBlurPaint.setAntiAlias(true);
         mErasePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
-        mErasePaint.setFilterBitmap(true);
-        mErasePaint.setAntiAlias(true);
     }
 
     public static HolographicOutlineHelper obtain(Context context) {
@@ -171,22 +166,46 @@ public class HolographicOutlineHelper {
         int key = (bitmapWidth << 16) | bitmapHeight;
         Bitmap cache = mBitmapCache.get(key);
         if (cache == null) {
-            cache = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
+            cache = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ALPHA_8);
             mCanvas.setBitmap(cache);
             mBitmapCache.put(key, cache);
         } else {
             mCanvas.setBitmap(cache);
-            mCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+            mCanvas.drawColor(Color.BLACK, PorterDuff.Mode.CLEAR);
         }
 
-        mCanvas.save(Canvas.MATRIX_SAVE_FLAG);
+        int saveCount = mCanvas.save();
         mCanvas.scale(view.getScaleX(), view.getScaleY());
         mCanvas.translate(-rect.left, -rect.top);
         icon.draw(mCanvas);
-        mCanvas.restore();
+        mCanvas.restoreToCount(saveCount);
         mCanvas.setBitmap(null);
 
         mBlurPaint.setMaskFilter(mShadowBlurMaskFilter);
-        return cache.extractAlpha(mBlurPaint, null);
+
+        int extraSize = (int) (2 * mShadowBitmapShift);
+
+        int resultWidth = bitmapWidth + extraSize;
+        int resultHeight = bitmapHeight + extraSize;
+        key = (resultWidth << 16) | resultHeight;
+        Bitmap result = mBitmapCache.get(key);
+        if (result == null) {
+            result = Bitmap.createBitmap(resultWidth, resultHeight, Bitmap.Config.ALPHA_8);
+            mCanvas.setBitmap(result);
+        } else {
+            // Use put instead of delete, to avoid unnecessary shrinking of cache array
+            mBitmapCache.put(key, null);
+            mCanvas.setBitmap(result);
+            mCanvas.drawColor(Color.BLACK, PorterDuff.Mode.CLEAR);
+        }
+        mCanvas.drawBitmap(cache, mShadowBitmapShift, mShadowBitmapShift, mBlurPaint);
+        mCanvas.setBitmap(null);
+        return result;
+    }
+
+    public void recycleShadowBitmap(Bitmap bitmap) {
+        if (bitmap != null) {
+            mBitmapCache.put((bitmap.getWidth() << 16) | bitmap.getHeight(), bitmap);
+        }
     }
 }

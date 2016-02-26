@@ -318,6 +318,7 @@ public class BubbleTextView extends TextView
     void setStayPressed(boolean stayPressed) {
         mStayPressed = stayPressed;
         if (!stayPressed) {
+            HolographicOutlineHelper.obtain(getContext()).recycleShadowBitmap(mPressedBackground);
             mPressedBackground = null;
         } else {
             if (mPressedBackground == null) {
