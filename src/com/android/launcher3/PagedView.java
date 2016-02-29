@@ -149,7 +149,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     protected boolean mIsPageMoving = false;
 
-    private boolean mWasInOverscroll = false;
+    protected boolean mWasInOverscroll = false;
 
     // Page Indicator
     @Thunk int mPageIndicatorViewId;
