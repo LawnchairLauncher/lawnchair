@@ -67,7 +67,7 @@
     <string name="folder_tap_to_rename" msgid="9191075570492871147">"Հպեք՝ վերանվանումը պահելու համար"</string>
     <string name="folder_closed" msgid="4100806530910930934">"Պանակը փակ է"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"Պանակը վերանվանվեց <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="folder_name_format" msgid="6629239338071103179">"Թղթապանակ՝ <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format" msgid="6629239338071103179">"Պանակ՝ <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Վիջեթներ"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Պաստառներ"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"Կարգավորումներ"</string>
