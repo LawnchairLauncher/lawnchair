@@ -1261,14 +1261,34 @@ public class Workspace extends PagedView
 
     @Override
     protected int getUnboundedScrollX() {
-        if (mLauncherOverlay != null) {
-            if ((mIsRtl && mUnboundedScrollX > mMaxScrollX) ||
-                    (!mIsRtl && mUnboundedScrollX < 0)) {
-                return mUnboundedScrollX;
-            }
+        if (isScrollingOverlay()) {
+            return mUnboundedScrollX;
         }
 
         return super.getUnboundedScrollX();
+    }
+
+    private boolean isScrollingOverlay() {
+        return mLauncherOverlay != null &&
+                ((mIsRtl && mUnboundedScrollX > mMaxScrollX) || (!mIsRtl && mUnboundedScrollX < 0));
+    }
+
+    @Override
+    protected void snapToDestination() {
+        // If we're overscrolling the overlay, we make sure to immediately reset the PagedView
+        // to it's baseline position instead of letting the overscroll settle. The overlay handles
+        // it's own settling, and every gesture to the overlay should be self-contained and start
+        // from 0, so we zero it out here.
+        if (isScrollingOverlay()) {
+            int finalScroll = mIsRtl ? mMaxScrollX : 0;
+
+            // We reset mWasInOverscroll so that PagedView doesn't zero out the overscroll
+            // interaction when we call scrollTo.
+            mWasInOverscroll = false;
+            scrollTo(finalScroll, getScrollY());
+        } else {
+            super.snapToDestination();
+        }
     }
 
     @Override
