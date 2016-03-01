@@ -107,18 +107,24 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
 
     @Override
     public Bitmap getBadgeBitmap(LauncherAppWidgetProviderInfo info, Bitmap bitmap,
-            int imageHeight) {
+            int imageWidth, int imageHeight) {
         if (info.isCustomWidget || info.getProfile().equals(android.os.Process.myUserHandle())) {
             return bitmap;
         }
 
         // Add a user badge in the bottom right of the image.
         final Resources res = mContext.getResources();
-        final int badgeSize = res.getDimensionPixelSize(R.dimen.profile_badge_size);
         final int badgeMinTop = res.getDimensionPixelSize(R.dimen.profile_badge_minimum_top);
+
+        // choose min between badge size defined for widget tray versus width, height of the image.
+        // Width, height of the image can be smaller than widget tray badge size when being dropped
+        // to the workspace.
+        final int badgeSize = Math.min(res.getDimensionPixelSize(R.dimen.profile_badge_size),
+                Math.min(imageWidth, imageHeight - badgeMinTop));
         final Rect badgeLocation = new Rect(0, 0, badgeSize, badgeSize);
 
         final int top = Math.max(imageHeight - badgeSize, badgeMinTop);
+
         if (res.getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
             badgeLocation.offset(0, top);
         } else {

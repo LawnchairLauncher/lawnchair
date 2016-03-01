@@ -79,6 +79,6 @@ public abstract class AppWidgetManagerCompat {
     public abstract Drawable loadIcon(LauncherAppWidgetProviderInfo info, IconCache cache);
 
     public abstract Bitmap getBadgeBitmap(LauncherAppWidgetProviderInfo info, Bitmap bitmap,
-            int imageHeight);
+            int imageWidth, int imageHeight);
 
 }
