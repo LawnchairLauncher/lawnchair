@@ -88,7 +88,7 @@ class AppWidgetManagerCompatV16 extends AppWidgetManagerCompat {
 
     @Override
     public Bitmap getBadgeBitmap(LauncherAppWidgetProviderInfo info, Bitmap bitmap,
-            int imageHeight) {
+            int imageWidth, int imageHeight) {
         return bitmap;
     }
 }

@@ -65,7 +65,7 @@ public class WidgetPreviewLoader {
     private final Context mContext;
     private final IconCache mIconCache;
     private final UserManagerCompat mUserManager;
-    private final AppWidgetManagerCompat mManager;
+    private final AppWidgetManagerCompat mWidgetManager;
     private final CacheDb mDb;
     private final int mProfileBadgeMargin;
 
@@ -75,7 +75,7 @@ public class WidgetPreviewLoader {
     public WidgetPreviewLoader(Context context, IconCache iconCache) {
         mContext = context;
         mIconCache = iconCache;
-        mManager = AppWidgetManagerCompat.getInstance(context);
+        mWidgetManager = AppWidgetManagerCompat.getInstance(context);
         mUserManager = UserManagerCompat.getInstance(context);
         mDb = new CacheDb(context);
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
@@ -139,7 +139,7 @@ public class WidgetPreviewLoader {
         // should cache the string builder
         if (o instanceof LauncherAppWidgetProviderInfo) {
             LauncherAppWidgetProviderInfo info = (LauncherAppWidgetProviderInfo) o;
-            return new WidgetCacheKey(info.provider, mManager.getUser(info), size);
+            return new WidgetCacheKey(info.provider, mWidgetManager.getUser(info), size);
         } else {
             ResolveInfo info = (ResolveInfo) o;
             return new WidgetCacheKey(
@@ -193,7 +193,7 @@ public class WidgetPreviewLoader {
                 pkg = ((ResolveInfo) obj).activityInfo.packageName;
             } else {
                 LauncherAppWidgetProviderInfo info = (LauncherAppWidgetProviderInfo) obj;
-                user = mManager.getUser(info);
+                user = mWidgetManager.getUser(info);
                 pkg = info.provider.getPackageName();
             }
 
@@ -305,6 +305,17 @@ public class WidgetPreviewLoader {
         }
     }
 
+    /**
+     * Generates the widget preview from either the {@link AppWidgetManagerCompat} or cache
+     * and add badge at the bottom right corner.
+     *
+     * @param launcher
+     * @param info                        information about the widget
+     * @param maxPreviewWidth             width of the preview on either workspace or tray
+     * @param preview                     bitmap that can be recycled
+     * @param preScaledWidthOut           return the width of the returned bitmap
+     * @return
+     */
     public Bitmap generateWidgetPreview(Launcher launcher, LauncherAppWidgetProviderInfo info,
             int maxPreviewWidth, Bitmap preview, int[] preScaledWidthOut) {
         // Load the preview image if possible
@@ -312,7 +323,7 @@ public class WidgetPreviewLoader {
 
         Drawable drawable = null;
         if (info.previewImage != 0) {
-            drawable = mManager.loadPreview(info);
+            drawable = mWidgetManager.loadPreview(info);
             if (drawable != null) {
                 drawable = mutateOnMainThread(drawable);
             } else {
@@ -327,6 +338,7 @@ public class WidgetPreviewLoader {
 
         int previewWidth;
         int previewHeight;
+
         Bitmap tileBitmap = null;
 
         if (widgetPreviewExists) {
@@ -398,7 +410,7 @@ public class WidgetPreviewLoader {
             float iconScale = Math.min((float) smallestSide / (appIconSize + 2 * minOffset), scale);
 
             try {
-                Drawable icon = mManager.loadIcon(info, mIconCache);
+                Drawable icon = mWidgetManager.loadIcon(info, mIconCache);
                 if (icon != null) {
                     icon = mutateOnMainThread(icon);
                     int hoffset = (int) ((tileW - appIconSize * iconScale) / 2) + x;
@@ -408,11 +420,13 @@ public class WidgetPreviewLoader {
                             yoffset + (int) (appIconSize * iconScale));
                     icon.draw(c);
                 }
-            } catch (Resources.NotFoundException e) { }
+            } catch (Resources.NotFoundException e) {
+            }
             c.setBitmap(null);
         }
+        int imageWidth = Math.min(preview.getWidth(), previewWidth + mProfileBadgeMargin);
         int imageHeight = Math.min(preview.getHeight(), previewHeight + mProfileBadgeMargin);
-        return mManager.getBadgeBitmap(info, preview, imageHeight);
+        return mWidgetManager.getBadgeBitmap(info, preview, imageWidth, imageHeight);
     }
 
     private Bitmap generateShortcutPreview(
