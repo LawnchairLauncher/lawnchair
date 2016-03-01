@@ -1042,24 +1042,25 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     protected void getVisiblePages(int[] range) {
-        final int pageCount = getChildCount();
+        final int count = getChildCount();
         range[0] = -1;
         range[1] = -1;
 
-        if (pageCount > 0) {
-            int lastVisiblePageIndex = 0;
+        if (count > 0) {
             final int visibleLeft = -getLeft();
             final int visibleRight = visibleLeft + getViewportWidth();
+            final Matrix pageShiftMatrix = getPageShiftMatrix();
+            int curScreen = 0;
 
-            for (int currPageIndex = 0; currPageIndex < pageCount; currPageIndex++) {
-                View currPage = getPageAt(currPageIndex);
+            for (int i = 0; i < count; i++) {
+                View currPage = getPageAt(i);
 
                 // Verify if the page bounds are within the visible range.
                 sTmpRectF.left = 0;
                 sTmpRectF.right = currPage.getMeasuredWidth();
                 currPage.getMatrix().mapRect(sTmpRectF);
                 sTmpRectF.offset(currPage.getLeft() - getScrollX(), 0);
-                getMatrix().mapRect(sTmpRectF);
+                pageShiftMatrix.mapRect(sTmpRectF);
 
                 if (sTmpRectF.left > visibleRight || sTmpRectF.right < visibleLeft) {
                     if (range[0] == -1) {
@@ -1068,17 +1069,21 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                         break;
                     }
                 }
+                curScreen = i;
                 if (range[0] < 0) {
-                    range[0] = currPageIndex;
+                    range[0] = curScreen;
                 }
-                lastVisiblePageIndex = currPageIndex;
             }
 
-            range[1] = lastVisiblePageIndex;
+            range[1] = curScreen;
         } else {
             range[0] = -1;
             range[1] = -1;
         }
+    }
+
+    protected Matrix getPageShiftMatrix() {
+        return getMatrix();
     }
 
     protected boolean shouldDrawChild(View child) {

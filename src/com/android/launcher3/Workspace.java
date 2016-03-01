@@ -170,6 +170,7 @@ public class Workspace extends PagedView
     @Thunk float[] mDragViewVisualCenter = new float[2];
     private float[] mTempCellLayoutCenterCoordinates = new float[2];
     private int[] mTempVisiblePagesRange = new int[2];
+    private Matrix mTempMatrix = new Matrix();
 
     private SpringLoadedDragController mSpringLoadedDragController;
     private float mSpringLoadedShrinkFactor;
@@ -1317,6 +1318,7 @@ public class Workspace extends PagedView
         if (mIsRtl) {
             transX = -transX;
         }
+        mOverlayTranslation = transX;
 
         // TODO(adamcohen): figure out a final effect here. We may need to recommend
         // different effects based on device performance. On at least one relatively high-end
@@ -1332,6 +1334,18 @@ public class Workspace extends PagedView
                 setTranslationAndAlpha(getChildAt(i), 0, alpha);
             }
         }
+    }
+
+    @Override
+    protected Matrix getPageShiftMatrix() {
+        if (Float.compare(mOverlayTranslation, 0) != 0) {
+            // The pages are translated by mOverlayTranslation. incorporate that in the
+            // visible page calculation by shifting everything back by that same amount.
+            mTempMatrix.set(getMatrix());
+            mTempMatrix.postTranslate(-mOverlayTranslation, 0);
+            return mTempMatrix;
+        }
+        return super.getPageShiftMatrix();
     }
 
     private void setTranslationAndAlpha(View v, float transX, float alpha) {
