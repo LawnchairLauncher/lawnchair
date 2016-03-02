@@ -28,11 +28,11 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
 import com.android.launcher3.ExtendedEditText;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.ComponentKey;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * An interface to a search box that AllApps can command.
@@ -40,9 +40,7 @@ import java.util.List;
 public abstract class AllAppsSearchBarController
         implements TextWatcher, OnEditorActionListener, ExtendedEditText.OnBackKeyListener {
 
-    private static final boolean ALLOW_SINGLE_APP_LAUNCH = true;
-
-    protected AllAppsRecyclerView mAppsRecyclerView;
+    protected Launcher mLauncher;
     protected AlphabeticalAppsList mApps;
     protected Callbacks mCb;
     protected ExtendedEditText mInput;
@@ -55,10 +53,10 @@ public abstract class AllAppsSearchBarController
      */
     public final void initialize(
             AlphabeticalAppsList apps, ExtendedEditText input,
-            AllAppsRecyclerView recycleView, Callbacks cb) {
+            Launcher launcher, Callbacks cb) {
         mApps = apps;
         mCb = cb;
-        mAppsRecyclerView = recycleView;
+        mLauncher = launcher;
 
         mInput = input;
         mInput.addTextChangedListener(this);
@@ -102,31 +100,17 @@ public abstract class AllAppsSearchBarController
 
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        // Skip if we disallow app-launch-on-enter
-        if (!ALLOW_SINGLE_APP_LAUNCH) {
-            return false;
-        }
         // Skip if it's not the right action
         if (actionId != EditorInfo.IME_ACTION_SEARCH) {
             return false;
         }
-        // Skip if there are more than one icon
-        if (mApps.getNumFilteredApps() > 1) {
+        // Skip if the query is empty
+        String query = v.getText().toString();
+        if (query.isEmpty()) {
             return false;
         }
-        // Otherwise, find the first icon, or fallback to the search-market-view and launch it
-        List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
-        for (int i = 0; i < items.size(); i++) {
-            AlphabeticalAppsList.AdapterItem item = items.get(i);
-            switch (item.viewType) {
-                case AllAppsGridAdapter.ICON_VIEW_TYPE:
-                case AllAppsGridAdapter.SEARCH_MARKET_VIEW_TYPE:
-                    mAppsRecyclerView.getChildAt(i).performClick();
-                    mInputMethodManager.hideSoftInputFromWindow(mInput.getWindowToken(), 0);
-                    return true;
-            }
-        }
-        return false;
+        return mLauncher.startActivitySafely(
+                v, AllAppsGridAdapter.createMarketSearchIntent(query), null);
     }
 
     @Override
