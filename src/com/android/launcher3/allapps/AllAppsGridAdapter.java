@@ -567,7 +567,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     /**
      * Creates a new market search intent.
      */
-    private Intent createMarketSearchIntent(String query) {
+    public static Intent createMarketSearchIntent(String query) {
         Uri marketSearchUri = Uri.parse("market://search")
                 .buildUpon()
                 .appendQueryParameter("q", query)
