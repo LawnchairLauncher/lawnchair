@@ -229,7 +229,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             throw new RuntimeException("Expected search bar controller to only be set once");
         }
         mSearchBarController = searchController;
-        mSearchBarController.initialize(mApps, mSearchInput, mAppsRecyclerView, this);
+        mSearchBarController.initialize(mApps, mSearchInput, mLauncher, this);
 
         updateBackgroundAndPaddings();
     }
