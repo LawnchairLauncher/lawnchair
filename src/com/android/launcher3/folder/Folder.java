@@ -470,8 +470,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     @SuppressLint("InflateParams")
     static Folder fromXml(Launcher launcher) {
         return (Folder) launcher.getLayoutInflater().inflate(
-                FeatureFlags.LAUNCHER3_ICON_NORMALIZATION
-                        ? R.layout.user_folder_icon_normalized : R.layout.user_folder, null);
+                FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION
+                        ? R.layout.user_folder : R.layout.user_folder_icon_normalized, null);
     }
 
     /**
