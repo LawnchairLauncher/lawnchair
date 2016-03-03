@@ -223,8 +223,8 @@ public final class Utilities {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static Bitmap createBadgedIconBitmap(
             Drawable icon, UserHandleCompat user, Context context) {
-        float scale = FeatureFlags.LAUNCHER3_ICON_NORMALIZATION ?
-                IconNormalizer.getInstance().getScale(icon) : 1;
+        float scale = FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION ?
+                1 : IconNormalizer.getInstance().getScale(icon);
         Bitmap bitmap = createIconBitmap(icon, context, scale);
         if (Utilities.ATLEAST_LOLLIPOP && user != null
                 && !UserHandleCompat.myUserHandle().equals(user)) {
