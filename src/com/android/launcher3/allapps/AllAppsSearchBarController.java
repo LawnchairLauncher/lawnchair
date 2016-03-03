@@ -16,12 +16,13 @@
 package com.android.launcher3.allapps;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
@@ -70,11 +71,9 @@ public abstract class AllAppsSearchBarController
     }
 
     /**
-     * To be overridden by subclasses. This method will get called when the controller is set.
+     * To be implemented by subclasses. This method will get called when the controller is set.
      */
-    protected DefaultAppSearchAlgorithm onInitializeSearch() {
-        return null;
-    }
+    protected abstract DefaultAppSearchAlgorithm onInitializeSearch();
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -109,8 +108,7 @@ public abstract class AllAppsSearchBarController
         if (query.isEmpty()) {
             return false;
         }
-        return mLauncher.startActivitySafely(
-                v, AllAppsGridAdapter.createMarketSearchIntent(query), null);
+        return mLauncher.startActivitySafely(v, createMarketSearchIntent(query), null);
     }
 
     @Override
@@ -143,14 +141,6 @@ public abstract class AllAppsSearchBarController
     }
 
     /**
-     * Returns the search bar view.
-     * @param parent the parent to attach the search bar view to.
-     */
-    public View getView(ViewGroup parent) {
-        return null;
-    }
-
-    /**
      * Focuses the search field to handle key events.
      */
     public void focusSearchField() {
@@ -166,11 +156,15 @@ public abstract class AllAppsSearchBarController
     }
 
     /**
-     * Returns whether the prediction bar should currently be visible depending on the state of
-     * the search bar.
+     * Creates a new market search intent.
      */
-    public boolean shouldShowPredictionBar() {
-        return false;
+    public Intent createMarketSearchIntent(String query) {
+        Uri marketSearchUri = Uri.parse("market://search")
+                .buildUpon()
+                .appendQueryParameter("c", "apps")
+                .appendQueryParameter("q", query)
+                .build();
+        return new Intent(Intent.ACTION_VIEW).setData(marketSearchUri);
     }
 
     /**
