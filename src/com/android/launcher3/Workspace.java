@@ -59,7 +59,6 @@ import android.widget.TextView;
 
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
-import com.android.launcher3.folder.FolderIcon.FolderRingAnimator;
 import com.android.launcher3.Launcher.CustomContentCallbacks;
 import com.android.launcher3.Launcher.LauncherOverlay;
 import com.android.launcher3.UninstallDropTarget.UninstallSource;
@@ -224,7 +223,7 @@ public class Workspace extends PagedView
     public static final int REORDER_TIMEOUT = 350;
     private final Alarm mFolderCreationAlarm = new Alarm();
     private final Alarm mReorderAlarm = new Alarm();
-    @Thunk FolderRingAnimator mDragFolderRingAnimator = null;
+    private FolderIcon.PreviewBackground mFolderCreateBg = new FolderIcon.PreviewBackground();
     private FolderIcon mDragOverFolderIcon = null;
     private boolean mCreateUserFolderOnDrop = false;
     private boolean mAddToExistingFolderOnDrop = false;
@@ -2493,6 +2492,10 @@ public class Workspace extends PagedView
             // If the dragView is null, we can't animate
             boolean animate = dragView != null;
             if (animate) {
+                // In order to keep everything continuous, we hand off the currently rendered
+                // folder background to the newly created icon. This preserves animation state.
+                fi.setFolderBackground(mFolderCreateBg);
+                mFolderCreateBg = new FolderIcon.PreviewBackground();
                 fi.performCreateAnimation(destInfo, v, sourceInfo, dragView, folderLocation, scale,
                         postAnimationRunnable);
             } else {
@@ -2855,10 +2858,7 @@ public class Workspace extends PagedView
     }
 
     private void cleanupFolderCreation() {
-        if (mDragFolderRingAnimator != null) {
-            mDragFolderRingAnimator.animateToNaturalState();
-            mDragFolderRingAnimator = null;
-        }
+        mFolderCreateBg.animateToRest();
         mFolderCreationAlarm.setOnAlarmListener(null);
         mFolderCreationAlarm.cancelAlarm();
     }
@@ -3166,18 +3166,16 @@ public class Workspace extends PagedView
             this.layout = layout;
             this.cellX = cellX;
             this.cellY = cellY;
+
+            DeviceProfile grid = mLauncher.getDeviceProfile();
+            BubbleTextView cell = (BubbleTextView) layout.getChildAt(cellX, cellY);
+
+            mFolderCreateBg.setup(getResources().getDisplayMetrics(), grid, null,
+                    cell.getMeasuredWidth(), cell.getPaddingTop());
         }
 
         public void onAlarm(Alarm alarm) {
-            if (mDragFolderRingAnimator != null) {
-                // This shouldn't happen ever, but just in case, make sure we clean up the mess.
-                mDragFolderRingAnimator.animateToNaturalState();
-            }
-            mDragFolderRingAnimator = new FolderRingAnimator(mLauncher, null);
-            mDragFolderRingAnimator.setCell(cellX, cellY);
-            mDragFolderRingAnimator.setCellLayout(layout);
-            mDragFolderRingAnimator.animateToAcceptState();
-            layout.showFolderAccept(mDragFolderRingAnimator);
+            mFolderCreateBg.animateToAccept(layout, cellX, cellY);
             layout.clearDragOutlines();
             setDragMode(DRAG_MODE_CREATE_FOLDER);
         }

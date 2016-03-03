@@ -85,6 +85,7 @@ public class DeviceProfile {
     // Folder
     public int folderBackgroundOffset;
     public int folderIconSizePx;
+    public int folderIconPreviewPadding;
     public int folderCellWidthPx;
     public int folderCellHeightPx;
 
@@ -262,6 +263,7 @@ public class DeviceProfile {
         folderCellHeightPx = cellHeightPx + edgeMarginPx;
         folderBackgroundOffset = -edgeMarginPx;
         folderIconSizePx = iconSizePx + 2 * -folderBackgroundOffset;
+        folderIconPreviewPadding = res.getDimensionPixelSize(R.dimen.folder_preview_padding);
     }
 
     /**

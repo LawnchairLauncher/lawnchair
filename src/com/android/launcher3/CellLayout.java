@@ -55,7 +55,6 @@ import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.folder.FolderIcon;
-import com.android.launcher3.folder.FolderIcon.FolderRingAnimator;
 import com.android.launcher3.util.ParcelableSparseArray;
 import com.android.launcher3.util.Thunk;
 
@@ -108,8 +107,9 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     private OnTouchListener mInterceptTouchListener;
     private StylusEventHelper mStylusEventHelper;
 
-    private ArrayList<FolderRingAnimator> mFolderOuterRings = new ArrayList<FolderRingAnimator>();
-    private int[] mFolderLeaveBehindCell = {-1, -1};
+    private ArrayList<FolderIcon.PreviewBackground> mFolderBackgrounds = new ArrayList<FolderIcon.PreviewBackground>();
+    FolderIcon.PreviewBackground mFolderLeaveBehind = new FolderIcon.PreviewBackground();
+    Paint mFolderBgPaint = new Paint();
 
     private float mBackgroundAlpha;
 
@@ -208,6 +208,9 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         mTmpOccupied = new boolean[mCountX][mCountY];
         mPreviousReorderDirection[0] = INVALID_DIRECTION;
         mPreviousReorderDirection[1] = INVALID_DIRECTION;
+
+        mFolderLeaveBehind.delegateCellX = -1;
+        mFolderLeaveBehind.delegateCellY = -1;
 
         setAlwaysDrawnWithCacheEnabled(false);
         final Resources res = getResources();
@@ -501,88 +504,62 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             }
         }
 
-        int previewOffset = FolderRingAnimator.sPreviewSize;
-
-        // The folder outer / inner ring image(s)
-        DeviceProfile grid = mLauncher.getDeviceProfile();
-        for (int i = 0; i < mFolderOuterRings.size(); i++) {
-            FolderRingAnimator fra = mFolderOuterRings.get(i);
-
-            Drawable d;
-            int width, height;
-            cellToPoint(fra.mCellX, fra.mCellY, mTempLocation);
-            View child = getChildAt(fra.mCellX, fra.mCellY);
-
-            if (child != null) {
-                int centerX = mTempLocation[0] + mCellWidth / 2;
-                int centerY = mTempLocation[1] + previewOffset / 2 +
-                        child.getPaddingTop() + grid.folderBackgroundOffset;
-
-                // Draw outer ring, if it exists
-                if (FolderIcon.HAS_OUTER_RING) {
-                    d = FolderRingAnimator.sSharedOuterRingDrawable;
-                    width = (int) (fra.getOuterRingSize() * getChildrenScale());
-                    height = width;
-                    canvas.save();
-                    canvas.translate(centerX - width / 2, centerY - height / 2);
-                    d.setBounds(0, 0, width, height);
-                    d.draw(canvas);
-                    canvas.restore();
-                }
-
-                // Draw inner ring
-                d = FolderRingAnimator.sSharedInnerRingDrawable;
-                width = (int) (fra.getInnerRingSize() * getChildrenScale());
-                height = width;
-                canvas.save();
-                canvas.translate(centerX - width / 2, centerY - width / 2);
-                d.setBounds(0, 0, width, height);
-                d.draw(canvas);
-                canvas.restore();
-            }
+        for (int i = 0; i < mFolderBackgrounds.size(); i++) {
+            FolderIcon.PreviewBackground bg = mFolderBackgrounds.get(i);
+            cellToPoint(bg.delegateCellX, bg.delegateCellY, mTempLocation);
+            canvas.save();
+            canvas.translate(mTempLocation[0], mTempLocation[1]);
+            bg.drawBackground(canvas, mFolderBgPaint);
+            canvas.restore();
         }
 
-        if (mFolderLeaveBehindCell[0] >= 0 && mFolderLeaveBehindCell[1] >= 0) {
-            Drawable d = FolderIcon.sSharedFolderLeaveBehind;
-            int width = d.getIntrinsicWidth();
-            int height = d.getIntrinsicHeight();
-
-            cellToPoint(mFolderLeaveBehindCell[0], mFolderLeaveBehindCell[1], mTempLocation);
-            View child = getChildAt(mFolderLeaveBehindCell[0], mFolderLeaveBehindCell[1]);
-            if (child != null) {
-                int centerX = mTempLocation[0] + mCellWidth / 2;
-                int centerY = mTempLocation[1] + previewOffset / 2 +
-                        child.getPaddingTop() + grid.folderBackgroundOffset;
-
-                canvas.save();
-                canvas.translate(centerX - width / 2, centerY - width / 2);
-                d.setBounds(0, 0, width, height);
-                d.draw(canvas);
-                canvas.restore();
-            }
+        if (mFolderLeaveBehind.delegateCellX >= 0 && mFolderLeaveBehind.delegateCellY >= 0) {
+            cellToPoint(mFolderLeaveBehind.delegateCellX,
+                    mFolderLeaveBehind.delegateCellY, mTempLocation);
+            canvas.save();
+            canvas.translate(mTempLocation[0], mTempLocation[1]);
+            mFolderLeaveBehind.drawLeaveBehind(canvas, mFolderBgPaint);
+            canvas.restore();
         }
     }
 
-    public void showFolderAccept(FolderRingAnimator fra) {
-        mFolderOuterRings.add(fra);
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        super.dispatchDraw(canvas);
+
+        for (int i = 0; i < mFolderBackgrounds.size(); i++) {
+            FolderIcon.PreviewBackground bg = mFolderBackgrounds.get(i);
+            cellToPoint(bg.delegateCellX, bg.delegateCellY, mTempLocation);
+            canvas.save();
+            canvas.translate(mTempLocation[0], mTempLocation[1]);
+            bg.drawBackgroundStroke(canvas, mFolderBgPaint);
+            canvas.restore();
+        }
     }
 
-    public void hideFolderAccept(FolderRingAnimator fra) {
-        if (mFolderOuterRings.contains(fra)) {
-            mFolderOuterRings.remove(fra);
-        }
-        invalidate();
+    public void addFolderBackground(FolderIcon.PreviewBackground bg) {
+        mFolderBackgrounds.add(bg);
+    }
+    public void removeFolderBackground(FolderIcon.PreviewBackground bg) {
+        mFolderBackgrounds.remove(bg);
     }
 
     public void setFolderLeaveBehindCell(int x, int y) {
-        mFolderLeaveBehindCell[0] = x;
-        mFolderLeaveBehindCell[1] = y;
+
+        DeviceProfile grid = mLauncher.getDeviceProfile();
+        View child = getChildAt(x, y);
+
+        mFolderLeaveBehind.setup(getResources().getDisplayMetrics(), grid, null,
+                child.getMeasuredWidth(), child.getPaddingTop());
+
+        mFolderLeaveBehind.delegateCellX = x;
+        mFolderLeaveBehind.delegateCellY = y;
         invalidate();
     }
 
     public void clearFolderLeaveBehind() {
-        mFolderLeaveBehindCell[0] = -1;
-        mFolderLeaveBehindCell[1] = -1;
+        mFolderLeaveBehind.delegateCellX = -1;
+        mFolderLeaveBehind.delegateCellY = -1;
         invalidate();
     }
 
