@@ -324,20 +324,29 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         }
     }
 
-    private Launcher mLauncher;
-    private LayoutInflater mLayoutInflater;
-    @Thunk AlphabeticalAppsList mApps;
-    private GridLayoutManager mGridLayoutMgr;
-    private GridSpanSizer mGridSizer;
-    private GridItemDecoration mItemDecoration;
-    private View.OnTouchListener mTouchListener;
-    private View.OnClickListener mIconClickListener;
-    private View.OnLongClickListener mIconLongClickListener;
+    private final Launcher mLauncher;
+    private final LayoutInflater mLayoutInflater;
+    private final AlphabeticalAppsList mApps;
+    private final GridLayoutManager mGridLayoutMgr;
+    private final GridSpanSizer mGridSizer;
+    private final GridItemDecoration mItemDecoration;
+    private final View.OnTouchListener mTouchListener;
+    private final View.OnClickListener mIconClickListener;
+    private final View.OnLongClickListener mIconLongClickListener;
+
+    private final Rect mBackgroundPadding = new Rect();
+    private final boolean mIsRtl;
+
+    // Section drawing
+    private final int mSectionNamesMargin;
+    private final int mSectionHeaderOffset;
+    private final Paint mSectionTextPaint;
+    private final Paint mPredictedAppsDividerPaint;
+
+    private final int mPredictionBarDividerOffset;
+    private int mAppsPerRow;
     private BindViewCallback mBindViewCallback;
-    @Thunk final Rect mBackgroundPadding = new Rect();
-    @Thunk int mPredictionBarDividerOffset;
-    @Thunk int mAppsPerRow;
-    @Thunk boolean mIsRtl;
+    private AllAppsSearchBarController mSearchController;
 
     // The text to show when there are no search results and no market search handler.
     private String mEmptySearchMessage;
@@ -349,14 +358,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     private String mMarketSearchMessage;
     // The intent to send off to the market app, updated each time the search query changes.
     private Intent mMarketSearchIntent;
-    // The last query that the user entered into the search field
-    private String mLastSearchQuery;
-
-    // Section drawing
-    @Thunk int mSectionNamesMargin;
-    @Thunk int mSectionHeaderOffset;
-    @Thunk Paint mSectionTextPaint;
-    @Thunk Paint mPredictedAppsDividerPaint;
 
     public AllAppsGridAdapter(Launcher launcher, AlphabeticalAppsList apps,
             View.OnTouchListener touchListener, View.OnClickListener iconClickListener,
@@ -375,28 +376,19 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         mIconLongClickListener = iconLongClickListener;
         mSectionNamesMargin = res.getDimensionPixelSize(R.dimen.all_apps_grid_view_start_margin);
         mSectionHeaderOffset = res.getDimensionPixelSize(R.dimen.all_apps_grid_section_y_offset);
+        mIsRtl = Utilities.isRtl(res);
 
-        mSectionTextPaint = new Paint();
+        mSectionTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mSectionTextPaint.setTextSize(res.getDimensionPixelSize(
                 R.dimen.all_apps_grid_section_text_size));
         mSectionTextPaint.setColor(res.getColor(R.color.all_apps_grid_section_text_color));
-        mSectionTextPaint.setAntiAlias(true);
 
-        mPredictedAppsDividerPaint = new Paint();
+        mPredictedAppsDividerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPredictedAppsDividerPaint.setStrokeWidth(Utilities.pxFromDp(1f, res.getDisplayMetrics()));
         mPredictedAppsDividerPaint.setColor(0x1E000000);
-        mPredictedAppsDividerPaint.setAntiAlias(true);
         mPredictionBarDividerOffset =
                 (-res.getDimensionPixelSize(R.dimen.all_apps_prediction_icon_bottom_padding) +
                         res.getDimensionPixelSize(R.dimen.all_apps_icon_top_bottom_padding)) / 2;
-
-        // Resolve the market app handling additional searches
-        PackageManager pm = launcher.getPackageManager();
-        ResolveInfo marketInfo = pm.resolveActivity(createMarketSearchIntent(""),
-                PackageManager.MATCH_DEFAULT_ONLY);
-        if (marketInfo != null) {
-            mMarketAppName = marketInfo.loadLabel(pm).toString();
-        }
     }
 
     /**
@@ -407,11 +399,16 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         mGridLayoutMgr.setSpanCount(appsPerRow);
     }
 
-    /**
-     * Sets whether we are in RTL mode.
-     */
-    public void setRtl(boolean rtl) {
-        mIsRtl = rtl;
+    public void setSearchController(AllAppsSearchBarController searchController) {
+        mSearchController = searchController;
+
+        // Resolve the market app handling additional searches
+        PackageManager pm = mLauncher.getPackageManager();
+        ResolveInfo marketInfo = pm.resolveActivity(mSearchController.createMarketSearchIntent(""),
+                PackageManager.MATCH_DEFAULT_ONLY);
+        if (marketInfo != null) {
+            mMarketAppName = marketInfo.loadLabel(pm).toString();
+        }
     }
 
     /**
@@ -421,12 +418,11 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     public void setLastSearchQuery(String query) {
         Resources res = mLauncher.getResources();
         String formatStr = res.getString(R.string.all_apps_no_search_results);
-        mLastSearchQuery = query;
         mEmptySearchMessage = String.format(formatStr, query);
         if (mMarketAppName != null) {
             mMarketSearchMessage = String.format(res.getString(R.string.all_apps_search_market_message),
                     mMarketAppName);
-            mMarketSearchIntent = createMarketSearchIntent(query);
+            mMarketSearchIntent = mSearchController.createMarketSearchIntent(query);
         }
     }
 
@@ -562,18 +558,5 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     public int getItemViewType(int position) {
         AlphabeticalAppsList.AdapterItem item = mApps.getAdapterItems().get(position);
         return item.viewType;
-    }
-
-    /**
-     * Creates a new market search intent.
-     */
-    public static Intent createMarketSearchIntent(String query) {
-        Uri marketSearchUri = Uri.parse("market://search")
-                .buildUpon()
-                .appendQueryParameter("q", query)
-                .build();
-        Intent marketSearchIntent = new Intent(Intent.ACTION_VIEW);
-        marketSearchIntent.setData(marketSearchUri);
-        return marketSearchIntent;
     }
 }

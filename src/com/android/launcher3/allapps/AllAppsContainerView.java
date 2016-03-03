@@ -229,6 +229,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         }
         mSearchBarController = searchController;
         mSearchBarController.initialize(mApps, mSearchInput, mLauncher, this);
+        mAdapter.setSearchController(mSearchBarController);
 
         updateBackgroundAndPaddings();
     }
@@ -261,7 +262,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mAdapter.setRtl(Utilities.isRtl(getResources()));
 
         // This is a focus listener that proxies focus from a view into the list view.  This is to
         // work around the search box from getting first focus and showing the cursor.
