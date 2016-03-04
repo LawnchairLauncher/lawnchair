@@ -23,8 +23,8 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.backup.nano.BackupProtos;
+import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.util.LongArrayMap;
 
 import java.util.ArrayList;
@@ -692,7 +692,8 @@ public class GridSizeMigrationTask {
                         Favorites.SPANX,                // 4
                         Favorites.SPANY,                // 5
                         Favorites.INTENT,               // 6
-                        Favorites.APPWIDGET_PROVIDER},  // 7
+                        Favorites.APPWIDGET_PROVIDER,   // 7
+                        Favorites.APPWIDGET_ID},        // 8
                 Favorites.CONTAINER + " = " + Favorites.CONTAINER_DESKTOP
                         + " AND " + Favorites.SCREEN + " = " + screen, null, null, null);
 
@@ -704,6 +705,7 @@ public class GridSizeMigrationTask {
         final int indexSpanY = c.getColumnIndexOrThrow(Favorites.SPANY);
         final int indexIntent = c.getColumnIndexOrThrow(Favorites.INTENT);
         final int indexAppWidgetProvider = c.getColumnIndexOrThrow(Favorites.APPWIDGET_PROVIDER);
+        final int indexAppWidgetId = c.getColumnIndexOrThrow(Favorites.APPWIDGET_ID);
 
         ArrayList<DbEntry> entries = new ArrayList<>();
         while (c.moveToNext()) {
@@ -733,9 +735,9 @@ public class GridSizeMigrationTask {
                         entry.weight = Math.max(WT_WIDGET_MIN, WT_WIDGET_FACTOR
                                 * entry.spanX * entry.spanY);
 
-                        // Migration happens for current user only.
-                        LauncherAppWidgetProviderInfo pInfo = LauncherModel.getProviderInfo(
-                                mContext, cn, UserHandleCompat.myUserHandle());
+                        int widgetId = c.getInt(indexAppWidgetId);
+                        LauncherAppWidgetProviderInfo pInfo = AppWidgetManagerCompat.getInstance(
+                                mContext).getLauncherAppWidgetInfo(widgetId);
                         Point spans = pInfo == null ?
                                 mWidgetMinSize.get(provider) : pInfo.getMinSpans(mIdp, mContext);
                         if (spans != null) {

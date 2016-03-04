@@ -68,6 +68,7 @@ import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate.AccessibilityDragSource;
 import com.android.launcher3.accessibility.OverviewScreenAccessibilityDelegate;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
+import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.Thunk;
@@ -180,22 +181,20 @@ public class Workspace extends PagedView
     // in all apps or customize mode)
 
     enum State {
-        NORMAL          (SearchDropTargetBar.State.SEARCH_BAR),
-        NORMAL_HIDDEN   (SearchDropTargetBar.State.INVISIBLE_TRANSLATED),
-        SPRING_LOADED   (SearchDropTargetBar.State.DROP_TARGET),
-        OVERVIEW        (SearchDropTargetBar.State.INVISIBLE),
-        OVERVIEW_HIDDEN (SearchDropTargetBar.State.INVISIBLE);
+        NORMAL          (SearchDropTargetBar.State.SEARCH_BAR, false),
+        NORMAL_HIDDEN   (SearchDropTargetBar.State.INVISIBLE_TRANSLATED, false),
+        SPRING_LOADED   (SearchDropTargetBar.State.DROP_TARGET, false),
+        OVERVIEW        (SearchDropTargetBar.State.INVISIBLE, true),
+        OVERVIEW_HIDDEN (SearchDropTargetBar.State.INVISIBLE, true);
 
-        private final SearchDropTargetBar.State mBarState;
+        public final SearchDropTargetBar.State searchDropTargetBarState;
+        public final boolean shouldUpdateWidget;
 
-        State(SearchDropTargetBar.State searchBarState) {
-            mBarState = searchBarState;
+        State(SearchDropTargetBar.State searchBarState, boolean shouldUpdateWidget) {
+            searchDropTargetBarState = searchBarState;
+            this.shouldUpdateWidget = shouldUpdateWidget;
         }
-
-        public SearchDropTargetBar.State getSearchDropTargetBarState() {
-            return mBarState;
-        }
-    };
+    }
 
     private State mState = State.NORMAL;
     private boolean mIsSwitchingState = false;
@@ -2017,9 +2016,15 @@ public class Workspace extends PagedView
         Animator workspaceAnim =  mStateTransitionAnimation.getAnimationToState(mState,
                 toState, toPage, animated, layerViews);
 
+        boolean shouldNotifyWidgetChange = !mState.shouldUpdateWidget
+                && toState.shouldUpdateWidget;
         // Update the current state
         mState = toState;
         updateAccessibilityFlags();
+
+        if (shouldNotifyWidgetChange) {
+            mLauncher.notifyWidgetProvidersChanged();
+        }
 
         return workspaceAnim;
     }
@@ -4400,13 +4405,22 @@ public class Workspace extends PagedView
         });
     }
 
-    void widgetsRestored(ArrayList<LauncherAppWidgetInfo> changedInfo) {
+    public void widgetsRestored(ArrayList<LauncherAppWidgetInfo> changedInfo) {
         if (!changedInfo.isEmpty()) {
             DeferredWidgetRefresh widgetRefresh = new DeferredWidgetRefresh(changedInfo,
                     mLauncher.getAppWidgetHost());
-            if (LauncherModel.getProviderInfo(getContext(),
-                    changedInfo.get(0).providerName,
-                    changedInfo.get(0).user) != null) {
+
+            LauncherAppWidgetInfo item = changedInfo.get(0);
+            final AppWidgetProviderInfo widgetInfo;
+            if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)) {
+                widgetInfo = AppWidgetManagerCompat
+                        .getInstance(mLauncher).findProvider(item.providerName, item.user);
+            } else {
+                widgetInfo = AppWidgetManagerCompat.getInstance(mLauncher)
+                        .getAppWidgetInfo(item.appWidgetId);
+            }
+
+            if (widgetInfo != null) {
                 // Re-inflate the widgets which have changed status
                 widgetRefresh.run();
             } else {

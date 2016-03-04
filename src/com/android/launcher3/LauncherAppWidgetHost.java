@@ -102,6 +102,10 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
                 callback.run();
             }
         }
+
+        if (Utilities.ATLEAST_MARSHMALLOW) {
+            mLauncher.notifyWidgetProvidersChanged();
+        }
     }
 
     public AppWidgetHostView createView(Context context, int appWidgetId,

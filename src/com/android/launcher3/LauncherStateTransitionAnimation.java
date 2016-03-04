@@ -702,7 +702,7 @@ public class LauncherStateTransitionAnimation {
     private void startWorkspaceSearchBarAnimation(
             final Workspace.State toWorkspaceState, int duration, AnimatorSet animation) {
         final SearchDropTargetBar.State toSearchBarState =
-                toWorkspaceState.getSearchDropTargetBarState();
+                toWorkspaceState.searchDropTargetBarState;
         mLauncher.getSearchDropTargetBar().animateToState(toSearchBarState, duration, animation);
     }
 
