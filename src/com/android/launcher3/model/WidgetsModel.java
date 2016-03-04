@@ -1,9 +1,13 @@
 
 package com.android.launcher3.model;
 
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ResolveInfo;
+import android.os.DeadObjectException;
+import android.os.TransactionTooLargeException;
 import android.util.Log;
 
 import com.android.launcher3.AppFilter;
@@ -16,6 +20,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.UserHandleCompat;
+import com.android.launcher3.config.ProviderConfig;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -95,8 +100,41 @@ public class WidgetsModel {
         return mRawList;
     }
 
-    public void setWidgetsAndShortcuts(ArrayList<Object> rawWidgetsShortcuts) {
+    public boolean isEmpty() {
+        return mRawList.isEmpty();
+    }
+
+    public WidgetsModel updateAndClone(Context context) {
         Utilities.assertWorkerThread();
+
+        try {
+            final ArrayList<Object> widgetsAndShortcuts = new ArrayList<>();
+            // Widgets
+            for (AppWidgetProviderInfo widgetInfo :
+                    AppWidgetManagerCompat.getInstance(context).getAllProviders()) {
+                widgetsAndShortcuts.add(LauncherAppWidgetProviderInfo
+                        .fromProviderInfo(context, widgetInfo));
+            }
+            // Shortcuts
+            widgetsAndShortcuts.addAll(context.getPackageManager().queryIntentActivities(
+                    new Intent(Intent.ACTION_CREATE_SHORTCUT), 0));
+            setWidgetsAndShortcuts(widgetsAndShortcuts);
+        } catch (Exception e) {
+            if (!ProviderConfig.IS_DOGFOOD_BUILD &&
+                    (e.getCause() instanceof TransactionTooLargeException ||
+                            e.getCause() instanceof DeadObjectException)) {
+                // the returned value may be incomplete and will not be refreshed until the next
+                // time Launcher starts.
+                // TODO: after figuring out a repro step, introduce a dirty bit to check when
+                // onResume is called to refresh the widget provider list.
+            } else {
+                throw e;
+            }
+        }
+        return clone();
+    }
+
+    private void setWidgetsAndShortcuts(ArrayList<Object> rawWidgetsShortcuts) {
         mRawList = rawWidgetsShortcuts;
         if (DEBUG) {
             Log.d(TAG, "addWidgetsAndShortcuts, widgetsShortcuts#=" + rawWidgetsShortcuts.size());

@@ -82,7 +82,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.view.ViewStub;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
@@ -1530,8 +1529,7 @@ public class Launcher extends Activity
 
         ItemInfo info = mPendingAddInfo;
         if (appWidgetInfo == null) {
-            appWidgetInfo = LauncherAppWidgetProviderInfo.fromProviderInfo(this,
-                    mAppWidgetManager.getAppWidgetInfo(appWidgetId));
+            appWidgetInfo = mAppWidgetManager.getLauncherAppWidgetInfo(appWidgetId);
         }
 
         if (appWidgetInfo.isCustomWidget) {
@@ -2528,10 +2526,10 @@ public class Launcher extends Activity
         final LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) v.getTag();
         if (v.isReadyForClickSetup()) {
             int widgetId = info.appWidgetId;
-            AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(widgetId);
+            LauncherAppWidgetProviderInfo appWidgetInfo =
+                    mAppWidgetManager.getLauncherAppWidgetInfo(widgetId);
             if (appWidgetInfo != null) {
-                mPendingAddWidgetInfo = LauncherAppWidgetProviderInfo.fromProviderInfo(
-                        this, appWidgetInfo);
+                mPendingAddWidgetInfo = appWidgetInfo;
                 mPendingAddInfo.copyFrom(info);
                 mPendingAddWidgetId = widgetId;
 
@@ -3509,10 +3507,6 @@ public class Launcher extends Activity
         // TODO
     }
 
-    protected void disableVoiceButtonProxy(boolean disable) {
-        // NO-OP
-    }
-
     public boolean launcherCallbacksProvidesSearch() {
         return (mLauncherCallbacks != null && mLauncherCallbacks.providesSearch());
     }
@@ -3926,6 +3920,16 @@ public class Launcher extends Activity
         sFolders = folders.clone();
     }
 
+    private void bindSafeModeWidget(LauncherAppWidgetInfo item) {
+        PendingAppWidgetHostView view = new PendingAppWidgetHostView(this, item, true);
+        view.updateIcon(mIconCache);
+        item.hostView = view;
+        item.hostView.updateAppWidget(null);
+        item.hostView.setOnClickListener(this);
+        addAppWidgetToWorkspace(item, null, false);
+        mWorkspace.requestLayout();
+    }
+
     /**
      * Add the views for a widget to the workspace.
      *
@@ -3941,19 +3945,31 @@ public class Launcher extends Activity
             return;
         }
 
+        if (mIsSafeModeEnabled) {
+            bindSafeModeWidget(item);
+            return;
+        }
+
         final long start = DEBUG_WIDGETS ? SystemClock.uptimeMillis() : 0;
         if (DEBUG_WIDGETS) {
             Log.d(TAG, "bindAppWidget: " + item);
         }
-        final Workspace workspace = mWorkspace;
 
-        LauncherAppWidgetProviderInfo appWidgetInfo =
-                LauncherModel.getProviderInfo(this, item.providerName, item.user);
+        final LauncherAppWidgetProviderInfo appWidgetInfo;
 
-        if (!mIsSafeModeEnabled
-                && ((item.restoreStatus & LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY) == 0)
-                && (item.restoreStatus != LauncherAppWidgetInfo.RESTORE_COMPLETED)) {
+        if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)) {
+            // If the provider is not ready, bind as a pending widget.
+            appWidgetInfo = null;
+        } else if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)) {
+            // The widget id is not valid. Try to find the widget based on the provider info.
+            appWidgetInfo = mAppWidgetManager.findProvider(item.providerName, item.user);
+        } else {
+            appWidgetInfo = mAppWidgetManager.getLauncherAppWidgetInfo(item.appWidgetId);
+        }
 
+        // If the provider is ready, but the width is not yet restored, try to restore it.
+        if (!item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY) &&
+                (item.restoreStatus != LauncherAppWidgetInfo.RESTORE_COMPLETED)) {
             if (appWidgetInfo == null) {
                 if (DEBUG_WIDGETS) {
                     Log.d(TAG, "Removing restored widget: id=" + item.appWidgetId
@@ -3965,7 +3981,7 @@ public class Launcher extends Activity
             }
 
             // If we do not have a valid id, try to bind an id.
-            if ((item.restoreStatus & LauncherAppWidgetInfo.FLAG_ID_NOT_VALID) != 0) {
+            if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)) {
                 // Note: This assumes that the id remap broadcast is received before this step.
                 // If that is not the case, the id remap will be ignored and user may see the
                 // click to setup view.
@@ -4001,46 +4017,42 @@ public class Launcher extends Activity
                         : LauncherAppWidgetInfo.FLAG_UI_NOT_READY;
 
                 LauncherModel.updateItemInDatabase(this, item);
-            } else if (((item.restoreStatus & LauncherAppWidgetInfo.FLAG_UI_NOT_READY) != 0)
+            } else if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_UI_NOT_READY)
                     && (appWidgetInfo.configure == null)) {
-                // If the ID is already valid, verify if we need to configure or not.
+                // The widget was marked as UI not ready, but there is no configure activity to
+                // update the UI.
                 item.restoreStatus = LauncherAppWidgetInfo.RESTORE_COMPLETED;
                 LauncherModel.updateItemInDatabase(this, item);
             }
         }
 
-        if (!mIsSafeModeEnabled && item.restoreStatus == LauncherAppWidgetInfo.RESTORE_COMPLETED) {
-            final int appWidgetId = item.appWidgetId;
+        if (item.restoreStatus == LauncherAppWidgetInfo.RESTORE_COMPLETED) {
             if (DEBUG_WIDGETS) {
                 Log.d(TAG, "bindAppWidget: id=" + item.appWidgetId + " belongs to component "
                         + appWidgetInfo.provider);
             }
 
             // Verify that we own the widget
-            AppWidgetProviderInfo info = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
-            if (info == null || appWidgetInfo == null ||
-                    !info.provider.equals(appWidgetInfo.provider)) {
-                Log.e(TAG, "Removing invalid widget: id=" + item.appWidgetId + " info=" + info
-                        + " appWidgetInfo=" + appWidgetInfo);
+            if (appWidgetInfo == null) {
+                Log.e(TAG, "Removing invalid widget: id=" + item.appWidgetId);
                 deleteWidgetInfo(item);
                 return;
             }
 
-            item.hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
+            item.hostView = mAppWidgetHost.createView(this, item.appWidgetId, appWidgetInfo);
             item.minSpanX = appWidgetInfo.minSpanX;
             item.minSpanY = appWidgetInfo.minSpanY;
+            addAppWidgetToWorkspace(item, appWidgetInfo, false);
         } else {
-            appWidgetInfo = null;
             PendingAppWidgetHostView view = new PendingAppWidgetHostView(this, item,
                     mIsSafeModeEnabled);
             view.updateIcon(mIconCache);
             item.hostView = view;
             item.hostView.updateAppWidget(null);
             item.hostView.setOnClickListener(this);
+            addAppWidgetToWorkspace(item, null, false);
         }
-
-        addAppWidgetToWorkspace(item, appWidgetInfo, false);
-        workspace.requestLayout();
+        mWorkspace.requestLayout();
 
         if (DEBUG_WIDGETS) {
             Log.d(TAG, "bound widget id="+item.appWidgetId+" in "
@@ -4378,15 +4390,15 @@ public class Launcher extends Activity
         }
     }
 
-    private Runnable mBindPackagesUpdatedRunnable = new Runnable() {
+    private Runnable mBindWidgetModelRunnable = new Runnable() {
             public void run() {
-                bindAllPackages(mWidgetsModel);
+                bindWidgetsModel(mWidgetsModel);
             }
         };
 
     @Override
-    public void bindAllPackages(final WidgetsModel model) {
-        if (waitUntilResume(mBindPackagesUpdatedRunnable, true)) {
+    public void bindWidgetsModel(WidgetsModel model) {
+        if (waitUntilResume(mBindWidgetModelRunnable, true)) {
             mWidgetsModel = model;
             return;
         }
@@ -4394,6 +4406,13 @@ public class Launcher extends Activity
         if (mWidgetsView != null && model != null) {
             mWidgetsView.addWidgets(model);
             mWidgetsModel = null;
+        }
+    }
+
+    @Override
+    public void notifyWidgetProvidersChanged() {
+        if (mWorkspace.getState().shouldUpdateWidget) {
+            mModel.refreshAndBindWidgetsAndShortcuts(this, mWidgetsView.isEmpty());
         }
     }
 
