@@ -1445,6 +1445,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             mLastMotionXRemainder = 0;
             onScrollInteractionBegin();
             pageBeginMoving();
+            // Stop listening for things like pinches.
+            requestDisallowInterceptTouchEvent(true);
         }
     }
 
