@@ -26,7 +26,6 @@ import android.view.View;
 import android.view.ViewParent;
 
 import com.android.launcher3.config.ProviderConfig;
-import com.android.launcher3.userevent.Logger;
 
 public class Stats {
 

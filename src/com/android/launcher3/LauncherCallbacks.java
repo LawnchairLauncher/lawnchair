@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import com.android.launcher3.allapps.AllAppsSearchBarController;
+import com.android.launcher3.logging.UserEventLogger;
 import com.android.launcher3.util.ComponentKey;
 
 import java.io.FileDescriptor;
@@ -97,6 +98,7 @@ public interface LauncherCallbacks {
     /*
      * Extensions points for adding / replacing some other aspects of the Launcher experience.
      */
+    public UserEventLogger getLogger();
     public Intent getFirstRunActivity();
     public boolean hasFirstRunActivity();
     public boolean hasDismissableIntroScreen();
