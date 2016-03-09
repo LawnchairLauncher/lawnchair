@@ -82,7 +82,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.view.ViewStub;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
@@ -109,8 +108,10 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.logging.UserEventLogger;
 import com.android.launcher3.model.WidgetsModel;
-import com.android.launcher3.userevent.Logger;
+import com.android.launcher3.logging.LoggerUtils;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.TestingUtils;
@@ -131,6 +132,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Default launcher application.
@@ -366,7 +368,7 @@ public class Launcher extends Activity
     }
 
     private Stats mStats;
-    private Logger mUserEventLogger;
+    private UserEventLogger mUserEventLogger;
 
     public FocusIndicatorView mFocusHandler;
     private boolean mRotationEnabled = false;
@@ -425,8 +427,8 @@ public class Launcher extends Activity
         mDragController = new DragController(this);
         mStateTransitionAnimation = new LauncherStateTransitionAnimation(this);
 
-        mUserEventLogger = new Logger(this);
         mStats = new Stats(this);
+        initLogger();
 
         mAppWidgetManager = AppWidgetManagerCompat.getInstance(this);
 
@@ -536,7 +538,7 @@ public class Launcher extends Activity
             private boolean mWorkspaceImportanceStored = false;
             private boolean mHotseatImportanceStored = false;
             private int mWorkspaceImportanceForAccessibility =
-                View.IMPORTANT_FOR_ACCESSIBILITY_AUTO;
+                    View.IMPORTANT_FOR_ACCESSIBILITY_AUTO;
             private int mHotseatImportanceForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_AUTO;
 
             @Override
@@ -632,7 +634,35 @@ public class Launcher extends Activity
     public Stats getStats() {
         return mStats;
     }
-    public Logger getLogger() {return mUserEventLogger; }
+
+    /**
+     * Logger object is a singleton and does not have to be coupled with the foreground activity.
+     * Since most user event logging is done on the UI, the object is retrieved from the
+     * callback for convenience.
+     */
+    private void initLogger() {
+        if (mLauncherCallbacks != null) {
+            mUserEventLogger = mLauncherCallbacks.getLogger();
+        }
+        if (mUserEventLogger == null) {
+            mUserEventLogger = new UserEventLogger() {
+                @Override
+                public void processEvent(LauncherLogProto.LauncherEvent ev) {
+                    if (ev.action.touch == LauncherLogProto.Action.TAP && ev.srcTarget.itemType == LauncherLogProto.APP_ICON) {
+                        Log.d(TAG, String.format(Locale.US, "action:%s target:%s\n\telapsed container %d ms session %d ms",
+                                LoggerUtils.getActionStr(ev.action),
+                                LoggerUtils.getTargetStr(ev.srcTarget),
+                                ev.elapsedContainerMillis,
+                                ev.elapsedSessionMillis));
+                    }
+                }
+            };
+        }
+    }
+
+    public UserEventLogger getLogger() {
+        return mUserEventLogger;
+    }
 
     public boolean isDraggingEnabled() {
         // We prevent dragging when we are loading the workspace as it is possible to pick up a view
@@ -3302,7 +3332,6 @@ public class Launcher extends Activity
             getWindow().getDecorView()
                     .sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
         }
-        mUserEventLogger.resetElapsedContainerMillis();
         return changed;
     }
 

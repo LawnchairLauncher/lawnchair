@@ -47,7 +47,6 @@ import com.android.launcher3.LauncherTransitionable;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.userevent.Logger;
 import com.android.launcher3.util.ComponentKey;
 
 import java.nio.charset.Charset;
@@ -313,7 +312,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                 icon.getMeasuredHeight());
 
         updateBackgroundAndPaddings();
-        mLauncher.getLogger().resetElapsedContainerMillis();
     }
 
     @Override

@@ -148,6 +148,7 @@ public class LauncherStateTransitionAnimation {
             }
             @Override
             void onTransitionComplete() {
+                mLauncher.getLogger().resetElapsedContainerMillis();
                 if (startSearchAfterTransition) {
                     toView.startAppsSearch();
                 }
@@ -167,7 +168,12 @@ public class LauncherStateTransitionAnimation {
         final View buttonView = mLauncher.getWidgetsButton();
         mCurrentAnimation = startAnimationToOverlay(fromWorkspaceState,
                 Workspace.State.OVERVIEW_HIDDEN, buttonView, toView, animated,
-                new PrivateTransitionCallbacks(FINAL_REVEAL_ALPHA_FOR_WIDGETS));
+                new PrivateTransitionCallbacks(FINAL_REVEAL_ALPHA_FOR_WIDGETS){
+                    @Override
+                    void onTransitionComplete() {
+                        mLauncher.getLogger().resetElapsedContainerMillis();
+                    }
+                });
     }
 
     /**
@@ -462,6 +468,10 @@ public class LauncherStateTransitionAnimation {
                     }
                 };
             }
+            @Override
+            void onTransitionComplete() {
+                mLauncher.getLogger().resetElapsedContainerMillis();
+            }
         };
         // Only animate the search bar if animating to spring loaded mode from all apps
         mCurrentAnimation = startAnimationToWorkspaceFromOverlay(fromWorkspaceState, toWorkspaceState,
@@ -487,6 +497,10 @@ public class LauncherStateTransitionAnimation {
                         revealView.setVisibility(View.INVISIBLE);
                     }
                 };
+            }
+            @Override
+            void onTransitionComplete() {
+                mLauncher.getLogger().resetElapsedContainerMillis();
             }
         };
         mCurrentAnimation = startAnimationToWorkspaceFromOverlay(

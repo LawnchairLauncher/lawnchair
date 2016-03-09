@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherCallbacks;
+import com.android.launcher3.logging.UserEventLogger;
 import com.android.launcher3.allapps.AllAppsSearchBarController;
 import com.android.launcher3.util.ComponentKey;
 
@@ -223,6 +224,9 @@ public class LauncherExtension extends Launcher {
             customContent.setBackgroundColor(Color.GRAY);
             addToCustomContentPage(customContent, mCustomContentCallbacks, "");
         }
+
+        @Override
+        public UserEventLogger getLogger() { return null; }
 
         @Override
         public View getQsbBar() {
