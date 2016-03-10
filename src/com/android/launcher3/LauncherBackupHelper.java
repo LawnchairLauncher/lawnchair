@@ -50,6 +50,7 @@ import com.android.launcher3.backup.nano.BackupProtos.Key;
 import com.android.launcher3.backup.nano.BackupProtos.Resource;
 import com.android.launcher3.backup.nano.BackupProtos.Screen;
 import com.android.launcher3.backup.nano.BackupProtos.Widget;
+import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.model.GridSizeMigrationTask;
@@ -660,12 +661,14 @@ public class LauncherBackupHelper implements BackupHelper {
                 + getUserSelectionArg();
         Cursor cursor = cr.query(Favorites.CONTENT_URI, FAVORITE_PROJECTION,
                 where, null, null);
+        AppWidgetManagerCompat widgetManager = AppWidgetManagerCompat.getInstance(mContext);
         try {
             cursor.moveToPosition(-1);
             while(cursor.moveToNext()) {
                 final long id = cursor.getLong(ID_INDEX);
                 final String providerName = cursor.getString(APPWIDGET_PROVIDER_INDEX);
                 final ComponentName provider = ComponentName.unflattenFromString(providerName);
+
                 Key key = null;
                 String backupKey = null;
                 if (provider != null) {
@@ -684,11 +687,14 @@ public class LauncherBackupHelper implements BackupHelper {
                 } else if (backupKey != null) {
                     if (DEBUG) Log.d(TAG, "I can count this high: " + backupWidgetCount);
                     if (backupWidgetCount < MAX_WIDGETS_PER_PASS) {
-                        if (DEBUG) Log.d(TAG, "saving widget " + backupKey);
-                        UserHandleCompat user = UserHandleCompat.myUserHandle();
-                        writeRowToBackup(key, packWidget(dpi, provider, user), data);
-                        mKeys.add(key);
-                        backupWidgetCount ++;
+                        LauncherAppWidgetProviderInfo widgetInfo = widgetManager
+                                .getLauncherAppWidgetInfo(cursor.getInt(APPWIDGET_ID_INDEX));
+                        if (widgetInfo != null) {
+                            if (DEBUG) Log.d(TAG, "saving widget " + backupKey);
+                            writeRowToBackup(key, packWidget(dpi, widgetInfo), data);
+                            mKeys.add(key);
+                            backupWidgetCount ++;
+                        }
                     } else {
                         if (VERBOSE) Log.v(TAG, "deferring widget backup " + backupKey);
                         // too many widgets for this pass, request another.
@@ -1004,16 +1010,14 @@ public class LauncherBackupHelper implements BackupHelper {
     }
 
     /** Serialize a widget for persistence, including a checksum wrapper. */
-    private Widget packWidget(int dpi, ComponentName provider, UserHandleCompat user) {
-        final LauncherAppWidgetProviderInfo info =
-                LauncherModel.getProviderInfo(mContext, provider, user);
+    private Widget packWidget(int dpi, LauncherAppWidgetProviderInfo info) {
         Widget widget = new Widget();
-        widget.provider = provider.flattenToShortString();
+        widget.provider = info.provider.flattenToShortString();
         widget.label = info.label;
         widget.configure = info.configure != null;
         if (info.icon != 0) {
             widget.icon = new Resource();
-            Drawable fullResIcon = mIconCache.getFullResIcon(provider.getPackageName(), info.icon);
+            Drawable fullResIcon = mIconCache.getFullResIcon(info.provider.getPackageName(), info.icon);
             Bitmap icon = Utilities.createIconBitmap(fullResIcon, mContext);
             widget.icon.data = Utilities.flattenBitmap(icon);
             widget.icon.dpi = dpi;
@@ -1022,7 +1026,6 @@ public class LauncherBackupHelper implements BackupHelper {
         Point spans = info.getMinSpans(mIdp, mContext);
         widget.minSpanX = spans.x;
         widget.minSpanY = spans.y;
-
         return widget;
     }
 

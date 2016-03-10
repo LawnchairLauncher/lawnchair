@@ -327,6 +327,10 @@ public class WidgetsContainerView extends BaseContainerView
         mAdapter.notifyDataSetChanged();
     }
 
+    public boolean isEmpty() {
+        return mAdapter.getItemCount() == 0;
+    }
+
     private WidgetPreviewLoader getWidgetPreviewLoader() {
         if (mWidgetPreviewLoader == null) {
             mWidgetPreviewLoader = LauncherAppState.getInstance().getWidgetCache();

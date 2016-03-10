@@ -145,6 +145,8 @@ public class Stats {
         LaunchSourceUtils.populateSourceDataFromAncestorProvider(v, sourceExtras);
         broadcastIntent.putExtra(EXTRA_SOURCE, sourceExtras);
         mLauncher.sendBroadcast(broadcastIntent, mLaunchBroadcastPermission);
-        mLauncher.getLogger().logAppLaunch(intent.getComponent().getPackageName(), shortcut, sourceExtras);
+        if (intent.getComponent() != null) {
+            mLauncher.getLogger().logAppLaunch(intent.getComponent().getPackageName(), shortcut, sourceExtras);
+        }
     }
 }

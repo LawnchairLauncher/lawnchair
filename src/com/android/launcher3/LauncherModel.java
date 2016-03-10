@@ -17,7 +17,6 @@
 package com.android.launcher3;
 
 import android.app.SearchManager;
-import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -34,7 +33,6 @@ import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.DeadObjectException;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -42,7 +40,6 @@ import android.os.Looper;
 import android.os.Parcelable;
 import android.os.Process;
 import android.os.SystemClock;
-import android.os.TransactionTooLargeException;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
 import android.util.Log;
@@ -73,7 +70,6 @@ import java.net.URISyntaxException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -137,11 +133,9 @@ public class LauncherModel extends BroadcastReceiver
     @Thunk WeakReference<Callbacks> mCallbacks;
 
     // < only access in worker thread >
-    AllAppsList mBgAllAppsList;
+    private final AllAppsList mBgAllAppsList;
     // Entire list of widgets.
-    WidgetsModel mBgWidgetsModel;
-    // Keep a clone of widgets that can be accessed from non-worker thread.
-    WidgetsModel mFgWidgetsModel;
+    private final WidgetsModel mBgWidgetsModel;
 
     // The lock that must be acquired before referencing any static bg data structures.  Unlike
     // other locks, this one can generally be held long-term because we never expect any of these
@@ -167,12 +161,6 @@ public class LauncherModel extends BroadcastReceiver
 
     // sBgWorkspaceScreens is the ordered set of workspace screens.
     static final ArrayList<Long> sBgWorkspaceScreens = new ArrayList<Long>();
-
-    // sBgWidgetProviders is the set of widget providers including custom internal widgets
-    public static HashMap<ComponentKey, LauncherAppWidgetProviderInfo> sBgWidgetProviders;
-
-    // sBgShortcutProviders is the set of custom shortcut providers
-    public static List<ResolveInfo> sBgShortcutProviders;
 
     // sPendingPackages is a set of packages which could be on sdcard and are not available yet
     static final HashMap<UserHandleCompat, HashSet<String>> sPendingPackages =
@@ -209,7 +197,8 @@ public class LauncherModel extends BroadcastReceiver
         public void bindRestoreItemsChange(HashSet<ItemInfo> updates);
         public void bindComponentsRemoved(ArrayList<String> packageNames,
                         ArrayList<AppInfo> appInfos, UserHandleCompat user, int reason);
-        public void bindAllPackages(WidgetsModel model);
+        public void notifyWidgetProvidersChanged();
+        public void bindWidgetsModel(WidgetsModel model);
         public void bindSearchProviderChanged();
         public boolean isAllAppsButtonRank(int rank);
         public void onPageBoundSynchronously(int page);
@@ -245,7 +234,6 @@ public class LauncherModel extends BroadcastReceiver
         mApp = app;
         mBgAllAppsList = new AllAppsList(iconCache, appFilter);
         mBgWidgetsModel = new WidgetsModel(context, iconCache, appFilter);
-        mFgWidgetsModel = mBgWidgetsModel.clone();
         mIconCache = iconCache;
 
         mLauncherApps = LauncherAppsCompat.getInstance(context);
@@ -1701,8 +1689,8 @@ public class LauncherModel extends BroadcastReceiver
                         .getInstance(mContext).updateAndGetActiveSessionCache();
                 sBgWorkspaceScreens.addAll(loadWorkspaceScreensDb(mContext));
 
-                final ArrayList<Long> itemsToRemove = new ArrayList<Long>();
-                final ArrayList<Long> restoredRows = new ArrayList<Long>();
+                final ArrayList<Long> itemsToRemove = new ArrayList<>();
+                final ArrayList<Long> restoredRows = new ArrayList<>();
                 final Uri contentUri = LauncherSettings.Favorites.CONTENT_URI;
                 if (DEBUG_LOADERS) Log.d(TAG, "loading model from " + contentUri);
                 final Cursor c = contentResolver.query(contentUri, null, null, null, null);
@@ -1711,6 +1699,7 @@ public class LauncherModel extends BroadcastReceiver
                 // Load workspace in reverse order to ensure that latest items are loaded first (and
                 // before any earlier duplicates)
                 final LongArrayMap<ItemInfo[][]> occupied = new LongArrayMap<>();
+                HashMap<ComponentKey, AppWidgetProviderInfo> widgetProvidersMap = null;
 
                 try {
                     final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
@@ -2070,10 +2059,14 @@ public class LauncherModel extends BroadcastReceiver
                                 final boolean wasProviderReady = (restoreStatus &
                                         LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY) == 0;
 
-                                final LauncherAppWidgetProviderInfo provider =
-                                        LauncherModel.getProviderInfo(context,
+                                if (widgetProvidersMap == null) {
+                                    widgetProvidersMap = AppWidgetManagerCompat
+                                            .getInstance(mContext).getAllProvidersMap();
+                                }
+                                final AppWidgetProviderInfo provider = widgetProvidersMap.get(
+                                        new ComponentKey(
                                                 ComponentName.unflattenFromString(savedProvider),
-                                                user);
+                                                user));
 
                                 final boolean isProviderReady = isValidProvider(provider);
                                 if (!isSafeMode && !customWidget &&
@@ -2695,7 +2688,6 @@ public class LauncherModel extends BroadcastReceiver
                     final Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                     if (callbacks != null) {
                         callbacks.bindAllApplications(list);
-                        callbacks.bindAllPackages(mFgWidgetsModel);
                     }
                     if (DEBUG_LOADERS) {
                         Log.d(TAG, "bound all " + list.size() + " apps from cache in "
@@ -2787,7 +2779,7 @@ public class LauncherModel extends BroadcastReceiver
                         callbacks.bindAllApplications(added);
                         if (DEBUG_LOADERS) {
                             Log.d(TAG, "bound " + added.size() + " apps in "
-                                + (SystemClock.uptimeMillis() - bindTime) + "ms");
+                                    + (SystemClock.uptimeMillis() - bindTime) + "ms");
                         }
                     } else {
                         Log.i(TAG, "not binding apps: no Launcher activity");
@@ -2796,8 +2788,6 @@ public class LauncherModel extends BroadcastReceiver
             });
             // Cleanup any data stored for a deleted user.
             ManagedProfileHeuristic.processAllUsers(profiles, mContext);
-
-            loadAndBindWidgetsAndShortcuts(tryGetCallbacks(oldCallbacks), true /* refresh */);
             if (DEBUG_LOADERS) {
                 Log.d(TAG, "Icons processed in "
                         + (SystemClock.uptimeMillis() - loadTime) + "ms");
@@ -2864,9 +2854,6 @@ public class LauncherModel extends BroadcastReceiver
                 }
             });
         }
-
-        // Reload widget list. No need to refresh, as we only want to update the icons and labels.
-        loadAndBindWidgetsAndShortcuts(callbacks, false);
     }
 
     void enqueuePackageUpdated(PackageUpdatedTask task) {
@@ -3230,167 +3217,49 @@ public class LauncherModel extends BroadcastReceiver
                 });
             }
 
-            // Update widgets
-            if (mOp == OP_ADD || mOp == OP_REMOVE || mOp == OP_UPDATE) {
-                // Always refresh for a package event on secondary user
-                boolean needToRefresh = !mUser.equals(UserHandleCompat.myUserHandle());
-
-                // Refresh widget list, if the package already had a widget.
-                synchronized (sBgLock) {
-                    if (sBgWidgetProviders != null) {
-                        HashSet<String> pkgSet = new HashSet<>();
-                        Collections.addAll(pkgSet, mPackages);
-
-                        for (ComponentKey key : sBgWidgetProviders.keySet()) {
-                            needToRefresh |= key.user.equals(mUser) &&
-                                    pkgSet.contains(key.componentName.getPackageName());
-                        }
-                    }
-                }
-
-                if (!needToRefresh && mOp != OP_REMOVE) {
-                    // Refresh widget list, if there is any newly added widget
-                    PackageManager pm = context.getPackageManager();
-                    for (String pkg : mPackages) {
-                        try {
-                            List<ResolveInfo> widgets = pm.queryBroadcastReceivers(
-                                    new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
-                                            .setPackage(pkg), 0);
-                            needToRefresh |= widgets != null && !widgets.isEmpty();
-                        } catch (RuntimeException e) {
-                            if (ProviderConfig.IS_DOGFOOD_BUILD) {
-                                throw e;
-                            }
-                            // Ignore the crash. We can live with a state widget list.
-                            Log.e(TAG, "PM call failed for " + pkg, e);
-                        }
-                    }
-                }
-
-                loadAndBindWidgetsAndShortcuts(callbacks, needToRefresh);
-            }
-        }
-    }
-
-    public static List<LauncherAppWidgetProviderInfo> getWidgetProviders(Context context,
-            boolean refresh) {
-        ArrayList<LauncherAppWidgetProviderInfo> results =
-                new ArrayList<LauncherAppWidgetProviderInfo>();
-        try {
-            synchronized (sBgLock) {
-                if (sBgWidgetProviders == null || refresh) {
-                    HashMap<ComponentKey, LauncherAppWidgetProviderInfo> tmpWidgetProviders
-                            = new HashMap<>();
-                    AppWidgetManagerCompat wm = AppWidgetManagerCompat.getInstance(context);
-                    LauncherAppWidgetProviderInfo info;
-
-                    List<AppWidgetProviderInfo> widgets = wm.getAllProviders();
-                    for (AppWidgetProviderInfo pInfo : widgets) {
-                        info = LauncherAppWidgetProviderInfo.fromProviderInfo(context, pInfo);
-                        UserHandleCompat user = wm.getUser(info);
-                        tmpWidgetProviders.put(new ComponentKey(info.provider, user), info);
-                    }
-
-                    Collection<CustomAppWidget> customWidgets = Launcher.getCustomAppWidgets().values();
-                    for (CustomAppWidget widget : customWidgets) {
-                        info = new LauncherAppWidgetProviderInfo(context, widget);
-                        UserHandleCompat user = wm.getUser(info);
-                        tmpWidgetProviders.put(new ComponentKey(info.provider, user), info);
-                    }
-                    // Replace the global list at the very end, so that if there is an exception,
-                    // previously loaded provider list is used.
-                    sBgWidgetProviders = tmpWidgetProviders;
-                }
-                results.addAll(sBgWidgetProviders.values());
-                return results;
-            }
-        } catch (Exception e) {
-            if (!ProviderConfig.IS_DOGFOOD_BUILD &&
-                    (e.getCause() instanceof TransactionTooLargeException ||
-                    e.getCause() instanceof DeadObjectException)) {
-                // the returned value may be incomplete and will not be refreshed until the next
-                // time Launcher starts.
-                // TODO: after figuring out a repro step, introduce a dirty bit to check when
-                // onResume is called to refresh the widget provider list.
-                synchronized (sBgLock) {
-                    if (sBgWidgetProviders != null) {
-                        results.addAll(sBgWidgetProviders.values());
-                    }
-                    return results;
-                }
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    public static LauncherAppWidgetProviderInfo getProviderInfo(Context ctx, ComponentName name,
-            UserHandleCompat user) {
-        synchronized (sBgLock) {
-            if (sBgWidgetProviders == null) {
-                getWidgetProviders(ctx, false /* refresh */);
-            }
-            return sBgWidgetProviders.get(new ComponentKey(name, user));
-        }
-    }
-
-    public void loadAndBindWidgetsAndShortcuts(final Callbacks callbacks, final boolean refresh) {
-
-        runOnWorkerThread(new Runnable() {
-            @Override
-            public void run() {
-                updateWidgetsModel(refresh);
+            // Notify launcher of widget update. From marshmallow onwards we use AppWidgetHost to
+            // get widget update signals.
+            if (!Utilities.ATLEAST_MARSHMALLOW &&
+                    (mOp == OP_ADD || mOp == OP_REMOVE || mOp == OP_UPDATE)) {
                 mHandler.post(new Runnable() {
-                    @Override
                     public void run() {
                         Callbacks cb = getCallback();
                         if (callbacks == cb && cb != null) {
-                            callbacks.bindAllPackages(mFgWidgetsModel);
+                            callbacks.notifyWidgetProvidersChanged();
                         }
                     }
                 });
-                // update the Widget entries inside DB on the worker thread.
-                LauncherAppState.getInstance().getWidgetCache().removeObsoletePreviews(
-                        mFgWidgetsModel.getRawList());
+            }
+        }
+    }
+
+    private void bindWidgetsModel(final Callbacks callbacks, final WidgetsModel model) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                Callbacks cb = getCallback();
+                if (callbacks == cb && cb != null) {
+                    callbacks.bindWidgetsModel(model);
+                }
             }
         });
     }
 
-    /**
-     * Returns a list of ResolveInfos/AppWidgetInfos.
-     *
-     * @see #loadAndBindWidgetsAndShortcuts
-     */
-    @Thunk void updateWidgetsModel(boolean refresh) {
-        Utilities.assertWorkerThread();
-        PackageManager packageManager = mApp.getContext().getPackageManager();
-        final ArrayList<Object> widgetsAndShortcuts = new ArrayList<Object>();
-        widgetsAndShortcuts.addAll(getWidgetProviders(mApp.getContext(), refresh));
-
-        // Update shortcut providers
-        synchronized (sBgLock) {
-            try {
-                Intent shortcutsIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
-                List<ResolveInfo> providers = packageManager.queryIntentActivities(shortcutsIntent, 0);
-                sBgShortcutProviders = providers;
-            } catch (RuntimeException e) {
-                if (!ProviderConfig.IS_DOGFOOD_BUILD &&
-                        (e.getCause() instanceof TransactionTooLargeException ||
-                                e.getCause() instanceof DeadObjectException)) {
-                    /**
-                     * Ignore exception and use the cached list if available.
-                     * Refer to {@link #getWidgetProviders(Context, boolean}} for more info.
-                     */
-                } else {
-                    throw e;
+    public void refreshAndBindWidgetsAndShortcuts(
+            final Callbacks callbacks, final boolean bindFirst) {
+        runOnWorkerThread(new Runnable() {
+            @Override
+            public void run() {
+                if (bindFirst && !mBgWidgetsModel.isEmpty()) {
+                    bindWidgetsModel(callbacks, mBgWidgetsModel.clone());
                 }
+                final WidgetsModel model = mBgWidgetsModel.updateAndClone(mApp.getContext());
+                bindWidgetsModel(callbacks, model);
+                // update the Widget entries inside DB on the worker thread.
+                LauncherAppState.getInstance().getWidgetCache().removeObsoletePreviews(
+                        model.getRawList());
             }
-            if (sBgShortcutProviders != null) {
-                widgetsAndShortcuts.addAll(sBgShortcutProviders);
-            }
-        }
-        mBgWidgetsModel.setWidgetsAndShortcuts(widgetsAndShortcuts);
-        mFgWidgetsModel = mBgWidgetsModel.clone();
+        });
     }
 
     @Thunk static boolean isPackageDisabled(Context context, String packageName,
