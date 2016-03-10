@@ -410,7 +410,7 @@ public class IconCache {
                             st.user, false);
                 } else if (info instanceof PackageItemInfo) {
                     PackageItemInfo pti = (PackageItemInfo) info;
-                    getTitleAndIconForApp(pti.packageName, pti.user, false, pti);
+                    getTitleAndIconForApp(pti, false);
                 }
                 mMainThreadExecutor.execute(new Runnable() {
 
@@ -507,16 +507,16 @@ public class IconCache {
     }
 
     /**
-     * Fill in {@param appInfo} with the icon and label for {@param packageName}
+     * Fill in {@param infoInOut} with the corresponding icon and label.
      */
     public synchronized void getTitleAndIconForApp(
-            String packageName, UserHandleCompat user, boolean useLowResIcon,
-            PackageItemInfo infoOut) {
-        CacheEntry entry = getEntryForPackageLocked(packageName, user, useLowResIcon);
-        infoOut.iconBitmap = getNonNullIcon(entry, user);
-        infoOut.title = Utilities.trim(entry.title);
-        infoOut.usingLowResIcon = entry.isLowResIcon;
-        infoOut.contentDescription = entry.contentDescription;
+            PackageItemInfo infoInOut, boolean useLowResIcon) {
+        CacheEntry entry = getEntryForPackageLocked(
+                infoInOut.packageName, infoInOut.user, useLowResIcon);
+        infoInOut.iconBitmap = getNonNullIcon(entry, infoInOut.user);
+        infoInOut.title = Utilities.trim(entry.title);
+        infoInOut.usingLowResIcon = entry.isLowResIcon;
+        infoInOut.contentDescription = entry.contentDescription;
     }
 
     public synchronized Bitmap getDefaultIcon(UserHandleCompat user) {
