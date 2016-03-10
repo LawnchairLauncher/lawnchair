@@ -52,11 +52,11 @@ import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityManager;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
 
+import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.Launcher.CustomContentCallbacks;
@@ -179,22 +179,20 @@ public class Workspace extends PagedView
     // in all apps or customize mode)
 
     enum State {
-        NORMAL          (SearchDropTargetBar.State.SEARCH_BAR),
-        NORMAL_HIDDEN   (SearchDropTargetBar.State.INVISIBLE_TRANSLATED),
-        SPRING_LOADED   (SearchDropTargetBar.State.DROP_TARGET),
-        OVERVIEW        (SearchDropTargetBar.State.INVISIBLE),
-        OVERVIEW_HIDDEN (SearchDropTargetBar.State.INVISIBLE);
+        NORMAL          (SearchDropTargetBar.State.SEARCH_BAR, false),
+        NORMAL_HIDDEN   (SearchDropTargetBar.State.INVISIBLE_TRANSLATED, false),
+        SPRING_LOADED   (SearchDropTargetBar.State.DROP_TARGET, false),
+        OVERVIEW        (SearchDropTargetBar.State.INVISIBLE, true),
+        OVERVIEW_HIDDEN (SearchDropTargetBar.State.INVISIBLE, true);
 
-        private final SearchDropTargetBar.State mBarState;
+        public final SearchDropTargetBar.State searchDropTargetBarState;
+        public final boolean shouldUpdateWidget;
 
-        State(SearchDropTargetBar.State searchBarState) {
-            mBarState = searchBarState;
+        State(SearchDropTargetBar.State searchBarState, boolean shouldUpdateWidget) {
+            searchDropTargetBarState = searchBarState;
+            this.shouldUpdateWidget = shouldUpdateWidget;
         }
-
-        public SearchDropTargetBar.State getSearchDropTargetBarState() {
-            return mBarState;
-        }
-    };
+    }
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private State mState = State.NORMAL;
@@ -1914,6 +1912,8 @@ public class Workspace extends PagedView
         Animator workspaceAnim =  mStateTransitionAnimation.getAnimationToState(mState,
                 toState, animated, layerViews);
 
+        boolean shouldNotifyWidgetChange = !mState.shouldUpdateWidget
+                && toState.shouldUpdateWidget;
         // Update the current state
         mState = toState;
         updateAccessibilityFlags();
@@ -1921,6 +1921,10 @@ public class Workspace extends PagedView
             // Redraw pages, as we might want to draw pages which were not visible.
             mForceDrawAdjacentPages = true;
             invalidate(); // This will call dispatchDraw(), which calls getVisiblePages().
+        }
+
+        if (shouldNotifyWidgetChange) {
+            mLauncher.notifyWidgetProvidersChanged();
         }
 
         return workspaceAnim;
@@ -4148,13 +4152,22 @@ public class Workspace extends PagedView
         });
     }
 
-    void widgetsRestored(ArrayList<LauncherAppWidgetInfo> changedInfo) {
+    public void widgetsRestored(ArrayList<LauncherAppWidgetInfo> changedInfo) {
         if (!changedInfo.isEmpty()) {
             DeferredWidgetRefresh widgetRefresh = new DeferredWidgetRefresh(changedInfo,
                     mLauncher.getAppWidgetHost());
-            if (LauncherModel.getProviderInfo(getContext(),
-                    changedInfo.get(0).providerName,
-                    changedInfo.get(0).user) != null) {
+
+            LauncherAppWidgetInfo item = changedInfo.get(0);
+            final AppWidgetProviderInfo widgetInfo;
+            if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)) {
+                widgetInfo = AppWidgetManagerCompat
+                        .getInstance(mLauncher).findProvider(item.providerName, item.user);
+            } else {
+                widgetInfo = AppWidgetManagerCompat.getInstance(mLauncher)
+                        .getAppWidgetInfo(item.appWidgetId);
+            }
+
+            if (widgetInfo != null) {
                 // Re-inflate the widgets which have changed status
                 widgetRefresh.run();
             } else {

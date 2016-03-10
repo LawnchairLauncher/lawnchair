@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -40,8 +41,10 @@ import android.widget.Toast;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
+import com.android.launcher3.util.ComponentKey;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -144,5 +147,29 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
         drawable.draw(c);
         c.setBitmap(null);
         return bitmap;
+    }
+
+    @Override
+    public LauncherAppWidgetProviderInfo findProvider(ComponentName provider, UserHandleCompat user) {
+        for (AppWidgetProviderInfo info : mAppWidgetManager
+                .getInstalledProvidersForProfile(user.getUser())) {
+            if (info.provider.equals(provider)) {
+                return LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, info);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public HashMap<ComponentKey, AppWidgetProviderInfo> getAllProvidersMap() {
+        HashMap<ComponentKey, AppWidgetProviderInfo> result = new HashMap<>();
+        for (UserHandle user : mUserManager.getUserProfiles()) {
+            UserHandleCompat userHandle = UserHandleCompat.fromUser(user);
+            for (AppWidgetProviderInfo info :
+                    mAppWidgetManager.getInstalledProvidersForProfile(user)) {
+                result.put(new ComponentKey(info.provider, userHandle), info);
+            }
+        }
+        return result;
     }
 }
