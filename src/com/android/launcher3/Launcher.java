@@ -4013,7 +4013,7 @@ public class Launcher extends Activity
                 // Note: This assumes that the id remap broadcast is received before this step.
                 // If that is not the case, the id remap will be ignored and user may see the
                 // click to setup view.
-                PendingAddWidgetInfo pendingInfo = new PendingAddWidgetInfo(this, appWidgetInfo, null);
+                PendingAddWidgetInfo pendingInfo = new PendingAddWidgetInfo(this, appWidgetInfo);
                 pendingInfo.spanX = item.spanX;
                 pendingInfo.spanY = item.spanY;
                 pendingInfo.minSpanX = item.minSpanX;

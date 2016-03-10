@@ -363,7 +363,7 @@ public class AppWidgetResizeFrame extends FrameLayout implements View.OnKeyListe
                 sTmpRect.right, sTmpRect.bottom);
     }
 
-    public static Rect getWidgetSizeRanges(Launcher launcher, int spanX, int spanY, Rect rect) {
+    public static Rect getWidgetSizeRanges(Context context, int spanX, int spanY, Rect rect) {
         if (sCellSize == null) {
             InvariantDeviceProfile inv = LauncherAppState.getInstance().getInvariantDeviceProfile();
 
@@ -376,7 +376,7 @@ public class AppWidgetResizeFrame extends FrameLayout implements View.OnKeyListe
         if (rect == null) {
             rect = new Rect();
         }
-        final float density = launcher.getResources().getDisplayMetrics().density;
+        final float density = context.getResources().getDisplayMetrics().density;
 
         // Compute landscape size
         int landWidth = (int) ((spanX * sCellSize[0].x) / density);

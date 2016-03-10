@@ -16,6 +16,7 @@
 package com.android.launcher3.widget;
 
 import android.appwidget.AppWidgetHostView;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 
@@ -37,14 +38,14 @@ public class PendingAddWidgetInfo extends PendingAddItemInfo {
     public AppWidgetHostView boundWidget;
     public Bundle bindOptions = null;
 
-    public PendingAddWidgetInfo(Launcher launcher, LauncherAppWidgetProviderInfo i, Parcelable data) {
+    public PendingAddWidgetInfo(Context context, LauncherAppWidgetProviderInfo i) {
         if (i.isCustomWidget) {
             itemType = LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
         } else {
             itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
         }
         this.info = i;
-        user = AppWidgetManagerCompat.getInstance(launcher).getUser(i);
+        user = AppWidgetManagerCompat.getInstance(context).getUser(i);
         componentName = i.provider;
         previewImage = i.previewImage;
         icon = i.icon;
