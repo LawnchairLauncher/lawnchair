@@ -800,7 +800,7 @@ public class IconCache {
     }
 
     private static final class IconDB extends SQLiteCacheHelper {
-        private final static int DB_VERSION = 7;
+        private final static int DB_VERSION = 8;
 
         private final static int RELEASE_VERSION = DB_VERSION +
                 (FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION ? 0 : 1);
@@ -859,6 +859,7 @@ public class IconCache {
             Bitmap lowResIcon = Bitmap.createBitmap(icon.getWidth() / LOW_RES_SCALE_FACTOR,
                     icon.getHeight() / LOW_RES_SCALE_FACTOR, Bitmap.Config.RGB_565);
             synchronized (this) {
+                mLowResCanvas.setBitmap(lowResIcon);
                 mLowResCanvas.drawColor(lowResBackgroundColor);
                 mLowResCanvas.drawBitmap(icon, new Rect(0, 0, icon.getWidth(), icon.getHeight()),
                         new Rect(0, 0, lowResIcon.getWidth(), lowResIcon.getHeight()),
