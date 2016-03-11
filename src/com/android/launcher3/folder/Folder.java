@@ -71,9 +71,8 @@ import com.android.launcher3.OnAlarmListener;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Stats;
-import com.android.launcher3.UninstallDropTarget.UninstallSource;
+import com.android.launcher3.UninstallDropTarget.DropTargetSource;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.Workspace;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate.AccessibilityDragSource;
 import com.android.launcher3.config.FeatureFlags;
@@ -92,7 +91,7 @@ import java.util.Comparator;
  */
 public class Folder extends LinearLayout implements DragSource, View.OnClickListener,
         View.OnLongClickListener, DropTarget, FolderListener, TextView.OnEditorActionListener,
-        View.OnFocusChangeListener, DragListener, UninstallSource, AccessibilityDragSource,
+        View.OnFocusChangeListener, DragListener, DropTargetSource, AccessibilityDragSource,
         Stats.LaunchSourceProvider {
     private static final String TAG = "Launcher.Folder";
 
@@ -980,7 +979,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     @Override
-    public void onUninstallActivityReturned(boolean success) {
+    public void onDragObjectRemoved(boolean success) {
         mDeferDropAfterUninstall = false;
         mUninstallSuccessful = success;
         if (mDeferredAction != null) {
