@@ -315,7 +315,15 @@ public class WidgetsContainerView extends BaseContainerView
     //
     @Override
     protected void onUpdateBgPadding(Rect padding, Rect bgPadding) {
-        mRecyclerView.updateBackgroundPadding(bgPadding);
+        if (Utilities.isRtl(getResources())) {
+            getContentView().setPadding(0, bgPadding.top,
+                    bgPadding.right, bgPadding.bottom);
+            mRecyclerView.updateBackgroundPadding(new Rect(bgPadding.left, 0, 0, 0));
+        } else {
+            getContentView().setPadding(bgPadding.left, bgPadding.top,
+                    0, bgPadding.bottom);
+            mRecyclerView.updateBackgroundPadding(new Rect(0, 0, bgPadding.right, 0));
+        }
     }
 
     /**
