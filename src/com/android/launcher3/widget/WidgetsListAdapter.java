@@ -138,7 +138,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
             WidgetCell widget = (WidgetCell) row.getChildAt(i);
             if (infoList.get(i) instanceof LauncherAppWidgetProviderInfo) {
                 LauncherAppWidgetProviderInfo info = (LauncherAppWidgetProviderInfo) infoList.get(i);
-                PendingAddWidgetInfo pawi = new PendingAddWidgetInfo(mLauncher, info, null);
+                PendingAddWidgetInfo pawi = new PendingAddWidgetInfo(mLauncher, info);
                 widget.setTag(pawi);
                 widget.applyFromAppWidgetProviderInfo(info, mWidgetPreviewLoader);
             } else if (infoList.get(i) instanceof ResolveInfo) {
