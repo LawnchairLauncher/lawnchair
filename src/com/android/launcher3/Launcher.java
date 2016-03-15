@@ -4366,7 +4366,7 @@ public class Launcher extends Activity
             }
             mWorkspace.removeItemsByComponentName(removedComponents, user);
             // Notify the drag controller
-            mDragController.onAppsRemoved(new ArrayList<String>(), removedComponents);
+            mDragController.onAppsRemoved(new HashSet<String>(), removedComponents);
         }
     }
 
@@ -4390,43 +4390,44 @@ public class Launcher extends Activity
     }
 
     /**
-     * A package was uninstalled.  We take both the super set of packageNames
+     * A package was uninstalled/updated.  We take both the super set of packageNames
      * in addition to specific applications to remove, the reason being that
      * this can be called when a package is updated as well.  In that scenario,
-     * we only remove specific components from the workspace, where as
+     * we only remove specific components from the workspace and hotseat, where as
      * package-removal should clear all items by package name.
-     *
-     * @param reason if non-zero, the icons are not permanently removed, rather marked as disabled.
-     * Implementation of the method from LauncherModel.Callbacks.
      */
     @Override
-    public void bindComponentsRemoved(final ArrayList<String> packageNames,
-            final ArrayList<AppInfo> appInfos, final UserHandleCompat user, final int reason) {
+    public void bindWorkspaceComponentsRemoved(
+            final HashSet<String> packageNames, final HashSet<ComponentName> components,
+            final UserHandleCompat user) {
         Runnable r = new Runnable() {
             public void run() {
-                bindComponentsRemoved(packageNames, appInfos, user, reason);
+                bindWorkspaceComponentsRemoved(packageNames, components, user);
             }
         };
         if (waitUntilResume(r)) {
             return;
         }
+        if (!packageNames.isEmpty()) {
+            mWorkspace.removeItemsByPackageName(packageNames, user);
+        }
+        if (!components.isEmpty()) {
+            mWorkspace.removeItemsByComponentName(components, user);
+        }
+        // Notify the drag controller
+        mDragController.onAppsRemoved(packageNames, components);
 
-        if (reason == 0) {
-            HashSet<ComponentName> removedComponents = new HashSet<ComponentName>();
-            for (AppInfo info : appInfos) {
-                removedComponents.add(info.componentName);
-            }
-            if (!packageNames.isEmpty()) {
-                mWorkspace.removeItemsByPackageName(packageNames, user);
-            }
-            if (!removedComponents.isEmpty()) {
-                mWorkspace.removeItemsByComponentName(removedComponents, user);
-            }
-            // Notify the drag controller
-            mDragController.onAppsRemoved(packageNames, removedComponents);
+    }
 
-        } else {
-            mWorkspace.disableShortcutsByPackageName(packageNames, user, reason);
+    @Override
+    public void bindAppInfosRemoved(final ArrayList<AppInfo> appInfos) {
+        Runnable r = new Runnable() {
+            public void run() {
+                bindAppInfosRemoved(appInfos);
+            }
+        };
+        if (waitUntilResume(r)) {
+            return;
         }
 
         // Update AllApps

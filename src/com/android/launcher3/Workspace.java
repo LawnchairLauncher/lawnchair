@@ -4165,41 +4165,10 @@ public class Workspace extends PagedView
         });
     }
 
-    public void disableShortcutsByPackageName(final ArrayList<String> packages,
-            final UserHandleCompat user, final int reason) {
-        final HashSet<String> packageNames = new HashSet<String>();
-        packageNames.addAll(packages);
-
-        mapOverItems(MAP_RECURSE, new ItemOperator() {
-            @Override
-            public boolean evaluate(ItemInfo info, View v, View parent) {
-                if (info instanceof ShortcutInfo && v instanceof BubbleTextView) {
-                    ShortcutInfo shortcutInfo = (ShortcutInfo) info;
-                    ComponentName cn = shortcutInfo.getTargetComponent();
-                    if (user.equals(shortcutInfo.user) && cn != null
-                            && packageNames.contains(cn.getPackageName())) {
-                        shortcutInfo.isDisabled |= reason;
-                        BubbleTextView shortcut = (BubbleTextView) v;
-                        shortcut.applyFromShortcutInfo(shortcutInfo, mIconCache);
-
-                        if (parent != null) {
-                            parent.invalidate();
-                        }
-                    }
-                }
-                // process all the shortcuts
-                return false;
-            }
-        });
-    }
-
     // Removes ALL items that match a given package name, this is usually called when a package
     // has been removed and we want to remove all components (widgets, shortcuts, apps) that
     // belong to that package.
-    void removeItemsByPackageName(final ArrayList<String> packages, final UserHandleCompat user) {
-        final HashSet<String> packageNames = new HashSet<String>();
-        packageNames.addAll(packages);
-
+    void removeItemsByPackageName(final HashSet<String> packageNames, final UserHandleCompat user) {
         // Filter out all the ItemInfos that this is going to affect
         final HashSet<ItemInfo> infos = new HashSet<ItemInfo>();
         final HashSet<ComponentName> cns = new HashSet<ComponentName>();
@@ -4381,7 +4350,7 @@ public class Workspace extends PagedView
     }
 
     public void removeAbandonedPromise(String packageName, UserHandleCompat user) {
-        ArrayList<String> packages = new ArrayList<String>(1);
+        HashSet<String> packages = new HashSet<>(1);
         packages.add(packageName);
         LauncherModel.deletePackageFromDatabase(mLauncher, packageName, user);
         removeItemsByPackageName(packages, user);

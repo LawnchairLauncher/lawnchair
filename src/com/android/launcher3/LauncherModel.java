@@ -57,6 +57,7 @@ import com.android.launcher3.model.GridSizeMigrationTask;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.CursorIconInfo;
+import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.ManagedProfileHeuristic;
 import com.android.launcher3.util.Thunk;
@@ -195,8 +196,10 @@ public class LauncherModel extends BroadcastReceiver
                 ArrayList<ShortcutInfo> removed, UserHandleCompat user);
         public void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
         public void bindRestoreItemsChange(HashSet<ItemInfo> updates);
-        public void bindComponentsRemoved(ArrayList<String> packageNames,
-                        ArrayList<AppInfo> appInfos, UserHandleCompat user, int reason);
+        public void bindWorkspaceComponentsRemoved(
+                HashSet<String> packageNames, HashSet<ComponentName> components,
+                UserHandleCompat user);
+        public void bindAppInfosRemoved(ArrayList<AppInfo> appInfos);
         public void notifyWidgetProvidersChanged();
         public void bindWidgetsModel(WidgetsModel model);
         public void bindSearchProviderChanged();
@@ -3014,6 +3017,7 @@ public class LauncherModel extends BroadcastReceiver
 
             final String[] packages = mPackages;
             final int N = packages.length;
+            FlagOp flagOp = FlagOp.NO_OP;
             switch (mOp) {
                 case OP_ADD: {
                     for (int i=0; i<N; i++) {
@@ -3035,6 +3039,8 @@ public class LauncherModel extends BroadcastReceiver
                         mBgAllAppsList.updatePackage(context, packages[i], mUser);
                         mApp.getWidgetCache().removePackage(packages[i], mUser);
                     }
+                    // Since package was just updated, the target must be available now.
+                    flagOp = FlagOp.removeFlag(ShortcutInfo.FLAG_DISABLED_NOT_AVAILABLE);
                     break;
                 case OP_REMOVE: {
                     ManagedProfileHeuristic heuristic = ManagedProfileHeuristic.get(context, mUser);
@@ -3053,14 +3059,16 @@ public class LauncherModel extends BroadcastReceiver
                         mBgAllAppsList.removePackage(packages[i], mUser);
                         mApp.getWidgetCache().removePackage(packages[i], mUser);
                     }
+                    flagOp = FlagOp.addFlag(ShortcutInfo.FLAG_DISABLED_NOT_AVAILABLE);
                     break;
                 case OP_SUSPEND:
                 case OP_UNSUSPEND:
-                    boolean suspend = mOp == OP_SUSPEND;
+                    flagOp = mOp == OP_SUSPEND ?
+                            FlagOp.addFlag(ShortcutInfo.FLAG_DISABLED_SUSPENDED) :
+                                    FlagOp.removeFlag(ShortcutInfo.FLAG_DISABLED_SUSPENDED);
                     for (int i=0; i<N; i++) {
-                        if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.suspendPackage "
-                                + suspend + " " + packages[i]);
-                        mBgAllAppsList.suspendPackage(packages[i], mUser, suspend);
+                        if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.(un)suspend " + packages[i]);
+                        mBgAllAppsList.updatePackageFlags(packages[i], mUser, flagOp);
                     }
                     break;
             }
@@ -3070,11 +3078,11 @@ public class LauncherModel extends BroadcastReceiver
             final ArrayList<AppInfo> removedApps = new ArrayList<AppInfo>();
 
             if (mBgAllAppsList.added.size() > 0) {
-                added = new ArrayList<AppInfo>(mBgAllAppsList.added);
+                added = new ArrayList<>(mBgAllAppsList.added);
                 mBgAllAppsList.added.clear();
             }
             if (mBgAllAppsList.modified.size() > 0) {
-                modified = new ArrayList<AppInfo>(mBgAllAppsList.modified);
+                modified = new ArrayList<>(mBgAllAppsList.modified);
                 mBgAllAppsList.modified.clear();
             }
             if (mBgAllAppsList.removed.size() > 0) {
@@ -3082,14 +3090,7 @@ public class LauncherModel extends BroadcastReceiver
                 mBgAllAppsList.removed.clear();
             }
 
-            final Callbacks callbacks = getCallback();
-            if (callbacks == null) {
-                Log.w(TAG, "Nobody to tell about the new app.  Launcher is probably loading.");
-                return;
-            }
-
-            final HashMap<ComponentName, AppInfo> addedOrUpdatedApps =
-                    new HashMap<ComponentName, AppInfo>();
+            final HashMap<ComponentName, AppInfo> addedOrUpdatedApps = new HashMap<>();
 
             if (added != null) {
                 addAppsToAllApps(context, added);
@@ -3099,6 +3100,7 @@ public class LauncherModel extends BroadcastReceiver
             }
 
             if (modified != null) {
+                final Callbacks callbacks = getCallback();
                 final ArrayList<AppInfo> modifiedFinal = modified;
                 for (AppInfo ai : modified) {
                     addedOrUpdatedApps.put(ai.componentName, ai);
@@ -3115,7 +3117,7 @@ public class LauncherModel extends BroadcastReceiver
             }
 
             // Update shortcut infos
-            if (mOp == OP_ADD || mOp == OP_UPDATE || mOp == OP_UNSUSPEND) {
+            if (mOp == OP_ADD || flagOp != FlagOp.NO_OP) {
                 final ArrayList<ShortcutInfo> updatedShortcuts = new ArrayList<ShortcutInfo>();
                 final ArrayList<ShortcutInfo> removedShortcuts = new ArrayList<ShortcutInfo>();
                 final ArrayList<LauncherAppWidgetInfo> widgets = new ArrayList<LauncherAppWidgetInfo>();
@@ -3127,11 +3129,6 @@ public class LauncherModel extends BroadcastReceiver
                             ShortcutInfo si = (ShortcutInfo) info;
                             boolean infoUpdated = false;
                             boolean shortcutUpdated = false;
-
-                            if (mOp == OP_UNSUSPEND) {
-                                si.isDisabled &= ~ ShortcutInfo.FLAG_DISABLED_SUSPENDED;
-                                infoUpdated = true;
-                            }
 
                             // Update shortcuts which use iconResource.
                             if ((si.iconResource != null)
@@ -3195,9 +3192,9 @@ public class LauncherModel extends BroadcastReceiver
                                     infoUpdated = true;
                                 }
 
-                                if ((si.isDisabled & ShortcutInfo.FLAG_DISABLED_NOT_AVAILABLE) != 0) {
-                                    // Since package was just updated, the target must be available now.
-                                    si.isDisabled &= ~ShortcutInfo.FLAG_DISABLED_NOT_AVAILABLE;
+                                int oldDisabledFlags = si.isDisabled;
+                                si.isDisabled = flagOp.apply(si.isDisabled);
+                                if (si.isDisabled != oldDisabledFlags) {
                                     shortcutUpdated = true;
                                 }
                             }
@@ -3230,6 +3227,7 @@ public class LauncherModel extends BroadcastReceiver
                 }
 
                 if (!updatedShortcuts.isEmpty() || !removedShortcuts.isEmpty()) {
+                    final Callbacks callbacks = getCallback();
                     mHandler.post(new Runnable() {
 
                         public void run() {
@@ -3245,6 +3243,7 @@ public class LauncherModel extends BroadcastReceiver
                     }
                 }
                 if (!widgets.isEmpty()) {
+                    final Callbacks callbacks = getCallback();
                     mHandler.post(new Runnable() {
                         public void run() {
                             Callbacks cb = getCallback();
@@ -3256,48 +3255,60 @@ public class LauncherModel extends BroadcastReceiver
                 }
             }
 
-            final ArrayList<String> removedPackageNames =
-                    new ArrayList<String>();
-            if (mOp == OP_REMOVE || mOp == OP_UNAVAILABLE || mOp == OP_SUSPEND) {
+            final HashSet<String> removedPackages = new HashSet<>();
+            final HashSet<ComponentName> removedComponents = new HashSet<>();
+            if (mOp == OP_REMOVE) {
                 // Mark all packages in the broadcast to be removed
-                removedPackageNames.addAll(Arrays.asList(packages));
+                Collections.addAll(removedPackages, packages);
+
+                // No need to update the removedComponents as
+                // removedPackages is a super-set of removedComponents
             } else if (mOp == OP_UPDATE) {
                 // Mark disabled packages in the broadcast to be removed
                 for (int i=0; i<N; i++) {
                     if (isPackageDisabled(context, packages[i], mUser)) {
-                        removedPackageNames.add(packages[i]);
+                        removedPackages.add(packages[i]);
                     }
+                }
+
+                // Update removedComponents as some components can get removed during package update
+                for (AppInfo info : removedApps) {
+                    removedComponents.add(info.componentName);
                 }
             }
 
-            if (!removedPackageNames.isEmpty() || !removedApps.isEmpty()) {
-                final int removeReason;
-                if (mOp == OP_UNAVAILABLE) {
-                    removeReason = ShortcutInfo.FLAG_DISABLED_NOT_AVAILABLE;
-                } else if (mOp == OP_SUSPEND) {
-                    removeReason = ShortcutInfo.FLAG_DISABLED_SUSPENDED;
-                } else {
-                    // Remove all the components associated with this package
-                    for (String pn : removedPackageNames) {
-                        deletePackageFromDatabase(context, pn, mUser);
-                    }
-                    // Remove all the specific components
-                    for (AppInfo a : removedApps) {
-                        ArrayList<ItemInfo> infos = getItemInfoForComponentName(a.componentName, mUser);
-                        deleteItemsFromDatabase(context, infos);
-                    }
-                    removeReason = 0;
+            if (!removedPackages.isEmpty() || !removedComponents.isEmpty()) {
+                for (String pn : removedPackages) {
+                    deletePackageFromDatabase(context, pn, mUser);
+                }
+                for (ComponentName cn : removedComponents) {
+                    deleteItemsFromDatabase(context, getItemInfoForComponentName(cn, mUser));
                 }
 
                 // Remove any queued items from the install queue
-                InstallShortcutReceiver.removeFromInstallQueue(context, removedPackageNames, mUser);
+                InstallShortcutReceiver.removeFromInstallQueue(context, removedPackages, mUser);
+
                 // Call the components-removed callback
+                final Callbacks callbacks = getCallback();
                 mHandler.post(new Runnable() {
                     public void run() {
                         Callbacks cb = getCallback();
                         if (callbacks == cb && cb != null) {
-                            callbacks.bindComponentsRemoved(
-                                    removedPackageNames, removedApps, mUser, removeReason);
+                            callbacks.bindWorkspaceComponentsRemoved(
+                                    removedPackages, removedComponents, mUser);
+                        }
+                    }
+                });
+            }
+
+            if (!removedApps.isEmpty()) {
+                // Remove corresponding apps from All-Apps
+                final Callbacks callbacks = getCallback();
+                mHandler.post(new Runnable() {
+                    public void run() {
+                        Callbacks cb = getCallback();
+                        if (callbacks == cb && cb != null) {
+                            callbacks.bindAppInfosRemoved(removedApps);
                         }
                     }
                 });
@@ -3307,6 +3318,7 @@ public class LauncherModel extends BroadcastReceiver
             // get widget update signals.
             if (!Utilities.ATLEAST_MARSHMALLOW &&
                     (mOp == OP_ADD || mOp == OP_REMOVE || mOp == OP_UPDATE)) {
+                final Callbacks callbacks = getCallback();
                 mHandler.post(new Runnable() {
                     public void run() {
                         Callbacks cb = getCallback();
