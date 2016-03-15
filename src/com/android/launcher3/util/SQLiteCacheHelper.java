@@ -98,7 +98,7 @@ public abstract class SQLiteCacheHelper {
     private class MySQLiteOpenHelper extends SQLiteOpenHelper {
 
         public MySQLiteOpenHelper(Context context, String name, int version) {
-            super(context, name, null, version);
+            super(new NoLocaleSqliteContext(context), name, null, version);
         }
 
         @Override
