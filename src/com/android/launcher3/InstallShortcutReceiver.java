@@ -87,7 +87,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         }
     }
 
-    public static void removeFromInstallQueue(Context context, ArrayList<String> packageNames,
+    public static void removeFromInstallQueue(Context context, HashSet<String> packageNames,
             UserHandleCompat user) {
         if (packageNames.isEmpty()) {
             return;

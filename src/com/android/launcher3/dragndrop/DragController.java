@@ -314,7 +314,7 @@ public class DragController implements DragDriver.EventListener {
         endDrag();
     }
 
-    public void onAppsRemoved(final ArrayList<String> packageNames, HashSet<ComponentName> cns) {
+    public void onAppsRemoved(final HashSet<String> packageNames, HashSet<ComponentName> cns) {
         // Cancel the current drag if we are removing an app that we are dragging
         if (mDragObject != null) {
             Object rawDragInfo = mDragObject.dragInfo;
