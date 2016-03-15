@@ -184,8 +184,6 @@ public class Launcher extends Activity
     private static final String RUNTIME_STATE_CURRENT_SCREEN = "launcher.current_screen";
     // Type: int
     private static final String RUNTIME_STATE = "launcher.state";
-    // Type: long
-    private static final String RUNTIME_STATE_OPEN_FOLDER_ID = "launcher.open_folder_id";
     // Type: Content Values / parcelable
     private static final String RUNTIME_STATE_PENDING_ADD_ITEM = "launcher.add_item";
     // Type: parcelable
@@ -1956,10 +1954,10 @@ public class Launcher extends Activity
         super.onSaveInstanceState(outState);
 
         outState.putInt(RUNTIME_STATE, mState.ordinal());
-        Folder openFolder = mWorkspace.getOpenFolder();
-        if (openFolder != null) {
-            outState.putLong(RUNTIME_STATE_OPEN_FOLDER_ID, openFolder.mInfo.id);
-        }
+        // We close any open folder since it will not be re-opened, and we need to make sure
+        // this state is reflected.
+        // TODO: Move folderInfo.isOpened out of the model and make it a UI state.
+        closeFolder(false);
 
         if (mPendingAddInfo.container != ItemInfo.NO_ID && mPendingAddInfo.screenId > -1 &&
                 mWaitingForResult) {
@@ -4146,25 +4144,6 @@ public class Launcher extends Activity
         if (mSavedState != null) {
             if (!mWorkspace.hasFocus()) {
                 mWorkspace.getChildAt(mWorkspace.getCurrentPage()).requestFocus();
-            }
-
-            long folderId = mSavedState.getLong(RUNTIME_STATE_OPEN_FOLDER_ID);
-            if (folderId != 0) {
-                View view = mWorkspace.getHomescreenIconByItemId(folderId);
-                if (view instanceof FolderIcon) {
-                    FolderIcon icon = (FolderIcon) view;
-                    FolderInfo info = icon.getFolderInfo();
-                    long currentScreenId = mWorkspace.getScreenIdForPageIndex(
-                            mWorkspace.getNextPage());
-                    if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT
-                        || info.screenId == currentScreenId) {
-                        // We can show the folder
-                        openFolder(icon, false);
-                    } else {
-                        Launcher.addDumpLog(TAG, "Saved state contains folder " + info +
-                                " but current screen is " + currentScreenId);
-                    }
-                }
             }
 
             mSavedState = null;
