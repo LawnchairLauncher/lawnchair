@@ -63,14 +63,22 @@ public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleG
             // Don't listen for the pinch gesture if we are already animating from a previous one.
             return false;
         }
+        if (mLauncher.isWorkspaceLocked()) {
+            // Don't listen for the pinch gesture if the workspace isn't ready.
+            return false;
+        }
         if (mWorkspace == null) {
-            mWorkspace = mLauncher.mWorkspace;
+            mWorkspace = mLauncher.getWorkspace();
             mThresholdManager = new PinchThresholdManager(mWorkspace);
             mAnimationManager = new PinchAnimationManager(mLauncher);
         }
         if (mWorkspace.isSwitchingState() || mWorkspace.mScrollInteractionBegan) {
-            // Don't listen to pinches occurring while switching state, as it will cause a jump
+            // Don't listen for the pinch gesture while switching state, as it will cause a jump
             // once the state switching animation is complete.
+            return false;
+        }
+        if (mWorkspace.getOpenFolder() != null) {
+            // Don't listen for the pinch gesture if a folder is open.
             return false;
         }
 
