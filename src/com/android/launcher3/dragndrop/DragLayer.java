@@ -250,12 +250,9 @@ public class DragLayer extends InsettableFrameLayout {
         }
         clearAllResizeFrames();
 
-        Folder currentFolder = mLauncher.getWorkspace().getOpenFolder();
-        if (currentFolder == null) {
-            if (mPinchListener.onInterceptTouchEvent(ev)) {
-                // Stop listening for scrolling etc. (onTouchEvent() handles the rest of the pinch.)
-                return true;
-            }
+        if (mPinchListener.onInterceptTouchEvent(ev)) {
+            // Stop listening for scrolling etc. (onTouchEvent() handles the rest of the pinch.)
+            return true;
         }
         return mDragController.onInterceptTouchEvent(ev);
     }
