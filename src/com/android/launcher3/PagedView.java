@@ -625,17 +625,23 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     // we moved this functionality to a helper function so SmoothPagedView can reuse it
     protected boolean computeScrollHelper() {
+        return computeScrollHelper(true);
+    }
+
+    protected boolean computeScrollHelper(boolean shouldInvalidate) {
         if (mScroller.computeScrollOffset()) {
             // Don't bother scrolling if the page does not need to be moved
             if (getScrollX() != mScroller.getCurrX()
-                || getScrollY() != mScroller.getCurrY()) {
+                    || getScrollY() != mScroller.getCurrY()) {
                 float scaleX = mFreeScroll ? getScaleX() : 1f;
                 int scrollX = (int) (mScroller.getCurrX() * (1 / scaleX));
                 scrollTo(scrollX, mScroller.getCurrY());
             }
-            invalidate();
+            if (shouldInvalidate) {
+                invalidate();
+            }
             return true;
-        } else if (mNextPage != INVALID_PAGE) {
+        } else if (mNextPage != INVALID_PAGE && shouldInvalidate) {
             sendScrollAccessibilityEvent();
 
             mCurrentPage = validateNewPage(mNextPage);

@@ -55,7 +55,7 @@ public class Hotseat extends FrameLayout
         mHasVerticalHotseat = mLauncher.getDeviceProfile().isVerticalBarLayout();
     }
 
-    CellLayout getLayout() {
+    public CellLayout getLayout() {
         return mContent;
     }
 

@@ -39,6 +39,9 @@
     <color name="outline_color">#FFFFFFFF</color>
     <color name="launcher_accent_color">#ff009688</color>
 
+    <color name="spring_loaded_panel_color">#40FFFFFF</color>
+    <color name="spring_loaded_highlighted_panel_border_color">#FFF</color>
+
     <!-- Containers -->
     <color name="container_fastscroll_thumb_inactive_color">#009688</color>
     <color name="container_fastscroll_thumb_active_color">#009688</color>
