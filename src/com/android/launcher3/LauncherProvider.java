@@ -54,6 +54,7 @@ import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.util.ManagedProfileHeuristic;
+import com.android.launcher3.util.NoLocaleSqliteContext;
 import com.android.launcher3.util.Thunk;
 
 import java.net.URISyntaxException;
@@ -526,7 +527,8 @@ public class LauncherProvider extends ContentProvider {
         private long mMaxScreenId = -1;
 
         DatabaseHelper(Context context, LauncherProvider provider) {
-            super(context, LauncherFiles.LAUNCHER_DB, null, DATABASE_VERSION);
+            super(new NoLocaleSqliteContext(context), LauncherFiles.LAUNCHER_DB,
+                    null, DATABASE_VERSION);
             mContext = context;
             mProvider = provider;
 
@@ -556,7 +558,7 @@ public class LauncherProvider extends ContentProvider {
          * Constructor used only in tests.
          */
         public DatabaseHelper(Context context, LauncherProvider provider, String tableName) {
-            super(context, tableName, null, DATABASE_VERSION);
+            super(new NoLocaleSqliteContext(context), tableName, null, DATABASE_VERSION);
             mContext = context;
             mProvider = provider;
 
