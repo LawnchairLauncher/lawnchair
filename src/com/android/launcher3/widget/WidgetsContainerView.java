@@ -96,6 +96,18 @@ public class WidgetsContainerView extends BaseContainerView
         mRecyclerView = (WidgetsRecyclerView) getContentView().findViewById(R.id.widgets_list_view);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        Rect bgPadding = new Rect();
+        getRevealView().getBackground().getPadding(bgPadding);
+        if (Utilities.isRtl(getResources())) {
+            getContentView().setPadding(0, bgPadding.top,
+                    bgPadding.right, bgPadding.bottom);
+            mRecyclerView.updateBackgroundPadding(new Rect(bgPadding.left, 0, 0, 0));
+        } else {
+            getContentView().setPadding(bgPadding.left, bgPadding.top,
+                    0, bgPadding.bottom);
+            mRecyclerView.updateBackgroundPadding(new Rect(0, 0, bgPadding.right, 0));
+        }
     }
 
     //
@@ -307,22 +319,6 @@ public class WidgetsContainerView extends BaseContainerView
                 mLauncher.showOutOfSpaceMessage(false);
             }
             d.deferDragViewCleanupPostAnimation = false;
-        }
-    }
-
-    //
-    // Container rendering related.
-    //
-    @Override
-    protected void onUpdateBgPadding(Rect padding, Rect bgPadding) {
-        if (Utilities.isRtl(getResources())) {
-            getContentView().setPadding(0, bgPadding.top,
-                    bgPadding.right, bgPadding.bottom);
-            mRecyclerView.updateBackgroundPadding(new Rect(bgPadding.left, 0, 0, 0));
-        } else {
-            getContentView().setPadding(bgPadding.left, bgPadding.top,
-                    0, bgPadding.bottom);
-            mRecyclerView.updateBackgroundPadding(new Rect(0, 0, bgPadding.right, 0));
         }
     }
 

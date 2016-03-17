@@ -15,6 +15,9 @@
 -->
 
 <resources>
+<!-- Container -->
+    <dimen name="container_min_margin">16dp</dimen>
+
 <!-- All Apps -->
     <dimen name="all_apps_grid_view_start_margin">0dp</dimen>
     <dimen name="all_apps_grid_section_text_size">26sp</dimen>

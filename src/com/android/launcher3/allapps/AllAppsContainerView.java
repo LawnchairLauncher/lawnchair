@@ -230,8 +230,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mSearchBarController = searchController;
         mSearchBarController.initialize(mApps, mSearchInput, mLauncher, this);
         mAdapter.setSearchController(mSearchBarController);
-
-        updateBackgroundAndPaddings();
     }
 
     /**
@@ -311,19 +309,17 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mAppsRecyclerView.setPremeasuredIconHeights(predIcon.getMeasuredHeight(),
                 icon.getMeasuredHeight());
 
-        updateBackgroundAndPaddings();
+        updatePaddingsAndMargins();
     }
 
     @Override
-    public void onBoundsChanged(Rect newBounds) {
-        mLauncher.updateOverlayBounds(newBounds);
-    }
+    public void onBoundsChanged(Rect newBounds) { }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        mContentBounds.set(mContentPadding.left, mContentPadding.top,
-                MeasureSpec.getSize(widthMeasureSpec) - mContentPadding.right,
-                MeasureSpec.getSize(heightMeasureSpec) - mContentPadding.bottom);
+        mContentBounds.set(mHorizontalPadding, 0,
+                MeasureSpec.getSize(widthMeasureSpec) - mHorizontalPadding,
+                MeasureSpec.getSize(heightMeasureSpec));
 
         // Update the number of items in the grid before we measure the view
         // TODO: mSectionNamesMargin is currently 0, but also account for it,
@@ -365,8 +361,10 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
      * container view, we inset the background and padding of the recycler view to allow for the
      * recycler view to handle touch events (for fast scrolling) all the way to the edge.
      */
-    @Override
-    protected void onUpdateBgPadding(Rect padding, Rect bgPadding) {
+    private void updatePaddingsAndMargins() {
+        Rect bgPadding = new Rect();
+        getRevealView().getBackground().getPadding(bgPadding);
+
         mAppsRecyclerView.updateBackgroundPadding(bgPadding);
         mAdapter.updateBackgroundPadding(bgPadding);
         mElevationController.updateBackgroundPadding(bgPadding);
@@ -377,16 +375,16 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         int startInset = Math.max(mSectionNamesMargin, maxScrollBarWidth);
         int topBottomPadding = mRecyclerViewTopBottomPadding;
         if (Utilities.isRtl(getResources())) {
-            mAppsRecyclerView.setPadding(padding.left + maxScrollBarWidth,
-                    topBottomPadding, padding.right + startInset, topBottomPadding);
+            mAppsRecyclerView.setPadding(bgPadding.left + maxScrollBarWidth,
+                    topBottomPadding, bgPadding.right + startInset, topBottomPadding);
         } else {
-            mAppsRecyclerView.setPadding(padding.left + startInset, topBottomPadding,
-                    padding.right + maxScrollBarWidth, topBottomPadding);
+            mAppsRecyclerView.setPadding(bgPadding.left + startInset, topBottomPadding,
+                    bgPadding.right + maxScrollBarWidth, topBottomPadding);
         }
 
         MarginLayoutParams lp = (MarginLayoutParams) mSearchContainer.getLayoutParams();
-        lp.leftMargin = padding.left;
-        lp.rightMargin = padding.right;
+        lp.leftMargin = bgPadding.left;
+        lp.rightMargin = bgPadding.right;
         mSearchContainer.setLayoutParams(lp);
     }
 

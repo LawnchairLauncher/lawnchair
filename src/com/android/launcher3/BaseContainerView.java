@@ -31,19 +31,9 @@ import com.android.launcher3.config.ProviderConfig;
 /**
  * A base container view, which supports resizing.
  */
-public abstract class BaseContainerView extends FrameLayout implements Insettable {
+public abstract class BaseContainerView extends FrameLayout {
 
-    private final static String TAG = "BaseContainerView";
-
-    // The window insets
-    private final Rect mInsets = new Rect();
-    // The bounds of the search bar.  Only the left, top, right are used to inset the
-    // search bar and the height is determined by the measurement of the layout
-    private final Rect mFixedSearchBarBounds = new Rect();
-    // The computed padding to apply to the container to achieve the container bounds
-    protected final Rect mContentPadding = new Rect();
-    // The inset to apply to the edges and between the search bar and the container
-    private final int mContainerBoundsInset;
+    protected final int mHorizontalPadding;
 
     private final Drawable mRevealDrawable;
 
@@ -60,11 +50,17 @@ public abstract class BaseContainerView extends FrameLayout implements Insettabl
 
     public BaseContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mContainerBoundsInset = getResources().getDimensionPixelSize(R.dimen.container_bounds_inset);
+
+        int width = ((Launcher) context).getDeviceProfile().availableWidthPx;
+        mHorizontalPadding = Math.max(
+                getResources().getDimensionPixelSize(R.dimen.container_min_margin),
+                (int) getResources().getFraction(R.fraction.container_margin, width, 1));
 
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.BaseContainerView, defStyleAttr, 0);
-        mRevealDrawable = a.getDrawable(R.styleable.BaseContainerView_revealBackground);
+        mRevealDrawable = new InsetDrawable(
+                a.getDrawable(R.styleable.BaseContainerView_revealBackground),
+                mHorizontalPadding, 0, mHorizontalPadding, 0);
         a.recycle();
     }
 
@@ -74,90 +70,13 @@ public abstract class BaseContainerView extends FrameLayout implements Insettabl
 
         mContent = findViewById(R.id.main_content);
         mRevealView = findViewById(R.id.reveal_view);
-    }
 
-    @Override
-    final public void setInsets(Rect insets) {
-        mInsets.set(insets);
-        updateBackgroundAndPaddings();
-    }
-
-    /**
-     * Sets the search bar bounds for this container view to match.
-     */
-    final public void setSearchBarBounds(Rect bounds) {
-        if (ProviderConfig.IS_DOGFOOD_BUILD && !isValidSearchBarBounds(bounds)) {
-            Log.e(TAG, "Invalid search bar bounds: " + bounds);
-        }
-
-        mFixedSearchBarBounds.set(bounds);
-
-        // Post the updates since they can trigger a relayout, and this call can be triggered from
-        // a layout pass itself.
-        post(new Runnable() {
-            @Override
-            public void run() {
-                updateBackgroundAndPaddings();
-            }
-        });
-    }
-
-    /**
-     * Update the backgrounds and padding in response to a change in the bounds or insets.
-     */
-    protected void updateBackgroundAndPaddings() {
-        Rect padding;
-        if (isValidSearchBarBounds(mFixedSearchBarBounds)) {
-            padding = new Rect(
-                    mFixedSearchBarBounds.left,
-                    mInsets.top + mContainerBoundsInset,
-                    getMeasuredWidth() - mFixedSearchBarBounds.right,
-                    mInsets.bottom + mContainerBoundsInset
-            );
-        } else {
-            padding = new Rect(
-                    mInsets.left + mContainerBoundsInset,
-                    mInsets.top + mContainerBoundsInset,
-                    mInsets.right + mContainerBoundsInset,
-                    mInsets.bottom + mContainerBoundsInset
-            );
-        }
-
-        // The container padding changed, notify the container.
-        if (!padding.equals(mContentPadding)) {
-            mContentPadding.set(padding);
-            onUpdateBackgroundAndPaddings(padding);
-        }
-    }
-
-    private void onUpdateBackgroundAndPaddings(Rect padding) {
-        // Apply the top-bottom padding to itself so that the launcher transition is
-        // clipped correctly
-        setPadding(0, padding.top, 0, padding.bottom);
-
-        InsetDrawable background = new InsetDrawable(mRevealDrawable,
-                padding.left, 0, padding.right, 0);
-        mRevealView.setBackground(background.getConstantState().newDrawable());
-        mContent.setBackground(background);
+        mRevealView.setBackground(mRevealDrawable.getConstantState().newDrawable());
+        mContent.setBackground(mRevealDrawable);
 
         // We let the content have a intent background, but still have full width.
         // This allows the scroll bar to be used responsive outside the background bounds as well.
         mContent.setPadding(0, 0, 0, 0);
-
-        Rect bgPadding = new Rect();
-        background.getPadding(bgPadding);
-        onUpdateBgPadding(padding, bgPadding);
-    }
-
-    protected abstract void onUpdateBgPadding(Rect padding, Rect bgPadding);
-
-    /**
-     * Returns whether the search bar bounds we got are considered valid.
-     */
-    private boolean isValidSearchBarBounds(Rect searchBarBounds) {
-        return !searchBarBounds.isEmpty() &&
-                searchBarBounds.right <= getMeasuredWidth() &&
-                searchBarBounds.bottom <= getMeasuredHeight();
     }
 
     public final View getContentView() {
