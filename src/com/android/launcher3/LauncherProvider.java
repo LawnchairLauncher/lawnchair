@@ -53,6 +53,7 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.dynamicui.ExtractionUtils;
 import com.android.launcher3.util.ManagedProfileHeuristic;
 import com.android.launcher3.util.NoLocaleSqliteContext;
 import com.android.launcher3.util.Thunk;
@@ -257,7 +258,7 @@ public class LauncherProvider extends ContentProvider {
     }
 
     @Override
-    public Bundle call(String method, String arg, Bundle extras) {
+    public Bundle call(String method, final String arg, final Bundle extras) {
         if (Binder.getCallingUid() != Process.myUid()) {
             return null;
         }
@@ -277,18 +278,47 @@ public class LauncherProvider extends ContentProvider {
                 return result;
             }
             case LauncherSettings.Settings.METHOD_SET_BOOLEAN: {
-                boolean value = extras.getBoolean(LauncherSettings.Settings.EXTRA_VALUE);
+                final boolean value = extras.getBoolean(LauncherSettings.Settings.EXTRA_VALUE);
                 Utilities.getPrefs(getContext()).edit().putBoolean(arg, value).apply();
-                synchronized (LISTENER_LOCK) {
-                    if (mListener != null) {
-                        mListener.onSettingsChanged(arg, value);
+                new MainThreadExecutor().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        synchronized (LISTENER_LOCK) {
+                            if (mListener != null) {
+                                mListener.onSettingsChanged(arg, value);
+                            }
+                        }
+
                     }
-                }
+                });
                 if (extras.getBoolean(LauncherSettings.Settings.NOTIFY_BACKUP)) {
                     LauncherBackupAgentHelper.dataChanged(getContext());
                 }
                 Bundle result = new Bundle();
                 result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE, value);
+                return result;
+            }
+            case LauncherSettings.Settings.METHOD_SET_EXTRACTED_COLORS_AND_WALLPAPER_ID: {
+                String extractedColors = extras.getString(
+                        LauncherSettings.Settings.EXTRA_EXTRACTED_COLORS);
+                int wallpaperId = extras.getInt(LauncherSettings.Settings.EXTRA_WALLPAPER_ID);
+                Utilities.getPrefs(getContext()).edit()
+                        .putString(ExtractionUtils.EXTRACTED_COLORS_PREFERENCE_KEY, extractedColors)
+                        .putInt(ExtractionUtils.WALLPAPER_ID_PREFERENCE_KEY, wallpaperId)
+                        .apply();
+                new MainThreadExecutor().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        synchronized (LISTENER_LOCK) {
+                            if (mListener != null) {
+                                mListener.onExtractedColorsChanged();
+                            }
+                        }
+
+                    }
+                });
+                Bundle result = new Bundle();
+                result.putString(LauncherSettings.Settings.EXTRA_VALUE, extractedColors);
                 return result;
             }
             case LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG: {

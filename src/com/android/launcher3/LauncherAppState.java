@@ -28,6 +28,7 @@ import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.dynamicui.ExtractionUtils;
 import com.android.launcher3.util.ConfigMonitor;
 import com.android.launcher3.util.TestingUtils;
 import com.android.launcher3.util.Thunk;
@@ -108,6 +109,11 @@ public class LauncherAppState {
         filter.addAction(LauncherAppsCompat.ACTION_MANAGED_PROFILE_ADDED);
         filter.addAction(LauncherAppsCompat.ACTION_MANAGED_PROFILE_REMOVED);
         filter.addAction(LauncherAppsCompat.ACTION_MANAGED_PROFILE_AVAILABILITY_CHANGED);
+        // For extracting colors from the wallpaper
+        if (Utilities.isNycOrAbove()) {
+            // TODO: add a broadcast entry to the manifest for pre-N.
+            filter.addAction(Intent.ACTION_WALLPAPER_CHANGED);
+        }
 
         sContext.registerReceiver(mModel, filter);
         UserManagerCompat.getInstance(sContext).enableAndResetCache();
@@ -121,6 +127,8 @@ public class LauncherAppState {
             }, new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED));
         }
         new ConfigMonitor(sContext).register();
+
+        ExtractionUtils.startColorExtractionServiceIfNecessary(sContext);
     }
 
     /**

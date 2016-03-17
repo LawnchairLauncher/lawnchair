@@ -141,6 +141,11 @@
             </intent-filter>
         </receiver>
 
+        <service android:name=".dynamicui.ColorExtractionService"
+            android:exported="false"
+            android:process=":wallpaper_chooser">
+        </service>
+
         <!-- The settings provider contains Home's data, like the workspace favorites -->
         <provider
             android:name="com.android.launcher3.LauncherProvider"
