@@ -22,6 +22,8 @@
     android:id="@+id/apps_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingTop="@dimen/container_bounds_inset"
+    android:paddingBottom="@dimen/container_bounds_inset"
     android:orientation="vertical"
     launcher:revealBackground="@drawable/quantum_panel_shape">
 

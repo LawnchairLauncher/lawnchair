@@ -67,6 +67,9 @@
     <dimen name="container_fastscroll_popup_size">72dp</dimen>
     <dimen name="container_fastscroll_popup_text_size">48dp</dimen>
 
+    <item name="container_margin" format="fraction" type="fraction">0%</item>
+    <dimen name="container_min_margin">8dp</dimen>
+
 <!-- All Apps -->
     <dimen name="all_apps_button_scale_down">0dp</dimen>
     <dimen name="all_apps_grid_view_start_margin">0dp</dimen>
