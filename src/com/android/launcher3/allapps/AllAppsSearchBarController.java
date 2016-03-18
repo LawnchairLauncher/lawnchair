@@ -175,6 +175,7 @@ public abstract class AllAppsSearchBarController
         /**
          * Called when the bounds of the search bar has changed.
          */
+        @Deprecated
         void onBoundsChanged(Rect newBounds);
 
         /**

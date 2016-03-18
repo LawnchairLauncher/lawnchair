@@ -583,14 +583,6 @@ public class Launcher extends Activity
         }
     }
 
-    /**
-     * Updates the bounds of all the overlays to match the new fixed bounds.
-     */
-    public void updateOverlayBounds(Rect newBounds) {
-        mAppsView.setSearchBarBounds(newBounds);
-        mWidgetsView.setSearchBarBounds(newBounds);
-    }
-
     /** To be overridden by subclasses to hint to Launcher that we have custom content */
     protected boolean hasCustomContentToLeft() {
         if (mLauncherCallbacks != null) {
