@@ -17,8 +17,6 @@
 package com.android.launcher3.widget;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
@@ -31,17 +29,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.SimpleOnStylusPressListener;
 import com.android.launcher3.R;
 import com.android.launcher3.StylusEventHelper;
 import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.WidgetPreviewLoader.PreviewLoadRequest;
-import com.android.launcher3.compat.AppWidgetManagerCompat;
+import com.android.launcher3.model.WidgetItem;
 
 /**
  * Represents the individual cell of the widget inside the widget tray. The preview is drawn
@@ -72,14 +68,13 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     private TextView mWidgetName;
     private TextView mWidgetDims;
 
-    private String mDimensionsFormatString;
-    private Object mInfo;
+    private WidgetItem mItem;
 
     private WidgetPreviewLoader mWidgetPreviewLoader;
     private PreviewLoadRequest mActiveRequest;
     private StylusEventHelper mStylusEventHelper;
 
-    private Launcher mLauncher;
+    private final Launcher mLauncher;
 
     public WidgetCell(Context context) {
         this(context, null);
@@ -96,7 +91,6 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         mLauncher = (Launcher) context;
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
 
-        mDimensionsFormatString = r.getString(R.string.widget_dims_format);
         setContainerWidth();
         setWillNotDraw(false);
         setClipToPadding(false);
@@ -136,33 +130,18 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         }
     }
 
-    /**
-     * Apply the widget provider info to the view.
-     */
-    public void applyFromAppWidgetProviderInfo(LauncherAppWidgetProviderInfo info,
-            WidgetPreviewLoader loader) {
-
-        InvariantDeviceProfile profile =
-                LauncherAppState.getInstance().getInvariantDeviceProfile();
-        mInfo = info;
-        // TODO(hyunyoungs): setup a cache for these labels.
-        mWidgetName.setText(AppWidgetManagerCompat.getInstance(getContext()).loadLabel(info));
-        int hSpan = Math.min(info.spanX, profile.numColumns);
-        int vSpan = Math.min(info.spanY, profile.numRows);
-        mWidgetDims.setText(String.format(mDimensionsFormatString, hSpan, vSpan));
+    public void applyFromCellItem(WidgetItem item, WidgetPreviewLoader loader) {
+        mItem = item;
+        mWidgetName.setText(mItem.label);
+        mWidgetDims.setText(getContext().getString(R.string.widget_dims_format,
+                mItem.spanX, mItem.spanY));
         mWidgetPreviewLoader = loader;
-    }
 
-    /**
-     * Apply the resolve info to the view.
-     */
-    public void applyFromResolveInfo(
-            PackageManager pm, ResolveInfo info, WidgetPreviewLoader loader) {
-        mInfo = info;
-        CharSequence label = info.loadLabel(pm);
-        mWidgetName.setText(label);
-        mWidgetDims.setText(String.format(mDimensionsFormatString, 1, 1));
-        mWidgetPreviewLoader = loader;
+        if (item.activityInfo != null) {
+            setTag(new PendingAddShortcutInfo(item.activityInfo));
+        } else {
+            setTag(new PendingAddWidgetInfo(mLauncher, item.widgetInfo));
+        }
     }
 
     public int[] getPreviewSize() {
@@ -191,7 +170,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             Log.d(TAG, String.format("[tag=%s] ensurePreview (%d, %d):",
                     getTagToString(), size[0], size[1]));
         }
-        mActiveRequest = mWidgetPreviewLoader.getPreview(mInfo, size[0], size[1], this);
+        mActiveRequest = mWidgetPreviewLoader.getPreview(mItem, size[0], size[1], this);
     }
 
     @Override

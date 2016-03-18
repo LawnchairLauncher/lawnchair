@@ -16,9 +16,6 @@
 package com.android.launcher3.widget;
 
 import android.annotation.TargetApi;
-import android.content.Context;
-import android.content.pm.ResolveInfo;
-import android.content.res.Resources;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
@@ -30,14 +27,13 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.model.PackageItemInfo;
+import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.WidgetsModel;
 
 import java.util.List;
@@ -91,7 +87,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
     @Override
     public void onBindViewHolder(WidgetsRowViewHolder holder, int pos) {
-        List<Object> infoList = mWidgetsModel.getSortedWidgets(pos);
+        List<WidgetItem> infoList = mWidgetsModel.getSortedWidgets(pos);
 
         ViewGroup row = ((ViewGroup) holder.getContent().findViewById(R.id.widgets_cell_list));
         if (DEBUG) {
@@ -136,17 +132,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
         }
         for (int i=0; i < infoList.size(); i++) {
             WidgetCell widget = (WidgetCell) row.getChildAt(i);
-            if (infoList.get(i) instanceof LauncherAppWidgetProviderInfo) {
-                LauncherAppWidgetProviderInfo info = (LauncherAppWidgetProviderInfo) infoList.get(i);
-                PendingAddWidgetInfo pawi = new PendingAddWidgetInfo(mLauncher, info);
-                widget.setTag(pawi);
-                widget.applyFromAppWidgetProviderInfo(info, mWidgetPreviewLoader);
-            } else if (infoList.get(i) instanceof ResolveInfo) {
-                ResolveInfo info = (ResolveInfo) infoList.get(i);
-                PendingAddShortcutInfo pasi = new PendingAddShortcutInfo(info.activityInfo);
-                widget.setTag(pasi);
-                widget.applyFromResolveInfo(mLauncher.getPackageManager(), info, mWidgetPreviewLoader);
-            }
+            widget.applyFromCellItem(infoList.get(i), mWidgetPreviewLoader);
             widget.ensurePreview();
             widget.setVisibility(View.VISIBLE);
         }

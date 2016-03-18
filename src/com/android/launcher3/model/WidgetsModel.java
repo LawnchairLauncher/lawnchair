@@ -2,9 +2,9 @@
 package com.android.launcher3.model;
 
 import android.appwidget.AppWidgetProviderInfo;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.DeadObjectException;
 import android.os.TransactionTooLargeException;
@@ -19,7 +19,6 @@ import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.config.ProviderConfig;
 
 import java.util.ArrayList;
@@ -42,20 +41,18 @@ public class WidgetsModel {
     private final ArrayList<PackageItemInfo> mPackageItemInfos;
 
     /* Map of widgets and shortcuts that are tracked per package. */
-    private final HashMap<PackageItemInfo, ArrayList<Object>> mWidgetsList;
+    private final HashMap<PackageItemInfo, ArrayList<WidgetItem>> mWidgetsList;
 
     private final AppWidgetManagerCompat mAppWidgetMgr;
-    private final WidgetsAndShortcutNameComparator mWidgetAndShortcutNameComparator;
     private final Comparator<ItemInfo> mAppNameComparator;
     private final IconCache mIconCache;
     private final AppFilter mAppFilter;
     private final AlphabeticIndexCompat mIndexer;
 
-    private ArrayList<Object> mRawList;
+    private ArrayList<WidgetItem> mRawList;
 
     public WidgetsModel(Context context,  IconCache iconCache, AppFilter appFilter) {
         mAppWidgetMgr = AppWidgetManagerCompat.getInstance(context);
-        mWidgetAndShortcutNameComparator = new WidgetsAndShortcutNameComparator(context);
         mAppNameComparator = (new AppNameComparator(context)).getAppInfoComparator();
         mIconCache = iconCache;
         mAppFilter = appFilter;
@@ -70,13 +67,12 @@ public class WidgetsModel {
     private WidgetsModel(WidgetsModel model) {
         mAppWidgetMgr = model.mAppWidgetMgr;
         mPackageItemInfos = (ArrayList<PackageItemInfo>) model.mPackageItemInfos.clone();
-        mWidgetsList = (HashMap<PackageItemInfo, ArrayList<Object>>) model.mWidgetsList.clone();
-        mWidgetAndShortcutNameComparator = model.mWidgetAndShortcutNameComparator;
+        mWidgetsList = (HashMap<PackageItemInfo, ArrayList<WidgetItem>>) model.mWidgetsList.clone();
         mAppNameComparator = model.mAppNameComparator;
         mIconCache = model.mIconCache;
         mAppFilter = model.mAppFilter;
         mIndexer = model.mIndexer;
-        mRawList = (ArrayList<Object>) model.mRawList.clone();
+        mRawList = (ArrayList<WidgetItem>) model.mRawList.clone();
     }
 
     // Access methods that may be deleted if the private fields are made package-private.
@@ -92,11 +88,11 @@ public class WidgetsModel {
         return mPackageItemInfos.get(pos);
     }
 
-    public List<Object> getSortedWidgets(int pos) {
+    public List<WidgetItem> getSortedWidgets(int pos) {
         return mWidgetsList.get(mPackageItemInfos.get(pos));
     }
 
-    public ArrayList<Object> getRawList() {
+    public ArrayList<WidgetItem> getRawList() {
         return mRawList;
     }
 
@@ -108,16 +104,21 @@ public class WidgetsModel {
         Utilities.assertWorkerThread();
 
         try {
-            final ArrayList<Object> widgetsAndShortcuts = new ArrayList<>();
+            final ArrayList<WidgetItem> widgetsAndShortcuts = new ArrayList<>();
             // Widgets
-            for (AppWidgetProviderInfo widgetInfo :
-                    AppWidgetManagerCompat.getInstance(context).getAllProviders()) {
-                widgetsAndShortcuts.add(LauncherAppWidgetProviderInfo
-                        .fromProviderInfo(context, widgetInfo));
+            AppWidgetManagerCompat widgetManager = AppWidgetManagerCompat.getInstance(context);
+            for (AppWidgetProviderInfo widgetInfo : widgetManager.getAllProviders()) {
+                widgetsAndShortcuts.add(new WidgetItem(
+                        LauncherAppWidgetProviderInfo.fromProviderInfo(context, widgetInfo),
+                        widgetManager));
             }
+
             // Shortcuts
-            widgetsAndShortcuts.addAll(context.getPackageManager().queryIntentActivities(
-                    new Intent(Intent.ACTION_CREATE_SHORTCUT), 0));
+            PackageManager pm = context.getPackageManager();
+            for (ResolveInfo info :
+                    pm.queryIntentActivities(new Intent(Intent.ACTION_CREATE_SHORTCUT), 0)) {
+                widgetsAndShortcuts.add(new WidgetItem(info, pm));
+            }
             setWidgetsAndShortcuts(widgetsAndShortcuts);
         } catch (Exception e) {
             if (!ProviderConfig.IS_DOGFOOD_BUILD &&
@@ -134,7 +135,7 @@ public class WidgetsModel {
         return clone();
     }
 
-    private void setWidgetsAndShortcuts(ArrayList<Object> rawWidgetsShortcuts) {
+    private void setWidgetsAndShortcuts(ArrayList<WidgetItem> rawWidgetsShortcuts) {
         mRawList = rawWidgetsShortcuts;
         if (DEBUG) {
             Log.d(TAG, "addWidgetsAndShortcuts, widgetsShortcuts#=" + rawWidgetsShortcuts.size());
@@ -147,76 +148,63 @@ public class WidgetsModel {
         // clear the lists.
         mWidgetsList.clear();
         mPackageItemInfos.clear();
-        mWidgetAndShortcutNameComparator.reset();
 
         InvariantDeviceProfile idp = LauncherAppState.getInstance().getInvariantDeviceProfile();
 
         // add and update.
-        for (Object o: rawWidgetsShortcuts) {
-            String packageName = "";
-            UserHandleCompat userHandle = null;
-            ComponentName componentName = null;
-            if (o instanceof LauncherAppWidgetProviderInfo) {
-                LauncherAppWidgetProviderInfo widgetInfo = (LauncherAppWidgetProviderInfo) o;
-
+        for (WidgetItem item: rawWidgetsShortcuts) {
+            if (item.widgetInfo != null) {
                 // Ensure that all widgets we show can be added on a workspace of this size
-                int minSpanX = Math.min(widgetInfo.spanX, widgetInfo.minSpanX);
-                int minSpanY = Math.min(widgetInfo.spanY, widgetInfo.minSpanY);
-                if (minSpanX <= (int) idp.numColumns &&
-                    minSpanY <= (int) idp.numRows) {
-                    componentName = widgetInfo.provider;
-                    packageName = widgetInfo.provider.getPackageName();
-                    userHandle = mAppWidgetMgr.getUser(widgetInfo);
-                } else {
+                int minSpanX = Math.min(item.widgetInfo.spanX, item.widgetInfo.minSpanX);
+                int minSpanY = Math.min(item.widgetInfo.spanY, item.widgetInfo.minSpanY);
+                if (minSpanX > idp.numColumns || minSpanY > idp.numRows) {
                     if (DEBUG) {
                         Log.d(TAG, String.format(
                                 "Widget %s : (%d X %d) can't fit on this device",
-                                widgetInfo.provider, minSpanX, minSpanY));
+                                item.componentName, minSpanX, minSpanY));
                     }
                     continue;
                 }
-            } else if (o instanceof ResolveInfo) {
-                ResolveInfo resolveInfo = (ResolveInfo) o;
-                componentName = new ComponentName(resolveInfo.activityInfo.packageName,
-                        resolveInfo.activityInfo.name);
-                packageName = resolveInfo.activityInfo.packageName;
-                userHandle = UserHandleCompat.myUserHandle();
             }
 
-            if (componentName == null || userHandle == null) {
-                Log.e(TAG, String.format("Widget cannot be set for %s.", o.getClass().toString()));
-                continue;
-            }
-            if (mAppFilter != null && !mAppFilter.shouldShowApp(componentName)) {
+            if (mAppFilter != null && !mAppFilter.shouldShowApp(item.componentName)) {
                 if (DEBUG) {
                     Log.d(TAG, String.format("%s is filtered and not added to the widget tray.",
-                        packageName));
+                            item.componentName));
                 }
                 continue;
             }
 
+            String packageName = item.componentName.getPackageName();
             PackageItemInfo pInfo = tmpPackageItemInfos.get(packageName);
-            ArrayList<Object> widgetsShortcutsList = mWidgetsList.get(pInfo);
-            if (widgetsShortcutsList != null) {
-                widgetsShortcutsList.add(o);
-            } else {
+            ArrayList<WidgetItem> widgetsShortcutsList = mWidgetsList.get(pInfo);
+
+            if (widgetsShortcutsList == null) {
                 widgetsShortcutsList = new ArrayList<>();
-                widgetsShortcutsList.add(o);
+
                 pInfo = new PackageItemInfo(packageName);
-                mIconCache.getTitleAndIconForApp(packageName, userHandle,
-                        true /* userLowResIcon */, pInfo);
-                pInfo.titleSectionName = mIndexer.computeSectionName(pInfo.title);
-                mWidgetsList.put(pInfo, widgetsShortcutsList);
                 tmpPackageItemInfos.put(packageName,  pInfo);
+
                 mPackageItemInfos.add(pInfo);
+                mWidgetsList.put(pInfo, widgetsShortcutsList);
             }
+
+            widgetsShortcutsList.add(item);
         }
 
-        // sort.
-        Collections.sort(mPackageItemInfos, mAppNameComparator);
-        for (PackageItemInfo p: mPackageItemInfos) {
-            Collections.sort(mWidgetsList.get(p), mWidgetAndShortcutNameComparator);
+        // Update each package entry
+        for (PackageItemInfo p : mPackageItemInfos) {
+            ArrayList<WidgetItem> widgetsShortcutsList = mWidgetsList.get(p);
+            Collections.sort(widgetsShortcutsList);
+
+            // Update the package entry based on the first item.
+            p.user = widgetsShortcutsList.get(0).user;
+            mIconCache.getTitleAndIconForApp(p, true /* userLowResIcon */);
+            p.titleSectionName = mIndexer.computeSectionName(p.title);
         }
+
+        // sort the package entries.
+        Collections.sort(mPackageItemInfos, mAppNameComparator);
     }
 
     /**
