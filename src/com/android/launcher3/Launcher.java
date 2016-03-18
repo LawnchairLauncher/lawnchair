@@ -120,7 +120,6 @@ import com.android.launcher3.util.ViewOnDrawExecutor;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetsContainerView;
-import com.android.wallpaperpicker.WallpaperUtils;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -2750,7 +2749,7 @@ public class Launcher extends Activity
         int pageScroll = mWorkspace.getScrollForPage(mWorkspace.getPageNearestToCenterOfScreen());
         float offset = mWorkspace.mWallpaperOffset.wallpaperOffsetForScroll(pageScroll);
         startActivityForResult(new Intent(Intent.ACTION_SET_WALLPAPER).setPackage(getPackageName())
-                        .putExtra(WallpaperUtils.EXTRA_WALLPAPER_OFFSET, offset),
+                        .putExtra(Utilities.EXTRA_WALLPAPER_OFFSET, offset),
                 REQUEST_PICK_WALLPAPER);
 
         if (mLauncherCallbacks != null) {
@@ -4499,17 +4498,6 @@ public class Launcher extends Activity
             e.printStackTrace();
             return false;
         }
-    }
-
-    /**
-     * This method indicates whether or not we should suggest default wallpaper dimensions
-     * when our wallpaper cropper was not yet used to set a wallpaper.
-     */
-    protected boolean overrideWallpaperDimensions() {
-        if (mLauncherCallbacks != null) {
-            return mLauncherCallbacks.overrideWallpaperDimensions();
-        }
-        return true;
     }
 
     /**

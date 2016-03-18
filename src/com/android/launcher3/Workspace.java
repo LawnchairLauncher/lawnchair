@@ -1382,17 +1382,17 @@ public class Workspace extends PagedView
     }
 
     protected void setWallpaperDimension() {
-        new AsyncTask<Void, Void, Void>() {
-            public Void doInBackground(Void ... args) {
-                if (Utilities.ATLEAST_KITKAT) {
-                    WallpaperUtils.suggestWallpaperDimension(mLauncher);
-                } else {
-                    WallpaperUtils.suggestWallpaperDimensionPreK(mLauncher,
-                            mLauncher.overrideWallpaperDimensions());
+        Utilities.THREAD_POOL_EXECUTOR.execute(new Runnable() {
+            @Override
+            public void run() {
+                final Point size = LauncherAppState.getInstance()
+                        .getInvariantDeviceProfile().defaultWallpaperSize;
+                if (size.x != mWallpaperManager.getDesiredMinimumWidth()
+                        || size.y != mWallpaperManager.getDesiredMinimumHeight()) {
+                    mWallpaperManager.suggestDesiredDimensions(size.x, size.y);
                 }
-                return null;
             }
-        }.executeOnExecutor(Utilities.THREAD_POOL_EXECUTOR);
+        });
     }
 
     protected void snapToPage(int whichPage, Runnable r) {
