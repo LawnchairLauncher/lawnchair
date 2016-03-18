@@ -22,6 +22,7 @@ import android.content.Context;
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserHandleCompat;
+import com.android.launcher3.util.FlagOp;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -119,19 +120,15 @@ class AllAppsList {
     }
 
     /**
-     * Suspend the apps for the given apk identified by packageName.
+     * Updates the apps for the given packageName and user based on {@param op}.
      */
-    public void suspendPackage(String packageName, UserHandleCompat user, boolean suspend) {
+    public void updatePackageFlags(String packageName, UserHandleCompat user, FlagOp op) {
         final List<AppInfo> data = this.data;
         for (int i = data.size() - 1; i >= 0; i--) {
             AppInfo info = data.get(i);
             final ComponentName component = info.intent.getComponent();
             if (info.user.equals(user) && packageName.equals(component.getPackageName())) {
-                if (suspend) {
-                    info.isDisabled |= ShortcutInfo.FLAG_DISABLED_SUSPENDED;
-                } else {
-                    info.isDisabled &= ~ShortcutInfo.FLAG_DISABLED_SUSPENDED;
-                }
+                info.isDisabled = op.apply(info.isDisabled);
                 modified.add(info);
             }
         }
