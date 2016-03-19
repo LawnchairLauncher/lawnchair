@@ -109,7 +109,7 @@ public class BindWidgetTest extends InstrumentationTestCase {
     public void testUnboundWidget_removed() throws Exception {
         LauncherAppWidgetProviderInfo info = findWidgetProvider(false);
         LauncherAppWidgetInfo item = createWidgetInfo(info, false);
-        item.appWidgetId = 33;
+        item.appWidgetId = -33;
 
         // Since there is no widget to verify, just wait until the workspace is ready.
         setupAndVerifyContents(item, Workspace.class, null);
@@ -253,6 +253,7 @@ public class BindWidgetTest extends InstrumentationTestCase {
             runTestOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    LauncherClings.markFirstRunClingDismissed(mTargetContext);
                     ManagedProfileHeuristic.markExistingUsersForNoFolderCreation(mTargetContext);
                     LauncherAppState.getInstance().getModel().resetLoadedState(true, true);
                 }

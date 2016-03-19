@@ -16,13 +16,10 @@
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
-src_dirs := src
 LOCAL_MODULE_TAGS := tests
 LOCAL_STATIC_JAVA_LIBRARIES := android-support-test ub-uiautomator
 
 LOCAL_SRC_FILES := $(call all-java-files-under, src)
-LOCAL_RESOURCE_DIR := $(addprefix $(LOCAL_PATH)/, $(res_dirs))
-LOCAL_AAPT_FLAGS := --auto-add-overlay
 
 LOCAL_SDK_VERSION := 23
 

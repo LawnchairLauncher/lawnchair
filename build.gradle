@@ -40,7 +40,6 @@ android {
 
         androidTest {
             java.srcDirs = ['tests/src']
-            res.srcDirs = ['tests/res']
             manifest.srcFile "tests/AndroidManifest.xml"
         }
     }
