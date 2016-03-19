@@ -63,6 +63,7 @@ import com.android.launcher3.util.CursorIconInfo;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.ManagedProfileHeuristic;
+import com.android.launcher3.util.StringFilter;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 
@@ -1226,10 +1227,16 @@ public class LauncherModel extends BroadcastReceiver
                 callbacks.bindSearchProviderChanged();
             }
         } else if (LauncherAppsCompat.ACTION_MANAGED_PROFILE_ADDED.equals(action)
-                || LauncherAppsCompat.ACTION_MANAGED_PROFILE_REMOVED.equals(action)
-                || LauncherAppsCompat.ACTION_MANAGED_PROFILE_AVAILABILITY_CHANGED.equals(action)) {
+                || LauncherAppsCompat.ACTION_MANAGED_PROFILE_REMOVED.equals(action)) {
             UserManagerCompat.getInstance(context).enableAndResetCache();
             forceReload();
+        } else if (LauncherAppsCompat.ACTION_MANAGED_PROFILE_AVAILABILITY_CHANGED.equals(action)) {
+            UserHandleCompat user = UserHandleCompat.fromIntent(intent);
+            if (user != null) {
+                enqueuePackageUpdated(new PackageUpdatedTask(
+                        PackageUpdatedTask.OP_USER_AVAILABILITY_CHANGE,
+                        new String[0], user));
+            }
         }
     }
 
@@ -2914,7 +2921,7 @@ public class LauncherModel extends BroadcastReceiver
         public static final int OP_UNAVAILABLE = 4; // external media unmounted
         public static final int OP_SUSPEND = 5; // package suspended
         public static final int OP_UNSUSPEND = 6; // package unsuspended
-
+        public static final int OP_USER_AVAILABILITY_CHANGE = 7; // user available/unavailable
 
         public PackageUpdatedTask(int op, String[] packages, UserHandleCompat user) {
             mOp = op;
@@ -2932,6 +2939,7 @@ public class LauncherModel extends BroadcastReceiver
             final String[] packages = mPackages;
             final int N = packages.length;
             FlagOp flagOp = FlagOp.NO_OP;
+            StringFilter pkgFilter = StringFilter.of(new HashSet<>(Arrays.asList(packages)));
             switch (mOp) {
                 case OP_ADD: {
                     for (int i=0; i<N; i++) {
@@ -2980,10 +2988,16 @@ public class LauncherModel extends BroadcastReceiver
                     flagOp = mOp == OP_SUSPEND ?
                             FlagOp.addFlag(ShortcutInfo.FLAG_DISABLED_SUSPENDED) :
                                     FlagOp.removeFlag(ShortcutInfo.FLAG_DISABLED_SUSPENDED);
-                    for (int i=0; i<N; i++) {
-                        if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.(un)suspend " + packages[i]);
-                        mBgAllAppsList.updatePackageFlags(packages[i], mUser, flagOp);
-                    }
+                    if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.(un)suspend " + packages);
+                    mBgAllAppsList.updatePackageFlags(pkgFilter, mUser, flagOp);
+                    break;
+                case OP_USER_AVAILABILITY_CHANGE:
+                    flagOp = UserManagerCompat.getInstance(context).isQuietModeEnabled(mUser)
+                            ? FlagOp.addFlag(ShortcutInfo.FLAG_DISABLED_QUIET_USER)
+                            : FlagOp.removeFlag(ShortcutInfo.FLAG_DISABLED_QUIET_USER);
+                    // We want to update all packages for this user.
+                    pkgFilter = StringFilter.matchesAll();
+                    mBgAllAppsList.updatePackageFlags(pkgFilter, mUser, flagOp);
                     break;
             }
 
@@ -3036,7 +3050,6 @@ public class LauncherModel extends BroadcastReceiver
                 final ArrayList<ShortcutInfo> removedShortcuts = new ArrayList<ShortcutInfo>();
                 final ArrayList<LauncherAppWidgetInfo> widgets = new ArrayList<LauncherAppWidgetInfo>();
 
-                HashSet<String> packageSet = new HashSet<String>(Arrays.asList(packages));
                 synchronized (sBgLock) {
                     for (ItemInfo info : sBgItemsIdMap) {
                         if (info instanceof ShortcutInfo && mUser.equals(info.user)) {
@@ -3046,7 +3059,7 @@ public class LauncherModel extends BroadcastReceiver
 
                             // Update shortcuts which use iconResource.
                             if ((si.iconResource != null)
-                                    && packageSet.contains(si.iconResource.packageName)) {
+                                    && pkgFilter.matches(si.iconResource.packageName)) {
                                 Bitmap icon = Utilities.createIconBitmap(
                                         si.iconResource.packageName,
                                         si.iconResource.resourceName, context);
@@ -3058,7 +3071,7 @@ public class LauncherModel extends BroadcastReceiver
                             }
 
                             ComponentName cn = si.getTargetComponent();
-                            if (cn != null && packageSet.contains(cn.getPackageName())) {
+                            if (cn != null && pkgFilter.matches(cn.getPackageName())) {
                                 AppInfo appInfo = addedOrUpdatedApps.get(cn);
 
                                 if (si.isPromise()) {
@@ -3119,11 +3132,11 @@ public class LauncherModel extends BroadcastReceiver
                             if (infoUpdated) {
                                 updateItemInDatabase(context, si);
                             }
-                        } else if (info instanceof LauncherAppWidgetInfo) {
+                        } else if (info instanceof LauncherAppWidgetInfo && mOp == OP_ADD) {
                             LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) info;
                             if (mUser.equals(widgetInfo.user)
                                     && widgetInfo.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)
-                                    && packageSet.contains(widgetInfo.providerName.getPackageName())) {
+                                    && pkgFilter.matches(widgetInfo.providerName.getPackageName())) {
                                 widgetInfo.restoreStatus &=
                                         ~LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY &
                                         ~LauncherAppWidgetInfo.FLAG_RESTORE_STARTED;
