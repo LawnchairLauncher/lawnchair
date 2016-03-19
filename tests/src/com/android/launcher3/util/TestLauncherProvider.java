@@ -26,7 +26,8 @@ public class TestLauncherProvider extends LauncherProvider {
 
     private static class MyDatabaseHelper extends DatabaseHelper {
         public MyDatabaseHelper(Context context, LauncherProvider provider) {
-            super(context, provider, null);
+            super(context, provider, null, null);
+            initIds();
         }
 
         @Override

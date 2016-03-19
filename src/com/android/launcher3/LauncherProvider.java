@@ -527,13 +527,8 @@ public class LauncherProvider extends ContentProvider {
         private long mMaxScreenId = -1;
 
         DatabaseHelper(Context context, LauncherProvider provider) {
-            super(new NoLocaleSqliteContext(context), LauncherFiles.LAUNCHER_DB,
-                    null, DATABASE_VERSION);
-            mContext = context;
-            mProvider = provider;
-
-            mAppWidgetHost = new AppWidgetHost(context, Launcher.APPWIDGET_HOST_ID);
-
+            this(context, provider, LauncherFiles.LAUNCHER_DB,
+                    new AppWidgetHost(context, Launcher.APPWIDGET_HOST_ID));
             // Table creation sometimes fails silently, which leads to a crash loop.
             // This way, we will try to create a table every time after crash, so the device
             // would eventually be able to recover.
@@ -544,6 +539,21 @@ public class LauncherProvider extends ContentProvider {
                 addWorkspacesTable(getWritableDatabase(), true);
             }
 
+            initIds();
+        }
+
+        /**
+         * Constructor used only in tests.
+         */
+        public DatabaseHelper(
+                Context context, LauncherProvider provider, String tableName, AppWidgetHost host) {
+            super(new NoLocaleSqliteContext(context), tableName, null, DATABASE_VERSION);
+            mContext = context;
+            mProvider = provider;
+            mAppWidgetHost = host;
+        }
+
+        protected void initIds() {
             // In the case where neither onCreate nor onUpgrade gets called, we read the maxId from
             // the DB here
             if (mMaxItemId == -1) {
@@ -552,19 +562,6 @@ public class LauncherProvider extends ContentProvider {
             if (mMaxScreenId == -1) {
                 mMaxScreenId = initializeMaxScreenId(getWritableDatabase());
             }
-        }
-
-        /**
-         * Constructor used only in tests.
-         */
-        public DatabaseHelper(Context context, LauncherProvider provider, String tableName) {
-            super(new NoLocaleSqliteContext(context), tableName, null, DATABASE_VERSION);
-            mContext = context;
-            mProvider = provider;
-
-            mAppWidgetHost = null;
-            mMaxItemId = initializeMaxItemId(getWritableDatabase());
-            mMaxScreenId = initializeMaxScreenId(getWritableDatabase());
         }
 
         private boolean tableExists(String tableName) {
