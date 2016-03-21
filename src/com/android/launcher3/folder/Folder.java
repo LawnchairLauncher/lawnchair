@@ -1067,8 +1067,13 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 sTempRect.left + sTempRect.width() - width);
         int top = Math.min(Math.max(sTempRect.top, centeredTop),
                 sTempRect.top + sTempRect.height() - height);
-        if (grid.isPhone && (grid.availableWidthPx - width) < grid.iconSizePx) {
-            // Center the folder if it is full (on phones only)
+
+        int distFromEdgeOfScreen = grid.getWorkspacePadding(isLayoutRtl()).left + getPaddingLeft();
+
+        if (grid.isPhone && (grid.availableWidthPx - width) < 4 * distFromEdgeOfScreen) {
+            // Center the folder if it is very close to being centered anyway, by virtue of
+            // filling the majority of the viewport. ie. remove it from the uncanny valley
+            // of centeredness.
             left = (grid.availableWidthPx - width) / 2;
         } else if (width >= sTempRect.width()) {
             // If the folder doesn't fit within the bounds, center it about the desired bounds
