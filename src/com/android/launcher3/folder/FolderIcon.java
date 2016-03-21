@@ -105,8 +105,10 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     // These variables are all associated with the drawing of the preview; they are stored
     // as member variables for shared usage and to avoid computation on each frame
-    private int mIntrinsicIconSize;
-    private int mTotalWidth;
+    private int mIntrinsicIconSize = -1;
+    private int mTotalWidth = -1;
+    private int mPrevTopPadding = -1;
+
     PreviewBackground mBackground = new PreviewBackground();
 
     private PreviewLayoutRule mPreviewLayoutRule;
@@ -376,11 +378,13 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     private void computePreviewDrawingParams(int drawableSize, int totalSize) {
-        if (mIntrinsicIconSize != drawableSize || mTotalWidth != totalSize) {
+        if (mIntrinsicIconSize != drawableSize || mTotalWidth != totalSize ||
+                mPrevTopPadding != getPaddingTop()) {
             DeviceProfile grid = mLauncher.getDeviceProfile();
 
             mIntrinsicIconSize = drawableSize;
             mTotalWidth = totalSize;
+            mPrevTopPadding = getPaddingTop();
 
             mBackground.setup(getResources().getDisplayMetrics(), grid, this, mTotalWidth,
                     getPaddingTop());
