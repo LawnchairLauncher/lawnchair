@@ -83,6 +83,8 @@ public class InvariantDeviceProfile {
     DeviceProfile landscapeProfile;
     DeviceProfile portraitProfile;
 
+    public Point defaultWallpaperSize;
+
     public InvariantDeviceProfile() {
     }
 
@@ -166,6 +168,16 @@ public class InvariantDeviceProfile {
                 largeSide, smallSide, true /* isLandscape */);
         portraitProfile = new DeviceProfile(context, this, smallestSize, largestSize,
                 smallSide, largeSide, false /* isLandscape */);
+
+        // We need to ensure that there is enough extra space in the wallpaper
+        // for the intended parallax effects
+        if (context.getResources().getConfiguration().smallestScreenWidthDp >= 720) {
+            defaultWallpaperSize = new Point(
+                    (int) (largeSide * wallpaperTravelToScreenWidthRatio(largeSide, smallSide)),
+                    largeSide);
+        } else {
+            defaultWallpaperSize = new Point(Math.max(smallSide * 2, largeSide), largeSide);
+        }
     }
 
     ArrayList<InvariantDeviceProfile> getPredefinedDeviceProfiles() {
@@ -299,4 +311,34 @@ public class InvariantDeviceProfile {
         }
         return (float) (WEIGHT_EFFICIENT / Math.pow(d, pow));
     }
+
+    /**
+     * As a ratio of screen height, the total distance we want the parallax effect to span
+     * horizontally
+     */
+    private static float wallpaperTravelToScreenWidthRatio(int width, int height) {
+        float aspectRatio = width / (float) height;
+
+        // At an aspect ratio of 16/10, the wallpaper parallax effect should span 1.5 * screen width
+        // At an aspect ratio of 10/16, the wallpaper parallax effect should span 1.2 * screen width
+        // We will use these two data points to extrapolate how much the wallpaper parallax effect
+        // to span (ie travel) at any aspect ratio:
+
+        final float ASPECT_RATIO_LANDSCAPE = 16/10f;
+        final float ASPECT_RATIO_PORTRAIT = 10/16f;
+        final float WALLPAPER_WIDTH_TO_SCREEN_RATIO_LANDSCAPE = 1.5f;
+        final float WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT = 1.2f;
+
+        // To find out the desired width at different aspect ratios, we use the following two
+        // formulas, where the coefficient on x is the aspect ratio (width/height):
+        //   (16/10)x + y = 1.5
+        //   (10/16)x + y = 1.2
+        // We solve for x and y and end up with a final formula:
+        final float x =
+                (WALLPAPER_WIDTH_TO_SCREEN_RATIO_LANDSCAPE - WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT) /
+                        (ASPECT_RATIO_LANDSCAPE - ASPECT_RATIO_PORTRAIT);
+        final float y = WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT - x * ASPECT_RATIO_PORTRAIT;
+        return x * aspectRatio + y;
+    }
+
 }

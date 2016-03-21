@@ -105,6 +105,7 @@ public interface LauncherCallbacks {
     public View getIntroScreen();
     public boolean shouldMoveToDefaultScreenOnHomeIntent();
     public boolean hasSettings();
+    @Deprecated
     public boolean overrideWallpaperDimensions();
     public boolean isLauncherPreinstalled();
     public AllAppsSearchBarController getAllAppsSearchBarController();
