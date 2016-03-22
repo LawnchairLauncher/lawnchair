@@ -118,7 +118,7 @@ public class IconCache {
         mUserManager = UserManagerCompat.getInstance(mContext);
         mLauncherApps = LauncherAppsCompat.getInstance(mContext);
         mIconDpi = inv.fillResIconDpi;
-        mIconDb = new IconDB(context);
+        mIconDb = new IconDB(context, inv.iconBitmapSize);
 
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
 
@@ -809,8 +809,10 @@ public class IconCache {
         private final static String COLUMN_LABEL = "label";
         private final static String COLUMN_SYSTEM_STATE = "system_state";
 
-        public IconDB(Context context) {
-            super(context, LauncherFiles.APP_ICONS_DB, RELEASE_VERSION, TABLE_NAME);
+        public IconDB(Context context, int iconPixelSize) {
+            super(context, LauncherFiles.APP_ICONS_DB,
+                    (RELEASE_VERSION << 16) + iconPixelSize,
+                    TABLE_NAME);
         }
 
         @Override
