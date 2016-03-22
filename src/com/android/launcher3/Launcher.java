@@ -84,6 +84,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityManager;
 import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Advanceable;
@@ -138,7 +139,8 @@ import java.util.Locale;
  */
 public class Launcher extends Activity
         implements View.OnClickListener, OnLongClickListener, LauncherModel.Callbacks,
-                   View.OnTouchListener, PageSwitchListener, LauncherProviderChangeListener {
+                   View.OnTouchListener, PageSwitchListener, LauncherProviderChangeListener,
+                   AccessibilityManager.AccessibilityStateChangeListener {
     public static final String TAG = "Launcher";
     static final boolean LOGD = false;
 
@@ -451,6 +453,9 @@ public class Launcher extends Activity
         mDeviceProfile.layout(this);
         mExtractedColors = new ExtractedColors();
         loadExtractedColorsAndColorItems();
+
+        ((AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE))
+                .addAccessibilityStateChangeListener(this);
 
         lockAllApps();
 
@@ -2011,6 +2016,9 @@ public class Launcher extends Activity
 
         TextKeyListener.getInstance().release();
 
+        ((AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE))
+                .removeAccessibilityStateChangeListener(this);
+
         unregisterReceiver(mCloseSystemDialogsReceiver);
 
         LauncherAnimUtils.onDestroyActivity();
@@ -2792,6 +2800,11 @@ public class Launcher extends Activity
             };
         }
         return mHapticFeedbackTouchListener;
+    }
+
+    @Override
+    public void onAccessibilityStateChanged(boolean enabled) {
+        mDragLayer.onAccessibilityStateChanged(enabled);
     }
 
     public void onDragStarted(View view) {
