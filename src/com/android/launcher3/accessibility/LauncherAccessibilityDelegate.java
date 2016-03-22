@@ -102,7 +102,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         if (UninstallDropTarget.supportsDrop(host.getContext(), item)) {
             info.addAction(mActions.get(UNINSTALL));
         }
-        if (InfoDropTarget.supportsDrop(host.getContext(), item)) {
+        if (InfoDropTarget.supportsDrop(item)) {
             info.addAction(mActions.get(INFO));
         }
 
@@ -137,7 +137,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
             DeleteDropTarget.removeWorkspaceOrFolderItem(mLauncher, item, host);
             return true;
         } else if (action == INFO) {
-            InfoDropTarget.startDetailsActivityForInfo(item, mLauncher);
+            InfoDropTarget.startDetailsActivityForInfo(item, mLauncher, null);
             return true;
         } else if (action == UNINSTALL) {
             return UninstallDropTarget.startUninstallActivity(mLauncher, item);

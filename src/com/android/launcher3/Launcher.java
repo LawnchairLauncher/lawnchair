@@ -57,7 +57,6 @@ import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -108,9 +107,9 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.logging.UserEventLogger;
 import com.android.launcher3.model.WidgetsModel;
-import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LongArrayMap;
@@ -2825,43 +2824,6 @@ public class Launcher extends Activity
             onInteractionBegin();
         } else if (fromStateWithOverlay) {
             onInteractionEnd();
-        }
-    }
-
-    void startApplicationDetailsActivity(ComponentName componentName, UserHandleCompat user) {
-        try {
-            LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(this);
-            launcherApps.showAppDetailsForProfile(componentName, user);
-        } catch (SecurityException e) {
-            Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Launcher does not have permission to launch settings");
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Unable to launch settings");
-        }
-    }
-
-    // returns true if the activity was started
-    boolean startApplicationUninstallActivity(ComponentName componentName, int flags,
-            UserHandleCompat user) {
-        if ((flags & AppInfo.DOWNLOADED_FLAG) == 0) {
-            // System applications cannot be installed. For now, show a toast explaining that.
-            // We may give them the option of disabling apps this way.
-            int messageId = R.string.uninstall_system_app_text;
-            Toast.makeText(this, messageId, Toast.LENGTH_SHORT).show();
-            return false;
-        } else {
-            String packageName = componentName.getPackageName();
-            String className = componentName.getClassName();
-            Intent intent = new Intent(
-                    Intent.ACTION_DELETE, Uri.fromParts("package", packageName, className));
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                    Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-            if (user != null) {
-                user.addToIntent(intent, Intent.EXTRA_USER);
-            }
-            startActivity(intent);
-            return true;
         }
     }
 
