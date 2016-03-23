@@ -56,6 +56,7 @@ import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.util.Thunk;
@@ -115,7 +116,7 @@ public class DragLayer extends InsettableFrameLayout {
     private Drawable mRightHoverDrawableActive;
 
     // Related to pinch-to-go-to-overview gesture.
-    private PinchToOverviewListener mPinchListener;
+    private PinchToOverviewListener mPinchListener = null;
     /**
      * Used to create a new DragLayer from XML.
      *
@@ -141,7 +142,9 @@ public class DragLayer extends InsettableFrameLayout {
         mLauncher = launcher;
         mDragController = controller;
 
-        mPinchListener = new PinchToOverviewListener(mLauncher);
+        if (!FeatureFlags.LAUNCHER3_DISABLE_PINCH_TO_OVERVIEW) {
+            mPinchListener = new PinchToOverviewListener(mLauncher);
+        }
     }
 
     @Override
@@ -250,7 +253,7 @@ public class DragLayer extends InsettableFrameLayout {
         }
         clearAllResizeFrames();
 
-        if (mPinchListener.onInterceptTouchEvent(ev)) {
+        if (mPinchListener != null && mPinchListener.onInterceptTouchEvent(ev)) {
             // Stop listening for scrolling etc. (onTouchEvent() handles the rest of the pinch.)
             return true;
         }
@@ -369,7 +372,9 @@ public class DragLayer extends InsettableFrameLayout {
 
         // This is only reached if a pinch was started from onInterceptTouchEvent();
         // this continues sending events for it.
-        mPinchListener.onTouchEvent(ev);
+        if (mPinchListener != null) {
+            mPinchListener.onTouchEvent(ev);
+        }
 
         if (action == MotionEvent.ACTION_DOWN) {
             if (handleTouchDown(ev, false)) {
