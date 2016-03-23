@@ -34,7 +34,7 @@ public class LauncherFiles {
             WALLPAPER_CROP_PREFERENCES_KEY + XML,
             WALLPAPER_IMAGES_DB,
             WIDGET_PREVIEWS_DB,
-            MANAGED_USER_PREFERENCES_KEY,
+            MANAGED_USER_PREFERENCES_KEY + XML,
             APP_ICONS_DB));
 
     // TODO: Delete these files on upgrade
