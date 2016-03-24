@@ -2988,7 +2988,7 @@ public class LauncherModel extends BroadcastReceiver
                     flagOp = mOp == OP_SUSPEND ?
                             FlagOp.addFlag(ShortcutInfo.FLAG_DISABLED_SUSPENDED) :
                                     FlagOp.removeFlag(ShortcutInfo.FLAG_DISABLED_SUSPENDED);
-                    if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.(un)suspend " + packages);
+                    if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.(un)suspend " + N);
                     mBgAllAppsList.updatePackageFlags(pkgFilter, mUser, flagOp);
                     break;
                 case OP_USER_AVAILABILITY_CHANGE:
