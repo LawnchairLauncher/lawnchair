@@ -83,4 +83,8 @@
     <declare-styleable name="InsettableFrameLayout_Layout">
         <attr name="layout_ignoreInsets" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="ButtonDropTarget">
+        <attr name="hideParentOnDisable" format="boolean" />
+    </declare-styleable>
 </resources>

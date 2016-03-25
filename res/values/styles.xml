@@ -71,16 +71,7 @@
     </style>
 
     <!-- Drop targets -->
-    <style name="DropTargetButtonContainer">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">match_parent</item>
-    </style>
-
     <style name="DropTargetButtonBase">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_gravity">center</item>
-        <item name="android:gravity">center_vertical</item>
         <item name="android:drawablePadding">7.5dp</item>
         <item name="android:paddingLeft">25dp</item>
         <item name="android:paddingRight">25dp</item>

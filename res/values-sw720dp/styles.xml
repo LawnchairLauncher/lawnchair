@@ -28,11 +28,6 @@
     </style>
 
     <!-- Workspace -->
-    <style name="DropTargetButtonContainer">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">match_parent</item>
-    </style>
-
     <style name="DropTargetButton" parent="DropTargetButtonBase">
         <item name="android:paddingLeft">60dp</item>
         <item name="android:paddingRight">60dp</item>

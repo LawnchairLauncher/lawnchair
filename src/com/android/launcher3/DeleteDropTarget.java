@@ -19,6 +19,7 @@ package com.android.launcher3;
 import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.graphics.PointF;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -69,7 +70,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
      * Set the drop target's text to either "Remove" or "Cancel" depending on the drag source.
      */
     public void setTextBasedOnDragSource(DragSource dragSource) {
-        if (!mDeviceProfile.isVerticalBarLayout()) {
+        if (!TextUtils.isEmpty(getText())) {
             setText(dragSource.supportsDeleteDropTarget() ? R.string.remove_drop_target_label
                     : android.R.string.cancel);
         }
