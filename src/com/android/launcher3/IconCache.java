@@ -55,7 +55,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.Stack;
 
@@ -89,6 +88,7 @@ public class IconCache {
 
     private final Context mContext;
     private final PackageManager mPackageManager;
+    private IconProvider mIconProvider;
     @Thunk final UserManagerCompat mUserManager;
     private final LauncherAppsCompat mLauncherApps;
     private final HashMap<ComponentKey, CacheEntry> mCache =
@@ -107,7 +107,6 @@ public class IconCache {
     private final int mPackageBgColor;
     private final BitmapFactory.Options mLowResOptions;
 
-    private String mSystemState;
     private Canvas mLowResCanvas;
     private Paint mLowResPaint;
 
@@ -121,6 +120,9 @@ public class IconCache {
         mLowResCanvas = new Canvas();
         mLowResPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
 
+        mIconProvider = IconProvider.loadByName(context.getString(R.string.icon_provider_class),
+                context);
+
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
 
         mActivityBgColor = context.getResources().getColor(R.color.quantum_panel_bg_color);
@@ -129,7 +131,6 @@ public class IconCache {
         // Always prefer RGB_565 config for low res. If the bitmap has transparency, it will
         // automatically be loaded as ALPHA_8888.
         mLowResOptions.inPreferredConfig = Bitmap.Config.RGB_565;
-        updateSystemStateString();
     }
 
     private Drawable getFullResDefaultActivityIcon() {
@@ -241,7 +242,7 @@ public class IconCache {
         // Remove all active icon update tasks.
         mWorkerHandler.removeCallbacksAndMessages(ICON_UPDATE_TOKEN);
 
-        updateSystemStateString();
+        mIconProvider.updateSystemStateString();
         for (UserHandleCompat user : mUserManager.getUserProfiles()) {
             // Query for the set of apps
             final List<LauncherActivityInfoCompat> apps = mLauncherApps.getActivityList(null, user);
@@ -315,7 +316,8 @@ public class IconCache {
                 int version = c.getInt(indexVersion);
                 LauncherActivityInfoCompat app = componentMap.remove(component);
                 if (version == info.versionCode && updateTime == info.lastUpdateTime &&
-                        TextUtils.equals(mSystemState, c.getString(systemStateIndex))) {
+                        TextUtils.equals(c.getString(systemStateIndex),
+                                mIconProvider.getIconSystemState(info.packageName))) {
                     continue;
                 }
                 if (app == null) {
@@ -382,14 +384,16 @@ public class IconCache {
         if (entry == null) {
             entry = new CacheEntry();
             entry.icon = Utilities.createBadgedIconBitmap(
-                    app.getIcon(mIconDpi), app.getUser(), mContext);
+                    mIconProvider.getIcon(app, mIconDpi), app.getUser(),
+                    mContext);
         }
         entry.title = app.getLabel();
         entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, app.getUser());
         mCache.put(new ComponentKey(app.getComponentName(), app.getUser()), entry);
 
         Bitmap lowResIcon = generateLowResIcon(entry.icon, mActivityBgColor);
-        return newContentValues(entry.icon, lowResIcon, entry.title.toString());
+        return newContentValues(entry.icon, lowResIcon, entry.title.toString(),
+                app.getApplicationInfo().packageName);
     }
 
     /**
@@ -546,7 +550,8 @@ public class IconCache {
             if (!getEntryFromDB(cacheKey, entry, useLowResIcon)) {
                 if (info != null) {
                     entry.icon = Utilities.createBadgedIconBitmap(
-                            info.getIcon(mIconDpi), info.getUser(), mContext);
+                            mIconProvider.getIcon(info, mIconDpi), info.getUser(),
+                            mContext);
                 } else {
                     if (usePackageIcon) {
                         CacheEntry packageEntry = getEntryForPackageLocked(
@@ -641,7 +646,7 @@ public class IconCache {
                     // Add the icon in the DB here, since these do not get written during
                     // package updates.
                     ContentValues values =
-                            newContentValues(icon, lowResIcon, entry.title.toString());
+                            newContentValues(icon, lowResIcon, entry.title.toString(), packageName);
                     addIconToDB(values, cacheKey.componentName, info,
                             mUserManager.getSerialNumberForUser(user));
 
@@ -683,7 +688,8 @@ public class IconCache {
 
         icon = Bitmap.createScaledBitmap(icon, idp.iconBitmapSize, idp.iconBitmapSize, true);
         Bitmap lowResIcon = generateLowResIcon(icon, Color.TRANSPARENT);
-        ContentValues values = newContentValues(icon, lowResIcon, label);
+        ContentValues values = newContentValues(icon, lowResIcon, label,
+                componentName.getPackageName());
         values.put(IconDB.COLUMN_COMPONENT, componentName.flattenToString());
         values.put(IconDB.COLUMN_USER, userSerial);
         mIconDb.insertOrReplace(values);
@@ -795,10 +801,6 @@ public class IconCache {
         }
     }
 
-    private void updateSystemStateString() {
-        mSystemState = Locale.getDefault().toString();
-    }
-
     private static final class IconDB extends SQLiteCacheHelper {
         private final static int DB_VERSION = 8;
 
@@ -838,13 +840,15 @@ public class IconCache {
         }
     }
 
-    private ContentValues newContentValues(Bitmap icon, Bitmap lowResIcon, String label) {
+    private ContentValues newContentValues(Bitmap icon, Bitmap lowResIcon, String label,
+            String packageName) {
         ContentValues values = new ContentValues();
         values.put(IconDB.COLUMN_ICON, Utilities.flattenBitmap(icon));
         values.put(IconDB.COLUMN_ICON_LOW_RES, Utilities.flattenBitmap(lowResIcon));
 
         values.put(IconDB.COLUMN_LABEL, label);
-        values.put(IconDB.COLUMN_SYSTEM_STATE, mSystemState);
+        values.put(IconDB.COLUMN_SYSTEM_STATE,
+                mIconProvider.getIconSystemState(mIconProvider.getIconSystemState(packageName)));
 
         return values;
     }
