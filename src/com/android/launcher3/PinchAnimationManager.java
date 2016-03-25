@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 
 import static com.android.launcher3.Workspace.State.NORMAL;
 import static com.android.launcher3.Workspace.State.OVERVIEW;
@@ -32,25 +33,23 @@ public class PinchAnimationManager {
     private static final String TAG = "PinchAnimationManager";
 
     private static final int THRESHOLD_ANIM_DURATION = 150;
+    private static final LinearInterpolator INTERPOLATOR = new LinearInterpolator();
 
+    private static int INDEX_PAGE_INDICATOR = 0;
+    private static int INDEX_HOTSEAT = 1;
+    private static int INDEX_OVERVIEW_PANEL_BUTTONS = 2;
+    private static int INDEX_SCRIM = 3;
+
+    private final Animator[] mAnimators = new Animator[4];
+
+    private final int[] mVisiblePageRange = new int[2];
     private Launcher mLauncher;
     private Workspace mWorkspace;
 
     private float mOverviewScale;
     private float mOverviewTranslationY;
     private int mNormalOverviewTransitionDuration;
-    private final int[] mVisiblePageRange = new int[2];
     private boolean mIsAnimating;
-
-    // Animators
-    private Animator mShowPageIndicatorAnimator;
-    private Animator mShowHotseatAnimator;
-    private Animator mShowOverviewPanelButtonsAnimator;
-    private Animator mShowScrimAnimator;
-    private Animator mHidePageIndicatorAnimator;
-    private Animator mHideHotseatAnimator;
-    private Animator mHideOverviewPanelButtonsAnimator;
-    private Animator mHideScrimAnimator;
 
     public PinchAnimationManager(Launcher launcher) {
         mLauncher = launcher;
@@ -60,61 +59,6 @@ public class PinchAnimationManager {
         mOverviewTranslationY = mWorkspace.getOverviewModeTranslationY();
         mNormalOverviewTransitionDuration = mWorkspace.getStateTransitionAnimation()
                 .mOverviewTransitionTime;
-
-        initializeAnimators();
-    }
-
-    private void initializeAnimators() {
-        mShowPageIndicatorAnimator = new LauncherViewPropertyAnimator(
-                mWorkspace.getPageIndicator()).alpha(1f).withLayer();
-        mShowPageIndicatorAnimator.setInterpolator(null);
-
-        mShowHotseatAnimator = new LauncherViewPropertyAnimator(mLauncher.getHotseat())
-                .alpha(1f).withLayer();
-        mShowHotseatAnimator.setInterpolator(null);
-
-        mShowOverviewPanelButtonsAnimator = new LauncherViewPropertyAnimator(
-                mLauncher.getOverviewPanel()).alpha(1f).withLayer();
-        mShowOverviewPanelButtonsAnimator.setInterpolator(null);
-
-        mShowScrimAnimator = ObjectAnimator.ofFloat(mLauncher.getDragLayer(), "backgroundAlpha",
-                mWorkspace.getStateTransitionAnimation().mWorkspaceScrimAlpha);
-        mShowScrimAnimator.setInterpolator(null);
-
-        mHidePageIndicatorAnimator = new LauncherViewPropertyAnimator(
-                mWorkspace.getPageIndicator()).alpha(0f).withLayer();
-        mHidePageIndicatorAnimator.setInterpolator(null);
-        mHidePageIndicatorAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (mWorkspace.getPageIndicator() != null) {
-                    mWorkspace.getPageIndicator().setVisibility(View.INVISIBLE);
-                }
-            }
-        });
-
-        mHideHotseatAnimator = new LauncherViewPropertyAnimator(mLauncher.getHotseat())
-                .alpha(0f).withLayer();
-        mHideHotseatAnimator.setInterpolator(null);
-        mHideHotseatAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mLauncher.getHotseat().setVisibility(View.INVISIBLE);
-            }
-        });
-
-        mHideOverviewPanelButtonsAnimator = new LauncherViewPropertyAnimator(
-                mLauncher.getOverviewPanel()).alpha(0f).withLayer();
-        mHideOverviewPanelButtonsAnimator.setInterpolator(null);
-        mHideOverviewPanelButtonsAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mLauncher.getOverviewPanel().setVisibility(View.INVISIBLE);
-            }
-        });
-
-        mHideScrimAnimator = ObjectAnimator.ofFloat(mLauncher.getDragLayer(), "backgroundAlpha", 0f);
-        mHideScrimAnimator.setInterpolator(null);
     }
 
     public int getNormalOverviewTransitionDuration() {
@@ -184,7 +128,7 @@ public class PinchAnimationManager {
      *                  {@link PinchThresholdManager#THRESHOLD_THREE}
      * @param startState {@link Workspace.State#NORMAL} or {@link Workspace.State#OVERVIEW}.
      * @param goingTowards {@link Workspace.State#NORMAL} or {@link Workspace.State#OVERVIEW}.
- *                     Note that this doesn't have to be the opposite of startState;
+     *                     Note that this doesn't have to be the opposite of startState;
      */
     public void animateThreshold(float threshold, Workspace.State startState,
             Workspace.State goingTowards) {
@@ -234,20 +178,10 @@ public class PinchAnimationManager {
     }
 
     private void animateHotseatAndPageIndicator(boolean show) {
-        if (show) {
-            mLauncher.getHotseat().setVisibility(View.VISIBLE);
-            mShowHotseatAnimator.setDuration(THRESHOLD_ANIM_DURATION).start();
-            if (mWorkspace.getPageIndicator() != null) {
-                // There aren't page indicators in landscape mode on phones, hence the null check.
-                mWorkspace.getPageIndicator().setVisibility(View.VISIBLE);
-                mShowPageIndicatorAnimator.setDuration(THRESHOLD_ANIM_DURATION).start();
-            }
-        } else {
-            mHideHotseatAnimator.setDuration(THRESHOLD_ANIM_DURATION).start();
-            if (mWorkspace.getPageIndicator() != null) {
-                // There aren't page indicators in landscape mode on phones, hence the null check.
-                mHidePageIndicatorAnimator.setDuration(THRESHOLD_ANIM_DURATION).start();
-            }
+        animateShowHideView(INDEX_HOTSEAT, mLauncher.getHotseat(), show);
+        if (mWorkspace.getPageIndicator() != null) {
+            // There aren't page indicators in landscape mode on phones, hence the null check.
+            animateShowHideView(INDEX_PAGE_INDICATOR, mWorkspace.getPageIndicator(), show);
         }
     }
 
@@ -258,28 +192,38 @@ public class PinchAnimationManager {
     }
 
     private void animateOverviewPanelButtons(boolean show) {
-        if (show) {
-            mLauncher.getOverviewPanel().setVisibility(View.VISIBLE);
-            mShowOverviewPanelButtonsAnimator.setDuration(THRESHOLD_ANIM_DURATION).start();
-        } else {
-            mHideOverviewPanelButtonsAnimator.setDuration(THRESHOLD_ANIM_DURATION).start();
-        }
+        animateShowHideView(INDEX_OVERVIEW_PANEL_BUTTONS, mLauncher.getOverviewPanel(), show);
     }
 
     private void animateScrim(boolean show) {
-        // We reninitialize the animators here so that they have the correct start values.
+        float endValue = show ? mWorkspace.getStateTransitionAnimation().mWorkspaceScrimAlpha : 0;
+        startAnimator(INDEX_SCRIM,
+                ObjectAnimator.ofFloat(mLauncher.getDragLayer(), "backgroundAlpha", endValue),
+                mNormalOverviewTransitionDuration);
+    }
+
+    private void animateShowHideView(int index, final View view, boolean show) {
+        Animator animator = new LauncherViewPropertyAnimator(view).alpha(show ? 1 : 0).withLayer();
         if (show) {
-            mShowScrimAnimator = ObjectAnimator.ofFloat(mLauncher.getDragLayer(), "backgroundAlpha",
-                    mWorkspace.getStateTransitionAnimation().mWorkspaceScrimAlpha);
-            mShowScrimAnimator.setInterpolator(null);
-            mShowScrimAnimator.setDuration(mNormalOverviewTransitionDuration).start();
+            view.setVisibility(View.VISIBLE);
         } else {
-            mHideScrimAnimator.setupStartValues();
-            mHideScrimAnimator = ObjectAnimator.ofFloat(mLauncher.getDragLayer(), "backgroundAlpha",
-                    0f);
-            mHideScrimAnimator.setInterpolator(null);
-            mHideScrimAnimator.setDuration(mNormalOverviewTransitionDuration).start();
-            mHideScrimAnimator.setDuration(mNormalOverviewTransitionDuration).start();
+            animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    view.setVisibility(View.INVISIBLE);
+                }
+            });
         }
+        startAnimator(index, animator, THRESHOLD_ANIM_DURATION);
+    }
+
+    private void startAnimator(int index, Animator animator, long duration) {
+        if (mAnimators[index] != null) {
+            mAnimators[index].removeAllListeners();
+            mAnimators[index].cancel();
+        }
+        mAnimators[index] = animator;
+        mAnimators[index].setInterpolator(INTERPOLATOR);
+        mAnimators[index].setDuration(duration).start();
     }
 }
