@@ -31,7 +31,6 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 import com.android.launcher3.config.FeatureFlags;
 
@@ -469,7 +468,7 @@ public class DeviceProfile {
         // Layout the search bar space
         Rect searchBarBounds = getSearchBarBounds(isLayoutRtl);
         View searchBar = launcher.getSearchDropTargetBar();
-        lp = getDropTargetBarLayoutParams(hasVerticalBarLayout, searchBar, Gravity.TOP);
+        lp = (FrameLayout.LayoutParams) searchBar.getLayoutParams();
         lp.width = searchBarBounds.width();
         lp.height = searchBarBounds.height();
         lp.topMargin = searchBarTopExtraPaddingPx;
@@ -477,7 +476,7 @@ public class DeviceProfile {
 
         // Layout the app info bar space
         View appInfoBar = launcher.getAppInfoDropTargetBar();
-        lp = getDropTargetBarLayoutParams(hasVerticalBarLayout, appInfoBar, Gravity.BOTTOM);
+        lp = (FrameLayout.LayoutParams) appInfoBar.getLayoutParams();
         lp.bottomMargin = hotseatBarHeightPx;
         appInfoBar.setLayoutParams(lp);
 
@@ -582,28 +581,6 @@ public class DeviceProfile {
                 }
             }
         }
-    }
-
-    private FrameLayout.LayoutParams getDropTargetBarLayoutParams(boolean hasVerticalBarLayout,
-            View dropTargetBar, int verticalGravity) {
-        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) dropTargetBar.getLayoutParams();
-        if (hasVerticalBarLayout) {
-            // Vertical drop target bar space -- The drop target bar is fixed in the layout to be on
-            //                                   the left of the screen regardless of RTL
-            lp.gravity = Gravity.LEFT;
-            lp.width = normalSearchBarSpaceHeightPx;
-
-            LinearLayout targets = (LinearLayout) dropTargetBar.findViewById(R.id.drag_target_bar);
-            targets.setOrientation(LinearLayout.VERTICAL);
-            FrameLayout.LayoutParams targetsLp = (FrameLayout.LayoutParams) targets.getLayoutParams();
-            targetsLp.gravity = verticalGravity;
-            targetsLp.height = LayoutParams.WRAP_CONTENT;
-        } else {
-            // Horizontal drop target bar space
-            lp.gravity = verticalGravity | Gravity.CENTER_HORIZONTAL;
-            lp.height = searchBarSpaceHeightPx;
-        }
-        return lp;
     }
 
     private int getCurrentWidth() {
