@@ -24,13 +24,13 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.InsetDrawable;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
@@ -62,6 +62,8 @@ public abstract class ButtonDropTarget extends TextView
 
     /** Whether this drop target is active for the current drag */
     protected boolean mActive;
+    /** An item must be dragged at least this many pixels before this drop target is enabled. */
+    private final int mDragDistanceThreshold;
 
     /** The paint applied to the drag view on hover */
     protected int mHoverColor = 0;
@@ -78,12 +80,14 @@ public abstract class ButtonDropTarget extends TextView
 
     public ButtonDropTarget(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mBottomDragPadding = getResources().getDimensionPixelSize(R.dimen.drop_target_drag_padding);
+        Resources resources = getResources();
+        mBottomDragPadding = resources.getDimensionPixelSize(R.dimen.drop_target_drag_padding);
 
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.ButtonDropTarget, defStyle, 0);
         mHideParentOnDisable = a.getBoolean(R.styleable.ButtonDropTarget_hideParentOnDisable, false);
         a.recycle();
+        mDragDistanceThreshold = resources.getDimensionPixelSize(R.dimen.drag_distanceThreshold);
     }
 
     @Override
@@ -216,7 +220,8 @@ public abstract class ButtonDropTarget extends TextView
 
     @Override
     public boolean isDropEnabled() {
-        return mActive;
+        return mActive
+                && mLauncher.getDragController().getDistanceDragged() >= mDragDistanceThreshold;
     }
 
     @Override
