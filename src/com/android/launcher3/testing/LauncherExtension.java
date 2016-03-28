@@ -1,5 +1,6 @@
 package com.android.launcher3.testing;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -11,6 +12,7 @@ import android.widget.FrameLayout;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherCallbacks;
+import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.logging.UserEventLogger;
 import com.android.launcher3.allapps.AllAppsSearchBarController;
 import com.android.launcher3.util.ComponentKey;
@@ -280,7 +282,15 @@ public class LauncherExtension extends Launcher {
 
         @Override
         public List<ComponentKey> getPredictedApps() {
-            return new ArrayList<>();
+            // Return a mock set of predicted apps for UI testing
+            ArrayList<ComponentKey> ar = new ArrayList<>();
+            for (int i = 0; i < 6; i++) {
+                ComponentKey ck = new ComponentKey(new ComponentName("com.android.settings",
+                        "com.android.settings.Settings"), UserHandleCompat.myUserHandle());
+                ar.add(ck);
+            }
+            return ar;
+
         }
 
         @Override
