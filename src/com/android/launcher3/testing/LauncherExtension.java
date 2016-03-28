@@ -282,15 +282,8 @@ public class LauncherExtension extends Launcher {
 
         @Override
         public List<ComponentKey> getPredictedApps() {
-            // Return a mock set of predicted apps for UI testing
-            ArrayList<ComponentKey> ar = new ArrayList<>();
-            for (int i = 0; i < 6; i++) {
-                ComponentKey ck = new ComponentKey(new ComponentName("com.android.settings",
-                        "com.android.settings.Settings"), UserHandleCompat.myUserHandle());
-                ar.add(ck);
-            }
-            return ar;
-
+            // To debug app predictions, enable AlphabeticalAppsList#DEBUG_PREDICTIONS
+            return new ArrayList<>();
         }
 
         @Override
