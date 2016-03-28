@@ -24,11 +24,13 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.TypedArray;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.InsetDrawable;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
@@ -52,6 +54,8 @@ public abstract class ButtonDropTarget extends TextView
 
     private static final int DRAG_VIEW_DROP_DURATION = 285;
 
+    private final boolean mHideParentOnDisable;
+
     protected Launcher mLauncher;
     private int mBottomDragPadding;
     protected BaseDropTargetBar mDropTargetBar;
@@ -65,11 +69,8 @@ public abstract class ButtonDropTarget extends TextView
     protected ColorStateList mOriginalTextColor;
     protected Drawable mDrawable;
 
-    protected DeviceProfile mDeviceProfile;
-
     private AnimatorSet mCurrentColorAnim;
     @Thunk ColorMatrix mSrcFilter, mDstFilter, mCurrentFilter;
-
 
     public ButtonDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -78,18 +79,17 @@ public abstract class ButtonDropTarget extends TextView
     public ButtonDropTarget(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mBottomDragPadding = getResources().getDimensionPixelSize(R.dimen.drop_target_drag_padding);
+
+        TypedArray a = context.obtainStyledAttributes(attrs,
+                R.styleable.ButtonDropTarget, defStyle, 0);
+        mHideParentOnDisable = a.getBoolean(R.styleable.ButtonDropTarget_hideParentOnDisable, false);
+        a.recycle();
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         mOriginalTextColor = getTextColors();
-
-        // Remove the text in the Phone UI in landscape
-        mDeviceProfile = ((Launcher) getContext()).getDeviceProfile();
-        if (mDeviceProfile.isVerticalBarLayout()) {
-            setText("");
-        }
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -203,7 +203,8 @@ public abstract class ButtonDropTarget extends TextView
             mCurrentColorAnim = null;
         }
         setTextColor(mOriginalTextColor);
-        ((ViewGroup) getParent()).setVisibility(mActive ? View.VISIBLE : View.GONE);
+        (mHideParentOnDisable ? ((ViewGroup) getParent()) : this)
+                .setVisibility(mActive ? View.VISIBLE : View.GONE);
     }
 
     @Override
