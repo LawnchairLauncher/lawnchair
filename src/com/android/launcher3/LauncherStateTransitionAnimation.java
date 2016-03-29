@@ -697,6 +697,17 @@ public class LauncherStateTransitionAnimation {
                 itemsAlpha.setInterpolator(decelerateInterpolator);
                 animation.play(itemsAlpha);
 
+                // Invalidate the scrim throughout the animation to ensure the highlight
+                // cutout is correct throughout.
+                ValueAnimator invalidateScrim = ValueAnimator.ofFloat(0f, 1f);
+                invalidateScrim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        mLauncher.getDragLayer().invalidateScrim();
+                    }
+                });
+                animation.play(invalidateScrim);
+
                 if (material) {
                     // Animate the all apps button
                     float finalRadius = pCb.getMaterialRevealViewStartFinalRadius();
