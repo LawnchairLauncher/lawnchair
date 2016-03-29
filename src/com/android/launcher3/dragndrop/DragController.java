@@ -276,6 +276,9 @@ public class DragController implements DragDriver.EventListener {
 
         mLauncher.getDragLayer().performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
         dragView.show(mMotionDownX, mMotionDownY);
+        mDistanceSinceScroll = 0;
+        mLastTouch[0] = mMotionDownX;
+        mLastTouch[1] = mMotionDownY;
         handleMoveEvent(mMotionDownX, mMotionDownY);
         return dragView;
     }
@@ -534,6 +537,10 @@ public class DragController implements DragDriver.EventListener {
         mLastTouch[0] = x;
         mLastTouch[1] = y;
         checkScrollState(x, y);
+    }
+
+    public float getDistanceDragged() {
+        return mDistanceSinceScroll;
     }
 
     public void forceTouchMove() {
