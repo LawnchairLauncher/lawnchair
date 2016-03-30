@@ -30,6 +30,7 @@
         android:bottom="0dp">
 
         <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
             <stroke
                 android:width="@dimen/all_apps_search_bar_divider_width"
                 android:color="#1E000000"/>
