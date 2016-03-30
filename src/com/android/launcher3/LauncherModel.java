@@ -97,7 +97,6 @@ public class LauncherModel extends BroadcastReceiver
     private static final int ITEMS_CHUNK = 6; // batch size for the workspace icons
     private static final long INVALID_SCREEN_ID = -1L;
 
-    @Thunk final boolean mAppsCanBeOnRemoveableStorage;
     private final boolean mOldContentProviderExists;
 
     @Thunk final LauncherAppState mApp;
@@ -216,7 +215,6 @@ public class LauncherModel extends BroadcastReceiver
     LauncherModel(LauncherAppState app, IconCache iconCache, AppFilter appFilter) {
         Context context = app.getContext();
 
-        mAppsCanBeOnRemoveableStorage = Environment.isExternalStorageRemovable();
         String oldProvider = context.getString(R.string.old_launcher_provider_uri);
         // This may be the same as MIGRATE_AUTHORITY, or it may be replaced by a different
         // resource string.
@@ -1230,20 +1228,8 @@ public class LauncherModel extends BroadcastReceiver
     @Override
     public void onPackagesAvailable(String[] packageNames, UserHandleCompat user,
             boolean replacing) {
-        if (!replacing) {
-            enqueuePackageUpdated(new PackageUpdatedTask(PackageUpdatedTask.OP_ADD, packageNames,
-                    user));
-            if (mAppsCanBeOnRemoveableStorage) {
-                // Only rebind if we support removable storage. It catches the
-                // case where
-                // apps on the external sd card need to be reloaded
-                startLoaderFromBackground();
-            }
-        } else {
-            // If we are replacing then just update the packages in the list
-            enqueuePackageUpdated(new PackageUpdatedTask(PackageUpdatedTask.OP_UPDATE,
-                    packageNames, user));
-        }
+        enqueuePackageUpdated(
+                new PackageUpdatedTask(PackageUpdatedTask.OP_UPDATE, packageNames, user));
     }
 
     @Override
