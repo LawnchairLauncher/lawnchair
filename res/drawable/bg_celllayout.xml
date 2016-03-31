@@ -30,6 +30,7 @@
             <stroke
                 android:width="@dimen/spring_loaded_panel_border"
                 android:color="@color/spring_loaded_highlighted_panel_border_color" />
+            <solid android:color="@android:color/transparent" />
         </shape>
     </item>
 
