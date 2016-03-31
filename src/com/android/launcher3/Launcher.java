@@ -997,7 +997,7 @@ public class Launcher extends Activity
         mPaused = false;
         if (mRestoring || mOnResumeNeedsLoad) {
             setWorkspaceLoading(true);
-            mModel.startLoader(PagedView.INVALID_RESTORE_PAGE);
+            mModel.startLoader(getCurrentWorkspaceScreen());
             mRestoring = false;
             mOnResumeNeedsLoad = false;
         }
@@ -3664,6 +3664,7 @@ public class Launcher extends Activity
      * @return true if we are currently paused.  The caller might be able to
      * skip some work in that case since we will come back again.
      */
+    @Override
     public boolean setLoadOnResume() {
         if (mPaused) {
             if (LOGD) Log.d(TAG, "setLoadOnResume");
@@ -3677,6 +3678,7 @@ public class Launcher extends Activity
     /**
      * Implementation of the method from LauncherModel.Callbacks.
      */
+    @Override
     public int getCurrentWorkspaceScreen() {
         if (mWorkspace != null) {
             return mWorkspace.getCurrentPage();
@@ -4046,7 +4048,6 @@ public class Launcher extends Activity
      * Restores a pending widget.
      *
      * @param appWidgetId The app widget id
-     * @param cellInfo The position on screen where to create the widget.
      */
     private void completeRestoreAppWidget(final int appWidgetId) {
         LauncherAppWidgetHostView view = mWorkspace.getWidgetForAppWidgetId(appWidgetId);
