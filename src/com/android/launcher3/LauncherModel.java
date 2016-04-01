@@ -1266,16 +1266,12 @@ public class LauncherModel extends BroadcastReceiver
      * of doing it now.
      */
     public void startLoaderFromBackground() {
-        boolean runLoader = false;
         Callbacks callbacks = getCallback();
         if (callbacks != null) {
             // Only actually run the loader if they're not paused.
             if (!callbacks.setLoadOnResume()) {
-                runLoader = true;
+                startLoader(callbacks.getCurrentWorkspaceScreen());
             }
-        }
-        if (runLoader) {
-            startLoader(PagedView.INVALID_RESTORE_PAGE);
         }
     }
 
@@ -1313,7 +1309,7 @@ public class LauncherModel extends BroadcastReceiver
 
                 // If there is already one running, tell it to stop.
                 stopLoaderLocked();
-                mLoaderTask = new LoaderTask(mApp.getContext(), loadFlags);
+                mLoaderTask = new LoaderTask(mApp.getContext(), loadFlags, synchronousBindPage);
                 if (synchronousBindPage != PagedView.INVALID_RESTORE_PAGE
                         && mAllAppsLoaded && mWorkspaceLoaded && !mIsLoaderTaskRunning) {
                     mLoaderTask.runBindSynchronousPage(synchronousBindPage);
@@ -1367,14 +1363,17 @@ public class LauncherModel extends BroadcastReceiver
      */
     private class LoaderTask implements Runnable {
         private Context mContext;
+        private int mPageToBindFirst;
+
         @Thunk boolean mIsLoadingAndBindingWorkspace;
         private boolean mStopped;
         @Thunk boolean mLoadAndBindStepFinished;
         private int mFlags;
 
-        LoaderTask(Context context, int flags) {
+        LoaderTask(Context context, int flags, int pageToBindFirst) {
             mContext = context;
             mFlags = flags;
+            mPageToBindFirst = pageToBindFirst;
         }
 
         private void loadAndBindWorkspace() {
@@ -1396,7 +1395,7 @@ public class LauncherModel extends BroadcastReceiver
             }
 
             // Bind the workspace
-            bindWorkspace(-1);
+            bindWorkspace(mPageToBindFirst);
         }
 
         private void waitForIdle() {
