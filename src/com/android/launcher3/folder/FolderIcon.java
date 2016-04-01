@@ -492,12 +492,16 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         canvas.restore();
     }
 
+    /**
+     * This object represents a FolderIcon preview background. It stores drawing / measurement
+     * information, handles drawing, and animation (accept state <--> rest state).
+     */
     public static class PreviewBackground {
         private float mScale = 1f;
         private float mColorMultiplier = 1f;
         private Path mClipPath = new Path();
         private int mStrokeWidth;
-        private View mInvalidateDeligate;
+        private View mInvalidateDelegate;
 
         public int previewSize;
         private int basePreviewOffsetX;
@@ -506,6 +510,10 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         private CellLayout mDrawingDelegate;
         public int delegateCellX;
         public int delegateCellY;
+
+        // When the PreviewBackground is drawn under an icon (for creating a folder) the border
+        // should not occlude the icon
+        public boolean isClipping = true;
 
         // Drawing / animation configurations
         private static final float ACCEPT_SCALE_FACTOR = 1.25f;
@@ -519,9 +527,9 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
         ValueAnimator mScaleAnimator;
 
-        public void setup(DisplayMetrics dm, DeviceProfile grid, View invalidateDeligate,
+        public void setup(DisplayMetrics dm, DeviceProfile grid, View invalidateDelegate,
                    int availableSpace, int topPadding) {
-            mInvalidateDeligate = invalidateDeligate;
+            mInvalidateDelegate = invalidateDelegate;
 
             final int previewSize = grid.folderIconSizePx;
             final int previewPadding = grid.folderIconPreviewPadding;
@@ -557,8 +565,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             mClipPath.reset();
             mClipPath.addCircle(radius, radius, radius, Path.Direction.CW);
 
-            if (mInvalidateDeligate != null) {
-                mInvalidateDeligate.invalidate();
+            if (mInvalidateDelegate != null) {
+                mInvalidateDelegate.invalidate();
             }
 
             if (mDrawingDelegate != null) {
@@ -566,8 +574,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             }
         }
 
-        void setInvalidateDeligate(View invalidateDeligate) {
-            mInvalidateDeligate = invalidateDeligate;
+        void setInvalidateDelegate(View invalidateDelegate) {
+            mInvalidateDelegate = invalidateDelegate;
             invalidate();
         }
 
@@ -742,7 +750,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     public void setFolderBackground(PreviewBackground bg) {
         mBackground = bg;
-        mBackground.setInvalidateDeligate(this);
+        mBackground.setInvalidateDelegate(this);
     }
 
     @Override
