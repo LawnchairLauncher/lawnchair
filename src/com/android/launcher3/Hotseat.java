@@ -16,8 +16,12 @@
 
 package com.android.launcher3;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -27,12 +31,13 @@ import android.view.ViewDebug;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
 public class Hotseat extends FrameLayout
-        implements UserEventDispatcher.LaunchSourceProvider{
+        implements UserEventDispatcher.LaunchSourceProvider, Insettable {
 
     private CellLayout mContent;
 
@@ -43,6 +48,14 @@ public class Hotseat extends FrameLayout
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private final boolean mHasVerticalHotseat;
+
+    @ViewDebug.ExportedProperty(category = "launcher")
+    private Rect mInsets = new Rect();
+
+    @ViewDebug.ExportedProperty(category = "launcher")
+    private int mBackgroundColor;
+    @ViewDebug.ExportedProperty(category = "launcher")
+    private ColorDrawable mBackground;
 
     public Hotseat(Context context) {
         this(context, null);
@@ -56,6 +69,8 @@ public class Hotseat extends FrameLayout
         super(context, attrs, defStyle);
         mLauncher = (Launcher) context;
         mHasVerticalHotseat = mLauncher.getDeviceProfile().isVerticalBarLayout();
+        mBackground = new ColorDrawable();
+        setBackground(mBackground);
     }
 
     public CellLayout getLayout() {
@@ -165,5 +180,47 @@ public class Hotseat extends FrameLayout
         target.gridX = info.cellX;
         target.gridY = info.cellY;
         targetParent.containerType = LauncherLogProto.HOTSEAT;
+    }
+
+    //Overridden so that the background color extends behind the navigation buttons.
+    @Override
+    public void setInsets(Rect insets) {
+        int rightInset = insets.right - mInsets.right;
+        int bottomInset = insets.bottom - mInsets.bottom;
+        mInsets.set(insets);
+        LayoutParams lp = (LayoutParams) getLayoutParams();
+        if (mHasVerticalHotseat) {
+            setPadding(getPaddingLeft(), getPaddingTop(),
+            getPaddingRight() + rightInset, getPaddingBottom());
+            if (lp.width != LayoutParams.MATCH_PARENT && lp.width != LayoutParams.WRAP_CONTENT) {
+                lp.width += rightInset;
+            }
+        } else {
+            setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(),
+            getPaddingBottom() + bottomInset);
+            if (lp.height != LayoutParams.MATCH_PARENT && lp.height != LayoutParams.WRAP_CONTENT) {
+                lp.height += bottomInset;
+            }
+        }
+    }
+
+    public void updateColor(ExtractedColors extractedColors, boolean animate) {
+        if (!mHasVerticalHotseat) {
+            int color = extractedColors.getColor(ExtractedColors.HOTSEAT_INDEX, Color.TRANSPARENT);
+            if (!animate) {
+                setBackgroundColor(color);
+            } else {
+                ValueAnimator animator = ValueAnimator.ofInt(mBackgroundColor, color);
+                animator.setEvaluator(new ArgbEvaluator());
+                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        mBackground.setColor((Integer) animation.getAnimatedValue());
+                    }
+                });
+                animator.start();
+            }
+            mBackgroundColor = color;
+        }
     }
 }
