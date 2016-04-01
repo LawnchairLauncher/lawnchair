@@ -158,6 +158,7 @@ public class Launcher extends Activity
     private static final int REQUEST_PICK_WALLPAPER = 10;
 
     private static final int REQUEST_BIND_APPWIDGET = 11;
+    private static final int REQUEST_BIND_PENDING_APPWIDGET = 14;
     private static final int REQUEST_RECONFIGURE_APPWIDGET = 12;
 
     private static final int REQUEST_PERMISSION_CALL_PHONE = 13;
@@ -688,8 +689,22 @@ public class Launcher extends Activity
                 completeAddAppWidget(args.appWidgetId, args.container, screenId, null, null);
                 break;
             case REQUEST_RECONFIGURE_APPWIDGET:
-                completeRestoreAppWidget(args.appWidgetId);
+                completeRestoreAppWidget(args.appWidgetId, LauncherAppWidgetInfo.RESTORE_COMPLETED);
                 break;
+            case REQUEST_BIND_PENDING_APPWIDGET: {
+                int widgetId = args.appWidgetId;
+                LauncherAppWidgetInfo info =
+                        completeRestoreAppWidget(widgetId, LauncherAppWidgetInfo.FLAG_UI_NOT_READY);
+                if (info != null) {
+                    // Since the view was just bound, also launch the configure activity if needed
+                    LauncherAppWidgetProviderInfo provider = mAppWidgetManager
+                            .getLauncherAppWidgetInfo(widgetId);
+                    if (provider != null && provider.configure != null) {
+                        startRestoredWidgetReconfigActivity(provider, info);
+                    }
+                }
+                break;
+            }
         }
         // Before adding this resetAddInfo(), after a shortcut was added to a workspace screen,
         // if you turned the screen off and then back while in All Apps, Launcher would not
@@ -804,7 +819,8 @@ public class Launcher extends Activity
             return;
         }
 
-        if (requestCode == REQUEST_RECONFIGURE_APPWIDGET) {
+        if (requestCode == REQUEST_RECONFIGURE_APPWIDGET
+                || requestCode == REQUEST_BIND_PENDING_APPWIDGET) {
             if (resultCode == RESULT_OK) {
                 // Update the widget view.
                 PendingAddArguments args = preparePendingAddArgs(requestCode, data,
@@ -2380,7 +2396,7 @@ public class Launcher extends Activity
      */
     private void deleteWidgetInfo(final LauncherAppWidgetInfo widgetInfo) {
         final LauncherAppWidgetHost appWidgetHost = getAppWidgetHost();
-        if (appWidgetHost != null && !widgetInfo.isCustomWidget() && widgetInfo.isWidgetIdValid()) {
+        if (appWidgetHost != null && !widgetInfo.isCustomWidget() && widgetInfo.isWidgetIdAllocated()) {
             // Deleting an app widget ID is a void call but writes to disk before returning
             // to the caller...
             new AsyncTask<Void, Void, Void>() {
@@ -2526,16 +2542,31 @@ public class Launcher extends Activity
 
         final LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) v.getTag();
         if (v.isReadyForClickSetup()) {
-            int widgetId = info.appWidgetId;
-            LauncherAppWidgetProviderInfo appWidgetInfo =
-                    mAppWidgetManager.getLauncherAppWidgetInfo(widgetId);
-            if (appWidgetInfo != null) {
-                mPendingAddWidgetInfo = appWidgetInfo;
-                mPendingAddInfo.copyFrom(info);
-                mPendingAddWidgetId = widgetId;
+            if (info.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)) {
+                if (!info.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_ALLOCATED)) {
+                    // This should not happen, as we make sure that an Id is allocated during bind.
+                    return;
+                }
+                LauncherAppWidgetProviderInfo appWidgetInfo =
+                        mAppWidgetManager.findProvider(info.providerName, info.user);
+                if (appWidgetInfo != null) {
+                    mPendingAddWidgetId = info.appWidgetId;
+                    mPendingAddInfo.copyFrom(info);
+                    mPendingAddWidgetInfo = appWidgetInfo;
 
-                AppWidgetManagerCompat.getInstance(this).startConfigActivity(appWidgetInfo,
-                        info.appWidgetId, this, mAppWidgetHost, REQUEST_RECONFIGURE_APPWIDGET);
+                    Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
+                    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mPendingAddWidgetId);
+                    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, appWidgetInfo.provider);
+                    mAppWidgetManager.getUser(mPendingAddWidgetInfo)
+                            .addToIntent(intent, AppWidgetManager.EXTRA_APPWIDGET_PROVIDER_PROFILE);
+                    startActivityForResult(intent, REQUEST_BIND_PENDING_APPWIDGET);
+                }
+            } else {
+                LauncherAppWidgetProviderInfo appWidgetInfo =
+                        mAppWidgetManager.getLauncherAppWidgetInfo(info.appWidgetId);
+                if (appWidgetInfo != null) {
+                    startRestoredWidgetReconfigActivity(appWidgetInfo, info);
+                }
             }
         } else if (info.installProgress < 0) {
             // The install has not been queued
@@ -2551,6 +2582,15 @@ public class Launcher extends Activity
             final String packageName = info.providerName.getPackageName();
             startActivitySafely(v, LauncherModel.getMarketIntent(packageName), info);
         }
+    }
+
+    private void startRestoredWidgetReconfigActivity(
+            LauncherAppWidgetProviderInfo provider, LauncherAppWidgetInfo info) {
+        mPendingAddWidgetInfo = provider;
+        mPendingAddInfo.copyFrom(info);
+        mPendingAddWidgetId = info.appWidgetId;
+        mAppWidgetManager.startConfigActivity(provider,
+                info.appWidgetId, this, mAppWidgetHost, REQUEST_RECONFIGURE_APPWIDGET);
     }
 
     /**
@@ -3919,41 +3959,33 @@ public class Launcher extends Activity
 
             // If we do not have a valid id, try to bind an id.
             if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)) {
-                // Note: This assumes that the id remap broadcast is received before this step.
-                // If that is not the case, the id remap will be ignored and user may see the
-                // click to setup view.
-                PendingAddWidgetInfo pendingInfo = new PendingAddWidgetInfo(this, appWidgetInfo);
-                pendingInfo.spanX = item.spanX;
-                pendingInfo.spanY = item.spanY;
-                pendingInfo.minSpanX = item.minSpanX;
-                pendingInfo.minSpanY = item.minSpanY;
-                Bundle options = WidgetHostViewLoader.getDefaultOptionsForWidget(this, pendingInfo);
+                if (!item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_ALLOCATED)) {
+                    // Id has not been allocated yet. Allocate a new id.
+                    item.appWidgetId = mAppWidgetHost.allocateAppWidgetId();
+                    item.restoreStatus |= LauncherAppWidgetInfo.FLAG_ID_ALLOCATED;
 
-                int newWidgetId = mAppWidgetHost.allocateAppWidgetId();
-                boolean success = mAppWidgetManager.bindAppWidgetIdIfAllowed(
-                        newWidgetId, appWidgetInfo, options);
+                    // Also try to bind the widget. If the bind fails, the user will be shown
+                    // a click to setup UI, which will ask for the bind permission.
+                    PendingAddWidgetInfo pendingInfo = new PendingAddWidgetInfo(this, appWidgetInfo);
+                    pendingInfo.spanX = item.spanX;
+                    pendingInfo.spanY = item.spanY;
+                    pendingInfo.minSpanX = item.minSpanX;
+                    pendingInfo.minSpanY = item.minSpanY;
+                    Bundle options = WidgetHostViewLoader.getDefaultOptionsForWidget(this, pendingInfo);
+                    boolean success = mAppWidgetManager.bindAppWidgetIdIfAllowed(
+                            item.appWidgetId, appWidgetInfo, options);
 
-                // TODO consider showing a permission dialog when the widget is clicked.
-                if (!success) {
-                    mAppWidgetHost.deleteAppWidgetId(newWidgetId);
-                    if (DEBUG_WIDGETS) {
-                        Log.d(TAG, "Removing restored widget: id=" + item.appWidgetId
-                                + " belongs to component " + item.providerName
-                                + ", as the launcher is unable to bing a new widget id");
+                    // Bind succeeded
+                    if (success) {
+                        // If the widget has a configure activity, it is still needs to set it up,
+                        // otherwise the widget is ready to go.
+                        item.restoreStatus = (appWidgetInfo.configure == null)
+                                ? LauncherAppWidgetInfo.RESTORE_COMPLETED
+                                : LauncherAppWidgetInfo.FLAG_UI_NOT_READY;
                     }
-                    LauncherModel.deleteItemFromDatabase(this, item);
-                    return;
+
+                    LauncherModel.updateItemInDatabase(this, item);
                 }
-
-                item.appWidgetId = newWidgetId;
-
-                // If the widget has a configure activity, it is still needs to set it up, otherwise
-                // the widget is ready to go.
-                item.restoreStatus = (appWidgetInfo.configure == null)
-                        ? LauncherAppWidgetInfo.RESTORE_COMPLETED
-                        : LauncherAppWidgetInfo.FLAG_UI_NOT_READY;
-
-                LauncherModel.updateItemInDatabase(this, item);
             } else if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_UI_NOT_READY)
                     && (appWidgetInfo.configure == null)) {
                 // The widget was marked as UI not ready, but there is no configure activity to
@@ -4001,18 +4033,19 @@ public class Launcher extends Activity
      *
      * @param appWidgetId The app widget id
      */
-    private void completeRestoreAppWidget(final int appWidgetId) {
+    private LauncherAppWidgetInfo completeRestoreAppWidget(int appWidgetId, int finalRestoreFlag) {
         LauncherAppWidgetHostView view = mWorkspace.getWidgetForAppWidgetId(appWidgetId);
         if ((view == null) || !(view instanceof PendingAppWidgetHostView)) {
             Log.e(TAG, "Widget update called, when the widget no longer exists.");
-            return;
+            return null;
         }
 
         LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) view.getTag();
-        info.restoreStatus = LauncherAppWidgetInfo.RESTORE_COMPLETED;
+        info.restoreStatus = finalRestoreFlag;
 
         mWorkspace.reinflateWidgetsIfNecessary();
         LauncherModel.updateItemInDatabase(this, info);
+        return info;
     }
 
     public void onPageBoundSynchronously(int page) {

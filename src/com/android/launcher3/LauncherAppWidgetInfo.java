@@ -51,6 +51,12 @@ public class LauncherAppWidgetInfo extends ItemInfo {
     public static final int FLAG_RESTORE_STARTED = 8;
 
     /**
+     * Indicates that the widget has been allocated an Id. The id is still not valid, as it has
+     * not been bound yet.
+     */
+    public static final int FLAG_ID_ALLOCATED = 16;
+
+    /**
      * Indicates that the widget hasn't been instantiated yet.
      */
     static final int NO_ID = -1;
@@ -127,8 +133,9 @@ public class LauncherAppWidgetInfo extends ItemInfo {
         return "AppWidget(id=" + Integer.toString(appWidgetId) + ")";
     }
 
-    public final boolean isWidgetIdValid() {
-        return (restoreStatus & FLAG_ID_NOT_VALID) == 0;
+    public final boolean isWidgetIdAllocated() {
+        return (restoreStatus & FLAG_ID_NOT_VALID) == 0 ||
+                (restoreStatus & FLAG_ID_ALLOCATED) == FLAG_ID_ALLOCATED;
     }
 
     public final boolean hasRestoreFlag(int flag) {
