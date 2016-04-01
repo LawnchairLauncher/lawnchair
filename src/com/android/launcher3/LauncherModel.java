@@ -54,6 +54,7 @@ import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.dynamicui.ExtractionUtils;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.GridSizeMigrationTask;
@@ -1237,6 +1238,8 @@ public class LauncherModel extends BroadcastReceiver
                         PackageUpdatedTask.OP_USER_AVAILABILITY_CHANGE,
                         new String[0], user));
             }
+        } else if (Intent.ACTION_WALLPAPER_CHANGED.equals(action)) {
+            ExtractionUtils.startColorExtractionServiceIfNecessary(context);
         }
     }
 

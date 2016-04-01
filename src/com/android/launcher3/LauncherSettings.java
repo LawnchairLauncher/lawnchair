@@ -339,6 +339,11 @@ public class LauncherSettings {
         public static final String METHOD_LOAD_DEFAULT_FAVORITES = "load_default_favorites";
         public static final String METHOD_MIGRATE_LAUNCHER2_SHORTCUTS = "migrate_l2_shortcuts";
 
+        public static final String METHOD_SET_EXTRACTED_COLORS_AND_WALLPAPER_ID =
+                "set_extracted_colors_and_wallpaper_id_setting";
+        public static final String EXTRA_EXTRACTED_COLORS = "extra_extractedColors";
+        public static final String EXTRA_WALLPAPER_ID = "extra_wallpaperId";
+
         public static final String EXTRA_VALUE = "value";
         public static final String EXTRA_DEFAULT_VALUE = "default_value";
         // Extra for set_boolean method to also notify the backup manager of the change.
