@@ -219,7 +219,7 @@ public class Workspace extends PagedView
     public static final int REORDER_TIMEOUT = 350;
     private final Alarm mFolderCreationAlarm = new Alarm();
     private final Alarm mReorderAlarm = new Alarm();
-    private FolderIcon.PreviewBackground mFolderCreateBg = new FolderIcon.PreviewBackground();
+    private FolderIcon.PreviewBackground mFolderCreateBg;
     private FolderIcon mDragOverFolderIcon = null;
     private boolean mCreateUserFolderOnDrop = false;
     private boolean mAddToExistingFolderOnDrop = false;
@@ -2878,7 +2878,9 @@ public class Workspace extends PagedView
     }
 
     private void cleanupFolderCreation() {
-        mFolderCreateBg.animateToRest();
+        if (mFolderCreateBg != null) {
+            mFolderCreateBg.animateToRest();
+        }
         mFolderCreationAlarm.setOnAlarmListener(null);
         mFolderCreationAlarm.cancelAlarm();
     }
@@ -3182,6 +3184,8 @@ public class Workspace extends PagedView
         int cellX;
         int cellY;
 
+        FolderIcon.PreviewBackground bg = new FolderIcon.PreviewBackground();
+
         public FolderCreationAlarmListener(CellLayout layout, int cellX, int cellY) {
             this.layout = layout;
             this.cellX = cellX;
@@ -3190,11 +3194,15 @@ public class Workspace extends PagedView
             DeviceProfile grid = mLauncher.getDeviceProfile();
             BubbleTextView cell = (BubbleTextView) layout.getChildAt(cellX, cellY);
 
-            mFolderCreateBg.setup(getResources().getDisplayMetrics(), grid, null,
+            bg.setup(getResources().getDisplayMetrics(), grid, null,
                     cell.getMeasuredWidth(), cell.getPaddingTop());
+
+            // The full preview background should appear behind the icon
+            bg.isClipping = false;
         }
 
         public void onAlarm(Alarm alarm) {
+            mFolderCreateBg = bg;
             mFolderCreateBg.animateToAccept(layout, cellX, cellY);
             layout.clearDragOutlines();
             setDragMode(DRAG_MODE_CREATE_FOLDER);
