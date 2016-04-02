@@ -522,7 +522,6 @@ public class Launcher extends Activity
         if (mExtractedColors != null) {
             mExtractedColors.load(this);
             // TODO: pass mExtractedColors to interested items such as hotseat.
-            mHotseat.setBackgroundColor(mExtractedColors.getColor(ExtractedColors.VIBRANT_INDEX));
         }
     }
 
