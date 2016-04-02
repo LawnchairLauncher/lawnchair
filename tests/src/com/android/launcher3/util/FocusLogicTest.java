@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.util;
 
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
