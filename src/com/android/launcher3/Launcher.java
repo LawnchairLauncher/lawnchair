@@ -465,7 +465,11 @@ public class Launcher extends Activity
             } else {
                 // We only load the page synchronously if the user rotates (or triggers a
                 // configuration change) while launcher is in the foreground
-                mModel.startLoader(mWorkspace.getRestorePage());
+                if (!mModel.startLoader(mWorkspace.getRestorePage())) {
+                    // If we are not binding synchronously, show a fade in animation when
+                    // the first page bind completes.
+                    mDragLayer.setAlpha(0);
+                }
             }
         }
 
@@ -4000,6 +4004,32 @@ public class Launcher extends Activity
     public void clearPendingExecutor(ViewOnDrawExecutor executor) {
         if (mPendingExecutor == executor) {
             mPendingExecutor = null;
+        }
+    }
+
+    @Override
+    public void finishFirstPageBind(final ViewOnDrawExecutor executor) {
+        Runnable r = new Runnable() {
+            public void run() {
+                finishFirstPageBind(executor);
+            }
+        };
+        if (waitUntilResume(r)) {
+            return;
+        }
+
+        Runnable onComplete = new Runnable() {
+            @Override
+            public void run() {
+                if (executor != null) {
+                    executor.onLoadAnimationCompleted();
+                }
+            }
+        };
+        if (mDragLayer.getAlpha() < 1) {
+            mDragLayer.animate().alpha(1).withEndAction(onComplete).start();
+        } else {
+            onComplete.run();
         }
     }
 

@@ -195,6 +195,7 @@ public class LauncherModel extends BroadcastReceiver
         public void bindItems(ArrayList<ItemInfo> shortcuts, int start, int end,
                               boolean forceAnimateIcons);
         public void bindScreens(ArrayList<Long> orderedScreenIds);
+        public void finishFirstPageBind(ViewOnDrawExecutor executor);
         public void finishBindingItems();
         public void bindAppWidget(LauncherAppWidgetInfo info);
         public void bindAllApplications(ArrayList<AppInfo> apps);
@@ -1282,7 +1283,11 @@ public class LauncherModel extends BroadcastReceiver
         return (mCallbacks != null && mCallbacks.get() == callbacks);
     }
 
-    public void startLoader(int synchronousBindPage) {
+    /**
+     * Starts the loader. Tries to bind {@params synchronousBindPage} synchronously if possible.
+     * @return true if the page could be bound synchronously.
+     */
+    public boolean startLoader(int synchronousBindPage) {
         // Enable queue before starting loader. It will get disabled in Launcher#finishBindingItems
         InstallShortcutReceiver.enableInstallQueue();
         synchronized (mLock) {
@@ -1302,12 +1307,14 @@ public class LauncherModel extends BroadcastReceiver
                 if (synchronousBindPage != PagedView.INVALID_RESTORE_PAGE && mAllAppsLoaded
                         && mWorkspaceLoaded && mDeepShortcutsLoaded && !mIsLoaderTaskRunning) {
                     mLoaderTask.runBindSynchronousPage(synchronousBindPage);
+                    return true;
                 } else {
                     sWorkerThread.setPriority(Thread.NORM_PRIORITY);
                     sWorker.post(mLoaderTask);
                 }
             }
         }
+        return false;
     }
 
     public void stopLoader() {
@@ -2508,17 +2515,19 @@ public class LauncherModel extends BroadcastReceiver
                 orderedScreenIds.addAll(sBgWorkspaceScreens);
             }
 
-            final boolean isLoadingSynchronously =
-                    synchronizeBindPage != PagedView.INVALID_RESTORE_PAGE;
-            int currScreen = isLoadingSynchronously ? synchronizeBindPage :
-                oldCallbacks.getCurrentWorkspaceScreen();
-            if (currScreen >= orderedScreenIds.size()) {
-                // There may be no workspace screens (just hotseat items and an empty page).
-                currScreen = PagedView.INVALID_RESTORE_PAGE;
+            final int currentScreen;
+            {
+                int currScreen = synchronizeBindPage != PagedView.INVALID_RESTORE_PAGE
+                        ? synchronizeBindPage : oldCallbacks.getCurrentWorkspaceScreen();
+                if (currScreen >= orderedScreenIds.size()) {
+                    // There may be no workspace screens (just hotseat items and an empty page).
+                    currScreen = PagedView.INVALID_RESTORE_PAGE;
+                }
+                currentScreen = currScreen;
             }
-            final int currentScreen = currScreen;
-            final long currentScreenId = currentScreen < 0
-                    ? INVALID_SCREEN_ID : orderedScreenIds.get(currentScreen);
+            final boolean validFirstPage = currentScreen >= 0;
+            final long currentScreenId =
+                    validFirstPage ? orderedScreenIds.get(currentScreen) : INVALID_SCREEN_ID;
 
             // Separate the items that are on the current screen, and all the other remaining items
             ArrayList<ItemInfo> currentWorkspaceItems = new ArrayList<>();
@@ -2551,12 +2560,24 @@ public class LauncherModel extends BroadcastReceiver
             // Load items on the current page.
             bindWorkspaceItems(oldCallbacks, currentWorkspaceItems, currentAppWidgets, mainExecutor);
 
-            // In case of isLoadingSynchronously, only bind the first screen, and defer binding the
-            // remaining screens after first onDraw is called. This ensures that the first screen
-            // is immediately visible (eg. during rotation)
-            // In case of !isLoadingSynchronously, bind all pages one after other.
-            final Executor deferredExecutor = isLoadingSynchronously ?
-                    new ViewOnDrawExecutor(mHandler) : mainExecutor;
+            // In case of validFirstPage, only bind the first screen, and defer binding the
+            // remaining screens after first onDraw (and an optional the fade animation whichever
+            // happens later).
+            // This ensures that the first screen is immediately visible (eg. during rotation)
+            // In case of !validFirstPage, bind all pages one after other.
+            final Executor deferredExecutor =
+                    validFirstPage ? new ViewOnDrawExecutor(mHandler) : mainExecutor;
+
+            mainExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    Callbacks callbacks = tryGetCallbacks(oldCallbacks);
+                    if (callbacks != null) {
+                        callbacks.finishFirstPageBind(
+                                validFirstPage ? (ViewOnDrawExecutor) deferredExecutor : null);
+                    }
+                }
+            });
 
             bindWorkspaceItems(oldCallbacks, otherWorkspaceItems, otherAppWidgets, deferredExecutor);
 
@@ -2590,7 +2611,7 @@ public class LauncherModel extends BroadcastReceiver
             };
             deferredExecutor.execute(r);
 
-            if (isLoadingSynchronously) {
+            if (validFirstPage) {
                 r = new Runnable() {
                     public void run() {
                         Callbacks callbacks = tryGetCallbacks(oldCallbacks);
