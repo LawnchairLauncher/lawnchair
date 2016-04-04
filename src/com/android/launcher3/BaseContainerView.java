@@ -18,15 +18,11 @@ package com.android.launcher3;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
-
-import com.android.launcher3.config.ProviderConfig;
 
 /**
  * A base container view, which supports resizing.
@@ -52,9 +48,7 @@ public abstract class BaseContainerView extends FrameLayout {
         super(context, attrs, defStyleAttr);
 
         int width = ((Launcher) context).getDeviceProfile().availableWidthPx;
-        mHorizontalPadding = Math.max(
-                getResources().getDimensionPixelSize(R.dimen.container_min_margin),
-                (int) getResources().getFraction(R.fraction.container_margin, width, 1));
+        mHorizontalPadding = DeviceProfile.getMaxContainerWidth(context, width);
 
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.BaseContainerView, defStyleAttr, 0);
