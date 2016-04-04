@@ -1277,7 +1277,8 @@ public class LauncherModel extends BroadcastReceiver
                 || LauncherAppsCompat.ACTION_MANAGED_PROFILE_REMOVED.equals(action)) {
             UserManagerCompat.getInstance(context).enableAndResetCache();
             forceReload();
-        } else if (LauncherAppsCompat.ACTION_MANAGED_PROFILE_AVAILABILITY_CHANGED.equals(action)) {
+        } else if (LauncherAppsCompat.ACTION_MANAGED_PROFILE_AVAILABLE.equals(action) ||
+                LauncherAppsCompat.ACTION_MANAGED_PROFILE_UNAVAILABLE.equals(action)) {
             UserHandleCompat user = UserHandleCompat.fromIntent(intent);
             if (user != null) {
                 enqueuePackageUpdated(new PackageUpdatedTask(
