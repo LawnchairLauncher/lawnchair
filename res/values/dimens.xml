@@ -60,6 +60,10 @@
     <dimen name="toolbar_button_horizontal_padding">12dip</dimen>
 
 <!-- Container -->
+    <item name="container_margin" format="fraction" type="fraction">0%</item>
+    <dimen name="container_min_margin">8dp</dimen>
+    <dimen name="container_max_width">0dp</dimen>
+
     <!-- Note: This needs to match the fixed insets for the search box. -->
     <dimen name="container_bounds_inset">8dp</dimen>
     <!-- Notes: container_bounds_inset - quantum_panel_outer_padding -->
@@ -160,5 +164,4 @@
 <!-- Pending widget -->
     <dimen name="pending_widget_min_padding">8dp</dimen>
     <dimen name="pending_widget_elevation">2dp</dimen>
-
 </resources>

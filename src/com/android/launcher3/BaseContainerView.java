@@ -22,7 +22,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -35,9 +34,6 @@ public abstract class BaseContainerView extends FrameLayout implements Insettabl
 
     // The window insets
     private final Rect mInsets = new Rect();
-    // The bounds of the search bar.  Only the left, top, right are used to inset the
-    // search bar and the height is determined by the measurement of the layout
-    private final Rect mFixedSearchBarBounds = new Rect();
     // The computed padding to apply to the container to achieve the container bounds
     protected final Rect mContentPadding = new Rect();
     // The inset to apply to the edges and between the search bar and the container
@@ -47,6 +43,8 @@ public abstract class BaseContainerView extends FrameLayout implements Insettabl
 
     private View mRevealView;
     private View mContent;
+
+    protected final int mHorizontalPadding;
 
     public BaseContainerView(Context context) {
         this(context, null);
@@ -64,6 +62,17 @@ public abstract class BaseContainerView extends FrameLayout implements Insettabl
                 R.styleable.BaseContainerView, defStyleAttr, 0);
         mRevealDrawable = a.getDrawable(R.styleable.BaseContainerView_revealBackground);
         a.recycle();
+
+        int maxSize = getResources().getDimensionPixelSize(R.dimen.container_max_width);
+        int minMargin = getResources().getDimensionPixelSize(R.dimen.container_min_margin);
+        int width = ((Launcher) context).getDeviceProfile().availableWidthPx;
+
+        if (maxSize > 0) {
+            mHorizontalPadding = Math.max(minMargin, (width - maxSize) / 2);
+        } else {
+            mHorizontalPadding = Math.max(minMargin,
+                    (int) getResources().getFraction(R.fraction.container_margin, width, 1));
+        }
     }
 
     @Override
@@ -84,12 +93,6 @@ public abstract class BaseContainerView extends FrameLayout implements Insettabl
      * Sets the search bar bounds for this container view to match.
      */
     final public void setSearchBarBounds(Rect bounds) {
-        if (LauncherAppState.isDogfoodBuild() && !isValidSearchBarBounds(bounds)) {
-            Log.e(TAG, "Invalid search bar bounds: " + bounds);
-        }
-
-        mFixedSearchBarBounds.set(bounds);
-
         // Post the updates since they can trigger a relayout, and this call can be triggered from
         // a layout pass itself.
         post(new Runnable() {
@@ -105,21 +108,12 @@ public abstract class BaseContainerView extends FrameLayout implements Insettabl
      */
     protected void updateBackgroundAndPaddings() {
         Rect padding;
-        if (isValidSearchBarBounds(mFixedSearchBarBounds)) {
-            padding = new Rect(
-                    mFixedSearchBarBounds.left,
-                    mInsets.top + mContainerBoundsInset,
-                    getMeasuredWidth() - mFixedSearchBarBounds.right,
-                    mInsets.bottom + mContainerBoundsInset
-            );
-        } else {
-            padding = new Rect(
-                    mInsets.left + mContainerBoundsInset,
-                    mInsets.top + mContainerBoundsInset,
-                    mInsets.right + mContainerBoundsInset,
-                    mInsets.bottom + mContainerBoundsInset
-            );
-        }
+        padding = new Rect(
+                mHorizontalPadding,
+                mInsets.top + mContainerBoundsInset,
+                mHorizontalPadding,
+                mInsets.bottom + mContainerBoundsInset
+        );
 
         // The container padding changed, notify the container.
         if (!padding.equals(mContentPadding)) {
@@ -148,15 +142,6 @@ public abstract class BaseContainerView extends FrameLayout implements Insettabl
     }
 
     protected abstract void onUpdateBgPadding(Rect padding, Rect bgPadding);
-
-    /**
-     * Returns whether the search bar bounds we got are considered valid.
-     */
-    private boolean isValidSearchBarBounds(Rect searchBarBounds) {
-        return !searchBarBounds.isEmpty() &&
-                searchBarBounds.right <= getMeasuredWidth() &&
-                searchBarBounds.bottom <= getMeasuredHeight();
-    }
 
     public final View getContentView() {
         return mContent;
