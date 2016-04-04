@@ -594,4 +594,19 @@ public class DeviceProfile {
                 ? Math.min(widthPx, heightPx)
                 : Math.max(widthPx, heightPx);
     }
+
+
+    public static final int getMaxContainerWidth(Context context, int availableWidth) {
+        Resources res = context.getResources();
+
+        int maxSize = res.getDimensionPixelSize(R.dimen.container_max_width);
+        int minMargin = res.getDimensionPixelSize(R.dimen.container_min_margin);
+
+        if (maxSize > 0) {
+            return Math.max(minMargin, (availableWidth - maxSize) / 2);
+        } else {
+            return Math.max(minMargin,
+                    (int) res.getFraction(R.fraction.container_margin, availableWidth, 1));
+        }
+    }
 }
