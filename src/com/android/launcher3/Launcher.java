@@ -2379,7 +2379,7 @@ public class Launcher extends Activity
             // Remove the shortcut from the folder before removing it from launcher
             View folderIcon = mWorkspace.getHomescreenIconByItemId(itemInfo.container);
             if (folderIcon instanceof FolderIcon) {
-                ((FolderInfo) folderIcon.getTag()).remove((ShortcutInfo) itemInfo);
+                ((FolderInfo) folderIcon.getTag()).remove((ShortcutInfo) itemInfo, true);
             } else {
                 mWorkspace.removeWorkspaceItem(v);
             }

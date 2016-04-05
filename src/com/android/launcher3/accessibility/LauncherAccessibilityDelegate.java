@@ -174,7 +174,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
             Folder folder = mLauncher.getWorkspace().getOpenFolder();
             mLauncher.closeFolder(folder, true);
             ShortcutInfo info = (ShortcutInfo) item;
-            folder.getInfo().remove(info);
+            folder.getInfo().remove(info, false);
 
             final int[] coordinates = new int[2];
             final long screenId = findSpaceOnWorkspace(item, coordinates);

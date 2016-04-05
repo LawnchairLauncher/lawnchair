@@ -454,7 +454,7 @@ public class FolderPagedView extends PagedView {
             for (int j = 0; j < page.getCountY(); j++) {
                 for (int i = 0; i < page.getCountX(); i++) {
                     View v = page.getChildAt(i, j);
-                    if ((v != null) && op.evaluate((ItemInfo) v.getTag(), v, this)) {
+                    if ((v != null) && op.evaluate((ItemInfo) v.getTag(), v)) {
                         return v;
                     }
                 }

@@ -69,12 +69,12 @@ public class FolderInfo extends ItemInfo {
      *
      * @param item
      */
-    public void add(ShortcutInfo item) {
+    public void add(ShortcutInfo item, boolean animate) {
         contents.add(item);
         for (int i = 0; i < listeners.size(); i++) {
             listeners.get(i).onAdd(item);
         }
-        itemsChanged();
+        itemsChanged(animate);
     }
 
     /**
@@ -82,12 +82,12 @@ public class FolderInfo extends ItemInfo {
      *
      * @param item
      */
-    public void remove(ShortcutInfo item) {
+    public void remove(ShortcutInfo item, boolean animate) {
         contents.remove(item);
         for (int i = 0; i < listeners.size(); i++) {
             listeners.get(i).onRemove(item);
         }
-        itemsChanged();
+        itemsChanged(animate);
     }
 
     public void setTitle(CharSequence title) {
@@ -115,9 +115,9 @@ public class FolderInfo extends ItemInfo {
         }
     }
 
-    void itemsChanged() {
+    public void itemsChanged(boolean animate) {
         for (int i = 0; i < listeners.size(); i++) {
-            listeners.get(i).onItemsChanged();
+            listeners.get(i).onItemsChanged(animate);
         }
     }
 
@@ -131,7 +131,7 @@ public class FolderInfo extends ItemInfo {
         public void onAdd(ShortcutInfo item);
         public void onRemove(ShortcutInfo item);
         public void onTitleChanged(CharSequence title);
-        public void onItemsChanged();
+        public void onItemsChanged(boolean animate);
     }
 
     @Override

@@ -300,7 +300,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             mCurrentDragView = v;
 
             mContent.removeItem(mCurrentDragView);
-            mInfo.remove(mCurrentDragInfo);
+            mInfo.remove(mCurrentDragInfo, true);
             mDragInProgress = true;
             mItemAddedBackToSelfViaIcon = false;
         }
@@ -426,8 +426,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         // If our folder has too many items we prune them from the list. This is an issue
         // when upgrading from the old Folders implementation which could contain an unlimited
         // number of items.
+        // TODO: Remove this, as with multi-page folders, there will never be any overflow
         for (ShortcutInfo item: overflow) {
-            mInfo.remove(item);
+            mInfo.remove(item, false);
             LauncherModel.deleteItemFromDatabase(mLauncher, item);
         }
 
@@ -1330,7 +1331,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
         // Temporarily suppress the listener, as we did all the work already here.
         mSuppressOnAdd = true;
-        mInfo.add(si);
+        mInfo.add(si, false);
         mSuppressOnAdd = false;
         // Clear the drag info, as it is no longer being dragged.
         mCurrentDragInfo = null;
@@ -1390,13 +1391,14 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         return mContent.iterateOverItems(new ItemOperator() {
 
             @Override
-            public boolean evaluate(ItemInfo info, View view, View parent) {
+            public boolean evaluate(ItemInfo info, View view) {
                 return info == item;
             }
         });
     }
 
-    public void onItemsChanged() {
+    @Override
+    public void onItemsChanged(boolean animate) {
         updateTextViewFocus();
     }
 
@@ -1409,7 +1411,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             mContent.iterateOverItems(new ItemOperator() {
 
                 @Override
-                public boolean evaluate(ItemInfo info, View view, View parent) {
+                public boolean evaluate(ItemInfo info, View view) {
                     mItemsInReadingOrder.add(view);
                     return false;
                 }
