@@ -48,7 +48,7 @@ public abstract class BaseContainerView extends FrameLayout {
         super(context, attrs, defStyleAttr);
 
         int width = ((Launcher) context).getDeviceProfile().availableWidthPx;
-        mHorizontalPadding = DeviceProfile.getMaxContainerWidth(context, width);
+        mHorizontalPadding = DeviceProfile.getContainerPadding(context, width);
 
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.BaseContainerView, defStyleAttr, 0);
