@@ -596,7 +596,7 @@ public class DeviceProfile {
     }
 
 
-    public static final int getMaxContainerWidth(Context context, int availableWidth) {
+    public static final int getContainerPadding(Context context, int availableWidth) {
         Resources res = context.getResources();
 
         int maxSize = res.getDimensionPixelSize(R.dimen.container_max_width);
