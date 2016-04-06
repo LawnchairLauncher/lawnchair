@@ -3873,7 +3873,7 @@ public class Workspace extends PagedView
         return getFirstMatch(new ItemOperator() {
 
             @Override
-            public boolean evaluate(ItemInfo info, View v, View parent) {
+            public boolean evaluate(ItemInfo info, View v) {
                 return info != null && info.id == id;
             }
         });
@@ -3883,7 +3883,7 @@ public class Workspace extends PagedView
         return getFirstMatch(new ItemOperator() {
 
             @Override
-            public boolean evaluate(ItemInfo info, View v, View parent) {
+            public boolean evaluate(ItemInfo info, View v) {
                 return info == tag;
             }
         });
@@ -3893,7 +3893,7 @@ public class Workspace extends PagedView
         return (LauncherAppWidgetHostView) getFirstMatch(new ItemOperator() {
 
             @Override
-            public boolean evaluate(ItemInfo info, View v, View parent) {
+            public boolean evaluate(ItemInfo info, View v) {
                 return (info instanceof LauncherAppWidgetInfo) &&
                         ((LauncherAppWidgetInfo) info).appWidgetId == appWidgetId;
             }
@@ -3904,8 +3904,8 @@ public class Workspace extends PagedView
         final View[] value = new View[1];
         mapOverItems(MAP_NO_RECURSE, new ItemOperator() {
             @Override
-            public boolean evaluate(ItemInfo info, View v, View parent) {
-                if (operator.evaluate(info, v, parent)) {
+            public boolean evaluate(ItemInfo info, View v) {
+                if (operator.evaluate(info, v)) {
                     value[0] = v;
                     return true;
                 }
@@ -3918,7 +3918,7 @@ public class Workspace extends PagedView
     void clearDropTargets() {
         mapOverItems(MAP_NO_RECURSE, new ItemOperator() {
             @Override
-            public boolean evaluate(ItemInfo info, View v, View parent) {
+            public boolean evaluate(ItemInfo info, View v) {
                 if (v instanceof DropTarget) {
                     mDragController.removeDropTarget((DropTarget) v);
                 }
@@ -4014,7 +4014,7 @@ public class Workspace extends PagedView
             for (FolderInfo folder : folderAppsToRemove.keySet()) {
                 ArrayList<ShortcutInfo> appsToRemove = folderAppsToRemove.get(folder);
                 for (ShortcutInfo info : appsToRemove) {
-                    folder.remove(info);
+                    folder.remove(info, false);
                 }
             }
 
@@ -4044,10 +4044,9 @@ public class Workspace extends PagedView
          *
          * @param info info for the shortcut
          * @param view view for the shortcut
-         * @param parent containing folder, or null
          * @return true if done, false to continue the map
          */
-        public boolean evaluate(ItemInfo info, View view, View parent);
+        public boolean evaluate(ItemInfo info, View view);
     }
 
     /**
@@ -4074,12 +4073,12 @@ public class Workspace extends PagedView
                     for (int childIdx = 0; childIdx < childCount; childIdx++) {
                         View child = folderChildren.get(childIdx);
                         info = (ItemInfo) child.getTag();
-                        if (op.evaluate(info, child, folder)) {
+                        if (op.evaluate(info, child)) {
                             return;
                         }
                     }
                 } else {
-                    if (op.evaluate(info, item, null)) {
+                    if (op.evaluate(info, item)) {
                         return;
                     }
                 }
@@ -4088,10 +4087,19 @@ public class Workspace extends PagedView
     }
 
     void updateShortcuts(ArrayList<ShortcutInfo> shortcuts) {
-        final HashSet<ShortcutInfo> updates = new HashSet<ShortcutInfo>(shortcuts);
+        int total  = shortcuts.size();
+        final HashSet<ShortcutInfo> updates = new HashSet<ShortcutInfo>(total);
+        final HashSet<Long> folderIds = new HashSet<>();
+
+        for (int i = 0; i < total; i++) {
+            ShortcutInfo s = shortcuts.get(i);
+            updates.add(s);
+            folderIds.add(s.container);
+        }
+
         mapOverItems(MAP_RECURSE, new ItemOperator() {
             @Override
-            public boolean evaluate(ItemInfo info, View v, View parent) {
+            public boolean evaluate(ItemInfo info, View v) {
                 if (info instanceof ShortcutInfo && v instanceof BubbleTextView &&
                         updates.contains(info)) {
                     ShortcutInfo si = (ShortcutInfo) info;
@@ -4101,10 +4109,18 @@ public class Workspace extends PagedView
                             && ((PreloadIconDrawable) oldIcon).hasNotCompleted();
                     shortcut.applyFromShortcutInfo(si, mIconCache,
                             si.isPromise() != oldPromiseState);
+                }
+                // process all the shortcuts
+                return false;
+            }
+        });
 
-                    if (parent != null) {
-                        parent.invalidate();
-                    }
+        // Update folder icons
+        mapOverItems(MAP_NO_RECURSE, new ItemOperator() {
+            @Override
+            public boolean evaluate(ItemInfo info, View v) {
+                if (info instanceof FolderInfo && folderIds.contains(info.id)) {
+                    ((FolderInfo) info).itemsChanged(false);
                 }
                 // process all the shortcuts
                 return false;
@@ -4122,7 +4138,7 @@ public class Workspace extends PagedView
     public void updateRestoreItems(final HashSet<ItemInfo> updates) {
         mapOverItems(MAP_RECURSE, new ItemOperator() {
             @Override
-            public boolean evaluate(ItemInfo info, View v, View parent) {
+            public boolean evaluate(ItemInfo info, View v) {
                 if (info instanceof ShortcutInfo && v instanceof BubbleTextView
                         && updates.contains(info)) {
                     ((BubbleTextView) v).applyState(false);

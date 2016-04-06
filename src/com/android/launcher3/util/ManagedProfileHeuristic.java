@@ -188,7 +188,7 @@ public class ManagedProfileHeuristic {
                 @Override
                 public void run() {
                     for (ShortcutInfo info : shortcuts) {
-                        workFolder.add(info);
+                        workFolder.add(info, false);
                     }
                 }
             });
@@ -200,7 +200,7 @@ public class ManagedProfileHeuristic {
 
             // Add all shortcuts before adding it to the UI, as an empty folder might get deleted.
             for (ShortcutInfo info : mWorkFolderApps) {
-                workFolder.add(info);
+                workFolder.add(info, false);
             }
 
             // Add the item to home screen and DB. This also generates an item id synchronously.

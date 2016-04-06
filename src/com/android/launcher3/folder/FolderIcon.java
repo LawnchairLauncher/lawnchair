@@ -224,7 +224,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     public void addItem(ShortcutInfo item) {
-        mInfo.add(item);
+        mInfo.add(item, true);
     }
 
     public void onDragEnter(ItemInfo dragInfo) {
@@ -937,8 +937,9 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         }
     }
 
-    public void onItemsChanged() {
-        updateItemDrawingParams(true);
+    @Override
+    public void onItemsChanged(boolean animate) {
+        updateItemDrawingParams(animate);
         invalidate();
         requestLayout();
     }

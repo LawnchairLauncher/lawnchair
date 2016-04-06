@@ -1986,7 +1986,7 @@ public class LauncherModel extends BroadcastReceiver
                                         // Item is in a user folder
                                         FolderInfo folderInfo =
                                                 findOrMakeFolder(sBgFolders, container);
-                                        folderInfo.add(info);
+                                        folderInfo.add(info, false);
                                         break;
                                     }
                                     sBgItemsIdMap.put(info.id, info);
