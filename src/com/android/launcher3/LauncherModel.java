@@ -33,7 +33,6 @@ import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -60,6 +59,7 @@ import com.android.launcher3.util.CursorIconInfo;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.ManagedProfileHeuristic;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.StringFilter;
 import com.android.launcher3.util.Thunk;
 
@@ -1825,6 +1825,7 @@ public class LauncherModel extends BroadcastReceiver
                     long serialNumber;
                     Intent intent;
                     UserHandleCompat user;
+                    String targetPackage;
 
                     while (!mStopped && c.moveToNext()) {
                         try {
@@ -1843,6 +1844,7 @@ public class LauncherModel extends BroadcastReceiver
                                 int promiseType = c.getInt(restoredIndex);
                                 int disabledState = 0;
                                 boolean itemReplaced = false;
+                                targetPackage = null;
                                 if (user == null) {
                                     // User has been deleted remove the item.
                                     itemsToRemove.add(id);
@@ -1856,6 +1858,9 @@ public class LauncherModel extends BroadcastReceiver
                                                 cn.getPackageName(), user);
                                         boolean validComponent = validPkg &&
                                                 launcherApps.isActivityEnabledForProfile(cn, user);
+                                        if (validPkg) {
+                                            targetPackage = cn.getPackageName();
+                                        }
 
                                         if (validComponent) {
                                             if (restored) {
@@ -1863,13 +1868,8 @@ public class LauncherModel extends BroadcastReceiver
                                                 restoredRows.add(id);
                                                 restored = false;
                                             }
-                                            boolean isSuspended = launcherApps.isPackageSuspendedForProfile(
-                                                    cn.getPackageName(), user);
-                                            if (isSuspended) {
-                                                disabledState = ShortcutInfo.FLAG_DISABLED_SUSPENDED;
-                                            }
                                             if (quietMode.get(serialNumber)) {
-                                                disabledState |= ShortcutInfo.FLAG_DISABLED_QUIET_USER;
+                                                disabledState = ShortcutInfo.FLAG_DISABLED_QUIET_USER;
                                             }
                                         } else if (validPkg) {
                                             intent = null;
@@ -1939,9 +1939,8 @@ public class LauncherModel extends BroadcastReceiver
                                                 itemsToRemove.add(id);
                                                 continue;
                                             }
-                                        } else if (launcherApps.isAppEnabled(
-                                                manager, cn.getPackageName(),
-                                                PackageManager.GET_UNINSTALLED_PACKAGES)) {
+                                        } else if (PackageManagerHelper.isAppOnSdcard(
+                                                manager, cn.getPackageName())) {
                                             // Package is present but not available.
                                             allowMissingTarget = true;
                                             disabledState = ShortcutInfo.FLAG_DISABLED_NOT_AVAILABLE;
@@ -1984,7 +1983,7 @@ public class LauncherModel extends BroadcastReceiver
 
                                 if (itemReplaced) {
                                     if (user.equals(UserHandleCompat.myUserHandle())) {
-                                        info = getAppShortcutInfo(manager, intent, user, context, null,
+                                        info = getAppShortcutInfo(intent, user, context, null,
                                                 cursorIconInfo.iconIndex, titleIndex,
                                                 false, useLowResIcon);
                                     } else {
@@ -2007,11 +2006,16 @@ public class LauncherModel extends BroadcastReceiver
                                     }
                                 } else if (itemType ==
                                         LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-                                    info = getAppShortcutInfo(manager, intent, user, context, c,
+                                    info = getAppShortcutInfo(intent, user, context, c,
                                             cursorIconInfo.iconIndex, titleIndex,
                                             allowMissingTarget, useLowResIcon);
                                 } else {
                                     info = getShortcutInfo(c, context, titleIndex, cursorIconInfo);
+
+                                    // Shortcuts are only available on the primary profile
+                                    if (PackageManagerHelper.isAppSuspended(manager, targetPackage)) {
+                                        disabledState |= ShortcutInfo.FLAG_DISABLED_SUSPENDED;
+                                    }
 
                                     // App shortcuts that used to be automatically added to Launcher
                                     // didn't always have the correct intent flags set, so do that
@@ -2040,7 +2044,7 @@ public class LauncherModel extends BroadcastReceiver
                                     if (info.promisedIntent != null) {
                                         info.promisedIntent.putExtra(ItemInfo.EXTRA_PROFILE, serialNumber);
                                     }
-                                    info.isDisabled = disabledState;
+                                    info.isDisabled |= disabledState;
                                     if (isSafeMode && !Utilities.isSystemApp(context, intent)) {
                                         info.isDisabled |= ShortcutInfo.FLAG_DISABLED_SAFEMODE;
                                     }
@@ -2957,10 +2961,7 @@ public class LauncherModel extends BroadcastReceiver
                     packagesUnavailable.clear();
                     for (String pkg : entry.getValue()) {
                         if (!launcherApps.isPackageEnabledForProfile(pkg, user)) {
-                            boolean packageOnSdcard = launcherApps.isAppEnabled(
-                                    manager, pkg, PackageManager.GET_UNINSTALLED_PACKAGES);
-                            if (packageOnSdcard) {
-                                Launcher.addDumpLog(TAG, "Package found on sd-card: " + pkg, true);
+                            if (PackageManagerHelper.isAppOnSdcard(manager, pkg)) {
                                 packagesUnavailable.add(pkg);
                             } else {
                                 Launcher.addDumpLog(TAG, "Package not found: " + pkg, true);
@@ -3447,7 +3448,7 @@ public class LauncherModel extends BroadcastReceiver
      *
      * If c is not null, then it will be used to fill in missing data like the title and icon.
      */
-    public ShortcutInfo getAppShortcutInfo(PackageManager manager, Intent intent,
+    public ShortcutInfo getAppShortcutInfo(Intent intent,
             UserHandleCompat user, Context context, Cursor c, int iconIndex, int titleIndex,
             boolean allowMissingTarget, boolean useLowResIcon) {
         if (user == null) {
@@ -3475,6 +3476,10 @@ public class LauncherModel extends BroadcastReceiver
         if (mIconCache.isDefaultIcon(info.getIcon(mIconCache), user) && c != null) {
             Bitmap icon = Utilities.createIconBitmap(c, iconIndex, context);
             info.setIcon(icon == null ? mIconCache.getDefaultIcon(user) : icon);
+        }
+
+        if (lai != null && PackageManagerHelper.isAppSuspended(lai.getApplicationInfo())) {
+            info.isDisabled = ShortcutInfo.FLAG_DISABLED_SUSPENDED;
         }
 
         // from the db

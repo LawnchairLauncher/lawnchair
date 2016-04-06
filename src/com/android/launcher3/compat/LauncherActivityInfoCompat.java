@@ -24,8 +24,6 @@ import android.graphics.drawable.Drawable;
 
 public abstract class LauncherActivityInfoCompat {
 
-    public static final int FLAG_SUSPENDED = 1<<30;
-
     LauncherActivityInfoCompat() {
     }
 

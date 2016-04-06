@@ -26,6 +26,7 @@ import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.PackageManagerHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -89,7 +90,7 @@ public class AppInfo extends ItemInfo {
         this.componentName = info.getComponentName();
         this.container = ItemInfo.NO_ID;
         flags = initFlags(info);
-        if ((info.getApplicationInfo().flags & LauncherActivityInfoCompat.FLAG_SUSPENDED) != 0) {
+        if (PackageManagerHelper.isAppSuspended(info.getApplicationInfo())) {
             isDisabled |= ShortcutInfo.FLAG_DISABLED_SUSPENDED;
         }
         if (quietModeEnabled) {
