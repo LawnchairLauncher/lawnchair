@@ -29,6 +29,7 @@ import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -43,7 +44,6 @@ import android.widget.TextView;
 
 import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.CellLayout;
-import com.android.launcher3.Hotseat;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
@@ -142,14 +142,19 @@ public class DragLayer extends InsettableFrameLayout {
         mLauncher = launcher;
         mDragController = controller;
 
-        if (!FeatureFlags.LAUNCHER3_DISABLE_PINCH_TO_OVERVIEW) {
-            mPinchListener = new PinchToOverviewListener(mLauncher);
-        }
+        boolean isAccessibilityEnabled = ((AccessibilityManager) mLauncher.getSystemService(
+                Context.ACCESSIBILITY_SERVICE)).isEnabled();
+        onAccessibilityStateChanged(isAccessibilityEnabled);
     }
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         return mDragController.dispatchKeyEvent(event) || super.dispatchKeyEvent(event);
+    }
+
+    public void onAccessibilityStateChanged(boolean isAccessibilityEnabled) {
+        mPinchListener = FeatureFlags.LAUNCHER3_DISABLE_PINCH_TO_OVERVIEW || isAccessibilityEnabled
+                ? null : new PinchToOverviewListener(mLauncher);
     }
 
     public void showOverlayView(View overlayView) {
