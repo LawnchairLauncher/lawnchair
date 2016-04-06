@@ -179,18 +179,21 @@ public class Workspace extends PagedView
     // in all apps or customize mode)
 
     enum State {
-        NORMAL          (SearchDropTargetBar.State.SEARCH_BAR, false),
-        NORMAL_HIDDEN   (SearchDropTargetBar.State.INVISIBLE_TRANSLATED, false),
-        SPRING_LOADED   (SearchDropTargetBar.State.DROP_TARGET, false),
-        OVERVIEW        (SearchDropTargetBar.State.INVISIBLE, true),
-        OVERVIEW_HIDDEN (SearchDropTargetBar.State.INVISIBLE, true);
+        NORMAL          (SearchDropTargetBar.State.SEARCH_BAR, false, false),
+        NORMAL_HIDDEN   (SearchDropTargetBar.State.INVISIBLE_TRANSLATED, false, false),
+        SPRING_LOADED   (SearchDropTargetBar.State.DROP_TARGET, false, true),
+        OVERVIEW        (SearchDropTargetBar.State.INVISIBLE, true, true),
+        OVERVIEW_HIDDEN (SearchDropTargetBar.State.INVISIBLE, true, false);
 
         public final SearchDropTargetBar.State searchDropTargetBarState;
         public final boolean shouldUpdateWidget;
+        public final boolean hasMultipleVisiblePages;
 
-        State(SearchDropTargetBar.State searchBarState, boolean shouldUpdateWidget) {
+        State(SearchDropTargetBar.State searchBarState, boolean shouldUpdateWidget,
+                boolean hasMultipleVisiblePages) {
             searchDropTargetBarState = searchBarState;
             this.shouldUpdateWidget = shouldUpdateWidget;
+            this.hasMultipleVisiblePages = hasMultipleVisiblePages;
         }
     }
 
@@ -1838,7 +1841,7 @@ public class Workspace extends PagedView
         int end = getChildCount() - 1;
 
         range[0] = Math.max(0, Math.min(start, getChildCount() - 1));
-        range[1] = Math.max(0,  end);
+        range[1] = Math.max(0, end);
     }
 
     public void onStartReordering() {
@@ -1921,11 +1924,6 @@ public class Workspace extends PagedView
         // Update the current state
         mState = toState;
         updateAccessibilityFlags();
-        if (mState == State.OVERVIEW || mState == State.SPRING_LOADED) {
-            // Redraw pages, as we might want to draw pages which were not visible.
-            mForceDrawAdjacentPages = true;
-            invalidate(); // This will call dispatchDraw(), which calls getVisiblePages().
-        }
 
         if (shouldNotifyWidgetChange) {
             mLauncher.notifyWidgetProvidersChanged();
@@ -1978,12 +1976,15 @@ public class Workspace extends PagedView
     }
 
     @Override
-    public void onLauncherTransitionPrepare(Launcher l, boolean animated, boolean toWorkspace) {
+    public void onLauncherTransitionPrepare(Launcher l, boolean animated,
+            boolean multiplePagesVisible) {
         mIsSwitchingState = true;
         mTransitionProgress = 0;
 
-        // Invalidate here to ensure that the pages are rendered during the state change transition.
-        invalidate();
+        if (multiplePagesVisible) {
+            mForceDrawAdjacentPages = true;
+        }
+        invalidate(); // This will call dispatchDraw(), which calls getVisiblePages().
 
         updateChildrenLayersEnabled(false);
         hideCustomContentIfNecessary();

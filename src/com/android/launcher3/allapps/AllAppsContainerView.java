@@ -514,7 +514,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     }
 
     @Override
-    public void onLauncherTransitionPrepare(Launcher l, boolean animated, boolean toWorkspace) {
+    public void onLauncherTransitionPrepare(Launcher l, boolean animated,
+            boolean multiplePagesVisible) {
         // Do nothing
     }
 

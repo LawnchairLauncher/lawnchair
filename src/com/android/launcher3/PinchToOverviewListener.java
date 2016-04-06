@@ -108,6 +108,7 @@ public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleG
         mInterpolator = mWorkspace.isInOverviewMode() ? new LogDecelerateInterpolator(100, 0)
                 : new LogAccelerateInterpolator(100, 0);
         mPinchStarted = true;
+        mWorkspace.onLauncherTransitionPrepare(mLauncher, false, true);
         return true;
     }
 
@@ -137,6 +138,7 @@ public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleG
                     mThresholdManager);
         } else {
             mThresholdManager.reset();
+            mWorkspace.onLauncherTransitionEnd(mLauncher, false, true);
         }
         mPinchStarted = false;
         mPinchCanceled = false;
@@ -206,6 +208,4 @@ public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleG
         mPreviousTimeMillis = System.currentTimeMillis();
         return false;
     }
-
-
 }

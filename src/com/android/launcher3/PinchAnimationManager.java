@@ -51,10 +51,10 @@ public class PinchAnimationManager {
     private static final int THRESHOLD_ANIM_DURATION = 150;
     private static final LinearInterpolator INTERPOLATOR = new LinearInterpolator();
 
-    private static int INDEX_PAGE_INDICATOR = 0;
-    private static int INDEX_HOTSEAT = 1;
-    private static int INDEX_OVERVIEW_PANEL_BUTTONS = 2;
-    private static int INDEX_SCRIM = 3;
+    private static final int INDEX_PAGE_INDICATOR = 0;
+    private static final int INDEX_HOTSEAT = 1;
+    private static final int INDEX_OVERVIEW_PANEL_BUTTONS = 2;
+    private static final int INDEX_SCRIM = 3;
 
     private final Animator[] mAnimators = new Animator[4];
 
@@ -93,20 +93,21 @@ public class PinchAnimationManager {
         }
         ValueAnimator animator = ValueAnimator.ofFloat(currentProgress, toProgress);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-               @Override
-               public void onAnimationUpdate(ValueAnimator animation) {
-                   float pinchProgress = (Float) animation.getAnimatedValue();
-                   setAnimationProgress(pinchProgress);
-                   thresholdManager.updateAndAnimatePassedThreshold(pinchProgress,
-                           PinchAnimationManager.this);
-               }
-           }
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float pinchProgress = (Float) animation.getAnimatedValue();
+                    setAnimationProgress(pinchProgress);
+                    thresholdManager.updateAndAnimatePassedThreshold(pinchProgress,
+                            PinchAnimationManager.this);
+                }
+            }
         );
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 mIsAnimating = false;
                 thresholdManager.reset();
+                mWorkspace.onLauncherTransitionEnd(mLauncher, false, true);
             }
         });
         animator.setDuration(duration).start();
@@ -129,10 +130,6 @@ public class PinchAnimationManager {
         mWorkspace.setScaleY(interpolatedScale);
         mWorkspace.setTranslationY(interpolatedTranslationY);
         setOverviewPanelsAlpha(1f - interpolatedProgress, 0);
-
-        // Make sure adjacent pages, except custom content page, are visible while scaling.
-        mWorkspace.setCustomContentVisibility(View.INVISIBLE);
-        mWorkspace.invalidate();
     }
 
     /**
@@ -168,7 +165,7 @@ public class PinchAnimationManager {
             // Passing threshold 3 ends the pinch and snaps to the new state.
             if (startState == OVERVIEW && goingTowards == NORMAL) {
                 mLauncher.showWorkspace(true);
-                mWorkspace.snapToPage(mWorkspace.getPageNearestToCenterOfScreen());
+                mWorkspace.snapToPage(mWorkspace.getCurrentPage());
             } else if (startState == NORMAL && goingTowards == OVERVIEW) {
                 mLauncher.showOverviewMode(true);
             }
