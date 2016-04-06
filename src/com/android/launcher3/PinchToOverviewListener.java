@@ -33,6 +33,11 @@ import android.view.ScaleGestureDetector;
 public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
     private static final float OVERVIEW_PROGRESS = 0f;
     private static final float WORKSPACE_PROGRESS = 1f;
+    /**
+     * The velocity threshold at which a pinch will be completed instead of canceled,
+     * even if the first threshold has not been passed. Measured in progress / millisecond
+     */
+    private static final float FLING_VELOCITY = 0.003f;
 
     private ScaleGestureDetector mPinchDetector;
     private Launcher mLauncher;
@@ -110,17 +115,20 @@ public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleG
     public void onScaleEnd(ScaleGestureDetector detector) {
         super.onScaleEnd(detector);
 
+        float progressVelocity = mProgressDelta / mTimeDelta;
         float passedThreshold = mThresholdManager.getPassedThreshold();
+        boolean isFling = mWorkspace.isInOverviewMode() && progressVelocity >= FLING_VELOCITY
+                || !mWorkspace.isInOverviewMode() && progressVelocity <= -FLING_VELOCITY;
+        boolean shouldCancelPinch = !isFling && passedThreshold < PinchThresholdManager.THRESHOLD_ONE;
         // If we are going towards overview, mPreviousProgress is how much further we need to
         // go, since it is going from 1 to 0. If we are going to workspace, we want
         // 1 - mPreviousProgress.
         float remainingProgress = mPreviousProgress;
-        if (mWorkspace.isInOverviewMode() || passedThreshold < PinchThresholdManager.THRESHOLD_ONE) {
+        if (mWorkspace.isInOverviewMode() || shouldCancelPinch) {
             remainingProgress = 1f - mPreviousProgress;
         }
-        int duration = computeDuration(remainingProgress, mProgressDelta, mTimeDelta);
-
-        if (passedThreshold < PinchThresholdManager.THRESHOLD_ONE) {
+        int duration = computeDuration(remainingProgress, progressVelocity);
+        if (shouldCancelPinch) {
             cancelPinch(mPreviousProgress, duration);
         } else if (passedThreshold < PinchThresholdManager.THRESHOLD_THREE) {
             float toProgress = mWorkspace.isInOverviewMode() ?
@@ -138,8 +146,8 @@ public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleG
      * Compute the amount of time required to complete the transition based on the current pinch
      * speed. If this time is too long, instead return the normal duration, ignoring the speed.
      */
-    private int computeDuration(float remainingProgress, float progressDelta, long timeDelta) {
-        float progressSpeed = Math.abs(progressDelta) / timeDelta;
+    private int computeDuration(float remainingProgress, float progressVelocity) {
+        float progressSpeed = Math.abs(progressVelocity);
         int remainingMillis = (int) (remainingProgress / progressSpeed);
         return Math.min(remainingMillis, mAnimationManager.getNormalOverviewTransitionDuration());
     }
