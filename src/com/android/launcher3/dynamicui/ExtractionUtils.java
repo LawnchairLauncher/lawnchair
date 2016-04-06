@@ -22,7 +22,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 import com.android.launcher3.Utilities;
-import com.android.wallpaperpicker.common.WallpaperManagerCompat;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -33,6 +32,8 @@ import java.lang.reflect.Method;
 public class ExtractionUtils {
     public static final String EXTRACTED_COLORS_PREFERENCE_KEY = "pref_extractedColors";
     public static final String WALLPAPER_ID_PREFERENCE_KEY = "pref_wallpaperId";
+
+    private static final int FLAG_SET_SYSTEM = 1 << 0; // TODO: use WallpaperManager.FLAG_SET_SYSTEM
 
     /**
      * Extract colors in the :wallpaper-chooser process, if the wallpaper id has changed.
@@ -66,8 +67,7 @@ public class ExtractionUtils {
         // TODO: use WallpaperManager#getWallpaperId(WallpaperManager.FLAG_SET_SYSTEM) directly.
         try {
             Method getWallpaperId = WallpaperManager.class.getMethod("getWallpaperId", int.class);
-            return (int) getWallpaperId.invoke(wallpaperManager,
-                    WallpaperManagerCompat.FLAG_SET_SYSTEM);
+            return (int) getWallpaperId.invoke(wallpaperManager, FLAG_SET_SYSTEM);
         } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
             return -1;
         }
