@@ -184,7 +184,6 @@ public class LauncherModel extends BroadcastReceiver
                               boolean forceAnimateIcons);
         public void bindScreens(ArrayList<Long> orderedScreenIds);
         public void bindAddScreens(ArrayList<Long> orderedScreenIds);
-        public void bindFolders(LongArrayMap<FolderInfo> folders);
         public void finishBindingItems();
         public void bindAppWidget(LauncherAppWidgetInfo info);
         public void bindAllApplications(ArrayList<AppInfo> apps);
@@ -2349,29 +2348,6 @@ public class LauncherModel extends BroadcastReceiver
             }
         }
 
-        /** Filters the set of folders which are on the specified screen. */
-        private void filterCurrentFolders(long currentScreenId,
-                LongArrayMap<ItemInfo> itemsIdMap,
-                LongArrayMap<FolderInfo> folders,
-                LongArrayMap<FolderInfo> currentScreenFolders,
-                LongArrayMap<FolderInfo> otherScreenFolders) {
-
-            int total = folders.size();
-            for (int i = 0; i < total; i++) {
-                long id = folders.keyAt(i);
-                FolderInfo folder = folders.valueAt(i);
-
-                ItemInfo info = itemsIdMap.get(id);
-                if (info == null || folder == null) continue;
-                if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
-                        info.screenId == currentScreenId) {
-                    currentScreenFolders.put(id, folder);
-                } else {
-                    otherScreenFolders.put(id, folder);
-                }
-            }
-        }
-
         /** Sorts the set of items by hotseat, workspace (spatially from top to bottom, left to
          * right) */
         private void sortWorkspaceItemsSpatially(ArrayList<ItemInfo> workspaceItems) {
@@ -2428,7 +2404,6 @@ public class LauncherModel extends BroadcastReceiver
         private void bindWorkspaceItems(final Callbacks oldCallbacks,
                 final ArrayList<ItemInfo> workspaceItems,
                 final ArrayList<LauncherAppWidgetInfo> appWidgets,
-                final LongArrayMap<FolderInfo> folders,
                 final Executor executor) {
 
             // Bind the workspace items
@@ -2443,19 +2418,6 @@ public class LauncherModel extends BroadcastReceiver
                         if (callbacks != null) {
                             callbacks.bindItems(workspaceItems, start, start+chunkSize,
                                     false);
-                        }
-                    }
-                };
-                executor.execute(r);
-            }
-
-            // Bind the folders
-            if (!folders.isEmpty()) {
-                final Runnable r = new Runnable() {
-                    public void run() {
-                        Callbacks callbacks = tryGetCallbacks(oldCallbacks);
-                        if (callbacks != null) {
-                            callbacks.bindFolders(folders);
                         }
                     }
                 };
@@ -2495,21 +2457,14 @@ public class LauncherModel extends BroadcastReceiver
             }
 
             // Save a copy of all the bg-thread collections
-            ArrayList<ItemInfo> workspaceItems = new ArrayList<ItemInfo>();
-            ArrayList<LauncherAppWidgetInfo> appWidgets =
-                    new ArrayList<LauncherAppWidgetInfo>();
-            ArrayList<Long> orderedScreenIds = new ArrayList<Long>();
-
-            final LongArrayMap<FolderInfo> folders;
-            final LongArrayMap<ItemInfo> itemsIdMap;
+            ArrayList<ItemInfo> workspaceItems = new ArrayList<>();
+            ArrayList<LauncherAppWidgetInfo> appWidgets = new ArrayList<>();
+            ArrayList<Long> orderedScreenIds = new ArrayList<>();
 
             synchronized (sBgLock) {
                 workspaceItems.addAll(sBgWorkspaceItems);
                 appWidgets.addAll(sBgAppWidgets);
                 orderedScreenIds.addAll(sBgWorkspaceScreens);
-
-                folders = sBgFolders.clone();
-                itemsIdMap = sBgItemsIdMap.clone();
             }
 
             final boolean isLoadingSynchronously =
@@ -2529,21 +2484,15 @@ public class LauncherModel extends BroadcastReceiver
             unbindWorkspaceItemsOnMainThread();
 
             // Separate the items that are on the current screen, and all the other remaining items
-            ArrayList<ItemInfo> currentWorkspaceItems = new ArrayList<ItemInfo>();
-            ArrayList<ItemInfo> otherWorkspaceItems = new ArrayList<ItemInfo>();
-            ArrayList<LauncherAppWidgetInfo> currentAppWidgets =
-                    new ArrayList<LauncherAppWidgetInfo>();
-            ArrayList<LauncherAppWidgetInfo> otherAppWidgets =
-                    new ArrayList<LauncherAppWidgetInfo>();
-            LongArrayMap<FolderInfo> currentFolders = new LongArrayMap<>();
-            LongArrayMap<FolderInfo> otherFolders = new LongArrayMap<>();
+            ArrayList<ItemInfo> currentWorkspaceItems = new ArrayList<>();
+            ArrayList<ItemInfo> otherWorkspaceItems = new ArrayList<>();
+            ArrayList<LauncherAppWidgetInfo> currentAppWidgets = new ArrayList<>();
+            ArrayList<LauncherAppWidgetInfo> otherAppWidgets = new ArrayList<>();
 
             filterCurrentWorkspaceItems(currentScreenId, workspaceItems, currentWorkspaceItems,
                     otherWorkspaceItems);
             filterCurrentAppWidgets(currentScreenId, appWidgets, currentAppWidgets,
                     otherAppWidgets);
-            filterCurrentFolders(currentScreenId, itemsIdMap, folders, currentFolders,
-                    otherFolders);
             sortWorkspaceItemsSpatially(currentWorkspaceItems);
             sortWorkspaceItemsSpatially(otherWorkspaceItems);
 
@@ -2563,8 +2512,7 @@ public class LauncherModel extends BroadcastReceiver
 
             Executor mainExecutor = new DeferredMainThreadExecutor();
             // Load items on the current page.
-            bindWorkspaceItems(oldCallbacks, currentWorkspaceItems, currentAppWidgets,
-                    currentFolders, mainExecutor);
+            bindWorkspaceItems(oldCallbacks, currentWorkspaceItems, currentAppWidgets, mainExecutor);
 
             // In case of isLoadingSynchronously, only bind the first screen, and defer binding the
             // remaining screens after first onDraw is called. This ensures that the first screen
@@ -2573,8 +2521,7 @@ public class LauncherModel extends BroadcastReceiver
             final Executor deferredExecutor = isLoadingSynchronously ?
                     new ViewOnDrawExecutor(mHandler) : mainExecutor;
 
-            bindWorkspaceItems(oldCallbacks, otherWorkspaceItems, otherAppWidgets,
-                    otherFolders, deferredExecutor);
+            bindWorkspaceItems(oldCallbacks, otherWorkspaceItems, otherAppWidgets, deferredExecutor);
 
             // Tell the workspace that we're done binding items
             r = new Runnable() {

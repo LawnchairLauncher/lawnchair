@@ -288,8 +288,6 @@ public class Launcher extends Activity
 
     private LauncherClings mClings;
 
-    private static LongArrayMap<FolderInfo> sFolders = new LongArrayMap<>();
-
     private View.OnTouchListener mHapticFeedbackTouchListener;
 
     // Related to the auto-advancing of widgets
@@ -2349,7 +2347,6 @@ public class Launcher extends Activity
         // Update the model
         LauncherModel.addItemToDatabase(Launcher.this, folderInfo, container, screenId,
                 cellX, cellY);
-        sFolders.put(folderInfo.id, folderInfo);
 
         // Create the view
         FolderIcon newFolder =
@@ -2372,9 +2369,9 @@ public class Launcher extends Activity
     public boolean removeItem(View v, ItemInfo itemInfo, boolean deleteFromDb) {
         if (itemInfo instanceof ShortcutInfo) {
             // Remove the shortcut from the folder before removing it from launcher
-            FolderInfo folderInfo = sFolders.get(itemInfo.container);
-            if (folderInfo != null) {
-                folderInfo.remove((ShortcutInfo) itemInfo);
+            View folderIcon = mWorkspace.getHomescreenIconByItemId(itemInfo.container);
+            if (folderIcon instanceof FolderIcon) {
+                ((FolderInfo) folderIcon.getTag()).remove((ShortcutInfo) itemInfo);
             } else {
                 mWorkspace.removeWorkspaceItem(v);
             }
@@ -2383,7 +2380,6 @@ public class Launcher extends Activity
             }
         } else if (itemInfo instanceof FolderInfo) {
             final FolderInfo folderInfo = (FolderInfo) itemInfo;
-            unbindFolder(folderInfo);
             mWorkspace.removeWorkspaceItem(v);
             if (deleteFromDb) {
                 LauncherModel.deleteFolderAndContentsFromDatabase(this, folderInfo);
@@ -2401,13 +2397,6 @@ public class Launcher extends Activity
             return false;
         }
         return true;
-    }
-
-    /**
-     * Unbinds any launcher references to the folder.
-     */
-    private void unbindFolder(FolderInfo folder) {
-        sFolders.remove(folder.id);
     }
 
     /**
@@ -3905,21 +3894,6 @@ public class Launcher extends Activity
         workspace.requestLayout();
     }
 
-    /**
-     * Implementation of the method from LauncherModel.Callbacks.
-     */
-    public void bindFolders(final LongArrayMap<FolderInfo> folders) {
-        Runnable r = new Runnable() {
-            public void run() {
-                bindFolders(folders);
-            }
-        };
-        if (waitUntilResume(r)) {
-            return;
-        }
-        sFolders = folders.clone();
-    }
-
     private void bindSafeModeWidget(LauncherAppWidgetInfo item) {
         PendingAppWidgetHostView view = new PendingAppWidgetHostView(this, item, true);
         view.updateIcon(mIconCache);
@@ -4698,7 +4672,6 @@ public class Launcher extends Activity
         Log.d(TAG, "mWorkspaceLoading=" + mWorkspaceLoading);
         Log.d(TAG, "mRestoring=" + mRestoring);
         Log.d(TAG, "mWaitingForResult=" + mWaitingForResult);
-        Log.d(TAG, "sFolders.size=" + sFolders.size());
         mModel.dumpState();
         // TODO(hyunyoungs): add mWidgetsView.dumpState(); or mWidgetsModel.dumpState();
 
