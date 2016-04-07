@@ -28,7 +28,7 @@ import java.nio.ByteBuffer;
 public class IconNormalizer {
 
     // Ratio of icon visible area to full icon size for a square shaped icon
-    private static final float MAX_SQUARE_AREA_FACTOR = 359.0f / 576;
+    private static final float MAX_SQUARE_AREA_FACTOR = 375.0f / 576;
     // Ratio of icon visible area to full icon size for a circular shaped icon
     private static final float MAX_CIRCLE_AREA_FACTOR = 380.0f / 576;
 
