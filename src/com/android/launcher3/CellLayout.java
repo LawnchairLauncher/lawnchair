@@ -113,7 +113,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     private float mBackgroundAlpha;
 
-    private static final int BACKGROUND_ACTIVATE_DURATION = 120;
+    private static final int BACKGROUND_ACTIVATE_DURATION =
+            FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND ? 120 : 0;
     private final TransitionDrawable mBackground;
 
     // These values allow a fixed measurement to be set on the CellLayout.
