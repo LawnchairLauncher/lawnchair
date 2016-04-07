@@ -117,6 +117,18 @@ public final class Utilities {
     public static final boolean ATLEAST_JB_MR2 =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2;
 
+    public static boolean isNycOrAbove() {
+        // TODO: Replace using reflection with looking at the API version once
+        // Build.VERSION.SDK_INT gets bumped to 24. b/22942492.
+        try {
+            View.class.getDeclaredField("DRAG_FLAG_OPAQUE");
+            // View.DRAG_FLAG_OPAQUE doesn't exist in M-release, so it's an indication of N+.
+            return true;
+        } catch (NoSuchFieldException e) {
+            return false;
+        }
+    }
+
     // These values are same as that in {@link AsyncTask}.
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
     private static final int CORE_POOL_SIZE = CPU_COUNT + 1;
