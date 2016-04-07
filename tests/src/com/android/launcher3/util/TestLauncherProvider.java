@@ -2,6 +2,7 @@ package com.android.launcher3.util;
 
 import android.content.Context;
 
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherProvider;
 
 /**
@@ -17,7 +18,7 @@ public class TestLauncherProvider extends LauncherProvider {
     @Override
     protected synchronized void createDbIfNotExists() {
         if (mOpenHelper == null) {
-            mOpenHelper = new MyDatabaseHelper(getContext(), this);
+            mOpenHelper = new MyDatabaseHelper(getContext());
         }
     }
 
@@ -25,8 +26,8 @@ public class TestLauncherProvider extends LauncherProvider {
     protected void notifyListeners() { }
 
     private static class MyDatabaseHelper extends DatabaseHelper {
-        public MyDatabaseHelper(Context context, LauncherProvider provider) {
-            super(context, provider, null);
+        public MyDatabaseHelper(Context context) {
+            super(context, null);
         }
 
         @Override
