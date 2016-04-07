@@ -958,13 +958,15 @@ public class GridSizeMigrationTask {
                 // The following list defines all possible grid sizes (and intermediate steps
                 // during migration). Note that at each step, dx <= 1 && dy <= 1. Any grid size
                 // which is not in this list is not migrated.
+                // Note that the InvariantDeviceProfile defines (rows, cols) but the Points
+                // specified here are defined as (cols, rows).
                 ArrayList<Point> gridSizeSteps = new ArrayList<>();
-                gridSizeSteps.add(new Point(2, 3));
+                gridSizeSteps.add(new Point(3, 2));
                 gridSizeSteps.add(new Point(3, 3));
-                gridSizeSteps.add(new Point(3, 4));
+                gridSizeSteps.add(new Point(4, 3));
                 gridSizeSteps.add(new Point(4, 4));
                 gridSizeSteps.add(new Point(5, 5));
-                gridSizeSteps.add(new Point(5, 6));
+                gridSizeSteps.add(new Point(6, 5));
                 gridSizeSteps.add(new Point(6, 6));
                 gridSizeSteps.add(new Point(7, 7));
 
