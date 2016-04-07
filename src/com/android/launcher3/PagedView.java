@@ -1565,6 +1565,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             } else if (getCurrentPage() > mTempVisiblePagesRange[1]) {
                 setCurrentPage(mTempVisiblePagesRange[1]);
             }
+        } else {
+            setCurrentPage(getPageNearestToCenterOfScreen());
         }
 
         setEnableOverscroll(!freeScroll);
