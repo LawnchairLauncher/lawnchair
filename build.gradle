@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:+'
+        classpath 'com.android.tools.build:gradle:1.5.0'
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.7.0'
     }
 }
