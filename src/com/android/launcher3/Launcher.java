@@ -2727,7 +2727,7 @@ public class Launcher extends Activity
         FolderIcon folderIcon = (FolderIcon) v;
         if (!folderIcon.getFolderInfo().opened && !folderIcon.getFolder().isDestroyed()) {
             // Open the requested folder
-            openFolder(folderIcon, true);
+            openFolder(folderIcon);
         }
 
         if (mLauncherCallbacks != null) {
@@ -3002,7 +3002,7 @@ public class Launcher extends Activity
         }
     }
 
-    private void growAndFadeOutFolderIcon(FolderIcon fi, boolean animate) {
+    private void growAndFadeOutFolderIcon(FolderIcon fi) {
         if (fi == null) return;
         FolderInfo info = (FolderInfo) fi.getTag();
         if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
@@ -3022,9 +3022,6 @@ public class Launcher extends Activity
         }
         oa.setDuration(getResources().getInteger(R.integer.config_folderExpandDuration));
         oa.start();
-        if (!animate) {
-            oa.end();
-        }
     }
 
     private void shrinkAndFadeInFolderIcon(final FolderIcon fi, boolean animate) {
@@ -3064,8 +3061,7 @@ public class Launcher extends Activity
      *
      * @param folderIcon The FolderIcon describing the folder to open.
      */
-    public void openFolder(FolderIcon folderIcon, boolean animate) {
-        animate &= !Utilities.isPowerSaverOn(this);
+    public void openFolder(FolderIcon folderIcon) {
 
         Folder folder = folderIcon.getFolder();
         Folder openFolder = mWorkspace != null ? mWorkspace.getOpenFolder() : null;
@@ -3090,12 +3086,9 @@ public class Launcher extends Activity
             Log.w(TAG, "Opening folder (" + folder + ") which already has a parent (" +
                     folder.getParent() + ").");
         }
-        if (animate) {
-            folder.animateOpen();
-        } else {
-            folder.open();
-        }
-        growAndFadeOutFolderIcon(folderIcon, animate);
+        folder.animateOpen();
+
+        growAndFadeOutFolderIcon(folderIcon);
 
         // Notify the accessibility manager that this folder "window" has appeared and occluded
         // the workspace items
