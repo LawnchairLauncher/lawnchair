@@ -21,6 +21,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.WallpaperManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -85,6 +86,18 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
     // A weak-set of reusable bitmaps
     @Thunk Set<Bitmap> mReusableBitmaps =
             Collections.newSetFromMap(new WeakHashMap<Bitmap, Boolean>());
+
+    private final DialogInterface.OnCancelListener mOnDialogCancelListener =
+            new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    getActionBar().show();
+                    View wallpaperStrip = findViewById(R.id.wallpaper_strip);
+                    if (wallpaperStrip != null) {
+                        wallpaperStrip.setVisibility(View.VISIBLE);
+                    }
+                }
+            };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -242,6 +255,10 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
         }
     }
 
+    public DialogInterface.OnCancelListener getOnDialogCancelListener() {
+        return mOnDialogCancelListener;
+    }
+
     protected void onLoadRequestComplete(LoadRequest req, boolean success) {
         mCurrentLoadRequest = null;
         if (success) {
@@ -326,7 +343,7 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
         };
         cropTask.setOnEndRunnable(onEndCrop);
         cropTask.setNoCrop(true);
-        cropTask.execute();
+        NycWallpaperUtils.executeCropTaskAfterPrompt(this, cropTask, getOnDialogCancelListener());
     }
 
     protected void cropImageAndSetWallpaper(Resources res, int resId,
@@ -335,8 +352,7 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
         // this device
         int rotation = BitmapUtils.getRotationFromExif(res, resId);
         Point inSize = mCropView.getSourceDimensions();
-        Point outSize = WallpaperUtils.getDefaultWallpaperSize(getResources(),
-                getWindowManager());
+        Point outSize = WallpaperUtils.getDefaultWallpaperSize(getResources(), getWindowManager());
         RectF crop = Utils.getMaxCropRect(
                 inSize.x, inSize.y, outSize.x, outSize.y, false);
         BitmapCropTask.OnEndCropHandler onEndCrop = new BitmapCropTask.OnEndCropHandler() {
@@ -355,7 +371,7 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
         };
         BitmapCropTask cropTask = new BitmapCropTask(getContext(), res, resId,
                 crop, rotation, outSize.x, outSize.y, true, false, onEndCrop);
-        cropTask.execute();
+        NycWallpaperUtils.executeCropTaskAfterPrompt(this, cropTask, getOnDialogCancelListener());
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)

@@ -849,7 +849,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                 (int) rotatedBounds[0], (int) rotatedBounds[1], width, height, leftAligned);
         cropTask.setCropBounds(cropRect);
 
-        if (cropTask.cropBitmap()) {
+        if (cropTask.cropBitmap(NycWallpaperUtils.FLAG_SET_SYSTEM)) {
             return cropTask.getCroppedBitmap();
         } else {
             return null;
