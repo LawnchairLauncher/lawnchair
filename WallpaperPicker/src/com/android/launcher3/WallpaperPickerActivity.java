@@ -83,7 +83,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class WallpaperPickerActivity extends WallpaperCropActivity {
-    static final String TAG = "Launcher.WallpaperPickerActivity";
+    static final String TAG = "WallpaperPickerActivity";
 
     public static final int IMAGE_PICK = 5;
     public static final int PICK_WALLPAPER_THIRD_PARTY_ACTIVITY = 6;
@@ -322,7 +322,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                 WallpaperManager.getInstance(a.getContext()).clear();
                 a.setResult(Activity.RESULT_OK);
             } catch (IOException e) {
-                Log.w("Setting wallpaper to default threw exception", e);
+                Log.w(TAG, "Setting wallpaper to default threw exception", e);
             }
             a.finish();
         }
@@ -442,10 +442,10 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                     }
                     return;
                 }
-                setWallpaperButtonEnabled(true);
                 WallpaperTileInfo info = (WallpaperTileInfo) v.getTag();
                 if (info.isSelectable() && v.getVisibility() == View.VISIBLE) {
                     selectTile(v);
+                    setWallpaperButtonEnabled(true);
                 }
                 info.onClick(WallpaperPickerActivity.this);
             }
@@ -561,7 +561,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // Ensure that a tile is slelected and loaded.
+                        // Ensure that a tile is selected and loaded.
                         if (mSelectedTile != null && mCropView.getTileSource() != null) {
                             // Prevent user from selecting any new tile.
                             mWallpaperStrip.setVisibility(View.GONE);
@@ -570,9 +570,9 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                             WallpaperTileInfo info = (WallpaperTileInfo) mSelectedTile.getTag();
                             info.onSave(WallpaperPickerActivity.this);
                         } else {
-                            // no tile was selected, so we just finish the activity and go back
-                            setResult(Activity.RESULT_OK);
-                            finish();
+                            // This case shouldn't be possible, since "Set wallpaper" is disabled
+                            // until user clicks on a title.
+                            Log.w(TAG, "\"Set wallpaper\" was clicked when no tile was selected");
                         }
                     }
                 });
