@@ -44,6 +44,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.Pair;
 import android.view.ActionMode;
@@ -77,6 +78,8 @@ import com.android.launcher3.util.Thunk;
 import com.android.photos.BitmapRegionTileSource;
 import com.android.photos.BitmapRegionTileSource.BitmapSource;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -317,15 +320,75 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             a.onLoadRequestComplete(req, true);
         }
         @Override
-        public void onSave(WallpaperPickerActivity a) {
-            try {
-                WallpaperManager.getInstance(a.getContext()).clear();
-                a.setResult(Activity.RESULT_OK);
-            } catch (IOException e) {
-                Log.w(TAG, "Setting wallpaper to default threw exception", e);
+        public void onSave(final WallpaperPickerActivity a) {
+            if (!Utilities.isNycOrAbove()) {
+                try {
+                    WallpaperManager.getInstance(a.getContext()).clear();
+                    a.setResult(Activity.RESULT_OK);
+                } catch (IOException e) {
+                    Log.e(TAG, "Setting wallpaper to default threw exception", e);
+                } catch (SecurityException e) {
+                    Log.w(TAG, "Setting wallpaper to default threw exception", e);
+                    // In this case, clearing worked; the exception was thrown afterwards.
+                    a.setResult(Activity.RESULT_OK);
+                }
+                a.finish();
+            } else {
+                BitmapCropTask.OnEndCropHandler onEndCropHandler
+                        = new BitmapCropTask.OnEndCropHandler() {
+                    @Override
+                    public void run(boolean cropSucceeded) {
+                        if (cropSucceeded) {
+                            a.setResult(Activity.RESULT_OK);
+                        }
+                        a.finish();
+                    }
+                };
+                BitmapCropTask setWallpaperTask = getDefaultWallpaperCropTask(a, onEndCropHandler);
+
+                NycWallpaperUtils.executeCropTaskAfterPrompt(a, setWallpaperTask,
+                        a.getOnDialogCancelListener());
             }
-            a.finish();
         }
+
+        @NonNull
+        private BitmapCropTask getDefaultWallpaperCropTask(final WallpaperPickerActivity a,
+                final BitmapCropTask.OnEndCropHandler onEndCropHandler) {
+            return new BitmapCropTask(a, null, null, -1, -1, -1,
+                    true, false, onEndCropHandler) {
+                @Override
+                protected Boolean doInBackground(Integer... params) {
+                    int whichWallpaper = params[0];
+                    boolean succeeded = true;
+                    try {
+                        if (whichWallpaper == NycWallpaperUtils.FLAG_SET_LOCK) {
+                            Bitmap defaultWallpaper = ((BitmapDrawable) WallpaperManager
+                                    .getInstance(a.getApplicationContext()).getBuiltInDrawable())
+                                    .getBitmap();
+                            ByteArrayOutputStream tmpOut = new ByteArrayOutputStream(2048);
+                            if (defaultWallpaper.compress(Bitmap.CompressFormat.PNG, 100,
+                                    tmpOut)) {
+                                byte[] outByteArray = tmpOut.toByteArray();
+                                NycWallpaperUtils.setStream(a.getApplicationContext(),
+                                        new ByteArrayInputStream(outByteArray), null, true,
+                                        NycWallpaperUtils.FLAG_SET_LOCK);
+                            }
+                        } else {
+                            NycWallpaperUtils.clear(a, whichWallpaper);
+                        }
+                    } catch (IOException e) {
+                        Log.e(TAG, "Setting wallpaper to default threw exception", e);
+                        succeeded = false;
+                    } catch (SecurityException e) {
+                        Log.w(TAG, "Setting wallpaper to default threw exception", e);
+                        // In this case, clearing worked; the exception was thrown afterwards.
+                        succeeded = true;
+                    }
+                    return succeeded;
+                }
+            };
+        }
+
         @Override
         public boolean isSelectable() {
             return true;

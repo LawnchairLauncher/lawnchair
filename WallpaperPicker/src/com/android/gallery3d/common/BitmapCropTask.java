@@ -73,15 +73,6 @@ public class BitmapCropTask extends AsyncTask<Integer, Void, Boolean> {
     BitmapCropTask.OnBitmapCroppedHandler mOnBitmapCroppedHandler;
     boolean mNoCrop;
 
-    public BitmapCropTask(Context c, String filePath,
-            RectF cropBounds, int rotation, int outWidth, int outHeight,
-            boolean setWallpaper, boolean saveCroppedBitmap, OnEndCropHandler onEndCropHandler) {
-        mContext = c;
-        mInFilePath = filePath;
-        init(cropBounds, rotation,
-                outWidth, outHeight, setWallpaper, saveCroppedBitmap, onEndCropHandler);
-    }
-
     public BitmapCropTask(byte[] imageBytes,
             RectF cropBounds, int rotation, int outWidth, int outHeight,
             boolean setWallpaper, boolean saveCroppedBitmap, OnEndCropHandler onEndCropHandler) {
