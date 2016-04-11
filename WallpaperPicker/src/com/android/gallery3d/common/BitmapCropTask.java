@@ -33,7 +33,9 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.launcher3.NycWallpaperUtils;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -42,7 +44,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class BitmapCropTask extends AsyncTask<Void, Void, Boolean> {
+public class BitmapCropTask extends AsyncTask<Integer, Void, Boolean> {
 
     public interface OnBitmapCroppedHandler {
         public void onBitmapCropped(byte[] imageBytes);
@@ -175,7 +177,7 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Boolean> {
     public Bitmap getCroppedBitmap() {
         return mCroppedBitmap;
     }
-    public boolean cropBitmap() {
+    public boolean cropBitmap(int whichWallpaper) {
         boolean failure = false;
 
 
@@ -189,7 +191,11 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Boolean> {
             try {
                 InputStream is = regenerateInputStream();
                 if (is != null) {
-                    wallpaperManager.setStream(is);
+                    if (!Utilities.isNycOrAbove()) {
+                        wallpaperManager.setStream(is);
+                    } else {
+                        NycWallpaperUtils.setStream(mContext, is, null, true, whichWallpaper);
+                    }
                     Utils.closeSilently(is);
                 }
             } catch (IOException e) {
@@ -375,7 +381,13 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Boolean> {
                 if (mSetWallpaper && wallpaperManager != null) {
                     try {
                         byte[] outByteArray = tmpOut.toByteArray();
-                        wallpaperManager.setStream(new ByteArrayInputStream(outByteArray));
+                        if (!Utilities.isNycOrAbove()) {
+                            wallpaperManager.setStream(new ByteArrayInputStream(outByteArray));
+                        } else {
+                            NycWallpaperUtils.setStream(mContext,
+                                    new ByteArrayInputStream(outByteArray), null, true,
+                                    whichWallpaper);
+                        }
                         if (mOnBitmapCroppedHandler != null) {
                             mOnBitmapCroppedHandler.onBitmapCropped(outByteArray);
                         }
@@ -393,8 +405,8 @@ public class BitmapCropTask extends AsyncTask<Void, Void, Boolean> {
     }
 
     @Override
-    protected Boolean doInBackground(Void... params) {
-        return cropBitmap();
+    protected Boolean doInBackground(Integer... params) {
+        return cropBitmap(params.length == 0 ? NycWallpaperUtils.FLAG_SET_SYSTEM : params[0]);
     }
 
     @Override
