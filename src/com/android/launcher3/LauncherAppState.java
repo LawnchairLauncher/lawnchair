@@ -106,6 +106,9 @@ public class LauncherAppState {
         sContext.registerReceiver(mModel, filter);
         UserManagerCompat.getInstance(sContext).enableAndResetCache();
         new ConfigMonitor(sContext).register();
+
+        sContext.registerReceiver(
+                new WallpaperChangedReceiver(), new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED));
     }
 
     /**
