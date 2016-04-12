@@ -24,12 +24,16 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
+import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
+import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.CollectionItemInfoCompat;
 import android.support.v4.view.accessibility.AccessibilityRecordCompat;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.net.Uri;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.Recycler;
+import android.support.v7.widget.RecyclerView.State;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,10 +44,8 @@ import android.widget.TextView;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.util.Thunk;
 
 import java.util.HashMap;
 import java.util.List;
@@ -103,18 +105,67 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             // adapter views
             final AccessibilityRecordCompat record = AccessibilityEventCompat
                     .asRecord(event);
+
+            // count the number of SECTION_BREAK_VIEW_TYPE that is wrongfully
+            // initialized as a node (also a row) for talk back.
+            int numEmptyNode = getEmptyRowForAccessibility(-1 /* no view type */);
+            record.setFromIndex(event.getFromIndex() - numEmptyNode);
+            record.setToIndex(event.getToIndex() - numEmptyNode);
             record.setItemCount(mApps.getNumFilteredApps());
+        }
+
+        @Override
+        public void onInitializeAccessibilityNodeInfoForItem(Recycler recycler,
+                State state, View host, AccessibilityNodeInfoCompat info) {
+
+            int viewType = getItemViewType(host);
+            // Only initialize on node that is meaningful. Subtract empty row count.
+            if (viewType == ICON_VIEW_TYPE || viewType == PREDICTION_ICON_VIEW_TYPE) {
+                super.onInitializeAccessibilityNodeInfoForItem(recycler, state, host, info);
+                CollectionItemInfoCompat itemInfo = info.getCollectionItemInfo();
+                final CollectionItemInfoCompat dstItemInfo = CollectionItemInfoCompat.obtain(
+                        itemInfo.getRowIndex() - getEmptyRowForAccessibility(viewType),
+                        itemInfo.getRowSpan(),
+                        itemInfo.getColumnIndex(),
+                        itemInfo.getColumnSpan(),
+                        itemInfo.isHeading(),
+                        itemInfo.isSelected());
+                info.setCollectionItemInfo(dstItemInfo);
+            }
         }
 
         @Override
         public int getRowCountForAccessibility(RecyclerView.Recycler recycler,
                 RecyclerView.State state) {
-            if (mApps.hasNoFilteredResults()) {
-                // Disregard the no-search-results text as a list item for accessibility
-                return 0;
+            return super.getRowCountForAccessibility(recycler, state)
+                    - getEmptyRowForAccessibility(-1 /* no view type */);
+        }
+
+        /**
+         * Returns the total number of SECTION_BREAK_VIEW_TYPE that is wrongfully
+         * initialized as a node (also a row) for talk back.
+         */
+        private int getEmptyRowForAccessibility(int viewType) {
+            int numEmptyNode = 0;
+            if (mApps.hasFilter()) {
+                // search result screen has only one SECTION_BREAK_VIEW
+                numEmptyNode = 1;
             } else {
-                return super.getRowCountForAccessibility(recycler, state);
+                // default all apps screen may have one or two SECTION_BREAK_VIEW
+                numEmptyNode = 1;
+                if (mApps.hasPredictedComponents()) {
+                    if (viewType == PREDICTION_ICON_VIEW_TYPE) {
+                        numEmptyNode = 1;
+                    } else if (viewType == ICON_VIEW_TYPE) {
+                        numEmptyNode = 2;
+                    }
+                } else {
+                    if (viewType == ICON_VIEW_TYPE) {
+                        numEmptyNode = 1;
+                    }
+                }
             }
+            return numEmptyNode;
         }
     }
 

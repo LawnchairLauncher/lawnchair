@@ -275,6 +275,10 @@ public class AlphabeticalAppsList {
         return (mSearchResults != null) && mFilteredApps.isEmpty();
     }
 
+    public boolean hasPredictedComponents() {
+        return (mPredictedAppComponents != null && mPredictedAppComponents.size() > 0);
+    }
+
     /**
      * Sets the sorted list of filtered components.
      */
