@@ -4255,6 +4255,10 @@ public class Workspace extends PagedView
             }
             nScreens--;
         }
+        if (nScreens == 0) {
+            // When the workspace is not loaded, we do not know how many screen will be bound.
+            return getContext().getString(R.string.all_apps_home_button_label);
+        }
         return getContext().getString(R.string.workspace_scroll_format,
                 page + 1 - delta, nScreens);
     }
