@@ -473,7 +473,7 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
         if (onBitmapCroppedHandler != null) {
             cropTask.setOnBitmapCropped(onBitmapCroppedHandler);
         }
-        cropTask.execute();
+        NycWallpaperUtils.executeCropTaskAfterPrompt(this, cropTask, getOnDialogCancelListener());
     }
 
     protected void updateWallpaperDimensions(int width, int height) {
