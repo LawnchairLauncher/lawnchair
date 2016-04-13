@@ -92,33 +92,6 @@
         </activity>
 
         <activity
-            android:name="com.android.launcher3.WallpaperPickerActivity"
-            android:theme="@style/WallpaperTheme.Picker"
-            android:label="@string/pick_wallpaper"
-            android:icon="@mipmap/ic_launcher_wallpaper"
-            android:finishOnCloseSystemDialogs="true"
-            android:process=":wallpaper_chooser">
-            <intent-filter>
-                <action android:name="android.intent.action.SET_WALLPAPER" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name="com.android.wallpaperpicker.WallpaperCropActivity"
-            android:theme="@style/WallpaperTheme"
-            android:label="@string/crop_wallpaper"
-            android:icon="@mipmap/ic_launcher_wallpaper"
-            android:finishOnCloseSystemDialogs="true"
-            android:process=":wallpaper_chooser">
-            <intent-filter>
-                <action android:name="android.service.wallpaper.CROP_AND_SET_WALLPAPER" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="image/*" />
-            </intent-filter>
-        </activity>
-
-        <activity
             android:name="com.android.launcher3.SettingsActivity"
             android:label="@string/settings_button_text"
             android:autoRemoveFromRecents="true"
