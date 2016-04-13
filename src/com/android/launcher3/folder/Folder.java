@@ -29,7 +29,6 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
-import android.os.Bundle;
 import android.text.InputType;
 import android.text.Selection;
 import android.text.Spannable;
@@ -70,7 +69,6 @@ import com.android.launcher3.LogDecelerateInterpolator;
 import com.android.launcher3.OnAlarmListener;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
-import com.android.launcher3.Stats;
 import com.android.launcher3.UninstallDropTarget.DropTargetSource;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace.ItemOperator;
@@ -79,6 +77,9 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.logging.UserEventLogger.LaunchSourceProvider;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.UiThreadCircularReveal;
 
@@ -92,7 +93,7 @@ import java.util.Comparator;
 public class Folder extends LinearLayout implements DragSource, View.OnClickListener,
         View.OnLongClickListener, DropTarget, FolderListener, TextView.OnEditorActionListener,
         View.OnFocusChangeListener, DragListener, DropTargetSource, AccessibilityDragSource,
-        Stats.LaunchSourceProvider {
+        LaunchSourceProvider {
     private static final String TAG = "Launcher.Folder";
 
     /**
@@ -1416,11 +1417,12 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     @Override
-    public void fillInLaunchSourceData(View v, Bundle sourceData) {
-        // Fill in from the folder icon's launch source provider first
-        Stats.LaunchSourceUtils.populateSourceDataFromAncestorProvider(mFolderIcon, sourceData);
-        sourceData.putString(Stats.SOURCE_EXTRA_SUB_CONTAINER, Stats.SUB_CONTAINER_FOLDER);
-        sourceData.putInt(Stats.SOURCE_EXTRA_SUB_CONTAINER_PAGE, mContent.getCurrentPage());
+    public void fillInLaunchSourceData(View v, ItemInfo info, Target target, Target targetParent) {
+        target.itemType = LauncherLogProto.APP_ICON;
+        target.gridX = info.cellX;
+        target.gridY = info.cellY;
+        target.pageIndex = mContent.getCurrentPage();
+        targetParent.containerType = LauncherLogProto.FOLDER;
     }
 
     private class OnScrollHintListener implements OnAlarmListener {

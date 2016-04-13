@@ -19,7 +19,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
@@ -27,17 +26,19 @@ import android.view.View;
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
-import com.android.launcher3.Stats;
 import com.android.launcher3.Utilities;
-
+import com.android.launcher3.logging.UserEventLogger.LaunchSourceProvider;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import java.util.List;
 
 /**
  * A RecyclerView with custom fast scroll support for the all apps view.
  */
 public class AllAppsRecyclerView extends BaseRecyclerView
-        implements Stats.LaunchSourceProvider {
+        implements LaunchSourceProvider {
 
     private AlphabeticalAppsList mApps;
     private AllAppsFastScrollHelper mFastScrollHelper;
@@ -165,11 +166,9 @@ public class AllAppsRecyclerView extends BaseRecyclerView
     }
 
     @Override
-    public void fillInLaunchSourceData(View v, Bundle sourceData) {
-        sourceData.putString(Stats.SOURCE_EXTRA_CONTAINER, Stats.CONTAINER_ALL_APPS);
+    public void fillInLaunchSourceData(View v, ItemInfo info, Target target, Target targetParent) {
         if (mApps.hasFilter()) {
-            sourceData.putString(Stats.SOURCE_EXTRA_SUB_CONTAINER,
-                    Stats.SUB_CONTAINER_ALL_APPS_SEARCH);
+            targetParent.containerType = LauncherLogProto.SEARCHRESULT;
         } else {
             if (v instanceof BubbleTextView) {
                 BubbleTextView icon = (BubbleTextView) v;
@@ -178,14 +177,13 @@ public class AllAppsRecyclerView extends BaseRecyclerView
                     List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
                     AlphabeticalAppsList.AdapterItem item = items.get(position);
                     if (item.viewType == AllAppsGridAdapter.PREDICTION_ICON_VIEW_TYPE) {
-                        sourceData.putString(Stats.SOURCE_EXTRA_SUB_CONTAINER,
-                                Stats.SUB_CONTAINER_ALL_APPS_PREDICTION);
+                        targetParent.containerType = LauncherLogProto.PREDICTION;
                         return;
                     }
                 }
             }
-            sourceData.putString(Stats.SOURCE_EXTRA_SUB_CONTAINER,
-                    Stats.SUB_CONTAINER_ALL_APPS_A_Z);
+
+            targetParent.containerType = LauncherLogProto.ALLAPPS;
         }
     }
 

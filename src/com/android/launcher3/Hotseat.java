@@ -19,7 +19,6 @@ package com.android.launcher3;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -28,8 +27,12 @@ import android.view.ViewDebug;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.android.launcher3.logging.UserEventLogger;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+
 public class Hotseat extends FrameLayout
-        implements Stats.LaunchSourceProvider{
+        implements UserEventLogger.LaunchSourceProvider{
 
     private CellLayout mContent;
 
@@ -157,7 +160,10 @@ public class Hotseat extends FrameLayout
     }
 
     @Override
-    public void fillInLaunchSourceData(View v, Bundle sourceData) {
-        sourceData.putString(Stats.SOURCE_EXTRA_CONTAINER, Stats.CONTAINER_HOTSEAT);
+    public void fillInLaunchSourceData(View v, ItemInfo info, Target target, Target targetParent) {
+        target.itemType = LauncherLogProto.APP_ICON;
+        target.gridX = info.cellX;
+        target.gridY = info.cellY;
+        targetParent.containerType = LauncherLogProto.HOTSEAT;
     }
 }

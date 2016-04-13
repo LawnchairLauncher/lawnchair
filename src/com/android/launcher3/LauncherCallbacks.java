@@ -1,12 +1,11 @@
 package com.android.launcher3;
 
-import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
-import android.view.ViewGroup;
+
 import com.android.launcher3.allapps.AllAppsSearchBarController;
 import com.android.launcher3.logging.UserEventLogger;
 import com.android.launcher3.util.ComponentKey;

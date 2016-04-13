@@ -148,6 +148,7 @@ public class Launcher extends Activity
     static final boolean DEBUG_WIDGETS = false;
     static final boolean DEBUG_STRICT_MODE = false;
     static final boolean DEBUG_RESUME_TIME = false;
+    static final boolean DEBUG_LOGGING = false;
 
     static final boolean ENABLE_DEBUG_INTENTS = false; // allow DebugIntents to run
 
@@ -174,7 +175,7 @@ public class Launcher extends Activity
     protected static final int REQUEST_LAST = 100;
 
     // To turn on these properties, type
-    // adb shell setprop log.tag.PROPERTY_NAME [VERBOSE | SUPPRESS]
+    // adb shell setprop logTap.tag.PROPERTY_NAME [VERBOSE | SUPPRESS]
     static final String DUMP_STATE_PROPERTY = "launcher_dump_state";
 
     // The Intent extra that defines whether to ignore the launch animation
@@ -365,7 +366,6 @@ public class Launcher extends Activity
         int appWidgetId;
     }
 
-    private Stats mStats;
     private UserEventLogger mUserEventLogger;
 
     public FocusIndicatorView mFocusHandler;
@@ -425,7 +425,6 @@ public class Launcher extends Activity
         mDragController = new DragController(this);
         mStateTransitionAnimation = new LauncherStateTransitionAnimation(this);
 
-        mStats = new Stats(this);
         initLogger();
 
         mAppWidgetManager = AppWidgetManagerCompat.getInstance(this);
@@ -638,10 +637,6 @@ public class Launcher extends Activity
         }
     }
 
-    public Stats getStats() {
-        return mStats;
-    }
-
     /**
      * Logger object is a singleton and does not have to be coupled with the foreground activity.
      * Since most user event logging is done on the UI, the object is retrieved from the
@@ -652,16 +647,19 @@ public class Launcher extends Activity
             mUserEventLogger = mLauncherCallbacks.getLogger();
         }
         if (mUserEventLogger == null) {
-            mUserEventLogger = new UserEventLogger() {
+            mUserEventLogger = new UserEventLogger(this) {
                 @Override
                 public void processEvent(LauncherLogProto.LauncherEvent ev) {
-                    if (ev.action.touch == LauncherLogProto.Action.TAP && ev.srcTarget.itemType == LauncherLogProto.APP_ICON) {
-                        Log.d(TAG, String.format(Locale.US, "action:%s target:%s\n\telapsed container %d ms session %d ms",
-                                LoggerUtils.getActionStr(ev.action),
-                                LoggerUtils.getTargetStr(ev.srcTarget),
-                                ev.elapsedContainerMillis,
-                                ev.elapsedSessionMillis));
+                    if (!DEBUG_LOGGING) {
+                        return;
                     }
+                    Log.d("UserEvent", String.format(Locale.US,
+                            "action:%s\nchild:%s\nparent:%s\nelapsed container %d ms session %d ms",
+                            LoggerUtils.getActionStr(ev.action),
+                            LoggerUtils.getTargetStr(ev.srcTarget[0]),
+                            LoggerUtils.getTargetStr(ev.srcTarget[1]),
+                            ev.elapsedContainerMillis,
+                            ev.elapsedSessionMillis));
                 }
             };
         }
@@ -2705,7 +2703,7 @@ public class Launcher extends Activity
         }
 
         boolean success = startActivitySafely(v, intent, tag);
-        mStats.recordLaunch(v, intent, shortcut);
+        mUserEventLogger.logLaunch(v, intent);
 
         if (success && v instanceof BubbleTextView) {
             mWaitingForResume = (BubbleTextView) v;
@@ -3488,6 +3486,7 @@ public class Launcher extends Activity
             List<ComponentKey> apps = mLauncherCallbacks.getPredictedApps();
             if (apps != null) {
                 mAppsView.setPredictedApps(apps);
+                mUserEventLogger.setPredictedApps(apps);
             }
         }
     }

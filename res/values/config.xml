@@ -68,6 +68,10 @@
          filter the activities shown in the launcher. Can be empty. -->
     <string name="app_filter_class" translatable="false"></string>
 
+    <!-- List of package names that com.android.launcher3.action.LAUNCH
+     should be targeting. Can be empty. -->
+    <array name="launch_broadcast_targets" translatable="false"></array>
+
     <!-- Name of an icon provider class. -->
     <string name="icon_provider_class" translatable="false"></string>
 
