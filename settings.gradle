@@ -1,2 +1,0 @@
-include ':WallpaperPicker-Lib'
-project(':WallpaperPicker-Lib').projectDir = new File(rootDir, '../WallpaperPicker')

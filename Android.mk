@@ -24,7 +24,6 @@ include $(CLEAR_VARS)
 LOCAL_MODULE_TAGS := optional
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
-    libWallpaperPicker \
     android-support-v4 \
     android-support-v7-recyclerview \
     android-support-v7-palette
@@ -32,7 +31,7 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
 LOCAL_SRC_FILES := $(call all-java-files-under, src) \
     $(call all-proto-files-under, protos)
 
-LOCAL_RESOURCE_DIR := packages/apps/WallpaperPicker/res \
+LOCAL_RESOURCE_DIR := \
     $(LOCAL_PATH)/res \
     prebuilts/sdk/current/support/v7/recyclerview/res
 
@@ -43,7 +42,6 @@ LOCAL_PROTOC_FLAGS := --proto_path=$(LOCAL_PATH)/protos/
 LOCAL_AAPT_FLAGS := \
     --auto-add-overlay \
     --extra-packages android.support.v7.recyclerview \
-    --extra-packages com.android.wallpaperpicker
 
 LOCAL_SDK_VERSION := current
 LOCAL_PACKAGE_NAME := Launcher3

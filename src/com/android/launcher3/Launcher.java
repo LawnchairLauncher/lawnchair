@@ -2759,13 +2759,7 @@ public class Launcher extends Activity
         if (LOGD) Log.d(TAG, "onClickWallpaperPicker");
         int pageScroll = mWorkspace.getScrollForPage(mWorkspace.getPageNearestToCenterOfScreen());
         float offset = mWorkspace.mWallpaperOffset.wallpaperOffsetForScroll(pageScroll);
-        startActivityForResult(new Intent(Intent.ACTION_SET_WALLPAPER).setPackage(getPackageName())
-                        .putExtra(Utilities.EXTRA_WALLPAPER_OFFSET, offset),
-                REQUEST_PICK_WALLPAPER);
-
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onClickWallpaperPicker(v);
-        }
+        // TODO: Start the system wallpaper picker
     }
 
     /**
