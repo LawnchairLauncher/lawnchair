@@ -1,6 +1,5 @@
 package com.android.launcher3.testing;
 
-import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -12,9 +11,8 @@ import android.widget.FrameLayout;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherCallbacks;
-import com.android.launcher3.compat.UserHandleCompat;
-import com.android.launcher3.logging.UserEventLogger;
 import com.android.launcher3.allapps.AllAppsSearchBarController;
+import com.android.launcher3.logging.UserEventLogger;
 import com.android.launcher3.util.ComponentKey;
 
 import java.io.FileDescriptor;

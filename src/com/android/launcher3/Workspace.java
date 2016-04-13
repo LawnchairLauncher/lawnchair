@@ -39,7 +39,6 @@ import android.graphics.Rect;
 import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Parcelable;
@@ -73,6 +72,9 @@ import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dragndrop.SpringLoadedDragController;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.logging.UserEventLogger;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.WallpaperOffsetInterpolator;
@@ -92,7 +94,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Workspace extends PagedView
         implements DropTarget, DragSource, DragScroller, View.OnTouchListener,
         DragController.DragListener, LauncherTransitionable, ViewGroup.OnHierarchyChangeListener,
-        Insettable, DropTargetSource, AccessibilityDragSource, Stats.LaunchSourceProvider {
+        Insettable, DropTargetSource, AccessibilityDragSource, UserEventLogger.LaunchSourceProvider {
     private static final String TAG = "Launcher.Workspace";
 
     private static boolean ENFORCE_DRAG_EVENT_ORDER = false;
@@ -4264,9 +4266,12 @@ public class Workspace extends PagedView
     }
 
     @Override
-    public void fillInLaunchSourceData(View v, Bundle sourceData) {
-        sourceData.putString(Stats.SOURCE_EXTRA_CONTAINER, Stats.CONTAINER_HOMESCREEN);
-        sourceData.putInt(Stats.SOURCE_EXTRA_CONTAINER_PAGE, getCurrentPage());
+    public void fillInLaunchSourceData(View v, ItemInfo info, Target target, Target targetParent) {
+        target.itemType = LauncherLogProto.APP_ICON;
+        target.gridX = info.cellX;
+        target.gridY = info.cellY;
+        target.pageIndex = getCurrentPage();
+        targetParent.containerType = LauncherLogProto.WORKSPACE;
     }
 
     /**
