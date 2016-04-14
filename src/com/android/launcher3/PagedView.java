@@ -142,8 +142,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     protected int mActivePointerId = INVALID_POINTER;
 
-    private PageSwitchListener mPageSwitchListener;
-
     // If true, modify alpha of neighboring pages as user scrolls left/right
     protected boolean mFadeInAdjacentScreens = false;
 
@@ -194,10 +192,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     // Edge effect
     private final LauncherEdgeEffect mEdgeGlowLeft = new LauncherEdgeEffect();
     private final LauncherEdgeEffect mEdgeGlowRight = new LauncherEdgeEffect();
-
-    public interface PageSwitchListener {
-        void onPageSwitch(View newPage, int newPageIndex);
-    }
 
     public PagedView(Context context) {
         this(context, null);
@@ -365,17 +359,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     /**
-     * Add a page change listener which will be called when a page is _finished_ listening.
-     *
-     */
-    public void setPageSwitchListener(PageSwitchListener pageSwitchListener) {
-        mPageSwitchListener = pageSwitchListener;
-        if (mPageSwitchListener != null) {
-            mPageSwitchListener.onPageSwitch(getPageAt(mCurrentPage), mCurrentPage);
-        }
-    }
-
-    /**
      * Returns the index of the currently displayed page. When in free scroll mode, this is the page
      * that the user was on before entering free scroll mode (e.g. the home screen page they
      * long-pressed on to enter the overview). Try using {@link #getPageNearestToCenterOfScreen()}
@@ -484,10 +467,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
      * has settled.
      */
     protected void notifyPageSwitchListener() {
-        if (mPageSwitchListener != null) {
-            mPageSwitchListener.onPageSwitch(getPageAt(getNextPage()), getNextPage());
-        }
-
         updatePageIndicator();
     }
 

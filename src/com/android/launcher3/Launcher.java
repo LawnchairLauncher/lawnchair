@@ -93,7 +93,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.launcher3.DropTarget.DragObject;
-import com.android.launcher3.PagedView.PageSwitchListener;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.DefaultAppSearchController;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
@@ -139,7 +138,7 @@ import java.util.Locale;
  */
 public class Launcher extends Activity
         implements View.OnClickListener, OnLongClickListener, LauncherModel.Callbacks,
-                   View.OnTouchListener, PageSwitchListener, LauncherProviderChangeListener,
+                   View.OnTouchListener, LauncherProviderChangeListener,
                    AccessibilityManager.AccessibilityStateChangeListener {
     public static final String TAG = "Launcher";
     static final boolean LOGD = false;
@@ -1347,7 +1346,6 @@ public class Launcher extends Activity
         mFocusHandler = (FocusIndicatorView) findViewById(R.id.focus_indicator);
         mDragLayer = (DragLayer) findViewById(R.id.drag_layer);
         mWorkspace = (Workspace) mDragLayer.findViewById(R.id.workspace);
-        mWorkspace.setPageSwitchListener(this);
         mPageIndicators = mDragLayer.findViewById(R.id.page_indicator);
 
         mLauncherView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -2596,10 +2594,6 @@ public class Launcher extends Activity
         if (!isAppsViewVisible()) {
             showAppsView(true /* animated */, false /* resetListToTop */,
                     true /* updatePredictedApps */, false /* focusSearchBar */);
-
-            if (mLauncherCallbacks != null) {
-                mLauncherCallbacks.onClickAllAppsButton(v);
-            }
         }
     }
 
@@ -2673,10 +2667,6 @@ public class Launcher extends Activity
 
         // Start activities
         startAppShortcutOrInfoActivity(v);
-
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onClickAppShortcut(v);
-        }
     }
 
     @Thunk void startAppShortcutOrInfoActivity(View v) {
@@ -2723,10 +2713,6 @@ public class Launcher extends Activity
             // Open the requested folder
             openFolder(folderIcon);
         }
-
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onClickFolderIcon(v);
-        }
     }
 
     /**
@@ -2739,9 +2725,6 @@ public class Launcher extends Activity
             Toast.makeText(this, R.string.safemode_widget_error, Toast.LENGTH_SHORT).show();
         } else {
             showWidgetsView(true /* animated */, true /* resetPageToZero */);
-            if (mLauncherCallbacks != null) {
-                mLauncherCallbacks.onClickAddWidgetButton(view);
-            }
         }
     }
 
@@ -2795,10 +2778,6 @@ public class Launcher extends Activity
             // Custom content screen doesn't participate in drag and drop. If on custom
             // content screen, move to default.
             moveWorkspaceToDefaultScreen();
-        }
-
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onDragStarted(view);
         }
     }
 
@@ -4418,9 +4397,6 @@ public class Launcher extends Activity
     }
 
     protected boolean isLauncherPreinstalled() {
-        if (mLauncherCallbacks != null) {
-            return mLauncherCallbacks.isLauncherPreinstalled();
-        }
         PackageManager pm = getPackageManager();
         try {
             ApplicationInfo ai = pm.getApplicationInfo(getComponentName().getPackageName(), 0);
@@ -4624,13 +4600,6 @@ public class Launcher extends Activity
 
     protected void moveWorkspaceToDefaultScreen() {
         mWorkspace.moveToDefaultScreen(false);
-    }
-
-    @Override
-    public void onPageSwitch(View newPage, int newPageIndex) {
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onPageSwitch(newPage, newPageIndex);
-        }
     }
 
     /**

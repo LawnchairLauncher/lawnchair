@@ -123,27 +123,7 @@ public class LauncherExtension extends Launcher {
         }
 
         @Override
-        public void onClickAllAppsButton(View v) {
-        }
-
-        @Override
         public void bindAllApplications(ArrayList<AppInfo> apps) {
-        }
-
-        @Override
-        public void onClickFolderIcon(View v) {
-        }
-
-        @Override
-        public void onClickAppShortcut(View v) {
-        }
-
-        @Override
-        public void onClickPagedViewIcon(View v) {
-        }
-
-        @Override
-        public void onClickWallpaperPicker(View v) {
         }
 
         @Override
@@ -151,19 +131,7 @@ public class LauncherExtension extends Launcher {
         }
 
         @Override
-        public void onClickAddWidgetButton(View v) {
-        }
-
-        @Override
-        public void onPageSwitch(View newPage, int newPageIndex) {
-        }
-
-        @Override
         public void onWorkspaceLockedChanged() {
-        }
-
-        @Override
-        public void onDragStarted(View view) {
         }
 
         @Override
@@ -182,11 +150,6 @@ public class LauncherExtension extends Launcher {
         @Override
         public boolean startSearch(String initialQuery, boolean selectInitialQuery,
                 Bundle appSearchData, Rect sourceBounds) {
-            return false;
-        }
-
-        @Override
-        public boolean startSearchFromAllApps(String query) {
             return false;
         }
 
@@ -269,11 +232,6 @@ public class LauncherExtension extends Launcher {
         }
 
         @Override
-        public boolean overrideWallpaperDimensions() {
-            return false;
-        }
-
-        @Override
         public AllAppsSearchBarController getAllAppsSearchBarController() {
             return null;
         }
@@ -290,11 +248,6 @@ public class LauncherExtension extends Launcher {
         }
 
         @Override
-        public boolean isLauncherPreinstalled() {
-            return false;
-        }
-
-        @Override
         public void setLauncherSearchCallback(Object callbacks) {
             // Do nothing
         }
@@ -305,6 +258,6 @@ public class LauncherExtension extends Launcher {
 
         @Override
         public void onDetachedFromWindow() {
-        };
+        }
     }
 }
