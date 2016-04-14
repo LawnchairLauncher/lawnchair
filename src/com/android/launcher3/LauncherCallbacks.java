@@ -60,35 +60,14 @@ public interface LauncherCallbacks {
     public void onInteractionBegin();
     public void onInteractionEnd();
 
-    /**
-     * Extension points for Gel Logging.
-     */
-    @Deprecated
-    public void onClickAllAppsButton(View v);
-    @Deprecated
-    public void onClickFolderIcon(View v);
-    @Deprecated
-    public void onClickAppShortcut(View v);
-    @Deprecated
-    public void onClickPagedViewIcon(View v);
-    @Deprecated
-    public void onClickWallpaperPicker(View v);
     @Deprecated
     public void onClickSettingsButton(View v);
     @Deprecated
-    public void onClickAddWidgetButton(View v);
-    @Deprecated
-    public void onPageSwitch(View newPage, int newPageIndex);
-    @Deprecated
     public void onWorkspaceLockedChanged();
-    @Deprecated
-    public void onDragStarted(View view);
 
     public boolean providesSearch();
     public boolean startSearch(String initialQuery, boolean selectInitialQuery,
             Bundle appSearchData, Rect sourceBounds);
-    @Deprecated
-    public boolean startSearchFromAllApps(String query);
     public boolean hasCustomContentToLeft();
     public void populateCustomContentContainer();
     public View getQsbBar();
@@ -104,9 +83,6 @@ public interface LauncherCallbacks {
     public View getIntroScreen();
     public boolean shouldMoveToDefaultScreenOnHomeIntent();
     public boolean hasSettings();
-    @Deprecated
-    public boolean overrideWallpaperDimensions();
-    public boolean isLauncherPreinstalled();
     public AllAppsSearchBarController getAllAppsSearchBarController();
     public List<ComponentKey> getPredictedApps();
     public static final int SEARCH_BAR_HEIGHT_NORMAL = 0, SEARCH_BAR_HEIGHT_TALL = 1;
