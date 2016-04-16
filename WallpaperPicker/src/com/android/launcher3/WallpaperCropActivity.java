@@ -29,6 +29,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Build;
@@ -269,13 +270,7 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
                 mCropView.moveToLeft();
             }
             if (req.scaleAndOffsetProvider != null) {
-                TileSource src = req.result;
-                Point wallpaperSize = WallpaperUtils.getDefaultWallpaperSize(
-                        getResources(), getWindowManager());
-                RectF crop = Utils.getMaxCropRect(src.getImageWidth(), src.getImageHeight(),
-                        wallpaperSize.x, wallpaperSize.y, false /* leftAligned */);
-                mCropView.setScale(req.scaleAndOffsetProvider.getScale(wallpaperSize, crop));
-                mCropView.setParallaxOffset(req.scaleAndOffsetProvider.getParallaxOffset(), crop);
+                req.scaleAndOffsetProvider.updateCropView(this, req.result);
             }
 
             // Free last image
@@ -502,8 +497,32 @@ public class WallpaperCropActivity extends BaseActivity implements Handler.Callb
         TileSource result;
     }
 
-    interface CropViewScaleAndOffsetProvider {
-        float getScale(Point wallpaperSize, RectF crop);
-        float getParallaxOffset();
+    public static class CropViewScaleAndOffsetProvider {
+        public float getScale(Point wallpaperSize, RectF crop) {
+            return 1f;
+        }
+
+        public float getParallaxOffset() {
+            return 0.5f;
+        }
+
+        public void updateCropView(WallpaperCropActivity a, TileSource src) {
+            Point wallpaperSize = WallpaperUtils.getDefaultWallpaperSize(
+                    a.getResources(), a.getWindowManager());
+            RectF crop = Utils.getMaxCropRect(src.getImageWidth(), src.getImageHeight(),
+                    wallpaperSize.x, wallpaperSize.y, false /* leftAligned */);
+
+            float scale = getScale(wallpaperSize, crop);
+            PointF center = a.mCropView.getCenter();
+
+            // Offsets wallpaper preview according to the state it will be displayed in upon
+            // returning home. Offset ranges from 0 to 1, where 0 is the leftmost parallax and
+            // 1 is the rightmost.
+            // Make sure the offset is in the correct range.
+            float offset = Math.max(0, Math.min(getParallaxOffset(), 1));
+            float screenWidth = a.mCropView.getWidth() / scale;
+            center.x = screenWidth / 2 + offset * (crop.width() - screenWidth) + crop.left;
+            a.mCropView.setScaleAndCenter(scale, center.x, center.y);
+        }
     }
 }

@@ -47,7 +47,7 @@ import java.io.InputStream;
 public class BitmapCropTask extends AsyncTask<Integer, Void, Boolean> {
 
     public interface OnBitmapCroppedHandler {
-        public void onBitmapCropped(byte[] imageBytes);
+        public void onBitmapCropped(byte[] imageBytes, Rect cropHint);
     }
 
     public interface OnEndCropHandler {
@@ -171,29 +171,42 @@ public class BitmapCropTask extends AsyncTask<Integer, Void, Boolean> {
     public boolean cropBitmap(int whichWallpaper) {
         boolean failure = false;
 
-
-        WallpaperManager wallpaperManager = null;
-        if (mSetWallpaper) {
-            wallpaperManager = WallpaperManager.getInstance(mContext.getApplicationContext());
-        }
-
-
         if (mSetWallpaper && mNoCrop) {
             try {
                 InputStream is = regenerateInputStream();
-                if (is != null) {
-                    if (!Utilities.isNycOrAbove()) {
-                        wallpaperManager.setStream(is);
-                    } else {
-                        NycWallpaperUtils.setStream(mContext, is, null, true, whichWallpaper);
-                    }
-                    Utils.closeSilently(is);
-                }
+                setWallpaper(is, null, whichWallpaper);
+                Utils.closeSilently(is);
             } catch (IOException e) {
                 Log.w(LOGTAG, "cannot write stream to wallpaper", e);
                 failure = true;
             }
             return !failure;
+        } else if (mSetWallpaper && Utilities.isNycOrAbove()
+                && mRotation == 0 && mOutWidth > 0 && mOutHeight > 0) {
+            Rect hint = new Rect();
+            mCropBounds.roundOut(hint);
+
+            InputStream is = null;
+            try {
+                is = regenerateInputStream();
+                if (is == null) {
+                    Log.w(LOGTAG, "cannot get input stream for uri=" + mInUri.toString());
+                    failure = true;
+                    return false;
+                }
+                WallpaperManager.getInstance(mContext).suggestDesiredDimensions(mOutWidth, mOutHeight);
+                setWallpaper(is, hint, whichWallpaper);
+
+                if (mOnBitmapCroppedHandler != null) {
+                    mOnBitmapCroppedHandler.onBitmapCropped(null, hint);
+                }
+
+                failure = false;
+            } catch (IOException e) {
+                Log.w(LOGTAG, "cannot open region decoder for file: " + mInUri.toString(), e);
+            } finally {
+                Utils.closeSilently(is);
+            }
         } else {
             // Find crop bounds (scaled to original image size)
             Rect roundedTrueCrop = new Rect();
@@ -222,7 +235,6 @@ public class BitmapCropTask extends AsyncTask<Integer, Void, Boolean> {
                 mCropBounds.offset(-rotatedBounds[0]/2, -rotatedBounds[1]/2);
                 inverseRotateMatrix.mapRect(mCropBounds);
                 mCropBounds.offset(bounds.x/2, bounds.y/2);
-
             }
 
             mCropBounds.roundOut(roundedTrueCrop);
@@ -369,18 +381,13 @@ public class BitmapCropTask extends AsyncTask<Integer, Void, Boolean> {
             ByteArrayOutputStream tmpOut = new ByteArrayOutputStream(2048);
             if (crop.compress(CompressFormat.JPEG, DEFAULT_COMPRESS_QUALITY, tmpOut)) {
                 // If we need to set to the wallpaper, set it
-                if (mSetWallpaper && wallpaperManager != null) {
+                if (mSetWallpaper) {
                     try {
                         byte[] outByteArray = tmpOut.toByteArray();
-                        if (!Utilities.isNycOrAbove()) {
-                            wallpaperManager.setStream(new ByteArrayInputStream(outByteArray));
-                        } else {
-                            NycWallpaperUtils.setStream(mContext,
-                                    new ByteArrayInputStream(outByteArray), null, true,
-                                    whichWallpaper);
-                        }
+                        setWallpaper(new ByteArrayInputStream(outByteArray), null, whichWallpaper);
                         if (mOnBitmapCroppedHandler != null) {
-                            mOnBitmapCroppedHandler.onBitmapCropped(outByteArray);
+                            mOnBitmapCroppedHandler.onBitmapCropped(outByteArray,
+                                    new Rect(0, 0, crop.getWidth(), crop.getHeight()));
                         }
                     } catch (IOException e) {
                         Log.w(LOGTAG, "cannot write stream to wallpaper", e);
@@ -407,6 +414,14 @@ public class BitmapCropTask extends AsyncTask<Integer, Void, Boolean> {
         }
         if (mOnEndCropHandler != null) {
             mOnEndCropHandler.run(cropSucceeded);
+        }
+    }
+
+    private void setWallpaper(InputStream in, Rect crop, int whichWallpaper) throws IOException {
+        if (!Utilities.isNycOrAbove()) {
+            WallpaperManager.getInstance(mContext.getApplicationContext()).setStream(in);
+        } else {
+            NycWallpaperUtils.setStream(mContext, in, crop, true, whichWallpaper);
         }
     }
 }

@@ -31,10 +31,13 @@ import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapRegionDecoder;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.PorterDuff;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -83,6 +86,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class WallpaperPickerActivity extends WallpaperCropActivity {
@@ -174,12 +178,45 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         public void onSave(final WallpaperPickerActivity a) {
             boolean finishActivityWhenDone = true;
             BitmapCropTask.OnBitmapCroppedHandler h = new BitmapCropTask.OnBitmapCroppedHandler() {
-                public void onBitmapCropped(byte[] imageBytes) {
+                @Override
+                public void onBitmapCropped(byte[] imageBytes, Rect hint) {
+                    Bitmap thumb = null;
                     Point thumbSize = getDefaultThumbnailSize(a.getResources());
-                    // rotation is set to 0 since imageBytes has already been correctly rotated
-                    Bitmap thumb = createThumbnail(
-                            thumbSize, null, null, imageBytes, null, 0, 0, true);
-                    a.getSavedImages().writeImage(thumb, imageBytes);
+                    if (imageBytes != null) {
+                        // rotation is set to 0 since imageBytes has already been correctly rotated
+                        thumb = createThumbnail(
+                                thumbSize, null, null, imageBytes, null, 0, 0, true);
+                        a.getSavedImages().writeImage(thumb, imageBytes);
+                    } else {
+                        try {
+                            // Generate thumb
+                            Point size = getDefaultThumbnailSize(a.getResources());
+                            Rect finalCropped = new Rect();
+                            Utils.getMaxCropRect(hint.width(), hint.height(), size.x, size.y, false)
+                                    .roundOut(finalCropped);
+                            finalCropped.offset(hint.left, hint.top);
+
+                            InputStream in = a.getContentResolver().openInputStream(mUri);
+                            BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(in, true);
+
+                            BitmapFactory.Options options = new BitmapFactory.Options();
+                            options.inSampleSize = finalCropped.width() / size.x;
+                            thumb = decoder.decodeRegion(finalCropped, options);
+                            decoder.recycle();
+                            Utils.closeSilently(in);
+                            if (thumb != null) {
+                                thumb = Bitmap.createScaledBitmap(thumb, size.x, size.y, true);
+                            }
+                        } catch (IOException e) { }
+                        PointF center = a.mCropView.getCenter();
+
+                        Float[] extras = new Float[] {
+                                a.mCropView.getScale(),
+                                center.x,
+                                center.y
+                        };
+                        a.getSavedImages().writeImage(thumb, mUri, extras);
+                    }
                 }
             };
             boolean shouldFadeOutOnFinish = a.getWallpaperParallaxOffset() == 0f;
@@ -196,7 +233,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
     }
 
     public static class FileWallpaperInfo extends WallpaperTileInfo {
-        private File mFile;
+        protected File mFile;
 
         public FileWallpaperInfo(File target, Drawable thumb) {
             mFile = target;
@@ -207,7 +244,8 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             a.setWallpaperButtonEnabled(false);
             final BitmapRegionTileSource.UriBitmapSource bitmapSource =
                     new BitmapRegionTileSource.UriBitmapSource(a.getContext(), Uri.fromFile(mFile));
-            a.setCropViewTileSource(bitmapSource, false, true, null, new Runnable() {
+            a.setCropViewTileSource(bitmapSource, false, true, getCropViewScaleAndOffsetProvider(),
+                    new Runnable() {
 
                 @Override
                 public void run() {
@@ -217,6 +255,11 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                 }
             });
         }
+
+        protected CropViewScaleAndOffsetProvider getCropViewScaleAndOffsetProvider() {
+            return null;
+        }
+
         @Override
         public void onSave(WallpaperPickerActivity a) {
             boolean shouldFadeOutOnFinish = a.getWallpaperParallaxOffset() == 0f;
@@ -303,18 +346,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
             LoadRequest req = new LoadRequest();
             req.moveToLeft = false;
             req.touchEnabled = false;
-            req.scaleAndOffsetProvider = new CropViewScaleAndOffsetProvider() {
-
-                @Override
-                public float getScale(Point wallpaperSize, RectF crop) {
-                    return 1f;
-                }
-
-                @Override
-                public float getParallaxOffset() {
-                    return 0.5f;
-                }
-            };
+            req.scaleAndOffsetProvider = new CropViewScaleAndOffsetProvider();
             req.result = new DrawableTileSource(a.getContext(),
                     defaultWallpaper, DrawableTileSource.MAX_PREVIEW_SIZE);
             a.onLoadRequestComplete(req, true);

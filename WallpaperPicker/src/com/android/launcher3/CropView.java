@@ -19,6 +19,7 @@ package com.android.launcher3;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -148,10 +149,17 @@ public class  CropView extends TiledImageView implements OnScaleGestureListener 
         updateMinScale(w, h, mRenderer.source, false);
     }
 
-    public void setScale(float scale) {
+    public void setScaleAndCenter(float scale, float x, float y) {
         synchronized (mLock) {
             mRenderer.scale = scale;
+            mCenterX = x;
+            mCenterY = y;
+            updateCenter();
         }
+    }
+
+    public float getScale() {
+        return mRenderer.scale;
     }
 
     private void updateMinScale(int w, int h, TileSource source, boolean resetScale) {
@@ -189,17 +197,6 @@ public class  CropView extends TiledImageView implements OnScaleGestureListener 
     public void onScaleEnd(ScaleGestureDetector detector) {
     }
 
-    /**
-     * Offsets wallpaper preview according to the state it will be displayed in upon returning home.
-     * @param offset Ranges from 0 to 1, where 0 is the leftmost parallax and 1 is the rightmost.
-     */
-    public void setParallaxOffset(float offset, RectF crop) {
-        offset = Math.max(0, Math.min(offset, 1)); // Make sure the offset is in the correct range.
-        float screenWidth = getWidth() / mRenderer.scale;
-        mCenterX = screenWidth / 2 + offset * (crop.width() - screenWidth) + crop.left;
-        updateCenter();
-    }
-
     public void moveToLeft() {
         if (getWidth() == 0 || getHeight() == 0) {
             final ViewTreeObserver observer = getViewTreeObserver();
@@ -220,6 +217,10 @@ public class  CropView extends TiledImageView implements OnScaleGestureListener 
     private void updateCenter() {
         mRenderer.centerX = Math.round(mCenterX);
         mRenderer.centerY = Math.round(mCenterY);
+    }
+
+    public PointF getCenter() {
+        return new PointF(mCenterX, mCenterY);
     }
 
     public void setTouchEnabled(boolean enabled) {
