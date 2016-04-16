@@ -33,6 +33,7 @@ import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SQLiteCacheHelper;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.WidgetCell;
@@ -169,7 +170,7 @@ public class WidgetPreviewLoader {
      * This ensures that we remove entries for packages which changed while the launcher was dead.
      */
     public void removeObsoletePreviews(ArrayList<? extends ComponentKey> list) {
-        Utilities.assertWorkerThread();
+        Preconditions.assertWorkerThread();
 
         LongSparseArray<HashSet<String>> validPackages = new LongSparseArray<>();
 
