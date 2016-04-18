@@ -47,7 +47,6 @@ import android.graphics.drawable.PaintDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.os.Process;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -62,7 +61,6 @@ import android.widget.Toast;
 
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.util.IconNormalizer;
 
 import java.io.ByteArrayOutputStream;
@@ -726,13 +724,6 @@ public final class Utilities {
     public static boolean isRtl(Resources res) {
         return ATLEAST_JB_MR1 &&
                 (res.getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL);
-    }
-
-    public static void assertWorkerThread() {
-        if (ProviderConfig.IS_DOGFOOD_BUILD &&
-                (LauncherModel.sWorkerThread.getThreadId() != Process.myTid())) {
-            throw new IllegalStateException();
-        }
     }
 
     /**

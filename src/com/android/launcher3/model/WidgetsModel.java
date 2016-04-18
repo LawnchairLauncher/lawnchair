@@ -16,10 +16,10 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.util.Preconditions;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -101,7 +101,7 @@ public class WidgetsModel {
     }
 
     public WidgetsModel updateAndClone(Context context) {
-        Utilities.assertWorkerThread();
+        Preconditions.assertWorkerThread();
 
         try {
             final ArrayList<WidgetItem> widgetsAndShortcuts = new ArrayList<>();
