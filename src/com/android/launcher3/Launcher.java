@@ -113,7 +113,6 @@ import com.android.launcher3.logging.UserEventLogger;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.ComponentKey;
-import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.TestingUtils;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.ViewOnDrawExecutor;
@@ -642,7 +641,7 @@ public class Launcher extends Activity
             mUserEventLogger = mLauncherCallbacks.getLogger();
         }
         if (mUserEventLogger == null) {
-            mUserEventLogger = new UserEventLogger(this) {
+            mUserEventLogger = new UserEventLogger() {
                 @Override
                 public void processEvent(LauncherLogProto.LauncherEvent ev) {
                     if (!DEBUG_LOGGING) {
