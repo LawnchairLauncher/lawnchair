@@ -16,24 +16,16 @@
 
 package com.android.launcher3.logging;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewParent;
 
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.R;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.LauncherEvent;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.util.ComponentKey;
-
-import com.google.protobuf.nano.MessageNano;
 
 import java.util.List;
 
@@ -79,14 +71,6 @@ public abstract class UserEventLogger {
     }
 
     private String TAG = "UserEventLogger";
-    private static final boolean DEBUG_BROADCASTS = true;
-
-    public static final String ACTION_LAUNCH = "com.android.launcher3.action.LAUNCH";
-    public static final String EXTRA_INTENT = "intent";;
-    public static final String EXTRA_SOURCE = "source";
-
-    private final Launcher mLauncher;
-    private final String mLaunchBroadcastPermission;
 
     private long mElapsedContainerMillis;
     private long mElapsedSessionMillis;
@@ -95,27 +79,6 @@ public abstract class UserEventLogger {
     // Used for filling in predictedRank on {@link Target}s.
     private List<ComponentKey> mPredictedApps;
 
-    public UserEventLogger(Launcher launcher) {
-        mLauncher = launcher;
-        mLaunchBroadcastPermission =
-                launcher.getResources().getString(R.string.receive_launch_broadcasts_permission);
-
-        if (DEBUG_BROADCASTS) {
-            launcher.registerReceiver(
-                    new BroadcastReceiver() {
-                        @Override
-                        public void onReceive(Context context, Intent intent) {
-                            Log.v(TAG, "got broadcast: " + intent + " for launched intent: "
-                                    + intent.getStringExtra(EXTRA_INTENT));
-                        }
-                    },
-                    new IntentFilter(ACTION_LAUNCH),
-                    mLaunchBroadcastPermission,
-                    null
-            );
-        }
-    }
-
     //                      APP_ICON    SHORTCUT    WIDGET
     // --------------------------------------------------------------
     // packageNameHash      required    optional    required
@@ -123,26 +86,7 @@ public abstract class UserEventLogger {
     // intentHash                       required
     // --------------------------------------------------------------
 
-    /**
-     * Prepare {@link LauncherEvent} and {@link Intent} and then attach the event
-     * to the intent and then broadcast.
-     */
-    public final void broadcastEvent(LauncherEvent ev, Intent intent) {
-        intent = new Intent(intent);
-        intent.setSourceBounds(null);
-
-        final String flat = intent.toUri(0);
-        Intent broadcastIntent = new Intent(ACTION_LAUNCH).putExtra(EXTRA_INTENT, flat);
-
-        broadcastIntent.putExtra(EXTRA_SOURCE, MessageNano.toByteArray(ev));
-        String[] packages = ((Context)mLauncher).getResources().getStringArray(R.array.launch_broadcast_targets);
-        for(String p: packages) {
-            broadcastIntent.setPackage(p);
-            mLauncher.sendBroadcast(broadcastIntent, mLaunchBroadcastPermission);
-        }
-    }
-
-    public final void logLaunch(View v, Intent intent) {
+    protected LauncherEvent createLogEvent(View v) {
         LauncherEvent event = LoggerUtils.initLauncherEvent(
                 Action.TOUCH, Target.ITEM, Target.CONTAINER);
         event.action.touch = Action.TAP;
@@ -158,9 +102,11 @@ public abstract class UserEventLogger {
         // Fill in the duration of time spent navigating in Launcher and the container.
         event.elapsedContainerMillis = System.currentTimeMillis() - mElapsedContainerMillis;
         event.elapsedSessionMillis = System.currentTimeMillis() - mElapsedSessionMillis;
-        processEvent(event);
+        return event;
+    }
 
-        broadcastEvent(event, intent);
+    public void logLaunch(View v, Intent intent) {
+        processEvent(createLogEvent(v));
     }
 
     public void logTap(View v) {
