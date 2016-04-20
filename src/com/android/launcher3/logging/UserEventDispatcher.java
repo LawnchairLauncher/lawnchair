@@ -21,7 +21,6 @@ import android.view.View;
 import android.view.ViewParent;
 
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.LauncherEvent;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -29,7 +28,10 @@ import com.android.launcher3.util.ComponentKey;
 
 import java.util.List;
 
-public abstract class UserEventLogger {
+/**
+ * Manages the creation of {@link LauncherEvent}.
+ */
+public abstract class UserEventDispatcher {
 
     private final static int MAXIMUM_VIEW_HIERARCHY_LEVEL = 5;
     /**
@@ -70,7 +72,7 @@ public abstract class UserEventLogger {
         return null;
     }
 
-    private String TAG = "UserEventLogger";
+    private String TAG = "UserEvent";
 
     private long mElapsedContainerMillis;
     private long mElapsedSessionMillis;
@@ -86,7 +88,7 @@ public abstract class UserEventLogger {
     // intentHash                       required
     // --------------------------------------------------------------
 
-    protected LauncherEvent createLogEvent(View v) {
+    protected LauncherEvent createLauncherEvent(View v) {
         LauncherEvent event = LoggerUtils.initLauncherEvent(
                 Action.TOUCH, Target.ITEM, Target.CONTAINER);
         event.action.touch = Action.TAP;
@@ -105,8 +107,8 @@ public abstract class UserEventLogger {
         return event;
     }
 
-    public void logLaunch(View v, Intent intent) {
-        processEvent(createLogEvent(v));
+    public void logAppLaunch(View v, Intent intent) {
+        dispatchUserEvent(createLauncherEvent(v), intent);
     }
 
     public void logTap(View v) {
@@ -142,7 +144,7 @@ public abstract class UserEventLogger {
         mActionDurationMillis = System.currentTimeMillis();
     }
 
-    public abstract void processEvent(LauncherLogProto.LauncherEvent ev);
+    public abstract void dispatchUserEvent(LauncherEvent ev, Intent intent);
 
     public int getPredictedRank(ComponentKey key) {
         if (mPredictedApps == null) return -1;

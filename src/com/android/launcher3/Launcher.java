@@ -109,7 +109,7 @@ import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.logging.LoggerUtils;
-import com.android.launcher3.logging.UserEventLogger;
+import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.ComponentKey;
@@ -360,7 +360,7 @@ public class Launcher extends Activity
         int appWidgetId;
     }
 
-    private UserEventLogger mUserEventLogger;
+    private UserEventDispatcher mUserEventDispatcher;
 
     public FocusIndicatorView mFocusHandler;
     private boolean mRotationEnabled = false;
@@ -418,8 +418,6 @@ public class Launcher extends Activity
 
         mDragController = new DragController(this);
         mStateTransitionAnimation = new LauncherStateTransitionAnimation(this);
-
-        initLogger();
 
         mAppWidgetManager = AppWidgetManagerCompat.getInstance(this);
 
@@ -636,31 +634,36 @@ public class Launcher extends Activity
      * Since most user event logging is done on the UI, the object is retrieved from the
      * callback for convenience.
      */
-    private void initLogger() {
-        if (mLauncherCallbacks != null) {
-            mUserEventLogger = mLauncherCallbacks.getLogger();
-        }
-        if (mUserEventLogger == null) {
-            mUserEventLogger = new UserEventLogger() {
-                @Override
-                public void processEvent(LauncherLogProto.LauncherEvent ev) {
-                    if (!DEBUG_LOGGING) {
-                        return;
-                    }
-                    Log.d("UserEvent", String.format(Locale.US,
-                            "action:%s\nchild:%s\nparent:%s\nelapsed container %d ms session %d ms",
-                            LoggerUtils.getActionStr(ev.action),
-                            LoggerUtils.getTargetStr(ev.srcTarget[0]),
-                            LoggerUtils.getTargetStr(ev.srcTarget[1]),
-                            ev.elapsedContainerMillis,
-                            ev.elapsedSessionMillis));
+    private UserEventDispatcher createUserEventDispatcher() {
+        return new UserEventDispatcher() {
+            @Override
+            public void dispatchUserEvent(LauncherLogProto.LauncherEvent ev, Intent intent) {
+                if (!DEBUG_LOGGING) {
+                    return;
                 }
-            };
-        }
+                Log.d("UserEvent", String.format(Locale.US,
+                        "action:%s\nchild:%s\nparent:%s\nelapsed container %d ms session %d ms",
+                        LoggerUtils.getActionStr(ev.action),
+                        LoggerUtils.getTargetStr(ev.srcTarget[0]),
+                        LoggerUtils.getTargetStr(ev.srcTarget[1]),
+                        ev.elapsedContainerMillis,
+                        ev.elapsedSessionMillis));
+            }
+        };
     }
 
-    public UserEventLogger getLogger() {
-        return mUserEventLogger;
+    public UserEventDispatcher getUserEventDispatcher() {
+        if (mLauncherCallbacks != null) {
+            UserEventDispatcher dispatcher = mLauncherCallbacks.getUserEventDispatcher();
+            if (dispatcher != null) {
+                return dispatcher;
+            }
+        }
+
+        if (mUserEventDispatcher == null) {
+            mUserEventDispatcher = createUserEventDispatcher();
+        }
+        return mUserEventDispatcher;
     }
 
     public boolean isDraggingEnabled() {
@@ -990,7 +993,7 @@ public class Launcher extends Activity
         }
 
         super.onResume();
-        mUserEventLogger.resetElapsedSessionMillis();
+        getUserEventDispatcher().resetElapsedSessionMillis();
 
         // Restore the previous launcher state
         if (mOnResumeState == State.WORKSPACE) {
@@ -2688,7 +2691,7 @@ public class Launcher extends Activity
         }
 
         boolean success = startActivitySafely(v, intent, tag);
-        mUserEventLogger.logLaunch(v, intent);
+        getUserEventDispatcher().logAppLaunch(v, intent);
 
         if (success && v instanceof BubbleTextView) {
             mWaitingForResume = (BubbleTextView) v;
@@ -3460,7 +3463,7 @@ public class Launcher extends Activity
             List<ComponentKey> apps = mLauncherCallbacks.getPredictedApps();
             if (apps != null) {
                 mAppsView.setPredictedApps(apps);
-                mUserEventLogger.setPredictedApps(apps);
+                getUserEventDispatcher().setPredictedApps(apps);
             }
         }
     }

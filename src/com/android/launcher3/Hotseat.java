@@ -27,12 +27,12 @@ import android.view.ViewDebug;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.android.launcher3.logging.UserEventLogger;
+import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
 public class Hotseat extends FrameLayout
-        implements UserEventLogger.LaunchSourceProvider{
+        implements UserEventDispatcher.LaunchSourceProvider{
 
     private CellLayout mContent;
 

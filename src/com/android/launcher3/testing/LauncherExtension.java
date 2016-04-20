@@ -12,7 +12,7 @@ import com.android.launcher3.AppInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherCallbacks;
 import com.android.launcher3.allapps.AllAppsSearchBarController;
-import com.android.launcher3.logging.UserEventLogger;
+import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.util.ComponentKey;
 
 import java.io.FileDescriptor;
@@ -189,7 +189,7 @@ public class LauncherExtension extends Launcher {
         }
 
         @Override
-        public UserEventLogger getLogger() { return null; }
+        public UserEventDispatcher getUserEventDispatcher() { return null; }
 
         @Override
         public View getQsbBar() {
