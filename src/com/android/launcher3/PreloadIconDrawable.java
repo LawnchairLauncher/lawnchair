@@ -179,7 +179,8 @@ class PreloadIconDrawable extends Drawable {
             mPaint.setColor(getIndicatorColor());
         }
         if (mIcon instanceof FastBitmapDrawable) {
-            ((FastBitmapDrawable) mIcon).setGhostModeEnabled(level <= 0);
+            ((FastBitmapDrawable) mIcon).setState(level <= 0 ?
+                    FastBitmapDrawable.State.DISABLED : FastBitmapDrawable.State.NORMAL);
         }
 
         invalidateSelf();

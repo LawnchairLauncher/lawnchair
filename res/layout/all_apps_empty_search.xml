@@ -16,7 +16,7 @@
 <TextView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/empty_text"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="start"
     android:paddingTop="@dimen/all_apps_empty_search_message_top_offset"

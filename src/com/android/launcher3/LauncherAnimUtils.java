@@ -24,7 +24,6 @@ import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
 
 import com.android.launcher3.util.UiThreadCircularReveal;
@@ -59,24 +58,25 @@ public class LauncherAnimUtils {
     // it should be cancelled
     public static void startAnimationAfterNextDraw(final Animator animator, final View view) {
         view.getViewTreeObserver().addOnDrawListener(new ViewTreeObserver.OnDrawListener() {
-                private boolean mStarted = false;
-                public void onDraw() {
-                    if (mStarted) return;
-                    mStarted = true;
-                    // Use this as a signal that the animation was cancelled
-                    if (animator.getDuration() == 0) {
-                        return;
-                    }
-                    animator.start();
+            private boolean mStarted = false;
 
-                    final ViewTreeObserver.OnDrawListener listener = this;
-                    view.post(new Runnable() {
-                            public void run() {
-                                view.getViewTreeObserver().removeOnDrawListener(listener);
-                            }
-                        });
+            public void onDraw() {
+                if (mStarted) return;
+                mStarted = true;
+                // Use this as a signal that the animation was cancelled
+                if (animator.getDuration() == 0) {
+                    return;
                 }
-            });
+                animator.start();
+
+                final ViewTreeObserver.OnDrawListener listener = this;
+                view.post(new Runnable() {
+                    public void run() {
+                        view.getViewTreeObserver().removeOnDrawListener(listener);
+                    }
+                });
+            }
+        });
     }
 
     public static void onDestroyActivity() {

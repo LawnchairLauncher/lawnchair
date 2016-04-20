@@ -15,11 +15,22 @@
  */
 package com.android.launcher3.allapps;
 
-import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
+import android.net.Uri;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 
+import com.android.launcher3.ExtendedEditText;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.ComponentKey;
 
 import java.util.ArrayList;
@@ -27,53 +38,134 @@ import java.util.ArrayList;
 /**
  * An interface to a search box that AllApps can command.
  */
-public abstract class AllAppsSearchBarController {
+public abstract class AllAppsSearchBarController
+        implements TextWatcher, OnEditorActionListener, ExtendedEditText.OnBackKeyListener {
 
+    protected Launcher mLauncher;
     protected AlphabeticalAppsList mApps;
     protected Callbacks mCb;
+    protected ExtendedEditText mInput;
+
+    protected DefaultAppSearchAlgorithm mSearchAlgorithm;
+    protected InputMethodManager mInputMethodManager;
 
     /**
      * Sets the references to the apps model and the search result callback.
      */
-    public final void initialize(AlphabeticalAppsList apps, Callbacks cb) {
+    public final void initialize(
+            AlphabeticalAppsList apps, ExtendedEditText input,
+            Launcher launcher, Callbacks cb) {
         mApps = apps;
         mCb = cb;
-        onInitialize();
+        mLauncher = launcher;
+
+        mInput = input;
+        mInput.addTextChangedListener(this);
+        mInput.setOnEditorActionListener(this);
+        mInput.setOnBackKeyListener(this);
+
+        mInputMethodManager = (InputMethodManager)
+                mInput.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        mSearchAlgorithm = onInitializeSearch();
     }
 
     /**
-     * To be overridden by subclasses.  This method will get called when the controller is set,
-     * before getView().
+     * To be implemented by subclasses. This method will get called when the controller is set.
      */
-    protected abstract void onInitialize();
+    protected abstract DefaultAppSearchAlgorithm onInitializeSearch();
 
-    /**
-     * Returns the search bar view.
-     * @param parent the parent to attach the search bar view to.
-     */
-    public abstract View getView(ViewGroup parent);
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        // Do nothing
+    }
 
-    /**
-     * Focuses the search field to handle key events.
-     */
-    public abstract void focusSearchField();
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        // Do nothing
+    }
 
-    /**
-     * Returns whether the search field is focused.
-     */
-    public abstract boolean isSearchFieldFocused();
+    @Override
+    public void afterTextChanged(final Editable s) {
+        String query = s.toString();
+        if (query.isEmpty()) {
+            mSearchAlgorithm.cancel(true);
+            mCb.clearSearchResult();
+        } else {
+            mSearchAlgorithm.cancel(false);
+            mSearchAlgorithm.doSearch(query, mCb);
+        }
+    }
+
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        // Skip if it's not the right action
+        if (actionId != EditorInfo.IME_ACTION_SEARCH) {
+            return false;
+        }
+        // Skip if the query is empty
+        String query = v.getText().toString();
+        if (query.isEmpty()) {
+            return false;
+        }
+        return mLauncher.startActivitySafely(v, createMarketSearchIntent(query), null);
+    }
+
+    @Override
+    public boolean onBackKey() {
+        // Only hide the search field if there is no query, or if there
+        // are no filtered results
+        String query = Utilities.trim(mInput.getEditableText().toString());
+        if (query.isEmpty() || mApps.hasNoFilteredResults()) {
+            reset();
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Resets the search bar state.
      */
-    public abstract void reset();
+    public void reset() {
+        unfocusSearchField();
+        mCb.clearSearchResult();
+        mInput.setText("");
+        mInputMethodManager.hideSoftInputFromWindow(mInput.getWindowToken(), 0);
+    }
+
+    protected void unfocusSearchField() {
+        View nextFocus = mInput.focusSearch(View.FOCUS_DOWN);
+        if (nextFocus != null) {
+            nextFocus.requestFocus();
+        }
+    }
 
     /**
-     * Returns whether the prediction bar should currently be visible depending on the state of
-     * the search bar.
+     * Focuses the search field to handle key events.
      */
-    @Deprecated
-    public abstract boolean shouldShowPredictionBar();
+    public void focusSearchField() {
+        mInput.requestFocus();
+        mInputMethodManager.showSoftInput(mInput, InputMethodManager.SHOW_IMPLICIT);
+    }
+
+    /**
+     * Returns whether the search field is focused.
+     */
+    public boolean isSearchFieldFocused() {
+        return mInput.isFocused();
+    }
+
+    /**
+     * Creates a new market search intent.
+     */
+    public Intent createMarketSearchIntent(String query) {
+        Uri marketSearchUri = Uri.parse("market://search")
+                .buildUpon()
+                .appendQueryParameter("c", "apps")
+                .appendQueryParameter("q", query)
+                .build();
+        return new Intent(Intent.ACTION_VIEW).setData(marketSearchUri);
+    }
 
     /**
      * Callback for getting search results.

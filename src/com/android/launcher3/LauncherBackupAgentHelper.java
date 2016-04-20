@@ -20,24 +20,25 @@ import android.app.backup.BackupAgentHelper;
 import android.app.backup.BackupDataInput;
 import android.app.backup.BackupManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
-import com.android.launcher3.model.MigrateFromRestoreTask;
+import com.android.launcher3.model.GridSizeMigrationTask;
 
 import java.io.IOException;
 
 public class LauncherBackupAgentHelper extends BackupAgentHelper {
 
-    private static final String TAG = "LauncherBackupAgentHelper";
+    private static final String TAG = "LauncherBAHelper";
+
+    private static final String KEY_LAST_NOTIFIED_TIME = "backup_manager_last_notified";
 
     private static final String LAUNCHER_DATA_PREFIX = "L";
 
     static final boolean VERBOSE = false;
     static final boolean DEBUG = false;
-
-    private static BackupManager sBackupManager;
 
     /**
      * Notify the backup manager that out database is dirty.
@@ -47,10 +48,29 @@ public class LauncherBackupAgentHelper extends BackupAgentHelper {
      * @param context application context
      */
     public static void dataChanged(Context context) {
-        if (sBackupManager == null) {
-            sBackupManager = new BackupManager(context);
+        dataChanged(context, 0);
+    }
+
+    /**
+     * Notify the backup manager that out database is dirty.
+     *
+     * <P>This does not force an immediate backup.
+     *
+     * @param context application context
+     * @param throttleMs duration in ms for which two consecutive calls to backup manager should
+     *                   not be made.
+     */
+    public static void dataChanged(Context context, long throttleMs) {
+        SharedPreferences prefs = Utilities.getPrefs(context);
+        long now = System.currentTimeMillis();
+        long lastTime = prefs.getLong(KEY_LAST_NOTIFIED_TIME, 0);
+
+        // User can manually change the system time, which could lead to now < lastTime.
+        // Re-backup in that case, as the backup will have a wrong lastModifiedTime.
+        if (now < lastTime || now >= (lastTime + throttleMs)) {
+            BackupManager.dataChanged(context.getPackageName());
+            prefs.edit().putLong(KEY_LAST_NOTIFIED_TIME, now).apply();
         }
-        sBackupManager.dataChanged();
     }
 
     private LauncherBackupHelper mHelper;
@@ -91,18 +111,16 @@ public class LauncherBackupAgentHelper extends BackupAgentHelper {
 
         if (hasData && mHelper.restoreSuccessful) {
             LauncherAppState.getLauncherProvider().clearFlagEmptyDbCreated();
-            LauncherClings.synchonouslyMarkFirstRunClingDismissed(this);
+            LauncherClings.markFirstRunClingDismissed(this);
 
             // Rank was added in v4.
             if (mHelper.restoredBackupVersion <= 3) {
                 LauncherAppState.getLauncherProvider().updateFolderItemsRank();
             }
 
-            if (MigrateFromRestoreTask.ENABLED && mHelper.shouldAttemptWorkspaceMigration()) {
-                MigrateFromRestoreTask.markForMigration(getApplicationContext(),
-                        (int) mHelper.migrationCompatibleProfileData.desktopCols,
-                        (int) mHelper.migrationCompatibleProfileData.desktopRows,
-                        mHelper.widgetSizes);
+            if (GridSizeMigrationTask.ENABLED && mHelper.shouldAttemptWorkspaceMigration()) {
+                GridSizeMigrationTask.markForMigration(getApplicationContext(),
+                        mHelper.widgetSizes, mHelper.migrationCompatibleProfileData);
             }
 
             LauncherAppState.getLauncherProvider().convertShortcutsToLauncherActivities();

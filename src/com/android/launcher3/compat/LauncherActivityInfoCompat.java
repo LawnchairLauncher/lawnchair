@@ -33,7 +33,6 @@ public abstract class LauncherActivityInfoCompat {
     public abstract Drawable getIcon(int density);
     public abstract ApplicationInfo getApplicationInfo();
     public abstract long getFirstInstallTime();
-    public abstract Drawable getBadgedIcon(int density);
 
     /**
      * Creates a LauncherActivityInfoCompat for the primary user.

@@ -22,9 +22,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.launcher3.CellLayout;
-import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 
 import java.util.Arrays;
@@ -51,7 +48,7 @@ public class FocusLogic {
     private static final String TAG = "FocusLogic";
     private static final boolean DEBUG = false;
 
-    // Item and page index related constant used by {@link #handleKeyEvent}.
+    /** Item and page index related constant used by {@link #handleKeyEvent}. */
     public static final int NOOP = -1;
 
     public static final int PREVIOUS_PAGE_RIGHT_COLUMN  = -2;
@@ -65,6 +62,8 @@ public class FocusLogic {
     public static final int NEXT_PAGE_FIRST_ITEM        = -8;
     public static final int NEXT_PAGE_LEFT_COLUMN       = -9;
     public static final int NEXT_PAGE_RIGHT_COLUMN      = -10;
+
+    public static final int ALL_APPS_COLUMN = -11;
 
     // Matrix related constant.
     public static final int EMPTY = -1;
@@ -81,8 +80,11 @@ public class FocusLogic {
                 keyCode == KeyEvent.KEYCODE_DEL || keyCode == KeyEvent.KEYCODE_FORWARD_DEL);
     }
 
-    public static int handleKeyEvent(int keyCode, int cntX, int cntY,
-            int [][] map, int iconIdx, int pageIndex, int pageCount, boolean isRtl) {
+    public static int handleKeyEvent(int keyCode, int [][] map, int iconIdx, int pageIndex,
+            int pageCount, boolean isRtl) {
+
+        int cntX = map == null ? -1 : map.length;
+        int cntY = map == null ? -1 : map[0].length;
 
         if (DEBUG) {
             Log.v(TAG, String.format(
@@ -93,16 +95,16 @@ public class FocusLogic {
         int newIndex = NOOP;
         switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_LEFT:
-                newIndex = handleDpadHorizontal(iconIdx, cntX, cntY, map, -1 /*increment*/);
-                if (isRtl && newIndex == NOOP && pageIndex > 0) {
+                newIndex = handleDpadHorizontal(iconIdx, cntX, cntY, map, -1 /*increment*/, isRtl);
+                if (!isRtl && newIndex == NOOP && pageIndex > 0) {
                     newIndex = PREVIOUS_PAGE_RIGHT_COLUMN;
                 } else if (isRtl && newIndex == NOOP && pageIndex < pageCount - 1) {
                     newIndex = NEXT_PAGE_RIGHT_COLUMN;
                 }
                 break;
             case KeyEvent.KEYCODE_DPAD_RIGHT:
-                newIndex = handleDpadHorizontal(iconIdx, cntX, cntY, map, 1 /*increment*/);
-                if (isRtl && newIndex == NOOP && pageIndex < pageCount - 1) {
+                newIndex = handleDpadHorizontal(iconIdx, cntX, cntY, map, 1 /*increment*/, isRtl);
+                if (!isRtl && newIndex == NOOP && pageIndex < pageCount - 1) {
                     newIndex = NEXT_PAGE_LEFT_COLUMN;
                 } else if (isRtl && newIndex == NOOP && pageIndex > 0) {
                     newIndex = PREVIOUS_PAGE_LEFT_COLUMN;
@@ -168,8 +170,12 @@ public class FocusLogic {
 
         // Iterate thru the children.
         for (int i = 0; i < parent.getChildCount(); i++ ) {
-            int cx = ((CellLayout.LayoutParams) parent.getChildAt(i).getLayoutParams()).cellX;
-            int cy = ((CellLayout.LayoutParams) parent.getChildAt(i).getLayoutParams()).cellY;
+            View cell = parent.getChildAt(i);
+            if (!cell.isFocusable()) {
+                continue;
+            }
+            int cx = ((CellLayout.LayoutParams) cell.getLayoutParams()).cellX;
+            int cy = ((CellLayout.LayoutParams) cell.getLayoutParams()).cellY;
             matrix[invert ? (m - cx - 1) : cx][cy] = i;
         }
         if (DEBUG) {
@@ -184,51 +190,67 @@ public class FocusLogic {
      * in portrait orientation. In landscape, [(icon + hotseat) column count x (icon row count)]
      */
     // TODO: get rid of the dynamic matrix creation
-    public static int[][] createSparseMatrix(CellLayout iconLayout, CellLayout hotseatLayout,
-            boolean isHorizontal, int allappsiconRank, boolean includeAllappsicon) {
+    public static int[][] createSparseMatrixWithHotseat(CellLayout iconLayout,
+            CellLayout hotseatLayout, boolean isHotseatHorizontal, int allappsiconRank) {
 
         ViewGroup iconParent = iconLayout.getShortcutsAndWidgets();
         ViewGroup hotseatParent = hotseatLayout.getShortcutsAndWidgets();
 
+        boolean moreIconsInHotseatThanWorkspace = isHotseatHorizontal ?
+                hotseatLayout.getCountX() > iconLayout.getCountX() :
+                hotseatLayout.getCountY() > iconLayout.getCountY();
+
         int m, n;
-        if (isHorizontal) {
-            m = iconLayout.getCountX();
+        if (isHotseatHorizontal) {
+            m = hotseatLayout.getCountX();
             n = iconLayout.getCountY() + hotseatLayout.getCountY();
         } else {
             m = iconLayout.getCountX() + hotseatLayout.getCountX();
-            n = iconLayout.getCountY();
+            n = hotseatLayout.getCountY();
         }
         int[][] matrix = createFullMatrix(m, n);
-
-        // Iterate thru the children of the top parent.
+        if (moreIconsInHotseatThanWorkspace) {
+            if (isHotseatHorizontal) {
+                for (int j = 0; j < n; j++) {
+                    matrix[allappsiconRank][j] = ALL_APPS_COLUMN;
+                }
+            } else {
+                for (int j = 0; j < m; j++) {
+                    matrix[j][allappsiconRank] = ALL_APPS_COLUMN;
+                }
+            }
+        }
+        // Iterate thru the children of the workspace.
         for (int i = 0; i < iconParent.getChildCount(); i++) {
-            int cx = ((CellLayout.LayoutParams) iconParent.getChildAt(i).getLayoutParams()).cellX;
-            int cy = ((CellLayout.LayoutParams) iconParent.getChildAt(i).getLayoutParams()).cellY;
+            View cell = iconParent.getChildAt(i);
+            if (!cell.isFocusable()) {
+                continue;
+            }
+            int cx = ((CellLayout.LayoutParams) cell.getLayoutParams()).cellX;
+            int cy = ((CellLayout.LayoutParams) cell.getLayoutParams()).cellY;
+            if (moreIconsInHotseatThanWorkspace) {
+                if (isHotseatHorizontal && cx >= allappsiconRank) {
+                    // Add 1 to account for the All Apps button.
+                    cx++;
+                }
+                if (!isHotseatHorizontal && cy >= allappsiconRank) {
+                    // Add 1 to account for the All Apps button.
+                    cy++;
+                }
+            }
             matrix[cx][cy] = i;
         }
 
-        // Iterate thru the children of the bottom parent
-        // The hotseat view group contains one more item than iconLayout column count.
-        // If {@param allappsiconRank} not negative, then the last icon in the hotseat
-        // is truncated. If it is negative, then all apps icon index is not inserted.
-        for(int i = hotseatParent.getChildCount() - 1; i >= (includeAllappsicon ? 0 : 1); i--) {
-            int delta = 0;
-            if (isHorizontal) {
+        // Iterate thru the children of the hotseat.
+        for (int i = hotseatParent.getChildCount() - 1; i >= 0; i--) {
+            if (isHotseatHorizontal) {
                 int cx = ((CellLayout.LayoutParams)
                         hotseatParent.getChildAt(i).getLayoutParams()).cellX;
-                if ((includeAllappsicon && cx >= allappsiconRank) ||
-                        (!includeAllappsicon && cx > allappsiconRank)) {
-                        delta = -1;
-                }
-                matrix[cx + delta][iconLayout.getCountY()] = iconParent.getChildCount() + i;
+                matrix[cx][iconLayout.getCountY()] = iconParent.getChildCount() + i;
             } else {
                 int cy = ((CellLayout.LayoutParams)
                         hotseatParent.getChildAt(i).getLayoutParams()).cellY;
-                if ((includeAllappsicon && cy >= allappsiconRank) ||
-                        (!includeAllappsicon && cy > allappsiconRank)) {
-                        delta = -1;
-                }
-                matrix[iconLayout.getCountX()][cy + delta] = iconParent.getChildCount() + i;
+                matrix[iconLayout.getCountX()][cy] = iconParent.getChildCount() + i;
             }
         }
         if (DEBUG) {
@@ -248,7 +270,8 @@ public class FocusLogic {
      * @param pivotY    y coordinate of the focused item in the current page
      */
     // TODO: get rid of the dynamic matrix creation
-    public static int[][] createSparseMatrix(CellLayout iconLayout, int pivotX, int pivotY) {
+    public static int[][] createSparseMatrixWithPivotColumn(CellLayout iconLayout,
+            int pivotX, int pivotY) {
 
         ViewGroup iconParent = iconLayout.getShortcutsAndWidgets();
 
@@ -256,8 +279,12 @@ public class FocusLogic {
 
         // Iterate thru the children of the top parent.
         for (int i = 0; i < iconParent.getChildCount(); i++) {
-            int cx = ((CellLayout.LayoutParams) iconParent.getChildAt(i).getLayoutParams()).cellX;
-            int cy = ((CellLayout.LayoutParams) iconParent.getChildAt(i).getLayoutParams()).cellY;
+            View cell = iconParent.getChildAt(i);
+            if (!cell.isFocusable()) {
+                continue;
+            }
+            int cx = ((CellLayout.LayoutParams) cell.getLayoutParams()).cellX;
+            int cy = ((CellLayout.LayoutParams) cell.getLayoutParams()).cellY;
             if (pivotX < 0) {
                 matrix[cx - pivotX][cy] = i;
             } else {
@@ -291,7 +318,7 @@ public class FocusLogic {
      */
     // TODO: add unit tests to verify all permutation.
     private static int handleDpadHorizontal(int iconIdx, int cntX, int cntY,
-            int[][] matrix, int increment) {
+            int[][] matrix, int increment, boolean isRtl) {
         if(matrix == null) {
             throw new IllegalStateException("Dpad navigation requires a matrix.");
         }
@@ -314,8 +341,9 @@ public class FocusLogic {
         }
 
         // Rule1: check first in the horizontal direction
-        for (int i = xPos + increment; 0 <= i && i < cntX; i = i + increment) {
-            if ((newIconIndex = inspectMatrix(i, yPos, cntX, cntY, matrix)) != NOOP) {
+        for (int x = xPos + increment; 0 <= x && x < cntX; x += increment) {
+            if ((newIconIndex = inspectMatrix(x, yPos, cntX, cntY, matrix)) != NOOP
+                    && newIconIndex != ALL_APPS_COLUMN) {
                 return newIconIndex;
             }
         }
@@ -324,18 +352,40 @@ public class FocusLogic {
         //              (x2-n, yPos + 2*increment), (x2-n, yPos - 2*increment)
         int nextYPos1;
         int nextYPos2;
-        int i = -1;
+        boolean haveCrossedAllAppsColumn1 = false;
+        boolean haveCrossedAllAppsColumn2 = false;
+        int x = -1;
         for (int coeff = 1; coeff < cntY; coeff++) {
             nextYPos1 = yPos + coeff * increment;
             nextYPos2 = yPos - coeff * increment;
-            for (i = xPos + increment * coeff; 0 <= i && i < cntX; i = i + increment) {
-                if ((newIconIndex = inspectMatrix(i, nextYPos1, cntX, cntY, matrix)) != NOOP) {
+            x = xPos + increment * coeff;
+            if (inspectMatrix(x, nextYPos1, cntX, cntY, matrix) == ALL_APPS_COLUMN) {
+                haveCrossedAllAppsColumn1 = true;
+            }
+            if (inspectMatrix(x, nextYPos2, cntX, cntY, matrix) == ALL_APPS_COLUMN) {
+                haveCrossedAllAppsColumn2 = true;
+            }
+            for (; 0 <= x && x < cntX; x += increment) {
+                int offset1 = haveCrossedAllAppsColumn1 && x < cntX - 1 ? increment : 0;
+                newIconIndex = inspectMatrix(x, nextYPos1 + offset1, cntX, cntY, matrix);
+                if (newIconIndex != NOOP) {
                     return newIconIndex;
                 }
-                if ((newIconIndex = inspectMatrix(i, nextYPos2, cntX, cntY, matrix)) != NOOP) {
+                int offset2 = haveCrossedAllAppsColumn2 && x < cntX - 1 ? -increment : 0;
+                newIconIndex = inspectMatrix(x, nextYPos2 + offset2, cntX, cntY, matrix);
+                if (newIconIndex != NOOP) {
                     return newIconIndex;
                 }
             }
+        }
+
+        // Rule3: if switching between pages, do a brute-force search to find an item that was
+        //        missed by rules 1 and 2 (such as when going from a bottom right icon to top left)
+        if (iconIdx == PIVOT) {
+            if (isRtl) {
+                return increment < 0 ? NEXT_PAGE_FIRST_ITEM : PREVIOUS_PAGE_LAST_ITEM;
+            }
+            return increment < 0 ? PREVIOUS_PAGE_LAST_ITEM : NEXT_PAGE_FIRST_ITEM;
         }
         return newIconIndex;
     }
@@ -375,8 +425,9 @@ public class FocusLogic {
         }
 
         // Rule1: check first in the dpad direction
-        for (int j = yPos + increment; 0 <= j && j <cntY && 0 <= j; j = j + increment) {
-            if ((newIconIndex = inspectMatrix(xPos, j, cntX, cntY, matrix)) != NOOP) {
+        for (int y = yPos + increment; 0 <= y && y <cntY && 0 <= y; y += increment) {
+            if ((newIconIndex = inspectMatrix(xPos, y, cntX, cntY, matrix)) != NOOP
+                    && newIconIndex != ALL_APPS_COLUMN) {
                 return newIconIndex;
             }
         }
@@ -385,15 +436,28 @@ public class FocusLogic {
         //              (xPos + 2*increment, y_(2-n))), (xPos - 2*increment, y_(2-n))
         int nextXPos1;
         int nextXPos2;
-        int j = -1;
+        boolean haveCrossedAllAppsColumn1 = false;
+        boolean haveCrossedAllAppsColumn2 = false;
+        int y = -1;
         for (int coeff = 1; coeff < cntX; coeff++) {
             nextXPos1 = xPos + coeff * increment;
             nextXPos2 = xPos - coeff * increment;
-            for (j = yPos + increment * coeff; 0 <= j && j < cntY; j = j + increment) {
-                if ((newIconIndex = inspectMatrix(nextXPos1, j, cntX, cntY, matrix)) != NOOP) {
+            y = yPos + increment * coeff;
+            if (inspectMatrix(nextXPos1, y, cntX, cntY, matrix) == ALL_APPS_COLUMN) {
+                haveCrossedAllAppsColumn1 = true;
+            }
+            if (inspectMatrix(nextXPos2, y, cntX, cntY, matrix) == ALL_APPS_COLUMN) {
+                haveCrossedAllAppsColumn2 = true;
+            }
+            for (; 0 <= y && y < cntY; y = y + increment) {
+                int offset1 = haveCrossedAllAppsColumn1 && y < cntY - 1 ? increment : 0;
+                newIconIndex = inspectMatrix(nextXPos1 + offset1, y, cntX, cntY, matrix);
+                if (newIconIndex != NOOP) {
                     return newIconIndex;
                 }
-                if ((newIconIndex = inspectMatrix(nextXPos2, j, cntX, cntY, matrix)) != NOOP) {
+                int offset2 = haveCrossedAllAppsColumn2 && y < cntY - 1 ? -increment : 0;
+                newIconIndex = inspectMatrix(nextXPos2 + offset2, y, cntX, cntY, matrix);
+                if (newIconIndex != NOOP) {
                     return newIconIndex;
                 }
             }
@@ -460,6 +524,7 @@ public class FocusLogic {
             case CURRENT_PAGE_LAST_ITEM:    return "CURRENT_PAGE_LAST";
             case NEXT_PAGE_FIRST_ITEM:      return "NEXT_PAGE_FIRST";
             case NEXT_PAGE_LEFT_COLUMN:     return "NEXT_PAGE_LEFT_COLUMN";
+            case ALL_APPS_COLUMN:           return "ALL_APPS_COLUMN";
             default:
                 return Integer.toString(index);
         }
@@ -485,9 +550,9 @@ public class FocusLogic {
     /**
      * @param edgeColumn the column of the new icon. either {@link #NEXT_PAGE_LEFT_COLUMN} or
      * {@link #NEXT_PAGE_RIGHT_COLUMN}
-     * @return the view adjacent to {@param oldView} in the {@param nextPage}.
+     * @return the view adjacent to {@param oldView} in the {@param nextPage} of the folder.
      */
-    public static View getAdjacentChildInNextPage(
+    public static View getAdjacentChildInNextFolderPage(
             ShortcutAndWidgetContainer nextPage, View oldView, int edgeColumn) {
         final int newRow = ((CellLayout.LayoutParams) oldView.getLayoutParams()).cellY;
 

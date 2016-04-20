@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.testing;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -114,10 +114,6 @@ public class WeightWatcher extends LinearLayout {
             v.setPid(processes[i]);
             addView(v);
         }
-    }
-
-    public WeightWatcher(Context context) {
-        this(context, null);
     }
 
     @Override

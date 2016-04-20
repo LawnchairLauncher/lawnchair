@@ -20,7 +20,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.InsetDrawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView.State;
 import android.util.AttributeSet;
@@ -52,13 +51,9 @@ import com.android.launcher3.util.Thunk;
  * The widgets list view container.
  */
 public class WidgetsContainerView extends BaseContainerView
-        implements View.OnLongClickListener, View.OnClickListener, DragSource{
-
+        implements View.OnLongClickListener, View.OnClickListener, DragSource {
     private static final String TAG = "WidgetsContainerView";
-    private static final boolean DEBUG = false;
-
-    /* Coefficient multiplied to the screen height for preloading widgets. */
-    private static final int PRELOAD_SCREEN_HEIGHT_MULTIPLE = 1;
+    private static final boolean LOGD = false;
 
     /* Global instances that are used inside this container. */
     @Thunk Launcher mLauncher;
@@ -66,8 +61,7 @@ public class WidgetsContainerView extends BaseContainerView
     private IconCache mIconCache;
 
     /* Recycler view related member variables */
-    private View mContent;
-    private WidgetsRecyclerView mView;
+    private WidgetsRecyclerView mRecyclerView;
     private WidgetsListAdapter mAdapter;
 
     /* Touch handling related member variables. */
@@ -75,8 +69,6 @@ public class WidgetsContainerView extends BaseContainerView
 
     /* Rendering related. */
     private WidgetPreviewLoader mWidgetPreviewLoader;
-
-    private Rect mPadding = new Rect();
 
     public WidgetsContainerView(Context context) {
         this(context, null);
@@ -92,45 +84,25 @@ public class WidgetsContainerView extends BaseContainerView
         mDragController = mLauncher.getDragController();
         mAdapter = new WidgetsListAdapter(context, this, this, mLauncher);
         mIconCache = (LauncherAppState.getInstance()).getIconCache();
-        if (DEBUG) {
+        if (LOGD) {
             Log.d(TAG, "WidgetsContainerView constructor");
         }
     }
 
     @Override
     protected void onFinishInflate() {
-        mContent = findViewById(R.id.content);
-        mView = (WidgetsRecyclerView) findViewById(R.id.widgets_list_view);
-        mView.setAdapter(mAdapter);
-
-        // This extends the layout space so that preloading happen for the {@link RecyclerView}
-        mView.setLayoutManager(new LinearLayoutManager(getContext()) {
-            @Override
-            protected int getExtraLayoutSpace(State state) {
-                DeviceProfile grid = mLauncher.getDeviceProfile();
-                return super.getExtraLayoutSpace(state)
-                        + grid.availableHeightPx * PRELOAD_SCREEN_HEIGHT_MULTIPLE;
-            }
-        });
-        mPadding.set(getPaddingLeft(), getPaddingTop(), getPaddingRight(),
-                getPaddingBottom());
+        super.onFinishInflate();
+        mRecyclerView = (WidgetsRecyclerView) getContentView().findViewById(R.id.widgets_list_view);
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
     //
     // Returns views used for launcher transitions.
     //
 
-    public View getContentView() {
-        return mView;
-    }
-
-    public View getRevealView() {
-        // TODO(hyunyoungs): temporarily use apps view transition.
-        return findViewById(R.id.widgets_reveal_view);
-    }
-
     public void scrollToTop() {
-        mView.scrollToPosition(0);
+        mRecyclerView.scrollToPosition(0);
     }
 
     //
@@ -148,14 +120,17 @@ public class WidgetsContainerView extends BaseContainerView
         if (mWidgetInstructionToast != null) {
             mWidgetInstructionToast.cancel();
         }
-        mWidgetInstructionToast = Toast.makeText(getContext(),R.string.long_press_widget_to_add,
-                Toast.LENGTH_SHORT);
+
+        CharSequence msg = Utilities.wrapForTts(
+                getContext().getText(R.string.long_press_widget_to_add),
+                getContext().getString(R.string.long_accessible_way_to_add));
+        mWidgetInstructionToast = Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT);
         mWidgetInstructionToast.show();
     }
 
     @Override
     public boolean onLongClick(View v) {
-        if (DEBUG) {
+        if (LOGD) {
             Log.d(TAG, String.format("onLonglick [v=%s]", v));
         }
         // Return early if this is not initiated from a touch
@@ -164,14 +139,13 @@ public class WidgetsContainerView extends BaseContainerView
         if (!mLauncher.isWidgetsViewVisible() ||
                 mLauncher.getWorkspace().isSwitchingState()) return false;
         // Return if global dragging is not enabled
-        Log.d(TAG, String.format("onLonglick dragging enabled?.", v));
         if (!mLauncher.isDraggingEnabled()) return false;
 
         boolean status = beginDragging(v);
         if (status && v.getTag() instanceof PendingAddWidgetInfo) {
             WidgetHostViewLoader hostLoader = new WidgetHostViewLoader(mLauncher, v);
             boolean preloadStatus = hostLoader.preloadWidget();
-            if (DEBUG) {
+            if (LOGD) {
                 Log.d(TAG, String.format("preloading widget [status=%s]", preloadStatus));
             }
             mLauncher.getDragController().addDragListener(hostLoader);
@@ -300,6 +274,9 @@ public class WidgetsContainerView extends BaseContainerView
     @Override
     public void onDropCompleted(View target, DragObject d, boolean isFlingToDelete,
             boolean success) {
+        if (LOGD) {
+            Log.d(TAG, "onDropCompleted");
+        }
         if (isFlingToDelete || !success || (target != mLauncher.getWorkspace() &&
                 !(target instanceof DeleteDropTarget) && !(target instanceof Folder))) {
             // Exit spring loaded mode if we have not successfully dropped or have not handled the
@@ -333,31 +310,30 @@ public class WidgetsContainerView extends BaseContainerView
     //
     // Container rendering related.
     //
-
     @Override
-    protected void onUpdateBackgroundAndPaddings(Rect searchBarBounds, Rect padding) {
-        // Apply the top-bottom padding to the content itself so that the launcher transition is
-        // clipped correctly
-        mContent.setPadding(0, padding.top, 0, padding.bottom);
-
-        // TODO: Use quantum_panel_dark instead of quantum_panel_shape_dark.
-        InsetDrawable background = new InsetDrawable(
-                getResources().getDrawable(R.drawable.quantum_panel_shape_dark), padding.left, 0,
-                padding.right, 0);
-        Rect bgPadding = new Rect();
-        background.getPadding(bgPadding);
-        mView.setBackground(background);
-        getRevealView().setBackground(background.getConstantState().newDrawable());
-        mView.updateBackgroundPadding(bgPadding);
+    protected void onUpdateBgPadding(Rect padding, Rect bgPadding) {
+        if (Utilities.isRtl(getResources())) {
+            getContentView().setPadding(0, bgPadding.top,
+                    bgPadding.right, bgPadding.bottom);
+            mRecyclerView.updateBackgroundPadding(new Rect(bgPadding.left, 0, 0, 0));
+        } else {
+            getContentView().setPadding(bgPadding.left, bgPadding.top,
+                    0, bgPadding.bottom);
+            mRecyclerView.updateBackgroundPadding(new Rect(0, 0, bgPadding.right, 0));
+        }
     }
 
     /**
      * Initialize the widget data model.
      */
     public void addWidgets(WidgetsModel model) {
-        mView.setWidgets(model);
+        mRecyclerView.setWidgets(model);
         mAdapter.setWidgetsModel(model);
         mAdapter.notifyDataSetChanged();
+    }
+
+    public boolean isEmpty() {
+        return mAdapter.getItemCount() == 0;
     }
 
     private WidgetPreviewLoader getWidgetPreviewLoader() {

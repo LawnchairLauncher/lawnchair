@@ -19,17 +19,17 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
+    <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"Munka"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Az alkalmazás nincs telepítve."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Az alkalmazás nem érhető el"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"A letöltött alkalmazás Csökkentett módban ki van kapcsolva"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"A modulok ki vannak kapcsolva Csökkentett módban"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Mem. megjelenítése"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Modul felvételéhez érintse meg, és tartsa lenyomva"</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Modul mozgatásához koppintson rá duplán és tartsa lenyomva, vagy használjon egyéni műveleteket."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Alkalmazások keresése"</string>
+    <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"Alkalmazások keresése…"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Alkalmazások betöltése…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Egy alkalmazás sem található a(z) „<xliff:g id="QUERY">%1$s</xliff:g>” lekérdezésre."</string>
     <string name="all_apps_search_market_message" msgid="5470761048755751471">"Keresse fel ezt: <xliff:g id="QUERY">%1$s</xliff:g>"</string>
@@ -38,7 +38,7 @@
     <string name="all_apps_button_label" msgid="9110807029020582876">"Alkalmazások"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Főoldal"</string>
     <string name="delete_target_label" msgid="1822697352535677073">"Eltávolítás"</string>
-    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"Eltávolítás"</string>
+    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"Törlés"</string>
     <string name="info_target_label" msgid="8053346143994679532">"Alkalmazásinformáció"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"parancsikonok telepítése"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Lehetővé teszi egy alkalmazás számára, hogy felhasználói beavatkozás nélkül adjon hozzá parancsikonokat."</string>
@@ -46,12 +46,14 @@
     <string name="permdesc_read_settings" msgid="5833423719057558387">"Lehetővé teszi az alkalmazás számára, hogy beolvassa a kezdőképernyő beállításait és parancsikonjait."</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"Főoldal beállításainak és parancsikonjainak írása"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Lehetővé teszi az alkalmazás számára, hogy módosítsa a kezdőképernyő beállításait és parancsikonjait."</string>
+    <string name="msg_no_phone_permission" msgid="9208659281529857371">"A(z) <xliff:g id="APP_NAME">%1$s</xliff:g> nem kezdeményezhet telefonhívásokat"</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Probléma történt a modul betöltésekor"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"Beállítás"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Ez egy rendszeralkalmazás, és nem lehet eltávolítani."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Névtelen mappa"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"%2$d/%1$d. oldal"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"%2$d/%1$d. kezdőképernyő"</string>
+    <string name="workspace_new_page" msgid="257366611030256142">"Új kezdőképernyő oldal"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"Üdvözöljük!"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"Alkalmazásikonok másolása"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"Importálja ikonjait és mappáit régi kezdőképernyőiről?"</string>
@@ -75,6 +77,8 @@
     <string name="abandoned_search" msgid="891119232568284442">"Keresés"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Az alkalmazás nincs telepítve"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Az ikonhoz tartozó alkalmazás nincs telepítve. Törölheti az ikont, vagy az alkalmazás megkeresése után manuálisan telepítheti azt."</string>
+    <string name="app_downloading_title" msgid="8336702962104482644">"A(z) <xliff:g id="NAME">%1$s</xliff:g> letöltése, <xliff:g id="PROGRESS">%2$s</xliff:g> kész"</string>
+    <string name="app_waiting_download_title" msgid="7053938513995617849">"A(z) <xliff:g id="NAME">%1$s</xliff:g> telepítésre vár"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Hozzáadás a kezdőképernyőhöz"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Elem áthelyezése ide"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Elem hozzáadva a kezdőképernyőhöz"</string>

@@ -31,7 +31,7 @@ public class Stats {
      * Implemented by containers to provide a launch source for a given child.
      */
     public interface LaunchSourceProvider {
-        void fillInLaunchSourceData(Bundle sourceData);
+        void fillInLaunchSourceData(View v, Bundle sourceData);
     }
 
     /**
@@ -70,7 +70,7 @@ public class Stats {
             }
 
             if (provider != null) {
-                provider.fillInLaunchSourceData(sourceData);
+                provider.fillInLaunchSourceData(v, sourceData);
             } else if (LauncherAppState.isDogfoodBuild()) {
                 throw new RuntimeException("Expected LaunchSourceProvider");
             }
@@ -132,6 +132,7 @@ public class Stats {
 
         final String flat = intent.toUri(0);
         Intent broadcastIntent = new Intent(ACTION_LAUNCH).putExtra(EXTRA_INTENT, flat);
+
         if (shortcut != null) {
             broadcastIntent.putExtra(EXTRA_CONTAINER, shortcut.container)
                     .putExtra(EXTRA_SCREEN, shortcut.screenId)
@@ -142,6 +143,11 @@ public class Stats {
         Bundle sourceExtras = LaunchSourceUtils.createSourceData();
         LaunchSourceUtils.populateSourceDataFromAncestorProvider(v, sourceExtras);
         broadcastIntent.putExtra(EXTRA_SOURCE, sourceExtras);
-        mLauncher.sendBroadcast(broadcastIntent, mLaunchBroadcastPermission);
+
+        String[] packages = mLauncher.getResources().getStringArray(R.array.launch_broadcast_targets);
+        for(String p: packages) {
+            broadcastIntent.setPackage(p);
+            mLauncher.sendBroadcast(broadcastIntent, mLaunchBroadcastPermission);
+        }
     }
 }

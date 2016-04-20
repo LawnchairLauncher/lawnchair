@@ -82,18 +82,17 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                     strings = new HashSet<String>(strings);
                 }
                 strings.add(encoded);
-                sharedPrefs.edit().putStringSet(APPS_PENDING_INSTALL, strings).commit();
+                sharedPrefs.edit().putStringSet(APPS_PENDING_INSTALL, strings).apply();
             }
         }
     }
 
-    public static void removeFromInstallQueue(Context context, ArrayList<String> packageNames,
+    public static void removeFromInstallQueue(Context context, HashSet<String> packageNames,
             UserHandleCompat user) {
         if (packageNames.isEmpty()) {
             return;
         }
-        String spKey = LauncherAppState.getSharedPreferencesKey();
-        SharedPreferences sp = context.getSharedPreferences(spKey, Context.MODE_PRIVATE);
+        SharedPreferences sp = Utilities.getPrefs(context);
         synchronized(sLock) {
             Set<String> strings = sp.getStringSet(APPS_PENDING_INSTALL, null);
             if (DBG) {
@@ -111,7 +110,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                         newStringsIter.remove();
                     }
                 }
-                sp.edit().putStringSet(APPS_PENDING_INSTALL, newStrings).commit();
+                sp.edit().putStringSet(APPS_PENDING_INSTALL, newStrings).apply();
             }
         }
     }
@@ -132,7 +131,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                     infos.add(info);
                 }
             }
-            sharedPrefs.edit().putStringSet(APPS_PENDING_INSTALL, new HashSet<String>()).commit();
+            sharedPrefs.edit().putStringSet(APPS_PENDING_INSTALL, new HashSet<String>()).apply();
             return infos;
         }
     }
@@ -145,40 +144,53 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         if (!ACTION_INSTALL_SHORTCUT.equals(data.getAction())) {
             return;
         }
-
-        PendingInstallShortcutInfo info = new PendingInstallShortcutInfo(data, context);
-        if (info.launchIntent == null || info.label == null) {
-            if (DBG) Log.e(TAG, "Invalid install shortcut intent");
-            return;
+        PendingInstallShortcutInfo info = createPendingInfo(context, data);
+        if (info != null) {
+            queuePendingShortcutInfo(info, context);
         }
-
-        info = convertToLauncherActivityIfPossible(info);
-        queuePendingShortcutInfo(info, context);
     }
 
-    public static ShortcutInfo fromShortcutIntent(Context context, Intent data) {
+    /**
+     * @return true is the extra is either null or is of type {@param type}
+     */
+    private static boolean isValidExtraType(Intent intent, String key, Class type) {
+        Object extra = intent.getParcelableExtra(key);
+        return extra == null || type.isInstance(extra);
+    }
+
+    /**
+     * Verifies the intent and creates a {@link PendingInstallShortcutInfo}
+     */
+    private static PendingInstallShortcutInfo createPendingInfo(Context context, Intent data) {
+        if (!isValidExtraType(data, Intent.EXTRA_SHORTCUT_INTENT, Intent.class) ||
+                !(isValidExtraType(data, Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
+                        Intent.ShortcutIconResource.class)) ||
+                !(isValidExtraType(data, Intent.EXTRA_SHORTCUT_ICON, Bitmap.class))) {
+
+            if (DBG) Log.e(TAG, "Invalid install shortcut intent");
+            return null;
+        }
+
         PendingInstallShortcutInfo info = new PendingInstallShortcutInfo(data, context);
         if (info.launchIntent == null || info.label == null) {
             if (DBG) Log.e(TAG, "Invalid install shortcut intent");
             return null;
         }
-        info = convertToLauncherActivityIfPossible(info);
-        return info.getShortcutInfo();
+
+        return convertToLauncherActivityIfPossible(info);
     }
 
-    static void queueInstallShortcut(LauncherActivityInfoCompat info, Context context) {
-        queuePendingShortcutInfo(new PendingInstallShortcutInfo(info, context), context);
+    public static ShortcutInfo fromShortcutIntent(Context context, Intent data) {
+        PendingInstallShortcutInfo info = createPendingInfo(context, data);
+        return info == null ? null : info.getShortcutInfo();
     }
 
     private static void queuePendingShortcutInfo(PendingInstallShortcutInfo info, Context context) {
         // Queue the item up for adding if launcher has not loaded properly yet
-        LauncherAppState.setApplicationContext(context.getApplicationContext());
         LauncherAppState app = LauncherAppState.getInstance();
         boolean launcherNotLoaded = app.getModel().getCallback() == null;
 
-        String spKey = LauncherAppState.getSharedPreferencesKey();
-        SharedPreferences sp = context.getSharedPreferences(spKey, Context.MODE_PRIVATE);
-        addToInstallQueue(sp, info);
+        addToInstallQueue(Utilities.getPrefs(context), info);
         if (!mUseInstallQueue && !launcherNotLoaded) {
             flushInstallQueue(context);
         }
@@ -192,22 +204,21 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         flushInstallQueue(context);
     }
     static void flushInstallQueue(Context context) {
-        String spKey = LauncherAppState.getSharedPreferencesKey();
-        SharedPreferences sp = context.getSharedPreferences(spKey, Context.MODE_PRIVATE);
+        SharedPreferences sp = Utilities.getPrefs(context);
         ArrayList<PendingInstallShortcutInfo> installQueue = getAndClearInstallQueue(sp, context);
         if (!installQueue.isEmpty()) {
             Iterator<PendingInstallShortcutInfo> iter = installQueue.iterator();
             ArrayList<ItemInfo> addShortcuts = new ArrayList<ItemInfo>();
             while (iter.hasNext()) {
                 final PendingInstallShortcutInfo pendingInfo = iter.next();
-                final Intent intent = pendingInfo.launchIntent;
 
                 // If the intent specifies a package, make sure the package exists
                 String packageName = pendingInfo.getTargetPackage();
                 if (!TextUtils.isEmpty(packageName)) {
                     UserHandleCompat myUserHandle = UserHandleCompat.myUserHandle();
                     if (!LauncherModel.isValidPackage(context, packageName, myUserHandle)) {
-                        if (DBG) Log.d(TAG, "Ignoring shortcut for absent package:" + intent);
+                        if (DBG) Log.d(TAG, "Ignoring shortcut for absent package: "
+                                + pendingInfo.launchIntent);
                         continue;
                     }
                 }
@@ -352,7 +363,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             return packageName;
         }
 
-        public boolean isLuncherActivity() {
+        public boolean isLauncherActivity() {
             return activityInfo != null;
         }
     }
@@ -395,9 +406,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             }
 
             return new PendingInstallShortcutInfo(data, context);
-        } catch (JSONException e) {
-            Log.d(TAG, "Exception reading shortcut to add: " + e);
-        } catch (URISyntaxException e) {
+        } catch (JSONException | URISyntaxException e) {
             Log.d(TAG, "Exception reading shortcut to add: " + e);
         }
         return null;
@@ -410,7 +419,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
      */
     private static PendingInstallShortcutInfo convertToLauncherActivityIfPossible(
             PendingInstallShortcutInfo original) {
-        if (original.isLuncherActivity()) {
+        if (original.isLauncherActivity()) {
             // Already an activity target
             return original;
         }

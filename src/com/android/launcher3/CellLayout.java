@@ -25,7 +25,6 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -53,6 +52,7 @@ import com.android.launcher3.FolderIcon.FolderRingAnimator;
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
 import com.android.launcher3.accessibility.FolderAccessibilityHelper;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
+import com.android.launcher3.util.ParcelableSparseArray;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
@@ -66,7 +66,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     public static final int WORKSPACE_ACCESSIBILITY_DRAG = 2;
     public static final int FOLDER_ACCESSIBILITY_DRAG = 1;
 
-    static final String TAG = "CellLayout";
+    private static final String TAG = "CellLayout";
+    private static final boolean LOGD = false;
 
     private Launcher mLauncher;
     @Thunk int mCellWidth;
@@ -84,6 +85,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     private int mMaxGap;
     private boolean mDropPending = false;
     private boolean mIsDragTarget = true;
+    private boolean mJailContent = true;
 
     // These are temporary variables to prevent having to allocate a new object just to
     // return an (x, y) value from helper functions. Do NOT use them to maintain other state.
@@ -187,7 +189,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         mLauncher = (Launcher) context;
 
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CellLayout, defStyle, 0);
 
         mCellWidth = mCellHeight = -1;
         mFixedCellWidth = mFixedCellHeight = -1;
@@ -201,10 +202,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         mPreviousReorderDirection[0] = INVALID_DIRECTION;
         mPreviousReorderDirection[1] = INVALID_DIRECTION;
 
-        a.recycle();
-
         setAlwaysDrawnWithCacheEnabled(false);
-
         final Resources res = getResources();
         mHotseatScale = (float) grid.hotseatIconSizePx / grid.iconSizePx;
 
@@ -244,9 +242,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                     // If an animation is started and then stopped very quickly, we can still
                     // get spurious updates we've cleared the tag. Guard against this.
                     if (outline == null) {
-                        @SuppressWarnings("all") // suppress dead code warning
-                        final boolean debug = false;
-                        if (debug) {
+                        if (LOGD) {
                             Object val = animation.getAnimatedValue();
                             Log.d(TAG, "anim " + thisIndex + " update: " + val +
                                      ", isStopped " + anim.isStopped());
@@ -424,8 +420,34 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         }
     }
 
-    boolean getIsDragOverlapping() {
+    public boolean getIsDragOverlapping() {
         return mIsDragOverlapping;
+    }
+
+    public void disableJailContent() {
+        mJailContent = false;
+    }
+
+    @Override
+    protected void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
+        if (mJailContent) {
+            ParcelableSparseArray jail = getJailedArray(container);
+            super.dispatchSaveInstanceState(jail);
+            container.put(R.id.cell_layout_jail_id, jail);
+        } else {
+            super.dispatchSaveInstanceState(container);
+        }
+    }
+
+    @Override
+    protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
+        super.dispatchRestoreInstanceState(mJailContent ? getJailedArray(container) : container);
+    }
+
+    private ParcelableSparseArray getJailedArray(SparseArray<Parcelable> container) {
+        final Parcelable parcelable = container.get(R.id.cell_layout_jail_id);
+        return parcelable instanceof ParcelableSparseArray ?
+                (ParcelableSparseArray) parcelable : new ParcelableSparseArray();
     }
 
     @Override
@@ -630,6 +652,9 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             if (lp.cellVSpan < 0) lp.cellVSpan = mCountY;
 
             child.setId(childId);
+            if (LOGD) {
+                Log.d(TAG, "Adding view to ShortcutsAndWidgetsContainer: " + child);
+            }
             mShortcutsAndWidgets.addView(child, index, lp);
 
             if (markCells) markCellsAsOccupiedForView(child);
@@ -873,9 +898,12 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        int offset = getMeasuredWidth() - getPaddingLeft() - getPaddingRight() -
-                (mCountX * mCellWidth);
-        int left = getPaddingLeft() + (int) Math.ceil(offset / 2f);
+        boolean isFullscreen = mShortcutsAndWidgets.getChildCount() > 0 &&
+                ((LayoutParams) mShortcutsAndWidgets.getChildAt(0).getLayoutParams()).isFullscreen;
+        int left = getPaddingLeft();
+        if (!isFullscreen) {
+            left += (int) Math.ceil(getUnusedHorizontalSpace() / 2f);
+        }
         int top = getPaddingTop();
 
         mTouchFeedbackView.layout(left, top,
@@ -884,6 +912,15 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         mShortcutsAndWidgets.layout(left, top,
                 left + r - l,
                 top + b - t);
+    }
+
+    /**
+     * Returns the amount of space left over after subtracting padding and cells. This space will be
+     * very small, a few pixels at most, and is a result of rounding down when calculating the cell
+     * width in {@link DeviceProfile#calculateCellWidth(int, int)}.
+     */
+    public int getUnusedHorizontalSpace() {
+        return getMeasuredWidth() - getPaddingLeft() - getPaddingRight() - (mCountX * mCellWidth);
     }
 
     @Override
@@ -1018,8 +1055,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         return false;
     }
 
-    void visualizeDropLocation(View v, Bitmap dragOutline, int originX, int originY, int cellX,
-            int cellY, int spanX, int spanY, boolean resize, Point dragOffset, Rect dragRegion) {
+    void visualizeDropLocation(View v, Bitmap dragOutline, int cellX, int cellY, int spanX,
+            int spanY, boolean resize, DropTarget.DragObject dragObject) {
         final int oldDragCellX = mDragCell[0];
         final int oldDragCellY = mDragCell[1];
 
@@ -1028,6 +1065,9 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         }
 
         if (cellX != oldDragCellX || cellY != oldDragCellY) {
+            Point dragOffset = dragObject.dragView.getDragVisualizeOffset();
+            Rect dragRegion = dragObject.dragView.getDragRegion();
+
             mDragCell[0] = cellX;
             mDragCell[1] = cellY;
             // Find the top left corner of the rect the object will occupy
@@ -1079,6 +1119,18 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
             mDragOutlineAnims[mDragOutlineCurrent].setTag(dragOutline);
             mDragOutlineAnims[mDragOutlineCurrent].animateIn();
+
+            if (dragObject.stateAnnouncer != null) {
+                String msg;
+                if (isHotseat()) {
+                    msg = getContext().getString(R.string.move_to_hotseat_position,
+                            Math.max(cellX, cellY) + 1);
+                } else {
+                    msg = getContext().getString(R.string.move_to_empty_cell,
+                            cellY + 1, cellX + 1);
+                }
+                dragObject.stateAnnouncer.announce(msg);
+            }
         }
     }
 
@@ -2133,8 +2185,15 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             }
             ValueAnimator va = LauncherAnimUtils.ofFloat(child, 0f, 1f);
             a = va;
-            va.setRepeatMode(ValueAnimator.REVERSE);
-            va.setRepeatCount(ValueAnimator.INFINITE);
+
+            // Animations are disabled in power save mode, causing the repeated animation to jump
+            // spastically between beginning and end states. Since this looks bad, we don't repeat
+            // the animation in power save mode.
+            if (!Utilities.isPowerSaverOn(getContext())) {
+                va.setRepeatMode(ValueAnimator.REVERSE);
+                va.setRepeatCount(ValueAnimator.INFINITE);
+            }
+
             va.setDuration(mode == MODE_HINT ? HINT_DURATION : PREVIEW_DURATION);
             va.setStartDelay((int) (Math.random() * 60));
             va.addUpdateListener(new AnimatorUpdateListener() {
@@ -2655,6 +2714,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
             lp.dropped = true;
             child.requestLayout();
+            markCellsAsOccupiedForView(child);
         }
     }
 

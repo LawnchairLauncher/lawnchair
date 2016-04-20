@@ -14,7 +14,25 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<inset xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@drawable/quantum_panel"
-    android:insetTop="@dimen/container_bounds_minus_quantum_panel_padding_inset"
-    android:insetBottom="@dimen/container_bounds_minus_quantum_panel_padding_inset" />
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/quantum_panel_bg_color" />
+            <corners
+                android:topLeftRadius="2dp"
+                android:topRightRadius="2dp" />
+        </shape>
+    </item>
+    <item
+        android:top="@dimen/all_apps_search_bar_bg_overflow"
+        android:left="@dimen/all_apps_search_bar_bg_overflow"
+        android:right="@dimen/all_apps_search_bar_bg_overflow"
+        android:bottom="0dp">
+
+        <shape android:shape="rectangle">
+            <stroke
+                android:width="@dimen/all_apps_search_bar_divider_width"
+                android:color="#1E000000"/>
+        </shape>
+    </item>
+</layer-list>

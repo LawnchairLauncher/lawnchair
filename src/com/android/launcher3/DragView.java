@@ -321,10 +321,10 @@ public class DragView extends View {
         setTranslationY(touchY - mRegistrationY);
         // Post the animation to skip other expensive work happening on the first frame
         post(new Runnable() {
-                public void run() {
-                    mAnim.start();
-                }
-            });
+            public void run() {
+                mAnim.start();
+            }
+        });
     }
 
     public void cancelAnimation() {

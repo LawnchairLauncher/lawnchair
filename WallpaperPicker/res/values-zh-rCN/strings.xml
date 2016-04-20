@@ -22,6 +22,7 @@
     <string name="wallpaper_instructions" msgid="3524143401182707094">"设置壁纸"</string>
     <string name="image_load_fail" msgid="7538534580694411837">"无法加载图片"</string>
     <string name="wallpaper_load_fail" msgid="4800700444605404650">"无法加载要设为壁纸的图片"</string>
+    <string name="wallpaper_set_fail" msgid="7023180794008631780">"无法将图片设为壁纸"</string>
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="9015111147509924344">"已选择%1$d项"</item>
     <item quantity="one" msgid="8409622005831789373">"已选择%1$d项"</item>
