@@ -43,7 +43,6 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
     PackageInstallerCompatVL(Context context) {
         mInstaller = context.getPackageManager().getPackageInstaller();
-        LauncherAppState.setApplicationContext(context.getApplicationContext());
         mCache = LauncherAppState.getInstance().getIconCache();
         mWorker = new Handler(LauncherModel.getWorkerLooper());
 
@@ -107,7 +106,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         @Override
         public void onProgressChanged(int sessionId, float progress) {
             SessionInfo session = mInstaller.getSessionInfo(sessionId);
-            if (session != null) {
+            if (session != null && session.getAppPackageName() != null) {
                 sendUpdate(new PackageInstallInfo(session.getAppPackageName(),
                         STATUS_INSTALLING,
                         (int) (session.getProgress() * 100)));
@@ -124,7 +123,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
         private void pushSessionDisplayToLauncher(int sessionId) {
             SessionInfo session = mInstaller.getSessionInfo(sessionId);
-            if (session != null) {
+            if (session != null && session.getAppPackageName() != null) {
                 addSessionInfoToCahce(session, UserHandleCompat.myUserHandle());
                 LauncherAppState app = LauncherAppState.getInstanceNoCreate();
 

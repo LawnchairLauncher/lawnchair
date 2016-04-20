@@ -77,26 +77,26 @@ public class BaseRecyclerViewFastScrollPopup {
      * Updates the bounds for the fast scroller.
      * @return the invalidation rect for this update.
      */
-    public Rect updateFastScrollerBounds(BaseRecyclerView rv, int lastTouchY) {
+    public Rect updateFastScrollerBounds(int lastTouchY) {
         mInvalidateRect.set(mBgBounds);
 
         if (isVisible()) {
             // Calculate the dimensions and position of the fast scroller popup
-            int edgePadding = rv.getMaxScrollbarWidth();
+            int edgePadding = mRv.getMaxScrollbarWidth();
             int bgPadding = (mBgOriginalSize - mTextBounds.height()) / 2;
             int bgHeight = mBgOriginalSize;
             int bgWidth = Math.max(mBgOriginalSize, mTextBounds.width() + (2 * bgPadding));
             if (Utilities.isRtl(mRes)) {
-                mBgBounds.left = rv.getBackgroundPadding().left + (2 * rv.getMaxScrollbarWidth());
+                mBgBounds.left = mRv.getBackgroundPadding().left + (2 * mRv.getMaxScrollbarWidth());
                 mBgBounds.right = mBgBounds.left + bgWidth;
             } else {
-                mBgBounds.right = rv.getWidth() - rv.getBackgroundPadding().right -
-                        (2 * rv.getMaxScrollbarWidth());
+                mBgBounds.right = mRv.getWidth() - mRv.getBackgroundPadding().right -
+                        (2 * mRv.getMaxScrollbarWidth());
                 mBgBounds.left = mBgBounds.right - bgWidth;
             }
             mBgBounds.top = lastTouchY - (int) (FAST_SCROLL_OVERLAY_Y_OFFSET_FACTOR * bgHeight);
             mBgBounds.top = Math.max(edgePadding,
-                    Math.min(mBgBounds.top, rv.getHeight() - edgePadding - bgHeight));
+                    Math.min(mBgBounds.top, mRv.getHeight() - edgePadding - bgHeight));
             mBgBounds.bottom = mBgBounds.top + bgHeight;
         } else {
             mBgBounds.setEmpty();

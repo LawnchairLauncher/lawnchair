@@ -22,6 +22,7 @@
     <string name="wallpaper_instructions" msgid="3524143401182707094">"وال پیپر سیٹ کریں"</string>
     <string name="image_load_fail" msgid="7538534580694411837">"تصویر کو لوڈ نہیں کیا جا سکا"</string>
     <string name="wallpaper_load_fail" msgid="4800700444605404650">"تصویر کو وال پیپر کے بطور لوڈ نہیں کیا جا سکا"</string>
+    <string name="wallpaper_set_fail" msgid="7023180794008631780">"تصویر کو بطور وال پیپر سیٹ نہیں کیا جا سکا"</string>
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="9015111147509924344">"‏%1$d کو منتخب کیا گیا"</item>
     <item quantity="one" msgid="8409622005831789373">"‏%1$d کو منتخب کیا گیا"</item>

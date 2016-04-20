@@ -197,4 +197,11 @@ public class ItemInfo {
             + " spanY=" + spanY + " dropPos=" + Arrays.toString(dropPos)
             + " user=" + user + ")";
     }
+
+    /**
+     * Whether this item is disabled.
+     */
+    public boolean isDisabled() {
+        return false;
+    }
 }

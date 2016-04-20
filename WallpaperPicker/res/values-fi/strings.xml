@@ -22,6 +22,7 @@
     <string name="wallpaper_instructions" msgid="3524143401182707094">"Aseta taustakuva"</string>
     <string name="image_load_fail" msgid="7538534580694411837">"Kuvan lataus epäonnistui"</string>
     <string name="wallpaper_load_fail" msgid="4800700444605404650">"Kuvaa ei voitu ladata taustakuvaksi"</string>
+    <string name="wallpaper_set_fail" msgid="7023180794008631780">"Kuvan asettaminen taustakuvaksi epäonnistui."</string>
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="9015111147509924344">"%1$d valittu"</item>
     <item quantity="one" msgid="8409622005831789373">"%1$d valittu"</item>

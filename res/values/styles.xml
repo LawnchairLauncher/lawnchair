@@ -44,6 +44,8 @@
         <item name="android:textColor">@color/quantum_panel_text_color</item>
         <item name="android:drawablePadding">@dimen/dynamic_grid_icon_drawable_padding</item>
         <item name="android:shadowRadius">0</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingRight">4dp</item>
         <item name="customShadows">false</item>
     </style>
 

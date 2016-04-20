@@ -22,6 +22,7 @@
     <string name="wallpaper_instructions" msgid="3524143401182707094">"వాల్‌పేపర్‌ను సెట్ చేయి"</string>
     <string name="image_load_fail" msgid="7538534580694411837">"చిత్రాన్ని లోడ్ చేయడం సాధ్యపడలేదు"</string>
     <string name="wallpaper_load_fail" msgid="4800700444605404650">"చిత్రాన్ని వాల్‌పేపర్‌గా లోడ్ చేయడం సాధ్యపడలేదు"</string>
+    <string name="wallpaper_set_fail" msgid="7023180794008631780">"చిత్రాన్ని వాల్‌పేపర్‌గా సెట్ చేయడం సాధ్యపడలేదు"</string>
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="9015111147509924344">"%1$d ఎంచుకోబడింది"</item>
     <item quantity="one" msgid="8409622005831789373">"%1$d ఎంచుకోబడింది"</item>

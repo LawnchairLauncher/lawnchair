@@ -18,4 +18,8 @@
 <!-- QSB -->
     <dimen name="toolbar_button_vertical_padding">12dip</dimen>
     <dimen name="toolbar_button_horizontal_padding">20dip</dimen>
+
+<!-- Container -->
+     <dimen name="container_max_width">736dp</dimen>
+
 </resources>

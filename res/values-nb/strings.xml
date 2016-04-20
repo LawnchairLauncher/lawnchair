@@ -19,17 +19,17 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
+    <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"Jobb"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Appen er ikke installert."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Appen er ikke tilgjengelig"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"En nedlastet app er deaktivert i sikker modus"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Moduler er deaktivert i sikker modus"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Vis minne"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Trykk og hold inne for å plukke opp en modul."</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Dobbelttrykk og hold inne for å velge en modul eller bruke tilpassede handlinger."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Søk i apper"</string>
+    <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"Søk i apper"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Laster inn apper …"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Fant ingen apper som samsvarer med «<xliff:g id="QUERY">%1$s</xliff:g>»"</string>
     <string name="all_apps_search_market_message" msgid="5470761048755751471">"Gå til <xliff:g id="QUERY">%1$s</xliff:g>"</string>
@@ -46,12 +46,14 @@
     <string name="permdesc_read_settings" msgid="5833423719057558387">"Lar appen lese innstillingene og snarveiene på startsiden."</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"angi startsideinnstillinger og -snarveier"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Lar appen endre innstillingene og snarveiene på startsiden."</string>
+    <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> har ikke tillatelse til å ringe"</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Problem ved innlasting av modul"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"Konfigurering"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Dette er en systemapp som ikke kan avinstalleres."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Mappe uten navn"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Side %1$d av %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Startside %1$d av %2$d"</string>
+    <string name="workspace_new_page" msgid="257366611030256142">"Ny side på startskjermen"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"Velkommen"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"Kopiér appikonene dine"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"Vil du importere ikoner og mapper fra dine gamle startsider?"</string>
@@ -75,6 +77,8 @@
     <string name="abandoned_search" msgid="891119232568284442">"Søk"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Denne appen er ikke installert"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Appen for dette ikonet er ikke installert. Du kan fjerne det, eller prøve å søke etter appen og installere den manuelt."</string>
+    <string name="app_downloading_title" msgid="8336702962104482644">"Laster ned <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="PROGRESS">%2$s</xliff:g> er fullført"</string>
+    <string name="app_waiting_download_title" msgid="7053938513995617849">"Venter på å installere <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Legg til på startskjermen"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Flytt elementet hit"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Elementet er lagt til på startskjermen"</string>

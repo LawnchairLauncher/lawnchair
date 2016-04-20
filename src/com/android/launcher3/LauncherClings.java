@@ -73,9 +73,7 @@ class LauncherClings implements OnClickListener {
                     LauncherModel.LOADER_FLAG_CLEAR_WORKSPACE
                             | LauncherModel.LOADER_FLAG_MIGRATE_SHORTCUTS);
             // Set the flag to skip the folder cling
-            String spKey = LauncherAppState.getSharedPreferencesKey();
-            SharedPreferences sp = mLauncher.getSharedPreferences(spKey, Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sp.edit();
+            SharedPreferences.Editor editor = Utilities.getPrefs(mLauncher).edit();
             editor.putBoolean(Launcher.USER_HAS_MIGRATED, true);
             editor.apply();
             // Disable the migration cling
@@ -253,11 +251,9 @@ class LauncherClings implements OnClickListener {
             !sharedPrefs.getBoolean(MIGRATION_CLING_DISMISSED_KEY, false);
     }
 
-    public static void synchonouslyMarkFirstRunClingDismissed(Context ctx) {
-        SharedPreferences prefs = ctx.getSharedPreferences(
-                LauncherAppState.getSharedPreferencesKey(), Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean(WORKSPACE_CLING_DISMISSED_KEY, true);
-        editor.commit();
+    public static void markFirstRunClingDismissed(Context ctx) {
+        Utilities.getPrefs(ctx).edit()
+                .putBoolean(WORKSPACE_CLING_DISMISSED_KEY, true)
+                .apply();
     }
 }

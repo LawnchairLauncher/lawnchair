@@ -26,6 +26,7 @@ import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.PackageManagerHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,17 +52,17 @@ public class AppInfo extends ItemInfo {
      */
     boolean usingLowResIcon;
 
-    /**
-     * The time at which the app was first installed.
-     */
-    long firstInstallTime;
-
     public ComponentName componentName;
 
     static final int DOWNLOADED_FLAG = 1;
     static final int UPDATED_SYSTEM_APP_FLAG = 2;
 
     int flags = 0;
+
+    /**
+     * {@see ShortcutInfo#isDisabled}
+     */
+    int isDisabled = ShortcutInfo.DEFAULT;
 
     AppInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
@@ -80,11 +81,22 @@ public class AppInfo extends ItemInfo {
      */
     public AppInfo(Context context, LauncherActivityInfoCompat info, UserHandleCompat user,
             IconCache iconCache) {
+        this(context, info, user, iconCache,
+                UserManagerCompat.getInstance(context).isQuietModeEnabled(user));
+    }
+
+    public AppInfo(Context context, LauncherActivityInfoCompat info, UserHandleCompat user,
+            IconCache iconCache, boolean quietModeEnabled) {
         this.componentName = info.getComponentName();
         this.container = ItemInfo.NO_ID;
-
         flags = initFlags(info);
-        firstInstallTime = info.getFirstInstallTime();
+        if (PackageManagerHelper.isAppSuspended(info.getApplicationInfo())) {
+            isDisabled |= ShortcutInfo.FLAG_DISABLED_SUSPENDED;
+        }
+        if (quietModeEnabled) {
+            isDisabled |= ShortcutInfo.FLAG_DISABLED_QUIET_USER;
+        }
+
         iconCache.getTitleAndIcon(this, info, true /* useLowResIcon */);
         intent = makeLaunchIntent(context, info, user);
         this.user = user;
@@ -109,7 +121,7 @@ public class AppInfo extends ItemInfo {
         title = Utilities.trim(info.title);
         intent = new Intent(info.intent);
         flags = info.flags;
-        firstInstallTime = info.firstInstallTime;
+        isDisabled = info.isDisabled;
         iconBitmap = info.iconBitmap;
     }
 
@@ -129,7 +141,6 @@ public class AppInfo extends ItemInfo {
         Log.d(tag, label + " size=" + list.size());
         for (AppInfo info: list) {
             Log.d(tag, "   title=\"" + info.title + "\" iconBitmap=" + info.iconBitmap 
-                    + " firstInstallTime=" + info.firstInstallTime
                     + " componentName=" + info.componentName.getPackageName());
         }
     }
@@ -150,5 +161,10 @@ public class AppInfo extends ItemInfo {
             .setComponent(info.getComponentName())
             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
             .putExtra(EXTRA_PROFILE, serialNumber);
+    }
+
+    @Override
+    public boolean isDisabled() {
+        return isDisabled != 0;
     }
 }

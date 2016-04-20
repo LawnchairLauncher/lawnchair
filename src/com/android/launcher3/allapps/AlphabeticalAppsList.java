@@ -275,14 +275,21 @@ public class AlphabeticalAppsList {
         return (mSearchResults != null) && mFilteredApps.isEmpty();
     }
 
+    public boolean hasPredictedComponents() {
+        return (mPredictedAppComponents != null && mPredictedAppComponents.size() > 0);
+    }
+
     /**
      * Sets the sorted list of filtered components.
      */
-    public void setOrderedFilter(ArrayList<ComponentKey> f) {
+    public boolean setOrderedFilter(ArrayList<ComponentKey> f) {
         if (mSearchResults != f) {
+            boolean same = mSearchResults != null && mSearchResults.equals(f);
             mSearchResults = f;
             updateAdapterItems();
+            return !same;
         }
+        return false;
     }
 
     /**
