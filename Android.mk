@@ -33,7 +33,7 @@ LOCAL_SRC_FILES := $(call all-java-files-under, src) \
 
 LOCAL_RESOURCE_DIR := \
     $(LOCAL_PATH)/res \
-    prebuilts/sdk/current/support/v7/recyclerview/res
+    frameworks/support/v7/recyclerview/res
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 
