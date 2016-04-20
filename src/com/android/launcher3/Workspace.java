@@ -72,7 +72,7 @@ import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dragndrop.SpringLoadedDragController;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
-import com.android.launcher3.logging.UserEventLogger;
+import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.LongArrayMap;
@@ -94,7 +94,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Workspace extends PagedView
         implements DropTarget, DragSource, DragScroller, View.OnTouchListener,
         DragController.DragListener, LauncherTransitionable, ViewGroup.OnHierarchyChangeListener,
-        Insettable, DropTargetSource, AccessibilityDragSource, UserEventLogger.LaunchSourceProvider {
+        Insettable, DropTargetSource, AccessibilityDragSource, UserEventDispatcher.LaunchSourceProvider {
     private static final String TAG = "Launcher.Workspace";
 
     private static boolean ENFORCE_DRAG_EVENT_ORDER = false;

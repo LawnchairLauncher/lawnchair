@@ -29,7 +29,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.logging.UserEventLogger.LaunchSourceProvider;
+import com.android.launcher3.logging.UserEventDispatcher.LaunchSourceProvider;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import java.util.List;
