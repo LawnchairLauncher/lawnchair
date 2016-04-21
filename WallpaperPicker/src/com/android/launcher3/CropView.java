@@ -19,6 +19,7 @@ package com.android.launcher3;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -31,7 +32,7 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import com.android.photos.views.TiledImageRenderer.TileSource;
 import com.android.photos.views.TiledImageView;
 
-public class CropView extends TiledImageView implements OnScaleGestureListener {
+public class  CropView extends TiledImageView implements OnScaleGestureListener {
 
     private ScaleGestureDetector mScaleGestureDetector;
     private long mTouchDownTime;
@@ -148,10 +149,17 @@ public class CropView extends TiledImageView implements OnScaleGestureListener {
         updateMinScale(w, h, mRenderer.source, false);
     }
 
-    public void setScale(float scale) {
+    public void setScaleAndCenter(float scale, float x, float y) {
         synchronized (mLock) {
             mRenderer.scale = scale;
+            mCenterX = x;
+            mCenterY = y;
+            updateCenter();
         }
+    }
+
+    public float getScale() {
+        return mRenderer.scale;
     }
 
     private void updateMinScale(int w, int h, TileSource source, boolean resetScale) {
@@ -209,6 +217,10 @@ public class CropView extends TiledImageView implements OnScaleGestureListener {
     private void updateCenter() {
         mRenderer.centerX = Math.round(mCenterX);
         mRenderer.centerY = Math.round(mCenterY);
+    }
+
+    public PointF getCenter() {
+        return new PointF(mCenterX, mCenterY);
     }
 
     public void setTouchEnabled(boolean enabled) {

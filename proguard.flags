@@ -15,11 +15,6 @@
   public float getAlpha();
 }
 
--keep class com.android.launcher3.BubbleTextView {
-  public void setFastScrollFocus(float);
-  public float getFastScrollFocus();
-}
-
 -keep class com.android.launcher3.ButtonDropTarget {
   public int getTextColor();
 }
@@ -52,8 +47,10 @@
 }
 
 -keep class com.android.launcher3.FastBitmapDrawable {
-  public int getBrightness();
-  public void setBrightness(int);
+  public void setDesaturation(float);
+  public float getDesaturation();
+  public void setBrightness(float);
+  public float getBrightness();
 }
 
 -keep class com.android.launcher3.MemoryDumpActivity {
@@ -69,3 +66,10 @@
   public float getBackgroundAlpha();
   public void setBackgroundAlpha(float);
 }
+
+# Proguard will strip new callbacks in LauncherApps.Callback from
+# WrappedCallback if compiled against an older SDK. Don't let this happen.
+-keep class com.android.launcher3.compat.** {
+  *;
+}
+

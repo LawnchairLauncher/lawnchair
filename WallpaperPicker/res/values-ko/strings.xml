@@ -22,6 +22,7 @@
     <string name="wallpaper_instructions" msgid="3524143401182707094">"배경화면 설정"</string>
     <string name="image_load_fail" msgid="7538534580694411837">"이미지를 로드할 수 없습니다."</string>
     <string name="wallpaper_load_fail" msgid="4800700444605404650">"이미지를 배경화면으로 로드할 수 없습니다."</string>
+    <string name="wallpaper_set_fail" msgid="7023180794008631780">"이미지를 배경화면으로 설정할 수 없습니다."</string>
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="9015111147509924344">"%1$d개 선택됨"</item>
     <item quantity="one" msgid="8409622005831789373">"%1$d개 선택됨"</item>

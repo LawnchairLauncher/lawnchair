@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -31,7 +32,9 @@ import android.os.Bundle;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.ComponentKey;
 
+import java.util.HashMap;
 import java.util.List;
 
 class AppWidgetManagerCompatV16 extends AppWidgetManagerCompat {
@@ -88,7 +91,28 @@ class AppWidgetManagerCompatV16 extends AppWidgetManagerCompat {
 
     @Override
     public Bitmap getBadgeBitmap(LauncherAppWidgetProviderInfo info, Bitmap bitmap,
-            int imageHeight) {
+            int imageWidth, int imageHeight) {
         return bitmap;
+    }
+
+    @Override
+    public LauncherAppWidgetProviderInfo findProvider(
+            ComponentName provider, UserHandleCompat user) {
+        for (AppWidgetProviderInfo info : mAppWidgetManager.getInstalledProviders()) {
+            if (info.provider.equals(provider)) {
+                return LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, info);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public HashMap<ComponentKey, AppWidgetProviderInfo> getAllProvidersMap() {
+        HashMap<ComponentKey, AppWidgetProviderInfo> result = new HashMap<>();
+        UserHandleCompat user = UserHandleCompat.myUserHandle();
+        for (AppWidgetProviderInfo info : mAppWidgetManager.getInstalledProviders()) {
+            result.put(new ComponentKey(info.provider, user), info);
+        }
+        return result;
     }
 }

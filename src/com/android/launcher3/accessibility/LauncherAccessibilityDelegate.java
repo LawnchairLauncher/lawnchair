@@ -134,11 +134,8 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
 
     public boolean performAction(final View host, final ItemInfo item, int action) {
         if (action == REMOVE) {
-            if (DeleteDropTarget.removeWorkspaceOrFolderItem(mLauncher, item, host)) {
-                announceConfirmation(R.string.item_removed);
-                return true;
-            }
-            return false;
+            DeleteDropTarget.removeWorkspaceOrFolderItem(mLauncher, item, host);
+            return true;
         } else if (action == INFO) {
             InfoDropTarget.startDetailsActivityForInfo(item, mLauncher);
             return true;
@@ -175,7 +172,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
             return true;
         } else if (action == MOVE_TO_WORKSPACE) {
             Folder folder = mLauncher.getWorkspace().getOpenFolder();
-            mLauncher.closeFolder(folder);
+            mLauncher.closeFolder(folder, true);
             ShortcutInfo info = (ShortcutInfo) item;
             folder.getInfo().remove(info);
 

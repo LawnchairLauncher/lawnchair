@@ -164,6 +164,9 @@ public class HolographicOutlineHelper {
 
         int bitmapWidth = (int) (rect.width() * view.getScaleX());
         int bitmapHeight = (int) (rect.height() * view.getScaleY());
+        if (bitmapHeight <= 0 || bitmapWidth <= 0) {
+            return null;
+        }
 
         int key = (bitmapWidth << 16) | bitmapHeight;
         Bitmap cache = mBitmapCache.get(key);

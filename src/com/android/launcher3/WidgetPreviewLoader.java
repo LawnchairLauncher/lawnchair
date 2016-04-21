@@ -10,7 +10,6 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
@@ -32,6 +31,7 @@ import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.SQLiteCacheHelper;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.WidgetCell;
 
@@ -65,7 +65,7 @@ public class WidgetPreviewLoader {
     private final Context mContext;
     private final IconCache mIconCache;
     private final UserManagerCompat mUserManager;
-    private final AppWidgetManagerCompat mManager;
+    private final AppWidgetManagerCompat mWidgetManager;
     private final CacheDb mDb;
     private final int mProfileBadgeMargin;
 
@@ -75,7 +75,7 @@ public class WidgetPreviewLoader {
     public WidgetPreviewLoader(Context context, IconCache iconCache) {
         mContext = context;
         mIconCache = iconCache;
-        mManager = AppWidgetManagerCompat.getInstance(context);
+        mWidgetManager = AppWidgetManagerCompat.getInstance(context);
         mUserManager = UserManagerCompat.getInstance(context);
         mDb = new CacheDb(context);
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
@@ -96,7 +96,7 @@ public class WidgetPreviewLoader {
         WidgetCacheKey key = getObjectKey(o, size);
 
         PreviewLoadTask task = new PreviewLoadTask(key, o, previewWidth, previewHeight, caller);
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        task.executeOnExecutor(Utilities.THREAD_POOL_EXECUTOR);
         return new PreviewLoadRequest(task);
     }
 
@@ -104,7 +104,7 @@ public class WidgetPreviewLoader {
      * The DB holds the generated previews for various components. Previews can also have different
      * sizes (landscape vs portrait).
      */
-    private static class CacheDb extends SQLiteOpenHelper {
+    private static class CacheDb extends SQLiteCacheHelper {
         private static final int DB_VERSION = 4;
 
         private static final String TABLE_NAME = "shortcut_and_widget_previews";
@@ -117,11 +117,11 @@ public class WidgetPreviewLoader {
         private static final String COLUMN_PREVIEW_BITMAP = "preview_bitmap";
 
         public CacheDb(Context context) {
-            super(context, LauncherFiles.WIDGET_PREVIEWS_DB, null, DB_VERSION);
+            super(context, LauncherFiles.WIDGET_PREVIEWS_DB, DB_VERSION, TABLE_NAME);
         }
 
         @Override
-        public void onCreate(SQLiteDatabase database) {
+        public void onCreateTable(SQLiteDatabase database) {
             database.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
                     COLUMN_COMPONENT + " TEXT NOT NULL, " +
                     COLUMN_USER + " INTEGER NOT NULL, " +
@@ -133,32 +133,13 @@ public class WidgetPreviewLoader {
                     "PRIMARY KEY (" + COLUMN_COMPONENT + ", " + COLUMN_USER + ", " + COLUMN_SIZE + ") " +
                     ");");
         }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            if (oldVersion != newVersion) {
-                clearDB(db);
-            }
-        }
-
-        @Override
-        public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            if (oldVersion != newVersion) {
-                clearDB(db);
-            }
-        }
-
-        private void clearDB(SQLiteDatabase db) {
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-            onCreate(db);
-        }
     }
 
     private WidgetCacheKey getObjectKey(Object o, String size) {
         // should cache the string builder
         if (o instanceof LauncherAppWidgetProviderInfo) {
             LauncherAppWidgetProviderInfo info = (LauncherAppWidgetProviderInfo) o;
-            return new WidgetCacheKey(info.provider, mManager.getUser(info), size);
+            return new WidgetCacheKey(info.provider, mWidgetManager.getUser(info), size);
         } else {
             ResolveInfo info = (ResolveInfo) o;
             return new WidgetCacheKey(
@@ -176,13 +157,7 @@ public class WidgetPreviewLoader {
         values.put(CacheDb.COLUMN_VERSION, versions[0]);
         values.put(CacheDb.COLUMN_LAST_UPDATED, versions[1]);
         values.put(CacheDb.COLUMN_PREVIEW_BITMAP, Utilities.flattenBitmap(preview));
-
-        try {
-            mDb.getWritableDatabase().insertWithOnConflict(CacheDb.TABLE_NAME, null, values,
-                    SQLiteDatabase.CONFLICT_REPLACE);
-        } catch (SQLException e) {
-            Log.e(TAG, "Error saving image to DB", e);
-        }
+        mDb.insertOrReplace(values);
     }
 
     public void removePackage(String packageName, UserHandleCompat user) {
@@ -194,13 +169,9 @@ public class WidgetPreviewLoader {
             mPackageVersions.remove(packageName);
         }
 
-        try {
-            mDb.getWritableDatabase().delete(CacheDb.TABLE_NAME,
-                    CacheDb.COLUMN_PACKAGE + " = ? AND " + CacheDb.COLUMN_USER + " = ?",
-                    new String[] {packageName, Long.toString(userSerial)});
-        } catch (SQLException e) {
-            Log.e(TAG, "Unable to delete items from DB", e);
-        }
+        mDb.delete(
+                CacheDb.COLUMN_PACKAGE + " = ? AND " + CacheDb.COLUMN_USER + " = ?",
+                new String[]{packageName, Long.toString(userSerial)});
     }
 
     /**
@@ -222,7 +193,7 @@ public class WidgetPreviewLoader {
                 pkg = ((ResolveInfo) obj).activityInfo.packageName;
             } else {
                 LauncherAppWidgetProviderInfo info = (LauncherAppWidgetProviderInfo) obj;
-                user = mManager.getUser(info);
+                user = mWidgetManager.getUser(info);
                 pkg = info.provider.getPackageName();
             }
 
@@ -238,10 +209,10 @@ public class WidgetPreviewLoader {
         LongSparseArray<HashSet<String>> packagesToDelete = new LongSparseArray<>();
         Cursor c = null;
         try {
-            c = mDb.getReadableDatabase().query(CacheDb.TABLE_NAME,
-                    new String[] {CacheDb.COLUMN_USER, CacheDb.COLUMN_PACKAGE,
-                        CacheDb.COLUMN_LAST_UPDATED, CacheDb.COLUMN_VERSION},
-                    null, null, null, null, null);
+            c = mDb.query(
+                    new String[]{CacheDb.COLUMN_USER, CacheDb.COLUMN_PACKAGE,
+                            CacheDb.COLUMN_LAST_UPDATED, CacheDb.COLUMN_VERSION},
+                    null, null);
             while (c.moveToNext()) {
                 long userId = c.getLong(0);
                 String pkg = c.getString(1);
@@ -274,7 +245,7 @@ public class WidgetPreviewLoader {
                 }
             }
         } catch (SQLException e) {
-            Log.e(TAG, "Error updatating widget previews", e);
+            Log.e(TAG, "Error updating widget previews", e);
         } finally {
             if (c != null) {
                 c.close();
@@ -288,16 +259,15 @@ public class WidgetPreviewLoader {
     @Thunk Bitmap readFromDb(WidgetCacheKey key, Bitmap recycle, PreviewLoadTask loadTask) {
         Cursor cursor = null;
         try {
-            cursor = mDb.getReadableDatabase().query(
-                    CacheDb.TABLE_NAME,
-                    new String[] { CacheDb.COLUMN_PREVIEW_BITMAP },
-                    CacheDb.COLUMN_COMPONENT + " = ? AND " + CacheDb.COLUMN_USER + " = ? AND " + CacheDb.COLUMN_SIZE + " = ?",
-                    new String[] {
+            cursor = mDb.query(
+                    new String[]{CacheDb.COLUMN_PREVIEW_BITMAP},
+                    CacheDb.COLUMN_COMPONENT + " = ? AND " + CacheDb.COLUMN_USER + " = ? AND "
+                            + CacheDb.COLUMN_SIZE + " = ?",
+                    new String[]{
                             key.componentName.flattenToString(),
                             Long.toString(mUserManager.getSerialNumberForUser(key.user)),
                             key.size
-                    },
-                    null, null, null);
+                    });
             // If cancelled, skip getting the blob and decoding it into a bitmap
             if (loadTask.isCancelled()) {
                 return null;
@@ -335,6 +305,17 @@ public class WidgetPreviewLoader {
         }
     }
 
+    /**
+     * Generates the widget preview from either the {@link AppWidgetManagerCompat} or cache
+     * and add badge at the bottom right corner.
+     *
+     * @param launcher
+     * @param info                        information about the widget
+     * @param maxPreviewWidth             width of the preview on either workspace or tray
+     * @param preview                     bitmap that can be recycled
+     * @param preScaledWidthOut           return the width of the returned bitmap
+     * @return
+     */
     public Bitmap generateWidgetPreview(Launcher launcher, LauncherAppWidgetProviderInfo info,
             int maxPreviewWidth, Bitmap preview, int[] preScaledWidthOut) {
         // Load the preview image if possible
@@ -342,7 +323,7 @@ public class WidgetPreviewLoader {
 
         Drawable drawable = null;
         if (info.previewImage != 0) {
-            drawable = mManager.loadPreview(info);
+            drawable = mWidgetManager.loadPreview(info);
             if (drawable != null) {
                 drawable = mutateOnMainThread(drawable);
             } else {
@@ -357,6 +338,7 @@ public class WidgetPreviewLoader {
 
         int previewWidth;
         int previewHeight;
+
         Bitmap tileBitmap = null;
 
         if (widgetPreviewExists) {
@@ -428,8 +410,9 @@ public class WidgetPreviewLoader {
             float iconScale = Math.min((float) smallestSide / (appIconSize + 2 * minOffset), scale);
 
             try {
-                Drawable icon = mutateOnMainThread(mManager.loadIcon(info, mIconCache));
+                Drawable icon = mWidgetManager.loadIcon(info, mIconCache);
                 if (icon != null) {
+                    icon = mutateOnMainThread(icon);
                     int hoffset = (int) ((tileW - appIconSize * iconScale) / 2) + x;
                     int yoffset = (int) ((tileH - appIconSize * iconScale) / 2);
                     icon.setBounds(hoffset, yoffset,
@@ -437,11 +420,13 @@ public class WidgetPreviewLoader {
                             yoffset + (int) (appIconSize * iconScale));
                     icon.draw(c);
                 }
-            } catch (Resources.NotFoundException e) { }
+            } catch (Resources.NotFoundException e) {
+            }
             c.setBitmap(null);
         }
+        int imageWidth = Math.min(preview.getWidth(), previewWidth + mProfileBadgeMargin);
         int imageHeight = Math.min(preview.getHeight(), previewHeight + mProfileBadgeMargin);
-        return mManager.getBadgeBitmap(info, preview, imageHeight);
+        return mWidgetManager.getBadgeBitmap(info, preview, imageWidth, imageHeight);
     }
 
     private Bitmap generateShortcutPreview(

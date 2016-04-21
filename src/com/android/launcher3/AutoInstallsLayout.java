@@ -125,8 +125,12 @@ public class AutoInstallsLayout {
     private static final String ATTR_CLASS_NAME = "className";
     private static final String ATTR_TITLE = "title";
     private static final String ATTR_SCREEN = "screen";
+
+    // x and y can be specified as negative integers, in which case -1 represents the
+    // last row / column, -2 represents the second last, and so on.
     private static final String ATTR_X = "x";
     private static final String ATTR_Y = "y";
+
     private static final String ATTR_SPAN_X = "spanX";
     private static final String ATTR_SPAN_Y = "spanY";
     private static final String ATTR_ICON = "icon";
@@ -154,6 +158,8 @@ public class AutoInstallsLayout {
     protected final int mLayoutId;
 
     private final int mHotseatAllAppsRank;
+    private final int mRowCount;
+    private final int mColumnCount;
 
     private final long[] mTemp = new long[2];
     @Thunk final ContentValues mValues;
@@ -164,13 +170,6 @@ public class AutoInstallsLayout {
     public AutoInstallsLayout(Context context, AppWidgetHost appWidgetHost,
             LayoutParserCallback callback, Resources res,
             int layoutId, String rootTag) {
-        this(context, appWidgetHost, callback, res, layoutId, rootTag,
-                LauncherAppState.getInstance().getInvariantDeviceProfile().hotseatAllAppsRank);
-    }
-
-    public AutoInstallsLayout(Context context, AppWidgetHost appWidgetHost,
-            LayoutParserCallback callback, Resources res,
-            int layoutId, String rootTag, int hotseatAllAppsRank) {
         mContext = context;
         mAppWidgetHost = appWidgetHost;
         mCallback = callback;
@@ -181,7 +180,11 @@ public class AutoInstallsLayout {
 
         mSourceRes = res;
         mLayoutId = layoutId;
-        mHotseatAllAppsRank = hotseatAllAppsRank;
+
+        InvariantDeviceProfile idp = LauncherAppState.getInstance().getInvariantDeviceProfile();
+        mHotseatAllAppsRank = idp.hotseatAllAppsRank;
+        mRowCount = idp.numRows;
+        mColumnCount = idp.numColumns;
     }
 
     /**
@@ -261,8 +264,11 @@ public class AutoInstallsLayout {
 
         mValues.put(Favorites.CONTAINER, container);
         mValues.put(Favorites.SCREEN, screenId);
-        mValues.put(Favorites.CELLX, getAttributeValue(parser, ATTR_X));
-        mValues.put(Favorites.CELLY, getAttributeValue(parser, ATTR_Y));
+
+        mValues.put(Favorites.CELLX,
+                convertToDistanceFromEnd(getAttributeValue(parser, ATTR_X), mColumnCount));
+        mValues.put(Favorites.CELLY,
+                convertToDistanceFromEnd(getAttributeValue(parser, ATTR_Y), mRowCount));
 
         TagParser tagParser = tagParserMap.get(parser.getName());
         if (tagParser == null) {
@@ -646,6 +652,16 @@ public class AutoInstallsLayout {
             throw new XmlPullParserException("Unexpected start tag: found " + parser.getName() +
                     ", expected " + firstElementName);
         }
+    }
+
+    private static String convertToDistanceFromEnd(String value, int endValue) {
+        if (!TextUtils.isEmpty(value)) {
+            int x = Integer.parseInt(value);
+            if (x < 0) {
+                return Integer.toString(endValue + x);
+            }
+        }
+        return value;
     }
 
     /**

@@ -18,7 +18,11 @@
 -->
 
 <resources>
-    <style name="Theme" parent="@android:style/Theme.DeviceDefault.Wallpaper.NoTitleBar">
+    <style name="BaseWallpaperTheme" parent="@android:style/Theme.DeviceDefault.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowShowWallpaper">true</item>
+        <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionModeOverlay">true</item>
     </style>
 </resources>

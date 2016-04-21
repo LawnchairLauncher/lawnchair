@@ -19,17 +19,17 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
+    <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"업무"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"앱이 설치되지 않았습니다."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"앱을 사용할 수 없음"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"다운로드한 앱은 안전 모드에서 사용할 수 없습니다."</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"안전 모드에서 위젯 사용 중지됨"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"메모리 표시"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"위젯을 선택하려면 길게 터치하세요."</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"위젯을 선택하려면 두 번 탭한 다음 길게 터치하거나 맞춤 액션을 사용합니다."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d×%2$d"</string>
-    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"앱 검색"</string>
+    <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"앱 검색..."</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"앱 로드 중..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\'<xliff:g id="QUERY">%1$s</xliff:g>\'와(과) 일치하는 앱이 없습니다."</string>
     <string name="all_apps_search_market_message" msgid="5470761048755751471">"<xliff:g id="QUERY">%1$s</xliff:g>(으)로 이동"</string>
@@ -46,12 +46,14 @@
     <string name="permdesc_read_settings" msgid="5833423719057558387">"앱이 홈에 있는 설정 및 바로가기를 읽을 수 있도록 합니다."</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"홈 설정 및 바로가기 쓰기"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"앱이 홈에 있는 설정 및 바로가기를 변경할 수 있도록 합니다."</string>
+    <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g>에서 전화를 걸 수 없습니다."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"위젯을 로드하는 중 문제가 발생했습니다."</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"설정"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"시스템 앱은 제거할 수 없습니다."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"이름이 없는 폴더"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"페이지 %1$d/%2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"홈 화면 %1$d/%2$d"</string>
+    <string name="workspace_new_page" msgid="257366611030256142">"새로운 메인 스크린 페이지"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"환영합니다."</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"앱 아이콘 복사"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"이전 메인 스크린에서 아이콘과 폴더를 가져오시겠습니까?"</string>
@@ -75,6 +77,8 @@
     <string name="abandoned_search" msgid="891119232568284442">"검색"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"이 앱이 설치되어 있지 않음"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"이 아이콘의 앱이 설치되어 있지 않습니다. 아이콘을 삭제하거나 앱을 검색하여 수동으로 설치하세요."</string>
+    <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> 다운로드 중, <xliff:g id="PROGRESS">%2$s</xliff:g> 완료"</string>
+    <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> 설치 대기 중"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"메인 스크린에 추가"</string>
     <string name="action_move_here" msgid="2170188780612570250">"여기에 항목을 이동"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"메인 스크린에 항목 추가됨"</string>

@@ -16,6 +16,7 @@
 
 package com.android.launcher3.accessibility;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -140,26 +141,30 @@ public class WorkspaceAccessibilityHelper extends DragAndDropAccessibilityDelega
                 return mContext.getString(R.string.move_to_empty_cell, y + 1, x + 1);
             }
         } else {
-            ItemInfo info = (ItemInfo) child.getTag();
-            if (info instanceof ShortcutInfo) {
-                return mContext.getString(R.string.create_folder_with, info.title);
-            } else if (info instanceof FolderInfo) {
-                if (TextUtils.isEmpty(info.title)) {
-                    // Find the first item in the folder.
-                    FolderInfo folder = (FolderInfo) info;
-                    ShortcutInfo firstItem = null;
-                    for (ShortcutInfo shortcut : folder.contents) {
-                        if (firstItem == null || firstItem.rank > shortcut.rank) {
-                            firstItem = shortcut;
-                        }
-                    }
+            return getDescriptionForDropOver(child, mContext);
+        }
+    }
 
-                    if (firstItem != null) {
-                        return mContext.getString(R.string.add_to_folder_with_app, firstItem.title);
+    public static String getDescriptionForDropOver(View overChild, Context context) {
+        ItemInfo info = (ItemInfo) overChild.getTag();
+        if (info instanceof ShortcutInfo) {
+            return context.getString(R.string.create_folder_with, info.title);
+        } else if (info instanceof FolderInfo) {
+            if (TextUtils.isEmpty(info.title)) {
+                // Find the first item in the folder.
+                FolderInfo folder = (FolderInfo) info;
+                ShortcutInfo firstItem = null;
+                for (ShortcutInfo shortcut : folder.contents) {
+                    if (firstItem == null || firstItem.rank > shortcut.rank) {
+                        firstItem = shortcut;
                     }
                 }
-                return mContext.getString(R.string.add_to_folder, info.title);
+
+                if (firstItem != null) {
+                    return context.getString(R.string.add_to_folder_with_app, firstItem.title);
+                }
             }
+            return context.getString(R.string.add_to_folder, info.title);
         }
         return "";
     }

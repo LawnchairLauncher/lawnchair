@@ -19,17 +19,17 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
+    <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"งาน"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"ไม่ได้ติดตั้งแอป"</string>
     <string name="activity_not_available" msgid="7456344436509528827">"แอปไม่พร้อมใช้งาน"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"แอปที่ดาวน์โหลดถูกปิดในโหมดปลอดภัย"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"มีการปิดใช้งานวิดเจ็ตในเซฟโหมด"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"แสดง Mem"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"แตะค้างเพื่อรับวิดเจ็ต"</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"แตะ 2 ครั้งค้างไว้เพื่อเลือกวิดเจ็ตหรือใช้การกระทำที่กำหนดเอง"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"ค้นหาแอป"</string>
+    <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"ค้นหาแอป…"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"กำลังโหลดแอป…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"ไม่พบแอปที่ตรงกับ \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="5470761048755751471">"ไปที่ <xliff:g id="QUERY">%1$s</xliff:g>"</string>
@@ -46,12 +46,14 @@
     <string name="permdesc_read_settings" msgid="5833423719057558387">"อนุญาตให้แอปอ่านการตั้งค่าและทางลัดในหน้าแรก"</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"เขียนการตั้งค่าและทางลัดหน้าแรกแล้ว"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"อนุญาตให้แอปเปลี่ยนการตั้งค่าและทางลัดในหน้าแรก"</string>
+    <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> ไม่ได้รับอนุญาตให้โทรออก"</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"มีปัญหาขณะโหลดวิดเจ็ต"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"ตั้งค่า"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"นี่เป็นแอประบบและไม่สามารถถอนการติดตั้งได้"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"โฟลเดอร์ที่ไม่มีชื่อ"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"หน้า %1$d จาก %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"หน้าจอหลัก %1$d จาก %2$d"</string>
+    <string name="workspace_new_page" msgid="257366611030256142">"หน้าใหม่ในหน้าจอหลัก"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"ยินดีต้อนรับ"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"คัดลอกไอคอนแอปของคุณ"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"นำเข้าไอคอนและโฟลเดอร์จากหน้าจอหลักเก่าของคุณ"</string>
@@ -75,6 +77,8 @@
     <string name="abandoned_search" msgid="891119232568284442">"ค้นหา"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"ไม่ได้ติดตั้งแอปนี้"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ยังไม่ได้ติดตั้งแอปสำหรับไอคอนนี้ คุณสามารถนำไอคอนออก หรือค้นหาแอปดังกล่าวแล้วติดตั้งด้วยตนเอง"</string>
+    <string name="app_downloading_title" msgid="8336702962104482644">"กำลังดาวน์โหลด <xliff:g id="NAME">%1$s</xliff:g> เสร็จแล้ว <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
+    <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> กำลังรอติดตั้ง"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"เพิ่มลงในหน้าแรก"</string>
     <string name="action_move_here" msgid="2170188780612570250">"ย้ายรายการมาที่นี่"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"เพิ่มรายการไปยังหน้าจอหลักแล้ว"</string>

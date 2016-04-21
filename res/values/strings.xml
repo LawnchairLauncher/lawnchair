@@ -45,18 +45,18 @@
     <!-- SafeMode widget error string -->
     <string name="safemode_widget_error">Widgets disabled in Safe mode</string>
 
-    <string name="toggle_weight_watcher">Show Mem</string>
-
     <!-- Widgets -->
     <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
     <string name="long_press_widget_to_add">Touch &amp; hold to pick up a widget.</string>
+    <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
+    <string name="long_accessible_way_to_add">Double-tap &amp; hold to pick up a widget or use custom actions.</string>
     <!-- The format string for the dimensions of a widget in the drawer -->
     <!-- There is a special version of this format string for Farsi -->
     <string name="widget_dims_format">%1$d \u00d7 %2$d</string>
 
     <!-- All Apps -->
     <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
-    <string name="all_apps_search_bar_hint">Search Apps</string>
+    <string name="all_apps_search_bar_hint">Search Apps&#8230;</string>
     <!-- Loading apps text. [CHAR_LIMIT=50] -->
     <string name="all_apps_loading_message">Loading Apps&#8230;</string>
     <!-- No-search-results text. [CHAR_LIMIT=50] -->
@@ -128,6 +128,8 @@
     <string name="default_scroll_format">Page %1$d of %2$d</string>
     <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
     <string name="workspace_scroll_format">Home screen %1$d of %2$d</string>
+    <!-- Description for a new page on homescreen[CHAR_LIMIT=none] -->
+    <string name="workspace_new_page">New home screen page</string>
 
     <!-- Clings -->
     <!-- The title text for the workspace cling [CHAR_LIMIT=30] -->
@@ -161,9 +163,6 @@
     <!-- Folder name format -->
     <string name="folder_name_format">Folder: <xliff:g id="name" example="Games">%1$s</xliff:g></string>
 
-    <!-- Debug-only activity name. [DO NOT TRANSLATE] -->
-    <string name="debug_memory_activity">* HPROF</string>
-
     <!-- Strings for the customization mode -->
     <!-- Text for widget add button -->
     <string name="widget_button_text">Widgets</string>
@@ -190,6 +189,10 @@
     <string name="abandoned_promise_explanation">The app for this icon isn\'t installed.
         You can remove it, or search for the app and install it manually.
     </string>
+    <!-- Title for an app which is being downloaded. -->
+    <string name="app_downloading_title"><xliff:g id="name" example="Messenger">%1$s</xliff:g> downloading, <xliff:g id="progress" example="30%">%2$s</xliff:g> complete</string>
+    <!-- Title for an app whose download has been started. -->
+    <string name="app_waiting_download_title"><xliff:g id="name" example="Messenger">%1$s</xliff:g> waiting to install</string>
 
 <!-- Strings for accessibility actions -->
     <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->

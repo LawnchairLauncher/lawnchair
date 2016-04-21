@@ -19,17 +19,17 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
+    <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"Darbs"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Lietotne nav instalēta."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Lietotne nav pieejama."</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Lejupielādētā lietotne ir atspējota drošajā režīmā."</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Logrīki atspējoti drošajā režīmā"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Rādīt atmiņu"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Lai izvēlētos logrīku, pieskarieties un turiet to."</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Lai atlasītu logrīku, veiciet dubultskārienu uz tā un turiet to vai arī veiciet pielāgotas darbības."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Meklēt lietotnes"</string>
+    <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"Meklēt lietotnes…"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Notiek lietotņu ielāde…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Vaicājumam “<xliff:g id="QUERY">%1$s</xliff:g>” neatbilda neviena lietotne."</string>
     <string name="all_apps_search_market_message" msgid="5470761048755751471">"Doties uz: <xliff:g id="QUERY">%1$s</xliff:g>"</string>
@@ -46,12 +46,14 @@
     <string name="permdesc_read_settings" msgid="5833423719057558387">"Ļauj lietotnei lasīt iestatījumus un saīsnes sākuma ekrānā."</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"rakstīt sākuma ekrāna iestatījumus un saīsnes"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Ļauj lietotnei mainīt iestatījumus un saīsnes sākuma ekrānā."</string>
+    <string name="msg_no_phone_permission" msgid="9208659281529857371">"Lietotnei <xliff:g id="APP_NAME">%1$s</xliff:g> nav atļauts veikt tālruņa zvanus."</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Ielādējot logrīku, radās problēma."</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"Notiek iestatīšana"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Šī ir sistēmas lietotne, un to nevar atinstalēt."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Mape bez nosaukuma"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"%1$d. lapa no %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Sākuma ekrāns: %1$d no %2$d"</string>
+    <string name="workspace_new_page" msgid="257366611030256142">"Jauna sākuma ekrāna lapa"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"Laipni lūdzam!"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"Lietotņu ikonu kopēšana"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"Vai importēt ikonas, mapes no iepriekšējiem sākuma ekrāniem?"</string>
@@ -75,6 +77,8 @@
     <string name="abandoned_search" msgid="891119232568284442">"Meklēt"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Šī lietotne nav instalēta"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Šai ikonai paredzētā lietotne nav instalēta. Varat noņemt ikonu vai meklēt lietotni un instalēt to manuāli."</string>
+    <string name="app_downloading_title" msgid="8336702962104482644">"Lietotnes <xliff:g id="NAME">%1$s</xliff:g> lejupielāde (<xliff:g id="PROGRESS">%2$s</xliff:g> pabeigti)"</string>
+    <string name="app_waiting_download_title" msgid="7053938513995617849">"Notiek <xliff:g id="NAME">%1$s</xliff:g> instalēšana"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Pievienot sākuma ekrānam"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Pārvietot vienumu šeit"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Vienums pievienots sākuma ekrānam"</string>

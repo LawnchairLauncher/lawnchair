@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.database.Cursor;
 import android.graphics.Point;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -21,32 +22,37 @@ import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.backup.nano.BackupProtos;
+import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.util.LongArrayMap;
-import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 
 /**
  * This class takes care of shrinking the workspace (by maximum of one row and one column), as a
- * result of restoring from a larger device.
+ * result of restoring from a larger device or device density change.
  */
-public class MigrateFromRestoreTask {
+public class GridSizeMigrationTask {
 
-    public static boolean ENABLED = false;
+    public static boolean ENABLED = Utilities.isNycOrAbove();
 
-    private static final String TAG = "MigrateFromRestoreTask";
+    private static final String TAG = "GridSizeMigrationTask";
     private static final boolean DEBUG = true;
 
-    private static final String KEY_MIGRATION_SOURCE_SIZE = "migration_restore_src_size";
+    private static final String KEY_MIGRATION_SRC_WORKSPACE_SIZE = "migration_src_workspace_size";
+    private static final String KEY_MIGRATION_SRC_HOTSEAT_SIZE = "migration_src_hotseat_size";
+
+    // Set of entries indicating minimum size a widget can be resized to. This is used during
+    // restore in case the widget has not been installed yet.
     private static final String KEY_MIGRATION_WIDGET_MINSIZE = "migration_widget_min_size";
 
     // These are carefully selected weights for various item types (Math.random?), to allow for
-    // the lease absurd migration experience.
+    // the least absurd migration experience.
     private static final float WT_SHORTCUT = 1;
     private static final float WT_APPLICATION = 0.8f;
     private static final float WT_WIDGET_MIN = 2;
@@ -54,59 +60,141 @@ public class MigrateFromRestoreTask {
     private static final float WT_FOLDER_FACTOR = 0.5f;
 
     private final Context mContext;
-    private final ContentValues mTempValues = new ContentValues();
-    private final HashMap<String, Point> mWidgetMinSize;
     private final InvariantDeviceProfile mIdp;
 
-    private HashSet<String> mValidPackages;
-    public ArrayList<Long> mEntryToRemove;
-    private ArrayList<ContentProviderOperation> mUpdateOperations;
-
-    private ArrayList<DbEntry> mCarryOver;
+    private final HashMap<String, Point> mWidgetMinSize = new HashMap<>();
+    private final ContentValues mTempValues = new ContentValues();
+    private final ArrayList<Long> mEntryToRemove = new ArrayList<>();
+    private final ArrayList<ContentProviderOperation> mUpdateOperations = new ArrayList<>();
+    private final ArrayList<DbEntry> mCarryOver = new ArrayList<>();
+    private final HashSet<String> mValidPackages;
 
     private final int mSrcX, mSrcY;
-    @Thunk final int mTrgX, mTrgY;
+    private final int mTrgX, mTrgY;
     private final boolean mShouldRemoveX, mShouldRemoveY;
 
-    public MigrateFromRestoreTask(Context context) {
-        mContext = context;
+    private final int mSrcHotseatSize;
+    private final int mSrcAllAppsRank;
+    private final int mDestHotseatSize;
+    private final int mDestAllAppsRank;
 
-        SharedPreferences prefs = prefs(context);
-        Point sourceSize = parsePoint(prefs.getString(KEY_MIGRATION_SOURCE_SIZE, ""));
+    protected GridSizeMigrationTask(Context context, InvariantDeviceProfile idp,
+            HashSet<String> validPackages, HashMap<String, Point> widgetMinSize,
+            Point sourceSize, Point targetSize) {
+        mContext = context;
+        mValidPackages = validPackages;
+        mWidgetMinSize.putAll(widgetMinSize);
+        mIdp = idp;
+
         mSrcX = sourceSize.x;
         mSrcY = sourceSize.y;
 
-        mWidgetMinSize = new HashMap<String, Point>();
-        for (String s : prefs.getStringSet(KEY_MIGRATION_WIDGET_MINSIZE,
-                Collections.<String>emptySet())) {
-            String[] parts = s.split("#");
-            mWidgetMinSize.put(parts[0], parsePoint(parts[1]));
-        }
+        mTrgX = targetSize.x;
+        mTrgY = targetSize.y;
 
-        mIdp = LauncherAppState.getInstance().getInvariantDeviceProfile();
-        mTrgX = mIdp.numColumns;
-        mTrgY = mIdp.numRows;
         mShouldRemoveX = mTrgX < mSrcX;
         mShouldRemoveY = mTrgY < mSrcY;
+
+        // Non-used variables
+        mSrcHotseatSize = mSrcAllAppsRank = mDestHotseatSize = mDestAllAppsRank = -1;
     }
 
-    public void execute() throws Exception {
-        mEntryToRemove = new ArrayList<>();
-        mCarryOver = new ArrayList<>();
-        mUpdateOperations = new ArrayList<>();
+    protected GridSizeMigrationTask(Context context,
+            InvariantDeviceProfile idp, HashSet<String> validPackages,
+            int srcHotseatSize, int srcAllAppsRank,
+            int destHotseatSize, int destAllAppsRank) {
+        mContext = context;
+        mIdp = idp;
+        mValidPackages = validPackages;
 
-        // Initialize list of valid packages. This contain all the packages which are already on
-        // the device and packages which are being installed. Any item which doesn't belong to
-        // this set is removed.
-        // Since the loader removes such items anyway, removing these items here doesn't cause any
-        // extra data loss and gives us more free space on the grid for better migration.
-        mValidPackages = new HashSet<>();
-        for (PackageInfo info : mContext.getPackageManager().getInstalledPackages(0)) {
-            mValidPackages.add(info.packageName);
+        mSrcHotseatSize = srcHotseatSize;
+        mSrcAllAppsRank = srcAllAppsRank;
+
+        mDestHotseatSize = destHotseatSize;
+        mDestAllAppsRank = destAllAppsRank;
+
+        // Non-used variables
+        mSrcX = mSrcY = mTrgX = mTrgY = -1;
+        mShouldRemoveX = mShouldRemoveY = false;
+    }
+
+    /**
+     * Applied all the pending DB operations
+     * @return true if any DB operation was commited.
+     */
+    private boolean applyOperations() throws Exception {
+        // Update items
+        if (!mUpdateOperations.isEmpty()) {
+            mContext.getContentResolver().applyBatch(LauncherProvider.AUTHORITY, mUpdateOperations);
         }
-        mValidPackages.addAll(PackageInstallerCompat.getInstance(mContext)
-                .updateAndGetActiveSessionCache().keySet());
 
+        if (!mEntryToRemove.isEmpty()) {
+            if (DEBUG) {
+                Log.d(TAG, "Removing items: " + TextUtils.join(", ", mEntryToRemove));
+            }
+            mContext.getContentResolver().delete(LauncherSettings.Favorites.CONTENT_URI,
+                    Utilities.createDbSelectionQuery(
+                            LauncherSettings.Favorites._ID, mEntryToRemove), null);
+        }
+
+        return !mUpdateOperations.isEmpty() || !mEntryToRemove.isEmpty();
+    }
+
+    /**
+     * To migrate hotseat, we load all the entries in order (LTR or RTL) and arrange them
+     * in the order in the new hotseat while keeping an empty space for all-apps. If the number of
+     * entries is more than what can fit in the new hotseat, we drop the entries with least weight.
+     * For weight calculation {@see #WT_SHORTCUT}, {@see #WT_APPLICATION}
+     * & {@see #WT_FOLDER_FACTOR}.
+     * @return true if any DB change was made
+     */
+    protected boolean migrateHotseat() throws Exception {
+        ArrayList<DbEntry> items = loadHotseatEntries();
+
+        int requiredCount = mDestHotseatSize - 1;
+
+        while (items.size() > requiredCount) {
+            // Pick the center item by default.
+            DbEntry toRemove = items.get(items.size() / 2);
+
+            // Find the item with least weight.
+            for (DbEntry entry : items) {
+                if (entry.weight < toRemove.weight) {
+                    toRemove = entry;
+                }
+            }
+
+            mEntryToRemove.add(toRemove.id);
+            items.remove(toRemove);
+        }
+
+        // Update screen IDS
+        int newScreenId = 0;
+        for (DbEntry entry : items) {
+            if (entry.screenId != newScreenId) {
+                entry.screenId = newScreenId;
+
+                // These values does not affect the item position, but we should set them
+                // to something other than -1.
+                entry.cellX = newScreenId;
+                entry.cellY = 0;
+
+                update(entry);
+            }
+
+            newScreenId++;
+            if (newScreenId == mDestAllAppsRank) {
+                newScreenId++;
+            }
+        }
+
+        return applyOperations();
+    }
+
+    /**
+     * @return true if any DB change was made
+     */
+    protected boolean migrateWorkspace() throws Exception {
         ArrayList<Long> allScreens = LauncherModel.loadWorkspaceScreensDb(mContext);
         if (allScreens.isEmpty()) {
             throw new Exception("Unable to get workspace screens");
@@ -150,31 +238,19 @@ public class MigrateFromRestoreTask {
 
             } while (!mCarryOver.isEmpty());
 
-
-            LauncherAppState.getInstance().getModel()
-                .updateWorkspaceScreenOrder(mContext, allScreens);
-        }
-
-        // Update items
-        mContext.getContentResolver().applyBatch(LauncherProvider.AUTHORITY, mUpdateOperations);
-
-        if (!mEntryToRemove.isEmpty()) {
-            if (DEBUG) {
-                Log.d(TAG, "Removing items: " + TextUtils.join(", ", mEntryToRemove));
+            // Update screens
+            final Uri uri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
+            mUpdateOperations.add(ContentProviderOperation.newDelete(uri).build());
+            int count = allScreens.size();
+            for (int i = 0; i < count; i++) {
+                ContentValues v = new ContentValues();
+                long screenId = allScreens.get(i);
+                v.put(LauncherSettings.WorkspaceScreens._ID, screenId);
+                v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
+                mUpdateOperations.add(ContentProviderOperation.newInsert(uri).withValues(v).build());
             }
-            mContext.getContentResolver().delete(LauncherSettings.Favorites.CONTENT_URI,
-                    Utilities.createDbSelectionQuery(
-                            LauncherSettings.Favorites._ID, mEntryToRemove), null);
         }
-
-        // Make sure we haven't removed everything.
-        final Cursor c = mContext.getContentResolver().query(
-                LauncherSettings.Favorites.CONTENT_URI, null, null, null, null);
-        boolean hasData = c.moveToNext();
-        c.close();
-        if (!hasData) {
-            throw new Exception("Removed every thing during grid resize");
-        }
+        return applyOperations();
     }
 
     /**
@@ -188,7 +264,7 @@ public class MigrateFromRestoreTask {
      *      (otherwise they are placed on a new screen).
      */
     private void migrateScreen(long screenId) {
-        ArrayList<DbEntry> items = loadEntries(screenId);
+        ArrayList<DbEntry> items = loadWorkspaceEntries(screenId);
 
         int removedCol = Integer.MAX_VALUE;
         int removedRow = Integer.MAX_VALUE;
@@ -326,7 +402,7 @@ public class MigrateFromRestoreTask {
         return finalItems;
     }
 
-    @Thunk void markCells(boolean[][] occupied, DbEntry item, boolean val) {
+    private void markCells(boolean[][] occupied, DbEntry item, boolean val) {
         for (int i = item.cellX; i < (item.cellX + item.spanX); i++) {
             for (int j = item.cellY; j < (item.cellY + item.spanY); j++) {
                 occupied[i][j] = val;
@@ -334,7 +410,7 @@ public class MigrateFromRestoreTask {
         }
     }
 
-    @Thunk boolean isVacant(boolean[][] occupied, int x, int y, int w, int h) {
+    private boolean isVacant(boolean[][] occupied, int x, int y, int w, int h) {
         if (x + w > mTrgX) return false;
         if (y + h > mTrgY) return false;
 
@@ -542,100 +618,163 @@ public class MigrateFromRestoreTask {
         }
     }
 
+    private ArrayList<DbEntry> loadHotseatEntries() {
+        Cursor c =  mContext.getContentResolver().query(LauncherSettings.Favorites.CONTENT_URI,
+                new String[]{
+                        Favorites._ID,                  // 0
+                        Favorites.ITEM_TYPE,            // 1
+                        Favorites.INTENT,               // 2
+                        Favorites.SCREEN},              // 3
+                Favorites.CONTAINER + " = " + Favorites.CONTAINER_HOTSEAT, null, null, null);
+
+        final int indexId = c.getColumnIndexOrThrow(Favorites._ID);
+        final int indexItemType = c.getColumnIndexOrThrow(Favorites.ITEM_TYPE);
+        final int indexIntent = c.getColumnIndexOrThrow(Favorites.INTENT);
+        final int indexScreen = c.getColumnIndexOrThrow(Favorites.SCREEN);
+
+        ArrayList<DbEntry> entries = new ArrayList<>();
+        while (c.moveToNext()) {
+            DbEntry entry = new DbEntry();
+            entry.id = c.getLong(indexId);
+            entry.itemType = c.getInt(indexItemType);
+            entry.screenId = c.getLong(indexScreen);
+
+            if (entry.screenId >= mSrcHotseatSize) {
+                mEntryToRemove.add(entry.id);
+                continue;
+            }
+
+            try {
+                // calculate weight
+                switch (entry.itemType) {
+                    case Favorites.ITEM_TYPE_SHORTCUT:
+                    case Favorites.ITEM_TYPE_APPLICATION: {
+                        verifyIntent(c.getString(indexIntent));
+                        entry.weight = entry.itemType == Favorites.ITEM_TYPE_SHORTCUT
+                                ? WT_SHORTCUT : WT_APPLICATION;
+                        break;
+                    }
+                    case Favorites.ITEM_TYPE_FOLDER: {
+                        int total = getFolderItemsCount(entry.id);
+                        if (total == 0) {
+                            throw new Exception("Folder is empty");
+                        }
+                        entry.weight = WT_FOLDER_FACTOR * total;
+                        break;
+                    }
+                    default:
+                        throw new Exception("Invalid item type");
+                }
+            } catch (Exception e) {
+                if (DEBUG) {
+                    Log.d(TAG, "Removing item " + entry.id, e);
+                }
+                mEntryToRemove.add(entry.id);
+                continue;
+            }
+            entries.add(entry);
+        }
+        c.close();
+        return entries;
+    }
+
+
     /**
      * Loads entries for a particular screen id.
      */
-    public ArrayList<DbEntry> loadEntries(long screen) {
-       Cursor c =  mContext.getContentResolver().query(LauncherSettings.Favorites.CONTENT_URI,
-                new String[] {
-                    Favorites._ID,                  // 0
-                    Favorites.ITEM_TYPE,            // 1
-                    Favorites.CELLX,                // 2
-                    Favorites.CELLY,                // 3
-                    Favorites.SPANX,                // 4
-                    Favorites.SPANY,                // 5
-                    Favorites.INTENT,               // 6
-                    Favorites.APPWIDGET_PROVIDER},  // 7
+    private ArrayList<DbEntry> loadWorkspaceEntries(long screen) {
+        Cursor c =  mContext.getContentResolver().query(LauncherSettings.Favorites.CONTENT_URI,
+                new String[]{
+                        Favorites._ID,                  // 0
+                        Favorites.ITEM_TYPE,            // 1
+                        Favorites.CELLX,                // 2
+                        Favorites.CELLY,                // 3
+                        Favorites.SPANX,                // 4
+                        Favorites.SPANY,                // 5
+                        Favorites.INTENT,               // 6
+                        Favorites.APPWIDGET_PROVIDER,   // 7
+                        Favorites.APPWIDGET_ID},        // 8
                 Favorites.CONTAINER + " = " + Favorites.CONTAINER_DESKTOP
-                    + " AND " + Favorites.SCREEN + " = " + screen, null, null, null);
+                        + " AND " + Favorites.SCREEN + " = " + screen, null, null, null);
 
-       final int indexId = c.getColumnIndexOrThrow(Favorites._ID);
-       final int indexItemType = c.getColumnIndexOrThrow(Favorites.ITEM_TYPE);
-       final int indexCellX = c.getColumnIndexOrThrow(Favorites.CELLX);
-       final int indexCellY = c.getColumnIndexOrThrow(Favorites.CELLY);
-       final int indexSpanX = c.getColumnIndexOrThrow(Favorites.SPANX);
-       final int indexSpanY = c.getColumnIndexOrThrow(Favorites.SPANY);
-       final int indexIntent = c.getColumnIndexOrThrow(Favorites.INTENT);
-       final int indexAppWidgetProvider = c.getColumnIndexOrThrow(Favorites.APPWIDGET_PROVIDER);
+        final int indexId = c.getColumnIndexOrThrow(Favorites._ID);
+        final int indexItemType = c.getColumnIndexOrThrow(Favorites.ITEM_TYPE);
+        final int indexCellX = c.getColumnIndexOrThrow(Favorites.CELLX);
+        final int indexCellY = c.getColumnIndexOrThrow(Favorites.CELLY);
+        final int indexSpanX = c.getColumnIndexOrThrow(Favorites.SPANX);
+        final int indexSpanY = c.getColumnIndexOrThrow(Favorites.SPANY);
+        final int indexIntent = c.getColumnIndexOrThrow(Favorites.INTENT);
+        final int indexAppWidgetProvider = c.getColumnIndexOrThrow(Favorites.APPWIDGET_PROVIDER);
+        final int indexAppWidgetId = c.getColumnIndexOrThrow(Favorites.APPWIDGET_ID);
 
-       ArrayList<DbEntry> entries = new ArrayList<>();
-       while (c.moveToNext()) {
-           DbEntry entry = new DbEntry();
-           entry.id = c.getLong(indexId);
-           entry.itemType = c.getInt(indexItemType);
-           entry.cellX = c.getInt(indexCellX);
-           entry.cellY = c.getInt(indexCellY);
-           entry.spanX = c.getInt(indexSpanX);
-           entry.spanY = c.getInt(indexSpanY);
-           entry.screenId = screen;
+        ArrayList<DbEntry> entries = new ArrayList<>();
+        while (c.moveToNext()) {
+            DbEntry entry = new DbEntry();
+            entry.id = c.getLong(indexId);
+            entry.itemType = c.getInt(indexItemType);
+            entry.cellX = c.getInt(indexCellX);
+            entry.cellY = c.getInt(indexCellY);
+            entry.spanX = c.getInt(indexSpanX);
+            entry.spanY = c.getInt(indexSpanY);
+            entry.screenId = screen;
 
-           try {
-               // calculate weight
-               switch (entry.itemType) {
-                   case Favorites.ITEM_TYPE_SHORTCUT:
-                   case Favorites.ITEM_TYPE_APPLICATION: {
-                       verifyIntent(c.getString(indexIntent));
-                       entry.weight = entry.itemType == Favorites.ITEM_TYPE_SHORTCUT
-                           ? WT_SHORTCUT : WT_APPLICATION;
-                       break;
-                   }
-                   case Favorites.ITEM_TYPE_APPWIDGET: {
-                       String provider = c.getString(indexAppWidgetProvider);
-                       ComponentName cn = ComponentName.unflattenFromString(provider);
-                       verifyPackage(cn.getPackageName());
-                       entry.weight = Math.max(WT_WIDGET_MIN, WT_WIDGET_FACTOR
-                               * entry.spanX * entry.spanY);
+            try {
+                // calculate weight
+                switch (entry.itemType) {
+                    case Favorites.ITEM_TYPE_SHORTCUT:
+                    case Favorites.ITEM_TYPE_APPLICATION: {
+                        verifyIntent(c.getString(indexIntent));
+                        entry.weight = entry.itemType == Favorites.ITEM_TYPE_SHORTCUT
+                            ? WT_SHORTCUT : WT_APPLICATION;
+                        break;
+                    }
+                    case Favorites.ITEM_TYPE_APPWIDGET: {
+                        String provider = c.getString(indexAppWidgetProvider);
+                        ComponentName cn = ComponentName.unflattenFromString(provider);
+                        verifyPackage(cn.getPackageName());
+                        entry.weight = Math.max(WT_WIDGET_MIN, WT_WIDGET_FACTOR
+                                * entry.spanX * entry.spanY);
 
-                       // Migration happens for current user only.
-                       LauncherAppWidgetProviderInfo pInfo = LauncherModel.getProviderInfo(
-                               mContext, cn, UserHandleCompat.myUserHandle());
-                       Point spans = pInfo == null ?
-                               mWidgetMinSize.get(provider) : pInfo.getMinSpans(mIdp, mContext);
-                       if (spans != null) {
-                           entry.minSpanX = spans.x > 0 ? spans.x : entry.spanX;
-                           entry.minSpanY = spans.y > 0 ? spans.y : entry.spanY;
-                       } else {
-                           // Assume that the widget be resized down to 2x2
-                           entry.minSpanX = entry.minSpanY = 2;
-                       }
+                        int widgetId = c.getInt(indexAppWidgetId);
+                        LauncherAppWidgetProviderInfo pInfo = AppWidgetManagerCompat.getInstance(
+                                mContext).getLauncherAppWidgetInfo(widgetId);
+                        Point spans = pInfo == null ?
+                                mWidgetMinSize.get(provider) : pInfo.getMinSpans(mIdp, mContext);
+                        if (spans != null) {
+                            entry.minSpanX = spans.x > 0 ? spans.x : entry.spanX;
+                            entry.minSpanY = spans.y > 0 ? spans.y : entry.spanY;
+                        } else {
+                            // Assume that the widget be resized down to 2x2
+                            entry.minSpanX = entry.minSpanY = 2;
+                        }
 
-                       if (entry.minSpanX > mTrgX || entry.minSpanY > mTrgY) {
-                           throw new Exception("Widget can't be resized down to fit the grid");
-                       }
-                       break;
-                   }
-                   case Favorites.ITEM_TYPE_FOLDER: {
-                       int total = getFolderItemsCount(entry.id);
-                       if (total == 0) {
-                           throw new Exception("Folder is empty");
-                       }
-                       entry.weight = WT_FOLDER_FACTOR * total;
-                       break;
-                   }
-                   default:
-                       throw new Exception("Invalid item type");
-               }
-           } catch (Exception e) {
-               if (DEBUG) {
-                   Log.d(TAG, "Removing item " + entry.id, e);
-               }
-               mEntryToRemove.add(entry.id);
-               continue;
-           }
-
-           entries.add(entry);
-       }
-       return entries;
+                        if (entry.minSpanX > mTrgX || entry.minSpanY > mTrgY) {
+                            throw new Exception("Widget can't be resized down to fit the grid");
+                        }
+                        break;
+                    }
+                    case Favorites.ITEM_TYPE_FOLDER: {
+                        int total = getFolderItemsCount(entry.id);
+                        if (total == 0) {
+                            throw new Exception("Folder is empty");
+                        }
+                        entry.weight = WT_FOLDER_FACTOR * total;
+                        break;
+                    }
+                    default:
+                        throw new Exception("Invalid item type");
+                }
+            } catch (Exception e) {
+                if (DEBUG) {
+                    Log.d(TAG, "Removing item " + entry.id, e);
+                }
+                mEntryToRemove.add(entry.id);
+                continue;
+            }
+            entries.add(entry);
+        }
+        c.close();
+        return entries;
     }
 
     /**
@@ -643,7 +782,7 @@ public class MigrateFromRestoreTask {
      */
     private int getFolderItemsCount(long folderId) {
         Cursor c =  mContext.getContentResolver().query(LauncherSettings.Favorites.CONTENT_URI,
-                new String[] {Favorites._ID, Favorites.INTENT},
+                new String[]{Favorites._ID, Favorites.INTENT},
                 Favorites.CONTAINER + " = " + folderId, null, null, null);
 
         int total = 0;
@@ -655,7 +794,7 @@ public class MigrateFromRestoreTask {
                 mEntryToRemove.add(c.getLong(0));
             }
         }
-
+        c.close();
         return total;
     }
 
@@ -730,7 +869,7 @@ public class MigrateFromRestoreTask {
         }
     }
 
-    @Thunk static ArrayList<DbEntry> deepCopy(ArrayList<DbEntry> src) {
+    private static ArrayList<DbEntry> deepCopy(ArrayList<DbEntry> src) {
         ArrayList<DbEntry> dup = new ArrayList<DbEntry>(src.size());
         for (DbEntry e : src) {
             dup.add(e.copy());
@@ -743,25 +882,149 @@ public class MigrateFromRestoreTask {
         return new Point(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
     }
 
-    public static void markForMigration(Context context, int srcX, int srcY,
-            HashSet<String> widgets) {
-        prefs(context).edit()
-                .putString(KEY_MIGRATION_SOURCE_SIZE, srcX + "," + srcY)
+    private static String getPointString(int x, int y) {
+        return String.format(Locale.ENGLISH, "%d,%d", x, y);
+    }
+
+    public static void markForMigration(
+            Context context, HashSet<String> widgets, BackupProtos.DeviceProfieData srcProfile) {
+        Utilities.getPrefs(context).edit()
+                .putString(KEY_MIGRATION_SRC_WORKSPACE_SIZE,
+                        getPointString((int) srcProfile.desktopCols, (int) srcProfile.desktopRows))
+                .putString(KEY_MIGRATION_SRC_HOTSEAT_SIZE,
+                        getPointString((int) srcProfile.hotseatCount, srcProfile.allappsRank))
                 .putStringSet(KEY_MIGRATION_WIDGET_MINSIZE, widgets)
                 .apply();
     }
 
-    public static boolean shouldRunTask(Context context) {
-        return !TextUtils.isEmpty(prefs(context).getString(KEY_MIGRATION_SOURCE_SIZE, ""));
-    }
+    /**
+     * Migrates the workspace and hotseat in case their sizes changed.
+     * @return false if the migration failed.
+     */
+    public static boolean migrateGridIfNeeded(Context context) {
+        SharedPreferences prefs = Utilities.getPrefs(context);
+        InvariantDeviceProfile idp = LauncherAppState.getInstance().getInvariantDeviceProfile();
 
-    public static void clearFlags(Context context) {
-        prefs(context).edit().remove(KEY_MIGRATION_SOURCE_SIZE)
-                .remove(KEY_MIGRATION_WIDGET_MINSIZE).commit();
-    }
+        String gridSizeString = getPointString(idp.numColumns, idp.numRows);
+        String hotseatSizeString = getPointString(idp.numHotseatIcons, idp.hotseatAllAppsRank);
 
-    private static SharedPreferences prefs(Context context) {
-        return context.getSharedPreferences(LauncherAppState.getSharedPreferencesKey(),
-                Context.MODE_PRIVATE);
+        if (gridSizeString.equals(prefs.getString(KEY_MIGRATION_SRC_WORKSPACE_SIZE, "")) &&
+                hotseatSizeString.equals(prefs.getString(KEY_MIGRATION_SRC_HOTSEAT_SIZE, ""))) {
+            // Skip if workspace and hotseat sizes have not changed.
+            return true;
+        }
+
+        long migrationStartTime = System.currentTimeMillis();
+        try {
+            boolean dbChanged = false;
+
+            // Initialize list of valid packages. This contain all the packages which are already on
+            // the device and packages which are being installed. Any item which doesn't belong to
+            // this set is removed.
+            // Since the loader removes such items anyway, removing these items here doesn't cause
+            // any extra data loss and gives us more free space on the grid for better migration.
+            HashSet validPackages = new HashSet<>();
+            for (PackageInfo info : context.getPackageManager().getInstalledPackages(0)) {
+                validPackages.add(info.packageName);
+            }
+            validPackages.addAll(PackageInstallerCompat.getInstance(context)
+                    .updateAndGetActiveSessionCache().keySet());
+
+            // Hotseat
+            Point srcHotseatSize = parsePoint(prefs.getString(
+                    KEY_MIGRATION_SRC_HOTSEAT_SIZE, hotseatSizeString));
+            if (srcHotseatSize.x != idp.numHotseatIcons ||
+                    srcHotseatSize.y != idp.hotseatAllAppsRank) {
+                // Migrate hotseat.
+
+                dbChanged = new GridSizeMigrationTask(context,
+                        LauncherAppState.getInstance().getInvariantDeviceProfile(),
+                        validPackages,
+                        srcHotseatSize.x, srcHotseatSize.y,
+                        idp.numHotseatIcons, idp.hotseatAllAppsRank).migrateHotseat();
+            }
+
+            // Grid size
+            Point targetSize = new Point(idp.numColumns, idp.numRows);
+            Point sourceSize = parsePoint(prefs.getString(
+                    KEY_MIGRATION_SRC_WORKSPACE_SIZE, gridSizeString));
+
+            if (!targetSize.equals(sourceSize)) {
+
+                // The following list defines all possible grid sizes (and intermediate steps
+                // during migration). Note that at each step, dx <= 1 && dy <= 1. Any grid size
+                // which is not in this list is not migrated.
+                // Note that the InvariantDeviceProfile defines (rows, cols) but the Points
+                // specified here are defined as (cols, rows).
+                ArrayList<Point> gridSizeSteps = new ArrayList<>();
+                gridSizeSteps.add(new Point(3, 2));
+                gridSizeSteps.add(new Point(3, 3));
+                gridSizeSteps.add(new Point(4, 3));
+                gridSizeSteps.add(new Point(4, 4));
+                gridSizeSteps.add(new Point(5, 5));
+                gridSizeSteps.add(new Point(6, 5));
+                gridSizeSteps.add(new Point(6, 6));
+                gridSizeSteps.add(new Point(7, 7));
+
+                int sourceSizeIndex = gridSizeSteps.indexOf(sourceSize);
+                int targetSizeIndex = gridSizeSteps.indexOf(targetSize);
+
+                if (sourceSizeIndex <= -1 || targetSizeIndex <= -1) {
+                    throw new Exception("Unable to migrate grid size from " + sourceSize
+                            + " to " + targetSize);
+                }
+
+                // Min widget sizes
+                HashMap<String, Point> widgetMinSize = new HashMap<>();
+                for (String s : Utilities.getPrefs(context).getStringSet(KEY_MIGRATION_WIDGET_MINSIZE,
+                        Collections.<String>emptySet())) {
+                    String[] parts = s.split("#");
+                    widgetMinSize.put(parts[0], parsePoint(parts[1]));
+                }
+
+                // Migrate the workspace grid, step by step.
+                while (targetSizeIndex < sourceSizeIndex ) {
+                    // We only need to migrate the grid if source size is greater
+                    // than the target size.
+                    Point stepTargetSize = gridSizeSteps.get(sourceSizeIndex - 1);
+                    Point stepSourceSize = gridSizeSteps.get(sourceSizeIndex);
+
+                    if (new GridSizeMigrationTask(context,
+                            LauncherAppState.getInstance().getInvariantDeviceProfile(),
+                            validPackages, widgetMinSize,
+                            stepSourceSize, stepTargetSize).migrateWorkspace()) {
+                        dbChanged = true;
+                    }
+                    sourceSizeIndex--;
+                }
+            }
+
+            if (dbChanged) {
+                // Make sure we haven't removed everything.
+                final Cursor c = context.getContentResolver().query(
+                        LauncherSettings.Favorites.CONTENT_URI, null, null, null, null);
+                boolean hasData = c.moveToNext();
+                c.close();
+                if (!hasData) {
+                    throw new Exception("Removed every thing during grid resize");
+                }
+            }
+
+            return true;
+        } catch (Exception e) {
+            Log.e(TAG, "Error during grid migration", e);
+
+            return false;
+        } finally {
+            Log.v(TAG, "Workspace migration completed in "
+                    + (System.currentTimeMillis() - migrationStartTime));
+
+            // Save current configuration, so that the migration does not run again.
+            prefs.edit()
+                    .putString(KEY_MIGRATION_SRC_WORKSPACE_SIZE, gridSizeString)
+                    .putString(KEY_MIGRATION_SRC_HOTSEAT_SIZE, hotseatSizeString)
+                    .remove(KEY_MIGRATION_WIDGET_MINSIZE)
+                    .apply();
+        }
     }
 }
