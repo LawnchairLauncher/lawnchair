@@ -19,9 +19,6 @@ package com.android.launcher3.compat;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Rect;
 import android.os.Bundle;
 
@@ -35,6 +32,10 @@ public abstract class LauncherAppsCompat {
             "android.intent.action.MANAGED_PROFILE_ADDED";
     public static final String ACTION_MANAGED_PROFILE_REMOVED =
             "android.intent.action.MANAGED_PROFILE_REMOVED";
+    public static final String ACTION_MANAGED_PROFILE_AVAILABLE =
+            "android.intent.action.MANAGED_PROFILE_AVAILABLE";
+    public static final String ACTION_MANAGED_PROFILE_UNAVAILABLE =
+            "android.intent.action.MANAGED_PROFILE_UNAVAILABLE";
 
     public interface OnAppsChangedCallbackCompat {
         void onPackageRemoved(String packageName, UserHandleCompat user);
@@ -42,6 +43,8 @@ public abstract class LauncherAppsCompat {
         void onPackageChanged(String packageName, UserHandleCompat user);
         void onPackagesAvailable(String[] packageNames, UserHandleCompat user, boolean replacing);
         void onPackagesUnavailable(String[] packageNames, UserHandleCompat user, boolean replacing);
+        void onPackagesSuspended(String[] packageNames, UserHandleCompat user);
+        void onPackagesUnsuspended(String[] packageNames, UserHandleCompat user);
     }
 
     protected LauncherAppsCompat() {
@@ -75,13 +78,5 @@ public abstract class LauncherAppsCompat {
     public abstract boolean isPackageEnabledForProfile(String packageName, UserHandleCompat user);
     public abstract boolean isActivityEnabledForProfile(ComponentName component,
             UserHandleCompat user);
-
-    public boolean isAppEnabled(PackageManager pm, String packageName, int flags) {
-        try {
-            ApplicationInfo info = pm.getApplicationInfo(packageName, flags);
-            return info != null && info.enabled;
-        } catch (NameNotFoundException e) {
-            return false;
-        }
-    }
+    public abstract boolean isPackageSuspendedForProfile(String packageName, UserHandleCompat user);
 }

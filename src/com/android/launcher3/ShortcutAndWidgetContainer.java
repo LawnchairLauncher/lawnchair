@@ -23,7 +23,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 
 public class ShortcutAndWidgetContainer extends ViewGroup {
     static final String TAG = "CellLayoutChildren";
@@ -164,8 +163,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
             lp.height = getMeasuredHeight();
         }
         int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(lp.width, MeasureSpec.EXACTLY);
-        int childheightMeasureSpec = MeasureSpec.makeMeasureSpec(lp.height,
-                MeasureSpec.EXACTLY);
+        int childheightMeasureSpec = MeasureSpec.makeMeasureSpec(lp.height, MeasureSpec.EXACTLY);
         child.measure(childWidthMeasureSpec, childheightMeasureSpec);
     }
 

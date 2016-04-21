@@ -22,6 +22,7 @@
     <string name="wallpaper_instructions" msgid="3524143401182707094">"កំណត់​ផ្ទាំង​រូបភាព"</string>
     <string name="image_load_fail" msgid="7538534580694411837">"មិន​អាច​ផ្ទុក​រូបភាព"</string>
     <string name="wallpaper_load_fail" msgid="4800700444605404650">"មិន​អាច​ផ្ទុក​រូបភាព​ជា​ផ្ទាំង​រូបភាព"</string>
+    <string name="wallpaper_set_fail" msgid="7023180794008631780">"មិនអាចកំណត់រូបភាពជាផ្ទាំងរូបភាពទេ"</string>
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="9015111147509924344">"បាន​ជ្រើស %1$d"</item>
     <item quantity="one" msgid="8409622005831789373">"បាន​ជ្រើស %1$d"</item>

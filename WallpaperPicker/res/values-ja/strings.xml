@@ -22,6 +22,7 @@
     <string name="wallpaper_instructions" msgid="3524143401182707094">"壁紙を設定"</string>
     <string name="image_load_fail" msgid="7538534580694411837">"画像を読み込めませんでした"</string>
     <string name="wallpaper_load_fail" msgid="4800700444605404650">"画像を壁紙として読み込めませんでした"</string>
+    <string name="wallpaper_set_fail" msgid="7023180794008631780">"画像を壁紙として設定できませんでした"</string>
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="9015111147509924344">"%1$d個選択済み"</item>
     <item quantity="one" msgid="8409622005831789373">"%1$d個選択済み"</item>

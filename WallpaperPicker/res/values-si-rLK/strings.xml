@@ -22,6 +22,7 @@
     <string name="wallpaper_instructions" msgid="3524143401182707094">"වෝල්පේපරය සකසන්න"</string>
     <string name="image_load_fail" msgid="7538534580694411837">"පින්තූරය පූරණය කිරීමට නොහැකි විය"</string>
     <string name="wallpaper_load_fail" msgid="4800700444605404650">"පින්තූරය වෝල්පේපරයක් ලෙස පූරණය කිරීමට නොහැකි විය"</string>
+    <string name="wallpaper_set_fail" msgid="7023180794008631780">"පින්තූරය බිතුපතක් ලෙස සැකසීමට නොහැකි විය"</string>
   <plurals name="number_of_items_selected">
     <item quantity="zero" msgid="9015111147509924344">"%1$d තෝරා ගන්නා ලදි"</item>
     <item quantity="one" msgid="8409622005831789373">"%1$d තෝරා ගන්නා ලදි"</item>

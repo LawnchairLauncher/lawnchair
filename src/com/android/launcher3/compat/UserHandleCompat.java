@@ -49,7 +49,7 @@ public class UserHandleCompat {
         }
     }
 
-    UserHandle getUser() {
+    public UserHandle getUser() {
         return mUser;
     }
 
@@ -92,5 +92,15 @@ public class UserHandleCompat {
         if (Utilities.ATLEAST_LOLLIPOP && mUser != null) {
             intent.putExtra(name, mUser);
         }
+    }
+
+    public static UserHandleCompat fromIntent(Intent intent) {
+        if (Utilities.ATLEAST_LOLLIPOP) {
+            UserHandle user = intent.getParcelableExtra(Intent.EXTRA_USER);
+            if (user != null) {
+                return UserHandleCompat.fromUser(user);
+            }
+        }
+        return null;
     }
 }

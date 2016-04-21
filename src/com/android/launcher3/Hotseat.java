@@ -17,13 +17,13 @@
 package com.android.launcher3;
 
 import android.content.Context;
-import android.content.res.Configuration;
-import android.content.res.Resources;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -70,7 +70,7 @@ public class Hotseat extends FrameLayout
     public void setOnLongClickListener(OnLongClickListener l) {
         mContent.setOnLongClickListener(l);
     }
-  
+
     /* Get the orientation invariant order of the item in the hotseat for persistence. */
     int getOrderInHotseat(int x, int y) {
         return mHasVerticalHotseat ? (mContent.getCountY() - y - 1) : x;
@@ -118,6 +118,10 @@ public class Hotseat extends FrameLayout
         Drawable d = context.getResources().getDrawable(R.drawable.all_apps_button_icon);
 
         mLauncher.resizeIconDrawable(d);
+        int scaleDownPx = getResources().getDimensionPixelSize(R.dimen.all_apps_button_scale_down);
+        Rect bounds = d.getBounds();
+        d.setBounds(bounds.left, bounds.top + scaleDownPx / 2, bounds.right - scaleDownPx,
+                bounds.bottom - scaleDownPx / 2);
         allAppsButton.setCompoundDrawables(null, d, null, null);
 
         allAppsButton.setContentDescription(context.getString(R.string.all_apps_button_label));
@@ -150,7 +154,7 @@ public class Hotseat extends FrameLayout
     }
 
     @Override
-    public void fillInLaunchSourceData(Bundle sourceData) {
+    public void fillInLaunchSourceData(View v, Bundle sourceData) {
         sourceData.putString(Stats.SOURCE_EXTRA_CONTAINER, Stats.CONTAINER_HOTSEAT);
     }
 }

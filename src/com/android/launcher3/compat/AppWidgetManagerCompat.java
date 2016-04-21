@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
+import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -28,7 +29,9 @@ import android.os.Bundle;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.ComponentKey;
 
+import java.util.HashMap;
 import java.util.List;
 
 public abstract class AppWidgetManagerCompat {
@@ -62,6 +65,11 @@ public abstract class AppWidgetManagerCompat {
         return mAppWidgetManager.getAppWidgetInfo(appWidgetId);
     }
 
+    public LauncherAppWidgetProviderInfo getLauncherAppWidgetInfo(int appWidgetId) {
+        AppWidgetProviderInfo info = getAppWidgetInfo(appWidgetId);
+        return info == null ? null : LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, info);
+    }
+
     public abstract List<AppWidgetProviderInfo> getAllProviders();
 
     public abstract String loadLabel(LauncherAppWidgetProviderInfo info);
@@ -79,6 +87,10 @@ public abstract class AppWidgetManagerCompat {
     public abstract Drawable loadIcon(LauncherAppWidgetProviderInfo info, IconCache cache);
 
     public abstract Bitmap getBadgeBitmap(LauncherAppWidgetProviderInfo info, Bitmap bitmap,
-            int imageHeight);
+            int imageWidth, int imageHeight);
 
+    public abstract LauncherAppWidgetProviderInfo findProvider(
+            ComponentName provider, UserHandleCompat user);
+
+    public abstract HashMap<ComponentKey, AppWidgetProviderInfo> getAllProvidersMap();
 }
