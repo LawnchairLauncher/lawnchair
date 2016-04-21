@@ -216,16 +216,6 @@ public class LauncherSettings {
         public static final int ITEM_TYPE_FOLDER = 2;
 
         /**
-        * The favorite is a live folder
-        *
-        * Note: live folders can no longer be added to Launcher, and any live folders which
-        * exist within the launcher database will be ignored when loading.  That said, these
-        * entries in the database may still exist, and are not automatically stripped.
-        */
-        @Deprecated
-        static final int ITEM_TYPE_LIVE_FOLDER = 3;
-
-        /**
          * The favorite is a widget
          */
         public static final int ITEM_TYPE_APPWIDGET = 4;
@@ -234,24 +224,6 @@ public class LauncherSettings {
          * The favorite is a custom widget provided by the launcher
          */
         public static final int ITEM_TYPE_CUSTOM_APPWIDGET = 5;
-
-        /**
-         * The favorite is a clock
-         */
-        @Deprecated
-        static final int ITEM_TYPE_WIDGET_CLOCK = 1000;
-
-        /**
-         * The favorite is a search widget
-         */
-        @Deprecated
-        static final int ITEM_TYPE_WIDGET_SEARCH = 1001;
-
-        /**
-         * The favorite is a photo frame
-         */
-        @Deprecated
-        static final int ITEM_TYPE_WIDGET_PHOTO_FRAME = 1002;
 
         /**
          * The appWidgetId of the widget
@@ -266,33 +238,6 @@ public class LauncherSettings {
          * <P>Type: STRING</P>
          */
         public static final String APPWIDGET_PROVIDER = "appWidgetProvider";
-        
-        /**
-         * Indicates whether this favorite is an application-created shortcut or not.
-         * If the value is 0, the favorite is not an application-created shortcut, if the
-         * value is 1, it is an application-created shortcut.
-         * <P>Type: INTEGER</P>
-         */
-        @Deprecated
-        static final String IS_SHORTCUT = "isShortcut";
-
-        /**
-         * The URI associated with the favorite. It is used, for instance, by
-         * live folders to find the content provider.
-         * <P>Type: TEXT</P>
-         */
-        @Deprecated
-        static final String URI = "uri";
-
-        /**
-         * The display mode if the item is a live folder.
-         * <P>Type: INTEGER</P>
-         *
-         * @see android.provider.LiveFolders#DISPLAY_MODE_GRID
-         * @see android.provider.LiveFolders#DISPLAY_MODE_LIST
-         */
-        @Deprecated
-        static final String DISPLAY_MODE = "displayMode";
 
         /**
          * Boolean indicating that his item was restored and not yet successfully bound.
