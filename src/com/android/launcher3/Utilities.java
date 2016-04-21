@@ -19,6 +19,7 @@ package com.android.launcher3;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.SearchManager;
+import android.app.WallpaperManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ActivityNotFoundException;
@@ -45,6 +46,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.os.Build;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.text.Spannable;
@@ -826,6 +828,17 @@ public final class Utilities {
     public static boolean isPowerSaverOn(Context context) {
         PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         return ATLEAST_LOLLIPOP && powerManager.isPowerSaveMode();
+    }
+
+    public static boolean isWallapaperAllowed(Context context) {
+        if (isNycOrAbove()) {
+            try {
+                WallpaperManager wm = context.getSystemService(WallpaperManager.class);
+                return (Boolean) wm.getClass().getDeclaredMethod("isWallpaperSettingAllowed")
+                        .invoke(wm);
+            } catch (Exception e) { }
+        }
+        return true;
     }
 
     /**
