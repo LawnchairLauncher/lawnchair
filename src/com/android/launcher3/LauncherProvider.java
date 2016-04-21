@@ -658,13 +658,10 @@ public class LauncherProvider extends ContentProvider {
                     "spanY INTEGER," +
                     "itemType INTEGER," +
                     "appWidgetId INTEGER NOT NULL DEFAULT -1," +
-                    "isShortcut INTEGER," +
                     "iconType INTEGER," +
                     "iconPackage TEXT," +
                     "iconResource TEXT," +
                     "icon BLOB," +
-                    "uri TEXT," +
-                    "displayMode INTEGER," +
                     "appWidgetProvider TEXT," +
                     "modified INTEGER NOT NULL DEFAULT 0," +
                     "restored INTEGER NOT NULL DEFAULT 0," +
