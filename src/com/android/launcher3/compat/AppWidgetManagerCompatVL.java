@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -40,8 +41,10 @@ import android.widget.Toast;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
+import com.android.launcher3.util.ComponentKey;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -90,9 +93,7 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
             AppWidgetHost host, int requestCode) {
         try {
             host.startAppWidgetConfigureActivityForResult(activity, widgetId, 0, requestCode, null);
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(activity, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
-        } catch (SecurityException e) {
+        } catch (ActivityNotFoundException | SecurityException e) {
             Toast.makeText(activity, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
         }
     }
@@ -109,18 +110,24 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
 
     @Override
     public Bitmap getBadgeBitmap(LauncherAppWidgetProviderInfo info, Bitmap bitmap,
-            int imageHeight) {
+            int imageWidth, int imageHeight) {
         if (info.isCustomWidget || info.getProfile().equals(android.os.Process.myUserHandle())) {
             return bitmap;
         }
 
         // Add a user badge in the bottom right of the image.
         final Resources res = mContext.getResources();
-        final int badgeSize = res.getDimensionPixelSize(R.dimen.profile_badge_size);
         final int badgeMinTop = res.getDimensionPixelSize(R.dimen.profile_badge_minimum_top);
+
+        // choose min between badge size defined for widget tray versus width, height of the image.
+        // Width, height of the image can be smaller than widget tray badge size when being dropped
+        // to the workspace.
+        final int badgeSize = Math.min(res.getDimensionPixelSize(R.dimen.profile_badge_size),
+                Math.min(imageWidth, imageHeight - badgeMinTop));
         final Rect badgeLocation = new Rect(0, 0, badgeSize, badgeSize);
 
         final int top = Math.max(imageHeight - badgeSize, badgeMinTop);
+
         if (res.getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
             badgeLocation.offset(0, top);
         } else {
@@ -140,5 +147,29 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
         drawable.draw(c);
         c.setBitmap(null);
         return bitmap;
+    }
+
+    @Override
+    public LauncherAppWidgetProviderInfo findProvider(ComponentName provider, UserHandleCompat user) {
+        for (AppWidgetProviderInfo info : mAppWidgetManager
+                .getInstalledProvidersForProfile(user.getUser())) {
+            if (info.provider.equals(provider)) {
+                return LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, info);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public HashMap<ComponentKey, AppWidgetProviderInfo> getAllProvidersMap() {
+        HashMap<ComponentKey, AppWidgetProviderInfo> result = new HashMap<>();
+        for (UserHandle user : mUserManager.getUserProfiles()) {
+            UserHandleCompat userHandle = UserHandleCompat.fromUser(user);
+            for (AppWidgetProviderInfo info :
+                    mAppWidgetManager.getInstalledProvidersForProfile(user)) {
+                result.put(new ComponentKey(info.provider, userHandle), info);
+            }
+        }
+        return result;
     }
 }

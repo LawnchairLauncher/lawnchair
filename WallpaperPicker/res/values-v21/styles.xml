@@ -34,8 +34,11 @@
     </style>
 
     <style name="Theme" parent="@style/BaseWallpaperTheme">
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">#00000000</item>
+        <item name="android:navigationBarColor">#00000000</item>
         <item name="android:colorControlActivated">@color/launcher_accent_color</item>
         <item name="android:colorAccent">@color/launcher_accent_color</item>
         <item name="android:colorPrimary">@color/launcher_accent_color</item>

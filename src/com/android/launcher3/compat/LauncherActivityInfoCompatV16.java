@@ -93,8 +93,4 @@ public class LauncherActivityInfoCompatV16 extends LauncherActivityInfoCompat {
     public String getName() {
         return mActivityInfo.name;
     }
-
-    public Drawable getBadgedIcon(int density) {
-        return getIcon(density);
-    }
 }

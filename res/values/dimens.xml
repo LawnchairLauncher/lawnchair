@@ -19,8 +19,18 @@
 
 <!-- Dynamic Grid -->
     <dimen name="dynamic_grid_edge_margin">6dp</dimen>
-    <dimen name="dynamic_grid_search_bar_max_width">500dp</dimen>
-    <dimen name="dynamic_grid_search_bar_height">56dp</dimen>
+    <dimen name="dynamic_grid_search_bar_height">48dp</dimen>
+    <!-- We want 46dp extra for the tall search bar. -->
+    <dimen name="dynamic_grid_search_bar_height_tall">94dp</dimen>
+    <dimen name="qsb_internal_padding_top">8dp</dimen>
+    <dimen name="qsb_internal_padding_bottom">8dp</dimen>
+    <dimen name="dynamic_grid_search_bar_extra_top_padding">0dp</dimen>
+    <!-- Reduce the space between the status bar and the search bar when the search bar is tall -->
+    <dimen name="dynamic_grid_search_bar_negative_top_padding_short">-4dp</dimen>
+    <dimen name="dynamic_grid_search_bar_bottom_padding">4dp</dimen>
+    <!-- Reduce the padding between the search bar and workspace when the search bar is tall -->
+    <dimen name="dynamic_grid_search_bar_bottom_negative_padding_short">-6dp</dimen>
+    <dimen name="dynamic_grid_search_bar_bottom_padding_tablet">16dp</dimen>
     <dimen name="dynamic_grid_page_indicator_height">20dp</dimen>
     <dimen name="dynamic_grid_icon_drawable_padding">4dp</dimen>
     <dimen name="dynamic_grid_workspace_page_spacing">8dp</dimen>
@@ -50,6 +60,10 @@
     <dimen name="toolbar_button_horizontal_padding">12dip</dimen>
 
 <!-- Container -->
+    <item name="container_margin" format="fraction" type="fraction">0%</item>
+    <dimen name="container_min_margin">8dp</dimen>
+    <dimen name="container_max_width">0dp</dimen>
+
     <!-- Note: This needs to match the fixed insets for the search box. -->
     <dimen name="container_bounds_inset">8dp</dimen>
     <!-- Notes: container_bounds_inset - quantum_panel_outer_padding -->
@@ -63,10 +77,11 @@
     <dimen name="container_fastscroll_popup_text_size">48dp</dimen>
 
 <!-- All Apps -->
+    <dimen name="all_apps_button_scale_down">0dp</dimen>
     <dimen name="all_apps_grid_view_start_margin">0dp</dimen>
     <dimen name="all_apps_grid_section_y_offset">8dp</dimen>
     <dimen name="all_apps_grid_section_text_size">24sp</dimen>
-    <dimen name="all_apps_search_bar_height">48dp</dimen>
+    <dimen name="all_apps_search_bar_height">60dp</dimen>
     <dimen name="all_apps_search_bar_prediction_bar_padding">8dp</dimen>
     <dimen name="all_apps_icon_top_bottom_padding">8dp</dimen>
     <dimen name="all_apps_icon_width_gap">24dp</dimen>
@@ -79,7 +94,20 @@
     <dimen name="all_apps_background_canvas_width">700dp</dimen>
     <dimen name="all_apps_background_canvas_height">475dp</dimen>
 
-<!-- Widget tray -->
+    <!-- Search bar in All Apps -->
+    <dimen name="all_apps_header_max_elevation">4dp</dimen>
+    <dimen name="all_apps_header_scroll_to_elevation">16dp</dimen>
+    <dimen name="all_apps_header_shadow_height">6dp</dimen>
+
+    <!-- The overflow is used to create a bottom border, by drawing other three sides
+        outside the bounds. Ensure that:
+            all_apps_search_bar_bg_overflow < (-3 * all_apps_search_bar_divider_width)
+        -6dp is picked at random, any smaller value would do.
+    -->
+    <dimen name="all_apps_search_bar_bg_overflow">-6dp</dimen>
+    <dimen name="all_apps_search_bar_divider_width">1dp</dimen>
+
+    <!-- Widget tray -->
     <dimen name="widget_container_inset">8dp</dimen>
     <dimen name="widget_preview_label_vertical_padding">8dp</dimen>
     <dimen name="widget_preview_label_horizontal_padding">8dp</dimen>
@@ -136,5 +164,4 @@
 <!-- Pending widget -->
     <dimen name="pending_widget_min_padding">8dp</dimen>
     <dimen name="pending_widget_elevation">2dp</dimen>
-
 </resources>

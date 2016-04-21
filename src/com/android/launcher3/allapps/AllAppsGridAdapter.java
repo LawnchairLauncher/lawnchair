@@ -24,12 +24,16 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
+import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
+import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.CollectionItemInfoCompat;
 import android.support.v4.view.accessibility.AccessibilityRecordCompat;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.net.Uri;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.Recycler;
+import android.support.v7.widget.RecyclerView.State;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,7 +46,6 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.util.Thunk;
 
 import java.util.HashMap;
 import java.util.List;
@@ -68,6 +71,10 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     public static final int SEARCH_MARKET_DIVIDER_VIEW_TYPE = 4;
     // The message to continue to a market search when there are no filtered results
     public static final int SEARCH_MARKET_VIEW_TYPE = 5;
+
+    public interface BindViewCallback {
+        public void onBindView(ViewHolder holder);
+    }
 
     /**
      * ViewHolder for each icon.
@@ -98,18 +105,67 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             // adapter views
             final AccessibilityRecordCompat record = AccessibilityEventCompat
                     .asRecord(event);
+
+            // count the number of SECTION_BREAK_VIEW_TYPE that is wrongfully
+            // initialized as a node (also a row) for talk back.
+            int numEmptyNode = getEmptyRowForAccessibility(-1 /* no view type */);
+            record.setFromIndex(event.getFromIndex() - numEmptyNode);
+            record.setToIndex(event.getToIndex() - numEmptyNode);
             record.setItemCount(mApps.getNumFilteredApps());
+        }
+
+        @Override
+        public void onInitializeAccessibilityNodeInfoForItem(Recycler recycler,
+                State state, View host, AccessibilityNodeInfoCompat info) {
+
+            int viewType = getItemViewType(host);
+            // Only initialize on node that is meaningful. Subtract empty row count.
+            if (viewType == ICON_VIEW_TYPE || viewType == PREDICTION_ICON_VIEW_TYPE) {
+                super.onInitializeAccessibilityNodeInfoForItem(recycler, state, host, info);
+                CollectionItemInfoCompat itemInfo = info.getCollectionItemInfo();
+                final CollectionItemInfoCompat dstItemInfo = CollectionItemInfoCompat.obtain(
+                        itemInfo.getRowIndex() - getEmptyRowForAccessibility(viewType),
+                        itemInfo.getRowSpan(),
+                        itemInfo.getColumnIndex(),
+                        itemInfo.getColumnSpan(),
+                        itemInfo.isHeading(),
+                        itemInfo.isSelected());
+                info.setCollectionItemInfo(dstItemInfo);
+            }
         }
 
         @Override
         public int getRowCountForAccessibility(RecyclerView.Recycler recycler,
                 RecyclerView.State state) {
-            if (mApps.hasNoFilteredResults()) {
-                // Disregard the no-search-results text as a list item for accessibility
-                return 0;
+            return super.getRowCountForAccessibility(recycler, state)
+                    - getEmptyRowForAccessibility(-1 /* no view type */);
+        }
+
+        /**
+         * Returns the total number of SECTION_BREAK_VIEW_TYPE that is wrongfully
+         * initialized as a node (also a row) for talk back.
+         */
+        private int getEmptyRowForAccessibility(int viewType) {
+            int numEmptyNode = 0;
+            if (mApps.hasFilter()) {
+                // search result screen has only one SECTION_BREAK_VIEW
+                numEmptyNode = 1;
             } else {
-                return super.getRowCountForAccessibility(recycler, state);
+                // default all apps screen may have one or two SECTION_BREAK_VIEW
+                numEmptyNode = 1;
+                if (mApps.hasPredictedComponents()) {
+                    if (viewType == PREDICTION_ICON_VIEW_TYPE) {
+                        numEmptyNode = 1;
+                    } else if (viewType == ICON_VIEW_TYPE) {
+                        numEmptyNode = 2;
+                    }
+                } else {
+                    if (viewType == ICON_VIEW_TYPE) {
+                        numEmptyNode = 1;
+                    }
+                }
             }
+            return numEmptyNode;
         }
     }
 
@@ -319,19 +375,29 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         }
     }
 
-    private Launcher mLauncher;
-    private LayoutInflater mLayoutInflater;
-    @Thunk AlphabeticalAppsList mApps;
-    private GridLayoutManager mGridLayoutMgr;
-    private GridSpanSizer mGridSizer;
-    private GridItemDecoration mItemDecoration;
-    private View.OnTouchListener mTouchListener;
-    private View.OnClickListener mIconClickListener;
-    private View.OnLongClickListener mIconLongClickListener;
-    @Thunk final Rect mBackgroundPadding = new Rect();
-    @Thunk int mPredictionBarDividerOffset;
-    @Thunk int mAppsPerRow;
-    @Thunk boolean mIsRtl;
+    private final Launcher mLauncher;
+    private final LayoutInflater mLayoutInflater;
+    private final AlphabeticalAppsList mApps;
+    private final GridLayoutManager mGridLayoutMgr;
+    private final GridSpanSizer mGridSizer;
+    private final GridItemDecoration mItemDecoration;
+    private final View.OnTouchListener mTouchListener;
+    private final View.OnClickListener mIconClickListener;
+    private final View.OnLongClickListener mIconLongClickListener;
+
+    private final Rect mBackgroundPadding = new Rect();
+    private final boolean mIsRtl;
+
+    // Section drawing
+    private final int mSectionNamesMargin;
+    private final int mSectionHeaderOffset;
+    private final Paint mSectionTextPaint;
+    private final Paint mPredictedAppsDividerPaint;
+
+    private final int mPredictionBarDividerOffset;
+    private int mAppsPerRow;
+    private BindViewCallback mBindViewCallback;
+    private AllAppsSearchBarController mSearchController;
 
     // The text to show when there are no search results and no market search handler.
     private String mEmptySearchMessage;
@@ -343,14 +409,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     private String mMarketSearchMessage;
     // The intent to send off to the market app, updated each time the search query changes.
     private Intent mMarketSearchIntent;
-    // The last query that the user entered into the search field
-    private String mLastSearchQuery;
-
-    // Section drawing
-    @Thunk int mSectionNamesMargin;
-    @Thunk int mSectionHeaderOffset;
-    @Thunk Paint mSectionTextPaint;
-    @Thunk Paint mPredictedAppsDividerPaint;
 
     public AllAppsGridAdapter(Launcher launcher, AlphabeticalAppsList apps,
             View.OnTouchListener touchListener, View.OnClickListener iconClickListener,
@@ -369,28 +427,19 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         mIconLongClickListener = iconLongClickListener;
         mSectionNamesMargin = res.getDimensionPixelSize(R.dimen.all_apps_grid_view_start_margin);
         mSectionHeaderOffset = res.getDimensionPixelSize(R.dimen.all_apps_grid_section_y_offset);
+        mIsRtl = Utilities.isRtl(res);
 
-        mSectionTextPaint = new Paint();
+        mSectionTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mSectionTextPaint.setTextSize(res.getDimensionPixelSize(
                 R.dimen.all_apps_grid_section_text_size));
         mSectionTextPaint.setColor(res.getColor(R.color.all_apps_grid_section_text_color));
-        mSectionTextPaint.setAntiAlias(true);
 
-        mPredictedAppsDividerPaint = new Paint();
+        mPredictedAppsDividerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPredictedAppsDividerPaint.setStrokeWidth(Utilities.pxFromDp(1f, res.getDisplayMetrics()));
         mPredictedAppsDividerPaint.setColor(0x1E000000);
-        mPredictedAppsDividerPaint.setAntiAlias(true);
         mPredictionBarDividerOffset =
                 (-res.getDimensionPixelSize(R.dimen.all_apps_prediction_icon_bottom_padding) +
                         res.getDimensionPixelSize(R.dimen.all_apps_icon_top_bottom_padding)) / 2;
-
-        // Resolve the market app handling additional searches
-        PackageManager pm = launcher.getPackageManager();
-        ResolveInfo marketInfo = pm.resolveActivity(createMarketSearchIntent(""),
-                PackageManager.MATCH_DEFAULT_ONLY);
-        if (marketInfo != null) {
-            mMarketAppName = marketInfo.loadLabel(pm).toString();
-        }
     }
 
     /**
@@ -401,11 +450,16 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         mGridLayoutMgr.setSpanCount(appsPerRow);
     }
 
-    /**
-     * Sets whether we are in RTL mode.
-     */
-    public void setRtl(boolean rtl) {
-        mIsRtl = rtl;
+    public void setSearchController(AllAppsSearchBarController searchController) {
+        mSearchController = searchController;
+
+        // Resolve the market app handling additional searches
+        PackageManager pm = mLauncher.getPackageManager();
+        ResolveInfo marketInfo = pm.resolveActivity(mSearchController.createMarketSearchIntent(""),
+                PackageManager.MATCH_DEFAULT_ONLY);
+        if (marketInfo != null) {
+            mMarketAppName = marketInfo.loadLabel(pm).toString();
+        }
     }
 
     /**
@@ -415,13 +469,19 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     public void setLastSearchQuery(String query) {
         Resources res = mLauncher.getResources();
         String formatStr = res.getString(R.string.all_apps_no_search_results);
-        mLastSearchQuery = query;
         mEmptySearchMessage = String.format(formatStr, query);
         if (mMarketAppName != null) {
             mMarketSearchMessage = String.format(res.getString(R.string.all_apps_search_market_message),
                     mMarketAppName);
-            mMarketSearchIntent = createMarketSearchIntent(query);
+            mMarketSearchIntent = mSearchController.createMarketSearchIntent(query);
         }
+    }
+
+    /**
+     * Sets the callback for when views are bound.
+     */
+    public void setBindViewCallback(BindViewCallback cb) {
+        mBindViewCallback = cb;
     }
 
     /**
@@ -486,7 +546,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 searchMarketView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mLauncher.startSearchFromAllApps(v, mMarketSearchIntent, mLastSearchQuery);
+                        mLauncher.startActivitySafely(v, mMarketSearchIntent, null);
                     }
                 });
                 return new ViewHolder(searchMarketView);
@@ -529,6 +589,15 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 }
                 break;
         }
+        if (mBindViewCallback != null) {
+            mBindViewCallback.onBindView(holder);
+        }
+    }
+
+    @Override
+    public boolean onFailedToRecycleView(ViewHolder holder) {
+        // Always recycle and we will reset the view when it is bound
+        return true;
     }
 
     @Override
@@ -540,18 +609,5 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     public int getItemViewType(int position) {
         AlphabeticalAppsList.AdapterItem item = mApps.getAdapterItems().get(position);
         return item.viewType;
-    }
-
-    /**
-     * Creates a new market search intent.
-     */
-    private Intent createMarketSearchIntent(String query) {
-        Uri marketSearchUri = Uri.parse("market://search")
-                .buildUpon()
-                .appendQueryParameter("q", query)
-                .build();
-        Intent marketSearchIntent = new Intent(Intent.ACTION_VIEW);
-        marketSearchIntent.setData(marketSearchUri);
-        return marketSearchIntent;
     }
 }

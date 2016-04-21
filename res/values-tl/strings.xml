@@ -19,17 +19,17 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name" msgid="5181331383435256801">"Launcher3"</string>
+    <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"Trabaho"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Hindi naka-install ang app."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Hindi available ang app"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Naka-disable ang na-download na app sa Safe mode"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Naka-disable ang mga widget sa Safe mode"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"Ipakita ang Mem"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Pindutin nang matagal upang kumuha ng widget."</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"I-double tap nang matagal upang pumili ng widget o gumamit ng mga custom na pagkilos."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Mga App sa Paghahanap"</string>
+    <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"Maghanap ng Mga App…"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Nilo-load ang Mga App…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Walang nakitang Mga App na tumutugma sa \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="5470761048755751471">"Pumunta sa <xliff:g id="QUERY">%1$s</xliff:g>"</string>
@@ -46,12 +46,14 @@
     <string name="permdesc_read_settings" msgid="5833423719057558387">"Pinapayagan ang app na basahin ang mga setting at shortcut sa Home."</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"magsulat ng mga setting at shortcut ng Home"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Pinapayagan ang app na baguhin ang mga setting at shortcut sa Home."</string>
+    <string name="msg_no_phone_permission" msgid="9208659281529857371">"Hindi pinahihintulutang tumawag ang <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"Problema sa pag-load ng widget"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"I-setup"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Isa itong app ng system at hindi maaaring i-uninstall."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Walang Pangalang Folder"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Pahina %1$d ng %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Home screen %1$d ng %2$d"</string>
+    <string name="workspace_new_page" msgid="257366611030256142">"Bagong page ng home screen"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"Maligayang Pagdating"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"Kopyahin ang mga icon ng app"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"I-import ang icon at folder mula sa luma mong Home screen?"</string>
@@ -75,6 +77,8 @@
     <string name="abandoned_search" msgid="891119232568284442">"Maghanap"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Hindi naka-install ang app na ito"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Hindi naka-install ang app para sa icon na ito. Maaari mo itong alisin, o maaari mong hanapin ang app at i-install ito nang manu-mano."</string>
+    <string name="app_downloading_title" msgid="8336702962104482644">"Dina-download na ang <xliff:g id="NAME">%1$s</xliff:g>, tapos na ang <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
+    <string name="app_waiting_download_title" msgid="7053938513995617849">"Hinihintay nang mag-install ang <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Idagdag sa Home screen"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Ilipat ang item dito"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Naidagdag sa home screen ang item"</string>

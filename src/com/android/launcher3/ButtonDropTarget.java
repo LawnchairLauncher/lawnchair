@@ -34,6 +34,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
@@ -123,6 +124,10 @@ public abstract class ButtonDropTarget extends TextView
             mDrawable.setColorFilter(new ColorMatrixColorFilter(mCurrentFilter));
             setTextColor(mHoverColor);
         }
+        if (d.stateAnnouncer != null) {
+            d.stateAnnouncer.cancel();
+        }
+        sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
     }
 
     @Override
@@ -301,14 +306,10 @@ public abstract class ButtonDropTarget extends TextView
         setOnClickListener(enable ? this : null);
     }
 
-    protected String getAccessibilityDropConfirmation() {
-        return null;
-    }
-
     @Override
     public void onClick(View v) {
         LauncherAppState.getInstance().getAccessibilityDelegate()
-            .handleAccessibleDrop(this, null, getAccessibilityDropConfirmation());
+            .handleAccessibleDrop(this, null, null);
     }
 
     public int getTextColor() {

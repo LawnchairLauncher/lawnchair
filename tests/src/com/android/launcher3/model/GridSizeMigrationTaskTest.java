@@ -1,0 +1,317 @@
+package com.android.launcher3.model;
+
+import android.content.ContentValues;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Point;
+import android.test.ProviderTestCase2;
+
+import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherModel;
+import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.util.TestLauncherProvider;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+
+/**
+ * Unit tests for {@link GridSizeMigrationTask}
+ */
+public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherProvider> {
+
+    private static final long DESKTOP = LauncherSettings.Favorites.CONTAINER_DESKTOP;
+    private static final long HOTSEAT = LauncherSettings.Favorites.CONTAINER_HOTSEAT;
+
+    private static final int APPLICATION = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
+    private static final int SHORTCUT = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+
+    private static final String TEST_PACKAGE = "com.android.launcher3.validpackage";
+    private static final String VALID_INTENT =
+            new Intent(Intent.ACTION_MAIN).setPackage(TEST_PACKAGE).toUri(0);
+
+    private HashSet<String> mValidPackages;
+    private InvariantDeviceProfile mIdp;
+
+    public GridSizeMigrationTaskTest() {
+        super(TestLauncherProvider.class, ProviderConfig.AUTHORITY);
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        mValidPackages = new HashSet<>();
+        mValidPackages.add(TEST_PACKAGE);
+
+        mIdp = new InvariantDeviceProfile();
+    }
+
+    public void testHotseatMigration_apps_dropped() throws Exception {
+        long[] hotseatItems = {
+                addItem(APPLICATION, 0, HOTSEAT, 0, 0),
+                addItem(SHORTCUT, 1, HOTSEAT, 0, 0),
+                -1,
+                addItem(SHORTCUT, 3, HOTSEAT, 0, 0),
+                addItem(APPLICATION, 4, HOTSEAT, 0, 0),
+        };
+
+        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages, 5, 2, 3, 1)
+                .migrateHotseat();
+        // First & last items are dropped as they have the least weight.
+        verifyHotseat(hotseatItems[1], -1, hotseatItems[3]);
+    }
+
+    public void testHotseatMigration_shortcuts_dropped() throws Exception {
+        long[] hotseatItems = {
+                addItem(APPLICATION, 0, HOTSEAT, 0, 0),
+                addItem(30, 1, HOTSEAT, 0, 0),
+                -1,
+                addItem(SHORTCUT, 3, HOTSEAT, 0, 0),
+                addItem(10, 4, HOTSEAT, 0, 0),
+        };
+
+        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages, 5, 2, 3, 1)
+                .migrateHotseat();
+        // First & third items are dropped as they have the least weight.
+        verifyHotseat(hotseatItems[1], -1, hotseatItems[4]);
+    }
+
+    private void verifyHotseat(long... sortedIds) {
+        int screenId = 0;
+        int total = 0;
+
+        for (long id : sortedIds) {
+            Cursor c = getMockContentResolver().query(LauncherSettings.Favorites.CONTENT_URI,
+                    new String[]{LauncherSettings.Favorites._ID},
+                    "container=-101 and screen=" + screenId, null, null, null);
+
+            if (id == -1) {
+                assertEquals(0, c.getCount());
+            } else {
+                assertEquals(1, c.getCount());
+                c.moveToNext();
+                assertEquals(id, c.getLong(0));
+                total ++;
+            }
+            c.close();
+
+            screenId++;
+        }
+
+        // Verify that not other entry exist in the DB.
+        Cursor c = getMockContentResolver().query(LauncherSettings.Favorites.CONTENT_URI,
+                new String[]{LauncherSettings.Favorites._ID},
+                "container=-101", null, null, null);
+        assertEquals(total, c.getCount());
+        c.close();
+    }
+
+    public void testWorkspace_empty_row_column_removed() throws Exception {
+        long[][][] ids = createGrid(new int[][][]{{
+                {  0,  0, -1,  1},
+                {  3,  1, -1,  4},
+                { -1, -1, -1, -1},
+                {  5,  2, -1,  6},
+        }});
+
+        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages, new HashMap<String, Point>(),
+                new Point(4, 4), new Point(3, 3)).migrateWorkspace();
+
+        // Column 2 and row 2 got removed.
+        verifyWorkspace(new long[][][] {{
+                {ids[0][0][0], ids[0][0][1], ids[0][0][3]},
+                {ids[0][1][0], ids[0][1][1], ids[0][1][3]},
+                {ids[0][3][0], ids[0][3][1], ids[0][3][3]},
+        }});
+    }
+
+    public void testWorkspace_new_screen_created() throws Exception {
+        long[][][] ids = createGrid(new int[][][]{{
+                {  0,  0,  0,  1},
+                {  3,  1,  0,  4},
+                { -1, -1, -1, -1},
+                {  5,  2, -1,  6},
+        }});
+
+        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages, new HashMap<String, Point>(),
+                new Point(4, 4), new Point(3, 3)).migrateWorkspace();
+
+        // Items in the second column get moved to new screen
+        verifyWorkspace(new long[][][] {{
+                {ids[0][0][0], ids[0][0][1], ids[0][0][3]},
+                {ids[0][1][0], ids[0][1][1], ids[0][1][3]},
+                {ids[0][3][0], ids[0][3][1], ids[0][3][3]},
+        }, {
+                {ids[0][0][2], ids[0][1][2], -1},
+        }});
+    }
+
+    public void testWorkspace_items_merged_in_next_screen() throws Exception {
+        long[][][] ids = createGrid(new int[][][]{{
+                {  0,  0,  0,  1},
+                {  3,  1,  0,  4},
+                { -1, -1, -1, -1},
+                {  5,  2, -1,  6},
+        },{
+                {  0,  0, -1,  1},
+                {  3,  1, -1,  4},
+        }});
+
+        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages, new HashMap<String, Point>(),
+                new Point(4, 4), new Point(3, 3)).migrateWorkspace();
+
+        // Items in the second column of the first screen should get placed on the 3rd
+        // row of the second screen
+        verifyWorkspace(new long[][][] {{
+                {ids[0][0][0], ids[0][0][1], ids[0][0][3]},
+                {ids[0][1][0], ids[0][1][1], ids[0][1][3]},
+                {ids[0][3][0], ids[0][3][1], ids[0][3][3]},
+        }, {
+                {ids[1][0][0], ids[1][0][1], ids[1][0][3]},
+                {ids[1][1][0], ids[1][1][1], ids[1][1][3]},
+                {ids[0][0][2], ids[0][1][2], -1},
+        }});
+    }
+
+    public void testWorkspace_items_not_merged_in_next_screen() throws Exception {
+        // First screen has 2 items that need to be moved, but second screen has only one
+        // empty space after migration (top-left corner)
+        long[][][] ids = createGrid(new int[][][]{{
+                {  0,  0,  0,  1},
+                {  3,  1,  0,  4},
+                { -1, -1, -1, -1},
+                {  5,  2, -1,  6},
+        },{
+                { -1,  0, -1,  1},
+                {  3,  1, -1,  4},
+                { -1, -1, -1, -1},
+                {  5,  2, -1,  6},
+        }});
+
+        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages, new HashMap<String, Point>(),
+                new Point(4, 4), new Point(3, 3)).migrateWorkspace();
+
+        // Items in the second column of the first screen should get placed on a new screen.
+        verifyWorkspace(new long[][][] {{
+                {ids[0][0][0], ids[0][0][1], ids[0][0][3]},
+                {ids[0][1][0], ids[0][1][1], ids[0][1][3]},
+                {ids[0][3][0], ids[0][3][1], ids[0][3][3]},
+        }, {
+                {          -1, ids[1][0][1], ids[1][0][3]},
+                {ids[1][1][0], ids[1][1][1], ids[1][1][3]},
+                {ids[1][3][0], ids[1][3][1], ids[1][3][3]},
+        }, {
+                {ids[0][0][2], ids[0][1][2], -1},
+        }});
+    }
+
+    /**
+     * Initializes the DB with dummy elements to represent the provided grid structure.
+     * @param typeArray A 3d array of item types. {@see #addItem(int, long, long, int, int)} for
+     *                  type definitions. The first dimension represents the screens and the next
+     *                  two represent the workspace grid.
+     * @return the same grid representation where each entry is the corresponding item id.
+     */
+    private long[][][] createGrid(int[][][] typeArray) throws Exception {
+        long[][][] ids = new long[typeArray.length][][];
+
+        for (int i = 0; i < typeArray.length; i++) {
+            // Add screen to DB
+            long screenId = LauncherAppState.getLauncherProvider().generateNewScreenId();
+            ContentValues v = new ContentValues();
+            v.put(LauncherSettings.WorkspaceScreens._ID, screenId);
+            v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
+            getMockContentResolver().insert(LauncherSettings.WorkspaceScreens.CONTENT_URI, v);
+
+            ids[i] = new long[typeArray[i].length][];
+            for (int y = 0; y < typeArray[i].length; y++) {
+                ids[i][y] = new long[typeArray[i][y].length];
+                for (int x = 0; x < typeArray[i][y].length; x++) {
+                    if (typeArray[i][y][x] < 0) {
+                        // Empty cell
+                        ids[i][y][x] = -1;
+                    } else {
+                        ids[i][y][x] = addItem(typeArray[i][y][x], screenId, DESKTOP, x, y);
+                    }
+                }
+            }
+        }
+        return ids;
+    }
+
+    /**
+     * Verifies that the workspace items are arranged in the provided order.
+     * @param ids A 3d array where the first dimension represents the screen, and the rest two
+     *            represent the workspace grid.
+     */
+    private void verifyWorkspace(long[][][] ids) {
+        ArrayList<Long> allScreens = LauncherModel.loadWorkspaceScreensDb(getMockContext());
+        assertEquals(ids.length, allScreens.size());
+        int total = 0;
+
+        for (int i = 0; i < ids.length; i++) {
+            long screenId = allScreens.get(i);
+            for (int y = 0; y < ids[i].length; y++) {
+                for (int x = 0; x < ids[i][y].length; x++) {
+                    long id = ids[i][y][x];
+
+                    Cursor c = getMockContentResolver().query(LauncherSettings.Favorites.CONTENT_URI,
+                            new String[]{LauncherSettings.Favorites._ID},
+                            "container=-100 and screen=" + screenId +
+                                    " and cellX=" + x + " and cellY=" + y, null, null, null);
+                    if (id == -1) {
+                        assertEquals(0, c.getCount());
+                    } else {
+                        assertEquals(1, c.getCount());
+                        c.moveToNext();
+                        assertEquals(id, c.getLong(0));
+                        total++;
+                    }
+                    c.close();
+                }
+            }
+        }
+
+        // Verify that not other entry exist in the DB.
+        Cursor c = getMockContentResolver().query(LauncherSettings.Favorites.CONTENT_URI,
+                new String[]{LauncherSettings.Favorites._ID},
+                "container=-100", null, null, null);
+        assertEquals(total, c.getCount());
+        c.close();
+    }
+
+    /**
+     * Adds a dummy item in the DB.
+     * @param type {@link #APPLICATION} or {@link #SHORTCUT} or >= 2 for
+     *             folder (where the type represents the number of items in the folder).
+     */
+    private long addItem(int type, long screen, long container, int x, int y) throws Exception {
+        long id = LauncherAppState.getLauncherProvider().generateNewItemId();
+
+        ContentValues values = new ContentValues();
+        values.put(LauncherSettings.Favorites._ID, id);
+        values.put(LauncherSettings.Favorites.CONTAINER, container);
+        values.put(LauncherSettings.Favorites.SCREEN, screen);
+        values.put(LauncherSettings.Favorites.CELLX, x);
+        values.put(LauncherSettings.Favorites.CELLY, y);
+        values.put(LauncherSettings.Favorites.SPANX, 1);
+        values.put(LauncherSettings.Favorites.SPANY, 1);
+
+        if (type == APPLICATION || type == SHORTCUT) {
+            values.put(LauncherSettings.Favorites.ITEM_TYPE, type);
+            values.put(LauncherSettings.Favorites.INTENT, VALID_INTENT);
+        } else {
+            values.put(LauncherSettings.Favorites.ITEM_TYPE,
+                    LauncherSettings.Favorites.ITEM_TYPE_FOLDER);
+            // Add folder items.
+            for (int i = 0; i < type; i++) {
+                addItem(APPLICATION, 0, id, 0, 0);
+            }
+        }
+
+        getMockContentResolver().insert(LauncherSettings.Favorites.CONTENT_URI, values);
+        return id;
+    }
+}

@@ -25,6 +25,8 @@
 
     <com.android.launcher3.DragLayer
         android:id="@+id/drag_layer"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

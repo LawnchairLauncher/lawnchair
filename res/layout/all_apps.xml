@@ -18,40 +18,74 @@
      will bake the left/right padding into that view's background itself. -->
 <com.android.launcher3.allapps.AllAppsContainerView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:id="@+id/apps_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    launcher:revealBackground="@drawable/quantum_panel_shape">
 
-    <!-- Both android:focusable and android:focusableInTouchMode are needed for
-         the view to get focus change events. -->
-    <FrameLayout
-        android:id="@+id/search_box_container"
+    <View
+        android:id="@+id/reveal_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:focusable="false"
+        android:elevation="2dp"
+        android:visibility="invisible" />
+
+
+    <com.android.launcher3.allapps.AllAppsRecyclerViewContainerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/main_content"
+        android:saveEnabled="false"
+        android:visibility="gone"
+        android:layout_gravity="center"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:visibility="gone" />
+        android:elevation="15dp" >
 
-    <FrameLayout
-        android:id="@+id/content"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-        <FrameLayout
-            android:id="@+id/all_apps_reveal"
+        <!-- DO NOT CHANGE THE ID -->
+        <com.android.launcher3.allapps.AllAppsRecyclerView
+            android:id="@+id/apps_list_view"
+            android:theme="@style/Theme.Light.CustomOverscroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:focusable="false"
-            android:elevation="2dp"
-            android:visibility="invisible" />
-        <include
-            layout="@layout/all_apps_container"
-            android:id="@+id/all_apps_container"
+            android:layout_gravity="center_horizontal|top"
+            android:clipToPadding="false"
+            android:focusable="true"
+            android:layout_marginTop="@dimen/all_apps_search_bar_height"
+            android:descendantFocusability="afterDescendants" />
+
+        <LinearLayout
+            android:id="@+id/search_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:visibility="gone" />
-    </FrameLayout>
+            android:saveEnabled="false"
+            android:layout_height="@dimen/all_apps_search_bar_height"
+            android:layout_gravity="start|top"
+            android:orientation="horizontal"
+            android:background="@drawable/all_apps_search_bg" >
+
+            <com.android.launcher3.ExtendedEditText
+                android:id="@+id/search_box_input"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:focusableInTouchMode="true"
+                android:gravity="fill_horizontal|center_vertical"
+                android:hint="@string/all_apps_search_bar_hint"
+                android:inputType="text|textNoSuggestions|textCapWords"
+                android:imeOptions="actionSearch|flagNoExtractUi"
+                android:maxLines="1"
+                android:scrollHorizontally="true"
+                android:layout_marginLeft="@dimen/container_fastscroll_thumb_max_width"
+                android:layout_marginRight="@dimen/container_fastscroll_thumb_max_width"
+                android:singleLine="true"
+                android:textColor="#4c4c4c"
+                android:textColorHint="#9c9c9c"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+    </com.android.launcher3.allapps.AllAppsRecyclerViewContainerView>
 </com.android.launcher3.allapps.AllAppsContainerView>

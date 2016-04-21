@@ -83,6 +83,13 @@
         <attr name="pageIndicator" format="reference" />
     </declare-styleable>
 
+    <!-- BaseContainerView specific attributes. These attributes are used to customize
+         AllApps view and WidgetsView in xml. -->
+    <declare-styleable name="BaseContainerView">
+        <!-- Drawable to use for the reveal animation -->
+        <attr name="revealBackground" format="reference" />
+    </declare-styleable>
+
     <!-- XML attributes used by default_workspace.xml -->
     <declare-styleable name="Favorite">
         <attr name="className" format="string" />
@@ -93,8 +100,8 @@
         <attr name="y" format="string" />
         <attr name="spanX" format="string" />
         <attr name="spanY" format="string" />
-        <attr name="icon" format="reference" />  
-        <attr name="title" format="reference" />
+        <attr name="icon" format="reference" />
+        <attr name="title" format="string" />
         <attr name="uri" format="string" />
     </declare-styleable>
 

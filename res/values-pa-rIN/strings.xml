@@ -19,17 +19,17 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name" msgid="5181331383435256801">"ਲਾਂਚਰ3"</string>
+    <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"ਦਫ਼ਤਰ"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"ਐਪ ਇੰਸਟੌਲ ਨਹੀਂ ਕੀਤਾ ਹੋਇਆ ਹੈ।"</string>
     <string name="activity_not_available" msgid="7456344436509528827">"ਐਪ ਉਪਲਬਧ ਨਹੀਂ ਹੈ"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"ਡਾਊਨਲੋਡ ਕੀਤਾ ਐਪ ਸੁਰੱਖਿਅਤ ਮੋਡ ਵਿੱਚ ਅਸਮਰਥਿਤ"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"ਵਿਜੇਟਸ ਸੁਰੱਖਿਅਤ ਮੋਡ ਵਿੱਚ ਅਸਮਰਥਿਤ"</string>
-    <string name="toggle_weight_watcher" msgid="5645299835184636119">"ਮੈਮ ਦਿਖਾਓ"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"ਇੱਕ ਵਿਜੇਟ ਚੁਣਨ ਲਈ ਛੋਹਵੋT &amp; ਹੋਲਡ ਕਰੋ।"</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"ਡਬਲ-ਟੈਪ &amp; ਇੱਕ ਵਿਜੇਟ ਚੁਣਨ ਲਈ ਹੋਲਡ ਕਰੋ ਅਤੇ ਕਸਟਮ ਕਿਰਿਆਵਾਂ ਵਰਤੋ।"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"ਐਪਸ ਖੋਜੋ"</string>
+    <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"ਐਪਾਂ ਖੋਜੋ…"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"ਐਪਸ ਲੋਡ ਕਰ ਰਿਹਾ ਹੈ..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" ਨਾਲ ਮਿਲਦੀ ਕੋਈ ਵੀ ਐਪਸ ਨਹੀਂ ਲੱਭੀਆਂ"</string>
     <string name="all_apps_search_market_message" msgid="5470761048755751471">"<xliff:g id="QUERY">%1$s</xliff:g> ਤੇ ਜਾਓ"</string>
@@ -46,12 +46,14 @@
     <string name="permdesc_read_settings" msgid="5833423719057558387">"ਐਪ ਨੂੰ ਹੋਮ ਵਿੱਚ ਸੈਟਿੰਗਾਂ ਅਤੇ ਸ਼ੌਰਟਕਟ ਪੜ੍ਹਨ ਦੀ ਆਗਿਆ ਦਿੰਦਾ ਹੈ।"</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"ਹੋਮ ਸੈਟਿੰਗਾਂ ਅਤੇ ਸ਼ੌਰਟਕਟ ਲਿਖੋ"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"ਐਪ ਨੂੰ ਹੋਮ ਵਿੱਚ ਸੈਟਿੰਗਾਂ ਅਤੇ ਸ਼ੌਰਟਕਟ ਬਦਲਣ ਦੀ ਆਗਿਆ ਦਿੰਦਾ ਹੈ।"</string>
+    <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> ਨੂੰ ਫੋਨ ਕਾਲਾਂ ਕਰਨ ਦੀ ਆਗਿਆ ਨਹੀਂ ਹੈ"</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"ਵਿਜੇਟ ਲੋਡ ਕਰਨ ਵਿੱਚ ਸਮੱਸਿਆ"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"ਸੈਟਅਪ"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ਇਹ ਇੱਕ ਸਿਸਟਮ ਐਪ ਹੈ ਅਤੇ ਇਸਨੂੰ ਅਣਇੰਸਟੌਲ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ।"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"ਬਿਨਾਂ ਨਾਮ ਦਿੱਤਾ ਫੋਲਡਰ"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"ਸਫ਼ਾ %2$d ਦਾ %1$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"ਹੋਮ ਸਕ੍ਰੀਨ %2$d ਦੀ %1$d"</string>
+    <string name="workspace_new_page" msgid="257366611030256142">"ਨਵਾਂ ਹੋਮ ਸਕ੍ਰੀਨ ਸਫ਼ਾ"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"ਸੁਆਗਤ ਹੈ"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"ਆਪਣੇ ਐਪ ਆਈਕਨਾਂ ਨੂੰ ਕਾਪੀ ਕਰੋ"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"ਕੀ ਆਪਣੀਆਂ ਪੁਰਾਣੀਆਂ ਹੋਮ ਸਕ੍ਰੀਨਾਂ ਤੋਂ ਆਈਕਨਾਂ ਅਤੇ ਫੋਲਡਰ ਆਯਾਤ ਕਰਨੇ ਹਨ?"</string>
@@ -75,6 +77,8 @@
     <string name="abandoned_search" msgid="891119232568284442">"ਖੋਜੋ"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"ਇਹ ਐਪ ਇੰਸਟੌਲ ਨਹੀਂ ਕੀਤਾ ਹੋਇਆ ਹੈ।"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ਇਸ ਆਈਕਨ ਲਈ ਐਪ ਇੰਸਟੌਲ ਨਹੀਂ ਕੀਤਾ ਹੋਇਆ ਹੈ। ਤੁਸੀਂ ਇਸਨੂੰ ਹਟਾ ਸਕਦੇ ਹੋ ਜਾਂ ਐਪ ਖੋਜ ਸਕਦੇ ਹੋ ਅਤੇ ਇਸਨੂੰ ਮੈਨੂਅਲੀ ਇੰਸਟੌਲ ਕਰ ਸਕਦੇ ਹੋ।"</string>
+    <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ਡਾਉਨਲੋਡ ਹੋਰ ਰਿਹਾ ਹੈ, <xliff:g id="PROGRESS">%2$s</xliff:g> ਸੰਪੂਰਣ"</string>
+    <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ਸਥਾਪਿਤ ਕਰਨ ਦੀ ਉਡੀਕ ਕਰ ਰਿਹਾ ਹੈ"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"ਹੋਮ ਸਕ੍ਰੀਨ ਵਿੱਚ ਜੋੜੋ"</string>
     <string name="action_move_here" msgid="2170188780612570250">"ਆਈਟਮ ਨੂੰ ਇੱਥੇ ਮੂਵ ਕਰੋ"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"ਆਈਟਮ ਨੂੰ ਮੁੱਖ ਸਕ੍ਰੀਨ ਵਿੱਚ ਜੋੜਿਆ ਗਿਆ"</string>

@@ -123,17 +123,11 @@ public class LauncherAppWidgetInfo extends ItemInfo {
      */
     void onBindAppWidget(Launcher launcher) {
         if (!mHasNotifiedInitialWidgetSizeChanged) {
-            notifyWidgetSizeChanged(launcher);
+            AppWidgetResizeFrame.updateWidgetSizeRanges(hostView, launcher, spanX, spanY);
+            mHasNotifiedInitialWidgetSizeChanged = true;
         }
     }
 
-    /**
-     * Trigger an update callback to the widget to notify it that its size has changed.
-     */
-    void notifyWidgetSizeChanged(Launcher launcher) {
-        AppWidgetResizeFrame.updateWidgetSizeRanges(hostView, launcher, spanX, spanY);
-        mHasNotifiedInitialWidgetSizeChanged = true;
-    }
 
     @Override
     public String toString() {
