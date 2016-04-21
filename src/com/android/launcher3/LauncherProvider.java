@@ -1077,8 +1077,6 @@ public class LauncherProvider extends ContentProvider {
                                 = c.getColumnIndexOrThrow(LauncherSettings.Favorites.INTENT);
                         final int titleIndex
                                 = c.getColumnIndexOrThrow(LauncherSettings.Favorites.TITLE);
-                        final int iconTypeIndex
-                                = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_TYPE);
                         final int iconIndex
                                 = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON);
                         final int iconPackageIndex
@@ -1195,8 +1193,6 @@ public class LauncherProvider extends ContentProvider {
                             values.put(LauncherSettings.Favorites._ID, c.getInt(idIndex));
                             values.put(LauncherSettings.Favorites.INTENT, intentStr);
                             values.put(LauncherSettings.Favorites.TITLE, c.getString(titleIndex));
-                            values.put(LauncherSettings.Favorites.ICON_TYPE,
-                                    c.getInt(iconTypeIndex));
                             values.put(LauncherSettings.Favorites.ICON, c.getBlob(iconIndex));
                             values.put(LauncherSettings.Favorites.ICON_PACKAGE,
                                     c.getString(iconPackageIndex));

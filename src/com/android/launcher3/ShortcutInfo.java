@@ -74,13 +74,6 @@ public class ShortcutInfo extends ItemInfo {
     public Intent intent;
 
     /**
-     * Indicates whether the icon comes from an application's resource (if false)
-     * or from a custom Bitmap (if true.)
-     * TODO: remove this flag
-     */
-    public boolean customIcon;
-
-    /**
      * Indicates whether we're using the default fallback icon instead of something from the
      * app.
      */
@@ -175,7 +168,6 @@ public class ShortcutInfo extends ItemInfo {
             iconResource.resourceName = info.iconResource.resourceName;
         }
         mIcon = info.mIcon; // TODO: should make a copy here.  maybe we don't need this ctor at all
-        customIcon = info.customIcon;
         flags = info.flags;
         user = info.user;
         status = info.status;
@@ -186,7 +178,6 @@ public class ShortcutInfo extends ItemInfo {
         super(info);
         title = Utilities.trim(info.title);
         intent = new Intent(info.intent);
-        customIcon = false;
         flags = info.flags;
         isDisabled = info.isDisabled;
     }
@@ -225,22 +216,14 @@ public class ShortcutInfo extends ItemInfo {
         values.put(LauncherSettings.BaseLauncherColumns.INTENT, uri);
         values.put(LauncherSettings.Favorites.RESTORED, status);
 
-        if (customIcon) {
-            values.put(LauncherSettings.BaseLauncherColumns.ICON_TYPE,
-                    LauncherSettings.BaseLauncherColumns.ICON_TYPE_BITMAP);
+        if (!usingFallbackIcon && !usingLowResIcon) {
             writeBitmap(values, mIcon);
-        } else {
-            if (!usingFallbackIcon) {
-                writeBitmap(values, mIcon);
-            }
-            if (iconResource != null) {
-                values.put(LauncherSettings.BaseLauncherColumns.ICON_TYPE,
-                        LauncherSettings.BaseLauncherColumns.ICON_TYPE_RESOURCE);
-                values.put(LauncherSettings.BaseLauncherColumns.ICON_PACKAGE,
-                        iconResource.packageName);
-                values.put(LauncherSettings.BaseLauncherColumns.ICON_RESOURCE,
-                        iconResource.resourceName);
-            }
+        }
+        if (iconResource != null) {
+            values.put(LauncherSettings.BaseLauncherColumns.ICON_PACKAGE,
+                    iconResource.packageName);
+            values.put(LauncherSettings.BaseLauncherColumns.ICON_RESOURCE,
+                    iconResource.resourceName);
         }
     }
 
@@ -284,7 +267,6 @@ public class ShortcutInfo extends ItemInfo {
         shortcut.title = Utilities.trim(info.getLabel());
         shortcut.contentDescription = UserManagerCompat.getInstance(context)
                 .getBadgedLabelForUser(info.getLabel(), info.getUser());
-        shortcut.customIcon = false;
         shortcut.intent = AppInfo.makeLaunchIntent(context, info, info.getUser());
         shortcut.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
         shortcut.flags = AppInfo.initFlags(info);

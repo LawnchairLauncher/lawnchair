@@ -68,7 +68,6 @@ public class CommonAppTypeParser implements LayoutParserCallback {
         parsedValues = values;
 
         // Remove unwanted values
-        values.put(Favorites.ICON_TYPE, (Integer) null);
         values.put(Favorites.ICON_PACKAGE, (String) null);
         values.put(Favorites.ICON_RESOURCE, (String) null);
         values.put(Favorites.ICON, (byte[]) null);
