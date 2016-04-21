@@ -2815,6 +2815,11 @@ public class Launcher extends Activity
      * on the home screen.
      */
     protected void onClickWallpaperPicker(View v) {
+        if (!Utilities.isWallapaperAllowed(this)) {
+            Toast.makeText(this, R.string.msg_disabled_by_admin, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (LOGD) Log.d(TAG, "onClickWallpaperPicker");
         int pageScroll = mWorkspace.getScrollForPage(mWorkspace.getPageNearestToCenterOfScreen());
         float offset = mWorkspace.mWallpaperOffset.wallpaperOffsetForScroll(pageScroll);
