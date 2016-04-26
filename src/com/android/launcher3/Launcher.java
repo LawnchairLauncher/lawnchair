@@ -136,8 +136,8 @@ import java.util.Locale;
  * Default launcher application.
  */
 public class Launcher extends Activity
-        implements View.OnClickListener, OnLongClickListener, LauncherModel.Callbacks,
-                   View.OnTouchListener, LauncherProviderChangeListener,
+        implements LauncherExterns, View.OnClickListener, OnLongClickListener,
+                   LauncherModel.Callbacks, View.OnTouchListener, LauncherProviderChangeListener,
                    AccessibilityManager.AccessibilityStateChangeListener {
     public static final String TAG = "Launcher";
     static final boolean LOGD = false;
@@ -1842,7 +1842,7 @@ public class Launcher extends Activity
         return mModel;
     }
 
-    protected SharedPreferences getSharedPrefs() {
+    public SharedPreferences getSharedPrefs() {
         return mSharedPrefs;
     }
 
