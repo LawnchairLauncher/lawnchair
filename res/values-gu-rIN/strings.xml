@@ -71,8 +71,7 @@
     <string name="widget_button_text" msgid="2880537293434387943">"વિજેટ્સ"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"વૉલપેપર્સ"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"સેટિંગ્સ"</string>
-    <!-- no translation found for msg_disabled_by_admin (6898038085516271325) -->
-    <skip />
+    <string name="msg_disabled_by_admin" msgid="6898038085516271325">"તમારા વ્યવસ્થાપક દ્વારા અક્ષમ કરેલ"</string>
     <string name="allow_rotation_title" msgid="2118706734511831751">"પરિભ્રમણને મંજૂરી આપો"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"અજાણ્યો"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"દૂર કરો"</string>
