@@ -71,8 +71,7 @@
     <string name="widget_button_text" msgid="2880537293434387943">"위젯"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"배경화면"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"설정"</string>
-    <!-- no translation found for msg_disabled_by_admin (6898038085516271325) -->
-    <skip />
+    <string name="msg_disabled_by_admin" msgid="6898038085516271325">"관리자가 사용 중지함"</string>
     <string name="allow_rotation_title" msgid="2118706734511831751">"회전 허용"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"알 수 없음"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"삭제"</string>
