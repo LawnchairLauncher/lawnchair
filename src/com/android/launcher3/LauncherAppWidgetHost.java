@@ -82,6 +82,12 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         }
     }
 
+    @Override
+    public void stopListening() {
+        super.stopListening();
+        clearViews();
+    }
+
     public void addProviderChangeListener(Runnable callback) {
         mProviderChangeListeners.add(callback);
     }
