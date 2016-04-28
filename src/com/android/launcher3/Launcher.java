@@ -939,9 +939,6 @@ public class Launcher extends Activity
     protected void onStop() {
         super.onStop();
         FirstFrameAnimatorHelper.setIsVisible(false);
-        if (Utilities.isNycOrAbove()) {
-            mAppWidgetHost.stopListening();
-        }
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onStop();
@@ -952,9 +949,6 @@ public class Launcher extends Activity
     protected void onStart() {
         super.onStart();
         FirstFrameAnimatorHelper.setIsVisible(true);
-        if (Utilities.isNycOrAbove()) {
-            mAppWidgetHost.startListening();
-        }
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onStart();
