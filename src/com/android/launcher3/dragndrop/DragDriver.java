@@ -16,12 +16,6 @@
 
 package com.android.launcher3.dragndrop;
 
-import com.android.launcher3.AnotherWindowDropTarget;
-import com.android.launcher3.DropTarget;
-import com.android.launcher3.ItemInfo;
-import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
-
 import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Canvas;
@@ -29,6 +23,12 @@ import android.graphics.Point;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.android.launcher3.AnotherWindowDropTarget;
+import com.android.launcher3.DropTarget;
+import com.android.launcher3.ItemInfo;
+import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
 
 /**
  * Base class for driving a drag/drop operation.

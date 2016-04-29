@@ -84,16 +84,13 @@ public class DragView extends View {
      * @param registrationY The y coordinate of the registration point.
      */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public DragView(Launcher launcher, Bitmap bitmap, int registrationX, int registrationY,
-            int left, int top, int width, int height, final float initialScale) {
+    public DragView(Launcher launcher, Bitmap bitmap, int registrationX, int registrationY, int left,
+            int top, int width, int height, final float initialScale, final float finalScaleDps) {
         super(launcher);
         mDragLayer = launcher.getDragLayer();
         mDragController = launcher.getDragController();
 
-        final Resources res = getResources();
-        final float scaleDps = !FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND ? 0f
-                : res.getDimensionPixelSize(R.dimen.dragViewScale);
-        final float scale = (width + scaleDps) / width;
+        final float scale = (width + finalScaleDps) / width;
 
         // Set the initial scale to avoid any jumps
         setScaleX(initialScale);
@@ -349,12 +346,12 @@ public class DragView extends View {
      * @param touchX the x coordinate the user touched in DragLayer coordinates
      * @param touchY the y coordinate the user touched in DragLayer coordinates
      */
-    void move(int touchX, int touchY) {
+    public void move(int touchX, int touchY) {
         setTranslationX(touchX - mRegistrationX);
         setTranslationY(touchY - mRegistrationY);
     }
 
-    void remove() {
+    public void remove() {
         if (getParent() != null) {
             mDragLayer.removeView(DragView.this);
         }

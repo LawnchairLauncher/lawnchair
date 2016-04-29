@@ -18,17 +18,13 @@ package com.android.launcher3.allapps;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.method.TextKeyListener;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -45,14 +41,14 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.ExtendedEditText;
-import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.folder.Folder;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherTransitionable;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.folder.Folder;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.util.ComponentKey;
 
@@ -133,8 +129,7 @@ final class SimpleSectionMergeAlgorithm implements AlphabeticalAppsList.MergeAlg
  * The all apps view container.
  */
 public class AllAppsContainerView extends BaseContainerView implements DragSource,
-        LauncherTransitionable, View.OnTouchListener, View.OnLongClickListener,
-        AllAppsSearchBarController.Callbacks {
+        LauncherTransitionable, View.OnLongClickListener, AllAppsSearchBarController.Callbacks {
 
     private static final int MIN_ROWS_IN_MERGED_SECTION_PHONE = 3;
     private static final int MAX_NUM_MERGES_PHONE = 2;
@@ -163,8 +158,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     private int mRecyclerViewTopBottomPadding;
     // This coordinate is relative to this container view
     private final Point mBoundsCheckLastTouchDownPos = new Point(-1, -1);
-    // This coordinate is relative to its parent
-    private final Point mIconLastTouchPos = new Point();
 
     public AllAppsContainerView(Context context) {
         this(context, null);
@@ -181,7 +174,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mLauncher = Launcher.getLauncher(context);
         mSectionNamesMargin = res.getDimensionPixelSize(R.dimen.all_apps_grid_view_start_margin);
         mApps = new AlphabeticalAppsList(context);
-        mAdapter = new AllAppsGridAdapter(mLauncher, mApps, this, mLauncher, this);
+        mAdapter = new AllAppsGridAdapter(mLauncher, mApps, mLauncher, this);
         mApps.setAdapter(mAdapter);
         mLayoutManager = mAdapter.getLayoutManager();
         mItemDecoration = mAdapter.getItemDecoration();
@@ -529,18 +522,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         return handleTouchEvent(ev);
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    @Override
-    public boolean onTouch(View v, MotionEvent ev) {
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-            case MotionEvent.ACTION_MOVE:
-                mIconLastTouchPos.set((int) ev.getX(), (int) ev.getY());
-                break;
-        }
-        return false;
-    }
-
     @Override
     public boolean onLongClick(View v) {
         // Return early if this is not initiated from a touch
@@ -553,7 +534,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         if (!mLauncher.isDraggingEnabled()) return false;
 
         // Start the drag
-        mLauncher.getWorkspace().beginDragShared(v, mIconLastTouchPos, this, false);
+        mLauncher.getWorkspace().beginDragShared(v, this, false);
         // Enter spring loaded mode
         mLauncher.enterSpringLoadedDragMode();
 

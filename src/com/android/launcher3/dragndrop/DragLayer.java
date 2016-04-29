@@ -43,23 +43,22 @@ import android.widget.TextView;
 
 import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.CellLayout;
+import com.android.launcher3.DropTargetBar;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetHostView;
 import com.android.launcher3.PinchToOverviewListener;
 import com.android.launcher3.R;
-import com.android.launcher3.DropTargetBar;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
+import com.android.launcher3.shortcuts.DeepShortcutsContainer;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TouchController;
 
@@ -193,22 +192,23 @@ public class DragLayer extends InsettableFrameLayout {
     }
 
     public boolean isEventOverHotseat(MotionEvent ev) {
-        getDescendantRectRelativeToSelf(mLauncher.getHotseat(), mHitRect);
-        return mHitRect.contains((int) ev.getX(), (int) ev.getY());
+        return isEventOverView(mLauncher.getHotseat(), ev);
     }
 
     private boolean isEventOverFolderTextRegion(Folder folder, MotionEvent ev) {
-        getDescendantRectRelativeToSelf(folder.getEditTextRegion(), mHitRect);
-        return mHitRect.contains((int) ev.getX(), (int) ev.getY());
+        return isEventOverView(folder.getEditTextRegion(), ev);
     }
 
     private boolean isEventOverFolder(Folder folder, MotionEvent ev) {
-        getDescendantRectRelativeToSelf(folder, mHitRect);
-        return mHitRect.contains((int) ev.getX(), (int) ev.getY());
+        return isEventOverView(folder, ev);
     }
 
     private boolean isEventOverDropTargetBar(MotionEvent ev) {
-        getDescendantRectRelativeToSelf(mLauncher.getDropTargetBar(), mHitRect);
+        return isEventOverView(mLauncher.getDropTargetBar(), ev);
+    }
+
+    private boolean isEventOverView(View view, MotionEvent ev) {
+        getDescendantRectRelativeToSelf(view, mHitRect);
         return mHitRect.contains((int) ev.getX(), (int) ev.getY());
     }
 
@@ -251,13 +251,31 @@ public class DragLayer extends InsettableFrameLayout {
                 }
             }
         }
+
+        // Remove the shortcuts container when touching outside of it.
+        DeepShortcutsContainer deepShortcutsContainer = (DeepShortcutsContainer)
+                findViewById(R.id.deep_shortcuts_container);
+        if (deepShortcutsContainer != null) {
+            if (!isEventOverView(deepShortcutsContainer, ev)) {
+                if (isInAccessibleDrag()) {
+                    // Do not close the container if in drag and drop.
+                    if (!isEventOverDropTargetBar(ev)) {
+                        return true;
+                    }
+                } else {
+                    removeView(deepShortcutsContainer);
+                    // We let touches on the original icon go through so that users can launch
+                    // the app with one tap if they don't find a shortcut they want.
+                    return !isEventOverView(deepShortcutsContainer.getDeferredDragIcon(), ev);
+                }
+            }
+        }
         return false;
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         int action = ev.getAction();
-
 
         if (action == MotionEvent.ACTION_DOWN) {
             if (handleTouchDown(ev, true)) {
@@ -275,6 +293,7 @@ public class DragLayer extends InsettableFrameLayout {
             mActiveController = mDragController;
             return true;
         }
+
         if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && mAllAppsController.onInterceptTouchEvent(ev)) {
             mActiveController = mAllAppsController;
             return true;
@@ -394,7 +413,6 @@ public class DragLayer extends InsettableFrameLayout {
 
         int x = (int) ev.getX();
         int y = (int) ev.getY();
-
 
         if (action == MotionEvent.ACTION_DOWN) {
             if (handleTouchDown(ev, false)) {
@@ -524,6 +542,10 @@ public class DragLayer extends InsettableFrameLayout {
     @Override
     protected LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
         return new LayoutParams(p);
+    }
+
+    public void setController(TouchController controller) {
+        mActiveController = controller;
     }
 
     public static class LayoutParams extends InsettableFrameLayout.LayoutParams {

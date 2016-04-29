@@ -67,6 +67,7 @@ public class BubbleTextView extends TextView
     private final Launcher mLauncher;
     private Drawable mIcon;
     private final Drawable mBackground;
+    private OnLongClickListener mOnLongClickListener;
     private final CheckLongPressHelper mLongPressHelper;
     private final HolographicOutlineHelper mOutlineHelper;
     private final StylusEventHelper mStylusEventHelper;
@@ -268,6 +269,16 @@ public class BubbleTextView extends TextView
                 d.animateState(FastBitmapDrawable.State.NORMAL);
             }
         }
+    }
+
+    @Override
+    public void setOnLongClickListener(OnLongClickListener l) {
+        super.setOnLongClickListener(l);
+        mOnLongClickListener = l;
+    }
+
+    public OnLongClickListener getOnLongClickListener() {
+        return mOnLongClickListener;
     }
 
     @Override
