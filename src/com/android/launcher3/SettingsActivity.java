@@ -77,8 +77,8 @@ public class SettingsActivity extends Activity {
                 @Override
                 protected Boolean doInBackground(Void... params) {
                     Bundle extras = new Bundle();
-                    extras.putBoolean(LauncherSettings.Settings.EXTRA_DEFAULT_VALUE, false);
-                    Bundle value = getActivity().getContentResolver().call(
+                    extras.putBoolean(LauncherSettings.Settings.EXTRA_DEFAULT_VALUE, true);
+                    Bundle value = pref.getContext().getContentResolver().call(
                             LauncherSettings.Settings.CONTENT_URI,
                             LauncherSettings.Settings.METHOD_GET_BOOLEAN,
                             pref.getKey(), extras);
