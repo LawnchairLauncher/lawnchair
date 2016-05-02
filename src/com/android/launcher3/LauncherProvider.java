@@ -280,17 +280,6 @@ public class LauncherProvider extends ContentProvider {
             case LauncherSettings.Settings.METHOD_SET_BOOLEAN: {
                 final boolean value = extras.getBoolean(LauncherSettings.Settings.EXTRA_VALUE);
                 Utilities.getPrefs(getContext()).edit().putBoolean(arg, value).apply();
-                new MainThreadExecutor().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        synchronized (LISTENER_LOCK) {
-                            if (mListener != null) {
-                                mListener.onSettingsChanged(arg, value);
-                            }
-                        }
-
-                    }
-                });
                 if (extras.getBoolean(LauncherSettings.Settings.NOTIFY_BACKUP)) {
                     LauncherBackupAgentHelper.dataChanged(getContext());
                 }

@@ -77,8 +77,6 @@ public interface LauncherCallbacks {
     public void onInteractionEnd();
 
     @Deprecated
-    public void onClickSettingsButton(View v);
-    @Deprecated
     public void onWorkspaceLockedChanged();
 
     public boolean providesSearch();

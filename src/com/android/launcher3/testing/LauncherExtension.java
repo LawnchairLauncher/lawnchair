@@ -127,10 +127,6 @@ public class LauncherExtension extends Launcher {
         }
 
         @Override
-        public void onClickSettingsButton(View v) {
-        }
-
-        @Override
         public void onWorkspaceLockedChanged() {
         }
 
