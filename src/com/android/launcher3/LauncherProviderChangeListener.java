@@ -9,8 +9,6 @@ public interface LauncherProviderChangeListener {
 
     public void onLauncherProviderChange();
 
-    public void onSettingsChanged(String settings, boolean value);
-
     public void onExtractedColorsChanged();
 
     public void onAppWidgetHostReset();

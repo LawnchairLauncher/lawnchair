@@ -43,6 +43,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -374,11 +375,7 @@ public class Launcher extends Activity
         }
     }
 
-    private Runnable mUpdateOrientationRunnable = new Runnable() {
-        public void run() {
-            setOrientation();
-        }
-    };
+    private RotationPrefChangeHandler mRotationPrefChangeHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -479,6 +476,8 @@ public class Launcher extends Activity
         // if the user has specifically allowed rotation.
         if (!mRotationEnabled) {
             mRotationEnabled = Utilities.isAllowRotationPrefEnabled(getApplicationContext());
+            mRotationPrefChangeHandler = new RotationPrefChangeHandler();
+            mSharedPrefs.registerOnSharedPreferenceChangeListener(mRotationPrefChangeHandler);
         }
 
         // On large interfaces, or on devices that a user has specifically enabled screen rotation,
@@ -494,16 +493,6 @@ public class Launcher extends Activity
         } else {
             showFirstRunActivity();
             showFirstRunClings();
-        }
-    }
-
-    @Override
-    public void onSettingsChanged(String settings, boolean value) {
-        if (Utilities.ALLOW_ROTATION_PREFERENCE_KEY.equals(settings)) {
-            mRotationEnabled = value;
-            if (!waitUntilResume(mUpdateOrientationRunnable, true)) {
-                mUpdateOrientationRunnable.run();
-            }
         }
     }
 
@@ -1997,6 +1986,10 @@ public class Launcher extends Activity
             LauncherAppState.getInstance().setLauncher(null);
         }
 
+        if (mRotationPrefChangeHandler != null) {
+            mSharedPrefs.unregisterOnSharedPreferenceChangeListener(mRotationPrefChangeHandler);
+        }
+
         try {
             mAppWidgetHost.stopListening();
         } catch (NullPointerException ex) {
@@ -2744,13 +2737,10 @@ public class Launcher extends Activity
      * Event handler for a click on the settings button that appears after a long press
      * on the home screen.
      */
-    protected void onClickSettingsButton(View v) {
+    private void onClickSettingsButton(View v) {
         if (LOGD) Log.d(TAG, "onClickSettingsButton");
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onClickSettingsButton(v);
-        } else {
-            startActivity(new Intent(this, SettingsActivity.class));
-        }
+        startActivity(new Intent(Utilities.ACTION_APPLICATION_PREFERENCES)
+                .setPackage(getPackageName()));
     }
 
     public View.OnTouchListener getHapticFeedbackTouchListener() {
@@ -4696,6 +4686,25 @@ public class Launcher extends Activity
             return ((FolderIcon) icon).getFolder().getItemsInReadingOrder();
         } else {
             return Collections.EMPTY_LIST;
+        }
+    }
+
+    private class RotationPrefChangeHandler implements OnSharedPreferenceChangeListener, Runnable {
+
+        @Override
+        public void onSharedPreferenceChanged(
+                SharedPreferences sharedPreferences, String key) {
+            if (Utilities.ALLOW_ROTATION_PREFERENCE_KEY.equals(key)) {
+                mRotationEnabled = Utilities.isAllowRotationPrefEnabled(getApplicationContext());
+                if (!waitUntilResume(this, true)) {
+                    run();
+                }
+            }
+        }
+
+        @Override
+        public void run() {
+            setOrientation();
         }
     }
 }

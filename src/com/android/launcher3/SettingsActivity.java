@@ -17,11 +17,13 @@
 package com.android.launcher3;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceFragment;
-import android.preference.SwitchPreference;
+import android.preference.PreferenceScreen;
+import android.preference.TwoStatePreference;
 
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
@@ -47,19 +49,13 @@ public class SettingsActivity extends Activity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.launcher_preferences);
 
-            SwitchPreference pref = (SwitchPreference) findPreference(
-                    Utilities.ALLOW_ROTATION_PREFERENCE_KEY);
-            pref.setPersistent(false);
-
-            Bundle extras = new Bundle();
-            extras.putBoolean(LauncherSettings.Settings.EXTRA_DEFAULT_VALUE, false);
-            Bundle value = getActivity().getContentResolver().call(
-                    LauncherSettings.Settings.CONTENT_URI,
-                    LauncherSettings.Settings.METHOD_GET_BOOLEAN,
-                    Utilities.ALLOW_ROTATION_PREFERENCE_KEY, extras);
-            pref.setChecked(value.getBoolean(LauncherSettings.Settings.EXTRA_VALUE));
-
-            pref.setOnPreferenceChangeListener(this);
+            PreferenceScreen screen = getPreferenceScreen();
+            for (int i = screen.getPreferenceCount() - 1; i >= 0; i--) {
+                Preference pref = screen.getPreference(i);
+                if (pref instanceof TwoStatePreference) {
+                    setBooleanPrefUsingContentProvider((TwoStatePreference) pref);
+                }
+            }
         }
 
         @Override
@@ -71,6 +67,31 @@ public class SettingsActivity extends Activity {
                     LauncherSettings.Settings.METHOD_SET_BOOLEAN,
                     preference.getKey(), extras);
             return true;
+        }
+
+        private void setBooleanPrefUsingContentProvider(final TwoStatePreference pref) {
+            pref.setPersistent(false);
+            pref.setEnabled(false);
+
+            new AsyncTask<Void, Void, Boolean>() {
+                @Override
+                protected Boolean doInBackground(Void... params) {
+                    Bundle extras = new Bundle();
+                    extras.putBoolean(LauncherSettings.Settings.EXTRA_DEFAULT_VALUE, false);
+                    Bundle value = getActivity().getContentResolver().call(
+                            LauncherSettings.Settings.CONTENT_URI,
+                            LauncherSettings.Settings.METHOD_GET_BOOLEAN,
+                            pref.getKey(), extras);
+                    return value.getBoolean(LauncherSettings.Settings.EXTRA_VALUE);
+                }
+
+                @Override
+                protected void onPostExecute(Boolean aBoolean) {
+                    pref.setChecked(aBoolean);
+                    pref.setEnabled(true);
+                    pref.setOnPreferenceChangeListener(LauncherSettingsFragment.this);
+                }
+            }.execute();
         }
     }
 }
