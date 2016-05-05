@@ -8,10 +8,12 @@ import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiSelector;
 import android.test.InstrumentationTestCase;
+import android.test.suitebuilder.annotation.MediumTest;
 
 /**
  * Test for auto rotate preference.
  */
+@MediumTest
 public class RotationPreferenceTest extends InstrumentationTestCase {
 
     private UiDevice mDevice;
