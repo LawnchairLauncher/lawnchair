@@ -564,7 +564,7 @@ public class LauncherProvider extends ContentProvider {
     /**
      * The class is subclassed in tests to create an in-memory db.
      */
-    protected static class DatabaseHelper extends SQLiteOpenHelper implements LayoutParserCallback {
+    public static class DatabaseHelper extends SQLiteOpenHelper implements LayoutParserCallback {
         private final Handler mWidgetHostResetHandler;
         private final Context mContext;
         private long mMaxItemId = -1;
@@ -586,7 +586,7 @@ public class LauncherProvider extends ContentProvider {
         }
 
         /**
-         * Constructor used only in tests.
+         * Constructor used in tests and for restore.
          */
         public DatabaseHelper(
                 Context context, Handler widgetHostResetHandler, String tableName) {
@@ -658,30 +658,7 @@ public class LauncherProvider extends ContentProvider {
         }
 
         private void addFavoritesTable(SQLiteDatabase db, boolean optional) {
-            String ifNotExists = optional ? " IF NOT EXISTS " : "";
-            db.execSQL("CREATE TABLE " + ifNotExists + Favorites.TABLE_NAME + " (" +
-                    "_id INTEGER PRIMARY KEY," +
-                    "title TEXT," +
-                    "intent TEXT," +
-                    "container INTEGER," +
-                    "screen INTEGER," +
-                    "cellX INTEGER," +
-                    "cellY INTEGER," +
-                    "spanX INTEGER," +
-                    "spanY INTEGER," +
-                    "itemType INTEGER," +
-                    "appWidgetId INTEGER NOT NULL DEFAULT -1," +
-                    "iconType INTEGER," +
-                    "iconPackage TEXT," +
-                    "iconResource TEXT," +
-                    "icon BLOB," +
-                    "appWidgetProvider TEXT," +
-                    "modified INTEGER NOT NULL DEFAULT 0," +
-                    "restored INTEGER NOT NULL DEFAULT 0," +
-                    "profileId INTEGER DEFAULT " + getDefaultUserSerial() + "," +
-                    "rank INTEGER NOT NULL DEFAULT 0," +
-                    "options INTEGER NOT NULL DEFAULT 0" +
-                    ");");
+            Favorites.addTableToDb(db, getDefaultUserSerial(), optional);
         }
 
         private void addWorkspacesTable(SQLiteDatabase db, boolean optional) {
