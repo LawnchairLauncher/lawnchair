@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Point;
 import android.test.ProviderTestCase2;
+import android.test.suitebuilder.annotation.MediumTest;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherModel;
@@ -19,6 +20,7 @@ import java.util.HashSet;
 /**
  * Unit tests for {@link GridSizeMigrationTask}
  */
+@MediumTest
 public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherProvider> {
 
     private static final long DESKTOP = LauncherSettings.Favorites.CONTAINER_DESKTOP;
