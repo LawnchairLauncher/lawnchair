@@ -330,8 +330,13 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     public void startEditingFolderName() {
-        mFolderName.setHint("");
-        mIsEditingName = true;
+        post(new Runnable() {
+            @Override
+            public void run() {
+                mFolderName.setHint("");
+                mIsEditingName = true;
+            }
+        });
     }
 
     public void dismissEditingName() {
