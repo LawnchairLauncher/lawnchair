@@ -19,6 +19,7 @@ import android.os.ParcelFileDescriptor;
 import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiSelector;
 import android.test.InstrumentationTestCase;
+import android.test.suitebuilder.annotation.LargeTest;
 
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
@@ -38,6 +39,7 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * Note running these tests will clear the workspace on the device.
  */
+@LargeTest
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class BindWidgetTest extends InstrumentationTestCase {
 

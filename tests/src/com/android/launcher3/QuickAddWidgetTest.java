@@ -9,6 +9,7 @@ import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.Until;
 import android.test.InstrumentationTestCase;
+import android.test.suitebuilder.annotation.LargeTest;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
@@ -17,6 +18,7 @@ import java.util.List;
 /**
  * Add an arbitrary widget from the widget picker very quickly to test potential race conditions.
  */
+@LargeTest
 public class QuickAddWidgetTest extends InstrumentationTestCase {
     // Disabled because it's flaky and not particularly useful. But this class could still be useful
     // as an example if we want other UI tests in the future.
