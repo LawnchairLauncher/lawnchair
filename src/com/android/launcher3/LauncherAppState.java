@@ -30,6 +30,7 @@ import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dynamicui.ExtractionUtils;
 import com.android.launcher3.util.ConfigMonitor;
+import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.util.TestingUtils;
 import com.android.launcher3.util.Thunk;
 
@@ -79,6 +80,7 @@ public class LauncherAppState {
         // is the first component to get created. Initializing application context here ensures
         // that LauncherAppState always exists in the main process.
         sContext = provider.getContext().getApplicationContext();
+        FileLog.setDir(sContext.getFilesDir());
     }
 
     private LauncherAppState() {
