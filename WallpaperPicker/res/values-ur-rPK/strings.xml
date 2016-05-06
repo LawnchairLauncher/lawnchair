@@ -23,15 +23,20 @@
     <string name="image_load_fail" msgid="7538534580694411837">"تصویر کو لوڈ نہیں کیا جا سکا"</string>
     <string name="wallpaper_load_fail" msgid="4800700444605404650">"تصویر کو وال پیپر کے بطور لوڈ نہیں کیا جا سکا"</string>
     <string name="wallpaper_set_fail" msgid="7023180794008631780">"تصویر کو بطور وال پیپر سیٹ نہیں کیا جا سکا"</string>
-  <plurals name="number_of_items_selected">
-    <item quantity="zero" msgid="9015111147509924344">"‏%1$d کو منتخب کیا گیا"</item>
-    <item quantity="one" msgid="8409622005831789373">"‏%1$d کو منتخب کیا گیا"</item>
-    <item quantity="other" msgid="479468347731745357">"‏%1$d کو منتخب کیا گیا"</item>
-  </plurals>
+    <plurals name="number_of_items_selected" formatted="false" msgid="4578652015328149361">
+      <item quantity="other">‏%1$d کا انتخاب ہو گیا</item>
+      <item quantity="one">‏%1$d کا انتخاب ہو گیا</item>
+    </plurals>
     <string name="wallpaper_accessibility_name" msgid="4093221025304876354">"‏وال پیپر ‎%1$d از ‎%2$d"</string>
     <string name="announce_selection" msgid="123723511662250539">"<xliff:g id="LABEL">%1$s</xliff:g> کو منتخب کیا گیا"</string>
     <string name="wallpaper_delete" msgid="1459353972739215344">"حذف کریں"</string>
     <string name="pick_image" msgid="3189640419551368385">"میری تصاویر"</string>
     <string name="pick_wallpaper" msgid="4628969645948454559">"وال پیپرز"</string>
     <string name="crop_wallpaper" msgid="4882870800623585836">"وال پیپر کو تراشیں"</string>
+    <!-- no translation found for which_wallpaper_option_home_screen (5259213374485080595) -->
+    <skip />
+    <!-- no translation found for which_wallpaper_option_lock_screen (5474588303389139825) -->
+    <skip />
+    <!-- no translation found for which_wallpaper_option_home_screen_and_lock_screen (7652312651094808607) -->
+    <skip />
 </resources>

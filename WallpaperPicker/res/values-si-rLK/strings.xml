@@ -23,11 +23,10 @@
     <string name="image_load_fail" msgid="7538534580694411837">"පින්තූරය පූරණය කිරීමට නොහැකි විය"</string>
     <string name="wallpaper_load_fail" msgid="4800700444605404650">"පින්තූරය වෝල්පේපරයක් ලෙස පූරණය කිරීමට නොහැකි විය"</string>
     <string name="wallpaper_set_fail" msgid="7023180794008631780">"පින්තූරය බිතුපතක් ලෙස සැකසීමට නොහැකි විය"</string>
-  <plurals name="number_of_items_selected">
-    <item quantity="zero" msgid="9015111147509924344">"%1$d තෝරා ගන්නා ලදි"</item>
-    <item quantity="one" msgid="8409622005831789373">"%1$d තෝරා ගන්නා ලදි"</item>
-    <item quantity="other" msgid="479468347731745357">"%1$d තෝරා ගන්නා ලදි"</item>
-  </plurals>
+    <plurals name="number_of_items_selected" formatted="false" msgid="4578652015328149361">
+      <item quantity="one">%1$dක් තෝරා ගන්නා ලදී</item>
+      <item quantity="other">%1$dක් තෝරා ගන්නා ලදී</item>
+    </plurals>
     <!-- String.format failed for translation -->
     <!-- no translation found for wallpaper_accessibility_name (4093221025304876354) -->
     <skip />
@@ -36,4 +35,10 @@
     <string name="pick_image" msgid="3189640419551368385">"මගේ ඡායාරූප"</string>
     <string name="pick_wallpaper" msgid="4628969645948454559">"වෝල්පේපර"</string>
     <string name="crop_wallpaper" msgid="4882870800623585836">"වෝල්පේපරය කප්පාදු කිරීම"</string>
+    <!-- no translation found for which_wallpaper_option_home_screen (5259213374485080595) -->
+    <skip />
+    <!-- no translation found for which_wallpaper_option_lock_screen (5474588303389139825) -->
+    <skip />
+    <!-- no translation found for which_wallpaper_option_home_screen_and_lock_screen (7652312651094808607) -->
+    <skip />
 </resources>

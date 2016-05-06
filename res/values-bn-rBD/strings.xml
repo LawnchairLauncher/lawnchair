@@ -55,9 +55,9 @@
     <string name="workspace_scroll_format" msgid="8458889198184077399">"%2$dটির %1$d নম্বর হোম স্ক্রীন"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"নতুন হোম স্ক্রীনের পৃষ্ঠা"</string>
     <string name="first_run_cling_title" msgid="2459738000155917941">"স্বাগতম"</string>
-    <string name="migration_cling_title" msgid="9181776667882933767">"আপনার অ্যাপ্লিকেশান আইকনগুলি অনুলিপি করুন"</string>
+    <string name="migration_cling_title" msgid="9181776667882933767">"আপনার অ্যাপ্লিকেশান আইকনগুলি কপি করুন"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"আপনার পুরানো হোম স্ক্রীন থেকে আইকন এবং ফোল্ডারগুলি আমদানি করবেন?"</string>
-    <string name="migration_cling_copy_apps" msgid="946331230090919440">"আইকনগুলি অনুলিপি করুন"</string>
+    <string name="migration_cling_copy_apps" msgid="946331230090919440">"আইকনগুলি কপি করুন"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"নতুন করে শুরু করুন"</string>
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"ওয়ালপেপার, উইজেট এবং সেটিংস"</string>
     <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"কাস্টমাইজ করার জন্য পটভূমি স্পর্শ করে ধরে থাকুন"</string>
@@ -71,6 +71,7 @@
     <string name="widget_button_text" msgid="2880537293434387943">"উইজেটগুলি"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"ওয়ালপেপারগুলি"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"সেটিংস"</string>
+    <string name="msg_disabled_by_admin" msgid="6898038085516271325">"আপনার প্রশাসক দ্বারা অক্ষম করা হয়েছে"</string>
     <string name="allow_rotation_title" msgid="2118706734511831751">"ঘূর্ণনের অনুমতি দিন"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"অজানা"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"সরান"</string>
