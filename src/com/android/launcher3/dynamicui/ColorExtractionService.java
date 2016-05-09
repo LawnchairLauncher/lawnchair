@@ -32,6 +32,9 @@ import com.android.launcher3.LauncherSettings;
  */
 public class ColorExtractionService extends IntentService {
 
+    /** The fraction of the wallpaper to extract colors for use on the hotseat. */
+    private static final float HOTSEAT_FRACTION = 1f / 4;
+
     public ColorExtractionService() {
         super("ColorExtractionService");
     }
@@ -44,10 +47,21 @@ public class ColorExtractionService extends IntentService {
         if (wallpaperManager.getWallpaperInfo() != null) {
             // We can't extract colors from live wallpapers, so just use the default color always.
             extractedColors.updatePalette(null);
+            extractedColors.updateHotseatPalette(null);
         } else {
             Bitmap wallpaper = ((BitmapDrawable) wallpaperManager.getDrawable()).getBitmap();
             Palette palette = Palette.from(wallpaper).generate();
             extractedColors.updatePalette(palette);
+            // We extract colors for the hotseat separately,
+            // since it only considers the lower part of the wallpaper.
+            // TODO(twickham): update Palette library to 23.3.1 or higher,
+            // which fixes a bug with using regions (b/28349435).
+            Palette hotseatPalette = Palette.from(wallpaper)
+                    .setRegion(0, (int) (wallpaper.getHeight() * (1f - HOTSEAT_FRACTION)),
+                            wallpaper.getWidth(), wallpaper.getHeight())
+                    .clearFilters()
+                    .generate();
+            extractedColors.updateHotseatPalette(hotseatPalette);
         }
 
         // Save the extracted colors and wallpaper id to LauncherProvider.

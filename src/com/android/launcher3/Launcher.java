@@ -496,9 +496,10 @@ public class Launcher extends Activity
     }
 
     private void loadExtractedColorsAndColorItems() {
-        if (mExtractedColors != null) {
+        // TODO: do this in pre-N as well, once the extraction part is complete.
+        if (mExtractedColors != null && Utilities.isNycOrAbove()) {
             mExtractedColors.load(this);
-            // TODO: pass mExtractedColors to interested items such as hotseat.
+            mHotseat.updateColor(mExtractedColors, !mPaused);
         }
     }
 

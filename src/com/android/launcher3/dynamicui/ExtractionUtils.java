@@ -20,11 +20,15 @@ import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.support.v4.graphics.ColorUtils;
+import android.support.v7.graphics.Palette;
 
 import com.android.launcher3.Utilities;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * Contains helper fields and methods related to extracting colors from the wallpaper.
@@ -34,6 +38,7 @@ public class ExtractionUtils {
     public static final String WALLPAPER_ID_PREFERENCE_KEY = "pref_wallpaperId";
 
     private static final int FLAG_SET_SYSTEM = 1 << 0; // TODO: use WallpaperManager.FLAG_SET_SYSTEM
+    private static final float MIN_CONTRAST_RATIO = 2f;
 
     /**
      * Extract colors in the :wallpaper-chooser process, if the wallpaper id has changed.
@@ -46,10 +51,15 @@ public class ExtractionUtils {
             @Override
             public void run() {
                 if (hasWallpaperIdChanged(context)) {
-                    context.startService(new Intent(context, ColorExtractionService.class));
+                    startColorExtractionService(context);
                 }
             }
         });
+    }
+
+    /** Starts the {@link ColorExtractionService} without checking the wallpaper id */
+    public static void startColorExtractionService(Context context) {
+        context.startService(new Intent(context, ColorExtractionService.class));
     }
 
     private static boolean hasWallpaperIdChanged(Context context) {
@@ -72,4 +82,36 @@ public class ExtractionUtils {
             return -1;
         }
     }
+
+    public static boolean isSuperLight(Palette p) {
+        return !isLegibleOnWallpaper(Color.WHITE, p.getSwatches());
+    }
+
+    public static boolean isSuperDark(Palette p) {
+        return !isLegibleOnWallpaper(Color.BLACK, p.getSwatches());
+    }
+
+    /**
+     * Given a color, returns true if that color is legible on
+     * the given wallpaper color swatches, else returns false.
+     */
+    private static boolean isLegibleOnWallpaper(int color, List<Palette.Swatch> wallpaperSwatches) {
+        int legiblePopulation = 0;
+        int illegiblePopulation = 0;
+        for (Palette.Swatch swatch : wallpaperSwatches) {
+            if (isLegible(color, swatch.getRgb())) {
+                legiblePopulation += swatch.getPopulation();
+            } else {
+                illegiblePopulation += swatch.getPopulation();
+            }
+        }
+        return legiblePopulation > illegiblePopulation;
+    }
+
+    /** @return Whether the foreground color is legible on the background color. */
+    private static boolean isLegible(int foreground, int background) {
+        background = ColorUtils.setAlphaComponent(background, 255);
+        return ColorUtils.calculateContrast(foreground, background) >= MIN_CONTRAST_RATIO;
+    }
+
 }
