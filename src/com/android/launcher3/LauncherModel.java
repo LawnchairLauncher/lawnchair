@@ -60,6 +60,7 @@ import com.android.launcher3.model.GridSizeMigrationTask;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.CursorIconInfo;
+import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.ManagedProfileHeuristic;
@@ -1335,7 +1336,7 @@ public class LauncherModel extends BroadcastReceiver
                 try {
                     screenIds.add(sc.getLong(idIndex));
                 } catch (Exception e) {
-                    addDumpLog("Invalid screen id: " + e);
+                    FileLog.d(TAG, "Invalid screen id", e);
                 }
             }
         } finally {
@@ -1813,7 +1814,7 @@ public class LauncherModel extends BroadcastReceiver
                                             if (intent == null) {
                                                 // The app is installed but the component is no
                                                 // longer available.
-                                                addDumpLog("Invalid component removed: " + cn);
+                                                FileLog.d(TAG, "Invalid component removed: " + cn);
                                                 itemsToRemove.add(id);
                                                 continue;
                                             } else {
@@ -1824,7 +1825,7 @@ public class LauncherModel extends BroadcastReceiver
                                         } else if (restored) {
                                             // Package is not yet available but might be
                                             // installed later.
-                                            addDumpLog("package not yet restored: " + cn);
+                                            FileLog.d(TAG, "package not yet restored: " + cn);
 
                                             if ((promiseType & ShortcutInfo.FLAG_RESTORE_STARTED) != 0) {
                                                 // Restore has started once.
@@ -1850,12 +1851,12 @@ public class LauncherModel extends BroadcastReceiver
                                                     itemReplaced = true;
 
                                                 } else if (REMOVE_UNRESTORED_ICONS) {
-                                                    addDumpLog("Unrestored package removed: " + cn);
+                                                    FileLog.d(TAG, "Unrestored package removed: " + cn);
                                                     itemsToRemove.add(id);
                                                     continue;
                                                 }
                                             } else if (REMOVE_UNRESTORED_ICONS) {
-                                                addDumpLog("Unrestored package removed: " + cn);
+                                                FileLog.d(TAG, "Unrestored package removed: " + cn);
                                                 itemsToRemove.add(id);
                                                 continue;
                                             }
@@ -1880,7 +1881,7 @@ public class LauncherModel extends BroadcastReceiver
                                         } else {
                                             // Do not wait for external media load anymore.
                                             // Log the invalid package, and remove it
-                                            addDumpLog("Invalid package removed: " + cn);
+                                            FileLog.d(TAG, "Invalid package removed: " + cn);
                                             itemsToRemove.add(id);
                                             continue;
                                         }
@@ -1890,7 +1891,7 @@ public class LauncherModel extends BroadcastReceiver
                                         restored = false;
                                     }
                                 } catch (URISyntaxException e) {
-                                    addDumpLog("Invalid uri: " + intentDescription);
+                                    FileLog.d(TAG, "Invalid uri: " + intentDescription);
                                     itemsToRemove.add(id);
                                     continue;
                                 }
@@ -2073,7 +2074,7 @@ public class LauncherModel extends BroadcastReceiver
                                 final boolean isProviderReady = isValidProvider(provider);
                                 if (!isSafeMode && !customWidget &&
                                         wasProviderReady && !isProviderReady) {
-                                    addDumpLog("Deleting widget that isn't installed anymore: "
+                                    FileLog.d(TAG, "Deleting widget that isn't installed anymore: "
                                             + provider);
                                     itemsToRemove.add(id);
                                 } else {
@@ -2115,7 +2116,7 @@ public class LauncherModel extends BroadcastReceiver
                                             appWidgetInfo.restoreStatus |=
                                                     LauncherAppWidgetInfo.FLAG_RESTORE_STARTED;
                                         } else if (REMOVE_UNRESTORED_ICONS && !isSafeMode) {
-                                            addDumpLog("Unrestored widget removed: " + component);
+                                            FileLog.d(TAG, "Unrestored widget removed: " + component);
                                             itemsToRemove.add(id);
                                             continue;
                                         }
@@ -2171,9 +2172,7 @@ public class LauncherModel extends BroadcastReceiver
                         }
                     }
                 } finally {
-                    if (c != null) {
-                        c.close();
-                    }
+                    Utilities.closeSilently(c);
                 }
 
                 // Break early if we've stopped loading
@@ -3540,9 +3539,5 @@ public class LauncherModel extends BroadcastReceiver
      */
     public static Looper getWorkerLooper() {
         return sWorkerThread.getLooper();
-    }
-
-    @Thunk static final void addDumpLog(String log) {
-        Launcher.addDumpLog(TAG, log);
     }
 }

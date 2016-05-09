@@ -63,9 +63,11 @@ import android.widget.Toast;
 
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.util.IconNormalizer;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -843,6 +845,18 @@ public final class Utilities {
             } catch (Exception e) { }
         }
         return true;
+    }
+
+    public static void closeSilently(Closeable c) {
+        if (c != null) {
+            try {
+                c.close();
+            } catch (IOException e) {
+                if (ProviderConfig.IS_DOGFOOD_BUILD) {
+                    Log.d(TAG, "Error closing", e);
+                }
+            }
+        }
     }
 
     /**

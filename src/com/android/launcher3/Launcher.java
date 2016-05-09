@@ -114,6 +114,7 @@ import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.util.TestingUtils;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.ViewOnDrawExecutor;
@@ -123,11 +124,9 @@ import com.android.launcher3.widget.WidgetsContainerView;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -306,11 +305,6 @@ public class Launcher extends Activity
 
     private final ArrayList<Integer> mSynchronouslyBoundPages = new ArrayList<Integer>();
     private static final boolean DISABLE_SYNCHRONOUS_BINDING_CURRENT_PAGE = false;
-
-    private static final ArrayList<String> sDumpLogs = new ArrayList<String>();
-    private static final Date sDateStamp = new Date();
-    private static final DateFormat sDateFormat =
-            DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
 
     // We only want to get the SharedPreferences once since it does an FS stat each time we get
     // it from the context.
@@ -3979,7 +3973,7 @@ public class Launcher extends Activity
 
             // Verify that we own the widget
             if (appWidgetInfo == null) {
-                Log.e(TAG, "Removing invalid widget: id=" + item.appWidgetId);
+                FileLog.e(TAG, "Removing invalid widget: id=" + item.appWidgetId);
                 deleteWidgetInfo(item);
                 return;
             }
@@ -4652,24 +4646,14 @@ public class Launcher extends Activity
             }
         }
 
-        synchronized (sDumpLogs) {
-            writer.println();
-            writer.println(prefix + "Debug logs");
-            for (String log : sDumpLogs) {
-                writer.println(prefix + "  " + log);
-            }
+        try {
+            FileLog.flushAll(writer);
+        } catch (Exception e) {
+            // Ignore
         }
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.dump(prefix, fd, writer, args);
-        }
-    }
-
-    public static void addDumpLog(String tag, String log) {
-        Log.d(tag, log);
-        synchronized(sDumpLogs) {
-            sDateStamp.setTime(System.currentTimeMillis());
-            sDumpLogs.add(sDateFormat.format(sDateStamp) + ": " + tag + ", " + log);
         }
     }
 
