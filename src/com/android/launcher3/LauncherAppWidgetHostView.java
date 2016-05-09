@@ -256,7 +256,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
     @Override
     public void requestChildFocus(View child, View focused) {
         super.requestChildFocus(child, focused);
-        dispatchChildFocus(focused != null);
+        dispatchChildFocus(mChildrenFocused && focused != null);
         if (focused != null) {
             focused.setFocusableInTouchMode(false);
         }
