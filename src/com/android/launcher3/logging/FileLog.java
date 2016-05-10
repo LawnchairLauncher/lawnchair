@@ -1,6 +1,7 @@
 package com.android.launcher3.logging;
 
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Message;
 import android.util.Log;
 import android.util.Pair;
@@ -23,6 +24,9 @@ import java.util.concurrent.TimeUnit;
 /**
  * Wrapper around {@link Log} to allow writing to a file.
  * This class can safely be called from main thread.
+ *
+ * Note: This should only be used for logging errors which have a persistent effect on user's data,
+ * but whose effect may not be visible immediately.
  */
 public final class FileLog {
 
@@ -77,8 +81,9 @@ public final class FileLog {
     private static Handler getHandler() {
         synchronized (DATE_FORMAT) {
             if (sHandler == null) {
-                // We can use any non-ui looper, but why create another just for logging!
-                sHandler = new Handler(LauncherModel.getWorkerLooper(), new LogWriterCallback());
+                HandlerThread thread = new HandlerThread("file-logger");
+                thread.start();
+                sHandler = new Handler(thread.getLooper(), new LogWriterCallback());
             }
         }
         return sHandler;
