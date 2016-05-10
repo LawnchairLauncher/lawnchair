@@ -1972,6 +1972,15 @@ public class Launcher extends Activity
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        // Catches the case where our activity is created and immediately destroyed and our views
+        // are not yet fully bound. In this case, we can't trust the state of our activity and
+        // instead save our previous state (which hasn't yet been consumed / applied, a fact we
+        // know as it's not null)
+        if (isWorkspaceLoading() && mSavedState != null) {
+            outState.putAll(mSavedState);
+            return;
+        }
+
         if (mWorkspace.getChildCount() > 0) {
             outState.putInt(RUNTIME_STATE_CURRENT_SCREEN,
                     mWorkspace.getCurrentPageOffsetFromCustomContent());
