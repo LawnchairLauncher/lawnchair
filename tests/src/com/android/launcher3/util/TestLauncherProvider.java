@@ -1,6 +1,7 @@
 package com.android.launcher3.util;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteOpenHelper;
 
 import com.android.launcher3.LauncherProvider;
 
@@ -17,16 +18,21 @@ public class TestLauncherProvider extends LauncherProvider {
     @Override
     protected synchronized void createDbIfNotExists() {
         if (mOpenHelper == null) {
-            mOpenHelper = new MyDatabaseHelper(getContext(), this);
+            mOpenHelper = new MyDatabaseHelper(getContext());
         }
+    }
+
+    public SQLiteOpenHelper getHelper() {
+        createDbIfNotExists();
+        return mOpenHelper;
     }
 
     @Override
     protected void notifyListeners() { }
 
     private static class MyDatabaseHelper extends DatabaseHelper {
-        public MyDatabaseHelper(Context context, LauncherProvider provider) {
-            super(context, provider, null, null);
+        public MyDatabaseHelper(Context context) {
+            super(context, null, null);
             initIds();
         }
 
