@@ -23,7 +23,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
 import android.view.View;
 import com.android.launcher3.BaseRecyclerView;
-import com.android.launcher3.R;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.model.WidgetsModel;
 
@@ -58,6 +57,9 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
     protected void onFinishInflate() {
         super.onFinishInflate();
         addOnItemTouchListener(this);
+        // create a layout manager with Launcher's context so that scroll position
+        // can be preserved during screen rotation.
+        setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
     public int getFastScrollerTrackColor(int defaultTrackColor) {
