@@ -1961,9 +1961,6 @@ public class Launcher extends Activity
             outState.putInt(RUNTIME_STATE_PENDING_ADD_WIDGET_ID, mPendingAddWidgetId);
         }
 
-        // Save the current widgets tray?
-        // TODO(hyunyoungs)
-
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onSaveInstanceState(outState);
         }
