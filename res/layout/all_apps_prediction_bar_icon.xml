@@ -24,6 +24,5 @@
     android:paddingTop="@dimen/all_apps_prediction_icon_top_padding"
     android:paddingBottom="@dimen/all_apps_prediction_icon_bottom_padding"
     android:focusable="true"
-    android:background="@drawable/focusable_view_bg"
     launcher:iconDisplay="all_apps" />
 

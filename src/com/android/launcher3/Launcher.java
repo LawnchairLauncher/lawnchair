@@ -107,6 +107,7 @@ import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.WidgetsModel;
@@ -363,7 +364,7 @@ public class Launcher extends Activity
 
     private UserEventDispatcher mUserEventDispatcher;
 
-    public FocusIndicatorView mFocusHandler;
+    public ViewGroupFocusHelper mFocusHandler;
     private boolean mRotationEnabled = false;
 
     @Thunk void setOrientation() {
@@ -1340,8 +1341,9 @@ public class Launcher extends Activity
      */
     private void setupViews() {
         mLauncherView = findViewById(R.id.launcher);
-        mFocusHandler = (FocusIndicatorView) findViewById(R.id.focus_indicator);
         mDragLayer = (DragLayer) findViewById(R.id.drag_layer);
+        mFocusHandler = mDragLayer.getFocusIndicatorHelper();
+
         mWorkspace = (Workspace) mDragLayer.findViewById(R.id.workspace);
         mPageIndicator = (PageIndicatorLine) mDragLayer.findViewById(R.id.page_indicator);
 
