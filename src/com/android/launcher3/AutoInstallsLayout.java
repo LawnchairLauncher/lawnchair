@@ -630,7 +630,7 @@ public class AutoInstallsLayout {
                     copyInteger(myValues, childValues, Favorites.CELLY);
 
                     addedId = folderItems.get(0);
-                    mDb.update(LauncherProvider.TABLE_FAVORITES, childValues,
+                    mDb.update(Favorites.TABLE_NAME, childValues,
                             Favorites._ID + "=" + addedId, null);
                 }
             }
