@@ -60,7 +60,7 @@ public class LauncherBackupAgentTest extends AndroidTestCase {
         private final long mProfileId;
 
         public MyDatabaseHelper(long profileId) {
-            super(getContext(), null, null, null);
+            super(getContext(), null, null);
             mProfileId = profileId;
         }
 
