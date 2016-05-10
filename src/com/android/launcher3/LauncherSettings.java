@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import android.content.ContentResolver;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.BaseColumns;
@@ -256,6 +257,33 @@ public class LauncherSettings {
          * <p>Type: INTEGER</p>
          */
         public static final String OPTIONS = "options";
+
+        public static void addTableToDb(SQLiteDatabase db, long myProfileId, boolean optional) {
+            String ifNotExists = optional ? " IF NOT EXISTS " : "";
+            db.execSQL("CREATE TABLE " + ifNotExists + TABLE_NAME + " (" +
+                    "_id INTEGER PRIMARY KEY," +
+                    "title TEXT," +
+                    "intent TEXT," +
+                    "container INTEGER," +
+                    "screen INTEGER," +
+                    "cellX INTEGER," +
+                    "cellY INTEGER," +
+                    "spanX INTEGER," +
+                    "spanY INTEGER," +
+                    "itemType INTEGER," +
+                    "appWidgetId INTEGER NOT NULL DEFAULT -1," +
+                    "iconType INTEGER," +
+                    "iconPackage TEXT," +
+                    "iconResource TEXT," +
+                    "icon BLOB," +
+                    "appWidgetProvider TEXT," +
+                    "modified INTEGER NOT NULL DEFAULT 0," +
+                    "restored INTEGER NOT NULL DEFAULT 0," +
+                    "profileId INTEGER DEFAULT " + myProfileId + "," +
+                    "rank INTEGER NOT NULL DEFAULT 0," +
+                    "options INTEGER NOT NULL DEFAULT 0" +
+                    ");");
+        }
     }
 
     /**
