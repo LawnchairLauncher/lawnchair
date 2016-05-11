@@ -106,8 +106,10 @@ public abstract class UserEventDispatcher {
         if (cn != null) {
             event.srcTarget[idx].packageNameHash = cn.getPackageName().hashCode();
             event.srcTarget[idx].componentHash = cn.hashCode();
-            event.srcTarget[idx].predictedRank = mPredictedApps.indexOf(
-                    new ComponentKey(cn, itemInfo.user));
+            if (mPredictedApps != null) {
+                event.srcTarget[idx].predictedRank = mPredictedApps.indexOf(
+                        new ComponentKey(cn, itemInfo.user));
+            }
         }
 
         // Fill in the duration of time spent navigating in Launcher and the container.
