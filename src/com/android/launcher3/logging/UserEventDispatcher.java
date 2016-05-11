@@ -16,6 +16,7 @@
 
 package com.android.launcher3.logging;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.view.View;
 import android.view.ViewParent;
@@ -88,7 +89,7 @@ public abstract class UserEventDispatcher {
     // intentHash                       required
     // --------------------------------------------------------------
 
-    protected LauncherEvent createLauncherEvent(View v) {
+    protected LauncherEvent createLauncherEvent(View v, Intent intent) {
         LauncherEvent event = LoggerUtils.initLauncherEvent(
                 Action.TOUCH, Target.ITEM, Target.CONTAINER);
         event.action.touch = Action.TAP;
@@ -97,9 +98,17 @@ public abstract class UserEventDispatcher {
         // TODO: make this percolate up the view hierarchy if needed.
         int idx = 0;
         LaunchSourceProvider provider = getLaunchProviderRecursive(v);
-        provider.fillInLaunchSourceData(v, (ItemInfo) v.getTag(), event.srcTarget[idx], event.srcTarget[idx + 1]);
+        ItemInfo itemInfo = (ItemInfo) v.getTag();
+        provider.fillInLaunchSourceData(v, itemInfo, event.srcTarget[idx], event.srcTarget[idx + 1]);
 
-        // TODO: Fill in all the hashes and the predictedRank
+        event.srcTarget[idx].intentHash = intent.hashCode();
+        ComponentName cn = intent.getComponent();
+        if (cn != null) {
+            event.srcTarget[idx].packageNameHash = cn.getPackageName().hashCode();
+            event.srcTarget[idx].componentHash = cn.hashCode();
+            event.srcTarget[idx].predictedRank = mPredictedApps.indexOf(
+                    new ComponentKey(cn, itemInfo.user));
+        }
 
         // Fill in the duration of time spent navigating in Launcher and the container.
         event.elapsedContainerMillis = System.currentTimeMillis() - mElapsedContainerMillis;
@@ -108,7 +117,7 @@ public abstract class UserEventDispatcher {
     }
 
     public void logAppLaunch(View v, Intent intent) {
-        dispatchUserEvent(createLauncherEvent(v), intent);
+        dispatchUserEvent(createLauncherEvent(v, intent), intent);
     }
 
     public void logTap(View v) {
