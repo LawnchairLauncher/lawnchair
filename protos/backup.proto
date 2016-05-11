@@ -97,7 +97,7 @@ message Favorite {
   optional string appWidgetProvider = 12;
   optional string intent = 13;
   optional string uri = 14;
-  optional int32 iconType = 15;
+  optional int32 iconType = 15 [deprecated = true];
   optional string iconPackage = 16;
   optional string iconResource = 17;
   optional bytes icon = 18;

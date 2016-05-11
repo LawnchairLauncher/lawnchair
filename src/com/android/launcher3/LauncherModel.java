@@ -3473,7 +3473,6 @@ public class LauncherModel extends BroadcastReceiver
         info.title = Utilities.trim(name);
         info.contentDescription = mUserManager.getBadgedLabelForUser(info.title, info.user);
         info.intent = intent;
-        info.customIcon = customIcon;
         info.iconResource = iconResource;
 
         return info;

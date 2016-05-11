@@ -103,14 +103,13 @@ public class LauncherBackupHelper implements BackupHelper {
         Favorites.ICON,                    // 8
         Favorites.ICON_PACKAGE,            // 9
         Favorites.ICON_RESOURCE,           // 10
-        Favorites.ICON_TYPE,               // 11
-        Favorites.ITEM_TYPE,               // 12
-        Favorites.SCREEN,                  // 13
-        Favorites.SPANX,                   // 14
-        Favorites.SPANY,                   // 15
-        Favorites.TITLE,                   // 16
-        Favorites.PROFILE_ID,              // 17
-        Favorites.RANK,                    // 18
+        Favorites.ITEM_TYPE,               // 11
+        Favorites.SCREEN,                  // 12
+        Favorites.SPANX,                   // 13
+        Favorites.SPANY,                   // 14
+        Favorites.TITLE,                   // 15
+        Favorites.PROFILE_ID,              // 16
+        Favorites.RANK,                    // 17
     };
 
     private static final int ID_INDEX = 0;
@@ -124,13 +123,12 @@ public class LauncherBackupHelper implements BackupHelper {
     private static final int ICON_INDEX = 8;
     private static final int ICON_PACKAGE_INDEX = 9;
     private static final int ICON_RESOURCE_INDEX = 10;
-    private static final int ICON_TYPE_INDEX = 11;
-    private static final int ITEM_TYPE_INDEX = 12;
-    private static final int SCREEN_INDEX = 13;
-    private static final int SPANX_INDEX = 14;
-    private static final int SPANY_INDEX = 15;
-    private static final int TITLE_INDEX = 16;
-    private static final int RANK_INDEX = 18;
+    private static final int ITEM_TYPE_INDEX = 11;
+    private static final int SCREEN_INDEX = 12;
+    private static final int SPANX_INDEX = 13;
+    private static final int SPANY_INDEX = 14;
+    private static final int TITLE_INDEX = 15;
+    private static final int RANK_INDEX = 17;
 
     private static final String[] SCREEN_PROJECTION = {
         WorkspaceScreens._ID,              // 0
@@ -814,7 +812,6 @@ public class LauncherBackupHelper implements BackupHelper {
         favorite.cellY = c.getInt(CELLY_INDEX);
         favorite.spanX = c.getInt(SPANX_INDEX);
         favorite.spanY = c.getInt(SPANY_INDEX);
-        favorite.iconType = c.getInt(ICON_TYPE_INDEX);
         favorite.rank = c.getInt(RANK_INDEX);
 
         String title = c.getString(TITLE_INDEX);
@@ -840,15 +837,11 @@ public class LauncherBackupHelper implements BackupHelper {
                 favorite.appWidgetProvider = appWidgetProvider;
             }
         } else if (favorite.itemType == Favorites.ITEM_TYPE_SHORTCUT) {
-            if (favorite.iconType == Favorites.ICON_TYPE_RESOURCE) {
-                String iconPackage = c.getString(ICON_PACKAGE_INDEX);
-                if (!TextUtils.isEmpty(iconPackage)) {
-                    favorite.iconPackage = iconPackage;
-                }
-                String iconResource = c.getString(ICON_RESOURCE_INDEX);
-                if (!TextUtils.isEmpty(iconResource)) {
-                    favorite.iconResource = iconResource;
-                }
+            String iconPackage = c.getString(ICON_PACKAGE_INDEX);
+            String iconResource = c.getString(ICON_RESOURCE_INDEX);
+            if (!TextUtils.isEmpty(iconPackage) && !TextUtils.isEmpty(iconResource)) {
+                favorite.iconResource = iconResource;
+                favorite.iconPackage = iconPackage;
             }
 
             byte[] blob = c.getBlob(ICON_INDEX);
@@ -906,11 +899,8 @@ public class LauncherBackupHelper implements BackupHelper {
         values.put(Favorites.RANK, favorite.rank);
 
         if (favorite.itemType == Favorites.ITEM_TYPE_SHORTCUT) {
-            values.put(Favorites.ICON_TYPE, favorite.iconType);
-            if (favorite.iconType == Favorites.ICON_TYPE_RESOURCE) {
-                values.put(Favorites.ICON_PACKAGE, favorite.iconPackage);
-                values.put(Favorites.ICON_RESOURCE, favorite.iconResource);
-            }
+            values.put(Favorites.ICON_PACKAGE, favorite.iconPackage);
+            values.put(Favorites.ICON_RESOURCE, favorite.iconResource);
             values.put(Favorites.ICON, favorite.icon);
         }
 

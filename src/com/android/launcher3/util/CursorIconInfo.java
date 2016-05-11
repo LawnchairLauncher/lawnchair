@@ -30,13 +30,11 @@ import com.android.launcher3.Utilities;
  * Utility class to load icon from a cursor.
  */
 public class CursorIconInfo {
-    public final int iconTypeIndex;
     public final int iconPackageIndex;
     public final int iconResourceIndex;
     public final int iconIndex;
 
     public CursorIconInfo(Cursor c) {
-        iconTypeIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_TYPE);
         iconIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON);
         iconPackageIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_PACKAGE);
         iconResourceIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_RESOURCE);
@@ -44,26 +42,17 @@ public class CursorIconInfo {
 
     public Bitmap loadIcon(Cursor c, ShortcutInfo info, Context context) {
         Bitmap icon = null;
-        int iconType = c.getInt(iconTypeIndex);
-        switch (iconType) {
-        case LauncherSettings.Favorites.ICON_TYPE_RESOURCE:
-            String packageName = c.getString(iconPackageIndex);
-            String resourceName = c.getString(iconResourceIndex);
-            if (!TextUtils.isEmpty(packageName) || !TextUtils.isEmpty(resourceName)) {
-                info.iconResource = new ShortcutIconResource();
-                info.iconResource.packageName = packageName;
-                info.iconResource.resourceName = resourceName;
-                icon = Utilities.createIconBitmap(packageName, resourceName, context);
-            }
-            if (icon == null) {
-                // Failed to load from resource, try loading from DB.
-                icon = Utilities.createIconBitmap(c, iconIndex, context);
-            }
-            break;
-        case LauncherSettings.Favorites.ICON_TYPE_BITMAP:
+        String packageName = c.getString(iconPackageIndex);
+        String resourceName = c.getString(iconResourceIndex);
+        if (!TextUtils.isEmpty(packageName) || !TextUtils.isEmpty(resourceName)) {
+            info.iconResource = new ShortcutIconResource();
+            info.iconResource.packageName = packageName;
+            info.iconResource.resourceName = resourceName;
+            icon = Utilities.createIconBitmap(packageName, resourceName, context);
+        }
+        if (icon == null) {
+            // Failed to load from resource, try loading from DB.
             icon = Utilities.createIconBitmap(c, iconIndex, context);
-            info.customIcon = icon != null;
-            break;
         }
         return icon;
     }
