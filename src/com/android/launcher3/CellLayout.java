@@ -1398,10 +1398,10 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
      * precise version of a bounding box.
      */
     private class ViewCluster {
-        final static int LEFT = 0;
-        final static int TOP = 1;
-        final static int RIGHT = 2;
-        final static int BOTTOM = 3;
+        final static int LEFT = 1 << 0;
+        final static int TOP = 1 << 1;
+        final static int RIGHT = 1 << 2;
+        final static int BOTTOM = 1 << 3;
 
         ArrayList<View> views;
         ItemConfiguration config;
@@ -1411,7 +1411,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         int[] rightEdge = new int[mCountY];
         int[] topEdge = new int[mCountX];
         int[] bottomEdge = new int[mCountX];
-        boolean leftEdgeDirty, rightEdgeDirty, topEdgeDirty, bottomEdgeDirty, boundingRectDirty;
+        int dirtyEdges;
+        boolean boundingRectDirty;
 
         @SuppressWarnings("unchecked")
         public ViewCluster(ArrayList<View> views, ItemConfiguration config) {
@@ -1429,14 +1430,11 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 leftEdge[i] = -1;
                 rightEdge[i] = -1;
             }
-            leftEdgeDirty = true;
-            rightEdgeDirty = true;
-            bottomEdgeDirty = true;
-            topEdgeDirty = true;
+            dirtyEdges = LEFT | TOP | RIGHT | BOTTOM;
             boundingRectDirty = true;
         }
 
-        void computeEdge(int which, int[] edge) {
+        void computeEdge(int which) {
             int count = views.size();
             for (int i = 0; i < count; i++) {
                 CellAndSpan cs = config.map.get(views.get(i));
@@ -1444,32 +1442,32 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                     case LEFT:
                         int left = cs.x;
                         for (int j = cs.y; j < cs.y + cs.spanY; j++) {
-                            if (left < edge[j] || edge[j] < 0) {
-                                edge[j] = left;
+                            if (left < leftEdge[j] || leftEdge[j] < 0) {
+                                leftEdge[j] = left;
                             }
                         }
                         break;
                     case RIGHT:
                         int right = cs.x + cs.spanX;
                         for (int j = cs.y; j < cs.y + cs.spanY; j++) {
-                            if (right > edge[j]) {
-                                edge[j] = right;
+                            if (right > rightEdge[j]) {
+                                rightEdge[j] = right;
                             }
                         }
                         break;
                     case TOP:
                         int top = cs.y;
                         for (int j = cs.x; j < cs.x + cs.spanX; j++) {
-                            if (top < edge[j] || edge[j] < 0) {
-                                edge[j] = top;
+                            if (top < topEdge[j] || topEdge[j] < 0) {
+                                topEdge[j] = top;
                             }
                         }
                         break;
                     case BOTTOM:
                         int bottom = cs.y + cs.spanY;
                         for (int j = cs.x; j < cs.x + cs.spanX; j++) {
-                            if (bottom > edge[j]) {
-                                edge[j] = bottom;
+                            if (bottom > bottomEdge[j]) {
+                                bottomEdge[j] = bottom;
                             }
                         }
                         break;
@@ -1480,33 +1478,36 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         boolean isViewTouchingEdge(View v, int whichEdge) {
             CellAndSpan cs = config.map.get(v);
 
-            int[] edge = getEdge(whichEdge);
+            if ((dirtyEdges & whichEdge) == whichEdge) {
+                computeEdge(whichEdge);
+                dirtyEdges &= ~whichEdge;
+            }
 
             switch (whichEdge) {
                 case LEFT:
                     for (int i = cs.y; i < cs.y + cs.spanY; i++) {
-                        if (edge[i] == cs.x + cs.spanX) {
+                        if (leftEdge[i] == cs.x + cs.spanX) {
                             return true;
                         }
                     }
                     break;
                 case RIGHT:
                     for (int i = cs.y; i < cs.y + cs.spanY; i++) {
-                        if (edge[i] == cs.x) {
+                        if (rightEdge[i] == cs.x) {
                             return true;
                         }
                     }
                     break;
                 case TOP:
                     for (int i = cs.x; i < cs.x + cs.spanX; i++) {
-                        if (edge[i] == cs.y + cs.spanY) {
+                        if (topEdge[i] == cs.y + cs.spanY) {
                             return true;
                         }
                     }
                     break;
                 case BOTTOM:
                     for (int i = cs.x; i < cs.x + cs.spanX; i++) {
-                        if (edge[i] == cs.y) {
+                        if (bottomEdge[i] == cs.y) {
                             return true;
                         }
                     }
@@ -1556,48 +1557,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 }
             }
             return boundingRect;
-        }
-
-        public int[] getEdge(int which) {
-            switch (which) {
-                case LEFT:
-                    return getLeftEdge();
-                case RIGHT:
-                    return getRightEdge();
-                case TOP:
-                    return getTopEdge();
-                case BOTTOM:
-                default:
-                    return getBottomEdge();
-            }
-        }
-
-        public int[] getLeftEdge() {
-            if (leftEdgeDirty) {
-                computeEdge(LEFT, leftEdge);
-            }
-            return leftEdge;
-        }
-
-        public int[] getRightEdge() {
-            if (rightEdgeDirty) {
-                computeEdge(RIGHT, rightEdge);
-            }
-            return rightEdge;
-        }
-
-        public int[] getTopEdge() {
-            if (topEdgeDirty) {
-                computeEdge(TOP, topEdge);
-            }
-            return topEdge;
-        }
-
-        public int[] getBottomEdge() {
-            if (bottomEdgeDirty) {
-                computeEdge(BOTTOM, bottomEdge);
-            }
-            return bottomEdge;
         }
 
         PositionComparator comparator = new PositionComparator();
