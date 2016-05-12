@@ -71,6 +71,7 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Amawijethi"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Izithombe zangemuva"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"Izilungiselelo"</string>
+    <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Kukhutshazwe umlawuli wakho"</string>
     <string name="allow_rotation_title" msgid="2118706734511831751">"Vumela ukuphenduka"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Akwaziwa"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Susa"</string>

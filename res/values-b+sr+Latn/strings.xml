@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+* Copyright (C) 2008 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
+    <string name="folder_name" msgid="7371454440695724752"></string>
+    <string name="work_folder_name" msgid="3753320833950115786">"Work"</string>
+    <string name="activity_not_found" msgid="8071924732094499514">"Aplikacija nije instalirana."</string>
+    <string name="activity_not_available" msgid="7456344436509528827">"Aplikacija nije dostupna"</string>
+    <string name="safemode_shortcut_error" msgid="9160126848219158407">"Preuzeta aplikacija je onemogućena u Bezbednom režimu"</string>
+    <string name="safemode_widget_error" msgid="4863470563535682004">"Vidžeti su onemogućeni u Bezbednom režimu"</string>
+    <string name="long_press_widget_to_add" msgid="7699152356777458215">"Dodirnite i zadržite da biste izabrali vidžet."</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Dvaput dodirnite i zadržite da biste izabrali vidžet ili koristite prilagođene radnje."</string>
+    <string name="widget_dims_format" msgid="2370757736025621599">"%1$d×%2$d"</string>
+    <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"Pretražite aplikacije..."</string>
+    <string name="all_apps_loading_message" msgid="7557140873644765180">"Aplikacije se učitavaju..."</string>
+    <string name="all_apps_no_search_results" msgid="6332185285860416787">"Nije pronađena nijedna aplikacija za „<xliff:g id="QUERY">%1$s</xliff:g>“"</string>
+    <string name="all_apps_search_market_message" msgid="5470761048755751471">"Idi na aplikaciju <xliff:g id="QUERY">%1$s</xliff:g>"</string>
+    <string name="out_of_space" msgid="4691004494942118364">"Nema više prostora na ovom početnom ekranu."</string>
+    <string name="hotseat_out_of_space" msgid="7448809638125333693">"Nema više prostora na traci Omiljeno"</string>
+    <string name="all_apps_button_label" msgid="9110807029020582876">"Aplikacije"</string>
+    <string name="all_apps_home_button_label" msgid="252062713717058851">"Početna"</string>
+    <string name="delete_target_label" msgid="1822697352535677073">"Ukloni"</string>
+    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"Deinstaliraj"</string>
+    <string name="info_target_label" msgid="8053346143994679532">"Informacije o aplikaciji"</string>
+    <string name="permlab_install_shortcut" msgid="5632423390354674437">"instaliranje prečica"</string>
+    <string name="permdesc_install_shortcut" msgid="923466509822011139">"Dozvoljava aplikaciji da dodaje prečice bez intervencije korisnika."</string>
+    <string name="permlab_read_settings" msgid="1941457408239617576">"čitanje podešavanja i prečica na početnom ekranu"</string>
+    <string name="permdesc_read_settings" msgid="5833423719057558387">"Dozvoljava aplikaciji da čita podešavanja i prečice na početnom ekranu."</string>
+    <string name="permlab_write_settings" msgid="3574213698004620587">"upisivanje podešavanja i prečica na početnom ekranu"</string>
+    <string name="permdesc_write_settings" msgid="5440712911516509985">"Dozvoljava aplikaciji da menja podešavanja i prečice na početnom ekranu."</string>
+    <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> nema dozvolu za upućivanje telefonskih poziva"</string>
+    <string name="gadget_error_text" msgid="6081085226050792095">"Problem pri učitavanju vidžeta"</string>
+    <string name="gadget_setup_text" msgid="8274003207686040488">"Podešavanje"</string>
+    <string name="uninstall_system_app_text" msgid="4172046090762920660">"Ovo je sistemska aplikacija i ne može da se deinstalira."</string>
+    <string name="folder_hint_text" msgid="6617836969016293992">"Neimenovani direktorijum"</string>
+    <string name="default_scroll_format" msgid="7475544710230993317">"%1$d. stranica od %2$d"</string>
+    <string name="workspace_scroll_format" msgid="8458889198184077399">"%1$d. početni ekran od %2$d"</string>
+    <string name="workspace_new_page" msgid="257366611030256142">"Nova stranica početnog ekrana"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"Dobro došli"</string>
+    <string name="migration_cling_title" msgid="9181776667882933767">"Kopirajte ikone aplikacija"</string>
+    <string name="migration_cling_description" msgid="2752413805582227644">"Uvesti ikone i direktorijume sa starih početnih ekrana?"</string>
+    <string name="migration_cling_copy_apps" msgid="946331230090919440">"KOPIRAJTE IKONE"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"POČNITE ISPOČETKA"</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Pozadine, vidžeti i podešavanja"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Dodirnite i zadržite pozadinu da biste prilagodili"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"VAŽI"</string>
+    <string name="folder_opened" msgid="94695026776264709">"Direktorijum je otvoren, <xliff:g id="WIDTH">%1$d</xliff:g> puta <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
+    <string name="folder_tap_to_close" msgid="1884479294466410023">"Dodirnite da biste zatvorili direktorijum"</string>
+    <string name="folder_tap_to_rename" msgid="9191075570492871147">"Dodirnite da biste sačuvali promenu imena"</string>
+    <string name="folder_closed" msgid="4100806530910930934">"Direktorijum je zatvoren"</string>
+    <string name="folder_renamed" msgid="1794088362165669656">"Direktorijum je preimenovan u <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format" msgid="6629239338071103179">"Direktorijum: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="widget_button_text" msgid="2880537293434387943">"Vidžeti"</string>
+    <string name="wallpaper_button_text" msgid="8404103075899945851">"Pozadine"</string>
+    <string name="settings_button_text" msgid="8119458837558863227">"Podešavanja"</string>
+    <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Administrator je onemogućio"</string>
+    <string name="allow_rotation_title" msgid="2118706734511831751">"Dozvoli rotaciju"</string>
+    <string name="package_state_unknown" msgid="7592128424511031410">"Nepoznato"</string>
+    <string name="abandoned_clean_this" msgid="7610119707847920412">"Ukloni"</string>
+    <string name="abandoned_search" msgid="891119232568284442">"Pretraži"</string>
+    <string name="abandoned_promises_title" msgid="7096178467971716750">"Ova aplikacija nije instalirana"</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Aplikacija za ovu ikonu nije instalirana. Možete da je uklonite ili da potražite aplikaciju i instalirate je ručno."</string>
+    <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> se preuzima, završeno je <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
+    <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> čeka na instaliranje"</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"Dodaj na početni ekran"</string>
+    <string name="action_move_here" msgid="2170188780612570250">"Premesti stavku ovde"</string>
+    <string name="item_added_to_workspace" msgid="4211073925752213539">"Stavka je dodata na početni ekran"</string>
+    <string name="item_removed" msgid="851119963877842327">"Stavka je uklonjena"</string>
+    <string name="action_move" msgid="4339390619886385032">"Premesti stavku"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"Premesti u red <xliff:g id="NUMBER_0">%1$s</xliff:g> i kolonu <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="move_to_position" msgid="6750008980455459790">"Premesti na <xliff:g id="NUMBER">%1$s</xliff:g>. poziciju"</string>
+    <string name="move_to_hotseat_position" msgid="6295412897075147808">"Premesti na <xliff:g id="NUMBER">%1$s</xliff:g>. poziciju u omiljenim"</string>
+    <string name="item_moved" msgid="4606538322571412879">"Stavka je premeštena"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"Dodaj u direktorijum: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="add_to_folder_with_app" msgid="4534929978967147231">"Dodaj u direktorijum u kome je <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"Stavka je dodata u direktorijum"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"Napravite direktorijum sa: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_created" msgid="6409794597405184510">"Direktorijum je napravljen"</string>
+    <string name="action_move_to_workspace" msgid="1603837886334246317">"Premesti na početni ekran"</string>
+    <string name="action_move_screen_left" msgid="8854216831569401665">"Pomeri ekran ulevo"</string>
+    <string name="action_move_screen_right" msgid="329334910274311123">"Pomeri ekran udesno"</string>
+    <string name="screen_moved" msgid="266230079505650577">"Ekran je pomeren"</string>
+    <string name="action_resize" msgid="1802976324781771067">"Promeni veličinu"</string>
+    <string name="action_increase_width" msgid="8773715375078513326">"Povećaj širinu"</string>
+    <string name="action_increase_height" msgid="459390020612501122">"Povećaj visinu"</string>
+    <string name="action_decrease_width" msgid="1374549771083094654">"Smanji širinu"</string>
+    <string name="action_decrease_height" msgid="282377193880900022">"Smanji visinu"</string>
+    <string name="widget_resized" msgid="9130327887929620">"Veličina vidžeta je promenjena na širinu <xliff:g id="NUMBER_0">%1$s</xliff:g> i visinu <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+</resources>

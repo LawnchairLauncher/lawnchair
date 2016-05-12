@@ -156,7 +156,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     protected boolean mIsPageMoving = false;
 
-    private boolean mWasInOverscroll = false;
+    protected boolean mWasInOverscroll = false;
 
     // Page Indicator
     @Thunk int mPageIndicatorViewId;
@@ -551,9 +551,13 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         super.setOnLongClickListener(l);
     }
 
+    protected int getUnboundedScrollX() {
+        return getScrollX();
+    }
+
     @Override
     public void scrollBy(int x, int y) {
-        scrollTo(getScrollX() + x, getScrollY() + y);
+        scrollTo(getUnboundedScrollX() + x, getScrollY() + y);
     }
 
     @Override
@@ -1051,16 +1055,16 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     protected void getVisiblePages(int[] range) {
-        final int pageCount = getChildCount();
+        final int count = getChildCount();
         range[0] = -1;
         range[1] = -1;
 
-        if (pageCount > 0) {
+        if (count > 0) {
             final int visibleLeft = -getLeft();
             final int visibleRight = visibleLeft + getViewportWidth();
+            final Matrix pageShiftMatrix = getPageShiftMatrix();
             int curScreen = 0;
 
-            int count = getChildCount();
             for (int i = 0; i < count; i++) {
                 View currPage = getPageAt(i);
 
@@ -1069,7 +1073,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 sTmpRectF.right = currPage.getMeasuredWidth();
                 currPage.getMatrix().mapRect(sTmpRectF);
                 sTmpRectF.offset(currPage.getLeft() - getScrollX(), 0);
-                getMatrix().mapRect(sTmpRectF);
+                pageShiftMatrix.mapRect(sTmpRectF);
 
                 if (sTmpRectF.left > visibleRight || sTmpRectF.right < visibleLeft) {
                     if (range[0] == -1) {
@@ -1090,6 +1094,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             range[0] = -1;
             range[1] = -1;
         }
+    }
+
+    protected Matrix getPageShiftMatrix() {
+        return getMatrix();
     }
 
     protected boolean shouldDrawChild(View child) {
@@ -2008,7 +2016,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         int halfScreenSize = getViewportWidth() / 2;
 
         final int newX = getScrollForPage(whichPage);
-        int delta = newX - getScrollX();
+        int delta = newX - getUnboundedScrollX();
         int duration = 0;
 
         if (Math.abs(velocity) < mMinFlingVelocity) {
@@ -2058,7 +2066,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         whichPage = validateNewPage(whichPage);
 
         int newX = getScrollForPage(whichPage);
-        final int delta = newX - getScrollX();
+        final int delta = newX - getUnboundedScrollX();
         snapToPage(whichPage, delta, duration, immediate, interpolator);
     }
 
@@ -2090,7 +2098,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             mScroller.setInterpolator(mDefaultInterpolator);
         }
 
-        mScroller.startScroll(getScrollX(), 0, delta, 0, duration);
+        mScroller.startScroll(getUnboundedScrollX(), 0, delta, 0, duration);
 
         updatePageIndicator();
 
