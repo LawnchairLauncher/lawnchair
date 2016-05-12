@@ -142,7 +142,11 @@ public final class Utilities {
     }
 
     public static boolean isAllowRotationPrefEnabled(Context context) {
-        boolean allowRotationPref = false;
+        return getPrefs(context).getBoolean(ALLOW_ROTATION_PREFERENCE_KEY,
+                getAllowRotationDefaultValue(context));
+    }
+
+    public static boolean getAllowRotationDefaultValue(Context context) {
         if (isNycOrAbove()) {
             // If the device was scaled, used the original dimensions to determine if rotation
             // is allowed of not.
@@ -153,13 +157,12 @@ public final class Utilities {
                 Resources res = context.getResources();
                 int originalSmallestWidth = res.getConfiguration().smallestScreenWidthDp
                         * res.getDisplayMetrics().densityDpi / originalDensity;
-                allowRotationPref = originalSmallestWidth >= 600;
+                return originalSmallestWidth >= 600;
             } catch (Exception e) {
                 // Ignore
             }
         }
-
-        return getPrefs(context).getBoolean(ALLOW_ROTATION_PREFERENCE_KEY, allowRotationPref);
+        return false;
     }
 
     public static boolean isNycOrAbove() {

@@ -323,28 +323,6 @@ public class LauncherProvider extends ContentProvider {
         createDbIfNotExists();
 
         switch (method) {
-            case LauncherSettings.Settings.METHOD_GET_BOOLEAN: {
-                Bundle result = new Bundle();
-                if (Utilities.ALLOW_ROTATION_PREFERENCE_KEY.equals(arg)) {
-                    result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
-                            Utilities.isAllowRotationPrefEnabled(getContext()));
-                } else {
-                    result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
-                            Utilities.getPrefs(getContext()).getBoolean(arg, extras.getBoolean(
-                                    LauncherSettings.Settings.EXTRA_DEFAULT_VALUE)));
-                }
-                return result;
-            }
-            case LauncherSettings.Settings.METHOD_SET_BOOLEAN: {
-                final boolean value = extras.getBoolean(LauncherSettings.Settings.EXTRA_VALUE);
-                Utilities.getPrefs(getContext()).edit().putBoolean(arg, value).apply();
-                if (extras.getBoolean(LauncherSettings.Settings.NOTIFY_BACKUP)) {
-                    LauncherBackupAgentHelper.dataChanged(getContext());
-                }
-                Bundle result = new Bundle();
-                result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE, value);
-                return result;
-            }
             case LauncherSettings.Settings.METHOD_SET_EXTRACTED_COLORS_AND_WALLPAPER_ID: {
                 String extractedColors = extras.getString(
                         LauncherSettings.Settings.EXTRA_EXTRACTED_COLORS);
