@@ -55,6 +55,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityManager;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
@@ -172,6 +173,7 @@ public class Workspace extends PagedView
     @Thunk float[] mDragViewVisualCenter = new float[2];
     private float[] mTempCellLayoutCenterCoordinates = new float[2];
     private Matrix mTempInverseMatrix = new Matrix();
+    private Matrix mTempMatrix = new Matrix();
 
     private SpringLoadedDragController mSpringLoadedDragController;
     private float mSpringLoadedShrinkFactor;
@@ -275,8 +277,11 @@ public class Workspace extends PagedView
     LauncherOverlay mLauncherOverlay;
     boolean mScrollInteractionBegan;
     boolean mStartedSendingScrollEvents;
-    boolean mShouldSendPageSettled;
-    int mLastOverlaySroll = 0;
+    float mLastOverlaySroll = 0;
+    // Total over scrollX in the overlay direction.
+    private int mUnboundedScrollX;
+    // Total over scrollX in the overlay direction.
+    private float mOverlayTranslation;
 
     // Handles workspace state transitions
     private WorkspaceStateTransitionAnimation mStateTransitionAnimation;
@@ -1232,11 +1237,6 @@ public class Workspace extends PagedView
             stripEmptyScreens();
             mStripScreensOnPageStopMoving = false;
         }
-
-        if (mShouldSendPageSettled) {
-            mLauncherOverlay.onScrollSettled();
-            mShouldSendPageSettled = false;
-        }
     }
 
     protected void onScrollInteractionBegin() {
@@ -1255,6 +1255,47 @@ public class Workspace extends PagedView
 
     public void setLauncherOverlay(LauncherOverlay overlay) {
         mLauncherOverlay = overlay;
+        // A new overlay has been set. Reset event tracking
+        mStartedSendingScrollEvents = false;
+        onOverlayScrollChanged(0);
+    }
+
+    @Override
+    protected int getUnboundedScrollX() {
+        if (isScrollingOverlay()) {
+            return mUnboundedScrollX;
+        }
+
+        return super.getUnboundedScrollX();
+    }
+
+    private boolean isScrollingOverlay() {
+        return mLauncherOverlay != null &&
+                ((mIsRtl && mUnboundedScrollX > mMaxScrollX) || (!mIsRtl && mUnboundedScrollX < 0));
+    }
+
+    @Override
+    protected void snapToDestination() {
+        // If we're overscrolling the overlay, we make sure to immediately reset the PagedView
+        // to it's baseline position instead of letting the overscroll settle. The overlay handles
+        // it's own settling, and every gesture to the overlay should be self-contained and start
+        // from 0, so we zero it out here.
+        if (isScrollingOverlay()) {
+            int finalScroll = mIsRtl ? mMaxScrollX : 0;
+
+            // We reset mWasInOverscroll so that PagedView doesn't zero out the overscroll
+            // interaction when we call scrollTo.
+            mWasInOverscroll = false;
+            scrollTo(finalScroll, getScrollY());
+        } else {
+            super.snapToDestination();
+        }
+    }
+
+    @Override
+    public void scrollTo(int x, int y) {
+        mUnboundedScrollX = x;
+        super.scrollTo(x, y);
     }
 
     @Override
@@ -1272,21 +1313,72 @@ public class Workspace extends PagedView
             if (!mStartedSendingScrollEvents && mScrollInteractionBegan) {
                 mStartedSendingScrollEvents = true;
                 mLauncherOverlay.onScrollInteractionBegin();
-                mShouldSendPageSettled = true;
             }
-            int screenSize = getViewportWidth();
-            float f = (amount / screenSize);
 
-            int progress = (int) Math.abs((f * 100));
-
-            mLastOverlaySroll = progress;
-            mLauncherOverlay.onScrollChange(progress, mIsRtl);
+            mLastOverlaySroll = Math.abs(amount / getViewportWidth());
+            mLauncherOverlay.onScrollChange(mLastOverlaySroll, mIsRtl);
         } else if (shouldOverScroll) {
             dampedOverScroll(amount);
         }
 
         if (shouldZeroOverlay) {
             mLauncherOverlay.onScrollChange(0, mIsRtl);
+        }
+    }
+
+    private final Interpolator mAlphaInterpolator = new DecelerateInterpolator(3f);
+
+    /**
+     * The overlay scroll is being controlled locally, just update our overlay effect
+     */
+    public void onOverlayScrollChanged(float scroll) {
+        float offset = 0f;
+        float slip = 0f;
+
+        scroll = Math.max(scroll - offset, 0);
+        scroll = Math.min(1, scroll / (1 - offset));
+
+        float alpha = 1 - mAlphaInterpolator.getInterpolation(scroll);
+        float transX = mLauncher.getDragLayer().getMeasuredWidth() * scroll;
+        transX *= 1 - slip;
+
+        if (mIsRtl) {
+            transX = -transX;
+        }
+        mOverlayTranslation = transX;
+
+        // TODO(adamcohen): figure out a final effect here. We may need to recommend
+        // different effects based on device performance. On at least one relatively high-end
+        // device I've tried, translating the launcher causes things to get quite laggy.
+        setTranslationAndAlpha(mLauncher.getSearchDropTargetBar(), transX, alpha);
+        setTranslationAndAlpha(getPageIndicator(), transX, alpha);
+        setTranslationAndAlpha(getChildAt(getCurrentPage()), transX, alpha);
+        setTranslationAndAlpha(mLauncher.getHotseat(), transX, alpha);
+
+        // When the animation finishes, reset all pages, just in case we missed a page.
+        if (transX == 0) {
+            for (int i = getChildCount() - 1; i >= 0; i--) {
+                setTranslationAndAlpha(getChildAt(i), 0, alpha);
+            }
+        }
+    }
+
+    @Override
+    protected Matrix getPageShiftMatrix() {
+        if (Float.compare(mOverlayTranslation, 0) != 0) {
+            // The pages are translated by mOverlayTranslation. incorporate that in the
+            // visible page calculation by shifting everything back by that same amount.
+            mTempMatrix.set(getMatrix());
+            mTempMatrix.postTranslate(-mOverlayTranslation, 0);
+            return mTempMatrix;
+        }
+        return super.getPageShiftMatrix();
+    }
+
+    private void setTranslationAndAlpha(View v, float transX, float alpha) {
+        if (v != null) {
+            v.setTranslationX(transX);
+            v.setAlpha(alpha);
         }
     }
 
