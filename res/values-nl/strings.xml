@@ -40,7 +40,7 @@
     <string name="delete_target_label" msgid="1822697352535677073">"Verwijderen"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"Deïnstalleren"</string>
     <string name="info_target_label" msgid="8053346143994679532">"App-info"</string>
-    <string name="permlab_install_shortcut" msgid="5632423390354674437">"Snelkoppelingen instellen"</string>
+    <string name="permlab_install_shortcut" msgid="5632423390354674437">"Snelle links instellen"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Een app toestaan snelkoppelingen toe te voegen zonder tussenkomst van de gebruiker."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"instellingen en snelkoppelingen op de startpagina lezen"</string>
     <string name="permdesc_read_settings" msgid="5833423719057558387">"De app toestaan de instellingen en snelkoppelingen op de startpagina te lezen."</string>
@@ -71,6 +71,7 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Widgets"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Achtergronden"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"Instellingen"</string>
+    <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Uitgeschakeld door je beheerder"</string>
     <string name="allow_rotation_title" msgid="2118706734511831751">"Draaien toestaan"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Onbekend"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Verwijderen"</string>
