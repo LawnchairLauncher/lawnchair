@@ -216,10 +216,6 @@ public class Launcher extends Activity
 
     private boolean mIsSafeModeEnabled;
 
-    LauncherOverlayCallbacks mLauncherOverlayCallbacks = new LauncherOverlayCallbacksImpl();
-    LauncherOverlay mLauncherOverlay;
-    InsettableFrameLayout mLauncherOverlayContainer;
-
     static final int APPWIDGET_HOST_ID = 1024;
     public static final int EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT = 300;
     private static final int ON_ACTIVITY_RESULT_ANIMATION_DELAY = 500;
@@ -501,13 +497,6 @@ public class Launcher extends Activity
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onCreate(savedInstanceState);
-            if (mLauncherCallbacks.hasLauncherOverlay()) {
-                ViewStub stub = (ViewStub) findViewById(R.id.launcher_overlay_stub);
-                mLauncherOverlayContainer = (InsettableFrameLayout) stub.inflate();
-                mLauncherOverlay = mLauncherCallbacks.setLauncherOverlayView(
-                        mLauncherOverlayContainer, mLauncherOverlayCallbacks);
-                mWorkspace.setLauncherOverlay(mLauncherOverlay);
-            }
         }
 
         if (shouldShowIntroScreen()) {
@@ -535,6 +524,16 @@ public class Launcher extends Activity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onPostCreate(savedInstanceState);
         }
+    }
+
+    /**
+     * Call this after onCreate to set or clear overlay.
+     */
+    public void setLauncherOverlay(LauncherOverlay overlay) {
+        if (overlay != null) {
+            overlay.setOverlayCallbacks(new LauncherOverlayCallbacksImpl());
+        }
+        mWorkspace.setLauncherOverlay(overlay);
     }
 
     public boolean setLauncherCallbacks(LauncherCallbacks callbacks) {
@@ -889,8 +888,7 @@ public class Launcher extends Activity
      * @return the new screen, or screenId if it exists
      */
     private long ensurePendingDropLayoutExists(long screenId) {
-        CellLayout dropLayout =
-                (CellLayout) mWorkspace.getScreenWithId(screenId);
+        CellLayout dropLayout = mWorkspace.getScreenWithId(screenId);
         if (dropLayout == null) {
             // it's possible that the add screen was removed because it was
             // empty and a re-bind occurred
@@ -939,9 +937,6 @@ public class Launcher extends Activity
     protected void onStop() {
         super.onStop();
         FirstFrameAnimatorHelper.setIsVisible(false);
-        if (Utilities.isNycOrAbove()) {
-            mAppWidgetHost.stopListening();
-        }
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onStop();
@@ -952,9 +947,6 @@ public class Launcher extends Activity
     protected void onStart() {
         super.onStart();
         FirstFrameAnimatorHelper.setIsVisible(true);
-        if (Utilities.isNycOrAbove()) {
-            mAppWidgetHost.startListening();
-        }
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onStart();
@@ -1131,18 +1123,13 @@ public class Launcher extends Activity
          * Scroll progress, between 0 and 100, when the user scrolls beyond the leftmost
          * screen (or in the case of RTL, the rightmost screen).
          */
-        public void onScrollChange(int progress, boolean rtl);
+        public void onScrollChange(float progress, boolean rtl);
 
         /**
-         * Screen has stopped scrolling
+         * Called when the launcher is ready to use the overlay
+         * @param callbacks A set of callbacks provided by Launcher in relation to the overlay
          */
-        public void onScrollSettled();
-
-        /**
-         * This method can be called by the Launcher in order to force the LauncherOverlay
-         * to exit fully immersive mode.
-         */
-        public void forceExitFullImmersion();
+        public void setOverlayCallbacks(LauncherOverlayCallbacks callbacks);
     }
 
     public interface LauncherSearchCallbacks {
@@ -1158,50 +1145,15 @@ public class Launcher extends Activity
     }
 
     public interface LauncherOverlayCallbacks {
-        /**
-         * This method indicates whether a call to {@link #enterFullImmersion()} will succeed,
-         * however it doesn't modify any state within the launcher.
-         */
-        public boolean canEnterFullImmersion();
-
-        /**
-         * Should be called to tell Launcher that the LauncherOverlay will take over interaction,
-         * eg. by occupying the full screen and handling all touch events.
-         *
-         * @return true if Launcher allows the LauncherOverlay to become fully immersive. In this
-         *          case, Launcher will modify any necessary state and assumes the overlay is
-         *          handling all interaction. If false, the LauncherOverlay should cancel any
-         *
-         */
-        public boolean enterFullImmersion();
-
-        /**
-         * Must be called when exiting fully immersive mode. Indicates to Launcher that it has
-         * full control over UI and state.
-         */
-        public void exitFullImmersion();
+        public void onScrollChanged(float progress);
     }
 
     class LauncherOverlayCallbacksImpl implements LauncherOverlayCallbacks {
 
-        @Override
-        public boolean canEnterFullImmersion() {
-            return mState == State.WORKSPACE;
-        }
-
-        @Override
-        public boolean enterFullImmersion() {
-            if (mState == State.WORKSPACE) {
-                // When fully immersed, disregard any touches which fall through.
-                mDragLayer.setBlockTouch(true);
-                return true;
+        public void onScrollChanged(float progress) {
+            if (mWorkspace != null) {
+                mWorkspace.onOverlayScrollChanged(progress);
             }
-            return false;
-        }
-
-        @Override
-        public void exitFullImmersion() {
-            mDragLayer.setBlockTouch(false);
         }
     }
 
@@ -1384,8 +1336,9 @@ public class Launcher extends Activity
         mWorkspace.setPageSwitchListener(this);
         mPageIndicators = mDragLayer.findViewById(R.id.page_indicator);
 
-        mLauncherView.setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        mLauncherView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         mWorkspaceBackgroundDrawable = getResources().getDrawable(R.drawable.workspace_bg);
 
         // Setup the drag layer
@@ -1700,6 +1653,10 @@ public class Launcher extends Activity
         FirstFrameAnimatorHelper.initializeDrawListener(getWindow().getDecorView());
         mAttached = true;
         mVisible = true;
+
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onAttachedToWindow();
+        }
     }
 
     @Override
@@ -1712,6 +1669,10 @@ public class Launcher extends Activity
             mAttached = false;
         }
         updateAutoAdvanceState();
+
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onDetachedFromWindow();
+        }
     }
 
     public void onWindowVisibilityChanged(int visibility) {
@@ -1977,6 +1938,15 @@ public class Launcher extends Activity
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        // Catches the case where our activity is created and immediately destroyed and our views
+        // are not yet fully bound. In this case, we can't trust the state of our activity and
+        // instead save our previous state (which hasn't yet been consumed / applied, a fact we
+        // know as it's not null)
+        if (isWorkspaceLoading() && mSavedState != null) {
+            outState.putAll(mSavedState);
+            return;
+        }
+
         if (mWorkspace.getChildCount() > 0) {
             outState.putInt(RUNTIME_STATE_CURRENT_SCREEN,
                     mWorkspace.getCurrentPageOffsetFromCustomContent());
@@ -2815,6 +2785,11 @@ public class Launcher extends Activity
      * on the home screen.
      */
     protected void onClickWallpaperPicker(View v) {
+        if (!Utilities.isWallapaperAllowed(this)) {
+            Toast.makeText(this, R.string.msg_disabled_by_admin, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (LOGD) Log.d(TAG, "onClickWallpaperPicker");
         int pageScroll = mWorkspace.getScrollForPage(mWorkspace.getPageNearestToCenterOfScreen());
         float offset = mWorkspace.mWallpaperOffset.wallpaperOffsetForScroll(pageScroll);
@@ -3117,10 +3092,6 @@ public class Launcher extends Activity
         }
         oa.setDuration(getResources().getInteger(R.integer.config_folderExpandDuration));
         oa.start();
-        if (Utilities.isPowerSaverOn(this)) {
-            // Animations are disabled in battery saver mode, so just skip to the end state.
-            oa.end();
-        }
     }
 
     private void shrinkAndFadeInFolderIcon(final FolderIcon fi, boolean animate) {
@@ -4640,9 +4611,6 @@ public class Launcher extends Activity
         if (introScreen != null) {
             mDragLayer.showOverlayView(introScreen);
         }
-        if (mLauncherOverlayContainer != null) {
-            mLauncherOverlayContainer.setVisibility(View.INVISIBLE);
-        }
     }
 
     public void dismissIntroScreen() {
@@ -4654,17 +4622,11 @@ public class Launcher extends Activity
                 @Override
                 public void run() {
                     mDragLayer.dismissOverlayView();
-                    if (mLauncherOverlayContainer != null) {
-                        mLauncherOverlayContainer.setVisibility(View.VISIBLE);
-                    }
                     showFirstRunClings();
                 }
             }, ACTIVITY_START_DELAY);
         } else {
             mDragLayer.dismissOverlayView();
-            if (mLauncherOverlayContainer != null) {
-                mLauncherOverlayContainer.setVisibility(View.VISIBLE);
-            }
             showFirstRunClings();
         }
         changeWallpaperVisiblity(true);
