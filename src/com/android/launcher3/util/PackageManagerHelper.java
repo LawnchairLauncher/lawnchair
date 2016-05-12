@@ -19,6 +19,8 @@ package com.android.launcher3.util;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 
+import com.android.launcher3.Utilities;
+
 /**
  * Utility methods using package manager
  */
@@ -57,6 +59,13 @@ public class PackageManagerHelper {
     }
 
     public static boolean isAppSuspended(ApplicationInfo info) {
-        return (info.flags & FLAG_SUSPENDED) != 0;
+        // The value of FLAG_SUSPENDED was reused by a hidden constant
+        // ApplicationInfo.FLAG_PRIVILEGED prior to N, so only check for suspended flag on N
+        // or later.
+        if (Utilities.isNycOrAbove()) {
+            return (info.flags & FLAG_SUSPENDED) != 0;
+        } else {
+            return false;
+        }
     }
 }
