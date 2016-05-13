@@ -524,11 +524,13 @@ public class LauncherStateTransitionAnimation {
         // Cancel the current animation
         cancelAnimation();
 
+        boolean multiplePagesVisible = toWorkspaceState.hasMultipleVisiblePages;
+
         playCommonTransitionAnimations(toWorkspaceState, fromWorkspace, null,
                 animated, animated, animation, revealDuration, layerViews);
 
         if (animated) {
-            dispatchOnLauncherTransitionPrepare(fromWorkspace, animated, true);
+            dispatchOnLauncherTransitionPrepare(fromWorkspace, animated, multiplePagesVisible);
 
             final AnimatorSet stateAnimation = animation;
             final Runnable startAnimRunnable = new Runnable() {
@@ -577,7 +579,7 @@ public class LauncherStateTransitionAnimation {
             fromWorkspace.post(startAnimRunnable);
             mCurrentAnimation = animation;
         } else /* if (!animated) */ {
-            dispatchOnLauncherTransitionPrepare(fromWorkspace, animated, true);
+            dispatchOnLauncherTransitionPrepare(fromWorkspace, animated, multiplePagesVisible);
             dispatchOnLauncherTransitionStart(fromWorkspace, animated, true);
             dispatchOnLauncherTransitionEnd(fromWorkspace, animated, true);
 
@@ -614,6 +616,8 @@ public class LauncherStateTransitionAnimation {
 
         // Cancel the current animation
         cancelAnimation();
+
+        boolean multiplePagesVisible = toWorkspaceState.hasMultipleVisiblePages;
 
         playCommonTransitionAnimations(toWorkspaceState, fromView, toView,
                 animated, initialized, animation, revealDuration, layerViews);
@@ -725,8 +729,8 @@ public class LauncherStateTransitionAnimation {
                 }
             }
 
-            dispatchOnLauncherTransitionPrepare(fromView, animated, true);
-            dispatchOnLauncherTransitionPrepare(toView, animated, true);
+            dispatchOnLauncherTransitionPrepare(fromView, animated, multiplePagesVisible);
+            dispatchOnLauncherTransitionPrepare(toView, animated, multiplePagesVisible);
 
             animation.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -789,10 +793,10 @@ public class LauncherStateTransitionAnimation {
             return animation;
         } else /* if (!(animated && initialized)) */ {
             fromView.setVisibility(View.GONE);
-            dispatchOnLauncherTransitionPrepare(fromView, animated, true);
+            dispatchOnLauncherTransitionPrepare(fromView, animated, multiplePagesVisible);
             dispatchOnLauncherTransitionStart(fromView, animated, true);
             dispatchOnLauncherTransitionEnd(fromView, animated, true);
-            dispatchOnLauncherTransitionPrepare(toView, animated, true);
+            dispatchOnLauncherTransitionPrepare(toView, animated, multiplePagesVisible);
             dispatchOnLauncherTransitionStart(toView, animated, true);
             dispatchOnLauncherTransitionEnd(toView, animated, true);
             pCb.onTransitionComplete();
@@ -809,10 +813,11 @@ public class LauncherStateTransitionAnimation {
     /**
      * Dispatches the prepare-transition event to suitable views.
      */
-    void dispatchOnLauncherTransitionPrepare(View v, boolean animated, boolean toWorkspace) {
+    void dispatchOnLauncherTransitionPrepare(View v, boolean animated,
+            boolean multiplePagesVisible) {
         if (v instanceof LauncherTransitionable) {
             ((LauncherTransitionable) v).onLauncherTransitionPrepare(mLauncher, animated,
-                    toWorkspace);
+                    multiplePagesVisible);
         }
     }
 
