@@ -1096,10 +1096,11 @@ public class Workspace extends PagedView
             for (int j = 0; j < itemCount; j++) {
                 View v = swc.getChildAt(j);
 
-                if (v != null  && v.getTag() instanceof LauncherAppWidgetInfo) {
+                if (v instanceof LauncherAppWidgetHostView
+                        && v.getTag() instanceof LauncherAppWidgetInfo) {
                     LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) v.getTag();
-                    LauncherAppWidgetHostView lahv = (LauncherAppWidgetHostView) info.hostView;
-                    if (lahv != null && lahv.isReinflateRequired()) {
+                    LauncherAppWidgetHostView lahv = (LauncherAppWidgetHostView) v;
+                    if (lahv.isReinflateRequired()) {
                         // Remove and rebind the current widget (which was inflated in the wrong
                         // orientation), but don't delete it from the database
                         mLauncher.removeItem(lahv, info, false  /* deleteFromDb */);
@@ -4156,7 +4157,7 @@ public class Workspace extends PagedView
         });
     }
 
-    public void widgetsRestored(ArrayList<LauncherAppWidgetInfo> changedInfo) {
+    public void widgetsRestored(final ArrayList<LauncherAppWidgetInfo> changedInfo) {
         if (!changedInfo.isEmpty()) {
             DeferredWidgetRefresh widgetRefresh = new DeferredWidgetRefresh(changedInfo,
                     mLauncher.getAppWidgetHost());
@@ -4177,12 +4178,18 @@ public class Workspace extends PagedView
             } else {
                 // widgetRefresh will automatically run when the packages are updated.
                 // For now just update the progress bars
-                for (LauncherAppWidgetInfo info : changedInfo) {
-                    if (info.hostView instanceof PendingAppWidgetHostView) {
-                        info.installProgress = 100;
-                        ((PendingAppWidgetHostView) info.hostView).applyState();
+                mapOverItems(MAP_NO_RECURSE, new ItemOperator() {
+                    @Override
+                    public boolean evaluate(ItemInfo info, View view) {
+                        if (view instanceof PendingAppWidgetHostView
+                                && changedInfo.contains(info)) {
+                            ((LauncherAppWidgetInfo) info).installProgress = 100;
+                            ((PendingAppWidgetHostView) view).applyState();
+                        }
+                        // process all the shortcuts
+                        return false;
                     }
-                }
+                });
             }
         }
     }
@@ -4310,14 +4317,18 @@ public class Workspace extends PagedView
 
             mRefreshPending = false;
 
-            for (LauncherAppWidgetInfo info : mInfos) {
-                if (info.hostView instanceof PendingAppWidgetHostView) {
-                    // Remove and rebind the current widget, but don't delete it from the database
-                    PendingAppWidgetHostView view = (PendingAppWidgetHostView) info.hostView;
-                    mLauncher.removeItem(view, info, false /* deleteFromDb */);
-                    mLauncher.bindAppWidget(info);
+            mapOverItems(MAP_NO_RECURSE, new ItemOperator() {
+                @Override
+                public boolean evaluate(ItemInfo info, View view) {
+                    if (view instanceof PendingAppWidgetHostView && mInfos.contains(info)) {
+                        PendingAppWidgetHostView hostView = (PendingAppWidgetHostView) view;
+                        mLauncher.removeItem(view, info, false /* deleteFromDb */);
+                        mLauncher.bindAppWidget((LauncherAppWidgetInfo) info);
+                    }
+                    // process all the shortcuts
+                    return false;
                 }
-            }
+            });
         }
     }
 }
