@@ -22,7 +22,9 @@ import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.UserManager;
@@ -47,9 +49,6 @@ class LauncherClings implements OnClickListener, OnKeyListener {
 
     private static final int SHOW_CLING_DURATION = 250;
     private static final int DISMISS_CLING_DURATION = 200;
-
-    // New Secure Setting in L
-    private static final String SKIP_FIRST_USE_HINTS = "skip_first_use_hints";
 
     @Thunk Launcher mLauncher;
     private LayoutInflater mInflater;
@@ -262,8 +261,8 @@ class LauncherClings implements OnClickListener, OnKeyListener {
                 return false;
             }
         }
-        if (Settings.Secure.getInt(mLauncher.getContentResolver(), SKIP_FIRST_USE_HINTS, 0)
-                == 1) {
+        if (Settings.Secure.getInt(mLauncher.getContentResolver(),
+                Settings.Secure.SKIP_FIRST_USE_HINTS, 0) == 1) {
             return false;
         }
         return true;
