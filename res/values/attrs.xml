@@ -32,7 +32,7 @@
     </declare-styleable>
 
     <!-- Page Indicator specific attributes. -->
-    <declare-styleable name="PageIndicator">
+    <declare-styleable name="PageIndicatorDots">
         <attr name="windowSize" format="integer"  />
     </declare-styleable>
 

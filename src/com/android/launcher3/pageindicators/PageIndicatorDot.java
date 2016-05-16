@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.pageindicators;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -22,7 +22,9 @@ import android.util.AttributeSet;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-public class PageIndicatorMarker extends FrameLayout {
+import com.android.launcher3.R;
+
+public class PageIndicatorDot extends FrameLayout {
     @SuppressWarnings("unused")
     private static final String TAG = "PageIndicator";
 
@@ -32,15 +34,15 @@ public class PageIndicatorMarker extends FrameLayout {
     private ImageView mInactiveMarker;
     private boolean mIsActive = false;
 
-    public PageIndicatorMarker(Context context) {
+    public PageIndicatorDot(Context context) {
         this(context, null);
     }
 
-    public PageIndicatorMarker(Context context, AttributeSet attrs) {
+    public PageIndicatorDot(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public PageIndicatorMarker(Context context, AttributeSet attrs, int defStyle) {
+    public PageIndicatorDot(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 

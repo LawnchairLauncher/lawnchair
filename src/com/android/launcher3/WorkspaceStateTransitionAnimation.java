@@ -288,7 +288,7 @@ public class WorkspaceStateTransitionAnimation {
         float finalBackgroundAlpha = (states.stateIsSpringLoaded || states.stateIsOverview) ?
                 1.0f : 0f;
         float finalHotseatAlpha = (states.stateIsNormal || states.stateIsSpringLoaded) ? 1f : 0f;
-        float finalPageIndicatorAlpha = states.stateIsNormal ? 1f : 0f;
+        float finalPageIndicatorAlpha = finalHotseatAlpha;
         float finalOverviewPanelAlpha = states.stateIsOverview ? 1f : 0f;
 
         float finalWorkspaceTranslationY = 0;
@@ -357,7 +357,7 @@ public class WorkspaceStateTransitionAnimation {
 
         final ViewGroup overviewPanel = mLauncher.getOverviewPanel();
         final View hotseat = mLauncher.getHotseat();
-        final View pageIndicator = mWorkspace.getPageIndicator();
+        final View pageIndicator = mWorkspace.getPageIndicator().getView();
         if (animated) {
             LauncherViewPropertyAnimator scale = new LauncherViewPropertyAnimator(mWorkspace);
             scale.scaleX(mNewScale)

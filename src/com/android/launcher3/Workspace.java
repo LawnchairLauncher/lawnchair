@@ -73,6 +73,7 @@ import com.android.launcher3.dragndrop.SpringLoadedDragController;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.LongArrayMap;
@@ -1273,6 +1274,22 @@ public class Workspace extends PagedView
     }
 
     @Override
+    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+        super.onScrollChanged(l, t, oldl, oldt);
+
+        // Update the page indicator progress.
+        boolean isTransitioning = mIsSwitchingState
+                || (getLayoutTransition() != null && getLayoutTransition().isRunning());
+        if (mPageIndicator != null && !isTransitioning) {
+            showPageIndicatorAtCurrentScroll();
+        }
+    }
+
+    private void showPageIndicatorAtCurrentScroll() {
+        mPageIndicator.setProgress((float) getScrollX() / computeMaxScrollX());
+    }
+
+    @Override
     protected void overScroll(float amount) {
         boolean shouldOverScroll = (amount <= 0 && (!hasCustomContent() || mIsRtl)) ||
                 (amount >= 0 && (!hasCustomContent() || !mIsRtl));
@@ -1325,7 +1342,7 @@ public class Workspace extends PagedView
         // different effects based on device performance. On at least one relatively high-end
         // device I've tried, translating the launcher causes things to get quite laggy.
         setTranslationAndAlpha(mLauncher.getSearchDropTargetBar(), transX, alpha);
-        setTranslationAndAlpha(getPageIndicator(), transX, alpha);
+        setTranslationAndAlpha(getPageIndicator().getView(), transX, alpha);
         setTranslationAndAlpha(getChildAt(getCurrentPage()), transX, alpha);
         setTranslationAndAlpha(mLauncher.getHotseat(), transX, alpha);
 
@@ -1538,7 +1555,7 @@ public class Workspace extends PagedView
         }
 
         if (getPageIndicator() != null) {
-            getPageIndicator().setTranslationX(translationX);
+            getPageIndicator().getView().setTranslationX(translationX);
         }
 
         if (mCustomContentCallbacks != null) {
@@ -1587,8 +1604,10 @@ public class Workspace extends PagedView
             // attach to window
             OnClickListener listener = getPageIndicatorClickListener();
             if (listener != null) {
-                getPageIndicator().setOnClickListener(listener);
+                getPageIndicator().getView().setOnClickListener(listener);
             }
+
+            showPageIndicatorAtCurrentScroll();
         }
 
         // Update wallpaper dimensions if they were changed since last onResume
@@ -1739,8 +1758,8 @@ public class Workspace extends PagedView
         super.getVisiblePages(range);
         if (mForceDrawAdjacentPages) {
             // In overview mode, make sure that the two side pages are visible.
-            range[0] = Utilities.boundInRange(getCurrentPage() - 1, numCustomPages(), range[1]);
-            range[1] = Utilities.boundInRange(getCurrentPage() + 1, range[0], getPageCount() - 1);
+            range[0] = Utilities.boundToRange(getCurrentPage() - 1, numCustomPages(), range[1]);
+            range[1] = Utilities.boundToRange(getCurrentPage() + 1, range[0], getPageCount() - 1);
         }
     }
 
@@ -2006,6 +2025,9 @@ public class Workspace extends PagedView
         updateChildrenLayersEnabled(false);
         showCustomContentIfNecessary();
         mForceDrawAdjacentPages = false;
+        if (mState == State.NORMAL || mState == State.SPRING_LOADED) {
+            showPageIndicatorAtCurrentScroll();
+        }
     }
 
     void updateCustomContentVisibility() {

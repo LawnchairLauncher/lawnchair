@@ -39,8 +39,8 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
-import com.android.launcher3.PageIndicator;
-import com.android.launcher3.PageIndicator.PageMarkerResources;
+import com.android.launcher3.pageindicators.PageIndicatorDots;
+import com.android.launcher3.pageindicators.PageIndicator.PageMarkerResources;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
@@ -103,7 +103,7 @@ public class FolderPagedView extends PagedView {
     private FocusIndicatorView mFocusIndicatorView;
     private PagedFolderKeyEventListener mKeyListener;
 
-    private PageIndicator mPageIndicator;
+    private PageIndicatorDots mPageIndicator;
 
     public FolderPagedView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -128,7 +128,7 @@ public class FolderPagedView extends PagedView {
         mFolder = folder;
         mFocusIndicatorView = (FocusIndicatorView) folder.findViewById(R.id.focus_indicator);
         mKeyListener = new PagedFolderKeyEventListener(folder);
-        mPageIndicator = (PageIndicator) folder.findViewById(R.id.folder_page_indicator);
+        mPageIndicator = (PageIndicatorDots) folder.findViewById(R.id.folder_page_indicator);
     }
 
     /**

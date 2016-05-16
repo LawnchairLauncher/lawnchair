@@ -64,11 +64,10 @@
 
         <!-- Keep these behind the workspace so that they are not visible when
              we go into AllApps -->
-        <include android:id="@+id/page_indicator"
-            layout="@layout/page_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal" />
+        <com.android.launcher3.pageindicators.PageIndicatorLine
+            android:id="@+id/page_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
 
         <include layout="@layout/widgets_view"
             android:id="@+id/widgets_view"
