@@ -277,8 +277,6 @@ public class LauncherSettings {
         public static final Uri CONTENT_URI = Uri.parse("content://" +
                 ProviderConfig.AUTHORITY + "/settings");
 
-        public static final String METHOD_GET_BOOLEAN = "get_boolean_setting";
-        public static final String METHOD_SET_BOOLEAN = "set_boolean_setting";
         public static final String METHOD_CLEAR_EMPTY_DB_FLAG = "clear_empty_db_flag";
 
         public static final String METHOD_DELETE_EMPTY_FOLDERS = "delete_empty_folders";
@@ -301,9 +299,6 @@ public class LauncherSettings {
         public static final String EXTRA_WALLPAPER_ID = "extra_wallpaperId";
 
         public static final String EXTRA_VALUE = "value";
-        public static final String EXTRA_DEFAULT_VALUE = "default_value";
-        // Extra for set_boolean method to also notify the backup manager of the change.
-        public static final String NOTIFY_BACKUP = "notify_backup";
 
         public static Bundle call(ContentResolver cr, String method) {
             return cr.call(CONTENT_URI, method, null, null);
