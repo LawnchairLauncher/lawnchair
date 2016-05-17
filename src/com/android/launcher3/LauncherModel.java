@@ -65,6 +65,7 @@ import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.ManagedProfileHeuristic;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.StringFilter;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.ViewOnDrawExecutor;
@@ -576,38 +577,6 @@ public class LauncherModel extends BroadcastReceiver
             }
         };
         runOnWorkerThread(r);
-    }
-
-    private void unbindItemInfosAndClearQueuedBindRunnables() {
-        if (sWorkerThread.getThreadId() == Process.myTid()) {
-            throw new RuntimeException("Expected unbindLauncherItemInfos() to be called from the " +
-                    "main thread");
-        }
-
-        // Remove any queued UI runnables
-        mHandler.cancelAll();
-        // Unbind all the workspace items
-        unbindWorkspaceItemsOnMainThread();
-    }
-
-    /** Unbinds all the sBgWorkspaceItems and sBgAppWidgets on the main thread */
-    void unbindWorkspaceItemsOnMainThread() {
-        // Ensure that we don't use the same workspace items data structure on the main thread
-        // by making a copy of workspace items first.
-        final ArrayList<ItemInfo> tmpItems = new ArrayList<ItemInfo>();
-        synchronized (sBgLock) {
-            tmpItems.addAll(sBgWorkspaceItems);
-            tmpItems.addAll(sBgAppWidgets);
-        }
-        Runnable r = new Runnable() {
-                @Override
-                public void run() {
-                   for (ItemInfo item : tmpItems) {
-                       item.unbind();
-                   }
-                }
-            };
-        runOnMainThread(r);
     }
 
     /**
@@ -1137,10 +1106,10 @@ public class LauncherModel extends BroadcastReceiver
      */
     public void initialize(Callbacks callbacks) {
         synchronized (mLock) {
-            // Disconnect any of the callbacks and drawables associated with ItemInfos on the
-            // workspace to prevent leaking Launcher activities on orientation change.
-            unbindItemInfosAndClearQueuedBindRunnables();
-            mCallbacks = new WeakReference<Callbacks>(callbacks);
+            Preconditions.assertUIThread();
+            // Remove any queued UI runnables
+            mHandler.cancelAll();
+            mCallbacks = new WeakReference<>(callbacks);
         }
     }
 
@@ -2481,10 +2450,6 @@ public class LauncherModel extends BroadcastReceiver
             final int currentScreen = currScreen;
             final long currentScreenId = currentScreen < 0
                     ? INVALID_SCREEN_ID : orderedScreenIds.get(currentScreen);
-
-            // Load all the items that are on the current page first (and in the process, unbind
-            // all the existing workspace items before we call startBinding() below.
-            unbindWorkspaceItemsOnMainThread();
 
             // Separate the items that are on the current screen, and all the other remaining items
             ArrayList<ItemInfo> currentWorkspaceItems = new ArrayList<>();

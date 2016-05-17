@@ -1967,6 +1967,7 @@ public class Launcher extends Activity
         mHandler.removeMessages(ADVANCE_MSG);
         mHandler.removeMessages(0);
         mWorkspace.removeCallbacks(mBuildLayersRunnable);
+        mWorkspace.removeFolderListeners();
 
         // Stop callbacks from LauncherModel
         // It's possible to receive onDestroy after a new Launcher activity has
@@ -2365,6 +2366,9 @@ public class Launcher extends Activity
             }
         } else if (itemInfo instanceof FolderInfo) {
             final FolderInfo folderInfo = (FolderInfo) itemInfo;
+            if (v instanceof FolderIcon) {
+                ((FolderIcon) v).removeListeners();
+            }
             mWorkspace.removeWorkspaceItem(v);
             if (deleteFromDb) {
                 LauncherModel.deleteFolderAndContentsFromDatabase(this, folderInfo);

@@ -109,22 +109,14 @@ public class FolderInfo extends ItemInfo {
         listeners.add(listener);
     }
 
-    void removeListener(FolderListener listener) {
-        if (listeners.contains(listener)) {
-            listeners.remove(listener);
-        }
+    public void removeListener(FolderListener listener) {
+        listeners.remove(listener);
     }
 
     public void itemsChanged(boolean animate) {
         for (int i = 0; i < listeners.size(); i++) {
             listeners.get(i).onItemsChanged(animate);
         }
-    }
-
-    @Override
-    void unbind() {
-        super.unbind();
-        listeners.clear();
     }
 
     public interface FolderListener {

@@ -3669,6 +3669,21 @@ public class Workspace extends PagedView
         }
     }
 
+    /**
+     * Removes all folder listeners
+     */
+    public void removeFolderListeners() {
+        mapOverItems(false, new ItemOperator() {
+            @Override
+            public boolean evaluate(ItemInfo info, View view) {
+                if (view instanceof FolderIcon) {
+                    ((FolderIcon) view).removeListeners();
+                }
+                return false;
+            }
+        });
+    }
+
     @Override
     public void deferCompleteDropAfterUninstallActivity() {
         mDeferDropAfterUninstall = true;
