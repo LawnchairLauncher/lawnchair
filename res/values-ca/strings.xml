@@ -54,7 +54,7 @@
     <string name="default_scroll_format" msgid="7475544710230993317">"Pàgina %1$d de %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Pantalla d\'inici %1$d de %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Pàgina de la pantalla d\'inici nova"</string>
-    <string name="first_run_cling_title" msgid="2459738000155917941">"Us donem la benvinguda"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"Et donem la benvinguda"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"Copiar les icones d\'aplicació"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"Importar icones i carpetes de pantalles d\'inici anteriors?"</string>
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"COPIA LES ICONES."</string>

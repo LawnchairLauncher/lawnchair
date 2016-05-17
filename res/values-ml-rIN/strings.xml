@@ -59,7 +59,7 @@
     <string name="migration_cling_description" msgid="2752413805582227644">"നിങ്ങളുടെ പഴയ ഹോം സ്ക്രീനുകളിൽ നിന്ന് ഐക്കണുകളും ഫോൾഡറുകളും ഇമ്പോർട്ടുചെയ്യണോ?"</string>
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"ഐക്കണുകൾ പകർത്തുക"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"പുതുതായി ആരംഭിക്കുക"</string>
-    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"വാൾപേപ്പറുകൾ, വിജറ്റുകൾ, ക്രമീകരണങ്ങൾ എന്നിവ"</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"വാൾപേപ്പറുകൾ, വിജറ്റുകൾ, ക്രമീകരണങ്ങൾ"</string>
     <string name="workspace_cling_longpress_description" msgid="6569028007301925917">"ഇഷ്‌ടാനുസൃതമാക്കുന്നതിന് പശ്ചാത്തലം ടാപ്പുചെയ്ത് പിടിക്കുക"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"മനസ്സിലായി"</string>
     <string name="folder_opened" msgid="94695026776264709">"ഫോൾഡർ തുറന്നു, <xliff:g id="WIDTH">%1$d</xliff:g> / <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
@@ -69,8 +69,8 @@
     <string name="folder_renamed" msgid="1794088362165669656">"ഫോൾഡറിന്റെ പേര് <xliff:g id="NAME">%1$s</xliff:g> എന്നായി മാറ്റി"</string>
     <string name="folder_name_format" msgid="6629239338071103179">"ഫോൾഡർ: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"വിജറ്റുകൾ"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"വാൾപേപ്പറുകൾ"</string>
-    <string name="settings_button_text" msgid="8119458837558863227">"ക്രമീകരണങ്ങൾ"</string>
+    <string name="wallpaper_button_text" msgid="8404103075899945851">"വാൾപേപ്പർ"</string>
+    <string name="settings_button_text" msgid="8119458837558863227">"ക്രമീകരണം"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"അഡ്മിൻ പ്രവർത്തനരഹിതമാക്കിയിരിക്കുന്നു"</string>
     <string name="allow_rotation_title" msgid="2118706734511831751">"തിരിക്കൽ അനുവദിക്കുക"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"അജ്ഞാതം"</string>

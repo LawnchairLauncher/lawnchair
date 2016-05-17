@@ -60,7 +60,7 @@
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"ТАҢБАЛАРДЫ КӨШІРУ"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"ЖАҢАДАН БАСТАУ"</string>
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Тұсқағаздар, виджеттер және параметрлер"</string>
-    <string name="workspace_cling_longpress_description" msgid="6569028007301925917">"Теңшеу үшін фонды түртіп, ұстап тұрыңыз"</string>
+    <string name="workspace_cling_longpress_description" msgid="6569028007301925917">"Реттеу үшін фонды саусағыңызбен басып тұрыңыз"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"ТҮСІНДІМ"</string>
     <string name="folder_opened" msgid="94695026776264709">"Қалта ашылды, <xliff:g id="WIDTH">%1$d</xliff:g> және <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="4625795376335528256">"Қалтаны жабу үшін түртіңіз"</string>
