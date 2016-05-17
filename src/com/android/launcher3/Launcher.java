@@ -115,6 +115,7 @@ import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.logging.FileLog;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.TestingUtils;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.ViewOnDrawExecutor;
@@ -2715,10 +2716,17 @@ public class Launcher extends Activity
             return;
         }
 
-        if (LOGD) Log.d(TAG, "onClickWallpaperPicker");
+        String pickerPackage = getString(R.string.wallpaper_picker_package);
+        if (TextUtils.isEmpty(pickerPackage)) {
+            pickerPackage =  PackageManagerHelper.getWallpaperPickerPackage(getPackageManager());
+        }
+
         int pageScroll = mWorkspace.getScrollForPage(mWorkspace.getPageNearestToCenterOfScreen());
         float offset = mWorkspace.mWallpaperOffset.wallpaperOffsetForScroll(pageScroll);
-        // TODO: Start the system wallpaper picker
+        startActivityForResult(new Intent(Intent.ACTION_SET_WALLPAPER)
+                .setPackage(pickerPackage)
+                .putExtra(Utilities.EXTRA_WALLPAPER_OFFSET, offset),
+                REQUEST_PICK_WALLPAPER);
     }
 
     /**
