@@ -1567,31 +1567,28 @@ public class Launcher extends Activity
         if (!mRestoring) {
             if (hostView == null) {
                 // Perform actual inflation because we're live
-                launcherInfo.hostView = mAppWidgetHost.createView(this, appWidgetId,
-                        appWidgetInfo);
-            } else {
-                // The AppWidgetHostView has already been inflated and instantiated
-                launcherInfo.hostView = hostView;
+                hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
             }
-            launcherInfo.hostView.setVisibility(View.VISIBLE);
-            addAppWidgetToWorkspace(launcherInfo, appWidgetInfo, isWorkspaceLocked());
+            hostView.setVisibility(View.VISIBLE);
+            addAppWidgetToWorkspace(hostView, launcherInfo, appWidgetInfo, isWorkspaceLocked());
         }
         resetAddInfo();
     }
 
-    private void addAppWidgetToWorkspace(LauncherAppWidgetInfo item,
+    private void addAppWidgetToWorkspace(
+            AppWidgetHostView hostView, LauncherAppWidgetInfo item,
             LauncherAppWidgetProviderInfo appWidgetInfo, boolean insert) {
-        item.hostView.setTag(item);
-        item.onBindAppWidget(this);
+        hostView.setTag(item);
+        item.onBindAppWidget(this, hostView);
 
-        item.hostView.setFocusable(true);
-        item.hostView.setOnFocusChangeListener(mFocusHandler);
+        hostView.setFocusable(true);
+        hostView.setOnFocusChangeListener(mFocusHandler);
 
-        mWorkspace.addInScreen(item.hostView, item.container, item.screenId,
+        mWorkspace.addInScreen(hostView, item.container, item.screenId,
                 item.cellX, item.cellY, item.spanX, item.spanY, insert);
 
         if (!item.isCustomWidget()) {
-            addWidgetToAutoAdvanceIfNeeded(item.hostView, appWidgetInfo);
+            addWidgetToAutoAdvanceIfNeeded(hostView, appWidgetInfo);
         }
     }
 
@@ -2374,8 +2371,7 @@ public class Launcher extends Activity
         } else if (itemInfo instanceof LauncherAppWidgetInfo) {
             final LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) itemInfo;
             mWorkspace.removeWorkspaceItem(v);
-            removeWidgetToAutoAdvance(widgetInfo.hostView);
-            widgetInfo.hostView = null;
+            removeWidgetToAutoAdvance(v);
             if (deleteFromDb) {
                 deleteWidgetInfo(widgetInfo);
             }
@@ -3860,10 +3856,9 @@ public class Launcher extends Activity
     private void bindSafeModeWidget(LauncherAppWidgetInfo item) {
         PendingAppWidgetHostView view = new PendingAppWidgetHostView(this, item, true);
         view.updateIcon(mIconCache);
-        item.hostView = view;
-        item.hostView.updateAppWidget(null);
-        item.hostView.setOnClickListener(this);
-        addAppWidgetToWorkspace(item, null, false);
+        view.updateAppWidget(null);
+        view.setOnClickListener(this);
+        addAppWidgetToWorkspace(view, item, null, false);
         mWorkspace.requestLayout();
     }
 
@@ -3976,18 +3971,17 @@ public class Launcher extends Activity
                 return;
             }
 
-            item.hostView = mAppWidgetHost.createView(this, item.appWidgetId, appWidgetInfo);
             item.minSpanX = appWidgetInfo.minSpanX;
             item.minSpanY = appWidgetInfo.minSpanY;
-            addAppWidgetToWorkspace(item, appWidgetInfo, false);
+            addAppWidgetToWorkspace(
+                    mAppWidgetHost.createView(this, item.appWidgetId, appWidgetInfo),
+                    item, appWidgetInfo, false);
         } else {
-            PendingAppWidgetHostView view = new PendingAppWidgetHostView(this, item,
-                    mIsSafeModeEnabled);
+            PendingAppWidgetHostView view = new PendingAppWidgetHostView(this, item, false);
             view.updateIcon(mIconCache);
-            item.hostView = view;
-            item.hostView.updateAppWidget(null);
-            item.hostView.setOnClickListener(this);
-            addAppWidgetToWorkspace(item, null, false);
+            view.updateAppWidget(null);
+            view.setOnClickListener(this);
+            addAppWidgetToWorkspace(view, item, null, false);
         }
         mWorkspace.requestLayout();
 
