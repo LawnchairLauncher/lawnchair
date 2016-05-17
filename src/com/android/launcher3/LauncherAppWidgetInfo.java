@@ -80,12 +80,6 @@ public class LauncherAppWidgetInfo extends ItemInfo {
 
     private boolean mHasNotifiedInitialWidgetSizeChanged;
 
-    /**
-     * View that holds this widget after it's been created.  This view isn't created
-     * until Launcher knows it's needed.
-     */
-    AppWidgetHostView hostView = null;
-
     LauncherAppWidgetInfo(int appWidgetId, ComponentName providerName) {
         if (appWidgetId == CUSTOM_WIDGET_ID) {
             itemType = LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
@@ -121,23 +115,16 @@ public class LauncherAppWidgetInfo extends ItemInfo {
      * When we bind the widget, we should notify the widget that the size has changed if we have not
      * done so already (only really for default workspace widgets).
      */
-    void onBindAppWidget(Launcher launcher) {
+    void onBindAppWidget(Launcher launcher, AppWidgetHostView hostView) {
         if (!mHasNotifiedInitialWidgetSizeChanged) {
             AppWidgetResizeFrame.updateWidgetSizeRanges(hostView, launcher, spanX, spanY);
             mHasNotifiedInitialWidgetSizeChanged = true;
         }
     }
 
-
     @Override
     public String toString() {
         return "AppWidget(id=" + Integer.toString(appWidgetId) + ")";
-    }
-
-    @Override
-    void unbind() {
-        super.unbind();
-        hostView = null;
     }
 
     public final boolean isWidgetIdValid() {
