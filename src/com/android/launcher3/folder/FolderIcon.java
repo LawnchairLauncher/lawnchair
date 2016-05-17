@@ -1000,6 +1000,11 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         mLongPressHelper.cancelLongPress();
     }
 
+    public void removeListeners() {
+        mInfo.removeListener(this);
+        mInfo.removeListener(mFolder);
+    }
+
     public interface PreviewLayoutRule {
         public PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
             PreviewItemDrawingParams params);
