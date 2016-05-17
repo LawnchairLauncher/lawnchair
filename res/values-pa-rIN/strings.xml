@@ -35,7 +35,7 @@
     <string name="all_apps_search_market_message" msgid="5470761048755751471">"<xliff:g id="QUERY">%1$s</xliff:g> ਤੇ ਜਾਓ"</string>
     <string name="out_of_space" msgid="4691004494942118364">"ਇਸ ਹੋਮ ਸਕ੍ਰੀਨ ਲਈ ਹੋਰ ਖਾਲੀ ਸਥਾਨ ਨਹੀਂ ਹੈ।"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ਮਨਪਸੰਦ ਟ੍ਰੇ ਵਿੱਚ ਹੋਰ ਖਾਲੀ ਸਥਾਨ ਨਹੀਂ।"</string>
-    <string name="all_apps_button_label" msgid="9110807029020582876">"ਐਪਸ"</string>
+    <string name="all_apps_button_label" msgid="9110807029020582876">"ਐਪਾਂ"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"ਹੋਮ"</string>
     <string name="delete_target_label" msgid="1822697352535677073">"ਹਟਾਓ"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"ਅਣਇੰਸਟੌਲ ਕਰੋ"</string>

@@ -61,7 +61,7 @@
     <string name="migration_cling_use_default" msgid="2626475813981258626">"ΝΕΑ ΕΝΑΡΞΗ"</string>
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Ταπετσαρίες, γραφικά στοιχεία και ρυθμίσεις"</string>
     <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Αγγίξτε παρατεταμένα το παρασκήνιο για προσαρμογή"</string>
-    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"ΕΓΙΝΕ"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"ΤΟ ΚΑΤΑΛΑΒΑ"</string>
     <string name="folder_opened" msgid="94695026776264709">"Άνοιγμα φακέλου, <xliff:g id="WIDTH">%1$d</xliff:g> επί <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1884479294466410023">"Αγγίξτε για να κλείσετε τον φάκελο"</string>
     <string name="folder_tap_to_rename" msgid="9191075570492871147">"Αγγίξτε για να αποθηκεύσετε το νέο όνομα"</string>
