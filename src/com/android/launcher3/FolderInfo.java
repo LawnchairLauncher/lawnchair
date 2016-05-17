@@ -21,7 +21,6 @@ import android.content.Context;
 
 import com.android.launcher3.compat.UserHandleCompat;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 /**
@@ -58,11 +57,7 @@ public class FolderInfo extends ItemInfo {
      */
     public ArrayList<ShortcutInfo> contents = new ArrayList<ShortcutInfo>();
 
-    /**
-     * A collection of listeners for folder info changes. Since this listeners are implemented by
-     * the UI objects, using a WeakReference prevents context leaks.
-     */
-    private  WeakReference<FolderListener> mListener;
+    ArrayList<FolderListener> listeners = new ArrayList<FolderListener>();
 
     public FolderInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
@@ -76,9 +71,8 @@ public class FolderInfo extends ItemInfo {
      */
     public void add(ShortcutInfo item, boolean animate) {
         contents.add(item);
-        FolderListener listener = mListener == null ? null : mListener.get();
-        if (listener != null) {
-            listener.onAdd(item);
+        for (int i = 0; i < listeners.size(); i++) {
+            listeners.get(i).onAdd(item);
         }
         itemsChanged(animate);
     }
@@ -90,11 +84,17 @@ public class FolderInfo extends ItemInfo {
      */
     public void remove(ShortcutInfo item, boolean animate) {
         contents.remove(item);
-        FolderListener listener = mListener == null ? null : mListener.get();
-        if (listener != null) {
-            listener.onRemove(item);
+        for (int i = 0; i < listeners.size(); i++) {
+            listeners.get(i).onRemove(item);
         }
         itemsChanged(animate);
+    }
+
+    public void setTitle(CharSequence title) {
+        this.title = title;
+        for (int i = 0; i < listeners.size(); i++) {
+            listeners.get(i).onTitleChanged(title);
+        }
     }
 
     @Override
@@ -105,30 +105,33 @@ public class FolderInfo extends ItemInfo {
 
     }
 
-    /**
-     * Registers a listener for info change events.
-     */
-    public void setListener(FolderListener listener) {
-        mListener = new WeakReference<>(listener);
+    public void addListener(FolderListener listener) {
+        listeners.add(listener);
+    }
+
+    void removeListener(FolderListener listener) {
+        if (listeners.contains(listener)) {
+            listeners.remove(listener);
+        }
     }
 
     public void itemsChanged(boolean animate) {
-        FolderListener listener = mListener == null ? null : mListener.get();
-        if (listener != null) {
-            listener.onItemsChanged(animate);
+        for (int i = 0; i < listeners.size(); i++) {
+            listeners.get(i).onItemsChanged(animate);
         }
     }
 
     @Override
     void unbind() {
         super.unbind();
-        mListener = null;
+        listeners.clear();
     }
 
     public interface FolderListener {
-        void onAdd(ShortcutInfo item);
-        void onRemove(ShortcutInfo item);
-        void onItemsChanged(boolean animate);
+        public void onAdd(ShortcutInfo item);
+        public void onRemove(ShortcutInfo item);
+        public void onTitleChanged(CharSequence title);
+        public void onItemsChanged(boolean animate);
     }
 
     @Override

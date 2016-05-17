@@ -183,9 +183,10 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         folder.setFolderIcon(icon);
         folder.bind(folderInfo);
         icon.setFolder(folder);
-        icon.setOnFocusChangeListener(launcher.mFocusHandler);
 
-        folderInfo.setListener(new MultiFolderListener(folder, icon));
+        folderInfo.addListener(icon);
+
+        icon.setOnFocusChangeListener(launcher.mFocusHandler);
         return icon;
     }
 
@@ -943,13 +944,11 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         requestLayout();
     }
 
-    @Override
     public void onAdd(ShortcutInfo item) {
         invalidate();
         requestLayout();
     }
 
-    @Override
     public void onRemove(ShortcutInfo item) {
         invalidate();
         requestLayout();

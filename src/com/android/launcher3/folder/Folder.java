@@ -348,14 +348,13 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mFolderName.setHint(sHintText);
         // Convert to a string here to ensure that no other state associated with the text field
         // gets saved.
-        mInfo.title = mFolderName.getText().toString();
-        mFolderIcon.onTitleChanged(mInfo.title);
-
+        String newTitle = mFolderName.getText().toString();
+        mInfo.setTitle(newTitle);
         LauncherModel.updateItemInDatabase(mLauncher, mInfo);
 
         if (commit) {
             sendCustomAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
-                    getContext().getString(R.string.folder_renamed, mInfo.title));
+                    getContext().getString(R.string.folder_renamed, newTitle));
         }
 
         // This ensures that focus is gained every time the field is clicked, which selects all
@@ -449,6 +448,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
         mItemsInvalidated = true;
         updateTextViewFocus();
+        mInfo.addListener(this);
 
         if (!sDefaultFolderName.contentEquals(mInfo.title)) {
             mFolderName.setText(mInfo.title);
@@ -1349,7 +1349,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 mLauncher, item, mInfo.id, 0, item.cellX, item.cellY);
     }
 
-    @Override
     public void onRemove(ShortcutInfo item) {
         mItemsInvalidated = true;
         // If this item is being dragged from this open folder, we have already handled
@@ -1384,6 +1383,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     @Override
     public void onItemsChanged(boolean animate) {
         updateTextViewFocus();
+    }
+
+    public void onTitleChanged(CharSequence title) {
     }
 
     public ArrayList<View> getItemsInReadingOrder() {
