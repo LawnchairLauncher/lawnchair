@@ -505,7 +505,9 @@ public class Launcher extends Activity
         if (mExtractedColors != null && Utilities.isNycOrAbove()) {
             mExtractedColors.load(this);
             mHotseat.updateColor(mExtractedColors, !mPaused);
-            mPageIndicator.updateColor(mExtractedColors);
+            if (mPageIndicator != null) {
+                mPageIndicator.updateColor(mExtractedColors);
+            }
         }
     }
 
