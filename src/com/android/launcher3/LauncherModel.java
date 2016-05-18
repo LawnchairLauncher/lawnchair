@@ -28,7 +28,6 @@ import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.content.pm.ProviderInfo;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -56,11 +55,11 @@ import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.dynamicui.ExtractionUtils;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.GridSizeMigrationTask;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.CursorIconInfo;
-import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.ManagedProfileHeuristic;
@@ -105,16 +104,12 @@ public class LauncherModel extends BroadcastReceiver
     private static final int ITEMS_CHUNK = 6; // batch size for the workspace icons
     private static final long INVALID_SCREEN_ID = -1L;
 
-    private final boolean mOldContentProviderExists;
-
     @Thunk final LauncherAppState mApp;
     @Thunk final Object mLock = new Object();
     @Thunk DeferredHandler mHandler = new DeferredHandler();
     @Thunk LoaderTask mLoaderTask;
     @Thunk boolean mIsLoaderTaskRunning;
     @Thunk boolean mHasLoaderCompletedOnce;
-
-    private static final String MIGRATE_AUTHORITY = "com.android.launcher2.settings";
 
     @Thunk static final HandlerThread sWorkerThread = new HandlerThread("launcher-loader");
     static {
@@ -216,25 +211,6 @@ public class LauncherModel extends BroadcastReceiver
 
     LauncherModel(LauncherAppState app, IconCache iconCache, AppFilter appFilter) {
         Context context = app.getContext();
-
-        String oldProvider = context.getString(R.string.old_launcher_provider_uri);
-        // This may be the same as MIGRATE_AUTHORITY, or it may be replaced by a different
-        // resource string.
-        String redirectAuthority = Uri.parse(oldProvider).getAuthority();
-        ProviderInfo providerInfo =
-                context.getPackageManager().resolveContentProvider(MIGRATE_AUTHORITY, 0);
-        ProviderInfo redirectProvider =
-                context.getPackageManager().resolveContentProvider(redirectAuthority, 0);
-
-        Log.d(TAG, "Old launcher provider: " + oldProvider);
-        mOldContentProviderExists = (providerInfo != null) && (redirectProvider != null);
-
-        if (mOldContentProviderExists) {
-            Log.d(TAG, "Old launcher provider exists.");
-        } else {
-            Log.d(TAG, "Old launcher provider does not exist.");
-        }
-
         mApp = app;
         mBgAllAppsList = new AllAppsList(iconCache, appFilter);
         mBgWidgetsModel = new WidgetsModel(context, iconCache, appFilter);
@@ -264,10 +240,6 @@ public class LauncherModel extends BroadcastReceiver
             // If we are not on the worker thread, then post to the worker handler
             sWorker.post(r);
         }
-    }
-
-    boolean canMigrateFromOldLauncherDb(Launcher launcher) {
-        return mOldContentProviderExists && !launcher.isLauncherPreinstalled() ;
     }
 
     public void setPackageState(final PackageInstallInfo installInfo) {

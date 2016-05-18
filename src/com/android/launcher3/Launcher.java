@@ -58,6 +58,7 @@ import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -201,6 +202,7 @@ public class Launcher extends Activity
     private static final String QSB_WIDGET_PROVIDER = "qsb_widget_provider";
 
     public static final String USER_HAS_MIGRATED = "launcher.user_migrated_from_old_data";
+    private static final String MIGRATE_AUTHORITY = "com.android.launcher2.settings";
 
     /** The different states that Launcher can be in. */
     enum State { NONE, WORKSPACE, WORKSPACE_SPRING_LOADED, APPS, APPS_SPRING_LOADED,
@@ -4389,18 +4391,7 @@ public class Launcher extends Activity
     }
 
     protected boolean isLauncherPreinstalled() {
-        PackageManager pm = getPackageManager();
-        try {
-            ApplicationInfo ai = pm.getApplicationInfo(getComponentName().getPackageName(), 0);
-            if ((ai.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (NameNotFoundException e) {
-            e.printStackTrace();
-            return false;
-        }
+        return (getApplicationInfo().flags & ApplicationInfo.FLAG_SYSTEM) != 0)
     }
 
     /**
@@ -4522,13 +4513,26 @@ public class Launcher extends Activity
         LauncherClings launcherClings = new LauncherClings(this);
         if (launcherClings.shouldShowFirstRunOrMigrationClings()) {
             mClings = launcherClings;
-            if (mModel.canMigrateFromOldLauncherDb(this)) {
+            if (canMigrateFromOldLauncherDb()) {
                 launcherClings.showMigrationCling();
             } else {
                 launcherClings.showLongPressCling(true);
             }
         }
     }
+
+    private boolean canMigrateFromOldLauncherDb() {
+        // Return true if launcher was not preinstalled and and old content provider exists.
+        return ((getApplicationInfo().flags & ApplicationInfo.FLAG_SYSTEM) == 0) &&
+                providerExists(MIGRATE_AUTHORITY) &&
+                providerExists(Uri.parse(getString(R.string.old_launcher_provider_uri)).getAuthority());
+
+    }
+
+    private boolean providerExists(String authority) {
+        return getPackageManager().resolveContentProvider(authority, 0) != null;
+    }
+
 
     void showWorkspaceSearchAndHotseat() {
         if (mWorkspace != null) mWorkspace.setAlpha(1f);
