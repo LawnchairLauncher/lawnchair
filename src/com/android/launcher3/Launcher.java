@@ -4390,10 +4390,6 @@ public class Launcher extends Activity
         }
     }
 
-    protected boolean isLauncherPreinstalled() {
-        return (getApplicationInfo().flags & ApplicationInfo.FLAG_SYSTEM) != 0)
-    }
-
     /**
      * To be overridden by subclasses to indicate that there is an activity to launch
      * before showing the standard launcher experience.
