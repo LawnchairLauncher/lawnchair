@@ -73,12 +73,13 @@
             android:textColorHint="#ff808080"
             android:textSize="14sp" />
 
-        <include
+        <com.android.launcher3.pageindicators.PageIndicatorDots
             android:id="@+id/folder_page_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="12dp"
             android:layout_gravity="center_vertical"
-            layout="@layout/page_indicator" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="1dp"
+            />
 
     </LinearLayout>
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 The Android Open Source Project
+ * Copyright (C) 2016 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,32 +16,97 @@
 
 package com.android.launcher3.pageindicators;
 
-import android.animation.LayoutTransition;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
-import android.content.res.TypedArray;
+import android.graphics.Canvas;
+import android.view.animation.Interpolator;
+import android.graphics.Outline;
+import android.graphics.Paint;
+import android.graphics.Paint.Style;
+import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
+import android.util.Property;
 import android.view.View;
-import android.view.ViewDebug;
-import android.widget.LinearLayout;
+import android.view.ViewOutlineProvider;
+import android.view.animation.OvershootInterpolator;
 
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 
-import java.util.ArrayList;
+/**
+ * {@link PageIndicator} which shows dots per page. The active page is shown with the current
+ * accent color.
+ */
+public class PageIndicatorDots extends View implements PageIndicator {
 
-public class PageIndicatorDots extends LinearLayout implements PageIndicator {
-    @SuppressWarnings("unused")
-    private static final String TAG = "PageIndicator";
-    // Want this to look good? Keep it odd
-    private static final boolean MODULATE_ALPHA_ENABLED = false;
+    private static final float SHIFT_PER_ANIMATION = 0.5f;
+    private static final float SHIFT_THRESHOLD = 0.1f;
+    private static final long ANIMATION_DURATION = 150;
 
-    private LayoutInflater mLayoutInflater;
-    private int[] mWindowRange = new int[2];
-    private int mMaxWindowSize;
+    private static final int ENTER_ANIMATION_START_DELAY = 300;
+    private static final int ENTER_ANIMATION_STAGGERED_DELAY = 150;
+    private static final int ENTER_ANIMATION_DURATION = 400;
 
-    private ArrayList<PageIndicatorDot> mMarkers = new ArrayList<>();
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private int mActiveMarkerIndex;
+    // This value approximately overshoots to 1.5 times the original size.
+    private static final float ENTER_ANIMATION_OVERSHOOT_TENSION = 4.9f;
+
+    private static final RectF sTempRect = new RectF();
+
+    private static final Property<PageIndicatorDots, Float> CURRENT_POSITION
+            = new Property<PageIndicatorDots, Float>(float.class, "current_position") {
+        @Override
+        public Float get(PageIndicatorDots obj) {
+            return obj.mCurrentPosition;
+        }
+
+        @Override
+        public void set(PageIndicatorDots obj, Float pos) {
+            obj.mCurrentPosition = pos;
+            obj.invalidate();
+            obj.invalidateOutline();
+        }
+    };
+
+    /**
+     * Listener for keep running the animation until the final state is reached.
+     */
+    private final AnimatorListenerAdapter mAnimCycleListener = new AnimatorListenerAdapter() {
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            mAnimator = null;
+            animateToPostion(mFinalPosition);
+        }
+    };
+
+    private final Paint mCirclePaint;
+    private final float mDotRadius;
+    private final int mActiveColor;
+    private final int mInActiveColor;
+    private final boolean mIsRtl;
+
+    private int mNumPages;
+    private int mActivePage;
+
+    /**
+     * The current position of the active dot including the animation progress.
+     * For ex:
+     *   0.0  => Active dot is at position 0
+     *   0.33 => Active dot is at position 0 and is moving towards 1
+     *   0.50 => Active dot is at position [0, 1]
+     *   0.77 => Active dot has left position 0 and is collapsing towards position 1
+     *   1.0  => Active dot is at position 1
+     */
+    private float mCurrentPosition;
+    private float mFinalPosition;
+    private ObjectAnimator mAnimator;
+
+    private float[] mEntryAnimationRadiusFactors;
 
     public PageIndicatorDots(Context context) {
         this(context, null);
@@ -51,137 +116,18 @@ public class PageIndicatorDots extends LinearLayout implements PageIndicator {
         this(context, attrs, 0);
     }
 
-    public PageIndicatorDots(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        TypedArray a = context.obtainStyledAttributes(attrs,
-                R.styleable.PageIndicatorDots, defStyle, 0);
-        mMaxWindowSize = a.getInteger(R.styleable.PageIndicatorDots_windowSize, 15);
-        mWindowRange[0] = 0;
-        mWindowRange[1] = 0;
-        mLayoutInflater = LayoutInflater.from(context);
-        a.recycle();
+    public PageIndicatorDots(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
 
-        // Set the layout transition properties
-        LayoutTransition transition = getLayoutTransition();
-        transition.setDuration(175);
-    }
+        mCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mCirclePaint.setStyle(Style.FILL);
+        mDotRadius = getResources().getDimension(R.dimen.page_indicator_dot_size) / 2;
+        setOutlineProvider(new MyOutlineProver());
 
-    private void enableLayoutTransitions() {
-        LayoutTransition transition = getLayoutTransition();
-        transition.enableTransitionType(LayoutTransition.APPEARING);
-        transition.enableTransitionType(LayoutTransition.DISAPPEARING);
-        transition.enableTransitionType(LayoutTransition.CHANGE_APPEARING);
-        transition.enableTransitionType(LayoutTransition.CHANGE_DISAPPEARING);
-    }
+        mActiveColor = getResources().getColor(R.color.launcher_accent_color);
+        mInActiveColor = getResources().getColor(R.color.page_indicator_dot_color);
 
-    private void disableLayoutTransitions() {
-        LayoutTransition transition = getLayoutTransition();
-        transition.disableTransitionType(LayoutTransition.APPEARING);
-        transition.disableTransitionType(LayoutTransition.DISAPPEARING);
-        transition.disableTransitionType(LayoutTransition.CHANGE_APPEARING);
-        transition.disableTransitionType(LayoutTransition.CHANGE_DISAPPEARING);
-    }
-
-    public void offsetWindowCenterTo(int activeIndex, boolean allowAnimations) {
-        if (activeIndex < 0) {
-            new Throwable().printStackTrace();
-        }
-        int windowSize = Math.min(mMarkers.size(), mMaxWindowSize);
-        int hWindowSize = (int) windowSize / 2;
-        float hfWindowSize = windowSize / 2f;
-        int windowStart = Math.max(0, activeIndex - hWindowSize);
-        int windowEnd = Math.min(mMarkers.size(), windowStart + mMaxWindowSize);
-        windowStart = windowEnd - Math.min(mMarkers.size(), windowSize);
-        int windowMid = windowStart + (windowEnd - windowStart) / 2;
-        boolean windowAtStart = (windowStart == 0);
-        boolean windowAtEnd = (windowEnd == mMarkers.size());
-        boolean windowMoved = (mWindowRange[0] != windowStart) ||
-                (mWindowRange[1] != windowEnd);
-
-        if (!allowAnimations) {
-            disableLayoutTransitions();
-        }
-
-        // Remove all the previous children that are no longer in the window
-        for (int i = getChildCount() - 1; i >= 0; --i) {
-            PageIndicatorDot marker = (PageIndicatorDot) getChildAt(i);
-            int markerIndex = mMarkers.indexOf(marker);
-            if (markerIndex < windowStart || markerIndex >= windowEnd) {
-                removeView(marker);
-            }
-        }
-
-        // Add all the new children that belong in the window
-        for (int i = 0; i < mMarkers.size(); ++i) {
-            PageIndicatorDot marker = (PageIndicatorDot) mMarkers.get(i);
-            if (windowStart <= i && i < windowEnd) {
-                if (indexOfChild(marker) < 0) {
-                    addView(marker, i - windowStart);
-                }
-                if (i == activeIndex) {
-                    marker.activate(windowMoved);
-                } else {
-                    marker.inactivate(windowMoved);
-                }
-            } else {
-                marker.inactivate(true);
-            }
-
-            if (MODULATE_ALPHA_ENABLED) {
-                // Update the marker's alpha
-                float alpha = 1f;
-                if (mMarkers.size() > windowSize) {
-                    if ((windowAtStart && i > hWindowSize) ||
-                        (windowAtEnd && i < (mMarkers.size() - hWindowSize)) ||
-                        (!windowAtStart && !windowAtEnd)) {
-                        alpha = 1f - Math.abs((i - windowMid) / hfWindowSize);
-                    }
-                }
-                marker.animate().alpha(alpha).setDuration(500).start();
-            }
-        }
-
-        if (!allowAnimations) {
-            enableLayoutTransitions();
-        }
-
-        mWindowRange[0] = windowStart;
-        mWindowRange[1] = windowEnd;
-    }
-
-    @Override
-    public void addMarker(int index, PageMarkerResources marker, boolean allowAnimations) {
-        index = Math.max(0, Math.min(index, mMarkers.size()));
-
-        PageIndicatorDot m =
-            (PageIndicatorDot) mLayoutInflater.inflate(R.layout.page_indicator_marker,
-                    this, false);
-        m.setMarkerDrawables(marker.activeId, marker.inactiveId);
-
-        mMarkers.add(index, m);
-        offsetWindowCenterTo(mActiveMarkerIndex, allowAnimations);
-    }
-
-    @Override
-    public void addMarkers(ArrayList<PageMarkerResources> markers, boolean allowAnimations) {
-        for (int i = 0; i < markers.size(); ++i) {
-            addMarker(Integer.MAX_VALUE, markers.get(i), allowAnimations);
-        }
-    }
-
-    @Override
-    public void updateMarker(int index, PageMarkerResources marker) {
-        PageIndicatorDot m = mMarkers.get(index);
-        m.setMarkerDrawables(marker.activeId, marker.inactiveId);
-    }
-
-    @Override
-    public void removeMarker(int index, boolean allowAnimations) {
-        if (mMarkers.size() > 0) {
-            index = Math.max(0, Math.min(mMarkers.size() - 1, index));
-            mMarkers.remove(index);
-            offsetWindowCenterTo(mActiveMarkerIndex, allowAnimations);
-        }
+        mIsRtl = Utilities.isRtl(getResources());
     }
 
     @Override
@@ -190,36 +136,209 @@ public class PageIndicatorDots extends LinearLayout implements PageIndicator {
     }
 
     @Override
-    public void setProgress(float progress) {
+    public void setScroll(int currentScroll, int totalScroll) {
+        if (mNumPages > 1) {
+            if (mIsRtl) {
+                currentScroll = totalScroll - currentScroll;
+            }
+            int scrollPerPage = totalScroll / (mNumPages - 1);
+            int absScroll = mActivePage * scrollPerPage;
+            float scrollThreshold = SHIFT_THRESHOLD * scrollPerPage;
+
+            if ((absScroll - currentScroll) > scrollThreshold) {
+                // current scroll is before absolute scroll
+                animateToPostion(mActivePage - SHIFT_PER_ANIMATION);
+            } else if ((currentScroll - absScroll) > scrollThreshold) {
+                // current scroll is ahead of absolute scroll
+                animateToPostion(mActivePage + SHIFT_PER_ANIMATION);
+            } else {
+                animateToPostion(mActivePage);
+            }
+        }
+    }
+
+    private void animateToPostion(float position) {
+        mFinalPosition = position;
+        if (Math.abs(mCurrentPosition - mFinalPosition) < SHIFT_THRESHOLD) {
+            mCurrentPosition = mFinalPosition;
+        }
+        if (mAnimator == null && Float.compare(mCurrentPosition, mFinalPosition) != 0) {
+            float positionForThisAnim = mCurrentPosition > mFinalPosition ?
+                    mCurrentPosition - SHIFT_PER_ANIMATION : mCurrentPosition + SHIFT_PER_ANIMATION;
+            mAnimator = ObjectAnimator.ofFloat(this, CURRENT_POSITION, positionForThisAnim);
+            mAnimator.addListener(mAnimCycleListener);
+            mAnimator.setDuration(ANIMATION_DURATION);
+            mAnimator.start();
+        }
+    }
+
+    public void stopAllAnimations() {
+        if (mAnimator != null) {
+            mAnimator.removeAllListeners();
+            mAnimator.cancel();
+            mAnimator = null;
+        }
+        mFinalPosition = mActivePage;
+        CURRENT_POSITION.set(this, mFinalPosition);
+    }
+
+    /**
+     * Sets up up the page indicator to play the entry animation.
+     * {@link #playEntryAnimation()} must be called after this.
+     */
+    public void prepareEntryAnimation() {
+        mEntryAnimationRadiusFactors = new float[mNumPages];
+        invalidate();
+    }
+
+    public void playEntryAnimation() {
+        int count  = mEntryAnimationRadiusFactors.length;
+        if (count == 0) {
+            mEntryAnimationRadiusFactors = null;
+            invalidate();
+            return;
+        }
+
+        Interpolator interpolator = new OvershootInterpolator(ENTER_ANIMATION_OVERSHOOT_TENSION);
+        AnimatorSet animSet = new AnimatorSet();
+        for (int i = 0; i < count; i++) {
+            ValueAnimator anim = ValueAnimator.ofFloat(0, 1).setDuration(ENTER_ANIMATION_DURATION);
+            final int index = i;
+            anim.addUpdateListener(new AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    mEntryAnimationRadiusFactors[index] = (Float) animation.getAnimatedValue();
+                    invalidate();
+                }
+            });
+            anim.setInterpolator(interpolator);
+            anim.setStartDelay(ENTER_ANIMATION_START_DELAY + ENTER_ANIMATION_STAGGERED_DELAY * i);
+            animSet.play(anim);
+        }
+
+        animSet.addListener(new AnimatorListenerAdapter() {
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mEntryAnimationRadiusFactors = null;
+                invalidateOutline();
+                invalidate();
+            }
+        });
+        animSet.start();
     }
 
     @Override
-    public void removeAllMarkers(boolean allowAnimations) {
-        while (mMarkers.size() > 0) {
-            removeMarker(Integer.MAX_VALUE, allowAnimations);
-        }
+    public void setActiveMarker(int activePage) {
+        mActivePage = activePage;
+        invalidate();
     }
 
     @Override
-    public void setActiveMarker(int index) {
-        // Center the active marker
-        mActiveMarkerIndex = index;
-        offsetWindowCenterTo(index, false);
+    public void addMarker() {
+        mNumPages++;
+        requestLayout();
     }
 
-    private void dumpState(String txt) {
-        System.out.println(txt);
-        System.out.println("\tmMarkers: " + mMarkers.size());
-        for (int i = 0; i < mMarkers.size(); ++i) {
-            PageIndicatorDot m = mMarkers.get(i);
-            System.out.println("\t\t(" + i + ") " + m);
+    @Override
+    public void removeMarker() {
+        mNumPages--;
+        requestLayout();
+    }
+
+    @Override
+    public void setMarkersCount(int numMarkers) {
+        mNumPages = numMarkers;
+        requestLayout();
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        // Add extra spacing of mDotRadius on all sides so than entry animation could be run.
+        int width = MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.EXACTLY ?
+                MeasureSpec.getSize(widthMeasureSpec) : (int) ((mNumPages * 3 + 2) * mDotRadius);
+        int height= MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.EXACTLY ?
+                MeasureSpec.getSize(heightMeasureSpec) : (int) (4 * mDotRadius);
+        setMeasuredDimension(width, height);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        // Draw all page indicators;
+        float circleGap = 3 * mDotRadius;
+        float startX = (getWidth() - mNumPages * circleGap + mDotRadius) / 2;
+
+        float x = startX + mDotRadius;
+        float y = canvas.getHeight() / 2;
+
+        if (mEntryAnimationRadiusFactors != null) {
+            // During entry animation, only draw the circles
+            if (mIsRtl) {
+                x = getWidth() - x;
+                circleGap = -circleGap;
+            }
+            for (int i = 0; i < mEntryAnimationRadiusFactors.length; i++) {
+                mCirclePaint.setColor(i == mActivePage ? mActiveColor : mInActiveColor);
+                canvas.drawCircle(x, y, mDotRadius * mEntryAnimationRadiusFactors[i], mCirclePaint);
+                x += circleGap;
+            }
+        } else {
+            mCirclePaint.setColor(mInActiveColor);
+            for (int i = 0; i < mNumPages; i++) {
+                canvas.drawCircle(x, y, mDotRadius, mCirclePaint);
+                x += circleGap;
+            }
+
+            mCirclePaint.setColor(mActiveColor);
+            canvas.drawRoundRect(getActiveRect(), mDotRadius, mDotRadius, mCirclePaint);
         }
-        System.out.println("\twindow: [" + mWindowRange[0] + ", " + mWindowRange[1] + "]");
-        System.out.println("\tchildren: " + getChildCount());
-        for (int i = 0; i < getChildCount(); ++i) {
-            PageIndicatorDot m = (PageIndicatorDot) getChildAt(i);
-            System.out.println("\t\t(" + i + ") " + m);
+    }
+
+    private RectF getActiveRect() {
+        float startCircle = (int) mCurrentPosition;
+        float delta = mCurrentPosition - startCircle;
+        float diameter = 2 * mDotRadius;
+        float circleGap = 3 * mDotRadius;
+        float startX = (getWidth() - mNumPages * circleGap + mDotRadius) / 2;
+
+        sTempRect.top = getHeight() * 0.5f - mDotRadius;
+        sTempRect.bottom = getHeight() * 0.5f + mDotRadius;
+        sTempRect.left = startX + startCircle * circleGap;
+        sTempRect.right = sTempRect.left + diameter;
+
+        if (delta < SHIFT_PER_ANIMATION) {
+            // dot is capturing the right circle.
+            sTempRect.right += delta * circleGap * 2;
+        } else {
+            // Dot is leaving the left circle.
+            sTempRect.right += circleGap;
+
+            delta -= SHIFT_PER_ANIMATION;
+            sTempRect.left += delta * circleGap * 2;
         }
-        System.out.println("\tactive: " + mActiveMarkerIndex);
+
+        if (mIsRtl) {
+            float rectWidth = sTempRect.width();
+            sTempRect.right = getWidth() - sTempRect.left;
+            sTempRect.left = sTempRect.right - rectWidth;
+        }
+        return sTempRect;
+    }
+
+    private class MyOutlineProver extends ViewOutlineProvider {
+
+        @Override
+        public void getOutline(View view, Outline outline) {
+            if (mEntryAnimationRadiusFactors == null) {
+                RectF activeRect = getActiveRect();
+                outline.setRoundRect(
+                        (int) activeRect.left,
+                        (int) activeRect.top,
+                        (int) activeRect.right,
+                        (int) activeRect.bottom,
+                        mDotRadius
+                );
+            }
+        }
     }
 }

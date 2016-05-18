@@ -809,11 +809,6 @@ public class Workspace extends PagedView
         mWorkspaceScreens.put(newId, cl);
         mScreenOrder.add(newId);
 
-        // Update the page indicator marker
-        if (getPageIndicator() != null) {
-            getPageIndicator().updateMarker(index, getPageIndicatorMarker(index));
-        }
-
         // Update the model for the new screen
         mLauncher.getModel().updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
 
@@ -1286,7 +1281,7 @@ public class Workspace extends PagedView
     }
 
     private void showPageIndicatorAtCurrentScroll() {
-        mPageIndicator.setProgress((float) getScrollX() / computeMaxScrollX());
+        mPageIndicator.setScroll(getScrollX(), computeMaxScrollX());
     }
 
     @Override
@@ -4263,20 +4258,6 @@ public class Workspace extends PagedView
             }
          }
         exitWidgetResizeMode();
-    }
-
-    @Override
-    protected PageIndicator.PageMarkerResources getPageIndicatorMarker(int pageIndex) {
-        long screenId = getScreenIdForPageIndex(pageIndex);
-        if (screenId == EXTRA_EMPTY_SCREEN_ID) {
-            int count = mScreenOrder.size() - numCustomPages();
-            if (count > 1) {
-                return new PageIndicator.PageMarkerResources(R.drawable.ic_pageindicator_current,
-                        R.drawable.ic_pageindicator_add);
-            }
-        }
-
-        return super.getPageIndicatorMarker(pageIndex);
     }
 
     protected String getPageIndicatorDescription() {
