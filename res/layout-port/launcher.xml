@@ -57,12 +57,10 @@
 
         <!-- Keep these behind the workspace so that they are not visible when
              we go into AllApps -->
-        <include
+        <com.android.launcher3.pageindicators.PageIndicatorLine
             android:id="@+id/page_indicator"
-            layout="@layout/page_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal" />
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
 
         <include
             android:id="@+id/app_info_drop_target_bar"

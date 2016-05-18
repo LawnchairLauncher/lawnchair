@@ -49,8 +49,11 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.Interpolator;
+
+import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.util.LauncherEdgeEffect;
 import com.android.launcher3.util.Thunk;
+
 import java.util.ArrayList;
 
 /**
@@ -254,8 +257,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             mPageIndicator = (PageIndicator) grandParent.findViewById(mPageIndicatorViewId);
             mPageIndicator.removeAllMarkers(true);
 
-            ArrayList<PageIndicator.PageMarkerResources> markers =
-                    new ArrayList<PageIndicator.PageMarkerResources>();
+            ArrayList<PageIndicator.PageMarkerResources> markers = new ArrayList<>();
             for (int i = 0; i < getChildCount(); ++i) {
                 markers.add(getPageIndicatorMarker(i));
             }
@@ -264,9 +266,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
             OnClickListener listener = getPageIndicatorClickListener();
             if (listener != null) {
-                mPageIndicator.setOnClickListener(listener);
+                mPageIndicator.getView().setOnClickListener(listener);
             }
-            mPageIndicator.setContentDescription(getPageIndicatorDescription());
+            mPageIndicator.getView().setContentDescription(getPageIndicatorDescription());
         }
     }
 
@@ -355,7 +357,8 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         return mPageIndicator;
     }
     protected PageIndicator.PageMarkerResources getPageIndicatorMarker(int pageIndex) {
-        return new PageIndicator.PageMarkerResources();
+        return new PageIndicator.PageMarkerResources(R.drawable.ic_pageindicator_current,
+                R.drawable.ic_pageindicator_default);
     }
 
     /**
@@ -430,7 +433,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                     Math.min(newPage, mTempVisiblePagesRange[1]));
         }
         // Ensure that it is clamped by the actual set of children in all cases
-        validatedPage = Utilities.boundInRange(validatedPage, 0, getPageCount() - 1);
+        validatedPage = Utilities.boundToRange(validatedPage, 0, getPageCount() - 1);
         return validatedPage;
     }
 
@@ -475,7 +478,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     private void updatePageIndicator() {
         // Update the page indicator (when we aren't reordering)
         if (mPageIndicator != null) {
-            mPageIndicator.setContentDescription(getPageIndicatorDescription());
+            mPageIndicator.getView().setContentDescription(getPageIndicatorDescription());
             if (!isReordering(false)) {
                 mPageIndicator.setActiveMarker(getNextPage());
             }
@@ -931,12 +934,16 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     @Thunk void updateMaxScrollX() {
+        mMaxScrollX = computeMaxScrollX();
+    }
+
+    protected int computeMaxScrollX() {
         int childCount = getChildCount();
         if (childCount > 0) {
             final int index = mIsRtl ? 0 : childCount - 1;
-            mMaxScrollX = getScrollForPage(index);
+            return getScrollForPage(index);
         } else {
-            mMaxScrollX = 0;
+            return 0;
         }
     }
 

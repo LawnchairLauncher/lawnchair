@@ -798,7 +798,14 @@ public final class Utilities {
      * If value is less than lowerBound, return lowerBound; else if value is greater than upperBound,
      * return upperBound; else return value unchanged.
      */
-    public static int boundInRange(int value, int lowerBound, int upperBound) {
+    public static int boundToRange(int value, int lowerBound, int upperBound) {
+        return Math.max(lowerBound, Math.min(value, upperBound));
+    }
+
+    /**
+     * @see #boundToRange(int, int, int).
+     */
+    public static float boundToRange(float value, float lowerBound, float upperBound) {
         return Math.max(lowerBound, Math.min(value, upperBound));
     }
 
