@@ -112,6 +112,8 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.WidgetsModel;
+import com.android.launcher3.pageindicators.PageIndicator;
+import com.android.launcher3.pageindicators.PageIndicatorLine;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.logging.FileLog;
@@ -224,7 +226,7 @@ public class Launcher extends Activity
 
     @Thunk Workspace mWorkspace;
     private View mLauncherView;
-    private View mPageIndicators;
+    private PageIndicatorLine mPageIndicator;
     @Thunk DragLayer mDragLayer;
     private DragController mDragController;
 
@@ -501,6 +503,7 @@ public class Launcher extends Activity
         if (mExtractedColors != null && Utilities.isNycOrAbove()) {
             mExtractedColors.load(this);
             mHotseat.updateColor(mExtractedColors, !mPaused);
+            mPageIndicator.updateColor(mExtractedColors);
         }
     }
 
@@ -1327,7 +1330,7 @@ public class Launcher extends Activity
         mFocusHandler = (FocusIndicatorView) findViewById(R.id.focus_indicator);
         mDragLayer = (DragLayer) findViewById(R.id.drag_layer);
         mWorkspace = (Workspace) mDragLayer.findViewById(R.id.workspace);
-        mPageIndicators = mDragLayer.findViewById(R.id.page_indicator);
+        mPageIndicator = (PageIndicatorLine) mDragLayer.findViewById(R.id.page_indicator);
 
         mLauncherView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -4530,7 +4533,7 @@ public class Launcher extends Activity
     void showWorkspaceSearchAndHotseat() {
         if (mWorkspace != null) mWorkspace.setAlpha(1f);
         if (mHotseat != null) mHotseat.setAlpha(1f);
-        if (mPageIndicators != null) mPageIndicators.setAlpha(1f);
+        if (mPageIndicator != null) mPageIndicator.setAlpha(1f);
         if (mSearchDropTargetBar != null) mSearchDropTargetBar.animateToState(
                 SearchDropTargetBar.State.SEARCH_BAR, 0);
     }
@@ -4538,7 +4541,7 @@ public class Launcher extends Activity
     void hideWorkspaceSearchAndHotseat() {
         if (mWorkspace != null) mWorkspace.setAlpha(0f);
         if (mHotseat != null) mHotseat.setAlpha(0f);
-        if (mPageIndicators != null) mPageIndicators.setAlpha(0f);
+        if (mPageIndicator != null) mPageIndicator.setAlpha(0f);
         if (mSearchDropTargetBar != null) mSearchDropTargetBar.animateToState(
                 SearchDropTargetBar.State.INVISIBLE, 0);
     }
