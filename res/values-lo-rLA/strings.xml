@@ -59,7 +59,7 @@
     <string name="migration_cling_description" msgid="2752413805582227644">"ນຳເຂົ້າໄອຄອນ ແລະ ໂຟນເດີຈາກໂຮມສະກຣີນອັນເກົ່າຂອງທ່ານບໍ່?"</string>
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"ສຳເນົາໄອຄອນ"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"ເລີ່ມຕົ້ນໃໝ່"</string>
-    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"​ຮູບ​ພື້ນຫຼັງ, ວິດເຈັດ, &amp; ​ການ​ຕັ້ງ​ຄ່າ"</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"ຮູບພາບພື້ນຫຼັງ, ວິດເຈັດ ແລະ ການຕັ້ງຄ່າ"</string>
     <string name="workspace_cling_longpress_description" msgid="6569028007301925917">"ແຕະທີ່ພາບພື້ນຫລັງຄ້າງໄວ້ເພື່ອປັບແຕ່ງ"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"ເຂົ້າໃຈແລ້ວ"</string>
     <string name="folder_opened" msgid="94695026776264709">"ເປີດໂຟນເດີແລ້ວ, <xliff:g id="WIDTH">%1$d</xliff:g> ຄູນ <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
