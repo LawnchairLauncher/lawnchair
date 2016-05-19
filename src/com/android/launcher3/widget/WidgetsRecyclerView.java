@@ -91,19 +91,14 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
     @Override
     public String scrollToPositionAtProgress(float touchFraction) {
         // Skip early if widgets are not bound.
-        if (mWidgets == null) {
-            return "";
-        }
-
-        // Skip early if there are no widgets.
-        int rowCount = mWidgets.getPackageSize();
-        if (rowCount == 0) {
+        if (isModelNotReady()) {
             return "";
         }
 
         // Stop the scroller if it is scrolling
         stopScroll();
 
+        int rowCount = mWidgets.getPackageSize();
         getCurScrollState(mScrollPosState, -1);
         float pos = rowCount * touchFraction;
         int availableScrollHeight = getAvailableScrollHeight(rowCount);
@@ -121,14 +116,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
     @Override
     public void onUpdateScrollbar(int dy) {
         // Skip early if widgets are not bound.
-        if (mWidgets == null) {
-            return;
-        }
-
-        // Skip early if there are no widgets.
-        int rowCount = mWidgets.getPackageSize();
-        if (rowCount == 0) {
-            mScrollbar.setThumbOffset(-1, -1);
+        if (isModelNotReady()) {
             return;
         }
 
@@ -139,7 +127,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
             return;
         }
 
-        synchronizeScrollBarThumbOffsetToViewScroll(mScrollPosState, rowCount);
+        synchronizeScrollBarThumbOffsetToViewScroll(mScrollPosState, mWidgets.getPackageSize());
     }
 
     /**
@@ -151,15 +139,10 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
         stateOut.itemPos = -1;
 
         // Skip early if widgets are not bound.
-        if (mWidgets == null) {
+        if (isModelNotReady()) {
             return;
         }
 
-        // Return early if there are no items
-        int rowCount = mWidgets.getPackageSize();
-        if (rowCount == 0) {
-            return;
-        }
         View child = getChildAt(0);
         int position = getChildPosition(child);
 
@@ -177,5 +160,9 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
         // All the rows are the same height, return any child height
         View child = getChildAt(0);
         return child.getMeasuredHeight() * rowIndex;
+    }
+
+    private boolean isModelNotReady() {
+        return mWidgets == null || mWidgets.getPackageSize() == 0;
     }
 }
