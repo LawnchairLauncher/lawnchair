@@ -1,38 +1,30 @@
 package com.android.launcher3;
 
 import android.annotation.TargetApi;
-import android.app.SearchManager;
 import android.appwidget.AppWidgetHost;
-import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionParams;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.ParcelFileDescriptor;
-import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiSelector;
-import android.test.InstrumentationTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
+import com.android.launcher3.ui.LauncherInstrumentationTestCase;
 import com.android.launcher3.util.ManagedProfileHeuristic;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 
-import java.io.FileInputStream;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Tests for bind widget flow.
@@ -41,12 +33,8 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @LargeTest
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-public class BindWidgetTest extends InstrumentationTestCase {
+public class BindWidgetTest extends LauncherInstrumentationTestCase {
 
-    private static final long DEFAULT_TIMEOUT = 6000;
-
-    private UiDevice mDevice;
-    private Context mTargetContext;
     private ContentResolver mResolver;
     private AppWidgetManagerCompat mWidgetManager;
 
@@ -59,23 +47,9 @@ public class BindWidgetTest extends InstrumentationTestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        mDevice = UiDevice.getInstance(getInstrumentation());
-        mTargetContext = getInstrumentation().getTargetContext();
         mResolver = mTargetContext.getContentResolver();
         mWidgetManager = AppWidgetManagerCompat.getInstance(mTargetContext);
-
-        // Check bind widget permission
-        String pkg = mTargetContext.getPackageName();
-        if (mTargetContext.getPackageManager().checkPermission(
-                pkg, android.Manifest.permission.BIND_APPWIDGET)
-                != PackageManager.PERMISSION_GRANTED) {
-            ParcelFileDescriptor pfd = getInstrumentation().getUiAutomation().executeShellCommand(
-                    "appwidget grantbind --package " + pkg);
-            // Read the input stream fully.
-            FileInputStream fis = new ParcelFileDescriptor.AutoCloseInputStream(pfd);
-            while (fis.read() != -1);
-            fis.close();
-        }
+        grantWidgetPermission();
 
         // Clear all existing data
         LauncherSettings.Settings.call(mResolver, LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
@@ -264,61 +238,14 @@ public class BindWidgetTest extends InstrumentationTestCase {
             throw new IllegalArgumentException(t);
         }
         // Launch the home activity
-        getInstrumentation().getContext().startActivity(new Intent(Intent.ACTION_MAIN)
-                .addCategory(Intent.CATEGORY_HOME)
-                .setPackage(mTargetContext.getPackageName())
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-
+        startLauncher();
         // Verify UI
         UiSelector selector = new UiSelector().packageName(mTargetContext.getPackageName())
                 .className(widgetClass);
         if (desc != null) {
             selector = selector.description(desc);
         }
-        assertTrue(mDevice.findObject(selector).waitForExists(DEFAULT_TIMEOUT));
-    }
-
-    /**
-     * Finds a widget provider which can fit on the home screen.
-     * @param hasConfigureScreen if true, a provider with a config screen is returned.
-     */
-    private LauncherAppWidgetProviderInfo findWidgetProvider(final boolean hasConfigureScreen) {
-        LauncherAppWidgetProviderInfo info = getOnUiThread(new Callable<LauncherAppWidgetProviderInfo>() {
-            @Override
-            public LauncherAppWidgetProviderInfo call() throws Exception {
-                InvariantDeviceProfile idv =
-                        LauncherAppState.getInstance().getInvariantDeviceProfile();
-
-                ComponentName searchComponent = ((SearchManager) mTargetContext
-                        .getSystemService(Context.SEARCH_SERVICE)).getGlobalSearchActivity();
-                String searchPackage = searchComponent == null
-                        ? null : searchComponent.getPackageName();
-
-                for (AppWidgetProviderInfo info :
-                        AppWidgetManagerCompat.getInstance(mTargetContext).getAllProviders()) {
-                    if ((info.configure != null) ^ hasConfigureScreen) {
-                        continue;
-                    }
-                    // Exclude the widgets in search package, as Launcher already binds them in
-                    // QSB, so they can cause conflicts.
-                    if (info.provider.getPackageName().equals(searchPackage)) {
-                        continue;
-                    }
-                    LauncherAppWidgetProviderInfo widgetInfo = LauncherAppWidgetProviderInfo
-                            .fromProviderInfo(mTargetContext, info);
-                    if (widgetInfo.minSpanX >= idv.numColumns
-                            || widgetInfo.minSpanY >= idv.numRows) {
-                        continue;
-                    }
-                    return widgetInfo;
-                }
-                return null;
-            }
-        });
-        if (info == null) {
-            throw new IllegalArgumentException("No valid widget provider");
-        }
-        return info;
+        assertTrue(mDevice.findObject(selector).waitForExists(DEFAULT_UI_TIMEOUT));
     }
 
     /**
@@ -395,24 +322,6 @@ public class BindWidgetTest extends InstrumentationTestCase {
         item.cellY = 0;
         item.container = LauncherSettings.Favorites.CONTAINER_DESKTOP;
         return item;
-    }
-
-    /**
-     * Runs the callback on the UI thread and returns the result.
-     */
-    private <T> T getOnUiThread(final Callable<T> callback) {
-        final AtomicReference<T> result = new AtomicReference<>(null);
-        try {
-            runTestOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        result.set(callback.call());
-                    } catch (Exception e) { }
-                }
-            });
-        } catch (Throwable t) { }
-        return result.get();
     }
 
     /**

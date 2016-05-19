@@ -207,4 +207,9 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         }
         return "";
     }
+
+    @Override
+    public CharSequence getAccessibilityClassName() {
+        return WidgetCell.class.getName();
+    }
 }
