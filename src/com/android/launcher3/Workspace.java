@@ -1337,7 +1337,9 @@ public class Workspace extends PagedView
         // different effects based on device performance. On at least one relatively high-end
         // device I've tried, translating the launcher causes things to get quite laggy.
         setTranslationAndAlpha(mLauncher.getSearchDropTargetBar(), transX, alpha);
-        setTranslationAndAlpha(getPageIndicator().getView(), transX, alpha);
+        if (getPageIndicator() != null) {
+            setTranslationAndAlpha(getPageIndicator().getView(), transX, alpha);
+        }
         setTranslationAndAlpha(getChildAt(getCurrentPage()), transX, alpha);
         setTranslationAndAlpha(mLauncher.getHotseat(), transX, alpha);
 
