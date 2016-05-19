@@ -158,7 +158,7 @@ public class BubbleTextView extends TextView
         if (info.isDisabled()) {
             iconDrawable.setState(FastBitmapDrawable.State.DISABLED);
         }
-        setIcon(iconDrawable, mIconSize);
+        setIcon(iconDrawable);
         if (info.contentDescription != null) {
             setContentDescription(info.contentDescription);
         }
@@ -175,7 +175,7 @@ public class BubbleTextView extends TextView
         if (info.isDisabled()) {
             iconDrawable.setState(FastBitmapDrawable.State.DISABLED);
         }
-        setIcon(iconDrawable, mIconSize);
+        setIcon(iconDrawable);
         setText(info.title);
         if (info.contentDescription != null) {
             setContentDescription(info.contentDescription);
@@ -188,7 +188,7 @@ public class BubbleTextView extends TextView
     }
 
     public void applyFromPackageItemInfo(PackageItemInfo info) {
-        setIcon(mLauncher.createIconDrawable(info.iconBitmap), mIconSize);
+        setIcon(mLauncher.createIconDrawable(info.iconBitmap));
         setText(info.title);
         if (info.contentDescription != null) {
             setContentDescription(info.contentDescription);
@@ -205,7 +205,7 @@ public class BubbleTextView extends TextView
      */
     public void applyDummyInfo() {
         ColorDrawable d = new ColorDrawable();
-        setIcon(mLauncher.resizeIconDrawable(d), mIconSize);
+        setIcon(mLauncher.resizeIconDrawable(d));
         setText("");
     }
 
@@ -477,7 +477,7 @@ public class BubbleTextView extends TextView
                     preloadDrawable = (PreloadIconDrawable) mIcon;
                 } else {
                     preloadDrawable = new PreloadIconDrawable(mIcon, getPreloaderTheme());
-                    setIcon(preloadDrawable, mIconSize);
+                    setIcon(preloadDrawable);
                 }
 
                 preloadDrawable.setLevel(progressLevel);
@@ -506,10 +506,10 @@ public class BubbleTextView extends TextView
      * Sets the icon for this view based on the layout direction.
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    private Drawable setIcon(Drawable icon, int iconSize) {
+    public void setIcon(Drawable icon) {
         mIcon = icon;
-        if (iconSize != -1) {
-            mIcon.setBounds(0, 0, iconSize, iconSize);
+        if (mIconSize != -1) {
+            mIcon.setBounds(0, 0, mIconSize, mIconSize);
         }
         if (mLayoutHorizontal) {
             if (Utilities.ATLEAST_JB_MR1) {
@@ -520,7 +520,6 @@ public class BubbleTextView extends TextView
         } else {
             setCompoundDrawables(null, mIcon, null, null);
         }
-        return icon;
     }
 
     @Override

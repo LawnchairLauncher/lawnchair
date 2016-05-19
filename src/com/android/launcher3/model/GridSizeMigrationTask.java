@@ -641,10 +641,11 @@ public class GridSizeMigrationTask {
                 // calculate weight
                 switch (entry.itemType) {
                     case Favorites.ITEM_TYPE_SHORTCUT:
+                    case Favorites.ITEM_TYPE_DEEP_SHORTCUT:
                     case Favorites.ITEM_TYPE_APPLICATION: {
                         verifyIntent(c.getString(indexIntent));
-                        entry.weight = entry.itemType == Favorites.ITEM_TYPE_SHORTCUT
-                                ? WT_SHORTCUT : WT_APPLICATION;
+                        entry.weight = entry.itemType == Favorites.ITEM_TYPE_APPLICATION ?
+                                WT_APPLICATION : WT_SHORTCUT;
                         break;
                     }
                     case Favorites.ITEM_TYPE_FOLDER: {
@@ -715,10 +716,11 @@ public class GridSizeMigrationTask {
                 // calculate weight
                 switch (entry.itemType) {
                     case Favorites.ITEM_TYPE_SHORTCUT:
+                    case Favorites.ITEM_TYPE_DEEP_SHORTCUT:
                     case Favorites.ITEM_TYPE_APPLICATION: {
                         verifyIntent(c.getString(indexIntent));
-                        entry.weight = entry.itemType == Favorites.ITEM_TYPE_SHORTCUT
-                            ? WT_SHORTCUT : WT_APPLICATION;
+                        entry.weight = entry.itemType == Favorites.ITEM_TYPE_APPLICATION ?
+                                WT_APPLICATION : WT_SHORTCUT;
                         break;
                     }
                     case Favorites.ITEM_TYPE_APPWIDGET: {

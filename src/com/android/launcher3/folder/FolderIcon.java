@@ -213,7 +213,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private boolean willAcceptItem(ItemInfo item) {
         final int itemType = item.itemType;
         return ((itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
-                itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) &&
+                itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT ||
+                itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) &&
                 !mFolder.isFull() && item != mInfo && !mInfo.opened);
     }
 

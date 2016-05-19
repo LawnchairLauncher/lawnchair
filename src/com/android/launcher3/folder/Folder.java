@@ -510,7 +510,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         }
 
         // This is set to true in close(), but isn't reset to false until onDropCompleted(). This
-        // leads to an consistent state if you drag out of the folder and drag back in without
+        // leads to an inconsistent state if you drag out of the folder and drag back in without
         // dropping. One resulting issue is that replaceFolderWithFinalItem() can be called twice.
         mDeleteFolderOnDropCompleted = false;
 
@@ -737,7 +737,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         final ItemInfo item = d.dragInfo;
         final int itemType = item.itemType;
         return ((itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
-                    itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) &&
+                itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT ||
+                itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) &&
                     !isFull());
     }
 

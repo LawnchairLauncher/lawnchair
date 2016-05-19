@@ -117,6 +117,7 @@ import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.TestingUtils;
 import com.android.launcher3.util.Thunk;
@@ -292,6 +293,9 @@ public class Launcher extends Activity
     private boolean mVisible = false;
     private boolean mHasFocus = false;
     private boolean mAttached = false;
+
+    /** Maps launcher activity components to their list of shortcut ids. */
+    private MultiHashMap<ComponentKey, String> mDeepShortcutMap = new MultiHashMap<>();
 
     private LauncherClings mClings;
 
@@ -2353,7 +2357,7 @@ public class Launcher extends Activity
      * @param itemInfo the {@link ItemInfo} for this view.
      * @param deleteFromDb whether or not to delete this item from the db.
      */
-    public boolean removeItem(View v, ItemInfo itemInfo, boolean deleteFromDb) {
+    public boolean removeItem(View v, final ItemInfo itemInfo, boolean deleteFromDb) {
         if (itemInfo instanceof ShortcutInfo) {
             // Remove the shortcut from the folder before removing it from launcher
             View folderIcon = mWorkspace.getHomescreenIconByItemId(itemInfo.container);
@@ -2381,7 +2385,6 @@ public class Launcher extends Activity
             if (deleteFromDb) {
                 deleteWidgetInfo(widgetInfo);
             }
-
         } else {
             return false;
         }
@@ -2818,8 +2821,16 @@ public class Launcher extends Activity
                 // is enabled by default on NYC.
                 StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll()
                         .penaltyLog().build());
-                // Could be launching some bookkeeping activity
-                startActivity(intent, optsBundle);
+
+                if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+                    String id = ((ShortcutInfo) info).getDeepShortcutId();
+                    String packageName = intent.getPackage();
+                    LauncherAppsCompat.getInstance(this).startShortcut(
+                                packageName, id, intent.getSourceBounds(), optsBundle, info.user);
+                } else {
+                    // Could be launching some bookkeeping activity
+                    startActivity(intent, optsBundle);
+                }
             } finally {
                 StrictMode.setVmPolicy(oldPolicy);
             }
@@ -2895,8 +2906,9 @@ public class Launcher extends Activity
                     new Rect(pos[0], pos[1], pos[0] + v.getWidth(), pos[1] + v.getHeight()));
         }
         try {
-            if (Utilities.ATLEAST_MARSHMALLOW &&
-                    item != null && item.itemType == Favorites.ITEM_TYPE_SHORTCUT) {
+            if (Utilities.ATLEAST_MARSHMALLOW && item != null
+                    && (item.itemType == Favorites.ITEM_TYPE_SHORTCUT
+                    || item.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT)) {
                 // Shortcuts need some special checks due to legacy reasons.
                 startShortcutIntentSafely(intent, optsBundle, item);
             } else if (user == null || user.equals(UserHandleCompat.myUserHandle())) {
@@ -3702,6 +3714,7 @@ public class Launcher extends Activity
             switch (item.itemType) {
                 case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                 case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
                     ShortcutInfo info = (ShortcutInfo) item;
                     view = createShortcut(info);
                     break;
@@ -4049,6 +4062,16 @@ public class Launcher extends Activity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.bindAllApplications(apps);
         }
+    }
+
+    /**
+     * Copies LauncherModel's map of activities to shortcut ids to Launcher's. This is necessary
+     * because LauncherModel's map is updated in the background, while Launcher runs on the UI.
+     */
+    @Override
+    public void bindDeepShortcutMap(MultiHashMap<ComponentKey, String> deepShortcutMapCopy) {
+        mDeepShortcutMap = deepShortcutMapCopy;
+        if (LOGD) Log.d(TAG, "bindDeepShortcutMap: " + mDeepShortcutMap);
     }
 
     /**
