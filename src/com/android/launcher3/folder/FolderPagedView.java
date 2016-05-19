@@ -25,8 +25,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.Interpolator;
-import android.view.animation.OvershootInterpolator;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
@@ -39,8 +37,6 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
-import com.android.launcher3.pageindicators.PageIndicatorDots;
-import com.android.launcher3.pageindicators.PageIndicator.PageMarkerResources;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
@@ -48,6 +44,7 @@ import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.dragndrop.DragController;
+import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
@@ -64,13 +61,6 @@ public class FolderPagedView extends PagedView {
     private static final int REORDER_ANIMATION_DURATION = 230;
     private static final int START_VIEW_REORDER_DELAY = 30;
     private static final float VIEW_REORDER_DELAY_FACTOR = 0.9f;
-
-    private static final int PAGE_INDICATOR_ANIMATION_START_DELAY = 300;
-    private static final int PAGE_INDICATOR_ANIMATION_STAGGERED_DELAY = 150;
-    private static final int PAGE_INDICATOR_ANIMATION_DURATION = 400;
-
-    // This value approximately overshoots to 1.5 times the original size.
-    private static final float PAGE_INDICATOR_OVERSHOOT_TENSION = 4.9f;
 
     /**
      * Fraction of the width to scroll when showing the next page hint.
@@ -103,7 +93,7 @@ public class FolderPagedView extends PagedView {
     private FocusIndicatorView mFocusIndicatorView;
     private PagedFolderKeyEventListener mKeyListener;
 
-    private PageIndicatorDots mPageIndicator;
+    private PageIndicator mPageIndicator;
 
     public FolderPagedView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -128,7 +118,7 @@ public class FolderPagedView extends PagedView {
         mFolder = folder;
         mFocusIndicatorView = (FocusIndicatorView) folder.findViewById(R.id.focus_indicator);
         mKeyListener = new PagedFolderKeyEventListener(folder);
-        mPageIndicator = (PageIndicatorDots) folder.findViewById(R.id.folder_page_indicator);
+        mPageIndicator = (PageIndicator) folder.findViewById(R.id.folder_page_indicator);
     }
 
     /**
@@ -285,6 +275,12 @@ public class FolderPagedView extends PagedView {
         }
     }
 
+    @Override
+    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+        super.onScrollChanged(l, t, oldl, oldt);
+        mPageIndicator.setScroll(l, mMaxScrollX);
+    }
+
     /**
      * Updates position and rank of all the children in the view.
      * It essentially removes all views from all the pages and then adds them again in appropriate
@@ -369,7 +365,7 @@ public class FolderPagedView extends PagedView {
         setEnableOverscroll(getPageCount() > 1);
 
         // Update footer
-        mPageIndicator.setVisibility(getPageCount() > 1 ? View.VISIBLE : View.GONE);
+        mPageIndicator.getView().setVisibility(getPageCount() > 1 ? View.VISIBLE : View.GONE);
         // Set the gravity as LEFT or RIGHT instead of START, as START depends on the actual text.
         mFolder.mFolderName.setGravity(getPageCount() > 1 ?
                 (mIsRtl ? Gravity.RIGHT : Gravity.LEFT) : Gravity.CENTER_HORIZONTAL);
@@ -407,12 +403,6 @@ public class FolderPagedView extends PagedView {
         }
         return Math.min(mAllocatedContentSize - 1,
                 pageIndex * mMaxItemsPerPage + sTempPosArray[1] * mGridCountX + sTempPosArray[0]);
-    }
-
-    @Override
-    protected PageMarkerResources getPageIndicatorMarker(int pageIndex) {
-        return new PageMarkerResources(R.drawable.ic_pageindicator_current_folder,
-                R.drawable.ic_pageindicator_default_folder);
     }
 
     public boolean isFull() {
@@ -673,28 +663,6 @@ public class FolderPagedView extends PagedView {
                 delay += delayAmount;
                 delayAmount *= VIEW_REORDER_DELAY_FACTOR;
             }
-        }
-    }
-
-    public void setMarkerScale(float scale) {
-        int count  = mPageIndicator.getChildCount();
-        for (int i = 0; i < count; i++) {
-            View marker = mPageIndicator.getChildAt(i);
-            marker.animate().cancel();
-            marker.setScaleX(scale);
-            marker.setScaleY(scale);
-        }
-    }
-
-    public void animateMarkers() {
-        int count  = mPageIndicator.getChildCount();
-        Interpolator interpolator = new OvershootInterpolator(PAGE_INDICATOR_OVERSHOOT_TENSION);
-        for (int i = 0; i < count; i++) {
-            mPageIndicator.getChildAt(i).animate().scaleX(1).scaleY(1)
-                .setInterpolator(interpolator)
-                .setDuration(PAGE_INDICATOR_ANIMATION_DURATION)
-                .setStartDelay(PAGE_INDICATOR_ANIMATION_STAGGERED_DELAY * i
-                        + PAGE_INDICATOR_ANIMATION_START_DELAY);
         }
     }
 

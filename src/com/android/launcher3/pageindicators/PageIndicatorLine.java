@@ -20,8 +20,6 @@ import android.view.ViewConfiguration;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dynamicui.ExtractedColors;
 
-import java.util.ArrayList;
-
 /**
  * A PageIndicator that briefly shows a fraction of a line when moving between pages.
  *
@@ -43,17 +41,17 @@ public class PageIndicatorLine extends View implements PageIndicator {
     private int mNumPages = 1;
     private Paint mLinePaint;
 
-    private Property<Paint, Integer> mPaintAlphaProperty
-            = new Property<Paint, Integer>(Integer.class, "paint_alpha") {
+    private static final Property<PageIndicatorLine, Integer> PAINT_ALPHA
+            = new Property<PageIndicatorLine, Integer>(Integer.class, "paint_alpha") {
         @Override
-        public Integer get(Paint paint) {
-            return paint.getAlpha();
+        public Integer get(PageIndicatorLine obj) {
+            return obj.mLinePaint.getAlpha();
         }
 
         @Override
-        public void set(Paint paint, Integer alpha) {
-            paint.setAlpha(alpha);
-            invalidate();
+        public void set(PageIndicatorLine obj, Integer alpha) {
+            obj.mLinePaint.setAlpha(alpha);
+            obj.invalidate();
         }
     };
 
@@ -99,13 +97,12 @@ public class PageIndicatorLine extends View implements PageIndicator {
     }
 
     @Override
-    public void setProgress(float progress) {
+    public void setScroll(int currentScroll, int totalScroll) {
         if (getAlpha() == 0) {
             return;
         }
-        progress = Utilities.boundToRange(progress, 0f, 1f);
         animateLineToAlpha(mAlpha);
-        mProgress = progress;
+        mProgress = Utilities.boundToRange(((float) currentScroll) / totalScroll, 0f, 1f);;
         invalidate();
 
         // Hide after a brief period.
@@ -114,32 +111,22 @@ public class PageIndicatorLine extends View implements PageIndicator {
     }
 
     @Override
-    public void removeAllMarkers(boolean allowAnimations) {
-        mNumPages = 0;
-    }
-
-    @Override
-    public void addMarkers(ArrayList<PageMarkerResources> markers, boolean allowAnimations) {
-        mNumPages += markers.size();
-    }
-
-    @Override
     public void setActiveMarker(int activePage) {
     }
 
     @Override
-    public void addMarker(int pageIndex, PageMarkerResources pageIndicatorMarker,
-            boolean allowAnimations) {
+    public void addMarker() {
         mNumPages++;
     }
 
     @Override
-    public void removeMarker(int pageIndex, boolean allowAnimations) {
+    public void removeMarker() {
         mNumPages--;
     }
 
     @Override
-    public void updateMarker(int pageIndex, PageMarkerResources pageIndicatorMarker) {
+    public void setMarkersCount(int numMarkers) {
+        mNumPages = numMarkers;
     }
 
     /**
@@ -174,7 +161,7 @@ public class PageIndicatorLine extends View implements PageIndicator {
             }
             mLineAlphaAnimator.cancel();
         }
-        mLineAlphaAnimator = ObjectAnimator.ofInt(mLinePaint, mPaintAlphaProperty, alpha);
+        mLineAlphaAnimator = ObjectAnimator.ofInt(this, PAINT_ALPHA, alpha);
         mLineAlphaAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {

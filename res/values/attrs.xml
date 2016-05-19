@@ -31,11 +31,6 @@
         <attr name="customShadows" format="boolean" />
     </declare-styleable>
 
-    <!-- Page Indicator specific attributes. -->
-    <declare-styleable name="PageIndicatorDots">
-        <attr name="windowSize" format="integer"  />
-    </declare-styleable>
-
     <!-- PagedView specific attributes. These attributes are used to customize
          a PagedView view in XML files. -->
     <declare-styleable name="PagedView">

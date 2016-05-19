@@ -78,6 +78,7 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.logging.UserEventDispatcher.LaunchSourceProvider;
+import com.android.launcher3.pageindicators.PageIndicatorDots;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.Thunk;
@@ -148,6 +149,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     @Thunk FolderPagedView mContent;
     @Thunk View mContentWrapper;
     public ExtendedEditText mFolderName;
+    private PageIndicatorDots mPageIndicator;
 
     private View mFooter;
     private int mFooterHeight;
@@ -228,6 +230,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mContent = (FolderPagedView) findViewById(R.id.folder_content);
         mContent.setFolder(this);
 
+        mPageIndicator = (PageIndicatorDots) findViewById(R.id.folder_page_indicator);
         mFolderName = (ExtendedEditText) findViewById(R.id.folder_name);
         mFolderName.setOnBackKeyListener(new ExtendedEditText.OnBackKeyListener() {
             @Override
@@ -612,7 +615,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             float textWidth =  mFolderName.getPaint().measureText(mFolderName.getText().toString());
             float translation = (footerWidth - textWidth) / 2;
             mFolderName.setTranslationX(mContent.mIsRtl ? -translation : translation);
-            mContent.setMarkerScale(0);
+            mPageIndicator.prepareEntryAnimation();
 
             // Do not update the flag if we are in drag mode. The flag will be updated, when we
             // actually drop the icon.
@@ -628,7 +631,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                                 AnimationUtils.loadInterpolator(mLauncher,
                                         android.R.interpolator.fast_out_slow_in)
                                 : new LogDecelerateInterpolator(100, 0));
-                    mContent.animateMarkers();
+                    mPageIndicator.playEntryAnimation();
 
                     if (updateAnimationFlag) {
                         mInfo.setOption(FolderInfo.FLAG_MULTI_PAGE_ANIMATION, true, mLauncher);
@@ -637,9 +640,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             });
         } else {
             mFolderName.setTranslationX(0);
-            mContent.setMarkerScale(1);
         }
 
+        mPageIndicator.stopAllAnimations();
         openFolderAnim.start();
 
         // Make sure the folder picks up the last drag move even if the finger doesn't move.

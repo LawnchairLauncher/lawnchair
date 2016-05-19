@@ -255,14 +255,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         ViewGroup grandParent = (ViewGroup) parent.getParent();
         if (mPageIndicator == null && mPageIndicatorViewId > -1) {
             mPageIndicator = (PageIndicator) grandParent.findViewById(mPageIndicatorViewId);
-            mPageIndicator.removeAllMarkers(true);
-
-            ArrayList<PageIndicator.PageMarkerResources> markers = new ArrayList<>();
-            for (int i = 0; i < getChildCount(); ++i) {
-                markers.add(getPageIndicatorMarker(i));
-            }
-
-            mPageIndicator.addMarkers(markers, true);
+            mPageIndicator.setMarkersCount(getChildCount());
 
             OnClickListener listener = getPageIndicatorClickListener();
             if (listener != null) {
@@ -355,10 +348,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     PageIndicator getPageIndicator() {
         return mPageIndicator;
-    }
-    protected PageIndicator.PageMarkerResources getPageIndicatorMarker(int pageIndex) {
-        return new PageIndicator.PageMarkerResources(R.drawable.ic_pageindicator_current,
-                R.drawable.ic_pageindicator_default);
     }
 
     /**
@@ -962,10 +951,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         // Update the page indicator, we don't update the page indicator as we
         // add/remove pages
         if (mPageIndicator != null && !isReordering(false)) {
-            int pageIndex = indexOfChild(child);
-            mPageIndicator.addMarker(pageIndex,
-                    getPageIndicatorMarker(pageIndex),
-                    true);
+            mPageIndicator.addMarker();
         }
 
         // This ensures that when children are added, they get the correct transforms / alphas
@@ -982,11 +968,11 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         invalidate();
     }
 
-    private void removeMarkerForView(int index) {
+    private void removeMarkerForView() {
         // Update the page indicator, we don't update the page indicator as we
         // add/remove pages
         if (mPageIndicator != null && !isReordering(false)) {
-            mPageIndicator.removeMarker(index, true);
+            mPageIndicator.removeMarker();
         }
     }
 
@@ -994,21 +980,21 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     public void removeView(View v) {
         // XXX: We should find a better way to hook into this before the view
         // gets removed form its parent...
-        removeMarkerForView(indexOfChild(v));
+        removeMarkerForView();
         super.removeView(v);
     }
     @Override
     public void removeViewInLayout(View v) {
         // XXX: We should find a better way to hook into this before the view
         // gets removed form its parent...
-        removeMarkerForView(indexOfChild(v));
+        removeMarkerForView();
         super.removeViewInLayout(v);
     }
     @Override
     public void removeViewAt(int index) {
         // XXX: We should find a better way to hook into this before the view
         // gets removed form its parent...
-        removeMarkerForView(index);
+        removeMarkerForView();
         super.removeViewAt(index);
     }
     @Override
@@ -1016,7 +1002,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         // Update the page indicator, we don't update the page indicator as we
         // add/remove pages
         if (mPageIndicator != null) {
-            mPageIndicator.removeAllMarkers(true);
+            mPageIndicator.setMarkersCount(0);
         }
 
         super.removeAllViewsInLayout();
