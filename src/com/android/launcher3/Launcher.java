@@ -3552,7 +3552,12 @@ public class Launcher extends Activity
             if (widgetId != -1) {
                 mQsb = mAppWidgetHost.createView(this, widgetId, searchProvider);
                 mQsb.setId(R.id.qsb_widget);
-                mQsb.updateAppWidgetOptions(opts);
+                if (!Utilities.containsAll(
+                        AppWidgetManager.getInstance(this).getAppWidgetOptions(widgetId), opts)) {
+                    // Launcher should not be updating the options often.
+                    FileLog.d(TAG, "Options for QSB were not same");
+                    mQsb.updateAppWidgetOptions(opts);
+                }
                 mQsb.setPadding(0, 0, 0, 0);
                 mSearchDropTargetBar.addView(mQsb);
                 mSearchDropTargetBar.setQsbSearchBar(mQsb);
