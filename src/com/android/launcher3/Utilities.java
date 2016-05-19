@@ -827,7 +827,7 @@ public final class Utilities {
         if (isNycOrAbove()) {
             try {
                 WallpaperManager wm = context.getSystemService(WallpaperManager.class);
-                return (Boolean) wm.getClass().getDeclaredMethod("isWallpaperSettingAllowed")
+                return (Boolean) wm.getClass().getDeclaredMethod("isSetWallpaperAllowed")
                         .invoke(wm);
             } catch (Exception e) { }
         }
