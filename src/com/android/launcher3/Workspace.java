@@ -1275,13 +1275,15 @@ public class Workspace extends PagedView
         // Update the page indicator progress.
         boolean isTransitioning = mIsSwitchingState
                 || (getLayoutTransition() != null && getLayoutTransition().isRunning());
-        if (mPageIndicator != null && !isTransitioning) {
+        if (!isTransitioning) {
             showPageIndicatorAtCurrentScroll();
         }
     }
 
     private void showPageIndicatorAtCurrentScroll() {
-        mPageIndicator.setScroll(getScrollX(), computeMaxScrollX());
+        if (mPageIndicator != null) {
+            mPageIndicator.setScroll(getScrollX(), computeMaxScrollX());
+        }
     }
 
     @Override
