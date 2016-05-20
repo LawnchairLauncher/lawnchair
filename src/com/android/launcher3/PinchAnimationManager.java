@@ -194,7 +194,7 @@ public class PinchAnimationManager {
         animateShowHideView(INDEX_HOTSEAT, mLauncher.getHotseat(), show);
         if (mWorkspace.getPageIndicator() != null) {
             // There aren't page indicators in landscape mode on phones, hence the null check.
-            animateShowHideView(INDEX_PAGE_INDICATOR, mWorkspace.getPageIndicator().getView(), show);
+            animateShowHideView(INDEX_PAGE_INDICATOR, mWorkspace.getPageIndicator(), show);
         }
     }
 

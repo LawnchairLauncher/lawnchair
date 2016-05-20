@@ -259,9 +259,9 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
             OnClickListener listener = getPageIndicatorClickListener();
             if (listener != null) {
-                mPageIndicator.getView().setOnClickListener(listener);
+                mPageIndicator.setOnClickListener(listener);
             }
-            mPageIndicator.getView().setContentDescription(getPageIndicatorDescription());
+            mPageIndicator.setContentDescription(getPageIndicatorDescription());
         }
     }
 
@@ -467,7 +467,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     private void updatePageIndicator() {
         // Update the page indicator (when we aren't reordering)
         if (mPageIndicator != null) {
-            mPageIndicator.getView().setContentDescription(getPageIndicatorDescription());
+            mPageIndicator.setContentDescription(getPageIndicatorDescription());
             if (!isReordering(false)) {
                 mPageIndicator.setActiveMarker(getNextPage());
             }
