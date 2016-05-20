@@ -357,8 +357,7 @@ public class WorkspaceStateTransitionAnimation {
 
         final ViewGroup overviewPanel = mLauncher.getOverviewPanel();
         final View hotseat = mLauncher.getHotseat();
-        final View pageIndicator = mWorkspace.getPageIndicator() == null ? null
-                : mWorkspace.getPageIndicator().getView();
+        final View pageIndicator = mWorkspace.getPageIndicator();
         if (animated) {
             LauncherViewPropertyAnimator scale = new LauncherViewPropertyAnimator(mWorkspace);
             scale.scaleX(mNewScale)

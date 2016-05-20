@@ -42,7 +42,7 @@ import com.android.launcher3.Utilities;
  * {@link PageIndicator} which shows dots per page. The active page is shown with the current
  * accent color.
  */
-public class PageIndicatorDots extends View implements PageIndicator {
+public class PageIndicatorDots extends PageIndicator {
 
     private static final float SHIFT_PER_ANIMATION = 0.5f;
     private static final float SHIFT_THRESHOLD = 0.1f;
@@ -90,7 +90,6 @@ public class PageIndicatorDots extends View implements PageIndicator {
     private final int mInActiveColor;
     private final boolean mIsRtl;
 
-    private int mNumPages;
     private int mActivePage;
 
     /**
@@ -128,11 +127,6 @@ public class PageIndicatorDots extends View implements PageIndicator {
         mInActiveColor = getResources().getColor(R.color.page_indicator_dot_color);
 
         mIsRtl = Utilities.isRtl(getResources());
-    }
-
-    @Override
-    public View getView() {
-        return this;
     }
 
     @Override
@@ -235,20 +229,7 @@ public class PageIndicatorDots extends View implements PageIndicator {
     }
 
     @Override
-    public void addMarker() {
-        mNumPages++;
-        requestLayout();
-    }
-
-    @Override
-    public void removeMarker() {
-        mNumPages--;
-        requestLayout();
-    }
-
-    @Override
-    public void setMarkersCount(int numMarkers) {
-        mNumPages = numMarkers;
+    protected void onPageCountChanged() {
         requestLayout();
     }
 

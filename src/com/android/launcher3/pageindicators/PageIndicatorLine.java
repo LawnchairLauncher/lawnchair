@@ -25,7 +25,7 @@ import com.android.launcher3.dynamicui.ExtractedColors;
  *
  * The fraction is 1 / number of pages and the position is based on the progress of the page scroll.
  */
-public class PageIndicatorLine extends View implements PageIndicator {
+public class PageIndicatorLine extends PageIndicator {
     private static final String TAG = "PageIndicatorLine";
 
     private static final int LINE_FADE_DURATION = ViewConfiguration.getScrollBarFadeDuration();
@@ -38,7 +38,6 @@ public class PageIndicatorLine extends View implements PageIndicator {
     private ValueAnimator mLineAlphaAnimator;
     private int mAlpha = 0;
     private float mProgress = 0f;
-    private int mNumPages = 1;
     private Paint mLinePaint;
 
     private static final Property<PageIndicatorLine, Integer> PAINT_ALPHA
@@ -78,8 +77,6 @@ public class PageIndicatorLine extends View implements PageIndicator {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-
         if (mNumPages == 0) {
             return;
         }
@@ -89,11 +86,6 @@ public class PageIndicatorLine extends View implements PageIndicator {
         int lineLeft = (int) (mProgress * (availableWidth - lineWidth));
         int lineRight = lineLeft + lineWidth;
         canvas.drawRect(lineLeft, 0, lineRight, canvas.getHeight(), mLinePaint);
-    }
-
-    @Override
-    public View getView() {
-        return this;
     }
 
     @Override
@@ -115,18 +107,8 @@ public class PageIndicatorLine extends View implements PageIndicator {
     }
 
     @Override
-    public void addMarker() {
-        mNumPages++;
-    }
-
-    @Override
-    public void removeMarker() {
-        mNumPages--;
-    }
-
-    @Override
-    public void setMarkersCount(int numMarkers) {
-        mNumPages = numMarkers;
+    protected void onPageCountChanged() {
+        invalidate();
     }
 
     /**

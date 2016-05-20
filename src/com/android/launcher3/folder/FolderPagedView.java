@@ -365,7 +365,7 @@ public class FolderPagedView extends PagedView {
         setEnableOverscroll(getPageCount() > 1);
 
         // Update footer
-        mPageIndicator.getView().setVisibility(getPageCount() > 1 ? View.VISIBLE : View.GONE);
+        mPageIndicator.setVisibility(getPageCount() > 1 ? View.VISIBLE : View.GONE);
         // Set the gravity as LEFT or RIGHT instead of START, as START depends on the actual text.
         mFolder.mFolderName.setGravity(getPageCount() > 1 ?
                 (mIsRtl ? Gravity.RIGHT : Gravity.LEFT) : Gravity.CENTER_HORIZONTAL);

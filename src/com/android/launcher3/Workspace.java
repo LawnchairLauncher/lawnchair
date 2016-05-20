@@ -1339,9 +1339,7 @@ public class Workspace extends PagedView
         // different effects based on device performance. On at least one relatively high-end
         // device I've tried, translating the launcher causes things to get quite laggy.
         setTranslationAndAlpha(mLauncher.getSearchDropTargetBar(), transX, alpha);
-        if (getPageIndicator() != null) {
-            setTranslationAndAlpha(getPageIndicator().getView(), transX, alpha);
-        }
+        setTranslationAndAlpha(getPageIndicator(), transX, alpha);
         setTranslationAndAlpha(getChildAt(getCurrentPage()), transX, alpha);
         setTranslationAndAlpha(mLauncher.getHotseat(), transX, alpha);
 
@@ -1554,7 +1552,7 @@ public class Workspace extends PagedView
         }
 
         if (getPageIndicator() != null) {
-            getPageIndicator().getView().setTranslationX(translationX);
+            getPageIndicator().setTranslationX(translationX);
         }
 
         if (mCustomContentCallbacks != null) {
@@ -1603,7 +1601,7 @@ public class Workspace extends PagedView
             // attach to window
             OnClickListener listener = getPageIndicatorClickListener();
             if (listener != null) {
-                getPageIndicator().getView().setOnClickListener(listener);
+                getPageIndicator().setOnClickListener(listener);
             }
 
             showPageIndicatorAtCurrentScroll();
