@@ -152,8 +152,6 @@ public class Launcher extends Activity
     static final boolean DEBUG_RESUME_TIME = false;
     static final boolean DEBUG_LOGGING = false;
 
-    static final boolean ENABLE_DEBUG_INTENTS = false; // allow DebugIntents to run
-
     private static final int REQUEST_CREATE_SHORTCUT = 1;
     private static final int REQUEST_CREATE_APPWIDGET = 5;
     private static final int REQUEST_PICK_APPWIDGET = 9;
@@ -200,9 +198,6 @@ public class Launcher extends Activity
 
     private static final String QSB_WIDGET_ID = "qsb_widget_id";
     private static final String QSB_WIDGET_PROVIDER = "qsb_widget_provider";
-
-    public static final String USER_HAS_MIGRATED = "launcher.user_migrated_from_old_data";
-    private static final String MIGRATE_AUTHORITY = "com.android.launcher2.settings";
 
     /** The different states that Launcher can be in. */
     enum State { NONE, WORKSPACE, WORKSPACE_SPRING_LOADED, APPS, APPS_SPRING_LOADED,
@@ -1621,15 +1616,6 @@ public class Launcher extends Activity
             } else if (Intent.ACTION_USER_PRESENT.equals(action)) {
                 mUserPresent = true;
                 updateAutoAdvanceState();
-            } else if (ENABLE_DEBUG_INTENTS && DebugIntents.DELETE_DATABASE.equals(action)) {
-                mModel.resetLoadedState(false, true);
-                mModel.startLoader(PagedView.INVALID_RESTORE_PAGE,
-                        LauncherModel.LOADER_FLAG_CLEAR_WORKSPACE);
-            } else if (ENABLE_DEBUG_INTENTS && DebugIntents.MIGRATE_DATABASE.equals(action)) {
-                mModel.resetLoadedState(false, true);
-                mModel.startLoader(PagedView.INVALID_RESTORE_PAGE,
-                        LauncherModel.LOADER_FLAG_CLEAR_WORKSPACE
-                                | LauncherModel.LOADER_FLAG_MIGRATE_SHORTCUTS);
             }
         }
     };
@@ -1642,11 +1628,6 @@ public class Launcher extends Activity
         final IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(Intent.ACTION_USER_PRESENT);
-        // For handling managed profiles
-        if (ENABLE_DEBUG_INTENTS) {
-            filter.addAction(DebugIntents.DELETE_DATABASE);
-            filter.addAction(DebugIntents.MIGRATE_DATABASE);
-        }
         registerReceiver(mReceiver, filter);
         FirstFrameAnimatorHelper.initializeDrawListener(getWindow().getDecorView());
         mAttached = true;
@@ -4516,41 +4497,8 @@ public class Launcher extends Activity
         LauncherClings launcherClings = new LauncherClings(this);
         if (launcherClings.shouldShowFirstRunOrMigrationClings()) {
             mClings = launcherClings;
-            if (canMigrateFromOldLauncherDb()) {
-                launcherClings.showMigrationCling();
-            } else {
-                launcherClings.showLongPressCling(true);
-            }
+            launcherClings.showLongPressCling(true);
         }
-    }
-
-    private boolean canMigrateFromOldLauncherDb() {
-        // Return true if launcher was not preinstalled and and old content provider exists.
-        return ((getApplicationInfo().flags & ApplicationInfo.FLAG_SYSTEM) == 0) &&
-                providerExists(MIGRATE_AUTHORITY) &&
-                providerExists(Uri.parse(getString(R.string.old_launcher_provider_uri)).getAuthority());
-
-    }
-
-    private boolean providerExists(String authority) {
-        return getPackageManager().resolveContentProvider(authority, 0) != null;
-    }
-
-
-    void showWorkspaceSearchAndHotseat() {
-        if (mWorkspace != null) mWorkspace.setAlpha(1f);
-        if (mHotseat != null) mHotseat.setAlpha(1f);
-        if (mPageIndicator != null) mPageIndicator.setAlpha(1f);
-        if (mSearchDropTargetBar != null) mSearchDropTargetBar.animateToState(
-                SearchDropTargetBar.State.SEARCH_BAR, 0);
-    }
-
-    void hideWorkspaceSearchAndHotseat() {
-        if (mWorkspace != null) mWorkspace.setAlpha(0f);
-        if (mHotseat != null) mHotseat.setAlpha(0f);
-        if (mPageIndicator != null) mPageIndicator.setAlpha(0f);
-        if (mSearchDropTargetBar != null) mSearchDropTargetBar.animateToState(
-                SearchDropTargetBar.State.INVISIBLE, 0);
     }
 
     // TODO: These method should be a part of LauncherSearchCallback
@@ -4705,9 +4653,4 @@ public class Launcher extends Activity
             setOrientation();
         }
     }
-}
-
-interface DebugIntents {
-    static final String DELETE_DATABASE = "com.android.launcher3.action.DELETE_DATABASE";
-    static final String MIGRATE_DATABASE = "com.android.launcher3.action.MIGRATE_DATABASE";
 }
