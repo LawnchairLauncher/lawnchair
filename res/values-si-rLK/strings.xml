@@ -72,7 +72,9 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"වෝල්පේපර"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"සැකසීම්"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"ඔබගේ පරිපාලක විසින් අබල කරන ලදී"</string>
-    <string name="allow_rotation_title" msgid="2118706734511831751">"කරකැවීමට ඉඩ දෙන්න"</string>
+    <string name="allow_rotation_title" msgid="3132336367556833843">"මුල් පිටු තිරය කරකැවීමට ඉඩ දෙන්න"</string>
+    <string name="allow_rotation_desc" msgid="7635719920854330492">"උපංගය කරකැවූ විට"</string>
+    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"වත්මන් සංදර්ශක සැකසීම් කරකැවීමට සහාය නොදක්වයි"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"නොදනී"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ඉවත් කරන්න"</string>
     <string name="abandoned_search" msgid="891119232568284442">"සොයන්න"</string>

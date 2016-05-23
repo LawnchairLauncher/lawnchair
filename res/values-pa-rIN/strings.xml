@@ -25,13 +25,13 @@
     <string name="activity_not_found" msgid="8071924732094499514">"ਐਪ ਇੰਸਟੌਲ ਨਹੀਂ ਕੀਤਾ ਹੋਇਆ ਹੈ।"</string>
     <string name="activity_not_available" msgid="7456344436509528827">"ਐਪ ਉਪਲਬਧ ਨਹੀਂ ਹੈ"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"ਡਾਊਨਲੋਡ ਕੀਤਾ ਐਪ ਸੁਰੱਖਿਅਤ ਮੋਡ ਵਿੱਚ ਅਸਮਰਥਿਤ"</string>
-    <string name="safemode_widget_error" msgid="4863470563535682004">"ਵਿਜੇਟਸ ਸੁਰੱਖਿਅਤ ਮੋਡ ਵਿੱਚ ਅਸਮਰਥਿਤ"</string>
+    <string name="safemode_widget_error" msgid="4863470563535682004">"ਵਿਜਿਟ ਸੁਰੱਖਿਅਤ ਮੋਡ ਵਿੱਚ ਅਸਮਰਥਿਤ"</string>
     <string name="long_press_widget_to_add" msgid="5154837155685183344">"ਇੱਕ ਵਿਜਿਟ ਨੂੰ ਚੁਣਨ ਲਈ ਟੈਪ ਕਰੋ ਅਤੇ ਦਬਾਈ ਰੱਖੋ।"</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"ਡਬਲ-ਟੈਪ &amp; ਇੱਕ ਵਿਜੇਟ ਚੁਣਨ ਲਈ ਹੋਲਡ ਕਰੋ ਅਤੇ ਕਸਟਮ ਕਿਰਿਆਵਾਂ ਵਰਤੋ।"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"ਐਪਾਂ ਖੋਜੋ…"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"ਐਪਸ ਲੋਡ ਕਰ ਰਿਹਾ ਹੈ..."</string>
-    <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" ਨਾਲ ਮਿਲਦੀ ਕੋਈ ਵੀ ਐਪਸ ਨਹੀਂ ਲੱਭੀਆਂ"</string>
+    <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" ਨਾਲ ਮਿਲਦੀਆਂ ਕੋਈ ਵੀ ਐਪਾਂ ਨਹੀਂ ਮਿਲੀਆਂ"</string>
     <string name="all_apps_search_market_message" msgid="5470761048755751471">"<xliff:g id="QUERY">%1$s</xliff:g> ਤੇ ਜਾਓ"</string>
     <string name="out_of_space" msgid="4691004494942118364">"ਇਸ ਹੋਮ ਸਕ੍ਰੀਨ ਲਈ ਹੋਰ ਖਾਲੀ ਸਥਾਨ ਨਹੀਂ ਹੈ।"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ਮਨਪਸੰਦ ਟ੍ਰੇ ਵਿੱਚ ਹੋਰ ਖਾਲੀ ਸਥਾਨ ਨਹੀਂ।"</string>
@@ -48,7 +48,7 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"ਐਪ ਨੂੰ ਹੋਮ ਵਿੱਚ ਸੈਟਿੰਗਾਂ ਅਤੇ ਸ਼ੌਰਟਕਟ ਬਦਲਣ ਦੀ ਆਗਿਆ ਦਿੰਦਾ ਹੈ।"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> ਨੂੰ ਫੋਨ ਕਾਲਾਂ ਕਰਨ ਦੀ ਆਗਿਆ ਨਹੀਂ ਹੈ"</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"ਵਿਜੇਟ ਲੋਡ ਕਰਨ ਵਿੱਚ ਸਮੱਸਿਆ"</string>
-    <string name="gadget_setup_text" msgid="8274003207686040488">"ਸੈਟਅਪ"</string>
+    <string name="gadget_setup_text" msgid="8274003207686040488">"ਸਥਾਪਤ ਕਰੋ"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ਇਹ ਇੱਕ ਸਿਸਟਮ ਐਪ ਹੈ ਅਤੇ ਇਸਨੂੰ ਅਣਇੰਸਟੌਲ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ।"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"ਬਿਨਾਂ ਨਾਮ ਦਿੱਤਾ ਫੋਲਡਰ"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"ਸਫ਼ਾ %2$d ਦਾ %1$d"</string>
@@ -59,20 +59,22 @@
     <string name="migration_cling_description" msgid="2752413805582227644">"ਕੀ ਆਪਣੀਆਂ ਪੁਰਾਣੀਆਂ ਹੋਮ ਸਕ੍ਰੀਨਾਂ ਤੋਂ ਆਈਕਨਾਂ ਅਤੇ ਫੋਲਡਰ ਆਯਾਤ ਕਰਨੇ ਹਨ?"</string>
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"ਆਈਕਨਾਂ ਨੂੰ ਕਾਪੀ ਕਰੋ"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"ਤਾਜ਼ਾ ਸ਼ੁਰੂ ਕਰੋ"</string>
-    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"ਵਾਲਪੇਪਰ, ਵਿਜੇਟ, &amp; ਸੈਟਿੰਗਾਂ"</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"ਵਾਲਪੇਪਰ, ਵਿਜਿਟ, ਅਤੇ ਸੈਟਿੰਗਾਂ"</string>
     <string name="workspace_cling_longpress_description" msgid="6569028007301925917">"ਬੈਕਗ੍ਰਾਊਂਡ ਨੂੰ ਵਿਸ਼ੇਸ਼-ਵਿਉਂਤਬੱਧ ਕਰਨ ਲਈ ਟੈਪ ਕਰੋ ਅਤੇ ਦਬਾਈ ਰੱਖੋ"</string>
-    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"ਸਮਝ ਗਿਆ"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"ਸਮਝ ਲਿਆ"</string>
     <string name="folder_opened" msgid="94695026776264709">"ਫੋਲਡਰ ਖੋਲ੍ਹਿਆ, <xliff:g id="WIDTH">%1$d</xliff:g> ਬਾਇ <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="4625795376335528256">"ਫੋਲਡਰ ਬੰਦ ਕਰਨ ਲਈ ਟੈਪ ਕਰੋ"</string>
     <string name="folder_tap_to_rename" msgid="4017685068016979677">"ਬਦਲੇ ਗਏ ਨਾਮ ਨੂੰ ਰੱਖਿਅਤ ਕਰਨ ਲਈ ਟੈਪ ਕਰੋ"</string>
     <string name="folder_closed" msgid="4100806530910930934">"ਫੋਲਡਰ ਬੰਦ ਕੀਤਾ"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"ਫੋਲਡਰ ਨੂੰ <xliff:g id="NAME">%1$s</xliff:g> ਮੁੜ ਨਾਮ ਦਿੱਤਾ ਗਿਆ"</string>
     <string name="folder_name_format" msgid="6629239338071103179">"ਫੋਲਡਰ: <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="widget_button_text" msgid="2880537293434387943">"ਵਿਜੇਟਸ"</string>
+    <string name="widget_button_text" msgid="2880537293434387943">"ਵਿਜਿਟ"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"ਵਾਲਪੇਪਰ"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"ਸੈਟਿੰਗਾਂ"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"ਤੁਹਾਡੇ ਪ੍ਰਸ਼ਾਸਕ ਦੁਆਰਾ ਅਯੋਗ ਬਣਾਈ ਗਈ"</string>
-    <string name="allow_rotation_title" msgid="2118706734511831751">"ਰੋਟੇਸ਼ਨ ਦੀ ਆਗਿਆ ਦਿਓ"</string>
+    <string name="allow_rotation_title" msgid="3132336367556833843">"ਮੁੱਖ ਸਕ੍ਰੀਨ ਨੂੰ ਘੁੰਮਾਉਣ ਦੀ ਆਗਿਆ ਦਿਓ"</string>
+    <string name="allow_rotation_desc" msgid="7635719920854330492">"ਜਦੋਂ ਡੀਵਾਈਸ ਘੁੰਮਾਈ ਜਾਂਦੀ ਹੈ"</string>
+    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"ਵਰਤਮਾਨ ਡਿਸਪਲੇ ਸੈਟਿੰਗ ਘੁੰਮਾਉਣ ਦੀ ਇਜਾਜ਼ਤ ਨਹੀਂ ਦਿੰਦੀ ਹੈ"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"ਅਗਿਆਤ"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ਹਟਾਓ"</string>
     <string name="abandoned_search" msgid="891119232568284442">"ਖੋਜੋ"</string>

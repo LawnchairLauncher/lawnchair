@@ -72,7 +72,9 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"وال پیپرز"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"ترتیبات"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"آپ کے منتظم کی طرف سے غیر فعال کر دیا گیا"</string>
-    <string name="allow_rotation_title" msgid="2118706734511831751">"گردش کی اجازت دیں"</string>
+    <string name="allow_rotation_title" msgid="3132336367556833843">"ہوم اسکرین گھمانے کی اجازت دیں"</string>
+    <string name="allow_rotation_desc" msgid="7635719920854330492">"جب آلہ گھمایا جائے"</string>
+    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"موجودہ ڈسپلے ترتیب گھمانے کی اجازت نہیں دیتی"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"نامعلوم"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ہٹائیں"</string>
     <string name="abandoned_search" msgid="891119232568284442">"تلاش کریں"</string>

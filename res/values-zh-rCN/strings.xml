@@ -72,7 +72,9 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"壁纸"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"设置"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"已被您的管理员停用"</string>
-    <string name="allow_rotation_title" msgid="2118706734511831751">"允许旋转"</string>
+    <string name="allow_rotation_title" msgid="3132336367556833843">"允许旋转主屏幕"</string>
+    <string name="allow_rotation_desc" msgid="7635719920854330492">"设备旋转时"</string>
+    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"当前的显示设置不允许旋转设备"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"未知"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"移除"</string>
     <string name="abandoned_search" msgid="891119232568284442">"搜索"</string>

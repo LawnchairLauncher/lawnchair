@@ -72,7 +72,9 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"วอลเปเปอร์"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"การตั้งค่า"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"ปิดใช้โดยผู้ดูแลระบบ"</string>
-    <string name="allow_rotation_title" msgid="2118706734511831751">"อนุญาตให้ใช้การหมุน"</string>
+    <string name="allow_rotation_title" msgid="3132336367556833843">"อนุญาตให้หมุนหน้าจอหลัก"</string>
+    <string name="allow_rotation_desc" msgid="7635719920854330492">"เมื่อหมุนอุปกรณ์"</string>
+    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"การตั้งค่าการแสดงผลปัจจุบันไม่อนุญาตให้มีการหมุน"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"ไม่รู้จัก"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ลบ"</string>
     <string name="abandoned_search" msgid="891119232568284442">"ค้นหา"</string>
