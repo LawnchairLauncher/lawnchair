@@ -72,7 +72,9 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Mga Wallpaper"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"Mga Setting"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Na-disable ng iyong admin"</string>
-    <string name="allow_rotation_title" msgid="2118706734511831751">"Payagan ang pag-rotate"</string>
+    <string name="allow_rotation_title" msgid="3132336367556833843">"Payagan ang pag-rotate ng homescreen"</string>
+    <string name="allow_rotation_desc" msgid="7635719920854330492">"Kapag na-rotate ang device"</string>
+    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Hindi pinahihintulutan ng kasalukuyang setting ng Display ang pag-rotate"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Hindi kilala"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Alisin"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Maghanap"</string>

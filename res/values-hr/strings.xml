@@ -72,7 +72,9 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Pozadine"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"Postavke"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Onemogućio administrator"</string>
-    <string name="allow_rotation_title" msgid="2118706734511831751">"Dopusti rotaciju"</string>
+    <string name="allow_rotation_title" msgid="3132336367556833843">"Dopusti zakretanje početnog zaslona"</string>
+    <string name="allow_rotation_desc" msgid="7635719920854330492">"Kada se uređaj zakrene"</string>
+    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Trenutačna postavka zaslona ne dopušta zakretanje"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Nepoznato"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Ukloni"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Traži"</string>

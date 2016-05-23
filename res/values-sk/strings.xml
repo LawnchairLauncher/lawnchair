@@ -59,7 +59,7 @@
     <string name="migration_cling_description" msgid="2752413805582227644">"Chcete importovať ikony a priečinky zo starých plôch?"</string>
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"SKOPÍROVAŤ IKONY"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"ZAČAŤ ODZNOVA"</string>
-    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Pozadia, miniaplikácie a nastavenia"</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Tapety, miniaplikácie a nastavenia"</string>
     <string name="workspace_cling_longpress_description" msgid="6569028007301925917">"Pozadie prispôsobíte klepnutím a podržaním"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"DOBRE"</string>
     <string name="folder_opened" msgid="94695026776264709">"Otvorený priečinok, <xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
@@ -72,7 +72,9 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Tapety"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"Nastavenia"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Zakázané vaším správcom"</string>
-    <string name="allow_rotation_title" msgid="2118706734511831751">"Povoliť otáčanie"</string>
+    <string name="allow_rotation_title" msgid="3132336367556833843">"Povoliť otáčanie plochy"</string>
+    <string name="allow_rotation_desc" msgid="7635719920854330492">"Pri otočení zariadenia"</string>
+    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Aktuálne nastavenie obrazovky nepovoľuje otáčanie"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Neznáme"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Odstrániť"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Vyhľadať"</string>

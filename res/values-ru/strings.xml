@@ -60,7 +60,7 @@
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"КОПИРОВАТЬ ЗНАЧКИ"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"ИСПОЛЬЗОВАТЬ СТАНДАРТНЫЙ МАКЕТ"</string>
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Обои, виджеты и настройки"</string>
-    <string name="workspace_cling_longpress_description" msgid="6569028007301925917">"Чтобы выполнить настройку, коснитесь фона и удерживайте его"</string>
+    <string name="workspace_cling_longpress_description" msgid="6569028007301925917">"Чтобы выполнить настройку, коснитесь фона и удерживайте его."</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"ОК"</string>
     <string name="folder_opened" msgid="94695026776264709">"Папка открыта, <xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="4625795376335528256">"Нажмите, чтобы закрыть папку"</string>
@@ -72,7 +72,9 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Обои"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"Настройки"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Функция отключена администратором"</string>
-    <string name="allow_rotation_title" msgid="2118706734511831751">"Разрешить автоповорот"</string>
+    <string name="allow_rotation_title" msgid="3132336367556833843">"Разрешить поворачивать главный экран"</string>
+    <string name="allow_rotation_desc" msgid="7635719920854330492">"При повороте устройства"</string>
+    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"В настройках отключен поворот экрана"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Неизвестно"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Удалить"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Найти"</string>

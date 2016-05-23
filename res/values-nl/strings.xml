@@ -69,10 +69,12 @@
     <string name="folder_renamed" msgid="1794088362165669656">"De naam van de map is gewijzigd in <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format" msgid="6629239338071103179">"Map: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Widgets"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"Achtergronden"</string>
+    <string name="wallpaper_button_text" msgid="8404103075899945851">"Achtergrond"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"Instellingen"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Uitgeschakeld door je beheerder"</string>
-    <string name="allow_rotation_title" msgid="2118706734511831751">"Draaien toestaan"</string>
+    <string name="allow_rotation_title" msgid="3132336367556833843">"Draaien van startscherm toestaan"</string>
+    <string name="allow_rotation_desc" msgid="7635719920854330492">"Wanneer het apparaat wordt gedraaid"</string>
+    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Huidige scherminstelling staat draaien niet toe"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Onbekend"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Verwijderen"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Zoeken"</string>
