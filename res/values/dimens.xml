@@ -50,10 +50,6 @@
     <dimen name="cling_migration_content_margin">16dp</dimen>
     <dimen name="cling_migration_content_width">280dp</dimen>
 
-<!-- QSB -->
-    <dimen name="toolbar_button_vertical_padding">4dip</dimen>
-    <dimen name="toolbar_button_horizontal_padding">12dip</dimen>
-
 <!-- Container -->
     <!-- Note: This needs to match the fixed insets for the search box. -->
     <dimen name="container_bounds_inset">8dp</dimen>
