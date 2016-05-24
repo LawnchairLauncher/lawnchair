@@ -51,10 +51,6 @@ public class GridSizeMigrationTask {
     private static final String KEY_MIGRATION_SRC_WORKSPACE_SIZE = "migration_src_workspace_size";
     private static final String KEY_MIGRATION_SRC_HOTSEAT_COUNT = "migration_src_hotseat_count";
 
-    // Set of entries indicating minimum size a widget can be resized to. This is used during
-    // restore in case the widget has not been installed yet.
-    private static final String KEY_MIGRATION_WIDGET_MINSIZE = "migration_widget_min_size";
-
     // These are carefully selected weights for various item types (Math.random?), to allow for
     // the least absurd migration experience.
     private static final float WT_SHORTCUT = 1;
@@ -81,11 +77,9 @@ public class GridSizeMigrationTask {
     private final int mDestHotseatSize;
 
     protected GridSizeMigrationTask(Context context, InvariantDeviceProfile idp,
-            HashSet<String> validPackages, HashMap<String, Point> widgetMinSize,
-            Point sourceSize, Point targetSize) {
+            HashSet<String> validPackages, Point sourceSize, Point targetSize) {
         mContext = context;
         mValidPackages = validPackages;
-        mWidgetMinSize.putAll(widgetMinSize);
         mIdp = idp;
 
         mSrcX = sourceSize.x;
@@ -886,16 +880,6 @@ public class GridSizeMigrationTask {
         return String.format(Locale.ENGLISH, "%d,%d", x, y);
     }
 
-    public static void markForMigration(
-            Context context, HashSet<String> widgets, BackupProtos.DeviceProfieData srcProfile) {
-        Utilities.getPrefs(context).edit()
-                .putString(KEY_MIGRATION_SRC_WORKSPACE_SIZE,
-                        getPointString((int) srcProfile.desktopCols, (int) srcProfile.desktopRows))
-                .putInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, (int) srcProfile.hotseatCount)
-                .putStringSet(KEY_MIGRATION_WIDGET_MINSIZE, widgets)
-                .apply();
-    }
-
     /**
      * Migrates the workspace and hotseat in case their sizes changed.
      * @return false if the migration failed.
@@ -957,14 +941,6 @@ public class GridSizeMigrationTask {
                             + " to " + targetSize);
                 }
 
-                // Min widget sizes
-                HashMap<String, Point> widgetMinSize = new HashMap<>();
-                for (String s : Utilities.getPrefs(context).getStringSet(KEY_MIGRATION_WIDGET_MINSIZE,
-                        Collections.<String>emptySet())) {
-                    String[] parts = s.split("#");
-                    widgetMinSize.put(parts[0], parsePoint(parts[1]));
-                }
-
                 // Migrate the workspace grid, step by step.
                 while (targetSizeIndex < sourceSizeIndex ) {
                     // We only need to migrate the grid if source size is greater
@@ -974,8 +950,7 @@ public class GridSizeMigrationTask {
 
                     if (new GridSizeMigrationTask(context,
                             LauncherAppState.getInstance().getInvariantDeviceProfile(),
-                            validPackages, widgetMinSize,
-                            stepSourceSize, stepTargetSize).migrateWorkspace()) {
+                            validPackages, stepSourceSize, stepTargetSize).migrateWorkspace()) {
                         dbChanged = true;
                     }
                     sourceSizeIndex--;
@@ -1006,7 +981,6 @@ public class GridSizeMigrationTask {
             prefs.edit()
                     .putString(KEY_MIGRATION_SRC_WORKSPACE_SIZE, gridSizeString)
                     .putInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, idp.numHotseatIcons)
-                    .remove(KEY_MIGRATION_WIDGET_MINSIZE)
                     .apply();
         }
     }

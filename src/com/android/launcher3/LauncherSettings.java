@@ -285,9 +285,6 @@ public class LauncherSettings {
         public static final String METHOD_CLEAR_EMPTY_DB_FLAG = "clear_empty_db_flag";
 
         public static final String METHOD_DELETE_EMPTY_FOLDERS = "delete_empty_folders";
-        public static final String METHOD_UPDATE_FOLDER_ITEMS_RANK = "update_folder_items_rank";
-        public static final String METHOD_CONVERT_SHORTCUTS_TO_ACTIVITIES =
-                "convert_shortcuts_to_launcher_activities";
 
         public static final String METHOD_NEW_ITEM_ID = "generate_new_item_id";
         public static final String METHOD_NEW_SCREEN_ID = "generate_new_screen_id";
