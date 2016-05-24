@@ -12,8 +12,8 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.protobuf'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 'android-N'
+    buildToolsVersion '24.0.0-rc3'
 
     defaultConfig {
         applicationId "com.android.launcher3"
@@ -33,7 +33,7 @@ android {
     sourceSets {
         main {
             res.srcDirs = ['res']
-            java.srcDirs = ['src']
+            java.srcDirs = ['src', 'src_config']
             manifest.srcFile 'AndroidManifest.xml'
             proto.srcDirs 'protos/'
         }
