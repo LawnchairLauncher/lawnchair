@@ -291,7 +291,6 @@ public class LauncherSettings {
         public static final String METHOD_DELETE_DB = "delete_db";
 
         public static final String METHOD_LOAD_DEFAULT_FAVORITES = "load_default_favorites";
-        public static final String METHOD_MIGRATE_LAUNCHER2_SHORTCUTS = "migrate_l2_shortcuts";
 
         public static final String METHOD_SET_EXTRACTED_COLORS_AND_WALLPAPER_ID =
                 "set_extracted_colors_and_wallpaper_id_setting";

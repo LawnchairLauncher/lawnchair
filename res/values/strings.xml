@@ -21,9 +21,6 @@
     <!-- General -->
     <skip />
 
-    <!-- URI used to import old favorites. [DO NOT TRANSLATE] -->
-    <string name="old_launcher_provider_uri" translatable="false">content://com.android.launcher2.settings/favorites?notify=true</string>
-
     <!-- Application name -->
     <string name="app_name">Launcher3</string>
     <!-- Default folder name -->

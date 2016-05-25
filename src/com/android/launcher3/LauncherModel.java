@@ -97,10 +97,6 @@ public class LauncherModel extends BroadcastReceiver
 
     static final String TAG = "Launcher.Model";
 
-    public static final int LOADER_FLAG_NONE = 0;
-    public static final int LOADER_FLAG_CLEAR_WORKSPACE = 1 << 0;
-    public static final int LOADER_FLAG_MIGRATE_SHORTCUTS = 1 << 1;
-
     private static final int ITEMS_CHUNK = 6; // batch size for the workspace icons
     private static final long INVALID_SCREEN_ID = -1L;
 
@@ -1221,10 +1217,6 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     public void startLoader(int synchronousBindPage) {
-        startLoader(synchronousBindPage, LOADER_FLAG_NONE);
-    }
-
-    public void startLoader(int synchronousBindPage, int loadFlags) {
         // Enable queue before starting loader. It will get disabled in Launcher#finishBindingItems
         InstallShortcutReceiver.enableInstallQueue();
         synchronized (mLock) {
@@ -1240,7 +1232,7 @@ public class LauncherModel extends BroadcastReceiver
 
                 // If there is already one running, tell it to stop.
                 stopLoaderLocked();
-                mLoaderTask = new LoaderTask(mApp.getContext(), loadFlags, synchronousBindPage);
+                mLoaderTask = new LoaderTask(mApp.getContext(), synchronousBindPage);
                 if (synchronousBindPage != PagedView.INVALID_RESTORE_PAGE
                         && mAllAppsLoaded && mWorkspaceLoaded && !mIsLoaderTaskRunning) {
                     mLoaderTask.runBindSynchronousPage(synchronousBindPage);
@@ -1299,11 +1291,9 @@ public class LauncherModel extends BroadcastReceiver
         @Thunk boolean mIsLoadingAndBindingWorkspace;
         private boolean mStopped;
         @Thunk boolean mLoadAndBindStepFinished;
-        private int mFlags;
 
-        LoaderTask(Context context, int flags, int pageToBindFirst) {
+        LoaderTask(Context context, int pageToBindFirst) {
             mContext = context;
-            mFlags = flags;
             mPageToBindFirst = pageToBindFirst;
         }
 
@@ -1599,29 +1589,22 @@ public class LauncherModel extends BroadcastReceiver
             int countX = profile.numColumns;
             int countY = profile.numRows;
 
+            boolean clearDb = false;
             if (GridSizeMigrationTask.ENABLED &&
                     !GridSizeMigrationTask.migrateGridIfNeeded(mContext)) {
                 // Migration failed. Clear workspace.
-                mFlags = mFlags | LOADER_FLAG_CLEAR_WORKSPACE;
+                clearDb = true;
             }
 
-            if ((mFlags & LOADER_FLAG_CLEAR_WORKSPACE) != 0) {
+            if (clearDb) {
                 Log.d(TAG, "loadWorkspace: resetting launcher database");
                 LauncherSettings.Settings.call(contentResolver,
                         LauncherSettings.Settings.METHOD_DELETE_DB);
             }
 
-            if ((mFlags & LOADER_FLAG_MIGRATE_SHORTCUTS) != 0) {
-                // append the user's Launcher2 shortcuts
-                Log.d(TAG, "loadWorkspace: migrating from launcher2");
-                LauncherSettings.Settings.call(contentResolver,
-                        LauncherSettings.Settings.METHOD_MIGRATE_LAUNCHER2_SHORTCUTS);
-            } else {
-                // Make sure the default workspace is loaded
-                Log.d(TAG, "loadWorkspace: loading default favorites");
-                LauncherSettings.Settings.call(contentResolver,
-                        LauncherSettings.Settings.METHOD_LOAD_DEFAULT_FAVORITES);
-            }
+            Log.d(TAG, "loadWorkspace: loading default favorites");
+            LauncherSettings.Settings.call(contentResolver,
+                    LauncherSettings.Settings.METHOD_LOAD_DEFAULT_FAVORITES);
 
             synchronized (sBgLock) {
                 clearSBgDataStructures();
