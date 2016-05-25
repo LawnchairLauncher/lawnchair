@@ -21,10 +21,7 @@ import android.animation.PropertyValuesHolder;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.UserManager;
@@ -42,7 +39,6 @@ import android.view.accessibility.AccessibilityManager;
 import com.android.launcher3.util.Thunk;
 
 class LauncherClings implements OnClickListener, OnKeyListener {
-    private static final String MIGRATION_CLING_DISMISSED_KEY = "cling_gel.migration.dismissed";
     private static final String WORKSPACE_CLING_DISMISSED_KEY = "cling_gel.workspace.dismissed";
 
     private static final String TAG_CROP_TOP_AND_SIDES = "crop_bg_top_and_sides";
@@ -62,24 +58,7 @@ class LauncherClings implements OnClickListener, OnKeyListener {
 
     @Override
     public void onClick(View v) {
-        int id = v.getId();
-        if (id == R.id.cling_dismiss_migration_use_default) {
-            // Disable the migration cling
-            dismissMigrationCling();
-        } else if (id == R.id.cling_dismiss_migration_copy_apps) {
-            // Copy the shortcuts from the old database
-            LauncherModel model = mLauncher.getModel();
-            model.resetLoadedState(false, true);
-            model.startLoader(PagedView.INVALID_RESTORE_PAGE,
-                    LauncherModel.LOADER_FLAG_CLEAR_WORKSPACE
-                            | LauncherModel.LOADER_FLAG_MIGRATE_SHORTCUTS);
-            // Set the flag to skip the folder cling
-            SharedPreferences.Editor editor = Utilities.getPrefs(mLauncher).edit();
-            editor.putBoolean(Launcher.USER_HAS_MIGRATED, true);
-            editor.apply();
-            // Disable the migration cling
-            dismissMigrationCling();
-        } else if (id == R.id.cling_dismiss_longpress_info) {
+        if (v.getId() == R.id.cling_dismiss_longpress_info) {
             dismissLongPressCling();
         }
     }
@@ -96,40 +75,6 @@ class LauncherClings implements OnClickListener, OnKeyListener {
             dismissLongPressCling();
         }
         return false;
-    }
-
-    /**
-     * Shows the migration cling.
-     *
-     * This flow is mutually exclusive with showFirstRunCling, and only runs if this Launcher
-     * package was not preinstalled and there exists a db to migrate from.
-     */
-    public void showMigrationCling() {
-        mLauncher.onLauncherClingShown();
-        mIsVisible = true;
-        mLauncher.hideWorkspaceSearchAndHotseat();
-
-        ViewGroup root = (ViewGroup) mLauncher.findViewById(R.id.launcher);
-        View inflated = mInflater.inflate(R.layout.migration_cling, root);
-        inflated.findViewById(R.id.cling_dismiss_migration_copy_apps).setOnClickListener(this);
-        inflated.findViewById(R.id.cling_dismiss_migration_use_default).setOnClickListener(this);
-    }
-
-    private void dismissMigrationCling() {
-        mLauncher.showWorkspaceSearchAndHotseat();
-        Runnable dismissCb = new Runnable() {
-            public void run() {
-                Runnable cb = new Runnable() {
-                    public void run() {
-                        // Show the longpress cling next
-                        showLongPressCling(false);
-                    }
-                };
-                dismissCling(mLauncher.findViewById(R.id.migration_cling), cb,
-                        MIGRATION_CLING_DISMISSED_KEY, DISMISS_CLING_DURATION);
-            }
-        };
-        mLauncher.getWorkspace().post(dismissCb);
     }
 
     public void showLongPressCling(boolean showWelcome) {
@@ -197,42 +142,26 @@ class LauncherClings implements OnClickListener, OnKeyListener {
     @Thunk void dismissLongPressCling() {
         Runnable dismissCb = new Runnable() {
             public void run() {
-                Runnable cb = new Runnable() {
-                    public void run() {
-                        mLauncher.onLauncherClingDismissed();
-                    }
-                };
-                dismissCling(mLauncher.findViewById(R.id.longpress_cling), cb,
-                        WORKSPACE_CLING_DISMISSED_KEY, DISMISS_CLING_DURATION);
+                final View cling = mLauncher.findViewById(R.id.longpress_cling);
+                // To catch cases where siblings of top-level views are made invisible, just check whether
+                // the cling is directly set to GONE before dismissing it.
+                if (cling != null && cling.getVisibility() != View.GONE) {
+                    final Runnable cleanUpClingCb = new Runnable() {
+                        public void run() {
+                            cling.setVisibility(View.GONE);
+                            mLauncher.getSharedPrefs().edit()
+                                    .putBoolean(WORKSPACE_CLING_DISMISSED_KEY, true)
+                                    .apply();
+                            mIsVisible = false;
+                            mLauncher.onLauncherClingDismissed();
+                        }
+                    };
+                    cling.animate().alpha(0).setDuration(DISMISS_CLING_DURATION)
+                            .withEndAction(cleanUpClingCb);
+                }
             }
         };
         mLauncher.getWorkspace().post(dismissCb);
-    }
-
-    /** Hides the specified Cling */
-    @Thunk void dismissCling(final View cling, final Runnable postAnimationCb,
-                              final String flag, int duration) {
-        // To catch cases where siblings of top-level views are made invisible, just check whether
-        // the cling is directly set to GONE before dismissing it.
-        if (cling != null && cling.getVisibility() != View.GONE) {
-            final Runnable cleanUpClingCb = new Runnable() {
-                public void run() {
-                    cling.setVisibility(View.GONE);
-                    mLauncher.getSharedPrefs().edit()
-                        .putBoolean(flag, true)
-                        .apply();
-                    mIsVisible = false;
-                    if (postAnimationCb != null) {
-                        postAnimationCb.run();
-                    }
-                }
-            };
-            if (duration <= 0) {
-                cleanUpClingCb.run();
-            } else {
-                cling.animate().alpha(0).setDuration(duration).withEndAction(cleanUpClingCb);
-            }
-        }
     }
 
     public boolean isVisible() {
@@ -269,10 +198,8 @@ class LauncherClings implements OnClickListener, OnKeyListener {
     }
 
     public boolean shouldShowFirstRunOrMigrationClings() {
-        SharedPreferences sharedPrefs = mLauncher.getSharedPrefs();
         return areClingsEnabled() &&
-            !sharedPrefs.getBoolean(WORKSPACE_CLING_DISMISSED_KEY, false) &&
-            !sharedPrefs.getBoolean(MIGRATION_CLING_DISMISSED_KEY, false);
+            !mLauncher.getSharedPrefs().getBoolean(WORKSPACE_CLING_DISMISSED_KEY, false);
     }
 
     public static void markFirstRunClingDismissed(Context ctx) {
