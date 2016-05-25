@@ -51,14 +51,13 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
     private static final String TAG = "WidgetsListAdapter";
     private static final boolean DEBUG = false;
 
-    private Launcher mLauncher;
-    private LayoutInflater mLayoutInflater;
+    private final WidgetPreviewLoader mWidgetPreviewLoader;
+    private final LayoutInflater mLayoutInflater;
+
+    private final View.OnClickListener mIconClickListener;
+    private final View.OnLongClickListener mIconLongClickListener;
 
     private WidgetsModel mWidgetsModel;
-    private WidgetPreviewLoader mWidgetPreviewLoader;
-
-    private View.OnClickListener mIconClickListener;
-    private View.OnLongClickListener mIconLongClickListener;
 
     private final int mIndent;
 
@@ -66,10 +65,10 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
             View.OnLongClickListener iconLongClickListener,
             Launcher launcher) {
         mLayoutInflater = launcher.getLayoutInflater();
+        mWidgetPreviewLoader = LauncherAppState.getInstance().getWidgetCache();
 
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
-        mLauncher = launcher;
         mIndent = launcher.getResources().getDimensionPixelSize(R.dimen.widget_section_indent);
     }
 
@@ -89,7 +88,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
     public void onBindViewHolder(WidgetsRowViewHolder holder, int pos) {
         List<WidgetItem> infoList = mWidgetsModel.getSortedWidgets(pos);
 
-        ViewGroup row = ((ViewGroup) holder.getContent().findViewById(R.id.widgets_cell_list));
+        ViewGroup row = holder.cellContainer;
         if (DEBUG) {
             Log.d(TAG, String.format(
                     "onBindViewHolder [pos=%d, widget#=%d, row.getChildCount=%d]",
@@ -122,14 +121,9 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
         }
 
         // Bind the views in the application info section.
-        PackageItemInfo infoOut = mWidgetsModel.getPackageItemInfo(pos);
-        BubbleTextView tv = ((BubbleTextView) holder.getContent().findViewById(R.id.section));
-        tv.applyFromPackageItemInfo(infoOut);
+        holder.title.applyFromPackageItemInfo(mWidgetsModel.getPackageItemInfo(pos));
 
         // Bind the view in the widget horizontal tray region.
-        if (getWidgetPreviewLoader() == null) {
-            return;
-        }
         for (int i=0; i < infoList.size(); i++) {
             WidgetCell widget = (WidgetCell) row.getChildAt(i);
             widget.applyFromCellItem(infoList.get(i), mWidgetPreviewLoader);
@@ -162,10 +156,9 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
     @Override
     public void onViewRecycled(WidgetsRowViewHolder holder) {
-        ViewGroup row = ((ViewGroup) holder.getContent().findViewById(R.id.widgets_cell_list));
-
-        for (int i = 0; i < row.getChildCount(); i++) {
-            WidgetCell widget = (WidgetCell) row.getChildAt(i);
+        int total = holder.cellContainer.getChildCount();
+        for (int i = 0; i < total; i++) {
+            WidgetCell widget = (WidgetCell) holder.cellContainer.getChildAt(i);
             widget.clear();
         }
     }
@@ -181,12 +174,5 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
     @Override
     public long getItemId(int pos) {
         return pos;
-    }
-
-    private WidgetPreviewLoader getWidgetPreviewLoader() {
-        if (mWidgetPreviewLoader == null) {
-            mWidgetPreviewLoader = LauncherAppState.getInstance().getWidgetCache();
-        }
-        return mWidgetPreviewLoader;
     }
 }
