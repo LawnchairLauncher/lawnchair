@@ -74,7 +74,7 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Администраторуңуз өчүрүп койгон"</string>
     <string name="allow_rotation_title" msgid="3132336367556833843">"Башкы экранды айлантууга уруксат берүү"</string>
     <string name="allow_rotation_desc" msgid="7635719920854330492">"Түзмөк айланганда"</string>
-    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Учурдагы дисплей жөндөөсү айлантууга уруксат бербейт"</string>
+    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Экранды айлантуу параметри өчүрүлгөн"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Белгисиз"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Алып салуу"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Издөө"</string>
