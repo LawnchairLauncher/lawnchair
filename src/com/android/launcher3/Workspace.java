@@ -73,7 +73,6 @@ import com.android.launcher3.dragndrop.SpringLoadedDragController;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.logging.UserEventDispatcher;
-import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.LongArrayMap;
@@ -109,7 +108,10 @@ public class Workspace extends PagedView
     private static final boolean MAP_RECURSE = true;
 
     // The screen id used for the empty screen always present to the right.
-    public final static long EXTRA_EMPTY_SCREEN_ID = -201;
+    public static final long EXTRA_EMPTY_SCREEN_ID = -201;
+    // The is the first screen. It is always present, even if its empty.
+    public static final long FIRST_SCREEN_ID = 0;
+
     private final static long CUSTOM_CONTENT_SCREEN_ID = -301;
 
     private static final long CUSTOM_CONTENT_GESTURE_DELAY = 200;
@@ -180,8 +182,8 @@ public class Workspace extends PagedView
     // in all apps or customize mode)
 
     enum State {
-        NORMAL          (SearchDropTargetBar.State.SEARCH_BAR, false, false),
-        NORMAL_HIDDEN   (SearchDropTargetBar.State.INVISIBLE_TRANSLATED, false, false),
+        NORMAL          (SearchDropTargetBar.State.INVISIBLE, false, false),
+        NORMAL_HIDDEN   (SearchDropTargetBar.State.INVISIBLE, false, false),
         SPRING_LOADED   (SearchDropTargetBar.State.DROP_TARGET, false, true),
         OVERVIEW        (SearchDropTargetBar.State.INVISIBLE, true, true),
         OVERVIEW_HIDDEN (SearchDropTargetBar.State.INVISIBLE, true, false);
@@ -501,6 +503,32 @@ public class Workspace extends PagedView
         return mTouchState != TOUCH_STATE_REST;
     }
 
+    /**
+     * Initializes and binds the first page
+     * @param qsb an exisitng qsb to recycle or null.
+     */
+    public void bindAndInitFirstWorkspaceScreen(View qsb) {
+        // Add the first page
+        CellLayout firstPage = insertNewWorkspaceScreen(Workspace.FIRST_SCREEN_ID, 0);
+
+        if (qsb == null) {
+            // Always add a QSB on the first screen.
+            qsb = mLauncher.getLayoutInflater().inflate(R.layout.qsb_container,
+                    firstPage, false);
+        }
+
+        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) qsb.getLayoutParams();
+        lp.cellX = 0;
+        lp.cellY = 0;
+        lp.cellHSpan = firstPage.getCountX();
+        lp.cellVSpan = 1;
+        lp.canReorder = false;
+
+        if (!firstPage.addViewToCellLayout(qsb, 0, R.id.qsb_container, lp, true)) {
+            Log.e(TAG, "Failed to add to item at (0, 0) to CellLayout");
+        }
+    }
+
     public void removeAllWorkspaceScreens() {
         // Disable all layout transitions before removing all pages to ensure that we don't get the
         // transition animations competing with us changing the scroll when we add pages or the
@@ -513,30 +541,39 @@ public class Workspace extends PagedView
             removeCustomContentPage();
         }
 
+        // Recycle the QSB widget
+        View qsb = findViewById(R.id.qsb_container);
+        if (qsb != null) {
+            ((ViewGroup) qsb.getParent()).removeView(qsb);
+        }
+
         // Remove the pages and clear the screen models
         removeAllViews();
         mScreenOrder.clear();
         mWorkspaceScreens.clear();
 
+        // Ensure that the first page is always present
+        bindAndInitFirstWorkspaceScreen(qsb);
+
         // Re-enable the layout transitions
         enableLayoutTransitions();
     }
 
-    public long insertNewWorkspaceScreenBeforeEmptyScreen(long screenId) {
+    public void insertNewWorkspaceScreenBeforeEmptyScreen(long screenId) {
         // Find the index to insert this view into.  If the empty screen exists, then
         // insert it before that.
         int insertIndex = mScreenOrder.indexOf(EXTRA_EMPTY_SCREEN_ID);
         if (insertIndex < 0) {
             insertIndex = mScreenOrder.size();
         }
-        return insertNewWorkspaceScreen(screenId, insertIndex);
+        insertNewWorkspaceScreen(screenId, insertIndex);
     }
 
-    public long insertNewWorkspaceScreen(long screenId) {
-        return insertNewWorkspaceScreen(screenId, getChildCount());
+    public void insertNewWorkspaceScreen(long screenId) {
+        insertNewWorkspaceScreen(screenId, getChildCount());
     }
 
-    public long insertNewWorkspaceScreen(long screenId, int insertIndex) {
+    public CellLayout insertNewWorkspaceScreen(long screenId, int insertIndex) {
         if (mWorkspaceScreens.containsKey(screenId)) {
             throw new RuntimeException("Screen id " + screenId + " already exists!");
         }
@@ -558,7 +595,8 @@ public class Workspace extends PagedView
         if (delegate != null && delegate.isInAccessibleDrag()) {
             newScreen.enableAccessibleDrag(true, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG);
         }
-        return screenId;
+
+        return newScreen;
     }
 
     public void createCustomContentContainer() {
@@ -860,7 +898,8 @@ public class Workspace extends PagedView
         for (int i = 0; i < total; i++) {
             long id = mWorkspaceScreens.keyAt(i);
             CellLayout cl = mWorkspaceScreens.valueAt(i);
-            if (id >= 0 && cl.getShortcutsAndWidgets().getChildCount() == 0) {
+            // FIRST_SCREEN_ID can never be removed.
+            if (id > FIRST_SCREEN_ID && cl.getShortcutsAndWidgets().getChildCount() == 0) {
                 removeScreens.add(id);
             }
         }

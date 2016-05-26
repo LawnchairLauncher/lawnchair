@@ -611,8 +611,11 @@ public class LauncherProvider extends ContentProvider {
             // Database was just created, so wipe any previous widgets
             if (mWidgetHostResetHandler != null) {
                 new AppWidgetHost(mContext, Launcher.APPWIDGET_HOST_ID).deleteHost();
-                mWidgetHostResetHandler.sendEmptyMessage(
-                        ChangeListenerWrapper.MSG_APP_WIDGET_HOST_RESET);
+                mWidgetHostResetHandler.sendMessage(Message.obtain(
+                        mWidgetHostResetHandler,
+                        ChangeListenerWrapper.MSG_APP_WIDGET_HOST_RESET,
+                        mContext
+                ));
             }
 
             // Set the flag for empty DB
@@ -1100,7 +1103,11 @@ public class LauncherProvider extends ContentProvider {
                         mListener.onExtractedColorsChanged();
                         break;
                     case MSG_APP_WIDGET_HOST_RESET:
-                        mListener.onAppWidgetHostReset();
+                        Context context = (Context) msg.obj;
+                        if (context != null) {
+                            context.sendBroadcast(new Intent(Launcher.ACTION_APPWIDGET_HOST_RESET)
+                                    .setPackage(context.getPackageName()));
+                        }
                         break;
                 }
             }

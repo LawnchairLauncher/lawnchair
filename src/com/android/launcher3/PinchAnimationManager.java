@@ -150,12 +150,10 @@ public class PinchAnimationManager {
                 animateOverviewPanelButtons(goingTowards == OVERVIEW);
             } else if (startState == NORMAL) {
                 animateHotseatAndPageIndicator(goingTowards == NORMAL);
-                animateQsb(goingTowards == NORMAL);
             }
         } else if (threshold == PinchThresholdManager.THRESHOLD_TWO) {
             if (startState == OVERVIEW) {
                 animateHotseatAndPageIndicator(goingTowards == NORMAL);
-                animateQsb(goingTowards == NORMAL);
                 animateScrim(goingTowards == OVERVIEW);
             } else if (startState == NORMAL) {
                 animateOverviewPanelButtons(goingTowards == OVERVIEW);
@@ -196,12 +194,6 @@ public class PinchAnimationManager {
             // There aren't page indicators in landscape mode on phones, hence the null check.
             animateShowHideView(INDEX_PAGE_INDICATOR, mWorkspace.getPageIndicator(), show);
         }
-    }
-
-    private void animateQsb(boolean show) {
-        SearchDropTargetBar.State searchBarState = show ? SearchDropTargetBar.State.SEARCH_BAR
-                : SearchDropTargetBar.State.INVISIBLE;
-        mLauncher.getSearchDropTargetBar().animateToState(searchBarState, THRESHOLD_ANIM_DURATION);
     }
 
     private void animateOverviewPanelButtons(boolean show) {

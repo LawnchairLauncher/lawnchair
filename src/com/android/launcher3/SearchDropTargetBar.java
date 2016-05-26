@@ -16,8 +16,6 @@
 
 package com.android.launcher3;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
@@ -26,8 +24,6 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewDebug;
-import android.view.accessibility.AccessibilityManager;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 
 import com.android.launcher3.dragndrop.DragController;
@@ -39,32 +35,21 @@ import com.android.launcher3.util.Thunk;
  */
 public class SearchDropTargetBar extends BaseDropTargetBar {
 
-    private static final TimeInterpolator MOVE_DOWN_INTERPOLATOR = new DecelerateInterpolator(0.6f);
-    private static final TimeInterpolator MOVE_UP_INTERPOLATOR = new DecelerateInterpolator(1.5f);
-
     /** The different states that the search bar space can be in. */
     public enum State {
-        INVISIBLE             (0f, 0f, 0f),
-        INVISIBLE_TRANSLATED  (0f, 0f, -1f),
-        SEARCH_BAR            (1f, 0f, 0f),
-        DROP_TARGET           (0f, 1f, 0f);
+        INVISIBLE             (0f),
+        DROP_TARGET           (1f);
 
-        private final float mSearchBarAlpha;
         private final float mDropTargetBarAlpha;
-        private final float mTranslation;
 
-        State(float sbAlpha, float dtbAlpha, float translation) {
-            mSearchBarAlpha = sbAlpha;
+        State(float dtbAlpha) {
             mDropTargetBarAlpha = dtbAlpha;
-            mTranslation = translation;
         }
-
     }
 
 
     @ViewDebug.ExportedProperty(category = "launcher")
-    private State mState = State.SEARCH_BAR;
-    @Thunk View mQSB;
+    private State mState = State.INVISIBLE;
 
     // Drop targets
     private ButtonDropTarget mDeleteDropTarget;
@@ -113,11 +98,7 @@ public class SearchDropTargetBar extends BaseDropTargetBar {
 
     @Override
     public void hideDropTargets() {
-        animateToState(State.SEARCH_BAR, DEFAULT_DRAG_FADE_DURATION);
-    }
-
-    public void setQsbSearchBar(View qsb) {
-        mQSB = qsb;
+        animateToState(State.INVISIBLE, DEFAULT_DRAG_FADE_DURATION);
     }
 
     /**
@@ -140,30 +121,6 @@ public class SearchDropTargetBar extends BaseDropTargetBar {
                 AlphaUpdateListener.updateVisibility(mDropTargetBar, mAccessibilityEnabled);
             }
 
-            if (mQSB != null) {
-                boolean isVertical = ((Launcher) getContext()).getDeviceProfile()
-                        .isVerticalBarLayout();
-                float translation = isVertical ? 0 : mState.mTranslation * getMeasuredHeight();
-
-                if (duration > 0) {
-                    int translationChange = Float.compare(mQSB.getTranslationY(), translation);
-
-                    animateAlpha(mQSB, mState.mSearchBarAlpha,
-                            translationChange == 0 ? DEFAULT_INTERPOLATOR
-                                    : (translationChange < 0 ? MOVE_DOWN_INTERPOLATOR
-                                    : MOVE_UP_INTERPOLATOR));
-
-                    if (translationChange != 0) {
-                        mCurrentAnimation.play(
-                                ObjectAnimator.ofFloat(mQSB, View.TRANSLATION_Y, translation));
-                    }
-                } else {
-                    mQSB.setTranslationY(translation);
-                    mQSB.setAlpha(mState.mSearchBarAlpha);
-                    AlphaUpdateListener.updateVisibility(mQSB, mAccessibilityEnabled);
-                }
-            }
-
             // Start the final animation
             if (duration > 0) {
                 if (animation != null) {
@@ -175,30 +132,8 @@ public class SearchDropTargetBar extends BaseDropTargetBar {
         }
     }
 
-    /**
-     * @return the bounds of the QSB search bar.
-     */
-    public Rect getSearchBarBounds() {
-        if (mQSB != null) {
-            final int[] pos = new int[2];
-            mQSB.getLocationOnScreen(pos);
-
-            final Rect rect = new Rect();
-            rect.left = pos[0];
-            rect.top = pos[1];
-            rect.right = pos[0] + mQSB.getWidth();
-            rect.bottom = pos[1] + mQSB.getHeight();
-            return rect;
-        } else {
-            return null;
-        }
-    }
-
     @Override
     public void enableAccessibleDrag(boolean enable) {
-        if (mQSB != null) {
-            mQSB.setVisibility(enable ? View.GONE : View.VISIBLE);
-        }
         mDeleteDropTarget.enableAccessibleDrag(enable);
         mUninstallDropTarget.enableAccessibleDrag(enable);
     }

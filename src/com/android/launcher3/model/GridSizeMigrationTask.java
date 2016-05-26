@@ -22,6 +22,7 @@ import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.backup.nano.BackupProtos;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
@@ -221,7 +222,7 @@ public class GridSizeMigrationTask {
                 // {@link #mCarryOver}, to prevent an infinite loop. If no item could be removed,
                 // break the loop and abort migration by throwing an exception.
                 OptimalPlacementSolution placement = new OptimalPlacementSolution(
-                        new GridOccupancy(mTrgX, mTrgY), deepCopy(mCarryOver), true);
+                        new GridOccupancy(mTrgX, mTrgY), deepCopy(mCarryOver), 0, true);
                 placement.find();
                 if (placement.finalPlacedItems.size() > 0) {
                     long newScreenId = LauncherSettings.Settings.call(
@@ -262,13 +263,16 @@ public class GridSizeMigrationTask {
      * Migrate a particular screen id.
      * Strategy:
      *   1) For all possible combinations of row and column, pick the one which causes the least
-     *      data loss: {@link #tryRemove(int, int, ArrayList, float[])}
+     *      data loss: {@link #tryRemove(int, int, int, ArrayList, float[])}
      *   2) Maintain a list of all lost items before this screen, and add any new item lost from
      *      this screen to that list as well.
      *   3) If all those items from the above list can be placed on this screen, place them
      *      (otherwise they are placed on a new screen).
      */
     private void migrateScreen(long screenId) {
+        // If we are migrating the first screen, do not touch the first row.
+        int startY = screenId == Workspace.FIRST_SCREEN_ID ? 1 : 0;
+
         ArrayList<DbEntry> items = loadWorkspaceEntries(screenId);
 
         int removedCol = Integer.MAX_VALUE;
@@ -286,10 +290,10 @@ public class GridSizeMigrationTask {
 
         // Try removing all possible combinations
         for (int x = 0; x < mSrcX; x++) {
-            for (int y = 0; y < mSrcY; y++) {
+            for (int y = startY; y < mSrcY; y++) {
                 // Use a deep copy when trying out a particular combination as it can change
                 // the underlying object.
-                ArrayList<DbEntry> itemsOnScreen = tryRemove(x, y, deepCopy(items), outLoss);
+                ArrayList<DbEntry> itemsOnScreen = tryRemove(x, y, startY, deepCopy(items), outLoss);
 
                 if ((outLoss[0] < removeWt) || ((outLoss[0] == removeWt) && (outLoss[1] < moveWt))) {
                     removeWt = outLoss[0];
@@ -338,12 +342,13 @@ public class GridSizeMigrationTask {
         if (!mCarryOver.isEmpty() && removeWt == 0) {
             // No new items were removed in this step. Try placing all the items on this screen.
             GridOccupancy occupied = new GridOccupancy(mTrgX, mTrgY);
+            occupied.markCells(0, 0, mTrgX, startY, true);
             for (DbEntry item : finalItems) {
                 occupied.markCells(item, true);
             }
 
             OptimalPlacementSolution placement = new OptimalPlacementSolution(occupied,
-                    deepCopy(mCarryOver), true);
+                    deepCopy(mCarryOver), startY, true);
             placement.find();
             if (placement.lowestWeightLoss == 0) {
                 // All items got placed
@@ -375,9 +380,10 @@ public class GridSizeMigrationTask {
      * @param outLoss array of size 2. The first entry is filled with weight loss, and the second
      * with the overall item movement.
      */
-    private ArrayList<DbEntry> tryRemove(int col, int row, ArrayList<DbEntry> items,
-            float[] outLoss) {
+    private ArrayList<DbEntry> tryRemove(int col, int row, int startY,
+            ArrayList<DbEntry> items, float[] outLoss) {
         GridOccupancy occupied = new GridOccupancy(mTrgX, mTrgY);
+        occupied.markCells(0, 0, mTrgX, startY, true);
 
         col = mShouldRemoveX ? col : Integer.MAX_VALUE;
         row = mShouldRemoveY ? row : Integer.MAX_VALUE;
@@ -399,7 +405,8 @@ public class GridSizeMigrationTask {
             }
         }
 
-        OptimalPlacementSolution placement = new OptimalPlacementSolution(occupied, removedItems);
+        OptimalPlacementSolution placement =
+                new OptimalPlacementSolution(occupied, removedItems, startY);
         placement.find();
         finalItems.addAll(placement.finalPlacedItems);
         outLoss[0] = placement.lowestWeightLoss;
@@ -415,19 +422,24 @@ public class GridSizeMigrationTask {
         // linear placement.
         private final boolean ignoreMove;
 
+        // The first row in the grid from where the placement should start.
+        private final int startY;
+
         float lowestWeightLoss = Float.MAX_VALUE;
         float lowestMoveCost = Float.MAX_VALUE;
         ArrayList<DbEntry> finalPlacedItems;
 
-        public OptimalPlacementSolution(GridOccupancy occupied, ArrayList<DbEntry> itemsToPlace) {
-            this(occupied, itemsToPlace, false);
+        public OptimalPlacementSolution(
+                GridOccupancy occupied, ArrayList<DbEntry> itemsToPlace, int startY) {
+            this(occupied, itemsToPlace, startY, false);
         }
 
         public OptimalPlacementSolution(GridOccupancy occupied, ArrayList<DbEntry> itemsToPlace,
-                boolean ignoreMove) {
+                int startY, boolean ignoreMove) {
             this.occupied = occupied;
             this.itemsToPlace = itemsToPlace;
             this.ignoreMove = ignoreMove;
+            this.startY = startY;
 
             // Sort the items such that larger widgets appear first followed by 1x1 items
             Collections.sort(this.itemsToPlace);
@@ -477,7 +489,7 @@ public class GridSizeMigrationTask {
                 int myW = me.spanX;
                 int myH = me.spanY;
 
-                for (int y = 0; y < mTrgY; y++) {
+                for (int y = startY; y < mTrgY; y++) {
                     for (int x = 0; x < mTrgX; x++) {
                         float newMoveCost = moveCost;
                         if (x != myX) {
@@ -547,7 +559,7 @@ public class GridSizeMigrationTask {
                 int newDistance = Integer.MAX_VALUE;
                 int newX = Integer.MAX_VALUE, newY = Integer.MAX_VALUE;
 
-                for (int y = 0; y < mTrgY; y++) {
+                for (int y = startY; y < mTrgY; y++) {
                     for (int x = 0; x < mTrgX; x++) {
                         if (!occupied.cells[x][y]) {
                             int dist = ignoreMove ? 0 :
