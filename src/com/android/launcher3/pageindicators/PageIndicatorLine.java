@@ -14,7 +14,6 @@ import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Property;
-import android.view.View;
 import android.view.ViewConfiguration;
 
 import com.android.launcher3.Utilities;
@@ -33,7 +32,9 @@ public class PageIndicatorLine extends PageIndicator {
     public static final int WHITE_ALPHA = (int) (0.70f * 255);
     public static final int BLACK_ALPHA = (int) (0.65f * 255);
 
-    private final Handler mHandler = new Handler(Looper.getMainLooper());
+    private final Handler mDelayedLineFadeHandler = new Handler(Looper.getMainLooper());
+
+    private boolean mShouldAutoHide = true;
 
     private ValueAnimator mLineAlphaAnimator;
     private int mAlpha = 0;
@@ -97,9 +98,14 @@ public class PageIndicatorLine extends PageIndicator {
         mProgress = Utilities.boundToRange(((float) currentScroll) / totalScroll, 0f, 1f);;
         invalidate();
 
-        // Hide after a brief period.
-        mHandler.removeCallbacksAndMessages(null);
-        mHandler.postDelayed(mHideLineRunnable, LINE_FADE_DELAY);
+        if (mShouldAutoHide) {
+            hideAfterDelay();
+        }
+    }
+
+    private void hideAfterDelay() {
+        mDelayedLineFadeHandler.removeCallbacksAndMessages(null);
+        mDelayedLineFadeHandler.postDelayed(mHideLineRunnable, LINE_FADE_DELAY);
     }
 
     @Override
@@ -109,6 +115,15 @@ public class PageIndicatorLine extends PageIndicator {
     @Override
     protected void onPageCountChanged() {
         invalidate();
+    }
+
+    public void setShouldAutoHide(boolean shouldAutoHide) {
+        mShouldAutoHide = shouldAutoHide;
+        if (shouldAutoHide && mLinePaint.getAlpha() > 0) {
+            hideAfterDelay();
+        } else if (!shouldAutoHide) {
+            mDelayedLineFadeHandler.removeCallbacksAndMessages(null);
+        }
     }
 
     /**
