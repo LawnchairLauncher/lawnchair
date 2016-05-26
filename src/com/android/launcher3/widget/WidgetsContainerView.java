@@ -26,6 +26,7 @@ import android.support.v7.widget.RecyclerView.State;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.android.launcher3.BaseContainerView;
@@ -329,6 +330,11 @@ public class WidgetsContainerView extends BaseContainerView
         mRecyclerView.setWidgets(model);
         mAdapter.setWidgetsModel(model);
         mAdapter.notifyDataSetChanged();
+
+        View loader = getContentView().findViewById(R.id.loader);
+        if (loader != null) {
+            ((ViewGroup) getContentView()).removeView(loader);
+        }
     }
 
     public boolean isEmpty() {
