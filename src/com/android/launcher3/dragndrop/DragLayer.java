@@ -29,7 +29,6 @@ import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -52,7 +51,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetHostView;
 import com.android.launcher3.PinchToOverviewListener;
 import com.android.launcher3.R;
-import com.android.launcher3.SearchDropTargetBar;
+import com.android.launcher3.DropTargetBar;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
@@ -184,31 +183,17 @@ public class DragLayer extends InsettableFrameLayout {
 
     private boolean isEventOverFolderTextRegion(Folder folder, MotionEvent ev) {
         getDescendantRectRelativeToSelf(folder.getEditTextRegion(), mHitRect);
-        if (mHitRect.contains((int) ev.getX(), (int) ev.getY())) {
-            return true;
-        }
-        return false;
+        return mHitRect.contains((int) ev.getX(), (int) ev.getY());
     }
 
     private boolean isEventOverFolder(Folder folder, MotionEvent ev) {
         getDescendantRectRelativeToSelf(folder, mHitRect);
-        if (mHitRect.contains((int) ev.getX(), (int) ev.getY())) {
-            return true;
-        }
-        return false;
+        return mHitRect.contains((int) ev.getX(), (int) ev.getY());
     }
 
     private boolean isEventOverDropTargetBar(MotionEvent ev) {
-        getDescendantRectRelativeToSelf(mLauncher.getSearchDropTargetBar(), mHitRect);
-        if (mHitRect.contains((int) ev.getX(), (int) ev.getY())) {
-            return true;
-        }
-
-        getDescendantRectRelativeToSelf(mLauncher.getAppInfoDropTargetBar(), mHitRect);
-        if (mHitRect.contains((int) ev.getX(), (int) ev.getY())) {
-            return true;
-        }
-        return false;
+        getDescendantRectRelativeToSelf(mLauncher.getDropTargetBar(), mHitRect);
+        return mHitRect.contains((int) ev.getX(), (int) ev.getY());
     }
 
     private boolean handleTouchDown(MotionEvent ev, boolean intercept) {
@@ -356,7 +341,7 @@ public class DragLayer extends InsettableFrameLayout {
                 return super.onRequestSendAccessibilityEvent(child, event);
             }
 
-            if (isInAccessibleDrag() && child instanceof SearchDropTargetBar) {
+            if (isInAccessibleDrag() && child instanceof DropTargetBar) {
                 return super.onRequestSendAccessibilityEvent(child, event);
             }
             // Skip propagating onRequestSendAccessibilityEvent all for other children
@@ -374,8 +359,7 @@ public class DragLayer extends InsettableFrameLayout {
             childrenForAccessibility.add(currentFolder);
 
             if (isInAccessibleDrag()) {
-                childrenForAccessibility.add(mLauncher.getSearchDropTargetBar());
-                childrenForAccessibility.add(mLauncher.getAppInfoDropTargetBar());
+                childrenForAccessibility.add(mLauncher.getDropTargetBar());
             }
         } else {
             super.addChildrenForAccessibility(childrenForAccessibility);

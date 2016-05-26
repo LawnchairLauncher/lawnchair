@@ -211,8 +211,7 @@ public class WorkspaceStateTransitionAnimation {
         mOverviewTransitionTime = res.getInteger(R.integer.config_overviewTransitionTime);
         mOverlayTransitionTime = res.getInteger(R.integer.config_overlayTransitionTime);
         mSpringLoadedTransitionTime = mOverlayTransitionTime / 2;
-        mSpringLoadedShrinkFactor =
-                res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100f;
+        mSpringLoadedShrinkFactor = mLauncher.getDeviceProfile().workspaceSpringLoadShrinkFactor;
         mOverviewModeShrinkFactor =
                 res.getInteger(R.integer.config_workspaceOverviewShrinkPercentage) / 100f;
         mWorkspaceScrimAlpha = res.getInteger(R.integer.config_workspaceScrimAlpha) / 100f;
