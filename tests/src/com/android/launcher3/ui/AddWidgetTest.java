@@ -44,7 +44,7 @@ public class AddWidgetTest extends LauncherInstrumentationTestCase {
         clearHomescreen();
         Launcher launcher = startLauncher();
 
-        // Open all apps and wait for load complete.
+        // Open widget tray and wait for load complete.
         final UiObject2 widgetContainer = openWidgetsTray();
         assertTrue(Wait.atMost(Condition.minChildCount(widgetContainer, 2), DEFAULT_UI_TIMEOUT));
 
