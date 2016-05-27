@@ -351,12 +351,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
     // The text to show when there are no search results and no market search handler.
     private String mEmptySearchMessage;
-    // The name of the market app which handles searches, to be used in the format str
-    // below when updating the search-market view.  Only needs to be loaded once.
-    private String mMarketAppName;
-    // The text to show when there is a market app which can handle a specific query, updated
-    // each time the search query changes.
-    private String mMarketSearchMessage;
     // The intent to send off to the market app, updated each time the search query changes.
     private Intent mMarketSearchIntent;
 
@@ -402,14 +396,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
     public void setSearchController(AllAppsSearchBarController searchController) {
         mSearchController = searchController;
-
-        // Resolve the market app handling additional searches
-        PackageManager pm = mLauncher.getPackageManager();
-        ResolveInfo marketInfo = pm.resolveActivity(mSearchController.createMarketSearchIntent(""),
-                PackageManager.MATCH_DEFAULT_ONLY);
-        if (marketInfo != null) {
-            mMarketAppName = marketInfo.loadLabel(pm).toString();
-        }
     }
 
     /**
@@ -419,11 +405,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     public void setLastSearchQuery(String query) {
         Resources res = mLauncher.getResources();
         mEmptySearchMessage = res.getString(R.string.all_apps_no_search_results, query);
-        if (mMarketAppName != null) {
-            mMarketSearchMessage = res.getString(R.string.all_apps_search_market_message,
-                    mMarketAppName);
-            mMarketSearchIntent = mSearchController.createMarketSearchIntent(query);
-        }
+        mMarketSearchIntent = mSearchController.createMarketSearchIntent(query);
     }
 
     /**
@@ -529,10 +511,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 TextView searchView = (TextView) holder.mContent;
                 if (mMarketSearchIntent != null) {
                     searchView.setVisibility(View.VISIBLE);
-                    searchView.setContentDescription(mMarketSearchMessage);
                     searchView.setGravity(mApps.hasNoFilteredResults() ? Gravity.CENTER :
                             Gravity.START | Gravity.CENTER_VERTICAL);
-                    searchView.setText(mMarketSearchMessage);
                 } else {
                     searchView.setVisibility(View.GONE);
                 }
