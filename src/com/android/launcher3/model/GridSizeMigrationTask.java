@@ -25,6 +25,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.backup.nano.BackupProtos;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
+import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.LongArrayMap;
 
 import java.util.ArrayList;
@@ -220,7 +221,7 @@ public class GridSizeMigrationTask {
                 // {@link #mCarryOver}, to prevent an infinite loop. If no item could be removed,
                 // break the loop and abort migration by throwing an exception.
                 OptimalPlacementSolution placement = new OptimalPlacementSolution(
-                        new boolean[mTrgX][mTrgY], deepCopy(mCarryOver), true);
+                        new GridOccupancy(mTrgX, mTrgY), deepCopy(mCarryOver), true);
                 placement.find();
                 if (placement.finalPlacedItems.size() > 0) {
                     long newScreenId = LauncherSettings.Settings.call(
@@ -336,9 +337,9 @@ public class GridSizeMigrationTask {
 
         if (!mCarryOver.isEmpty() && removeWt == 0) {
             // No new items were removed in this step. Try placing all the items on this screen.
-            boolean[][] occupied = new boolean[mTrgX][mTrgY];
+            GridOccupancy occupied = new GridOccupancy(mTrgX, mTrgY);
             for (DbEntry item : finalItems) {
-                markCells(occupied, item, true);
+                occupied.markCells(item, true);
             }
 
             OptimalPlacementSolution placement = new OptimalPlacementSolution(occupied,
@@ -376,7 +377,7 @@ public class GridSizeMigrationTask {
      */
     private ArrayList<DbEntry> tryRemove(int col, int row, ArrayList<DbEntry> items,
             float[] outLoss) {
-        boolean[][] occupied = new boolean[mTrgX][mTrgY];
+        GridOccupancy occupied = new GridOccupancy(mTrgX, mTrgY);
 
         col = mShouldRemoveX ? col : Integer.MAX_VALUE;
         row = mShouldRemoveY ? row : Integer.MAX_VALUE;
@@ -394,7 +395,7 @@ public class GridSizeMigrationTask {
                 if (item.cellX > col) item.cellX --;
                 if (item.cellY > row) item.cellY --;
                 finalItems.add(item);
-                markCells(occupied, item, true);
+                occupied.markCells(item, true);
             }
         }
 
@@ -406,31 +407,9 @@ public class GridSizeMigrationTask {
         return finalItems;
     }
 
-    private void markCells(boolean[][] occupied, DbEntry item, boolean val) {
-        for (int i = item.cellX; i < (item.cellX + item.spanX); i++) {
-            for (int j = item.cellY; j < (item.cellY + item.spanY); j++) {
-                occupied[i][j] = val;
-            }
-        }
-    }
-
-    private boolean isVacant(boolean[][] occupied, int x, int y, int w, int h) {
-        if (x + w > mTrgX) return false;
-        if (y + h > mTrgY) return false;
-
-        for (int i = 0; i < w; i++) {
-            for (int j = 0; j < h; j++) {
-                if (occupied[i + x][j + y]) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
     private class OptimalPlacementSolution {
         private final ArrayList<DbEntry> itemsToPlace;
-        private final boolean[][] occupied;
+        private final GridOccupancy occupied;
 
         // If set to true, item movement are not considered in move cost, leading to a more
         // linear placement.
@@ -440,11 +419,11 @@ public class GridSizeMigrationTask {
         float lowestMoveCost = Float.MAX_VALUE;
         ArrayList<DbEntry> finalPlacedItems;
 
-        public OptimalPlacementSolution(boolean[][] occupied, ArrayList<DbEntry> itemsToPlace) {
+        public OptimalPlacementSolution(GridOccupancy occupied, ArrayList<DbEntry> itemsToPlace) {
             this(occupied, itemsToPlace, false);
         }
 
-        public OptimalPlacementSolution(boolean[][] occupied, ArrayList<DbEntry> itemsToPlace,
+        public OptimalPlacementSolution(GridOccupancy occupied, ArrayList<DbEntry> itemsToPlace,
                 boolean ignoreMove) {
             this.occupied = occupied;
             this.itemsToPlace = itemsToPlace;
@@ -513,42 +492,42 @@ public class GridSizeMigrationTask {
                             newMoveCost = moveCost;
                         }
 
-                        if (isVacant(occupied, x, y, myW, myH)) {
+                        if (occupied.isRegionVacant(x, y, myW, myH)) {
                             // place at this position and continue search.
-                            markCells(occupied, me, true);
+                            occupied.markCells(me, true);
                             find(index + 1, weightLoss, newMoveCost, itemsIncludingMe);
-                            markCells(occupied, me, false);
+                            occupied.markCells(me, false);
                         }
 
                         // Try resizing horizontally
-                        if (myW > me.minSpanX && isVacant(occupied, x, y, myW - 1, myH)) {
+                        if (myW > me.minSpanX && occupied.isRegionVacant(x, y, myW - 1, myH)) {
                             me.spanX --;
-                            markCells(occupied, me, true);
+                            occupied.markCells(me, true);
                             // 1 extra move cost
                             find(index + 1, weightLoss, newMoveCost + 1, itemsIncludingMe);
-                            markCells(occupied, me, false);
+                            occupied.markCells(me, false);
                             me.spanX ++;
                         }
 
                         // Try resizing vertically
-                        if (myH > me.minSpanY && isVacant(occupied, x, y, myW, myH - 1)) {
+                        if (myH > me.minSpanY && occupied.isRegionVacant(x, y, myW, myH - 1)) {
                             me.spanY --;
-                            markCells(occupied, me, true);
+                            occupied.markCells(me, true);
                             // 1 extra move cost
                             find(index + 1, weightLoss, newMoveCost + 1, itemsIncludingMe);
-                            markCells(occupied, me, false);
+                            occupied.markCells(me, false);
                             me.spanY ++;
                         }
 
                         // Try resizing horizontally & vertically
                         if (myH > me.minSpanY && myW > me.minSpanX &&
-                                isVacant(occupied, x, y, myW - 1, myH - 1)) {
+                                occupied.isRegionVacant(x, y, myW - 1, myH - 1)) {
                             me.spanX --;
                             me.spanY --;
-                            markCells(occupied, me, true);
+                            occupied.markCells(me, true);
                             // 2 extra move cost
                             find(index + 1, weightLoss, newMoveCost + 2, itemsIncludingMe);
-                            markCells(occupied, me, false);
+                            occupied.markCells(me, false);
                             me.spanX ++;
                             me.spanY ++;
                         }
@@ -570,7 +549,7 @@ public class GridSizeMigrationTask {
 
                 for (int y = 0; y < mTrgY; y++) {
                     for (int x = 0; x < mTrgX; x++) {
-                        if (!occupied[x][y]) {
+                        if (!occupied.cells[x][y]) {
                             int dist = ignoreMove ? 0 :
                                 ((me.cellX - x) * (me.cellX - x) + (me.cellY - y) * (me.cellY - y));
                             if (dist < newDistance) {
@@ -595,9 +574,9 @@ public class GridSizeMigrationTask {
                     if (ignoreMove) {
                         newMoveCost = moveCost;
                     }
-                    markCells(occupied, me, true);
+                    occupied.markCells(me, true);
                     find(index + 1, weightLoss, newMoveCost, itemsIncludingMe);
-                    markCells(occupied, me, false);
+                    occupied.markCells(me, false);
                     me.cellX = myX;
                     me.cellY = myY;
 
