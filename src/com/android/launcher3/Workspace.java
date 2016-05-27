@@ -3938,7 +3938,7 @@ public class Workspace extends PagedView
         });
     }
 
-    private View getFirstMatch(final ItemOperator operator) {
+    public View getFirstMatch(final ItemOperator operator) {
         final View[] value = new View[1];
         mapOverItems(MAP_NO_RECURSE, new ItemOperator() {
             @Override

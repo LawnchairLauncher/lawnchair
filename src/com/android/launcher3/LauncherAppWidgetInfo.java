@@ -72,7 +72,7 @@ public class LauncherAppWidgetInfo extends ItemInfo {
      */
     int appWidgetId = NO_ID;
 
-    ComponentName providerName;
+    public ComponentName providerName;
 
     /**
      * Indicates the restore status of the widget.
