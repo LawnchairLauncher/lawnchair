@@ -1,24 +1,20 @@
-package com.android.launcher3;
+package com.android.launcher3.ui;
 
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiSelector;
-import android.test.InstrumentationTestCase;
 import android.test.suitebuilder.annotation.MediumTest;
+
+import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 
 /**
  * Test for auto rotate preference.
  */
 @MediumTest
-public class RotationPreferenceTest extends InstrumentationTestCase {
-
-    private UiDevice mDevice;
-    private Context mTargetContext;
-    private String mTargetPackage;
+public class RotationPreferenceTest extends LauncherInstrumentationTestCase {
 
     private SharedPreferences mPrefs;
     private boolean mOriginalRotationValue;
@@ -48,7 +44,7 @@ public class RotationPreferenceTest extends InstrumentationTestCase {
 
         setRotationEnabled(false);
         mDevice.setOrientationRight();
-        goToLauncher();
+        startLauncher();
 
         Rect hotseat = getHotseatBounds();
         assertTrue(hotseat.width() > hotseat.height());
@@ -62,19 +58,10 @@ public class RotationPreferenceTest extends InstrumentationTestCase {
 
         setRotationEnabled(true);
         mDevice.setOrientationRight();
-        goToLauncher();
+        startLauncher();
 
         Rect hotseat = getHotseatBounds();
         assertTrue(hotseat.width() < hotseat.height());
-    }
-
-    private void goToLauncher() {
-        Intent homeIntent = new Intent(Intent.ACTION_MAIN)
-                .addCategory(Intent.CATEGORY_HOME)
-                .setPackage(mTargetPackage)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        getInstrumentation().getContext().startActivity(homeIntent);
-        mDevice.findObject(new UiSelector().packageName(mTargetPackage)).waitForExists(6000);
     }
 
     private void setRotationEnabled(boolean enabled) {
