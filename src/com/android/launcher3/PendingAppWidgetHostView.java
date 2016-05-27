@@ -189,9 +189,19 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
         }
     }
 
+    /**
+     * A pending widget is ready for setup after the provider is installed and
+     *   1) Widget id is not valid: the widget id is not yet bound to the provider, probably
+     *                              because the launcher doesn't have appropriate permissions.
+     *                              Note that we would still have an allocated id as that does not
+     *                              require any permissions and can be done during view inflation.
+     *   2) UI is not ready: the id is valid and the bound. But the widget has a configure activity
+     *                       which needs to be called once.
+     */
     public boolean isReadyForClickSetup() {
-        return (mInfo.restoreStatus & LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY) == 0
-                && (mInfo.restoreStatus & LauncherAppWidgetInfo.FLAG_UI_NOT_READY) != 0;
+        return !mInfo.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)
+                && (mInfo.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_UI_NOT_READY)
+                || mInfo.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID));
     }
 
     private void updateDrawableBounds() {
