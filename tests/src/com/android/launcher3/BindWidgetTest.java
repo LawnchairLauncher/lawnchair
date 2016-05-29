@@ -205,10 +205,13 @@ public class BindWidgetTest extends LauncherInstrumentationTestCase {
      */
     private void setupAndVerifyContents(
             LauncherAppWidgetInfo item, Class<?> widgetClass, String desc) {
-        // Add new screen
-        long screenId = LauncherSettings.Settings.call(
-                mResolver, LauncherSettings.Settings.METHOD_NEW_SCREEN_ID)
-                .getLong(LauncherSettings.Settings.EXTRA_VALUE);
+        long screenId = Workspace.FIRST_SCREEN_ID;
+        // Update the screen id counter for the provider.
+        LauncherSettings.Settings.call(mResolver, LauncherSettings.Settings.METHOD_NEW_SCREEN_ID);
+
+        if (screenId > Workspace.FIRST_SCREEN_ID) {
+            screenId = Workspace.FIRST_SCREEN_ID;
+        }
         ContentValues v = new ContentValues();
         v.put(LauncherSettings.WorkspaceScreens._ID, screenId);
         v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, 0);
@@ -263,7 +266,7 @@ public class BindWidgetTest extends LauncherInstrumentationTestCase {
         item.minSpanY = info.minSpanY;
         item.user = mWidgetManager.getUser(info);
         item.cellX = 0;
-        item.cellY = 0;
+        item.cellY = 1;
         item.container = LauncherSettings.Favorites.CONTAINER_DESKTOP;
 
         if (bindWidget) {
@@ -319,7 +322,7 @@ public class BindWidgetTest extends LauncherInstrumentationTestCase {
         item.minSpanX = 2;
         item.minSpanY = 2;
         item.cellX = 0;
-        item.cellY = 0;
+        item.cellY = 1;
         item.container = LauncherSettings.Favorites.CONTAINER_DESKTOP;
         return item;
     }

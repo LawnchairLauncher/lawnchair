@@ -45,20 +45,16 @@ import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.ActivityInfo;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -113,7 +109,6 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.WidgetsModel;
-import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.pageindicators.PageIndicatorLine;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.ComponentKey;
@@ -183,6 +178,9 @@ public class Launcher extends Activity
     static final String INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION =
             "com.android.launcher3.intent.extra.shortcut.INGORE_LAUNCH_ANIMATION";
 
+    public static final String ACTION_APPWIDGET_HOST_RESET =
+            "com.android.launcher3.intent.ACTION_APPWIDGET_HOST_RESET";
+
     // Type: int
     private static final String RUNTIME_STATE_CURRENT_SCREEN = "launcher.current_screen";
     // Type: int
@@ -196,9 +194,6 @@ public class Launcher extends Activity
 
     static final String INTRO_SCREEN_DISMISSED = "launcher.intro_screen_dismissed";
     static final String FIRST_RUN_ACTIVITY_DISPLAYED = "launcher.first_run_activity_displayed";
-
-    private static final String QSB_WIDGET_ID = "qsb_widget_id";
-    private static final String QSB_WIDGET_PROVIDER = "qsb_widget_provider";
 
     /** The different states that Launcher can be in. */
     enum State { NONE, WORKSPACE, WORKSPACE_SPRING_LOADED, APPS, APPS_SPRING_LOADED,
@@ -219,8 +214,19 @@ public class Launcher extends Activity
     private static int NEW_APPS_ANIMATION_INACTIVE_TIMEOUT_SECONDS = 5;
     @Thunk static int NEW_APPS_ANIMATION_DELAY = 500;
 
-    private final BroadcastReceiver mCloseSystemDialogsReceiver
-            = new CloseSystemDialogsIntentReceiver();
+    private final BroadcastReceiver mUiBroadcastReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (Intent.ACTION_CLOSE_SYSTEM_DIALOGS.equals(intent.getAction())) {
+                closeSystemDialogs();
+            } else if (ACTION_APPWIDGET_HOST_RESET.equals(intent.getAction())) {
+                if (mAppWidgetHost != null) {
+                    mAppWidgetHost.startListening();
+                }
+            }
+        }
+    };
 
     @Thunk Workspace mWorkspace;
     private View mLauncherView;
@@ -254,8 +260,6 @@ public class Launcher extends Activity
     // Main container view and the model for the widget tray screen.
     @Thunk WidgetsContainerView mWidgetsView;
     @Thunk WidgetsModel mWidgetsModel;
-
-    private AppWidgetHostView mQsb;
 
     private Bundle mSavedState;
     // We set the state in both onCreate and then onNewIntent in some cases, which causes both
@@ -464,7 +468,8 @@ public class Launcher extends Activity
         Selection.setSelection(mDefaultKeySsb, 0);
 
         IntentFilter filter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-        registerReceiver(mCloseSystemDialogsReceiver, filter);
+        filter.addAction(ACTION_APPWIDGET_HOST_RESET);
+        registerReceiver(mUiBroadcastReceiver, filter);
 
         mRotationEnabled = getResources().getBoolean(R.bool.allow_rotation);
         // In case we are on a device with locked rotation, we should look at preferences to check
@@ -739,10 +744,6 @@ public class Launcher extends Activity
             } else if (resultCode == RESULT_OK) {
                 addAppWidgetImpl(appWidgetId, mPendingAddInfo, null,
                         mPendingAddWidgetInfo, ON_ACTIVITY_RESULT_ANIMATION_DELAY);
-
-                // When the user has granted permission to bind widgets, we should check to see if
-                // we can inflate the default search bar widget.
-                getOrCreateQsbBar();
             }
             return;
         } else if (requestCode == REQUEST_PICK_WALLPAPER) {
@@ -1056,7 +1057,6 @@ public class Launcher extends Activity
         if (!isWorkspaceLoading()) {
             getWorkspace().reinflateWidgetsIfNecessary();
         }
-        reinflateQSBIfNecessary();
 
         if (DEBUG_RESUME_TIME) {
             Log.d(TAG, "Time spent in onResume: " + (System.currentTimeMillis() - startTime));
@@ -1368,6 +1368,7 @@ public class Launcher extends Activity
         mWorkspace.setHapticFeedbackEnabled(false);
         mWorkspace.setOnLongClickListener(this);
         mWorkspace.setup(dragController);
+        mWorkspace.bindAndInitFirstWorkspaceScreen(null /* recycled qsb */);
         dragController.addDragListener(mWorkspace);
 
         // Get the search/delete/uninstall bar
@@ -1393,7 +1394,6 @@ public class Launcher extends Activity
         dragController.addDropTarget(mWorkspace);
         if (mSearchDropTargetBar != null) {
             mSearchDropTargetBar.setup(this, dragController);
-            mSearchDropTargetBar.setQsbSearchBar(getOrCreateQsbBar());
         }
         if (mAppInfoDropTargetBar != null) {
             mAppInfoDropTargetBar.setup(this, dragController);
@@ -1999,7 +1999,7 @@ public class Launcher extends Activity
         ((AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE))
                 .removeAccessibilityStateChangeListener(this);
 
-        unregisterReceiver(mCloseSystemDialogsReceiver);
+        unregisterReceiver(mUiBroadcastReceiver);
 
         LauncherAnimUtils.onDestroyActivity();
 
@@ -2052,10 +2052,9 @@ public class Launcher extends Activity
             appSearchData = new Bundle();
             appSearchData.putString("source", "launcher-search");
         }
-        Rect sourceBounds = new Rect();
-        if (mSearchDropTargetBar != null) {
-            sourceBounds = mSearchDropTargetBar.getSearchBarBounds();
-        }
+
+        // TODO send proper bounds.
+        Rect sourceBounds = null;
 
         boolean clearTextImmediately = startSearch(initialQuery, selectInitialQuery,
                 appSearchData, sourceBounds);
@@ -2462,19 +2461,6 @@ public class Launcher extends Activity
             // Back button is a no-op here, but give at least some feedback for the button press
             mWorkspace.showOutlinesTemporarily();
         }
-    }
-
-    /**
-     * Re-listen when widget host is reset.
-     */
-    @Override
-    public void onAppWidgetHostReset() {
-        if (mAppWidgetHost != null) {
-            mAppWidgetHost.startListening();
-        }
-
-        // Recreate the QSB, as the widget has been reset.
-        bindSearchProviderChanged();
     }
 
     /**
@@ -3497,105 +3483,6 @@ public class Launcher extends Activity
         return (mLauncherCallbacks != null && mLauncherCallbacks.providesSearch());
     }
 
-    public View getOrCreateQsbBar() {
-        if (launcherCallbacksProvidesSearch()) {
-            return mLauncherCallbacks.getQsbBar();
-        }
-
-        if (mQsb == null) {
-            AppWidgetProviderInfo searchProvider = Utilities.getSearchWidgetProvider(this);
-            if (searchProvider == null) {
-                return null;
-            }
-
-            Bundle opts = new Bundle();
-            opts.putInt(AppWidgetManager.OPTION_APPWIDGET_HOST_CATEGORY,
-                    AppWidgetProviderInfo.WIDGET_CATEGORY_SEARCHBOX);
-
-            // Determine the min and max dimensions of the widget.
-            LauncherAppState app = LauncherAppState.getInstance();
-            DeviceProfile portraitProfile = app.getInvariantDeviceProfile().portraitProfile;
-            DeviceProfile landscapeProfile = app.getInvariantDeviceProfile().landscapeProfile;
-            float density = getResources().getDisplayMetrics().density;
-            Point searchDimens = portraitProfile.getSearchBarDimensForWidgetOpts(getResources());
-            int maxHeight = (int) (searchDimens.y / density);
-            int minHeight = maxHeight;
-            int maxWidth = (int) (searchDimens.x / density);
-            int minWidth = maxWidth;
-            if (!landscapeProfile.isVerticalBarLayout()) {
-                searchDimens = landscapeProfile.getSearchBarDimensForWidgetOpts(getResources());
-                maxHeight = (int) Math.max(maxHeight, searchDimens.y / density);
-                minHeight = (int) Math.min(minHeight, searchDimens.y / density);
-                maxWidth = (int) Math.max(maxWidth, searchDimens.x / density);
-                minWidth = (int) Math.min(minWidth, searchDimens.x / density);
-            }
-            opts.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, maxHeight);
-            opts.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, minHeight);
-            opts.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, maxWidth);
-            opts.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, minWidth);
-            if (LOGD) {
-                Log.d(TAG, "QSB widget options: maxHeight=" + maxHeight + " minHeight=" + minHeight
-                        + " maxWidth=" + maxWidth + " minWidth=" + minWidth);
-            }
-
-            if (mLauncherCallbacks != null) {
-                opts.putAll(mLauncherCallbacks.getAdditionalSearchWidgetOptions());
-            }
-
-            int widgetId = mSharedPrefs.getInt(QSB_WIDGET_ID, -1);
-            AppWidgetProviderInfo widgetInfo = mAppWidgetManager.getAppWidgetInfo(widgetId);
-            if (!searchProvider.provider.flattenToString().equals(
-                    mSharedPrefs.getString(QSB_WIDGET_PROVIDER, null))
-                    || (widgetInfo == null)
-                    || !widgetInfo.provider.equals(searchProvider.provider)) {
-                // A valid widget is not already bound.
-                if (widgetId > -1) {
-                    mAppWidgetHost.deleteAppWidgetId(widgetId);
-                    widgetId = -1;
-                }
-
-                // Try to bind a new widget
-                widgetId = mAppWidgetHost.allocateAppWidgetId();
-
-                if (!AppWidgetManagerCompat.getInstance(this)
-                        .bindAppWidgetIdIfAllowed(widgetId, searchProvider, opts)) {
-                    mAppWidgetHost.deleteAppWidgetId(widgetId);
-                    widgetId = -1;
-                }
-
-                mSharedPrefs.edit()
-                    .putInt(QSB_WIDGET_ID, widgetId)
-                    .putString(QSB_WIDGET_PROVIDER, searchProvider.provider.flattenToString())
-                    .apply();
-            }
-
-            mAppWidgetHost.setQsbWidgetId(widgetId);
-            if (widgetId != -1) {
-                mQsb = mAppWidgetHost.createView(this, widgetId, searchProvider);
-                mQsb.setId(R.id.qsb_widget);
-                if (!Utilities.containsAll(
-                        AppWidgetManager.getInstance(this).getAppWidgetOptions(widgetId), opts)) {
-                    // Launcher should not be updating the options often.
-                    FileLog.d(TAG, "Options for QSB were not same");
-                    mQsb.updateAppWidgetOptions(opts);
-                }
-                mQsb.setPadding(0, 0, 0, 0);
-                mSearchDropTargetBar.addView(mQsb);
-                mSearchDropTargetBar.setQsbSearchBar(mQsb);
-            }
-        }
-        return mQsb;
-    }
-
-    private void reinflateQSBIfNecessary() {
-        if (mQsb instanceof LauncherAppWidgetHostView &&
-                ((LauncherAppWidgetHostView) mQsb).isReinflateRequired()) {
-            mSearchDropTargetBar.removeView(mQsb);
-            mQsb = null;
-            mSearchDropTargetBar.setQsbSearchBar(getOrCreateQsbBar());
-        }
-    }
-
     @Override
     public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
         final boolean result = super.dispatchPopulateAccessibilityEvent(event);
@@ -3612,16 +3499,6 @@ public class Launcher extends Activity
             text.add(getString(R.string.all_apps_home_button_label));
         }
         return result;
-    }
-
-    /**
-     * Receives notifications when system dialogs are to be closed.
-     */
-    @Thunk class CloseSystemDialogsIntentReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            closeSystemDialogs();
-        }
     }
 
     /**
@@ -3729,12 +3606,13 @@ public class Launcher extends Activity
 
     @Override
     public void bindScreens(ArrayList<Long> orderedScreenIds) {
-        bindAddScreens(orderedScreenIds);
-
-        // If there are no screens, we need to have an empty screen
-        if (orderedScreenIds.size() == 0) {
-            mWorkspace.addExtraEmptyScreen();
+        // Make sure the first screen is always at the start.
+        if (orderedScreenIds.indexOf(Workspace.FIRST_SCREEN_ID) != 0) {
+            orderedScreenIds.remove(Workspace.FIRST_SCREEN_ID);
+            orderedScreenIds.add(0, Workspace.FIRST_SCREEN_ID);
+            mModel.updateWorkspaceScreenOrder(this, orderedScreenIds);
         }
+        bindAddScreens(orderedScreenIds);
 
         // Create the custom content page (this call updates mDefaultScreen which calls
         // setCurrentPage() so ensure that all pages are added before calling this).
@@ -3744,11 +3622,14 @@ public class Launcher extends Activity
         }
     }
 
-    @Override
-    public void bindAddScreens(ArrayList<Long> orderedScreenIds) {
+    private void bindAddScreens(ArrayList<Long> orderedScreenIds) {
         int count = orderedScreenIds.size();
         for (int i = 0; i < count; i++) {
-            mWorkspace.insertNewWorkspaceScreenBeforeEmptyScreen(orderedScreenIds.get(i));
+            long screenId = orderedScreenIds.get(i);
+            if (screenId != Workspace.FIRST_SCREEN_ID) {
+                // No need to bind the first screen, as its always bound.
+                mWorkspace.insertNewWorkspaceScreenBeforeEmptyScreen(screenId);
+            }
         }
     }
 
@@ -3827,24 +3708,6 @@ public class Launcher extends Activity
                 case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                     ShortcutInfo info = (ShortcutInfo) item;
                     view = createShortcut(info);
-
-                    /*
-                     * TODO: FIX collision case
-                     */
-                    if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                        CellLayout cl = mWorkspace.getScreenWithId(item.screenId);
-                        if (cl != null && cl.isOccupied(item.cellX, item.cellY)) {
-                            View v = cl.getChildAt(item.cellX, item.cellY);
-                            Object tag = v.getTag();
-                            String desc = "Collision while binding workspace item: " + item
-                                    + ". Collides with " + tag;
-                            if (ProviderConfig.IS_DOGFOOD_BUILD) {
-                                throw (new RuntimeException(desc));
-                            } else {
-                                Log.d(TAG, desc);
-                            }
-                        }
-                    }
                     break;
                 case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                     view = FolderIcon.fromXml(R.layout.folder_icon, this,
@@ -3855,6 +3718,25 @@ public class Launcher extends Activity
                     throw new RuntimeException("Invalid Item Type");
             }
 
+             /*
+             * Remove colliding items.
+             */
+            if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                CellLayout cl = mWorkspace.getScreenWithId(item.screenId);
+                if (cl != null && cl.isOccupied(item.cellX, item.cellY)) {
+                    View v = cl.getChildAt(item.cellX, item.cellY);
+                    Object tag = v.getTag();
+                    String desc = "Collision while binding workspace item: " + item
+                            + ". Collides with " + tag;
+                    if (ProviderConfig.IS_DOGFOOD_BUILD) {
+                        throw (new RuntimeException(desc));
+                    } else {
+                        Log.d(TAG, desc);
+                        LauncherModel.deleteItemFromDatabase(this, item);
+                        continue;
+                    }
+                }
+            }
             workspace.addInScreenFromBind(view, item.container, item.screenId, item.cellX,
                     item.cellY, 1, 1);
             if (animateIcons) {
@@ -4152,17 +4034,6 @@ public class Launcher extends Activity
             return mLauncherCallbacks.getSearchBarHeight();
         }
         return LauncherCallbacks.SEARCH_BAR_HEIGHT_NORMAL;
-    }
-
-    public void bindSearchProviderChanged() {
-        if (mSearchDropTargetBar == null) {
-            return;
-        }
-        if (mQsb != null) {
-            mSearchDropTargetBar.removeView(mQsb);
-            mQsb = null;
-        }
-        mSearchDropTargetBar.setQsbSearchBar(getOrCreateQsbBar());
     }
 
     /**

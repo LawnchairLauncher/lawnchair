@@ -2708,7 +2708,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
         /**
          * Indicates whether this item can be reordered. Always true except in the case of the
-         * the AllApps button.
+         * the AllApps button and QSB place holder.
          */
         public boolean canReorder = true;
 

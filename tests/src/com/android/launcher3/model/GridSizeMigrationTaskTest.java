@@ -208,6 +208,57 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
         }});
     }
 
+    public void testWorkspace_first_row_blocked() throws Exception {
+        // The first screen has one item on the 4th column which needs moving, as the first row
+        // will be kept empty.
+        long[][][] ids = createGrid(new int[][][]{{
+                { -1, -1, -1, -1},
+                {  3,  1,  7,  0},
+                {  8,  7,  7, -1},
+                {  5,  2,  7, -1},
+        }}, 0);
+
+        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages, new HashMap<String, Point>(),
+                new Point(4, 4), new Point(3, 4)).migrateWorkspace();
+
+        // Items in the second column of the first screen should get placed on a new screen.
+        verifyWorkspace(new long[][][] {{
+                {          -1,           -1,           -1},
+                {ids[0][1][0], ids[0][1][1], ids[0][1][2]},
+                {ids[0][2][0], ids[0][2][1], ids[0][2][2]},
+                {ids[0][3][0], ids[0][3][1], ids[0][3][2]},
+        }, {
+                {ids[0][1][3]},
+        }});
+    }
+
+    public void testWorkspace_items_moved_to_empty_first_row() throws Exception {
+        // Items will get moved to the next screen to keep the first screen empty.
+        long[][][] ids = createGrid(new int[][][]{{
+                { -1, -1, -1, -1},
+                {  0,  1,  0,  0},
+                {  8,  7,  7, -1},
+                {  5,  6,  7, -1},
+        }}, 0);
+
+        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages, new HashMap<String, Point>(),
+                new Point(4, 4), new Point(3, 3)).migrateWorkspace();
+
+        // Items in the second column of the first screen should get placed on a new screen.
+        verifyWorkspace(new long[][][] {{
+                {          -1,           -1,           -1},
+                {ids[0][2][0], ids[0][2][1], ids[0][2][2]},
+                {ids[0][3][0], ids[0][3][1], ids[0][3][2]},
+        }, {
+                {ids[0][1][1], ids[0][1][0], ids[0][1][2]},
+                {ids[0][1][3]},
+        }});
+    }
+
+    private long[][][] createGrid(int[][][] typeArray) throws Exception {
+        return createGrid(typeArray, 1);
+    }
+
     /**
      * Initializes the DB with dummy elements to represent the provided grid structure.
      * @param typeArray A 3d array of item types. {@see #addItem(int, long, long, int, int)} for
@@ -215,14 +266,18 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
      *                  two represent the workspace grid.
      * @return the same grid representation where each entry is the corresponding item id.
      */
-    private long[][][] createGrid(int[][][] typeArray) throws Exception {
+    private long[][][] createGrid(int[][][] typeArray, long startScreen) throws Exception {
+        LauncherSettings.Settings.call(getMockContentResolver(),
+                LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
         long[][][] ids = new long[typeArray.length][][];
 
         for (int i = 0; i < typeArray.length; i++) {
             // Add screen to DB
-            long screenId = LauncherSettings.Settings.call(getMockContentResolver(),
-                    LauncherSettings.Settings.METHOD_NEW_SCREEN_ID)
-                    .getLong(LauncherSettings.Settings.EXTRA_VALUE);
+            long screenId = startScreen + i;
+
+            // Keep the screen id counter up to date
+            LauncherSettings.Settings.call(getMockContentResolver(),
+                    LauncherSettings.Settings.METHOD_NEW_SCREEN_ID);
 
             ContentValues v = new ContentValues();
             v.put(LauncherSettings.WorkspaceScreens._ID, screenId);
@@ -270,7 +325,8 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
                     } else {
                         assertEquals(1, c.getCount());
                         c.moveToNext();
-                        assertEquals(id, c.getLong(0));
+                        assertEquals(String.format("Failed to verify item ad %d %d, %d", i, y, x),
+                                id, c.getLong(0));
                         total++;
                     }
                     c.close();

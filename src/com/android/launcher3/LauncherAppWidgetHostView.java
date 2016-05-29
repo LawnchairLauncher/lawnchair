@@ -54,6 +54,8 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mChildrenFocused;
 
+    protected int mErrorViewId = R.layout.appwidget_error;
+
     public LauncherAppWidgetHostView(Context context) {
         super(context);
         mContext = context;
@@ -68,7 +70,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
 
     @Override
     protected View getErrorView() {
-        return mInflater.inflate(R.layout.appwidget_error, this, false);
+        return mInflater.inflate(mErrorViewId, this, false);
     }
 
     public void updateLastInflationOrientation() {

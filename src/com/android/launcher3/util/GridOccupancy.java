@@ -77,7 +77,7 @@ public class GridOccupancy {
     public void markCells(int cellX, int cellY, int spanX, int spanY, boolean value) {
         if (cellX < 0 || cellY < 0) return;
         for (int x = cellX; x < cellX + spanX && x < mCountX; x++) {
-            for (int y = cellY; y < cellY + spanY && y < mCountX; y++) {
+            for (int y = cellY; y < cellY + spanY && y < mCountY; y++) {
                 cells[x][y] = value;
             }
         }

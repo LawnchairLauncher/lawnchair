@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import android.app.SearchManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -177,7 +176,6 @@ public class LauncherModel extends BroadcastReceiver
         public void bindItems(ArrayList<ItemInfo> shortcuts, int start, int end,
                               boolean forceAnimateIcons);
         public void bindScreens(ArrayList<Long> orderedScreenIds);
-        public void bindAddScreens(ArrayList<Long> orderedScreenIds);
         public void finishBindingItems();
         public void bindAppWidget(LauncherAppWidgetInfo info);
         public void bindAllApplications(ArrayList<AppInfo> apps);
@@ -196,7 +194,6 @@ public class LauncherModel extends BroadcastReceiver
         public void bindAppInfosRemoved(ArrayList<AppInfo> appInfos);
         public void notifyWidgetProvidersChanged();
         public void bindWidgetsModel(WidgetsModel model);
-        public void bindSearchProviderChanged();
         public boolean isAllAppsButtonRank(int rank);
         public void onPageBoundSynchronously(int page);
         public void executeOnNextDraw(ViewOnDrawExecutor executor);
@@ -1139,11 +1136,6 @@ public class LauncherModel extends BroadcastReceiver
         if (Intent.ACTION_LOCALE_CHANGED.equals(action)) {
             // If we have changed locale we need to clear out the labels in all apps/workspace.
             forceReload();
-        } else if (SearchManager.INTENT_GLOBAL_SEARCH_ACTIVITY_CHANGED.equals(action)) {
-            Callbacks callbacks = getCallback();
-            if (callbacks != null) {
-                callbacks.bindSearchProviderChanged();
-            }
         } else if (LauncherAppsCompat.ACTION_MANAGED_PROFILE_ADDED.equals(action)
                 || LauncherAppsCompat.ACTION_MANAGED_PROFILE_REMOVED.equals(action)) {
             UserManagerCompat.getInstance(context).enableAndResetCache();
@@ -1528,7 +1520,12 @@ public class LauncherModel extends BroadcastReceiver
             }
 
             if (!occupied.containsKey(item.screenId)) {
-                occupied.put(item.screenId, new GridOccupancy(countX + 1, countY + 1));
+                GridOccupancy screen = new GridOccupancy(countX + 1, countY + 1);
+                if (item.screenId == Workspace.FIRST_SCREEN_ID) {
+                    // Mark the first row as occupied in order to account for the QSB.
+                    screen.markCells(0, 0, countX + 1, 1, true);
+                }
+                occupied.put(item.screenId, screen);
             }
             final GridOccupancy occupancy = occupied.get(item.screenId);
 
