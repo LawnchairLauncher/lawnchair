@@ -91,6 +91,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.launcher3.DropTarget.DragObject;
+import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DefaultAppSearchController;
@@ -108,13 +109,13 @@ import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
+import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.pageindicators.PageIndicatorLine;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.ComponentKey;
-import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.TestingUtils;
 import com.android.launcher3.util.Thunk;
@@ -2654,26 +2655,13 @@ public class Launcher extends Activity
         startAppShortcutOrInfoActivity(v);
     }
 
-    @Thunk void startAppShortcutOrInfoActivity(View v) {
-        Object tag = v.getTag();
-        final ShortcutInfo shortcut;
-        final Intent intent;
-        if (tag instanceof ShortcutInfo) {
-            shortcut = (ShortcutInfo) tag;
-            intent = shortcut.intent;
-            int[] pos = new int[2];
-            v.getLocationOnScreen(pos);
-            intent.setSourceBounds(new Rect(pos[0], pos[1],
-                    pos[0] + v.getWidth(), pos[1] + v.getHeight()));
-
-        } else if (tag instanceof AppInfo) {
-            shortcut = null;
-            intent = ((AppInfo) tag).intent;
-        } else {
-            throw new IllegalArgumentException("Input must be a Shortcut or AppInfo");
+    private void startAppShortcutOrInfoActivity(View v) {
+        ItemInfo item = (ItemInfo) v.getTag();
+        Intent intent = item.getIntent();
+        if (intent == null) {
+            throw new IllegalArgumentException("Input must have a valid intent");
         }
-
-        boolean success = startActivitySafely(v, intent, tag);
+        boolean success = startActivitySafely(v, intent, item);
         getUserEventDispatcher().logAppLaunch(v, intent);
 
         if (success && v instanceof BubbleTextView) {
@@ -2813,112 +2801,109 @@ public class Launcher extends Activity
         }
     }
 
-    private boolean startActivity(View v, Intent intent, Object tag) {
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    private void startShortcutIntentSafely(Intent intent, Bundle optsBundle, ItemInfo info) {
         try {
-            // Only launch using the new animation if the shortcut has not opted out (this is a
-            // private contract between launcher and may be ignored in the future).
-            boolean useLaunchAnimation = (v != null) &&
-                    !intent.hasExtra(INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION);
-            LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(this);
-            UserManagerCompat userManager = UserManagerCompat.getInstance(this);
-
-            UserHandleCompat user = null;
-            if (intent.hasExtra(AppInfo.EXTRA_PROFILE)) {
-                long serialNumber = intent.getLongExtra(AppInfo.EXTRA_PROFILE, -1);
-                user = userManager.getUserForSerialNumber(serialNumber);
+            StrictMode.VmPolicy oldPolicy = StrictMode.getVmPolicy();
+            try {
+                // Temporarily disable deathPenalty on all default checks. For eg, shortcuts
+                // containing file Uri's would cause a crash as penaltyDeathOnFileUriExposure
+                // is enabled by default on NYC.
+                StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll()
+                        .penaltyLog().build());
+                // Could be launching some bookkeeping activity
+                startActivity(intent, optsBundle);
+            } finally {
+                StrictMode.setVmPolicy(oldPolicy);
             }
-
-            Bundle optsBundle = null;
-            if (useLaunchAnimation) {
-                ActivityOptions opts = null;
-                if (Utilities.ATLEAST_MARSHMALLOW) {
-                    int left = 0, top = 0;
-                    int width = v.getMeasuredWidth(), height = v.getMeasuredHeight();
-                    if (v instanceof TextView) {
-                        // Launch from center of icon, not entire view
-                        Drawable icon = Workspace.getTextViewIcon((TextView) v);
-                        if (icon != null) {
-                            Rect bounds = icon.getBounds();
-                            left = (width - bounds.width()) / 2;
-                            top = v.getPaddingTop();
-                            width = bounds.width();
-                            height = bounds.height();
-                        }
-                    }
-                    opts = ActivityOptions.makeClipRevealAnimation(v, left, top, width, height);
-                } else if (!Utilities.ATLEAST_LOLLIPOP) {
-                    // Below L, we use a scale up animation
-                    opts = ActivityOptions.makeScaleUpAnimation(v, 0, 0,
-                                    v.getMeasuredWidth(), v.getMeasuredHeight());
-                } else if (Utilities.ATLEAST_LOLLIPOP_MR1) {
-                    // On L devices, we use the device default slide-up transition.
-                    // On L MR1 devices, we a custom version of the slide-up transition which
-                    // doesn't have the delay present in the device default.
-                    opts = ActivityOptions.makeCustomAnimation(this,
-                            R.anim.task_open_enter, R.anim.no_anim);
-                }
-                optsBundle = opts != null ? opts.toBundle() : null;
-            }
-
-            if (user == null || user.equals(UserHandleCompat.myUserHandle())) {
-                StrictMode.VmPolicy oldPolicy = StrictMode.getVmPolicy();
-                try {
-                    // Temporarily disable deathPenalty on all default checks. For eg, shortcuts
-                    // containing file Uris would cause a crash as penaltyDeathOnFileUriExposure
-                    // is enabled by default on NYC.
-                    StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll()
-                            .penaltyLog().build());
-                    // Could be launching some bookkeeping activity
-                    startActivity(intent, optsBundle);
-                } finally {
-                    StrictMode.setVmPolicy(oldPolicy);
-                }
-            } else {
-                // TODO Component can be null when shortcuts are supported for secondary user
-                launcherApps.startActivityForProfile(intent.getComponent(), user,
-                        intent.getSourceBounds(), optsBundle);
-            }
-            return true;
         } catch (SecurityException e) {
-            if (Utilities.ATLEAST_MARSHMALLOW && tag instanceof ItemInfo) {
-                // Due to legacy reasons, direct call shortcuts require Launchers to have the
-                // corresponding permission. Show the appropriate permission prompt if that
-                // is the case.
-                if (intent.getComponent() == null
-                        && Intent.ACTION_CALL.equals(intent.getAction())
-                        && checkSelfPermission(Manifest.permission.CALL_PHONE) !=
-                            PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Rename sPendingAddItem to a generic name.
-                    sPendingAddItem = preparePendingAddArgs(REQUEST_PERMISSION_CALL_PHONE, intent,
-                            0, (ItemInfo) tag);
-                    requestPermissions(new String[]{Manifest.permission.CALL_PHONE},
-                            REQUEST_PERMISSION_CALL_PHONE);
-                    return false;
-                }
+            // Due to legacy reasons, direct call shortcuts require Launchers to have the
+            // corresponding permission. Show the appropriate permission prompt if that
+            // is the case.
+            if (intent.getComponent() == null
+                    && Intent.ACTION_CALL.equals(intent.getAction())
+                    && checkSelfPermission(Manifest.permission.CALL_PHONE) !=
+                    PackageManager.PERMISSION_GRANTED) {
+                // TODO: Rename sPendingAddItem to a generic name.
+                sPendingAddItem = preparePendingAddArgs(REQUEST_PERMISSION_CALL_PHONE, intent,
+                        0, info);
+                requestPermissions(new String[]{Manifest.permission.CALL_PHONE},
+                        REQUEST_PERMISSION_CALL_PHONE);
+            } else {
+                // No idea why this was thrown.
+                throw e;
             }
-            Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Launcher does not have the permission to launch " + intent +
-                    ". Make sure to create a MAIN intent-filter for the corresponding activity " +
-                    "or use the exported attribute for this activity. "
-                    + "tag="+ tag + " intent=" + intent, e);
         }
-        return false;
     }
 
-    public boolean startActivitySafely(View v, Intent intent, Object tag) {
-        boolean success = false;
+    private Bundle getActivityLaunchOptions(View v) {
+        if (Utilities.ATLEAST_MARSHMALLOW) {
+            int left = 0, top = 0;
+            int width = v.getMeasuredWidth(), height = v.getMeasuredHeight();
+            if (v instanceof TextView) {
+                // Launch from center of icon, not entire view
+                Drawable icon = Workspace.getTextViewIcon((TextView) v);
+                if (icon != null) {
+                    Rect bounds = icon.getBounds();
+                    left = (width - bounds.width()) / 2;
+                    top = v.getPaddingTop();
+                    width = bounds.width();
+                    height = bounds.height();
+                }
+            }
+            return ActivityOptions.makeClipRevealAnimation(v, left, top, width, height).toBundle();
+        } else if (Utilities.ATLEAST_LOLLIPOP_MR1) {
+            // On L devices, we use the device default slide-up transition.
+            // On L MR1 devices, we use a custom version of the slide-up transition which
+            // doesn't have the delay present in the device default.
+            return ActivityOptions.makeCustomAnimation(
+                    this, R.anim.task_open_enter, R.anim.no_anim).toBundle();
+        }
+        return null;
+    }
+
+    public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
         if (mIsSafeModeEnabled && !Utilities.isSystemApp(this, intent)) {
             Toast.makeText(this, R.string.safemode_shortcut_error, Toast.LENGTH_SHORT).show();
             return false;
         }
-        try {
-            success = startActivity(v, intent, tag);
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Unable to launch. tag=" + tag + " intent=" + intent, e);
+        // Only launch using the new animation if the shortcut has not opted out (this is a
+        // private contract between launcher and may be ignored in the future).
+        boolean useLaunchAnimation = (v != null) &&
+                !intent.hasExtra(INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION);
+        Bundle optsBundle = useLaunchAnimation ? getActivityLaunchOptions(v) : null;
+
+        UserHandleCompat user = null;
+        if (intent.hasExtra(AppInfo.EXTRA_PROFILE)) {
+            long serialNumber = intent.getLongExtra(AppInfo.EXTRA_PROFILE, -1);
+            user = UserManagerCompat.getInstance(this).getUserForSerialNumber(serialNumber);
         }
-        return success;
+
+        // Prepare intent
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (v != null) {
+            int[] pos = new int[2];
+            v.getLocationOnScreen(pos);
+            intent.setSourceBounds(
+                    new Rect(pos[0], pos[1], pos[0] + v.getWidth(), pos[1] + v.getHeight()));
+        }
+        try {
+            if (Utilities.ATLEAST_MARSHMALLOW &&
+                    item != null && item.itemType == Favorites.ITEM_TYPE_SHORTCUT) {
+                // Shortcuts need some special checks due to legacy reasons.
+                startShortcutIntentSafely(intent, optsBundle, item);
+            } else if (user == null || user.equals(UserHandleCompat.myUserHandle())) {
+                // Could be launching some bookkeeping activity
+                startActivity(intent, optsBundle);
+            } else {
+                LauncherAppsCompat.getInstance(this).startActivityForProfile(
+                        intent.getComponent(), user, intent.getSourceBounds(), optsBundle);
+            }
+            return true;
+        } catch (ActivityNotFoundException|SecurityException e) {
+            Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Unable to launch. tag=" + item + " intent=" + intent, e);
+        }
+        return false;
     }
 
     /**
