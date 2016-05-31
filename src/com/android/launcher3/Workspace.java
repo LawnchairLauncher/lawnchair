@@ -2050,7 +2050,12 @@ public class Workspace extends PagedView
     @Override
     public void onLauncherTransitionStart(Launcher l, boolean animated, boolean toWorkspace) {
         if (mPageIndicator instanceof PageIndicatorLine) {
-            ((PageIndicatorLine) mPageIndicator).setShouldAutoHide(mState != State.SPRING_LOADED);
+            boolean isNewStateSpringLoaded = mState == State.SPRING_LOADED;
+            ((PageIndicatorLine) mPageIndicator).setShouldAutoHide(!isNewStateSpringLoaded);
+            if (isNewStateSpringLoaded) {
+                // Show the page indicator at the same time as the rest of the transition.
+                showPageIndicatorAtCurrentScroll();
+            }
         }
     }
 
