@@ -73,6 +73,7 @@ import com.android.launcher3.dragndrop.SpringLoadedDragController;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.pageindicators.PageIndicatorLine;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.LongArrayMap;
@@ -803,6 +804,8 @@ public class Workspace extends PagedView
                     if (stripEmptyScreens) {
                         stripEmptyScreens();
                     }
+                    // Update the page indicator to reflect the removed page.
+                    showPageIndicatorAtCurrentScroll();
                 }
             }
         };
@@ -1642,8 +1645,6 @@ public class Workspace extends PagedView
             if (listener != null) {
                 getPageIndicator().setOnClickListener(listener);
             }
-
-            showPageIndicatorAtCurrentScroll();
         }
 
         // Update wallpaper dimensions if they were changed since last onResume
@@ -2048,6 +2049,9 @@ public class Workspace extends PagedView
 
     @Override
     public void onLauncherTransitionStart(Launcher l, boolean animated, boolean toWorkspace) {
+        if (mPageIndicator instanceof PageIndicatorLine) {
+            ((PageIndicatorLine) mPageIndicator).setShouldAutoHide(mState != State.SPRING_LOADED);
+        }
     }
 
     @Override
@@ -2061,7 +2065,7 @@ public class Workspace extends PagedView
         updateChildrenLayersEnabled(false);
         showCustomContentIfNecessary();
         mForceDrawAdjacentPages = false;
-        if (mState == State.NORMAL || mState == State.SPRING_LOADED) {
+        if (mState == State.SPRING_LOADED) {
             showPageIndicatorAtCurrentScroll();
         }
     }
