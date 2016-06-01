@@ -4444,7 +4444,7 @@ public class Launcher extends Activity
 
     @Override
     public void notifyWidgetProvidersChanged() {
-        if (mWorkspace.getState().shouldUpdateWidget) {
+        if (mWorkspace != null && mWorkspace.getState().shouldUpdateWidget) {
             mModel.refreshAndBindWidgetsAndShortcuts(this, mWidgetsView.isEmpty());
         }
     }
