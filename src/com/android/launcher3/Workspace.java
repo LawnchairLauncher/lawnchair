@@ -512,6 +512,12 @@ public class Workspace extends PagedView
         // Add the first page
         CellLayout firstPage = insertNewWorkspaceScreen(Workspace.FIRST_SCREEN_ID, 0);
 
+        if (!mIsRtl || !mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+            // Let the cell layout extend the start padding.
+            ((LayoutParams) firstPage.getLayoutParams()).matchStartEdge = true;
+            firstPage.setPaddingRelative(getPaddingStart(), 0, 0, 0);
+        }
+
         if (qsb == null) {
             // Always add a QSB on the first screen.
             qsb = mLauncher.getLayoutInflater().inflate(R.layout.qsb_container,
