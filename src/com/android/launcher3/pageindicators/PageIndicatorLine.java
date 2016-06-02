@@ -27,18 +27,29 @@ import com.android.launcher3.dynamicui.ExtractedColors;
 public class PageIndicatorLine extends PageIndicator {
     private static final String TAG = "PageIndicatorLine";
 
-    private static final int LINE_FADE_DURATION = ViewConfiguration.getScrollBarFadeDuration();
+    private static final int LINE_ANIMATE_DURATION = ViewConfiguration.getScrollBarFadeDuration();
     private static final int LINE_FADE_DELAY = ViewConfiguration.getScrollDefaultDelay();
     public static final int WHITE_ALPHA = (int) (0.70f * 255);
     public static final int BLACK_ALPHA = (int) (0.65f * 255);
+
+    private static final int LINE_ALPHA_ANIMATOR_INDEX = 0;
+    private static final int NUM_PAGES_ANIMATOR_INDEX = 1;
+    private static final int TOTAL_SCROLL_ANIMATOR_INDEX = 2;
+
+    private ValueAnimator[] mAnimators = new ValueAnimator[3];
 
     private final Handler mDelayedLineFadeHandler = new Handler(Looper.getMainLooper());
 
     private boolean mShouldAutoHide = true;
 
-    private ValueAnimator mLineAlphaAnimator;
-    private int mAlpha = 0;
-    private float mProgress = 0f;
+    // The alpha of the line when it is showing.
+    private int mActiveAlpha = 0;
+    // The alpha that the line is being animated to or already at (either 0 or mActiveAlpha).
+    private int mToAlpha;
+    // A float value representing the number of pages, to allow for an animation when it changes.
+    private float mNumPagesFloat;
+    private int mCurrentScroll;
+    private int mTotalScroll;
     private Paint mLinePaint;
 
     private static final Property<PageIndicatorLine, Integer> PAINT_ALPHA
@@ -51,6 +62,34 @@ public class PageIndicatorLine extends PageIndicator {
         @Override
         public void set(PageIndicatorLine obj, Integer alpha) {
             obj.mLinePaint.setAlpha(alpha);
+            obj.invalidate();
+        }
+    };
+
+    private static final Property<PageIndicatorLine, Float> NUM_PAGES
+            = new Property<PageIndicatorLine, Float>(Float.class, "num_pages") {
+        @Override
+        public Float get(PageIndicatorLine obj) {
+            return obj.mNumPagesFloat;
+        }
+
+        @Override
+        public void set(PageIndicatorLine obj, Float numPages) {
+            obj.mNumPagesFloat = numPages;
+            obj.invalidate();
+        }
+    };
+
+    private static final Property<PageIndicatorLine, Integer> TOTAL_SCROLL
+            = new Property<PageIndicatorLine, Integer>(Integer.class, "total_scroll") {
+        @Override
+        public Integer get(PageIndicatorLine obj) {
+            return obj.mTotalScroll;
+        }
+
+        @Override
+        public void set(PageIndicatorLine obj, Integer totalScroll) {
+            obj.mTotalScroll = totalScroll;
             obj.invalidate();
         }
     };
@@ -78,13 +117,15 @@ public class PageIndicatorLine extends PageIndicator {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (mNumPages == 0) {
+        if (mTotalScroll == 0 || mNumPagesFloat == 0) {
             return;
         }
 
+        // Compute and draw line rect.
+        float progress = Utilities.boundToRange(((float) mCurrentScroll) / mTotalScroll, 0f, 1f);
         int availableWidth = canvas.getWidth();
-        int lineWidth = availableWidth / mNumPages;
-        int lineLeft = (int) (mProgress * (availableWidth - lineWidth));
+        int lineWidth = (int) (availableWidth / mNumPagesFloat);
+        int lineLeft = (int) (progress * (availableWidth - lineWidth));
         int lineRight = lineLeft + lineWidth;
         canvas.drawRect(lineLeft, 0, lineRight, canvas.getHeight(), mLinePaint);
     }
@@ -94,9 +135,16 @@ public class PageIndicatorLine extends PageIndicator {
         if (getAlpha() == 0) {
             return;
         }
-        animateLineToAlpha(mAlpha);
-        mProgress = Utilities.boundToRange(((float) currentScroll) / totalScroll, 0f, 1f);;
-        invalidate();
+        animateLineToAlpha(mActiveAlpha);
+
+        mCurrentScroll = currentScroll;
+        if (mTotalScroll == 0) {
+            mTotalScroll = totalScroll;
+        } else if (mTotalScroll != totalScroll) {
+            animateToTotalScroll(totalScroll);
+        } else {
+            invalidate();
+        }
 
         if (mShouldAutoHide) {
             hideAfterDelay();
@@ -114,7 +162,9 @@ public class PageIndicatorLine extends PageIndicator {
 
     @Override
     protected void onPageCountChanged() {
-        invalidate();
+        if (Float.compare(mNumPages, mNumPagesFloat) != 0) {
+            animateToNumPages(mNumPages);
+        }
     }
 
     public void setShouldAutoHide(boolean shouldAutoHide) {
@@ -137,9 +187,9 @@ public class PageIndicatorLine extends PageIndicator {
         if (color != Color.TRANSPARENT) {
             color = ColorUtils.setAlphaComponent(color, 255);
             if (color == Color.BLACK) {
-                mAlpha = BLACK_ALPHA;
+                mActiveAlpha = BLACK_ALPHA;
             } else if (color == Color.WHITE) {
-                mAlpha = WHITE_ALPHA;
+                mActiveAlpha = WHITE_ALPHA;
             } else {
                 Log.e(TAG, "Setting workspace page indicators to an unsupported color: #"
                         + Integer.toHexString(color));
@@ -150,22 +200,44 @@ public class PageIndicatorLine extends PageIndicator {
     }
 
     private void animateLineToAlpha(int alpha) {
-        if (mLineAlphaAnimator != null) {
-            // An animation is already running, so ignore the new animation request unless we are
-            // trying to hide the line, in which case we always allow the animation.
-            if (alpha != 0) {
-                return;
-            }
-            mLineAlphaAnimator.cancel();
+        if (alpha == mToAlpha) {
+            // Ignore the new animation if it is going to the same alpha as the current animation.
+            return;
         }
-        mLineAlphaAnimator = ObjectAnimator.ofInt(this, PAINT_ALPHA, alpha);
-        mLineAlphaAnimator.addListener(new AnimatorListenerAdapter() {
+        mToAlpha = alpha;
+        setupAndRunAnimation(ObjectAnimator.ofInt(this, PAINT_ALPHA, alpha),
+                LINE_ALPHA_ANIMATOR_INDEX);
+    }
+
+    private void animateToNumPages(int numPages) {
+        setupAndRunAnimation(ObjectAnimator.ofFloat(this, NUM_PAGES, numPages),
+                NUM_PAGES_ANIMATOR_INDEX);
+    }
+
+    private void animateToTotalScroll(int totalScroll) {
+        setupAndRunAnimation(ObjectAnimator.ofInt(this, TOTAL_SCROLL, totalScroll),
+                TOTAL_SCROLL_ANIMATOR_INDEX);
+    }
+
+    /**
+     * Starts the given animator and stores it in the provided index in {@link #mAnimators} until
+     * the animation ends.
+     *
+     * If an animator is already at the index (i.e. it is already playing), it is canceled and
+     * replaced with the new animator.
+     */
+    private void setupAndRunAnimation(ValueAnimator animator, final int animatorIndex) {
+        if (mAnimators[animatorIndex] != null) {
+            mAnimators[animatorIndex].cancel();
+        }
+        mAnimators[animatorIndex] = animator;
+        mAnimators[animatorIndex].addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                mLineAlphaAnimator = null;
+                mAnimators[animatorIndex] = null;
             }
         });
-        mLineAlphaAnimator.setDuration(LINE_FADE_DURATION);
-        mLineAlphaAnimator.start();
+        mAnimators[animatorIndex].setDuration(LINE_ANIMATE_DURATION);
+        mAnimators[animatorIndex].start();
     }
 }
