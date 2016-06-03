@@ -18,7 +18,6 @@ package com.android.launcher3;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.SearchManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -44,8 +43,6 @@ import com.android.launcher3.compat.AppWidgetManagerCompat;
  */
 public class QsbContainerView extends FrameLayout {
 
-    private boolean mBound;
-
     public QsbContainerView(Context context) {
         super(context);
     }
@@ -56,17 +53,6 @@ public class QsbContainerView extends FrameLayout {
 
     public QsbContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-
-        if (!mBound) {
-            FragmentManager fm = ((Launcher) getContext()).getFragmentManager();
-            fm.beginTransaction().add(R.id.qsb_container, new QsbFragment()).commit();
-            mBound = true;
-        }
     }
 
     @Override
@@ -103,6 +89,8 @@ public class QsbContainerView extends FrameLayout {
             getContext().registerReceiver(mRebindReceiver, filter);
         }
 
+        private FrameLayout mWrapper;
+
         @Override
         public View onCreateView(
                 LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -110,7 +98,12 @@ public class QsbContainerView extends FrameLayout {
             if (savedInstanceState != null) {
                 sSavedWidgetId = savedInstanceState.getInt(QSB_WIDGET_ID, -1);
             }
+            mWrapper = new FrameLayout(getContext());
+            mWrapper.addView(createQsb(inflater, mWrapper));
+            return mWrapper;
+        }
 
+        private View createQsb(LayoutInflater inflater, ViewGroup container) {
             Launcher launcher = (Launcher) getActivity();
             mWidgetInfo = getSearchWidgetProvider(launcher);
             if (mWidgetInfo == null) {
@@ -222,10 +215,9 @@ public class QsbContainerView extends FrameLayout {
         }
 
         private void rebindFragment() {
-            if (getActivity() != null) {
-                // Recreate the fragment. This will cause the qsb to be inflated again.
-                getActivity().getFragmentManager().beginTransaction()
-                        .replace(R.id.qsb_container, new QsbFragment()).commit();
+            if (mWrapper != null && getActivity() != null) {
+                mWrapper.removeAllViews();
+                mWrapper.addView(createQsb(getActivity().getLayoutInflater(), mWrapper));
             }
         }
 
