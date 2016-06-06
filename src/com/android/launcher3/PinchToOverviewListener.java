@@ -21,6 +21,8 @@ import android.content.Context;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
+import com.android.launcher3.util.TouchController;
+
 /**
  * Detects pinches and animates the Workspace to/from overview mode.
  *
@@ -30,7 +32,8 @@ import android.view.ScaleGestureDetector;
  * @see PinchThresholdManager
  * @see PinchAnimationManager
  */
-public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleGestureListener
+        implements TouchController {
     private static final float OVERVIEW_PROGRESS = 0f;
     private static final float WORKSPACE_PROGRESS = 1f;
     /**
@@ -63,15 +66,16 @@ public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleG
         return mPinchStarted;
     }
 
-    public void onTouchEvent(MotionEvent ev) {
+    public boolean onTouchEvent(MotionEvent ev) {
         if (mPinchStarted) {
             if (ev.getPointerCount() > 2) {
                 // Using more than two fingers causes weird behavior, so just cancel the pinch.
                 cancelPinch(mPreviousProgress, -1);
             } else {
-                mPinchDetector.onTouchEvent(ev);
+                return mPinchDetector.onTouchEvent(ev);
             }
         }
+        return false;
     }
 
     @Override

@@ -20,16 +20,20 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.method.TextKeyListener;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.widget.LinearLayout;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BaseContainerView;
@@ -40,6 +44,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.ExtendedEditText;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
@@ -178,9 +183,13 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mApps.setAdapter(mAdapter);
         mLayoutManager = mAdapter.getLayoutManager();
         mItemDecoration = mAdapter.getItemDecoration();
-        mRecyclerViewTopBottomPadding =
-                res.getDimensionPixelSize(R.dimen.all_apps_list_top_bottom_padding);
-
+        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
+            mRecyclerViewTopBottomPadding = 0;
+            setPadding(0, 0, 0, 0);
+        } else {
+            mRecyclerViewTopBottomPadding =
+                    res.getDimensionPixelSize(R.dimen.all_apps_list_top_bottom_padding);
+        }
         mSearchQueryBuilder = new SpannableStringBuilder();
         Selection.setSelection(mSearchQueryBuilder, 0);
     }
@@ -220,6 +229,13 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mApps.removeApps(apps);
     }
 
+    public void setSearchBarVisible(boolean visible) {
+        if (visible) {
+            mSearchBarController.setVisibility(View.VISIBLE);
+        } else {
+            mSearchBarController.setVisibility(View.INVISIBLE);
+        }
+    }
     /**
      * Sets the search bar that shows above the a-z list.
      */
@@ -239,6 +255,10 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mAppsRecyclerView.scrollToTop();
     }
 
+    public boolean isScrollAtTop() {
+        return ((LinearLayoutManager) mAppsRecyclerView.getLayoutManager())
+                .findFirstVisibleItemPosition() == 1;
+    }
     /**
      * Focuses the search field and begins an app search.
      */
@@ -321,13 +341,33 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                 MeasureSpec.getSize(widthMeasureSpec) - mHorizontalPadding,
                 MeasureSpec.getSize(heightMeasureSpec));
 
+        DeviceProfile grid = mLauncher.getDeviceProfile();
+        int availableWidth = (!mContentBounds.isEmpty() ? mContentBounds.width() :
+                MeasureSpec.getSize(widthMeasureSpec))
+                - 2 * mAppsRecyclerView.getMaxScrollbarWidth();
+        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
+            if (mNumAppsPerRow != grid.inv.numColumns ||
+                    mNumPredictedAppsPerRow != grid.inv.numColumns) {
+                mNumAppsPerRow = grid.inv.numColumns;
+                mNumPredictedAppsPerRow = grid.inv.numColumns;
+
+                mAppsRecyclerView.setNumAppsPerRow(grid, mNumAppsPerRow);
+                mAdapter.setNumAppsPerRow(mNumAppsPerRow);
+                mApps.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow, new FullMergeAlgorithm());
+                if (mNumAppsPerRow > 0) {
+                    int iconSize = availableWidth / mNumAppsPerRow;
+                    int iconSpacing = (iconSize - grid.allAppsIconSizePx) / 2;
+                }
+            }
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            return;
+        }
+
+        // --- remove START when {@code FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP} is enabled. ---
+
         // Update the number of items in the grid before we measure the view
         // TODO: mSectionNamesMargin is currently 0, but also account for it,
         // if it's enabled in the future.
-        int availableWidth = (!mContentBounds.isEmpty() ? mContentBounds.width() :
-                MeasureSpec.getSize(widthMeasureSpec))
-                    - 2 * mAppsRecyclerView.getMaxScrollbarWidth();
-        DeviceProfile grid = mLauncher.getDeviceProfile();
         grid.updateAppsViewNumCols(getResources(), availableWidth);
         if (mNumAppsPerRow != grid.allAppsNumCols ||
                 mNumPredictedAppsPerRow != grid.allAppsNumPredictiveCols) {
@@ -346,6 +386,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             mAdapter.setNumAppsPerRow(mNumAppsPerRow);
             mApps.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow, mergeAlgorithm);
 
+            // TODO: should we not do all this complicated computation but just match the
+            // numAppsPerRow with the workspace?
             if (mNumAppsPerRow > 0) {
                 int iconSize = availableWidth / mNumAppsPerRow;
                 int iconSpacing = (iconSize - grid.allAppsIconSizePx) / 2;
@@ -353,6 +395,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             }
         }
 
+        // --- remove END when {@code FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP} is enabled. ---
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
@@ -385,6 +428,24 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         MarginLayoutParams lp = (MarginLayoutParams) mSearchContainer.getLayoutParams();
         lp.leftMargin = bgPadding.left;
         lp.rightMargin = bgPadding.right;
+
+        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
+            MarginLayoutParams mlp = (MarginLayoutParams) mAppsRecyclerView.getLayoutParams();
+
+            int navBarHeight = 84; /* replace with mInset.height() in dragLayer */
+            DeviceProfile grid = mLauncher.getDeviceProfile();
+            int height = navBarHeight + grid.hotseatCellHeightPx;
+
+            mlp.topMargin = height;
+            mAppsRecyclerView.setLayoutParams(mlp);
+
+            LinearLayout.LayoutParams llp =
+                    (LinearLayout.LayoutParams) mSearchInput.getLayoutParams();
+            llp.topMargin = navBarHeight;
+            mSearchInput.setLayoutParams(llp);
+
+            lp.height = height;
+        }
         mSearchContainer.setLayoutParams(lp);
     }
 
@@ -437,6 +498,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         // Return early if this is not initiated from a touch
         if (!v.isInTouchMode()) return false;
         // When we have exited all apps or are in transition, disregard long clicks
+
         if (!mLauncher.isAppsViewVisible() ||
                 mLauncher.getWorkspace().isSwitchingState()) return false;
         // Return if global dragging is not enabled

@@ -24,6 +24,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.android.launcher3.allapps.AllAppsContainerView;
+import com.android.launcher3.config.FeatureFlags;
+
 /**
  * A base container view, which supports resizing.
  */
@@ -48,7 +51,11 @@ public abstract class BaseContainerView extends FrameLayout {
         super(context, attrs, defStyleAttr);
 
         int width = ((Launcher) context).getDeviceProfile().availableWidthPx;
-        mHorizontalPadding = DeviceProfile.getContainerPadding(context, width);
+        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && (this instanceof AllAppsContainerView)) {
+            mHorizontalPadding = 0;
+        } else {
+            mHorizontalPadding = DeviceProfile.getContainerPadding(context, width);
+        }
 
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.BaseContainerView, defStyleAttr, 0);

@@ -43,6 +43,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.launcher3.AppWidgetResizeFrame;
+import com.android.launcher3.BaseContainerView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.ItemInfo;
@@ -56,10 +57,13 @@ import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
+import com.android.launcher3.allapps.AllAppsContainerView;
+import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.util.TouchController;
 
 import java.util.ArrayList;
 
@@ -117,6 +121,11 @@ public class DragLayer extends InsettableFrameLayout {
 
     // Related to pinch-to-go-to-overview gesture.
     private PinchToOverviewListener mPinchListener = null;
+
+    // Handles all apps pull up interaction
+    private AllAppsTransitionController mAllAppsController;
+
+    private TouchController mActiveController;
     /**
      * Used to create a new DragLayer from XML.
      *
@@ -138,9 +147,11 @@ public class DragLayer extends InsettableFrameLayout {
         mIsRtl = Utilities.isRtl(res);
     }
 
-    public void setup(Launcher launcher, DragController controller) {
+    public void setup(Launcher launcher, DragController dragController,
+            AllAppsTransitionController allAppsTransitionController) {
         mLauncher = launcher;
-        mDragController = controller;
+        mDragController = dragController;
+        mAllAppsController = allAppsTransitionController;
 
         boolean isAccessibilityEnabled = ((AccessibilityManager) mLauncher.getSystemService(
                 Context.ACCESSIBILITY_SERVICE)).isEnabled();
@@ -246,6 +257,7 @@ public class DragLayer extends InsettableFrameLayout {
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         int action = ev.getAction();
 
+
         if (action == MotionEvent.ACTION_DOWN) {
             if (handleTouchDown(ev, true)) {
                 return true;
@@ -258,11 +270,21 @@ public class DragLayer extends InsettableFrameLayout {
         }
         clearAllResizeFrames();
 
-        if (mPinchListener != null && mPinchListener.onInterceptTouchEvent(ev)) {
-            // Stop listening for scrolling etc. (onTouchEvent() handles the rest of the pinch.)
+        if (mDragController.onInterceptTouchEvent(ev)) {
+            mActiveController = mDragController;
             return true;
         }
-        return mDragController.onInterceptTouchEvent(ev);
+        if (mAllAppsController.onInterceptTouchEvent(ev)) {
+            mActiveController = mAllAppsController;
+            return true;
+        }
+
+        if (mPinchListener != null && mPinchListener.onInterceptTouchEvent(ev)) {
+            // Stop listening for scrolling etc. (onTouchEvent() handles the rest of the pinch.)
+            mActiveController = mPinchListener;
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -375,11 +397,6 @@ public class DragLayer extends InsettableFrameLayout {
         int x = (int) ev.getX();
         int y = (int) ev.getY();
 
-        // This is only reached if a pinch was started from onInterceptTouchEvent();
-        // this continues sending events for it.
-        if (mPinchListener != null) {
-            mPinchListener.onTouchEvent(ev);
-        }
 
         if (action == MotionEvent.ACTION_DOWN) {
             if (handleTouchDown(ev, false)) {
@@ -406,7 +423,10 @@ public class DragLayer extends InsettableFrameLayout {
             }
         }
         if (handled) return true;
-        return mDragController.onTouchEvent(ev);
+        if (mActiveController != null) {
+            return mActiveController.onTouchEvent(ev);
+        }
+        return false;
     }
 
     @Override

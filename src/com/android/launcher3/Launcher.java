@@ -92,6 +92,7 @@ import android.widget.Toast;
 
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.allapps.AllAppsContainerView;
+import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DefaultAppSearchController;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
@@ -256,6 +257,7 @@ public class Launcher extends Activity
 
     // Main container view for the all apps screen.
     @Thunk AllAppsContainerView mAppsView;
+    AllAppsTransitionController mAllAppsController;
 
     // Main container view and the model for the widget tray screen.
     @Thunk WidgetsContainerView mWidgetsView;
@@ -413,7 +415,8 @@ public class Launcher extends Activity
         mIconCache = app.getIconCache();
 
         mDragController = new DragController(this);
-        mStateTransitionAnimation = new LauncherStateTransitionAnimation(this);
+        mAllAppsController = new AllAppsTransitionController(this);
+        mStateTransitionAnimation = new LauncherStateTransitionAnimation(this, mAllAppsController);
 
         mAppWidgetManager = AppWidgetManagerCompat.getInstance(this);
 
@@ -1339,8 +1342,6 @@ public class Launcher extends Activity
      * Finds all the views we need and configure them properly.
      */
     private void setupViews() {
-        final DragController dragController = mDragController;
-
         mLauncherView = findViewById(R.id.launcher);
         mFocusHandler = (FocusIndicatorView) findViewById(R.id.focus_indicator);
         mDragLayer = (DragLayer) findViewById(R.id.drag_layer);
@@ -1353,7 +1354,8 @@ public class Launcher extends Activity
         mWorkspaceBackgroundDrawable = getResources().getDrawable(R.drawable.workspace_bg);
 
         // Setup the drag layer
-        mDragLayer.setup(this, dragController);
+
+        mDragLayer.setup(this, mDragController, mAllAppsController);
 
         // Setup the hotseat
         mHotseat = (Hotseat) findViewById(R.id.hotseat);
@@ -1367,9 +1369,9 @@ public class Launcher extends Activity
         // Setup the workspace
         mWorkspace.setHapticFeedbackEnabled(false);
         mWorkspace.setOnLongClickListener(this);
-        mWorkspace.setup(dragController);
+        mWorkspace.setup(mDragController);
         mWorkspace.bindAndInitFirstWorkspaceScreen(null /* recycled qsb */);
-        dragController.addDragListener(mWorkspace);
+        mDragController.addDragListener(mWorkspace);
 
         // Get the search/delete/uninstall bar
         mSearchDropTargetBar = (SearchDropTargetBar)
@@ -1388,15 +1390,15 @@ public class Launcher extends Activity
         }
 
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
-        dragController.setDragScoller(mWorkspace);
-        dragController.setScrollView(mDragLayer);
-        dragController.setMoveTarget(mWorkspace);
-        dragController.addDropTarget(mWorkspace);
+        mDragController.setDragScoller(mWorkspace);
+        mDragController.setScrollView(mDragLayer);
+        mDragController.setMoveTarget(mWorkspace);
+        mDragController.addDropTarget(mWorkspace);
         if (mSearchDropTargetBar != null) {
-            mSearchDropTargetBar.setup(this, dragController);
+            mSearchDropTargetBar.setup(this, mDragController);
         }
         if (mAppInfoDropTargetBar != null) {
-            mAppInfoDropTargetBar.setup(this, dragController);
+            mAppInfoDropTargetBar.setup(this, mDragController);
         }
 
         if (TestingUtils.MEMORY_DUMP_ENABLED) {
@@ -1940,6 +1942,7 @@ public class Launcher extends Activity
         if (mWorkspace.getChildCount() > 0) {
             outState.putInt(RUNTIME_STATE_CURRENT_SCREEN,
                     mWorkspace.getCurrentPageOffsetFromCustomContent());
+
         }
         super.onSaveInstanceState(outState);
 
@@ -3163,6 +3166,8 @@ public class Launcher extends Activity
                     mWorkspace.startReordering(v);
                 } else {
                     showOverviewMode(true);
+                    mHotseat.requestDisallowInterceptTouchEvent(true);
+
                 }
             } else {
                 final boolean isAllAppsButton = inHotseat && isAllAppsButtonRank(
@@ -3318,7 +3323,7 @@ public class Launcher extends Activity
     /**
      * Shows the apps view.
      */
-    void showAppsView(boolean animated, boolean resetListToTop, boolean updatePredictedApps,
+    public void showAppsView(boolean animated, boolean resetListToTop, boolean updatePredictedApps,
             boolean focusSearchBar) {
         if (resetListToTop) {
             mAppsView.scrollToTop();
