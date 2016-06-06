@@ -49,6 +49,9 @@ public abstract class AllAppsSearchBarController
     protected DefaultAppSearchAlgorithm mSearchAlgorithm;
     protected InputMethodManager mInputMethodManager;
 
+    public void setVisibility(int visibility) {
+        mInput.setVisibility(visibility);
+    }
     /**
      * Sets the references to the apps model and the search result callback.
      */

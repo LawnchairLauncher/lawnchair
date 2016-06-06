@@ -33,6 +33,8 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 
 import com.android.launcher3.allapps.AllAppsContainerView;
+import com.android.launcher3.allapps.AllAppsTransitionController;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.UiThreadCircularReveal;
 import com.android.launcher3.widget.WidgetsContainerView;
@@ -82,6 +84,17 @@ import java.util.HashMap;
  */
 public class LauncherStateTransitionAnimation {
 
+    /**
+     * animation used for all apps and widget tray when
+     *{@link FeatureFlags#LAUNCHER3_ALL_APPS_PULL_UP} is {@code false}
+     */
+    public static final int CIRCULAR_REVEAL = 0;
+    /**
+     * animation used for all apps and not widget tray when
+     *{@link FeatureFlags#LAUNCHER3_ALL_APPS_PULL_UP} is {@code true}
+     */
+    public static final int PULLUP = 1;
+
     private static final float FINAL_REVEAL_ALPHA_FOR_WIDGETS = 0.3f;
 
     /**
@@ -113,9 +126,11 @@ public class LauncherStateTransitionAnimation {
 
     @Thunk Launcher mLauncher;
     @Thunk AnimatorSet mCurrentAnimation;
+    AllAppsTransitionController mAllAppsController;
 
-    public LauncherStateTransitionAnimation(Launcher l) {
+    public LauncherStateTransitionAnimation(Launcher l, AllAppsTransitionController allAppsController) {
         mLauncher = l;
+        mAllAppsController = allAppsController;
     }
 
     /**
@@ -154,9 +169,13 @@ public class LauncherStateTransitionAnimation {
                 }
             }
         };
+        int animType = CIRCULAR_REVEAL;
+        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
+            animType = PULLUP;
+        }
         // Only animate the search bar if animating from spring loaded mode back to all apps
         mCurrentAnimation = startAnimationToOverlay(fromWorkspaceState,
-                Workspace.State.NORMAL_HIDDEN, buttonView, toView, animated, cb);
+                Workspace.State.NORMAL_HIDDEN, buttonView, toView, animated, animType, cb);
     }
 
     /**
@@ -167,7 +186,7 @@ public class LauncherStateTransitionAnimation {
         final WidgetsContainerView toView = mLauncher.getWidgetsView();
         final View buttonView = mLauncher.getWidgetsButton();
         mCurrentAnimation = startAnimationToOverlay(fromWorkspaceState,
-                Workspace.State.OVERVIEW_HIDDEN, buttonView, toView, animated,
+                Workspace.State.OVERVIEW_HIDDEN, buttonView, toView, animated, CIRCULAR_REVEAL,
                 new PrivateTransitionCallbacks(FINAL_REVEAL_ALPHA_FOR_WIDGETS){
                     @Override
                     void onTransitionComplete() {
@@ -189,8 +208,12 @@ public class LauncherStateTransitionAnimation {
         }
 
         if (fromState == Launcher.State.APPS || fromState == Launcher.State.APPS_SPRING_LOADED) {
+            int animType = CIRCULAR_REVEAL;
+            if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
+                animType = PULLUP;
+            }
             startAnimationToWorkspaceFromAllApps(fromWorkspaceState, toWorkspaceState,
-                    animated, onCompleteRunnable);
+                    animated, animType, onCompleteRunnable);
         } else if (fromState == Launcher.State.WIDGETS ||
                 fromState == Launcher.State.WIDGETS_SPRING_LOADED) {
             startAnimationToWorkspaceFromWidgets(fromWorkspaceState, toWorkspaceState,
@@ -208,7 +231,7 @@ public class LauncherStateTransitionAnimation {
     private AnimatorSet startAnimationToOverlay(
             final Workspace.State fromWorkspaceState, final Workspace.State toWorkspaceState,
             final View buttonView, final BaseContainerView toView,
-            final boolean animated, final PrivateTransitionCallbacks pCb) {
+            final boolean animated, int animType, final PrivateTransitionCallbacks pCb) {
         final AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
         final Resources res = mLauncher.getResources();
         final boolean material = Utilities.ATLEAST_LOLLIPOP;
@@ -225,12 +248,35 @@ public class LauncherStateTransitionAnimation {
         // Cancel the current animation
         cancelAnimation();
 
-        playCommonTransitionAnimations(toWorkspaceState, fromView, toView,
-                animated, initialized, animation, revealDuration, layerViews);
-
+        if (!FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
+            playCommonTransitionAnimations(toWorkspaceState, fromView, toView,
+                    animated, initialized, animation, revealDuration, layerViews);
+        }
         final View contentView = toView.getContentView();
 
-        if (animated && initialized) {
+        if (!animated || !initialized) {
+            toView.setTranslationX(0.0f);
+            toView.setTranslationY(0.0f);
+            toView.setScaleX(1.0f);
+            toView.setScaleY(1.0f);
+            toView.setAlpha(1.0f);
+            toView.setVisibility(View.VISIBLE);
+            toView.bringToFront();
+
+            // Show the content view
+            contentView.setVisibility(View.VISIBLE);
+
+            dispatchOnLauncherTransitionPrepare(fromView, animated, false);
+            dispatchOnLauncherTransitionStart(fromView, animated, false);
+            dispatchOnLauncherTransitionEnd(fromView, animated, false);
+            dispatchOnLauncherTransitionPrepare(toView, animated, false);
+            dispatchOnLauncherTransitionStart(toView, animated, false);
+            dispatchOnLauncherTransitionEnd(toView, animated, false);
+            pCb.onTransitionComplete();
+
+            return null;
+        }
+        if (animType == CIRCULAR_REVEAL) {
             // Setup the reveal view animation
             final View revealView = toView.getRevealView();
 
@@ -366,27 +412,40 @@ public class LauncherStateTransitionAnimation {
             toView.post(startAnimRunnable);
 
             return animation;
-        } else {
-            toView.setTranslationX(0.0f);
-            toView.setTranslationY(0.0f);
-            toView.setScaleX(1.0f);
-            toView.setScaleY(1.0f);
-            toView.setVisibility(View.VISIBLE);
-            toView.bringToFront();
+        } else if (animType == PULLUP) {
+            animation.addListener(new AnimatorListenerAdapter() {
+                  @Override
+                  public void onAnimationEnd(Animator animation) {
+                      dispatchOnLauncherTransitionEnd(fromView, animated, false);
+                      dispatchOnLauncherTransitionEnd(toView, animated, false);
+                      cleanupAnimation();
+                      pCb.onTransitionComplete();
+                  }
 
-            // Show the content view
-            contentView.setVisibility(View.VISIBLE);
+            });
+            mAllAppsController.animateToAllApps(animation);
 
             dispatchOnLauncherTransitionPrepare(fromView, animated, false);
-            dispatchOnLauncherTransitionStart(fromView, animated, false);
-            dispatchOnLauncherTransitionEnd(fromView, animated, false);
             dispatchOnLauncherTransitionPrepare(toView, animated, false);
-            dispatchOnLauncherTransitionStart(toView, animated, false);
-            dispatchOnLauncherTransitionEnd(toView, animated, false);
-            pCb.onTransitionComplete();
 
-            return null;
+            final AnimatorSet stateAnimation = animation;
+            final Runnable startAnimRunnable = new Runnable() {
+                public void run() {
+                    // Check that mCurrentAnimation hasn't changed while
+                    // we waited for a layout/draw pass
+                    if (mCurrentAnimation != stateAnimation)
+                        return;
+                    dispatchOnLauncherTransitionStart(fromView, animated, false);
+                    dispatchOnLauncherTransitionStart(toView, animated, false);
+
+                    toView.requestFocus();
+                    stateAnimation.start();
+                }
+            };
+            toView.post(startAnimRunnable);
+            return animation;
         }
+        return null;
     }
 
     /**
@@ -439,7 +498,7 @@ public class LauncherStateTransitionAnimation {
      * Starts an animation to the workspace from the apps view.
      */
     private void startAnimationToWorkspaceFromAllApps(final Workspace.State fromWorkspaceState,
-            final Workspace.State toWorkspaceState, final boolean animated, 
+            final Workspace.State toWorkspaceState, final boolean animated, int type,
             final Runnable onCompleteRunnable) {
         AllAppsContainerView appsView = mLauncher.getAppsView();
         // No alpha anim from all apps
@@ -476,7 +535,7 @@ public class LauncherStateTransitionAnimation {
         // Only animate the search bar if animating to spring loaded mode from all apps
         mCurrentAnimation = startAnimationToWorkspaceFromOverlay(fromWorkspaceState, toWorkspaceState,
                 mLauncher.getAllAppsButton(), appsView,
-                animated, onCompleteRunnable, cb);
+                animated, type, onCompleteRunnable, cb);
     }
 
     /**
@@ -506,7 +565,7 @@ public class LauncherStateTransitionAnimation {
         mCurrentAnimation = startAnimationToWorkspaceFromOverlay(
                 fromWorkspaceState, toWorkspaceState,
                 mLauncher.getWidgetsButton(), widgetsView,
-                animated, onCompleteRunnable, cb);
+                animated, CIRCULAR_REVEAL, onCompleteRunnable, cb);
     }
 
     /**
@@ -598,7 +657,7 @@ public class LauncherStateTransitionAnimation {
     private AnimatorSet startAnimationToWorkspaceFromOverlay(
             final Workspace.State fromWorkspaceState, final Workspace.State toWorkspaceState,
             final View buttonView, final BaseContainerView fromView,
-            final boolean animated, final Runnable onCompleteRunnable,
+            final boolean animated, int animType, final Runnable onCompleteRunnable,
             final PrivateTransitionCallbacks pCb) {
         final AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
         final Resources res = mLauncher.getResources();
@@ -619,10 +678,29 @@ public class LauncherStateTransitionAnimation {
 
         boolean multiplePagesVisible = toWorkspaceState.hasMultipleVisiblePages;
 
-        playCommonTransitionAnimations(toWorkspaceState, fromView, toView,
-                animated, initialized, animation, revealDuration, layerViews);
+        if (!FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
+            playCommonTransitionAnimations(toWorkspaceState, fromView, toView,
+                    animated, initialized, animation, revealDuration, layerViews);
+        }
+        if (!animated || !initialized) {
+            mAllAppsController.finishPullDown();
+            fromView.setVisibility(View.GONE);
+            dispatchOnLauncherTransitionPrepare(fromView, animated, multiplePagesVisible);
+            dispatchOnLauncherTransitionStart(fromView, animated, true);
+            dispatchOnLauncherTransitionEnd(fromView, animated, true);
+            dispatchOnLauncherTransitionPrepare(toView, animated, multiplePagesVisible);
+            dispatchOnLauncherTransitionStart(toView, animated, true);
+            dispatchOnLauncherTransitionEnd(toView, animated, true);
+            pCb.onTransitionComplete();
 
-        if (animated && initialized) {
+            // Run any queued runnables
+            if (onCompleteRunnable != null) {
+                onCompleteRunnable.run();
+            }
+
+            return null;
+        }
+        if (animType == CIRCULAR_REVEAL) {
             final View revealView = fromView.getRevealView();
             final View contentView = fromView.getContentView();
 
@@ -791,23 +869,59 @@ public class LauncherStateTransitionAnimation {
             fromView.post(startAnimRunnable);
 
             return animation;
-        } else /* if (!(animated && initialized)) */ {
-            fromView.setVisibility(View.GONE);
-            dispatchOnLauncherTransitionPrepare(fromView, animated, multiplePagesVisible);
-            dispatchOnLauncherTransitionStart(fromView, animated, true);
-            dispatchOnLauncherTransitionEnd(fromView, animated, true);
-            dispatchOnLauncherTransitionPrepare(toView, animated, multiplePagesVisible);
-            dispatchOnLauncherTransitionStart(toView, animated, true);
-            dispatchOnLauncherTransitionEnd(toView, animated, true);
-            pCb.onTransitionComplete();
+        } else if (animType == PULLUP) {
+            animation.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    dispatchOnLauncherTransitionEnd(fromView, animated, false);
+                    dispatchOnLauncherTransitionEnd(toView, animated, false);
+                    cleanupAnimation();
+                    pCb.onTransitionComplete();
+                }
 
-            // Run any queued runnables
-            if (onCompleteRunnable != null) {
-                onCompleteRunnable.run();
-            }
+            });
+            mAllAppsController.animateToWorkspace(animation);
 
-            return null;
+            // Dispatch the prepare transition signal
+            dispatchOnLauncherTransitionPrepare(fromView, animated, false);
+            dispatchOnLauncherTransitionPrepare(toView, animated, false);
+
+            animation.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    dispatchOnLauncherTransitionEnd(fromView, animated, true);
+                    dispatchOnLauncherTransitionEnd(toView, animated, true);
+
+                    // Run any queued runnables
+                    if (onCompleteRunnable != null) {
+                        onCompleteRunnable.run();
+                    }
+
+                    // This can hold unnecessary references to views.
+                    cleanupAnimation();
+                    pCb.onTransitionComplete();
+                }
+            });
+
+            final AnimatorSet stateAnimation = animation;
+            final Runnable startAnimRunnable = new Runnable() {
+                public void run() {
+                    // Check that mCurrentAnimation hasn't changed while
+                    // we waited for a layout/draw pass
+                    if (mCurrentAnimation != stateAnimation)
+                        return;
+                    dispatchOnLauncherTransitionStart(fromView, animated, false);
+                    dispatchOnLauncherTransitionStart(toView, animated, false);
+
+                    // Focus the new view
+                    toView.requestFocus();
+                    stateAnimation.start();
+                }
+            };
+            fromView.post(startAnimRunnable);
+            return animation;
         }
+        return null;
     }
 
     /**
