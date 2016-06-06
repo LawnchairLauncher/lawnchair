@@ -24,7 +24,6 @@ import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.view.animation.Interpolator;
 import android.graphics.Outline;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
@@ -33,6 +32,7 @@ import android.util.AttributeSet;
 import android.util.Property;
 import android.view.View;
 import android.view.ViewOutlineProvider;
+import android.view.animation.Interpolator;
 import android.view.animation.OvershootInterpolator;
 
 import com.android.launcher3.R;
@@ -224,8 +224,14 @@ public class PageIndicatorDots extends PageIndicator {
 
     @Override
     public void setActiveMarker(int activePage) {
-        mActivePage = activePage;
-        invalidate();
+        if (mActivePage != activePage) {
+            mActivePage = activePage;
+
+            // Simulate a scroll change
+            int totalScroll = mNumPages - 1;
+            int currentScroll = mIsRtl ? (totalScroll - mActivePage) : mActivePage;
+            setScroll(currentScroll, totalScroll);
+        }
     }
 
     @Override
