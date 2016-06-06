@@ -46,6 +46,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.util.TouchController;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -53,7 +54,7 @@ import java.util.HashSet;
 /**
  * Class for initiating a drag within a view or across multiple views.
  */
-public class DragController implements DragDriver.EventListener {
+public class DragController implements DragDriver.EventListener, TouchController {
     private static final String TAG = "Launcher.DragController";
 
     /** Indicates the drag is a move.  */
