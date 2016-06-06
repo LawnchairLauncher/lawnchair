@@ -76,10 +76,10 @@
     <string name="allow_rotation_desc" msgid="7635719920854330492">"Al girar el dispositivo"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"La configuración de pantalla actual no permite girar la pantalla"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Desconocido"</string>
-    <string name="abandoned_clean_this" msgid="7610119707847920412">"Eliminar"</string>
+    <string name="abandoned_clean_this" msgid="7610119707847920412">"Quitar"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Buscar"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Esta aplicación no está instalada"</string>
-    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"La aplicación de este icono no está instalada. Puedes eliminar el icono o buscar la aplicación e instalarla manualmente."</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"La aplicación de este icono no está instalada. Puedes quitar el icono o buscar la aplicación e instalarla manualmente."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Descargando <xliff:g id="NAME">%1$s</xliff:g> (<xliff:g id="PROGRESS">%2$s</xliff:g> completado)"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"Esperando para instalar <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Añadir a la pantalla de inicio"</string>

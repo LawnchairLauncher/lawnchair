@@ -59,7 +59,7 @@
     <string name="migration_cling_description" msgid="2752413805582227644">"आफ्नो पुरानो गृह स्क्रीनबाट अाईकन र फोल्डरहरू आयात गर्नुहोस्?"</string>
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"ICONS प्रतिलिप गर्नुहोस्"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"START FRESH"</string>
-    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"वालपेपरहरू, विजेट; सेटिङहरू"</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"वालपेपर, विजेट तथा सेटिङहरू"</string>
     <string name="workspace_cling_longpress_description" msgid="6569028007301925917">"अनुकूलन गर्नका लागि पृष्ठभूमिलाई ट्याप गरी थिचिरहनुहोस्"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"बुँझें"</string>
     <string name="folder_opened" msgid="94695026776264709">"फोल्डर खुल्यो <xliff:g id="WIDTH">%1$d</xliff:g> बाट <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
