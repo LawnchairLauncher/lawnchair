@@ -123,14 +123,16 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             if (viewType == ICON_VIEW_TYPE || viewType == PREDICTION_ICON_VIEW_TYPE) {
                 super.onInitializeAccessibilityNodeInfoForItem(recycler, state, host, info);
                 CollectionItemInfoCompat itemInfo = info.getCollectionItemInfo();
-                final CollectionItemInfoCompat dstItemInfo = CollectionItemInfoCompat.obtain(
-                        itemInfo.getRowIndex() - getEmptyRowForAccessibility(viewType),
-                        itemInfo.getRowSpan(),
-                        itemInfo.getColumnIndex(),
-                        itemInfo.getColumnSpan(),
-                        itemInfo.isHeading(),
-                        itemInfo.isSelected());
-                info.setCollectionItemInfo(dstItemInfo);
+                if (itemInfo != null) {
+                    final CollectionItemInfoCompat dstItemInfo = CollectionItemInfoCompat.obtain(
+                            itemInfo.getRowIndex() - getEmptyRowForAccessibility(viewType),
+                            itemInfo.getRowSpan(),
+                            itemInfo.getColumnIndex(),
+                            itemInfo.getColumnSpan(),
+                            itemInfo.isHeading(),
+                            itemInfo.isSelected());
+                    info.setCollectionItemInfo(dstItemInfo);
+                }
             }
         }
 
