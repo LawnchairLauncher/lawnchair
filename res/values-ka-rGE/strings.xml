@@ -59,7 +59,7 @@
     <string name="migration_cling_description" msgid="2752413805582227644">"გსურთ, ძველი მთავარი ეკრანიდან ხატულების და საქაღ. იმპორტი?"</string>
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"ხატულების კოპირება"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"სტანდარტული განლაგება"</string>
-    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"ფონები, ვიჯეტები, &amp; პარამეტრები"</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"ფონები, ვიჯეტები &amp; პარამეტრები"</string>
     <string name="workspace_cling_longpress_description" msgid="6569028007301925917">"მოსარგებად, ხანგრძლივად შეეხეთ ფონს."</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"გასაგებია"</string>
     <string name="folder_opened" msgid="94695026776264709">"საქაღალდე გახსნილია, <xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
