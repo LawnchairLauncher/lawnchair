@@ -511,12 +511,16 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 AppInfo info = mApps.getAdapterItems().get(position).appInfo;
                 BubbleTextView icon = (BubbleTextView) holder.mContent;
                 icon.applyFromApplicationInfo(info);
+                icon.setAccessibilityDelegate(
+                        LauncherAppState.getInstance().getAccessibilityDelegate());
                 break;
             }
             case PREDICTION_ICON_VIEW_TYPE: {
                 AppInfo info = mApps.getAdapterItems().get(position).appInfo;
                 BubbleTextView icon = (BubbleTextView) holder.mContent;
                 icon.applyFromApplicationInfo(info);
+                icon.setAccessibilityDelegate(
+                        LauncherAppState.getInstance().getAccessibilityDelegate());
                 break;
             }
             case EMPTY_SEARCH_VIEW_TYPE:
