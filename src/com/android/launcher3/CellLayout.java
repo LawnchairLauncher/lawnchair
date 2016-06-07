@@ -896,14 +896,30 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         if (!isFullscreen) {
             left += (int) Math.ceil(getUnusedHorizontalSpace() / 2f);
         }
+        int right = r - l - getPaddingRight();
+        if (!isFullscreen) {
+            right -= (int) Math.ceil(getUnusedHorizontalSpace() / 2f);
+        }
+
         int top = getPaddingTop();
+        int bottom = b - t - getPaddingBottom();
 
         mTouchFeedbackView.layout(left, top,
                 left + mTouchFeedbackView.getMeasuredWidth(),
                 top + mTouchFeedbackView.getMeasuredHeight());
-        mShortcutsAndWidgets.layout(left, top,
-                left + r - l,
-                top + b - t);
+        mShortcutsAndWidgets.layout(left, top, right, bottom);
+
+        // Expand the background drawing bounds by the padding baked into the background drawable
+        mBackground.getPadding(mTempRect);
+        mBackground.setBounds(
+                left - mTempRect.left,
+                top - mTempRect.top,
+                right + mTempRect.right,
+                bottom + mTempRect.bottom);
+    }
+
+    public Rect getBackgroundBounds() {
+        return mBackground.getBounds();
     }
 
     /**
@@ -913,16 +929,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
      */
     public int getUnusedHorizontalSpace() {
         return getMeasuredWidth() - getPaddingLeft() - getPaddingRight() - (mCountX * mCellWidth);
-    }
-
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-
-        // Expand the background drawing bounds by the padding baked into the background drawable
-        mBackground.getPadding(mTempRect);
-        mBackground.setBounds(-mTempRect.left, -mTempRect.top,
-                w + mTempRect.right, h + mTempRect.bottom);
     }
 
     @Override
