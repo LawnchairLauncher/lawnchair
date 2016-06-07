@@ -40,6 +40,15 @@ public final class FileLog {
     private static File sLogsDirectory = null;
 
     public static void setDir(File logsDir) {
+        if (ProviderConfig.IS_DOGFOOD_BUILD) {
+            synchronized (DATE_FORMAT) {
+                // If the target directory changes, stop any active thread.
+                if (sHandler != null && !logsDir.equals(sLogsDirectory)) {
+                    ((HandlerThread) sHandler.getLooper().getThread()).quit();
+                    sHandler = null;
+                }
+            }
+        }
         sLogsDirectory = logsDir;
     }
 
