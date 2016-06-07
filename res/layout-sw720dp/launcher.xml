@@ -51,12 +51,8 @@
             android:layout_height="match_parent" />
 
         <include
-            android:id="@+id/app_info_drop_target_bar"
-            layout="@layout/drop_target_bar_horz_info" />
-
-        <include
-            android:id="@+id/search_drop_target_bar"
-            layout="@layout/drop_target_bar_horz_search" />
+            android:id="@+id/drop_target_bar"
+            layout="@layout/drop_target_bar_horz" />
 
         <include layout="@layout/overview_panel"
             android:id="@+id/overview_panel"
@@ -67,7 +63,7 @@
         <com.android.launcher3.pageindicators.PageIndicatorLine
             android:id="@+id/page_indicator"
             android:layout_width="match_parent"
-            android:layout_height="1dp" />
+            android:layout_height="@dimen/dynamic_grid_page_indicator_height" />
 
         <include layout="@layout/widgets_view"
             android:id="@+id/widgets_view"

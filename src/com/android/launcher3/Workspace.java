@@ -176,26 +176,22 @@ public class Workspace extends PagedView
     private Matrix mTempMatrix = new Matrix();
 
     private SpringLoadedDragController mSpringLoadedDragController;
-    private float mSpringLoadedShrinkFactor;
     private float mOverviewModeShrinkFactor;
 
     // State variable that indicates whether the pages are small (ie when you're
     // in all apps or customize mode)
 
     enum State {
-        NORMAL          (SearchDropTargetBar.State.INVISIBLE, false, false),
-        NORMAL_HIDDEN   (SearchDropTargetBar.State.INVISIBLE, false, false),
-        SPRING_LOADED   (SearchDropTargetBar.State.DROP_TARGET, false, true),
-        OVERVIEW        (SearchDropTargetBar.State.INVISIBLE, true, true),
-        OVERVIEW_HIDDEN (SearchDropTargetBar.State.INVISIBLE, true, false);
+        NORMAL          (false, false),
+        NORMAL_HIDDEN   (false, false),
+        SPRING_LOADED   (false, true),
+        OVERVIEW        (true, true),
+        OVERVIEW_HIDDEN (true, false);
 
-        public final SearchDropTargetBar.State searchDropTargetBarState;
         public final boolean shouldUpdateWidget;
         public final boolean hasMultipleVisiblePages;
 
-        State(SearchDropTargetBar.State searchBarState, boolean shouldUpdateWidget,
-                boolean hasMultipleVisiblePages) {
-            searchDropTargetBarState = searchBarState;
+        State(boolean shouldUpdateWidget, boolean hasMultipleVisiblePages) {
             this.shouldUpdateWidget = shouldUpdateWidget;
             this.hasMultipleVisiblePages = hasMultipleVisiblePages;
         }
@@ -316,9 +312,6 @@ public class Workspace extends PagedView
         mWallpaperManager = WallpaperManager.getInstance(context);
 
         mWallpaperOffset = new WallpaperOffsetInterpolator(this);
-
-        mSpringLoadedShrinkFactor =
-                res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
         mOverviewModeShrinkFactor =
                 res.getInteger(R.integer.config_workspaceOverviewShrinkPercentage) / 100f;
 
@@ -347,6 +340,7 @@ public class Workspace extends PagedView
     // estimate the size of a widget with spans hSpan, vSpan. return MAX_VALUE for each
     // dimension if unsuccessful
     public int[] estimateItemSize(ItemInfo itemInfo, boolean springLoaded) {
+        float shrinkFactor = mLauncher.getDeviceProfile().workspaceSpringLoadShrinkFactor;
         int[] size = new int[2];
         if (getChildCount() > 0) {
             // Use the first non-custom page to estimate the child position
@@ -355,8 +349,8 @@ public class Workspace extends PagedView
             size[0] = r.width();
             size[1] = r.height();
             if (springLoaded) {
-                size[0] *= mSpringLoadedShrinkFactor;
-                size[1] *= mSpringLoadedShrinkFactor;
+                size[0] *= shrinkFactor;
+                size[1] *= shrinkFactor;
             }
             return size;
         } else {
@@ -1380,7 +1374,6 @@ public class Workspace extends PagedView
         // TODO(adamcohen): figure out a final effect here. We may need to recommend
         // different effects based on device performance. On at least one relatively high-end
         // device I've tried, translating the launcher causes things to get quite laggy.
-        setTranslationAndAlpha(mLauncher.getSearchDropTargetBar(), transX, alpha);
         setTranslationAndAlpha(getPageIndicator(), transX, alpha);
         setTranslationAndAlpha(getChildAt(getCurrentPage()), transX, alpha);
         setTranslationAndAlpha(mLauncher.getHotseat(), transX, alpha);
@@ -1536,8 +1529,7 @@ public class Workspace extends PagedView
             // Reset our click listener
             setOnClickListener(mLauncher);
         }
-        mLauncher.getSearchDropTargetBar().enableAccessibleDrag(enable);
-        mLauncher.getAppInfoDropTargetBar().enableAccessibleDrag(enable);
+        mLauncher.getDropTargetBar().enableAccessibleDrag(enable);
         mLauncher.getHotseat().getLayout()
             .enableAccessibleDrag(enable, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG);
     }
@@ -1938,7 +1930,7 @@ public class Workspace extends PagedView
 
     int getOverviewModeTranslationY() {
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        Rect workspacePadding = grid.getWorkspacePadding(Utilities.isRtl(getResources()));
+        Rect workspacePadding = grid.getWorkspacePadding();
         int overviewButtonBarHeight = grid.getOverviewModeButtonBarHeight();
 
         int scaledHeight = (int) (mOverviewModeShrinkFactor * getNormalChildHeight());
@@ -1951,15 +1943,26 @@ public class Workspace extends PagedView
         return -workspaceOffsetTopEdge + overviewOffsetTopEdge;
     }
 
-    int getSpringLoadedTranslationY() {
+    float getSpringLoadedTranslationY() {
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        Rect workspacePadding = grid.getWorkspacePadding(Utilities.isRtl(getResources()));
-        int scaledHeight = (int) (mSpringLoadedShrinkFactor * getNormalChildHeight());
-        int workspaceTop = mInsets.top + workspacePadding.top;
-        int workspaceBottom = getViewportHeight() - mInsets.bottom - workspacePadding.bottom;
-        int workspaceHeight = workspaceBottom - workspaceTop;
-        // Center the spring-loaded pages by translating it up by half of the reduced height.
-        return -(workspaceHeight - scaledHeight) / 2;
+        if (grid.isVerticalBarLayout() || getChildCount() == 0) {
+            return 0;
+        }
+        Rect workspacePadding = grid.getWorkspacePadding();
+
+        float scaledHeight = grid.workspaceSpringLoadShrinkFactor * getNormalChildHeight();
+        float shrunkTop = mInsets.top + grid.dropTargetBarSizePx;
+        float shrunkBottom = getViewportHeight() - mInsets.bottom
+                - workspacePadding.bottom - grid.workspaceSpringLoadedBottomSpace;
+        float totalShrunkSpace = shrunkBottom - shrunkTop;
+
+        float desiredCellTop = shrunkTop + (totalShrunkSpace - scaledHeight) / 2;
+
+        float halfHeight = getHeight() / 2;
+        float myCenter = getTop() + halfHeight;
+        float cellTopFromCenter = halfHeight - getChildAt(0).getTop();
+        float actualCellTop = myCenter - cellTopFromCenter * grid.workspaceSpringLoadShrinkFactor;
+        return (desiredCellTop - actualCellTop) / grid.workspaceSpringLoadShrinkFactor;
     }
 
     float getOverviewModeShrinkFactor() {
