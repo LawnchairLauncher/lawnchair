@@ -35,7 +35,7 @@
     <string name="all_apps_search_market_message" msgid="5470761048755751471">"<xliff:g id="QUERY">%1$s</xliff:g>ကို သွားပါ"</string>
     <string name="out_of_space" msgid="4691004494942118364">"ဤပင်မမျက်နှာစာတွင် နေရာလွတ် မကျန်တော့ပါ"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"အနှစ်သက်ဆုံးများ ထားရာတွင် နေရာလွတ် မကျန်တော့ပါ"</string>
-    <string name="all_apps_button_label" msgid="9110807029020582876">"အပ်ပလီကေးရှင်းများ"</string>
+    <string name="all_apps_button_label" msgid="9110807029020582876">"အက်ပ်များ"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"ပင်မစာမျက်နှာ"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"ဖယ်ရှားမည်"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"ဖယ်ထုတ်မည်"</string>
