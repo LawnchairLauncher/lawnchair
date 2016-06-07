@@ -69,7 +69,7 @@
     <string name="folder_renamed" msgid="1794088362165669656">"Қалта атауы <xliff:g id="NAME">%1$s</xliff:g> болып өзгертілді"</string>
     <string name="folder_name_format" msgid="6629239338071103179">"Қалта: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Виджеттер"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"Артқы фондар"</string>
+    <string name="wallpaper_button_text" msgid="8404103075899945851">"Тұсқағаздар"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"Параметрлер"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Әкімші өшірді"</string>
     <string name="allow_rotation_title" msgid="3132336367556833843">"Негізгі экранды айналдыруды рұқсат ету"</string>
