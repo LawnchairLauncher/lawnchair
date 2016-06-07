@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import android.app.WallpaperManager;
 import android.content.Context;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
@@ -216,5 +217,12 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
 
     protected void setChildrenDrawnWithCacheEnabled(boolean enabled) {
         super.setChildrenDrawnWithCacheEnabled(enabled);
+    }
+
+    @Override
+    public void setLayerType(int layerType, Paint paint) {
+        // When clip children is disabled do not use hardware layer,
+        // as hardware layer forces clip children.
+        super.setLayerType(getClipChildren() ? layerType : LAYER_TYPE_NONE, paint);
     }
 }
