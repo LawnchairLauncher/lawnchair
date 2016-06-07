@@ -677,7 +677,7 @@ public class LauncherStateTransitionAnimation {
                     animated, initialized, animation, revealDuration, layerViews);
         }
         if (!animated || !initialized) {
-            if (!FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
+            if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
                 mAllAppsController.finishPullDown();
             }
             fromView.setVisibility(View.GONE);
