@@ -38,7 +38,7 @@
     <string name="all_apps_button_label" msgid="9110807029020582876">"अनुप्रयोगहरू"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"गृह"</string>
     <string name="delete_target_label" msgid="1822697352535677073">"हटाउनुहोस्"</string>
-    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"स्थापना हटाउनुहोस्"</string>
+    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"स्थापित अनुप्रयोग हटाउनुहोस्"</string>
     <string name="info_target_label" msgid="8053346143994679532">"अनुप्रयोग जानकारी"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"सर्टकट स्थापना गर्नेहोस्"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"प्रयोगकर्ताको हस्तक्षेप बिना एउटा अनुप्रयोगलाई सर्टकटमा थप्नको लागि अनुमति दिनुहोस्।"</string>
@@ -54,14 +54,14 @@
     <string name="default_scroll_format" msgid="7475544710230993317">"पृष्ठ %2$d को %1$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"गृह स्क्रिन %1$d को %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"नयाँ गृह स्क्रिन पृष्ठ"</string>
-    <string name="first_run_cling_title" msgid="2459738000155917941">"स्वागतम"</string>
+    <string name="first_run_cling_title" msgid="2459738000155917941">"स्वागतम्"</string>
     <string name="migration_cling_title" msgid="9181776667882933767">"तपाईँको अनुप्रयोग आईकनको प्रतिलिप गर्नुहोस्"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"आफ्नो पुरानो गृह स्क्रीनबाट अाईकन र फोल्डरहरू आयात गर्नुहोस्?"</string>
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"ICONS प्रतिलिप गर्नुहोस्"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"START FRESH"</string>
-    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"वालपेपरहरू, विजेट; सेटिङहरू"</string>
-    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"छुनुहोस् ; अनुकूलन पृष्ठभूमि होल्ड गर्नुहोस्"</string>
-    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"बुझियो"</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"वालपेपर, विजेट तथा सेटिङहरू"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"अनुकूलन गर्न पृष्ठभूमिलाई छुनुहोस् र होल्ड गर्नुहोस्"</string>
+    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"बुँझें"</string>
     <string name="folder_opened" msgid="94695026776264709">"फोल्डर खुल्यो <xliff:g id="WIDTH">%1$d</xliff:g> बाट <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1884479294466410023">"फोल्डर बन्द गर्नको लागि टच गर्नुहोस्"</string>
     <string name="folder_tap_to_rename" msgid="9191075570492871147">"पुन: नामाकरण बचत गर्न टच गर्नुहोस्।"</string>

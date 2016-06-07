@@ -29,16 +29,16 @@
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Vidjetni tanlash uchun bosib turing."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Ikki marta bosib va bosib turgan holatda vidjetni tanlang yoki maxsus amaldan foydalaning."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"Ilovalarni qidirish…"</string>
+    <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"Ilovalar ichidan qidirish…"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Ilovalar yuklanmoqda…"</string>
-    <string name="all_apps_no_search_results" msgid="6332185285860416787">"“<xliff:g id="QUERY">%1$s</xliff:g>” bilan mos hech qanday ilova topilmadi"</string>
-    <string name="all_apps_search_market_message" msgid="5470761048755751471">"O‘tish: <xliff:g id="QUERY">%1$s</xliff:g>"</string>
+    <string name="all_apps_no_search_results" msgid="6332185285860416787">"“<xliff:g id="QUERY">%1$s</xliff:g>” so‘rovi bo‘yicha hech narsa topilmadi"</string>
+    <string name="all_apps_search_market_message" msgid="5470761048755751471">"<xliff:g id="QUERY">%1$s</xliff:g>"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Uy ekranida bitta ham xona yo‘q."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Ajratilganlarda birorta ham xona yo‘q"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Ilovalar"</string>
-    <string name="all_apps_home_button_label" msgid="252062713717058851">"Uy"</string>
+    <string name="all_apps_home_button_label" msgid="252062713717058851">"Bosh sahifa"</string>
     <string name="delete_target_label" msgid="1822697352535677073">"Olib tashlash"</string>
-    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"O‘chirish"</string>
+    <string name="delete_target_uninstall_label" msgid="5100785476250872595">"O‘chirib tashlash"</string>
     <string name="info_target_label" msgid="8053346143994679532">"Ilova haqida"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"yorliqlar yaratish"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Ilovalarga foydalanuvchidan so‘ramasdan yorliqlar qo‘shishga ruxsat beradi."</string>
@@ -59,8 +59,8 @@
     <string name="migration_cling_description" msgid="2752413805582227644">"Eski \"Uy\" ekranlaringizdan jildlar va nishonchalar import qilinsinmi?"</string>
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"NISHONCHALARNI NUSXALASH"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"YANGIDAN BOSHLASH"</string>
-    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Orqa fon rasmlari, vidjet va sozlamalar"</string>
-    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Orqa fonni moslashtirish uchun uni bosing va ushlab turing"</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Fon rasmlari, vidjet va sozlamalar"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Moslashtirish uchun orqa fon ustiga biroz bosib turing"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"OK"</string>
     <string name="folder_opened" msgid="94695026776264709">"Jild ochildi, <xliff:g id="WIDTH">%1$d</xliff:g> ga <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1884479294466410023">"Jildni yopish uchun bosing"</string>
@@ -71,7 +71,7 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Vidjetlar"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Fon rasmlari"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"Sozlamalar"</string>
-    <string name="allow_rotation_title" msgid="2118706734511831751">"Aylanishga ruxsat berish"</string>
+    <string name="allow_rotation_title" msgid="2118706734511831751">"Avtomatik burilish"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Noma’lum"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"O‘chirish"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Qidirish"</string>

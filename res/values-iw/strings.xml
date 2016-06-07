@@ -37,7 +37,7 @@
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"אין עוד מקום במגש המועדפים"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"אפליקציות"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"דף הבית"</string>
-    <string name="delete_target_label" msgid="1822697352535677073">"הסר"</string>
+    <string name="delete_target_label" msgid="1822697352535677073">"מחק"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"הסר התקנה"</string>
     <string name="info_target_label" msgid="8053346143994679532">"פרטי אפליקציה"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"התקן קיצורי דרך"</string>
@@ -60,7 +60,7 @@
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"העתק סמלים"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"התחל דף חדש"</string>
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"טפטים, ווידג\'טים והגדרות"</string>
-    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"גע והחזק ברקע לביצוע התאמה אישית"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"גע והחזק ברקע כדי לבצע התאמה אישית"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"הבנתי"</string>
     <string name="folder_opened" msgid="94695026776264709">"תיקיה פתוחה, <xliff:g id="WIDTH">%1$d</xliff:g> על <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1884479294466410023">"גע כדי לסגור את התיקיה"</string>

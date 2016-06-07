@@ -60,7 +60,7 @@
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"COPIAR ÍCONES"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"COMEÇAR DO ZERO"</string>
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Plano de fundo, widgets e configurações"</string>
-    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Toque e mantenha pressionado o segundo plano para personalizar"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Toque no segundo plano e mantenha pressionado para personalizar"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"ENTENDI"</string>
     <string name="folder_opened" msgid="94695026776264709">"Pasta aberta, <xliff:g id="WIDTH">%1$d</xliff:g> por <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1884479294466410023">"Toque para fechar a pasta"</string>

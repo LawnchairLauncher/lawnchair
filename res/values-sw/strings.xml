@@ -61,8 +61,8 @@
     <string name="migration_cling_description" msgid="2752413805582227644">"Je, ungependa kuingiza ikoni na folda kutoka kwenye skrini zako za Mwanzo za zamani?"</string>
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"NAKILI IKONI"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"ANZA UPYA"</string>
-    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Mandhari, wijeti, na mipangilio"</string>
-    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Gusa na ushikilie mandhari ili uweke mapendeleo"</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Mandhari, wijeti na mipangilio"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Gusa na ushikilie mandhari ili ubadilishe upendavyo"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"NIMEELEWA"</string>
     <string name="folder_opened" msgid="94695026776264709">"Folda imefunguliwa, <xliff:g id="WIDTH">%1$d</xliff:g> kwa <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1884479294466410023">"Gusa ili ufunge folda"</string>

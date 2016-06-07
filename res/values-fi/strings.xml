@@ -60,7 +60,7 @@
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"KOPIOI KUVAKKEET"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"ALOITA ALUSTA"</string>
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Taustakuvat, widgetit ja asetukset"</string>
-    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Muokkaa taustaa koskettamalla ja painamalla pitkään"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Muokkaa taustaa koskettamalla ja painamalla pitkään."</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"SELVÄ"</string>
     <string name="folder_opened" msgid="94695026776264709">"Kansio avattu, koko <xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1884479294466410023">"Sulje kansio koskettamalla"</string>
