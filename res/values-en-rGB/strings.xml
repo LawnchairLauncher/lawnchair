@@ -59,7 +59,7 @@
     <string name="migration_cling_description" msgid="2752413805582227644">"Import icons and folders from your old Home screens?"</string>
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"COPY ICONS"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"START AFRESH"</string>
-    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Wallpapers, widgets, &amp; settings"</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Wallpapers, widgets &amp; settings"</string>
     <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Touch &amp; hold background to customise"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"GOT IT"</string>
     <string name="folder_opened" msgid="94695026776264709">"Folder opened, <xliff:g id="WIDTH">%1$d</xliff:g> by <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
