@@ -63,9 +63,8 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
         LauncherAppState app = LauncherAppState.getInstance();
         InvariantDeviceProfile idp = app.getInvariantDeviceProfile();
 
-        // We only care out the cell size, which is independent of the the layout direction.
-        Rect paddingLand = idp.landscapeProfile.getWorkspacePadding(false /* isLayoutRtl */);
-        Rect paddingPort = idp.portraitProfile.getWorkspacePadding(false /* isLayoutRtl */);
+        Rect paddingLand = idp.landscapeProfile.getWorkspacePadding();
+        Rect paddingPort = idp.portraitProfile.getWorkspacePadding();
 
         // Always assume we're working with the smallest span to make sure we
         // reserve enough space in both orientations.

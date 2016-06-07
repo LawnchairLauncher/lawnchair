@@ -51,12 +51,8 @@
             android:layout_gravity="right" />
 
         <include
-            android:id="@+id/app_info_drop_target_bar"
-            layout="@layout/drop_target_bar_vert_info" />
-
-        <include
-            android:id="@+id/search_drop_target_bar"
-            layout="@layout/drop_target_bar_vert_search" />
+            android:id="@+id/drop_target_bar"
+            layout="@layout/drop_target_bar_vert" />
 
         <include layout="@layout/overview_panel"
             android:id="@+id/overview_panel"

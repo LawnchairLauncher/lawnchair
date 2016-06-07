@@ -55,10 +55,10 @@ public abstract class ButtonDropTarget extends TextView
     private static final int DRAG_VIEW_DROP_DURATION = 285;
 
     private final boolean mHideParentOnDisable;
+    protected final Launcher mLauncher;
 
-    protected Launcher mLauncher;
     private int mBottomDragPadding;
-    protected BaseDropTargetBar mDropTargetBar;
+    protected DropTargetBar mDropTargetBar;
 
     /** Whether this drop target is active for the current drag */
     protected boolean mActive;
@@ -80,6 +80,8 @@ public abstract class ButtonDropTarget extends TextView
 
     public ButtonDropTarget(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        mLauncher = (Launcher) context;
+
         Resources resources = getResources();
         mBottomDragPadding = resources.getDimensionPixelSize(R.dimen.drop_target_drag_padding);
 
@@ -109,11 +111,7 @@ public abstract class ButtonDropTarget extends TextView
         }
     }
 
-    public void setLauncher(Launcher launcher) {
-        mLauncher = launcher;
-    }
-
-    public void setDropTargetBar(BaseDropTargetBar dropTargetBar) {
+    public void setDropTargetBar(DropTargetBar dropTargetBar) {
         mDropTargetBar = dropTargetBar;
     }
 

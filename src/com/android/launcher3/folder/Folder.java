@@ -318,7 +318,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     @Override
     public void enableAccessibleDrag(boolean enable) {
-        mLauncher.getSearchDropTargetBar().enableAccessibleDrag(enable);
+        mLauncher.getDropTargetBar().enableAccessibleDrag(enable);
         for (int i = 0; i < mContent.getChildCount(); i++) {
             mContent.getPageAt(i).enableAccessibleDrag(enable, CellLayout.FOLDER_ACCESSIBILITY_DRAG);
         }
@@ -1054,7 +1054,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         int top = Math.min(Math.max(sTempRect.top, centeredTop),
                 sTempRect.top + sTempRect.height() - height);
 
-        int distFromEdgeOfScreen = grid.getWorkspacePadding(isLayoutRtl()).left + getPaddingLeft();
+        int distFromEdgeOfScreen = grid.getWorkspacePadding().left + getPaddingLeft();
 
         if (grid.isPhone && (grid.availableWidthPx - width) < 4 * distFromEdgeOfScreen) {
             // Center the folder if it is very close to being centered anyway, by virtue of
@@ -1093,7 +1093,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     private int getContentAreaHeight() {
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        Rect workspacePadding = grid.getWorkspacePadding(mContent.mIsRtl);
+        Rect workspacePadding = grid.getWorkspacePadding();
         int maxContentAreaHeight = grid.availableHeightPx -
                 workspacePadding.top - workspacePadding.bottom -
                 mFooterHeight;

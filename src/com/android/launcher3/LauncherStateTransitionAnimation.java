@@ -460,12 +460,6 @@ public class LauncherStateTransitionAnimation {
         Animator workspaceAnim = mLauncher.startWorkspaceStateChangeAnimation(toWorkspaceState,
                 animated, layerViews);
 
-        // Animate the search bar
-        final SearchDropTargetBar.State toSearchBarState =
-                toWorkspaceState.searchDropTargetBarState;
-        mLauncher.getSearchDropTargetBar().animateToState(toSearchBarState,
-                animated ? revealDuration : 0, animation);
-
         if (animated && initialized) {
             // Play the workspace animation
             if (workspaceAnim != null) {

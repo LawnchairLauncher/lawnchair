@@ -252,8 +252,7 @@ public class Launcher extends Activity
     private View mAllAppsButton;
     private View mWidgetsButton;
 
-    private SearchDropTargetBar mSearchDropTargetBar;
-    private AppInfoDropTargetBar mAppInfoDropTargetBar;
+    private DropTargetBar mDropTargetBar;
 
     // Main container view for the all apps screen.
     @Thunk AllAppsContainerView mAppsView;
@@ -435,8 +434,6 @@ public class Launcher extends Activity
 
         setContentView(R.layout.launcher);
 
-        app.getInvariantDeviceProfile().landscapeProfile.setSearchBarHeight(getSearchBarHeight());
-        app.getInvariantDeviceProfile().portraitProfile.setSearchBarHeight(getSearchBarHeight());
         setupViews();
         mDeviceProfile.layout(this);
         mExtractedColors = new ExtractedColors();
@@ -1374,11 +1371,7 @@ public class Launcher extends Activity
         mDragController.addDragListener(mWorkspace);
 
         // Get the search/delete/uninstall bar
-        mSearchDropTargetBar = (SearchDropTargetBar)
-                mDragLayer.findViewById(R.id.search_drop_target_bar);
-        // Get the app info bar
-        mAppInfoDropTargetBar = (AppInfoDropTargetBar)
-                mDragLayer.findViewById(R.id.app_info_drop_target_bar);
+        mDropTargetBar = (DropTargetBar) mDragLayer.findViewById(R.id.drop_target_bar);
 
         // Setup Apps and Widgets
         mAppsView = (AllAppsContainerView) findViewById(R.id.apps_view);
@@ -1394,12 +1387,7 @@ public class Launcher extends Activity
         mDragController.setScrollView(mDragLayer);
         mDragController.setMoveTarget(mWorkspace);
         mDragController.addDropTarget(mWorkspace);
-        if (mSearchDropTargetBar != null) {
-            mSearchDropTargetBar.setup(this, mDragController);
-        }
-        if (mAppInfoDropTargetBar != null) {
-            mAppInfoDropTargetBar.setup(this, mDragController);
-        }
+        mDropTargetBar.setup(mDragController);
 
         if (TestingUtils.MEMORY_DUMP_ENABLED) {
             TestingUtils.addWeightWatcher(this);
@@ -1808,12 +1796,8 @@ public class Launcher extends Activity
         return mOverviewPanel;
     }
 
-    public SearchDropTargetBar getSearchDropTargetBar() {
-        return mSearchDropTargetBar;
-    }
-
-    public AppInfoDropTargetBar getAppInfoDropTargetBar() {
-        return mAppInfoDropTargetBar;
+    public DropTargetBar getDropTargetBar() {
+        return mDropTargetBar;
     }
 
     public LauncherAppWidgetHost getAppWidgetHost() {
@@ -4037,11 +4021,6 @@ public class Launcher extends Activity
 
     public boolean useVerticalBarLayout() {
         return mDeviceProfile.isVerticalBarLayout();
-    }
-
-    /** Returns the search bar bounds in pixels. */
-    protected Rect getSearchBarBounds() {
-        return mDeviceProfile.getSearchBarBounds(Utilities.isRtl(getResources()));
     }
 
     public int getSearchBarHeight() {

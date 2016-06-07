@@ -356,7 +356,7 @@ public class FocusHelper {
         CellLayout iconLayout = (CellLayout) parent.getParent();
         final Workspace workspace = (Workspace) iconLayout.getParent();
         final ViewGroup dragLayer = (ViewGroup) workspace.getParent();
-        final ViewGroup tabs = (ViewGroup) dragLayer.findViewById(R.id.search_drop_target_bar);
+        final ViewGroup tabs = (ViewGroup) dragLayer.findViewById(R.id.drop_target_bar);
         final Hotseat hotseat = (Hotseat) dragLayer.findViewById(R.id.hotseat);
 
         final ItemInfo itemInfo = (ItemInfo) v.getTag();
