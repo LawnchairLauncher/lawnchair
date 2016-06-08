@@ -98,7 +98,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private static final String TAG = "Launcher.Folder";
 
     /**
-     * We avoid measuring {@link #mContentWrapper} with a 0 width or height, as this
+     * We avoid measuring {@link #mContent} with a 0 width or height, as this
      * results in CellLayout being measured as UNSPECIFIED, which it does not support.
      */
     private static final int MIN_CONTENT_DIMEN = 5;
@@ -147,7 +147,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     @Thunk FolderIcon mFolderIcon;
 
     @Thunk FolderPagedView mContent;
-    @Thunk View mContentWrapper;
     public ExtendedEditText mFolderName;
     private PageIndicatorDots mPageIndicator;
 
@@ -226,7 +225,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mContentWrapper = findViewById(R.id.folder_content_wrapper);
         mContent = (FolderPagedView) findViewById(R.id.folder_content);
         mContent.setFolder(this);
 
@@ -562,8 +560,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             reveal.setDuration(mMaterialExpandDuration);
             reveal.setInterpolator(new LogDecelerateInterpolator(100, 0));
 
-            mContentWrapper.setAlpha(0f);
-            Animator iconsAlpha = ObjectAnimator.ofFloat(mContentWrapper, "alpha", 0f, 1f);
+            mContent.setAlpha(0f);
+            Animator iconsAlpha = ObjectAnimator.ofFloat(mContent, "alpha", 0f, 1f);
             iconsAlpha.setDuration(mMaterialExpandDuration);
             iconsAlpha.setStartDelay(mMaterialExpandStagger);
             iconsAlpha.setInterpolator(new AccelerateInterpolator(1.5f));
@@ -581,12 +579,12 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
             openFolderAnim = anim;
 
-            mContentWrapper.setLayerType(LAYER_TYPE_HARDWARE, null);
+            mContent.setLayerType(LAYER_TYPE_HARDWARE, null);
             mFooter.setLayerType(LAYER_TYPE_HARDWARE, null);
             onCompleteRunnable = new Runnable() {
                 @Override
                 public void run() {
-                    mContentWrapper.setLayerType(LAYER_TYPE_NONE, null);
+                    mContent.setLayerType(LAYER_TYPE_NONE, null);
                     mFooter.setLayerType(LAYER_TYPE_NONE, null);
                 }
             };
@@ -1122,7 +1120,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         int contentAreaHeightSpec = MeasureSpec.makeMeasureSpec(contentHeight, MeasureSpec.EXACTLY);
 
         mContent.setFixedSize(contentWidth, contentHeight);
-        mContentWrapper.measure(contentAreaWidthSpec, contentAreaHeightSpec);
+        mContent.measure(contentAreaWidthSpec, contentAreaHeightSpec);
 
         if (mContent.getChildCount() > 0) {
             int cellIconGap = (mContent.getPageAt(0).getCellWidth()

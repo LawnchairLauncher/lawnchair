@@ -61,6 +61,7 @@ import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TouchController;
 
@@ -111,6 +112,8 @@ public class DragLayer extends InsettableFrameLayout {
 
     // Related to adjacent page hints
     private final Rect mScrollChildPosition = new Rect();
+    private final ViewGroupFocusHelper mFocusIndicatorHelper;
+
     private boolean mInScrollArea;
     private boolean mShowPageHints;
     private Drawable mLeftHoverDrawable;
@@ -144,6 +147,7 @@ public class DragLayer extends InsettableFrameLayout {
         mLeftHoverDrawableActive = res.getDrawable(R.drawable.page_hover_left_active);
         mRightHoverDrawableActive = res.getDrawable(R.drawable.page_hover_right_active);
         mIsRtl = Utilities.isRtl(res);
+        mFocusIndicatorHelper = new ViewGroupFocusHelper(this);
     }
 
     public void setup(Launcher launcher, DragController dragController,
@@ -155,6 +159,10 @@ public class DragLayer extends InsettableFrameLayout {
         boolean isAccessibilityEnabled = ((AccessibilityManager) mLauncher.getSystemService(
                 Context.ACCESSIBILITY_SERVICE)).isEnabled();
         onAccessibilityStateChanged(isAccessibilityEnabled);
+    }
+
+    public ViewGroupFocusHelper getFocusIndicatorHelper() {
+        return mFocusIndicatorHelper;
     }
 
     @Override
@@ -966,6 +974,7 @@ public class DragLayer extends InsettableFrameLayout {
             canvas.restore();
         }
 
+        mFocusIndicatorHelper.draw(canvas);
         super.dispatchDraw(canvas);
     }
 

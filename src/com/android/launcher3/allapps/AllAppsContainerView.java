@@ -52,6 +52,7 @@ import com.android.launcher3.LauncherTransitionable;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.util.ComponentKey;
 
 import java.nio.charset.Charset;
@@ -310,6 +311,10 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         if (mItemDecoration != null) {
             mAppsRecyclerView.addItemDecoration(mItemDecoration);
         }
+
+        FocusedItemDecorator focusedItemDecorator = new FocusedItemDecorator(mAppsRecyclerView);
+        mAppsRecyclerView.addItemDecoration(focusedItemDecorator);
+        mAdapter.setIconFocusListener(focusedItemDecorator.getFocusListener());
 
         // Precalculate the prediction icon and normal icon sizes
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());

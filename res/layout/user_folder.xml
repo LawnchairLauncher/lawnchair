@@ -22,27 +22,14 @@
     android:elevation="5dp"
     android:orientation="vertical" >
 
-    <FrameLayout
-        android:id="@+id/folder_content_wrapper"
+    <com.android.launcher3.folder.FolderPagedView
+        android:id="@+id/folder_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-
-        <!-- Actual size of the indicator doesn't matter as it is scaled to match the view size -->
-
-        <com.android.launcher3.FocusIndicatorView
-            android:id="@+id/focus_indicator"
-            android:layout_width="20dp"
-            android:layout_height="20dp" />
-
-        <com.android.launcher3.folder.FolderPagedView
-            android:id="@+id/folder_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-            android:paddingTop="8dp"
-            launcher:pageIndicator="@+id/folder_page_indicator" />
-    </FrameLayout>
+        android:layout_height="match_parent"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:paddingTop="8dp"
+        launcher:pageIndicator="@+id/folder_page_indicator" />
 
     <LinearLayout
         android:id="@+id/folder_footer"

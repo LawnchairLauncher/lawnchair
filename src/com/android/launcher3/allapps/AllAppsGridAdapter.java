@@ -33,6 +33,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
@@ -348,6 +349,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
     private BindViewCallback mBindViewCallback;
     private AllAppsSearchBarController mSearchController;
+    private OnFocusChangeListener mIconFocusListener;
 
     // The text to show when there are no search results and no market search handler.
     private String mEmptySearchMessage;
@@ -412,6 +414,10 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         }
     }
 
+    public void setIconFocusListener(OnFocusChangeListener focusListener) {
+        mIconFocusListener = focusListener;
+    }
+
     /**
      * Sets the last search query that was made, used to show when there are no results and to also
      * seed the intent for searching the market.
@@ -461,26 +467,17 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         switch (viewType) {
             case SECTION_BREAK_VIEW_TYPE:
                 return new ViewHolder(new View(parent.getContext()));
-            case ICON_VIEW_TYPE: {
-                BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
-                        R.layout.all_apps_icon, parent, false);
-                icon.setOnTouchListener(mTouchListener);
-                icon.setOnClickListener(mIconClickListener);
-                icon.setOnLongClickListener(mIconLongClickListener);
-                icon.setLongPressTimeout(ViewConfiguration.get(parent.getContext())
-                        .getLongPressTimeout());
-                icon.setFocusable(true);
-                return new ViewHolder(icon);
-            }
+            case ICON_VIEW_TYPE:
             case PREDICTION_ICON_VIEW_TYPE: {
                 BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
-                        R.layout.all_apps_prediction_bar_icon, parent, false);
+                        viewType == ICON_VIEW_TYPE ? R.layout.all_apps_icon :
+                                R.layout.all_apps_prediction_bar_icon, parent, false);
                 icon.setOnTouchListener(mTouchListener);
                 icon.setOnClickListener(mIconClickListener);
                 icon.setOnLongClickListener(mIconLongClickListener);
                 icon.setLongPressTimeout(ViewConfiguration.get(parent.getContext())
                         .getLongPressTimeout());
-                icon.setFocusable(true);
+                icon.setOnFocusChangeListener(mIconFocusListener);
                 return new ViewHolder(icon);
             }
             case EMPTY_SEARCH_VIEW_TYPE:
