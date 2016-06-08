@@ -86,7 +86,7 @@ public class QsbContainerView extends FrameLayout {
 
             IntentFilter filter = new IntentFilter(Launcher.ACTION_APPWIDGET_HOST_RESET);
             filter.addAction(SearchManager.INTENT_GLOBAL_SEARCH_ACTIVITY_CHANGED);
-            getContext().registerReceiver(mRebindReceiver, filter);
+            getActivity().registerReceiver(mRebindReceiver, filter);
         }
 
         private FrameLayout mWrapper;
@@ -98,7 +98,7 @@ public class QsbContainerView extends FrameLayout {
             if (savedInstanceState != null) {
                 sSavedWidgetId = savedInstanceState.getInt(QSB_WIDGET_ID, -1);
             }
-            mWrapper = new FrameLayout(getContext());
+            mWrapper = new FrameLayout(getActivity());
             mWrapper.addView(createQsb(inflater, mWrapper));
             return mWrapper;
         }
@@ -190,7 +190,7 @@ public class QsbContainerView extends FrameLayout {
                 if (resultCode == Activity.RESULT_OK) {
                     int widgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                             sSavedWidgetId);
-                    Utilities.getPrefs(getContext()).edit().putInt(QSB_WIDGET_ID, widgetId).apply();
+                    Utilities.getPrefs(getActivity()).edit().putInt(QSB_WIDGET_ID, widgetId).apply();
                     sSavedWidgetId = -1;
                     rebindFragment();
                 } else if (sSavedWidgetId != -1) {
@@ -210,7 +210,7 @@ public class QsbContainerView extends FrameLayout {
 
         @Override
         public void onDestroy() {
-            getContext().unregisterReceiver(mRebindReceiver);
+            getActivity().unregisterReceiver(mRebindReceiver);
             super.onDestroy();
         }
 
