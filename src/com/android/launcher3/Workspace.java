@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
@@ -181,7 +182,7 @@ public class Workspace extends PagedView
     // State variable that indicates whether the pages are small (ie when you're
     // in all apps or customize mode)
 
-    enum State {
+    public enum State {
         NORMAL          (false, false),
         NORMAL_HIDDEN   (false, false),
         SPRING_LOADED   (false, true),
@@ -280,6 +281,7 @@ public class Workspace extends PagedView
     private WorkspaceStateTransitionAnimation mStateTransitionAnimation;
 
     private AccessibilityDelegate mPagesAccessibilityDelegate;
+    private OnStateChangeListener mOnStateChangeListener;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -335,6 +337,10 @@ public class Workspace extends PagedView
                 ((Insettable) customContent).setInsets(mInsets);
             }
         }
+    }
+
+    public void setOnStateChangeListener(OnStateChangeListener listener) {
+        mOnStateChangeListener = listener;
     }
 
     // estimate the size of a widget with spans hSpan, vSpan. return MAX_VALUE for each
@@ -1982,7 +1988,7 @@ public class Workspace extends PagedView
     public Animator setStateWithAnimation(State toState, boolean animated,
             HashMap<View, Integer> layerViews) {
         // Create the animation to the new state
-        Animator workspaceAnim =  mStateTransitionAnimation.getAnimationToState(mState,
+        AnimatorSet workspaceAnim =  mStateTransitionAnimation.getAnimationToState(mState,
                 toState, animated, layerViews);
 
         boolean shouldNotifyWidgetChange = !mState.shouldUpdateWidget
@@ -1993,6 +1999,10 @@ public class Workspace extends PagedView
 
         if (shouldNotifyWidgetChange) {
             mLauncher.notifyWidgetProvidersChanged();
+        }
+
+        if (mOnStateChangeListener != null) {
+            mOnStateChangeListener.prepareStateChange(toState, animated ? workspaceAnim : null);
         }
 
         return workspaceAnim;
@@ -4407,5 +4417,15 @@ public class Workspace extends PagedView
                 }
             });
         }
+    }
+
+    public interface OnStateChangeListener {
+
+        /**
+         * Called when the workspace state is changing.
+         * @param toState final state
+         * @param targetAnim animation which will be played during the transition or null.
+         */
+        void prepareStateChange(State toState, AnimatorSet targetAnim);
     }
 }
