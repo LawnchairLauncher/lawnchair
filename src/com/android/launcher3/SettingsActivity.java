@@ -59,7 +59,7 @@ public class SettingsActivity extends Activity {
                 // Launcher supports rotation by default. No need to show this setting.
                 getPreferenceScreen().removePreference(rotationPref);
             } else {
-                ContentResolver resolver = getContext().getContentResolver();
+                ContentResolver resolver = getActivity().getContentResolver();
                 mRotationLockObserver = new SystemDisplayRotationLockObserver(rotationPref, resolver);
 
                 // Register a content observer to listen for system setting changes while
@@ -70,14 +70,14 @@ public class SettingsActivity extends Activity {
 
                 // Initialize the UI once
                 mRotationLockObserver.onChange(true);
-                rotationPref.setDefaultValue(Utilities.getAllowRotationDefaultValue(getContext()));
+                rotationPref.setDefaultValue(Utilities.getAllowRotationDefaultValue(getActivity()));
             }
         }
 
         @Override
         public void onDestroy() {
             if (mRotationLockObserver != null) {
-                getContext().getContentResolver().unregisterContentObserver(mRotationLockObserver);
+                getActivity().getContentResolver().unregisterContentObserver(mRotationLockObserver);
                 mRotationLockObserver = null;
             }
             super.onDestroy();
