@@ -18,6 +18,7 @@ package com.android.launcher3.allapps;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.support.v7.widget.LinearLayoutManager;
@@ -450,6 +451,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             mSearchInput.setLayoutParams(llp);
 
             lp.height = height;
+            mSearchContainer.setBackground(null);
         }
         mSearchContainer.setLayoutParams(lp);
     }
