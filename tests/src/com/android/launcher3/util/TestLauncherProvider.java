@@ -37,7 +37,7 @@ public class TestLauncherProvider extends LauncherProvider {
         }
 
         @Override
-        protected long getDefaultUserSerial() {
+        public long getDefaultUserSerial() {
             return 0;
         }
 
