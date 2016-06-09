@@ -32,7 +32,8 @@
     <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"Ilovalar ichidan qidirish…"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Ilovalar yuklanmoqda…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"“<xliff:g id="QUERY">%1$s</xliff:g>” so‘rovi bo‘yicha hech narsa topilmadi"</string>
-    <string name="all_apps_search_market_message" msgid="5470761048755751471">"<xliff:g id="QUERY">%1$s</xliff:g>"</string>
+    <!-- no translation found for all_apps_search_market_message (1366263386197059176) -->
+    <skip />
     <string name="out_of_space" msgid="4691004494942118364">"Uy ekranida bitta ham xona yo‘q."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Ajratilganlarda birorta ham xona yo‘q"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"Ilovalar"</string>
@@ -73,7 +74,7 @@
     <string name="settings_button_text" msgid="8119458837558863227">"Sozlamalar"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Administrator tomonidan o‘chirilgan"</string>
     <string name="allow_rotation_title" msgid="3132336367556833843">"Asosiy ekranni aylantirishga ruxsat berish"</string>
-    <string name="allow_rotation_desc" msgid="7635719920854330492">"Qurilma aylanganda"</string>
+    <string name="allow_rotation_desc" msgid="7635719920854330492">"Qurilma burilganda"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Ekran sozlamalariga ko‘ra uni aylantirib bo‘lmaydi"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Noma’lum"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"O‘chirish"</string>
