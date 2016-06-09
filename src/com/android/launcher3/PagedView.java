@@ -1971,7 +1971,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         snapToPage(getPageNearestToCenterOfScreen(), PAGE_SNAP_ANIMATION_DURATION);
     }
 
-    private static class ScrollInterpolator implements Interpolator {
+    public static class ScrollInterpolator implements Interpolator {
         public ScrollInterpolator() {
         }
 

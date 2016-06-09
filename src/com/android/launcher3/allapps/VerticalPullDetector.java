@@ -21,7 +21,7 @@ public class VerticalPullDetector {
     /**
      * The minimum release velocity in pixels per millisecond that triggers fling..
      */
-    private static final float RELEASE_VELOCITY_PX_MS = 1.7f;
+    private static final float RELEASE_VELOCITY_PX_MS = 1.0f;
 
     /**
      * The time constant used to calculate dampening in the low-pass filter of scroll velocity.
@@ -32,7 +32,7 @@ public class VerticalPullDetector {
     /* Scroll state, this is set to true during dragging and animation. */
     boolean mScrolling;
 
-
+    float mDownX;
     float mDownY;
     float mDownMillis;
 
@@ -41,7 +41,8 @@ public class VerticalPullDetector {
 
     float mVelocity;
     float mLastDisplacement;
-    float mDisplacement;
+    float mDisplacementY;
+    float mDisplacementX;
 
     /* scroll started during previous animation */
     boolean mSubtractSlop = true;
@@ -72,11 +73,17 @@ public class VerticalPullDetector {
     }
 
     private boolean shouldScrollStart() {
-        if (mAllAppsVisible && mDisplacement > mTouchSlop && mAllAppsScrollAtTop) {
-            return true;
+        float deltaY = Math.abs(mDisplacementY);
+        float deltaX = Math.max(Math.abs(mDisplacementX), 1);
+        if (mAllAppsVisible && mDisplacementY > mTouchSlop && mAllAppsScrollAtTop) {
+            if (deltaY > deltaX) {
+                return true;
+            }
         }
-        if (!mAllAppsVisible && mDisplacement < -mTouchSlop) {
-            return true;
+        if (!mAllAppsVisible && mDisplacementY < -mTouchSlop) {
+            if (deltaY > deltaX) {
+                return true;
+            }
         }
         return false;
     }
@@ -85,6 +92,7 @@ public class VerticalPullDetector {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mDownMillis = ev.getDownTime();
+                mDownX = ev.getX();
                 mDownY = ev.getY();
                 mLastDisplacement = 0;
                 mVelocity = 0;
@@ -94,7 +102,8 @@ public class VerticalPullDetector {
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
-                mDisplacement = computeDisplacement(ev);
+                mDisplacementX = ev.getX() - mDownX;
+                mDisplacementY = ev.getY() - mDownY;
                 mVelocity = computeVelocity(ev, mVelocity);
 
                 if (!mScrolling && shouldScrollStart()) {
@@ -117,7 +126,7 @@ public class VerticalPullDetector {
                 break;
         }
         // Do house keeping.
-        mLastDisplacement = mDisplacement;
+        mLastDisplacement = mDisplacementY;
 
         mLastY = ev.getY();
         mLastMillis = ev.getEventTime();
@@ -138,13 +147,17 @@ public class VerticalPullDetector {
     }
 
     private boolean reportScroll() {
-        float delta = mDisplacement - mLastDisplacement;
+        float delta = mDisplacementY - mLastDisplacement;
         if (delta != 0) {
             if (DBG) {
                 Log.d(TAG, String.format("onScroll disp=%.1f, velocity=%.1f",
-                        mDisplacement, mVelocity));
+                        mDisplacementY, mVelocity));
             }
-            return mListener.onScroll(mDisplacement - (mSubtractSlop? mTouchSlop : 0), mVelocity);
+            if (mDisplacementY > 0) {
+                return mListener.onScroll(mDisplacementY - mTouchSlop, mVelocity);
+            } else {
+                return mListener.onScroll(mDisplacementY + mTouchSlop, mVelocity);
+            }
         }
         return true;
     }
@@ -152,7 +165,7 @@ public class VerticalPullDetector {
     private void reportScrollEnd() {
         if (DBG) {
             Log.d(TAG, String.format("onScrolEnd disp=%.1f, velocity=%.1f",
-                    mDisplacement, mVelocity));
+                    mDisplacementY, mVelocity));
         }
         mListener.onScrollEnd(mVelocity, Math.abs(mVelocity) > RELEASE_VELOCITY_PX_MS);
     }

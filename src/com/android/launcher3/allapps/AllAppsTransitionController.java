@@ -8,12 +8,16 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 
+import com.android.launcher3.CellLayout;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
+import com.android.launcher3.PagedView;
 import com.android.launcher3.util.TouchController;
 
 /**
@@ -31,7 +35,10 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private static final String TAG = "AllAppsTrans";
     private static final boolean DBG = false;
 
-    private static final float ANIMATION_DURATION = 500;
+     private final Interpolator mAccelInterpolator = new AccelerateInterpolator(1f);
+
+    private static final float ANIMATION_DURATION = 2000;
+    private static final float FINAL_ALPHA = .6f;
 
     private AllAppsContainerView mAppsView;
     private Hotseat mHotseat;
@@ -48,7 +55,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private float mProgressTransY;   // numerator
     private float mTranslation = -1; // denominator
 
-    private float mAnimationDuration;
+    private long mAnimationDuration;
     private float mCurY;
 
     private AnimatorSet mCurrentAnimation;
@@ -84,8 +91,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         }
         mAppsView = mLauncher.getAppsView();
         mHotseat = mLauncher.getHotseat();
-        mWorkspaceCurPage = mLauncher.getWorkspace().getChildAt(
-                mLauncher.getWorkspace().getCurrentPage());
 
         if (mHotseatBackground == null) {
             mHotseatBackground = mHotseat.getBackground();
@@ -97,21 +102,27 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     public void onScrollStart(boolean start) {
         cancelAnimation();
         mCurrentAnimation = LauncherAnimUtils.createAnimatorSet();
-        mCurY = mAppsView.getTranslationY();
         preparePull(start);
-
+        mCurY = mAppsView.getTranslationY();
     }
 
     /**
      * @param start {@code true} if start of new drag.
      */
     public void preparePull(boolean start) {
+        // TODO: create a method inside workspace to fetch this easily.
+        mWorkspaceCurPage = mLauncher.getWorkspace().getChildAt(
+                mLauncher.getWorkspace().getNextPage());
+        mHotseat.setVisibility(View.VISIBLE);
+        mHotseat.bringToFront();
         if (start) {
             if (!mLauncher.isAllAppsVisible()) {
                 mHotseat.setBackground(null);
                 mAppsView.setVisibility(View.VISIBLE);
                 mAppsView.getContentView().setVisibility(View.VISIBLE);
-                mAppsView.setAlpha(mHotseatAlpha);
+                mAppsView.getContentView().setBackground(null);
+                mAppsView.getRevealView().setVisibility(View.VISIBLE);
+                mAppsView.getRevealView().setAlpha(mHotseatAlpha);
                 mAppsView.setSearchBarVisible(false);
 
                 if (mTranslation < 0) {
@@ -119,16 +130,14 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                     setProgress(mTranslation);
                 }
             } else {
-                mLauncher.getWorkspace().setVisibility(View.VISIBLE);
-                mLauncher.getWorkspace().setAlpha(1f);
                 mLauncher.getWorkspace().onLauncherTransitionPrepare(mLauncher, false, false);
                 mWorkspaceCurPage.setVisibility(View.VISIBLE);
+                ((CellLayout) mWorkspaceCurPage).getShortcutsAndWidgets().setVisibility(View.VISIBLE);
+                ((CellLayout) mWorkspaceCurPage).getShortcutsAndWidgets().setAlpha(1f);
                 mAppsView.setSearchBarVisible(false);
                 setLightStatusBar(false);
             }
         }
-        mHotseat.setVisibility(View.VISIBLE);
-        mHotseat.bringToFront();
     }
 
     private void setLightStatusBar(boolean enable) {
@@ -143,8 +152,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
         }
     }
-
-    private final Interpolator mAlphaInterpolator = new DecelerateInterpolator(.5f);
 
     @Override
     public boolean onScroll(float displacement, float velocity) {
@@ -163,9 +170,12 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     public void setProgress(float progress) {
         mProgressTransY = progress;
         float alpha = calcAlphaAllApps(progress);
-        float workspaceHotseatAlpha = Math.max(mHotseatAlpha, 1 - alpha);
-        setTransAndAlpha(mAppsView, progress, Math.max(mHotseatAlpha, alpha));
-        setTransAndAlpha(mWorkspaceCurPage, -mTranslation + progress, workspaceHotseatAlpha);
+        float workspaceHotseatAlpha = 1 - alpha;
+
+        mAppsView.getRevealView().setAlpha(Math.min(FINAL_ALPHA, Math.max(mHotseatAlpha, alpha)));
+        mAppsView.getContentView().setAlpha(alpha);
+        mAppsView.setTranslationY(progress);
+        setTransAndAlpha(mWorkspaceCurPage, -mTranslation + progress, mAccelInterpolator.getInterpolation(workspaceHotseatAlpha));
         setTransAndAlpha(mHotseat, -mTranslation + progress, workspaceHotseatAlpha);
     }
 
@@ -174,7 +184,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     private float calcAlphaAllApps(float progress) {
-        return mAlphaInterpolator.getInterpolation((mTranslation - progress)/mTranslation);
+        return ((mTranslation - progress)/mTranslation);
     }
 
     private void setTransAndAlpha(View v, float transY, float alpha) {
@@ -212,11 +222,11 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     private void calculateDuration(float velocity, float disp) {
         // TODO: make these values constants after tuning.
-        float velocityDivisor = Math.max(1, 0.75f * velocity);
+        float velocityDivisor = Math.max(1.5f, Math.abs(0.25f * velocity));
         float travelDistance = Math.max(0.2f, disp / mTranslation);
-        mAnimationDuration = Math.max(100, ANIMATION_DURATION / velocityDivisor * travelDistance);
-        if (true) { // MERONG
-            Log.d(TAG, String.format("calculateDuration=%f, v=%f, d=%f", mAnimationDuration, velocity, disp));
+        mAnimationDuration = (long) Math.max(100, ANIMATION_DURATION / velocityDivisor * travelDistance);
+        if (DBG) {
+            Log.d(TAG, String.format("calculateDuration=%d, v=%f, d=%f", mAnimationDuration, velocity, disp));
         }
     }
 
@@ -227,7 +237,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
      */
     private void showAppsView() {
         if (mLauncher.isAllAppsVisible()) {
-            animateToAllApps(mCurrentAnimation);
+            animateToAllApps(mCurrentAnimation, mAnimationDuration);
             mCurrentAnimation.start();
         } else {
             mLauncher.showAppsView(true /* animated */, true /* resetListToTop */,
@@ -244,17 +254,18 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         if (mLauncher.isAllAppsVisible()) {
             mLauncher.showWorkspace(true /* animated */);
         } else {
-            animateToWorkspace(mCurrentAnimation);
+            animateToWorkspace(mCurrentAnimation, mAnimationDuration);
             mCurrentAnimation.start();
         }
     }
 
-    public void animateToAllApps(AnimatorSet animationOut) {
+    public void animateToAllApps(AnimatorSet animationOut, long duration) {
         if ((mAppsView = mLauncher.getAppsView()) == null || animationOut == null){
             return;
         }
         if (!mDetector.mScrolling) {
             preparePull(true);
+            mAnimationDuration = duration;
         }
         mCurY = mAppsView.getTranslationY();
         final float fromAllAppsTop = mAppsView.getTranslationY();
@@ -262,7 +273,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
         ObjectAnimator driftAndAlpha = ObjectAnimator.ofFloat(this, "progress",
                 fromAllAppsTop, toAllAppsTop);
-        driftAndAlpha.setDuration((long) mAnimationDuration);
+        driftAndAlpha.setDuration(mAnimationDuration);
+        driftAndAlpha.setInterpolator(new PagedView.ScrollInterpolator());
         animationOut.play(driftAndAlpha);
 
         animationOut.addListener(new AnimatorListenerAdapter() {
@@ -291,19 +303,21 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         setLightStatusBar(true);
     }
 
-    public void animateToWorkspace(AnimatorSet animationOut) {
+    public void animateToWorkspace(AnimatorSet animationOut, long duration) {
         if ((mAppsView = mLauncher.getAppsView()) == null || animationOut == null){
             return;
         }
         if(!mDetector.mScrolling) {
             preparePull(true);
+            mAnimationDuration = duration;
         }
         final float fromAllAppsTop = mAppsView.getTranslationY();
         final float toAllAppsTop = mTranslation;
 
         ObjectAnimator driftAndAlpha = ObjectAnimator.ofFloat(this, "progress",
                 fromAllAppsTop, toAllAppsTop);
-        driftAndAlpha.setDuration((long) mAnimationDuration);
+        driftAndAlpha.setDuration(mAnimationDuration);
+        driftAndAlpha.setInterpolator(new PagedView.ScrollInterpolator());
         animationOut.play(driftAndAlpha);
 
         animationOut.addListener(new AnimatorListenerAdapter() {
