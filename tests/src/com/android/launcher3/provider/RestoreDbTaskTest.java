@@ -1,4 +1,4 @@
-package com.android.launcher3;
+package com.android.launcher3.provider;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -10,14 +10,14 @@ import com.android.launcher3.LauncherProvider.DatabaseHelper;
 import com.android.launcher3.LauncherSettings.Favorites;
 
 /**
- * Tests for {@link LauncherBackupAgent}
+ * Tests for {@link RestoreDbTask}
  */
 @MediumTest
-public class LauncherBackupAgentTest extends AndroidTestCase {
+public class RestoreDbTaskTest extends AndroidTestCase {
 
     public void testGetProfileId() throws Exception {
         SQLiteDatabase db = new MyDatabaseHelper(23).getWritableDatabase();
-        assertEquals(23, new LauncherBackupAgent().getDefaultProfileId(db));
+        assertEquals(23, new RestoreDbTask().getDefaultProfileId(db));
     }
 
     public void testMigrateProfileId() throws Exception {
@@ -32,7 +32,7 @@ public class LauncherBackupAgentTest extends AndroidTestCase {
         // Verify item add
         assertEquals(5, getCount(db, "select * from favorites where profileId = 42"));
 
-        new LauncherBackupAgent().migrateProfileId(db, 33);
+        new RestoreDbTask().migrateProfileId(db, 33);
 
         // verify data migrated
         assertEquals(0, getCount(db, "select * from favorites where profileId = 42"));

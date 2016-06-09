@@ -46,7 +46,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
 import android.os.UserManager;
-import android.provider.BaseColumns;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
@@ -58,6 +57,7 @@ import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.dynamicui.ExtractionUtils;
+import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.util.ManagedProfileHeuristic;
 import com.android.launcher3.util.NoLocaleSqliteContext;
 import com.android.launcher3.util.Preconditions;
@@ -117,6 +117,15 @@ public class LauncherProvider extends ContentProvider {
     protected synchronized void createDbIfNotExists() {
         if (mOpenHelper == null) {
             mOpenHelper = new DatabaseHelper(getContext(), mListenerHandler);
+
+            if (RestoreDbTask.isPending(getContext())) {
+                if (!RestoreDbTask.performRestore(mOpenHelper)) {
+                    mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
+                }
+                // Set is pending to false irrespective of the result, so that it doesn't get
+                // executed again.
+                RestoreDbTask.setPending(getContext(), false);
+            }
         }
     }
 
@@ -626,7 +635,7 @@ public class LauncherProvider extends ContentProvider {
                     mContext);
         }
 
-        protected long getDefaultUserSerial() {
+        public long getDefaultUserSerial() {
             return UserManagerCompat.getInstance(mContext).getSerialNumberForUser(
                     UserHandleCompat.myUserHandle());
         }
