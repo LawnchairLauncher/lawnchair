@@ -144,6 +144,7 @@ public class ShortcutInfo extends ItemInfo {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
     }
 
+    @Override
     public Intent getIntent() {
         return intent;
     }
