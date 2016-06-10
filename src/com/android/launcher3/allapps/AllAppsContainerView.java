@@ -257,9 +257,24 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mAppsRecyclerView.scrollToTop();
     }
 
-    public boolean isScrollAtTop() {
-        return ((LinearLayoutManager) mAppsRecyclerView.getLayoutManager())
-                .findFirstVisibleItemPosition() == 1;
+    /**
+     * Returns whether the view itself will handle the touch event or not.
+     */
+    public boolean shouldContainerScroll(float x, float y) {
+        int[] point = new int[2];
+        point[0] = (int) x;
+        point[1] = (int) y;
+        Utilities.mapCoordInSelfToDescendent(mAppsRecyclerView, this, point);
+
+        // if the MotionEvent is inside the thumb, container should not be pulled down.
+        if (mAppsRecyclerView.getScrollBar().isNearThumb(point[0], point[1])){
+             return false;
+        }
+        // If scroller is at the very top, then it's okay for the container to be pulled down.
+        if (Float.compare(0f, mAppsRecyclerView.getScrollBar().getThumbOffset().y) == 0) {
+            return true;
+        }
+        return false;
     }
     /**
      * Focuses the search field and begins an app search.

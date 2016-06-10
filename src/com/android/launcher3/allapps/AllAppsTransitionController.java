@@ -9,9 +9,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
-import android.view.animation.LinearInterpolator;
 
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.Hotseat;
@@ -39,7 +37,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
      private final Interpolator mAccelInterpolator = new AccelerateInterpolator(1f);
 
     private static final float ANIMATION_DURATION = 2000;
-    private static final float FINAL_ALPHA = .6f;
+    private static final float FINAL_ALPHA = .65f;
 
     private AllAppsContainerView mAppsView;
     private Workspace mWorkspace;
@@ -60,6 +58,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private float mCurY;
 
     private AnimatorSet mCurrentAnimation;
+    private boolean mNoIntercept;
 
     public AllAppsTransitionController(Launcher launcher) {
         mLauncher = launcher;
@@ -70,11 +69,20 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         init();
-        if (mWorkspace.isInOverviewMode() || mLauncher.isWidgetsViewVisible()) {
-            return false;
-        }
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            mDetector.setAllAppsState(mLauncher.isAllAppsVisible(), mAppsView.isScrollAtTop());
+            mNoIntercept = false;
+            if (mLauncher.getWorkspace().isInOverviewMode() || mLauncher.isWidgetsViewVisible()) {
+                mNoIntercept = true;
+            }
+            if (mLauncher.isAllAppsVisible() &&
+                    !mAppsView.shouldContainerScroll(ev.getX(), ev.getY())) {
+                mNoIntercept = true;
+            }
+        }
+        if (mNoIntercept) {
+            return false;
+        } else {
+            mDetector.setScrollDirectionDown(mLauncher.isAllAppsVisible());
         }
         mDetector.onTouchEvent(ev);
         return mDetector.mScrolling;

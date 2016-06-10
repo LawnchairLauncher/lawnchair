@@ -14,9 +14,7 @@ public class VerticalPullDetector {
     private static final boolean DBG = false;
 
     private float mTouchSlop;
-
-    private boolean mAllAppsVisible;
-    private boolean mAllAppsScrollAtTop;
+    private boolean mScrollDown; // if false, only scroll up will be reported.
 
     /**
      * The minimum release velocity in pixels per millisecond that triggers fling..
@@ -32,20 +30,20 @@ public class VerticalPullDetector {
     /* Scroll state, this is set to true during dragging and animation. */
     boolean mScrolling;
 
-    float mDownX;
-    float mDownY;
-    float mDownMillis;
+    private float mDownX;
+    private float mDownY;
+    private float mDownMillis;
 
-    float mLastY;
-    float mLastMillis;
+    private float mLastY;
+    private float mLastMillis;
 
-    float mVelocity;
-    float mLastDisplacement;
-    float mDisplacementY;
-    float mDisplacementX;
+    private float mVelocity;
+    private float mLastDisplacement;
+    private float mDisplacementY;
+    private float mDisplacementX;
 
     /* scroll started during previous animation */
-    boolean mSubtractSlop = true;
+    private boolean mSubtractSlop = true;
 
     /* Client of this gesture detector can register a callback. */
     Listener mListener;
@@ -67,20 +65,19 @@ public class VerticalPullDetector {
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
     }
 
-    public void setAllAppsState(boolean allAppsVisible, boolean scrollAtTop) {
-        mAllAppsVisible = allAppsVisible;
-        mAllAppsScrollAtTop = scrollAtTop;
+    public void setScrollDirectionDown(boolean scrollDown) {
+        mScrollDown = scrollDown;
     }
 
     private boolean shouldScrollStart() {
         float deltaY = Math.abs(mDisplacementY);
         float deltaX = Math.max(Math.abs(mDisplacementX), 1);
-        if (mAllAppsVisible && mDisplacementY > mTouchSlop && mAllAppsScrollAtTop) {
+        if (mScrollDown && mDisplacementY > mTouchSlop) {
             if (deltaY > deltaX) {
                 return true;
             }
         }
-        if (!mAllAppsVisible && mDisplacementY < -mTouchSlop) {
+        if (!mScrollDown && mDisplacementY < -mTouchSlop) {
             if (deltaY > deltaX) {
                 return true;
             }
@@ -140,6 +137,7 @@ public class VerticalPullDetector {
 
     private boolean reportScrollStart(boolean recatch) {
         mListener.onScrollStart(!recatch);
+        mSubtractSlop = !recatch;
         if (DBG) {
             Log.d(TAG, "onScrollStart recatch:" + recatch);
         }
@@ -153,11 +151,15 @@ public class VerticalPullDetector {
                 Log.d(TAG, String.format("onScroll disp=%.1f, velocity=%.1f",
                         mDisplacementY, mVelocity));
             }
-            if (mDisplacementY > 0) {
-                return mListener.onScroll(mDisplacementY - mTouchSlop, mVelocity);
-            } else {
-                return mListener.onScroll(mDisplacementY + mTouchSlop, mVelocity);
+            float subtractDisplacement = 0f;
+            if (mSubtractSlop) {
+                if (mDisplacementY > 0) {
+                    subtractDisplacement = mTouchSlop;
+                } else {
+                    subtractDisplacement = -mTouchSlop;
+                }
             }
+            return mListener.onScroll(mDisplacementY - subtractDisplacement, mVelocity);
         }
         return true;
     }
