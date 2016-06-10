@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Point;
 import android.net.Uri;
@@ -26,6 +27,7 @@ import com.android.launcher3.Workspace;
 import com.android.launcher3.backup.nano.BackupProtos;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.LongArrayMap;
 
@@ -66,9 +68,9 @@ public class GridSizeMigrationTask {
 
     private final HashMap<String, Point> mWidgetMinSize = new HashMap<>();
     private final ContentValues mTempValues = new ContentValues();
-    private final ArrayList<Long> mEntryToRemove = new ArrayList<>();
+    protected final ArrayList<Long> mEntryToRemove = new ArrayList<>();
     private final ArrayList<ContentProviderOperation> mUpdateOperations = new ArrayList<>();
-    private final ArrayList<DbEntry> mCarryOver = new ArrayList<>();
+    protected final ArrayList<DbEntry> mCarryOver = new ArrayList<>();
     private final HashSet<String> mValidPackages;
 
     private final int mSrcX, mSrcY;
@@ -269,9 +271,10 @@ public class GridSizeMigrationTask {
      *   3) If all those items from the above list can be placed on this screen, place them
      *      (otherwise they are placed on a new screen).
      */
-    private void migrateScreen(long screenId) {
+    protected void migrateScreen(long screenId) {
         // If we are migrating the first screen, do not touch the first row.
-        int startY = screenId == Workspace.FIRST_SCREEN_ID ? 1 : 0;
+        int startY = (FeatureFlags.QSB_ON_FIRST_SCREEN && screenId == Workspace.FIRST_SCREEN_ID)
+                ? 1 : 0;
 
         ArrayList<DbEntry> items = loadWorkspaceEntries(screenId);
 
@@ -366,7 +369,7 @@ public class GridSizeMigrationTask {
     /**
      * Updates an item in the DB.
      */
-    private void update(DbEntry item) {
+    protected void update(DbEntry item) {
         mTempValues.clear();
         item.addToContentValues(mTempValues);
         mUpdateOperations.add(ContentProviderOperation
@@ -677,8 +680,8 @@ public class GridSizeMigrationTask {
     /**
      * Loads entries for a particular screen id.
      */
-    private ArrayList<DbEntry> loadWorkspaceEntries(long screen) {
-        Cursor c =  mContext.getContentResolver().query(LauncherSettings.Favorites.CONTENT_URI,
+    protected ArrayList<DbEntry> loadWorkspaceEntries(long screen) {
+        Cursor c = queryWorkspace(
                 new String[]{
                         Favorites._ID,                  // 0
                         Favorites.ITEM_TYPE,            // 1
@@ -690,7 +693,7 @@ public class GridSizeMigrationTask {
                         Favorites.APPWIDGET_PROVIDER,   // 7
                         Favorites.APPWIDGET_ID},        // 8
                 Favorites.CONTAINER + " = " + Favorites.CONTAINER_DESKTOP
-                        + " AND " + Favorites.SCREEN + " = " + screen, null, null, null);
+                        + " AND " + Favorites.SCREEN + " = " + screen);
 
         final int indexId = c.getColumnIndexOrThrow(Favorites._ID);
         final int indexItemType = c.getColumnIndexOrThrow(Favorites.ITEM_TYPE);
@@ -776,9 +779,9 @@ public class GridSizeMigrationTask {
      * @return the number of valid items in the folder.
      */
     private int getFolderItemsCount(long folderId) {
-        Cursor c =  mContext.getContentResolver().query(LauncherSettings.Favorites.CONTENT_URI,
+        Cursor c = queryWorkspace(
                 new String[]{Favorites._ID, Favorites.INTENT},
-                Favorites.CONTAINER + " = " + folderId, null, null, null);
+                Favorites.CONTAINER + " = " + folderId);
 
         int total = 0;
         while (c.moveToNext()) {
@@ -791,6 +794,11 @@ public class GridSizeMigrationTask {
         }
         c.close();
         return total;
+    }
+
+    protected Cursor queryWorkspace(String[] columns, String where) {
+        return mContext.getContentResolver().query(LauncherSettings.Favorites.CONTENT_URI,
+                columns, where, null, null, null);
     }
 
     /**
@@ -815,7 +823,7 @@ public class GridSizeMigrationTask {
         }
     }
 
-    private static class DbEntry extends ItemInfo implements Comparable<DbEntry> {
+    protected static class DbEntry extends ItemInfo implements Comparable<DbEntry> {
 
         public float weight;
 
@@ -913,18 +921,7 @@ public class GridSizeMigrationTask {
         try {
             boolean dbChanged = false;
 
-            // Initialize list of valid packages. This contain all the packages which are already on
-            // the device and packages which are being installed. Any item which doesn't belong to
-            // this set is removed.
-            // Since the loader removes such items anyway, removing these items here doesn't cause
-            // any extra data loss and gives us more free space on the grid for better migration.
-            HashSet validPackages = new HashSet<>();
-            for (PackageInfo info : context.getPackageManager().getInstalledPackages(0)) {
-                validPackages.add(info.packageName);
-            }
-            validPackages.addAll(PackageInstallerCompat.getInstance(context)
-                    .updateAndGetActiveSessionCache().keySet());
-
+            HashSet validPackages = getValidPackages(context);
             // Hotseat
             Point srcHotseatSize = parsePoint(prefs.getString(
                     KEY_MIGRATION_SRC_HOTSEAT_SIZE, hotseatSizeString));
@@ -1021,5 +1018,21 @@ public class GridSizeMigrationTask {
                     .remove(KEY_MIGRATION_WIDGET_MINSIZE)
                     .apply();
         }
+    }
+
+    protected static HashSet<String> getValidPackages(Context context) {
+        // Initialize list of valid packages. This contain all the packages which are already on
+        // the device and packages which are being installed. Any item which doesn't belong to
+        // this set is removed.
+        // Since the loader removes such items anyway, removing these items here doesn't cause
+        // any extra data loss and gives us more free space on the grid for better migration.
+        HashSet validPackages = new HashSet<>();
+        for (PackageInfo info : context.getPackageManager()
+                .getInstalledPackages(PackageManager.GET_UNINSTALLED_PACKAGES)) {
+            validPackages.add(info.packageName);
+        }
+        validPackages.addAll(PackageInstallerCompat.getInstance(context)
+                .updateAndGetActiveSessionCache().keySet());
+        return validPackages;
     }
 }
