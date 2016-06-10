@@ -27,7 +27,6 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.view.MotionEvent;
-import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 
 import com.android.launcher3.util.Thunk;
@@ -293,7 +292,7 @@ public class BaseRecyclerViewFastScrollBar {
     /**
      * Returns whether the specified points are near the scroll bar bounds.
      */
-    private boolean isNearThumb(int x, int y) {
+    public boolean isNearThumb(int x, int y) {
         mTmpRect.set(mThumbOffset.x, mThumbOffset.y, mThumbOffset.x + mThumbWidth,
                 mThumbOffset.y + mThumbHeight);
         mTmpRect.inset(mTouchInset, mTouchInset);
