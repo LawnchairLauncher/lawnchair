@@ -45,6 +45,7 @@ import android.os.IBinder;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.Property;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
@@ -1386,16 +1387,50 @@ public class Workspace extends PagedView
         // TODO(adamcohen): figure out a final effect here. We may need to recommend
         // different effects based on device performance. On at least one relatively high-end
         // device I've tried, translating the launcher causes things to get quite laggy.
-        setTranslationAndAlpha(getPageIndicator(), transX, alpha);
-        setTranslationAndAlpha(getChildAt(getCurrentPage()), transX, alpha);
-        setTranslationAndAlpha(mLauncher.getHotseat(), transX, alpha);
+        setWorkspaceTranslation(TRANSLATION_X, transX, alpha);
+        setHotseatTranslation(TRANSLATION_X, transX, alpha);
+    }
+
+    /**
+     * Moves the workspace UI in the provided direction.
+     * @param direction either {@link #TRANSLATION_X} or {@link #TRANSLATION_Y}
+     * @param translation the amound of shift.
+     * @param alpha the alpha for the workspace page
+     */
+    public void setWorkspaceTranslation(
+            Property<View, Float> direction, float translation, float alpha) {
+        View currentChild = getChildAt(getCurrentPage());
+        if (currentChild != null) {
+            direction.set(currentChild, translation);
+            currentChild.setAlpha(alpha);
+        }
 
         // When the animation finishes, reset all pages, just in case we missed a page.
-        if (transX == 0) {
+        if (Float.compare(translation, 0) == 0) {
             for (int i = getChildCount() - 1; i >= 0; i--) {
-                setTranslationAndAlpha(getChildAt(i), 0, alpha);
+                View child = getChildAt(i);
+                direction.set(child, translation);
+                child.setAlpha(alpha);
             }
         }
+    }
+
+    /**
+     * Moves the Hotseat UI in the provided direction.
+     * @param direction either {@link #TRANSLATION_X} or {@link #TRANSLATION_Y}
+     * @param translation the amound of shift.
+     * @param alpha the alpha for the hotseat page
+     */
+    public void setHotseatTranslation(
+            Property<View, Float> direction, float translation, float alpha) {
+        View pageIndicator = getPageIndicator();
+        if (pageIndicator != null) {
+            direction.set(pageIndicator, translation);
+            pageIndicator.setAlpha(alpha);
+        }
+
+        direction.set(mLauncher.getHotseat(), translation);
+        mLauncher.getHotseat().setAlpha(alpha);
     }
 
     @Override
@@ -1408,13 +1443,6 @@ public class Workspace extends PagedView
             return mTempMatrix;
         }
         return super.getPageShiftMatrix();
-    }
-
-    private void setTranslationAndAlpha(View v, float transX, float alpha) {
-        if (v != null) {
-            v.setTranslationX(transX);
-            v.setAlpha(alpha);
-        }
     }
 
     @Override

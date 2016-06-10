@@ -18,6 +18,7 @@ import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.PagedView;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.util.TouchController;
 
 /**
@@ -41,10 +42,10 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private static final float FINAL_ALPHA = .6f;
 
     private AllAppsContainerView mAppsView;
+    private Workspace mWorkspace;
     private Hotseat mHotseat;
     private Drawable mHotseatBackground;
     private float mHotseatAlpha;
-    private View mWorkspaceCurPage;
 
     private final Launcher mLauncher;
     private final VerticalPullDetector mDetector;
@@ -69,8 +70,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         init();
-        if (mLauncher.getWorkspace().isInOverviewMode() ||
-                mLauncher.isWidgetsViewVisible()) {
+        if (mWorkspace.isInOverviewMode() || mLauncher.isWidgetsViewVisible()) {
             return false;
         }
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
@@ -91,6 +91,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         }
         mAppsView = mLauncher.getAppsView();
         mHotseat = mLauncher.getHotseat();
+        mWorkspace = mLauncher.getWorkspace();
 
         if (mHotseatBackground == null) {
             mHotseatBackground = mHotseat.getBackground();
@@ -110,9 +111,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
      * @param start {@code true} if start of new drag.
      */
     public void preparePull(boolean start) {
-        // TODO: create a method inside workspace to fetch this easily.
-        mWorkspaceCurPage = mLauncher.getWorkspace().getChildAt(
-                mLauncher.getWorkspace().getNextPage());
         mHotseat.setVisibility(View.VISIBLE);
         mHotseat.bringToFront();
         if (start) {
@@ -130,10 +128,13 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                     setProgress(mTranslation);
                 }
             } else {
-                mLauncher.getWorkspace().onLauncherTransitionPrepare(mLauncher, false, false);
-                mWorkspaceCurPage.setVisibility(View.VISIBLE);
-                ((CellLayout) mWorkspaceCurPage).getShortcutsAndWidgets().setVisibility(View.VISIBLE);
-                ((CellLayout) mWorkspaceCurPage).getShortcutsAndWidgets().setAlpha(1f);
+                // TODO: get rid of this workaround to override state change by workspace transition
+                mWorkspace.onLauncherTransitionPrepare(mLauncher, false, false);
+                View child = ((CellLayout) mWorkspace.getChildAt(mWorkspace.getNextPage()))
+                        .getShortcutsAndWidgets();
+                child.setVisibility(View.VISIBLE);
+                child.setAlpha(1f);
+
                 mAppsView.setSearchBarVisible(false);
                 setLightStatusBar(false);
             }
@@ -175,8 +176,10 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mAppsView.getRevealView().setAlpha(Math.min(FINAL_ALPHA, Math.max(mHotseatAlpha, alpha)));
         mAppsView.getContentView().setAlpha(alpha);
         mAppsView.setTranslationY(progress);
-        setTransAndAlpha(mWorkspaceCurPage, -mTranslation + progress, mAccelInterpolator.getInterpolation(workspaceHotseatAlpha));
-        setTransAndAlpha(mHotseat, -mTranslation + progress, workspaceHotseatAlpha);
+        mWorkspace.setWorkspaceTranslation(View.TRANSLATION_Y, -mTranslation + progress,
+                mAccelInterpolator.getInterpolation(workspaceHotseatAlpha));
+        mWorkspace.setHotseatTranslation(
+                View.TRANSLATION_Y, -mTranslation + progress, workspaceHotseatAlpha);
     }
 
     public float getProgress() {
@@ -185,13 +188,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     private float calcAlphaAllApps(float progress) {
         return ((mTranslation - progress)/mTranslation);
-    }
-
-    private void setTransAndAlpha(View v, float transY, float alpha) {
-        if (v != null) {
-            v.setTranslationY(transY);
-            v.setAlpha(alpha);
-        }
     }
 
     @Override
