@@ -54,6 +54,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private float mProgressTransY;   // numerator
     private float mTranslation = -1; // denominator
 
+    private static final float RECATCH_REJECTION_FRACTION = .0875f;
+
     private long mAnimationDuration;
     private float mCurY;
 
@@ -73,24 +75,32 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             mNoIntercept = false;
             if (mLauncher.getWorkspace().isInOverviewMode() || mLauncher.isWidgetsViewVisible()) {
                 mNoIntercept = true;
-            }
-            if (mLauncher.isAllAppsVisible() &&
+            } else if (mLauncher.isAllAppsVisible() &&
                     !mAppsView.shouldContainerScroll(ev.getX(), ev.getY())) {
                 mNoIntercept = true;
+            } else {
+                mDetector.setDetectableScrollConditions(mLauncher.isAllAppsVisible() /* down */,
+                        isInDisallowRecatchTopZone(), isInDisallowRecatchBottomZone());
             }
         }
         if (mNoIntercept) {
             return false;
-        } else {
-            mDetector.setScrollDirectionDown(mLauncher.isAllAppsVisible());
         }
         mDetector.onTouchEvent(ev);
-        return mDetector.mScrolling;
+        return mDetector.shouldIntercept();
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         return mDetector.onTouchEvent(ev);
+    }
+
+    private boolean isInDisallowRecatchTopZone() {
+        return mProgressTransY / mTranslation < RECATCH_REJECTION_FRACTION;
+    }
+
+    private boolean isInDisallowRecatchBottomZone() {
+        return mProgressTransY / mTranslation > 1 - RECATCH_REJECTION_FRACTION;
     }
 
     private void init() {
@@ -267,7 +277,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         if ((mAppsView = mLauncher.getAppsView()) == null || animationOut == null){
             return;
         }
-        if (!mDetector.mScrolling) {
+        if (mDetector.isRestingState()) {
             preparePull(true);
             mAnimationDuration = duration;
         }
@@ -311,7 +321,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         if ((mAppsView = mLauncher.getAppsView()) == null || animationOut == null){
             return;
         }
-        if(!mDetector.mScrolling) {
+        if(mDetector.isRestingState()) {
             preparePull(true);
             mAnimationDuration = duration;
         }

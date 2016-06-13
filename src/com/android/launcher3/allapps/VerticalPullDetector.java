@@ -15,6 +15,8 @@ public class VerticalPullDetector {
 
     private float mTouchSlop;
     private boolean mScrollDown; // if false, only scroll up will be reported.
+    private boolean mDisallowRecatchFromTop;
+    private boolean mDisallowRecatchFromBottom;
 
     /**
      * The minimum release velocity in pixels per millisecond that triggers fling..
@@ -28,7 +30,23 @@ public class VerticalPullDetector {
     public static final float SCROLL_VELOCITY_DAMPENING_RC = 1000f / (2f * (float) Math.PI * 10);
 
     /* Scroll state, this is set to true during dragging and animation. */
-    boolean mScrolling;
+    private State mState = State.NONE;
+    enum State {NONE, DRAG, SCROLLING};
+
+    private void setState(State newState) {
+        if (DBG) {
+            Log.d(TAG, mState + "->" + newState);
+        }
+        mState = newState;
+    }
+
+    public boolean shouldIntercept() {
+        return mState == State.DRAG;
+    }
+
+    public boolean isRestingState() {
+        return mState == State.NONE;
+    }
 
     private float mDownX;
     private float mDownY;
@@ -53,9 +71,6 @@ public class VerticalPullDetector {
     }
 
     interface Listener{
-        /**
-         * @param start when should
-         */
         void onScrollStart(boolean start);
         boolean onScroll(float displacement, float velocity);
         void onScrollEnd(float velocity, boolean fling);
@@ -65,8 +80,11 @@ public class VerticalPullDetector {
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
     }
 
-    public void setScrollDirectionDown(boolean scrollDown) {
+    public void setDetectableScrollConditions(boolean scrollDown, boolean disallowRecatchFromTop,
+            boolean disallowRecatchFromBottom) {
         mScrollDown = scrollDown;
+        mDisallowRecatchFromTop = disallowRecatchFromTop;
+        mDisallowRecatchFromBottom = disallowRecatchFromBottom;
     }
 
     private boolean shouldScrollStart() {
@@ -85,6 +103,21 @@ public class VerticalPullDetector {
         return false;
     }
 
+    private boolean shouldRecatchScrollStart() {
+        if (!mDisallowRecatchFromBottom && !mDisallowRecatchFromTop) {
+            return true;
+        }
+        if (mDisallowRecatchFromTop && mDisplacementY > mTouchSlop) {
+            mDisallowRecatchFromTop = false;
+            return true;
+        }
+        if (mDisallowRecatchFromBottom && mDisplacementY < -mTouchSlop) {
+            mDisallowRecatchFromBottom = false;
+            return true;
+        }
+        return false;
+    }
+
     public boolean onTouchEvent(MotionEvent ev) {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -93,8 +126,7 @@ public class VerticalPullDetector {
                 mDownY = ev.getY();
                 mLastDisplacement = 0;
                 mVelocity = 0;
-
-                if (mScrolling) {
+                if (mState == State.SCROLLING && shouldRecatchScrollStart()){
                     reportScrollStart(true /* recatch */);
                 }
                 break;
@@ -103,18 +135,22 @@ public class VerticalPullDetector {
                 mDisplacementY = ev.getY() - mDownY;
                 mVelocity = computeVelocity(ev, mVelocity);
 
-                if (!mScrolling && shouldScrollStart()) {
-                    mScrolling = true;
+                if (mState == State.SCROLLING && shouldRecatchScrollStart()){
+                    setState(State.DRAG);
+                    reportScrollStart(true /* recatch */);
+                }
+                if (mState == State.NONE && shouldScrollStart()) {
+                    setState(State.DRAG);
                     reportScrollStart(false /* recatch */);
                 }
-                if (mScrolling && mListener != null) {
+                if (mState == State.DRAG && mListener != null) {
                     reportScroll();
                 }
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
                 // These are synthetic events and there is no need to update internal values.
-                if (mScrolling && mListener != null) {
+                if (mState == State.DRAG && mListener != null) {
                     reportScrollEnd();
                 }
                 break;
@@ -132,7 +168,7 @@ public class VerticalPullDetector {
     }
 
     public void finishedScrolling() {
-        mScrolling = false;
+        setState(State.NONE);
     }
 
     private boolean reportScrollStart(boolean recatch) {
@@ -170,6 +206,7 @@ public class VerticalPullDetector {
                     mDisplacementY, mVelocity));
         }
         mListener.onScrollEnd(mVelocity, Math.abs(mVelocity) > RELEASE_VELOCITY_PX_MS);
+        setState(State.SCROLLING);
     }
     /**
      * Computes the damped velocity using the two motion events and the previous velocity.
@@ -185,10 +222,6 @@ public class VerticalPullDetector {
 
         float alpha = computeDampeningFactor(deltaTimeMillis);
         return interpolate(previousVelocity, velocity, alpha);
-    }
-
-    private float computeDisplacement(MotionEvent to) {
-        return to.getY() - mDownY;
     }
 
     private float computeDelta(MotionEvent to) {
