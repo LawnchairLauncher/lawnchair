@@ -39,14 +39,6 @@
     <dimen name="widget_handle_margin">13dp</dimen>
     <dimen name="resize_frame_background_padding">24dp</dimen>
 
-<!-- Cling -->
-    <dimen name="cling_migration_logo_height">240dp</dimen>
-    <dimen name="cling_migration_logo_width">165dp</dimen>
-    <dimen name="cling_migration_bg_size">400dp</dimen>
-    <dimen name="cling_migration_bg_shift">-200dp</dimen>
-    <dimen name="cling_migration_content_margin">16dp</dimen>
-    <dimen name="cling_migration_content_width">280dp</dimen>
-
 <!-- Container -->
     <!-- Note: This needs to match the fixed insets for the search box. -->
     <dimen name="container_bounds_inset">8dp</dimen>

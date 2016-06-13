@@ -27,4 +27,4 @@
     android:text="@string/all_apps_search_market_message"
     android:textAllCaps="true"
     android:focusable="true"
-    android:background="@drawable/all_apps_search_market_bg" />
+    android:background="?android:selectableItemBackground" />
