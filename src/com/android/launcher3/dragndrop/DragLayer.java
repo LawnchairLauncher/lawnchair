@@ -42,7 +42,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.launcher3.AppWidgetResizeFrame;
-import com.android.launcher3.BaseContainerView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.ItemInfo;
@@ -56,7 +55,6 @@ import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
-import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
@@ -468,7 +466,7 @@ public class DragLayer extends InsettableFrameLayout {
      */
     public float getDescendantCoordRelativeToSelf(View descendant, int[] coord,
             boolean includeRootScroll) {
-        return Utilities.getDescendantCoordRelativeToParent(descendant, this,
+        return Utilities.getDescendantCoordRelativeToAncestor(descendant, this,
                 coord, includeRootScroll);
     }
 
