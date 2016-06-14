@@ -32,8 +32,7 @@
     <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"అనువర్తనాల్లో శోధించండి…"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"అనువర్తనాలను లోడ్ చేస్తోంది…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"కి సరిపోలే అనువర్తనాలేవీ కనుగొనబడలేదు"</string>
-    <!-- no translation found for all_apps_search_market_message (1366263386197059176) -->
-    <skip />
+    <string name="all_apps_search_market_message" msgid="1366263386197059176">"మరిన్ని అనువర్తనాల కోసం శోధించు"</string>
     <string name="out_of_space" msgid="4691004494942118364">"ఈ హోమ్ స్క్రీన్‌లో ఖాళీ లేదు."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ఇష్టమైనవి ట్రేలో ఖాళీ లేదు"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"అనువర్తనాలు"</string>

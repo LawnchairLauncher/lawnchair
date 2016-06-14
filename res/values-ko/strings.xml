@@ -32,8 +32,7 @@
     <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"앱 검색..."</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"앱 로드 중..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\'<xliff:g id="QUERY">%1$s</xliff:g>\'와(과) 일치하는 앱이 없습니다."</string>
-    <!-- no translation found for all_apps_search_market_message (1366263386197059176) -->
-    <skip />
+    <string name="all_apps_search_market_message" msgid="1366263386197059176">"더 많은 앱 검색"</string>
     <string name="out_of_space" msgid="4691004494942118364">"홈 화면에 더 이상 공간이 없습니다."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"즐겨찾기 트레이에 더 이상 공간이 없습니다."</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"앱"</string>

@@ -32,8 +32,7 @@
     <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"ઍપ્લિકેશનોમાં શોધો…"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"ઍપ્લિકેશનો લોડ કરી રહ્યું છે…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" થી મેળ ખાતી કોઈ ઍપ્લિકેશનો મળી નથી"</string>
-    <!-- no translation found for all_apps_search_market_message (1366263386197059176) -->
-    <skip />
+    <string name="all_apps_search_market_message" msgid="1366263386197059176">"વધુ ઍપ્લિકેશનો શોધો"</string>
     <string name="out_of_space" msgid="4691004494942118364">"આ હોમ સ્ક્રીન પર વધુ જગ્યા નથી."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"મનપસંદ ટ્રે પર વધુ જગ્યા નથી"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"ઍપ્લિકેશનો"</string>
