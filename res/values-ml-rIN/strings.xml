@@ -32,8 +32,7 @@
     <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"ആപ്പ്‌സ് തിരയുക…"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"ആപ്പ്‌സ് ലോഡുചെയ്യുന്നു..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" എന്നതുമായി പൊരുത്തപ്പെടുന്ന ആപ്പ്‌സൊന്നും കണ്ടെത്തിയില്ല"</string>
-    <!-- no translation found for all_apps_search_market_message (1366263386197059176) -->
-    <skip />
+    <string name="all_apps_search_market_message" msgid="1366263386197059176">"കൂടുതൽ ആപ്പുകൾക്ക് തിരയുക"</string>
     <string name="out_of_space" msgid="4691004494942118364">"ഈ ഹോം സ്‌ക്രീനിൽ ഒഴിവൊന്നുമില്ല."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"പ്രിയപ്പെട്ടവയുടെ ട്രേയിൽ ഒഴിവൊന്നുമില്ല"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"അപ്ലിക്കേഷനുകൾ"</string>
