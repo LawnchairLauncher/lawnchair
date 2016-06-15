@@ -58,7 +58,8 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
                 addItem(APPLICATION, 4, HOTSEAT, 0, 0),
         };
 
-        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages, 5, 2, 3, 1)
+        mIdp.numHotseatIcons = 3;
+        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages, 5, 3)
                 .migrateHotseat();
         // First & last items are dropped as they have the least weight.
         verifyHotseat(hotseatItems[1], -1, hotseatItems[3]);
@@ -73,7 +74,8 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
                 addItem(10, 4, HOTSEAT, 0, 0),
         };
 
-        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages, 5, 2, 3, 1)
+        mIdp.numHotseatIcons = 3;
+        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages, 5, 3)
                 .migrateHotseat();
         // First & third items are dropped as they have the least weight.
         verifyHotseat(hotseatItems[1], -1, hotseatItems[4]);

@@ -23,6 +23,8 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
 
+import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
@@ -76,9 +78,6 @@ public class InvariantDeviceProfile {
     public int numHotseatIcons;
     float hotseatIconSize;
     int defaultLayoutId;
-
-    // Derived invariant properties
-    public int hotseatAllAppsRank;
 
     DeviceProfile landscapeProfile;
     DeviceProfile portraitProfile;
@@ -141,7 +140,6 @@ public class InvariantDeviceProfile {
         numRows = closestProfile.numRows;
         numColumns = closestProfile.numColumns;
         numHotseatIcons = closestProfile.numHotseatIcons;
-        hotseatAllAppsRank = (int) (numHotseatIcons / 2);
         defaultLayoutId = closestProfile.defaultLayoutId;
         numFolderRows = closestProfile.numFolderRows;
         numFolderColumns = closestProfile.numFolderColumns;
@@ -302,6 +300,17 @@ public class InvariantDeviceProfile {
         iconTextSize *= w;
         hotseatIconSize *= w;
         return this;
+    }
+
+    public int getAllAppsButtonRank() {
+        if (ProviderConfig.IS_DOGFOOD_BUILD && FeatureFlags.NO_ALL_APPS_ICON) {
+            throw new IllegalAccessError("Accessing all apps rank when all-apps is disabled");
+        }
+        return numHotseatIcons / 2;
+    }
+
+    public boolean isAllAppsButtonRank(int rank) {
+        return rank == getAllAppsButtonRank();
     }
 
     private float weight(float x0, float y0, float x1, float y1, float pow) {

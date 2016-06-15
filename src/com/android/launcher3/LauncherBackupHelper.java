@@ -439,7 +439,6 @@ public class LauncherBackupHelper implements BackupHelper {
         data.desktopRows = profile.numRows;
         data.desktopCols = profile.numColumns;
         data.hotseatCount = profile.numHotseatIcons;
-        data.allappsRank = profile.hotseatAllAppsRank;
         return data;
     }
 

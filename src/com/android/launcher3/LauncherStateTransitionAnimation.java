@@ -142,7 +142,7 @@ public class LauncherStateTransitionAnimation {
     public void startAnimationToAllApps(final Workspace.State fromWorkspaceState,
             final boolean animated, final boolean startSearchAfterTransition) {
         final AllAppsContainerView toView = mLauncher.getAppsView();
-        final View buttonView = mLauncher.getAllAppsButton();
+        final View buttonView = mLauncher.getStartViewForAllAppsRevealAnimation();
         PrivateTransitionCallbacks cb = new PrivateTransitionCallbacks(1f) {
             @Override
             public float getMaterialRevealViewStartFinalRadius() {
@@ -525,7 +525,7 @@ public class LauncherStateTransitionAnimation {
         };
         // Only animate the search bar if animating to spring loaded mode from all apps
         mCurrentAnimation = startAnimationToWorkspaceFromOverlay(fromWorkspaceState, toWorkspaceState,
-                mLauncher.getAllAppsButton(), appsView,
+                mLauncher.getStartViewForAllAppsRevealAnimation(), appsView,
                 animated, type, onCompleteRunnable, cb);
     }
 

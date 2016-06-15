@@ -239,14 +239,12 @@ public class FocusHelper {
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_UP &&
                 !profile.isVerticalBarLayout()) {
-            matrix = FocusLogic.createSparseMatrixWithHotseat(iconLayout, hotseatLayout,
-                    true /* hotseat horizontal */, profile.inv.hotseatAllAppsRank);
+            matrix = FocusLogic.createSparseMatrixWithHotseat(iconLayout, hotseatLayout, profile);
             iconIndex += iconParent.getChildCount();
             parent = iconParent;
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT &&
                 profile.isVerticalBarLayout()) {
-            matrix = FocusLogic.createSparseMatrixWithHotseat(iconLayout, hotseatLayout,
-                    false /* hotseat horizontal */, profile.inv.hotseatAllAppsRank);
+            matrix = FocusLogic.createSparseMatrixWithHotseat(iconLayout, hotseatLayout, profile);
             iconIndex += iconParent.getChildCount();
             parent = iconParent;
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT &&
@@ -372,12 +370,10 @@ public class FocusHelper {
         // to take a user to the hotseat. For other dpad navigation, do not use the matrix extended
         // with the hotseat.
         if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN && !profile.isVerticalBarLayout()) {
-            matrix = FocusLogic.createSparseMatrixWithHotseat(iconLayout, hotseatLayout,
-                    true /* horizontal */, profile.inv.hotseatAllAppsRank);
+            matrix = FocusLogic.createSparseMatrixWithHotseat(iconLayout, hotseatLayout, profile);
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT &&
                 profile.isVerticalBarLayout()) {
-            matrix = FocusLogic.createSparseMatrixWithHotseat(iconLayout, hotseatLayout,
-                    false /* horizontal */, profile.inv.hotseatAllAppsRank);
+            matrix = FocusLogic.createSparseMatrixWithHotseat(iconLayout, hotseatLayout, profile);
         } else if (isUninstallKeyChord(e)) {
             matrix = FocusLogic.createSparseMatrix(iconLayout);
             if (UninstallDropTarget.supportsDrop(launcher, itemInfo)) {

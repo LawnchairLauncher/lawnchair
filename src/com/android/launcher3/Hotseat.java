@@ -31,6 +31,7 @@ import android.view.ViewDebug;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -42,9 +43,6 @@ public class Hotseat extends FrameLayout
     private CellLayout mContent;
 
     private Launcher mLauncher;
-
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private int mAllAppsButtonRank;
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private final boolean mHasVerticalHotseat;
@@ -106,16 +104,10 @@ public class Hotseat extends FrameLayout
         return mHasVerticalHotseat ? (mContent.getCountY() - (rank + 1)) : 0;
     }
 
-    public boolean isAllAppsButtonRank(int rank) {
-        return rank == mAllAppsButtonRank;
-    }
-
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         DeviceProfile grid = mLauncher.getDeviceProfile();
-
-        mAllAppsButtonRank = grid.inv.hotseatAllAppsRank;
         mContent = (CellLayout) findViewById(R.id.layout);
         if (grid.isLandscape && !grid.isLargeTablet) {
             mContent.setGridSize(1, (int) grid.inv.numHotseatIcons);
@@ -130,38 +122,41 @@ public class Hotseat extends FrameLayout
     void resetLayout() {
         mContent.removeAllViewsInLayout();
 
-        // Add the Apps button
-        Context context = getContext();
+        if (!FeatureFlags.NO_ALL_APPS_ICON) {
+            // Add the Apps button
+            Context context = getContext();
+            int allAppsButtonRank = mLauncher.getDeviceProfile().inv.getAllAppsButtonRank();
 
-        LayoutInflater inflater = LayoutInflater.from(context);
-        TextView allAppsButton = (TextView)
-                inflater.inflate(R.layout.all_apps_button, mContent, false);
-        Drawable d = context.getResources().getDrawable(R.drawable.all_apps_button_icon);
+            LayoutInflater inflater = LayoutInflater.from(context);
+            TextView allAppsButton = (TextView)
+                    inflater.inflate(R.layout.all_apps_button, mContent, false);
+            Drawable d = context.getResources().getDrawable(R.drawable.all_apps_button_icon);
 
-        mLauncher.resizeIconDrawable(d);
-        int scaleDownPx = getResources().getDimensionPixelSize(R.dimen.all_apps_button_scale_down);
-        Rect bounds = d.getBounds();
-        d.setBounds(bounds.left, bounds.top + scaleDownPx / 2, bounds.right - scaleDownPx,
-                bounds.bottom - scaleDownPx / 2);
-        allAppsButton.setCompoundDrawables(null, d, null, null);
+            mLauncher.resizeIconDrawable(d);
+            int scaleDownPx = getResources().getDimensionPixelSize(R.dimen.all_apps_button_scale_down);
+            Rect bounds = d.getBounds();
+            d.setBounds(bounds.left, bounds.top + scaleDownPx / 2, bounds.right - scaleDownPx,
+                    bounds.bottom - scaleDownPx / 2);
+            allAppsButton.setCompoundDrawables(null, d, null, null);
 
-        allAppsButton.setContentDescription(context.getString(R.string.all_apps_button_label));
-        allAppsButton.setOnKeyListener(new HotseatIconKeyEventListener());
-        if (mLauncher != null) {
-            mLauncher.setAllAppsButton(allAppsButton);
-            allAppsButton.setOnTouchListener(mLauncher.getHapticFeedbackTouchListener());
-            allAppsButton.setOnClickListener(mLauncher);
-            allAppsButton.setOnLongClickListener(mLauncher);
-            allAppsButton.setOnFocusChangeListener(mLauncher.mFocusHandler);
+            allAppsButton.setContentDescription(context.getString(R.string.all_apps_button_label));
+            allAppsButton.setOnKeyListener(new HotseatIconKeyEventListener());
+            if (mLauncher != null) {
+                mLauncher.setAllAppsButton(allAppsButton);
+                allAppsButton.setOnTouchListener(mLauncher.getHapticFeedbackTouchListener());
+                allAppsButton.setOnClickListener(mLauncher);
+                allAppsButton.setOnLongClickListener(mLauncher);
+                allAppsButton.setOnFocusChangeListener(mLauncher.mFocusHandler);
+            }
+
+            // Note: We do this to ensure that the hotseat is always laid out in the orientation of
+            // the hotseat in order regardless of which orientation they were added
+            int x = getCellXFromOrder(allAppsButtonRank);
+            int y = getCellYFromOrder(allAppsButtonRank);
+            CellLayout.LayoutParams lp = new CellLayout.LayoutParams(x, y, 1, 1);
+            lp.canReorder = false;
+            mContent.addViewToCellLayout(allAppsButton, -1, allAppsButton.getId(), lp, true);
         }
-
-        // Note: We do this to ensure that the hotseat is always laid out in the orientation of
-        // the hotseat in order regardless of which orientation they were added
-        int x = getCellXFromOrder(mAllAppsButtonRank);
-        int y = getCellYFromOrder(mAllAppsButtonRank);
-        CellLayout.LayoutParams lp = new CellLayout.LayoutParams(x,y,1,1);
-        lp.canReorder = false;
-        mContent.addViewToCellLayout(allAppsButton, -1, allAppsButton.getId(), lp, true);
     }
 
     @Override
