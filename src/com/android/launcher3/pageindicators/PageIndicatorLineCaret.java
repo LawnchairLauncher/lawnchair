@@ -151,7 +151,7 @@ public class PageIndicatorLineCaret extends PageIndicator {
         // which extends to the top of the hotseat.
         View parent = mLauncher.getDragLayer();
         sTempCoords[0] = sTempCoords[1] = 0;
-        Utilities.getDescendantCoordRelativeToParent(this, parent, sTempCoords, true);
+        Utilities.getDescendantCoordRelativeToAncestor(this, parent, sTempCoords, true);
         mTouchHitRect.set(sTempCoords[0], sTempCoords[1], sTempCoords[0] + this.getWidth(),
                 sTempCoords[1] + getHeight() + mTouchExtensionHeight);
         parent.setTouchDelegate(new TouchDelegate(mTouchHitRect, this));
