@@ -341,35 +341,27 @@ public final class Utilities {
      */
     public static float getDescendantCoordRelativeToAncestor(
             View descendant, View ancestor, int[] coord, boolean includeRootScroll) {
-        ArrayList<View> ancestorChain = new ArrayList<View>();
-
         float[] pt = {coord[0], coord[1]};
-
+        float scale = 1.0f;
         View v = descendant;
         while(v != ancestor && v != null) {
-            ancestorChain.add(v);
+            // For TextViews, scroll has a meaning which relates to the text position
+            // which is very strange... ignore the scroll.
+            if (v != descendant || includeRootScroll) {
+                pt[0] -= v.getScrollX();
+                pt[1] -= v.getScrollY();
+            }
+
+            v.getMatrix().mapPoints(pt);
+            pt[0] += v.getLeft();
+            pt[1] += v.getTop();
+            scale *= v.getScaleX();
+
             v = (View) v.getParent();
         }
 
-        float scale = 1.0f;
-        int count = ancestorChain.size();
-        for (int i = 0; i < count; i++) {
-            View v0 = ancestorChain.get(i);
-            // For TextViews, scroll has a meaning which relates to the text position
-            // which is very strange... ignore the scroll.
-            if (v0 != descendant || includeRootScroll) {
-                pt[0] -= v0.getScrollX();
-                pt[1] -= v0.getScrollY();
-            }
-
-            v0.getMatrix().mapPoints(pt);
-            pt[0] += v0.getLeft();
-            pt[1] += v0.getTop();
-            scale *= v0.getScaleX();
-        }
-
-        coord[0] = (int) Math.round(pt[0]);
-        coord[1] = (int) Math.round(pt[1]);
+        coord[0] = Math.round(pt[0]);
+        coord[1] = Math.round(pt[1]);
         return scale;
     }
 
