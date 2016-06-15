@@ -113,7 +113,7 @@ import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.WidgetsModel;
-import com.android.launcher3.pageindicators.PageIndicatorLine;
+import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -233,7 +233,7 @@ public class Launcher extends Activity
 
     @Thunk Workspace mWorkspace;
     private View mLauncherView;
-    private PageIndicatorLine mPageIndicator;
+    private PageIndicator mPageIndicator;
     @Thunk DragLayer mDragLayer;
     private DragController mDragController;
 
@@ -1346,7 +1346,7 @@ public class Launcher extends Activity
         mFocusHandler = mDragLayer.getFocusIndicatorHelper();
 
         mWorkspace = (Workspace) mDragLayer.findViewById(R.id.workspace);
-        mPageIndicator = (PageIndicatorLine) mDragLayer.findViewById(R.id.page_indicator);
+        mPageIndicator = (PageIndicator) mDragLayer.findViewById(R.id.page_indicator);
 
         mLauncherView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -2491,7 +2491,7 @@ public class Launcher extends Activity
             if (v instanceof FolderIcon) {
                 onClickFolderIcon(v);
             }
-        } else if (v == mAllAppsButton) {
+        } else if (v instanceof PageIndicator || v == mAllAppsButton) {
             onClickAllAppsButton(v);
         } else if (tag instanceof AppInfo) {
             startAppShortcutOrInfoActivity(v);

@@ -55,7 +55,7 @@
 
         <!-- Keep these behind the workspace so that they are not visible when
              we go into AllApps -->
-        <com.android.launcher3.pageindicators.PageIndicatorLine
+        <com.android.launcher3.pageindicators.PageIndicatorLineCaret
             android:id="@+id/page_indicator"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dynamic_grid_page_indicator_height" />
