@@ -457,17 +457,14 @@ public class DeviceProfile {
         // Layout the page indicators
         View pageIndicator = launcher.findViewById(R.id.page_indicator);
         if (pageIndicator != null) {
-            if (hasVerticalBarLayout) {
-                // Hide the page indicators when we have vertical search/hotseat
-                pageIndicator.setVisibility(View.GONE);
-            } else {
+            lp = (FrameLayout.LayoutParams) pageIndicator.getLayoutParams();
+            if (!hasVerticalBarLayout) {
                 // Put the page indicators above the hotseat
-                lp = (FrameLayout.LayoutParams) pageIndicator.getLayoutParams();
                 lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
                 lp.width = LayoutParams.WRAP_CONTENT;
                 lp.bottomMargin = hotseatBarHeightPx;
-                pageIndicator.setLayoutParams(lp);
             }
+            pageIndicator.setLayoutParams(lp);
         }
 
         // Layout the Overview Mode

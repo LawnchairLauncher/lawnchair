@@ -5,17 +5,24 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Property;
+import android.view.TouchDelegate;
+import android.view.View;
 import android.view.ViewConfiguration;
 
+import com.android.launcher3.Launcher;
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dynamicui.ExtractedColors;
 
@@ -24,8 +31,10 @@ import com.android.launcher3.dynamicui.ExtractedColors;
  *
  * The fraction is 1 / number of pages and the position is based on the progress of the page scroll.
  */
-public class PageIndicatorLine extends PageIndicator {
+public class PageIndicatorLineCaret extends PageIndicator {
     private static final String TAG = "PageIndicatorLine";
+
+    private static final int[] sTempCoords = new int[2];
 
     private static final int LINE_ANIMATE_DURATION = ViewConfiguration.getScrollBarFadeDuration();
     private static final int LINE_FADE_DELAY = ViewConfiguration.getScrollDefaultDelay();
@@ -51,44 +60,50 @@ public class PageIndicatorLine extends PageIndicator {
     private int mCurrentScroll;
     private int mTotalScroll;
     private Paint mLinePaint;
+    private Launcher mLauncher;
+    // all apps pull up handle drawable.
+    private final Drawable caretDrawable;
+    private final int mLineHeight;
+    private final Rect mTouchHitRect = new Rect();
+    private final int mTouchExtensionHeight;
 
-    private static final Property<PageIndicatorLine, Integer> PAINT_ALPHA
-            = new Property<PageIndicatorLine, Integer>(Integer.class, "paint_alpha") {
+    private static final Property<PageIndicatorLineCaret, Integer> PAINT_ALPHA
+            = new Property<PageIndicatorLineCaret, Integer>(Integer.class, "paint_alpha") {
         @Override
-        public Integer get(PageIndicatorLine obj) {
+        public Integer get(PageIndicatorLineCaret obj) {
             return obj.mLinePaint.getAlpha();
         }
 
         @Override
-        public void set(PageIndicatorLine obj, Integer alpha) {
+        public void set(PageIndicatorLineCaret obj, Integer alpha) {
             obj.mLinePaint.setAlpha(alpha);
             obj.invalidate();
         }
     };
 
-    private static final Property<PageIndicatorLine, Float> NUM_PAGES
-            = new Property<PageIndicatorLine, Float>(Float.class, "num_pages") {
+    private static final Property<PageIndicatorLineCaret, Float> NUM_PAGES
+            = new Property<PageIndicatorLineCaret, Float>(Float.class, "num_pages") {
         @Override
-        public Float get(PageIndicatorLine obj) {
+        public Float get(PageIndicatorLineCaret obj) {
             return obj.mNumPagesFloat;
         }
 
         @Override
-        public void set(PageIndicatorLine obj, Float numPages) {
+        public void set(PageIndicatorLineCaret obj, Float numPages) {
             obj.mNumPagesFloat = numPages;
             obj.invalidate();
         }
     };
 
-    private static final Property<PageIndicatorLine, Integer> TOTAL_SCROLL
-            = new Property<PageIndicatorLine, Integer>(Integer.class, "total_scroll") {
+    private static final Property<PageIndicatorLineCaret, Integer> TOTAL_SCROLL
+            = new Property<PageIndicatorLineCaret, Integer>(Integer.class, "total_scroll") {
         @Override
-        public Integer get(PageIndicatorLine obj) {
+        public Integer get(PageIndicatorLineCaret obj) {
             return obj.mTotalScroll;
         }
 
         @Override
-        public void set(PageIndicatorLine obj, Integer totalScroll) {
+        public void set(PageIndicatorLineCaret obj, Integer totalScroll) {
             obj.mTotalScroll = totalScroll;
             obj.invalidate();
         }
@@ -101,22 +116,50 @@ public class PageIndicatorLine extends PageIndicator {
         }
     };
 
-    public PageIndicatorLine(Context context) {
+    public PageIndicatorLineCaret(Context context) {
         this(context, null);
     }
 
-    public PageIndicatorLine(Context context, AttributeSet attrs) {
+    public PageIndicatorLineCaret(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public PageIndicatorLine(Context context, AttributeSet attrs, int defStyle) {
+    public PageIndicatorLineCaret(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mLinePaint = new Paint();
         mLinePaint.setAlpha(0);
+
+        mLauncher = (Launcher) context;
+        setOnTouchListener(mLauncher.getHapticFeedbackTouchListener());
+        setOnClickListener(mLauncher);
+        setOnFocusChangeListener(mLauncher.mFocusHandler);
+        Resources res = context.getResources();
+        caretDrawable = res.getDrawable(R.drawable.ic_allapps_caret);
+        mLineHeight = res.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_line_height);
+        mTouchExtensionHeight = res.getDimensionPixelSize(
+                R.dimen.dynamic_grid_page_indicator_extra_touch_height);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        int size = bottom - top;
+        int l = (right - left) / 2 - size / 2;
+        caretDrawable.setBounds(l, 0, l+ size, size);
+
+        // The touch area is expanded below this view by #mTouchExtensionHeight
+        // which extends to the top of the hotseat.
+        View parent = mLauncher.getDragLayer();
+        sTempCoords[0] = sTempCoords[1] = 0;
+        Utilities.getDescendantCoordRelativeToParent(this, parent, sTempCoords, true);
+        mTouchHitRect.set(sTempCoords[0], sTempCoords[1], sTempCoords[0] + this.getWidth(),
+                sTempCoords[1] + getHeight() + mTouchExtensionHeight);
+        parent.setTouchDelegate(new TouchDelegate(mTouchHitRect, this));
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
+        caretDrawable.draw(canvas);
         if (mTotalScroll == 0 || mNumPagesFloat == 0) {
             return;
         }
@@ -127,7 +170,8 @@ public class PageIndicatorLine extends PageIndicator {
         int lineWidth = (int) (availableWidth / mNumPagesFloat);
         int lineLeft = (int) (progress * (availableWidth - lineWidth));
         int lineRight = lineLeft + lineWidth;
-        canvas.drawRect(lineLeft, 0, lineRight, canvas.getHeight(), mLinePaint);
+        canvas.drawRect(lineLeft, canvas.getHeight() + mLineHeight, lineRight, canvas.getHeight(),
+                mLinePaint);
     }
 
     @Override

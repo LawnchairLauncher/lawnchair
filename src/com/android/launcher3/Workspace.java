@@ -75,7 +75,7 @@ import com.android.launcher3.dragndrop.SpringLoadedDragController;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.logging.UserEventDispatcher;
-import com.android.launcher3.pageindicators.PageIndicatorLine;
+import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.LongArrayMap;
@@ -2096,9 +2096,9 @@ public class Workspace extends PagedView
 
     @Override
     public void onLauncherTransitionStart(Launcher l, boolean animated, boolean toWorkspace) {
-        if (mPageIndicator instanceof PageIndicatorLine) {
+        if (mPageIndicator instanceof PageIndicator) {
             boolean isNewStateSpringLoaded = mState == State.SPRING_LOADED;
-            ((PageIndicatorLine) mPageIndicator).setShouldAutoHide(!isNewStateSpringLoaded);
+            mPageIndicator.setShouldAutoHide(!isNewStateSpringLoaded);
             if (isNewStateSpringLoaded) {
                 // Show the page indicator at the same time as the rest of the transition.
                 showPageIndicatorAtCurrentScroll();
