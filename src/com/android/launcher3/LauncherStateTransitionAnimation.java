@@ -249,10 +249,9 @@ public class LauncherStateTransitionAnimation {
         cancelAnimation();
 
         final View contentView = toView.getContentView();
-
+        playCommonTransitionAnimations(toWorkspaceState, fromView, toView,
+                animated, initialized, animation, revealDuration, layerViews);
         if (!animated || !initialized) {
-            playCommonTransitionAnimations(toWorkspaceState, fromView, toView,
-                    animated, initialized, animation, revealDuration, layerViews);
 
             toView.setTranslationX(0.0f);
             toView.setTranslationY(0.0f);
@@ -276,9 +275,6 @@ public class LauncherStateTransitionAnimation {
             return null;
         }
         if (animType == CIRCULAR_REVEAL) {
-            playCommonTransitionAnimations(toWorkspaceState, fromView, toView,
-                    animated, initialized, animation, revealDuration, layerViews);
-
             // Setup the reveal view animation
             final View revealView = toView.getRevealView();
 
@@ -425,8 +421,6 @@ public class LauncherStateTransitionAnimation {
                   }
             });
             mAllAppsController.animateToAllApps(animation, revealDuration);
-            playCommonTransitionAnimations(toWorkspaceState, fromView, toView,
-                    animated, initialized, animation, revealDuration, layerViews);
 
             dispatchOnLauncherTransitionPrepare(fromView, animated, false);
             dispatchOnLauncherTransitionPrepare(toView, animated, false);
@@ -675,9 +669,9 @@ public class LauncherStateTransitionAnimation {
 
         boolean multiplePagesVisible = toWorkspaceState.hasMultipleVisiblePages;
 
+        playCommonTransitionAnimations(toWorkspaceState, fromView, toView,
+                animated, initialized, animation, revealDuration, layerViews);
         if (!animated || !initialized) {
-            playCommonTransitionAnimations(toWorkspaceState, fromView, toView,
-                    animated, initialized, animation, revealDuration, layerViews);
             if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
                 mAllAppsController.finishPullDown();
             }
@@ -694,12 +688,9 @@ public class LauncherStateTransitionAnimation {
             if (onCompleteRunnable != null) {
                 onCompleteRunnable.run();
             }
-
             return null;
         }
         if (animType == CIRCULAR_REVEAL) {
-            playCommonTransitionAnimations(toWorkspaceState, fromView, toView,
-                    animated, initialized, animation, revealDuration, layerViews);
             final View revealView = fromView.getRevealView();
             final View contentView = fromView.getContentView();
 
@@ -880,8 +871,6 @@ public class LauncherStateTransitionAnimation {
 
             });
             mAllAppsController.animateToWorkspace(animation, revealDuration);
-            playCommonTransitionAnimations(toWorkspaceState, fromView, toView,
-                    animated, initialized, animation, revealDuration, layerViews);
 
             // Dispatch the prepare transition signal
             dispatchOnLauncherTransitionPrepare(fromView, animated, false);

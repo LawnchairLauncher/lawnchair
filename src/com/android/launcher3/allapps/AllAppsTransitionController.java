@@ -8,10 +8,13 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.CellLayout;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
@@ -34,16 +37,21 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private static final String TAG = "AllAppsTrans";
     private static final boolean DBG = false;
 
-     private final Interpolator mAccelInterpolator = new AccelerateInterpolator(1f);
+    private final Interpolator mAccelInterpolator = new AccelerateInterpolator(2f);
+    private final Interpolator mDecelInterpolator = new DecelerateInterpolator(1f);
+    private final Interpolator mAccelDecelInterpolator = new AccelerateDecelerateInterpolator();
 
     private static final float ANIMATION_DURATION = 2000;
-    private static final float FINAL_ALPHA = .65f;
+    public static final float ALL_APPS_FINAL_ALPHA = .8f;
+
+    private static final float PARALLAX_COEFFICIENT = .125f;
 
     private AllAppsContainerView mAppsView;
     private Workspace mWorkspace;
     private Hotseat mHotseat;
     private Drawable mHotseatBackground;
     private float mHotseatAlpha;
+    private float mStatusBarHeight;
 
     private final Launcher mLauncher;
     private final VerticalPullDetector mDetector;
@@ -56,11 +64,20 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     private static final float RECATCH_REJECTION_FRACTION = .0875f;
 
+    // Used in landscape.
+    private static final float BAZEL_PULL_UP_HEIGHT = 60;
+
     private long mAnimationDuration;
     private float mCurY;
 
     private AnimatorSet mCurrentAnimation;
     private boolean mNoIntercept;
+
+    private boolean mLightStatusBar;
+
+    // At the end of scroll settling, this class also sets the state of the launcher.
+    // If it's already set,do not call the #mLauncher.setXXX method.
+    private boolean mStateAlreadyChanged;
 
     public AllAppsTransitionController(Launcher launcher) {
         mLauncher = launcher;
@@ -78,6 +95,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             } else if (mLauncher.isAllAppsVisible() &&
                     !mAppsView.shouldContainerScroll(ev.getX(), ev.getY())) {
                 mNoIntercept = true;
+            } else if (!mLauncher.isAllAppsVisible() && !shouldPossiblyIntercept(ev)) {
+                mNoIntercept = true;
             } else {
                 mDetector.setDetectableScrollConditions(mLauncher.isAllAppsVisible() /* down */,
                         isInDisallowRecatchTopZone(), isInDisallowRecatchBottomZone());
@@ -88,6 +107,22 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         }
         mDetector.onTouchEvent(ev);
         return mDetector.shouldIntercept();
+    }
+
+    private boolean shouldPossiblyIntercept(MotionEvent ev) {
+        DeviceProfile grid = mLauncher.getDeviceProfile();
+        if (mDetector.isRestingState()) {
+            if (mLauncher.getDragLayer().isEventOverHotseat(ev) && !grid.isLandscape) {
+                return true;
+            }
+            if (ev.getY() > mLauncher.getDeviceProfile().heightPx - BAZEL_PULL_UP_HEIGHT &&
+                    grid.isLandscape) {
+                return true;
+            }
+            return false;
+        } else {
+            return true;
+        }
     }
 
     @Override
@@ -111,6 +146,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mHotseat = mLauncher.getHotseat();
         mWorkspace = mLauncher.getWorkspace();
 
+        mStatusBarHeight = mLauncher.getDragLayer().getInsets().height();
         if (mHotseatBackground == null) {
             mHotseatBackground = mHotseat.getBackground();
             mHotseatAlpha = mHotseatBackground.getAlpha() / 255f;
@@ -119,6 +155,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     @Override
     public void onScrollStart(boolean start) {
+        init();
         cancelAnimation();
         mCurrentAnimation = LauncherAnimUtils.createAnimatorSet();
         preparePull(start);
@@ -133,18 +170,21 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mHotseat.bringToFront();
         if (start) {
             if (!mLauncher.isAllAppsVisible()) {
+                mLauncher.tryAndUpdatePredictedApps();
                 mHotseat.setBackground(null);
                 mAppsView.setVisibility(View.VISIBLE);
                 mAppsView.getContentView().setVisibility(View.VISIBLE);
                 mAppsView.getContentView().setBackground(null);
                 mAppsView.getRevealView().setVisibility(View.VISIBLE);
                 mAppsView.getRevealView().setAlpha(mHotseatAlpha);
-                mAppsView.setSearchBarVisible(false);
 
-                if (mTranslation < 0) {
+                DeviceProfile grid= mLauncher.getDeviceProfile();
+                if (!grid.isLandscape) {
                     mTranslation = mHotseat.getTop();
-                    setProgress(mTranslation);
+                } else {
+                    mTranslation = mHotseat.getBottom();
                 }
+                setProgress(mTranslation);
             } else {
                 // TODO: get rid of this workaround to override state change by workspace transition
                 mWorkspace.onLauncherTransitionPrepare(mLauncher, false, false);
@@ -152,14 +192,16 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                         .getShortcutsAndWidgets();
                 child.setVisibility(View.VISIBLE);
                 child.setAlpha(1f);
-
-                mAppsView.setSearchBarVisible(false);
-                setLightStatusBar(false);
             }
         }
     }
 
-    private void setLightStatusBar(boolean enable) {
+    private void updateLightStatusBar(float progress) {
+        boolean enable = (progress < mStatusBarHeight / 2);
+        // Already set correctly
+        if (mLightStatusBar == enable) {
+            return;
+        }
         int systemUiFlags = mLauncher.getWindow().getDecorView().getSystemUiVisibility();
         if (enable) {
             mLauncher.getWindow().getDecorView().setSystemUiVisibility(systemUiFlags
@@ -170,6 +212,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                     & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 
         }
+        mLightStatusBar = enable;
     }
 
     @Override
@@ -187,17 +230,20 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
      * @param progress y value of the border between hotseat and all apps
      */
     public void setProgress(float progress) {
+        updateLightStatusBar(progress);
         mProgressTransY = progress;
         float alpha = calcAlphaAllApps(progress);
         float workspaceHotseatAlpha = 1 - alpha;
 
-        mAppsView.getRevealView().setAlpha(Math.min(FINAL_ALPHA, Math.max(mHotseatAlpha, alpha)));
+        mAppsView.getRevealView().setAlpha(Math.min(ALL_APPS_FINAL_ALPHA, Math.max(mHotseatAlpha,
+                mDecelInterpolator.getInterpolation(alpha))));
         mAppsView.getContentView().setAlpha(alpha);
         mAppsView.setTranslationY(progress);
-        mWorkspace.setWorkspaceTranslation(View.TRANSLATION_Y, -mTranslation + progress,
+        mWorkspace.setWorkspaceTranslation(View.TRANSLATION_Y,
+                PARALLAX_COEFFICIENT *(-mTranslation + progress),
                 mAccelInterpolator.getInterpolation(workspaceHotseatAlpha));
-        mWorkspace.setHotseatTranslation(
-                View.TRANSLATION_Y, -mTranslation + progress, workspaceHotseatAlpha);
+        mWorkspace.setHotseatTranslation(View.TRANSLATION_Y, -mTranslation + progress,
+                mAccelInterpolator.getInterpolation(workspaceHotseatAlpha));
     }
 
     public float getProgress() {
@@ -217,59 +263,31 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         if (fling) {
             if (velocity < 0) {
                 calculateDuration(velocity, mAppsView.getTranslationY());
-                showAppsView(); // Flinging in UP direction
+                animateToAllApps(mCurrentAnimation, mAnimationDuration);
             } else {
                 calculateDuration(velocity, Math.abs(mTranslation - mAppsView.getTranslationY()));
-                showWorkspace(); // Flinging in DOWN direction
+                animateToWorkspace(mCurrentAnimation, mAnimationDuration);
             }
             // snap to top or bottom using the release velocity
         } else {
             if (mAppsView.getTranslationY() > mTranslation / 2) {
                 calculateDuration(velocity, Math.abs(mTranslation - mAppsView.getTranslationY()));
-                showWorkspace(); // Released in the bottom half
+                animateToWorkspace(mCurrentAnimation, mAnimationDuration);
             } else {
                 calculateDuration(velocity, Math.abs(mAppsView.getTranslationY()));
-                showAppsView(); // Released in the top half
+                animateToAllApps(mCurrentAnimation, mAnimationDuration);
             }
         }
+        mCurrentAnimation.start();
     }
 
     private void calculateDuration(float velocity, float disp) {
         // TODO: make these values constants after tuning.
-        float velocityDivisor = Math.max(1.5f, Math.abs(0.25f * velocity));
+        float velocityDivisor = Math.max(1.5f, Math.abs(0.5f * velocity));
         float travelDistance = Math.max(0.2f, disp / mTranslation);
         mAnimationDuration = (long) Math.max(100, ANIMATION_DURATION / velocityDivisor * travelDistance);
         if (DBG) {
             Log.d(TAG, String.format("calculateDuration=%d, v=%f, d=%f", mAnimationDuration, velocity, disp));
-        }
-    }
-
-    /**
-     * Depending on the current state of the launcher, either just
-     * 1) animate
-     * 2) animate and do all the state updates.
-     */
-    private void showAppsView() {
-        if (mLauncher.isAllAppsVisible()) {
-            animateToAllApps(mCurrentAnimation, mAnimationDuration);
-            mCurrentAnimation.start();
-        } else {
-            mLauncher.showAppsView(true /* animated */, true /* resetListToTop */,
-                    true /* updatePredictedApps */, false /* focusSearchBar */);
-        }
-    }
-
-    /**
-     * Depending on the current state of the launcher, either just
-     * 1) animate
-     * 2) animate and do all the state updates.
-     */
-    private void showWorkspace() {
-        if (mLauncher.isAllAppsVisible()) {
-            mLauncher.showWorkspace(true /* animated */);
-        } else {
-            animateToWorkspace(mCurrentAnimation, mAnimationDuration);
-            mCurrentAnimation.start();
         }
     }
 
@@ -280,6 +298,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         if (mDetector.isRestingState()) {
             preparePull(true);
             mAnimationDuration = duration;
+            mStateAlreadyChanged = true;
         }
         mCurY = mAppsView.getTranslationY();
         final float fromAllAppsTop = mAppsView.getTranslationY();
@@ -310,13 +329,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mCurrentAnimation = animationOut;
     }
 
-    private void finishPullUp() {
-        mAppsView.setSearchBarVisible(true);
-        mHotseat.setVisibility(View.INVISIBLE);
-        setProgress(0f);
-        setLightStatusBar(true);
-    }
-
     public void animateToWorkspace(AnimatorSet animationOut, long duration) {
         if ((mAppsView = mLauncher.getAppsView()) == null || animationOut == null){
             return;
@@ -324,6 +336,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         if(mDetector.isRestingState()) {
             preparePull(true);
             mAnimationDuration = duration;
+            mStateAlreadyChanged = true;
         }
         final float fromAllAppsTop = mAppsView.getTranslationY();
         final float toAllAppsTop = mTranslation;
@@ -354,12 +367,28 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mCurrentAnimation = animationOut;
     }
 
+    private void finishPullUp() {
+        mHotseat.setVisibility(View.INVISIBLE);
+        setProgress(0f);
+        if (!mStateAlreadyChanged) {
+            mLauncher.showAppsView(false /* animated */, true /* resetListToTop */,
+                    false /* updatePredictedApps */, false /* focusSearchBar */);
+        }
+        mStateAlreadyChanged = false;
+    }
+
     public void finishPullDown() {
+        if (mHotseat.getBackground() != null) {
+            return;
+        }
         mAppsView.setVisibility(View.INVISIBLE);
         mHotseat.setBackground(mHotseatBackground);
         mHotseat.setVisibility(View.VISIBLE);
         setProgress(mTranslation);
-        setLightStatusBar(false);
+        if (!mStateAlreadyChanged) {
+            mLauncher.showWorkspace(false);
+        }
+        mStateAlreadyChanged = false;
     }
 
     private void cancelAnimation() {

@@ -135,7 +135,7 @@ public class VerticalPullDetector {
                 mDisplacementY = ev.getY() - mDownY;
                 mVelocity = computeVelocity(ev, mVelocity);
 
-                if (mState == State.SCROLLING && shouldRecatchScrollStart()){
+                if (mState == State.SCROLLING && Math.abs(mDisplacementY) > mTouchSlop ){
                     setState(State.DRAG);
                     reportScrollStart(true /* recatch */);
                 }

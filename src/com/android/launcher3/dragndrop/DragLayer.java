@@ -187,6 +187,11 @@ public class DragLayer extends InsettableFrameLayout {
         removeView(mOverlayView);
     }
 
+    public boolean isEventOverHotseat(MotionEvent ev) {
+        getDescendantRectRelativeToSelf(mLauncher.getHotseat(), mHitRect);
+        return mHitRect.contains((int) ev.getX(), (int) ev.getY());
+    }
+
     private boolean isEventOverFolderTextRegion(Folder folder, MotionEvent ev) {
         getDescendantRectRelativeToSelf(folder.getEditTextRegion(), mHitRect);
         return mHitRect.contains((int) ev.getX(), (int) ev.getY());

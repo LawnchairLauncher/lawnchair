@@ -490,7 +490,8 @@ public class WorkspaceStateTransitionAnimation {
 
         final DragLayer dragLayer = mLauncher.getDragLayer();
         final float startAlpha = dragLayer.getBackgroundAlpha();
-        float finalAlpha = states.stateIsNormal ? 0 : mWorkspaceScrimAlpha;
+        float finalAlpha = states.stateIsNormal || states.stateIsNormalHidden ?
+                0 : mWorkspaceScrimAlpha;
 
         if (finalAlpha != startAlpha) {
             if (animated) {
