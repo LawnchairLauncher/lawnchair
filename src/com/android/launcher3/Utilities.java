@@ -331,7 +331,7 @@ public final class Utilities {
      * coordinates.
      *
      * @param descendant The descendant to which the passed coordinate is relative.
-     * @param root The root view to make the coordinates relative to.
+     * @param ancestor The root view to make the coordinates relative to.
      * @param coord The coordinate that we want mapped.
      * @param includeRootScroll Whether or not to account for the scroll of the descendant:
      *          sometimes this is relevant as in a child's coordinates within the descendant.
@@ -339,18 +339,17 @@ public final class Utilities {
      *         this scale factor is assumed to be equal in X and Y, and so if at any point this
      *         assumption fails, we will need to return a pair of scale factors.
      */
-    public static float getDescendantCoordRelativeToParent(View descendant, View root,
-                                                           int[] coord, boolean includeRootScroll) {
+    public static float getDescendantCoordRelativeToAncestor(
+            View descendant, View ancestor, int[] coord, boolean includeRootScroll) {
         ArrayList<View> ancestorChain = new ArrayList<View>();
 
         float[] pt = {coord[0], coord[1]};
 
         View v = descendant;
-        while(v != root && v != null) {
+        while(v != ancestor && v != null) {
             ancestorChain.add(v);
             v = (View) v.getParent();
         }
-        ancestorChain.add(root);
 
         float scale = 1.0f;
         int count = ancestorChain.size();
@@ -375,7 +374,7 @@ public final class Utilities {
     }
 
     /**
-     * Inverse of {@link #getDescendantCoordRelativeToParent(View, View, int[], boolean)}.
+     * Inverse of {@link #getDescendantCoordRelativeToAncestor(View, View, int[], boolean)}.
      */
     public static float mapCoordInSelfToDescendent(View descendant, View root,
                                                    int[] coord) {
