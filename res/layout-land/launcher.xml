@@ -36,7 +36,8 @@
             android:id="@+id/workspace"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            launcher:pageIndicator="@id/page_indicator" />
 
         <!-- DO NOT CHANGE THE ID -->
         <include layout="@layout/hotseat"
