@@ -23,7 +23,6 @@ import android.content.ComponentName;
 import android.content.ContentProvider;
 import android.content.ContentProviderOperation;
 import android.content.ContentProviderResult;
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -48,15 +47,16 @@ import android.os.Process;
 import android.os.UserManager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.SparseArray;
 
 import com.android.launcher3.AutoInstallsLayout.LayoutParserCallback;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.WorkspaceScreens;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.dynamicui.ExtractionUtils;
+import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.util.ManagedProfileHeuristic;
 import com.android.launcher3.util.NoLocaleSqliteContext;
@@ -66,13 +66,12 @@ import com.android.launcher3.util.Thunk;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 
 public class LauncherProvider extends ContentProvider {
     private static final String TAG = "LauncherProvider";
     private static final boolean LOGD = false;
 
-    private static final int DATABASE_VERSION = 26;
+    private static final int DATABASE_VERSION = 27;
 
     public static final String AUTHORITY = ProviderConfig.AUTHORITY;
 
@@ -780,7 +779,13 @@ public class LauncherProvider extends ContentProvider {
                     ManagedProfileHeuristic.markExistingUsersForNoFolderCreation(mContext);
                 case 25:
                     convertShortcutsToLauncherActivities(db);
-                case 26: {
+                case 26:
+                    // QSB was moved to the grid. Clear the first row on screen 0.
+                    if (FeatureFlags.QSB_ON_FIRST_SCREEN &&
+                            !LauncherDbUtils.prepareScreenZeroToHostQsb(db)) {
+                        break;
+                    }
+                case 27: {
                     // DB Upgraded successfully
                     return;
                 }

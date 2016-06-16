@@ -50,6 +50,7 @@ import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.dynamicui.ExtractionUtils;
 import com.android.launcher3.folder.Folder;
@@ -57,6 +58,7 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.GridSizeMigrationTask;
 import com.android.launcher3.model.WidgetsModel;
+import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.CursorIconInfo;
 import com.android.launcher3.util.FlagOp;
@@ -1246,22 +1248,8 @@ public class LauncherModel extends BroadcastReceiver
         final Uri screensUri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
 
         // Get screens ordered by rank.
-        final Cursor sc = contentResolver.query(screensUri, null, null, null,
-                LauncherSettings.WorkspaceScreens.SCREEN_RANK);
-        ArrayList<Long> screenIds = new ArrayList<Long>();
-        try {
-            final int idIndex = sc.getColumnIndexOrThrow(LauncherSettings.WorkspaceScreens._ID);
-            while (sc.moveToNext()) {
-                try {
-                    screenIds.add(sc.getLong(idIndex));
-                } catch (Exception e) {
-                    FileLog.d(TAG, "Invalid screen id", e);
-                }
-            }
-        } finally {
-            sc.close();
-        }
-        return screenIds;
+        return LauncherDbUtils.getScreenIdsFromCursor(contentResolver.query(
+                screensUri, null, null, null, LauncherSettings.WorkspaceScreens.SCREEN_RANK));
     }
 
     /**
@@ -1522,8 +1510,9 @@ public class LauncherModel extends BroadcastReceiver
             if (!occupied.containsKey(item.screenId)) {
                 GridOccupancy screen = new GridOccupancy(countX + 1, countY + 1);
                 if (item.screenId == Workspace.FIRST_SCREEN_ID) {
-                    // Mark the first row as occupied in order to account for the QSB.
-                    screen.markCells(0, 0, countX + 1, 1, true);
+                    // Mark the first row as occupied (if the feature is enabled)
+                    // in order to account for the QSB.
+                    screen.markCells(0, 0, countX + 1, 1, FeatureFlags.QSB_ON_FIRST_SCREEN);
                 }
                 occupied.put(item.screenId, screen);
             }
