@@ -71,7 +71,8 @@
             android:id="@+id/apps_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            launcher:layout_ignoreInsets="true" />
     </com.android.launcher3.dragndrop.DragLayer>
 
 </com.android.launcher3.LauncherRootView>

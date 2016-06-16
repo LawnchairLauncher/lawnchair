@@ -185,7 +185,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mApps.setAdapter(mAdapter);
         mLayoutManager = mAdapter.getLayoutManager();
         mItemDecoration = mAdapter.getItemDecoration();
-        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
+        DeviceProfile grid = mLauncher.getDeviceProfile();
+        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && !grid.isLandscape) {
             mRecyclerViewTopBottomPadding = 0;
             setPadding(0, 0, 0, 0);
         } else {
@@ -350,7 +351,12 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mAppsRecyclerView.setPremeasuredIconHeights(predIcon.getMeasuredHeight(),
                 icon.getMeasuredHeight());
 
-        updatePaddingsAndMargins();
+        // TODO(hyunyoungs): clean up setting the content and the reveal view.
+        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
+            getContentView().setBackground(null);
+            getRevealView().setVisibility(View.VISIBLE);
+            getRevealView().setAlpha(AllAppsTransitionController.ALL_APPS_FINAL_ALPHA);
+        }
     }
 
     @Override
@@ -358,6 +364,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        updatePaddingsAndMargins();
         mContentBounds.set(mHorizontalPadding, 0,
                 MeasureSpec.getSize(widthMeasureSpec) - mHorizontalPadding,
                 MeasureSpec.getSize(heightMeasureSpec));
@@ -366,6 +373,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         int availableWidth = (!mContentBounds.isEmpty() ? mContentBounds.width() :
                 MeasureSpec.getSize(widthMeasureSpec))
                 - 2 * mAppsRecyclerView.getMaxScrollbarWidth();
+        grid.updateAppsViewNumCols(getResources(), availableWidth);
         if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
             if (mNumAppsPerRow != grid.inv.numColumns ||
                     mNumPredictedAppsPerRow != grid.inv.numColumns) {
@@ -378,6 +386,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                 if (mNumAppsPerRow > 0) {
                     int iconSize = availableWidth / mNumAppsPerRow;
                     int iconSpacing = (iconSize - grid.allAppsIconSizePx) / 2;
+                    mSearchInput.setPaddingRelative(iconSpacing, 0, iconSpacing, 0);
                 }
             }
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -450,23 +459,25 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         lp.leftMargin = bgPadding.left;
         lp.rightMargin = bgPadding.right;
 
+        DeviceProfile grid = mLauncher.getDeviceProfile();
         if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
-            MarginLayoutParams mlp = (MarginLayoutParams) mAppsRecyclerView.getLayoutParams();
+            if (!grid.isLandscape) {
+                MarginLayoutParams mlp = (MarginLayoutParams) mAppsRecyclerView.getLayoutParams();
 
-            int navBarHeight = 84; /* replace with mInset.height() in dragLayer */
-            DeviceProfile grid = mLauncher.getDeviceProfile();
-            int height = navBarHeight + grid.hotseatCellHeightPx;
+                int navBarHeight = mLauncher.getDragLayer().getInsets().top;
+                int height = navBarHeight + grid.hotseatCellHeightPx;
 
-            mlp.topMargin = height;
-            mAppsRecyclerView.setLayoutParams(mlp);
+                mlp.topMargin = height;
+                mAppsRecyclerView.setLayoutParams(mlp);
 
-            LinearLayout.LayoutParams llp =
-                    (LinearLayout.LayoutParams) mSearchInput.getLayoutParams();
-            llp.topMargin = navBarHeight;
-            mSearchInput.setLayoutParams(llp);
+                LinearLayout.LayoutParams llp =
+                        (LinearLayout.LayoutParams) mSearchInput.getLayoutParams();
+                llp.topMargin = navBarHeight;
+                mSearchInput.setLayoutParams(llp);
 
-            lp.height = height;
-            mSearchContainer.setBackground(null);
+                lp.height = height;
+            }
+            mSearchContainer.getBackground().setAlpha(0);
         }
         mSearchContainer.setLayoutParams(lp);
     }

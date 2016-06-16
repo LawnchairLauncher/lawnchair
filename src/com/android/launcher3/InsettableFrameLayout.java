@@ -18,6 +18,10 @@ public class InsettableFrameLayout extends FrameLayout implements
     @ViewDebug.ExportedProperty(category = "launcher")
     protected Rect mInsets = new Rect();
 
+    public Rect getInsets() {
+        return mInsets;
+    }
+
     public InsettableFrameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         setOnHierarchyChangeListener(this);
@@ -33,9 +37,6 @@ public class InsettableFrameLayout extends FrameLayout implements
             lp.leftMargin += (newInsets.left - oldInsets.left);
             lp.rightMargin += (newInsets.right - oldInsets.right);
             lp.bottomMargin += (newInsets.bottom - oldInsets.bottom);
-        }
-        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && child instanceof AllAppsContainerView) {
-            lp.setMargins(0, 0, 0, lp.bottomMargin);
         }
         child.setLayoutParams(lp);
     }

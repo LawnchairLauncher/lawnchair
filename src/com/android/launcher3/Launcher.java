@@ -3447,7 +3447,7 @@ public class Launcher extends Activity
      * Updates the set of predicted apps if it hasn't been updated since the last time Launcher was
      * resumed.
      */
-    private void tryAndUpdatePredictedApps() {
+    public void tryAndUpdatePredictedApps() {
         if (mLauncherCallbacks != null) {
             List<ComponentKey> apps = mLauncherCallbacks.getPredictedApps();
             if (apps != null) {
