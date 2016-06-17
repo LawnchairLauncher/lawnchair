@@ -94,7 +94,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         setContainerWidth();
         setWillNotDraw(false);
         setClipToPadding(false);
-        setAccessibilityDelegate(LauncherAppState.getInstance().getAccessibilityDelegate());
+        setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
     }
 
     private void setContainerWidth() {
