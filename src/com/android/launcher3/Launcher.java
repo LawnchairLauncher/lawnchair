@@ -950,6 +950,10 @@ public class Launcher extends Activity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onStop();
         }
+
+        if (Utilities.isNycMR1OrAbove()) {
+            mAppWidgetHost.stopListening();
+        }
     }
 
     @Override
@@ -959,6 +963,10 @@ public class Launcher extends Activity
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onStart();
+        }
+
+        if (Utilities.isNycMR1OrAbove()) {
+            mAppWidgetHost.startListening();
         }
     }
 
