@@ -37,6 +37,7 @@ import android.util.Patterns;
 
 import com.android.launcher3.LauncherProvider.SqlArguments;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Thunk;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -157,7 +158,7 @@ public class AutoInstallsLayout {
     protected final Resources mSourceRes;
     protected final int mLayoutId;
 
-    private final int mHotseatAllAppsRank;
+    private final InvariantDeviceProfile mIdp;
     private final int mRowCount;
     private final int mColumnCount;
 
@@ -181,10 +182,9 @@ public class AutoInstallsLayout {
         mSourceRes = res;
         mLayoutId = layoutId;
 
-        InvariantDeviceProfile idp = LauncherAppState.getInstance().getInvariantDeviceProfile();
-        mHotseatAllAppsRank = idp.hotseatAllAppsRank;
-        mRowCount = idp.numRows;
-        mColumnCount = idp.numColumns;
+        mIdp = LauncherAppState.getInstance().getInvariantDeviceProfile();
+        mRowCount = mIdp.numRows;
+        mColumnCount = mIdp.numColumns;
     }
 
     /**
@@ -231,7 +231,8 @@ public class AutoInstallsLayout {
             out[0] = Favorites.CONTAINER_HOTSEAT;
             // Hack: hotseat items are stored using screen ids
             long rank = Long.parseLong(getAttributeValue(parser, ATTR_RANK));
-            out[1] = (rank < mHotseatAllAppsRank) ? rank : (rank + 1);
+            out[1] = (FeatureFlags.NO_ALL_APPS_ICON || rank < mIdp.getAllAppsButtonRank())
+                    ? rank : (rank + 1);
         } else {
             out[0] = Favorites.CONTAINER_DESKTOP;
             out[1] = Long.parseLong(getAttributeValue(parser, ATTR_SCREEN));

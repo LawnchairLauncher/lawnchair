@@ -196,7 +196,6 @@ public class LauncherModel extends BroadcastReceiver
         public void bindAppInfosRemoved(ArrayList<AppInfo> appInfos);
         public void notifyWidgetProvidersChanged();
         public void bindWidgetsModel(WidgetsModel model);
-        public boolean isAllAppsButtonRank(int rank);
         public void onPageBoundSynchronously(int page);
         public void executeOnNextDraw(ViewOnDrawExecutor executor);
     }
@@ -1450,8 +1449,8 @@ public class LauncherModel extends BroadcastReceiver
             long containerIndex = item.screenId;
             if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
                 // Return early if we detect that an item is under the hotseat button
-                if (mCallbacks == null ||
-                        mCallbacks.get().isAllAppsButtonRank((int) item.screenId)) {
+                if (!FeatureFlags.NO_ALL_APPS_ICON &&
+                        profile.isAllAppsButtonRank((int) item.screenId)) {
                     Log.e(TAG, "Error loading shortcut into hotseat " + item
                             + " into position (" + item.screenId + ":" + item.cellX + ","
                             + item.cellY + ") occupied by all apps");

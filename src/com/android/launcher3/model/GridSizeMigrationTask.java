@@ -49,7 +49,7 @@ public class GridSizeMigrationTask {
     private static final boolean DEBUG = true;
 
     private static final String KEY_MIGRATION_SRC_WORKSPACE_SIZE = "migration_src_workspace_size";
-    private static final String KEY_MIGRATION_SRC_HOTSEAT_SIZE = "migration_src_hotseat_size";
+    private static final String KEY_MIGRATION_SRC_HOTSEAT_COUNT = "migration_src_hotseat_count";
 
     // Set of entries indicating minimum size a widget can be resized to. This is used during
     // restore in case the widget has not been installed yet.
@@ -78,9 +78,7 @@ public class GridSizeMigrationTask {
     private final boolean mShouldRemoveX, mShouldRemoveY;
 
     private final int mSrcHotseatSize;
-    private final int mSrcAllAppsRank;
     private final int mDestHotseatSize;
-    private final int mDestAllAppsRank;
 
     protected GridSizeMigrationTask(Context context, InvariantDeviceProfile idp,
             HashSet<String> validPackages, HashMap<String, Point> widgetMinSize,
@@ -100,22 +98,19 @@ public class GridSizeMigrationTask {
         mShouldRemoveY = mTrgY < mSrcY;
 
         // Non-used variables
-        mSrcHotseatSize = mSrcAllAppsRank = mDestHotseatSize = mDestAllAppsRank = -1;
+        mSrcHotseatSize = mDestHotseatSize = -1;
     }
 
     protected GridSizeMigrationTask(Context context,
             InvariantDeviceProfile idp, HashSet<String> validPackages,
-            int srcHotseatSize, int srcAllAppsRank,
-            int destHotseatSize, int destAllAppsRank) {
+            int srcHotseatSize, int destHotseatSize) {
         mContext = context;
         mIdp = idp;
         mValidPackages = validPackages;
 
         mSrcHotseatSize = srcHotseatSize;
-        mSrcAllAppsRank = srcAllAppsRank;
 
         mDestHotseatSize = destHotseatSize;
-        mDestAllAppsRank = destAllAppsRank;
 
         // Non-used variables
         mSrcX = mSrcY = mTrgX = mTrgY = -1;
@@ -187,7 +182,7 @@ public class GridSizeMigrationTask {
             }
 
             newScreenId++;
-            if (newScreenId == mDestAllAppsRank) {
+            if (!FeatureFlags.NO_ALL_APPS_ICON && mIdp.isAllAppsButtonRank(newScreenId)) {
                 newScreenId++;
             }
         }
@@ -894,8 +889,7 @@ public class GridSizeMigrationTask {
         Utilities.getPrefs(context).edit()
                 .putString(KEY_MIGRATION_SRC_WORKSPACE_SIZE,
                         getPointString((int) srcProfile.desktopCols, (int) srcProfile.desktopRows))
-                .putString(KEY_MIGRATION_SRC_HOTSEAT_SIZE,
-                        getPointString((int) srcProfile.hotseatCount, srcProfile.allappsRank))
+                .putInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, (int) srcProfile.hotseatCount)
                 .putStringSet(KEY_MIGRATION_WIDGET_MINSIZE, widgets)
                 .apply();
     }
@@ -909,10 +903,9 @@ public class GridSizeMigrationTask {
         InvariantDeviceProfile idp = LauncherAppState.getInstance().getInvariantDeviceProfile();
 
         String gridSizeString = getPointString(idp.numColumns, idp.numRows);
-        String hotseatSizeString = getPointString(idp.numHotseatIcons, idp.hotseatAllAppsRank);
 
         if (gridSizeString.equals(prefs.getString(KEY_MIGRATION_SRC_WORKSPACE_SIZE, "")) &&
-                hotseatSizeString.equals(prefs.getString(KEY_MIGRATION_SRC_HOTSEAT_SIZE, ""))) {
+                idp.numHotseatIcons != prefs.getInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, idp.numHotseatIcons)) {
             // Skip if workspace and hotseat sizes have not changed.
             return true;
         }
@@ -923,17 +916,13 @@ public class GridSizeMigrationTask {
 
             HashSet validPackages = getValidPackages(context);
             // Hotseat
-            Point srcHotseatSize = parsePoint(prefs.getString(
-                    KEY_MIGRATION_SRC_HOTSEAT_SIZE, hotseatSizeString));
-            if (srcHotseatSize.x != idp.numHotseatIcons ||
-                    srcHotseatSize.y != idp.hotseatAllAppsRank) {
+            int srcHotseatCount = prefs.getInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, idp.numHotseatIcons);
+            if (srcHotseatCount != idp.numHotseatIcons) {
                 // Migrate hotseat.
 
                 dbChanged = new GridSizeMigrationTask(context,
                         LauncherAppState.getInstance().getInvariantDeviceProfile(),
-                        validPackages,
-                        srcHotseatSize.x, srcHotseatSize.y,
-                        idp.numHotseatIcons, idp.hotseatAllAppsRank).migrateHotseat();
+                        validPackages, srcHotseatCount, idp.numHotseatIcons).migrateHotseat();
             }
 
             // Grid size
@@ -1014,7 +1003,7 @@ public class GridSizeMigrationTask {
             // Save current configuration, so that the migration does not run again.
             prefs.edit()
                     .putString(KEY_MIGRATION_SRC_WORKSPACE_SIZE, gridSizeString)
-                    .putString(KEY_MIGRATION_SRC_HOTSEAT_SIZE, hotseatSizeString)
+                    .putInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, idp.numHotseatIcons)
                     .remove(KEY_MIGRATION_WIDGET_MINSIZE)
                     .apply();
         }

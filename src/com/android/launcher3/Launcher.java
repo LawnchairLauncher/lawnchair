@@ -1457,13 +1457,14 @@ public class Launcher extends Activity
 
     /**
      * Sets the all apps button. This method is called from {@link Hotseat}.
+     * TODO: Get rid of this.
      */
     public void setAllAppsButton(View allAppsButton) {
         mAllAppsButton = allAppsButton;
     }
 
-    public View getAllAppsButton() {
-        return mAllAppsButton;
+    public View getStartViewForAllAppsRevealAnimation() {
+        return FeatureFlags.NO_ALL_APPS_ICON ? mPageIndicator : mAllAppsButton;
     }
 
     public View getWidgetsButton() {
@@ -2491,7 +2492,7 @@ public class Launcher extends Activity
             if (v instanceof FolderIcon) {
                 onClickFolderIcon(v);
             }
-        } else if (v instanceof PageIndicator || v == mAllAppsButton) {
+        } else if (v instanceof PageIndicator || (v == mAllAppsButton && mAllAppsButton != null)) {
             onClickAllAppsButton(v);
         } else if (tag instanceof AppInfo) {
             startAppShortcutOrInfoActivity(v);
@@ -3096,7 +3097,7 @@ public class Launcher extends Activity
         if (isWorkspaceLocked()) return false;
         if (mState != State.WORKSPACE) return false;
 
-        if (v == mAllAppsButton) {
+        if (v == mAllAppsButton && mAllAppsButton != null) {
             onLongClickAllAppsButton(v);
             return true;
         }
@@ -3127,7 +3128,6 @@ public class Launcher extends Activity
 
         // The hotseat touch handling does not go through Workspace, and we always allow long press
         // on hotseat items.
-        final boolean inHotseat = isHotseatLayout(v);
         if (!mDragController.isDragging()) {
             if (itemUnderLongClick == null) {
                 // User long pressed on empty space
@@ -3138,13 +3138,12 @@ public class Launcher extends Activity
                 } else {
                     showOverviewMode(true);
                     mHotseat.requestDisallowInterceptTouchEvent(true);
-
                 }
             } else {
-                final boolean isAllAppsButton = inHotseat && isAllAppsButtonRank(
-                        mHotseat.getOrderInHotseat(
-                                longClickCellInfo.cellX,
-                                longClickCellInfo.cellY));
+                final boolean isAllAppsButton =
+                        !FeatureFlags.NO_ALL_APPS_ICON && isHotseatLayout(v) &&
+                                mDeviceProfile.inv.isAllAppsButtonRank(mHotseat.getOrderInHotseat(
+                                        longClickCellInfo.cellX, longClickCellInfo.cellY));
                 if (!(itemUnderLongClick instanceof Folder || isAllAppsButton)) {
                     // User long pressed on an item
                     mWorkspace.startDrag(longClickCellInfo);
@@ -3987,13 +3986,6 @@ public class Launcher extends Activity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.finishBindingItems(false);
         }
-    }
-
-    public boolean isAllAppsButtonRank(int rank) {
-        if (mHotseat != null) {
-            return mHotseat.isAllAppsButtonRank(rank);
-        }
-        return false;
     }
 
     private boolean canRunNewAppsAnimation() {
