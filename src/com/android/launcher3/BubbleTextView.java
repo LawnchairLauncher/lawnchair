@@ -143,7 +143,7 @@ public class BubbleTextView extends TextView
             setShadowLayer(SHADOW_LARGE_RADIUS, 0.0f, SHADOW_Y_OFFSET, SHADOW_LARGE_COLOUR);
         }
 
-        setAccessibilityDelegate(LauncherAppState.getInstance().getAccessibilityDelegate());
+        setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
     }
 
     public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache) {

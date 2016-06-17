@@ -312,8 +312,7 @@ public abstract class ButtonDropTarget extends TextView
 
     @Override
     public void onClick(View v) {
-        LauncherAppState.getInstance().getAccessibilityDelegate()
-            .handleAccessibleDrop(this, null, null);
+        mLauncher.getAccessibilityDelegate().handleAccessibleDrop(this, null, null);
     }
 
     public int getTextColor() {

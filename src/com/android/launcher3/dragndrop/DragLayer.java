@@ -339,9 +339,7 @@ public class DragLayer extends InsettableFrameLayout {
     }
 
     private boolean isInAccessibleDrag() {
-        LauncherAccessibilityDelegate delegate = LauncherAppState
-                .getInstance().getAccessibilityDelegate();
-        return delegate != null && delegate.isInAccessibleDrag();
+        return mLauncher.getAccessibilityDelegate().isInAccessibleDrag();
     }
 
     @Override

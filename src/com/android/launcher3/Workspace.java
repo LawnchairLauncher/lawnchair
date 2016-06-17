@@ -601,9 +601,7 @@ public class Workspace extends PagedView
         mScreenOrder.add(insertIndex, screenId);
         addView(newScreen, insertIndex);
 
-        LauncherAccessibilityDelegate delegate =
-                LauncherAppState.getInstance().getAccessibilityDelegate();
-        if (delegate != null && delegate.isInAccessibleDrag()) {
+        if (mLauncher.getAccessibilityDelegate().isInAccessibleDrag()) {
             newScreen.enableAccessibleDrag(true, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG);
         }
 
@@ -918,8 +916,7 @@ public class Workspace extends PagedView
             }
         }
 
-        LauncherAccessibilityDelegate delegate =
-                LauncherAppState.getInstance().getAccessibilityDelegate();
+        boolean isInAccessibleDrag = mLauncher.getAccessibilityDelegate().isInAccessibleDrag();
 
         // We enforce at least one page to add new items to. In the case that we remove the last
         // such screen, we convert the last screen to the empty screen
@@ -936,7 +933,7 @@ public class Workspace extends PagedView
                     pageShift++;
                 }
 
-                if (delegate != null && delegate.isInAccessibleDrag()) {
+                if (isInAccessibleDrag) {
                     cl.enableAccessibleDrag(false, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG);
                 }
 

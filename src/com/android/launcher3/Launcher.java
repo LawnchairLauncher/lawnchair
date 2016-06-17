@@ -92,6 +92,7 @@ import android.widget.Toast;
 
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DefaultAppSearchController;
@@ -286,6 +287,7 @@ public class Launcher extends Activity
     private LauncherModel mModel;
     private IconCache mIconCache;
     private ExtractedColors mExtractedColors;
+    private LauncherAccessibilityDelegate mAccessibilityDelegate;
     @Thunk boolean mUserPresent = true;
     private boolean mVisible = false;
     private boolean mHasFocus = false;
@@ -414,6 +416,7 @@ public class Launcher extends Activity
         mIsSafeModeEnabled = getPackageManager().isSafeMode();
         mModel = app.setLauncher(this);
         mIconCache = app.getIconCache();
+        mAccessibilityDelegate = new LauncherAccessibilityDelegate(this);
 
         mDragController = new DragController(this);
         mAllAppsController = new AllAppsTransitionController(this);
@@ -1997,6 +2000,10 @@ public class Launcher extends Activity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onDestroy();
         }
+    }
+
+    public LauncherAccessibilityDelegate getAccessibilityDelegate() {
+        return mAccessibilityDelegate;
     }
 
     public DragController getDragController() {

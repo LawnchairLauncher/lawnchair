@@ -144,8 +144,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         mPreviewLayoutRule = FeatureFlags.LAUNCHER3_LEGACY_FOLDER_ICON ?
                 new StackFolderIconLayoutRule() :
                 new ClippedFolderIconLayoutRule();
-
-        setAccessibilityDelegate(LauncherAppState.getInstance().getAccessibilityDelegate());
     }
 
     public static FolderIcon fromXml(int resId, Launcher launcher, ViewGroup group,
@@ -183,6 +181,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         folder.setFolderIcon(icon);
         folder.bind(folderInfo);
         icon.setFolder(folder);
+        icon.setAccessibilityDelegate(launcher.getAccessibilityDelegate());
 
         folderInfo.addListener(icon);
 

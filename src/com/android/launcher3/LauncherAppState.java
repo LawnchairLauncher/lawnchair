@@ -16,20 +16,18 @@
 
 package com.android.launcher3;
 
-import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 
-import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.dynamicui.ExtractionUtils;
-import com.android.launcher3.util.ConfigMonitor;
 import com.android.launcher3.logging.FileLog;
+import com.android.launcher3.util.ConfigMonitor;
 import com.android.launcher3.util.TestingUtils;
 import com.android.launcher3.util.Thunk;
 
@@ -50,8 +48,6 @@ public class LauncherAppState {
     private static LauncherAppState INSTANCE;
 
     private InvariantDeviceProfile mInvariantDeviceProfile;
-
-    private LauncherAccessibilityDelegate mAccessibilityDelegate;
 
     public static LauncherAppState getInstance() {
         if (INSTANCE == null) {
@@ -154,13 +150,7 @@ public class LauncherAppState {
     LauncherModel setLauncher(Launcher launcher) {
         sLauncherProvider.get().setLauncherProviderChangeListener(launcher);
         mModel.initialize(launcher);
-        mAccessibilityDelegate = ((launcher != null) && Utilities.ATLEAST_LOLLIPOP) ?
-            new LauncherAccessibilityDelegate(launcher) : null;
         return mModel;
-    }
-
-    public LauncherAccessibilityDelegate getAccessibilityDelegate() {
-        return mAccessibilityDelegate;
     }
 
     public IconCache getIconCache() {
