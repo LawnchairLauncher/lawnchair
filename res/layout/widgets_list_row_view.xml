@@ -19,7 +19,7 @@
     android:id="@+id/widgets_cell_list_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/widgets_cell_color"
+    android:background="?android:attr/colorPrimary"
     android:orientation="vertical"
     android:focusable="true"
     android:descendantFocusability="afterDescendants">

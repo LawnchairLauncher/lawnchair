@@ -53,7 +53,7 @@ public class BaseRecyclerViewFastScrollPopup {
         mRes = res;
         mRv = rv;
         mBgOriginalSize = res.getDimensionPixelSize(R.dimen.container_fastscroll_popup_size);
-        mBg = res.getDrawable(R.drawable.container_fastscroll_popup_bg);
+        mBg = rv.getContext().getDrawable(R.drawable.container_fastscroll_popup_bg);
         mBg.setBounds(0, 0, mBgOriginalSize, mBgOriginalSize);
         mTextPaint = new Paint();
         mTextPaint.setColor(Color.WHITE);

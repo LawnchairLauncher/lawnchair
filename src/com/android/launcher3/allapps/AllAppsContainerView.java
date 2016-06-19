@@ -178,7 +178,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         super(context, attrs, defStyleAttr);
         Resources res = context.getResources();
 
-        mLauncher = (Launcher) context;
+        mLauncher = Launcher.getLauncher(context);
         mSectionNamesMargin = res.getDimensionPixelSize(R.dimen.all_apps_grid_view_start_margin);
         mApps = new AlphabeticalAppsList(context);
         mAdapter = new AllAppsGridAdapter(mLauncher, mApps, this, mLauncher, this);

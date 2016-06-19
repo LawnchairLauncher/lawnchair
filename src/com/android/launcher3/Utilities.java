@@ -30,6 +30,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -838,5 +839,12 @@ public final class Utilities {
         public int getIntrinsicWidth() {
             return getBitmap().getWidth();
         }
+    }
+
+    public static int getColorAccent(Context context) {
+        TypedArray ta = context.obtainStyledAttributes(new int[]{android.R.attr.colorAccent});
+        int colorAccent = ta.getColor(0, 0);
+        ta.recycle();
+        return colorAccent;
     }
 }
