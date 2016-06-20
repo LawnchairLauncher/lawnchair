@@ -4,11 +4,9 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
@@ -39,7 +37,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     private final Interpolator mAccelInterpolator = new AccelerateInterpolator(2f);
     private final Interpolator mDecelInterpolator = new DecelerateInterpolator(1f);
-    private final Interpolator mAccelDecelInterpolator = new AccelerateDecelerateInterpolator();
 
     private static final float ANIMATION_DURATION = 2000;
     public static final float ALL_APPS_FINAL_ALPHA = .8f;
@@ -49,8 +46,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private AllAppsContainerView mAppsView;
     private Workspace mWorkspace;
     private Hotseat mHotseat;
-    private Drawable mHotseatBackground;
-    private float mHotseatAlpha;
+    private float mHotseatBackgroundAlpha;
+
     private float mStatusBarHeight;
 
     private final Launcher mLauncher;
@@ -87,7 +84,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        init();
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             mNoIntercept = false;
             if (mLauncher.getWorkspace().isInOverviewMode() || mLauncher.isWidgetsViewVisible()) {
@@ -138,45 +134,32 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         return mProgressTransY / mTranslation > 1 - RECATCH_REJECTION_FRACTION;
     }
 
-    private void init() {
-        if (mAppsView != null) {
-            return;
-        }
-        mAppsView = mLauncher.getAppsView();
-        mHotseat = mLauncher.getHotseat();
-        mWorkspace = mLauncher.getWorkspace();
-
-        mStatusBarHeight = mLauncher.getDragLayer().getInsets().height();
-        if (mHotseatBackground == null) {
-            mHotseatBackground = mHotseat.getBackground();
-            mHotseatAlpha = mHotseatBackground.getAlpha() / 255f;
-        }
-    }
-
     @Override
     public void onScrollStart(boolean start) {
-        init();
         cancelAnimation();
         mCurrentAnimation = LauncherAnimUtils.createAnimatorSet();
         preparePull(start);
-        mCurY = mAppsView.getTranslationY();
     }
 
     /**
      * @param start {@code true} if start of new drag.
      */
     public void preparePull(boolean start) {
+        // Initialize values that should not change until #onScrollEnd
+        mCurY = mAppsView.getTranslationY();
+        mStatusBarHeight = mLauncher.getDragLayer().getInsets().top;
         mHotseat.setVisibility(View.VISIBLE);
         mHotseat.bringToFront();
         if (start) {
             if (!mLauncher.isAllAppsVisible()) {
                 mLauncher.tryAndUpdatePredictedApps();
-                mHotseat.setBackground(null);
+                mHotseatBackgroundAlpha = mHotseat.getBackground().getAlpha() / 255f;
+                mHotseat.setBackgroundTransparent(true /* transparent */);
                 mAppsView.setVisibility(View.VISIBLE);
                 mAppsView.getContentView().setVisibility(View.VISIBLE);
                 mAppsView.getContentView().setBackground(null);
                 mAppsView.getRevealView().setVisibility(View.VISIBLE);
-                mAppsView.getRevealView().setAlpha(mHotseatAlpha);
+                mAppsView.getRevealView().setAlpha(mHotseatBackgroundAlpha);
 
                 DeviceProfile grid= mLauncher.getDeviceProfile();
                 if (!grid.isLandscape) {
@@ -235,7 +218,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         float alpha = calcAlphaAllApps(progress);
         float workspaceHotseatAlpha = 1 - alpha;
 
-        mAppsView.getRevealView().setAlpha(Math.min(ALL_APPS_FINAL_ALPHA, Math.max(mHotseatAlpha,
+        mAppsView.getRevealView().setAlpha(Math.min(ALL_APPS_FINAL_ALPHA, Math.max(mHotseatBackgroundAlpha,
                 mDecelInterpolator.getInterpolation(alpha))));
         mAppsView.getContentView().setAlpha(alpha);
         mAppsView.setTranslationY(progress);
@@ -292,7 +275,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     public void animateToAllApps(AnimatorSet animationOut, long duration) {
-        if ((mAppsView = mLauncher.getAppsView()) == null || animationOut == null){
+        if (animationOut == null){
             return;
         }
         if (mDetector.isRestingState()) {
@@ -330,7 +313,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     public void animateToWorkspace(AnimatorSet animationOut, long duration) {
-        if ((mAppsView = mLauncher.getAppsView()) == null || animationOut == null){
+        if (animationOut == null){
             return;
         }
         if(mDetector.isRestingState()) {
@@ -382,7 +365,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             return;
         }
         mAppsView.setVisibility(View.INVISIBLE);
-        mHotseat.setBackground(mHotseatBackground);
+        mHotseat.setBackgroundTransparent(false /* transparent */);
         mHotseat.setVisibility(View.VISIBLE);
         setProgress(mTranslation);
         if (!mStateAlreadyChanged) {
@@ -400,5 +383,11 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     private void cleanUpAnimation() {
         mCurrentAnimation = null;
+    }
+
+    public void setupViews(AllAppsContainerView appsView, Hotseat hotseat, Workspace workspace) {
+        mAppsView = appsView;
+        mHotseat = hotseat;
+        mWorkspace = workspace;
     }
 }
