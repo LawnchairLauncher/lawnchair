@@ -164,7 +164,7 @@ class TransitionStates {
         workspaceToAllApps = (oldStateIsNormal && stateIsNormalHidden);
         overviewToWorkspace = (oldStateIsOverview && stateIsNormal);
         overviewToAllApps = (oldStateIsOverview && stateIsOverviewHidden);
-        allAppsToWorkspace = (stateIsNormalHidden && stateIsNormal);
+        allAppsToWorkspace = (oldStateIsNormalHidden && stateIsNormal);
     }
 }
 
