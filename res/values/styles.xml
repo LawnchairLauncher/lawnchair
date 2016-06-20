@@ -30,12 +30,19 @@
 
     <style name="Theme" parent="@style/LauncherTheme"></style>
 
+    <!-- Theme for the widget container. Overridden on API 25. -->
+    <style name="WidgetContainerTheme" parent="@android:style/Theme.DeviceDefault.Settings">
+        <item name="colorSecondary">@color/fallback_secondary_color</item>
+    </style>
+
     <!-- Overscroll effect -->
+    <style name="CustomOverscroll" />
+
     <style name="CustomOverscroll.Light" parent="@android:style/Theme.DeviceDefault.Light">
         <item name="android:colorEdgeEffect">@color/folder_edge_effect_color</item>
     </style>
 
-    <style name="CustomOverscroll.Dark" parent="@android:style/Theme.DeviceDefault">
+    <style name="CustomOverscroll.Dark">
         <item name="android:colorEdgeEffect">@color/workspace_edge_effect_color</item>
     </style>
 

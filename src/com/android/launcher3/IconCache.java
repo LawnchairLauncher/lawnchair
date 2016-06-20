@@ -26,6 +26,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -126,7 +127,9 @@ public class IconCache {
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
 
         mActivityBgColor = context.getResources().getColor(R.color.quantum_panel_bg_color);
-        mPackageBgColor = context.getResources().getColor(R.color.quantum_panel_bg_color_dark);
+        TypedArray ta = context.obtainStyledAttributes(new int[]{R.attr.colorSecondary});
+        mPackageBgColor = ta.getColor(0, 0);
+        ta.recycle();
         mLowResOptions = new BitmapFactory.Options();
         // Always prefer RGB_565 config for low res. If the bitmap has transparency, it will
         // automatically be loaded as ALPHA_8888.

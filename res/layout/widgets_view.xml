@@ -26,7 +26,7 @@
     android:paddingBottom="@dimen/container_bounds_inset"
     android:descendantFocusability="afterDescendants"
     launcher:revealBackground="@drawable/quantum_panel_shape_dark"
-    android:theme="@android:style/Theme.DeviceDefault.Settings">
+    android:theme="@style/WidgetContainerTheme">
 
     <View
         android:id="@+id/reveal_view"

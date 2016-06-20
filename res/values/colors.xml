@@ -34,7 +34,6 @@
 
     <color name="quantum_panel_text_color">#FF666666</color>
     <color name="quantum_panel_bg_color">#FFF5F5F5</color>
-    <color name="quantum_panel_bg_color_dark">#FF374248</color>
 
     <color name="outline_color">#FFFFFFFF</color>
 
@@ -44,4 +43,7 @@
     <!-- Widgets view -->
     <color name="widgets_view_section_text_color">#FFFFFF</color>
     <color name="widgets_view_item_text_color">#C4C4C4</color>
+
+    <!-- Used as a fallback since colorSecondary doesn't exist pre-API 25 -->
+    <color name="fallback_secondary_color">#FF37474F</color>
 </resources>
