@@ -38,6 +38,7 @@ import android.content.ComponentCallbacks2;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -4521,6 +4522,13 @@ public class Launcher extends Activity
         } else {
             return Collections.EMPTY_LIST;
         }
+    }
+
+    public static Launcher getLauncher(Context context) {
+        if (context instanceof Launcher) {
+            return (Launcher) context;
+        }
+        return ((Launcher) ((ContextWrapper) context).getBaseContext());
     }
 
     private class RotationPrefChangeHandler implements OnSharedPreferenceChangeListener, Runnable {

@@ -16,7 +16,7 @@
 -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
        android:shape="rectangle">
-    <solid android:color="@color/container_fastscroll_thumb_active_color" />
+    <solid android:color="?android:attr/colorAccent" />
     <size
         android:width="64dp"
         android:height="64dp" />

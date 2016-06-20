@@ -16,6 +16,7 @@
 package com.android.launcher3.widget;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
@@ -27,7 +28,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -63,13 +63,13 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
     public WidgetsListAdapter(View.OnClickListener iconClickListener,
             View.OnLongClickListener iconLongClickListener,
-            Launcher launcher) {
-        mLayoutInflater = launcher.getLayoutInflater();
+            Context context) {
+        mLayoutInflater = LayoutInflater.from(context);
         mWidgetPreviewLoader = LauncherAppState.getInstance().getWidgetCache();
 
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
-        mIndent = launcher.getResources().getDimensionPixelSize(R.dimen.widget_section_indent);
+        mIndent = context.getResources().getDimensionPixelSize(R.dimen.widget_section_indent);
     }
 
     public void setWidgetsModel(WidgetsModel w) {
