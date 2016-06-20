@@ -150,7 +150,6 @@ public class Launcher extends Activity
     static final boolean DEBUG_WIDGETS = false;
     static final boolean DEBUG_STRICT_MODE = false;
     static final boolean DEBUG_RESUME_TIME = false;
-    static final boolean DEBUG_LOGGING = false;
 
     private static final int REQUEST_CREATE_SHORTCUT = 1;
     private static final int REQUEST_CREATE_APPWIDGET = 5;
@@ -628,29 +627,6 @@ public class Launcher extends Activity
         }
     }
 
-    /**
-     * Logger object is a singleton and does not have to be coupled with the foreground activity.
-     * Since most user event logging is done on the UI, the object is retrieved from the
-     * callback for convenience.
-     */
-    private UserEventDispatcher createUserEventDispatcher() {
-        return new UserEventDispatcher() {
-            @Override
-            public void dispatchUserEvent(LauncherLogProto.LauncherEvent ev, Intent intent) {
-                if (!DEBUG_LOGGING) {
-                    return;
-                }
-                Log.d("UserEvent", String.format(Locale.US,
-                        "action:%s\nchild:%s\nparent:%s\nelapsed container %d ms session %d ms",
-                        LoggerUtils.getActionStr(ev.action),
-                        LoggerUtils.getTargetStr(ev.srcTarget[0]),
-                        LoggerUtils.getTargetStr(ev.srcTarget[1]),
-                        ev.elapsedContainerMillis,
-                        ev.elapsedSessionMillis));
-            }
-        };
-    }
-
     public UserEventDispatcher getUserEventDispatcher() {
         if (mLauncherCallbacks != null) {
             UserEventDispatcher dispatcher = mLauncherCallbacks.getUserEventDispatcher();
@@ -659,8 +635,11 @@ public class Launcher extends Activity
             }
         }
 
+        // Logger object is a singleton and does not have to be coupled with the foreground
+        // activity. Since most user event logging is done on the UI, the object is retrieved
+        // from the callback for convenience.
         if (mUserEventDispatcher == null) {
-            mUserEventDispatcher = createUserEventDispatcher();
+            mUserEventDispatcher = new UserEventDispatcher();
         }
         return mUserEventDispatcher;
     }

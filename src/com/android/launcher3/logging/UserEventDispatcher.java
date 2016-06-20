@@ -18,6 +18,7 @@ package com.android.launcher3.logging;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewParent;
 
@@ -28,11 +29,14 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ComponentKey;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Manages the creation of {@link LauncherEvent}.
  */
-public abstract class UserEventDispatcher {
+public class UserEventDispatcher {
+
+    private static final boolean DEBUG_LOGGING = false;
 
     private final static int MAXIMUM_VIEW_HIERARCHY_LEVEL = 5;
     /**
@@ -155,7 +159,17 @@ public abstract class UserEventDispatcher {
         mActionDurationMillis = System.currentTimeMillis();
     }
 
-    public abstract void dispatchUserEvent(LauncherEvent ev, Intent intent);
+    public void dispatchUserEvent(LauncherEvent ev, Intent intent) {
+        if (DEBUG_LOGGING) {
+            Log.d("UserEvent", String.format(Locale.US,
+                    "action:%s\nchild:%s\nparent:%s\nelapsed container %d ms session %d ms",
+                    LoggerUtils.getActionStr(ev.action),
+                    LoggerUtils.getTargetStr(ev.srcTarget[0]),
+                    LoggerUtils.getTargetStr(ev.srcTarget[1]),
+                    ev.elapsedContainerMillis,
+                    ev.elapsedSessionMillis));
+        }
+    }
 
     public int getPredictedRank(ComponentKey key) {
         if (mPredictedApps == null) return -1;
