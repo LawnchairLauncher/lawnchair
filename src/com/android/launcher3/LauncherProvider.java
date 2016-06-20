@@ -44,6 +44,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
+import android.os.Trace;
 import android.os.UserManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -86,6 +87,9 @@ public class LauncherProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
+        if (ProviderConfig.IS_DOGFOOD_BUILD) {
+            Log.d(TAG, "Launcher process started");
+        }
         mListenerHandler = new Handler(mListenerWrapper);
 
         LauncherAppState.setLauncherProvider(this);
@@ -115,6 +119,9 @@ public class LauncherProvider extends ContentProvider {
      */
     protected synchronized void createDbIfNotExists() {
         if (mOpenHelper == null) {
+            if (LauncherAppState.PROFILE_STARTUP) {
+                Trace.beginSection("Opening workspace DB");
+            }
             mOpenHelper = new DatabaseHelper(getContext(), mListenerHandler);
 
             if (RestoreDbTask.isPending(getContext())) {
@@ -124,6 +131,10 @@ public class LauncherProvider extends ContentProvider {
                 // Set is pending to false irrespective of the result, so that it doesn't get
                 // executed again.
                 RestoreDbTask.setPending(getContext(), false);
+            }
+
+            if (LauncherAppState.PROFILE_STARTUP) {
+                Trace.endSection();
             }
         }
     }
