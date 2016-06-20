@@ -378,7 +378,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         mSectionTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mSectionTextPaint.setTextSize(res.getDimensionPixelSize(
                 R.dimen.all_apps_grid_section_text_size));
-        mSectionTextPaint.setColor(res.getColor(R.color.all_apps_grid_section_text_color));
+        mSectionTextPaint.setColor(Utilities.getColorAccent(launcher));
 
         mPredictedAppsDividerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPredictedAppsDividerPaint.setStrokeWidth(Utilities.pxFromDp(1f, res.getDisplayMetrics()));

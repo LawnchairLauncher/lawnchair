@@ -50,10 +50,10 @@ public abstract class BaseContainerView extends FrameLayout {
     public BaseContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        int width = ((Launcher) context).getDeviceProfile().availableWidthPx;
+        Launcher launcher = Launcher.getLauncher(context);
+        int width = launcher.getDeviceProfile().availableWidthPx;
         if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP &&
-                this instanceof AllAppsContainerView &&
-                !((Launcher) context).getDeviceProfile().isLandscape) {
+                this instanceof AllAppsContainerView && launcher.getDeviceProfile().isLandscape) {
             mHorizontalPadding = 0;
         } else {
             mHorizontalPadding = DeviceProfile.getContainerPadding(context, width);

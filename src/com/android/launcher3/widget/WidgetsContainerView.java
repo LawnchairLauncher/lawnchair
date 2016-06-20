@@ -82,9 +82,9 @@ public class WidgetsContainerView extends BaseContainerView
 
     public WidgetsContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mLauncher = (Launcher) context;
+        mLauncher = Launcher.getLauncher(context);
         mDragController = mLauncher.getDragController();
-        mAdapter = new WidgetsListAdapter(this, this, mLauncher);
+        mAdapter = new WidgetsListAdapter(this, this, context);
         mIconCache = (LauncherAppState.getInstance()).getIconCache();
         if (LOGD) {
             Log.d(TAG, "WidgetsContainerView constructor");

@@ -123,7 +123,7 @@ public class PageIndicatorDots extends PageIndicator {
         mDotRadius = getResources().getDimension(R.dimen.page_indicator_dot_size) / 2;
         setOutlineProvider(new MyOutlineProver());
 
-        mActiveColor = getResources().getColor(R.color.launcher_accent_color);
+        mActiveColor = Utilities.getColorAccent(context);
         mInActiveColor = getResources().getColor(R.color.page_indicator_dot_color);
 
         mIsRtl = Utilities.isRtl(getResources());

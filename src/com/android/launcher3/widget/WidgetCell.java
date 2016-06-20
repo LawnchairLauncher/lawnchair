@@ -88,7 +88,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         super(context, attrs, defStyle);
 
         final Resources r = context.getResources();
-        mLauncher = (Launcher) context;
+        mLauncher = Launcher.getLauncher(context);
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
 
         setContainerWidth();

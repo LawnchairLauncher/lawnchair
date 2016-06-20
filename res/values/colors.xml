@@ -22,7 +22,6 @@
          over the delete target or the info target -->
     <color name="delete_target_hover_tint">#FFC1C1C1</color>
     <color name="uninstall_target_hover_tint">#FFF0592B</color>
-    <color name="info_target_hover_tint">#FF009688</color>
     <color name="cling_scrim_background">#80000000</color>
 
     <color name="focused_background">#80c6c5c5</color>
@@ -38,20 +37,11 @@
     <color name="quantum_panel_bg_color_dark">#FF374248</color>
 
     <color name="outline_color">#FFFFFFFF</color>
-    <color name="launcher_accent_color">#ff009688</color>
 
     <color name="spring_loaded_panel_color">#40FFFFFF</color>
     <color name="spring_loaded_highlighted_panel_border_color">#FFF</color>
 
-    <!-- Containers -->
-    <color name="container_fastscroll_thumb_inactive_color">#009688</color>
-    <color name="container_fastscroll_thumb_active_color">#009688</color>
-
-    <!-- All Apps -->
-    <color name="all_apps_grid_section_text_color">#009688</color>
-
     <!-- Widgets view -->
     <color name="widgets_view_section_text_color">#FFFFFF</color>
     <color name="widgets_view_item_text_color">#C4C4C4</color>
-    <color name="widgets_cell_color">#263238</color>
 </resources>
