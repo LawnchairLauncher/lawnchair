@@ -20,6 +20,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.Workspace.Direction;
 import com.android.launcher3.util.TouchController;
 
 /**
@@ -239,10 +240,10 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                 mDecelInterpolator.getInterpolation(alpha))));
         mAppsView.getContentView().setAlpha(alpha);
         mAppsView.setTranslationY(progress);
-        mWorkspace.setWorkspaceTranslation(View.TRANSLATION_Y,
+        mWorkspace.setWorkspaceTranslation(Direction.Y,
                 PARALLAX_COEFFICIENT *(-mTranslation + progress),
                 mAccelInterpolator.getInterpolation(workspaceHotseatAlpha));
-        mWorkspace.setHotseatTranslation(View.TRANSLATION_Y, -mTranslation + progress,
+        mWorkspace.setHotseatTranslation(Direction.Y, -mTranslation + progress,
                 mAccelInterpolator.getInterpolation(workspaceHotseatAlpha));
     }
 
