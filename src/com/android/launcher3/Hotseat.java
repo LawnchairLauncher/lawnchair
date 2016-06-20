@@ -218,4 +218,13 @@ public class Hotseat extends FrameLayout
             mBackgroundColor = color;
         }
     }
+
+    public void setBackgroundTransparent(boolean enable) {
+        // This causes re-layout. Should replace the logic with simply setting the background alpha
+        if (enable) {
+            setBackground(null);
+        } else {
+            setBackground(mBackground);
+        }
+    }
 }
