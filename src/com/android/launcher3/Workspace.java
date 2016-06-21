@@ -199,6 +199,21 @@ public class Workspace extends PagedView
         }
     }
 
+    // Direction used for moving the workspace and hotseat UI
+    public enum Direction {
+        X  (TRANSLATION_X),
+        Y  (TRANSLATION_Y);
+
+        private final Property<View, Float> viewProperty;
+
+        Direction(Property<View, Float> viewProperty) {
+            this.viewProperty = viewProperty;
+        }
+    }
+
+    private float[] mPageAlpha = new float[] {1, 1};
+    private float[] mHotseatAlpha = new float[] {1, 1};
+
     @ViewDebug.ExportedProperty(category = "launcher")
     private State mState = State.NORMAL;
     private boolean mIsSwitchingState = false;
@@ -1388,50 +1403,56 @@ public class Workspace extends PagedView
         // TODO(adamcohen): figure out a final effect here. We may need to recommend
         // different effects based on device performance. On at least one relatively high-end
         // device I've tried, translating the launcher causes things to get quite laggy.
-        setWorkspaceTranslation(TRANSLATION_X, transX, alpha);
-        setHotseatTranslation(TRANSLATION_X, transX, alpha);
+        setWorkspaceTranslation(Direction.X, transX, alpha);
+        setHotseatTranslation(Direction.X, transX, alpha);
     }
 
     /**
      * Moves the workspace UI in the provided direction.
-     * @param direction either {@link #TRANSLATION_X} or {@link #TRANSLATION_Y}
-     * @param translation the amound of shift.
+     * @param direction the direction to move the workspace
+     * @param translation the amount of shift.
      * @param alpha the alpha for the workspace page
      */
-    public void setWorkspaceTranslation(
-            Property<View, Float> direction, float translation, float alpha) {
+    public void setWorkspaceTranslation(Direction direction, float translation, float alpha) {
+        Property<View, Float> property = direction.viewProperty;
+        mPageAlpha[direction.ordinal()] = alpha;
+        float finalAlpha = mPageAlpha[0] * mPageAlpha[1];
+
         View currentChild = getChildAt(getCurrentPage());
         if (currentChild != null) {
-            direction.set(currentChild, translation);
-            currentChild.setAlpha(alpha);
+            property.set(currentChild, translation);
+            currentChild.setAlpha(finalAlpha);
         }
 
         // When the animation finishes, reset all pages, just in case we missed a page.
         if (Float.compare(translation, 0) == 0) {
             for (int i = getChildCount() - 1; i >= 0; i--) {
                 View child = getChildAt(i);
-                direction.set(child, translation);
-                child.setAlpha(alpha);
+                property.set(child, translation);
+                child.setAlpha(finalAlpha);
             }
         }
     }
 
     /**
      * Moves the Hotseat UI in the provided direction.
-     * @param direction either {@link #TRANSLATION_X} or {@link #TRANSLATION_Y}
+     * @param direction the direction to move the workspace
      * @param translation the amound of shift.
      * @param alpha the alpha for the hotseat page
      */
-    public void setHotseatTranslation(
-            Property<View, Float> direction, float translation, float alpha) {
+    public void setHotseatTranslation(Direction direction, float translation, float alpha) {
+        Property<View, Float> property = direction.viewProperty;
+        mHotseatAlpha[direction.ordinal()] = alpha;
+        float finalAlpha = mHotseatAlpha[0] * mHotseatAlpha[1];
+
         View pageIndicator = getPageIndicator();
         if (pageIndicator != null) {
-            direction.set(pageIndicator, translation);
-            pageIndicator.setAlpha(alpha);
+            property.set(pageIndicator, translation);
+            pageIndicator.setAlpha(finalAlpha);
         }
 
-        direction.set(mLauncher.getHotseat(), translation);
-        mLauncher.getHotseat().setAlpha(alpha);
+        property.set(mLauncher.getHotseat(), translation);
+        mLauncher.getHotseat().setAlpha(finalAlpha);
     }
 
     @Override
