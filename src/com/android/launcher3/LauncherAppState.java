@@ -25,6 +25,7 @@ import android.util.Log;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.dynamicui.ExtractionUtils;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.util.ConfigMonitor;
@@ -34,6 +35,8 @@ import com.android.launcher3.util.Thunk;
 import java.lang.ref.WeakReference;
 
 public class LauncherAppState {
+
+    public static final boolean PROFILE_STARTUP = ProviderConfig.IS_DOGFOOD_BUILD;
 
     private final AppFilter mAppFilter;
     @Thunk final LauncherModel mModel;
