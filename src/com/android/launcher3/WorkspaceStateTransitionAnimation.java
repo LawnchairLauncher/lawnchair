@@ -30,6 +30,7 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.DecelerateInterpolator;
 
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.Thunk;
 
@@ -43,6 +44,7 @@ class AlphaUpdateListener extends AnimatorListenerAdapter implements ValueAnimat
 
     private View mView;
     private boolean mAccessibilityEnabled;
+    private boolean mCanceled = false;
 
     public AlphaUpdateListener(View v, boolean accessibilityEnabled) {
         mView = v;
@@ -67,7 +69,13 @@ class AlphaUpdateListener extends AnimatorListenerAdapter implements ValueAnimat
     }
 
     @Override
+    public void onAnimationCancel(Animator animation) {
+        mCanceled = true;
+    }
+
+    @Override
     public void onAnimationEnd(Animator arg0) {
+        if (mCanceled) return;
         updateVisibility(mView, mAccessibilityEnabled);
     }
 
@@ -322,8 +330,10 @@ public class WorkspaceStateTransitionAnimation {
             boolean isCurrentPage = (i == toPage);
             float initialAlpha = cl.getShortcutsAndWidgets().getAlpha();
             float finalAlpha;
-            if (states.stateIsNormalHidden || states.stateIsOverviewHidden) {
+            if (states.stateIsOverviewHidden) {
                 finalAlpha = 0f;
+            } else if(states.stateIsNormalHidden) {
+                finalAlpha = FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP  ? 1 : 0;
             } else if (states.stateIsNormal && mWorkspaceFadeInAdjacentScreens) {
                 finalAlpha = (i == toPage || i < customPageCount) ? 1f : 0f;
             } else {
@@ -447,10 +457,16 @@ public class WorkspaceStateTransitionAnimation {
             mStateAnimator.play(hotseatAlpha);
             mStateAnimator.play(pageIndicatorAlpha);
             mStateAnimator.addListener(new AnimatorListenerAdapter() {
+                boolean canceled = false;
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    canceled = true;
+                }
+
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mStateAnimator = null;
-
+                    if (canceled) return;
                     if (accessibilityEnabled && overviewPanel.getVisibility() == View.VISIBLE) {
                         overviewPanel.getChildAt(0).performAccessibilityAction(
                                 AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS, null);

@@ -88,6 +88,7 @@
     <dimen name="all_apps_search_bar_bg_overflow">-6dp</dimen>
     <dimen name="all_apps_search_bar_divider_width">1dp</dimen>
 
+    <dimen name="all_apps_bezel_swipe_height">24dp</dimen>
 <!-- Widget tray -->
     <dimen name="widget_preview_label_vertical_padding">8dp</dimen>
     <dimen name="widget_preview_label_horizontal_padding">8dp</dimen>
