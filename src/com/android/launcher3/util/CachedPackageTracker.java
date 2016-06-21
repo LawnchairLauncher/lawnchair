@@ -170,7 +170,7 @@ public abstract class CachedPackageTracker implements OnAppsChangedCallbackCompa
      */
     protected abstract void onLauncherPackageRemoved(String packageName, UserHandleCompat user);
 
-    protected static class LauncherActivityInstallInfo
+    public static class LauncherActivityInstallInfo
             implements Comparable<LauncherActivityInstallInfo> {
         public final LauncherActivityInfoCompat info;
         public final long installTime;
