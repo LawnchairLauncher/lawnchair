@@ -181,7 +181,7 @@ public class BitmapCropTask extends AsyncTask<Integer, Void, Boolean> {
                 failure = true;
             }
             return !failure;
-        } else if (mSetWallpaper && Utilities.isNycOrAbove()
+        } else if (mSetWallpaper && Utilities.ATLEAST_N
                 && mRotation == 0 && mOutWidth > 0 && mOutHeight > 0) {
             Rect hint = new Rect();
             mCropBounds.roundOut(hint);
@@ -404,7 +404,7 @@ public class BitmapCropTask extends AsyncTask<Integer, Void, Boolean> {
 
     @Override
     protected Boolean doInBackground(Integer... params) {
-        return cropBitmap(params.length == 0 ? NycWallpaperUtils.FLAG_SET_SYSTEM : params[0]);
+        return cropBitmap(params.length == 0 ? WallpaperManager.FLAG_SYSTEM : params[0]);
     }
 
     @Override
@@ -418,7 +418,7 @@ public class BitmapCropTask extends AsyncTask<Integer, Void, Boolean> {
     }
 
     private void setWallpaper(InputStream in, Rect crop, int whichWallpaper) throws IOException {
-        if (!Utilities.isNycOrAbove()) {
+        if (!Utilities.ATLEAST_N) {
             WallpaperManager.getInstance(mContext.getApplicationContext()).setStream(in);
         } else {
             NycWallpaperUtils.setStream(mContext, in, crop, true, whichWallpaper);

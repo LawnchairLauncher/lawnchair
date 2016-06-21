@@ -118,7 +118,9 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
                     info.addAction(mActions.get(RESIZE));
                 }
             }
-        } if ((item instanceof AppInfo) || (item instanceof PendingAddItemInfo)) {
+        }
+
+        if ((item instanceof AppInfo) || (item instanceof PendingAddItemInfo)) {
             info.addAction(mActions.get(ADD_TO_WORKSPACE));
         }
     }

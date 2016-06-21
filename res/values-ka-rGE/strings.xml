@@ -37,7 +37,7 @@
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"რჩეულების თაროზე ადგილი არ არის"</string>
     <string name="all_apps_button_label" msgid="9110807029020582876">"აპები"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"მთავარი"</string>
-    <string name="delete_target_label" msgid="1822697352535677073">"წაშლა"</string>
+    <string name="delete_target_label" msgid="1822697352535677073">"მოშორება"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"დეინსტალაცია"</string>
     <string name="info_target_label" msgid="8053346143994679532">"აპის შესახებ"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"მალსახმობების დაყენება"</string>
@@ -59,7 +59,7 @@
     <string name="migration_cling_description" msgid="2752413805582227644">"გსურთ, ძველი მთავარი ეკრანიდან ხატულების და საქაღ. იმპორტი?"</string>
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"ხატულების კოპირება"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"სტანდარტული განლაგება"</string>
-    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"ფონები, ვიჯეტები, &amp; პარამეტრები"</string>
+    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"ფონები, ვიჯეტები &amp; პარამეტრები"</string>
     <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"მოსარგებად შეეხეთ &amp; დააყოვნეთ ფონზე"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"გასაგებია"</string>
     <string name="folder_opened" msgid="94695026776264709">"საქაღალდე გახსნილია, <xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
