@@ -855,7 +855,7 @@ public class Launcher extends Activity
             sPendingAddItem = null;
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startActivity(v, intent, null);
+                startActivitySafely(v, intent, null);
             } else {
                 // TODO: Show a snack bar with link to settings
                 Toast.makeText(this, getString(R.string.msg_no_phone_permission,
@@ -2967,8 +2967,18 @@ public class Launcher extends Activity
             }
 
             if (user == null || user.equals(UserHandleCompat.myUserHandle())) {
-                // Could be launching some bookkeeping activity
-                startActivity(intent, optsBundle);
+                StrictMode.VmPolicy oldPolicy = StrictMode.getVmPolicy();
+                try {
+                    // Temporarily disable deathPenalty on all default checks. For eg, shortcuts
+                    // containing file Uris would cause a crash as penaltyDeathOnFileUriExposure
+                    // is enabled by default on NYC.
+                    StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll()
+                            .penaltyLog().build());
+                    // Could be launching some bookkeeping activity
+                    startActivity(intent, optsBundle);
+                } finally {
+                    StrictMode.setVmPolicy(oldPolicy);
+                }
             } else {
                 // TODO Component can be null when shortcuts are supported for secondary user
                 launcherApps.startActivityForProfile(intent.getComponent(), user,
@@ -4434,7 +4444,7 @@ public class Launcher extends Activity
 
     @Override
     public void notifyWidgetProvidersChanged() {
-        if (mWorkspace.getState().shouldUpdateWidget) {
+        if (mWorkspace != null && mWorkspace.getState().shouldUpdateWidget) {
             mModel.refreshAndBindWidgetsAndShortcuts(this, mWidgetsView.isEmpty());
         }
     }

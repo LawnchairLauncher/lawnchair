@@ -35,10 +35,7 @@
     <string name="pick_image" msgid="3189640419551368385">"Мої фото"</string>
     <string name="pick_wallpaper" msgid="4628969645948454559">"Фонові малюнки"</string>
     <string name="crop_wallpaper" msgid="4882870800623585836">"Обрізати фоновий малюнок"</string>
-    <!-- no translation found for which_wallpaper_option_home_screen (5259213374485080595) -->
-    <skip />
-    <!-- no translation found for which_wallpaper_option_lock_screen (5474588303389139825) -->
-    <skip />
-    <!-- no translation found for which_wallpaper_option_home_screen_and_lock_screen (7652312651094808607) -->
-    <skip />
+    <string name="which_wallpaper_option_home_screen" msgid="5259213374485080595">"Головний екран"</string>
+    <string name="which_wallpaper_option_lock_screen" msgid="5474588303389139825">"Заблокований екран"</string>
+    <string name="which_wallpaper_option_home_screen_and_lock_screen" msgid="7652312651094808607">"Головний екран і заблокований екран"</string>
 </resources>

@@ -60,7 +60,7 @@
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"আইকনগুলি কপি করুন"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"নতুন করে শুরু করুন"</string>
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"ওয়ালপেপার, উইজেট এবং সেটিংস"</string>
-    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"কাস্টমাইজ করার জন্য পটভূমি স্পর্শ করে ধরে থাকুন"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"নিজের পছন্দমত সাজানোর জন্য পটভূমি স্পর্শ করে ধরে থাকুন"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"বুঝেছি"</string>
     <string name="folder_opened" msgid="94695026776264709">"ফোল্ডার খোলা হয়েছে, <xliff:g id="WIDTH">%1$d</xliff:g> বাই <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1884479294466410023">"ফোল্ডার বন্ধ করতে স্পর্শ করুন"</string>

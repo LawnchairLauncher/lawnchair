@@ -39,7 +39,7 @@ import java.util.Locale;
  */
 public class GridSizeMigrationTask {
 
-    public static boolean ENABLED = Utilities.isNycOrAbove();
+    public static boolean ENABLED = Utilities.ATLEAST_N;
 
     private static final String TAG = "GridSizeMigrationTask";
     private static final boolean DEBUG = true;
