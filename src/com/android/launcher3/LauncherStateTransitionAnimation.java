@@ -420,7 +420,7 @@ public class LauncherStateTransitionAnimation {
                       pCb.onTransitionComplete();
                   }
             });
-            mAllAppsController.animateToAllApps(animation, revealDuration);
+            mAllAppsController.animateToAllApps(animation, revealDuration, false);
 
             dispatchOnLauncherTransitionPrepare(fromView, animated, false);
             dispatchOnLauncherTransitionPrepare(toView, animated, false);
@@ -861,37 +861,31 @@ public class LauncherStateTransitionAnimation {
             return animation;
         } else if (animType == PULLUP) {
             animation.addListener(new AnimatorListenerAdapter() {
+                boolean canceled = false;
                 @Override
-                public void onAnimationEnd(Animator animation) {
-                    dispatchOnLauncherTransitionEnd(fromView, animated, false);
-                    dispatchOnLauncherTransitionEnd(toView, animated, false);
-                    cleanupAnimation();
-                    pCb.onTransitionComplete();
+                public void onAnimationCancel(Animator animation) {
+                    canceled = true;
                 }
 
-            });
-            mAllAppsController.animateToWorkspace(animation, revealDuration);
-
-            // Dispatch the prepare transition signal
-            dispatchOnLauncherTransitionPrepare(fromView, animated, false);
-            dispatchOnLauncherTransitionPrepare(toView, animated, false);
-
-            animation.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    dispatchOnLauncherTransitionEnd(fromView, animated, true);
-                    dispatchOnLauncherTransitionEnd(toView, animated, true);
-
+                    if (canceled) return;
+                    dispatchOnLauncherTransitionEnd(fromView, animated, false);
+                    dispatchOnLauncherTransitionEnd(toView, animated, false);
                     // Run any queued runnables
                     if (onCompleteRunnable != null) {
                         onCompleteRunnable.run();
                     }
-
-                    // This can hold unnecessary references to views.
                     cleanupAnimation();
                     pCb.onTransitionComplete();
                 }
+
             });
+            mAllAppsController.animateToWorkspace(animation, revealDuration, false);
+
+            // Dispatch the prepare transition signal
+            dispatchOnLauncherTransitionPrepare(fromView, animated, false);
+            dispatchOnLauncherTransitionPrepare(toView, animated, false);
 
             final AnimatorSet stateAnimation = animation;
             final Runnable startAnimRunnable = new Runnable() {
