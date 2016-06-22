@@ -1447,7 +1447,7 @@ public class Launcher extends Activity
     }
 
     public View getStartViewForAllAppsRevealAnimation() {
-        return FeatureFlags.NO_ALL_APPS_ICON ? mPageIndicator : mAllAppsButton;
+        return FeatureFlags.NO_ALL_APPS_ICON ? mWorkspace.getPageIndicator() : mAllAppsButton;
     }
 
     public View getWidgetsButton() {
