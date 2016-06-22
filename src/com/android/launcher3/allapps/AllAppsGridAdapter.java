@@ -44,6 +44,7 @@ import android.widget.TextView;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 
@@ -123,14 +124,16 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             if (viewType == ICON_VIEW_TYPE || viewType == PREDICTION_ICON_VIEW_TYPE) {
                 super.onInitializeAccessibilityNodeInfoForItem(recycler, state, host, info);
                 CollectionItemInfoCompat itemInfo = info.getCollectionItemInfo();
-                final CollectionItemInfoCompat dstItemInfo = CollectionItemInfoCompat.obtain(
-                        itemInfo.getRowIndex() - getEmptyRowForAccessibility(viewType),
-                        itemInfo.getRowSpan(),
-                        itemInfo.getColumnIndex(),
-                        itemInfo.getColumnSpan(),
-                        itemInfo.isHeading(),
-                        itemInfo.isSelected());
-                info.setCollectionItemInfo(dstItemInfo);
+                if (itemInfo != null) {
+                    final CollectionItemInfoCompat dstItemInfo = CollectionItemInfoCompat.obtain(
+                            itemInfo.getRowIndex() - getEmptyRowForAccessibility(viewType),
+                            itemInfo.getRowSpan(),
+                            itemInfo.getColumnIndex(),
+                            itemInfo.getColumnSpan(),
+                            itemInfo.isHeading(),
+                            itemInfo.isSelected());
+                    info.setCollectionItemInfo(dstItemInfo);
+                }
             }
         }
 
@@ -562,12 +565,16 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 AppInfo info = mApps.getAdapterItems().get(position).appInfo;
                 BubbleTextView icon = (BubbleTextView) holder.mContent;
                 icon.applyFromApplicationInfo(info);
+                icon.setAccessibilityDelegate(
+                        LauncherAppState.getInstance().getAccessibilityDelegate());
                 break;
             }
             case PREDICTION_ICON_VIEW_TYPE: {
                 AppInfo info = mApps.getAdapterItems().get(position).appInfo;
                 BubbleTextView icon = (BubbleTextView) holder.mContent;
                 icon.applyFromApplicationInfo(info);
+                icon.setAccessibilityDelegate(
+                        LauncherAppState.getInstance().getAccessibilityDelegate());
                 break;
             }
             case EMPTY_SEARCH_VIEW_TYPE:

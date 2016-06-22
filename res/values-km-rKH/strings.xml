@@ -60,7 +60,7 @@
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"រូប​តំណាង​ច្បាប់​ចម្លង"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"ចាប់ផ្ដើម​ធ្វើ​ឲ្យ​ស្រស់"</string>
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"ផ្ទាំងរូបភាព,ធាតុក្រាហ្វិក &amp; ការកំណត់"</string>
-    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"ប៉ះ &amp; សង្កត់​ផ្ទៃ​ខាង​ក្រោយ​ដើម្បី​ប្ដូរ​តាម​​តម្រូវ​ការ"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"ប៉ះ &amp; សង្កត់​ផ្ទៃ​ខាង​ក្រោយ​ឲ្យជាប់ ដើម្បី​ប្ដូរ​តាមបំណង"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"យល់​ហើយ"</string>
     <string name="folder_opened" msgid="94695026776264709">"បាន​បើក​ថត <xliff:g id="WIDTH">%1$d</xliff:g> ដោយ <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1884479294466410023">"ប៉ះ ដើម្បី​បិទ​ថត"</string>
