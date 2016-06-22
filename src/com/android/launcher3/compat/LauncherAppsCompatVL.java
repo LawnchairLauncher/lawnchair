@@ -22,10 +22,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
+import android.content.pm.ShortcutInfo;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.UserHandle;
+
+import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-public class LauncherAppsCompatVL extends LauncherAppsCompat {
+public class LauncherAppsCompatVL extends LauncherAppsCompatV16 {
 
     protected LauncherApps mLauncherApps;
 
@@ -42,7 +45,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
             = new HashMap<OnAppsChangedCallbackCompat, WrappedCallback>();
 
     LauncherAppsCompatVL(Context context) {
-        super();
+        super(context);
         mLauncherApps = (LauncherApps) context.getSystemService("launcherapps");
     }
 
@@ -145,6 +148,18 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
 
         public void onPackagesUnsuspended(String[] packageNames, UserHandle user) {
             mCallback.onPackagesUnsuspended(packageNames, UserHandleCompat.fromUser(user));
+        }
+
+        @Override
+        public void onShortcutsChanged(String packageName, List<ShortcutInfo> shortcuts,
+                UserHandle user) {
+            List<ShortcutInfoCompat> shortcutInfoCompats = new ArrayList<>(shortcuts.size());
+            for (ShortcutInfo shortcutInfo : shortcuts) {
+                shortcutInfoCompats.add(new ShortcutInfoCompat(shortcutInfo));
+            }
+
+            mCallback.onShortcutsChanged(packageName, shortcutInfoCompats,
+                    UserHandleCompat.fromUser(user));
         }
     }
 }

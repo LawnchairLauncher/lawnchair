@@ -29,6 +29,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
+import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 
@@ -179,6 +180,12 @@ public class ManagedProfileHeuristic {
 
                 saveWorkFolderShortcuts(workFolder.id, 0, workFolderApps);
             }
+        }
+
+        @Override
+        public void onShortcutsChanged(String packageName, List<ShortcutInfoCompat> shortcuts,
+                UserHandleCompat user) {
+            // Do nothing
         }
     }
 

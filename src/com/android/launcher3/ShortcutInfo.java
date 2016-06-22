@@ -16,20 +16,23 @@
 
 package com.android.launcher3;
 
+import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.util.Log;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.text.TextUtils;
 
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
+import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.folder.FolderIcon;
-
-import java.util.ArrayList;
+import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 
 /**
  * Represents a launchable icon on the workspaces and in folders.
@@ -272,6 +275,46 @@ public class ShortcutInfo extends ItemInfo {
         shortcut.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
         shortcut.flags = AppInfo.initFlags(info);
         return shortcut;
+    }
+
+    /**
+     * Creates a {@link ShortcutInfo} from a {@link ShortcutInfoCompat}. Pardon the overloaded name.
+     */
+    @TargetApi(Build.VERSION_CODES.N)
+    public static ShortcutInfo fromDeepShortcutInfo(ShortcutInfoCompat shortcutInfo,
+            Context context, LauncherAppsCompat launcherApps) {
+        ShortcutInfo si = new ShortcutInfo();
+        si.user = shortcutInfo.getUserHandle();
+        si.itemType = LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
+        si.intent = shortcutInfo.makeIntent(context);
+        si.flags = 0;
+        si.updateFromDeepShortcutInfo(shortcutInfo, context, launcherApps);
+        return si;
+    }
+
+    public void updateFromDeepShortcutInfo(ShortcutInfoCompat shortcutInfo,
+            Context context, LauncherAppsCompat launcherApps) {
+        title = shortcutInfo.getShortLabel();
+
+        CharSequence label = shortcutInfo.getLongLabel();
+        if (TextUtils.isEmpty(label)) {
+            label = shortcutInfo.getShortLabel();
+        }
+        this.contentDescription = UserManagerCompat.getInstance(context)
+                .getBadgedLabelForUser(label, user);
+
+        LauncherAppState launcherAppState = LauncherAppState.getInstance();
+        Drawable unbadgedIcon = launcherApps.getShortcutIconDrawable(shortcutInfo, launcherAppState
+                .getInvariantDeviceProfile().fillResIconDpi);
+        Bitmap icon = unbadgedIcon == null ? null
+                : Utilities.createBadgedIconBitmap(unbadgedIcon, user, context);
+        setIcon(icon != null ? icon : launcherAppState.getIconCache().getDefaultIcon(user));
+    }
+
+    /** Returns the ShortcutInfo id associated with the deep shortcut. */
+    public String getDeepShortcutId() {
+        return itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT ?
+                intent.getStringExtra(ShortcutInfoCompat.EXTRA_SHORTCUT_ID) : null;
     }
 
     @Override

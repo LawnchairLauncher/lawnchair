@@ -19,10 +19,13 @@ package com.android.launcher3.compat;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.LauncherApps;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import com.android.launcher3.Utilities;
+import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 
 import java.util.List;
 
@@ -45,6 +48,8 @@ public abstract class LauncherAppsCompat {
         void onPackagesUnavailable(String[] packageNames, UserHandleCompat user, boolean replacing);
         void onPackagesSuspended(String[] packageNames, UserHandleCompat user);
         void onPackagesUnsuspended(String[] packageNames, UserHandleCompat user);
+        void onShortcutsChanged(String packageName, List<ShortcutInfoCompat> shortcuts,
+                UserHandleCompat user);
     }
 
     protected LauncherAppsCompat() {
@@ -56,7 +61,9 @@ public abstract class LauncherAppsCompat {
     public static LauncherAppsCompat getInstance(Context context) {
         synchronized (sInstanceLock) {
             if (sInstance == null) {
-                if (Utilities.ATLEAST_LOLLIPOP) {
+                if (Utilities.isNycOrAbove()) {
+                    sInstance = new LauncherAppsCompatVNMR1(context.getApplicationContext());
+                } else if (Utilities.ATLEAST_LOLLIPOP) {
                     sInstance = new LauncherAppsCompatVL(context.getApplicationContext());
                 } else {
                     sInstance = new LauncherAppsCompatV16(context.getApplicationContext());
@@ -79,4 +86,11 @@ public abstract class LauncherAppsCompat {
     public abstract boolean isActivityEnabledForProfile(ComponentName component,
             UserHandleCompat user);
     public abstract boolean isPackageSuspendedForProfile(String packageName, UserHandleCompat user);
+    public abstract List<ShortcutInfoCompat> getShortcuts(LauncherApps.ShortcutQuery q,
+            UserHandleCompat userHandle);
+    public abstract void pinShortcuts(String packageName, List<String> pinnedIds,
+            UserHandleCompat userHandle);
+    public abstract void startShortcut(String packageName, String id, Rect sourceBounds,
+            Bundle startActivityOptions, UserHandleCompat user);
+    public abstract Drawable getShortcutIconDrawable(ShortcutInfoCompat shortcutInfo, int density);
 }
