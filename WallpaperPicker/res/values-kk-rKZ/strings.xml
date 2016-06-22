@@ -31,12 +31,9 @@
     <string name="announce_selection" msgid="123723511662250539">"<xliff:g id="LABEL">%1$s</xliff:g> таңдалған"</string>
     <string name="wallpaper_delete" msgid="1459353972739215344">"Жою"</string>
     <string name="pick_image" msgid="3189640419551368385">"Менің фотосуреттерім"</string>
-    <string name="pick_wallpaper" msgid="4628969645948454559">"Артқы фондар"</string>
+    <string name="pick_wallpaper" msgid="4628969645948454559">"Тұсқағаздар"</string>
     <string name="crop_wallpaper" msgid="4882870800623585836">"Артқы фонды кесу"</string>
-    <!-- no translation found for which_wallpaper_option_home_screen (5259213374485080595) -->
-    <skip />
-    <!-- no translation found for which_wallpaper_option_lock_screen (5474588303389139825) -->
-    <skip />
-    <!-- no translation found for which_wallpaper_option_home_screen_and_lock_screen (7652312651094808607) -->
-    <skip />
+    <string name="which_wallpaper_option_home_screen" msgid="5259213374485080595">"Негізгі экран"</string>
+    <string name="which_wallpaper_option_lock_screen" msgid="5474588303389139825">"Құлыпталған экран"</string>
+    <string name="which_wallpaper_option_home_screen_and_lock_screen" msgid="7652312651094808607">"Негізгі экран және құлыпталған экран"</string>
 </resources>

@@ -353,7 +353,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
         }
         @Override
         public void onSave(final WallpaperPickerActivity a) {
-            if (!Utilities.isNycOrAbove()) {
+            if (!Utilities.ATLEAST_N) {
                 try {
                     WallpaperManager.getInstance(a.getContext()).clear();
                     a.setResult(Activity.RESULT_OK);
@@ -393,7 +393,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                     int whichWallpaper = params[0];
                     boolean succeeded = true;
                     try {
-                        if (whichWallpaper == NycWallpaperUtils.FLAG_SET_LOCK) {
+                        if (whichWallpaper == WallpaperManager.FLAG_LOCK) {
                             Bitmap defaultWallpaper = ((BitmapDrawable) WallpaperManager
                                     .getInstance(a.getApplicationContext()).getBuiltInDrawable())
                                     .getBitmap();
@@ -403,7 +403,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                                 byte[] outByteArray = tmpOut.toByteArray();
                                 NycWallpaperUtils.setStream(a.getApplicationContext(),
                                         new ByteArrayInputStream(outByteArray), null, true,
-                                        NycWallpaperUtils.FLAG_SET_LOCK);
+                                        WallpaperManager.FLAG_LOCK);
                             }
                         } else {
                             NycWallpaperUtils.clear(a, whichWallpaper);
@@ -944,7 +944,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity {
                 (int) rotatedBounds[0], (int) rotatedBounds[1], width, height, leftAligned);
         cropTask.setCropBounds(cropRect);
 
-        if (cropTask.cropBitmap(NycWallpaperUtils.FLAG_SET_SYSTEM)) {
+        if (cropTask.cropBitmap(WallpaperManager.FLAG_SYSTEM)) {
             return cropTask.getCroppedBitmap();
         } else {
             return null;

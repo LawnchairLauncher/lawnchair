@@ -26,7 +26,7 @@
     <string name="activity_not_available" msgid="7456344436509528827">"Ez dago erabilgarri aplikazioa"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Deskargatutako aplikazioa modu seguruan desgaitu da"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Widgetak desgaitu egin dira modu seguruan"</string>
-    <string name="long_press_widget_to_add" msgid="7699152356777458215">"Eduki ukituta widgeta aukeratzeko."</string>
+    <string name="long_press_widget_to_add" msgid="7699152356777458215">"Eduki sakatuta widgeta aukeratzeko."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Sakatu birritan eta eduki sakatuta widgeta aukeratzeko edo ekintza pertsonalizatuak erabiltzeko."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"Bilatu aplikazioetan…"</string>
@@ -60,7 +60,7 @@
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"KOPIATU IKONOAK"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"HASI HUTSETIK"</string>
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Horma-paperak, widgetak eta ezarpenak"</string>
-    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Pertsonalizatzeko, eduki ukituta atzeko planoa"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Pertsonalizatzeko, eduki sakatuta atzeko planoa"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"ADOS"</string>
     <string name="folder_opened" msgid="94695026776264709">"Karpeta ireki da: <xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="1884479294466410023">"Karpeta ixteko, uki ezazu"</string>

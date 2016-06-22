@@ -46,7 +46,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.os.Build;
-import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.Process;
@@ -101,8 +100,11 @@ public final class Utilities {
     private static final int[] sLoc0 = new int[2];
     private static final int[] sLoc1 = new int[2];
 
-    // TODO: use Build.VERSION_CODES when available
-    public static final boolean ATLEAST_MARSHMALLOW = Build.VERSION.SDK_INT >= 23;
+    // TODO: use the full N name (e.g. ATLEAST_N*****) when available
+    public static final boolean ATLEAST_N = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
+
+    public static final boolean ATLEAST_MARSHMALLOW =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
 
     public static final boolean ATLEAST_LOLLIPOP_MR1 =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1;
@@ -118,18 +120,6 @@ public final class Utilities {
 
     public static final boolean ATLEAST_JB_MR2 =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2;
-
-    public static boolean isNycOrAbove() {
-        // TODO: Replace using reflection with looking at the API version once
-        // Build.VERSION.SDK_INT gets bumped to 24. b/22942492.
-        try {
-            View.class.getDeclaredField("DRAG_FLAG_OPAQUE");
-            // View.DRAG_FLAG_OPAQUE doesn't exist in M-release, so it's an indication of N+.
-            return true;
-        } catch (NoSuchFieldException e) {
-            return false;
-        }
-    }
 
     // These values are same as that in {@link AsyncTask}.
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
@@ -151,20 +141,14 @@ public final class Utilities {
 
     public static boolean isAllowRotationPrefEnabled(Context context) {
         boolean allowRotationPref = false;
-        if (isNycOrAbove()) {
+        if (ATLEAST_N) {
             // If the device was scaled, used the original dimensions to determine if rotation
             // is allowed of not.
-            try {
-                // TODO: Use the actual field when the API is finalized.
-                int originalDensity =
-                        DisplayMetrics.class.getField("DENSITY_DEVICE_STABLE").getInt(null);
-                Resources res = context.getResources();
-                int originalSmallestWidth = res.getConfiguration().smallestScreenWidthDp
-                        * res.getDisplayMetrics().densityDpi / originalDensity;
-                allowRotationPref = originalSmallestWidth >= 600;
-            } catch (Exception e) {
-                // Ignore
-            }
+            int originalDensity = DisplayMetrics.DENSITY_DEVICE_STABLE;
+            Resources res = context.getResources();
+            int originalSmallestWidth = res.getConfiguration().smallestScreenWidthDp
+                    * res.getDisplayMetrics().densityDpi / originalDensity;
+            allowRotationPref = originalSmallestWidth >= 600;
         }
         return getPrefs(context).getBoolean(ALLOW_ROTATION_PREFERENCE_KEY, allowRotationPref);
     }
@@ -824,12 +808,8 @@ public final class Utilities {
     }
 
     public static boolean isWallapaperAllowed(Context context) {
-        if (isNycOrAbove()) {
-            try {
-                WallpaperManager wm = context.getSystemService(WallpaperManager.class);
-                return (Boolean) wm.getClass().getDeclaredMethod("isSetWallpaperAllowed")
-                        .invoke(wm);
-            } catch (Exception e) { }
+        if (ATLEAST_N) {
+            return context.getSystemService(WallpaperManager.class).isSetWallpaperAllowed();
         }
         return true;
     }

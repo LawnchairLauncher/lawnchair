@@ -19,7 +19,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="wallpaper_instructions" msgid="3524143401182707094">"ਵਾਲਪੇਪਰ ਸੈਟ ਕਰੋ"</string>
+    <string name="wallpaper_instructions" msgid="3524143401182707094">"ਵਾਲਪੇਪਰ ਸੈੱਟ ਕਰੋ"</string>
     <string name="image_load_fail" msgid="7538534580694411837">"ਚਿੱਤਰ ਲੋਡ ਨਹੀਂ ਕਰ ਸਕਿਆ"</string>
     <string name="wallpaper_load_fail" msgid="4800700444605404650">"ਵਾਲਪੇਪਰ ਦੇ ਤੌਰ ਤੇ ਚਿੱਤਰ ਲੋਡ ਨਹੀਂ ਕਰ ਸਕਿਆ"</string>
     <string name="wallpaper_set_fail" msgid="7023180794008631780">"ਵਾਲਪੇਪਰ ਦੇ ਤੌਰ ਤੇ ਚਿੱਤਰ ਸੈਟ ਨਹੀਂ ਕਰ ਸਕਿਆ"</string>
@@ -33,10 +33,7 @@
     <string name="pick_image" msgid="3189640419551368385">"ਮੇਰੀਆਂ ਫੋਟੋਆਂ"</string>
     <string name="pick_wallpaper" msgid="4628969645948454559">"ਵਾਲਪੇਪਰ"</string>
     <string name="crop_wallpaper" msgid="4882870800623585836">"ਵਾਲਪੇਪਰ ਕੱਟੋ"</string>
-    <!-- no translation found for which_wallpaper_option_home_screen (5259213374485080595) -->
-    <skip />
-    <!-- no translation found for which_wallpaper_option_lock_screen (5474588303389139825) -->
-    <skip />
-    <!-- no translation found for which_wallpaper_option_home_screen_and_lock_screen (7652312651094808607) -->
-    <skip />
+    <string name="which_wallpaper_option_home_screen" msgid="5259213374485080595">"ਮੁੱਖ ਸਕ੍ਰੀਨ"</string>
+    <string name="which_wallpaper_option_lock_screen" msgid="5474588303389139825">"ਲੌਕ ਸਕ੍ਰੀਨ"</string>
+    <string name="which_wallpaper_option_home_screen_and_lock_screen" msgid="7652312651094808607">"ਮੁੱਖ ਸਕ੍ਰੀਨ ਅਤੇ ਲੌਕ ਸਕ੍ਰੀਨ"</string>
 </resources>
