@@ -28,6 +28,7 @@ import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.config.FeatureFlags;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class OverviewScreenAccessibilityDelegate extends AccessibilityDelegate {
@@ -88,7 +89,9 @@ public class OverviewScreenAccessibilityDelegate extends AccessibilityDelegate {
         if (index < mWorkspace.getChildCount() - 1) {
             info.addAction(mActions.get(MOVE_FORWARD));
         }
-        if (index > mWorkspace.numCustomPages()) {
+
+        int startIndex = mWorkspace.numCustomPages() + (FeatureFlags.QSB_ON_FIRST_SCREEN ? 1 : 0);
+        if (index > startIndex) {
             info.addAction(mActions.get(MOVE_BACKWARD));
         }
     }

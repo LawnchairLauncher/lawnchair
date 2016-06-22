@@ -154,7 +154,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     // Page Indicator
     @Thunk int mPageIndicatorViewId;
-    @Thunk PageIndicator mPageIndicator;
+    protected PageIndicator mPageIndicator;
     // The viewport whether the pages are to be contained (the actual view may be larger than the
     // viewport)
     @ViewDebug.ExportedProperty(category = "launcher")
@@ -247,37 +247,12 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         mScroller.setInterpolator(mDefaultInterpolator);
     }
 
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-
-        // Hook up the page indicator
-        ViewGroup parent = (ViewGroup) getParent();
-        ViewGroup grandParent = (ViewGroup) parent.getParent();
-        if (mPageIndicator == null && mPageIndicatorViewId > -1) {
-            mPageIndicator = (PageIndicator) grandParent.findViewById(mPageIndicatorViewId);
+    public void initParentViews(View parent) {
+        if (mPageIndicatorViewId > -1) {
+            mPageIndicator = (PageIndicator) parent.findViewById(mPageIndicatorViewId);
             mPageIndicator.setMarkersCount(getChildCount());
-
-            OnClickListener listener = getPageIndicatorClickListener();
-            if (listener != null) {
-                mPageIndicator.setOnClickListener(listener);
-            }
-            mPageIndicator.setContentDescription(getPageIndicatorDescription());
+            mPageIndicator.setContentDescription(getCurrentPageDescription());
         }
-    }
-
-    protected String getPageIndicatorDescription() {
-        return getCurrentPageDescription();
-    }
-
-    protected OnClickListener getPageIndicatorClickListener() {
-        return null;
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        // Unhook the page indicator
-        mPageIndicator = null;
     }
 
     // Convenience methods to map points from self to parent and vice versa
@@ -467,7 +442,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     private void updatePageIndicator() {
         // Update the page indicator (when we aren't reordering)
         if (mPageIndicator != null) {
-            mPageIndicator.setContentDescription(getPageIndicatorDescription());
+            mPageIndicator.setContentDescription(getCurrentPageDescription());
             if (!isReordering(false)) {
                 mPageIndicator.setActiveMarker(getNextPage());
             }

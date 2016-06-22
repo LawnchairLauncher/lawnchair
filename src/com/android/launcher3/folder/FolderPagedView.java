@@ -120,6 +120,7 @@ public class FolderPagedView extends PagedView {
         mFolder = folder;
         mKeyListener = new PagedFolderKeyEventListener(folder);
         mPageIndicator = (PageIndicator) folder.findViewById(R.id.folder_page_indicator);
+        initParentViews(folder);
     }
 
     /**

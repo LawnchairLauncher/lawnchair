@@ -235,7 +235,6 @@ public class Launcher extends Activity
 
     @Thunk Workspace mWorkspace;
     private View mLauncherView;
-    private PageIndicator mPageIndicator;
     @Thunk DragLayer mDragLayer;
     private DragController mDragController;
 
@@ -513,9 +512,7 @@ public class Launcher extends Activity
         if (mExtractedColors != null && Utilities.isNycOrAbove()) {
             mExtractedColors.load(this);
             mHotseat.updateColor(mExtractedColors, !mPaused);
-            if (mPageIndicator != null) {
-                mPageIndicator.updateColor(mExtractedColors);
-            }
+            mWorkspace.getPageIndicator().updateColor(mExtractedColors);
         }
     }
 
@@ -1329,9 +1326,8 @@ public class Launcher extends Activity
         mLauncherView = findViewById(R.id.launcher);
         mDragLayer = (DragLayer) findViewById(R.id.drag_layer);
         mFocusHandler = mDragLayer.getFocusIndicatorHelper();
-
         mWorkspace = (Workspace) mDragLayer.findViewById(R.id.workspace);
-        mPageIndicator = (PageIndicator) mDragLayer.findViewById(R.id.page_indicator);
+        mWorkspace.initParentViews(mDragLayer);
 
         mLauncherView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -2683,7 +2679,7 @@ public class Launcher extends Activity
      * Event handler for the (Add) Widgets button that appears after a long press
      * on the home screen.
      */
-    protected void onClickAddWidgetButton(View view) {
+    public void onClickAddWidgetButton(View view) {
         if (LOGD) Log.d(TAG, "onClickAddWidgetButton");
         if (mIsSafeModeEnabled) {
             Toast.makeText(this, R.string.safemode_widget_error, Toast.LENGTH_SHORT).show();
@@ -2696,7 +2692,7 @@ public class Launcher extends Activity
      * Event handler for the wallpaper picker button that appears after a long press
      * on the home screen.
      */
-    protected void onClickWallpaperPicker(View v) {
+    public void onClickWallpaperPicker(View v) {
         if (!Utilities.isWallapaperAllowed(this)) {
             Toast.makeText(this, R.string.msg_disabled_by_admin, Toast.LENGTH_SHORT).show();
             return;
@@ -2719,7 +2715,7 @@ public class Launcher extends Activity
      * Event handler for a click on the settings button that appears after a long press
      * on the home screen.
      */
-    private void onClickSettingsButton(View v) {
+    public void onClickSettingsButton(View v) {
         if (LOGD) Log.d(TAG, "onClickSettingsButton");
         startActivity(new Intent(Utilities.ACTION_APPLICATION_PREFERENCES)
                 .setPackage(getPackageName()));
@@ -3262,7 +3258,7 @@ public class Launcher extends Activity
     /**
      * Shows the overview button.
      */
-    void showOverviewMode(boolean animated) {
+    public void showOverviewMode(boolean animated) {
         showOverviewMode(animated, false);
     }
 
