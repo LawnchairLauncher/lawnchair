@@ -186,7 +186,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mLayoutManager = mAdapter.getLayoutManager();
         mItemDecoration = mAdapter.getItemDecoration();
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && !grid.isLandscape) {
+        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && !grid.isVerticalBarLayout()) {
             mRecyclerViewTopBottomPadding = 0;
             setPadding(0, 0, 0, 0);
         } else {
@@ -461,18 +461,19 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         DeviceProfile grid = mLauncher.getDeviceProfile();
         if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
-            if (!grid.isLandscape) {
+            if (!grid.isVerticalBarLayout()) {
                 MarginLayoutParams mlp = (MarginLayoutParams) mAppsRecyclerView.getLayoutParams();
 
-                int navBarHeight = mLauncher.getDragLayer().getInsets().top;
-                int height = navBarHeight + grid.hotseatCellHeightPx;
+                Rect insets = mLauncher.getDragLayer().getInsets();
+                getContentView().setPadding(0,0,0, insets.bottom);
+                int height = insets.top + grid.hotseatCellHeightPx;
 
                 mlp.topMargin = height;
                 mAppsRecyclerView.setLayoutParams(mlp);
 
                 LinearLayout.LayoutParams llp =
                         (LinearLayout.LayoutParams) mSearchInput.getLayoutParams();
-                llp.topMargin = navBarHeight;
+                llp.topMargin = insets.top;
                 mSearchInput.setLayoutParams(llp);
 
                 lp.height = height;
