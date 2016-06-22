@@ -28,6 +28,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.ManagedProfileHeuristic;
 
 import java.io.FileInputStream;
@@ -101,8 +102,14 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
      * Opens all apps and returns the recycler view
      */
     protected UiObject2 openAllApps() {
-        mDevice.wait(Until.findObject(
-                By.desc(mTargetContext.getString(R.string.all_apps_button_label))), DEFAULT_UI_TIMEOUT).click();
+        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
+            // clicking on the page indicator brings up all apps tray on non tablets.
+            findViewById(R.id.page_indicator).click();
+        } else {
+            mDevice.wait(Until.findObject(
+                    By.desc(mTargetContext.getString(R.string.all_apps_button_label))),
+                    DEFAULT_UI_TIMEOUT).click();
+        }
         return findViewById(R.id.apps_list_view);
     }
 
