@@ -560,7 +560,8 @@ public class LauncherBackupHelper implements BackupHelper {
 
         // Don't backup apps in other profiles for now.
         String where = "(" + Favorites.ITEM_TYPE + "=" + Favorites.ITEM_TYPE_APPLICATION + " OR " +
-                Favorites.ITEM_TYPE + "=" + Favorites.ITEM_TYPE_SHORTCUT + ") AND " +
+                Favorites.ITEM_TYPE + "=" + Favorites.ITEM_TYPE_SHORTCUT + " OR " +
+                Favorites.ITEM_TYPE + "=" + Favorites.ITEM_TYPE_DEEP_SHORTCUT + ") AND " +
                 getUserSelectionArg();
         Cursor cursor = cr.query(Favorites.CONTENT_URI, FAVORITE_PROJECTION,
                 where, null, null);
@@ -798,7 +799,8 @@ public class LauncherBackupHelper implements BackupHelper {
         return favorite.container == Favorites.CONTAINER_HOTSEAT
                 && favorite.intent != null
                 && (favorite.itemType == Favorites.ITEM_TYPE_APPLICATION
-                || favorite.itemType == Favorites.ITEM_TYPE_SHORTCUT);
+                || favorite.itemType == Favorites.ITEM_TYPE_SHORTCUT
+                || favorite.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT);
     }
 
     /** Serialize a Favorite for persistence, including a checksum wrapper. */
@@ -835,7 +837,8 @@ public class LauncherBackupHelper implements BackupHelper {
             if (!TextUtils.isEmpty(appWidgetProvider)) {
                 favorite.appWidgetProvider = appWidgetProvider;
             }
-        } else if (favorite.itemType == Favorites.ITEM_TYPE_SHORTCUT) {
+        } else if (favorite.itemType == Favorites.ITEM_TYPE_SHORTCUT
+                || favorite.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
             String iconPackage = c.getString(ICON_PACKAGE_INDEX);
             String iconResource = c.getString(ICON_RESOURCE_INDEX);
             if (!TextUtils.isEmpty(iconPackage) && !TextUtils.isEmpty(iconResource)) {
@@ -897,7 +900,8 @@ public class LauncherBackupHelper implements BackupHelper {
         values.put(Favorites.SPANY, favorite.spanY);
         values.put(Favorites.RANK, favorite.rank);
 
-        if (favorite.itemType == Favorites.ITEM_TYPE_SHORTCUT) {
+        if (favorite.itemType == Favorites.ITEM_TYPE_SHORTCUT
+                || favorite.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
             values.put(Favorites.ICON_PACKAGE, favorite.iconPackage);
             values.put(Favorites.ICON_RESOURCE, favorite.iconResource);
             values.put(Favorites.ICON, favorite.icon);

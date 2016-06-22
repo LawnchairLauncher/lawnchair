@@ -22,15 +22,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 
 import com.android.launcher3.Utilities;
+import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Thunk;
 
@@ -128,6 +131,29 @@ public class LauncherAppsCompatV16 extends LauncherAppsCompat {
 
     public boolean isPackageSuspendedForProfile(String packageName, UserHandleCompat user) {
         return false;
+    }
+
+    @Override
+    public List<ShortcutInfoCompat> getShortcuts(LauncherApps.ShortcutQuery q,
+            UserHandleCompat userHandle) {
+        return null;
+    }
+
+    @Override
+    public void pinShortcuts(String packageName, List<String> pinnedIds,
+            UserHandleCompat userHandle) {
+        // Not supported, so do nothing.
+    }
+
+    @Override
+    public void startShortcut(String packageName, String id, Rect sourceBounds,
+            Bundle startActivityOptions, UserHandleCompat user) {
+        // Not supported, so do nothing.
+    }
+
+    @Override
+    public Drawable getShortcutIconDrawable(ShortcutInfoCompat shortcutInfo, int density) {
+        return null;
     }
 
     private void unregisterForPackageIntents() {

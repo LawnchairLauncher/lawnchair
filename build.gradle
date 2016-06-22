@@ -18,7 +18,7 @@ android {
     defaultConfig {
         applicationId "com.android.launcher3"
         minSdkVersion 21
-        targetSdkVersion 23
+        targetSdkVersion 'N'
         versionCode 1
         versionName "1.0"
 

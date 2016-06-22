@@ -211,6 +211,11 @@ public class LauncherSettings {
         public static final int ITEM_TYPE_CUSTOM_APPWIDGET = 5;
 
         /**
+         * The gesture is an application created deep shortcut
+         */
+        public static final int ITEM_TYPE_DEEP_SHORTCUT = 6;
+
+        /**
          * The appWidgetId of the widget
          *
          * <P>Type: INTEGER</P>

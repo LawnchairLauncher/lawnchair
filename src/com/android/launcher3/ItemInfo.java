@@ -32,7 +32,7 @@ public class ItemInfo {
     /**
      * Intent extra to store the profile. Format: UserHandle
      */
-    static final String EXTRA_PROFILE = "profile";
+    public static final String EXTRA_PROFILE = "profile";
 
     public static final int NO_ID = -1;
 

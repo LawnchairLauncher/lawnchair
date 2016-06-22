@@ -42,6 +42,7 @@ import android.provider.BaseColumns;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.LongSparseArray;
+import android.util.MutableInt;
 import android.util.Pair;
 
 import com.android.launcher3.compat.AppWidgetManagerCompat;
@@ -60,6 +61,9 @@ import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.GridSizeMigrationTask;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.provider.LauncherDbUtils;
+import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.shortcuts.ShortcutInfoCompat;
+import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.CursorIconInfo;
 import com.android.launcher3.util.FlagOp;
@@ -69,6 +73,7 @@ import com.android.launcher3.util.ManagedProfileHeuristic;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.StringFilter;
+import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 
@@ -83,6 +88,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.Executor;
@@ -119,8 +125,9 @@ public class LauncherModel extends BroadcastReceiver
     // We start off with everything not loaded.  After that, we assume that
     // our monitoring of the package manager provides all updates and we never
     // need to do a requery.  These are only ever touched from the loader thread.
-    @Thunk boolean mWorkspaceLoaded;
-    @Thunk boolean mAllAppsLoaded;
+    private boolean mWorkspaceLoaded;
+    private boolean mAllAppsLoaded;
+    private boolean mDeepShortcutsLoaded;
 
     /**
      * Set of runnables to be called on the background thread after the workspace binding
@@ -134,6 +141,9 @@ public class LauncherModel extends BroadcastReceiver
     private final AllAppsList mBgAllAppsList;
     // Entire list of widgets.
     private final WidgetsModel mBgWidgetsModel;
+
+    // Maps all launcher activities to the id's of their shortcuts (if they have any).
+    private final MultiHashMap<ComponentKey, String> mBgDeepShortcutMap = new MultiHashMap<>();
 
     // The lock that must be acquired before referencing any static bg data structures.  Unlike
     // other locks, this one can generally be held long-term because we never expect any of these
@@ -160,16 +170,21 @@ public class LauncherModel extends BroadcastReceiver
     // sBgWorkspaceScreens is the ordered set of workspace screens.
     static final ArrayList<Long> sBgWorkspaceScreens = new ArrayList<Long>();
 
+    // sBgPinnedShortcutCounts is the ComponentKey representing a pinned shortcut to the number of
+    // times it is pinned.
+    static final Map<ShortcutKey, MutableInt> sBgPinnedShortcutCounts = new HashMap<>();
+
     // sPendingPackages is a set of packages which could be on sdcard and are not available yet
     static final HashMap<UserHandleCompat, HashSet<String>> sPendingPackages =
             new HashMap<UserHandleCompat, HashSet<String>>();
 
     // </ only access in worker thread >
 
-    @Thunk IconCache mIconCache;
+    private IconCache mIconCache;
+    private DeepShortcutManager mDeepShortcutManager;
 
-    @Thunk final LauncherAppsCompat mLauncherApps;
-    @Thunk final UserManagerCompat mUserManager;
+    private final LauncherAppsCompat mLauncherApps;
+    private final UserManagerCompat mUserManager;
 
     public interface Callbacks {
         public boolean setLoadOnResume();
@@ -199,18 +214,21 @@ public class LauncherModel extends BroadcastReceiver
         public void bindWidgetsModel(WidgetsModel model);
         public void onPageBoundSynchronously(int page);
         public void executeOnNextDraw(ViewOnDrawExecutor executor);
+        public void bindDeepShortcutMap(MultiHashMap<ComponentKey, String> deepShortcutMap);
     }
 
     public interface ItemInfoFilter {
         public boolean filterItem(ItemInfo parent, ItemInfo info, ComponentName cn);
     }
 
-    LauncherModel(LauncherAppState app, IconCache iconCache, AppFilter appFilter) {
+    LauncherModel(LauncherAppState app, IconCache iconCache, AppFilter appFilter,
+            DeepShortcutManager deepShortcutManager) {
         Context context = app.getContext();
         mApp = app;
         mBgAllAppsList = new AllAppsList(iconCache, appFilter);
         mBgWidgetsModel = new WidgetsModel(context, iconCache, appFilter);
         mIconCache = iconCache;
+        mDeepShortcutManager = deepShortcutManager;
 
         mLauncherApps = LauncherAppsCompat.getInstance(context);
         mUserManager = UserManagerCompat.getInstance(context);
@@ -679,6 +697,7 @@ public class LauncherModel extends BroadcastReceiver
                 switch (modelItem.itemType) {
                     case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                     case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                    case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
                     case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                         if (!sBgWorkspaceItems.contains(modelItem)) {
                             sBgWorkspaceItems.add(modelItem);
@@ -892,6 +911,7 @@ public class LauncherModel extends BroadcastReceiver
                             // Fall through
                         case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                         case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                        case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
                             if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
                                     item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
                                 sBgWorkspaceItems.add(item);
@@ -902,6 +922,14 @@ public class LauncherModel extends BroadcastReceiver
                                             " doesn't exist";
                                     Log.e(TAG, msg);
                                 }
+                            }
+                            if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+                                ShortcutInfo shortcutInfo = (ShortcutInfo) item;
+                                ShortcutKey shortcutToPin = new ShortcutKey(
+                                        shortcutInfo.intent.getPackage(),
+                                        shortcutInfo.user,
+                                        shortcutInfo.getDeepShortcutId());
+                                incrementPinnedShortcutCount(shortcutToPin, true /* shouldPin */);
                             }
                             break;
                         case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
@@ -969,6 +997,14 @@ public class LauncherModel extends BroadcastReceiver
                                 }
                                 sBgWorkspaceItems.remove(item);
                                 break;
+                            case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
+                                ShortcutInfo shortcutInfo = ((ShortcutInfo) item);
+                                ShortcutKey pinnedShortcut = new ShortcutKey(
+                                        shortcutInfo.intent.getPackage(),
+                                        shortcutInfo.user,
+                                        shortcutInfo.getDeepShortcutId());
+                                decrementPinnedShortcutCount(pinnedShortcut);
+                                // Fall through.
                             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                                 sBgWorkspaceItems.remove(item);
@@ -983,6 +1019,39 @@ public class LauncherModel extends BroadcastReceiver
             }
         };
         runOnWorkerThread(r);
+    }
+
+    /**
+     * Decrement the count for the given pinned shortcut, unpinning it if the count becomes 0.
+     */
+    private static void decrementPinnedShortcutCount(final ShortcutKey pinnedShortcut) {
+        synchronized (sBgLock) {
+            MutableInt count = sBgPinnedShortcutCounts.get(pinnedShortcut);
+            if (count == null || --count.value == 0) {
+                LauncherAppState.getInstance().getShortcutManager().unpinShortcut(pinnedShortcut);
+            }
+        }
+    }
+
+    /**
+     * Increment the count for the given shortcut, pinning it if the count becomes 1.
+     *
+     * As an optimization, the caller can pass shouldPin == false to avoid
+     * unnecessary RPC's if the shortcut is already pinned.
+     */
+    private static void incrementPinnedShortcutCount(ShortcutKey pinnedShortcut, boolean shouldPin) {
+        synchronized (sBgLock) {
+            MutableInt count = sBgPinnedShortcutCounts.get(pinnedShortcut);
+            if (count == null) {
+                count = new MutableInt(1);
+                sBgPinnedShortcutCounts.put(pinnedShortcut, count);
+            } else {
+                count.value++;
+            }
+            if (shouldPin && count.value == 1) {
+                LauncherAppState.getInstance().getShortcutManager().pinShortcut(pinnedShortcut);
+            }
+        }
     }
 
     /**
@@ -1077,28 +1146,28 @@ public class LauncherModel extends BroadcastReceiver
     @Override
     public void onPackageChanged(String packageName, UserHandleCompat user) {
         int op = PackageUpdatedTask.OP_UPDATE;
-        enqueuePackageUpdated(new PackageUpdatedTask(op, new String[] { packageName },
+        enqueueItemUpdatedTask(new PackageUpdatedTask(op, new String[] { packageName },
                 user));
     }
 
     @Override
     public void onPackageRemoved(String packageName, UserHandleCompat user) {
         int op = PackageUpdatedTask.OP_REMOVE;
-        enqueuePackageUpdated(new PackageUpdatedTask(op, new String[] { packageName },
+        enqueueItemUpdatedTask(new PackageUpdatedTask(op, new String[] { packageName },
                 user));
     }
 
     @Override
     public void onPackageAdded(String packageName, UserHandleCompat user) {
         int op = PackageUpdatedTask.OP_ADD;
-        enqueuePackageUpdated(new PackageUpdatedTask(op, new String[] { packageName },
+        enqueueItemUpdatedTask(new PackageUpdatedTask(op, new String[] { packageName },
                 user));
     }
 
     @Override
     public void onPackagesAvailable(String[] packageNames, UserHandleCompat user,
             boolean replacing) {
-        enqueuePackageUpdated(
+        enqueueItemUpdatedTask(
                 new PackageUpdatedTask(PackageUpdatedTask.OP_UPDATE, packageNames, user));
     }
 
@@ -1106,7 +1175,7 @@ public class LauncherModel extends BroadcastReceiver
     public void onPackagesUnavailable(String[] packageNames, UserHandleCompat user,
             boolean replacing) {
         if (!replacing) {
-            enqueuePackageUpdated(new PackageUpdatedTask(
+            enqueueItemUpdatedTask(new PackageUpdatedTask(
                     PackageUpdatedTask.OP_UNAVAILABLE, packageNames,
                     user));
         }
@@ -1114,16 +1183,22 @@ public class LauncherModel extends BroadcastReceiver
 
     @Override
     public void onPackagesSuspended(String[] packageNames, UserHandleCompat user) {
-        enqueuePackageUpdated(new PackageUpdatedTask(
+        enqueueItemUpdatedTask(new PackageUpdatedTask(
                 PackageUpdatedTask.OP_SUSPEND, packageNames,
                 user));
     }
 
     @Override
     public void onPackagesUnsuspended(String[] packageNames, UserHandleCompat user) {
-        enqueuePackageUpdated(new PackageUpdatedTask(
+        enqueueItemUpdatedTask(new PackageUpdatedTask(
                 PackageUpdatedTask.OP_UNSUSPEND, packageNames,
                 user));
+    }
+
+    @Override
+    public void onShortcutsChanged(String packageName, List<ShortcutInfoCompat> shortcuts,
+            UserHandleCompat user) {
+        enqueueItemUpdatedTask(new ShortcutsChangedTask(packageName, shortcuts, user));
     }
 
     /**
@@ -1146,7 +1221,7 @@ public class LauncherModel extends BroadcastReceiver
                 LauncherAppsCompat.ACTION_MANAGED_PROFILE_UNAVAILABLE.equals(action)) {
             UserHandleCompat user = UserHandleCompat.fromIntent(intent);
             if (user != null) {
-                enqueuePackageUpdated(new PackageUpdatedTask(
+                enqueueItemUpdatedTask(new PackageUpdatedTask(
                         PackageUpdatedTask.OP_USER_AVAILABILITY_CHANGE,
                         new String[0], user));
             }
@@ -1171,6 +1246,8 @@ public class LauncherModel extends BroadcastReceiver
             stopLoaderLocked();
             if (resetAllAppsLoaded) mAllAppsLoaded = false;
             if (resetWorkspaceLoaded) mWorkspaceLoaded = false;
+            // Always reset deep shortcuts loaded.
+            mDeepShortcutsLoaded = false;
         }
     }
 
@@ -1257,6 +1334,7 @@ public class LauncherModel extends BroadcastReceiver
      *   - workspace icons
      *   - widgets
      *   - all apps icons
+     *   - deep shortcuts within apps
      */
     private class LoaderTask implements Runnable {
         private Context mContext;
@@ -1388,6 +1466,12 @@ public class LauncherModel extends BroadcastReceiver
                 // second step
                 if (DEBUG_LOADERS) Log.d(TAG, "step 2: loading all apps");
                 loadAndBindAllApps();
+
+                waitForIdle();
+
+                // third step
+                if (DEBUG_LOADERS) Log.d(TAG, "step 3: loading deep shortcuts");
+                loadAndBindDeepShortcuts();
             }
 
             // Clear out this reference, otherwise we end up holding it until all of the
@@ -1539,6 +1623,7 @@ public class LauncherModel extends BroadcastReceiver
                 sBgFolders.clear();
                 sBgItemsIdMap.clear();
                 sBgWorkspaceScreens.clear();
+                sBgPinnedShortcutCounts.clear();
             }
         }
 
@@ -1585,6 +1670,7 @@ public class LauncherModel extends BroadcastReceiver
 
                 final ArrayList<Long> itemsToRemove = new ArrayList<>();
                 final ArrayList<Long> restoredRows = new ArrayList<>();
+                Map<ShortcutKey, ShortcutInfoCompat> shortcutKeyToPinnedShortcuts = new HashMap<>();
                 final Uri contentUri = LauncherSettings.Favorites.CONTENT_URI;
                 if (DEBUG_LOADERS) Log.d(TAG, "loading model from " + contentUri);
                 final Cursor c = contentResolver.query(contentUri, null, null, null, null);
@@ -1635,6 +1721,13 @@ public class LauncherModel extends BroadcastReceiver
                         long serialNo = mUserManager.getSerialNumberForUser(user);
                         allUsers.put(serialNo, user);
                         quietMode.put(serialNo, mUserManager.isQuietModeEnabled(user));
+
+                        List<ShortcutInfoCompat> pinnedShortcuts = mDeepShortcutManager
+                                .queryForPinnedShortcuts(null, user);
+                        for (ShortcutInfoCompat shortcut : pinnedShortcuts) {
+                            shortcutKeyToPinnedShortcuts.put(ShortcutKey.fromInfo(shortcut),
+                                    shortcut);
+                        }
                     }
 
                     ShortcutInfo info;
@@ -1657,6 +1750,7 @@ public class LauncherModel extends BroadcastReceiver
                             switch (itemType) {
                             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                            case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
                                 id = c.getLong(idIndex);
                                 intentDescription = c.getString(intentIndex);
                                 serialNumber = c.getInt(profileIdIndex);
@@ -1819,7 +1913,37 @@ public class LauncherModel extends BroadcastReceiver
                                     info = getAppShortcutInfo(intent, user, context, c,
                                             cursorIconInfo.iconIndex, titleIndex,
                                             allowMissingTarget, useLowResIcon);
-                                } else {
+                                } else if (itemType ==
+                                        LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+                                    String shortcutId = intent.getStringExtra(
+                                            ShortcutInfoCompat.EXTRA_SHORTCUT_ID);
+                                    String packageName = intent.getPackage();
+                                    ShortcutKey key = new ShortcutKey(intent.getPackage(),
+                                            user, shortcutId);
+                                    ShortcutInfoCompat pinnedShortcut =
+                                            shortcutKeyToPinnedShortcuts.get(key);
+                                    boolean shouldPin = false; // It's already pinned.
+                                    if (pinnedShortcut == null) {
+                                        // It shouldn't be possible for a shortcut to be on the
+                                        // workspace without being pinned, but if one somehow is,
+                                        // we should pin it now to get back to a good state.
+                                        Log.w(TAG, "Shortcut was on workspace but wasn't pinned");
+                                        // Get full details; incrementing the count will pin it.
+                                        List<ShortcutInfoCompat> fullDetails = mDeepShortcutManager
+                                                .queryForFullDetails(packageName,
+                                                Collections.singletonList(shortcutId), user);
+                                        if (fullDetails == null || fullDetails.isEmpty()) {
+                                            itemsToRemove.add(id);
+                                            continue;
+                                        } else {
+                                            pinnedShortcut = fullDetails.get(0);
+                                            shouldPin = true;
+                                        }
+                                    }
+                                    incrementPinnedShortcutCount(key, shouldPin);
+                                    info = ShortcutInfo.fromDeepShortcutInfo(pinnedShortcut,
+                                            context, launcherApps);
+                                } else { // item type == ITEM_TYPE_SHORTCUT
                                     info = getShortcutInfo(c, context, titleIndex, cursorIconInfo);
 
                                     // Shortcuts are only available on the primary profile
@@ -2095,6 +2219,15 @@ public class LauncherModel extends BroadcastReceiver
                         sBgWorkspaceItems.remove(sBgFolders.get(folderId));
                         sBgFolders.remove(folderId);
                         sBgItemsIdMap.remove(folderId);
+                    }
+                }
+
+                // Unpin shortcuts that don't exist on the workspace.
+                for (ShortcutKey key : shortcutKeyToPinnedShortcuts.keySet()) {
+                    MutableInt numTimesPinned = sBgPinnedShortcutCounts.get(key);
+                    if (numTimesPinned == null || numTimesPinned.value == 0) {
+                        // Shortcut is pinned but doesn't exist on the workspace; unpin it.
+                        mDeepShortcutManager.unpinShortcut(key);
                     }
                 }
 
@@ -2629,6 +2762,27 @@ public class LauncherModel extends BroadcastReceiver
             }
         }
 
+        private void loadAndBindDeepShortcuts() {
+            if (DEBUG_LOADERS) {
+                Log.d(TAG, "loadAndBindDeepShortcuts mDeepShortcutsLoaded=" + mDeepShortcutsLoaded);
+            }
+            if (!mDeepShortcutsLoaded) {
+                mBgDeepShortcutMap.clear();
+                for (UserHandleCompat user : mUserManager.getUserProfiles()) {
+                    List<ShortcutInfoCompat> shortcuts = mDeepShortcutManager
+                            .queryForAllShortcuts(user);
+                    updateDeepShortcutMap(null, shortcuts);
+                }
+                synchronized (LoaderTask.this) {
+                    if (mStopped) {
+                        return;
+                    }
+                    mDeepShortcutsLoaded = true;
+                }
+            }
+            bindDeepShortcutMapOnMainThread();
+        }
+
         public void dumpState() {
             synchronized (sBgLock) {
                 Log.d(TAG, "mLoaderTask.mContext=" + mContext);
@@ -2637,6 +2791,40 @@ public class LauncherModel extends BroadcastReceiver
                 Log.d(TAG, "mItems size=" + sBgWorkspaceItems.size());
             }
         }
+    }
+
+    // Clear all the shortcuts for the given package, and re-add the new shortcuts.
+    private void updateDeepShortcutMap(String packageName, List<ShortcutInfoCompat> shortcuts) {
+        // Remove all keys associated with the given package.
+        if (packageName != null) {
+            Iterator<ComponentKey> keysIter = mBgDeepShortcutMap.keySet().iterator();
+            while (keysIter.hasNext()) {
+                if (keysIter.next().componentName.getPackageName().equals(packageName)) {
+                    keysIter.remove();
+                }
+            }
+        }
+
+        // Now add the new shortcuts to the map.
+        for (ShortcutInfoCompat shortcut : shortcuts) {
+            ComponentKey targetComponent
+                    = new ComponentKey(shortcut.getActivity(), shortcut.getUserHandle());
+            mBgDeepShortcutMap.addToList(targetComponent, shortcut.getId());
+        }
+    }
+
+    private void bindDeepShortcutMapOnMainThread() {
+        final MultiHashMap<ComponentKey, String> shortcutMapCopy = new MultiHashMap<>();
+        shortcutMapCopy.putAll(mBgDeepShortcutMap);
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                Callbacks callbacks = getCallback();
+                if (callbacks != null) {
+                    callbacks.bindDeepShortcutMap(shortcutMapCopy);
+                }
+            }
+        });
     }
 
     /**
@@ -2664,19 +2852,7 @@ public class LauncherModel extends BroadcastReceiver
             mBgAllAppsList.updateIconsAndLabels(updatedPackages, user, updatedApps);
         }
 
-        if (!updatedShortcuts.isEmpty()) {
-            final UserHandleCompat userFinal = user;
-            mHandler.post(new Runnable() {
-
-                public void run() {
-                    Callbacks cb = getCallback();
-                    if (cb != null && callbacks == cb) {
-                        cb.bindShortcutsChanged(updatedShortcuts,
-                                new ArrayList<ShortcutInfo>(), userFinal);
-                    }
-                }
-            });
-        }
+        bindUpdatedShortcuts(updatedShortcuts, user);
 
         if (!updatedApps.isEmpty()) {
             mHandler.post(new Runnable() {
@@ -2691,7 +2867,25 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
-    void enqueuePackageUpdated(PackageUpdatedTask task) {
+    private void bindUpdatedShortcuts(final ArrayList<ShortcutInfo> updatedShortcuts,
+            UserHandleCompat user) {
+        if (!updatedShortcuts.isEmpty()) {
+            final Callbacks callbacks = getCallback();
+            final UserHandleCompat userFinal = user;
+            mHandler.post(new Runnable() {
+
+                public void run() {
+                    Callbacks cb = getCallback();
+                    if (cb != null && callbacks == cb) {
+                        cb.bindShortcutsChanged(updatedShortcuts,
+                                new ArrayList<ShortcutInfo>(), userFinal);
+                    }
+                }
+            });
+        }
+    }
+
+    void enqueueItemUpdatedTask(Runnable task) {
         sWorker.post(task);
     }
 
@@ -2719,11 +2913,11 @@ public class LauncherModel extends BroadcastReceiver
                         }
                     }
                     if (!packagesRemoved.isEmpty()) {
-                        enqueuePackageUpdated(new PackageUpdatedTask(PackageUpdatedTask.OP_REMOVE,
+                        enqueueItemUpdatedTask(new PackageUpdatedTask(PackageUpdatedTask.OP_REMOVE,
                                 packagesRemoved.toArray(new String[packagesRemoved.size()]), user));
                     }
                     if (!packagesUnavailable.isEmpty()) {
-                        enqueuePackageUpdated(new PackageUpdatedTask(PackageUpdatedTask.OP_UNAVAILABLE,
+                        enqueueItemUpdatedTask(new PackageUpdatedTask(PackageUpdatedTask.OP_UNAVAILABLE,
                                 packagesUnavailable.toArray(new String[packagesUnavailable.size()]), user));
                     }
                 }
@@ -3078,6 +3272,60 @@ public class LauncherModel extends BroadcastReceiver
                     }
                 });
             }
+        }
+    }
+
+    private class ShortcutsChangedTask implements Runnable {
+        private String mPackageName;
+        private List<ShortcutInfoCompat> mShortcuts;
+        private UserHandleCompat mUser;
+
+        public ShortcutsChangedTask(String packageName, List<ShortcutInfoCompat> shortcuts,
+                UserHandleCompat user) {
+            mPackageName = packageName;
+            mShortcuts = shortcuts;
+            mUser = user;
+        }
+
+        @Override
+        public void run() {
+            mDeepShortcutManager.onShortcutsChanged(mShortcuts);
+
+            Map<String, ShortcutInfoCompat> idsToShortcuts = new HashMap<>();
+            for (ShortcutInfoCompat shortcut : mShortcuts) {
+                idsToShortcuts.put(shortcut.getId(), shortcut);
+            }
+
+            // Find ShortcutInfo's that have changed on the workspace.
+            MultiHashMap<String, ShortcutInfo> idsToWorkspaceShortcutInfos = new MultiHashMap<>();
+            for (ItemInfo itemInfo : sBgItemsIdMap) {
+                if (itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+                    ShortcutInfo si = (ShortcutInfo) itemInfo;
+                    String shortcutId = si.getDeepShortcutId();
+                    if (idsToShortcuts.containsKey(shortcutId)) {
+                        idsToWorkspaceShortcutInfos.addToList(shortcutId, si);
+                    }
+                }
+            }
+
+            // Update the workspace to reflect the changes to updated shortcuts residing on it.
+            List<ShortcutInfoCompat> shortcuts = mDeepShortcutManager.queryForFullDetails(
+                    mPackageName, new ArrayList<>(idsToWorkspaceShortcutInfos.keySet()), mUser);
+            ArrayList<ShortcutInfo> updatedShortcutInfos = new ArrayList<>();
+            Context context = LauncherAppState.getInstance().getContext();
+            for (ShortcutInfoCompat fullDetails : shortcuts) {
+                List<ShortcutInfo> shortcutInfos = idsToWorkspaceShortcutInfos
+                        .get(fullDetails.getId());
+                for (ShortcutInfo shortcutInfo : shortcutInfos) {
+                    shortcutInfo.updateFromDeepShortcutInfo(fullDetails, context, mLauncherApps);
+                    updatedShortcutInfos.add(shortcutInfo);
+                }
+            }
+            bindUpdatedShortcuts(updatedShortcutInfos, mUser);
+
+            // Update the deep shortcut map, in case the list of ids has changed for an activity.
+            updateDeepShortcutMap(mPackageName, mShortcuts);
+            bindDeepShortcutMapOnMainThread();
         }
     }
 
