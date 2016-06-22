@@ -32,7 +32,7 @@ public abstract class UserManagerCompat {
     public static UserManagerCompat getInstance(Context context) {
         synchronized (sInstanceLock) {
             if (sInstance == null) {
-                if (Utilities.isNycOrAbove()) {
+                if (Utilities.ATLEAST_N) {
                     sInstance = new UserManagerCompatVN(context.getApplicationContext());
                 } else if (Utilities.ATLEAST_LOLLIPOP) {
                     sInstance = new UserManagerCompatVL(context.getApplicationContext());
