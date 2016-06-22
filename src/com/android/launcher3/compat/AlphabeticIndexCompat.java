@@ -20,7 +20,7 @@ public class AlphabeticIndexCompat {
         BaseIndex index = null;
 
         try {
-            if (Utilities.isNycOrAbove()) {
+            if (Utilities.ATLEAST_N) {
                 index = new AlphabeticIndexVN(context);
             }
         } catch (Exception e) {
