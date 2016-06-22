@@ -60,6 +60,7 @@ import com.android.launcher3.Launcher.CustomContentCallbacks;
 import com.android.launcher3.Launcher.LauncherOverlay;
 import com.android.launcher3.UninstallDropTarget.DropTargetSource;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate.AccessibilityDragSource;
+import com.android.launcher3.accessibility.OverviewAccessibilityDelegate;
 import com.android.launcher3.accessibility.OverviewScreenAccessibilityDelegate;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
@@ -455,6 +456,12 @@ public class Workspace extends PagedView
         setWallpaperDimension();
 
         setEdgeGlowColor(getResources().getColor(R.color.workspace_edge_effect_color));
+    }
+
+    @Override
+    public void initParentViews(View parent) {
+        super.initParentViews(parent);
+        mPageIndicator.setAccessibilityDelegate(new OverviewAccessibilityDelegate());
     }
 
     private int getDefaultPage() {
@@ -1444,10 +1451,9 @@ public class Workspace extends PagedView
         mHotseatAlpha[direction.ordinal()] = alpha;
         float finalAlpha = mHotseatAlpha[0] * mHotseatAlpha[1];
 
-        View pageIndicator = getPageIndicator();
-        if (pageIndicator != null) {
-            property.set(pageIndicator, translation);
-            pageIndicator.setAlpha(finalAlpha);
+        if (mPageIndicator != null) {
+            property.set(mPageIndicator, translation);
+            mPageIndicator.setAlpha(alpha);
         }
 
         property.set(mLauncher.getHotseat(), translation);
@@ -1646,28 +1652,13 @@ public class Workspace extends PagedView
             mLauncher.getHotseat().setTranslationX(translationX);
         }
 
-        if (getPageIndicator() != null) {
-            getPageIndicator().setTranslationX(translationX);
+        if (mPageIndicator != null) {
+            mPageIndicator.setTranslationX(translationX);
         }
 
         if (mCustomContentCallbacks != null) {
             mCustomContentCallbacks.onScrollProgressChanged(progress);
         }
-    }
-
-    @Override
-    protected OnClickListener getPageIndicatorClickListener() {
-        AccessibilityManager am = (AccessibilityManager)
-                getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
-        if (!am.isTouchExplorationEnabled()) {
-            return null;
-        }
-        return new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                mLauncher.showOverviewMode(true);
-            }
-        };
     }
 
     @Override
@@ -1691,15 +1682,6 @@ public class Workspace extends PagedView
     }
 
     protected void onResume() {
-        if (getPageIndicator() != null) {
-            // In case accessibility state has changed, we need to perform this on every
-            // attach to window
-            OnClickListener listener = getPageIndicatorClickListener();
-            if (listener != null) {
-                getPageIndicator().setOnClickListener(listener);
-            }
-        }
-
         // Update wallpaper dimensions if they were changed since last onResume
         // (we also always set the wallpaper dimensions in the constructor)
         if (LauncherAppState.getInstance().hasWallpaperChangedSinceLastCheck()) {
@@ -2085,10 +2067,13 @@ public class Workspace extends PagedView
                     IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
             page.setContentDescription(getPageDescription(pageNo));
 
-            if (mPagesAccessibilityDelegate == null) {
-                mPagesAccessibilityDelegate = new OverviewScreenAccessibilityDelegate(this);
+            // No custom action for the first page.
+            if (!FeatureFlags.QSB_ON_FIRST_SCREEN || pageNo > 0) {
+                if (mPagesAccessibilityDelegate == null) {
+                    mPagesAccessibilityDelegate = new OverviewScreenAccessibilityDelegate(this);
+                }
+                page.setAccessibilityDelegate(mPagesAccessibilityDelegate);
             }
-            page.setAccessibilityDelegate(mPagesAccessibilityDelegate);
         } else {
             int accessible = mState == State.NORMAL ?
                     IMPORTANT_FOR_ACCESSIBILITY_AUTO :
@@ -2117,7 +2102,7 @@ public class Workspace extends PagedView
 
     @Override
     public void onLauncherTransitionStart(Launcher l, boolean animated, boolean toWorkspace) {
-        if (mPageIndicator instanceof PageIndicator) {
+        if (mPageIndicator != null) {
             boolean isNewStateSpringLoaded = mState == State.SPRING_LOADED;
             mPageIndicator.setShouldAutoHide(!isNewStateSpringLoaded);
             if (isNewStateSpringLoaded) {
@@ -4196,7 +4181,7 @@ public class Workspace extends PagedView
 
     public interface ItemOperator {
         /**
-         * Process the next itemInfo, possibly with side-effect on {@link ItemOperator#value}.
+         * Process the next itemInfo, possibly with side-effect on the next item.
          *
          * @param info info for the shortcut
          * @param view view for the shortcut
@@ -4380,11 +4365,7 @@ public class Workspace extends PagedView
         exitWidgetResizeMode();
     }
 
-    protected String getPageIndicatorDescription() {
-        String settings = getResources().getString(R.string.settings_button_text);
-        return getCurrentPageDescription() + ", " + settings;
-    }
-
+    @Override
     protected String getCurrentPageDescription() {
         if (hasCustomContent() && getNextPage() == 0) {
             return mCustomContentDescription;
