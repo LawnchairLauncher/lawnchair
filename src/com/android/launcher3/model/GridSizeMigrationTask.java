@@ -150,7 +150,7 @@ public class GridSizeMigrationTask {
     protected boolean migrateHotseat() throws Exception {
         ArrayList<DbEntry> items = loadHotseatEntries();
 
-        int requiredCount = mDestHotseatSize - 1;
+        int requiredCount = FeatureFlags.NO_ALL_APPS_ICON ? mDestHotseatSize : mDestHotseatSize - 1;
 
         while (items.size() > requiredCount) {
             // Pick the center item by default.
