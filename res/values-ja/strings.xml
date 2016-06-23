@@ -26,7 +26,7 @@
     <string name="activity_not_available" msgid="7456344436509528827">"このアプリは使用できません"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"ダウンロードしたアプリは、セーフモードでは無効です"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"セーフモードではウィジェットは無効です"</string>
-    <string name="long_press_widget_to_add" msgid="5154837155685183344">"ウィジェットを追加するには押し続けます。"</string>
+    <string name="long_press_widget_to_add" msgid="7699152356777458215">"ウィジェットを追加するには押し続けます。"</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"ダブルタップ後に押し続けてウィジェットを選択するか、カスタム操作を使用してください。"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$dx%2$d"</string>
     <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"アプリを検索…"</string>
@@ -60,7 +60,7 @@
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"アイコンをコピー"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"初期状態にリセットする"</string>
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"壁紙、ウィジェット、設定"</string>
-    <string name="workspace_cling_longpress_description" msgid="6569028007301925917">"カスタマイズするにはバックグラウンドを押し続けます"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"カスタマイズするには背景を押し続けます"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"OK"</string>
     <string name="folder_opened" msgid="94695026776264709">"フォルダが開いています。<xliff:g id="WIDTH">%1$d</xliff:g>x<xliff:g id="HEIGHT">%2$d</xliff:g>の大きさです"</string>
     <string name="folder_tap_to_close" msgid="4625795376335528256">"タップしてフォルダを閉じます"</string>
@@ -72,6 +72,8 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"壁紙"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"設定"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"管理者により無効にされています"</string>
+    <!-- no translation found for accessibility_action_overview (6257665857640347026) -->
+    <skip />
     <string name="allow_rotation_title" msgid="3132336367556833843">"ホーム画面の回転を許可"</string>
     <string name="allow_rotation_desc" msgid="7635719920854330492">"端末が回転したとき"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"現在の [ディスプレイ] 設定では回転を使用できません"</string>
