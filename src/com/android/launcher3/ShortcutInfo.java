@@ -282,18 +282,17 @@ public class ShortcutInfo extends ItemInfo {
      */
     @TargetApi(Build.VERSION_CODES.N)
     public static ShortcutInfo fromDeepShortcutInfo(ShortcutInfoCompat shortcutInfo,
-            Context context, LauncherAppsCompat launcherApps) {
+            Context context) {
         ShortcutInfo si = new ShortcutInfo();
         si.user = shortcutInfo.getUserHandle();
         si.itemType = LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
         si.intent = shortcutInfo.makeIntent(context);
         si.flags = 0;
-        si.updateFromDeepShortcutInfo(shortcutInfo, context, launcherApps);
+        si.updateFromDeepShortcutInfo(shortcutInfo, context);
         return si;
     }
 
-    public void updateFromDeepShortcutInfo(ShortcutInfoCompat shortcutInfo,
-            Context context, LauncherAppsCompat launcherApps) {
+    public void updateFromDeepShortcutInfo(ShortcutInfoCompat shortcutInfo, Context context) {
         title = shortcutInfo.getShortLabel();
 
         CharSequence label = shortcutInfo.getLongLabel();
@@ -304,8 +303,9 @@ public class ShortcutInfo extends ItemInfo {
                 .getBadgedLabelForUser(label, user);
 
         LauncherAppState launcherAppState = LauncherAppState.getInstance();
-        Drawable unbadgedIcon = launcherApps.getShortcutIconDrawable(shortcutInfo, launcherAppState
-                .getInvariantDeviceProfile().fillResIconDpi);
+        Drawable unbadgedIcon = launcherAppState.getShortcutManager()
+                .getShortcutIconDrawable(shortcutInfo,
+                        launcherAppState.getInvariantDeviceProfile().fillResIconDpi);
         Bitmap icon = unbadgedIcon == null ? null
                 : Utilities.createBadgedIconBitmap(unbadgedIcon, user, context);
         setIcon(icon != null ? icon : launcherAppState.getIconCache().getDefaultIcon(user));

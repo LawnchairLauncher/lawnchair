@@ -19,30 +19,37 @@ package com.android.launcher3.shortcuts;
 import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.LauncherApps;
 import android.content.pm.LauncherApps.ShortcutQuery;
-import android.os.Build;
-import android.os.Process;
-import android.util.Log;
+import android.content.pm.ShortcutInfo;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 
-import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserHandleCompat;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Performs operations related to deep shortcuts, such as querying for them, pinning them, etc.
  */
-@TargetApi(Build.VERSION_CODES.N)
 public class DeepShortcutManager {
-    private static final int FLAG_GET_ALL = ShortcutQuery.FLAG_GET_DYNAMIC
-            | ShortcutQuery.FLAG_GET_PINNED | ShortcutQuery.FLAG_GET_MANIFEST;
 
-    private final LauncherAppsCompat mLauncherApps;
+    // TODO: Replace this with platform constants when the new sdk is available.
+    public static final int FLAG_MATCH_DYNAMIC = 1 << 0;
+    public static final int FLAG_MATCH_MANIFEST = 1 << 3;
+    public static final int FLAG_MATCH_PINNED = 1 << 1;
+
+    private static final int FLAG_GET_ALL =
+            FLAG_MATCH_DYNAMIC | FLAG_MATCH_PINNED | FLAG_MATCH_MANIFEST;
+
+    private final LauncherApps mLauncherApps;
 
     public DeepShortcutManager(Context context, ShortcutCache shortcutCache) {
-        mLauncherApps = LauncherAppsCompat.getInstance(context);
+        mLauncherApps = (LauncherApps) context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
     }
 
     public void onShortcutsChanged(List<ShortcutInfoCompat> shortcuts) {
@@ -72,26 +79,48 @@ public class DeepShortcutManager {
      * Removes the given shortcut from the current list of pinned shortcuts.
      * (Runs on background thread)
      */
+    @TargetApi(25)
     public void unpinShortcut(final ShortcutKey key) {
-        String packageName = key.componentName.getPackageName();
-        String id = key.id;
-        UserHandleCompat user = key.user;
-        List<String> pinnedIds = extractIds(queryForPinnedShortcuts(packageName, user));
-        pinnedIds.remove(id);
-        mLauncherApps.pinShortcuts(packageName, pinnedIds, user);
+        if (Utilities.isNycMR1OrAbove()) {
+            String packageName = key.componentName.getPackageName();
+            String id = key.id;
+            UserHandleCompat user = key.user;
+            List<String> pinnedIds = extractIds(queryForPinnedShortcuts(packageName, user));
+            pinnedIds.remove(id);
+            mLauncherApps.pinShortcuts(packageName, pinnedIds, user.getUser());
+        }
     }
 
     /**
      * Adds the given shortcut to the current list of pinned shortcuts.
      * (Runs on background thread)
      */
+    @TargetApi(25)
     public void pinShortcut(final ShortcutKey key) {
-        String packageName = key.componentName.getPackageName();
-        String id = key.id;
-        UserHandleCompat user = key.user;
-        List<String> pinnedIds = extractIds(queryForPinnedShortcuts(packageName, user));
-        pinnedIds.add(id);
-        mLauncherApps.pinShortcuts(packageName, pinnedIds, user);
+        if (Utilities.isNycMR1OrAbove()) {
+            String packageName = key.componentName.getPackageName();
+            String id = key.id;
+            UserHandleCompat user = key.user;
+            List<String> pinnedIds = extractIds(queryForPinnedShortcuts(packageName, user));
+            pinnedIds.add(id);
+            mLauncherApps.pinShortcuts(packageName, pinnedIds, user.getUser());
+        }
+    }
+
+    @TargetApi(25)
+    public void startShortcut(String packageName, String id, Rect sourceBounds,
+          Bundle startActivityOptions, UserHandleCompat user) {
+        if (Utilities.isNycMR1OrAbove()) {
+            mLauncherApps.startShortcut(packageName, id, sourceBounds,
+                    startActivityOptions, user.getUser());
+        }
+    }
+
+    @TargetApi(25)
+    public Drawable getShortcutIconDrawable(ShortcutInfoCompat shortcutInfo, int density) {
+        return Utilities.isNycMR1OrAbove()
+                ? mLauncherApps.getShortcutIconDrawable(shortcutInfo.getShortcutInfo(), density)
+                : null;
     }
 
     /**
@@ -101,7 +130,7 @@ public class DeepShortcutManager {
      */
     public List<ShortcutInfoCompat> queryForPinnedShortcuts(String packageName,
             UserHandleCompat user) {
-        return query(ShortcutQuery.FLAG_GET_PINNED, packageName, null, null, user);
+        return query(FLAG_MATCH_PINNED, packageName, null, null, user);
     }
 
     public List<ShortcutInfoCompat> queryForAllShortcuts(UserHandleCompat user) {
@@ -122,15 +151,28 @@ public class DeepShortcutManager {
      *
      * TODO: Use the cache to optimize this so we don't make an RPC every time.
      */
+    @TargetApi(25)
     private List<ShortcutInfoCompat> query(int flags, String packageName,
             ComponentName activity, List<String> shortcutIds, UserHandleCompat user) {
-        ShortcutQuery q = new ShortcutQuery();
-        q.setQueryFlags(flags);
-        if (packageName != null) {
-            q.setPackage(packageName);
-            q.setActivity(activity);
-            q.setShortcutIds(shortcutIds);
+        if (Utilities.isNycMR1OrAbove()) {
+            ShortcutQuery q = new ShortcutQuery();
+            q.setQueryFlags(flags);
+            if (packageName != null) {
+                q.setPackage(packageName);
+                q.setActivity(activity);
+                q.setShortcutIds(shortcutIds);
+            }
+            List<ShortcutInfo> shortcutInfos = mLauncherApps.getShortcuts(q, user.getUser());
+            if (shortcutInfos == null) {
+                return Collections.EMPTY_LIST;
+            }
+            List<ShortcutInfoCompat> shortcutInfoCompats = new ArrayList<>(shortcutInfos.size());
+            for (ShortcutInfo shortcutInfo : shortcutInfos) {
+                shortcutInfoCompats.add(new ShortcutInfoCompat(shortcutInfo));
+            }
+            return shortcutInfoCompats;
+        } else {
+            return Collections.EMPTY_LIST;
         }
-        return mLauncherApps.getShortcuts(q, user);
     }
 }
