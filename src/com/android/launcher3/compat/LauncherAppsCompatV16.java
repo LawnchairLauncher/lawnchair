@@ -133,29 +133,6 @@ public class LauncherAppsCompatV16 extends LauncherAppsCompat {
         return false;
     }
 
-    @Override
-    public List<ShortcutInfoCompat> getShortcuts(LauncherApps.ShortcutQuery q,
-            UserHandleCompat userHandle) {
-        return null;
-    }
-
-    @Override
-    public void pinShortcuts(String packageName, List<String> pinnedIds,
-            UserHandleCompat userHandle) {
-        // Not supported, so do nothing.
-    }
-
-    @Override
-    public void startShortcut(String packageName, String id, Rect sourceBounds,
-            Bundle startActivityOptions, UserHandleCompat user) {
-        // Not supported, so do nothing.
-    }
-
-    @Override
-    public Drawable getShortcutIconDrawable(ShortcutInfoCompat shortcutInfo, int density) {
-        return null;
-    }
-
     private void unregisterForPackageIntents() {
         mContext.unregisterReceiver(mPackageMonitor);
     }

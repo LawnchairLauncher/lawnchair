@@ -44,8 +44,10 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.os.Build;
+import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.support.v4.os.BuildCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -99,6 +101,12 @@ public final class Utilities {
 
     private static final int[] sLoc0 = new int[2];
     private static final int[] sLoc1 = new int[2];
+
+    public static boolean isNycMR1OrAbove() {
+        // TODO: Use the check from support lib
+        return !"REL".equals(VERSION.CODENAME)
+                && "NMR1".compareTo(VERSION.CODENAME) <= 0;
+    }
 
     // TODO: use Build.VERSION_CODES when available
     public static final boolean ATLEAST_MARSHMALLOW = Build.VERSION.SDK_INT >= 23;
