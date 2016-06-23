@@ -26,7 +26,7 @@
     <string name="activity_not_available" msgid="7456344436509528827">"មិន​មាន​កម្មវិធី"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"បាន​បិទ​កម្មវិធី​ដែល​បាន​ទាញ​យក​ក្នុង​របៀប​សុវត្ថិភាព"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"បាន​បិទ​ធាតុ​ក្រាហ្វិក​ក្នុង​របៀប​សុវត្ថិភាព"</string>
-    <string name="long_press_widget_to_add" msgid="5154837155685183344">"ប៉ះ និងសង្កត់ឲ្យជាប់ដើម្បីជ្រើសធាតុក្រាហ្វិក"</string>
+    <string name="long_press_widget_to_add" msgid="7699152356777458215">"ប៉ះ &amp; សង្កត់ ដើម្បី​ជ្រើស​ធាតុ​ក្រាហ្វិក។"</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"ប៉ះពីរដង ហើយចុចឲ្យជាប់ដើម្បីជ្រើសយកធាតុក្រាហ្វិក ឬប្រើសកម្មភាពផ្ទាល់ខ្លួន។"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"ស្វែងរកកម្មវិធី…"</string>
@@ -60,7 +60,7 @@
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"រូប​តំណាង​ច្បាប់​ចម្លង"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"ចាប់ផ្ដើម​ធ្វើ​ឲ្យ​ស្រស់"</string>
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"ផ្ទាំងរូបភាព,ធាតុក្រាហ្វិក &amp; ការកំណត់"</string>
-    <string name="workspace_cling_longpress_description" msgid="6569028007301925917">"ប៉ះ និងសង្កត់ផ្ទៃខាងក្រោយឲ្យជាប់ដើម្បីប្ដូរតាមបំណង"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"ប៉ះ &amp; សង្កត់​ផ្ទៃ​ខាង​ក្រោយ​ឲ្យជាប់ ដើម្បី​ប្ដូរ​តាមបំណង"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"យល់​ហើយ"</string>
     <string name="folder_opened" msgid="94695026776264709">"បាន​បើក​ថត <xliff:g id="WIDTH">%1$d</xliff:g> ដោយ <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="4625795376335528256">"ប៉ះ ដើម្បីបិទថត"</string>
@@ -72,6 +72,8 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"ផ្ទាំង​រូបភាព"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"ការកំណត់"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"បានបិទដំណើរការដោយអ្នកគ្រប់គ្រងរបស់អ្នក"</string>
+    <!-- no translation found for accessibility_action_overview (6257665857640347026) -->
+    <skip />
     <string name="allow_rotation_title" msgid="3132336367556833843">"អនុញ្ញាតការបងិ្វលអេក្រង់ដើម"</string>
     <string name="allow_rotation_desc" msgid="7635719920854330492">"នៅ​ពេល​បង្វិល​ឧបករណ៍When device is rotated"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"ការកំណត់អេក្រង់បច្ចុប្បន្នមិនអនុញ្ញាតការបង្វិលទេ"</string>
