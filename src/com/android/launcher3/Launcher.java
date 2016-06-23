@@ -2801,8 +2801,8 @@ public class Launcher extends Activity
                 if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
                     String id = ((ShortcutInfo) info).getDeepShortcutId();
                     String packageName = intent.getPackage();
-                    LauncherAppsCompat.getInstance(this).startShortcut(
-                                packageName, id, intent.getSourceBounds(), optsBundle, info.user);
+                    LauncherAppState.getInstance().getShortcutManager().startShortcut(
+                            packageName, id, intent.getSourceBounds(), optsBundle, info.user);
                 } else {
                     // Could be launching some bookkeeping activity
                     startActivity(intent, optsBundle);

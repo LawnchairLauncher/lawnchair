@@ -61,9 +61,7 @@ public abstract class LauncherAppsCompat {
     public static LauncherAppsCompat getInstance(Context context) {
         synchronized (sInstanceLock) {
             if (sInstance == null) {
-                if (Utilities.isNycOrAbove()) {
-                    sInstance = new LauncherAppsCompatVNMR1(context.getApplicationContext());
-                } else if (Utilities.ATLEAST_LOLLIPOP) {
+                if (Utilities.ATLEAST_LOLLIPOP) {
                     sInstance = new LauncherAppsCompatVL(context.getApplicationContext());
                 } else {
                     sInstance = new LauncherAppsCompatV16(context.getApplicationContext());
@@ -86,11 +84,4 @@ public abstract class LauncherAppsCompat {
     public abstract boolean isActivityEnabledForProfile(ComponentName component,
             UserHandleCompat user);
     public abstract boolean isPackageSuspendedForProfile(String packageName, UserHandleCompat user);
-    public abstract List<ShortcutInfoCompat> getShortcuts(LauncherApps.ShortcutQuery q,
-            UserHandleCompat userHandle);
-    public abstract void pinShortcuts(String packageName, List<String> pinnedIds,
-            UserHandleCompat userHandle);
-    public abstract void startShortcut(String packageName, String id, Rect sourceBounds,
-            Bundle startActivityOptions, UserHandleCompat user);
-    public abstract Drawable getShortcutIconDrawable(ShortcutInfoCompat shortcutInfo, int density);
 }

@@ -1941,8 +1941,8 @@ public class LauncherModel extends BroadcastReceiver
                                         }
                                     }
                                     incrementPinnedShortcutCount(key, shouldPin);
-                                    info = ShortcutInfo.fromDeepShortcutInfo(pinnedShortcut,
-                                            context, launcherApps);
+                                    info = ShortcutInfo.fromDeepShortcutInfo(
+                                            pinnedShortcut, context);
                                 } else { // item type == ITEM_TYPE_SHORTCUT
                                     info = getShortcutInfo(c, context, titleIndex, cursorIconInfo);
 
@@ -3317,7 +3317,7 @@ public class LauncherModel extends BroadcastReceiver
                 List<ShortcutInfo> shortcutInfos = idsToWorkspaceShortcutInfos
                         .get(fullDetails.getId());
                 for (ShortcutInfo shortcutInfo : shortcutInfos) {
-                    shortcutInfo.updateFromDeepShortcutInfo(fullDetails, context, mLauncherApps);
+                    shortcutInfo.updateFromDeepShortcutInfo(fullDetails, context);
                     updatedShortcutInfos.add(shortcutInfo);
                 }
             }
