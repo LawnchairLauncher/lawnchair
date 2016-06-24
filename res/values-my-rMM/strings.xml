@@ -26,7 +26,7 @@
     <string name="activity_not_available" msgid="7456344436509528827">"App လက်လှမ်း မမှီပါ"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"ဒေါင်းလုဒ် အက်ပ်ကို လုံခြုံရေး မုဒ်ထဲမှာ ပိတ်ထား"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"လုံခြုံရေး မုဒ်ထဲမှာ ဝီဂျက်များကို ပိတ်ထား"</string>
-    <string name="long_press_widget_to_add" msgid="5154837155685183344">"ဝစ်ဂျက်တစ်ခုကို ရွေးချယ်ရန် တို့၍ &amp; ဖိထားပါ"</string>
+    <string name="long_press_widget_to_add" msgid="7699152356777458215">"ဝဒ်ဂျက်တစ်ခုကို ကောက်ယူရန် ဖိနှိပ်ထားပါ"</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"ဝစ်ဂျက်တစ်ခုကိုရယူရန် သို့မဟုတ် စိတ်ကြိုက်လုပ်ဆောင်မှုများကို အသုံးပြုရန် နှစ်ချက်တို့ပြီး ကိုင်ထားပါ။"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"အက်ပ်များကို ရှာဖွေပါ…"</string>
@@ -60,7 +60,7 @@
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"COPY ICONS"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"START FRESH"</string>
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"နောက်ခံများ၊ ဝိဂျက်များ&amp; ဆက်တင်များ"</string>
-    <string name="workspace_cling_longpress_description" msgid="6569028007301925917">"စိတ်တိုင်းကျပြုပြင်ရန် နောက်ခံတို့၍ &amp; ဖိထားပါ"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"နောက်ခံကို စိတ်တိုင်းကျ ပြုလုပ်ရန် ထိလျက် &amp; ကိုင်ထားပါ"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"ရပါပြီ"</string>
     <string name="folder_opened" msgid="94695026776264709">"ဖွင့်ထားသောအကန့်, <xliff:g id="WIDTH">%1$d</xliff:g> နှင့် <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="4625795376335528256">"ဖိုင်တွဲကို ပိတ်ရန် တို့ပါ"</string>
@@ -72,6 +72,8 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"နောက်ခံများ"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"ဆက်တင်များ"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"သင့်စီမံခန့်ခွဲသူက ပိတ်လိုက်ပါသည်"</string>
+    <!-- no translation found for accessibility_action_overview (6257665857640347026) -->
+    <skip />
     <string name="allow_rotation_title" msgid="3132336367556833843">"ပင်မစာမျက်နှာကို လှည့်ခွင့်ပြုပါ"</string>
     <string name="allow_rotation_desc" msgid="7635719920854330492">"စက်ပစ္စည်းကို လှည့်ထားသည့်အခါ"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"လက်ရှိ မြင်ကွင်းဆက်တင်တွင် မြင်ကွင်းကို လှည့်ခွင့်မပေးပါ"</string>
