@@ -26,7 +26,7 @@
     <string name="activity_not_available" msgid="7456344436509528827">"Aplikacija nije dostupna"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Preuzeta aplikacija onemogućena je u Sigurnom načinu rada"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Widgeti su onemogućeni u Sigurnom načinu rada"</string>
-    <string name="long_press_widget_to_add" msgid="5154837155685183344">"Dodirnite i zadržite da biste podigli widget."</string>
+    <string name="long_press_widget_to_add" msgid="7699152356777458215">"Dodirnite i držite kako biste podigli widget."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Dodirnite dvaput i držite kako biste podigli widget ili pokušajte prilagođenim radnjama."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"Pretraživanje aplikacija…"</string>
@@ -60,7 +60,7 @@
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"KOPIRAJ IKONE"</string>
     <string name="migration_cling_use_default" msgid="2626475813981258626">"POKRENI NOVO"</string>
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Pozadine, widgeti i postavke"</string>
-    <string name="workspace_cling_longpress_description" msgid="6569028007301925917">"Dodirnite i zadržite pozadinu da biste je prilagodili"</string>
+    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Dodirnite i zadržite pozadinu radi prilagodbe"</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"SHVAĆAM"</string>
     <string name="folder_opened" msgid="94695026776264709">"Mapa je otvorena, <xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="4625795376335528256">"Dodirnite da biste zatvorili mapu"</string>
@@ -72,6 +72,8 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Pozadine"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"Postavke"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Onemogućio administrator"</string>
+    <!-- no translation found for accessibility_action_overview (6257665857640347026) -->
+    <skip />
     <string name="allow_rotation_title" msgid="3132336367556833843">"Dopusti zakretanje početnog zaslona"</string>
     <string name="allow_rotation_desc" msgid="7635719920854330492">"Kada se uređaj zakrene"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Trenutačna postavka zaslona ne dopušta zakretanje"</string>
