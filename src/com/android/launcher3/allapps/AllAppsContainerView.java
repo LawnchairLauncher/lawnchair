@@ -459,6 +459,16 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         lp.leftMargin = bgPadding.left;
         lp.rightMargin = bgPadding.right;
 
+        // Clip the view to the left and right edge of the background to
+        // to prevent shadows from rendering beyond the edges
+        final Rect newClipBounds = new Rect(
+                bgPadding.left,
+                0,
+                getWidth() - bgPadding.right,
+                getHeight()
+        );
+        setClipBounds(newClipBounds);
+
         DeviceProfile grid = mLauncher.getDeviceProfile();
         if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
             if (!grid.isVerticalBarLayout()) {
