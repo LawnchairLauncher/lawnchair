@@ -97,6 +97,9 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             } else if (!mLauncher.isAllAppsVisible() && !shouldPossiblyIntercept(ev)) {
                 mNoIntercept = true;
             } else {
+                // This controller is now going to handle all the touch events.
+                // First cancel any animation that is in progress.
+                cancelAnimation();
                 // Now figure out which direction scroll events the controller will start
                 // calling the callbacks.
                 int conditionsToReportScroll = 0;
@@ -162,7 +165,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     @Override
     public void onScrollStart(boolean start) {
-        cancelAnimation();
         mCurrentAnimation = LauncherAnimUtils.createAnimatorSet();
         mShiftStart = mAppsView.getTranslationY();
         preparePull(start);
