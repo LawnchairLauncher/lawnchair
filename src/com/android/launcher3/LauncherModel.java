@@ -1932,10 +1932,7 @@ public class LauncherModel extends BroadcastReceiver
                                         List<ShortcutInfoCompat> fullDetails = mDeepShortcutManager
                                                 .queryForFullDetails(packageName,
                                                 Collections.singletonList(shortcutId), user);
-                                        if (fullDetails == null || fullDetails.isEmpty()) {
-                                            itemsToRemove.add(id);
-                                            continue;
-                                        } else {
+                                        if (fullDetails != null && !fullDetails.isEmpty()) {
                                             pinnedShortcut = fullDetails.get(0);
                                             shouldPin = true;
                                         }

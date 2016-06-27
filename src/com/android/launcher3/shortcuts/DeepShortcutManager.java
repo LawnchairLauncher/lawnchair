@@ -25,6 +25,7 @@ import android.content.pm.ShortcutInfo;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserHandleCompat;
@@ -37,6 +38,7 @@ import java.util.List;
  * Performs operations related to deep shortcuts, such as querying for them, pinning them, etc.
  */
 public class DeepShortcutManager {
+    private static final String TAG = "DeepShortcutManager";
 
     // TODO: Replace this with platform constants when the new sdk is available.
     public static final int FLAG_MATCH_DYNAMIC = 1 << 0;
@@ -87,7 +89,11 @@ public class DeepShortcutManager {
             UserHandleCompat user = key.user;
             List<String> pinnedIds = extractIds(queryForPinnedShortcuts(packageName, user));
             pinnedIds.remove(id);
-            mLauncherApps.pinShortcuts(packageName, pinnedIds, user.getUser());
+            try {
+                mLauncherApps.pinShortcuts(packageName, pinnedIds, user.getUser());
+            } catch (SecurityException e) {
+                Log.e(TAG, Log.getStackTraceString(e));
+            }
         }
     }
 
@@ -103,7 +109,11 @@ public class DeepShortcutManager {
             UserHandleCompat user = key.user;
             List<String> pinnedIds = extractIds(queryForPinnedShortcuts(packageName, user));
             pinnedIds.add(id);
-            mLauncherApps.pinShortcuts(packageName, pinnedIds, user.getUser());
+            try {
+                mLauncherApps.pinShortcuts(packageName, pinnedIds, user.getUser());
+            } catch (SecurityException e) {
+                Log.e(TAG, Log.getStackTraceString(e));
+            }
         }
     }
 
@@ -111,16 +121,26 @@ public class DeepShortcutManager {
     public void startShortcut(String packageName, String id, Rect sourceBounds,
           Bundle startActivityOptions, UserHandleCompat user) {
         if (Utilities.isNycMR1OrAbove()) {
-            mLauncherApps.startShortcut(packageName, id, sourceBounds,
-                    startActivityOptions, user.getUser());
+            try {
+                mLauncherApps.startShortcut(packageName, id, sourceBounds,
+                        startActivityOptions, user.getUser());
+            } catch (SecurityException e) {
+                Log.e(TAG, Log.getStackTraceString(e));
+            }
         }
     }
 
     @TargetApi(25)
     public Drawable getShortcutIconDrawable(ShortcutInfoCompat shortcutInfo, int density) {
-        return Utilities.isNycMR1OrAbove()
-                ? mLauncherApps.getShortcutIconDrawable(shortcutInfo.getShortcutInfo(), density)
-                : null;
+        if (Utilities.isNycMR1OrAbove()) {
+            try {
+                return mLauncherApps.getShortcutIconDrawable(shortcutInfo.getShortcutInfo(),
+                        density);
+            } catch (SecurityException e) {
+                Log.e(TAG, Log.getStackTraceString(e));
+            }
+        }
+        return null;
     }
 
     /**
@@ -162,7 +182,12 @@ public class DeepShortcutManager {
                 q.setActivity(activity);
                 q.setShortcutIds(shortcutIds);
             }
-            List<ShortcutInfo> shortcutInfos = mLauncherApps.getShortcuts(q, user.getUser());
+            List<ShortcutInfo> shortcutInfos = null;
+            try {
+                shortcutInfos = mLauncherApps.getShortcuts(q, user.getUser());
+            } catch (SecurityException e) {
+                Log.e(TAG, Log.getStackTraceString(e));
+            }
             if (shortcutInfos == null) {
                 return Collections.EMPTY_LIST;
             }
