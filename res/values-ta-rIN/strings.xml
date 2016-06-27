@@ -72,8 +72,7 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"வால்பேப்பர்கள்"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"அமைப்பு"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"உங்கள் நிர்வாகி முடக்கியுள்ளார்"</string>
-    <!-- no translation found for accessibility_action_overview (6257665857640347026) -->
-    <skip />
+    <string name="accessibility_action_overview" msgid="6257665857640347026">"மேலோட்டப் பார்வை"</string>
     <string name="allow_rotation_title" msgid="3132336367556833843">"முகப்புத் திரை சுழற்சியை அனுமதி"</string>
     <string name="allow_rotation_desc" msgid="7635719920854330492">"சாதனத்தைச் சுழற்றும் போது"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"தற்போதைய திரை அமைப்பு சுழற்றுவதை அனுமதிக்கவில்லை"</string>
