@@ -72,8 +72,7 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Bakgrunder"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"Inställningar"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Inaktiverat av administratören"</string>
-    <!-- no translation found for accessibility_action_overview (6257665857640347026) -->
-    <skip />
+    <string name="accessibility_action_overview" msgid="6257665857640347026">"Översikt"</string>
     <string name="allow_rotation_title" msgid="3132336367556833843">"Tillåt rotering av startskärmen"</string>
     <string name="allow_rotation_desc" msgid="7635719920854330492">"När enheten roterar"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Rotering tillåts inte i de nuvarande skärminställningarna"</string>

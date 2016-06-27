@@ -72,8 +72,7 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Hintergründe"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"Einstellungen"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Von deinem Administrator deaktiviert"</string>
-    <!-- no translation found for accessibility_action_overview (6257665857640347026) -->
-    <skip />
+    <string name="accessibility_action_overview" msgid="6257665857640347026">"Übersicht"</string>
     <string name="allow_rotation_title" msgid="3132336367556833843">"Drehung des Startbildschirms zulassen"</string>
     <string name="allow_rotation_desc" msgid="7635719920854330492">"Bei Drehung des Geräts"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Die aktuelle \"Display\"-Einstellung verhindert eine Drehung der Anzeige"</string>

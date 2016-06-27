@@ -72,8 +72,7 @@
     <string name="wallpaper_button_text" msgid="8404103075899945851">"ផ្ទាំង​រូបភាព"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"ការកំណត់"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"បានបិទដំណើរការដោយអ្នកគ្រប់គ្រងរបស់អ្នក"</string>
-    <!-- no translation found for accessibility_action_overview (6257665857640347026) -->
-    <skip />
+    <string name="accessibility_action_overview" msgid="6257665857640347026">"សង្ខេប"</string>
     <string name="allow_rotation_title" msgid="3132336367556833843">"អនុញ្ញាតការបងិ្វលអេក្រង់ដើម"</string>
     <string name="allow_rotation_desc" msgid="7635719920854330492">"នៅ​ពេល​បង្វិល​ឧបករណ៍When device is rotated"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"ការកំណត់អេក្រង់បច្ចុប្បន្នមិនអនុញ្ញាតការបង្វិលទេ"</string>
