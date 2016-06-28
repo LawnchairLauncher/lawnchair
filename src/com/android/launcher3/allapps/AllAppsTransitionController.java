@@ -258,8 +258,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                 mAppsView.getRevealView().setAlpha(mHotseatBackgroundAlpha);
                 setProgress(mShiftRange);
             } else {
-                // TODO: get rid of this workaround to override state change by workspace transition
-                mWorkspace.onLauncherTransitionPrepare(mLauncher, false, false);
                 View child = ((CellLayout) mWorkspace.getChildAt(mWorkspace.getNextPage()))
                         .getShortcutsAndWidgets();
                 child.setVisibility(View.VISIBLE);
@@ -429,9 +427,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     public void finishPullDown() {
-        if (mHotseat.getBackground() != null) {
-            return;
-        }
         mAppsView.setVisibility(View.INVISIBLE);
         mHotseat.setBackgroundTransparent(false /* transparent */);
         mHotseat.setVisibility(View.VISIBLE);
