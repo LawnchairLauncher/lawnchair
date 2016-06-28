@@ -275,13 +275,17 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             return;
         }
         int systemUiFlags = mLauncher.getWindow().getDecorView().getSystemUiVisibility();
+        // SYSTEM_UI_FLAG_LIGHT_NAV_BAR == SYSTEM_UI_FLAG_LIGHT_STATUS_BAR << 1
+        // Use proper constant once API is submitted.
         if (enable) {
             mLauncher.getWindow().getDecorView().setSystemUiVisibility(systemUiFlags
-                    | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                    | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                    | (View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR << 1));
 
         } else {
             mLauncher.getWindow().getDecorView().setSystemUiVisibility(systemUiFlags
-                    & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                    & ~(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                            |(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR << 1)));
 
         }
         mLightStatusBar = enable;
