@@ -459,6 +459,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         lp.leftMargin = bgPadding.left;
         lp.rightMargin = bgPadding.right;
 
+
         // Clip the view to the left and right edge of the background to
         // to prevent shadows from rendering beyond the edges
         final Rect newClipBounds = new Rect(
@@ -468,6 +469,9 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                 getHeight()
         );
         setClipBounds(newClipBounds);
+
+        // Allow the overscroll effect to reach the edges of the view
+        mAppsRecyclerView.setClipToPadding(false);
 
         DeviceProfile grid = mLauncher.getDeviceProfile();
         if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
