@@ -137,7 +137,9 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                     return true;
                 }
             } else {
-                if (mLauncher.getDragLayer().isEventOverHotseat(ev) && !grid.isVerticalBarLayout()) {
+                if ((mLauncher.getDragLayer().isEventOverHotseat(ev)
+                        || mLauncher.getDragLayer().isEventOverPageIndicator(ev))
+                        && !grid.isVerticalBarLayout()) {
                     return true;
                 }
             }

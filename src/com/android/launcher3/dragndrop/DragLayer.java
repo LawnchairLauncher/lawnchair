@@ -187,6 +187,11 @@ public class DragLayer extends InsettableFrameLayout {
         removeView(mOverlayView);
     }
 
+    public boolean isEventOverPageIndicator(MotionEvent ev) {
+        getDescendantRectRelativeToSelf(mLauncher.getWorkspace().getPageIndicator(), mHitRect);
+        return mHitRect.contains((int) ev.getX(), (int) ev.getY());
+    }
+
     public boolean isEventOverHotseat(MotionEvent ev) {
         getDescendantRectRelativeToSelf(mLauncher.getHotseat(), mHitRect);
         return mHitRect.contains((int) ev.getX(), (int) ev.getY());
