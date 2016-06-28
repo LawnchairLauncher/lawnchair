@@ -227,4 +227,8 @@ public class Hotseat extends FrameLayout
             setBackground(mBackground);
         }
     }
+
+    public int getBackgroundDrawableAlpha() {
+        return Color.alpha(mBackgroundColor);
+    }
 }
