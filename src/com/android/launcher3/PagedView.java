@@ -321,7 +321,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         return (getMeasuredHeight() - getViewportHeight()) / 2;
     }
 
-    PageIndicator getPageIndicator() {
+    public PageIndicator getPageIndicator() {
         return mPageIndicator;
     }
 
