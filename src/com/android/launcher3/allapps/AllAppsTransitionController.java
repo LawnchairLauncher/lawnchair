@@ -239,7 +239,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             if (!mLauncher.isAllAppsVisible()) {
                 mLauncher.tryAndUpdatePredictedApps();
 
-                mHotseatBackgroundAlpha = mHotseat.getBackground().getAlpha() / 255f;
+                mHotseatBackgroundAlpha = mHotseat.getBackgroundDrawableAlpha() / 255f;
                 mHotseat.setBackgroundTransparent(true /* transparent */);
                 mAppsView.setVisibility(View.VISIBLE);
                 mAppsView.getContentView().setVisibility(View.VISIBLE);
@@ -270,6 +270,10 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     private void updateLightStatusBar(float progress) {
         boolean enable = (progress < mStatusBarHeight / 2);
+        // Do not modify status bar on landscape as all apps is not full bleed.
+        if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+            return;
+        }
         // Already set correctly
         if (mLightStatusBar == enable) {
             return;

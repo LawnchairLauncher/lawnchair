@@ -53,7 +53,8 @@ public abstract class BaseContainerView extends FrameLayout {
         Launcher launcher = Launcher.getLauncher(context);
         int width = launcher.getDeviceProfile().availableWidthPx;
         if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP &&
-                this instanceof AllAppsContainerView && !launcher.getDeviceProfile().isLandscape) {
+                this instanceof AllAppsContainerView &&
+                !launcher.getDeviceProfile().isVerticalBarLayout()) {
             mHorizontalPadding = 0;
         } else {
             mHorizontalPadding = DeviceProfile.getContainerPadding(context, width);
