@@ -22,6 +22,8 @@ import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
+import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.WallpaperManager;
@@ -211,8 +213,18 @@ public class Workspace extends PagedView
         }
     }
 
+    private static final int HOTSEAT_STATE_ALPHA_INDEX = 2;
+
+    /**
+     * These values correspond to {@link Direction#X} & {@link Direction#Y}
+     */
     private float[] mPageAlpha = new float[] {1, 1};
-    private float[] mHotseatAlpha = new float[] {1, 1};
+    /**
+     * Hotseat alpha can be changed when moving horizontally, vertically, changing states.
+     * The values correspond to {@link Direction#X}, {@link Direction#Y} &
+     * {@link #HOTSEAT_STATE_ALPHA_INDEX} respectively.
+     */
+    private float[] mHotseatAlpha = new float[] {1, 1, 1};
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private State mState = State.NORMAL;
@@ -1448,16 +1460,43 @@ public class Workspace extends PagedView
      */
     public void setHotseatTranslation(Direction direction, float translation, float alpha) {
         Property<View, Float> property = direction.viewProperty;
-        mHotseatAlpha[direction.ordinal()] = alpha;
-        float finalAlpha = mHotseatAlpha[0] * mHotseatAlpha[1];
-
-        if (mPageIndicator != null) {
-            property.set(mPageIndicator, translation);
-            mPageIndicator.setAlpha(alpha);
-        }
-
+        property.set(mPageIndicator, translation);
         property.set(mLauncher.getHotseat(), translation);
+        setHotseatAlphaAtIndex(alpha, direction.ordinal());
+    }
+
+    private void setHotseatAlphaAtIndex(float alpha, int index) {
+        mHotseatAlpha[index] = alpha;
+        float finalAlpha = mHotseatAlpha[0] * mHotseatAlpha[1] * mHotseatAlpha[2];
+
         mLauncher.getHotseat().setAlpha(finalAlpha);
+        mPageIndicator.setAlpha(finalAlpha);
+    }
+
+    public ValueAnimator createHotseatAlphaAnimator(float finalValue) {
+        if (Float.compare(finalValue, mHotseatAlpha[HOTSEAT_STATE_ALPHA_INDEX]) == 0) {
+            // Return a dummy animator to avoid null checks.
+            return ValueAnimator.ofFloat(0, 0);
+        } else {
+            ValueAnimator animator = ValueAnimator
+                    .ofFloat(mHotseatAlpha[HOTSEAT_STATE_ALPHA_INDEX], finalValue);
+            animator.addUpdateListener(new AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    float value = (Float) valueAnimator.getAnimatedValue();
+                    setHotseatAlphaAtIndex(value, HOTSEAT_STATE_ALPHA_INDEX);
+                }
+            });
+
+            AccessibilityManager am = (AccessibilityManager)
+                    mLauncher.getSystemService(Context.ACCESSIBILITY_SERVICE);
+            final boolean accessibilityEnabled = am.isEnabled();
+            animator.addUpdateListener(
+                    new AlphaUpdateListener(mLauncher.getHotseat(), accessibilityEnabled));
+            animator.addUpdateListener(
+                    new AlphaUpdateListener(mPageIndicator, accessibilityEnabled));
+            return animator;
+        }
     }
 
     @Override
