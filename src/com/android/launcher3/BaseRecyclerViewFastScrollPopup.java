@@ -119,6 +119,7 @@ public class BaseRecyclerViewFastScrollPopup {
             mShadow = HolographicOutlineHelper.obtain(
                     mRv.getContext()).createMediumDropShadow(mBg, false /* shouldCache */);
         } else {
+            mShadow = null;
             mBgBounds.setEmpty();
         }
 
