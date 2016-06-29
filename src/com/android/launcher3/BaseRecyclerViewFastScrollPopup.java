@@ -18,6 +18,7 @@ package com.android.launcher3;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -31,8 +32,15 @@ public class BaseRecyclerViewFastScrollPopup {
 
     private static final float FAST_SCROLL_OVERLAY_Y_OFFSET_FACTOR = 1.5f;
 
+    private static final int SHADOW_INSET = 6;
+    private static final int SHADOW_SHIFT_Y = 4;
+    private static final float SHADOW_ALPHA_MULTIPLIER = 0.6f;
+
     private Resources mRes;
     private BaseRecyclerView mRv;
+
+    private Bitmap mShadow;
+    private Paint mShadowPaint;
 
     private Drawable mBg;
     // The absolute bounds of the fast scroller bg
@@ -52,13 +60,20 @@ public class BaseRecyclerViewFastScrollPopup {
     public BaseRecyclerViewFastScrollPopup(BaseRecyclerView rv, Resources res) {
         mRes = res;
         mRv = rv;
+
         mBgOriginalSize = res.getDimensionPixelSize(R.dimen.container_fastscroll_popup_size);
         mBg = rv.getContext().getDrawable(R.drawable.container_fastscroll_popup_bg);
         mBg.setBounds(0, 0, mBgOriginalSize, mBgOriginalSize);
+
         mTextPaint = new Paint();
         mTextPaint.setColor(Color.WHITE);
         mTextPaint.setAntiAlias(true);
         mTextPaint.setTextSize(res.getDimensionPixelSize(R.dimen.container_fastscroll_popup_text_size));
+
+        mShadowPaint = new Paint();
+        mShadowPaint.setAntiAlias(true);
+        mShadowPaint.setFilterBitmap(true);
+        mShadowPaint.setDither(true);
     }
 
     /**
@@ -75,6 +90,7 @@ public class BaseRecyclerViewFastScrollPopup {
 
     /**
      * Updates the bounds for the fast scroller.
+     *
      * @return the invalidation rect for this update.
      */
     public Rect updateFastScrollerBounds(int lastTouchY) {
@@ -98,6 +114,10 @@ public class BaseRecyclerViewFastScrollPopup {
             mBgBounds.top = Math.max(edgePadding,
                     Math.min(mBgBounds.top, mRv.getHeight() - edgePadding - bgHeight));
             mBgBounds.bottom = mBgBounds.top + bgHeight;
+
+            // Generate a bitmap for a shadow matching these bounds
+            mShadow = HolographicOutlineHelper.obtain(
+                    mRv.getContext()).createMediumDropShadow(mBg, false /* shouldCache */);
         } else {
             mBgBounds.setEmpty();
         }
@@ -138,17 +158,32 @@ public class BaseRecyclerViewFastScrollPopup {
 
     public void draw(Canvas c) {
         if (isVisible()) {
-            // Draw the fast scroller popup
+            // Determine the alpha and prepare the canvas
+            final int alpha = (int) (mAlpha * 255);
             int restoreCount = c.save(Canvas.MATRIX_SAVE_FLAG);
             c.translate(mBgBounds.left, mBgBounds.top);
             mTmpRect.set(mBgBounds);
             mTmpRect.offsetTo(0, 0);
+
+            // Expand the rect (with a negative inset), translate it, and draw the shadow
+            if (mShadow != null) {
+                mTmpRect.inset(-SHADOW_INSET * 2, -SHADOW_INSET * 2);
+                mTmpRect.offset(0, SHADOW_SHIFT_Y);
+                mShadowPaint.setAlpha((int) (alpha * SHADOW_ALPHA_MULTIPLIER));
+                c.drawBitmap(mShadow, null, mTmpRect, mShadowPaint);
+                mTmpRect.inset(SHADOW_INSET * 2, SHADOW_INSET * 2);
+                mTmpRect.offset(0, -SHADOW_SHIFT_Y);
+            }
+
+            // Draw the background
             mBg.setBounds(mTmpRect);
-            mBg.setAlpha((int) (mAlpha * 255));
+            mBg.setAlpha(alpha);
             mBg.draw(c);
-            mTextPaint.setAlpha((int) (mAlpha * 255));
+
+            // Draw the text
+            mTextPaint.setAlpha(alpha);
             c.drawText(mSectionName, (mBgBounds.width() - mTextBounds.width()) / 2,
-                    mBgBounds.height() - (mBgBounds.height() - mTextBounds.height()) / 2,
+                    mBgBounds.height() - (mBgBounds.height() / 2) - mTextBounds.exactCenterY(),
                     mTextPaint);
             c.restoreToCount(restoreCount);
         }
