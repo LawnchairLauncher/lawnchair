@@ -175,9 +175,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         if (mAppsView == null) {
             return false;   // early termination.
         }
-        if (0 <= mShiftStart + displacement && mShiftStart + displacement < mShiftRange) {
-            setProgress(mShiftStart + displacement);
-        }
+        float progress = Math.min(Math.max(0, mShiftStart + displacement), mShiftRange);
+        setProgress(progress);
         return true;
     }
 
@@ -233,11 +232,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             mStatusBarHeight = mLauncher.getDragLayer().getInsets().top;
             mHotseat.setVisibility(View.VISIBLE);
             mHotseat.bringToFront();
-            if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
-                mShiftRange = mHotseat.getTop();
-            } else {
-                mShiftRange = mHotseat.getBottom();
-            }
+
             if (!mLauncher.isAllAppsVisible()) {
                 mLauncher.tryAndUpdatePredictedApps();
 
@@ -248,20 +243,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                 mAppsView.getContentView().setBackground(null);
                 mAppsView.getRevealView().setVisibility(View.VISIBLE);
                 mAppsView.getRevealView().setAlpha(mHotseatBackgroundAlpha);
-
-                DeviceProfile grid= mLauncher.getDeviceProfile();
-                if (!grid.isVerticalBarLayout()) {
-                    mShiftRange = mHotseat.getTop();
-                } else {
-                    mShiftRange = mHotseat.getBottom();
-                }
-                mAppsView.getRevealView().setAlpha(mHotseatBackgroundAlpha);
-                setProgress(mShiftRange);
-            } else {
-                View child = ((CellLayout) mWorkspace.getChildAt(mWorkspace.getNextPage()))
-                        .getShortcutsAndWidgets();
-                child.setVisibility(View.VISIBLE);
-                child.setAlpha(1f);
             }
         } else {
             setProgress(mShiftCurrent);
@@ -449,5 +430,18 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mAppsView = appsView;
         mHotseat = hotseat;
         mWorkspace = workspace;
+        mHotseat.addOnLayoutChangeListener(new View.OnLayoutChangeListener(){
+            public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                    int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+                    mShiftRange = top;
+                } else {
+                    mShiftRange = bottom;
+                }
+                if (!mLauncher.isAllAppsVisible()) {
+                    setProgress(mShiftRange);
+                }
+            }
+        });
     }
 }
