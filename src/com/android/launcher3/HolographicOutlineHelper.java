@@ -83,6 +83,7 @@ public class HolographicOutlineHelper {
             int outlineColor) {
         applyExpensiveOutlineWithBlur(srcDst, srcDstCanvas, color, outlineColor, true);
     }
+
     void applyExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas, int color,
             int outlineColor, boolean clipAlpha) {
 
@@ -151,33 +152,44 @@ public class HolographicOutlineHelper {
     }
 
     Bitmap createMediumDropShadow(BubbleTextView view) {
-        Drawable icon = view.getIcon();
-        if (icon == null) {
+        return createMediumDropShadow(view.getIcon(), view.getScaleX(), view.getScaleY(), true);
+    }
+
+    Bitmap createMediumDropShadow(Drawable drawable, boolean shouldCache) {
+        return createMediumDropShadow(drawable, 1f, 1f, shouldCache);
+    }
+
+    Bitmap createMediumDropShadow(Drawable drawable, float scaleX, float scaleY,
+                boolean shouldCache) {
+        if (drawable == null) {
             return null;
         }
-        Rect rect = icon.getBounds();
+        Rect rect = drawable.getBounds();
 
-        int bitmapWidth = (int) (rect.width() * view.getScaleX());
-        int bitmapHeight = (int) (rect.height() * view.getScaleY());
+        int bitmapWidth = (int) (rect.width() * scaleX);
+        int bitmapHeight = (int) (rect.height() * scaleY);
         if (bitmapHeight <= 0 || bitmapWidth <= 0) {
             return null;
         }
 
         int key = (bitmapWidth << 16) | bitmapHeight;
-        Bitmap cache = mBitmapCache.get(key);
+        Bitmap cache = shouldCache ? mBitmapCache.get(key) : null;
         if (cache == null) {
             cache = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ALPHA_8);
             mCanvas.setBitmap(cache);
-            mBitmapCache.put(key, cache);
+
+            if (shouldCache) {
+                mBitmapCache.put(key, cache);
+            }
         } else {
             mCanvas.setBitmap(cache);
             mCanvas.drawColor(Color.BLACK, PorterDuff.Mode.CLEAR);
         }
 
         int saveCount = mCanvas.save();
-        mCanvas.scale(view.getScaleX(), view.getScaleY());
+        mCanvas.scale(scaleX, scaleY);
         mCanvas.translate(-rect.left, -rect.top);
-        icon.draw(mCanvas);
+        drawable.draw(mCanvas);
         mCanvas.restoreToCount(saveCount);
         mCanvas.setBitmap(null);
 
@@ -188,7 +200,7 @@ public class HolographicOutlineHelper {
         int resultWidth = bitmapWidth + extraSize;
         int resultHeight = bitmapHeight + extraSize;
         key = (resultWidth << 16) | resultHeight;
-        Bitmap result = mBitmapCache.get(key);
+        Bitmap result = shouldCache ? mBitmapCache.get(key) : null;
         if (result == null) {
             result = Bitmap.createBitmap(resultWidth, resultHeight, Bitmap.Config.ALPHA_8);
             mCanvas.setBitmap(result);
