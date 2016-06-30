@@ -359,6 +359,8 @@ public class DeepShortcutsContainer extends LinearLayout implements  View.OnClic
         mLauncher.getDragLayer().setController(mLauncher.getDragController());
         mLauncher.getWorkspace().beginDragShared(v, mIconLastTouchPos, this, false);
         ((DragLayer) getParent()).removeView(this);
+        // TODO: support dragging from within folder without having to close it
+        mLauncher.closeFolder();
         return false;
     }
 
