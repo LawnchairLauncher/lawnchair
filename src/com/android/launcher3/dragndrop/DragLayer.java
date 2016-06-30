@@ -230,6 +230,28 @@ public class DragLayer extends InsettableFrameLayout {
             }
         }
 
+        // Remove the shortcuts container when touching outside of it.
+        DeepShortcutsContainer deepShortcutsContainer = (DeepShortcutsContainer)
+                findViewById(R.id.deep_shortcuts_container);
+        if (deepShortcutsContainer != null) {
+            if (isEventOverView(deepShortcutsContainer, ev)) {
+                // Let the container handle the event.
+                return false;
+            } else {
+                if (isInAccessibleDrag()) {
+                    // Do not close the container if in drag and drop.
+                    if (!isEventOverDropTargetBar(ev)) {
+                        return true;
+                    }
+                } else {
+                    removeView(deepShortcutsContainer);
+                    // We let touches on the original icon go through so that users can launch
+                    // the app with one tap if they don't find a shortcut they want.
+                    return !isEventOverView(deepShortcutsContainer.getDeferredDragIcon(), ev);
+                }
+            }
+        }
+
         Folder currentFolder = mLauncher.getWorkspace().getOpenFolder();
         if (currentFolder != null && intercept) {
             if (currentFolder.isEditingName()) {
@@ -248,25 +270,6 @@ public class DragLayer extends InsettableFrameLayout {
                 } else {
                     mLauncher.closeFolder();
                     return true;
-                }
-            }
-        }
-
-        // Remove the shortcuts container when touching outside of it.
-        DeepShortcutsContainer deepShortcutsContainer = (DeepShortcutsContainer)
-                findViewById(R.id.deep_shortcuts_container);
-        if (deepShortcutsContainer != null) {
-            if (!isEventOverView(deepShortcutsContainer, ev)) {
-                if (isInAccessibleDrag()) {
-                    // Do not close the container if in drag and drop.
-                    if (!isEventOverDropTargetBar(ev)) {
-                        return true;
-                    }
-                } else {
-                    removeView(deepShortcutsContainer);
-                    // We let touches on the original icon go through so that users can launch
-                    // the app with one tap if they don't find a shortcut they want.
-                    return !isEventOverView(deepShortcutsContainer.getDeferredDragIcon(), ev);
                 }
             }
         }
