@@ -32,7 +32,8 @@ import com.android.launcher3.util.TouchController;
  * If release velocity < THRES1, snap according to either top or bottom depending on whether it's
  *     closer to top or closer to the page indicator.
  */
-public class AllAppsTransitionController implements TouchController, VerticalPullDetector.Listener {
+public class AllAppsTransitionController implements TouchController, VerticalPullDetector.Listener,
+        View.OnLayoutChangeListener {
 
     private static final String TAG = "AllAppsTrans";
     private static final boolean DBG = false;
@@ -426,18 +427,19 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mAppsView = appsView;
         mHotseat = hotseat;
         mWorkspace = workspace;
-        mHotseat.addOnLayoutChangeListener(new View.OnLayoutChangeListener(){
-            public void onLayoutChange(View v, int left, int top, int right, int bottom,
-                    int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
-                    mShiftRange = top;
-                } else {
-                    mShiftRange = bottom;
-                }
-                if (!mLauncher.isAllAppsVisible()) {
-                    setProgress(mShiftRange);
-                }
-            }
-        });
+        mHotseat.addOnLayoutChangeListener(this);
+    }
+
+    @Override
+    public void onLayoutChange(View v, int left, int top, int right, int bottom,
+            int oldLeft, int oldTop, int oldRight, int oldBottom) {
+        if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+            mShiftRange = top;
+        } else {
+            mShiftRange = bottom;
+        }
+        if (!mLauncher.isAllAppsVisible()) {
+            setProgress(mShiftRange);
+        }
     }
 }
