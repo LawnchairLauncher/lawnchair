@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -135,6 +136,10 @@ public class ItemInfo {
 
     public Intent getIntent() {
         return null;
+    }
+
+    public ComponentName getTargetComponent() {
+        return getIntent() == null ? null : getIntent().getComponent();
     }
 
     public void writeToValues(ContentValues values) {

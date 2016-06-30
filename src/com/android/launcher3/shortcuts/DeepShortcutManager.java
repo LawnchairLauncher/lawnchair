@@ -27,6 +27,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.android.launcher3.ItemInfo;
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserHandleCompat;
 
@@ -52,6 +54,11 @@ public class DeepShortcutManager {
 
     public DeepShortcutManager(Context context, ShortcutCache shortcutCache) {
         mLauncherApps = (LauncherApps) context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
+    }
+
+    public static boolean supportsShortcuts(ItemInfo info) {
+        return info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
+                || info.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
     }
 
     public void onShortcutsChanged(List<ShortcutInfoCompat> shortcuts) {

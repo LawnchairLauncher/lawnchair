@@ -59,7 +59,6 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
@@ -113,11 +112,10 @@ import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logging.FileLog;
-import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.pageindicators.PageIndicator;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -136,7 +134,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Default launcher application.
@@ -4060,6 +4057,15 @@ public class Launcher extends Activity
     public void bindDeepShortcutMap(MultiHashMap<ComponentKey, String> deepShortcutMapCopy) {
         mDeepShortcutMap = deepShortcutMapCopy;
         if (LOGD) Log.d(TAG, "bindDeepShortcutMap: " + mDeepShortcutMap);
+    }
+
+    public List<String> getShortcutIdsForItem(ItemInfo info) {
+        if (!DeepShortcutManager.supportsShortcuts(info)) {
+            return Collections.EMPTY_LIST;
+        }
+        ComponentName component = info.getTargetComponent();
+        List<String> ids = mDeepShortcutMap.get(new ComponentKey(component, info.user));
+        return ids == null ? Collections.EMPTY_LIST : ids;
     }
 
     /**

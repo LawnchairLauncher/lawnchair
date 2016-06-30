@@ -47,7 +47,6 @@ import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.support.v4.os.BuildCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -57,7 +56,9 @@ import android.util.Log;
 import android.util.Pair;
 import android.util.SparseArray;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewParent;
 import android.widget.Toast;
 
 import com.android.launcher3.compat.UserHandleCompat;
@@ -68,8 +69,10 @@ import com.android.launcher3.util.IconNormalizer;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.Executor;
@@ -423,6 +426,30 @@ public final class Utilities {
     public static boolean pointInView(View v, float localX, float localY, float slop) {
         return localX >= -slop && localY >= -slop && localX < (v.getWidth() + slop) &&
                 localY < (v.getHeight() + slop);
+    }
+
+    /** Translates MotionEvents from src's coordinate system to dst's. */
+    public static void translateEventCoordinates(View src, View dst, MotionEvent dstEvent) {
+        toGlobalMotionEvent(src, dstEvent);
+        toLocalMotionEvent(dst, dstEvent);
+    }
+
+    /**
+     * Emulates View.toGlobalMotionEvent(). This implementation does not handle transformations
+     * (scaleX, scaleY, etc).
+     */
+    private static void toGlobalMotionEvent(View view, MotionEvent event) {
+        view.getLocationOnScreen(sLoc0);
+        event.offsetLocation(sLoc0[0], sLoc0[1]);
+    }
+
+    /**
+     * Emulates View.toLocalMotionEvent(). This implementation does not handle transformations
+     * (scaleX, scaleY, etc).
+     */
+    private static void toLocalMotionEvent(View view, MotionEvent event) {
+        view.getLocationOnScreen(sLoc0);
+        event.offsetLocation(-sLoc0[0], -sLoc0[1]);
     }
 
     public static int[] getCenterDeltaInScreenSpace(View v0, View v1, int[] delta) {
@@ -817,6 +844,11 @@ public final class Utilities {
             }
         }
         return true;
+    }
+
+    /** Returns whether the collection is null or empty. */
+    public static boolean isEmpty(Collection c) {
+        return c == null || c.isEmpty();
     }
 
     /**

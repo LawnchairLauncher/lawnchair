@@ -17,17 +17,13 @@ package com.android.launcher3.allapps;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.support.v4.view.accessibility.AccessibilityRecordCompat;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
-import android.net.Uri;
+import android.support.v4.view.accessibility.AccessibilityRecordCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -38,13 +34,14 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.TextView;
+
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.util.Thunk;
+import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.shortcuts.ShortcutsContainerListener;
 
 import java.util.HashMap;
 import java.util.List;
@@ -331,7 +328,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     private final GridLayoutManager mGridLayoutMgr;
     private final GridSpanSizer mGridSizer;
     private final GridItemDecoration mItemDecoration;
-    private final View.OnTouchListener mTouchListener;
     private final View.OnClickListener mIconClickListener;
     private final View.OnLongClickListener mIconLongClickListener;
 
@@ -357,8 +353,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     private Intent mMarketSearchIntent;
 
     public AllAppsGridAdapter(Launcher launcher, AlphabeticalAppsList apps,
-            View.OnTouchListener touchListener, View.OnClickListener iconClickListener,
-            View.OnLongClickListener iconLongClickListener) {
+            View.OnClickListener iconClickListener, View.OnLongClickListener iconLongClickListener) {
         Resources res = launcher.getResources();
         mLauncher = launcher;
         mApps = apps;
@@ -368,7 +363,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         mGridLayoutMgr.setSpanSizeLookup(mGridSizer);
         mItemDecoration = new GridItemDecoration();
         mLayoutInflater = LayoutInflater.from(launcher);
-        mTouchListener = touchListener;
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
         mSectionNamesMargin = res.getDimensionPixelSize(R.dimen.all_apps_grid_view_start_margin);
@@ -454,7 +448,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
                         viewType == ICON_VIEW_TYPE ? R.layout.all_apps_icon :
                                 R.layout.all_apps_prediction_bar_icon, parent, false);
-                icon.setOnTouchListener(mTouchListener);
                 icon.setOnClickListener(mIconClickListener);
                 icon.setOnLongClickListener(mIconLongClickListener);
                 icon.setLongPressTimeout(ViewConfiguration.get(parent.getContext())
@@ -490,6 +483,10 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 AppInfo info = mApps.getAdapterItems().get(position).appInfo;
                 BubbleTextView icon = (BubbleTextView) holder.mContent;
                 icon.applyFromApplicationInfo(info);
+                if (DeepShortcutManager.supportsShortcuts(info)) {
+                    // TODO: only add this listener if the item has shortcuts associated with it.
+                    icon.setOnTouchListener(new ShortcutsContainerListener(icon));
+                }
                 icon.setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
                 break;
             }
@@ -497,6 +494,10 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 AppInfo info = mApps.getAdapterItems().get(position).appInfo;
                 BubbleTextView icon = (BubbleTextView) holder.mContent;
                 icon.applyFromApplicationInfo(info);
+                if (DeepShortcutManager.supportsShortcuts(info)) {
+                    // TODO: only add this listener if the item has shortcuts associated with it.
+                    icon.setOnTouchListener(new ShortcutsContainerListener(icon));
+                }
                 icon.setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
                 break;
             }

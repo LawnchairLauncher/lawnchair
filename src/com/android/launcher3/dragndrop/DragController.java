@@ -45,6 +45,7 @@ import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TouchController;
 
@@ -247,9 +248,12 @@ public class DragController implements DragDriver.EventListener, TouchController
 
         mDragObject = new DropTarget.DragObject();
 
+        final Resources res = mLauncher.getResources();
+        final float scaleDps = FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND ?
+                res.getDimensionPixelSize(R.dimen.dragViewScale) : 0f;
         final DragView dragView = mDragObject.dragView = new DragView(mLauncher, b, registrationX,
                 registrationY, 0, 0, b.getWidth(), b.getHeight(),
-                initialDragViewScale);
+                initialDragViewScale, scaleDps);
 
         mDragObject.dragComplete = false;
         if (mIsAccessibleDrag) {
@@ -282,6 +286,10 @@ public class DragController implements DragDriver.EventListener, TouchController
         mLastTouch[1] = mMotionDownY;
         handleMoveEvent(mMotionDownX, mMotionDownY);
         return dragView;
+    }
+
+    public Point getMotionDown() {
+        return new Point(mMotionDownX, mMotionDownY);
     }
 
     /**

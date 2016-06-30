@@ -56,6 +56,7 @@ public class ShortcutCache {
         for (ShortcutInfoCompat shortcut : shortcuts) {
             ShortcutKey key = ShortcutKey.fromInfo(shortcut);
             mCachedShortcuts.remove(key);
+            mPinnedShortcuts.remove(key);
         }
     }
 

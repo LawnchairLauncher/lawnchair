@@ -25,7 +25,6 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
@@ -295,7 +294,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 return false;
             }
 
-            mLauncher.getWorkspace().beginDragShared(v, new Point(), this, accessible);
+            mLauncher.getWorkspace().beginDragShared(v, this, accessible);
 
             mCurrentDragInfo = item;
             mEmptyCellRank = item.rank;

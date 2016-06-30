@@ -154,4 +154,14 @@
     <dimen name="pending_widget_min_padding">8dp</dimen>
     <dimen name="pending_widget_elevation">2dp</dimen>
 
+<!-- Deep shortcuts -->
+    <dimen name="deep_shortcuts_elevation">9dp</dimen>
+    <dimen name="deep_shortcuts_width">180dp</dimen>
+    <dimen name="deep_shortcuts_spacing">4dp</dimen>
+    <dimen name="deep_shortcuts_drag_view_scale">6dp</dimen>
+    <!-- an icon with shortcuts must be dragged this much distance away from the nearest edge
+         of the shortcut container before the container is removed. -->
+    <dimen name="deep_shortcuts_start_drag_threshold">35dp</dimen>
+    <dimen name="deep_shortcut_icon_size">36dp</dimen>
+
 </resources>
