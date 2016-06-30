@@ -25,11 +25,14 @@ import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.method.TextKeyListener;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.AppInfo;
@@ -58,7 +61,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
 /**
  * A merge algorithm that merges every section indiscriminately.
  */
@@ -66,8 +68,8 @@ final class FullMergeAlgorithm implements AlphabeticalAppsList.MergeAlgorithm {
 
     @Override
     public boolean continueMerging(AlphabeticalAppsList.SectionInfo section,
-           AlphabeticalAppsList.SectionInfo withSection,
-           int sectionAppCount, int numAppsPerRow, int mergeCount) {
+            AlphabeticalAppsList.SectionInfo withSection,
+            int sectionAppCount, int numAppsPerRow, int mergeCount) {
         // Don't merge the predicted apps
         if (section.firstAppItem.viewType != AllAppsGridAdapter.ICON_VIEW_TYPE) {
             return false;
@@ -98,8 +100,8 @@ final class SimpleSectionMergeAlgorithm implements AlphabeticalAppsList.MergeAlg
 
     @Override
     public boolean continueMerging(AlphabeticalAppsList.SectionInfo section,
-           AlphabeticalAppsList.SectionInfo withSection,
-           int sectionAppCount, int numAppsPerRow, int mergeCount) {
+            AlphabeticalAppsList.SectionInfo withSection,
+            int sectionAppCount, int numAppsPerRow, int mergeCount) {
         // Don't merge the predicted apps
         if (section.firstAppItem.viewType != AllAppsGridAdapter.ICON_VIEW_TYPE) {
             return false;
@@ -148,6 +150,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     private View mSearchContainer;
     private ExtendedEditText mSearchInput;
+    private ImageView mSearchIcon;
     private HeaderElevationController mElevationController;
 
     private SpannableStringBuilder mSearchQueryBuilder = null;
@@ -232,6 +235,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             mSearchBarController.setVisibility(View.INVISIBLE);
         }
     }
+
     /**
      * Sets the search bar that shows above the a-z list.
      */
@@ -261,8 +265,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         Utilities.mapCoordInSelfToDescendent(mAppsRecyclerView, this, point);
 
         // if the MotionEvent is inside the thumb, container should not be pulled down.
-        if (mAppsRecyclerView.getScrollBar().isNearThumb(point[0], point[1])){
-             return false;
+        if (mAppsRecyclerView.getScrollBar().isNearThumb(point[0], point[1])) {
+            return false;
         }
         // If scroller is at the very top, then it's okay for the container to be pulled down.
         if (Float.compare(0f, mAppsRecyclerView.getScrollBar().getThumbOffset().y) == 0) {
@@ -270,6 +274,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         }
         return false;
     }
+
     /**
      * Focuses the search field and begins an app search.
      */
@@ -305,6 +310,42 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         mSearchContainer = findViewById(R.id.search_container);
         mSearchInput = (ExtendedEditText) findViewById(R.id.search_box_input);
+        mSearchIcon = (ImageView) findViewById(R.id.search_icon);
+
+        final LinearLayout.LayoutParams searchParams =
+                (LinearLayout.LayoutParams) mSearchInput.getLayoutParams();
+        mSearchInput.setOnFocusChangeListener(new OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean focused) {
+                if (focused) {
+                    searchParams.width = LayoutParams.MATCH_PARENT;
+                    mSearchInput.setLayoutParams(searchParams);
+                    mSearchInput.setGravity(Gravity.FILL_HORIZONTAL | Gravity.CENTER_VERTICAL);
+                    mSearchIcon.setVisibility(View.GONE);
+                } else {
+                    searchParams.width = LayoutParams.WRAP_CONTENT;
+                    mSearchInput.setLayoutParams(searchParams);
+                    mSearchInput.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+                    mSearchIcon.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        final OnClickListener searchFocusListener = new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!mSearchInput.isFocused()) {
+                    mSearchInput.requestFocus();
+                    final InputMethodManager imm =
+                            (InputMethodManager)getContext().getSystemService(
+                                    Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(mSearchInput, 0);
+                }
+            }
+        };
+        mSearchInput.setOnClickListener(searchFocusListener);
+        mSearchContainer.setOnClickListener(searchFocusListener);
+
         mElevationController = Utilities.ATLEAST_LOLLIPOP
                 ? new HeaderElevationController.ControllerVL(mSearchContainer)
                 : new HeaderElevationController.ControllerV16(mSearchContainer);
@@ -379,7 +420,11 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                 if (mNumAppsPerRow > 0) {
                     int iconSize = availableWidth / mNumAppsPerRow;
                     int iconSpacing = (iconSize - grid.allAppsIconSizePx) / 2;
-                    mSearchInput.setPaddingRelative(iconSpacing, 0, iconSpacing, 0);
+                    final int thumbMaxWidth =
+                            getResources().getDimensionPixelSize(
+                                    R.dimen.container_fastscroll_thumb_max_width);
+                    mSearchContainer.setPaddingRelative(
+                            iconSpacing + thumbMaxWidth, 0, iconSpacing + thumbMaxWidth, 0);
                 }
             }
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -452,7 +497,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         lp.leftMargin = bgPadding.left;
         lp.rightMargin = bgPadding.right;
 
-
         // Clip the view to the left and right edge of the background to
         // to prevent shadows from rendering beyond the edges
         final Rect newClipBounds = new Rect(
@@ -472,7 +516,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                 MarginLayoutParams mlp = (MarginLayoutParams) mAppsRecyclerView.getLayoutParams();
 
                 Rect insets = mLauncher.getDragLayer().getInsets();
-                getContentView().setPadding(0,0,0, insets.bottom);
+                getContentView().setPadding(0, 0, 0, insets.bottom);
                 int height = insets.top + grid.hotseatCellHeightPx;
 
                 mlp.topMargin = height;
@@ -482,10 +526,10 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                         (LinearLayout.LayoutParams) mSearchInput.getLayoutParams();
                 llp.topMargin = insets.top;
                 mSearchInput.setLayoutParams(llp);
+                mSearchIcon.setLayoutParams(llp);
 
                 lp.height = height;
             }
-            mSearchContainer.getBackground().setAlpha(0);
         }
         mSearchContainer.setLayoutParams(lp);
     }

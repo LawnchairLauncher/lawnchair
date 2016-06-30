@@ -1370,7 +1370,9 @@ public class Launcher extends Activity
         mDragController.addDropTarget(mWorkspace);
         mDropTargetBar.setup(mDragController);
 
-        mAllAppsController.setupViews(mAppsView, mHotseat, mWorkspace);
+        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
+            mAllAppsController.setupViews(mAppsView, mHotseat, mWorkspace);
+        }
 
         if (TestingUtils.MEMORY_DUMP_ENABLED) {
             TestingUtils.addWeightWatcher(this);

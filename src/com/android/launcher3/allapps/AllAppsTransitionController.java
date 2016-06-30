@@ -408,6 +408,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mAppsView.setVisibility(View.INVISIBLE);
         mHotseat.setBackgroundTransparent(false /* transparent */);
         mHotseat.setVisibility(View.VISIBLE);
+        mAppsView.reset();
         setProgress(mShiftRange);
     }
 
