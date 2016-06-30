@@ -1,6 +1,7 @@
 package com.android.launcher3.shortcuts;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.os.SystemClock;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
@@ -53,6 +54,8 @@ public class ShortcutsContainerListener implements View.OnTouchListener,
     private Launcher mLauncher;
     private DragLayer mDragLayer;
     private MotionEvent mTouchDownEvent;
+    /** The coordinates of the touch down, relative do the shortcuts container. */
+    private final Point mTouchDown;
 
     public ShortcutsContainerListener(BubbleTextView icon) {
         mSrcIcon = icon;
@@ -64,8 +67,8 @@ public class ShortcutsContainerListener implements View.OnTouchListener,
         icon.addOnAttachStateChangeListener(this);
 
         mLauncher = Launcher.getLauncher(mSrcIcon.getContext());
-
         mDragLayer = mLauncher.getDragLayer();
+        mTouchDown = new Point();
     }
 
     @Override
@@ -76,6 +79,9 @@ public class ShortcutsContainerListener implements View.OnTouchListener,
         }
 
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (mTouchDownEvent != null) {
+                mTouchDownEvent.recycle();
+            }
             mTouchDownEvent = MotionEvent.obtainNoHistory(event);
         }
 
@@ -134,6 +140,10 @@ public class ShortcutsContainerListener implements View.OnTouchListener,
             deepShortcutsContainer.populateAndShow(mSrcIcon, ids);
             mSrcIcon.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                     HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+
+            // Convert touch down event to the container's coordinates.
+            Utilities.translateEventCoordinates(mSrcIcon, deepShortcutsContainer, mTouchDownEvent);
+            mTouchDown.set((int) mTouchDownEvent.getX(), (int) mTouchDownEvent.getY());
             return true;
         }
         return false;
@@ -252,16 +262,10 @@ public class ShortcutsContainerListener implements View.OnTouchListener,
         final MotionEvent dstEvent = MotionEvent.obtainNoHistory(srcEvent);
         Utilities.translateEventCoordinates(src, dst, dstEvent);
 
-        // Convert touch down event to destination-local coordinates.
-        // TODO: only create this once, or just store the x and y.
-        final MotionEvent touchDownEvent = MotionEvent.obtainNoHistory(mTouchDownEvent);
-        Utilities.translateEventCoordinates(src, dst, touchDownEvent);
-
         // Forward converted event to destination view, then recycle it.
         // TODO: don't create objects in onForwardedEvent.
-        final boolean handled = dst.onForwardedEvent(dstEvent, mActivePointerId, touchDownEvent);
+        final boolean handled = dst.onForwardedEvent(dstEvent, mActivePointerId, mTouchDown);
         dstEvent.recycle();
-        touchDownEvent.recycle();
 
         // Always cancel forwarding when the touch stream ends.
         final int action = srcEvent.getActionMasked();

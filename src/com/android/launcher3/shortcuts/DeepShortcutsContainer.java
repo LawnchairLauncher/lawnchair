@@ -7,8 +7,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,6 +22,7 @@ import com.android.launcher3.DropTarget;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LogDecelerateInterpolator;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
@@ -35,7 +37,6 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.UiThreadCircularReveal;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -98,37 +99,45 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         deferDrag(originalIcon);
 
         // Load the shortcuts on a background thread and update the container as it animates.
+        final Looper workerLooper = LauncherModel.getWorkerLooper();
+        final Handler uiHandler = new Handler(Looper.getMainLooper());
         final ItemInfo originalInfo = (ItemInfo) originalIcon.getTag();
         final UserHandleCompat user = originalInfo.user;
         final ComponentName activity = originalInfo.getTargetComponent();
-        new AsyncTask<Void, Void, List<ShortcutInfo>>() {
-            public List<ShortcutInfo> doInBackground(Void ... args) {
-                List<ShortcutInfoCompat> shortcuts = mDeepShortcutsManager
-                        .queryForAllAppShortcuts(activity, ids, user);
-                List<ShortcutInfo> shortcutInfos = new ArrayList<>(shortcuts.size());
-                for (ShortcutInfoCompat shortcut : shortcuts) {
-                    shortcutInfos.add(ShortcutInfo.fromDeepShortcutInfo(shortcut, mLauncher));
-                }
-                return shortcutInfos;
-            }
-
-            // TODO: implement onProgressUpdate() to load shortcuts one at a time.
-
+        new Handler(workerLooper).postAtFrontOfQueue(new Runnable() {
             @Override
-            protected void onPostExecute(List<ShortcutInfo> shortcuts) {
+            public void run() {
+                final List<ShortcutInfoCompat> shortcuts = mDeepShortcutsManager
+                        .queryForAllAppShortcuts(activity, ids, user);
                 for (int i = 0; i < shortcuts.size(); i++) {
-                    DeepShortcutView iconAndText = (DeepShortcutView) getChildAt(i);
-                    ShortcutInfo launcherShortcutInfo = shortcuts.get(i);
-                    iconAndText.applyFromShortcutInfo(launcherShortcutInfo,
-                            LauncherAppState.getInstance().getIconCache());
-                    iconAndText.setOnClickListener(mLauncher);
-                    iconAndText.setOnLongClickListener(DeepShortcutsContainer.this);
-                    iconAndText.setOnTouchListener(DeepShortcutsContainer.this);
-                    int viewId = mLauncher.getViewIdForItem(originalInfo);
-                    iconAndText.setId(viewId);
+                    final ShortcutInfoCompat shortcut = shortcuts.get(i);
+                    final ShortcutInfo launcherShortcutInfo = ShortcutInfo
+                            .fromDeepShortcutInfo(shortcut, mLauncher);
+                    uiHandler.post(new UpdateShortcutChild(i, launcherShortcutInfo));
                 }
             }
-        }.execute();
+        });
+    }
+
+    /** Updates the child of this container at the given index based on the given shortcut info. */
+    private class UpdateShortcutChild implements Runnable {
+        private int mShortcutChildIndex;
+        private ShortcutInfo mShortcutChildInfo;
+
+        public UpdateShortcutChild(int shortcutChildIndex, ShortcutInfo shortcutChildInfo) {
+            mShortcutChildIndex = shortcutChildIndex;
+            mShortcutChildInfo = shortcutChildInfo;
+        }
+
+        @Override
+        public void run() {
+            DeepShortcutView shortcutView = (DeepShortcutView) getChildAt(mShortcutChildIndex);
+            shortcutView.applyFromShortcutInfo(mShortcutChildInfo,
+                    LauncherAppState.getInstance().getIconCache());
+            shortcutView.setOnClickListener(mLauncher);
+            shortcutView.setOnLongClickListener(DeepShortcutsContainer.this);
+            shortcutView.setOnTouchListener(DeepShortcutsContainer.this);
+        }
     }
 
     // TODO: update this animation
@@ -220,9 +229,9 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         mDragView.show(motionDownX, motionDownY);
     }
 
-    public boolean onForwardedEvent(MotionEvent ev, int activePointerId, MotionEvent touchDownEvent) {
-        mTouchDown = new Point((int) touchDownEvent.getX(), (int) touchDownEvent.getY());
+    public boolean onForwardedEvent(MotionEvent ev, int activePointerId, Point touchDown) {
         mActivePointerId = activePointerId;
+        mTouchDown = touchDown;
         return dispatchTouchEvent(ev);
     }
 
@@ -313,9 +322,9 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
      * @param y the y touch coordinate relative to this container
      */
     private boolean shouldStartDeferredDrag(int x, int y, boolean containerContainsTouch) {
-        Point closestEdge = new Point(mTouchDown.x, mIsAboveIcon ? getMeasuredHeight() : 0);
-        double distToEdge = Math.hypot(mTouchDown.x - closestEdge.x, mTouchDown.y - closestEdge.y);
-        double newDistToEdge = Math.hypot(x - closestEdge.x, y - closestEdge.y);
+        int closestEdgeY = mIsAboveIcon ? getMeasuredHeight() : 0;
+        double distToEdge = Math.abs(mTouchDown.y - closestEdgeY);
+        double newDistToEdge = Math.hypot(x - mTouchDown.x, y - closestEdgeY);
         return  !containerContainsTouch && (newDistToEdge - distToEdge > mStartDragThreshold);
     }
 
