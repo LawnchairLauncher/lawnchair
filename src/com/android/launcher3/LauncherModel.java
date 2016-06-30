@@ -236,7 +236,7 @@ public class LauncherModel extends BroadcastReceiver
 
     /** Runs the specified runnable immediately if called from the main thread, otherwise it is
      * posted on the main thread handler. */
-    @Thunk void runOnMainThread(Runnable r) {
+    private void runOnMainThread(Runnable r) {
         if (sWorkerThread.getThreadId() == Process.myTid()) {
             // If we are on the worker thread, post onto the main handler
             mHandler.post(r);
@@ -247,7 +247,7 @@ public class LauncherModel extends BroadcastReceiver
 
     /** Runs the specified runnable immediately if called from the worker thread, otherwise it is
      * posted on the worker thread handler. */
-    @Thunk static void runOnWorkerThread(Runnable r) {
+    private static void runOnWorkerThread(Runnable r) {
         if (sWorkerThread.getThreadId() == Process.myTid()) {
             r.run();
         } else {
@@ -1298,8 +1298,8 @@ public class LauncherModel extends BroadcastReceiver
                 // If there is already one running, tell it to stop.
                 stopLoaderLocked();
                 mLoaderTask = new LoaderTask(mApp.getContext(), synchronousBindPage);
-                if (synchronousBindPage != PagedView.INVALID_RESTORE_PAGE
-                        && mAllAppsLoaded && mWorkspaceLoaded && !mIsLoaderTaskRunning) {
+                if (synchronousBindPage != PagedView.INVALID_RESTORE_PAGE && mAllAppsLoaded
+                        && mWorkspaceLoaded && mDeepShortcutsLoaded && !mIsLoaderTaskRunning) {
                     mLoaderTask.runBindSynchronousPage(synchronousBindPage);
                 } else {
                     sWorkerThread.setPriority(Thread.NORM_PRIORITY);
@@ -1441,6 +1441,8 @@ public class LauncherModel extends BroadcastReceiver
             // XXX: For now, continue posting the binding of AllApps as there are other issues that
             //      arise from that.
             onlyBindAllApps();
+
+            bindDeepShortcuts();
         }
 
         public void run() {
@@ -2660,12 +2662,7 @@ public class LauncherModel extends BroadcastReceiver
                     }
                 }
             };
-            boolean isRunningOnMainThread = !(sWorkerThread.getThreadId() == Process.myTid());
-            if (isRunningOnMainThread) {
-                r.run();
-            } else {
-                mHandler.post(r);
-            }
+            runOnMainThread(r);
         }
 
         private void loadAllApps() {
@@ -2777,7 +2774,7 @@ public class LauncherModel extends BroadcastReceiver
                     mDeepShortcutsLoaded = true;
                 }
             }
-            bindDeepShortcutMapOnMainThread();
+            bindDeepShortcuts();
         }
 
         public void dumpState() {
@@ -2810,10 +2807,10 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
-    private void bindDeepShortcutMapOnMainThread() {
+    public void bindDeepShortcuts() {
         final MultiHashMap<ComponentKey, String> shortcutMapCopy = new MultiHashMap<>();
         shortcutMapCopy.putAll(mBgDeepShortcutMap);
-        mHandler.post(new Runnable() {
+        Runnable r = new Runnable() {
             @Override
             public void run() {
                 Callbacks callbacks = getCallback();
@@ -2821,7 +2818,8 @@ public class LauncherModel extends BroadcastReceiver
                     callbacks.bindDeepShortcutMap(shortcutMapCopy);
                 }
             }
-        });
+        };
+        runOnMainThread(r);
     }
 
     /**
@@ -3322,7 +3320,7 @@ public class LauncherModel extends BroadcastReceiver
 
             // Update the deep shortcut map, in case the list of ids has changed for an activity.
             updateDeepShortcutMap(mPackageName, mShortcuts);
-            bindDeepShortcutMapOnMainThread();
+            bindDeepShortcuts();
         }
     }
 
