@@ -18,6 +18,8 @@ package com.android.launcher3;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
 import android.util.AttributeSet;
@@ -60,12 +62,17 @@ public abstract class BaseContainerView extends FrameLayout {
             mHorizontalPadding = DeviceProfile.getContainerPadding(context, width);
         }
 
-        TypedArray a = context.obtainStyledAttributes(attrs,
-                R.styleable.BaseContainerView, defStyleAttr, 0);
-        mRevealDrawable = new InsetDrawable(
-                a.getDrawable(R.styleable.BaseContainerView_revealBackground),
-                mHorizontalPadding, 0, mHorizontalPadding, 0);
-        a.recycle();
+        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && this instanceof AllAppsContainerView) {
+            mRevealDrawable = new InsetDrawable(new ColorDrawable(Color.WHITE), mHorizontalPadding,
+                    0, mHorizontalPadding, 0);
+        } else {
+            TypedArray a = context.obtainStyledAttributes(attrs,
+                    R.styleable.BaseContainerView, defStyleAttr, 0);
+            mRevealDrawable = new InsetDrawable(
+                    a.getDrawable(R.styleable.BaseContainerView_revealBackground),
+                    mHorizontalPadding, 0, mHorizontalPadding, 0);
+            a.recycle();
+        }
     }
 
     @Override

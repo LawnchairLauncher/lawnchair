@@ -273,7 +273,8 @@ public class WorkspaceStateTransitionAnimation {
         // Update the workspace state
         float finalBackgroundAlpha = (states.stateIsSpringLoaded || states.stateIsOverview) ?
                 1.0f : 0f;
-        float finalHotseatAlpha = (states.stateIsNormal || states.stateIsSpringLoaded) ? 1f : 0f;
+        float finalHotseatAlpha = (states.stateIsNormal || states.stateIsSpringLoaded ||
+                (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && states.stateIsNormalHidden)) ? 1f : 0f;
         float finalOverviewPanelAlpha = states.stateIsOverview ? 1f : 0f;
 
         float finalWorkspaceTranslationY = 0;
