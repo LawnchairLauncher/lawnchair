@@ -15,5 +15,5 @@
 -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android" >
     <size android:width="@dimen/widget_row_divider" />
-    <solid android:color="@color/quantum_panel_bg_color_dark" />
+    <solid android:color="?attr/colorSecondary" />
 </shape>
