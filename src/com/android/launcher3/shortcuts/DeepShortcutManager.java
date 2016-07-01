@@ -25,7 +25,6 @@ import android.content.pm.ShortcutInfo;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.UserHandle;
 import android.util.Log;
 
 import com.android.launcher3.ItemInfo;
@@ -33,7 +32,6 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserHandleCompat;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -53,6 +51,7 @@ public class DeepShortcutManager {
             FLAG_MATCH_DYNAMIC | FLAG_MATCH_PINNED | FLAG_MATCH_MANIFEST;
 
     private final LauncherApps mLauncherApps;
+    private boolean mWasLastCallSuccess;
 
     public DeepShortcutManager(Context context, ShortcutCache shortcutCache) {
         mLauncherApps = (LauncherApps) context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
@@ -61,6 +60,10 @@ public class DeepShortcutManager {
     public static boolean supportsShortcuts(ItemInfo info) {
         return info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
                 || info.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+    }
+
+    public boolean wasLastCallSuccess() {
+        return mWasLastCallSuccess;
     }
 
     public void onShortcutsChanged(List<ShortcutInfoCompat> shortcuts) {
@@ -100,8 +103,10 @@ public class DeepShortcutManager {
             pinnedIds.remove(id);
             try {
                 mLauncherApps.pinShortcuts(packageName, pinnedIds, user.getUser());
+                mWasLastCallSuccess = true;
             } catch (SecurityException e) {
-                Log.e(TAG, Log.getStackTraceString(e));
+                Log.w(TAG, "Failed to unpin shortcut", e);
+                mWasLastCallSuccess = false;
             }
         }
     }
@@ -120,8 +125,10 @@ public class DeepShortcutManager {
             pinnedIds.add(id);
             try {
                 mLauncherApps.pinShortcuts(packageName, pinnedIds, user.getUser());
+                mWasLastCallSuccess = true;
             } catch (SecurityException e) {
-                Log.e(TAG, Log.getStackTraceString(e));
+                Log.w(TAG, "Failed to pin shortcut", e);
+                mWasLastCallSuccess = false;
             }
         }
     }
@@ -131,16 +138,12 @@ public class DeepShortcutManager {
           Bundle startActivityOptions, UserHandleCompat user) {
         if (Utilities.isNycMR1OrAbove()) {
             try {
-                // TODO: remove reflection once updated SDK is ready.
-                // mLauncherApps.startShortcut(packageName, id, sourceBounds,
-                //        startActivityOptions, user.getUser());
-                mLauncherApps.getClass().getMethod("startShortcut", String.class, String.class,
-                        Rect.class, Bundle.class, UserHandle.class).invoke(mLauncherApps,
-                        packageName, id, sourceBounds, startActivityOptions, user.getUser());
+                mLauncherApps.startShortcut(packageName, id, sourceBounds,
+                        startActivityOptions, user.getUser());
+                mWasLastCallSuccess = true;
             } catch (SecurityException e) {
-                Log.e(TAG, Log.getStackTraceString(e));
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
+                Log.e(TAG, "Failed to start shortcut", e);
+                mWasLastCallSuccess = false;
             }
         }
     }
@@ -149,10 +152,13 @@ public class DeepShortcutManager {
     public Drawable getShortcutIconDrawable(ShortcutInfoCompat shortcutInfo, int density) {
         if (Utilities.isNycMR1OrAbove()) {
             try {
-                return mLauncherApps.getShortcutIconDrawable(shortcutInfo.getShortcutInfo(),
-                        density);
+                Drawable icon = mLauncherApps.getShortcutIconDrawable(
+                        shortcutInfo.getShortcutInfo(), density);
+                mWasLastCallSuccess = true;
+                return icon;
             } catch (SecurityException e) {
-                Log.e(TAG, Log.getStackTraceString(e));
+                Log.e(TAG, "Failed to get shortcut icon", e);
+                mWasLastCallSuccess = false;
             }
         }
         return null;
@@ -200,8 +206,10 @@ public class DeepShortcutManager {
             List<ShortcutInfo> shortcutInfos = null;
             try {
                 shortcutInfos = mLauncherApps.getShortcuts(q, user.getUser());
+                mWasLastCallSuccess = true;
             } catch (SecurityException e) {
-                Log.e(TAG, Log.getStackTraceString(e));
+                Log.e(TAG, "Failed to query for shortcuts", e);
+                mWasLastCallSuccess = false;
             }
             if (shortcutInfos == null) {
                 return Collections.EMPTY_LIST;
