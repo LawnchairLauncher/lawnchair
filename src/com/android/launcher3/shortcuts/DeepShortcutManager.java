@@ -25,6 +25,7 @@ import android.content.pm.ShortcutInfo;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.UserHandle;
 import android.util.Log;
 
 import com.android.launcher3.ItemInfo;
@@ -32,6 +33,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserHandleCompat;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -129,10 +131,16 @@ public class DeepShortcutManager {
           Bundle startActivityOptions, UserHandleCompat user) {
         if (Utilities.isNycMR1OrAbove()) {
             try {
-                mLauncherApps.startShortcut(packageName, id, sourceBounds,
-                        startActivityOptions, user.getUser());
+                // TODO: remove reflection once updated SDK is ready.
+                // mLauncherApps.startShortcut(packageName, id, sourceBounds,
+                //        startActivityOptions, user.getUser());
+                mLauncherApps.getClass().getMethod("startShortcut", String.class, String.class,
+                        Rect.class, Bundle.class, UserHandle.class).invoke(mLauncherApps,
+                        packageName, id, sourceBounds, startActivityOptions, user.getUser());
             } catch (SecurityException e) {
                 Log.e(TAG, Log.getStackTraceString(e));
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
             }
         }
     }
