@@ -82,4 +82,7 @@
     <declare-styleable name="ButtonDropTarget">
         <attr name="hideParentOnDisable" format="boolean" />
     </declare-styleable>
+
+    <!-- Fallback attr for pre-API 25 support -->
+    <attr name="colorSecondary" format="reference|color" />
 </resources>
