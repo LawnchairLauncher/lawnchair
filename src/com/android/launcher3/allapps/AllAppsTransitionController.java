@@ -11,7 +11,6 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 
-import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
@@ -100,31 +99,34 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             } else {
                 // Now figure out which direction scroll events the controller will start
                 // calling the callbacks.
-                int conditionsToReportScroll = 0;
+                int directionsToDetectScroll = 0;
+                boolean ignoreSlopWhenSettling = false;
 
-                if (mDetector.isRestingState()) {
+                if (mDetector.isIdleState()) {
                     if (mLauncher.isAllAppsVisible()) {
-                        conditionsToReportScroll |= VerticalPullDetector.THRESHOLD_DOWN;
+                        directionsToDetectScroll |= VerticalPullDetector.DIRECTION_DOWN;
                     } else {
-                        conditionsToReportScroll |= VerticalPullDetector.THRESHOLD_UP;
+                        directionsToDetectScroll |= VerticalPullDetector.DIRECTION_UP;
                     }
                 } else {
                     if (isInDisallowRecatchBottomZone()) {
-                        conditionsToReportScroll |= VerticalPullDetector.THRESHOLD_UP;
+                        directionsToDetectScroll |= VerticalPullDetector.DIRECTION_UP;
                     } else if (isInDisallowRecatchTopZone()) {
-                        conditionsToReportScroll |= VerticalPullDetector.THRESHOLD_DOWN;
+                        directionsToDetectScroll |= VerticalPullDetector.DIRECTION_DOWN;
                     } else {
-                        conditionsToReportScroll |= VerticalPullDetector.THRESHOLD_ONLY;
+                        directionsToDetectScroll |= VerticalPullDetector.DIRECTION_BOTH;
+                        ignoreSlopWhenSettling = true;
                     }
                 }
-                mDetector.setDetectableScrollConditions(conditionsToReportScroll);
+                mDetector.setDetectableScrollConditions(directionsToDetectScroll,
+                        ignoreSlopWhenSettling);
             }
         }
         if (mNoIntercept) {
             return false;
         }
         mDetector.onTouchEvent(ev);
-        if (mDetector.isScrollingState() && (isInDisallowRecatchBottomZone() || isInDisallowRecatchTopZone())) {
+        if (mDetector.isSettlingState() && (isInDisallowRecatchBottomZone() || isInDisallowRecatchTopZone())) {
             return false;
         }
         return mDetector.shouldIntercept();
@@ -132,7 +134,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     private boolean shouldPossiblyIntercept(MotionEvent ev) {
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        if (mDetector.isRestingState()) {
+        if (mDetector.isIdleState()) {
             if (grid.isVerticalBarLayout()) {
                 if (ev.getY() > mLauncher.getDeviceProfile().heightPx - mBezelSwipeUpHeight) {
                     return true;
@@ -164,7 +166,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     @Override
-    public void onScrollStart(boolean start) {
+    public void onDragStart(boolean start) {
         cancelAnimation();
         mCurrentAnimation = LauncherAnimUtils.createAnimatorSet();
         mShiftStart = mAppsView.getTranslationY();
@@ -172,7 +174,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     @Override
-    public boolean onScroll(float displacement, float velocity) {
+    public boolean onDrag(float displacement, float velocity) {
         if (mAppsView == null) {
             return false;   // early termination.
         }
@@ -182,7 +184,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     @Override
-    public void onScrollEnd(float velocity, boolean fling) {
+    public void onDragEnd(float velocity, boolean fling) {
         if (mAppsView == null) {
             return; // early termination.
         }
@@ -229,7 +231,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
      */
     public void preparePull(boolean start) {
         if (start) {
-            // Initialize values that should not change until #onScrollEnd
+            // Initialize values that should not change until #onDragEnd
             mStatusBarHeight = mLauncher.getDragLayer().getInsets().top;
             mHotseat.setVisibility(View.VISIBLE);
             mHotseat.bringToFront();
@@ -321,7 +323,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         if (animationOut == null){
             return;
         }
-        if (mDetector.isRestingState()) {
+        if (mDetector.isIdleState()) {
             preparePull(true);
             mAnimationDuration = duration;
             mShiftStart = mAppsView.getTranslationY();
@@ -361,7 +363,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         if (animationOut == null){
             return;
         }
-        if(mDetector.isRestingState()) {
+        if(mDetector.isIdleState()) {
             preparePull(true);
             mAnimationDuration = duration;
             mShiftStart = mAppsView.getTranslationY();
