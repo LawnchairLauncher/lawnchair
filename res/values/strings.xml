@@ -121,24 +121,6 @@
     <!-- Description for a new page on homescreen[CHAR_LIMIT=none] -->
     <string name="workspace_new_page">New home screen page</string>
 
-    <!-- Clings -->
-    <!-- The title text for the workspace cling [CHAR_LIMIT=30] -->
-    <string name="first_run_cling_title">Welcome</string>
-    <!-- The title text for the migration cling [CHAR_LIMIT=30] -->
-    <string name="migration_cling_title">Copy your app icons</string>
-    <!-- The description of what migration does [CHAR_LIMIT=70] -->
-    <string name="migration_cling_description">Import icons and folders from your old Home screens?</string>
-    <!-- The description of the button to migrate apps from another launcher [CHAR_LIMIT=30] -->
-    <string name="migration_cling_copy_apps">COPY ICONS</string>
-    <!-- The description of the button to use the default launcher layout [CHAR_LIMIT=30] -->
-    <string name="migration_cling_use_default">START FRESH</string>
-    <!-- The title text for workspace longpress action [CHAR_LIMIT=40] -->
-    <string name="workspace_cling_longpress_title">Wallpapers, widgets, &amp; settings</string>
-    <!-- The description of how to use the workspace [CHAR_LIMIT=70] -->
-    <string name="workspace_cling_longpress_description">Touch &amp; hold background to customize</string>
-    <!-- The description of the button to dismiss the cling [CHAR_LIMIT=30] -->
-    <string name="workspace_cling_longpress_dismiss">GOT IT</string>
-
     <!-- Folder accessibility -->
     <!-- The format string for when a folder is opened, speaks the dimensions -->
     <string name="folder_opened">Folder opened, <xliff:g id="width" example="5">%1$d</xliff:g> by <xliff:g id="height" example="3">%2$d</xliff:g></string>
