@@ -22,7 +22,6 @@
          over the delete target or the info target -->
     <color name="delete_target_hover_tint">#FFC1C1C1</color>
     <color name="uninstall_target_hover_tint">#FFF0592B</color>
-    <color name="cling_scrim_background">#80000000</color>
 
     <color name="focused_background">#80c6c5c5</color>
 

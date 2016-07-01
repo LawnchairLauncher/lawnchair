@@ -22,8 +22,4 @@
     <dimen name="all_apps_empty_search_message_top_offset">64dp</dimen>
     <dimen name="all_apps_empty_search_bg_top_offset">180dp</dimen>
 
-<!-- Cling -->
-    <dimen name="cling_migration_content_margin">96dp</dimen>
-    <dimen name="cling_migration_content_width">320dp</dimen>
-
 </resources>
