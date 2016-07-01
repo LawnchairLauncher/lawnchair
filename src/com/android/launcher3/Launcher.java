@@ -495,7 +495,6 @@ public class Launcher extends Activity
             showIntroScreen();
         } else {
             showFirstRunActivity();
-            showFirstRunClings();
         }
     }
 
