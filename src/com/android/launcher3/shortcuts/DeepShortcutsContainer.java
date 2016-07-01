@@ -27,12 +27,12 @@ import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.compat.UserHandleCompat;
+import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
-import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.UiThreadCircularReveal;
 
 import java.util.ArrayList;
@@ -42,9 +42,9 @@ import java.util.List;
  * A container for shortcuts to deep links within apps.
  */
 @TargetApi(Build.VERSION_CODES.N)
-public class DeepShortcutsContainer extends LinearLayout implements  View.OnClickListener,
-        View.OnLongClickListener, View.OnTouchListener, DragSource,
-        UserEventDispatcher.LaunchSourceProvider, TouchController {
+public class DeepShortcutsContainer extends LinearLayout implements View.OnLongClickListener,
+        View.OnTouchListener, DragSource, DragController.DragListener,
+        UserEventDispatcher.LaunchSourceProvider {
     private static final String TAG = "ShortcutsContainer";
 
     private Launcher mLauncher;
@@ -121,7 +121,7 @@ public class DeepShortcutsContainer extends LinearLayout implements  View.OnClic
                     ShortcutInfo launcherShortcutInfo = shortcuts.get(i);
                     iconAndText.applyFromShortcutInfo(launcherShortcutInfo,
                             LauncherAppState.getInstance().getIconCache());
-                    iconAndText.setOnClickListener(DeepShortcutsContainer.this);
+                    iconAndText.setOnClickListener(mLauncher);
                     iconAndText.setOnLongClickListener(DeepShortcutsContainer.this);
                     iconAndText.setOnTouchListener(DeepShortcutsContainer.this);
                     int viewId = mLauncher.getViewIdForItem(originalInfo);
@@ -194,6 +194,7 @@ public class DeepShortcutsContainer extends LinearLayout implements  View.OnClic
     private void deferDrag(BubbleTextView originalIcon) {
         mDeferredDragIcon = originalIcon;
         showDragView(originalIcon);
+        mLauncher.getDragController().addDragListener(this);
     }
 
     public BubbleTextView getDeferredDragIcon() {
@@ -231,7 +232,6 @@ public class DeepShortcutsContainer extends LinearLayout implements  View.OnClic
             return false;
         }
 
-
         final int activePointerIndex = ev.findPointerIndex(mActivePointerId);
         if (activePointerIndex < 0) {
             return false;
@@ -256,12 +256,10 @@ public class DeepShortcutsContainer extends LinearLayout implements  View.OnClic
 
             boolean containerContainsTouch = x >= 0 && y >= 0 && x < getWidth() && y < getHeight();
             if (shouldStartDeferredDrag((int) x, (int) y, containerContainsTouch)) {
-                mDeferredDragIcon.getParent().requestDisallowInterceptTouchEvent(false);
-                mDeferredDragIcon.setVisibility(VISIBLE);
-                mDeferredDragIcon.getOnLongClickListener().onLongClick(mDeferredDragIcon);
-                mLauncher.getDragLayer().removeView(this);
-                mLauncher.getDragController().onTouchEvent(ev);
                 cleanupDeferredDrag();
+                mDeferredDragIcon.getParent().requestDisallowInterceptTouchEvent(false);
+                mDeferredDragIcon.getOnLongClickListener().onLongClick(mDeferredDragIcon);
+                mLauncher.getDragController().onTouchEvent(ev);
                 return true;
             } else {
                 // Determine whether touch is over a shortcut.
@@ -288,7 +286,6 @@ public class DeepShortcutsContainer extends LinearLayout implements  View.OnClic
                 }
             }
         } else if (action == MotionEvent.ACTION_UP) {
-            mDeferredDragIcon.setVisibility(VISIBLE);
             cleanupDeferredDrag();
             // Launch a shortcut if user was hovering over it.
             for (int i = 0; i < childCount; i++) {
@@ -326,6 +323,7 @@ public class DeepShortcutsContainer extends LinearLayout implements  View.OnClic
         if (mDragView != null) {
             mDragView.remove();
         }
+        mDeferredDragIcon.setVisibility(VISIBLE);
     }
 
     @Override
@@ -340,13 +338,6 @@ public class DeepShortcutsContainer extends LinearLayout implements  View.OnClic
         return false;
     }
 
-    @Override
-    public void onClick(View view) {
-        // Clicked on a shortcut.
-        mLauncher.onClick(view);
-        ((DragLayer) getParent()).removeView(this);
-    }
-
     public boolean onLongClick(View v) {
         // Return early if this is not initiated from a touch
         if (!v.isInTouchMode()) return false;
@@ -354,11 +345,7 @@ public class DeepShortcutsContainer extends LinearLayout implements  View.OnClic
         if (!mLauncher.isDraggingEnabled()) return false;
 
         // Long clicked on a shortcut.
-        // TODO remove this hack; it required because DragLayer isn't intercepting touch, so
-        // the controller is not updated from what it was previously.
-        mLauncher.getDragLayer().setController(mLauncher.getDragController());
         mLauncher.getWorkspace().beginDragShared(v, mIconLastTouchPos, this, false);
-        ((DragLayer) getParent()).removeView(this);
         // TODO: support dragging from within folder without having to close it
         mLauncher.closeFolder();
         return false;
@@ -398,6 +385,19 @@ public class DeepShortcutsContainer extends LinearLayout implements  View.OnClic
             mLauncher.showWorkspace(true);
             mLauncher.getDropTargetBar().onDragEnd();
         }
+    }
+
+    @Override
+    public void onDragStart(DragSource source, ItemInfo info, int dragAction) {
+        // Either the original icon or one of the shortcuts was dragged.
+        // Hide the container, but don't remove it yet because that interferes with touch events.
+        setVisibility(INVISIBLE);
+    }
+
+    @Override
+    public void onDragEnd() {
+        // Now remove the container.
+        mLauncher.closeShortcutsContainer();
     }
 
     @Override

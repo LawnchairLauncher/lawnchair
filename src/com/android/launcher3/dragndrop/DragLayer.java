@@ -231,8 +231,7 @@ public class DragLayer extends InsettableFrameLayout {
         }
 
         // Remove the shortcuts container when touching outside of it.
-        DeepShortcutsContainer deepShortcutsContainer = (DeepShortcutsContainer)
-                findViewById(R.id.deep_shortcuts_container);
+        DeepShortcutsContainer deepShortcutsContainer = mLauncher.getOpenShortcutsContainer();
         if (deepShortcutsContainer != null) {
             if (isEventOverView(deepShortcutsContainer, ev)) {
                 // Let the container handle the event.
@@ -244,7 +243,7 @@ public class DragLayer extends InsettableFrameLayout {
                         return true;
                     }
                 } else {
-                    removeView(deepShortcutsContainer);
+                    mLauncher.closeShortcutsContainer();
                     // We let touches on the original icon go through so that users can launch
                     // the app with one tap if they don't find a shortcut they want.
                     return !isEventOverView(deepShortcutsContainer.getDeferredDragIcon(), ev);
@@ -545,10 +544,6 @@ public class DragLayer extends InsettableFrameLayout {
     @Override
     protected LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
         return new LayoutParams(p);
-    }
-
-    public void setController(TouchController controller) {
-        mActiveController = controller;
     }
 
     public static class LayoutParams extends InsettableFrameLayout.LayoutParams {
