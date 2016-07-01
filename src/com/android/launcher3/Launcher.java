@@ -293,8 +293,6 @@ public class Launcher extends Activity
     /** Maps launcher activity components to their list of shortcut ids. */
     private MultiHashMap<ComponentKey, String> mDeepShortcutMap = new MultiHashMap<>();
 
-    private LauncherClings mClings;
-
     private View.OnTouchListener mHapticFeedbackTouchListener;
 
     // Related to the auto-advancing of widgets
@@ -3362,18 +3360,6 @@ public class Launcher extends Activity
         return anim;
     }
 
-    public void onLauncherClingShown() {
-        // When a launcher cling appears, it should cover the underlying layers, so their focus
-        // should be blocked.
-        if (mDragLayer.getDescendantFocusability() != ViewGroup.FOCUS_BLOCK_DESCENDANTS) {
-            mDragLayer.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-        }
-    }
-
-    public void onLauncherClingDismissed() {
-        mDragLayer.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-    }
-
     public void enterSpringLoadedDragMode() {
         if (LOGD) Log.d(TAG, String.format("enterSpringLoadedDragMode [mState=%s", mState.name()));
         if (isStateSpringLoaded()) {
@@ -3994,8 +3980,7 @@ public class Launcher extends Activity
 
     private boolean canRunNewAppsAnimation() {
         long diff = System.currentTimeMillis() - mDragController.getLastGestureUpTime();
-        return diff > (NEW_APPS_ANIMATION_INACTIVE_TIMEOUT_SECONDS * 1000)
-                && (mClings == null || !mClings.isVisible());
+        return diff > (NEW_APPS_ANIMATION_INACTIVE_TIMEOUT_SECONDS * 1000);
     }
 
     private ValueAnimator createNewAppBounceAnimation(View v, int i) {
@@ -4366,42 +4351,6 @@ public class Launcher extends Activity
         changeWallpaperVisiblity(false);
         if (introScreen != null) {
             mDragLayer.showOverlayView(introScreen);
-        }
-    }
-
-    public void dismissIntroScreen() {
-        markIntroScreenDismissed();
-        if (showFirstRunActivity()) {
-            // We delay hiding the intro view until the first run activity is showing. This
-            // avoids a blip.
-            mWorkspace.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mDragLayer.dismissOverlayView();
-                    showFirstRunClings();
-                }
-            }, ACTIVITY_START_DELAY);
-        } else {
-            mDragLayer.dismissOverlayView();
-            showFirstRunClings();
-        }
-        changeWallpaperVisiblity(true);
-    }
-
-    private void markIntroScreenDismissed() {
-        SharedPreferences.Editor editor = mSharedPrefs.edit();
-        editor.putBoolean(INTRO_SCREEN_DISMISSED, true);
-        editor.apply();
-    }
-
-    @Thunk void showFirstRunClings() {
-        // The two first run cling paths are mutually exclusive, if the launcher is preinstalled
-        // on the device, then we always show the first run cling experience (or if there is no
-        // launcher2). Otherwise, we prompt the user upon started for migration
-        LauncherClings launcherClings = new LauncherClings(this);
-        if (launcherClings.shouldShowFirstRunOrMigrationClings()) {
-            mClings = launcherClings;
-            launcherClings.showLongPressCling(true);
         }
     }
 
