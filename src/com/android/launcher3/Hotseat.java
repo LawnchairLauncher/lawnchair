@@ -220,11 +220,10 @@ public class Hotseat extends FrameLayout
     }
 
     public void setBackgroundTransparent(boolean enable) {
-        // This causes re-layout. Should replace the logic with simply setting the background alpha
         if (enable) {
-            setBackground(null);
+            mBackground.setAlpha(0);
         } else {
-            setBackground(mBackground);
+            mBackground.setAlpha(255);
         }
     }
 
