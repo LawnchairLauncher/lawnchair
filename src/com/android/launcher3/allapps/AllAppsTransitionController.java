@@ -444,5 +444,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         if (!mLauncher.isAllAppsVisible()) {
             setProgress(mShiftRange);
         }
+        mHotseat.removeOnLayoutChangeListener(this);
     }
 }
