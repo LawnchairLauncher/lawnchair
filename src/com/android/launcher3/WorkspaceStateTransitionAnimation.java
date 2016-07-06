@@ -312,7 +312,8 @@ public class WorkspaceStateTransitionAnimation {
             if (states.stateIsOverviewHidden) {
                 finalAlpha = 0f;
             } else if(states.stateIsNormalHidden) {
-                finalAlpha = FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP  ? 1 : 0;
+                finalAlpha = (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP &&
+                        i == mWorkspace.getNextPage()) ? 1 : 0;
             } else if (states.stateIsNormal && mWorkspaceFadeInAdjacentScreens) {
                 finalAlpha = (i == toPage || i < customPageCount) ? 1f : 0f;
             } else {
