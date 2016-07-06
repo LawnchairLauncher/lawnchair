@@ -1426,8 +1426,8 @@ public class Workspace extends PagedView
         // TODO(adamcohen): figure out a final effect here. We may need to recommend
         // different effects based on device performance. On at least one relatively high-end
         // device I've tried, translating the launcher causes things to get quite laggy.
-        setWorkspaceTranslation(Direction.X, transX, alpha);
-        setHotseatTranslation(Direction.X, transX, alpha);
+        setWorkspaceTranslationAndAlpha(Direction.X, transX, alpha);
+        setHotseatTranslationAndAlpha(Direction.X, transX, alpha);
     }
 
     /**
@@ -1436,7 +1436,7 @@ public class Workspace extends PagedView
      * @param translation the amount of shift.
      * @param alpha the alpha for the workspace page
      */
-    public void setWorkspaceTranslation(Direction direction, float translation, float alpha) {
+    public void setWorkspaceTranslationAndAlpha(Direction direction, float translation, float alpha) {
         Property<View, Float> property = direction.viewProperty;
         mPageAlpha[direction.ordinal()] = alpha;
         float finalAlpha = mPageAlpha[0] * mPageAlpha[1];
@@ -1463,7 +1463,7 @@ public class Workspace extends PagedView
      * @param translation the amound of shift.
      * @param alpha the alpha for the hotseat page
      */
-    public void setHotseatTranslation(Direction direction, float translation, float alpha) {
+    public void setHotseatTranslationAndAlpha(Direction direction, float translation, float alpha) {
         Property<View, Float> property = direction.viewProperty;
         property.set(mPageIndicator, translation);
         property.set(mLauncher.getHotseat(), translation);
