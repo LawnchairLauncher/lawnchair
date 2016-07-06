@@ -29,7 +29,7 @@
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Touch &amp; hold to pick up a widget."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Double-tap &amp; hold to pick up a widget or use customised actions."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"Search Apps…"</string>
+    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Search Apps"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Loading Apps…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"No Apps found matching \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Search for more apps"</string>
@@ -54,14 +54,6 @@
     <string name="default_scroll_format" msgid="7475544710230993317">"Page %1$d of %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Home screen %1$d of %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"New home screen page"</string>
-    <string name="first_run_cling_title" msgid="2459738000155917941">"Welcome"</string>
-    <string name="migration_cling_title" msgid="9181776667882933767">"Copy your app icons"</string>
-    <string name="migration_cling_description" msgid="2752413805582227644">"Import icons and folders from your old Home screens?"</string>
-    <string name="migration_cling_copy_apps" msgid="946331230090919440">"COPY ICONS"</string>
-    <string name="migration_cling_use_default" msgid="2626475813981258626">"START AFRESH"</string>
-    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Wallpapers, widgets &amp; settings"</string>
-    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Touch &amp; hold background to customise"</string>
-    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"GOT IT"</string>
     <string name="folder_opened" msgid="94695026776264709">"Folder opened, <xliff:g id="WIDTH">%1$d</xliff:g> by <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="4625795376335528256">"Tap to close folder"</string>
     <string name="folder_tap_to_rename" msgid="4017685068016979677">"Tap to save rename"</string>
