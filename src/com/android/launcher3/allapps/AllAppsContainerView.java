@@ -31,6 +31,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -529,6 +530,12 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                 mSearchIcon.setLayoutParams(llp);
 
                 lp.height = height;
+
+                View navBarBg = findViewById(R.id.nav_bar_bg);
+                ViewGroup.LayoutParams params = navBarBg.getLayoutParams();
+                params.height = insets.bottom;
+                navBarBg.setLayoutParams(params);
+                navBarBg.setVisibility(View.VISIBLE);
             }
         }
         mSearchContainer.setLayoutParams(lp);

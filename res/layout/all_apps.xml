@@ -99,4 +99,13 @@
         </LinearLayout>
 
     </com.android.launcher3.allapps.AllAppsRecyclerViewContainerView>
+    <View
+        android:id="@+id/nav_bar_bg"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="bottom"
+        android:background="@android:color/black"
+        android:elevation="16dp"
+        android:focusable="false"
+        android:visibility="invisible" />
 </com.android.launcher3.allapps.AllAppsContainerView>
