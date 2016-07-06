@@ -29,7 +29,7 @@
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Widget vyberete dotykem a podržením."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Dvojitým klepnutím a podržením vyberte widget, případně použijte vlastní akce."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"Hledat v aplikacích…"</string>
+    <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Hledat aplikace"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Načítání aplikací…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Dotazu „<xliff:g id="QUERY">%1$s</xliff:g>“ neodpovídají žádné aplikace"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Vyhledat další aplikace"</string>
@@ -54,14 +54,6 @@
     <string name="default_scroll_format" msgid="7475544710230993317">"Strana %1$d z %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Plocha %1$d z %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Nová stránka plochy"</string>
-    <string name="first_run_cling_title" msgid="2459738000155917941">"Vítejte"</string>
-    <string name="migration_cling_title" msgid="9181776667882933767">"Zkopírování ikon aplikací"</string>
-    <string name="migration_cling_description" msgid="2752413805582227644">"Chcete importovat ikony a složky ze svých starých ploch?"</string>
-    <string name="migration_cling_copy_apps" msgid="946331230090919440">"ZKOPÍROVAT IKONY"</string>
-    <string name="migration_cling_use_default" msgid="2626475813981258626">"ZAČÍT S VÝCHOZÍM ROZVRŽENÍM"</string>
-    <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Tapety, widgety a nastavení"</string>
-    <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Pozadí můžete přizpůsobit klepnutím a podržením"</string>
-    <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"ROZUMÍM"</string>
     <string name="folder_opened" msgid="94695026776264709">"Složka otevřena, rozměry <xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="4625795376335528256">"Klepnutím složku zavřete"</string>
     <string name="folder_tap_to_rename" msgid="4017685068016979677">"Klepnutím změnu názvu uložíte"</string>
