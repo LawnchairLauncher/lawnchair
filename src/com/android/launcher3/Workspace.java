@@ -357,7 +357,16 @@ public class Workspace extends PagedView
 
     @Override
     public void setInsets(Rect insets) {
+        int extraLeftPadding = insets.left - mInsets.left;
         mInsets.set(insets);
+        if (extraLeftPadding != 0) {
+            /**
+             * Initial layout assumes that the insets is on the right,
+             * {@link DeviceProfile#getWorkspacePadding()}. Compensate for the difference.
+             */
+            setPadding(getPaddingLeft() + extraLeftPadding, getPaddingTop(),
+                    getPaddingRight() - extraLeftPadding, getPaddingBottom());
+        }
 
         CellLayout customScreen = getScreenWithId(CUSTOM_CONTENT_SCREEN_ID);
         if (customScreen != null) {
@@ -550,8 +559,9 @@ public class Workspace extends PagedView
         // Add the first page
         CellLayout firstPage = insertNewWorkspaceScreen(Workspace.FIRST_SCREEN_ID, 0);
 
-        if (!mIsRtl || !mLauncher.getDeviceProfile().isVerticalBarLayout()) {
-            // Let the cell layout extend the start padding.
+        if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+            // Let the cell layout extend the start padding. On transposed layout, there is page
+            // indicator on left and hotseat on right, as such workspace does not touch the edge.
             ((LayoutParams) firstPage.getLayoutParams()).matchStartEdge = true;
             firstPage.setPaddingRelative(getPaddingStart(), 0, 0, 0);
         }
@@ -3087,7 +3097,11 @@ public class Workspace extends PagedView
        mTempXY[0] = x;
        mTempXY[1] = y;
        mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, mTempXY, true);
-       return mLauncher.getDeviceProfile().isInHotseatRect(mTempXY[0], mTempXY[1]);
+       View hotseat = mLauncher.getHotseat();
+       return mTempXY[0] >= hotseat.getLeft() &&
+               mTempXY[0] <= hotseat.getRight() &&
+               mTempXY[1] >= hotseat.getTop() &&
+               mTempXY[1] <= hotseat.getBottom();
    }
 
    void mapPointFromSelfToHotseatLayout(Hotseat hotseat, float[] xy) {

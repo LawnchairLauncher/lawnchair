@@ -194,9 +194,7 @@ public class DeviceProfile {
         updateIconSize(1f, drawablePadding, res, dm);
         float usedHeight = (cellHeightPx * inv.numRows);
 
-        // We only care about the top and bottom workspace padding, which is not affected by RTL.
-        Rect workspacePadding = getWorkspacePadding();
-        int maxHeight = (availableHeightPx - workspacePadding.top - workspacePadding.bottom);
+        int maxHeight = (availableHeightPx - getTotalWorkspacePadding().y);
         if (usedHeight > maxHeight) {
             scale = maxHeight / usedHeight;
             drawablePadding = 0;
@@ -291,15 +289,23 @@ public class DeviceProfile {
         Point result = new Point();
         // Since we are only concerned with the overall padding, layout direction does
         // not matter.
-        Rect padding = getWorkspacePadding();
-        result.x = calculateCellWidth(availableWidthPx - padding.left - padding.right,
-                inv.numColumns);
-        result.y = calculateCellHeight(availableHeightPx - padding.top - padding.bottom,
-                inv.numRows);
+        Point padding = getTotalWorkspacePadding();
+        result.x = calculateCellWidth(availableWidthPx - padding.x, inv.numColumns);
+        result.y = calculateCellHeight(availableHeightPx - padding.y, inv.numRows);
         return result;
     }
 
-    /** Returns the workspace padding in the specified orientation */
+    public Point getTotalWorkspacePadding() {
+        Rect padding = getWorkspacePadding();
+        return new Point(padding.left + padding.right, padding.top + padding.bottom);
+    }
+
+    /**
+     * Returns the workspace padding in the specified orientation.
+     * Note that it assumes that while in verticalBarLayout, the nav bar is on the right, as such
+     * this value is not reliable.
+     * Use {@link #getTotalWorkspacePadding()} instead.
+     */
     public Rect getWorkspacePadding() {
         Rect padding = new Rect();
         if (isVerticalBarLayout()) {
@@ -351,17 +357,6 @@ public class DeviceProfile {
         zoneHeight = Math.min(overviewModeMaxIconZoneHeightPx,
                 Math.max(overviewModeMinIconZoneHeightPx, zoneHeight));
         return zoneHeight;
-    }
-
-    // The rect returned will be extended to below the system ui that covers the workspace
-    public boolean isInHotseatRect(int x, int y) {
-        if (isVerticalBarLayout()) {
-            return (x >= (availableWidthPx - hotseatBarHeightPx))
-                    && (y >= 0) && (y <= availableHeightPx);
-        } else {
-            return (x >= 0) && (x <= availableWidthPx)
-                    && (y >= (availableHeightPx - hotseatBarHeightPx));
-        }
     }
 
     public static int calculateCellWidth(int width, int countX) {
