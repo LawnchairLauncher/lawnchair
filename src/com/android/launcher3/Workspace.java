@@ -2088,19 +2088,22 @@ public class Workspace extends PagedView
     }
 
     public void updateAccessibilityFlags() {
-        if (Utilities.ATLEAST_LOLLIPOP) {
-            int total = getPageCount();
-            for (int i = numCustomPages(); i < total; i++) {
-                updateAccessibilityFlags((CellLayout) getPageAt(i), i);
-            }
-            setImportantForAccessibility((mState == State.NORMAL || mState == State.OVERVIEW)
-                    ? IMPORTANT_FOR_ACCESSIBILITY_AUTO
-                    : IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
-        } else {
-            int accessible = mState == State.NORMAL ?
-                    IMPORTANT_FOR_ACCESSIBILITY_AUTO :
+        // TODO: Update the accessibility flags appropriately when dragging.
+        if (!mLauncher.getAccessibilityDelegate().isInAccessibleDrag()) {
+            if (Utilities.ATLEAST_LOLLIPOP) {
+                int total = getPageCount();
+                for (int i = numCustomPages(); i < total; i++) {
+                    updateAccessibilityFlags((CellLayout) getPageAt(i), i);
+                }
+                setImportantForAccessibility((mState == State.NORMAL || mState == State.OVERVIEW)
+                        ? IMPORTANT_FOR_ACCESSIBILITY_AUTO
+                        : IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
+            } else {
+                int accessible = mState == State.NORMAL ?
+                        IMPORTANT_FOR_ACCESSIBILITY_AUTO :
                         IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
-            setImportantForAccessibility(accessible);
+                setImportantForAccessibility(accessible);
+            }
         }
     }
 
