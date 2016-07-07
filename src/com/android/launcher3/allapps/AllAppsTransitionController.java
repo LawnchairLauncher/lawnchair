@@ -65,6 +65,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private float mShiftCurrent;    // [0, mShiftRange]
     private float mShiftRange;      // changes depending on the orientation
 
+    private static final float DEFAULT_SHIFT_RANGE = 10;
+
 
     private static final float RECATCH_REJECTION_FRACTION = .0875f;
 
@@ -81,6 +83,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mLauncher = launcher;
         mDetector = new VerticalPullDetector(launcher);
         mDetector.setListener(this);
+        mShiftCurrent = mShiftRange = DEFAULT_SHIFT_RANGE;
         mBezelSwipeUpHeight = launcher.getResources().getDimensionPixelSize(
                 R.dimen.all_apps_bezel_swipe_height);
     }
@@ -436,14 +439,12 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     @Override
     public void onLayoutChange(View v, int left, int top, int right, int bottom,
             int oldLeft, int oldTop, int oldRight, int oldBottom) {
+        float prevShiftRatio = mShiftCurrent / mShiftRange;
         if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
             mShiftRange = top;
         } else {
             mShiftRange = bottom;
         }
-        if (!mLauncher.isAllAppsVisible()) {
-            setProgress(mShiftRange);
-        }
-        mHotseat.removeOnLayoutChangeListener(this);
+        setProgress(mShiftRange * prevShiftRatio);
     }
 }
