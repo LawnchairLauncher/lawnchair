@@ -56,17 +56,34 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     private static final boolean DEBUG = false;
 
     // A section break in the grid
-    public static final int SECTION_BREAK_VIEW_TYPE = 0;
+    public static final int VIEW_TYPE_SECTION_BREAK = 1 << 0;
     // A normal icon
-    public static final int ICON_VIEW_TYPE = 1;
+    public static final int VIEW_TYPE_ICON = 1 << 1;
     // A prediction icon
-    public static final int PREDICTION_ICON_VIEW_TYPE = 2;
+    public static final int VIEW_TYPE_PREDICTION_ICON = 1 << 2;
     // The message shown when there are no filtered results
-    public static final int EMPTY_SEARCH_VIEW_TYPE = 3;
+    public static final int VIEW_TYPE_EMPTY_SEARCH = 1 << 3;
     // A divider that separates the apps list and the search market button
-    public static final int SEARCH_MARKET_DIVIDER_VIEW_TYPE = 4;
-    // The message to continue to a market search when there are no filtered results
-    public static final int SEARCH_MARKET_VIEW_TYPE = 5;
+    public static final int VIEW_TYPE_SEARCH_MARKET = 1 << 4;
+
+    // We use various dividers for various purposes.  They share enough attributes to reuse layouts,
+    // but differ in enough attributes to require different view types
+
+    // A divider that separates the apps list and the search market button
+    public static final int VIEW_TYPE_SEARCH_MARKET_DIVIDER = 1 << 5;
+    // The divider under the search field
+    public static final int VIEW_TYPE_SEARCH_DIVIDER = 1 << 6;
+    // The divider that separates prediction icons from the app list
+    public static final int VIEW_TYPE_PREDICTION_DIVIDER = 1 << 7;
+
+    // Common view type masks
+    public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_SEARCH_DIVIDER
+            | VIEW_TYPE_SEARCH_MARKET_DIVIDER
+            | VIEW_TYPE_PREDICTION_DIVIDER
+            | VIEW_TYPE_SECTION_BREAK;
+    public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON
+            | VIEW_TYPE_PREDICTION_ICON;
+
 
     public interface BindViewCallback {
         public void onBindView(ViewHolder holder);
@@ -128,11 +145,9 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
         @Override
         public int getSpanSize(int position) {
-            switch (mApps.getAdapterItems().get(position).viewType) {
-                case AllAppsGridAdapter.ICON_VIEW_TYPE:
-                case AllAppsGridAdapter.PREDICTION_ICON_VIEW_TYPE:
-                    return 1;
-                default:
+            if (isIconViewType(mApps.getAdapterItems().get(position).viewType)) {
+                return 1;
+            } else {
                     // Section breaks span the full width
                     return mAppsPerRow;
             }
@@ -164,7 +179,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             }
 
             List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
-            boolean hasDrawnPredictedAppsDivider = false;
             boolean showSectionNames = mSectionNamesMargin > 0;
             int childCount = parent.getChildCount();
             int lastSectionTop = 0;
@@ -176,15 +190,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                     continue;
                 }
 
-                if (shouldDrawItemDivider(holder, items) && !hasDrawnPredictedAppsDivider) {
-                    // Draw the divider under the predicted apps
-                    int top = child.getTop() + child.getHeight() + mPredictionBarDividerOffset;
-                    c.drawLine(mBackgroundPadding.left, top,
-                            parent.getWidth() - mBackgroundPadding.right, top,
-                            mPredictedAppsDividerPaint);
-                    hasDrawnPredictedAppsDivider = true;
-
-                } else if (showSectionNames && shouldDrawItemSection(holder, i, items)) {
+                if (showSectionNames && shouldDrawItemSection(holder, i, items)) {
                     // At this point, we only draw sections for each section break;
                     int viewTopOffset = (2 * child.getPaddingTop());
                     int pos = holder.getPosition();
@@ -210,7 +216,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                         int sectionBaseline = (int) (viewTopOffset + sectionBounds.y);
                         int x = mIsRtl ?
                                 parent.getWidth() - mBackgroundPadding.left - mSectionNamesMargin :
-                                        mBackgroundPadding.left;
+                                mBackgroundPadding.left;
                         x += (int) ((mSectionNamesMargin - sectionBounds.x) / 2f);
                         int y = child.getTop() + sectionBaseline;
 
@@ -295,15 +301,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         }
 
         /**
-         * Returns whether to draw the divider for a given child.
-         */
-        private boolean shouldDrawItemDivider(ViewHolder holder,
-                List<AlphabeticalAppsList.AdapterItem> items) {
-            int pos = holder.getPosition();
-            return items.get(pos).viewType == AllAppsGridAdapter.PREDICTION_ICON_VIEW_TYPE;
-        }
-
-        /**
          * Returns whether to draw the section for the given child.
          */
         private boolean shouldDrawItemSection(ViewHolder holder, int childIndex,
@@ -312,12 +309,12 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             AlphabeticalAppsList.AdapterItem item = items.get(pos);
 
             // Ensure it's an icon
-            if (item.viewType != AllAppsGridAdapter.ICON_VIEW_TYPE) {
+            if (item.viewType != AllAppsGridAdapter.VIEW_TYPE_ICON) {
                 return false;
             }
             // Draw the section header for the first item in each section
             return (childIndex == 0) ||
-                    (items.get(pos - 1).viewType == AllAppsGridAdapter.SECTION_BREAK_VIEW_TYPE);
+                    (items.get(pos - 1).viewType == AllAppsGridAdapter.VIEW_TYPE_SECTION_BREAK);
         }
     }
 
@@ -337,9 +334,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     private final int mSectionNamesMargin;
     private final int mSectionHeaderOffset;
     private final Paint mSectionTextPaint;
-    private final Paint mPredictedAppsDividerPaint;
+    private int mAccentColor;
 
-    private final int mPredictionBarDividerOffset;
     private int mAppsPerRow;
 
     private BindViewCallback mBindViewCallback;
@@ -351,8 +347,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     // The intent to send off to the market app, updated each time the search query changes.
     private Intent mMarketSearchIntent;
 
-    public AllAppsGridAdapter(Launcher launcher, AlphabeticalAppsList apps,
-            View.OnClickListener iconClickListener, View.OnLongClickListener iconLongClickListener) {
+    public AllAppsGridAdapter(Launcher launcher, AlphabeticalAppsList apps, View.OnClickListener
+            iconClickListener, View.OnLongClickListener iconLongClickListener) {
         Resources res = launcher.getResources();
         mLauncher = launcher;
         mApps = apps;
@@ -368,17 +364,24 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         mSectionHeaderOffset = res.getDimensionPixelSize(R.dimen.all_apps_grid_section_y_offset);
         mIsRtl = Utilities.isRtl(res);
 
+        mAccentColor = Utilities.getColorAccent(launcher);
+
         mSectionTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mSectionTextPaint.setTextSize(res.getDimensionPixelSize(
                 R.dimen.all_apps_grid_section_text_size));
-        mSectionTextPaint.setColor(Utilities.getColorAccent(launcher));
+        mSectionTextPaint.setColor(mAccentColor);
+    }
 
-        mPredictedAppsDividerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mPredictedAppsDividerPaint.setStrokeWidth(Utilities.pxFromDp(1f, res.getDisplayMetrics()));
-        mPredictedAppsDividerPaint.setColor(0x1E000000);
-        mPredictionBarDividerOffset =
-                (-res.getDimensionPixelSize(R.dimen.all_apps_prediction_icon_bottom_padding) +
-                        res.getDimensionPixelSize(R.dimen.all_apps_icon_top_bottom_padding)) / 2;
+    public static boolean isDividerViewType(int viewType) {
+        return isViewType(viewType, VIEW_TYPE_MASK_DIVIDER);
+    }
+
+    public static boolean isIconViewType(int viewType) {
+        return isViewType(viewType, VIEW_TYPE_MASK_ICON);
+    }
+
+    public static boolean isViewType(int viewType, int viewTypeMask) {
+        return (viewType & viewTypeMask) != 0;
     }
 
     /**
@@ -440,12 +443,13 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
-            case SECTION_BREAK_VIEW_TYPE:
+            case VIEW_TYPE_SECTION_BREAK:
                 return new ViewHolder(new View(parent.getContext()));
-            case ICON_VIEW_TYPE:
-            case PREDICTION_ICON_VIEW_TYPE: {
+            case VIEW_TYPE_ICON:
+                /* falls through */
+            case VIEW_TYPE_PREDICTION_ICON: {
                 BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
-                        viewType == ICON_VIEW_TYPE ? R.layout.all_apps_icon :
+                        viewType == VIEW_TYPE_ICON ? R.layout.all_apps_icon :
                                 R.layout.all_apps_prediction_bar_icon, parent, false);
                 icon.setOnClickListener(mIconClickListener);
                 icon.setOnLongClickListener(mIconLongClickListener);
@@ -454,13 +458,10 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 icon.setOnFocusChangeListener(mIconFocusListener);
                 return new ViewHolder(icon);
             }
-            case EMPTY_SEARCH_VIEW_TYPE:
+            case VIEW_TYPE_EMPTY_SEARCH:
                 return new ViewHolder(mLayoutInflater.inflate(R.layout.all_apps_empty_search,
                         parent, false));
-            case SEARCH_MARKET_DIVIDER_VIEW_TYPE:
-                return new ViewHolder(mLayoutInflater.inflate(R.layout.all_apps_search_market_divider,
-                        parent, false));
-            case SEARCH_MARKET_VIEW_TYPE:
+            case VIEW_TYPE_SEARCH_MARKET:
                 View searchMarketView = mLayoutInflater.inflate(R.layout.all_apps_search_market,
                         parent, false);
                 searchMarketView.setOnClickListener(new View.OnClickListener() {
@@ -470,6 +471,20 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                     }
                 });
                 return new ViewHolder(searchMarketView);
+            case VIEW_TYPE_SEARCH_DIVIDER:
+                final View searchDivider =
+                        mLayoutInflater.inflate(R.layout.all_apps_divider, parent, false);
+                searchDivider.setBackgroundColor(mAccentColor);
+                final GridLayoutManager.LayoutParams searchDividerParams =
+                        (GridLayoutManager.LayoutParams) searchDivider.getLayoutParams();
+                searchDividerParams.topMargin = 0;
+                searchDivider.setLayoutParams(searchDividerParams);
+                return new ViewHolder(searchDivider);
+            case VIEW_TYPE_PREDICTION_DIVIDER:
+                /* falls through */
+            case VIEW_TYPE_SEARCH_MARKET_DIVIDER:
+                return new ViewHolder(mLayoutInflater.inflate(
+                        R.layout.all_apps_divider, parent, false));
             default:
                 throw new RuntimeException("Unexpected view type");
         }
@@ -478,7 +493,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         switch (holder.getItemViewType()) {
-            case ICON_VIEW_TYPE: {
+            case VIEW_TYPE_ICON: {
                 AppInfo info = mApps.getAdapterItems().get(position).appInfo;
                 BubbleTextView icon = (BubbleTextView) holder.mContent;
                 icon.applyFromApplicationInfo(info);
@@ -489,7 +504,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 icon.setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
                 break;
             }
-            case PREDICTION_ICON_VIEW_TYPE: {
+            case VIEW_TYPE_PREDICTION_ICON: {
                 AppInfo info = mApps.getAdapterItems().get(position).appInfo;
                 BubbleTextView icon = (BubbleTextView) holder.mContent;
                 icon.applyFromApplicationInfo(info);
@@ -500,13 +515,13 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 icon.setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
                 break;
             }
-            case EMPTY_SEARCH_VIEW_TYPE:
+            case VIEW_TYPE_EMPTY_SEARCH:
                 TextView emptyViewText = (TextView) holder.mContent;
                 emptyViewText.setText(mEmptySearchMessage);
                 emptyViewText.setGravity(mApps.hasNoFilteredResults() ? Gravity.CENTER :
                         Gravity.START | Gravity.CENTER_VERTICAL);
                 break;
-            case SEARCH_MARKET_VIEW_TYPE:
+            case VIEW_TYPE_SEARCH_MARKET:
                 TextView searchView = (TextView) holder.mContent;
                 if (mMarketSearchIntent != null) {
                     searchView.setVisibility(View.VISIBLE);

@@ -108,7 +108,7 @@ public class AlphabeticalAppsList {
 
         public static AdapterItem asSectionBreak(int pos, SectionInfo section) {
             AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.SECTION_BREAK_VIEW_TYPE;
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_SECTION_BREAK;
             item.position = pos;
             item.sectionInfo = section;
             section.sectionBreakItem = item;
@@ -118,14 +118,14 @@ public class AlphabeticalAppsList {
         public static AdapterItem asPredictedApp(int pos, SectionInfo section, String sectionName,
                 int sectionAppIndex, AppInfo appInfo, int appIndex) {
             AdapterItem item = asApp(pos, section, sectionName, sectionAppIndex, appInfo, appIndex);
-            item.viewType = AllAppsGridAdapter.PREDICTION_ICON_VIEW_TYPE;
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON;
             return item;
         }
 
         public static AdapterItem asApp(int pos, SectionInfo section, String sectionName,
                 int sectionAppIndex, AppInfo appInfo, int appIndex) {
             AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.ICON_VIEW_TYPE;
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_ICON;
             item.position = pos;
             item.sectionInfo = section;
             item.sectionName = sectionName;
@@ -137,21 +137,35 @@ public class AlphabeticalAppsList {
 
         public static AdapterItem asEmptySearch(int pos) {
             AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.EMPTY_SEARCH_VIEW_TYPE;
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH;
             item.position = pos;
             return item;
         }
 
-        public static AdapterItem asDivider(int pos) {
+        public static AdapterItem asPredictionDivider(int pos) {
             AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.SEARCH_MARKET_DIVIDER_VIEW_TYPE;
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_PREDICTION_DIVIDER;
+            item.position = pos;
+            return item;
+        }
+
+        public static AdapterItem asSearchDivder(int pos) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_DIVIDER;
+            item.position = pos;
+            return item;
+        }
+
+        public static AdapterItem asMarketDivider(int pos) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET_DIVIDER;
             item.position = pos;
             return item;
         }
 
         public static AdapterItem asMarketSearch(int pos) {
             AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.SEARCH_MARKET_VIEW_TYPE;
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET;
             item.position = pos;
             return item;
         }
@@ -414,6 +428,9 @@ public class AlphabeticalAppsList {
             }
         }
 
+        // Add the search divider
+        mAdapterItems.add(AdapterItem.asSearchDivder(position++));
+
         // Process the predicted app components
         mPredictedApps.clear();
         if (mPredictedAppComponents != null && !mPredictedAppComponents.isEmpty() && !hasFilter()) {
@@ -452,6 +469,8 @@ public class AlphabeticalAppsList {
                     mAdapterItems.add(appItem);
                     mFilteredApps.add(info);
                 }
+
+                mAdapterItems.add(AdapterItem.asPredictionDivider(position++));
             }
         }
 
@@ -491,7 +510,7 @@ public class AlphabeticalAppsList {
             if (hasNoFilteredResults()) {
                 mAdapterItems.add(AdapterItem.asEmptySearch(position++));
             } else {
-                mAdapterItems.add(AdapterItem.asDivider(position++));
+                mAdapterItems.add(AdapterItem.asMarketDivider(position++));
             }
             mAdapterItems.add(AdapterItem.asMarketSearch(position++));
         }
@@ -507,10 +526,9 @@ public class AlphabeticalAppsList {
             int rowIndex = -1;
             for (AdapterItem item : mAdapterItems) {
                 item.rowIndex = 0;
-                if (item.viewType == AllAppsGridAdapter.SECTION_BREAK_VIEW_TYPE) {
+                if (AllAppsGridAdapter.isDividerViewType(item.viewType)) {
                     numAppsInSection = 0;
-                } else if (item.viewType == AllAppsGridAdapter.ICON_VIEW_TYPE ||
-                        item.viewType == AllAppsGridAdapter.PREDICTION_ICON_VIEW_TYPE) {
+                } else if (AllAppsGridAdapter.isIconViewType(item.viewType)) {
                     if (numAppsInSection % mNumAppsPerRow == 0) {
                         numAppsInRow = 0;
                         rowIndex++;
@@ -529,8 +547,7 @@ public class AlphabeticalAppsList {
                     float rowFraction = 1f / mNumAppRowsInAdapter;
                     for (FastScrollSectionInfo info : mFastScrollerSections) {
                         AdapterItem item = info.fastScrollToItem;
-                        if (item.viewType != AllAppsGridAdapter.ICON_VIEW_TYPE &&
-                                item.viewType != AllAppsGridAdapter.PREDICTION_ICON_VIEW_TYPE) {
+                        if (!AllAppsGridAdapter.isIconViewType(item.viewType)) {
                             info.touchFraction = 0f;
                             continue;
                         }
@@ -544,8 +561,7 @@ public class AlphabeticalAppsList {
                     float cumulativeTouchFraction = 0f;
                     for (FastScrollSectionInfo info : mFastScrollerSections) {
                         AdapterItem item = info.fastScrollToItem;
-                        if (item.viewType != AllAppsGridAdapter.ICON_VIEW_TYPE &&
-                                item.viewType != AllAppsGridAdapter.PREDICTION_ICON_VIEW_TYPE) {
+                        if (!AllAppsGridAdapter.isIconViewType(item.viewType)) {
                             info.touchFraction = 0f;
                             continue;
                         }

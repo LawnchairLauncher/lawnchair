@@ -264,7 +264,7 @@ public abstract class BaseRecyclerView extends RecyclerView
         // Calculate the current scroll position, the scrollY of the recycler view accounts for the
         // view padding, while the scrollBarY is drawn right up to the background padding (ignoring
         // padding)
-        int scrollY = getScrollTop(scrollPosState);
+        int scrollY = Math.max(0, getScrollTop(scrollPosState));
         int scrollBarY = mBackgroundPadding.top +
                 (int) (((float) scrollY / availableScrollHeight) * availableScrollBarHeight);
 
