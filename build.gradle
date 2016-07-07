@@ -12,8 +12,8 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.protobuf'
 
 android {
-    compileSdkVersion 'android-N'
-    buildToolsVersion '24.0.0-rc3'
+    compileSdkVersion 25
+    buildToolsVersion '24.0.0'
 
     defaultConfig {
         applicationId "com.android.launcher3"
