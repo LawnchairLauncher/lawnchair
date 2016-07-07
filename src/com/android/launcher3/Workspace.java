@@ -3177,9 +3177,6 @@ public class Workspace extends PagedView
         return (d.dragInfo instanceof LauncherAppWidgetInfo ||
                 d.dragInfo instanceof PendingAddWidgetInfo);
     }
-    private boolean isExternalDragWidget(DragObject d) {
-        return d.dragSource != this && isDragWidget(d);
-    }
 
     public void onDragOver(DragObject d) {
         // Skip drag over events while we are dragging over side pages
@@ -3201,7 +3198,7 @@ public class Workspace extends PagedView
         final View child = (mDragInfo == null) ? null : mDragInfo.cell;
         // Identify whether we have dragged over a side page
         if (workspaceInModalState()) {
-            if (mLauncher.getHotseat() != null && !isExternalDragWidget(d)) {
+            if (mLauncher.getHotseat() != null && !isDragWidget(d)) {
                 if (isPointInSelfOverHotseat(d.x, d.y)) {
                     layout = mLauncher.getHotseat().getLayout();
                 }
