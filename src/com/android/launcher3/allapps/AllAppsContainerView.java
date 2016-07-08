@@ -32,7 +32,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -335,12 +334,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         final OnClickListener searchFocusListener = new OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!mSearchInput.isFocused()) {
-                    mSearchInput.requestFocus();
-                    final InputMethodManager imm =
-                            (InputMethodManager)getContext().getSystemService(
-                                    Context.INPUT_METHOD_SERVICE);
-                    imm.showSoftInput(mSearchInput, 0);
+                if (!mSearchBarController.isSearchFieldFocused()) {
+                    mSearchBarController.focusSearchField();
                 }
             }
         };
