@@ -152,6 +152,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     private ExtendedEditText mSearchInput;
     private ImageView mSearchIcon;
     private HeaderElevationController mElevationController;
+    private int mSearchContainerOffsetTop;
 
     private SpannableStringBuilder mSearchQueryBuilder = null;
 
@@ -311,6 +312,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mSearchContainer = findViewById(R.id.search_container);
         mSearchInput = (ExtendedEditText) findViewById(R.id.search_box_input);
         mSearchIcon = (ImageView) findViewById(R.id.search_icon);
+        mSearchContainerOffsetTop = getResources().getDimensionPixelSize(
+                R.dimen.all_apps_search_bar_margin_top);
 
         final LinearLayout.LayoutParams searchParams =
                 (LinearLayout.LayoutParams) mSearchInput.getLayoutParams();
@@ -414,13 +417,12 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                 mAdapter.setNumAppsPerRow(mNumAppsPerRow);
                 mApps.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow, new FullMergeAlgorithm());
                 if (mNumAppsPerRow > 0) {
-                    int iconSize = availableWidth / mNumAppsPerRow;
-                    int iconSpacing = (iconSize - grid.allAppsIconSizePx) / 2;
+                    int rvPadding = mAppsRecyclerView.getPaddingStart(); // Assumes symmetry
                     final int thumbMaxWidth =
                             getResources().getDimensionPixelSize(
                                     R.dimen.container_fastscroll_thumb_max_width);
-                    mSearchContainer.setPaddingRelative(
-                            iconSpacing + thumbMaxWidth, 0, iconSpacing + thumbMaxWidth, 0);
+                    mSearchContainer.setPaddingRelative(rvPadding + thumbMaxWidth, 0, rvPadding +
+                            thumbMaxWidth, 0);
                 }
             }
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -520,7 +522,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
                 LinearLayout.LayoutParams llp =
                         (LinearLayout.LayoutParams) mSearchInput.getLayoutParams();
-                llp.topMargin = insets.top;
+                llp.topMargin = insets.top + mSearchContainerOffsetTop;
                 mSearchInput.setLayoutParams(llp);
                 mSearchIcon.setLayoutParams(llp);
 
