@@ -203,7 +203,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                             continue;
                         }
 
-
                         // Find the section name bounds
                         PointF sectionBounds = getAndCacheSectionBounds(sectionName);
 
