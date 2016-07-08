@@ -281,7 +281,9 @@ public class GridSizeMigrationTask {
 
         // Try removing all possible combinations
         for (int x = 0; x < mSrcX; x++) {
-            for (int y = startY; y < mSrcY; y++) {
+            // Try removing the rows first from bottom. This keeps the workspace
+            // nicely aligned with hotseat.
+            for (int y = mSrcY - 1; y >= startY; y--) {
                 // Use a deep copy when trying out a particular combination as it can change
                 // the underlying object.
                 ArrayList<DbEntry> itemsOnScreen = tryRemove(x, y, startY, deepCopy(items), outLoss);
@@ -879,6 +881,14 @@ public class GridSizeMigrationTask {
         return String.format(Locale.ENGLISH, "%d,%d", x, y);
     }
 
+    public static void markForMigration(
+            Context context, int gridX, int gridY, int hotseatSize) {
+        Utilities.getPrefs(context).edit()
+                .putString(KEY_MIGRATION_SRC_WORKSPACE_SIZE, getPointString(gridX, gridY))
+                .putInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, hotseatSize)
+                .apply();
+    }
+
     /**
      * Migrates the workspace and hotseat in case their sizes changed.
      * @return false if the migration failed.
@@ -915,45 +925,8 @@ public class GridSizeMigrationTask {
             Point sourceSize = parsePoint(prefs.getString(
                     KEY_MIGRATION_SRC_WORKSPACE_SIZE, gridSizeString));
 
-            if (!targetSize.equals(sourceSize)) {
-
-                // The following list defines all possible grid sizes (and intermediate steps
-                // during migration). Note that at each step, dx <= 1 && dy <= 1. Any grid size
-                // which is not in this list is not migrated.
-                // Note that the InvariantDeviceProfile defines (rows, cols) but the Points
-                // specified here are defined as (cols, rows).
-                ArrayList<Point> gridSizeSteps = new ArrayList<>();
-                gridSizeSteps.add(new Point(3, 2));
-                gridSizeSteps.add(new Point(3, 3));
-                gridSizeSteps.add(new Point(4, 3));
-                gridSizeSteps.add(new Point(4, 4));
-                gridSizeSteps.add(new Point(5, 5));
-                gridSizeSteps.add(new Point(6, 5));
-                gridSizeSteps.add(new Point(6, 6));
-                gridSizeSteps.add(new Point(7, 7));
-
-                int sourceSizeIndex = gridSizeSteps.indexOf(sourceSize);
-                int targetSizeIndex = gridSizeSteps.indexOf(targetSize);
-
-                if (sourceSizeIndex <= -1 || targetSizeIndex <= -1) {
-                    throw new Exception("Unable to migrate grid size from " + sourceSize
-                            + " to " + targetSize);
-                }
-
-                // Migrate the workspace grid, step by step.
-                while (targetSizeIndex < sourceSizeIndex ) {
-                    // We only need to migrate the grid if source size is greater
-                    // than the target size.
-                    Point stepTargetSize = gridSizeSteps.get(sourceSizeIndex - 1);
-                    Point stepSourceSize = gridSizeSteps.get(sourceSizeIndex);
-
-                    if (new GridSizeMigrationTask(context,
-                            LauncherAppState.getInstance().getInvariantDeviceProfile(),
-                            validPackages, stepSourceSize, stepTargetSize).migrateWorkspace()) {
-                        dbChanged = true;
-                    }
-                    sourceSizeIndex--;
-                }
+            if (new MultiStepMigrationTask(validPackages, context).migrate(sourceSize, targetSize)) {
+                dbChanged = true;
             }
 
             if (dbChanged) {
@@ -998,5 +971,56 @@ public class GridSizeMigrationTask {
         validPackages.addAll(PackageInstallerCompat.getInstance(context)
                 .updateAndGetActiveSessionCache().keySet());
         return validPackages;
+    }
+
+    /**
+     * Task to run grid migration in multiple steps when the size difference is more than 1.
+     */
+    protected static class MultiStepMigrationTask {
+        private final HashSet<String> mValidPackages;
+        private final Context mContext;
+
+        public MultiStepMigrationTask(HashSet<String> validPackages, Context context) {
+            mValidPackages = validPackages;
+            mContext = context;
+        }
+
+        public boolean migrate(Point sourceSize, Point targetSize) throws Exception {
+            boolean dbChanged = false;
+            if (!targetSize.equals(sourceSize)) {
+                if (sourceSize.x < targetSize.x) {
+                    // Source is smaller that target, just expand the grid without actual migration.
+                    sourceSize.x = targetSize.x;
+                }
+                if (sourceSize.y < targetSize.y) {
+                    // Source is smaller that target, just expand the grid without actual migration.
+                    sourceSize.y = targetSize.y;
+                }
+
+                // Migrate the workspace grid, such that the points differ by max 1 in x and y
+                // each on every step.
+                while (!targetSize.equals(sourceSize)) {
+                    // Get the next size, such that the points differ by max 1 in x and y each
+                    Point nextSize = new Point(sourceSize);
+                    if (targetSize.x < nextSize.x) {
+                        nextSize.x--;
+                    }
+                    if (targetSize.y < nextSize.y) {
+                        nextSize.y--;
+                    }
+                    if (runStepTask(sourceSize, nextSize)) {
+                        dbChanged = true;
+                    }
+                    sourceSize.set(nextSize.x, nextSize.y);
+                }
+            }
+            return dbChanged;
+        }
+
+        protected boolean runStepTask(Point sourceSize, Point nextSize) throws Exception {
+            return new GridSizeMigrationTask(mContext,
+                    LauncherAppState.getInstance().getInvariantDeviceProfile(),
+                    mValidPackages, sourceSize, nextSize).migrateWorkspace();
+        }
     }
 }

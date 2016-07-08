@@ -283,6 +283,7 @@ public class LauncherSettings {
                 ProviderConfig.AUTHORITY + "/settings");
 
         public static final String METHOD_CLEAR_EMPTY_DB_FLAG = "clear_empty_db_flag";
+        public static final String METHOD_WAS_EMPTY_DB_CREATED = "get_empty_db_flag";
 
         public static final String METHOD_DELETE_EMPTY_FOLDERS = "delete_empty_folders";
 

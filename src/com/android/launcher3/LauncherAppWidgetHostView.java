@@ -62,8 +62,8 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
         mLongPressHelper = new CheckLongPressHelper(this);
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mDragLayer = ((Launcher) context).getDragLayer();
-        setAccessibilityDelegate(((Launcher) context).getAccessibilityDelegate());
+        mDragLayer = Launcher.getLauncher(context).getDragLayer();
+        setAccessibilityDelegate(Launcher.getLauncher(context).getAccessibilityDelegate());
 
         setBackgroundResource(R.drawable.widget_internal_focus_bg);
     }
