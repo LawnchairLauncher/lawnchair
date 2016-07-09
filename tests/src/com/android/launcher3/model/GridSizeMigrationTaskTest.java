@@ -130,7 +130,7 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
                 {  5,  2, -1,  6},
         }});
 
-        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages, new HashMap<String, Point>(),
+        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages,
                 new Point(4, 4), new Point(3, 3)).migrateWorkspace();
 
         // Column 2 and row 2 got removed.
@@ -149,7 +149,7 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
                 {  5,  2, -1,  6},
         }});
 
-        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages, new HashMap<String, Point>(),
+        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages,
                 new Point(4, 4), new Point(3, 3)).migrateWorkspace();
 
         // Items in the second column get moved to new screen
@@ -173,7 +173,7 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
                 {  3,  1, -1,  4},
         }});
 
-        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages, new HashMap<String, Point>(),
+        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages,
                 new Point(4, 4), new Point(3, 3)).migrateWorkspace();
 
         // Items in the second column of the first screen should get placed on the 3rd
@@ -204,7 +204,7 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
                 {  5,  2, -1,  6},
         }});
 
-        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages, new HashMap<String, Point>(),
+        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages,
                 new Point(4, 4), new Point(3, 3)).migrateWorkspace();
 
         // Items in the second column of the first screen should get placed on a new screen.

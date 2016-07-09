@@ -47,8 +47,9 @@ public class LossyScreenMigrationTask extends GridSizeMigrationTask {
     protected LossyScreenMigrationTask(
             Context context, InvariantDeviceProfile idp, SQLiteDatabase db) {
         // Decrease the rows count by 1
-        super(context, idp, getValidPackages(context), new HashMap<String, Point>(),
-                new Point(idp.numColumns, idp.numRows + 1), new Point(idp.numColumns, idp.numRows));
+        super(context, idp, getValidPackages(context),
+                new Point(idp.numColumns, idp.numRows + 1),
+                new Point(idp.numColumns, idp.numRows));
 
         mDb = db;
         mOriginalItems = new LongArrayMap<>();
