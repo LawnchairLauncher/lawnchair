@@ -15,7 +15,6 @@ import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.util.TestLauncherProvider;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 
 /**
@@ -231,7 +230,7 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
                 {  5,  2,  7, -1},
         }}, 0);
 
-        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages, new HashMap<String, Point>(),
+        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages,
                 new Point(4, 4), new Point(3, 4)).migrateWorkspace();
 
         // Items in the second column of the first screen should get placed on a new screen.
@@ -254,7 +253,7 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
                 {  5,  6,  7, -1},
         }}, 0);
 
-        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages, new HashMap<String, Point>(),
+        new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages,
                 new Point(4, 4), new Point(3, 3)).migrateWorkspace();
 
         // Items in the second column of the first screen should get placed on a new screen.
