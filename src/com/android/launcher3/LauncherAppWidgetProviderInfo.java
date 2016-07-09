@@ -63,18 +63,18 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
         LauncherAppState app = LauncherAppState.getInstance();
         InvariantDeviceProfile idp = app.getInvariantDeviceProfile();
 
-        Rect paddingLand = idp.landscapeProfile.getWorkspacePadding();
-        Rect paddingPort = idp.portraitProfile.getWorkspacePadding();
+        Point paddingLand = idp.landscapeProfile.getTotalWorkspacePadding();
+        Point paddingPort = idp.portraitProfile.getTotalWorkspacePadding();
 
         // Always assume we're working with the smallest span to make sure we
         // reserve enough space in both orientations.
         float smallestCellWidth = DeviceProfile.calculateCellWidth(Math.min(
-                idp.landscapeProfile.widthPx - paddingLand.left - paddingLand.right,
-                idp.portraitProfile.widthPx - paddingPort.left - paddingPort.right),
+                idp.landscapeProfile.widthPx - paddingLand.x,
+                idp.portraitProfile.widthPx - paddingPort.x),
                 idp.numColumns);
         float smallestCellHeight = DeviceProfile.calculateCellWidth(Math.min(
-                idp.landscapeProfile.heightPx - paddingLand.top - paddingLand.bottom,
-                idp.portraitProfile.heightPx - paddingPort.top - paddingPort.bottom),
+                idp.landscapeProfile.heightPx - paddingLand.y,
+                idp.portraitProfile.heightPx - paddingPort.y),
                 idp.numRows);
 
         // We want to account for the extra amount of padding that we are adding to the widget
