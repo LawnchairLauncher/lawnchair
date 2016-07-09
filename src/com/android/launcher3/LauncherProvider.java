@@ -382,14 +382,6 @@ public class LauncherProvider extends ContentProvider {
                 loadDefaultFavoritesIfNecessary();
                 return null;
             }
-            case LauncherSettings.Settings.METHOD_UPDATE_FOLDER_ITEMS_RANK: {
-                mOpenHelper.updateFolderItemsRank(mOpenHelper.getWritableDatabase(), false);
-                return null;
-            }
-            case LauncherSettings.Settings.METHOD_CONVERT_SHORTCUTS_TO_ACTIVITIES: {
-                mOpenHelper.convertShortcutsToLauncherActivities(mOpenHelper.getWritableDatabase());
-                return null;
-            }
             case LauncherSettings.Settings.METHOD_DELETE_DB: {
                 // Are you sure? (y/n)
                 mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
@@ -439,8 +431,6 @@ public class LauncherProvider extends ContentProvider {
      * Overridden in tests
      */
     protected void notifyListeners() {
-        // always notify the backup agent
-        LauncherBackupAgentHelper.dataChanged(getContext());
         mListenerHandler.sendEmptyMessage(ChangeListenerWrapper.MSG_LAUNCHER_PROVIDER_CHANGED);
     }
 
