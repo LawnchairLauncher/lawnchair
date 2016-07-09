@@ -4410,6 +4410,11 @@ public class Workspace extends PagedView
     }
 
     @Override
+    protected String getPageIndicatorDescription() {
+        return getResources().getString(R.string.all_apps_button_label);
+    }
+
+    @Override
     protected String getCurrentPageDescription() {
         if (hasCustomContent() && getNextPage() == 0) {
             return mCustomContentDescription;
