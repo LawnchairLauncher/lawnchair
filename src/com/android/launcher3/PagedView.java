@@ -251,7 +251,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         if (mPageIndicatorViewId > -1) {
             mPageIndicator = (PageIndicator) parent.findViewById(mPageIndicatorViewId);
             mPageIndicator.setMarkersCount(getChildCount());
-            mPageIndicator.setContentDescription(getCurrentPageDescription());
+            mPageIndicator.setContentDescription(getPageIndicatorDescription());
         }
     }
 
@@ -442,7 +442,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     private void updatePageIndicator() {
         // Update the page indicator (when we aren't reordering)
         if (mPageIndicator != null) {
-            mPageIndicator.setContentDescription(getCurrentPageDescription());
+            mPageIndicator.setContentDescription(getPageIndicatorDescription());
             if (!isReordering(false)) {
                 mPageIndicator.setActiveMarker(getNextPage());
             }
@@ -2274,6 +2274,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             } break;
         }
         return false;
+    }
+
+    protected String getPageIndicatorDescription() {
+        return getCurrentPageDescription();
     }
 
     protected String getCurrentPageDescription() {
