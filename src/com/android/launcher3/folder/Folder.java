@@ -1052,7 +1052,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         int top = Math.min(Math.max(sTempRect.top, centeredTop),
                 sTempRect.top + sTempRect.height() - height);
 
-        int distFromEdgeOfScreen = grid.getWorkspacePadding().left + getPaddingLeft();
+        int distFromEdgeOfScreen = mLauncher.getWorkspace().getPaddingLeft() + getPaddingLeft();
 
         if (grid.isPhone && (grid.availableWidthPx - width) < 4 * distFromEdgeOfScreen) {
             // Center the folder if it is very close to being centered anyway, by virtue of
@@ -1091,10 +1091,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     private int getContentAreaHeight() {
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        Rect workspacePadding = grid.getWorkspacePadding();
-        int maxContentAreaHeight = grid.availableHeightPx -
-                workspacePadding.top - workspacePadding.bottom -
-                mFooterHeight;
+        int maxContentAreaHeight = grid.availableHeightPx
+                - grid.getTotalWorkspacePadding().y - mFooterHeight;
         int height = Math.min(maxContentAreaHeight,
                 mContent.getDesiredHeight());
         return Math.max(height, MIN_CONTENT_DIMEN);
