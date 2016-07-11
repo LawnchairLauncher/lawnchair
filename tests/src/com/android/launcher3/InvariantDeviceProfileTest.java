@@ -41,7 +41,7 @@ public class InvariantDeviceProfileTest extends AndroidTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         mInvariantProfile = new InvariantDeviceProfile(getContext());
-        mPredefinedDeviceProfiles = mInvariantProfile.getPredefinedDeviceProfiles();
+        mPredefinedDeviceProfiles = mInvariantProfile.getPredefinedDeviceProfiles(getContext());
     }
 
     @Override
