@@ -21,8 +21,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:paddingTop="@dimen/all_apps_prediction_icon_top_padding"
-    android:paddingBottom="@dimen/all_apps_prediction_icon_bottom_padding"
+    android:paddingTop="@dimen/all_apps_icon_top_bottom_padding"
+    android:paddingBottom="@dimen/all_apps_icon_top_bottom_padding"
     android:focusable="true"
     launcher:iconDisplay="all_apps" />
 

@@ -13,15 +13,13 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<ImageView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<View xmlns:android="http://schemas.android.com/apk/res/android"
+    android:importantForAccessibility="no"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center"
-    android:paddingTop="16dp"
-    android:paddingBottom="8dp"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:focusable="false"
-    android:scaleType="matrix"
-    android:src="@drawable/horizontal_line" />
+    android:layout_height="@dimen/all_apps_divider_height"
+    android:layout_marginBottom="@dimen/all_apps_divider_margin_vertical"
+    android:layout_marginLeft="@dimen/container_fastscroll_thumb_max_width"
+    android:layout_marginRight="@dimen/container_fastscroll_thumb_max_width"
+    android:layout_marginTop="@dimen/all_apps_divider_margin_vertical"
+    android:background="@color/all_apps_divider_color"
+    android:focusable="false" />

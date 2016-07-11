@@ -71,7 +71,7 @@ final class FullMergeAlgorithm implements AlphabeticalAppsList.MergeAlgorithm {
             AlphabeticalAppsList.SectionInfo withSection,
             int sectionAppCount, int numAppsPerRow, int mergeCount) {
         // Don't merge the predicted apps
-        if (section.firstAppItem.viewType != AllAppsGridAdapter.ICON_VIEW_TYPE) {
+        if (section.firstAppItem.viewType != AllAppsGridAdapter.VIEW_TYPE_ICON) {
             return false;
         }
         // Otherwise, merge every other section
@@ -103,7 +103,7 @@ final class SimpleSectionMergeAlgorithm implements AlphabeticalAppsList.MergeAlg
             AlphabeticalAppsList.SectionInfo withSection,
             int sectionAppCount, int numAppsPerRow, int mergeCount) {
         // Don't merge the predicted apps
-        if (section.firstAppItem.viewType != AllAppsGridAdapter.ICON_VIEW_TYPE) {
+        if (section.firstAppItem.viewType != AllAppsGridAdapter.VIEW_TYPE_ICON) {
             return false;
         }
 
@@ -159,7 +159,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     private int mSectionNamesMargin;
     private int mNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
-    private int mRecyclerViewTopBottomPadding;
+    private int mRecyclerViewBottomPadding;
     // This coordinate is relative to this container view
     private final Point mBoundsCheckLastTouchDownPos = new Point(-1, -1);
 
@@ -184,11 +184,11 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mItemDecoration = mAdapter.getItemDecoration();
         DeviceProfile grid = mLauncher.getDeviceProfile();
         if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && !grid.isVerticalBarLayout()) {
-            mRecyclerViewTopBottomPadding = 0;
+            mRecyclerViewBottomPadding = 0;
             setPadding(0, 0, 0, 0);
         } else {
-            mRecyclerViewTopBottomPadding =
-                    res.getDimensionPixelSize(R.dimen.all_apps_list_top_bottom_padding);
+            mRecyclerViewBottomPadding =
+                    res.getDimensionPixelSize(R.dimen.all_apps_list_bottom_padding);
         }
         mSearchQueryBuilder = new SpannableStringBuilder();
         Selection.setSelection(mSearchQueryBuilder, 0);
@@ -482,13 +482,12 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         // names)
         int maxScrollBarWidth = mAppsRecyclerView.getMaxScrollbarWidth();
         int startInset = Math.max(mSectionNamesMargin, maxScrollBarWidth);
-        int topBottomPadding = mRecyclerViewTopBottomPadding;
         if (Utilities.isRtl(getResources())) {
-            mAppsRecyclerView.setPadding(bgPadding.left + maxScrollBarWidth,
-                    topBottomPadding, bgPadding.right + startInset, topBottomPadding);
+            mAppsRecyclerView.setPadding(bgPadding.left + maxScrollBarWidth, 0, bgPadding.right
+                    + startInset, mRecyclerViewBottomPadding);
         } else {
-            mAppsRecyclerView.setPadding(bgPadding.left + startInset, topBottomPadding,
-                    bgPadding.right + maxScrollBarWidth, topBottomPadding);
+            mAppsRecyclerView.setPadding(bgPadding.left + startInset, 0, bgPadding.right +
+                    maxScrollBarWidth, mRecyclerViewBottomPadding);
         }
 
         MarginLayoutParams lp = (MarginLayoutParams) mSearchContainer.getLayoutParams();

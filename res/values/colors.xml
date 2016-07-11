@@ -35,6 +35,7 @@
     <color name="quantum_panel_bg_color">#FFF5F5F5</color>
 
     <color name="outline_color">#FFFFFFFF</color>
+    <color name="all_apps_divider_color">#1E000000</color>
 
     <color name="spring_loaded_panel_color">#40FFFFFF</color>
     <color name="spring_loaded_highlighted_panel_border_color">#FFF</color>

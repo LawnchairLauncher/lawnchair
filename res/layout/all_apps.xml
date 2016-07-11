@@ -66,7 +66,6 @@
             android:layout_gravity="center|top"
             android:paddingLeft="@dimen/container_fastscroll_thumb_max_width"
             android:paddingRight="@dimen/container_fastscroll_thumb_max_width"
-            android:background="@drawable/all_apps_search_bg"
             android:gravity="center|bottom"
             android:orientation="horizontal"
             android:saveEnabled="false">
