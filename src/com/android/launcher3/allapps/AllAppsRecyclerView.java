@@ -98,12 +98,14 @@ public class AllAppsRecyclerView extends BaseRecyclerView
 
         RecyclerView.RecycledViewPool pool = getRecycledViewPool();
         int approxRows = (int) Math.ceil(grid.availableHeightPx / grid.allAppsIconSizePx);
-        pool.setMaxRecycledViews(AllAppsGridAdapter.EMPTY_SEARCH_VIEW_TYPE, 1);
-        pool.setMaxRecycledViews(AllAppsGridAdapter.SEARCH_MARKET_DIVIDER_VIEW_TYPE, 1);
-        pool.setMaxRecycledViews(AllAppsGridAdapter.SEARCH_MARKET_VIEW_TYPE, 1);
-        pool.setMaxRecycledViews(AllAppsGridAdapter.ICON_VIEW_TYPE, approxRows * mNumAppsPerRow);
-        pool.setMaxRecycledViews(AllAppsGridAdapter.PREDICTION_ICON_VIEW_TYPE, mNumAppsPerRow);
-        pool.setMaxRecycledViews(AllAppsGridAdapter.SECTION_BREAK_VIEW_TYPE, approxRows);
+        pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH, 1);
+        pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_SEARCH_DIVIDER, 1);
+        pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET_DIVIDER, 1);
+        pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET, 1);
+        pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_ICON, approxRows * mNumAppsPerRow);
+        pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON, mNumAppsPerRow);
+        pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_PREDICTION_DIVIDER, 1);
+        pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_SECTION_BREAK, approxRows);
     }
 
     /**
@@ -176,7 +178,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView
                 if (position != NO_POSITION) {
                     List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
                     AlphabeticalAppsList.AdapterItem item = items.get(position);
-                    if (item.viewType == AllAppsGridAdapter.PREDICTION_ICON_VIEW_TYPE) {
+                    if (item.viewType == AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON) {
                         targetParent.containerType = LauncherLogProto.PREDICTION;
                         return;
                     }
@@ -265,7 +267,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView
 
         // Find the index and height of the first visible row (all rows have the same height)
         int rowCount = mApps.getNumAppRows();
-        getCurScrollState(mScrollPosState, -1);
+        getCurScrollState(mScrollPosState, AllAppsGridAdapter.VIEW_TYPE_MASK_ICON);
         if (mScrollPosState.rowIndex < 0) {
             mScrollbar.setThumbOffset(-1, -1);
             return;
@@ -352,7 +354,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView
             int position = getChildPosition(child);
             if (position != NO_POSITION) {
                 AlphabeticalAppsList.AdapterItem item = items.get(position);
-                if ((item.viewType & viewTypeMask) != 0) {
+                if (AllAppsGridAdapter.isViewType(item.viewType, viewTypeMask)) {
                     stateOut.rowIndex = item.rowIndex;
                     stateOut.rowTopOffset = getLayoutManager().getDecoratedTop(child);
                     stateOut.itemPos = position;
