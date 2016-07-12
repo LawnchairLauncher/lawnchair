@@ -256,7 +256,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     private void updateLightStatusBar(float progress) {
-        boolean enable = (progress < mStatusBarHeight / 2);
+        boolean enable = progress <= mStatusBarHeight / 2;
         // Do not modify status bar on landscape as all apps is not full bleed.
         if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
             return;
@@ -404,7 +404,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         }
     }
 
-    private void finishPullUp() {
+    public void finishPullUp() {
         mHotseat.setVisibility(View.INVISIBLE);
         setProgress(0f);
     }

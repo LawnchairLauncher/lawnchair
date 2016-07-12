@@ -252,7 +252,10 @@ public class LauncherStateTransitionAnimation {
         playCommonTransitionAnimations(toWorkspaceState, fromView, toView,
                 animated, initialized, animation, revealDuration, layerViews);
         if (!animated || !initialized) {
-
+            if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP &&
+                    toWorkspaceState == Workspace.State.NORMAL_HIDDEN) {
+                mAllAppsController.finishPullUp();
+            }
             toView.setTranslationX(0.0f);
             toView.setTranslationY(0.0f);
             toView.setScaleX(1.0f);
@@ -672,7 +675,8 @@ public class LauncherStateTransitionAnimation {
         playCommonTransitionAnimations(toWorkspaceState, fromView, toView,
                 animated, initialized, animation, revealDuration, layerViews);
         if (!animated || !initialized) {
-            if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
+            if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP &&
+                    fromWorkspaceState == Workspace.State.NORMAL_HIDDEN) {
                 mAllAppsController.finishPullDown();
             }
             fromView.setVisibility(View.GONE);
