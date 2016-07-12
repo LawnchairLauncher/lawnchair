@@ -35,7 +35,8 @@
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"વધુ ઍપ્લિકેશનો શોધો"</string>
     <string name="out_of_space" msgid="4691004494942118364">"આ હોમ સ્ક્રીન પર વધુ જગ્યા નથી."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"મનપસંદ ટ્રે પર વધુ જગ્યા નથી"</string>
-    <string name="all_apps_button_label" msgid="9110807029020582876">"ઍપ્લિકેશનો"</string>
+    <!-- no translation found for all_apps_button_label (8130441508702294465) -->
+    <skip />
     <string name="all_apps_home_button_label" msgid="252062713717058851">"હોમ"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"દૂર કરો"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"અનઇન્સ્ટોલ કરો"</string>
@@ -65,8 +66,10 @@
     <string name="settings_button_text" msgid="8119458837558863227">"સેટિંગ્સ"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"તમારા વ્યવસ્થાપક દ્વારા અક્ષમ કરેલ"</string>
     <string name="accessibility_action_overview" msgid="6257665857640347026">"વિહંગાવલોકન"</string>
-    <string name="allow_rotation_title" msgid="3132336367556833843">"હોમસ્ક્રીનને ફેરવવાની મંજૂરી આપો"</string>
-    <string name="allow_rotation_desc" msgid="7635719920854330492">"જ્યારે ઉપકરણ ફેરવેલું હોય ત્યારે"</string>
+    <!-- no translation found for allow_rotation_title (7728578836261442095) -->
+    <skip />
+    <!-- no translation found for allow_rotation_desc (8662546029078692509) -->
+    <skip />
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"વર્તમાન પ્રદર્શન સેટિંગ ફેરવવાની પરવાનગી આપતી નથી"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"અજાણ્યો"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"દૂર કરો"</string>
