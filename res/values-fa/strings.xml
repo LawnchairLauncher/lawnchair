@@ -35,7 +35,8 @@
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"جستجوی برنامه‌های بیشتر"</string>
     <string name="out_of_space" msgid="4691004494942118364">"فضای بیشتری در این صفحه اصلی موجود نیست."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"فضای بیشتری در سینی موارد دلخواه وجود ندارد"</string>
-    <string name="all_apps_button_label" msgid="9110807029020582876">"برنامه‌ها"</string>
+    <!-- no translation found for all_apps_button_label (8130441508702294465) -->
+    <skip />
     <string name="all_apps_home_button_label" msgid="252062713717058851">"صفحه اصلی"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"برداشتن"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"حذف نصب"</string>
@@ -65,8 +66,10 @@
     <string name="settings_button_text" msgid="8119458837558863227">"تنظیمات"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"توسط سرپرست سیستم غیرفعال شده است"</string>
     <string name="accessibility_action_overview" msgid="6257665857640347026">"نمای کلی"</string>
-    <string name="allow_rotation_title" msgid="3132336367556833843">"مجاز کردن چرخش صفحه‌اصلی"</string>
-    <string name="allow_rotation_desc" msgid="7635719920854330492">"وقتی دستگاه چرخانده می‌شود"</string>
+    <!-- no translation found for allow_rotation_title (7728578836261442095) -->
+    <skip />
+    <!-- no translation found for allow_rotation_desc (8662546029078692509) -->
+    <skip />
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"تنظیم نمایشگر کنونی اجازه چرخش نمی‌دهد"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"نامشخص"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"حذف"</string>
