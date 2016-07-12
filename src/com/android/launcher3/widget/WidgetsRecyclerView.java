@@ -33,7 +33,6 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
 
     private static final String TAG = "WidgetsRecyclerView";
     private WidgetsModel mWidgets;
-    private ScrollPositionState mScrollPosState = new ScrollPositionState();
 
     public WidgetsRecyclerView(Context context) {
         this(context, null);
@@ -99,9 +98,8 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
         stopScroll();
 
         int rowCount = mWidgets.getPackageSize();
-        getCurScrollState(mScrollPosState, -1);
         float pos = rowCount * touchFraction;
-        int availableScrollHeight = getAvailableScrollHeight(rowCount);
+        int availableScrollHeight = getAvailableScrollHeight();
         LinearLayoutManager layoutManager = ((LinearLayoutManager) getLayoutManager());
         layoutManager.scrollToPositionWithOffset(0, (int) -(availableScrollHeight * touchFraction));
 
@@ -121,45 +119,41 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
         }
 
         // Skip early if, there no child laid out in the container.
-        getCurScrollState(mScrollPosState, -1);
-        if (mScrollPosState.rowIndex < 0) {
+        int scrollY = getCurrentScrollY();
+        if (scrollY < 0) {
             mScrollbar.setThumbOffset(-1, -1);
             return;
         }
 
-        synchronizeScrollBarThumbOffsetToViewScroll(mScrollPosState, mWidgets.getPackageSize());
-    }
-
-    /**
-     * Returns the current scroll state.
-     */
-    protected void getCurScrollState(ScrollPositionState stateOut, int viewTypeMask) {
-        stateOut.rowIndex = -1;
-        stateOut.rowTopOffset = -1;
-        stateOut.itemPos = -1;
-
-        // Skip early if widgets are not bound.
-        if (isModelNotReady()) {
-            return;
-        }
-
-        View child = getChildAt(0);
-        int position = getChildPosition(child);
-
-        stateOut.rowIndex = position;
-        stateOut.rowTopOffset = getLayoutManager().getDecoratedTop(child);
-        stateOut.itemPos = position;
+        synchronizeScrollBarThumbOffsetToViewScroll(scrollY, getAvailableScrollHeight());
     }
 
     @Override
-    protected int getTop(int rowIndex) {
-        if (getChildCount() == 0) {
-            return 0;
+    protected int getCurrentScrollY() {
+        // Skip early if widgets are not bound.
+        if (isModelNotReady() || getChildCount() == 0) {
+            return -1;
         }
 
-        // All the rows are the same height, return any child height
         View child = getChildAt(0);
-        return child.getMeasuredHeight() * rowIndex;
+        int rowIndex = getChildPosition(child);
+        int y = (child.getMeasuredHeight() * rowIndex);
+        int offset = getLayoutManager().getDecoratedTop(child);
+
+        return getPaddingTop() + y - offset;
+    }
+
+    /**
+     * Returns the available scroll height:
+     *   AvailableScrollHeight = Total height of the all items - last page height
+     */
+    @Override
+    protected int getAvailableScrollHeight() {
+        View child = getChildAt(0);
+        int height = child.getMeasuredHeight() * mWidgets.getPackageSize();
+        int totalHeight = getPaddingTop() + height + getPaddingBottom();
+        int availableScrollHeight = totalHeight - getVisibleHeight();
+        return availableScrollHeight;
     }
 
     private boolean isModelNotReady() {
