@@ -129,7 +129,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
     }
 
     @Override
-    protected int getCurrentScrollY() {
+    public int getCurrentScrollY() {
         // Skip early if widgets are not bound.
         if (isModelNotReady() || getChildCount() == 0) {
             return -1;

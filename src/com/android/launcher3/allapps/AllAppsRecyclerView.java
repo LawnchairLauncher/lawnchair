@@ -375,7 +375,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView
     }
 
     @Override
-    protected int getCurrentScrollY() {
+    public int getCurrentScrollY() {
         // Return early if there are no items or we haven't been measured
         List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
         if (items.isEmpty() || mNumAppsPerRow == 0 || getChildCount() == 0) {

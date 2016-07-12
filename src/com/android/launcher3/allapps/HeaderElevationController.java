@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
 
+import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.R;
 
 /**
@@ -28,7 +29,7 @@ public abstract class HeaderElevationController extends RecyclerView.OnScrollLis
 
     @Override
     public final void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-        mCurrentY += dy;
+        mCurrentY = ((BaseRecyclerView) recyclerView).getCurrentScrollY();
         onScroll(mCurrentY);
     }
 
