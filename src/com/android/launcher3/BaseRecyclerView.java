@@ -246,13 +246,18 @@ public abstract class BaseRecyclerView extends RecyclerView
                 (int) (((float) scrollY / availableScrollHeight) * availableScrollBarHeight);
 
         // Calculate the position and size of the scroll bar
-        int scrollBarX;
+        mScrollbar.setThumbOffset(getScrollBarX(), scrollBarY);
+    }
+
+    /**
+     * @return the x position for the scrollbar thumb
+     */
+    protected int getScrollBarX() {
         if (Utilities.isRtl(getResources())) {
-            scrollBarX = mBackgroundPadding.left;
+            return mBackgroundPadding.left;
         } else {
-            scrollBarX = getWidth() - mBackgroundPadding.right - mScrollbar.getThumbWidth();
+            return getWidth() - mBackgroundPadding.right - mScrollbar.getThumbWidth();
         }
-        mScrollbar.setThumbOffset(scrollBarX, scrollBarY);
     }
 
     /**

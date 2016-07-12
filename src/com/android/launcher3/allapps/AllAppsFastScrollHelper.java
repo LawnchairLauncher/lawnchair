@@ -23,6 +23,7 @@ import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.util.Thunk;
 
 import java.util.HashSet;
+import java.util.List;
 
 public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallback {
 
@@ -142,13 +143,22 @@ public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallb
         }
 
         // Calculate the full animation from the current scroll position to the final scroll
-        // position, and then run the animation for the duration.
+        // position, and then run the animation for the duration.  If we are scrolling to the
+        // first fast scroll section, then just scroll to the top of the list itself.
+        List<AlphabeticalAppsList.FastScrollSectionInfo> fastScrollSections =
+                mApps.getFastScrollerSections();
         int newPosition = info.fastScrollToItem.position;
-        int newScrollY = Math.min(availableScrollHeight, mRv.getCurrentScrollY(newPosition, 0));
+        int newScrollY = fastScrollSections.size() > 0 && fastScrollSections.get(0) == info
+                        ? 0
+                        : Math.min(availableScrollHeight, mRv.getCurrentScrollY(newPosition, 0));
         int numFrames = mFastScrollFrames.length;
+        int deltaY = newScrollY - scrollY;
+        float ySign = Math.signum(deltaY);
+        int step = (int) (ySign * Math.ceil((float) Math.abs(deltaY) / numFrames));
         for (int i = 0; i < numFrames; i++) {
             // TODO(winsonc): We can interpolate this as well.
-            mFastScrollFrames[i] = (newScrollY - scrollY) / numFrames;
+            mFastScrollFrames[i] = (int) (ySign * Math.min(Math.abs(step), Math.abs(deltaY)));
+            deltaY -= step;
         }
         mFastScrollFrameIndex = 0;
         mRv.postOnAnimation(mSmoothSnapNextFrameRunnable);

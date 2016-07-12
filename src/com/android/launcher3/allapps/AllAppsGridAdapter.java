@@ -377,10 +377,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         return isViewType(viewType, VIEW_TYPE_MASK_ICON);
     }
 
-    public static boolean isPredictionIconViewType(int viewType) {
-        return isViewType(viewType, VIEW_TYPE_PREDICTION_ICON);
-    }
-
     public static boolean isViewType(int viewType, int viewTypeMask) {
         return (viewType & viewTypeMask) != 0;
     }
