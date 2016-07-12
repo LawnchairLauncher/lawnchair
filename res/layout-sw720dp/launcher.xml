@@ -33,6 +33,7 @@
         <!-- The workspace contains 5 screens of cells -->
         <!-- DO NOT CHANGE THE ID -->
         <com.android.launcher3.Workspace
+            android:layout_gravity="center"
             android:id="@+id/workspace"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -59,6 +60,10 @@
             android:id="@+id/page_indicator"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dynamic_grid_page_indicator_height" />
+
+        <include
+            layout="@layout/qsb_container"
+            android:id="@+id/qsb_container" />
 
         <include layout="@layout/widgets_view"
             android:id="@+id/widgets_view"

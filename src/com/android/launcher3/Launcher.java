@@ -234,6 +234,7 @@ public class Launcher extends Activity
     private View mLauncherView;
     @Thunk DragLayer mDragLayer;
     private DragController mDragController;
+    private View mQsbContainer;
 
     public View mWeightWatcher;
 
@@ -1329,6 +1330,8 @@ public class Launcher extends Activity
         mDragLayer = (DragLayer) findViewById(R.id.drag_layer);
         mFocusHandler = mDragLayer.getFocusIndicatorHelper();
         mWorkspace = (Workspace) mDragLayer.findViewById(R.id.workspace);
+        mQsbContainer = mDragLayer.findViewById(mDeviceProfile.isVerticalBarLayout()
+                ? R.id.workspace_blocked_row : R.id.qsb_container);
         mWorkspace.initParentViews(mDragLayer);
 
         mLauncherView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -1777,6 +1780,10 @@ public class Launcher extends Activity
 
     public Workspace getWorkspace() {
         return mWorkspace;
+    }
+
+    public View getQsbContainer() {
+        return mQsbContainer;
     }
 
     public Hotseat getHotseat() {

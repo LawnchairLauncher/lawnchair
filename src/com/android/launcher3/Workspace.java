@@ -53,9 +53,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
+import android.widget.Space;
 import android.widget.TextView;
 
 import com.android.launcher3.Launcher.CustomContentCallbacks;
@@ -82,6 +84,7 @@ import com.android.launcher3.shortcuts.ShortcutsContainerListener;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.LongArrayMap;
+import com.android.launcher3.util.MultiStateAlphaController;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.WallpaperOffsetInterpolator;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
@@ -227,6 +230,12 @@ public class Workspace extends PagedView
      */
     private float[] mHotseatAlpha = new float[] {1, 1, 1};
 
+    public static final int QSB_ALPHA_INDEX_STATE_CHANGE = 0;
+    public static final int QSB_ALPHA_INDEX_Y_TRANSLATION = 1;
+    public static final int QSB_ALPHA_INDEX_PAGE_SCROLL = 2;
+
+    MultiStateAlphaController mQsbAlphaController;
+
     @ViewDebug.ExportedProperty(category = "launcher")
     private State mState = State.NORMAL;
     private boolean mIsSwitchingState = false;
@@ -305,6 +314,7 @@ public class Workspace extends PagedView
     private boolean mForceDrawAdjacentPages = false;
     // Total over scrollX in the overlay direction.
     private float mOverlayTranslation;
+    private int mFirstPageScrollX;
 
     // Handles workspace state transitions
     private WorkspaceStateTransitionAnimation mStateTransitionAnimation;
@@ -339,7 +349,6 @@ public class Workspace extends PagedView
         final Resources res = getResources();
         DeviceProfile grid = mLauncher.getDeviceProfile();
         mWorkspaceFadeInAdjacentScreens = grid.shouldFadeAdjacentWorkspaceScreens();
-        mFadeInAdjacentScreens = false;
         mWallpaperManager = WallpaperManager.getInstance(context);
 
         mWallpaperOffset = new WallpaperOffsetInterpolator(this);
@@ -484,6 +493,7 @@ public class Workspace extends PagedView
     public void initParentViews(View parent) {
         super.initParentViews(parent);
         mPageIndicator.setAccessibilityDelegate(new OverviewAccessibilityDelegate());
+        mQsbAlphaController = new MultiStateAlphaController(mLauncher.getQsbContainer(), 3);
     }
 
     private int getDefaultPage() {
@@ -548,6 +558,11 @@ public class Workspace extends PagedView
         return mTouchState != TOUCH_STATE_REST;
     }
 
+    private int getEmbeddedQsbId() {
+        return mLauncher.getDeviceProfile().isVerticalBarLayout()
+                ? R.id.qsb_container : R.id.workspace_blocked_row;
+    }
+
     /**
      * Initializes and binds the first page
      * @param qsb an exisitng qsb to recycle or null.
@@ -559,28 +574,42 @@ public class Workspace extends PagedView
         // Add the first page
         CellLayout firstPage = insertNewWorkspaceScreen(Workspace.FIRST_SCREEN_ID, 0);
 
-        if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
-            // Let the cell layout extend the start padding. On transposed layout, there is page
-            // indicator on left and hotseat on right, as such workspace does not touch the edge.
-            ((LayoutParams) firstPage.getLayoutParams()).matchStartEdge = true;
-            firstPage.setPaddingRelative(getPaddingStart(), 0, 0, 0);
-        }
-
+        // Always add a QSB on the first screen.
         if (qsb == null) {
-            // Always add a QSB on the first screen.
-            qsb = mLauncher.getLayoutInflater().inflate(R.layout.qsb_container,
-                    firstPage, false);
+            // In transposed layout, we add the QSB in the Grid. As workspace does not touch the
+            // edges, we do not need a full width QSB.
+            if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+                qsb = mLauncher.getLayoutInflater().inflate(R.layout.qsb_container, firstPage, false);
+            } else {
+                qsb = new Space(getContext());
+            }
         }
 
-        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) qsb.getLayoutParams();
-        lp.cellX = 0;
-        lp.cellY = 0;
-        lp.cellHSpan = firstPage.getCountX();
-        lp.cellVSpan = 1;
+        CellLayout.LayoutParams lp = new CellLayout.LayoutParams(0, 0, firstPage.getCountX(), 1);
         lp.canReorder = false;
-
-        if (!firstPage.addViewToCellLayout(qsb, 0, R.id.qsb_container, lp, true)) {
+        if (!firstPage.addViewToCellLayout(qsb, 0, getEmbeddedQsbId(), lp, true)) {
             Log.e(TAG, "Failed to add to item at (0, 0) to CellLayout");
+        }
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        // Update the QSB to match the cell height. This is treating the QSB essentially as a child
+        // of workspace despite that it's not a true child.
+        // Note that it relies on the strict ordering of measuring the workspace before the QSB
+        // at the dragLayer level.
+        if (getChildCount() > 0) {
+            CellLayout firstPage = (CellLayout) getChildAt(0);
+            int cellHeight = firstPage.getCellHeight();
+
+            View qsbContainer = mLauncher.getQsbContainer();
+            ViewGroup.LayoutParams lp = qsbContainer.getLayoutParams();
+            if (cellHeight > 0 && lp.height != cellHeight) {
+                lp.height = cellHeight;
+            }
+            qsbContainer.setLayoutParams(lp);
         }
     }
 
@@ -597,7 +626,7 @@ public class Workspace extends PagedView
         }
 
         // Recycle the QSB widget
-        View qsb = findViewById(R.id.qsb_container);
+        View qsb = findViewById(getEmbeddedQsbId());
         if (qsb != null) {
             ((ViewGroup) qsb.getParent()).removeView(qsb);
         }
@@ -1366,9 +1395,15 @@ public class Workspace extends PagedView
         super.scrollTo(x, y);
     }
 
+    private void onWorkspaceOverallScrollChanged() {
+        mLauncher.getQsbContainer().setTranslationX(
+                mOverlayTranslation + mFirstPageScrollX - getScrollX());
+    }
+
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
+        onWorkspaceOverallScrollChanged();
 
         // Update the page indicator progress.
         boolean isTransitioning = mIsSwitchingState
@@ -1438,6 +1473,19 @@ public class Workspace extends PagedView
         // device I've tried, translating the launcher causes things to get quite laggy.
         setWorkspaceTranslationAndAlpha(Direction.X, transX, alpha);
         setHotseatTranslationAndAlpha(Direction.X, transX, alpha);
+        onWorkspaceOverallScrollChanged();
+    }
+
+    /**
+     * Moves the workspace UI in the Y direction.
+     * @param translation the amount of shift.
+     * @param alpha the alpha for the workspace page
+     */
+    public void setWorkspaceYTranslationAndAlpha(float translation, float alpha) {
+        setWorkspaceTranslationAndAlpha(Direction.Y, translation, alpha);
+
+        mLauncher.getQsbContainer().setTranslationY(translation);
+        mQsbAlphaController.setAlphaAtIndex(alpha, QSB_ALPHA_INDEX_Y_TRANSLATION);
     }
 
     /**
@@ -1446,7 +1494,7 @@ public class Workspace extends PagedView
      * @param translation the amount of shift.
      * @param alpha the alpha for the workspace page
      */
-    public void setWorkspaceTranslationAndAlpha(Direction direction, float translation, float alpha) {
+    private void setWorkspaceTranslationAndAlpha(Direction direction, float translation, float alpha) {
         Property<View, Float> property = direction.viewProperty;
         mPageAlpha[direction.ordinal()] = alpha;
         float finalAlpha = mPageAlpha[0] * mPageAlpha[1];
@@ -1630,6 +1678,10 @@ public class Workspace extends PagedView
                     float scrollProgress = getScrollProgress(screenCenter, child, i);
                     float alpha = 1 - Math.abs(scrollProgress);
                     child.getShortcutsAndWidgets().setAlpha(alpha);
+
+                    if (isQsbContainerPage(i)) {
+                        mQsbAlphaController.setAlphaAtIndex(alpha, QSB_ALPHA_INDEX_PAGE_SCROLL);
+                    }
                 }
             }
         }
@@ -1751,6 +1803,8 @@ public class Workspace extends PagedView
             mWallpaperOffset.jumpToFinal();
         }
         super.onLayout(changed, left, top, right, bottom);
+        mFirstPageScrollX = getScrollForPage(0);
+        onWorkspaceOverallScrollChanged();
     }
 
     @Override
@@ -2027,10 +2081,10 @@ public class Workspace extends PagedView
 
     int getOverviewModeTranslationY() {
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        Rect workspacePadding = grid.getWorkspacePadding();
         int overviewButtonBarHeight = grid.getOverviewModeButtonBarHeight();
 
         int scaledHeight = (int) (mOverviewModeShrinkFactor * getNormalChildHeight());
+        Rect workspacePadding = grid.getWorkspacePadding(sTempRect);
         int workspaceTop = mInsets.top + workspacePadding.top;
         int workspaceBottom = getViewportHeight() - mInsets.bottom - workspacePadding.bottom;
         int overviewTop = mInsets.top;
@@ -2045,12 +2099,12 @@ public class Workspace extends PagedView
         if (grid.isVerticalBarLayout() || getChildCount() == 0) {
             return 0;
         }
-        Rect workspacePadding = grid.getWorkspacePadding();
 
         float scaledHeight = grid.workspaceSpringLoadShrinkFactor * getNormalChildHeight();
         float shrunkTop = mInsets.top + grid.dropTargetBarSizePx;
         float shrunkBottom = getViewportHeight() - mInsets.bottom
-                - workspacePadding.bottom - grid.workspaceSpringLoadedBottomSpace;
+                - grid.getWorkspacePadding(sTempRect).bottom
+                - grid.workspaceSpringLoadedBottomSpace;
         float totalShrunkSpace = shrunkBottom - shrunkTop;
 
         float desiredCellTop = shrunkTop + (totalShrunkSpace - scaledHeight) / 2;
@@ -4522,5 +4576,9 @@ public class Workspace extends PagedView
          * @param targetAnim animation which will be played during the transition or null.
          */
         void prepareStateChange(State toState, AnimatorSet targetAnim);
+    }
+
+    public static final boolean isQsbContainerPage(int pageNo) {
+        return pageNo == 0;
     }
 }

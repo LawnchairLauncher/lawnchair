@@ -51,8 +51,8 @@ public class PinchAnimationManager {
     private static final int THRESHOLD_ANIM_DURATION = 150;
     private static final LinearInterpolator INTERPOLATOR = new LinearInterpolator();
 
-    private static final int INDEX_PAGE_INDICATOR = 0;
-    private static final int INDEX_HOTSEAT = 1;
+    private static final int INDEX_HOTSEAT = 0;
+    private static final int INDEX_QSB = 1;
     private static final int INDEX_OVERVIEW_PANEL_BUTTONS = 2;
     private static final int INDEX_SCRIM = 3;
 
@@ -189,11 +189,10 @@ public class PinchAnimationManager {
     }
 
     private void animateHotseatAndPageIndicator(boolean show) {
-        animateShowHideView(INDEX_HOTSEAT, mLauncher.getHotseat(), show);
-        if (mWorkspace.getPageIndicator() != null) {
-            // There aren't page indicators in landscape mode on phones, hence the null check.
-            animateShowHideView(INDEX_PAGE_INDICATOR, mWorkspace.getPageIndicator(), show);
-        }
+        startAnimator(INDEX_HOTSEAT,
+                mWorkspace.createHotseatAlphaAnimator(show ? 1 : 0), THRESHOLD_ANIM_DURATION);
+        startAnimator(INDEX_QSB, mWorkspace.mQsbAlphaController.animateAlphaAtIndex(
+                show ? 1 : 0, Workspace.QSB_ALPHA_INDEX_STATE_CHANGE), THRESHOLD_ANIM_DURATION);
     }
 
     private void animateOverviewPanelButtons(boolean show) {
