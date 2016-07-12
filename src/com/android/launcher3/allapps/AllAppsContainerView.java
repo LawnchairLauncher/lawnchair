@@ -397,14 +397,13 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        updatePaddingsAndMargins();
-        mContentBounds.set(mHorizontalPadding, 0,
-                MeasureSpec.getSize(widthMeasureSpec) - mHorizontalPadding,
-                MeasureSpec.getSize(heightMeasureSpec));
+        int widthPx = MeasureSpec.getSize(widthMeasureSpec);
+        int heightPx = MeasureSpec.getSize(heightMeasureSpec);
+        updatePaddingsAndMargins(widthPx, heightPx);
+        mContentBounds.set(mHorizontalPadding, 0, widthPx - mHorizontalPadding, heightPx);
 
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        int availableWidth = (!mContentBounds.isEmpty() ? mContentBounds.width() :
-                MeasureSpec.getSize(widthMeasureSpec))
+        int availableWidth = (!mContentBounds.isEmpty() ? mContentBounds.width() : widthPx)
                 - 2 * mAppsRecyclerView.getMaxScrollbarWidth();
         grid.updateAppsViewNumCols(getResources(), availableWidth);
         if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
@@ -470,7 +469,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
      * container view, we inset the background and padding of the recycler view to allow for the
      * recycler view to handle touch events (for fast scrolling) all the way to the edge.
      */
-    private void updatePaddingsAndMargins() {
+    private void updatePaddingsAndMargins(int widthPx, int heightPx) {
         Rect bgPadding = new Rect();
         getRevealView().getBackground().getPadding(bgPadding);
 
@@ -497,11 +496,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         // Clip the view to the left and right edge of the background to
         // to prevent shadows from rendering beyond the edges
         final Rect newClipBounds = new Rect(
-                bgPadding.left,
-                0,
-                getWidth() - bgPadding.right,
-                getHeight()
-        );
+                bgPadding.left, 0, widthPx - bgPadding.right, heightPx);
         setClipBounds(newClipBounds);
 
         // Allow the overscroll effect to reach the edges of the view
