@@ -299,7 +299,7 @@ public class ShortcutInfo extends ItemInfo {
         if (TextUtils.isEmpty(label)) {
             label = shortcutInfo.getShortLabel();
         }
-        this.contentDescription = UserManagerCompat.getInstance(context)
+        contentDescription = UserManagerCompat.getInstance(context)
                 .getBadgedLabelForUser(label, user);
 
         LauncherAppState launcherAppState = LauncherAppState.getInstance();
