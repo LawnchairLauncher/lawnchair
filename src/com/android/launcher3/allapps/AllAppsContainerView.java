@@ -269,8 +269,9 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         if (mAppsRecyclerView.getScrollBar().isNearThumb(point[0], point[1])) {
             return false;
         }
-        // If scroller is at the very top, then it's okay for the container to be pulled down.
-        if (Float.compare(0f, mAppsRecyclerView.getScrollBar().getThumbOffset().y) == 0) {
+        // IF scroller is at the very top OR there is no scroll bar because there is probably not
+        // enough items to scroll, THEN it's okay for the container to be pulled down.
+        if (mAppsRecyclerView.getScrollBar().getThumbOffset().y <= 0) {
             return true;
         }
         return false;
