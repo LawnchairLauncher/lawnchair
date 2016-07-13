@@ -445,8 +445,8 @@ public class IconCache {
         CacheEntry entry = cacheLocked(application.componentName, info, user,
                 false, useLowResIcon);
         application.title = Utilities.trim(entry.title);
-        application.iconBitmap = getNonNullIcon(entry, user);
         application.contentDescription = entry.contentDescription;
+        application.iconBitmap = getNonNullIcon(entry, user);
         application.usingLowResIcon = entry.isLowResIcon;
     }
 
@@ -458,8 +458,8 @@ public class IconCache {
                 false, application.usingLowResIcon);
         if (entry.icon != null && !isDefaultIcon(entry.icon, application.user)) {
             application.title = Utilities.trim(entry.title);
-            application.iconBitmap = entry.icon;
             application.contentDescription = entry.contentDescription;
+            application.iconBitmap = entry.icon;
             application.usingLowResIcon = entry.isLowResIcon;
         }
     }
@@ -492,6 +492,7 @@ public class IconCache {
         if (component == null) {
             shortcutInfo.setIcon(getDefaultIcon(user));
             shortcutInfo.title = "";
+            shortcutInfo.contentDescription = "";
             shortcutInfo.usingFallbackIcon = true;
             shortcutInfo.usingLowResIcon = false;
         } else {
@@ -509,6 +510,7 @@ public class IconCache {
         CacheEntry entry = cacheLocked(component, info, user, usePkgIcon, useLowResIcon);
         shortcutInfo.setIcon(getNonNullIcon(entry, user));
         shortcutInfo.title = Utilities.trim(entry.title);
+        shortcutInfo.contentDescription = entry.contentDescription;
         shortcutInfo.usingFallbackIcon = isDefaultIcon(entry.icon, user);
         shortcutInfo.usingLowResIcon = entry.isLowResIcon;
     }
@@ -520,10 +522,10 @@ public class IconCache {
             PackageItemInfo infoInOut, boolean useLowResIcon) {
         CacheEntry entry = getEntryForPackageLocked(
                 infoInOut.packageName, infoInOut.user, useLowResIcon);
-        infoInOut.iconBitmap = getNonNullIcon(entry, infoInOut.user);
         infoInOut.title = Utilities.trim(entry.title);
-        infoInOut.usingLowResIcon = entry.isLowResIcon;
         infoInOut.contentDescription = entry.contentDescription;
+        infoInOut.iconBitmap = getNonNullIcon(entry, infoInOut.user);
+        infoInOut.usingLowResIcon = entry.isLowResIcon;
     }
 
     public synchronized Bitmap getDefaultIcon(UserHandleCompat user) {
