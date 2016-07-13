@@ -359,6 +359,12 @@ public class LauncherProvider extends ContentProvider {
                 clearFlagEmptyDbCreated();
                 return null;
             }
+            case LauncherSettings.Settings.METHOD_WAS_EMPTY_DB_CREATED : {
+                Bundle result = new Bundle();
+                result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
+                        Utilities.getPrefs(getContext()).getBoolean(EMPTY_DATABASE_CREATED, false));
+                return result;
+            }
             case LauncherSettings.Settings.METHOD_DELETE_EMPTY_FOLDERS: {
                 Bundle result = new Bundle();
                 result.putSerializable(LauncherSettings.Settings.EXTRA_VALUE, deleteEmptyFolders());

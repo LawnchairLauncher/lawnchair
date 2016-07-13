@@ -60,6 +60,7 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.GridSizeMigrationTask;
 import com.android.launcher3.model.WidgetsModel;
+import com.android.launcher3.provider.ImportDataTask;
 import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
@@ -1648,7 +1649,14 @@ public class LauncherModel extends BroadcastReceiver
             int countY = profile.numRows;
 
             boolean clearDb = false;
-            if (GridSizeMigrationTask.ENABLED &&
+            try {
+                ImportDataTask.performImportIfPossible(context);
+            } catch (Exception e) {
+                // Migration failed. Clear workspace.
+                clearDb = true;
+            }
+
+            if (!clearDb && GridSizeMigrationTask.ENABLED &&
                     !GridSizeMigrationTask.migrateGridIfNeeded(mContext)) {
                 // Migration failed. Clear workspace.
                 clearDb = true;

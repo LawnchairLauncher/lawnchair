@@ -1,6 +1,7 @@
 package com.android.launcher3.model;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Point;
@@ -12,10 +13,12 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.model.GridSizeMigrationTask.MultiStepMigrationTask;
 import com.android.launcher3.util.TestLauncherProvider;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 /**
  * Unit tests for {@link GridSizeMigrationTask}
@@ -337,7 +340,7 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
                     } else {
                         assertEquals(1, c.getCount());
                         c.moveToNext();
-                        assertEquals(String.format("Failed to verify item ad %d %d, %d", i, y, x),
+                        assertEquals(String.format("Failed to verify item at %d %d, %d", i, y, x),
                                 id, c.getLong(0));
                         total++;
                     }
@@ -387,5 +390,54 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
 
         getMockContentResolver().insert(LauncherSettings.Favorites.CONTENT_URI, values);
         return id;
+    }
+
+    public void testMultiStepMigration_small_to_large() throws Exception {
+        MultiStepMigrationTaskVerifier verifier = new MultiStepMigrationTaskVerifier();
+        verifier.migrate(new Point(3, 3), new Point(5, 5));
+        verifier.assertCompleted();
+    }
+
+    public void testMultiStepMigration_large_to_small() throws Exception {
+        MultiStepMigrationTaskVerifier verifier = new MultiStepMigrationTaskVerifier(
+                5, 5, 4, 4,
+                4, 4, 3, 4
+        );
+        verifier.migrate(new Point(5, 5), new Point(3, 4));
+        verifier.assertCompleted();
+    }
+
+    public void testMultiStepMigration_zig_zag() throws Exception {
+        MultiStepMigrationTaskVerifier verifier = new MultiStepMigrationTaskVerifier(
+                5, 7, 4, 7,
+                4, 7, 3, 7
+        );
+        verifier.migrate(new Point(5, 5), new Point(3, 7));
+        verifier.assertCompleted();
+    }
+
+    private static class MultiStepMigrationTaskVerifier extends MultiStepMigrationTask {
+
+        private final LinkedList<Point> mPoints;
+
+        public MultiStepMigrationTaskVerifier(int... points) {
+            super(null, null);
+
+            mPoints = new LinkedList<>();
+            for (int i = 0; i < points.length; i += 2) {
+                mPoints.add(new Point(points[i], points[i + 1]));
+            }
+        }
+
+        @Override
+        protected boolean runStepTask(Point sourceSize, Point nextSize) throws Exception {
+            assertEquals(sourceSize, mPoints.poll());
+            assertEquals(nextSize, mPoints.poll());
+            return false;
+        }
+
+        public void assertCompleted() {
+            assertTrue(mPoints.isEmpty());
+        }
     }
 }
