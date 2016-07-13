@@ -156,10 +156,6 @@ public class BaseRecyclerViewFastScrollBar {
         return mThumbMaxWidth;
     }
 
-    public float getLastTouchY() {
-        return mLastTouchY;
-    }
-
     public boolean isDraggingThumb() {
         return mIsDragging;
     }
@@ -210,6 +206,7 @@ public class BaseRecyclerViewFastScrollBar {
                     mPopup.animateVisibility(!sectionName.isEmpty());
                     mRv.invalidate(mPopup.updateFastScrollerBounds(lastY));
                     mLastTouchY = boundedY;
+                    setThumbOffset(mRv.getScrollBarX(), (int) mLastTouchY);
                 }
                 break;
             case MotionEvent.ACTION_UP:

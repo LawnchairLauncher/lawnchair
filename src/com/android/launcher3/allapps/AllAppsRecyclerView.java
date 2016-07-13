@@ -325,25 +325,15 @@ public class AllAppsRecyclerView extends BaseRecyclerView
             return;
         }
 
-        // Calculate the current scroll position, the scrollY of the recycler view accounts for the
-        // view padding, while the scrollBarY is drawn right up to the background padding (ignoring
-        // padding)
-        int scrollBarY = mBackgroundPadding.top +
-                (int) (((float) scrollY / availableScrollHeight) * availableScrollBarHeight);
-
         if (mScrollbar.isThumbDetached()) {
-            int scrollBarX;
-            if (Utilities.isRtl(getResources())) {
-                scrollBarX = mBackgroundPadding.left;
-            } else {
-                scrollBarX = getWidth() - mBackgroundPadding.right - mScrollbar.getThumbWidth();
-            }
+            if (!mScrollbar.isDraggingThumb()) {
+                // Calculate the current scroll position, the scrollY of the recycler view accounts
+                // for the view padding, while the scrollBarY is drawn right up to the background
+                // padding (ignoring padding)
+                int scrollBarX = getScrollBarX();
+                int scrollBarY = mBackgroundPadding.top +
+                        (int) (((float) scrollY / availableScrollHeight) * availableScrollBarHeight);
 
-            if (mScrollbar.isDraggingThumb()) {
-                // If the thumb is detached, then just update the thumb to the current
-                // touch position
-                mScrollbar.setThumbOffset(scrollBarX, (int) mScrollbar.getLastTouchY());
-            } else {
                 int thumbScrollY = mScrollbar.getThumbOffset().y;
                 int diffScrollY = scrollBarY - thumbScrollY;
                 if (diffScrollY * dy > 0f) {
