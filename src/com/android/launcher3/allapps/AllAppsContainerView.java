@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.allapps;
 
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
@@ -25,19 +26,15 @@ import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.method.TextKeyListener;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.view.animation.AnimationUtils;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BaseContainerView;
-import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeleteDropTarget;
 import com.android.launcher3.DeviceProfile;
@@ -150,7 +147,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     private View mSearchContainer;
     private ExtendedEditText mSearchInput;
-    private ImageView mSearchIcon;
     private HeaderElevationController mElevationController;
     private int mSearchContainerOffsetTop;
 
@@ -313,39 +309,34 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         mSearchContainer = findViewById(R.id.search_container);
         mSearchInput = (ExtendedEditText) findViewById(R.id.search_box_input);
-        mSearchIcon = (ImageView) findViewById(R.id.search_icon);
         mSearchContainerOffsetTop = getResources().getDimensionPixelSize(
                 R.dimen.all_apps_search_bar_margin_top);
 
-        final LinearLayout.LayoutParams searchParams =
-                (LinearLayout.LayoutParams) mSearchInput.getLayoutParams();
+        final View searchHint = findViewById(R.id.search_hint);
+        final ObjectAnimator searchInputAnimator = ObjectAnimator.ofFloat(mSearchInput,
+                View.TRANSLATION_X, 0);
+        searchInputAnimator.setDuration(getContext().getResources().getInteger(
+                R.integer.config_searchHintAnimationDuration));
+        searchInputAnimator.setInterpolator(AnimationUtils.loadInterpolator(getContext(),
+                android.R.interpolator.accelerate_decelerate));
+
         mSearchInput.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean focused) {
                 if (focused) {
-                    searchParams.width = LayoutParams.MATCH_PARENT;
-                    mSearchInput.setLayoutParams(searchParams);
-                    mSearchInput.setGravity(Gravity.FILL_HORIZONTAL | Gravity.CENTER_VERTICAL);
-                    mSearchIcon.setVisibility(View.GONE);
+                    searchHint.setVisibility(View.INVISIBLE);
+                    if (searchInputAnimator.isRunning()) {
+                        searchInputAnimator.end();
+                    }
+
+                    searchInputAnimator.setFloatValues(searchHint.getLeft(), 0);
+                    searchInputAnimator.start();
                 } else {
-                    searchParams.width = LayoutParams.WRAP_CONTENT;
-                    mSearchInput.setLayoutParams(searchParams);
-                    mSearchInput.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
-                    mSearchIcon.setVisibility(View.VISIBLE);
+                    searchHint.setVisibility(View.VISIBLE);
+                    mSearchInput.setTranslationX(0);
                 }
             }
         });
-
-        final OnClickListener searchFocusListener = new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!mSearchBarController.isSearchFieldFocused()) {
-                    mSearchBarController.focusSearchField();
-                }
-            }
-        };
-        mSearchInput.setOnClickListener(searchFocusListener);
-        mSearchContainer.setOnClickListener(searchFocusListener);
 
         mElevationController = Utilities.ATLEAST_LOLLIPOP
                 ? new HeaderElevationController.ControllerVL(mSearchContainer)
@@ -405,8 +396,11 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                     final int thumbMaxWidth =
                             getResources().getDimensionPixelSize(
                                     R.dimen.container_fastscroll_thumb_max_width);
-                    mSearchContainer.setPaddingRelative(rvPadding + thumbMaxWidth, 0, rvPadding +
-                            thumbMaxWidth, 0);
+                    mSearchContainer.setPadding(
+                            rvPadding - mHorizontalPadding + thumbMaxWidth,
+                            mSearchContainer.getPaddingTop(),
+                            rvPadding - mHorizontalPadding + thumbMaxWidth,
+                            mSearchContainer.getPaddingBottom());
                 }
             }
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -435,14 +429,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             mAppsRecyclerView.setNumAppsPerRow(grid, mNumAppsPerRow);
             mAdapter.setNumAppsPerRow(mNumAppsPerRow);
             mApps.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow, mergeAlgorithm);
-
-            // TODO: should we not do all this complicated computation but just match the
-            // numAppsPerRow with the workspace?
-            if (mNumAppsPerRow > 0) {
-                int iconSize = availableWidth / mNumAppsPerRow;
-                int iconSpacing = (iconSize - grid.allAppsIconSizePx) / 2;
-                mSearchInput.setPaddingRelative(iconSpacing, 0, iconSpacing, 0);
-            }
         }
 
         // --- remove END when {@code FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP} is enabled. ---
@@ -499,12 +485,11 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                 mlp.topMargin = height;
                 mAppsRecyclerView.setLayoutParams(mlp);
 
-                LinearLayout.LayoutParams llp =
-                        (LinearLayout.LayoutParams) mSearchInput.getLayoutParams();
-                llp.topMargin = insets.top + mSearchContainerOffsetTop;
-                mSearchInput.setLayoutParams(llp);
-                mSearchIcon.setLayoutParams(llp);
-
+                mSearchContainer.setPadding(
+                        mSearchContainer.getPaddingLeft(),
+                        insets.top + mSearchContainerOffsetTop,
+                        mSearchContainer.getPaddingRight(),
+                        mSearchContainer.getPaddingBottom());
                 lp.height = height;
 
                 View navBarBg = findViewById(R.id.nav_bar_bg);

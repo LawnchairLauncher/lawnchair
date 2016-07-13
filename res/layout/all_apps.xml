@@ -59,7 +59,7 @@
             android:focusable="true"
             android:theme="@style/CustomOverscroll.Light" />
 
-        <LinearLayout
+        <FrameLayout
             android:id="@+id/search_container"
             android:layout_width="match_parent"
             android:layout_height="@dimen/all_apps_search_bar_height"
@@ -68,25 +68,28 @@
             android:paddingRight="@dimen/container_fastscroll_thumb_max_width"
             android:gravity="center|bottom"
             android:orientation="horizontal"
-            android:saveEnabled="false">
+            android:saveEnabled="false"
+            android:paddingTop="@dimen/all_apps_search_bar_margin_top" >
 
-            <ImageView
-                android:id="@+id/search_icon"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:scaleType="fitCenter"
-                android:layout_marginTop="@dimen/all_apps_search_bar_icon_margin_top"
-                android:paddingEnd="@dimen/all_apps_search_bar_icon_margin_right"
-                android:src="@drawable/ic_allapps_search" />
+                android:gravity="center_vertical"
+                android:id="@+id/search_hint"
+                android:layout_gravity="center_horizontal"
+                android:drawablePadding="@dimen/all_apps_search_bar_icon_margin_right"
+                android:drawableStart="@drawable/ic_allapps_search"
+                android:text="@string/all_apps_search_bar_hint"
+                android:textColor="@drawable/all_apps_search_hint"
+                android:textSize="16sp" />
 
             <com.android.launcher3.ExtendedEditText
                 android:id="@+id/search_box_input"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
                 android:focusableInTouchMode="true"
                 android:gravity="start|center_vertical"
-                android:hint="@string/all_apps_search_bar_hint"
                 android:imeOptions="actionSearch|flagNoExtractUi"
                 android:inputType="text|textNoSuggestions|textCapWords"
                 android:maxLines="1"
@@ -95,7 +98,7 @@
                 android:textColor="#4c4c4c"
                 android:textColorHint="@drawable/all_apps_search_hint"
                 android:textSize="16sp" />
-        </LinearLayout>
+        </FrameLayout>
 
     </com.android.launcher3.allapps.AllAppsRecyclerViewContainerView>
     <View
