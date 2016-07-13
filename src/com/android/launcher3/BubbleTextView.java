@@ -153,34 +153,16 @@ public class BubbleTextView extends TextView
 
     public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache,
             boolean promiseStateChanged) {
-        Bitmap b = info.getIcon(iconCache);
-
-        FastBitmapDrawable iconDrawable = mLauncher.createIconDrawable(b);
-        if (info.isDisabled()) {
-            iconDrawable.setState(FastBitmapDrawable.State.DISABLED);
-        }
-        setIcon(iconDrawable);
-        if (info.contentDescription != null) {
-            setContentDescription(info.contentDescription);
-        }
-        setText(info.title);
+        applyIconAndLabel(info.getIcon(iconCache), info);
         setTag(info);
-
         if (promiseStateChanged || info.isPromise()) {
             applyState(promiseStateChanged);
         }
     }
 
     public void applyFromApplicationInfo(AppInfo info) {
-        FastBitmapDrawable iconDrawable = mLauncher.createIconDrawable(info.iconBitmap);
-        if (info.isDisabled()) {
-            iconDrawable.setState(FastBitmapDrawable.State.DISABLED);
-        }
-        setIcon(iconDrawable);
-        setText(info.title);
-        if (info.contentDescription != null) {
-            setContentDescription(info.contentDescription);
-        }
+        applyIconAndLabel(info.iconBitmap, info);
+
         // We don't need to check the info since it's not a ShortcutInfo
         super.setTag(info);
 
@@ -189,16 +171,26 @@ public class BubbleTextView extends TextView
     }
 
     public void applyFromPackageItemInfo(PackageItemInfo info) {
-        setIcon(mLauncher.createIconDrawable(info.iconBitmap));
-        setText(info.title);
-        if (info.contentDescription != null) {
-            setContentDescription(info.contentDescription);
-        }
+        applyIconAndLabel(info.iconBitmap, info);
         // We don't need to check the info since it's not a ShortcutInfo
         super.setTag(info);
 
         // Verify high res immediately
         verifyHighRes();
+    }
+
+    private void applyIconAndLabel(Bitmap icon, ItemInfo info) {
+        FastBitmapDrawable iconDrawable = mLauncher.createIconDrawable(icon);
+        if (info.isDisabled()) {
+            iconDrawable.setState(FastBitmapDrawable.State.DISABLED);
+        }
+        setIcon(iconDrawable);
+        setText(info.title);
+        if (info.contentDescription != null) {
+            setContentDescription(info.isDisabled()
+                    ? getContext().getString(R.string.disabled_app_label, info.contentDescription)
+                    : info.contentDescription);
+        }
     }
 
     /**

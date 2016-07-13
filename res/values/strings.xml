@@ -112,6 +112,8 @@
     <string name="folder_hint_text">Unnamed Folder</string>
 
     <!-- Accessibility -->
+    <!-- The format string for when an app is temporarily disabled. -->
+    <string name="disabled_app_label">Disabled <xliff:g id="app_name" example="Messenger">%1$s</xliff:g></string>
     <skip />
 
     <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
