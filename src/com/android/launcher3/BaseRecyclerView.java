@@ -273,7 +273,7 @@ public abstract class BaseRecyclerView extends RecyclerView
      *
      * @return the scroll top of this recycler view.
      */
-    protected abstract int getCurrentScrollY();
+    public abstract int getCurrentScrollY();
 
     /**
      * Maps the touch (from 0..1) to the adapter position that should be visible.
