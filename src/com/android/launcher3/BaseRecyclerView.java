@@ -41,21 +41,6 @@ public abstract class BaseRecyclerView extends RecyclerView
     @Thunk int mDy = 0;
     private float mDeltaThreshold;
 
-    /**
-     * The current scroll state of the recycler view.  We use this in onUpdateScrollbar()
-     * and scrollToPositionAtProgress() to determine the scroll position of the recycler view so
-     * that we can calculate what the scroll bar looks like, and where to jump to from the fast
-     * scroller.
-     */
-    public static class ScrollPositionState {
-        // The index of the first visible row
-        public int rowIndex;
-        // The offset of the first visible row
-        public int rowTopOffset;
-        // The adapter position of the first visible item
-        public int itemPos;
-    }
-
     protected BaseRecyclerViewFastScrollBar mScrollbar;
 
     private int mDownX;
@@ -199,11 +184,7 @@ public abstract class BaseRecyclerView extends RecyclerView
      * Returns the available scroll height:
      *   AvailableScrollHeight = Total height of the all items - last page height
      */
-    protected int getAvailableScrollHeight(int rowCount) {
-        int totalHeight = getPaddingTop() + getTop(rowCount) + getPaddingBottom();
-        int availableScrollHeight = totalHeight - getVisibleHeight();
-        return availableScrollHeight;
-    }
+    protected abstract int getAvailableScrollHeight();
 
     /**
      * Returns the available scroll bar height:
@@ -247,15 +228,12 @@ public abstract class BaseRecyclerView extends RecyclerView
      * this by mapping the available scroll area of the recycler view to the available space for the
      * scroll bar.
      *
-     * @param scrollPosState the current scroll position
-     * @param rowCount the number of rows, used to calculate the total scroll height (assumes that
-     *                 all rows are the same height)
+     * @param scrollY the current scroll y
      */
-    protected void synchronizeScrollBarThumbOffsetToViewScroll(ScrollPositionState scrollPosState,
-            int rowCount) {
+    protected void synchronizeScrollBarThumbOffsetToViewScroll(int scrollY,
+            int availableScrollHeight) {
         // Only show the scrollbar if there is height to be scrolled
         int availableScrollBarHeight = getAvailableScrollBarHeight();
-        int availableScrollHeight = getAvailableScrollHeight(rowCount);
         if (availableScrollHeight <= 0) {
             mScrollbar.setThumbOffset(-1, -1);
             return;
@@ -264,7 +242,6 @@ public abstract class BaseRecyclerView extends RecyclerView
         // Calculate the current scroll position, the scrollY of the recycler view accounts for the
         // view padding, while the scrollBarY is drawn right up to the background padding (ignoring
         // padding)
-        int scrollY = Math.max(0, getScrollTop(scrollPosState));
         int scrollBarY = mBackgroundPadding.top +
                 (int) (((float) scrollY / availableScrollHeight) * availableScrollBarHeight);
 
@@ -291,20 +268,7 @@ public abstract class BaseRecyclerView extends RecyclerView
      *
      * @return the scroll top of this recycler view.
      */
-    protected int getScrollTop(ScrollPositionState scrollPosState) {
-        return getPaddingTop() + getTop(scrollPosState.rowIndex) -
-                scrollPosState.rowTopOffset;
-    }
-
-    /**
-     * Returns information about the item that the recycler view is currently scrolled to.
-     */
-    protected abstract void getCurScrollState(ScrollPositionState stateOut, int viewTypeMask);
-
-    /**
-     * Returns the top (or y position) of the row at the specified index.
-     */
-    protected abstract int getTop(int rowIndex);
+    protected abstract int getCurrentScrollY();
 
     /**
      * Maps the touch (from 0..1) to the adapter position that should be visible.

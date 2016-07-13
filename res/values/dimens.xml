@@ -80,7 +80,6 @@
     <dimen name="all_apps_header_scroll_to_elevation">16dp</dimen>
     <dimen name="all_apps_header_shadow_height">6dp</dimen>
 
-    <dimen name="all_apps_divider_height">1dp</dimen>
     <dimen name="all_apps_divider_margin_vertical">8dp</dimen>
 
     <dimen name="all_apps_bezel_swipe_height">24dp</dimen>
