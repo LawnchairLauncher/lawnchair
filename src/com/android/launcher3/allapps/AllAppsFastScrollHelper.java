@@ -18,7 +18,6 @@ package com.android.launcher3.allapps;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.BaseRecyclerViewFastScrollBar;
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.util.Thunk;
@@ -144,8 +143,8 @@ public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallb
 
         // Calculate the full animation from the current scroll position to the final scroll
         // position, and then run the animation for the duration.
-        int newScrollY = Math.min(availableScrollHeight,
-                mRv.getPaddingTop() + mRv.getTop(info.fastScrollToItem.rowIndex));
+        int newPosition = info.fastScrollToItem.position;
+        int newScrollY = Math.min(availableScrollHeight, mRv.getCurrentScrollY(newPosition, 0));
         int numFrames = mFastScrollFrames.length;
         for (int i = 0; i < numFrames; i++) {
             // TODO(winsonc): We can interpolate this as well.

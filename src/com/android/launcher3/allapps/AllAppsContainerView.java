@@ -366,25 +366,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         FocusedItemDecorator focusedItemDecorator = new FocusedItemDecorator(mAppsRecyclerView);
         mAppsRecyclerView.addItemDecoration(focusedItemDecorator);
+        mAppsRecyclerView.preMeasureViews(mAdapter);
         mAdapter.setIconFocusListener(focusedItemDecorator.getFocusListener());
-
-        // Precalculate the prediction icon and normal icon sizes
-        LayoutInflater layoutInflater = LayoutInflater.from(getContext());
-        final int widthMeasureSpec = MeasureSpec.makeMeasureSpec(
-                getResources().getDisplayMetrics().widthPixels, MeasureSpec.AT_MOST);
-        final int heightMeasureSpec = MeasureSpec.makeMeasureSpec(
-                getResources().getDisplayMetrics().heightPixels, MeasureSpec.AT_MOST);
-
-        BubbleTextView icon = (BubbleTextView) layoutInflater.inflate(
-                R.layout.all_apps_icon, this, false);
-        icon.applyDummyInfo();
-        icon.measure(widthMeasureSpec, heightMeasureSpec);
-        BubbleTextView predIcon = (BubbleTextView) layoutInflater.inflate(
-                R.layout.all_apps_prediction_bar_icon, this, false);
-        predIcon.applyDummyInfo();
-        predIcon.measure(widthMeasureSpec, heightMeasureSpec);
-        mAppsRecyclerView.setPremeasuredIconHeights(predIcon.getMeasuredHeight(),
-                icon.getMeasuredHeight());
 
         // TODO(hyunyoungs): clean up setting the content and the reveal view.
         if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
