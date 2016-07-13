@@ -71,10 +71,10 @@ import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.ManagedProfileHeuristic;
+import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.StringFilter;
-import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 
@@ -1942,7 +1942,16 @@ public class LauncherModel extends BroadcastReceiver
                                         List<ShortcutInfoCompat> fullDetails = mDeepShortcutManager
                                                 .queryForFullDetails(packageName,
                                                 Collections.singletonList(shortcutId), user);
-                                        if (fullDetails != null && !fullDetails.isEmpty()) {
+                                        if (fullDetails == null || fullDetails.isEmpty()) {
+                                            // There are no details for the shortcut. If this is due
+                                            // to a SecurityException, keep it in the database so
+                                            // we can restore the icon when the launcher regains
+                                            // permission. Otherwise remove the icon from the db.
+                                            if (!mDeepShortcutManager.wasLastCallSuccess()) {
+                                                itemsToRemove.add(id);
+                                                continue;
+                                            }
+                                        } else {
                                             pinnedShortcut = fullDetails.get(0);
                                             shouldPin = true;
                                         }
