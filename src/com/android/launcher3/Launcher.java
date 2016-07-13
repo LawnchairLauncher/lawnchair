@@ -116,6 +116,7 @@ import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.shortcuts.DeepShortcutsContainer;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -1245,6 +1246,9 @@ public class Launcher extends Activity
                 // Close any open folders
                 closeFolder();
 
+                // Close any shortcuts containers
+                closeShortcutsContainer();
+
                 // Stop resizing any widgets
                 mWorkspace.exitWidgetResizeMode();
 
@@ -1840,6 +1844,7 @@ public class Launcher extends Activity
             mWorkspace.exitWidgetResizeMode();
 
             closeFolder(alreadyOnHome);
+            closeShortcutsContainer();
             exitSpringLoadedDragMode();
 
             // If we are already on home, then just animate back to the workspace,
@@ -1926,6 +1931,8 @@ public class Launcher extends Activity
         // this state is reflected.
         // TODO: Move folderInfo.isOpened out of the model and make it a UI state.
         closeFolder(false);
+
+        closeShortcutsContainer();
 
         if (mPendingAddInfo.container != ItemInfo.NO_ID && mPendingAddInfo.screenId > -1 &&
                 mWaitingForResult) {
@@ -2423,7 +2430,9 @@ public class Launcher extends Activity
             return;
         }
 
-        if (isAppsViewVisible()) {
+        if (getOpenShortcutsContainer() != null) {
+            closeShortcutsContainer();
+        } else if (isAppsViewVisible()) {
             showWorkspace(true);
         } else if (isWidgetsViewVisible())  {
             showOverviewMode(true);
@@ -3090,6 +3099,21 @@ public class Launcher extends Activity
         getDragLayer().sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
     }
 
+    public void closeShortcutsContainer() {
+        DeepShortcutsContainer deepShortcutsContainer = getOpenShortcutsContainer();
+        if (deepShortcutsContainer != null) {
+            mDragController.removeDragListener(deepShortcutsContainer);
+            mDragLayer.removeView(deepShortcutsContainer);
+        }
+    }
+
+    /**
+     * @return The open shortcuts container, or null if there is none
+     */
+    public DeepShortcutsContainer getOpenShortcutsContainer() {
+        return (DeepShortcutsContainer) mDragLayer.findViewById(R.id.deep_shortcuts_container);
+    }
+
     @Override
     public boolean onLongClick(View v) {
         if (!isDraggingEnabled()) return false;
@@ -3351,6 +3375,7 @@ public class Launcher extends Activity
         mUserPresent = false;
         updateAutoAdvanceState();
         closeFolder();
+        closeShortcutsContainer();
 
         // Send an accessibility event to announce the context change
         getWindow().getDecorView()

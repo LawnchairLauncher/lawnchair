@@ -243,8 +243,7 @@ public class ShortcutsContainerListener implements View.OnTouchListener,
     private boolean onTouchForwarded(MotionEvent srcEvent) {
         final View src = mSrcIcon;
 
-        final DeepShortcutsContainer dst = (DeepShortcutsContainer)
-                mDragLayer.findViewById(R.id.deep_shortcuts_container);
+        final DeepShortcutsContainer dst = mLauncher.getOpenShortcutsContainer();
         if (dst == null) {
             return false;
         }
