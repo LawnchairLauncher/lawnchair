@@ -33,7 +33,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     private static final String TAG_FAVORITES = "favorites";
     protected static final String TAG_FAVORITE = "favorite";
     private static final String TAG_APPWIDGET = "appwidget";
-    private static final String TAG_SHORTCUT = "shortcut";
+    protected static final String TAG_SHORTCUT = "shortcut";
     private static final String TAG_FOLDER = "folder";
     private static final String TAG_PARTNER_FOLDER = "partner-folder";
 
@@ -89,7 +89,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     /**
      * AppShortcutParser which also supports adding URI based intents
      */
-    @Thunk class AppShortcutWithUriParser extends AppShortcutParser {
+    public class AppShortcutWithUriParser extends AppShortcutParser {
 
         @Override
         protected long invalidPackageOrClass(XmlResourceParser parser) {
@@ -179,7 +179,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     /**
      * Shortcut parser which allows any uri and not just web urls.
      */
-    private class UriShortcutParser extends ShortcutParser {
+    public class UriShortcutParser extends ShortcutParser {
 
         public UriShortcutParser(Resources iconRes) {
             super(iconRes);
@@ -201,7 +201,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     /**
      * Contains a list of <favorite> nodes, and accepts the first successfully parsed node.
      */
-    protected class ResolveParser implements TagParser {
+    public class ResolveParser implements TagParser {
 
         private final AppShortcutWithUriParser mChildParser = new AppShortcutWithUriParser();
 

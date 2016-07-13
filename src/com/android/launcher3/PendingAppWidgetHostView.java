@@ -32,6 +32,7 @@ import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.TypedValue;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -63,9 +64,9 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public PendingAppWidgetHostView(Context context, LauncherAppWidgetInfo info,
             boolean disabledForSafeMode) {
-        super(context);
+        super(new ContextThemeWrapper(context, R.style.WidgetContainerTheme));
 
-        mLauncher = (Launcher) context;
+        mLauncher = Launcher.getLauncher(context);
         mInfo = info;
         mStartState = info.restoreStatus;
         mIconLookupIntent = new Intent().setComponent(info.providerName);
