@@ -57,6 +57,9 @@
     <!-- The distance at which the animation should take the max duration -->
     <integer name="config_dropAnimMaxDist">800</integer>
 
+    <!-- The duration of the caret animation -->
+    <integer name="config_caretAnimationDuration">200</integer>
+
 <!-- Hotseat -->
     <bool name="hotseat_transpose_layout_with_orientation">true</bool>
 

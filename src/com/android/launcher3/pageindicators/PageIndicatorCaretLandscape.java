@@ -16,21 +16,16 @@
 package com.android.launcher3.pageindicators;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.R;
-import com.android.launcher3.dynamicui.ExtractedColors;
 
 /**
  * Simply draws the caret drawable in the center. Used for the landscape layout.
  */
 public class PageIndicatorCaretLandscape extends PageIndicator {
     // all apps pull up handle drawable.
-    private final Drawable caretDrawable;
 
     public PageIndicatorCaretLandscape(Context context) {
         this(context, null);
@@ -43,8 +38,7 @@ public class PageIndicatorCaretLandscape extends PageIndicator {
     public PageIndicatorCaretLandscape(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        Resources res = context.getResources();
-        caretDrawable = res.getDrawable(R.drawable.ic_allapps_caret);
+        setCaretDrawable(new CaretDrawable(context));
         Launcher l = (Launcher) context;
         setOnTouchListener(l.getHapticFeedbackTouchListener());
         setOnClickListener(l);
@@ -56,11 +50,11 @@ public class PageIndicatorCaretLandscape extends PageIndicator {
         super.onLayout(changed, left, top, right, bottom);
         int size = bottom - top;
         int l = (right - left) / 2 - size / 2;
-        caretDrawable.setBounds(l, 0, l + size, size);
+        getCaretDrawable().setBounds(l, 0, l + size, size);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        caretDrawable.draw(canvas);
+        getCaretDrawable().draw(canvas);
     }
 }

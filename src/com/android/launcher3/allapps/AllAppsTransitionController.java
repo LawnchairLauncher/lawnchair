@@ -8,9 +8,11 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 
+import com.android.launcher3.pageindicators.CaretDrawable;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
@@ -50,6 +52,10 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private Hotseat mHotseat;
     private float mHotseatBackgroundAlpha;
 
+    private ObjectAnimator mCaretAnimator;
+    private final long mCaretAnimationDuration;
+    private final Interpolator mCaretInterpolator;
+
     private float mStatusBarHeight;
 
     private final Launcher mLauncher;
@@ -67,12 +73,10 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     private static final float DEFAULT_SHIFT_RANGE = 10;
 
-
     private static final float RECATCH_REJECTION_FRACTION = .0875f;
 
     private int mBezelSwipeUpHeight;
     private long mAnimationDuration;
-
 
     private AnimatorSet mCurrentAnimation;
     private boolean mNoIntercept;
@@ -86,6 +90,11 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mShiftCurrent = mShiftRange = DEFAULT_SHIFT_RANGE;
         mBezelSwipeUpHeight = launcher.getResources().getDimensionPixelSize(
                 R.dimen.all_apps_bezel_swipe_height);
+
+        mCaretAnimationDuration = launcher.getResources().getInteger(
+                R.integer.config_caretAnimationDuration);
+        mCaretInterpolator = AnimationUtils.loadInterpolator(launcher,
+                R.interpolator.caret_animation_interpolator);
     }
 
     @Override
@@ -398,7 +407,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                 if (canceled) {
                     return;
                 } else {
-                    finishPullDown();
+                    finishPullDown(true);
                     cleanUpAnimation();
                     mDetector.finishedScrolling();
                 }
@@ -413,14 +422,21 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     public void finishPullUp() {
         mHotseat.setVisibility(View.INVISIBLE);
         setProgress(0f);
+        animateCaret();
     }
 
-    public void finishPullDown() {
+    public void finishPullDown(boolean animated) {
         mAppsView.setVisibility(View.INVISIBLE);
         mHotseat.setBackgroundTransparent(false /* transparent */);
         mHotseat.setVisibility(View.VISIBLE);
         mAppsView.reset();
         setProgress(mShiftRange);
+        if (animated) {
+            animateCaret();
+        } else {
+            mWorkspace.getPageIndicator().getCaretDrawable()
+                    .setLevel(CaretDrawable.LEVEL_CARET_POINTING_UP);
+        }
     }
 
     private void cancelAnimation() {
@@ -435,10 +451,28 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mCurrentAnimation = null;
     }
 
+    private void animateCaret() {
+        if (mCaretAnimator.isRunning()) {
+            mCaretAnimator.cancel(); // stop the animator in its tracks
+        }
+
+        if (mLauncher.isAllAppsVisible()) {
+            mCaretAnimator.setIntValues(CaretDrawable.LEVEL_CARET_POINTING_DOWN);
+        } else {
+            mCaretAnimator.setIntValues(CaretDrawable.LEVEL_CARET_POINTING_UP);
+        }
+
+        mCaretAnimator.start();
+    }
+
     public void setupViews(AllAppsContainerView appsView, Hotseat hotseat, Workspace workspace) {
         mAppsView = appsView;
         mHotseat = hotseat;
         mWorkspace = workspace;
+        mCaretAnimator = ObjectAnimator.ofInt(mWorkspace.getPageIndicator().getCaretDrawable(),
+                "level", CaretDrawable.LEVEL_CARET_POINTING_UP); // we will set values later
+        mCaretAnimator.setDuration(mCaretAnimationDuration);
+        mCaretAnimator.setInterpolator(mCaretInterpolator);
         mHotseat.addOnLayoutChangeListener(this);
     }
 
