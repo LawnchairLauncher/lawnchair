@@ -291,7 +291,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                 mDecelInterpolator.getInterpolation(alpha))));
         mAppsView.getContentView().setAlpha(alpha);
         mAppsView.setTranslationY(progress);
-        mWorkspace.setWorkspaceTranslationAndAlpha(Direction.Y,
+        mWorkspace.setWorkspaceYTranslationAndAlpha(
                 PARALLAX_COEFFICIENT * (-mShiftRange + progress),
                 mAccelInterpolator.getInterpolation(workspaceHotseatAlpha));
         if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {

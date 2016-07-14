@@ -276,6 +276,8 @@ public class WorkspaceStateTransitionAnimation {
         float finalHotseatAlpha = (states.stateIsNormal || states.stateIsSpringLoaded ||
                 (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && states.stateIsNormalHidden)) ? 1f : 0f;
         float finalOverviewPanelAlpha = states.stateIsOverview ? 1f : 0f;
+        float finalQsbAlpha = (states.stateIsNormal ||
+                (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && states.stateIsNormalHidden)) ? 1f : 0f;
 
         float finalWorkspaceTranslationY = 0;
         if (states.stateIsOverview || states.stateIsOverviewHidden) {
@@ -355,9 +357,28 @@ public class WorkspaceStateTransitionAnimation {
                 cl.setBackgroundAlpha(finalBackgroundAlpha);
                 cl.setShortcutAndWidgetAlpha(finalAlpha);
             }
+
+            if (Workspace.isQsbContainerPage(i)) {
+                if (animated) {
+                    Animator anim = mWorkspace.mQsbAlphaController
+                            .animateAlphaAtIndex(finalAlpha, Workspace.QSB_ALPHA_INDEX_PAGE_SCROLL);
+                    anim.setDuration(duration);
+                    anim.setInterpolator(mZoomInInterpolator);
+                    mStateAnimator.play(anim);
+                } else {
+                    mWorkspace.mQsbAlphaController.setAlphaAtIndex(
+                            finalAlpha, Workspace.QSB_ALPHA_INDEX_PAGE_SCROLL);
+                }
+            }
         }
 
         final ViewGroup overviewPanel = mLauncher.getOverviewPanel();
+
+        final View qsbContainer = mLauncher.getQsbContainer();
+
+        Animator qsbAlphaAnimation = mWorkspace.mQsbAlphaController
+                .animateAlphaAtIndex(finalQsbAlpha, Workspace.QSB_ALPHA_INDEX_STATE_CHANGE);
+
         if (animated) {
             LauncherViewPropertyAnimator scale = new LauncherViewPropertyAnimator(mWorkspace);
             scale.scaleX(mNewScale)
@@ -376,10 +397,13 @@ public class WorkspaceStateTransitionAnimation {
             // For animation optimations, we may need to provide the Launcher transition
             // with a set of views on which to force build layers in certain scenarios.
             overviewPanel.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            qsbContainer.setLayerType(View.LAYER_TYPE_HARDWARE, null);
             if (layerViews != null) {
                 // If layerViews is not null, we add these views, and indicate that
                 // the caller can manage layer state.
                 layerViews.put(overviewPanel, LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
+                layerViews.put(qsbContainer, LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
+
                 layerViews.put(mLauncher.getHotseat(),
                         LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
                 layerViews.put(mWorkspace.getPageIndicator(),
@@ -399,9 +423,11 @@ public class WorkspaceStateTransitionAnimation {
 
             overviewPanelAlpha.setDuration(duration);
             hotseatAlpha.setDuration(duration);
+            qsbAlphaAnimation.setDuration(duration);
 
             mStateAnimator.play(overviewPanelAlpha);
             mStateAnimator.play(hotseatAlpha);
+            mStateAnimator.play(qsbAlphaAnimation);
             mStateAnimator.addListener(new AnimatorListenerAdapter() {
                 boolean canceled = false;
                 @Override
@@ -422,6 +448,8 @@ public class WorkspaceStateTransitionAnimation {
         } else {
             overviewPanel.setAlpha(finalOverviewPanelAlpha);
             AlphaUpdateListener.updateVisibility(overviewPanel, accessibilityEnabled);
+
+            qsbAlphaAnimation.end();
             mWorkspace.createHotseatAlphaAnimator(finalHotseatAlpha).end();
             mWorkspace.updateCustomContentVisibility();
             mWorkspace.setScaleX(mNewScale);

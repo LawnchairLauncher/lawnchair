@@ -918,10 +918,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 bottom + mTempRect.bottom);
     }
 
-    public Rect getBackgroundBounds() {
-        return mBackground.getBounds();
-    }
-
     /**
      * Returns the amount of space left over after subtracting padding and cells. This space will be
      * very small, a few pixels at most, and is a result of rounding down when calculating the cell

@@ -30,7 +30,6 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.RemoteViews;
 
-import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragLayer.TouchCompleteListener;
 
 import java.util.ArrayList;
@@ -47,7 +46,6 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
     private Context mContext;
     @ViewDebug.ExportedProperty(category = "launcher")
     private int mPreviousOrientation;
-    private DragLayer mDragLayer;
 
     private float mSlop;
 
@@ -62,9 +60,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
         mLongPressHelper = new CheckLongPressHelper(this);
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mDragLayer = Launcher.getLauncher(context).getDragLayer();
         setAccessibilityDelegate(Launcher.getLauncher(context).getAccessibilityDelegate());
-
         setBackgroundResource(R.drawable.widget_internal_focus_bg);
     }
 
@@ -117,7 +113,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
                 if (!mStylusEventHelper.inStylusButtonPressed()) {
                     mLongPressHelper.postCheckForLongPress();
                 }
-                mDragLayer.setTouchCompleteListener(this);
+                Launcher.getLauncher(getContext()).getDragLayer().setTouchCompleteListener(this);
                 break;
             }
 

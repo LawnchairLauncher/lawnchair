@@ -747,13 +747,14 @@ public class DragLayer extends InsettableFrameLayout {
      *        location doesn't account for scaling, and so should be centered about the desired
      *        final location (including scaling).
      * @param finalAlpha The final alpha of the view, in case we want it to fade as it animates.
-     * @param finalScale The final scale of the view. The view is scaled about its center.
+     * @param finalScaleX The final scale of the view. The view is scaled about its center.
+     * @param finalScaleY The final scale of the view. The view is scaled about its center.
      * @param duration The duration of the animation.
      * @param motionInterpolator The interpolator to use for the location of the view.
      * @param alphaInterpolator The interpolator to use for the alpha of the view.
      * @param onCompleteRunnable Optional runnable to run on animation completion.
-     * @param fadeOut Whether or not to fade out the view once the animation completes. If true,
-     *        the runnable will execute after the view is faded out.
+     * @param animationEndStyle Whether or not to fade out the view once the animation completes.
+     *        {@link #ANIMATION_END_DISAPPEAR} or {@link #ANIMATION_END_REMAIN_VISIBLE}.
      * @param anchorView If not null, this represents the view which the animated view stays
      *        anchored to in case scrolling is currently taking place. Note: currently this is
      *        only used for the X dimension for the case of the workspace.
@@ -988,12 +989,7 @@ public class DragLayer extends InsettableFrameLayout {
             canvas.save();
             if (currCellLayout != null && currCellLayout != mLauncher.getHotseat().getLayout()) {
                 // Cut a hole in the darkening scrim on the page that should be highlighted, if any.
-                float scale = getDescendantRectRelativeToSelf(currCellLayout, mHighlightRect);
-                Rect backBounds = currCellLayout.getBackgroundBounds();
-                mHighlightRect.left += (int) (backBounds.left * scale);
-                mHighlightRect.top += (int) (backBounds.top * scale);
-                mHighlightRect.right = (int) (mHighlightRect.left + backBounds.width() * scale);
-                mHighlightRect.bottom = (int) (mHighlightRect.top + backBounds.height() * scale);
+                getDescendantRectRelativeToSelf(currCellLayout, mHighlightRect);
                 canvas.clipRect(mHighlightRect, Region.Op.DIFFERENCE);
             }
             canvas.drawColor((alpha << 24) | SCRIM_COLOR);
