@@ -35,8 +35,7 @@
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"अधिक अॅप्स शोधा"</string>
     <string name="out_of_space" msgid="4691004494942118364">"या मुख्य स्क्रीनवर आणखी जागा नाही."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"आवडीच्या ट्रे मध्ये आणखी जागा नाही"</string>
-    <!-- no translation found for all_apps_button_label (8130441508702294465) -->
-    <skip />
+    <string name="all_apps_button_label" msgid="8130441508702294465">"अॅप्स सूची"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"मुख्‍यपृष्‍ठ"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"काढा"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"विस्थापित करा"</string>
@@ -52,6 +51,8 @@
     <string name="gadget_setup_text" msgid="8274003207686040488">"सेटअप"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"हा सिस्टम अॅप आहे आणि विस्थापित केला जाऊ शकत नाही."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"अनामित फोल्डर"</string>
+    <!-- no translation found for disabled_app_label (6673129024321402780) -->
+    <skip />
     <string name="default_scroll_format" msgid="7475544710230993317">"%2$d पैकी %1$d पृष्ठ"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"%2$d पैकी %1$d मुख्य स्क्रीन"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"नवीन मुख्य स्क्रीन पृष्ठ"</string>
@@ -66,10 +67,8 @@
     <string name="settings_button_text" msgid="8119458837558863227">"सेटिंग्ज"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"आपल्या प्रशासकाने अक्षम केले"</string>
     <string name="accessibility_action_overview" msgid="6257665857640347026">"विहंगावलोकन"</string>
-    <!-- no translation found for allow_rotation_title (7728578836261442095) -->
-    <skip />
-    <!-- no translation found for allow_rotation_desc (8662546029078692509) -->
-    <skip />
+    <string name="allow_rotation_title" msgid="7728578836261442095">"मुख्यस्क्रीन फिरविण्‍यास अनुमती द्या"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"फोन फिरविला जातो तेव्हा"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"वर्तमान प्रदर्शन सेटिंग फिरविण्यास परवानगी देत नाही"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"अज्ञात"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"काढा"</string>
