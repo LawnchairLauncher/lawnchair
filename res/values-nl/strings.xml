@@ -35,8 +35,7 @@
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Zoeken naar meer apps"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Er is geen ruimte meer op dit startscherm."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Geen ruimte meer in het vak \'Favorieten\'"</string>
-    <!-- no translation found for all_apps_button_label (8130441508702294465) -->
-    <skip />
+    <string name="all_apps_button_label" msgid="8130441508702294465">"Lijst met apps"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Startpagina"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Verwijderen"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Deïnstalleren"</string>
@@ -52,6 +51,8 @@
     <string name="gadget_setup_text" msgid="8274003207686040488">"Configuratie"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Dit is een systeemapp die niet kan worden verwijderd."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Naamloze map"</string>
+    <!-- no translation found for disabled_app_label (6673129024321402780) -->
+    <skip />
     <string name="default_scroll_format" msgid="7475544710230993317">"Pagina %1$d van %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Startscherm %1$d van %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Nieuwe startschermpagina"</string>
@@ -66,10 +67,8 @@
     <string name="settings_button_text" msgid="8119458837558863227">"Instellingen"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Uitgeschakeld door je beheerder"</string>
     <string name="accessibility_action_overview" msgid="6257665857640347026">"Overzicht"</string>
-    <!-- no translation found for allow_rotation_title (7728578836261442095) -->
-    <skip />
-    <!-- no translation found for allow_rotation_desc (8662546029078692509) -->
-    <skip />
+    <string name="allow_rotation_title" msgid="7728578836261442095">"Draaien van startscherm toestaan"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"Wanneer de telefoon gedraaid is"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Huidige scherminstelling staat draaien niet toe"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Onbekend"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Verwijderen"</string>
