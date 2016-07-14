@@ -8,7 +8,7 @@ import android.view.ViewConfiguration;
 /**
  * One dimensional scroll gesture detector for all apps container pull up interaction.
  * Client (e.g., AllAppsTransitionController) of this class can register a listener.
- *
+ * <p/>
  * Features that this gesture detector can support.
  */
 public class VerticalPullDetector {
@@ -22,7 +22,6 @@ public class VerticalPullDetector {
     public static final int DIRECTION_UP = 1 << 0;
     public static final int DIRECTION_DOWN = 1 << 1;
     public static final int DIRECTION_BOTH = DIRECTION_DOWN | DIRECTION_UP;
-
 
     /**
      * The minimum release velocity in pixels per millisecond that triggers fling..
@@ -42,7 +41,9 @@ public class VerticalPullDetector {
         IDLE,
         DRAGGING,      // onDragStart, onDrag
         SETTLING       // onDragEnd
-    };
+    }
+
+    ;
 
     //------------------- ScrollState transition diagram -----------------------------------
     //
@@ -108,9 +109,11 @@ public class VerticalPullDetector {
         mListener = l;
     }
 
-    interface Listener{
+    interface Listener {
         void onDragStart(boolean start);
+
         boolean onDrag(float displacement, float velocity);
+
         void onDragEnd(float velocity, boolean fling);
     }
 
@@ -137,7 +140,7 @@ public class VerticalPullDetector {
         }
         // Check if the client is interested in scroll in current direction.
         if (((mScrollConditions & DIRECTION_DOWN) > 0 && mDisplacementY > 0) ||
-            ((mScrollConditions & DIRECTION_UP) > 0 && mDisplacementY < 0)) {
+                ((mScrollConditions & DIRECTION_UP) > 0 && mDisplacementY < 0)) {
             return true;
         }
         return false;
@@ -234,6 +237,7 @@ public class VerticalPullDetector {
         mListener.onDragEnd(mVelocity, Math.abs(mVelocity) > RELEASE_VELOCITY_PX_MS);
 
     }
+
     /**
      * Computes the damped velocity using the two motion events and the previous velocity.
      */

@@ -25,11 +25,11 @@ import com.android.launcher3.util.TouchController;
  * Handles AllApps view transition.
  * 1) Slides all apps view using direct manipulation
  * 2) When finger is released, animate to either top or bottom accordingly.
- *
+ * <p/>
  * Algorithm:
  * If release velocity > THRES1, snap according to the direction of movement.
  * If release velocity < THRES1, snap according to either top or bottom depending on whether it's
- *     closer to top or closer to the page indicator.
+ * closer to top or closer to the page indicator.
  */
 public class AllAppsTransitionController implements TouchController, VerticalPullDetector.Listener,
         View.OnLayoutChangeListener {
@@ -229,6 +229,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             }
         }
     }
+
     /**
      * @param start {@code true} if start of new drag.
      */
@@ -309,7 +310,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     private float calcAlphaAllApps(float progress) {
-        return ((mShiftRange - progress)/ mShiftRange);
+        return ((mShiftRange - progress) / mShiftRange);
     }
 
     private void calculateDuration(float velocity, float disp) {
@@ -323,7 +324,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     public void animateToAllApps(AnimatorSet animationOut, long duration, boolean start) {
-        if (animationOut == null){
+        if (animationOut == null) {
             return;
         }
         if (mDetector.isIdleState()) {
@@ -342,10 +343,12 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
         animationOut.addListener(new AnimatorListenerAdapter() {
             boolean canceled = false;
+
             @Override
             public void onAnimationCancel(Animator animation) {
                 canceled = true;
             }
+
             @Override
             public void onAnimationEnd(Animator animation) {
                 if (canceled) {
@@ -355,7 +358,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                     cleanUpAnimation();
                     mDetector.finishedScrolling();
                 }
-            }});
+            }
+        });
         mCurrentAnimation = animationOut;
         if (start) {
             mCurrentAnimation.start();
@@ -363,10 +367,10 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     public void animateToWorkspace(AnimatorSet animationOut, long duration, boolean start) {
-        if (animationOut == null){
+        if (animationOut == null) {
             return;
         }
-        if(mDetector.isIdleState()) {
+        if (mDetector.isIdleState()) {
             preparePull(true);
             mAnimationDuration = duration;
             mShiftStart = mAppsView.getTranslationY();
@@ -381,23 +385,25 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         animationOut.play(driftAndAlpha);
 
         animationOut.addListener(new AnimatorListenerAdapter() {
-             boolean canceled = false;
-             @Override
-             public void onAnimationCancel(Animator animation) {
-                 canceled = true;
-                 setProgress(mShiftCurrent);
-             }
+            boolean canceled = false;
 
-             @Override
-             public void onAnimationEnd(Animator animation) {
-                 if (canceled) {
-                     return;
-                 } else {
-                     finishPullDown();
-                     cleanUpAnimation();
-                     mDetector.finishedScrolling();
-                 }
-             }});
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                canceled = true;
+                setProgress(mShiftCurrent);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (canceled) {
+                    return;
+                } else {
+                    finishPullDown();
+                    cleanUpAnimation();
+                    mDetector.finishedScrolling();
+                }
+            }
+        });
         mCurrentAnimation = animationOut;
         if (start) {
             mCurrentAnimation.start();
@@ -438,7 +444,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     @Override
     public void onLayoutChange(View v, int left, int top, int right, int bottom,
-            int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                               int oldLeft, int oldTop, int oldRight, int oldBottom) {
         float prevShiftRatio = mShiftCurrent / mShiftRange;
         if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
             mShiftRange = top;
