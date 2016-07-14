@@ -10,6 +10,7 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -113,7 +114,11 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
                     final ShortcutInfoCompat shortcut = shortcuts.get(i);
                     final ShortcutInfo launcherShortcutInfo = ShortcutInfo
                             .fromDeepShortcutInfo(shortcut, mLauncher);
-                    uiHandler.post(new UpdateShortcutChild(i, launcherShortcutInfo));
+                    CharSequence label = shortcut.getLongLabel();
+                    if (TextUtils.isEmpty(label)) {
+                        label = shortcut.getShortLabel();
+                    }
+                    uiHandler.post(new UpdateShortcutChild(i, launcherShortcutInfo, label));
                 }
             }
         });
@@ -123,10 +128,13 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
     private class UpdateShortcutChild implements Runnable {
         private int mShortcutChildIndex;
         private ShortcutInfo mShortcutChildInfo;
+        private CharSequence mLabel;
 
-        public UpdateShortcutChild(int shortcutChildIndex, ShortcutInfo shortcutChildInfo) {
+        public UpdateShortcutChild(int shortcutChildIndex, ShortcutInfo shortcutChildInfo,
+                CharSequence label) {
             mShortcutChildIndex = shortcutChildIndex;
             mShortcutChildInfo = shortcutChildInfo;
+            mLabel = label;
         }
 
         @Override
@@ -134,6 +142,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
             DeepShortcutView shortcutView = (DeepShortcutView) getChildAt(mShortcutChildIndex);
             shortcutView.applyFromShortcutInfo(mShortcutChildInfo,
                     LauncherAppState.getInstance().getIconCache());
+            shortcutView.setText(mLabel);
             shortcutView.setOnClickListener(mLauncher);
             shortcutView.setOnLongClickListener(DeepShortcutsContainer.this);
             shortcutView.setOnTouchListener(DeepShortcutsContainer.this);
