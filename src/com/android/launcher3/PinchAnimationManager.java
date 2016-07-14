@@ -149,11 +149,11 @@ public class PinchAnimationManager {
             if (startState == OVERVIEW) {
                 animateOverviewPanelButtons(goingTowards == OVERVIEW);
             } else if (startState == NORMAL) {
-                animateHotseatAndPageIndicator(goingTowards == NORMAL);
+                animateHotseatAndQsb(goingTowards == NORMAL);
             }
         } else if (threshold == PinchThresholdManager.THRESHOLD_TWO) {
             if (startState == OVERVIEW) {
-                animateHotseatAndPageIndicator(goingTowards == NORMAL);
+                animateHotseatAndQsb(goingTowards == NORMAL);
                 animateScrim(goingTowards == OVERVIEW);
             } else if (startState == NORMAL) {
                 animateOverviewPanelButtons(goingTowards == OVERVIEW);
@@ -188,7 +188,7 @@ public class PinchAnimationManager {
         }
     }
 
-    private void animateHotseatAndPageIndicator(boolean show) {
+    private void animateHotseatAndQsb(boolean show) {
         startAnimator(INDEX_HOTSEAT,
                 mWorkspace.createHotseatAlphaAnimator(show ? 1 : 0), THRESHOLD_ANIM_DURATION);
         startAnimator(INDEX_QSB, mWorkspace.mQsbAlphaController.animateAlphaAtIndex(

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 The Android Open Source Project
+ * Copyright (C) 2016 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,6 +53,10 @@ public class MultiStateAlphaController {
                 : (mAm.isEnabled() ? View.GONE : View.INVISIBLE));
     }
 
+    /**
+     * Returns an animator which changes the alpha at the index {@param index}
+     * to {@param finalAlpha}. Alphas at other index are not affected.
+     */
     public Animator animateAlphaAtIndex(float finalAlpha, final int index) {
         if (Float.compare(finalAlpha, mAlphas[index]) == 0) {
             // Return a dummy animator to avoid null checks.
