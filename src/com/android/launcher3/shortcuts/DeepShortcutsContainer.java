@@ -38,6 +38,8 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.UiThreadCircularReveal;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -64,6 +66,26 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
     private Point mIconLastTouchPos = new Point();
     private boolean mIsLeftAligned;
     private boolean mIsAboveIcon;
+
+    /**
+     * Sorts shortcuts in rank order, with manifest shortcuts coming before dynamic shortcuts.
+     */
+    private static final Comparator<ShortcutInfoCompat> sShortcutsComparator
+            = new Comparator<ShortcutInfoCompat>() {
+        @Override
+        public int compare(ShortcutInfoCompat a, ShortcutInfoCompat b) {
+            if (a.isDeclaredInManifest() && !b.isDeclaredInManifest()) {
+                return -1;
+            }
+            if (!a.isDeclaredInManifest() && b.isDeclaredInManifest()) {
+                return 1;
+            }
+            return Integer.compare(a.getRank(), b.getRank());
+        }
+    };
+
+    private static final Comparator<ShortcutInfoCompat> sShortcutsComparatorReversed
+            = Collections.reverseOrder(sShortcutsComparator);
 
     public DeepShortcutsContainer(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -109,7 +131,11 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
             @Override
             public void run() {
                 final List<ShortcutInfoCompat> shortcuts = mDeepShortcutsManager
-                        .queryForAllAppShortcuts(activity, ids, user);
+                        .queryForShortcutsContainer(activity, ids, user);
+                // We want the lowest rank to be closest to the user's finger.
+                final Comparator<ShortcutInfoCompat> shortcutsComparator = mIsAboveIcon ?
+                        sShortcutsComparatorReversed : sShortcutsComparator;
+                Collections.sort(shortcuts, shortcutsComparator);
                 for (int i = 0; i < shortcuts.size(); i++) {
                     final ShortcutInfoCompat shortcut = shortcuts.get(i);
                     final ShortcutInfo launcherShortcutInfo = ShortcutInfo
