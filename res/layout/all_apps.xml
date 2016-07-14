@@ -31,7 +31,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:elevation="2dp"
         android:focusable="false"
         android:visibility="invisible" />
 
@@ -41,7 +40,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:elevation="15dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:saveEnabled="false"
