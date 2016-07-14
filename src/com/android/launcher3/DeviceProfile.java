@@ -296,7 +296,7 @@ public class DeviceProfile {
     }
 
     public Point getTotalWorkspacePadding() {
-        Rect padding = getWorkspacePadding();
+        Rect padding = getWorkspacePadding(null);
         return new Point(padding.left + padding.right, padding.top + padding.bottom);
     }
 
@@ -306,8 +306,8 @@ public class DeviceProfile {
      * this value is not reliable.
      * Use {@link #getTotalWorkspacePadding()} instead.
      */
-    public Rect getWorkspacePadding() {
-        Rect padding = new Rect();
+    public Rect getWorkspacePadding(Rect recycle) {
+        Rect padding = recycle == null ? new Rect() : recycle;
         if (isVerticalBarLayout()) {
             // in case of isVerticalBarLayout, the hotseat is always on the right and the drop
             // target bar is on the left, independent of the layout direction.
@@ -348,7 +348,7 @@ public class DeviceProfile {
             // In portrait, we want the pages spaced such that there is no
             // overhang of the previous / next page into the current page viewport.
             // We assume symmetrical padding in portrait mode.
-            return Math.max(defaultPageSpacingPx, 2 * getWorkspacePadding().left);
+            return Math.max(defaultPageSpacingPx, 2 * getWorkspacePadding(null).left);
         }
     }
 
@@ -405,12 +405,14 @@ public class DeviceProfile {
 
         // Layout the workspace
         PagedView workspace = (PagedView) launcher.findViewById(R.id.workspace);
-        lp = (FrameLayout.LayoutParams) workspace.getLayoutParams();
-        lp.gravity = Gravity.CENTER;
-        Rect padding = getWorkspacePadding();
-        workspace.setLayoutParams(lp);
+        Rect padding = getWorkspacePadding(null);
         workspace.setPadding(padding.left, padding.top, padding.right, padding.bottom);
         workspace.setPageSpacing(getWorkspacePageSpacing());
+
+        View qsbContainer = launcher.getQsbContainer();
+        lp = (FrameLayout.LayoutParams) qsbContainer.getLayoutParams();
+        lp.topMargin = padding.top;
+        qsbContainer.setLayoutParams(lp);
 
         // Layout the hotseat
         View hotseat = launcher.findViewById(R.id.hotseat);

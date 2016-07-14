@@ -74,6 +74,9 @@
     <!-- View ID to use for QSB widget -->
     <item type="id" name="qsb_widget" />
 
+    <!-- View ID to use for blocked area on the first screen -->
+    <item type="id" name="workspace_blocked_row" />
+
     <!-- View ID used by cell layout to jail its content -->
     <item type="id" name="cell_layout_jail_id" />
 

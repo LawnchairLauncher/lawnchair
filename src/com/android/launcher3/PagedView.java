@@ -145,9 +145,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     protected int mActivePointerId = INVALID_POINTER;
 
-    // If true, modify alpha of neighboring pages as user scrolls left/right
-    protected boolean mFadeInAdjacentScreens = false;
-
     protected boolean mIsPageMoving = false;
 
     protected boolean mWasInOverscroll = false;
@@ -756,10 +753,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
                     childWidth = getViewportWidth() - horizontalPadding
                             - mInsets.left - mInsets.right;
-
-                    if (lp.matchStartEdge) {
-                        childWidth += getPaddingStart();
-                    }
                     childHeight = getViewportHeight() - verticalPadding
                             - mInsets.top - mInsets.bottom;
                     mNormalChildHeight = childHeight;
@@ -809,8 +802,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         LayoutParams lp = (LayoutParams) getChildAt(startIndex).getLayoutParams();
         LayoutParams nextLp;
 
-        int childLeft = offsetX +
-                ((lp.isFullScreenPage || (!mIsRtl && lp.matchStartEdge)) ? 0 : getPaddingLeft());
+        int childLeft = offsetX + (lp.isFullScreenPage ? 0 : getPaddingLeft());
         if (mPageScrolls == null || childCount != mChildCountOnLastLayout) {
             mPageScrolls = new int[childCount];
         }
@@ -834,8 +826,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 child.layout(childLeft, childTop,
                         childLeft + child.getMeasuredWidth(), childTop + childHeight);
 
-                int scrollOffsetLeft = (lp.isFullScreenPage || (!mIsRtl & lp.matchStartEdge)) ?
-                        0 : getPaddingLeft();
+                int scrollOffsetLeft = lp.isFullScreenPage ? 0 : getPaddingLeft();
                 mPageScrolls[i] = childLeft - scrollOffsetLeft - offsetX;
 
                 int pageGap = mPageSpacing;

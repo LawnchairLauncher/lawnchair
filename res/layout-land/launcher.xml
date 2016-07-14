@@ -60,6 +60,12 @@
             android:layout_height="@dimen/dynamic_grid_page_indicator_height"
             android:layout_gravity="bottom|left"/>
 
+        <!-- A place holder view instead of the QSB in transposed layout -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="10dp"
+            android:id="@+id/workspace_blocked_row" />
+
         <include layout="@layout/widgets_view"
             android:id="@+id/widgets_view"
             android:layout_width="match_parent"
@@ -71,6 +77,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible" />
+
     </com.android.launcher3.dragndrop.DragLayer>
 
 </com.android.launcher3.LauncherRootView>

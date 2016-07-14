@@ -37,6 +37,7 @@
             android:id="@+id/workspace"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             launcher:pageIndicator="@+id/page_indicator">
         </com.android.launcher3.Workspace>
 
@@ -60,6 +61,10 @@
         <include
             android:id="@+id/drop_target_bar"
             layout="@layout/drop_target_bar_horz" />
+
+        <include
+            layout="@layout/qsb_container"
+            android:id="@+id/qsb_container" />
 
         <include layout="@layout/widgets_view"
             android:id="@+id/widgets_view"
