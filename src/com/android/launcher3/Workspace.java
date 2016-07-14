@@ -578,11 +578,10 @@ public class Workspace extends PagedView
         if (qsb == null) {
             // In transposed layout, we add the QSB in the Grid. As workspace does not touch the
             // edges, we do not need a full width QSB.
-            if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
-                qsb = mLauncher.getLayoutInflater().inflate(R.layout.qsb_container, firstPage, false);
-            } else {
-                qsb = new Space(getContext());
-            }
+            qsb = mLauncher.getLayoutInflater().inflate(
+                    mLauncher.getDeviceProfile().isVerticalBarLayout()
+                            ? R.layout.qsb_container : R.layout.qsb_blocker_view,
+                    firstPage, false);
         }
 
         CellLayout.LayoutParams lp = new CellLayout.LayoutParams(0, 0, firstPage.getCountX(), 1);
@@ -2147,7 +2146,7 @@ public class Workspace extends PagedView
         return workspaceAnim;
     }
 
-    State getState() {
+    public State getState() {
         return mState;
     }
 
