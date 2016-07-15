@@ -329,7 +329,11 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                         searchInputAnimator.end();
                     }
 
-                    searchInputAnimator.setFloatValues(searchHint.getLeft(), 0);
+                    if (Utilities.isRtl(getContext().getResources())) {
+                        searchInputAnimator.setFloatValues(-searchHint.getLeft(), 0);
+                    } else {
+                        searchInputAnimator.setFloatValues(searchHint.getLeft(), 0);
+                    }
                     searchInputAnimator.start();
                 } else {
                     searchHint.setVisibility(View.VISIBLE);
