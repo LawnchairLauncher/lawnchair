@@ -10,7 +10,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.graphics.ColorUtils;
@@ -61,8 +60,6 @@ public class PageIndicatorLineCaret extends PageIndicator {
     private int mTotalScroll;
     private Paint mLinePaint;
     private Launcher mLauncher;
-    // all apps pull up handle drawable.
-    private final Drawable caretDrawable;
     private final int mLineHeight;
     private final Rect mTouchHitRect = new Rect();
     private final int mTouchExtensionHeight;
@@ -134,7 +131,7 @@ public class PageIndicatorLineCaret extends PageIndicator {
         setOnClickListener(mLauncher);
         setOnFocusChangeListener(mLauncher.mFocusHandler);
         Resources res = context.getResources();
-        caretDrawable = res.getDrawable(R.drawable.ic_allapps_caret);
+        setCaretDrawable(new CaretDrawable(context));
         mLineHeight = res.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_line_height);
         mTouchExtensionHeight = res.getDimensionPixelSize(
                 R.dimen.dynamic_grid_page_indicator_extra_touch_height);
@@ -145,7 +142,7 @@ public class PageIndicatorLineCaret extends PageIndicator {
         super.onLayout(changed, left, top, right, bottom);
         int size = bottom - top;
         int l = (right - left) / 2 - size / 2;
-        caretDrawable.setBounds(l, 0, l+ size, size);
+        getCaretDrawable().setBounds(l, 0, l + size, size);
 
         // The touch area is expanded below this view by #mTouchExtensionHeight
         // which extends to the top of the hotseat.
@@ -159,7 +156,7 @@ public class PageIndicatorLineCaret extends PageIndicator {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        caretDrawable.draw(canvas);
+        getCaretDrawable().draw(canvas);
         if (mTotalScroll == 0 || mNumPagesFloat == 0) {
             return;
         }

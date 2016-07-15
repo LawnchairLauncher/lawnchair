@@ -1532,7 +1532,6 @@ public class Workspace extends PagedView
         float finalAlpha = mHotseatAlpha[0] * mHotseatAlpha[1] * mHotseatAlpha[2];
 
         mLauncher.getHotseat().setAlpha(finalAlpha);
-        mPageIndicator.setAlpha(finalAlpha);
     }
 
     public ValueAnimator createHotseatAlphaAnimator(float finalValue) {

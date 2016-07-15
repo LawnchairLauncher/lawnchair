@@ -677,7 +677,7 @@ public class LauncherStateTransitionAnimation {
         if (!animated || !initialized) {
             if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP &&
                     fromWorkspaceState == Workspace.State.NORMAL_HIDDEN) {
-                mAllAppsController.finishPullDown();
+                mAllAppsController.finishPullDown(false);
             }
             fromView.setVisibility(View.GONE);
             dispatchOnLauncherTransitionPrepare(fromView, animated, multiplePagesVisible);

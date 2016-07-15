@@ -58,7 +58,7 @@
     <dimen name="container_min_margin">8dp</dimen>
     <dimen name="container_max_width">0dp</dimen>
 
-    <!-- All Apps -->
+<!-- All Apps -->
     <dimen name="all_apps_button_scale_down">0dp</dimen>
     <dimen name="all_apps_grid_view_start_margin">0dp</dimen>
     <dimen name="all_apps_grid_section_y_offset">8dp</dimen>
@@ -74,8 +74,10 @@
     <dimen name="all_apps_empty_search_bg_top_offset">144dp</dimen>
     <dimen name="all_apps_background_canvas_width">700dp</dimen>
     <dimen name="all_apps_background_canvas_height">475dp</dimen>
+    <dimen name="all_apps_caret_stroke_width">2dp</dimen>
+    <dimen name="all_apps_caret_inset">8dp</dimen>
 
-    <!-- Search bar in All Apps -->
+<!-- Search bar in All Apps -->
     <dimen name="all_apps_header_max_elevation">3dp</dimen>
     <dimen name="all_apps_header_scroll_to_elevation">16dp</dimen>
     <dimen name="all_apps_header_shadow_height">6dp</dimen>
