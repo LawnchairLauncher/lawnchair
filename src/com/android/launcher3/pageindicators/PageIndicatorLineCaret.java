@@ -167,7 +167,7 @@ public class PageIndicatorLineCaret extends PageIndicator {
         int lineWidth = (int) (availableWidth / mNumPagesFloat);
         int lineLeft = (int) (progress * (availableWidth - lineWidth));
         int lineRight = lineLeft + lineWidth;
-        canvas.drawRect(lineLeft, canvas.getHeight() + mLineHeight, lineRight, canvas.getHeight(),
+        canvas.drawRect(lineLeft, canvas.getHeight() - mLineHeight, lineRight, canvas.getHeight(),
                 mLinePaint);
     }
 
