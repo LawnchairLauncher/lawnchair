@@ -888,8 +888,8 @@ public class LauncherStateTransitionAnimation {
             mAllAppsController.animateToWorkspace(animation, revealDuration, false);
 
             // Dispatch the prepare transition signal
-            dispatchOnLauncherTransitionPrepare(fromView, animated, false);
-            dispatchOnLauncherTransitionPrepare(toView, animated, false);
+            dispatchOnLauncherTransitionPrepare(fromView, animated, multiplePagesVisible);
+            dispatchOnLauncherTransitionPrepare(toView, animated, multiplePagesVisible);
 
             final AnimatorSet stateAnimation = animation;
             final Runnable startAnimRunnable = new Runnable() {
