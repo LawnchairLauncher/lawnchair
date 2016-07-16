@@ -1,6 +1,24 @@
+/*
+ * Copyright (C) 2016 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.android.launcher3.shortcuts;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
@@ -12,6 +30,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -22,9 +41,9 @@ import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
-import com.android.launcher3.LogDecelerateInterpolator;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
@@ -36,7 +55,6 @@ import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
-import com.android.launcher3.util.UiThreadCircularReveal;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -66,6 +84,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
     private Point mIconLastTouchPos = new Point();
     private boolean mIsLeftAligned;
     private boolean mIsAboveIcon;
+    private boolean mIsAnimatingOpen;
 
     /**
      * Sorts shortcuts in rank order, with manifest shortcuts coming before dynamic shortcuts.
@@ -107,11 +126,12 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
     public void populateAndShow(final BubbleTextView originalIcon, final List<String> ids) {
         // Add dummy views first, and populate with real shortcut info when ready.
+        final int spacing = getResources().getDimensionPixelSize(R.dimen.deep_shortcuts_spacing);
+        final LayoutInflater inflator = mLauncher.getLayoutInflater();
         for (int i = 0; i < ids.size(); i++) {
-            final DeepShortcutView shortcut = (DeepShortcutView)
-                    mLauncher.getLayoutInflater().inflate(R.layout.deep_shortcut, this, false);
+            final View shortcut = inflator.inflate(R.layout.deep_shortcut, this, false);
             if (i < ids.size() - 1) {
-                ((LayoutParams) shortcut.getLayoutParams()).bottomMargin = shortcut.getSpacing();
+                ((LayoutParams) shortcut.getLayoutParams()).bottomMargin = spacing;
             }
             addView(shortcut);
         }
@@ -165,7 +185,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
         @Override
         public void run() {
-            DeepShortcutView shortcutView = (DeepShortcutView) getChildAt(mShortcutChildIndex);
+            BubbleTextView shortcutView = getShortcutAt(mShortcutChildIndex).getBubbleText();
             shortcutView.applyFromShortcutInfo(mShortcutChildInfo,
                     LauncherAppState.getInstance().getIconCache());
             shortcutView.setText(mLabel);
@@ -175,19 +195,36 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         }
     }
 
-    // TODO: update this animation
+    private DeepShortcutView getShortcutAt(int index) {
+        return (DeepShortcutView) getChildAt(index);
+    }
+
     private void animateOpen(BubbleTextView originalIcon) {
         orientAboutIcon(originalIcon);
 
         setVisibility(View.VISIBLE);
-        int rx = (int) Math.max(Math.max(getMeasuredWidth() - getPivotX(), 0), getPivotX());
-        int ry = (int) Math.max(Math.max(getMeasuredHeight() - getPivotY(), 0), getPivotY());
-        float radius = (float) Math.hypot(rx, ry);
-        Animator reveal = UiThreadCircularReveal.createCircularReveal(this, (int) getPivotX(),
-                (int) getPivotY(), 0, radius);
-        reveal.setDuration(getResources().getInteger(R.integer.config_materialFolderExpandDuration));
-        reveal.setInterpolator(new LogDecelerateInterpolator(100, 0));
-        reveal.start();
+
+        final AnimatorSet shortcutAnims = LauncherAnimUtils.createAnimatorSet();
+        final int numShortcuts = getChildCount();
+        final int arrowOffset = getResources().getDimensionPixelSize(
+                R.dimen.deep_shortcuts_arrow_horizontal_offset);
+        final int pivotX = mIsLeftAligned ? arrowOffset : getMeasuredWidth() - arrowOffset;
+        final int pivotY = getShortcutAt(0).getMeasuredHeight() / 2;
+        for (int i = 0; i < numShortcuts; i++) {
+            DeepShortcutView deepShortcutView = getShortcutAt(i);
+            deepShortcutView.setPivotX(pivotX);
+            deepShortcutView.setPivotY(pivotY);
+            int animationIndex = mIsAboveIcon ? numShortcuts - i - 1 : i;
+            shortcutAnims.play(deepShortcutView.createOpenAnimation(animationIndex, mIsAboveIcon));
+        }
+        shortcutAnims.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mIsAnimatingOpen = false;
+            }
+        });
+        mIsAnimatingOpen = true;
+        shortcutAnims.start();
     }
 
     /**
@@ -202,7 +239,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
      * So we always align left if there is enough horizontal space
      * and align above if there is enough vertical space.
      *
-     * TODO: draw pointer based on orientation.
+     * TODO: draw arrow based on orientation.
      */
     private void orientAboutIcon(BubbleTextView icon) {
         int width = getMeasuredWidth();
@@ -224,9 +261,6 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         if (!mIsAboveIcon) {
             y = mTempRect.bottom;
         }
-
-        setPivotX(width / 2);
-        setPivotY(height / 2);
 
         // Insets are added later, so subtract them now.
         y -= insets.top;
@@ -308,8 +342,8 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
             } else {
                 // Determine whether touch is over a shortcut.
                 boolean hoveringOverShortcut = false;
-                for (int i = 0; i < childCount; i++) {
-                    DeepShortcutView shortcut = (DeepShortcutView) getChildAt(i);
+                for (int i = 0; i < childCount && !mIsAnimatingOpen; i++) {
+                    DeepShortcutView shortcut = getShortcutAt(i);
                     if (shortcut.updateHoverState(containerContainsTouch, hoveringOverShortcut, y)) {
                         hoveringOverShortcut = true;
                     }
@@ -333,9 +367,9 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
             cleanupDeferredDrag();
             // Launch a shortcut if user was hovering over it.
             for (int i = 0; i < childCount; i++) {
-                DeepShortcutView shortcut = (DeepShortcutView) getChildAt(i);
+                DeepShortcutView shortcut = getShortcutAt(i);
                 if (shortcut.isHoveringOver()) {
-                    shortcut.performClick();
+                    shortcut.getBubbleText().performClick();
                     break;
                 }
             }

@@ -78,10 +78,7 @@
     </style>
 
     <style name="Icon.DeepShortcut">
-        <item name="android:background">@drawable/bg_white_pill</item>
         <item name="android:gravity">start|center_vertical</item>
-        <item name="android:minWidth">@dimen/deep_shortcuts_width</item>
-        <item name="android:maxWidth">@dimen/deep_shortcuts_width</item>
         <item name="android:elevation">@dimen/deep_shortcuts_elevation</item>
         <item name="android:paddingLeft">7dp</item>
         <item name="android:drawablePadding">12dp</item>
