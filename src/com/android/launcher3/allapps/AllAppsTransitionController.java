@@ -3,7 +3,9 @@ package com.android.launcher3.allapps;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -43,14 +45,14 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private final Interpolator mDecelInterpolator = new DecelerateInterpolator(1f);
 
     private static final float ANIMATION_DURATION = 1200;
-    public static final float ALL_APPS_FINAL_ALPHA = .9f;
 
     private static final float PARALLAX_COEFFICIENT = .125f;
 
     private AllAppsContainerView mAppsView;
+    private int mAllAppsBackgroundColor;
     private Workspace mWorkspace;
     private Hotseat mHotseat;
-    private float mHotseatBackgroundAlpha;
+    private int mHotseatBackgroundColor;
 
     private ObjectAnimator mCaretAnimator;
     private final long mCaretAnimationDuration;
@@ -60,6 +62,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     private final Launcher mLauncher;
     private final VerticalPullDetector mDetector;
+    private final ArgbEvaluator mEvaluator;
 
     // Animation in this class is controlled by a single variable {@link mShiftCurrent}.
     // Visually, it represents top y coordinate of the all apps container. Using the
@@ -95,6 +98,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                 R.integer.config_caretAnimationDuration);
         mCaretInterpolator = AnimationUtils.loadInterpolator(launcher,
                 R.interpolator.caret_animation_interpolator);
+        mEvaluator = new ArgbEvaluator();
+        mAllAppsBackgroundColor = launcher.getColor(R.color.all_apps_container_color);
     }
 
     @Override
@@ -248,17 +253,15 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             mStatusBarHeight = mLauncher.getDragLayer().getInsets().top;
             mHotseat.setVisibility(View.VISIBLE);
             mHotseat.bringToFront();
-
             if (!mLauncher.isAllAppsVisible()) {
                 mLauncher.tryAndUpdatePredictedApps();
-
-                mHotseatBackgroundAlpha = mHotseat.getBackgroundDrawableAlpha() / 255f;
+                mHotseatBackgroundColor = mHotseat.getBackgroundDrawableColor();
                 mHotseat.setBackgroundTransparent(true /* transparent */);
                 mAppsView.setVisibility(View.VISIBLE);
                 mAppsView.getContentView().setVisibility(View.VISIBLE);
                 mAppsView.getContentView().setBackground(null);
                 mAppsView.getRevealView().setVisibility(View.VISIBLE);
-                mAppsView.getRevealView().setAlpha(mHotseatBackgroundAlpha);
+                mAppsView.setRevealDrawableColor(mHotseatBackgroundColor);
             }
         } else {
             setProgress(mShiftCurrent);
@@ -297,8 +300,9 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         float alpha = calcAlphaAllApps(progress);
         float workspaceHotseatAlpha = 1 - alpha;
 
-        mAppsView.getRevealView().setAlpha(Math.min(ALL_APPS_FINAL_ALPHA, Math.max(mHotseatBackgroundAlpha,
-                mDecelInterpolator.getInterpolation(alpha))));
+        int color = (Integer) mEvaluator.evaluate(mDecelInterpolator.getInterpolation(alpha),
+                mHotseatBackgroundColor, mAllAppsBackgroundColor);
+        mAppsView.setRevealDrawableColor(color);
         mAppsView.getContentView().setAlpha(alpha);
         mAppsView.setTranslationY(progress);
         mWorkspace.setWorkspaceYTranslationAndAlpha(

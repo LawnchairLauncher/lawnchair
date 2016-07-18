@@ -366,9 +366,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         // TODO(hyunyoungs): clean up setting the content and the reveal view.
         if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
-            getContentView().setBackground(null);
             getRevealView().setVisibility(View.VISIBLE);
-            getRevealView().setAlpha(AllAppsTransitionController.ALL_APPS_FINAL_ALPHA);
         }
     }
 

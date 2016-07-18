@@ -36,7 +36,8 @@ public abstract class BaseContainerView extends FrameLayout {
 
     protected final int mHorizontalPadding;
 
-    private final Drawable mRevealDrawable;
+    private final InsetDrawable mRevealDrawable;
+    private final ColorDrawable mDrawable;
 
     private View mRevealView;
     private View mContent;
@@ -63,14 +64,16 @@ public abstract class BaseContainerView extends FrameLayout {
         }
 
         if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && this instanceof AllAppsContainerView) {
-            mRevealDrawable = new InsetDrawable(new ColorDrawable(Color.WHITE), mHorizontalPadding,
-                    0, mHorizontalPadding, 0);
+            mDrawable = new ColorDrawable();
+            mRevealDrawable = new InsetDrawable(mDrawable,
+                    mHorizontalPadding, 0, mHorizontalPadding, 0);
         } else {
             TypedArray a = context.obtainStyledAttributes(attrs,
                     R.styleable.BaseContainerView, defStyleAttr, 0);
             mRevealDrawable = new InsetDrawable(
                     a.getDrawable(R.styleable.BaseContainerView_revealBackground),
                     mHorizontalPadding, 0, mHorizontalPadding, 0);
+            mDrawable = null;
             a.recycle();
         }
     }
@@ -82,8 +85,12 @@ public abstract class BaseContainerView extends FrameLayout {
         mContent = findViewById(R.id.main_content);
         mRevealView = findViewById(R.id.reveal_view);
 
-        mRevealView.setBackground(mRevealDrawable.getConstantState().newDrawable());
-        mContent.setBackground(mRevealDrawable);
+        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && this instanceof AllAppsContainerView) {
+            mRevealView.setBackground(mRevealDrawable);
+        } else {
+            mRevealView.setBackground(mRevealDrawable.getConstantState().newDrawable());
+            mContent.setBackground(mRevealDrawable);
+        }
 
         // We let the content have a intent background, but still have full width.
         // This allows the scroll bar to be used responsive outside the background bounds as well.
@@ -96,5 +103,9 @@ public abstract class BaseContainerView extends FrameLayout {
 
     public final View getRevealView() {
         return mRevealView;
+    }
+
+    public void setRevealDrawableColor(int color) {
+        mDrawable.setColor(color);
     }
 }
