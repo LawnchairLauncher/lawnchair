@@ -23,6 +23,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -67,7 +68,9 @@ public class Hotseat extends FrameLayout
         super(context, attrs, defStyle);
         mLauncher = (Launcher) context;
         mHasVerticalHotseat = mLauncher.getDeviceProfile().isVerticalBarLayout();
-        mBackground = new ColorDrawable();
+        mBackgroundColor = ColorUtils.setAlphaComponent(
+                context.getColor(R.color.all_apps_container_color), 0);
+        mBackground = new ColorDrawable(mBackgroundColor);
         setBackground(mBackground);
     }
 
@@ -227,7 +230,7 @@ public class Hotseat extends FrameLayout
         }
     }
 
-    public int getBackgroundDrawableAlpha() {
-        return Color.alpha(mBackgroundColor);
+    public int getBackgroundDrawableColor() {
+        return mBackgroundColor;
     }
 }
