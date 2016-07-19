@@ -19,6 +19,7 @@ package com.android.launcher3.util;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 
 import com.android.launcher3.LauncherAppState;
@@ -74,8 +75,10 @@ public class IconNormalizer {
      *
      * This closeness is used to determine the ratio of hull area to the full icon size.
      * Refer {@link #MAX_CIRCLE_AREA_FACTOR} and {@link #MAX_SQUARE_AREA_FACTOR}
+     *
+     * @param outBounds optional rect to receive the fraction distance from each edge.
      */
-    public synchronized float getScale(Drawable d) {
+    public synchronized float getScale(Drawable d, RectF outBounds) {
         int width = d.getIntrinsicWidth();
         int height = d.getIntrinsicHeight();
         if (width <= 0 || height <= 0) {
@@ -166,6 +169,14 @@ public class IconNormalizer {
             scaleRequired = MAX_CIRCLE_AREA_FACTOR;
         } else {
             scaleRequired = MAX_SQUARE_AREA_FACTOR + LINEAR_SCALE_SLOPE * (1  - hullByRect);
+        }
+
+        if (outBounds != null) {
+            outBounds.left = ((float) leftX) / width;
+            outBounds.right = 1 - ((float) rightX) / width;
+
+            outBounds.top = ((float) topY) / height;
+            outBounds.bottom = 1 - ((float) bottomY) / height;
         }
 
         float areaScale = area / (width * height);
