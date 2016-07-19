@@ -51,8 +51,7 @@
     <string name="gadget_setup_text" msgid="8274003207686040488">"সেটআপ"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"এটি একটি সিস্টেম অ্যাপ্লিকেশান এবং আনইনস্টল করা যাবে না৷"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"নামবিহীন ফোল্ডার"</string>
-    <!-- no translation found for disabled_app_label (6673129024321402780) -->
-    <skip />
+    <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> অক্ষম করা হয়েছে"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"%2$dটির মধ্যে %1$dটি পৃষ্ঠা"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"%2$dটির %1$d নম্বর হোম স্ক্রীন"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"নতুন হোম স্ক্রীনের পৃষ্ঠা"</string>
