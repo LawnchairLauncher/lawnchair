@@ -53,6 +53,10 @@ public class CaretDrawable extends Drawable {
 
     @Override
     public void draw(Canvas canvas) {
+        if (Float.compare(mPaint.getAlpha(), 0f) == 0) {
+            return;
+        }
+
         final float width = getBounds().width();
         final float height = getBounds().height();
         final float left = getBounds().left;
@@ -78,12 +82,13 @@ public class CaretDrawable extends Drawable {
 
     @Override
     public int getOpacity() {
-        return PixelFormat.OPAQUE;
+        return PixelFormat.TRANSLUCENT;
     }
 
     @Override
     public void setAlpha(int alpha) {
-        // no-op
+        mPaint.setAlpha(alpha);
+        invalidateSelf();
     }
 
     @Override
