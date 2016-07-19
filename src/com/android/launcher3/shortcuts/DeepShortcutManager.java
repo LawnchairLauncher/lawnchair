@@ -81,11 +81,13 @@ public class DeepShortcutManager {
     }
 
     /**
-     * Gets all the shortcuts associated with the given package and user.
+     * Gets all the manifest and dynamic shortcuts associated with the given package and user,
+     * to be displayed in the shortcuts container on long press.
      */
-    public List<ShortcutInfoCompat> queryForAllAppShortcuts(ComponentName activity,
+    public List<ShortcutInfoCompat> queryForShortcutsContainer(ComponentName activity,
             List<String> ids, UserHandleCompat user) {
-        return query(FLAG_GET_ALL, activity.getPackageName(), activity, ids, user);
+        return query(FLAG_MATCH_MANIFEST | FLAG_MATCH_DYNAMIC,
+                activity.getPackageName(), activity, ids, user);
     }
 
     /**

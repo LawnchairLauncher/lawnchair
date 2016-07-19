@@ -97,6 +97,14 @@ public class ShortcutInfoCompat {
         return mShortcutInfo.isPinned();
     }
 
+    public boolean isDeclaredInManifest() {
+        return mShortcutInfo.isDeclaredInManifest();
+    }
+
+    public int getRank() {
+        return mShortcutInfo.getRank();
+    }
+
     @Override
     public String toString() {
         return mShortcutInfo.toString();
