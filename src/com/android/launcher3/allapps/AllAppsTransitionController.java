@@ -298,6 +298,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mShiftCurrent = progress;
         float alpha = calcAlphaAllApps(progress);
         float workspaceHotseatAlpha = 1 - alpha;
+        float interpolation = mAccelInterpolator.getInterpolation(workspaceHotseatAlpha);
 
         int color = (Integer) mEvaluator.evaluate(mDecelInterpolator.getInterpolation(alpha),
                 mHotseatBackgroundColor, mAllAppsBackgroundColor);
@@ -306,14 +307,13 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mAppsView.setTranslationY(progress);
         mWorkspace.setWorkspaceYTranslationAndAlpha(
                 PARALLAX_COEFFICIENT * (-mShiftRange + progress),
-                mAccelInterpolator.getInterpolation(workspaceHotseatAlpha));
-        if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
-            mWorkspace.setHotseatTranslationAndAlpha(Direction.Y, -mShiftRange + progress,
-                    mAccelInterpolator.getInterpolation(workspaceHotseatAlpha));
+                interpolation);
+        if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+            mWorkspace.setHotseatTranslationAndAlpha(Direction.Y,
+                    PARALLAX_COEFFICIENT * (-mShiftRange + progress), interpolation);
         } else {
             mWorkspace.setHotseatTranslationAndAlpha(Direction.Y,
-                    PARALLAX_COEFFICIENT * (-mShiftRange + progress),
-                    mAccelInterpolator.getInterpolation(workspaceHotseatAlpha));
+                    -mShiftRange + progress, interpolation);
         }
     }
 

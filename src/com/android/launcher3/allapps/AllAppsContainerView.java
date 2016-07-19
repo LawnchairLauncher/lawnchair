@@ -347,12 +347,10 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         int widthPx = MeasureSpec.getSize(widthMeasureSpec);
         int heightPx = MeasureSpec.getSize(heightMeasureSpec);
         updatePaddingsAndMargins(widthPx, heightPx);
-        mContentBounds.set(mHorizontalPadding, 0, widthPx - mHorizontalPadding, heightPx);
+        mContentBounds.set(mContainerPaddingLeft, 0, widthPx - mContainerPaddingRight, heightPx);
 
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        int availableWidth = (!mContentBounds.isEmpty() ? mContentBounds.width() : widthPx)
-                - 2 * mAppsRecyclerView.getMaxScrollbarWidth();
-        grid.updateAppsViewNumCols(getResources(), availableWidth);
+        grid.updateAppsViewNumCols();
         if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
             if (mNumAppsPerRow != grid.inv.numColumns ||
                     mNumPredictedAppsPerRow != grid.inv.numColumns) {
@@ -368,9 +366,9 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                             getResources().getDimensionPixelSize(
                                     R.dimen.container_fastscroll_thumb_max_width);
                     mSearchContainer.setPadding(
-                            rvPadding - mHorizontalPadding + thumbMaxWidth,
+                            rvPadding - mContainerPaddingLeft + thumbMaxWidth,
                             mSearchContainer.getPaddingTop(),
-                            rvPadding - mHorizontalPadding + thumbMaxWidth,
+                            rvPadding - mContainerPaddingRight + thumbMaxWidth,
                             mSearchContainer.getPaddingBottom());
                 }
             }
@@ -383,7 +381,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         // Update the number of items in the grid before we measure the view
         // TODO: mSectionNamesMargin is currently 0, but also account for it,
         // if it's enabled in the future.
-        grid.updateAppsViewNumCols(getResources(), availableWidth);
+        grid.updateAppsViewNumCols();
         if (mNumAppsPerRow != grid.allAppsNumCols ||
                 mNumPredictedAppsPerRow != grid.allAppsNumPredictiveCols) {
             mNumAppsPerRow = grid.allAppsNumCols;

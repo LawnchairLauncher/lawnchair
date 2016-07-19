@@ -53,11 +53,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
-import android.widget.Space;
 import android.widget.TextView;
 
 import com.android.launcher3.Launcher.CustomContentCallbacks;
@@ -366,16 +364,7 @@ public class Workspace extends PagedView
 
     @Override
     public void setInsets(Rect insets) {
-        int extraLeftPadding = insets.left - mInsets.left;
         mInsets.set(insets);
-        if (extraLeftPadding != 0) {
-            /**
-             * Initial layout assumes that the insets is on the right,
-             * {@link DeviceProfile#getWorkspacePadding()}. Compensate for the difference.
-             */
-            setPadding(getPaddingLeft() + extraLeftPadding, getPaddingTop(),
-                    getPaddingRight() - extraLeftPadding, getPaddingBottom());
-        }
 
         CellLayout customScreen = getScreenWithId(CUSTOM_CONTENT_SCREEN_ID);
         if (customScreen != null) {
@@ -1517,12 +1506,15 @@ public class Workspace extends PagedView
     /**
      * Moves the Hotseat UI in the provided direction.
      * @param direction the direction to move the workspace
-     * @param translation the amound of shift.
+     * @param translation the amount of shift.
      * @param alpha the alpha for the hotseat page
      */
     public void setHotseatTranslationAndAlpha(Direction direction, float translation, float alpha) {
         Property<View, Float> property = direction.viewProperty;
-        property.set(mPageIndicator, translation);
+        // Skip the page indicator movement in the vertical bar layout
+        if (direction != Direction.Y || !mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+            property.set(mPageIndicator, translation);
+        }
         property.set(mLauncher.getHotseat(), translation);
         setHotseatAlphaAtIndex(alpha, direction.ordinal());
     }

@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
@@ -37,6 +38,8 @@ import android.widget.TextView;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.CellLayout;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -331,7 +334,9 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     private final boolean mIsRtl;
 
     // Section drawing
+    @Deprecated
     private final int mSectionNamesMargin;
+    @Deprecated
     private final int mSectionHeaderOffset;
     private final Paint mSectionTextPaint;
 
@@ -452,6 +457,14 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 icon.setLongPressTimeout(ViewConfiguration.get(parent.getContext())
                         .getLongPressTimeout());
                 icon.setOnFocusChangeListener(mIconFocusListener);
+
+                // Ensure the all apps icon height matches the workspace icons
+                DeviceProfile profile = mLauncher.getDeviceProfile();
+                Point cellSize = profile.getCellSize();
+                GridLayoutManager.LayoutParams lp =
+                        (GridLayoutManager.LayoutParams) icon.getLayoutParams();
+                lp.height = cellSize.y;
+                icon.setLayoutParams(lp);
                 return new ViewHolder(icon);
             }
             case VIEW_TYPE_EMPTY_SEARCH:

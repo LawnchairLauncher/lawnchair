@@ -20,7 +20,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.InsetDrawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView.State;
 import android.util.AttributeSet;
@@ -32,7 +31,6 @@ import android.widget.Toast;
 import com.android.launcher3.BaseContainerView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeleteDropTarget;
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.folder.Folder;
@@ -61,6 +59,9 @@ public class WidgetsContainerView extends BaseContainerView
     @Thunk Launcher mLauncher;
     private DragController mDragController;
     private IconCache mIconCache;
+
+    private final Rect mTmpBgPaddingRect = new Rect();
+    private final Rect mTmpRect = new Rect();
 
     /* Recycler view related member variables */
     private WidgetsRecyclerView mRecyclerView;
@@ -97,18 +98,24 @@ public class WidgetsContainerView extends BaseContainerView
         mRecyclerView = (WidgetsRecyclerView) getContentView().findViewById(R.id.widgets_list_view);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+    }
 
-        Rect bgPadding = new Rect();
-        getRevealView().getBackground().getPadding(bgPadding);
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        getRevealView().getBackground().getPadding(mTmpBgPaddingRect);
         if (Utilities.isRtl(getResources())) {
-            getContentView().setPadding(0, bgPadding.top,
-                    bgPadding.right, bgPadding.bottom);
-            mRecyclerView.updateBackgroundPadding(new Rect(bgPadding.left, 0, 0, 0));
+            getContentView().setPadding(0, mTmpBgPaddingRect.top, mTmpBgPaddingRect.right,
+                    mTmpBgPaddingRect.bottom);
+            mTmpRect.set(mTmpBgPaddingRect.left, 0, 0, 0);
+            mRecyclerView.updateBackgroundPadding(mTmpRect);
         } else {
-            getContentView().setPadding(bgPadding.left, bgPadding.top,
-                    0, bgPadding.bottom);
-            mRecyclerView.updateBackgroundPadding(new Rect(0, 0, bgPadding.right, 0));
+            getContentView().setPadding(mTmpBgPaddingRect.left, mTmpBgPaddingRect.top, 0,
+                    mTmpBgPaddingRect.bottom);
+            mTmpRect.set(0, 0, mTmpBgPaddingRect.right, 0);
+            mRecyclerView.updateBackgroundPadding(mTmpRect);
         }
+
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     //

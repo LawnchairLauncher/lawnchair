@@ -24,6 +24,7 @@ import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Region;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -66,6 +67,7 @@ public class BubbleTextView extends TextView
 
     private final Launcher mLauncher;
     private Drawable mIcon;
+    private final boolean mCenterVertically;
     private final Drawable mBackground;
     private OnLongClickListener mOnLongClickListener;
     private final CheckLongPressHelper mLongPressHelper;
@@ -119,9 +121,11 @@ public class BubbleTextView extends TextView
         if (display == DISPLAY_WORKSPACE) {
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.iconTextSizePx);
         } else if (display == DISPLAY_ALL_APPS) {
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, grid.allAppsIconTextSizeSp);
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.allAppsIconTextSizePx);
+            setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
             defaultIconSize = grid.allAppsIconSizePx;
         }
+        mCenterVertically = a.getBoolean(R.styleable.BubbleTextView_centerVertically, false);
 
         mIconSize = a.getDimensionPixelSize(R.styleable.BubbleTextView_iconSizeOverride,
                 defaultIconSize);
@@ -425,6 +429,19 @@ public class BubbleTextView extends TextView
             ((PreloadIconDrawable) mIcon).applyPreloaderTheme(getPreloaderTheme());
         }
         mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if (mCenterVertically) {
+            Paint.FontMetrics fm = getPaint().getFontMetrics();
+            int cellHeightPx = mIconSize + getCompoundDrawablePadding() +
+                    (int) Math.ceil(fm.bottom - fm.top);
+            int height = MeasureSpec.getSize(heightMeasureSpec);
+            setPadding(getPaddingLeft(), (height - cellHeightPx) / 2, getPaddingRight(),
+                    getPaddingBottom());
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     @Override
