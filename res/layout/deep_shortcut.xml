@@ -16,5 +16,13 @@
 
 <com.android.launcher3.shortcuts.DeepShortcutView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/Icon.DeepShortcut"
-    android:focusable="true"/>
+    android:layout_width="@dimen/bg_pill_width"
+    android:layout_height="@dimen/bg_pill_height"
+    android:elevation="@dimen/deep_shortcuts_elevation"
+    android:background="@drawable/bg_white_pill">
+
+    <com.android.launcher3.BubbleTextView
+        android:id="@+id/deep_shortcut"
+        style="@style/Icon.DeepShortcut"
+        android:focusable="true"/>
+</com.android.launcher3.shortcuts.DeepShortcutView>

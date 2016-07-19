@@ -80,8 +80,8 @@ import com.android.launcher3.logging.UserEventDispatcher.LaunchSourceProvider;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+import com.android.launcher3.util.CircleRevealOutlineProvider;
 import com.android.launcher3.util.Thunk;
-import com.android.launcher3.util.UiThreadCircularReveal;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -554,8 +554,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             int ry = (int) Math.max(Math.max(height - getPivotY(), 0), getPivotY());
             float radius = (float) Math.hypot(rx, ry);
 
-            Animator reveal = UiThreadCircularReveal.createCircularReveal(this, (int) getPivotX(),
-                    (int) getPivotY(), 0, radius);
+            Animator reveal = new CircleRevealOutlineProvider((int) getPivotX(),
+                    (int) getPivotY(), 0, radius).createRevealAnimator(this);
             reveal.setDuration(mMaterialExpandDuration);
             reveal.setInterpolator(new LogDecelerateInterpolator(100, 0));
 

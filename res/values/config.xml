@@ -86,6 +86,11 @@
     <!-- View ID used by cell layout to jail its content -->
     <item type="id" name="cell_layout_jail_id" />
 
+<!-- Deep shortcuts -->
+    <integer name="config_deepShortcutOpenDuration">300</integer>
+    <integer name="config_deepShortcutOpenStagger">20</integer>
+    <integer name="config_deepShortcutHoverDuration">120</integer>
+
 <!-- Accessibility actions -->
     <item type="id" name="action_remove" />
     <item type="id" name="action_uninstall" />

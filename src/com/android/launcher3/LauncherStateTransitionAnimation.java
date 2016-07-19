@@ -35,8 +35,8 @@ import android.view.animation.DecelerateInterpolator;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.util.CircleRevealOutlineProvider;
 import com.android.launcher3.util.Thunk;
-import com.android.launcher3.util.UiThreadCircularReveal;
 import com.android.launcher3.widget.WidgetsContainerView;
 
 import java.util.HashMap;
@@ -345,8 +345,8 @@ public class LauncherStateTransitionAnimation {
                 float startRadius = pCb.getMaterialRevealViewStartFinalRadius();
                 AnimatorListenerAdapter listener = pCb.getMaterialRevealViewAnimatorListener(
                         revealView, buttonView);
-                Animator reveal = UiThreadCircularReveal.createCircularReveal(revealView, width / 2,
-                        height / 2, startRadius, revealRadius);
+                Animator reveal = new CircleRevealOutlineProvider(width / 2, height / 2,
+                        startRadius, revealRadius).createRevealAnimator(revealView);
                 reveal.setDuration(revealDuration);
                 reveal.setInterpolator(new LogDecelerateInterpolator(100, 0));
                 if (listener != null) {
@@ -789,8 +789,8 @@ public class LauncherStateTransitionAnimation {
                     float finalRadius = pCb.getMaterialRevealViewStartFinalRadius();
                     AnimatorListenerAdapter listener =
                             pCb.getMaterialRevealViewAnimatorListener(revealView, buttonView);
-                    Animator reveal = UiThreadCircularReveal.createCircularReveal(revealView, width / 2,
-                            height / 2, revealRadius, finalRadius);
+                    Animator reveal = new CircleRevealOutlineProvider(width / 2, height / 2,
+                            revealRadius, finalRadius).createRevealAnimator(revealView);
                     reveal.setInterpolator(new LogDecelerateInterpolator(100, 0));
                     reveal.setDuration(revealDuration);
                     reveal.setStartDelay(itemsAlphaStagger);
