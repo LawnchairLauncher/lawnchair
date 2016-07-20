@@ -34,30 +34,43 @@ public class CaretDrawable extends Drawable {
 
     private float mCaretProgress;
 
-    private Paint mPaint = new Paint();
+    private Paint mShadowPaint = new Paint();
+    private Paint mCaretPaint = new Paint();
     private Path mPath = new Path();
 
     public CaretDrawable(Context context) {
         final Resources res = context.getResources();
 
-        mPaint.setColor(res.getColor(R.color.all_apps_caret_color));
-        mPaint.setAntiAlias(true);
-        mPaint.setStrokeWidth(res.getDimensionPixelSize(R.dimen.all_apps_caret_stroke_width));
-        mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setStrokeCap(Paint.Cap.SQUARE);
-        mPaint.setStrokeJoin(Paint.Join.MITER);
+        final int strokeWidth = res.getDimensionPixelSize(R.dimen.all_apps_caret_stroke_width);
+        final int shadowSpread = res.getDimensionPixelSize(R.dimen.all_apps_caret_shadow_spread);
+
+        mCaretPaint.setColor(res.getColor(R.color.all_apps_caret_color));
+        mCaretPaint.setAntiAlias(true);
+        mCaretPaint.setStrokeWidth(strokeWidth);
+        mCaretPaint.setStyle(Paint.Style.STROKE);
+        mCaretPaint.setStrokeCap(Paint.Cap.SQUARE);
+        mCaretPaint.setStrokeJoin(Paint.Join.MITER);
+
+        mShadowPaint.setColor(res.getColor(R.color.all_apps_caret_shadow_color));
+        mShadowPaint.setAntiAlias(true);
+        mShadowPaint.setStrokeWidth(strokeWidth + (shadowSpread * 2));
+        mShadowPaint.setStyle(Paint.Style.STROKE);
+        mShadowPaint.setStrokeCap(Paint.Cap.ROUND);
+        mShadowPaint.setStrokeJoin(Paint.Join.ROUND);
     }
 
     @Override
     public void draw(Canvas canvas) {
-        if (Float.compare(mPaint.getAlpha(), 0f) == 0) {
+        // Assumes caret paint is more important than shadow paint
+        if (Float.compare(mCaretPaint.getAlpha(), 0f) == 0) {
             return;
         }
 
-        final float width = getBounds().width() - mPaint.getStrokeWidth();
-        final float height = getBounds().height() - mPaint.getStrokeWidth();
-        final float left = getBounds().left + (mPaint.getStrokeWidth() / 2);
-        final float top = getBounds().top + (mPaint.getStrokeWidth() / 2);
+        // Assumes shadow stroke width is larger
+        final float width = getBounds().width() - mShadowPaint.getStrokeWidth();
+        final float height = getBounds().height() - mShadowPaint.getStrokeWidth();
+        final float left = getBounds().left + (mShadowPaint.getStrokeWidth() / 2);
+        final float top = getBounds().top + (mShadowPaint.getStrokeWidth() / 2);
 
         final float verticalInset = (height / 4);
         final float caretHeight = (height - (verticalInset * 2));
@@ -67,7 +80,8 @@ public class CaretDrawable extends Drawable {
         mPath.lineTo(left + (width / 2), top + caretHeight * mCaretProgress);
         mPath.lineTo(left + width, top + caretHeight * (1 - mCaretProgress));
 
-        canvas.drawPath(mPath, mPaint);
+        canvas.drawPath(mPath, mShadowPaint);
+        canvas.drawPath(mPath, mCaretPaint);
     }
 
     @Override
@@ -84,7 +98,8 @@ public class CaretDrawable extends Drawable {
 
     @Override
     public void setAlpha(int alpha) {
-        mPaint.setAlpha(alpha);
+        mCaretPaint.setAlpha(alpha);
+        mShadowPaint.setAlpha(alpha);
         invalidateSelf();
     }
 
