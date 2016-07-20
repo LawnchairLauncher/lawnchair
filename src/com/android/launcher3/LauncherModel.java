@@ -2782,7 +2782,7 @@ public class LauncherModel extends BroadcastReceiver
                 for (UserHandleCompat user : mUserManager.getUserProfiles()) {
                     List<ShortcutInfoCompat> shortcuts = mDeepShortcutManager
                             .queryForAllShortcuts(user);
-                    updateDeepShortcutMap(null, shortcuts);
+                    updateDeepShortcutMap(null, user, shortcuts);
                 }
                 synchronized (LoaderTask.this) {
                     if (mStopped) {
@@ -2804,13 +2804,17 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
-    // Clear all the shortcuts for the given package, and re-add the new shortcuts.
-    private void updateDeepShortcutMap(String packageName, List<ShortcutInfoCompat> shortcuts) {
-        // Remove all keys associated with the given package.
+    /**
+     * Clear all the shortcuts for the given package, and re-add the new shortcuts.
+     */
+    private void updateDeepShortcutMap(
+            String packageName, UserHandleCompat user, List<ShortcutInfoCompat> shortcuts) {
         if (packageName != null) {
             Iterator<ComponentKey> keysIter = mBgDeepShortcutMap.keySet().iterator();
             while (keysIter.hasNext()) {
-                if (keysIter.next().componentName.getPackageName().equals(packageName)) {
+                ComponentKey next = keysIter.next();
+                if (next.componentName.getPackageName().equals(packageName)
+                        && next.user.equals(user)) {
                     keysIter.remove();
                 }
             }
@@ -3336,7 +3340,7 @@ public class LauncherModel extends BroadcastReceiver
             bindUpdatedShortcuts(updatedShortcutInfos, mUser);
 
             // Update the deep shortcut map, in case the list of ids has changed for an activity.
-            updateDeepShortcutMap(mPackageName, mShortcuts);
+            updateDeepShortcutMap(mPackageName, mUser, mShortcuts);
             bindDeepShortcuts();
         }
     }
