@@ -1,7 +1,6 @@
 package com.android.launcher3.shortcuts;
 
 import android.content.Context;
-import android.graphics.Point;
 import android.os.SystemClock;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
@@ -53,9 +52,9 @@ public class ShortcutsContainerListener implements View.OnTouchListener,
 
     private Launcher mLauncher;
     private DragLayer mDragLayer;
-    private MotionEvent mTouchDownEvent;
-    /** The coordinates of the touch down, relative do the shortcuts container. */
-    private final Point mTouchDown;
+    /** The coordinates of the touch down, relative to the shortcuts container. */
+    private final int[] mTouchDown;
+    private boolean mHasMappedTouchDownToContainerCoord;
 
     public ShortcutsContainerListener(BubbleTextView icon) {
         mSrcIcon = icon;
@@ -68,7 +67,7 @@ public class ShortcutsContainerListener implements View.OnTouchListener,
 
         mLauncher = Launcher.getLauncher(mSrcIcon.getContext());
         mDragLayer = mLauncher.getDragLayer();
-        mTouchDown = new Point();
+        mTouchDown = new int[2];
     }
 
     @Override
@@ -79,10 +78,10 @@ public class ShortcutsContainerListener implements View.OnTouchListener,
         }
 
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            if (mTouchDownEvent != null) {
-                mTouchDownEvent.recycle();
-            }
-            mTouchDownEvent = MotionEvent.obtainNoHistory(event);
+            mTouchDown[0] = (int) event.getX();
+            mTouchDown[1] = (int) event.getY();
+            mDragLayer.getDescendantCoordRelativeToSelf(mSrcIcon, mTouchDown);
+            mHasMappedTouchDownToContainerCoord = false;
         }
 
         final boolean wasForwarding = mForwarding;
@@ -140,10 +139,6 @@ public class ShortcutsContainerListener implements View.OnTouchListener,
             deepShortcutsContainer.populateAndShow(mSrcIcon, ids);
             mSrcIcon.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                     HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-
-            // Convert touch down event to the container's coordinates.
-            Utilities.translateEventCoordinates(mSrcIcon, deepShortcutsContainer, mTouchDownEvent);
-            mTouchDown.set((int) mTouchDownEvent.getX(), (int) mTouchDownEvent.getY());
             return true;
         }
         return false;
@@ -257,13 +252,21 @@ public class ShortcutsContainerListener implements View.OnTouchListener,
         if (dst == null) {
             return false;
         }
+        if (!dst.isLaidOut()) {
+            return true;
+        }
 
         // Convert event to destination-local coordinates.
         final MotionEvent dstEvent = MotionEvent.obtainNoHistory(srcEvent);
         Utilities.translateEventCoordinates(src, dst, dstEvent);
 
+        // Convert touch down event to destination-local coordinates.
+        if (!mHasMappedTouchDownToContainerCoord) {
+            mDragLayer.mapCoordInSelfToDescendent(dst, mTouchDown);
+            mHasMappedTouchDownToContainerCoord = true;
+        }
+
         // Forward converted event to destination view, then recycle it.
-        // TODO: don't create objects in onForwardedEvent.
         final boolean handled = dst.onForwardedEvent(dstEvent, mActivePointerId, mTouchDown);
         dstEvent.recycle();
 
