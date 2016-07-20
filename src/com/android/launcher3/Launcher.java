@@ -2014,9 +2014,9 @@ public class Launcher extends Activity
     }
 
     @Override
-    public void startActivityForResult(Intent intent, int requestCode) {
+    public void startActivityForResult(Intent intent, int requestCode, Bundle options) {
         onStartForResult(requestCode);
-        super.startActivityForResult(intent, requestCode);
+        super.startActivityForResult(intent, requestCode, options);
     }
 
     @Override
@@ -2730,10 +2730,12 @@ public class Launcher extends Activity
 
         int pageScroll = mWorkspace.getScrollForPage(mWorkspace.getPageNearestToCenterOfScreen());
         float offset = mWorkspace.mWallpaperOffset.wallpaperOffsetForScroll(pageScroll);
-        startActivityForResult(new Intent(Intent.ACTION_SET_WALLPAPER)
+
+        Intent intent = new Intent(Intent.ACTION_SET_WALLPAPER)
                 .setPackage(pickerPackage)
-                .putExtra(Utilities.EXTRA_WALLPAPER_OFFSET, offset),
-                REQUEST_PICK_WALLPAPER);
+                .putExtra(Utilities.EXTRA_WALLPAPER_OFFSET, offset);
+        intent.setSourceBounds(getViewBounds(v));
+        startActivityForResult(intent, REQUEST_PICK_WALLPAPER, getActivityLaunchOptions(v));
     }
 
     /**
@@ -2881,6 +2883,12 @@ public class Launcher extends Activity
         return null;
     }
 
+    private Rect getViewBounds(View v) {
+        int[] pos = new int[2];
+        v.getLocationOnScreen(pos);
+        return new Rect(pos[0], pos[1], pos[0] + v.getWidth(), pos[1] + v.getHeight());
+    }
+
     public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
         if (mIsSafeModeEnabled && !Utilities.isSystemApp(this, intent)) {
             Toast.makeText(this, R.string.safemode_shortcut_error, Toast.LENGTH_SHORT).show();
@@ -2901,10 +2909,7 @@ public class Launcher extends Activity
         // Prepare intent
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if (v != null) {
-            int[] pos = new int[2];
-            v.getLocationOnScreen(pos);
-            intent.setSourceBounds(
-                    new Rect(pos[0], pos[1], pos[0] + v.getWidth(), pos[1] + v.getHeight()));
+            intent.setSourceBounds(getViewBounds(v));
         }
         try {
             if (Utilities.ATLEAST_MARSHMALLOW && item != null
