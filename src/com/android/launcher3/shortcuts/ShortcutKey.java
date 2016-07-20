@@ -2,7 +2,6 @@ package com.android.launcher3.shortcuts;
 
 import android.content.ComponentName;
 
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.util.ComponentKey;
 
@@ -21,10 +20,5 @@ public class ShortcutKey extends ComponentKey {
     public static ShortcutKey fromInfo(ShortcutInfoCompat shortcutInfo) {
         return new ShortcutKey(shortcutInfo.getPackage(), shortcutInfo.getUserHandle(),
                 shortcutInfo.getId());
-    }
-
-    @Override
-    public String toString() {
-        return flattenToString(LauncherAppState.getInstance().getContext());
     }
 }
