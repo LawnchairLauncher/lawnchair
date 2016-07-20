@@ -35,11 +35,9 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
@@ -71,6 +69,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.dragndrop.DragScroller;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dragndrop.SpringLoadedDragController;
@@ -248,7 +247,7 @@ public class Workspace extends PagedView
 
     private HolographicOutlineHelper mOutlineHelper;
     @Thunk Bitmap mDragOutline = null;
-    public static final int DRAG_BITMAP_PADDING = 2;
+    public static final int DRAG_BITMAP_PADDING = DragPreviewProvider.DRAG_BITMAP_PADDING;
     private boolean mWorkspaceFadeInAdjacentScreens;
 
     final WallpaperOffsetInterpolator mWallpaperOffset;
@@ -1980,56 +1979,6 @@ public class Workspace extends PagedView
                 position[0], position[1], 0, null);
     }
 
-    /*
-    *
-    * We call these methods (onDragStartedWithItemSpans/onDragStartedWithSize) whenever we
-    * start a drag in Launcher, regardless of whether the drag has ever entered the Workspace
-    *
-    * These methods mark the appropriate pages as accepting drops (which alters their visual
-    * appearance).
-    *
-    */
-    private static Rect getDrawableBounds(Drawable d) {
-        Rect bounds = new Rect();
-        d.copyBounds(bounds);
-        if (bounds.width() == 0 || bounds.height() == 0) {
-            bounds.set(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
-        } else {
-            bounds.offsetTo(0, 0);
-        }
-        if (d instanceof PreloadIconDrawable) {
-            int inset = -((PreloadIconDrawable) d).getOutset();
-            bounds.inset(inset, inset);
-        }
-        return bounds;
-    }
-
-    public void onExternalDragStartedWithItem(View v) {
-        // Compose a drag bitmap with the view scaled to the icon size
-        DeviceProfile grid = mLauncher.getDeviceProfile();
-        int iconSize = grid.iconSizePx;
-        int bmpWidth = v.getMeasuredWidth();
-        int bmpHeight = v.getMeasuredHeight();
-
-        // If this is a text view, use its drawable instead
-        if (v instanceof TextView) {
-            Drawable d = getTextViewIcon((TextView) v);
-            Rect bounds = getDrawableBounds(d);
-            bmpWidth = bounds.width();
-            bmpHeight = bounds.height();
-        }
-
-        // Compose the bitmap to create the icon from
-        Bitmap b = Bitmap.createBitmap(bmpWidth, bmpHeight,
-                Bitmap.Config.ARGB_8888);
-        mCanvas.setBitmap(b);
-        drawDragView(v, mCanvas, 0);
-        mCanvas.setBitmap(null);
-
-        // The outline is used to visualize where the item will land if dropped
-        mDragOutline = createDragOutline(b, DRAG_BITMAP_PADDING, iconSize, iconSize, true);
-    }
-
     public void onDragStartedWithItem(PendingAddItemInfo info, Bitmap b, boolean clipAlpha) {
         // Find a page that has enough space to place this widget (after rearranging/resizing).
         // Start at the current page and search right (on LTR) until finding a page with enough
@@ -2303,89 +2252,6 @@ public class Workspace extends PagedView
     }
 
     /**
-     * Draw the View v into the given Canvas.
-     *
-     * @param v the view to draw
-     * @param destCanvas the canvas to draw on
-     * @param padding the horizontal and vertical padding to use when drawing
-     */
-    private static void drawDragView(View v, Canvas destCanvas, int padding) {
-        destCanvas.save();
-        if (v instanceof TextView) {
-            Drawable d = getTextViewIcon((TextView) v);
-            Rect bounds = getDrawableBounds(d);
-            destCanvas.translate(padding / 2 - bounds.left, padding / 2 - bounds.top);
-            d.draw(destCanvas);
-        } else {
-            final Rect clipRect = sTempRect;
-            v.getDrawingRect(clipRect);
-
-            boolean textVisible = false;
-            if (v instanceof FolderIcon) {
-                // For FolderIcons the text can bleed into the icon area, and so we need to
-                // hide the text completely (which can't be achieved by clipping).
-                if (((FolderIcon) v).getTextVisible()) {
-                    ((FolderIcon) v).setTextVisible(false);
-                    textVisible = true;
-                }
-            }
-            destCanvas.translate(-v.getScrollX() + padding / 2, -v.getScrollY() + padding / 2);
-            destCanvas.clipRect(clipRect, Op.REPLACE);
-            v.draw(destCanvas);
-
-            // Restore text visibility of FolderIcon if necessary
-            if (textVisible) {
-                ((FolderIcon) v).setTextVisible(true);
-            }
-        }
-        destCanvas.restore();
-    }
-
-    /**
-     * Returns a new bitmap to show when the given View is being dragged around.
-     * Responsibility for the bitmap is transferred to the caller.
-     * @param expectedPadding padding to add to the drag view. If a different padding was used
-     * its value will be changed
-     */
-    public Bitmap createDragBitmap(View v, AtomicInteger expectedPadding) {
-        Bitmap b;
-
-        int padding = expectedPadding.get();
-        if (v instanceof TextView) {
-            Drawable d = getTextViewIcon((TextView) v);
-            Rect bounds = getDrawableBounds(d);
-            b = Bitmap.createBitmap(bounds.width() + padding,
-                    bounds.height() + padding, Bitmap.Config.ARGB_8888);
-            expectedPadding.set(padding - bounds.left - bounds.top);
-        } else {
-            b = Bitmap.createBitmap(
-                    v.getWidth() + padding, v.getHeight() + padding, Bitmap.Config.ARGB_8888);
-        }
-
-        mCanvas.setBitmap(b);
-        drawDragView(v, mCanvas, padding);
-        mCanvas.setBitmap(null);
-
-        return b;
-    }
-
-    /**
-     * Returns a new bitmap to be used as the object outline, e.g. to visualize the drop location.
-     * Responsibility for the bitmap is transferred to the caller.
-     */
-    private Bitmap createDragOutline(View v, int padding) {
-        final int outlineColor = getResources().getColor(R.color.outline_color);
-        final Bitmap b = Bitmap.createBitmap(
-                v.getWidth() + padding, v.getHeight() + padding, Bitmap.Config.ARGB_8888);
-
-        mCanvas.setBitmap(b);
-        drawDragView(v, mCanvas, padding);
-        mOutlineHelper.applyExpensiveOutlineWithBlur(b, mCanvas, outlineColor, outlineColor);
-        mCanvas.setBitmap(null);
-        return b;
-    }
-
-    /**
      * Returns a new bitmap to be used as the object outline, e.g. to visualize the drop location.
      * Responsibility for the bitmap is transferred to the caller.
      */
@@ -2435,29 +2301,28 @@ public class Workspace extends PagedView
     }
 
     public void beginDragShared(View child, DragSource source, boolean accessible) {
-        beginDragShared(child, new Point(), source, accessible);
+        beginDragShared(child, new Point(), source, accessible, new DragPreviewProvider(child));
     }
 
     public void beginDragShared(View child, Point relativeTouchPos, DragSource source,
-            boolean accessible) {
+                                boolean accessible, DragPreviewProvider previewProvider) {
         child.clearFocus();
         child.setPressed(false);
 
         // The outline is used to visualize where the item will land if dropped
-        mDragOutline = createDragOutline(child, DRAG_BITMAP_PADDING);
+        mDragOutline = previewProvider.createDragOutline(mCanvas);
 
         mLauncher.onDragStarted(child);
         // The drag bitmap follows the touch point around on the screen
-        AtomicInteger padding = new AtomicInteger(DRAG_BITMAP_PADDING);
-        final Bitmap b = createDragBitmap(child, padding);
+        final Bitmap b = previewProvider.createDragBitmap(mCanvas);
+        int halfPadding = previewProvider.previewPadding / 2;
 
         final int bmpWidth = b.getWidth();
         final int bmpHeight = b.getHeight();
 
         float scale = mLauncher.getDragLayer().getLocationInDragLayer(child, mTempXY);
         int dragLayerX = Math.round(mTempXY[0] - (bmpWidth - scale * child.getWidth()) / 2);
-        int dragLayerY = Math.round(mTempXY[1] - (bmpHeight - scale * bmpHeight) / 2
-                        - padding.get() / 2);
+        int dragLayerY = Math.round(mTempXY[1] - (bmpHeight - scale * bmpHeight) / 2 - halfPadding);
 
         DeviceProfile grid = mLauncher.getDeviceProfile();
         Point dragVisualizeOffset = null;
@@ -2483,12 +2348,11 @@ public class Workspace extends PagedView
             dragLayerY += top;
             // Note: The drag region is used to calculate drag layer offsets, but the
             // dragVisualizeOffset in addition to the dragRect (the size) to position the outline.
-            dragVisualizeOffset = new Point(-padding.get() / 2, padding.get() / 2);
+            dragVisualizeOffset = new Point(- halfPadding, halfPadding);
             dragRect = new Rect(left, top, right, bottom);
         } else if (child instanceof FolderIcon) {
             int previewSize = grid.folderIconSizePx;
-            dragVisualizeOffset = new Point(-padding.get() / 2,
-                    padding.get() / 2 - child.getPaddingTop());
+            dragVisualizeOffset = new Point(- halfPadding, halfPadding - child.getPaddingTop());
             dragRect = new Rect(0, child.getPaddingTop(), child.getWidth(), previewSize);
         }
 
@@ -2516,58 +2380,6 @@ public class Workspace extends PagedView
         dv.setIntrinsicIconScaleFactor(source.getIntrinsicIconScaleFactor());
 
         b.recycle();
-
-        if (!FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND) {
-            mLauncher.enterSpringLoadedDragMode();
-        }
-    }
-
-    public void beginExternalDragShared(View child, DragSource source) {
-        DeviceProfile grid = mLauncher.getDeviceProfile();
-        int iconSize = grid.iconSizePx;
-
-        // Notify launcher of drag start
-        mLauncher.onDragStarted(child);
-
-        // Compose a new drag bitmap that is of the icon size
-        AtomicInteger padding = new AtomicInteger(DRAG_BITMAP_PADDING);
-        final Bitmap tmpB = createDragBitmap(child, padding);
-        Bitmap b = Bitmap.createBitmap(iconSize, iconSize, Bitmap.Config.ARGB_8888);
-        Paint p = new Paint();
-        p.setFilterBitmap(true);
-        mCanvas.setBitmap(b);
-        mCanvas.drawBitmap(tmpB, new Rect(0, 0, tmpB.getWidth(), tmpB.getHeight()),
-                new Rect(0, 0, iconSize, iconSize), p);
-        mCanvas.setBitmap(null);
-
-        // Find the child's location on the screen
-        int bmpWidth = tmpB.getWidth();
-        float iconScale = (float) bmpWidth / iconSize;
-        float scale = mLauncher.getDragLayer().getLocationInDragLayer(child, mTempXY) * iconScale;
-        int dragLayerX = Math.round(mTempXY[0] - (bmpWidth - scale * child.getWidth()) / 2);
-        int dragLayerY = Math.round(mTempXY[1]);
-
-        // Note: The drag region is used to calculate drag layer offsets, but the
-        // dragVisualizeOffset in addition to the dragRect (the size) to position the outline.
-        Point dragVisualizeOffset = new Point(-padding.get() / 2, padding.get() / 2);
-        Rect dragRect = new Rect(0, 0, iconSize, iconSize);
-
-        Object dragObject = child.getTag();
-        if (!(dragObject instanceof ItemInfo)) {
-            String msg = "Drag started with a view that has no tag set. This "
-                    + "will cause a crash (issue 11627249) down the line. "
-                    + "View: " + child + "  tag: " + child.getTag();
-            throw new IllegalStateException(msg);
-        }
-
-        // Start the drag
-        DragView dv = mDragController.startDrag(b, dragLayerX, dragLayerY, source,
-                (ItemInfo) dragObject, DragController.DRAG_ACTION_MOVE, dragVisualizeOffset,
-                dragRect, scale, false);
-        dv.setIntrinsicIconScaleFactor(source.getIntrinsicIconScaleFactor());
-
-        // Recycle temporary bitmaps
-        tmpB.recycle();
 
         if (!FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND) {
             mLauncher.enterSpringLoadedDragMode();

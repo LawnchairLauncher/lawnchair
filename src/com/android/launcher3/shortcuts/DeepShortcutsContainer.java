@@ -52,6 +52,7 @@ import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.graphics.ScaledPreviewProvider;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -298,8 +299,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         final int registrationY = motionDownY - dragLayerY;
 
         float scaleDps = getResources().getDimensionPixelSize(R.dimen.deep_shortcuts_drag_view_scale);
-        mDragView = new DragView(mLauncher, b, registrationX, registrationY,
-                0, 0, b.getWidth(), b.getHeight(), 1f, scaleDps);
+        mDragView = new DragView(mLauncher, b, registrationX, registrationY, 1f, scaleDps);
         mLastX = mLastY = mDistanceDragged = 0;
         mDragView.show(motionDownX, motionDownY);
     }
@@ -429,7 +429,8 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         if (!mLauncher.isDraggingEnabled()) return false;
 
         // Long clicked on a shortcut.
-        mLauncher.getWorkspace().beginDragShared(v, mIconLastTouchPos, this, false);
+        mLauncher.getWorkspace().beginDragShared(v, mIconLastTouchPos, this, false,
+                new ScaledPreviewProvider(v));
         // TODO: support dragging from within folder without having to close it
         mLauncher.closeFolder();
         return false;
@@ -452,8 +453,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
     @Override
     public float getIntrinsicIconScaleFactor() {
-        return (float) getResources().getDimensionPixelSize(R.dimen.deep_shortcut_icon_size)
-                / mLauncher.getDeviceProfile().iconSizePx;
+        return 1f;
     }
 
     @Override

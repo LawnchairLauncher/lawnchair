@@ -84,13 +84,13 @@ public class DragView extends View {
      * @param registrationY The y coordinate of the registration point.
      */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public DragView(Launcher launcher, Bitmap bitmap, int registrationX, int registrationY, int left,
-            int top, int width, int height, final float initialScale, final float finalScaleDps) {
+    public DragView(Launcher launcher, Bitmap bitmap, int registrationX, int registrationY,
+                    final float initialScale, final float finalScaleDps) {
         super(launcher);
         mDragLayer = launcher.getDragLayer();
         mDragController = launcher.getDragController();
 
-        final float scale = (width + finalScaleDps) / width;
+        final float scale = (bitmap.getWidth() + finalScaleDps) / bitmap.getWidth();
 
         // Set the initial scale to avoid any jumps
         setScaleX(initialScale);
@@ -125,8 +125,8 @@ public class DragView extends View {
             }
         });
 
-        mBitmap = Bitmap.createBitmap(bitmap, left, top, width, height);
-        setDragRegion(new Rect(0, 0, width, height));
+        mBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight());
+        setDragRegion(new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()));
 
         // The point in our scaled bitmap that the touch events are located
         mRegistrationX = registrationX;

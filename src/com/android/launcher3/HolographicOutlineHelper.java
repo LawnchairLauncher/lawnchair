@@ -79,7 +79,7 @@ public class HolographicOutlineHelper {
      * Applies a more expensive and accurate outline to whatever is currently drawn in a specified
      * bitmap.
      */
-    void applyExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas, int color,
+    public void applyExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas, int color,
             int outlineColor) {
         applyExpensiveOutlineWithBlur(srcDst, srcDstCanvas, color, outlineColor, true);
     }
