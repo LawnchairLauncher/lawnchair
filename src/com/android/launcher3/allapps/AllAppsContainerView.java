@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.allapps;
 
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
@@ -31,7 +30,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BaseContainerView;
@@ -242,6 +240,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         }
         mSearchBarController = searchController;
         mSearchBarController.initialize(mApps, mSearchInput, mLauncher, this);
+        mSearchBarController.setHintView(findViewById(R.id.search_hint));
         mAdapter.setSearchController(mSearchBarController);
     }
 
@@ -311,36 +310,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mSearchInput = (ExtendedEditText) findViewById(R.id.search_box_input);
         mSearchContainerOffsetTop = getResources().getDimensionPixelSize(
                 R.dimen.all_apps_search_bar_margin_top);
-
-        final View searchHint = findViewById(R.id.search_hint);
-        final ObjectAnimator searchInputAnimator = ObjectAnimator.ofFloat(mSearchInput,
-                View.TRANSLATION_X, 0);
-        searchInputAnimator.setDuration(getContext().getResources().getInteger(
-                R.integer.config_searchHintAnimationDuration));
-        searchInputAnimator.setInterpolator(AnimationUtils.loadInterpolator(getContext(),
-                android.R.interpolator.accelerate_decelerate));
-
-        mSearchInput.setOnFocusChangeListener(new OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean focused) {
-                if (focused) {
-                    searchHint.setVisibility(View.INVISIBLE);
-                    if (searchInputAnimator.isRunning()) {
-                        searchInputAnimator.end();
-                    }
-
-                    if (Utilities.isRtl(getContext().getResources())) {
-                        searchInputAnimator.setFloatValues(-searchHint.getLeft(), 0);
-                    } else {
-                        searchInputAnimator.setFloatValues(searchHint.getLeft(), 0);
-                    }
-                    searchInputAnimator.start();
-                } else {
-                    searchHint.setVisibility(View.VISIBLE);
-                    mSearchInput.setTranslationX(0);
-                }
-            }
-        });
 
         mElevationController = Utilities.ATLEAST_LOLLIPOP
                 ? new HeaderElevationController.ControllerVL(mSearchContainer)
