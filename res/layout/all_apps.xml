@@ -94,6 +94,7 @@
                 android:scrollHorizontally="true"
                 android:singleLine="true"
                 android:textColor="#4c4c4c"
+                android:contentDescription="@string/all_apps_search_bar_hint"
                 android:textColorHint="@drawable/all_apps_search_hint"
                 android:textSize="16sp" />
         </FrameLayout>
