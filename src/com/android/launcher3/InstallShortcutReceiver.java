@@ -348,7 +348,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 
         public ShortcutInfo getShortcutInfo() {
             if (activityInfo != null) {
-                return ShortcutInfo.fromActivityInfo(activityInfo, mContext);
+                return new ShortcutInfo(activityInfo, mContext);
             } else {
                 return LauncherAppState.getInstance().getModel().infoFromShortcutIntent(mContext, data);
             }
