@@ -63,6 +63,8 @@ public class PageIndicatorLineCaret extends PageIndicator {
     private final int mLineHeight;
     private final Rect mTouchHitRect = new Rect();
     private final int mTouchExtensionHeight;
+    private final int mCaretSizePx;
+    private final int mCaretWorkspaceOffsetPx;
 
     private static final Property<PageIndicatorLineCaret, Integer> PAINT_ALPHA
             = new Property<PageIndicatorLineCaret, Integer>(Integer.class, "paint_alpha") {
@@ -123,14 +125,18 @@ public class PageIndicatorLineCaret extends PageIndicator {
 
     public PageIndicatorLineCaret(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+
+        Resources res = context.getResources();
         mLinePaint = new Paint();
         mLinePaint.setAlpha(0);
+        mCaretSizePx = res.getDimensionPixelSize(R.dimen.all_apps_caret_size);
+        mCaretWorkspaceOffsetPx = res.getDimensionPixelSize(
+                R.dimen.all_apps_caret_workspace_offset);
 
         mLauncher = (Launcher) context;
         setOnTouchListener(mLauncher.getHapticFeedbackTouchListener());
         setOnClickListener(mLauncher);
         setOnFocusChangeListener(mLauncher.mFocusHandler);
-        Resources res = context.getResources();
         setCaretDrawable(new CaretDrawable(context));
         mLineHeight = res.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_line_height);
         mTouchExtensionHeight = res.getDimensionPixelSize(
@@ -140,9 +146,9 @@ public class PageIndicatorLineCaret extends PageIndicator {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        int size = bottom - top;
-        int l = (right - left) / 2 - size / 2;
-        getCaretDrawable().setBounds(l, 0, l + size, size);
+        // Top/center align the caret in the page indicator space
+        int l = (right - left) / 2 - mCaretSizePx / 2;
+        getCaretDrawable().setBounds(l, mCaretWorkspaceOffsetPx, l + mCaretSizePx, mCaretSizePx);
 
         // The touch area is expanded below this view by #mTouchExtensionHeight
         // which extends to the top of the hotseat.

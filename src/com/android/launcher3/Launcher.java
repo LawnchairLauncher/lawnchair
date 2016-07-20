@@ -438,7 +438,7 @@ public class Launcher extends Activity
         setContentView(R.layout.launcher);
 
         setupViews();
-        mDeviceProfile.layout(this);
+        mDeviceProfile.layout(this, false /* notifyListeners */);
         mExtractedColors = new ExtractedColors();
         loadExtractedColorsAndColorItems();
 
@@ -519,6 +519,11 @@ public class Launcher extends Activity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onPostCreate(savedInstanceState);
         }
+    }
+
+    public void onInsetsChanged(Rect insets) {
+        mDeviceProfile.updateInsets(insets);
+        mDeviceProfile.layout(this, true /* notifyListeners */);
     }
 
     /**
