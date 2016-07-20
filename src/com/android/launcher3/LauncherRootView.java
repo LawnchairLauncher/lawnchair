@@ -44,6 +44,7 @@ public class LauncherRootView extends InsettableFrameLayout {
     @TargetApi(23)
     @Override
     protected boolean fitSystemWindows(Rect insets) {
+        boolean rawInsetsChanged = !mInsets.equals(insets);
         mDrawSideInsetBar = (insets.right > 0 || insets.left > 0) &&
                 (!Utilities.ATLEAST_MARSHMALLOW ||
                 getContext().getSystemService(ActivityManager.class).isLowRamDevice());
@@ -59,6 +60,12 @@ public class LauncherRootView extends InsettableFrameLayout {
                 lp.rightMargin = insets.right;
                 mAlignedView.setLayoutParams(lp);
             }
+        }
+
+        if (rawInsetsChanged) {
+            // Update the grid again
+            Launcher launcher = Launcher.getLauncher(getContext());
+            launcher.onInsetsChanged(insets);
         }
 
         return true; // I'll take it from here

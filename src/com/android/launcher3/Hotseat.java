@@ -39,7 +39,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
 public class Hotseat extends FrameLayout
-        implements UserEventDispatcher.LaunchSourceProvider, Insettable {
+        implements UserEventDispatcher.LaunchSourceProvider {
 
     private CellLayout mContent;
 
@@ -47,9 +47,6 @@ public class Hotseat extends FrameLayout
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private final boolean mHasVerticalHotseat;
-
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private Rect mInsets = new Rect();
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private int mBackgroundColor;
@@ -178,28 +175,6 @@ public class Hotseat extends FrameLayout
         target.gridX = info.cellX;
         target.gridY = info.cellY;
         targetParent.containerType = LauncherLogProto.HOTSEAT;
-    }
-
-    //Overridden so that the background color extends behind the navigation buttons.
-    @Override
-    public void setInsets(Rect insets) {
-        int rightInset = insets.right - mInsets.right;
-        int bottomInset = insets.bottom - mInsets.bottom;
-        mInsets.set(insets);
-        LayoutParams lp = (LayoutParams) getLayoutParams();
-        if (mHasVerticalHotseat) {
-            setPadding(getPaddingLeft(), getPaddingTop(),
-            getPaddingRight() + rightInset, getPaddingBottom());
-            if (lp.width != LayoutParams.MATCH_PARENT && lp.width != LayoutParams.WRAP_CONTENT) {
-                lp.width += rightInset;
-            }
-        } else {
-            setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(),
-            getPaddingBottom() + bottomInset);
-            if (lp.height != LayoutParams.MATCH_PARENT && lp.height != LayoutParams.WRAP_CONTENT) {
-                lp.height += bottomInset;
-            }
-        }
     }
 
     public void updateColor(ExtractedColors extractedColors, boolean animate) {

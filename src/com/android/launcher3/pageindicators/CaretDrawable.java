@@ -36,7 +36,6 @@ public class CaretDrawable extends Drawable {
 
     private Paint mPaint = new Paint();
     private Path mPath = new Path();
-    private int mInset;
 
     public CaretDrawable(Context context) {
         final Resources res = context.getResources();
@@ -47,8 +46,6 @@ public class CaretDrawable extends Drawable {
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeCap(Paint.Cap.SQUARE);
         mPaint.setStrokeJoin(Paint.Join.MITER);
-
-        mInset = res.getDimensionPixelSize(R.dimen.all_apps_caret_inset);
     }
 
     @Override
@@ -57,10 +54,10 @@ public class CaretDrawable extends Drawable {
             return;
         }
 
-        final float width = getBounds().width();
-        final float height = getBounds().height();
-        final float left = getBounds().left;
-        final float top = getBounds().top;
+        final float width = getBounds().width() - mPaint.getStrokeWidth();
+        final float height = getBounds().height() - mPaint.getStrokeWidth();
+        final float left = getBounds().left + (mPaint.getStrokeWidth() / 2);
+        final float top = getBounds().top + (mPaint.getStrokeWidth() / 2);
 
         final float verticalInset = (height / 4);
         final float caretHeight = (height - (verticalInset * 2));
@@ -94,10 +91,5 @@ public class CaretDrawable extends Drawable {
     @Override
     public void setColorFilter(ColorFilter cf) {
         // no-op
-    }
-
-    @Override
-    public void setBounds(int left, int top, int right, int bottom) {
-        super.setBounds(left + mInset, top + mInset, right - mInset, bottom - mInset);
     }
 }

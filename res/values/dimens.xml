@@ -16,20 +16,26 @@
 
 <resources>
 <!-- Dynamic Grid -->
-    <dimen name="dynamic_grid_edge_margin">6dp</dimen>
-    <dimen name="dynamic_grid_page_indicator_height">24dp</dimen>
+    <dimen name="dynamic_grid_edge_margin">8dp</dimen>
+    <dimen name="dynamic_grid_page_indicator_height">28dp</dimen>
     <dimen name="dynamic_grid_page_indicator_line_height">1dp</dimen>
     <dimen name="dynamic_grid_page_indicator_extra_touch_height">12dp</dimen>
-    <dimen name="dynamic_grid_icon_drawable_padding">4dp</dimen>
-    <dimen name="dynamic_grid_workspace_page_spacing">8dp</dimen>
+    <dimen name="dynamic_grid_page_indicator_gutter_width_left_nav_bar">38dp</dimen>
+    <dimen name="dynamic_grid_page_indicator_gutter_width_right_nav_bar">48dp</dimen>
+    <dimen name="dynamic_grid_icon_drawable_padding">8dp</dimen>
     <dimen name="dynamic_grid_overview_min_icon_zone_height">80dp</dimen>
     <dimen name="dynamic_grid_overview_max_icon_zone_height">120dp</dimen>
     <dimen name="dynamic_grid_overview_bar_item_width">80dp</dimen>
-    <dimen name="dynamic_grid_overview_bar_spacer_width">20dp</dimen>
-
+    <dimen name="dynamic_grid_overview_bar_spacer_width">25dp</dimen>
+    <dimen name="dynamic_grid_hotseat_height">88dp</dimen>
+    <dimen name="dynamic_grid_hotseat_top_padding">12dp</dimen>
+    <dimen name="dynamic_grid_hotseat_gutter_width">24dp</dimen>
     <dimen name="dynamic_grid_workspace_top_padding">12dp</dimen>
+    <dimen name="dynamic_grid_workspace_page_spacing">8dp</dimen>
     <!-- Minimum space between workspace and hotseat in spring loaded mode -->
     <dimen name="dynamic_grid_min_spring_loaded_space">8dp</dimen>
+    <dimen name="dynamic_grid_container_land_left_padding">118dp</dimen>
+    <dimen name="dynamic_grid_container_land_right_padding">66dp</dimen>
 
 <!-- Drop target bar -->
     <dimen name="dynamic_grid_drop_target_size">48dp</dimen>
@@ -54,28 +60,23 @@
     <dimen name="container_fastscroll_popup_size">72dp</dimen>
     <dimen name="container_fastscroll_popup_text_size">48dp</dimen>
 
-    <item name="container_margin" format="fraction" type="fraction">0%</item>
-    <dimen name="container_min_margin">8dp</dimen>
-    <dimen name="container_max_width">0dp</dimen>
-
 <!-- All Apps -->
     <dimen name="all_apps_button_scale_down">0dp</dimen>
     <dimen name="all_apps_grid_view_start_margin">0dp</dimen>
     <dimen name="all_apps_grid_section_y_offset">8dp</dimen>
     <dimen name="all_apps_grid_section_text_size">24sp</dimen>
     <dimen name="all_apps_search_bar_height">60dp</dimen>
-    <dimen name="all_apps_search_bar_margin_top">5dp</dimen>
+    <dimen name="all_apps_search_bar_margin_top">12dp</dimen>
     <dimen name="all_apps_search_bar_icon_margin_right">4dp</dimen>
     <dimen name="all_apps_search_bar_icon_margin_top">1dp</dimen>
-    <dimen name="all_apps_icon_top_bottom_padding">8dp</dimen>
-    <dimen name="all_apps_icon_width_gap">24dp</dimen>
     <dimen name="all_apps_list_bottom_padding">8dp</dimen>
     <dimen name="all_apps_empty_search_message_top_offset">40dp</dimen>
     <dimen name="all_apps_empty_search_bg_top_offset">144dp</dimen>
     <dimen name="all_apps_background_canvas_width">700dp</dimen>
     <dimen name="all_apps_background_canvas_height">475dp</dimen>
     <dimen name="all_apps_caret_stroke_width">2dp</dimen>
-    <dimen name="all_apps_caret_inset">8dp</dimen>
+    <dimen name="all_apps_caret_size">13dp</dimen>
+    <dimen name="all_apps_caret_workspace_offset">4dp</dimen>
 
 <!-- Search bar in All Apps -->
     <dimen name="all_apps_header_max_elevation">3dp</dimen>
@@ -85,6 +86,7 @@
     <dimen name="all_apps_divider_margin_vertical">8dp</dimen>
 
     <dimen name="all_apps_bezel_swipe_height">24dp</dimen>
+
 <!-- Widget tray -->
     <dimen name="widget_preview_label_vertical_padding">8dp</dimen>
     <dimen name="widget_preview_label_horizontal_padding">8dp</dimen>

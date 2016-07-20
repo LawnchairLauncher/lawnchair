@@ -29,6 +29,7 @@
         </attr>
         <attr name="deferShadowGeneration" format="boolean" />
         <attr name="customShadows" format="boolean" />
+        <attr name="centerVertically" format="boolean" />
     </declare-styleable>
 
     <!-- PagedView specific attributes. These attributes are used to customize

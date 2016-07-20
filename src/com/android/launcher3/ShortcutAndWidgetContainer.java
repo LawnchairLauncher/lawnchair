@@ -129,7 +129,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
             if (child instanceof LauncherAppWidgetHostView) {
                 // Widgets have their own padding, so skip
             } else {
-                // Otherwise, center the icon
+                // Otherwise, center the icon/folder
                 int cHeight = getCellContentHeight();
                 int cellPaddingY = (int) Math.max(0, ((lp.height - cHeight) / 2f));
                 int cellPaddingX = (int) (grid.edgeMarginPx / 2f);

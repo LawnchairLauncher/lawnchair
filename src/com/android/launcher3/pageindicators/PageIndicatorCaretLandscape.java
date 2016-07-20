@@ -16,13 +16,19 @@
 package com.android.launcher3.pageindicators;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.R;
 
 /**
- * Simply draws the caret drawable in the center. Used for the landscape layout.
+ * Simply draws the caret drawable bottom-right aligned in the view. This ensures that we can have
+ * a view with as large an area as we want (for touching) while maintaining a caret of size
+ * all_apps_caret_size.  Used only for the landscape layout.
  */
 public class PageIndicatorCaretLandscape extends PageIndicator {
     // all apps pull up handle drawable.
@@ -38,7 +44,11 @@ public class PageIndicatorCaretLandscape extends PageIndicator {
     public PageIndicatorCaretLandscape(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        setCaretDrawable(new CaretDrawable(context));
+        int caretSize = context.getResources().getDimensionPixelSize(R.dimen.all_apps_caret_size);
+        CaretDrawable caretDrawable = new CaretDrawable(context);
+        caretDrawable.setBounds(0, 0, caretSize, caretSize);
+        setCaretDrawable(caretDrawable);
+
         Launcher l = (Launcher) context;
         setOnTouchListener(l.getHapticFeedbackTouchListener());
         setOnClickListener(l);
@@ -46,15 +56,12 @@ public class PageIndicatorCaretLandscape extends PageIndicator {
     }
 
     @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-        int size = bottom - top;
-        int l = (right - left) / 2 - size / 2;
-        getCaretDrawable().setBounds(l, 0, l + size, size);
-    }
-
-    @Override
     protected void onDraw(Canvas canvas) {
+        Rect drawableBounds = getCaretDrawable().getBounds();
+        int count = canvas.save();
+        canvas.translate(getWidth() - drawableBounds.width(),
+                getHeight() - drawableBounds.height());
         getCaretDrawable().draw(canvas);
+        canvas.restoreToCount(count);
     }
 }

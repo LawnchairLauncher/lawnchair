@@ -22,8 +22,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/container_bounds_inset"
-    android:paddingTop="@dimen/container_bounds_inset"
     launcher:revealBackground="@drawable/quantum_panel_shape">
 
     <View
@@ -62,12 +60,10 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/all_apps_search_bar_height"
             android:layout_gravity="center|top"
-            android:paddingLeft="@dimen/container_fastscroll_thumb_max_width"
-            android:paddingRight="@dimen/container_fastscroll_thumb_max_width"
+            android:paddingTop="@dimen/all_apps_search_bar_margin_top"
             android:gravity="center|bottom"
             android:orientation="horizontal"
-            android:saveEnabled="false"
-            android:paddingTop="@dimen/all_apps_search_bar_margin_top" >
+            android:saveEnabled="false">
 
             <TextView
                 android:layout_width="wrap_content"

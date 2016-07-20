@@ -72,6 +72,7 @@ public class IconCache {
     private static final String EMPTY_CLASS_NAME = ".";
 
     private static final boolean DEBUG = false;
+    private static final boolean DEBUG_IGNORE_CACHE = false;
 
     private static final int LOW_RES_SCALE_FACTOR = 5;
 
@@ -552,7 +553,7 @@ public class IconCache {
             mCache.put(cacheKey, entry);
 
             // Check the DB first.
-            if (!getEntryFromDB(cacheKey, entry, useLowResIcon)) {
+            if (!getEntryFromDB(cacheKey, entry, useLowResIcon) || DEBUG_IGNORE_CACHE) {
                 if (info != null) {
                     entry.icon = Utilities.createBadgedIconBitmap(
                             mIconProvider.getIcon(info, mIconDpi), info.getUser(),

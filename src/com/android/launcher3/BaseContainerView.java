@@ -18,7 +18,6 @@ package com.android.launcher3;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
@@ -32,12 +31,16 @@ import com.android.launcher3.config.FeatureFlags;
 /**
  * A base container view, which supports resizing.
  */
-public abstract class BaseContainerView extends FrameLayout {
+public abstract class BaseContainerView extends FrameLayout
+        implements DeviceProfile.LauncherLayoutChangeListener {
 
-    protected final int mHorizontalPadding;
+    protected int mContainerPaddingLeft;
+    protected int mContainerPaddingRight;
+    protected int mContainerPaddingTop;
+    protected int mContainerPaddingBottom;
 
-    private final InsetDrawable mRevealDrawable;
-    private final ColorDrawable mDrawable;
+    private InsetDrawable mRevealDrawable;
+    protected final Drawable mBaseDrawable;
 
     private View mRevealView;
     private View mContent;
@@ -53,29 +56,30 @@ public abstract class BaseContainerView extends FrameLayout {
     public BaseContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        Launcher launcher = Launcher.getLauncher(context);
-        int width = launcher.getDeviceProfile().availableWidthPx;
-        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP &&
-                this instanceof AllAppsContainerView &&
-                !launcher.getDeviceProfile().isVerticalBarLayout()) {
-            mHorizontalPadding = 0;
-        } else {
-            mHorizontalPadding = DeviceProfile.getContainerPadding(context, width);
-        }
-
         if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && this instanceof AllAppsContainerView) {
-            mDrawable = new ColorDrawable();
-            mRevealDrawable = new InsetDrawable(mDrawable,
-                    mHorizontalPadding, 0, mHorizontalPadding, 0);
+            mBaseDrawable = new ColorDrawable();
         } else {
             TypedArray a = context.obtainStyledAttributes(attrs,
                     R.styleable.BaseContainerView, defStyleAttr, 0);
-            mRevealDrawable = new InsetDrawable(
-                    a.getDrawable(R.styleable.BaseContainerView_revealBackground),
-                    mHorizontalPadding, 0, mHorizontalPadding, 0);
-            mDrawable = null;
+            mBaseDrawable = a.getDrawable(R.styleable.BaseContainerView_revealBackground);
             a.recycle();
         }
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+
+        DeviceProfile grid = Launcher.getLauncher(getContext()).getDeviceProfile();
+        grid.addLauncherLayoutChangedListener(this);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+        DeviceProfile grid = Launcher.getLauncher(getContext()).getDeviceProfile();
+        grid.removeLauncherLayoutChangedListener(this);
     }
 
     @Override
@@ -85,16 +89,16 @@ public abstract class BaseContainerView extends FrameLayout {
         mContent = findViewById(R.id.main_content);
         mRevealView = findViewById(R.id.reveal_view);
 
-        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && this instanceof AllAppsContainerView) {
-            mRevealView.setBackground(mRevealDrawable);
-        } else {
-            mRevealView.setBackground(mRevealDrawable.getConstantState().newDrawable());
-            mContent.setBackground(mRevealDrawable);
-        }
+        updatePaddings();
+    }
 
-        // We let the content have a intent background, but still have full width.
-        // This allows the scroll bar to be used responsive outside the background bounds as well.
-        mContent.setPadding(0, 0, 0, 0);
+    @Override
+    public void onLauncherLayoutChanged() {
+        updatePaddings();
+    }
+
+    public void setRevealDrawableColor(int color) {
+        ((ColorDrawable) mBaseDrawable).setColor(color);
     }
 
     public final View getContentView() {
@@ -105,7 +109,35 @@ public abstract class BaseContainerView extends FrameLayout {
         return mRevealView;
     }
 
-    public void setRevealDrawableColor(int color) {
-        mDrawable.setColor(color);
+    private void updatePaddings() {
+        Context context = getContext();
+        Launcher launcher = Launcher.getLauncher(context);
+
+        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP &&
+                this instanceof AllAppsContainerView &&
+                !launcher.getDeviceProfile().isVerticalBarLayout()) {
+            mContainerPaddingLeft = mContainerPaddingRight = 0;
+            mContainerPaddingTop = mContainerPaddingBottom = 0;
+        } else {
+            DeviceProfile grid = launcher.getDeviceProfile();
+            int[] padding = grid.getContainerPadding(context);
+            mContainerPaddingLeft = padding[0] + grid.edgeMarginPx;
+            mContainerPaddingRight = padding[1] + grid.edgeMarginPx;
+            if (!launcher.getDeviceProfile().isVerticalBarLayout()) {
+                mContainerPaddingTop = mContainerPaddingBottom = grid.edgeMarginPx;
+            } else {
+                mContainerPaddingTop = mContainerPaddingBottom = 0;
+            }
+        }
+
+        mRevealDrawable = new InsetDrawable(mBaseDrawable,
+                mContainerPaddingLeft, mContainerPaddingTop, mContainerPaddingRight,
+                mContainerPaddingBottom);
+        mRevealView.setBackground(mRevealDrawable);
+        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && this instanceof AllAppsContainerView) {
+            // Skip updating the content background
+        } else {
+            mContent.setBackground(mRevealDrawable);
+        }
     }
 }

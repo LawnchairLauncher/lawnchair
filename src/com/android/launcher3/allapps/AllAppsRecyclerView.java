@@ -120,10 +120,9 @@ public class AllAppsRecyclerView extends BaseRecyclerView
         // Icons
         BubbleTextView icon = (BubbleTextView) adapter.onCreateViewHolder(this,
                 AllAppsGridAdapter.VIEW_TYPE_ICON).mContent;
-        icon.applyDummyInfo();
-        icon.measure(widthMeasureSpec, heightMeasureSpec);
-        mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_ICON, icon.getMeasuredHeight());
-        mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON, icon.getMeasuredHeight());
+        int iconHeight = icon.getLayoutParams().height;
+        mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_ICON, iconHeight);
+        mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON, iconHeight);
 
         // Search divider
         View searchDivider = adapter.onCreateViewHolder(this,
