@@ -40,6 +40,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
@@ -64,6 +65,7 @@ import android.widget.Toast;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.graphics.ShadowGenerator;
 import com.android.launcher3.util.IconNormalizer;
 
 import java.io.ByteArrayOutputStream;
@@ -244,8 +246,36 @@ public final class Utilities {
     public static Bitmap createBadgedIconBitmap(
             Drawable icon, UserHandleCompat user, Context context) {
         float scale = FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION ?
-                1 : IconNormalizer.getInstance().getScale(icon);
+                1 : IconNormalizer.getInstance().getScale(icon, null);
         Bitmap bitmap = createIconBitmap(icon, context, scale);
+        if (Utilities.ATLEAST_LOLLIPOP && user != null
+                && !UserHandleCompat.myUserHandle().equals(user)) {
+            BitmapDrawable drawable = new FixedSizeBitmapDrawable(bitmap);
+            Drawable badged = context.getPackageManager().getUserBadgedIcon(
+                    drawable, user.getUser());
+            if (badged instanceof BitmapDrawable) {
+                return ((BitmapDrawable) badged).getBitmap();
+            } else {
+                return createIconBitmap(badged, context);
+            }
+        } else {
+            return bitmap;
+        }
+    }
+
+    /**
+     * Same as {@link #createBadgedIconBitmap} but adds a shadow before badging the icon
+     */
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public static Bitmap createBadgedIconBitmapWithShadow(
+            Drawable icon, UserHandleCompat user, Context context) {
+        RectF iconBounds = new RectF();
+        float scale = FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION ?
+                1 : IconNormalizer.getInstance().getScale(icon, iconBounds);
+        scale = Math.min(scale, ShadowGenerator.getScaleForBounds(iconBounds));
+
+        Bitmap bitmap = createIconBitmap(icon, context, scale);
+        bitmap = ShadowGenerator.getInstance().recreateIcon(bitmap);
         if (Utilities.ATLEAST_LOLLIPOP && user != null
                 && !UserHandleCompat.myUserHandle().equals(user)) {
             BitmapDrawable drawable = new FixedSizeBitmapDrawable(bitmap);
