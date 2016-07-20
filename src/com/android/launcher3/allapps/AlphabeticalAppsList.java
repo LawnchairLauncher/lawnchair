@@ -440,7 +440,7 @@ public class AlphabeticalAppsList {
                     mPredictedApps.add(info);
                 } else {
                     if (ProviderConfig.IS_DOGFOOD_BUILD) {
-                        Log.e(TAG, "Predicted app not found: " + ck.flattenToString(mLauncher));
+                        Log.e(TAG, "Predicted app not found: " + ck);
                     }
                 }
                 // Stop at the number of predicted apps
