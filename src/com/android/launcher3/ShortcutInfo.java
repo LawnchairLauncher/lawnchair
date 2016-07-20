@@ -307,7 +307,7 @@ public class ShortcutInfo extends ItemInfo {
                 .getShortcutIconDrawable(shortcutInfo,
                         launcherAppState.getInvariantDeviceProfile().fillResIconDpi);
         Bitmap icon = unbadgedIcon == null ? null
-                : Utilities.createBadgedIconBitmap(unbadgedIcon, user, context);
+                : Utilities.createBadgedIconBitmapWithShadow(unbadgedIcon, user, context);
         setIcon(icon != null ? icon : launcherAppState.getIconCache().getDefaultIcon(user));
     }
 
