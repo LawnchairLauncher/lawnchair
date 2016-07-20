@@ -87,7 +87,7 @@
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
                 android:focusableInTouchMode="true"
-                android:gravity="start|center_vertical"
+                android:gravity="center"
                 android:imeOptions="actionSearch|flagNoExtractUi"
                 android:inputType="text|textNoSuggestions|textCapWords"
                 android:maxLines="1"
