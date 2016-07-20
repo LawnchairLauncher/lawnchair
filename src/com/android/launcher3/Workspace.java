@@ -313,6 +313,7 @@ public class Workspace extends PagedView
     // Total over scrollX in the overlay direction.
     private float mOverlayTranslation;
     private int mFirstPageScrollX;
+    private boolean mIgnoreQsbScroll;
 
     // Handles workspace state transitions
     private WorkspaceStateTransitionAnimation mStateTransitionAnimation;
@@ -1384,8 +1385,10 @@ public class Workspace extends PagedView
     }
 
     private void onWorkspaceOverallScrollChanged() {
-        mLauncher.getQsbContainer().setTranslationX(
-                mOverlayTranslation + mFirstPageScrollX - getScrollX());
+        if (!mIgnoreQsbScroll) {
+            mLauncher.getQsbContainer().setTranslationX(
+                    mOverlayTranslation + mFirstPageScrollX - getScrollX());
+        }
     }
 
     @Override
@@ -1797,6 +1800,33 @@ public class Workspace extends PagedView
         super.onLayout(changed, left, top, right, bottom);
         mFirstPageScrollX = getScrollForPage(0);
         onWorkspaceOverallScrollChanged();
+
+        final LayoutTransition transition = getLayoutTransition();
+        // If the transition is running defer updating max scroll, as some empty pages could
+        // still be present, and a max scroll change could cause sudden jumps in scroll.
+        if (transition != null && transition.isRunning()) {
+            transition.addTransitionListener(new LayoutTransition.TransitionListener() {
+
+                @Override
+                public void startTransition(LayoutTransition transition, ViewGroup container,
+                                            View view, int transitionType) {
+                    mIgnoreQsbScroll = true;
+                }
+
+                @Override
+                public void endTransition(LayoutTransition transition, ViewGroup container,
+                                          View view, int transitionType) {
+                    // Wait until all transitions are complete.
+                    if (!transition.isRunning()) {
+                        mIgnoreQsbScroll = false;
+                        transition.removeTransitionListener(this);
+                        mFirstPageScrollX = getScrollForPage(0);
+                        onWorkspaceOverallScrollChanged();
+                    }
+                }
+            });
+        }
+
     }
 
     @Override
