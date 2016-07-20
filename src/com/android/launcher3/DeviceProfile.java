@@ -392,7 +392,7 @@ public class DeviceProfile {
             // In portrait, we want the pages spaced such that there is no
             // overhang of the previous / next page into the current page viewport.
             // We assume symmetrical padding in portrait mode.
-            return Math.max(defaultPageSpacingPx, 2 * getWorkspacePadding(null).left);
+            return Math.max(defaultPageSpacingPx, getWorkspacePadding(null).left + 1);
         }
     }
 
