@@ -148,7 +148,8 @@ public class PageIndicatorLineCaret extends PageIndicator {
         super.onLayout(changed, left, top, right, bottom);
         // Top/center align the caret in the page indicator space
         int l = (right - left) / 2 - mCaretSizePx / 2;
-        getCaretDrawable().setBounds(l, mCaretWorkspaceOffsetPx, l + mCaretSizePx, mCaretSizePx);
+        getCaretDrawable().setBounds(l, mCaretWorkspaceOffsetPx, l + mCaretSizePx,
+                mCaretWorkspaceOffsetPx + mCaretSizePx);
 
         // The touch area is expanded below this view by #mTouchExtensionHeight
         // which extends to the top of the hotseat.
