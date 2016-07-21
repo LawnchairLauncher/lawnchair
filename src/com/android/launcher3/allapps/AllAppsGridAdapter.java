@@ -66,7 +66,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     public static final int VIEW_TYPE_PREDICTION_ICON = 1 << 2;
     // The message shown when there are no filtered results
     public static final int VIEW_TYPE_EMPTY_SEARCH = 1 << 3;
-    // A divider that separates the apps list and the search market button
+    // The message to continue to a market search when there are no filtered results
     public static final int VIEW_TYPE_SEARCH_MARKET = 1 << 4;
 
     // We use various dividers for various purposes.  They share enough attributes to reuse layouts,
@@ -528,8 +528,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 TextView searchView = (TextView) holder.mContent;
                 if (mMarketSearchIntent != null) {
                     searchView.setVisibility(View.VISIBLE);
-                    searchView.setGravity(mApps.hasNoFilteredResults() ? Gravity.CENTER :
-                            Gravity.START | Gravity.CENTER_VERTICAL);
                 } else {
                     searchView.setVisibility(View.GONE);
                 }
