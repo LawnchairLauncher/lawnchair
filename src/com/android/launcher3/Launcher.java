@@ -2591,7 +2591,7 @@ public class Launcher extends Activity
     protected void onClickAllAppsButton(View v) {
         if (LOGD) Log.d(TAG, "onClickAllAppsButton");
         if (!isAppsViewVisible()) {
-            mUserEventDispatcher.logActionOnControl(LauncherLogProto.Action.TAP,
+            getUserEventDispatcher().logActionOnControl(LauncherLogProto.Action.TAP,
                     LauncherLogProto.ALL_APPS_BUTTON);
             showAppsView(true /* animated */, false /* resetListToTop */,
                     true /* updatePredictedApps */, false /* focusSearchBar */);
@@ -2601,7 +2601,7 @@ public class Launcher extends Activity
     protected void onLongClickAllAppsButton(View v) {
         if (LOGD) Log.d(TAG, "onLongClickAllAppsButton");
         if (!isAppsViewVisible()) {
-            mUserEventDispatcher.logActionOnControl(LauncherLogProto.Action.LONGPRESS,
+            getUserEventDispatcher().logActionOnControl(LauncherLogProto.Action.LONGPRESS,
                     LauncherLogProto.ALL_APPS_BUTTON);
             showAppsView(true /* animated */, false /* resetListToTop */,
                     true /* updatePredictedApps */, true /* focusSearchBar */);
