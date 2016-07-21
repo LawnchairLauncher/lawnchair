@@ -486,10 +486,8 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
     @Override
     public void fillInLaunchSourceData(View v, ItemInfo info, Target target, Target targetParent) {
-        target.itemType = LauncherLogProto.SHORTCUT; // TODO: change to DYNAMIC_SHORTCUT
-        target.gridX = info.cellX;
-        target.gridY = info.cellY;
-        target.pageIndex = 0;
-        targetParent.containerType = LauncherLogProto.FOLDER; // TODO: change to DYNAMIC_SHORTCUTS
+        target.itemType = LauncherLogProto.DEEPSHORTCUT;
+        // TODO: add target.rank
+        targetParent.containerType = LauncherLogProto.DEEPSHORTCUTS;
     }
 }

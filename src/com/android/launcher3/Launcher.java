@@ -117,6 +117,7 @@ import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.DeepShortcutsContainer;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -2590,6 +2591,8 @@ public class Launcher extends Activity
     protected void onClickAllAppsButton(View v) {
         if (LOGD) Log.d(TAG, "onClickAllAppsButton");
         if (!isAppsViewVisible()) {
+            mUserEventDispatcher.logActionOnControl(LauncherLogProto.Action.TAP,
+                    LauncherLogProto.ALL_APPS_BUTTON);
             showAppsView(true /* animated */, false /* resetListToTop */,
                     true /* updatePredictedApps */, false /* focusSearchBar */);
         }
@@ -2598,6 +2601,8 @@ public class Launcher extends Activity
     protected void onLongClickAllAppsButton(View v) {
         if (LOGD) Log.d(TAG, "onLongClickAllAppsButton");
         if (!isAppsViewVisible()) {
+            mUserEventDispatcher.logActionOnControl(LauncherLogProto.Action.LONGPRESS,
+                    LauncherLogProto.ALL_APPS_BUTTON);
             showAppsView(true /* animated */, false /* resetListToTop */,
                     true /* updatePredictedApps */, true /* focusSearchBar */);
         }

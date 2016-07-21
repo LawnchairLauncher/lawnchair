@@ -61,6 +61,7 @@ enum ItemType {
   SHORTCUT = 2;
   WIDGET = 3;
   FOLDER_ICON = 4;
+  DEEPSHORTCUT = 5;
 }
 
 // Used to define what type of container a Target would represent.
@@ -74,6 +75,7 @@ enum ContainerType {
   OVERVIEW = 6;
   PREDICTION = 7;
   SEARCHRESULT = 8;
+  DEEPSHORTCUTS = 9;
 }
 
 // Used to define what type of control a Target would represent.
@@ -106,8 +108,16 @@ message Action {
     FLING = 4;
     PINCH = 5;
   }
+ enum Direction {
+    NONE = 0;
+    UP = 1;
+    DOWN = 2;
+    LEFT = 3;
+    RIGHT = 4;
+  }
   optional Type type = 1;
   optional Touch touch = 2;
+  optional Direction dir = 3;
 }
 
 //
