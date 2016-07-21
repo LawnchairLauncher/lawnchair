@@ -113,8 +113,8 @@ public final class Utilities {
                 && "NMR1".compareTo(VERSION.CODENAME) <= 0;
     }
 
-    // TODO: use Build.VERSION_CODES when available
-    public static final boolean ATLEAST_MARSHMALLOW = Build.VERSION.SDK_INT >= 23;
+    public static final boolean ATLEAST_MARSHMALLOW =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
 
     public static final boolean ATLEAST_LOLLIPOP_MR1 =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1;
