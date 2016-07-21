@@ -18,7 +18,7 @@
     android:id="@+id/search_market_text"
     android:layout_width="match_parent"
     android:layout_height="48dp"
-    android:gravity="start|center_vertical"
+    android:gravity="center"
     android:paddingLeft="@dimen/container_fastscroll_thumb_max_width"
     android:paddingRight="@dimen/container_fastscroll_thumb_max_width"
     android:fontFamily="sans-serif-medium"
