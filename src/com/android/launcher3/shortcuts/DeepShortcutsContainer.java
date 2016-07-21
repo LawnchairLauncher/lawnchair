@@ -160,11 +160,10 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
                     final ShortcutInfoCompat shortcut = shortcuts.get(i);
                     final ShortcutInfo launcherShortcutInfo = ShortcutInfo
                             .fromDeepShortcutInfo(shortcut, mLauncher);
-                    CharSequence label = shortcut.getLongLabel();
-                    if (TextUtils.isEmpty(label)) {
-                        label = shortcut.getShortLabel();
-                    }
-                    uiHandler.post(new UpdateShortcutChild(i, launcherShortcutInfo, label));
+                    CharSequence shortLabel = shortcut.getShortLabel();
+                    CharSequence longLabel = shortcut.getLongLabel();
+                    uiHandler.post(new UpdateShortcutChild(i, launcherShortcutInfo,
+                            shortLabel, longLabel));
                 }
             }
         });
@@ -174,13 +173,15 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
     private class UpdateShortcutChild implements Runnable {
         private int mShortcutChildIndex;
         private ShortcutInfo mShortcutChildInfo;
-        private CharSequence mLabel;
+        private CharSequence mShortLabel;
+        private CharSequence mLongLabel;
 
         public UpdateShortcutChild(int shortcutChildIndex, ShortcutInfo shortcutChildInfo,
-                CharSequence label) {
+                CharSequence shortLabel, CharSequence longLabel) {
             mShortcutChildIndex = shortcutChildIndex;
             mShortcutChildInfo = shortcutChildInfo;
-            mLabel = label;
+            mShortLabel = shortLabel;
+            mLongLabel = longLabel;
         }
 
         @Override
@@ -188,7 +189,12 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
             BubbleTextView shortcutView = getShortcutAt(mShortcutChildIndex).getBubbleText();
             shortcutView.applyFromShortcutInfo(mShortcutChildInfo,
                     LauncherAppState.getInstance().getIconCache());
-            shortcutView.setText(mLabel);
+            // Use the long label as long as it exists and fits.
+            int availableWidth = shortcutView.getWidth() - shortcutView.getTotalPaddingLeft()
+                    - shortcutView.getTotalPaddingRight();
+            boolean usingLongLabel = !TextUtils.isEmpty(mLongLabel)
+                    && shortcutView.getPaint().measureText(mLongLabel.toString()) <= availableWidth;
+            shortcutView.setText(usingLongLabel ? mLongLabel : mShortLabel);
             shortcutView.setOnClickListener(mLauncher);
             shortcutView.setOnLongClickListener(DeepShortcutsContainer.this);
             shortcutView.setOnTouchListener(DeepShortcutsContainer.this);
