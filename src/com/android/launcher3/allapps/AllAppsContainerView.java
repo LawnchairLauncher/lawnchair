@@ -22,6 +22,8 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.text.Selection;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.method.TextKeyListener;
 import android.util.AttributeSet;
@@ -47,6 +49,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
+import com.android.launcher3.graphics.TintedDrawableSpan;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.util.ComponentKey;
 
@@ -240,7 +243,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         }
         mSearchBarController = searchController;
         mSearchBarController.initialize(mApps, mSearchInput, mLauncher, this);
-        mSearchBarController.setHintView(findViewById(R.id.search_hint));
         mAdapter.setSearchController(mSearchBarController);
     }
 
@@ -308,6 +310,16 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         mSearchContainer = findViewById(R.id.search_container);
         mSearchInput = (ExtendedEditText) findViewById(R.id.search_box_input);
+
+        // Update the hint to contain the icon.
+        // Prefix the original hint with two spaces. The first space gets replaced by the icon
+        // using span. The second space is used for a singe space character between the hint
+        // and the icon.
+        SpannableString spanned = new SpannableString("  " + mSearchInput.getHint());
+        spanned.setSpan(new TintedDrawableSpan(getContext(), R.drawable.ic_allapps_search),
+                0, 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+        mSearchInput.setHint(spanned);
+
         mSearchContainerOffsetTop = getResources().getDimensionPixelSize(
                 R.dimen.all_apps_search_bar_margin_top);
 
