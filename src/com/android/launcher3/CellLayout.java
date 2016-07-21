@@ -406,7 +406,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             mTouchFeedbackView.animate().cancel();
         } else {
             if (mTouchFeedbackView.setBitmap(background)) {
-                mTouchFeedbackView.alignWithIconView(icon, mShortcutsAndWidgets);
+                mTouchFeedbackView.alignWithIconView(icon, mShortcutsAndWidgets,
+                        null /* clipAgainstView */);
                 mTouchFeedbackView.animateShadow();
             }
         }
