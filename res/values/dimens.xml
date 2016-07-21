@@ -28,7 +28,7 @@
     <dimen name="dynamic_grid_overview_bar_item_width">80dp</dimen>
     <dimen name="dynamic_grid_overview_bar_spacer_width">25dp</dimen>
     <dimen name="dynamic_grid_hotseat_height">88dp</dimen>
-    <dimen name="dynamic_grid_hotseat_top_padding">12dp</dimen>
+    <dimen name="dynamic_grid_hotseat_top_padding">8dp</dimen>
     <dimen name="dynamic_grid_hotseat_gutter_width">24dp</dimen>
     <dimen name="dynamic_grid_workspace_top_padding">12dp</dimen>
     <dimen name="dynamic_grid_workspace_page_spacing">8dp</dimen>
