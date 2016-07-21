@@ -75,7 +75,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
     private final int mStartDragThreshold;
     private BubbleTextView mDeferredDragIcon;
     private int mActivePointerId;
-    private Point mTouchDown = null;
+    private int[] mTouchDown = null;
     private DragView mDragView;
     private float mLastX, mLastY;
     private float mDistanceDragged = 0;
@@ -236,7 +236,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
     /**
      * Orients this container above or below the given icon, aligning with the left or right.
      *
-     * These are the preferred orientations, in order:
+     * These are the preferred orientations, in order (RTL prefers right-aligned over left):
      * - Above and left-aligned
      * - Above and right-aligned
      * - Below and left-aligned
@@ -253,16 +253,25 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
         DragLayer dragLayer = mLauncher.getDragLayer();
         dragLayer.getDescendantRectRelativeToSelf(icon, mTempRect);
-        // Align left and above by default.
-        int x = mTempRect.left + icon.getPaddingLeft();
-        int y = mTempRect.top - height;
         Rect insets = dragLayer.getInsets();
 
-        mIsLeftAligned = x + width < dragLayer.getRight() - insets.right;
-        if (!mIsLeftAligned) {
-            x = mTempRect.right - width - icon.getPaddingRight();
+        // Align left (right in RTL) if there is room.
+        boolean isRtl = Utilities.isRtl(getResources());
+        int leftAlignedX = mTempRect.left + icon.getPaddingLeft();
+        int rightAlignedX = mTempRect.right - width - icon.getPaddingRight();
+        int x = leftAlignedX;
+        boolean canBeLeftAligned = leftAlignedX + width < dragLayer.getRight() - insets.right;
+        boolean canBeRightAligned = rightAlignedX > dragLayer.getLeft() + insets.left;
+        if (!canBeLeftAligned || (isRtl && canBeRightAligned)) {
+            x = rightAlignedX;
+        }
+        mIsLeftAligned = x == leftAlignedX;
+        if (isRtl) {
+            x -= dragLayer.getWidth() - width;
         }
 
+        // Open above icon if there is room.
+        int y = mTempRect.top - height;
         mIsAboveIcon = mTempRect.top - height > dragLayer.getTop() + insets.top;
         if (!mIsAboveIcon) {
             y = mTempRect.bottom;
@@ -304,7 +313,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         mDragView.show(motionDownX, motionDownY);
     }
 
-    public boolean onForwardedEvent(MotionEvent ev, int activePointerId, Point touchDown) {
+    public boolean onForwardedEvent(MotionEvent ev, int activePointerId, int[] touchDown) {
         mActivePointerId = activePointerId;
         mTouchDown = touchDown;
         return dispatchTouchEvent(ev);
@@ -398,9 +407,9 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
      */
     private boolean shouldStartDeferredDrag(int x, int y, boolean containerContainsTouch) {
         int closestEdgeY = mIsAboveIcon ? getMeasuredHeight() : 0;
-        double distToEdge = Math.abs(mTouchDown.y - closestEdgeY);
-        double newDistToEdge = Math.hypot(x - mTouchDown.x, y - closestEdgeY);
-        return  !containerContainsTouch && (newDistToEdge - distToEdge > mStartDragThreshold);
+        double distToEdge = Math.abs(mTouchDown[1] - closestEdgeY);
+        double newDistToEdge = Math.hypot(x - mTouchDown[0], y - closestEdgeY);
+        return !containerContainsTouch && (newDistToEdge - distToEdge > mStartDragThreshold);
     }
 
     public void cleanupDeferredDrag() {
