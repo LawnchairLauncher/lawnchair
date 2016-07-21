@@ -460,7 +460,7 @@ public class DeviceProfile {
         qsbContainer.setLayoutParams(lp);
 
         // Layout the hotseat
-        View hotseat = launcher.findViewById(R.id.hotseat);
+        Hotseat hotseat = (Hotseat) launcher.findViewById(R.id.hotseat);
         lp = (FrameLayout.LayoutParams) hotseat.getLayoutParams();
         // We want the edges of the hotseat to line up with the edges of the workspace, but the
         // icons in the hotseat are a different size, and so don't line up perfectly. To account for
@@ -475,27 +475,25 @@ public class DeviceProfile {
             lp.gravity = Gravity.RIGHT;
             lp.width = hotseatBarHeightPx + mInsets.left + mInsets.right;
             lp.height = LayoutParams.MATCH_PARENT;
-            hotseat.findViewById(R.id.layout).setPadding(0, 2 * edgeMarginPx, 0, 2 * edgeMarginPx);
-            hotseat.setPadding(mInsets.left, 0, mInsets.right, 0);
+            hotseat.getLayout().setPadding(mInsets.left, mInsets.top, mInsets.right,
+                    workspacePadding.bottom);
         } else if (isTablet) {
             // Pad the hotseat with the workspace padding calculated above
             lp.gravity = Gravity.BOTTOM;
             lp.width = LayoutParams.MATCH_PARENT;
             lp.height = hotseatBarHeightPx + mInsets.bottom;
-            hotseat.findViewById(R.id.layout).setPadding(
-                    hotseatAdjustment + workspacePadding.left, 0,
-                    hotseatAdjustment + workspacePadding.right, 2 * edgeMarginPx);
-            hotseat.setPadding(0, hotseatBarTopPaddingPx, 0, mInsets.bottom);
+            hotseat.getLayout().setPadding(hotseatAdjustment + workspacePadding.left,
+                    hotseatBarTopPaddingPx, hotseatAdjustment + workspacePadding.right,
+                    mInsets.bottom);
         } else {
             // For phones, layout the hotseat without any bottom margin
             // to ensure that we have space for the folders
             lp.gravity = Gravity.BOTTOM;
             lp.width = LayoutParams.MATCH_PARENT;
             lp.height = hotseatBarHeightPx + mInsets.bottom;
-            hotseat.findViewById(R.id.layout).setPadding(
-                    hotseatAdjustment + workspacePadding.left, 0,
-                    hotseatAdjustment + workspacePadding.right, 0);
-            hotseat.setPadding(0, hotseatBarTopPaddingPx, 0, mInsets.bottom);
+            hotseat.getLayout().setPadding(hotseatAdjustment + workspacePadding.left,
+                    hotseatBarTopPaddingPx, hotseatAdjustment + workspacePadding.right,
+                    mInsets.bottom);
         }
         hotseat.setLayoutParams(lp);
 
