@@ -3128,7 +3128,15 @@ public class Launcher extends Activity
      * @return The open shortcuts container, or null if there is none
      */
     public DeepShortcutsContainer getOpenShortcutsContainer() {
-        return (DeepShortcutsContainer) mDragLayer.findViewById(R.id.deep_shortcuts_container);
+        // Iterate in reverse order. Shortcuts container is added later to the dragLayer,
+        // and will be one of the last views.
+        for (int i = mDragLayer.getChildCount() - 1; i >= 0; i--) {
+            View child = mDragLayer.getChildAt(i);
+            if (child instanceof DeepShortcutsContainer) {
+                return (DeepShortcutsContainer) child;
+            }
+        }
+        return null;
     }
 
     @Override

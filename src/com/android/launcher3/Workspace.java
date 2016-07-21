@@ -532,8 +532,9 @@ public class Workspace extends PagedView
      */
     public Folder getOpenFolder() {
         DragLayer dragLayer = mLauncher.getDragLayer();
-        int count = dragLayer.getChildCount();
-        for (int i = 0; i < count; i++) {
+        // Iterate in reverse order. Folder is added later to the dragLayer,
+        // and will be one of the last views.
+        for (int i = dragLayer.getChildCount() - 1; i >= 0; i--) {
             View child = dragLayer.getChildAt(i);
             if (child instanceof Folder) {
                 Folder folder = (Folder) child;
