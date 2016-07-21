@@ -37,8 +37,8 @@ import java.util.Locale;
 public class UserEventDispatcher {
 
     private static final boolean DEBUG_LOGGING = false;
-
     private final static int MAXIMUM_VIEW_HIERARCHY_LEVEL = 5;
+
     /**
      * Implemented by containers to provide a launch source for a given child.
      */
@@ -46,10 +46,11 @@ public class UserEventDispatcher {
 
         /**
          * Copies data from the source to the destination proto.
-         * @param v                 source of the data
-         * @param info          source of the data
-         * @param target            dest of the data
-         * @param targetParent      dest of the data
+         *
+         * @param v            source of the data
+         * @param info         source of the data
+         * @param target       dest of the data
+         * @param targetParent dest of the data
          */
         void fillInLaunchSourceData(View v, ItemInfo info, Target target, Target targetParent);
     }
@@ -126,12 +127,23 @@ public class UserEventDispatcher {
         dispatchUserEvent(createLauncherEvent(v, intent), intent);
     }
 
-    public void logTap(View v) {
-        // TODO
+    public void logActionOnControl(int action, int controlType) {
+        LauncherEvent event = LoggerUtils.initLauncherEvent(Action.TOUCH, Target.CONTROL);
+        event.action.touch = action;
+        event.srcTarget[0].controlType = controlType;
+        event.elapsedContainerMillis = System.currentTimeMillis() - mElapsedContainerMillis;
+        event.elapsedSessionMillis = System.currentTimeMillis() - mElapsedSessionMillis;
+        dispatchUserEvent(event, null);
     }
 
-    public void logLongPress() {
-        // TODO
+    public void logActionOnContainer(int action, int dir, int containerType) {
+        LauncherEvent event = LoggerUtils.initLauncherEvent(Action.TOUCH, Target.CONTAINER);
+        event.action.touch = action;
+        event.action.dir = dir;
+        event.srcTarget[0].containerType = containerType;
+        event.elapsedContainerMillis = System.currentTimeMillis() - mElapsedContainerMillis;
+        event.elapsedSessionMillis = System.currentTimeMillis() - mElapsedSessionMillis;
+        dispatchUserEvent(event, null);
     }
 
     public void logDragNDrop() {
@@ -152,7 +164,6 @@ public class UserEventDispatcher {
     public final void resetElapsedSessionMillis() {
         mElapsedSessionMillis = System.currentTimeMillis();
         mElapsedContainerMillis = System.currentTimeMillis();
-
     }
 
     public final void resetActionDurationMillis() {
@@ -164,8 +175,8 @@ public class UserEventDispatcher {
             Log.d("UserEvent", String.format(Locale.US,
                     "action:%s\nchild:%s\nparent:%s\nelapsed container %d ms session %d ms",
                     LoggerUtils.getActionStr(ev.action),
-                    LoggerUtils.getTargetStr(ev.srcTarget[0]),
-                    LoggerUtils.getTargetStr(ev.srcTarget[1]),
+                    LoggerUtils.getTargetStr(ev.srcTarget != null ? ev.srcTarget[0] : null),
+                    LoggerUtils.getTargetStr(ev.srcTarget.length > 1 ? ev.srcTarget[1] : null),
                     ev.elapsedContainerMillis,
                     ev.elapsedSessionMillis));
         }

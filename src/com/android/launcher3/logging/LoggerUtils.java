@@ -1,14 +1,8 @@
 package com.android.launcher3.logging;
 
-import android.os.Bundle;
-import android.util.Log;
-
-import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
-
 
 /**
  * Debugging helper methods.
@@ -24,12 +18,17 @@ public class LoggerUtils {
             case Action.LONGPRESS: return "LONGPRESS";
             case Action.DRAGDROP: return "DRAGDROP";
             case Action.PINCH: return "PINCH";
+            case Action.SWIPE: return "SWIPE";
+            case Action.FLING: return "FLING";
             default: return "UNKNOWN";
         }
     }
 
     public static String getTargetStr(Target t) {
-        String typeStr;
+        String typeStr = "";
+        if (t == null){
+            return typeStr;
+        }
         switch (t.type) {
             case Target.ITEM:
                 return getItemStr(t);
@@ -44,6 +43,9 @@ public class LoggerUtils {
 
     private static String getItemStr(Target t) {
         String typeStr = "";
+        if (t == null){
+            return typeStr;
+        }
         switch(t.itemType){
             case LauncherLogProto.APP_ICON: typeStr = "ICON"; break;
             case LauncherLogProto.SHORTCUT: typeStr = "SHORTCUT"; break;
@@ -58,6 +60,9 @@ public class LoggerUtils {
     }
 
     private static String getControlStr(Target t) {
+        if (t == null){
+            return "";
+        }
         switch(t.controlType) {
             case LauncherLogProto.ALL_APPS_BUTTON: return "ALL_APPS_BUTTON";
             case LauncherLogProto.WIDGETS_BUTTON: return "WIDGETS_BUTTON";
@@ -72,8 +77,10 @@ public class LoggerUtils {
     }
 
     private static String getContainerStr(LauncherLogProto.Target t) {
-        String str;
-        Log.d(TAG, "t.containerType" + t.containerType);
+        String str = "";
+        if (t == null) {
+            return str;
+        }
         switch (t.containerType) {
             case LauncherLogProto.WORKSPACE:
                 str = "WORKSPACE";
@@ -117,6 +124,20 @@ public class LoggerUtils {
         event.srcTarget[0].type = childTargetType;
         event.srcTarget[1] = new LauncherLogProto.Target();
         event.srcTarget[1].type = parentTargetType;
+
+        event.action = new LauncherLogProto.Action();
+        event.action.type = actionType;
+        return event;
+    }
+
+    public static LauncherLogProto.LauncherEvent initLauncherEvent(
+            int actionType,
+            int childTargetType){
+        LauncherLogProto.LauncherEvent event = new LauncherLogProto.LauncherEvent();
+
+        event.srcTarget = new LauncherLogProto.Target[1];
+        event.srcTarget[0] = new LauncherLogProto.Target();
+        event.srcTarget[0].type = childTargetType;
 
         event.action = new LauncherLogProto.Action();
         event.action.type = actionType;
