@@ -526,19 +526,23 @@ public class BubbleTextView extends TextView
      * Sets the icon for this view based on the layout direction.
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    public void setIcon(Drawable icon) {
+    private void setIcon(Drawable icon) {
         mIcon = icon;
         if (mIconSize != -1) {
             mIcon.setBounds(0, 0, mIconSize, mIconSize);
         }
+        applyCompoundDrawables(mIcon);
+    }
+
+    protected void applyCompoundDrawables(Drawable icon) {
         if (mLayoutHorizontal) {
             if (Utilities.ATLEAST_JB_MR1) {
-                setCompoundDrawablesRelative(mIcon, null, null, null);
+                setCompoundDrawablesRelative(icon, null, null, null);
             } else {
-                setCompoundDrawables(mIcon, null, null, null);
+                setCompoundDrawables(icon, null, null, null);
             }
         } else {
-            setCompoundDrawables(null, mIcon, null, null);
+            setCompoundDrawables(null, icon, null, null);
         }
     }
 
