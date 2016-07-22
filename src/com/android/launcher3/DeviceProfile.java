@@ -378,10 +378,30 @@ public class DeviceProfile {
                 padding.set(desiredWorkspaceLeftRightMarginPx,
                         topWorkspacePadding,
                         desiredWorkspaceLeftRightMarginPx,
-                        hotseatBarHeightPx + pageIndicatorHeightPx);
+                        paddingBottom);
             }
         }
         return padding;
+    }
+
+    /**
+     * @return the bounds for which the open folders should be contained within
+     */
+    public Rect getAbsoluteOpenFolderBounds() {
+        if (isVerticalBarLayout()) {
+            // Folders should only appear right of the drop target bar and left of the hotseat
+            return new Rect(mInsets.left + dropTargetBarSizePx + edgeMarginPx,
+                    mInsets.top,
+                    mInsets.left + availableWidthPx - hotseatBarHeightPx - edgeMarginPx,
+                    mInsets.top + availableHeightPx);
+        } else {
+            // Folders should only appear below the drop target bar and above the hotseat
+            return new Rect(mInsets.left,
+                    mInsets.top + dropTargetBarSizePx + edgeMarginPx,
+                    mInsets.left + availableWidthPx,
+                    mInsets.top + availableHeightPx - hotseatBarHeightPx - pageIndicatorHeightPx -
+                            edgeMarginPx);
+        }
     }
 
     private int getWorkspacePageSpacing() {

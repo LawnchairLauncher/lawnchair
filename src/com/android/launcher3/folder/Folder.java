@@ -1030,27 +1030,25 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     private void centerAboutIcon() {
-        DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
+        DeviceProfile grid = mLauncher.getDeviceProfile();
 
+        DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
         DragLayer parent = (DragLayer) mLauncher.findViewById(R.id.drag_layer);
         int width = getPaddingLeft() + getPaddingRight() + mContent.getDesiredWidth();
         int height = getFolderHeight();
 
         float scale = parent.getDescendantRectRelativeToSelf(mFolderIcon, sTempRect);
-
-        DeviceProfile grid = mLauncher.getDeviceProfile();
-
-        int centerX = (int) (sTempRect.left + sTempRect.width() * scale / 2);
-        int centerY = (int) (sTempRect.top + sTempRect.height() * scale / 2);
+        int centerX = sTempRect.centerX();
+        int centerY = sTempRect.centerY();
         int centeredLeft = centerX - width / 2;
         int centeredTop = centerY - height / 2;
 
         // We need to bound the folder to the currently visible workspace area
         mLauncher.getWorkspace().getPageAreaRelativeToDragLayer(sTempRect);
         int left = Math.min(Math.max(sTempRect.left, centeredLeft),
-                sTempRect.left + sTempRect.width() - width);
+                sTempRect.right- width);
         int top = Math.min(Math.max(sTempRect.top, centeredTop),
-                sTempRect.top + sTempRect.height() - height);
+                sTempRect.bottom - height);
 
         int distFromEdgeOfScreen = mLauncher.getWorkspace().getPaddingLeft() + getPaddingLeft();
 
@@ -1064,7 +1062,14 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             left = sTempRect.left + (sTempRect.width() - width) / 2;
         }
         if (height >= sTempRect.height()) {
+            // Folder height is greater than page height, center on page
             top = sTempRect.top + (sTempRect.height() - height) / 2;
+        } else {
+            // Folder height is less than page height, so bound it to the absolute open folder
+            // bounds if necessary
+            Rect folderBounds = grid.getAbsoluteOpenFolderBounds();
+            left = Math.max(folderBounds.left, Math.min(left, folderBounds.right - width));
+            top = Math.max(folderBounds.top, Math.min(top, folderBounds.bottom - height));
         }
 
         int folderPivotX = width / 2 + (centeredLeft - left);
