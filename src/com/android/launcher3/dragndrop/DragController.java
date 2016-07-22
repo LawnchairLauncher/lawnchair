@@ -252,8 +252,7 @@ public class DragController implements DragDriver.EventListener, TouchController
         final float scaleDps = FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND ?
                 res.getDimensionPixelSize(R.dimen.dragViewScale) : 0f;
         final DragView dragView = mDragObject.dragView = new DragView(mLauncher, b, registrationX,
-                registrationY, 0, 0, b.getWidth(), b.getHeight(),
-                initialDragViewScale, scaleDps);
+                registrationY, initialDragViewScale, scaleDps);
 
         mDragObject.dragComplete = false;
         if (mIsAccessibleDrag) {
