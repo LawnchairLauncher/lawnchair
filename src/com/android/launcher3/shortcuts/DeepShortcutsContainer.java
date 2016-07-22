@@ -16,19 +16,24 @@
 
 package com.android.launcher3.shortcuts;
 
+import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -44,6 +49,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
+import com.android.launcher3.LauncherViewPropertyAnimator;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
@@ -54,6 +60,7 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.graphics.ScaledPreviewProvider;
+import com.android.launcher3.graphics.TriangleShape;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -88,6 +95,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
     private Point mIconLastTouchPos = new Point();
     private boolean mIsLeftAligned;
     private boolean mIsAboveIcon;
+    private View mArrow;
 
     private boolean mSrcIconDragStarted;
 
@@ -210,27 +218,56 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
     }
 
     private DeepShortcutView getShortcutAt(int index) {
+        if (!mIsAboveIcon) {
+            // Opening down, so arrow is the first view.
+            index++;
+        }
         return (DeepShortcutView) getChildAt(index);
+    }
+
+    private int getShortcutCount() {
+        // All children except the arrow are shortcuts.
+        return getChildCount() - 1;
     }
 
     private void animateOpen(BubbleTextView originalIcon) {
         orientAboutIcon(originalIcon);
+        final Resources resources = getResources();
+        final int arrowWidth = resources.getDimensionPixelSize(R.dimen.deep_shortcuts_arrow_width);
+        final int arrowHeight = resources.getDimensionPixelSize(R.dimen.deep_shortcuts_arrow_height);
+        int iconWidth = originalIcon.getWidth() - originalIcon.getTotalPaddingLeft()
+                - originalIcon.getTotalPaddingRight();
+        iconWidth *= originalIcon.getScaleX();
+        final int arrowHorizontalOffset = iconWidth / 2 - arrowWidth / 2;
+        final int arrowVerticalOffset = resources.getDimensionPixelSize(
+                R.dimen.deep_shortcuts_arrow_vertical_offset);
+        mArrow = addArrowView(arrowHorizontalOffset, arrowVerticalOffset, arrowWidth, arrowHeight);
 
         setVisibility(View.VISIBLE);
 
         final AnimatorSet shortcutAnims = LauncherAnimUtils.createAnimatorSet();
-        final int numShortcuts = getChildCount();
-        final int arrowOffset = getResources().getDimensionPixelSize(
-                R.dimen.deep_shortcuts_arrow_horizontal_offset);
-        final int pivotX = mIsLeftAligned ? arrowOffset : getMeasuredWidth() - arrowOffset;
+        final int shortcutCount = getShortcutCount();
+        final int pivotX = mIsLeftAligned ? arrowHorizontalOffset
+                : getMeasuredWidth() - arrowHorizontalOffset;
         final int pivotY = getShortcutAt(0).getMeasuredHeight() / 2;
-        for (int i = 0; i < numShortcuts; i++) {
+        for (int i = 0; i < shortcutCount; i++) {
             DeepShortcutView deepShortcutView = getShortcutAt(i);
             deepShortcutView.setPivotX(pivotX);
             deepShortcutView.setPivotY(pivotY);
-            int animationIndex = mIsAboveIcon ? numShortcuts - i - 1 : i;
-            shortcutAnims.play(deepShortcutView.createOpenAnimation(animationIndex, mIsAboveIcon));
+            int animationIndex = mIsAboveIcon ? shortcutCount - i - 1 : i;
+            long animationDelay = animationIndex * getResources().getInteger(
+                    R.integer.config_deepShortcutOpenStagger);
+            shortcutAnims.play(deepShortcutView.createOpenAnimation(animationDelay, mIsAboveIcon));
         }
+        mArrow.setScaleX(0);
+        mArrow.setScaleY(0);
+        final long shortcutAnimDuration = shortcutAnims.getChildAnimations().get(0).getDuration();
+        final long arrowScaleDelay = shortcutAnimDuration / 6;
+        final long arrowScaleDuration = shortcutAnimDuration - arrowScaleDelay;
+        Animator arrowScale = new LauncherViewPropertyAnimator(mArrow).scaleX(1).scaleY(1);
+        arrowScale.setStartDelay(arrowScaleDelay);
+        arrowScale.setDuration(arrowScaleDuration);
+        shortcutAnims.play(arrowScale);
         shortcutAnims.start();
     }
 
@@ -245,8 +282,6 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
      *
      * So we always align left if there is enough horizontal space
      * and align above if there is enough vertical space.
-     *
-     * TODO: draw arrow based on orientation.
      */
     private void orientAboutIcon(BubbleTextView icon) {
         int width = getMeasuredWidth();
@@ -283,6 +318,36 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
         setX(x);
         setY(y);
+    }
+
+    /**
+     * Adds an arrow view pointing at the original icon.
+     * @param horizontalOffset the horizontal offset of the arrow, so that it
+     *                              points at the center of the original icon
+     */
+    private View addArrowView(int horizontalOffset, int verticalOffset, int width, int height) {
+        LinearLayout.LayoutParams layoutParams = new LayoutParams(width, height);
+        if (mIsLeftAligned) {
+            layoutParams.gravity = Gravity.LEFT;
+            layoutParams.leftMargin = horizontalOffset;
+        } else {
+            layoutParams.gravity = Gravity.RIGHT;
+            layoutParams.rightMargin = horizontalOffset;
+        }
+        if (mIsAboveIcon) {
+            layoutParams.topMargin = verticalOffset;
+        } else {
+            layoutParams.bottomMargin = verticalOffset;
+        }
+
+        View arrowView = new View(getContext());
+        ShapeDrawable arrowDrawable = new ShapeDrawable(TriangleShape.create(
+                width, height, !mIsAboveIcon));
+        arrowDrawable.getPaint().setColor(Color.WHITE);
+        arrowView.setBackground(arrowDrawable);
+        arrowView.setElevation(getElevation());
+        addView(arrowView, mIsAboveIcon ? getChildCount() : 0, layoutParams);
+        return arrowView;
     }
 
     private void deferDrag(BubbleTextView originalIcon) {
@@ -339,6 +404,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         Utilities.translateEventCoordinates(this, mLauncher.getDragLayer(), ev);
         final int dragLayerX = (int) ev.getX();
         final int dragLayerY = (int) ev.getY();
+        int shortcutCount = getShortcutCount();
         if (action == MotionEvent.ACTION_MOVE) {
             if (mLastX != 0 || mLastY != 0) {
                 mDistanceDragged += Math.hypot(mLastX - x, mLastY - y);
@@ -347,6 +413,8 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
             mLastY = y;
 
             if (shouldStartDeferredDrag((int) x, (int) y)) {
+            DeepShortcutView topShortcut = getShortcutAt(0);
+            DeepShortcutView bottomShortcut = getShortcutAt(shortcutCount - 1);
                 mSrcIconDragStarted = true;
                 cleanupDeferredDrag(true);
                 mDeferredDragIcon.getParent().requestDisallowInterceptTouchEvent(false);

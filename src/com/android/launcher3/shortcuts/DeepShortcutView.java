@@ -89,11 +89,8 @@ public class DeepShortcutView extends FrameLayout {
 
     /**
      * Creates an animator to play when the shortcut container is being opened.
-     *
-     * @param animationIndex The index at which this animation will be started
-     *                       relative to other DeepShortcutView open animations.
      */
-    public Animator createOpenAnimation(int animationIndex, boolean isContainerAboveIcon) {
+    public Animator createOpenAnimation(long animationDelay, boolean isContainerAboveIcon) {
         final Resources res = getResources();
         setVisibility(INVISIBLE);
 
@@ -119,8 +116,7 @@ public class DeepShortcutView extends FrameLayout {
                 .scaleX(1).scaleY(1);
 
         openAnimation.playTogether(reveal, translationY, scale);
-        openAnimation.setStartDelay(animationIndex * res.getInteger(
-                R.integer.config_deepShortcutOpenStagger));
+        openAnimation.setStartDelay(animationDelay);
         openAnimation.setDuration(res.getInteger(R.integer.config_deepShortcutOpenDuration));
         openAnimation.setInterpolator(new DecelerateInterpolator());
         return openAnimation;

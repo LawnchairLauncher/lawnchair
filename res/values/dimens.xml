@@ -164,7 +164,9 @@
          of the shortcut container before the container is removed. -->
     <dimen name="deep_shortcuts_start_drag_threshold">35dp</dimen>
     <dimen name="deep_shortcut_icon_size">36dp</dimen>
-    <dimen name="deep_shortcuts_arrow_horizontal_offset">19dp</dimen>
     <dimen name="deep_shortcut_anim_translation_y">5dp</dimen>
+    <dimen name="deep_shortcuts_arrow_width">10dp</dimen>
+    <dimen name="deep_shortcuts_arrow_height">8dp</dimen>
+    <dimen name="deep_shortcuts_arrow_vertical_offset">-2dp</dimen>
 
 </resources>
