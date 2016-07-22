@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+** Copyright 2016, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+        android:ordering="sequentially"
+        android:startOffset="200">
+
+    <objectAnimator
+        android:propertyName="progress"
+        android:duration="250"
+        android:interpolator="@interpolator/disco_bounce_section1"
+        android:valueFrom="1f"
+        android:valueTo=".94f"
+        android:valueType="floatType"/>
+    <objectAnimator
+        android:propertyName="progress"
+        android:duration="216"
+        android:interpolator="@interpolator/disco_bounce_section2"
+        android:valueFrom=".94f"
+        android:valueTo="1.012f"
+        android:valueType="floatType"/>
+    <objectAnimator
+        android:propertyName="progress"
+        android:duration="234"
+        android:interpolator="@interpolator/disco_bounce_section3"
+        android:valueFrom="1.012f"
+        android:valueTo="1f"
+        android:valueType="floatType"/>
+</set>

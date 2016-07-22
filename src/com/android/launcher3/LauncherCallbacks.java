@@ -110,4 +110,6 @@ public interface LauncherCallbacks {
      *                  but for implementation purposes is passed around as an object.
      */
     public void setLauncherSearchCallback(Object callbacks);
+
+    public boolean shouldShowDiscoveryBounce();
 }
