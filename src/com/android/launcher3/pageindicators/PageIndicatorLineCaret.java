@@ -136,6 +136,7 @@ public class PageIndicatorLineCaret extends PageIndicator {
         mLauncher = (Launcher) context;
         setOnTouchListener(mLauncher.getHapticFeedbackTouchListener());
         setOnClickListener(mLauncher);
+        setOnLongClickListener(mLauncher);
         setOnFocusChangeListener(mLauncher.mFocusHandler);
         setCaretDrawable(new CaretDrawable(context));
         mLineHeight = res.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_line_height);
