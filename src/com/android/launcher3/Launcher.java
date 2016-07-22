@@ -4483,13 +4483,6 @@ public class Launcher extends Activity
                 UserHandleCompat.myUserHandle());
     }
 
-    // TODO: This method should be a part of LauncherSearchCallback
-    public void startDrag(View dragView, ItemInfo dragInfo, DragSource source) {
-        dragView.setTag(dragInfo);
-        mWorkspace.onExternalDragStartedWithItem(dragView);
-        mWorkspace.beginExternalDragShared(dragView, source);
-    }
-
     protected void moveWorkspaceToDefaultScreen() {
         mWorkspace.moveToDefaultScreen(false);
     }
