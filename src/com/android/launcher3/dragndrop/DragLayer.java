@@ -280,6 +280,10 @@ public class DragLayer extends InsettableFrameLayout {
         int action = ev.getAction();
 
         if (action == MotionEvent.ACTION_DOWN) {
+            // Cancel discovery bounce animation when a user start interacting on anywhere on
+            // dray layer even if mAllAppsController is NOT the active controller.
+            // TODO: handle other input other than touch
+            mAllAppsController.cancelDiscoveryAnimation();
             if (handleTouchDown(ev, true)) {
                 return true;
             }

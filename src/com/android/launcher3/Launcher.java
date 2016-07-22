@@ -198,6 +198,7 @@ public class Launcher extends Activity
 
     static final String INTRO_SCREEN_DISMISSED = "launcher.intro_screen_dismissed";
     static final String FIRST_RUN_ACTIVITY_DISPLAYED = "launcher.first_run_activity_displayed";
+    static final String APPS_VIEW_SHOWN = "launcher.apps_view_shown";
 
     /** The different states that Launcher can be in. */
     enum State { NONE, WORKSPACE, WORKSPACE_SPRING_LOADED, APPS, APPS_SPRING_LOADED,
@@ -288,6 +289,7 @@ public class Launcher extends Activity
     private IconCache mIconCache;
     private ExtractedColors mExtractedColors;
     private LauncherAccessibilityDelegate mAccessibilityDelegate;
+    private boolean mIsResumeFromActionScreenOff;
     @Thunk boolean mUserPresent = true;
     private boolean mVisible = false;
     private boolean mHasFocus = false;
@@ -1079,6 +1081,10 @@ public class Launcher extends Activity
             InstallShortcutReceiver.disableAndFlushInstallQueue(this);
         }
 
+        if (shouldShowDiscoveryBounce()) {
+            mAllAppsController.showDiscoveryBounce();
+        }
+        mIsResumeFromActionScreenOff = false;
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onResume();
         }
@@ -1623,6 +1629,7 @@ public class Launcher extends Activity
                         mAppsView.reset();
                     }
                 }
+                mIsResumeFromActionScreenOff = true;
             } else if (Intent.ACTION_USER_PRESENT.equals(action)) {
                 mUserPresent = true;
                 updateAutoAdvanceState();
@@ -3348,6 +3355,7 @@ public class Launcher extends Activity
      */
     public void showAppsView(boolean animated, boolean resetListToTop, boolean updatePredictedApps,
             boolean focusSearchBar) {
+        markAppsViewShown();
         if (resetListToTop) {
             mAppsView.scrollToTop();
         }
@@ -4358,10 +4366,6 @@ public class Launcher extends Activity
                 !mSharedPrefs.getBoolean(FIRST_RUN_ACTIVITY_DISPLAYED, false);
     }
 
-    protected boolean hasRunFirstRunActivity() {
-        return mSharedPrefs.getBoolean(FIRST_RUN_ACTIVITY_DISPLAYED, false);
-    }
-
     public boolean showFirstRunActivity() {
         if (shouldRunFirstRunActivity() &&
                 hasFirstRunActivity()) {
@@ -4379,6 +4383,29 @@ public class Launcher extends Activity
         SharedPreferences.Editor editor = mSharedPrefs.edit();
         editor.putBoolean(FIRST_RUN_ACTIVITY_DISPLAYED, true);
         editor.apply();
+    }
+
+    private void markAppsViewShown() {
+        if (mSharedPrefs.getBoolean(APPS_VIEW_SHOWN, false)) {
+            return;
+        }
+        mSharedPrefs.edit().putBoolean(APPS_VIEW_SHOWN, true).apply();
+    }
+
+    private boolean shouldShowDiscoveryBounce() {
+        if (mState != mState.WORKSPACE) {
+            return false;
+        }
+        if (mLauncherCallbacks != null && mLauncherCallbacks.shouldShowDiscoveryBounce()) {
+            return true;
+        }
+        if (!mIsResumeFromActionScreenOff) {
+            return false;
+        }
+        if (mSharedPrefs.getBoolean(APPS_VIEW_SHOWN, false)) {
+            return false;
+        }
+        return true;
     }
 
     /**
