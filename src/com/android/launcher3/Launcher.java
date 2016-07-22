@@ -2511,7 +2511,8 @@ public class Launcher extends Activity
             if (v instanceof FolderIcon) {
                 onClickFolderIcon(v);
             }
-        } else if (v instanceof PageIndicator || (v == mAllAppsButton && mAllAppsButton != null)) {
+        } else if ((FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && v instanceof PageIndicator) ||
+                (v == mAllAppsButton && mAllAppsButton != null)) {
             onClickAllAppsButton(v);
         } else if (tag instanceof AppInfo) {
             startAppShortcutOrInfoActivity(v);
@@ -3157,7 +3158,8 @@ public class Launcher extends Activity
         if (isWorkspaceLocked()) return false;
         if (mState != State.WORKSPACE) return false;
 
-        if (v == mAllAppsButton && mAllAppsButton != null) {
+        if ((FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && v instanceof PageIndicator) ||
+                (v == mAllAppsButton && mAllAppsButton != null)) {
             onLongClickAllAppsButton(v);
             return true;
         }

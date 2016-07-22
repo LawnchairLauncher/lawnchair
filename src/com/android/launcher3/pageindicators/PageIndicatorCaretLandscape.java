@@ -52,6 +52,7 @@ public class PageIndicatorCaretLandscape extends PageIndicator {
         Launcher l = (Launcher) context;
         setOnTouchListener(l.getHapticFeedbackTouchListener());
         setOnClickListener(l);
+        setOnLongClickListener(l);
         setOnFocusChangeListener(l.mFocusHandler);
     }
 
