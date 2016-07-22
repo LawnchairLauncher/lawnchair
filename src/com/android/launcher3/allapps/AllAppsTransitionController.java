@@ -1,6 +1,7 @@
 package com.android.launcher3.allapps;
 
 import android.animation.Animator;
+import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
@@ -13,15 +14,15 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 
-import com.android.launcher3.pageindicators.CaretDrawable;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.Workspace.Direction;
+import com.android.launcher3.pageindicators.CaretDrawable;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.TouchController;
 
@@ -64,15 +65,15 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private final VerticalPullDetector mDetector;
     private final ArgbEvaluator mEvaluator;
 
-    // Animation in this class is controlled by a single variable {@link mShiftCurrent}.
-    // Visually, it represents top y coordinate of the all apps container. Using the
-    // {@link mShiftRange} as the denominator, this fraction value ranges in [0, 1].
-    //
-    // When {@link mShiftCurrent} is 0, all apps container is pulled up.
-    // When {@link mShiftCurrent} is {@link mShirtRange}, all apps container is pulled down.
+    // Animation in this class is controlled by a single variable {@link mProgress}.
+    // Visually, it represents top y coordinate of the all apps container if multiplied with
+    // {@link mShiftRange}.
+
+    // When {@link mProgress} is 0, all apps container is pulled up.
+    // When {@link mProgress} is 1, all apps container is pulled down.
     private float mShiftStart;      // [0, mShiftRange]
-    private float mShiftCurrent;    // [0, mShiftRange]
     private float mShiftRange;      // changes depending on the orientation
+    private float mProgress;        // [0, 1], mShiftRange * mProgress = shiftCurrent
 
     private static final float DEFAULT_SHIFT_RANGE = 10;
 
@@ -86,20 +87,26 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     private boolean mLightStatusBar;
 
-    public AllAppsTransitionController(Launcher launcher) {
-        mLauncher = launcher;
-        mDetector = new VerticalPullDetector(launcher);
+    // Used in discovery bounce animation to provide the transition without workspace changing.
+    private boolean mIsTranslateWithoutWorkspace = false;
+    private AnimatorSet mDiscoBounceAnimation;
+
+    public AllAppsTransitionController(Launcher l) {
+        mLauncher = l;
+        mDetector = new VerticalPullDetector(l);
         mDetector.setListener(this);
-        mShiftCurrent = mShiftRange = DEFAULT_SHIFT_RANGE;
-        mBezelSwipeUpHeight = launcher.getResources().getDimensionPixelSize(
+        mShiftRange = DEFAULT_SHIFT_RANGE;
+        mProgress = 1f;
+        mBezelSwipeUpHeight = l.getResources().getDimensionPixelSize(
                 R.dimen.all_apps_bezel_swipe_height);
 
-        mCaretAnimationDuration = launcher.getResources().getInteger(
+        mCaretAnimationDuration = l.getResources().getInteger(
                 R.integer.config_caretAnimationDuration);
-        mCaretInterpolator = AnimationUtils.loadInterpolator(launcher,
+        mCaretInterpolator = AnimationUtils.loadInterpolator(l,
                 R.interpolator.caret_animation_interpolator);
+
         mEvaluator = new ArgbEvaluator();
-        mAllAppsBackgroundColor = launcher.getColor(R.color.all_apps_container_color);
+        mAllAppsBackgroundColor = l.getColor(R.color.all_apps_container_color);
     }
 
     @Override
@@ -175,11 +182,11 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     private boolean isInDisallowRecatchTopZone() {
-        return mShiftCurrent / mShiftRange < RECATCH_REJECTION_FRACTION;
+        return mProgress < RECATCH_REJECTION_FRACTION;
     }
 
     private boolean isInDisallowRecatchBottomZone() {
-        return mShiftCurrent / mShiftRange > 1 - RECATCH_REJECTION_FRACTION;
+        return mProgress > 1 - RECATCH_REJECTION_FRACTION;
     }
 
     @Override
@@ -195,8 +202,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         if (mAppsView == null) {
             return false;   // early termination.
         }
-        float progress = Math.min(Math.max(0, mShiftStart + displacement), mShiftRange);
-        setProgress(progress);
+        float shift = Math.min(Math.max(0, mShiftStart + displacement), mShiftRange);
+        setProgress(shift / mShiftRange);
         return true;
     }
 
@@ -271,13 +278,11 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                 mAppsView.getRevealView().setVisibility(View.VISIBLE);
                 mAppsView.setRevealDrawableColor(mHotseatBackgroundColor);
             }
-        } else {
-            setProgress(mShiftCurrent);
         }
     }
 
-    private void updateLightStatusBar(float progress) {
-        boolean enable = progress <= mStatusBarHeight / 2;
+    private void updateLightStatusBar(float shift) {
+        boolean enable = shift <= mStatusBarHeight / 2;
         // Do not modify status bar on landscape as all apps is not full bleed.
         if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
             return;
@@ -300,38 +305,43 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     /**
-     * @param progress y value of the border between hotseat and all apps
+     * @param progress value between 0 and 1
      */
     public void setProgress(float progress) {
-        updateLightStatusBar(progress);
-        mShiftCurrent = progress;
-        float alpha = calcAlphaAllApps(progress);
-        float workspaceHotseatAlpha = 1 - alpha;
+        mProgress = progress;
+        float shiftCurrent = progress * mShiftRange;
+
+        float workspaceHotseatAlpha = Utilities.boundToRange(progress, 0f, 1f);
+        float alpha = 1 - workspaceHotseatAlpha;
+
         float interpolation = mAccelInterpolator.getInterpolation(workspaceHotseatAlpha);
 
-        int color = (Integer) mEvaluator.evaluate(mDecelInterpolator.getInterpolation(alpha),
+        int color = (Integer) mEvaluator.evaluate(alpha,
                 mHotseatBackgroundColor, mAllAppsBackgroundColor);
         mAppsView.setRevealDrawableColor(color);
         mAppsView.getContentView().setAlpha(alpha);
-        mAppsView.setTranslationY(progress);
-        mWorkspace.setWorkspaceYTranslationAndAlpha(
-                PARALLAX_COEFFICIENT * (-mShiftRange + progress),
-                interpolation);
-        if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
-            mWorkspace.setHotseatTranslationAndAlpha(Direction.Y,
-                    PARALLAX_COEFFICIENT * (-mShiftRange + progress), interpolation);
+        mAppsView.setTranslationY(shiftCurrent);
+
+        if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+            mWorkspace.setHotseatTranslationAndAlpha(Workspace.Direction.Y, -mShiftRange + shiftCurrent,
+                    interpolation);
         } else {
-            mWorkspace.setHotseatTranslationAndAlpha(Direction.Y,
-                    -mShiftRange + progress, interpolation);
+            mWorkspace.setHotseatTranslationAndAlpha(Workspace.Direction.Y,
+                    PARALLAX_COEFFICIENT * (-mShiftRange + shiftCurrent),
+                    interpolation);
         }
+
+        if (mIsTranslateWithoutWorkspace) {
+            return;
+        }
+        mWorkspace.setWorkspaceYTranslationAndAlpha(
+                PARALLAX_COEFFICIENT * (-mShiftRange + shiftCurrent),
+                interpolation);
+        updateLightStatusBar(shiftCurrent);
     }
 
     public float getProgress() {
-        return mShiftCurrent;
-    }
-
-    private float calcAlphaAllApps(float progress) {
-        return ((mShiftRange - progress) / mShiftRange);
+        return mProgress;
     }
 
     private void calculateDuration(float velocity, float disp) {
@@ -354,10 +364,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             mShiftStart = mAppsView.getTranslationY();
         }
         final float fromAllAppsTop = mAppsView.getTranslationY();
-        final float toAllAppsTop = 0;
-
         ObjectAnimator driftAndAlpha = ObjectAnimator.ofFloat(this, "progress",
-                fromAllAppsTop, toAllAppsTop);
+                fromAllAppsTop / mShiftRange, 0f);
         driftAndAlpha.setDuration(mAnimationDuration);
         driftAndAlpha.setInterpolator(new PagedView.ScrollInterpolator());
         animationOut.play(driftAndAlpha);
@@ -387,6 +395,36 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         }
     }
 
+    public void showDiscoveryBounce() {
+        // cancel existing animation in case user locked and unlocked at a super human speed.
+        cancelDiscoveryAnimation();
+
+        // assumption is that this variable is always null
+        mDiscoBounceAnimation = (AnimatorSet) AnimatorInflater.loadAnimator(mLauncher,
+                R.anim.discovery_bounce);
+        mDiscoBounceAnimation.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                mIsTranslateWithoutWorkspace = true;
+                preparePull(true);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                finishPullDown(false);
+                mDiscoBounceAnimation = null;
+                mIsTranslateWithoutWorkspace = false;
+            }
+        });
+        mDiscoBounceAnimation.setTarget(this);
+        mAppsView.post(new Runnable() {
+            @Override
+            public void run() {
+                mDiscoBounceAnimation.start();
+            }
+        });
+    }
+
     public void animateToWorkspace(AnimatorSet animationOut, long duration, boolean start) {
         if (animationOut == null) {
             return;
@@ -397,10 +435,9 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             mShiftStart = mAppsView.getTranslationY();
         }
         final float fromAllAppsTop = mAppsView.getTranslationY();
-        final float toAllAppsTop = mShiftRange;
 
         ObjectAnimator driftAndAlpha = ObjectAnimator.ofFloat(this, "progress",
-                fromAllAppsTop, toAllAppsTop);
+                fromAllAppsTop / mShiftRange, 1f);
         driftAndAlpha.setDuration(mAnimationDuration);
         driftAndAlpha.setInterpolator(new PagedView.ScrollInterpolator());
         animationOut.play(driftAndAlpha);
@@ -411,7 +448,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             @Override
             public void onAnimationCancel(Animator animation) {
                 canceled = true;
-                setProgress(mShiftCurrent);
             }
 
             @Override
@@ -442,7 +478,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mHotseat.setBackgroundTransparent(false /* transparent */);
         mHotseat.setVisibility(View.VISIBLE);
         mAppsView.reset();
-        setProgress(mShiftRange);
+        setProgress(1f);
         if (animated) {
             animateCaret();
         } else {
@@ -453,10 +489,18 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     private void cancelAnimation() {
         if (mCurrentAnimation != null) {
-            mCurrentAnimation.setDuration(0);
             mCurrentAnimation.cancel();
             mCurrentAnimation = null;
         }
+        cancelDiscoveryAnimation();
+    }
+
+    public void cancelDiscoveryAnimation() {
+        if (mDiscoBounceAnimation == null) {
+            return;
+        }
+        mDiscoBounceAnimation.cancel();
+        mDiscoBounceAnimation = null;
     }
 
     private void cleanUpAnimation() {
@@ -490,13 +534,14 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     @Override
     public void onLayoutChange(View v, int left, int top, int right, int bottom,
-                               int oldLeft, int oldTop, int oldRight, int oldBottom) {
-        float prevShiftRatio = mShiftCurrent / mShiftRange;
+            int oldLeft, int oldTop, int oldRight, int oldBottom) {
         if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
             mShiftRange = top;
         } else {
             mShiftRange = bottom;
         }
-        setProgress(mShiftRange * prevShiftRatio);
+        setProgress(mProgress);
     }
+
+
 }
