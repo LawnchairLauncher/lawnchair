@@ -14,60 +14,55 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.graphics;
+package com.android.launcher3.shortcuts;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.ImageView;
 
+import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.HolographicOutlineHelper;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.Workspace;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.DragPreviewProvider;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 /**
- * Extension of {@link DragPreviewProvider} which generates bitmaps scaled to the default icon size
+ * Extension of {@link DragPreviewProvider} which generates bitmaps scaled to the default icon size.
  */
-public class ScaledPreviewProvider extends DragPreviewProvider {
+public class ShortcutDragPreviewProvider extends DragPreviewProvider {
 
-    public ScaledPreviewProvider(View v) {
-        super(v);
+    private final Point mPositionShift;
+
+    public ShortcutDragPreviewProvider(View icon, Point shift) {
+        super(icon);
+        mPositionShift = shift;
     }
 
     @Override
     public Bitmap createDragOutline(Canvas canvas) {
-        if (mView instanceof TextView) {
-            Bitmap b = drawScaledPreview(canvas);
+        Bitmap b = drawScaledPreview(canvas);
 
-            final int outlineColor = mView.getResources().getColor(R.color.outline_color);
-            HolographicOutlineHelper.obtain(mView.getContext())
-                    .applyExpensiveOutlineWithBlur(b, canvas, outlineColor, outlineColor);
-            canvas.setBitmap(null);
-            return b;
-        }
-        return super.createDragOutline(canvas);
+        final int outlineColor = mView.getResources().getColor(R.color.outline_color);
+        HolographicOutlineHelper.obtain(mView.getContext())
+                .applyExpensiveOutlineWithBlur(b, canvas, outlineColor, outlineColor);
+        canvas.setBitmap(null);
+        return b;
     }
 
     @Override
     public Bitmap createDragBitmap(Canvas canvas) {
-        if (mView instanceof TextView) {
-            Bitmap b = drawScaledPreview(canvas);
-            canvas.setBitmap(null);
-            return b;
-
-        } else {
-            return super.createDragBitmap(canvas);
-        }
+        Bitmap b = drawScaledPreview(canvas);
+        canvas.setBitmap(null);
+        return b;
     }
 
     private Bitmap drawScaledPreview(Canvas canvas) {
-        Drawable d = Workspace.getTextViewIcon((TextView) mView);
+        Drawable d = mView.getBackground();
         Rect bounds = getDrawableBounds(d);
 
         int size = Launcher.getLauncher(mView.getContext()).getDeviceProfile().iconSizePx;
@@ -85,5 +80,24 @@ public class ScaledPreviewProvider extends DragPreviewProvider {
         d.draw(canvas);
         canvas.restore();
         return b;
+    }
+
+    @Override
+    public float getScaleAndPosition(Bitmap preview, int[] outPos) {
+        Launcher launcher = Launcher.getLauncher(mView.getContext());
+        int iconSize = getDrawableBounds(mView.getBackground()).width();
+        float scale = launcher.getDragLayer().getLocationInDragLayer(mView, outPos);
+
+        int iconLeft = mView.getPaddingStart();
+        if (Utilities.isRtl(mView.getResources())) {
+            iconLeft = mView.getWidth() - iconSize - iconLeft;
+        }
+
+        outPos[0] += Math.round(scale * iconLeft + (scale * iconSize - preview.getWidth()) / 2 +
+                mPositionShift.x);
+        outPos[1] += Math.round((scale * mView.getHeight() - preview.getHeight()) / 2
+                + mPositionShift.y);
+        float size = launcher.getDeviceProfile().iconSizePx;
+        return scale * iconSize / size;
     }
 }

@@ -17,21 +17,20 @@
 package com.android.launcher3.shortcuts;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.content.res.Resources;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.view.animation.DecelerateInterpolator;
+import android.view.View;
 import android.widget.FrameLayout;
 
-import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.LauncherAnimUtils;
-import com.android.launcher3.LauncherViewPropertyAnimator;
+import com.android.launcher3.IconCache;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
+import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.PillRevealOutlineProvider;
+import com.android.launcher3.util.PillWidthRevealOutlineProvider;
 
 /**
  * A {@link android.widget.FrameLayout} that contains a {@link DeepShortcutView}.
@@ -39,10 +38,12 @@ import com.android.launcher3.util.PillRevealOutlineProvider;
  */
 public class DeepShortcutView extends FrameLayout {
 
-    private int mRadius;
-    private Rect mPillRect;
+    private static final Point sTempPoint = new Point();
 
-    private BubbleTextView mBubbleText;
+    private final Rect mPillRect;
+
+    private DeepShortcutTextView mBubbleText;
+    private View mIconView;
 
     public DeepShortcutView(Context context) {
         this(context, null, 0);
@@ -55,18 +56,26 @@ public class DeepShortcutView extends FrameLayout {
     public DeepShortcutView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        mRadius = getResources().getDimensionPixelSize(R.dimen.bg_pill_radius);
         mPillRect = new Rect();
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mBubbleText = (BubbleTextView) findViewById(R.id.deep_shortcut);
+        mIconView = findViewById(R.id.deep_shortcut_icon);
+        mBubbleText = (DeepShortcutTextView) findViewById(R.id.deep_shortcut);
     }
 
-    public BubbleTextView getBubbleText() {
+    public DeepShortcutTextView getBubbleText() {
         return mBubbleText;
+    }
+
+    public void setWillDrawIcon(boolean willDraw) {
+        mIconView.setVisibility(willDraw ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    public boolean willDrawIcon() {
+        return mIconView.getVisibility() == View.VISIBLE;
     }
 
     @Override
@@ -75,50 +84,88 @@ public class DeepShortcutView extends FrameLayout {
         mPillRect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
     }
 
-    @Override
-    public void setPivotX(float pivotX) {
-        super.setPivotX(pivotX);
-        mBubbleText.setPivotX(pivotX);
+    public void applyShortcutInfo(ShortcutInfo info) {
+        IconCache cache = LauncherAppState.getInstance().getIconCache();
+        mBubbleText.applyFromShortcutInfo(info, cache);
+        mIconView.setBackground(mBubbleText.getIcon());
     }
 
-    @Override
-    public void setPivotY(float pivotY) {
-        super.setPivotY(pivotY);
-        mBubbleText.setPivotY(pivotY);
+    public View getIconView() {
+        return mIconView;
     }
 
     /**
-     * Creates an animator to play when the shortcut container is being opened.
+     * Creates an animator to play when the shortcut container is being opened or closed.
      */
-    public Animator createOpenAnimation(long animationDelay, boolean isContainerAboveIcon) {
-        final Resources res = getResources();
-        setVisibility(INVISIBLE);
+    public Animator createOpenCloseAnimation(
+            boolean isContainerAboveIcon, boolean pivotLeft, boolean isReverse) {
+        Point center = getIconCenter();
+        return new ZoomRevealOutlineProvider(center.x, center.y, mPillRect,
+                this, mIconView, isContainerAboveIcon, pivotLeft)
+                .createRevealAnimator(this, isReverse);
+    }
 
-        AnimatorSet openAnimation = LauncherAnimUtils.createAnimatorSet();
+    /**
+     * Creates an animator which clips the container to form a circle around the icon.
+     */
+    public Animator collapseToIcon() {
+        int halfHeight = getMeasuredHeight() / 2;
+        int iconCenterX = getIconCenter().x;
+        return new PillWidthRevealOutlineProvider(mPillRect,
+                iconCenterX - halfHeight, iconCenterX + halfHeight)
+                .createRevealAnimator(this, true);
+    }
 
-        Animator reveal = new PillRevealOutlineProvider((int) getPivotX(), (int) getPivotY(),
-                mPillRect, mRadius).createRevealAnimator(this);
-        reveal.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                setVisibility(VISIBLE);
-            }
-        });
+    /**
+     * Returns the position of the center of the icon relative to the container.
+     */
+    public Point getIconCenter() {
+        sTempPoint.y = sTempPoint.x = getMeasuredHeight() / 2;
+        if (Utilities.isRtl(getResources())) {
+            sTempPoint.x = getMeasuredWidth() - sTempPoint.x;
+        }
+        return sTempPoint;
+    }
 
-        float transY = res.getDimensionPixelSize(R.dimen.deep_shortcut_anim_translation_y);
-        Animator translationY = ObjectAnimator.ofFloat(this, TRANSLATION_Y,
-                isContainerAboveIcon ? transY : -transY, 0);
+    /**
+     * Extension of {@link PillRevealOutlineProvider} which scales the icon based on the height.
+     */
+    private static class ZoomRevealOutlineProvider extends PillRevealOutlineProvider {
 
-        // Only scale mBubbleText (the icon and text, not the background).
-        mBubbleText.setScaleX(0);
-        mBubbleText.setScaleY(0);
-        LauncherViewPropertyAnimator scale = new LauncherViewPropertyAnimator(mBubbleText)
-                .scaleX(1).scaleY(1);
+        private final View mTranslateView;
+        private final View mZoomView;
 
-        openAnimation.playTogether(reveal, translationY, scale);
-        openAnimation.setStartDelay(animationDelay);
-        openAnimation.setDuration(res.getInteger(R.integer.config_deepShortcutOpenDuration));
-        openAnimation.setInterpolator(new DecelerateInterpolator());
-        return openAnimation;
+        private final float mFullHeight;
+        private final float mTranslateYMultiplier;
+
+        private final boolean mPivotLeft;
+        private final float mTranslateX;
+
+        public ZoomRevealOutlineProvider(int x, int y, Rect pillRect,
+                View translateView, View zoomView, boolean isContainerAboveIcon, boolean pivotLeft) {
+            super(x, y, pillRect);
+            mTranslateView = translateView;
+            mZoomView = zoomView;
+            mFullHeight = pillRect.height();
+
+            mTranslateYMultiplier = isContainerAboveIcon ? 0.5f : -0.5f;
+
+            mPivotLeft = pivotLeft;
+            mTranslateX = pivotLeft ? pillRect.height() / 2 : pillRect.right - pillRect.height() / 2;
+        }
+
+        @Override
+        public void setProgress(float progress) {
+            super.setProgress(progress);
+
+            mZoomView.setScaleX(progress);
+            mZoomView.setScaleY(progress);
+
+            float height = mOutline.height();
+            mTranslateView.setTranslationY(mTranslateYMultiplier * (mFullHeight - height));
+
+            float pivotX = mPivotLeft ? (mOutline.left + height / 2) : (mOutline.right - height / 2);
+            mTranslateView.setTranslationX(mTranslateX - pivotX);
+        }
     }
 }

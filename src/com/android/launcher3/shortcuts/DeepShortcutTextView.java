@@ -21,7 +21,6 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 
 import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.R;
 
 /**
  * A {@link BubbleTextView} that has the shortcut icon on the left and drag handle on the right.
@@ -41,10 +40,7 @@ public class DeepShortcutTextView extends BubbleTextView {
     }
 
     @Override
-    /** Use the BubbleTextView icon for the start and the drag handle for the end. */
     protected void applyCompoundDrawables(Drawable icon) {
-        Drawable dragHandle = getResources().getDrawable(R.drawable.deep_shortcuts_drag_handle);
-        dragHandle.setBounds(0, 0, dragHandle.getIntrinsicWidth(), dragHandle.getIntrinsicHeight());
-        setCompoundDrawablesRelative(icon, null, dragHandle, null);
+        // The icon is drawn in a separate view.
     }
 }

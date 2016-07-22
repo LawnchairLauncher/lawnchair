@@ -47,7 +47,8 @@ import com.android.launcher3.R;
 import java.util.Arrays;
 
 public class DragView extends View {
-    public static int COLOR_CHANGE_DURATION = 120;
+    public static final int COLOR_CHANGE_DURATION = 120;
+    public static final int VIEW_ZOOM_DURATION = 150;
 
     @Thunk static float sDragAlpha = 1f;
 
@@ -72,6 +73,11 @@ public class DragView extends View {
 
     @Thunk float[] mCurrentFilter;
     private ValueAnimator mFilterAnimator;
+
+    private int mLastTouchX;
+    private int mLastTouchY;
+    private int mAnimatedShiftX;
+    private int mAnimatedShiftY;
 
     /**
      * Construct the drag view.
@@ -98,7 +104,7 @@ public class DragView extends View {
 
         // Animate the view into the correct position
         mAnim = LauncherAnimUtils.ofFloat(this, 0f, 1f);
-        mAnim.setDuration(150);
+        mAnim.setDuration(VIEW_ZOOM_DURATION);
         mAnim.addUpdateListener(new AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -310,7 +316,6 @@ public class DragView extends View {
     /**
      * Create a window containing this view and show it.
      *
-     * @param windowToken obtained from v.getWindowToken() from one of your views
      * @param touchX the x coordinate the user touched in DragLayer coordinates
      * @param touchY the y coordinate the user touched in DragLayer coordinates
      */
@@ -323,8 +328,7 @@ public class DragView extends View {
         lp.height = mBitmap.getHeight();
         lp.customPosition = true;
         setLayoutParams(lp);
-        setTranslationX(touchX - mRegistrationX);
-        setTranslationY(touchY - mRegistrationY);
+        move(touchX, touchY);
         // Post the animation to skip other expensive work happening on the first frame
         post(new Runnable() {
             public void run() {
@@ -347,8 +351,32 @@ public class DragView extends View {
      * @param touchY the y coordinate the user touched in DragLayer coordinates
      */
     public void move(int touchX, int touchY) {
-        setTranslationX(touchX - mRegistrationX);
-        setTranslationY(touchY - mRegistrationY);
+        mLastTouchX = touchX;
+        mLastTouchY = touchY;
+        applyTranslation();
+    }
+
+    public void animateShift(final int shiftX, final int shiftY) {
+        if (mAnim.isStarted()) {
+            return;
+        }
+        mAnimatedShiftX = shiftX;
+        mAnimatedShiftY = shiftY;
+        applyTranslation();
+        mAnim.addUpdateListener(new AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float fraction = 1 - animation.getAnimatedFraction();
+                mAnimatedShiftX = (int) (fraction * shiftX);
+                mAnimatedShiftY = (int) (fraction * shiftY);
+                applyTranslation();
+            }
+        });
+    }
+
+    private void applyTranslation() {
+        setTranslationX(mLastTouchX - mRegistrationX + mAnimatedShiftX);
+        setTranslationY(mLastTouchY - mRegistrationY + mAnimatedShiftY);
     }
 
     public void remove() {

@@ -25,12 +25,11 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.android.launcher3.HolographicOutlineHelper;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.PreloadIconDrawable;
 import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.folder.FolderIcon;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A utility class to generate preview bitmap for dragging.
@@ -59,9 +58,7 @@ public class DragPreviewProvider {
     }
 
     /**
-     * Draw the View v into the given Canvas.
-     *
-     * @param destCanvas the canvas to draw on
+     * Draws the {@link #mView} into the given {@param destCanvas}.
      */
     private void drawDragView(Canvas destCanvas) {
         destCanvas.save();
@@ -98,7 +95,7 @@ public class DragPreviewProvider {
     }
 
     /**
-     * Returns a new bitmap to show when the given View is being dragged around.
+     * Returns a new bitmap to show when the {@link #mView} is being dragged around.
      * Responsibility for the bitmap is transferred to the caller.
      */
     public Bitmap createDragBitmap(Canvas canvas) {
@@ -151,5 +148,13 @@ public class DragPreviewProvider {
             bounds.inset(inset, inset);
         }
         return bounds;
+    }
+
+    public float getScaleAndPosition(Bitmap preview, int[] outPos) {
+        float scale = Launcher.getLauncher(mView.getContext())
+                .getDragLayer().getLocationInDragLayer(mView, outPos);
+        outPos[0] = Math.round(outPos[0] - (preview.getWidth() - scale * mView.getWidth()) / 2);
+        outPos[1] = Math.round(outPos[1] - (1 - scale) * preview.getHeight() / 2 - previewPadding / 2);
+        return scale;
     }
 }

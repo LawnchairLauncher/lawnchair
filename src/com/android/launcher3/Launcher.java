@@ -1864,7 +1864,7 @@ public class Launcher extends Activity
             mWorkspace.exitWidgetResizeMode();
 
             closeFolder(alreadyOnHome);
-            closeShortcutsContainer();
+            closeShortcutsContainer(alreadyOnHome);
             exitSpringLoadedDragMode();
 
             // If we are already on home, then just animate back to the workspace,
@@ -1951,8 +1951,7 @@ public class Launcher extends Activity
         // this state is reflected.
         // TODO: Move folderInfo.isOpened out of the model and make it a UI state.
         closeFolder(false);
-
-        closeShortcutsContainer();
+        closeShortcutsContainer(false);
 
         if (mPendingAddInfo.container != ItemInfo.NO_ID && mPendingAddInfo.screenId > -1 &&
                 mWaitingForResult) {
@@ -3130,11 +3129,17 @@ public class Launcher extends Activity
     }
 
     public void closeShortcutsContainer() {
+        closeShortcutsContainer(true);
+    }
+
+    public void closeShortcutsContainer(boolean animate) {
         DeepShortcutsContainer deepShortcutsContainer = getOpenShortcutsContainer();
         if (deepShortcutsContainer != null) {
-            deepShortcutsContainer.cleanupDeferredDrag(true);
-            mDragController.removeDragListener(deepShortcutsContainer);
-            mDragLayer.removeView(deepShortcutsContainer);
+            if (animate) {
+                deepShortcutsContainer.animateClose();
+            } else {
+                deepShortcutsContainer.close();
+            }
         }
     }
 
@@ -3146,7 +3151,8 @@ public class Launcher extends Activity
         // and will be one of the last views.
         for (int i = mDragLayer.getChildCount() - 1; i >= 0; i--) {
             View child = mDragLayer.getChildAt(i);
-            if (child instanceof DeepShortcutsContainer) {
+            if (child instanceof DeepShortcutsContainer
+                    && ((DeepShortcutsContainer) child).isOpen()) {
                 return (DeepShortcutsContainer) child;
             }
         }

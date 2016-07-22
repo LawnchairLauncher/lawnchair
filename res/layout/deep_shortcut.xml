@@ -21,8 +21,18 @@
     android:elevation="@dimen/deep_shortcuts_elevation"
     android:background="@drawable/bg_white_pill">
 
-    <com.android.launcher3.shortcuts.DeepShortcutTextView
+<com.android.launcher3.shortcuts.DeepShortcutTextView
         android:id="@+id/deep_shortcut"
         style="@style/Icon.DeepShortcut"
-        android:focusable="true"/>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="true" />
+
+    <View
+        android:id="@+id/deep_shortcut_icon"
+        android:layout_width="@dimen/deep_shortcut_icon_size"
+        android:layout_height="@dimen/deep_shortcut_icon_size"
+        android:layout_margin="@dimen/deep_shortcut_padding_start"
+        android:layout_gravity="start" />
+
 </com.android.launcher3.shortcuts.DeepShortcutView>
