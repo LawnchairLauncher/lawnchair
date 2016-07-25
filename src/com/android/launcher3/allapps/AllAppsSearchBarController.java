@@ -39,8 +39,7 @@ import java.util.ArrayList;
  * An interface to a search box that AllApps can command.
  */
 public abstract class AllAppsSearchBarController
-        implements TextWatcher, OnEditorActionListener, ExtendedEditText.OnBackKeyListener,
-        View.OnFocusChangeListener {
+        implements TextWatcher, OnEditorActionListener, ExtendedEditText.OnBackKeyListener {
 
     protected Launcher mLauncher;
     protected AlphabeticalAppsList mApps;
@@ -49,8 +48,6 @@ public abstract class AllAppsSearchBarController
 
     protected DefaultAppSearchAlgorithm mSearchAlgorithm;
     protected InputMethodManager mInputMethodManager;
-
-    protected View mHintView;
 
     public void setVisibility(int visibility) {
         mInput.setVisibility(visibility);
@@ -69,7 +66,6 @@ public abstract class AllAppsSearchBarController
         mInput.addTextChangedListener(this);
         mInput.setOnEditorActionListener(this);
         mInput.setOnBackKeyListener(this);
-        mInput.setOnFocusChangeListener(this);
 
         mInputMethodManager = (InputMethodManager)
                 mInput.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -128,27 +124,6 @@ public abstract class AllAppsSearchBarController
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void onFocusChange(View view, boolean focused) {
-        if (mHintView != null) {
-            mHintView.setVisibility(focused ? View.INVISIBLE : View.VISIBLE);
-        }
-    }
-
-    /**
-     * Sets a view to serve as the search field's hint.
-     */
-    public void setHintView(View hintView) {
-        mHintView = hintView;
-    }
-
-    /**
-     * Returns the search field's hint view.
-     */
-    public View getHintView() {
-        return mHintView;
     }
 
     /**

@@ -65,18 +65,6 @@
             android:orientation="horizontal"
             android:saveEnabled="false">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:id="@+id/search_hint"
-                android:layout_gravity="center_horizontal"
-                android:drawablePadding="@dimen/all_apps_search_bar_icon_margin_right"
-                android:drawableStart="@drawable/ic_allapps_search"
-                android:text="@string/all_apps_search_bar_hint"
-                android:textColor="@drawable/all_apps_search_hint"
-                android:textSize="16sp" />
-
             <com.android.launcher3.ExtendedEditText
                 android:id="@+id/search_box_input"
                 android:layout_width="match_parent"
@@ -90,7 +78,7 @@
                 android:scrollHorizontally="true"
                 android:singleLine="true"
                 android:textColor="#4c4c4c"
-                android:contentDescription="@string/all_apps_search_bar_hint"
+                android:hint="@string/all_apps_search_bar_hint"
                 android:textColorHint="@drawable/all_apps_search_hint"
                 android:textSize="16sp" />
         </FrameLayout>
