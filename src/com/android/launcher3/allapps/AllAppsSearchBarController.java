@@ -46,6 +46,7 @@ public abstract class AllAppsSearchBarController
     protected AlphabeticalAppsList mApps;
     protected Callbacks mCb;
     protected ExtendedEditText mInput;
+    private String mQuery;
 
     protected DefaultAppSearchAlgorithm mSearchAlgorithm;
     protected InputMethodManager mInputMethodManager;
@@ -94,14 +95,23 @@ public abstract class AllAppsSearchBarController
 
     @Override
     public void afterTextChanged(final Editable s) {
-        String query = s.toString();
-        if (query.isEmpty()) {
+        mQuery = s.toString();
+        if (mQuery.isEmpty()) {
             mSearchAlgorithm.cancel(true);
             mCb.clearSearchResult();
         } else {
             mSearchAlgorithm.cancel(false);
-            mSearchAlgorithm.doSearch(query, mCb);
+            mSearchAlgorithm.doSearch(mQuery, mCb);
         }
+    }
+
+    protected void refreshSearchResult() {
+        if (mQuery == null) {
+            return;
+        }
+        // If play store continues auto updating an app, we want to show partial result.
+        mSearchAlgorithm.cancel(false);
+        mSearchAlgorithm.doSearch(mQuery, mCb);
     }
 
     @Override
@@ -155,6 +165,7 @@ public abstract class AllAppsSearchBarController
      * Resets the search bar state.
      */
     public void reset() {
+        mQuery = null;
         unfocusSearchField();
         mCb.clearSearchResult();
         mInput.setText("");

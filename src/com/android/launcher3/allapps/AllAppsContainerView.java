@@ -207,6 +207,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
      */
     public void addApps(List<AppInfo> apps) {
         mApps.addApps(apps);
+        mSearchBarController.refreshSearchResult();
     }
 
     /**
@@ -214,6 +215,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
      */
     public void updateApps(List<AppInfo> apps) {
         mApps.updateApps(apps);
+        mSearchBarController.refreshSearchResult();
     }
 
     /**
@@ -221,6 +223,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
      */
     public void removeApps(List<AppInfo> apps) {
         mApps.removeApps(apps);
+        mSearchBarController.refreshSearchResult();
     }
 
     public void setSearchBarVisible(boolean visible) {
