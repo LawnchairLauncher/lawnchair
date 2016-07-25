@@ -56,6 +56,9 @@ public class ShortcutsContainerListener implements View.OnTouchListener,
     private final int[] mTouchDown;
     private boolean mHasMappedTouchDownToContainerCoord;
 
+    /** If true, the gesture is not handled. The value is reset when next gesture starts. */
+    private boolean mIgnoreCurrentGesture;
+
     public ShortcutsContainerListener(BubbleTextView icon) {
         mSrcIcon = icon;
         mScaledTouchSlop = ViewConfiguration.get(icon.getContext()).getScaledTouchSlop();
@@ -72,16 +75,20 @@ public class ShortcutsContainerListener implements View.OnTouchListener,
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if (mLauncher.getShortcutIdsForItem((ItemInfo) v.getTag()).isEmpty()) {
-            // There are no shortcuts associated with this item, so return to normal touch handling.
-            return false;
-        }
-
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            // There are no shortcuts associated with this item,
+            // so return to normal touch handling.
+            mIgnoreCurrentGesture =
+                    (mLauncher.getShortcutIdsForItem((ItemInfo) v.getTag())).isEmpty();
+
             mTouchDown[0] = (int) event.getX();
             mTouchDown[1] = (int) event.getY();
             mDragLayer.getDescendantCoordRelativeToSelf(mSrcIcon, mTouchDown);
             mHasMappedTouchDownToContainerCoord = false;
+        }
+
+        if (mIgnoreCurrentGesture) {
+            return false;
         }
 
         final boolean wasForwarding = mForwarding;
