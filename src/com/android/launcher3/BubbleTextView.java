@@ -649,6 +649,13 @@ public class BubbleTextView extends TextView
     }
 
     /**
+     * Returns true if the view can show custom shortcuts.
+     */
+    public boolean hasDeepShortcuts() {
+        return !mLauncher.getShortcutIdsForItem((ItemInfo) getTag()).isEmpty();
+    }
+
+    /**
      * Returns the start delay when animating between certain {@link FastBitmapDrawable} states.
      */
     private static int getStartDelayForStateChange(final FastBitmapDrawable.State fromState,

@@ -18,6 +18,7 @@ import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.AppWidgetResizeFrame;
+import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeleteDropTarget;
 import com.android.launcher3.DragSource;
@@ -36,6 +37,8 @@ import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.UninstallDropTarget;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.dragndrop.DragController.DragListener;
+import com.android.launcher3.shortcuts.DeepShortcutTextView;
+import com.android.launcher3.shortcuts.DeepShortcutsContainer;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
@@ -45,13 +48,14 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
 
     private static final String TAG = "LauncherAccessibilityDelegate";
 
-    private static final int REMOVE = R.id.action_remove;
-    private static final int INFO = R.id.action_info;
-    private static final int UNINSTALL = R.id.action_uninstall;
-    private static final int ADD_TO_WORKSPACE = R.id.action_add_to_workspace;
-    private static final int MOVE = R.id.action_move;
-    private static final int MOVE_TO_WORKSPACE = R.id.action_move_to_workspace;
-    private static final int RESIZE = R.id.action_resize;
+    protected static final int REMOVE = R.id.action_remove;
+    protected static final int INFO = R.id.action_info;
+    protected static final int UNINSTALL = R.id.action_uninstall;
+    protected static final int ADD_TO_WORKSPACE = R.id.action_add_to_workspace;
+    protected static final int MOVE = R.id.action_move;
+    protected static final int MOVE_TO_WORKSPACE = R.id.action_move_to_workspace;
+    protected static final int RESIZE = R.id.action_resize;
+    protected static final int DEEP_SHORTCUTS = R.id.action_deep_shortcuts;
 
     public enum DragType {
         ICON,
@@ -65,7 +69,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         public View item;
     }
 
-    private final SparseArray<AccessibilityAction> mActions = new SparseArray<>();
+    protected final SparseArray<AccessibilityAction> mActions = new SparseArray<>();
     @Thunk final Launcher mLauncher;
 
     private DragInfo mDragInfo = null;
@@ -88,13 +92,23 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
                 launcher.getText(R.string.action_move_to_workspace)));
         mActions.put(RESIZE, new AccessibilityAction(RESIZE,
                         launcher.getText(R.string.action_resize)));
+        mActions.put(DEEP_SHORTCUTS, new AccessibilityAction(DEEP_SHORTCUTS,
+                launcher.getText(R.string.action_deep_shortcut)));
     }
 
     @Override
     public void onInitializeAccessibilityNodeInfo(View host, AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(host, info);
+        addActions(host, info);
+    }
+
+    protected void addActions(View host, AccessibilityNodeInfo info) {
         if (!(host.getTag() instanceof ItemInfo)) return;
         ItemInfo item = (ItemInfo) host.getTag();
+
+        if (host instanceof BubbleTextView && ((BubbleTextView) host).hasDeepShortcuts()) {
+            info.addAction(mActions.get(DEEP_SHORTCUTS));
+        }
 
         if (DeleteDropTarget.supportsAccessibleDrop(item)) {
             info.addAction(mActions.get(REMOVE));
@@ -215,6 +229,9 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
                     }
                 })
                 .show();
+            return true;
+        } else if (action == DEEP_SHORTCUTS) {
+            return DeepShortcutsContainer.showForIcon((BubbleTextView) host) != null;
         }
         return false;
     }
@@ -397,7 +414,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
     /**
      * Find empty space on the workspace and returns the screenId.
      */
-    private long findSpaceOnWorkspace(ItemInfo info, int[] outCoordinates) {
+    protected long findSpaceOnWorkspace(ItemInfo info, int[] outCoordinates) {
         Workspace workspace = mLauncher.getWorkspace();
         ArrayList<Long> workspaceScreens = workspace.getScreenOrder();
         long screenId;

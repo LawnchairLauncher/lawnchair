@@ -1,9 +1,6 @@
 package com.android.launcher3.shortcuts;
 
-import android.content.Context;
 import android.os.SystemClock;
-import android.view.HapticFeedbackConstants;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -11,13 +8,9 @@ import android.view.ViewParent;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CheckLongPressHelper;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragLayer;
-
-import java.util.List;
 
 /**
  * A {@link android.view.View.OnTouchListener} that creates a {@link DeepShortcutsContainer} and
@@ -58,6 +51,7 @@ public class ShortcutsContainerListener implements View.OnTouchListener,
 
     /** If true, the gesture is not handled. The value is reset when next gesture starts. */
     private boolean mIgnoreCurrentGesture;
+    private DeepShortcutsContainer mShortcutsContainer;
 
     public ShortcutsContainerListener(BubbleTextView icon) {
         mSrcIcon = icon;
@@ -78,8 +72,7 @@ public class ShortcutsContainerListener implements View.OnTouchListener,
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             // There are no shortcuts associated with this item,
             // so return to normal touch handling.
-            mIgnoreCurrentGesture =
-                    (mLauncher.getShortcutIdsForItem((ItemInfo) v.getTag())).isEmpty();
+            mIgnoreCurrentGesture = !mSrcIcon.hasDeepShortcuts();
 
             mTouchDown[0] = (int) event.getX();
             mTouchDown[1] = (int) event.getY();
@@ -134,21 +127,8 @@ public class ShortcutsContainerListener implements View.OnTouchListener,
      * @return true to start forwarding, false otherwise
      */
     protected boolean onForwardingStarted() {
-        List<String> ids = mLauncher.getShortcutIdsForItem((ItemInfo) mSrcIcon.getTag());
-        if (!ids.isEmpty()) {
-            // There are shortcuts associated with the app, so defer its drag.
-            LayoutInflater layoutInflater = (LayoutInflater) mLauncher.getSystemService
-                    (Context.LAYOUT_INFLATER_SERVICE);
-            final DeepShortcutsContainer deepShortcutsContainer = (DeepShortcutsContainer)
-                    layoutInflater.inflate(R.layout.deep_shortcuts_container, mDragLayer, false);
-            deepShortcutsContainer.setVisibility(View.INVISIBLE);
-            mDragLayer.addView(deepShortcutsContainer);
-            deepShortcutsContainer.populateAndShow(mSrcIcon, ids);
-            mSrcIcon.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
-                    HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-            return true;
-        }
-        return false;
+        mShortcutsContainer = DeepShortcutsContainer.showForIcon(mSrcIcon);
+        return mShortcutsContainer != null;
     }
 
     /**
@@ -157,6 +137,7 @@ public class ShortcutsContainerListener implements View.OnTouchListener,
      * @return true to stop forwarding, false otherwise
      */
     protected boolean onForwardingStopped() {
+        mShortcutsContainer = null;
         return true;
     }
 
@@ -223,8 +204,8 @@ public class ShortcutsContainerListener implements View.OnTouchListener,
     private void onLongPress() {
         clearCallbacks();
 
-        final View src = mSrcIcon;
-        if (!src.isEnabled() || mLauncher.getShortcutIdsForItem((ItemInfo) src.getTag()).isEmpty()) {
+        final BubbleTextView src = mSrcIcon;
+        if (!src.isEnabled() || !src.hasDeepShortcuts()) {
             // Ignore long-press if the view is disabled or doesn't have shortcuts.
             return;
         }
@@ -254,8 +235,7 @@ public class ShortcutsContainerListener implements View.OnTouchListener,
      */
     private boolean onTouchForwarded(MotionEvent srcEvent) {
         final View src = mSrcIcon;
-
-        final DeepShortcutsContainer dst = mLauncher.getOpenShortcutsContainer();
+        final DeepShortcutsContainer dst = mShortcutsContainer;
         if (dst == null) {
             return false;
         }
