@@ -388,6 +388,8 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
                     break;
                 }
             }
+        } else if (action == MotionEvent.ACTION_CANCEL) {
+            cleanupDeferredDrag();
         }
         return true;
     }
