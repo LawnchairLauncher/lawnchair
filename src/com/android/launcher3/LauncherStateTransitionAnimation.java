@@ -250,7 +250,7 @@ public class LauncherStateTransitionAnimation {
 
         final View contentView = toView.getContentView();
         playCommonTransitionAnimations(toWorkspaceState, fromView, toView,
-                animated, initialized, animation, revealDuration, layerViews);
+                animated, initialized, animation, layerViews);
         if (!animated || !initialized) {
             if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP &&
                     toWorkspaceState == Workspace.State.NORMAL_HIDDEN) {
@@ -414,11 +414,22 @@ public class LauncherStateTransitionAnimation {
 
             return animation;
         } else if (animType == PULLUP) {
+            // We are animating the content view alpha, so ensure we have a layer for it
+            layerViews.put(contentView, BUILD_AND_SET_LAYER);
+
             animation.addListener(new AnimatorListenerAdapter() {
                   @Override
                   public void onAnimationEnd(Animator animation) {
                       dispatchOnLauncherTransitionEnd(fromView, animated, false);
                       dispatchOnLauncherTransitionEnd(toView, animated, false);
+
+                      // Disable all necessary layers
+                      for (View v : layerViews.keySet()) {
+                          if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
+                              v.setLayerType(View.LAYER_TYPE_NONE, null);
+                          }
+                      }
+
                       cleanupAnimation();
                       pCb.onTransitionComplete();
                   }
@@ -435,8 +446,19 @@ public class LauncherStateTransitionAnimation {
                     // we waited for a layout/draw pass
                     if (mCurrentAnimation != stateAnimation)
                         return;
+
                     dispatchOnLauncherTransitionStart(fromView, animated, false);
                     dispatchOnLauncherTransitionStart(toView, animated, false);
+
+                    // Enable all necessary layers
+                    for (View v : layerViews.keySet()) {
+                        if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
+                            v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+                        }
+                        if (Utilities.ATLEAST_LOLLIPOP && v.isAttachedToWindow()) {
+                            v.buildLayer();
+                        }
+                    }
 
                     toView.requestFocus();
                     stateAnimation.start();
@@ -453,7 +475,7 @@ public class LauncherStateTransitionAnimation {
      */
     private void playCommonTransitionAnimations(
             Workspace.State toWorkspaceState, View fromView, View toView,
-            boolean animated, boolean initialized, AnimatorSet animation, int revealDuration,
+            boolean animated, boolean initialized, AnimatorSet animation,
             HashMap<View, Integer> layerViews) {
         // Create the workspace animation.
         // NOTE: this call apparently also sets the state for the workspace if !animated
@@ -580,7 +602,7 @@ public class LauncherStateTransitionAnimation {
         boolean multiplePagesVisible = toWorkspaceState.hasMultipleVisiblePages;
 
         playCommonTransitionAnimations(toWorkspaceState, fromWorkspace, null,
-                animated, animated, animation, revealDuration, layerViews);
+                animated, animated, animation, layerViews);
 
         if (animated) {
             dispatchOnLauncherTransitionPrepare(fromWorkspace, animated, multiplePagesVisible);
@@ -661,6 +683,8 @@ public class LauncherStateTransitionAnimation {
                 res.getInteger(R.integer.config_overlayItemsAlphaStagger);
 
         final View toView = mLauncher.getWorkspace();
+        final View revealView = fromView.getRevealView();
+        final View contentView = fromView.getContentView();
 
         final HashMap<View, Integer> layerViews = new HashMap<>();
 
@@ -673,7 +697,7 @@ public class LauncherStateTransitionAnimation {
         boolean multiplePagesVisible = toWorkspaceState.hasMultipleVisiblePages;
 
         playCommonTransitionAnimations(toWorkspaceState, fromView, toView,
-                animated, initialized, animation, revealDuration, layerViews);
+                animated, initialized, animation, layerViews);
         if (!animated || !initialized) {
             if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP &&
                     fromWorkspaceState == Workspace.State.NORMAL_HIDDEN) {
@@ -695,9 +719,6 @@ public class LauncherStateTransitionAnimation {
             return null;
         }
         if (animType == CIRCULAR_REVEAL) {
-            final View revealView = fromView.getRevealView();
-            final View contentView = fromView.getContentView();
-
             // hideAppsCustomizeHelper is called in some cases when it is already hidden
             // don't perform all these no-op animations. In particularly, this was causing
             // the all-apps button to pop in and out.
@@ -864,6 +885,9 @@ public class LauncherStateTransitionAnimation {
 
             return animation;
         } else if (animType == PULLUP) {
+            // We are animating the content view alpha, so ensure we have a layer for it
+            layerViews.put(contentView, BUILD_AND_SET_LAYER);
+
             animation.addListener(new AnimatorListenerAdapter() {
                 boolean canceled = false;
                 @Override
@@ -876,10 +900,19 @@ public class LauncherStateTransitionAnimation {
                     if (canceled) return;
                     dispatchOnLauncherTransitionEnd(fromView, animated, false);
                     dispatchOnLauncherTransitionEnd(toView, animated, false);
+
                     // Run any queued runnables
                     if (onCompleteRunnable != null) {
                         onCompleteRunnable.run();
                     }
+
+                    // Disable all necessary layers
+                    for (View v : layerViews.keySet()) {
+                        if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
+                            v.setLayerType(View.LAYER_TYPE_NONE, null);
+                        }
+                    }
+
                     cleanupAnimation();
                     pCb.onTransitionComplete();
                 }
@@ -898,8 +931,19 @@ public class LauncherStateTransitionAnimation {
                     // we waited for a layout/draw pass
                     if (mCurrentAnimation != stateAnimation)
                         return;
+
                     dispatchOnLauncherTransitionStart(fromView, animated, false);
                     dispatchOnLauncherTransitionStart(toView, animated, false);
+
+                    // Enable all necessary layers
+                    for (View v : layerViews.keySet()) {
+                        if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
+                            v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+                        }
+                        if (Utilities.ATLEAST_LOLLIPOP && v.isAttachedToWindow()) {
+                            v.buildLayer();
+                        }
+                    }
 
                     // Focus the new view
                     toView.requestFocus();

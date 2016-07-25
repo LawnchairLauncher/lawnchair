@@ -394,24 +394,14 @@ public class WorkspaceStateTransitionAnimation {
             overviewPanelAlpha.addListener(new AlphaUpdateListener(overviewPanel,
                     accessibilityEnabled));
 
-            // For animation optimations, we may need to provide the Launcher transition
-            // with a set of views on which to force build layers in certain scenarios.
-            overviewPanel.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-            qsbContainer.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-            if (layerViews != null) {
-                // If layerViews is not null, we add these views, and indicate that
-                // the caller can manage layer state.
-                layerViews.put(overviewPanel, LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
-                layerViews.put(qsbContainer, LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
-
-                layerViews.put(mLauncher.getHotseat(),
-                        LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
-                layerViews.put(mWorkspace.getPageIndicator(),
-                        LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
-            } else {
-                // Otherwise let the animator handle layer management.
-                overviewPanelAlpha.withLayer();
-            }
+            // For animation optimization, we may need to provide the Launcher transition
+            // with a set of views on which to force build and manage layers in certain scenarios.
+            layerViews.put(overviewPanel, LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
+            layerViews.put(qsbContainer, LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
+            layerViews.put(mLauncher.getHotseat(),
+                    LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
+            layerViews.put(mWorkspace.getPageIndicator(),
+                    LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
 
             if (states.workspaceToOverview) {
                 hotseatAlpha.setInterpolator(new DecelerateInterpolator(2));
