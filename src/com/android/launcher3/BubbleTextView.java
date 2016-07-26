@@ -56,11 +56,12 @@ public class BubbleTextView extends TextView
 
     private static SparseArray<Theme> sPreloaderThemes = new SparseArray<Theme>(2);
 
-    private static final float SHADOW_LARGE_RADIUS = 4.0f;
-    private static final float SHADOW_SMALL_RADIUS = 1.75f;
-    private static final float SHADOW_Y_OFFSET = 2.0f;
-    private static final int SHADOW_LARGE_COLOUR = 0xDD000000;
-    private static final int SHADOW_SMALL_COLOUR = 0xCC000000;
+    // Dimensions in DP
+    private static final float AMBIENT_SHADOW_RADIUS = 2.5f;
+    private static final float KEY_SHADOW_RADIUS = 1f;
+    private static final float KEY_SHADOW_OFFSET = 0.5f;
+    private static final int AMBIENT_SHADOW_COLOR = 0x33000000;
+    private static final int KEY_SHADOW_COLOR = 0x66000000;
 
     private static final int DISPLAY_WORKSPACE = 0;
     private static final int DISPLAY_ALL_APPS = 1;
@@ -136,6 +137,10 @@ public class BubbleTextView extends TextView
             // Draw the background itself as the parent is drawn twice.
             mBackground = getBackground();
             setBackground(null);
+
+            // Set shadow layer as the larger shadow to that the textView does not clip the shadow.
+            float density = getResources().getDisplayMetrics().density;
+            setShadowLayer(density * AMBIENT_SHADOW_RADIUS, 0, 0, AMBIENT_SHADOW_COLOR);
         } else {
             mBackground = null;
         }
@@ -144,10 +149,6 @@ public class BubbleTextView extends TextView
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
 
         mOutlineHelper = HolographicOutlineHelper.obtain(getContext());
-        if (mCustomShadowsEnabled) {
-            setShadowLayer(SHADOW_LARGE_RADIUS, 0.0f, SHADOW_Y_OFFSET, SHADOW_LARGE_COLOUR);
-        }
-
         setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
     }
 
@@ -408,13 +409,15 @@ public class BubbleTextView extends TextView
         }
 
         // We enhance the shadow by drawing the shadow twice
-        getPaint().setShadowLayer(SHADOW_LARGE_RADIUS, 0.0f, SHADOW_Y_OFFSET, SHADOW_LARGE_COLOUR);
+        float density = getResources().getDisplayMetrics().density;
+        getPaint().setShadowLayer(density * AMBIENT_SHADOW_RADIUS, 0, 0, AMBIENT_SHADOW_COLOR);
         super.draw(canvas);
         canvas.save(Canvas.CLIP_SAVE_FLAG);
         canvas.clipRect(getScrollX(), getScrollY() + getExtendedPaddingTop(),
                 getScrollX() + getWidth(),
                 getScrollY() + getHeight(), Region.Op.INTERSECT);
-        getPaint().setShadowLayer(SHADOW_SMALL_RADIUS, 0.0f, 0.0f, SHADOW_SMALL_COLOUR);
+        getPaint().setShadowLayer(
+                density * KEY_SHADOW_RADIUS, 0.0f, density * KEY_SHADOW_OFFSET, KEY_SHADOW_COLOR);
         super.draw(canvas);
         canvas.restore();
     }
