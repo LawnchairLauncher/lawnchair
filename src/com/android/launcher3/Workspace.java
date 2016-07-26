@@ -2584,6 +2584,7 @@ public class Workspace extends PagedView
                 fi.performCreateAnimation(destInfo, v, sourceInfo, dragView, folderLocation, scale,
                         postAnimationRunnable);
             } else {
+                fi.prepareCreate(v);
                 fi.addItem(destInfo);
                 fi.addItem(sourceInfo);
             }

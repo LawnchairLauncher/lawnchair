@@ -197,7 +197,7 @@ public class FolderPagedView extends PagedView {
      */
     public int allocateRankForNewItem(ShortcutInfo info) {
         int rank = getItemCount();
-        ArrayList<View> views = new ArrayList<View>(mFolder.getItemsInReadingOrder());
+        ArrayList<View> views = new ArrayList<>(mFolder.getItemsInReadingOrder());
         views.add(rank, null);
         arrangeChildren(views, views.size(), false);
         setCurrentPage(rank / mMaxItemsPerPage);
