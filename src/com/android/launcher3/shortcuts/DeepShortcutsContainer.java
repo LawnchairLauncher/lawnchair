@@ -30,6 +30,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -48,6 +49,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.accessibility.ShortcutMenuAccessibilityDelegate;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -70,10 +72,12 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         UserEventDispatcher.LaunchSourceProvider {
     private static final String TAG = "ShortcutsContainer";
 
-    private Launcher mLauncher;
-    private DeepShortcutManager mDeepShortcutsManager;
+    private final Launcher mLauncher;
+    private final DeepShortcutManager mDeepShortcutsManager;
     private final int mDragDeadzone;
     private final int mStartDragThreshold;
+    private final ShortcutMenuAccessibilityDelegate mAccessibilityDelegate;
+
     private BubbleTextView mDeferredDragIcon;
     private int mActivePointerId;
     private int[] mTouchDown = null;
@@ -115,6 +119,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         mDragDeadzone = ViewConfiguration.get(context).getScaledTouchSlop();
         mStartDragThreshold = getResources().getDimensionPixelSize(
                 R.dimen.deep_shortcuts_start_drag_threshold);
+        mAccessibilityDelegate = new ShortcutMenuAccessibilityDelegate(mLauncher);
     }
 
     public DeepShortcutsContainer(Context context, AttributeSet attrs) {
@@ -128,12 +133,14 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
     public void populateAndShow(final BubbleTextView originalIcon, final List<String> ids) {
         // Add dummy views first, and populate with real shortcut info when ready.
         final int spacing = getResources().getDimensionPixelSize(R.dimen.deep_shortcuts_spacing);
-        final LayoutInflater inflator = mLauncher.getLayoutInflater();
+        final LayoutInflater inflater = mLauncher.getLayoutInflater();
         for (int i = 0; i < ids.size(); i++) {
-            final View shortcut = inflator.inflate(R.layout.deep_shortcut, this, false);
+            final DeepShortcutView shortcut =
+                    (DeepShortcutView) inflater.inflate(R.layout.deep_shortcut, this, false);
             if (i < ids.size() - 1) {
                 ((LayoutParams) shortcut.getLayoutParams()).bottomMargin = spacing;
             }
+            shortcut.getBubbleText().setAccessibilityDelegate(mAccessibilityDelegate);
             addView(shortcut);
         }
 
@@ -500,5 +507,27 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         target.itemType = LauncherLogProto.DEEPSHORTCUT;
         // TODO: add target.rank
         targetParent.containerType = LauncherLogProto.DEEPSHORTCUTS;
+    }
+
+    /**
+     * Shows the shortcuts container for {@param icon}
+     * @return the container if shown or null.
+     */
+    public static DeepShortcutsContainer showForIcon(BubbleTextView icon) {
+        Launcher launcher = Launcher.getLauncher(icon.getContext());
+        List<String> ids = launcher.getShortcutIdsForItem((ItemInfo) icon.getTag());
+        if (!ids.isEmpty()) {
+            // There are shortcuts associated with the app, so defer its drag.
+            final DeepShortcutsContainer container =
+                    (DeepShortcutsContainer) launcher.getLayoutInflater().inflate(
+                            R.layout.deep_shortcuts_container, launcher.getDragLayer(), false);
+            container.setVisibility(View.INVISIBLE);
+            launcher.getDragLayer().addView(container);
+            container.populateAndShow(icon, ids);
+            icon.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
+                    HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+            return container;
+        }
+        return null;
     }
 }
