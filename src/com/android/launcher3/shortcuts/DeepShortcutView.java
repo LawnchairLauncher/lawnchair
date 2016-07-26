@@ -23,7 +23,6 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
-import android.support.annotation.IntDef;
 import android.util.AttributeSet;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
@@ -40,26 +39,8 @@ import com.android.launcher3.util.PillRevealOutlineProvider;
  */
 public class DeepShortcutView extends FrameLayout {
 
-    private static final float HOVER_SCALE = 1.05f;
-
-    // The direction this view should translate when animating the hover state.
-    // This allows hovered shortcuts to "push" other shortcuts away.
-    @IntDef({DIRECTION_UP, DIRECTION_NONE, DIRECTION_DOWN})
-    public @interface TranslationDirection {}
-
-    public static final int DIRECTION_UP = -1;
-    public static final int DIRECTION_NONE = 0;
-    public static final int DIRECTION_DOWN = 1;
-
-    @TranslationDirection
-    private int mTranslationDirection = DIRECTION_NONE;
-
-    private int mSpacing;
     private int mRadius;
     private Rect mPillRect;
-    private int mTop;
-    private boolean mIsHoveringOver = false;
-    private LauncherViewPropertyAnimator mHoverAnimator;
 
     private BubbleTextView mBubbleText;
 
@@ -74,10 +55,8 @@ public class DeepShortcutView extends FrameLayout {
     public DeepShortcutView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        mSpacing = getResources().getDimensionPixelSize(R.dimen.deep_shortcuts_spacing);
         mRadius = getResources().getDimensionPixelSize(R.dimen.bg_pill_radius);
         mPillRect = new Rect();
-        mHoverAnimator = new LauncherViewPropertyAnimator(this);
     }
 
     @Override
@@ -145,54 +124,5 @@ public class DeepShortcutView extends FrameLayout {
         openAnimation.setDuration(res.getInteger(R.integer.config_deepShortcutOpenDuration));
         openAnimation.setInterpolator(new DecelerateInterpolator());
         return openAnimation;
-    }
-
-    /**
-     * Updates the state of this view based on touches over the container before user lifts finger.
-     *
-     * @param containerContainsTouch whether the {@link DeepShortcutsContainer} this shortcut
-     *                               is inside contains the current touch
-     * @param isBelowHoveredShortcut whether a sibling shortcut before this one in the
-     *                               view hierarchy is being hovered over
-     * @param touchY the y coordinate of the touch, relative to the {@link DeepShortcutsContainer}
-     *               this shortcut is inside
-     * @return whether this shortcut is being hovered over
-     */
-    public boolean updateHoverState(boolean containerContainsTouch, boolean isBelowHoveredShortcut,
-            float touchY) {
-        if (!containerContainsTouch) {
-            mIsHoveringOver = false;
-            mTranslationDirection = DIRECTION_NONE;
-        } else if (isBelowHoveredShortcut) {
-            mIsHoveringOver = false;
-            mTranslationDirection = DIRECTION_DOWN;
-        } else {
-            // Include space around the view when determining hover state to avoid gaps.
-            mTop = (int) (getY() - getTranslationY());
-            mIsHoveringOver = (touchY >= mTop - mSpacing / 2)
-                    && (touchY < mTop + getHeight() + mSpacing / 2);
-            mTranslationDirection = mIsHoveringOver ? DIRECTION_NONE : DIRECTION_UP;
-        }
-        animateHoverState();
-        return mIsHoveringOver;
-    }
-
-    /**
-     * If this shortcut is being hovered over, we scale it up. If another shortcut is being hovered
-     * over, we translate this one away from it to account for its increased size.
-     */
-    private void animateHoverState() {
-        if (mHoverAnimator.isRunning()) {
-            return;
-        }
-        float scale = mIsHoveringOver ? HOVER_SCALE : 1f;
-        float translateY = (HOVER_SCALE - 1f) * getHeight() * mTranslationDirection;
-        mHoverAnimator.scaleX(scale).scaleY(scale).translationY(translateY)
-                .setDuration(getResources().getInteger(R.integer.config_deepShortcutHoverDuration))
-                .start();
-    }
-
-    public boolean isHoveringOver() {
-        return mIsHoveringOver;
     }
 }
