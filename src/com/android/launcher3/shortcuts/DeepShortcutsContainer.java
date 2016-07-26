@@ -16,8 +16,6 @@
 
 package com.android.launcher3.shortcuts;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.annotation.TargetApi;
 import android.content.ComponentName;
@@ -89,7 +87,6 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
     private Point mIconLastTouchPos = new Point();
     private boolean mIsLeftAligned;
     private boolean mIsAboveIcon;
-    private boolean mIsAnimatingOpen;
 
     private boolean mSrcIconDragStarted;
 
@@ -233,13 +230,6 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
             int animationIndex = mIsAboveIcon ? numShortcuts - i - 1 : i;
             shortcutAnims.play(deepShortcutView.createOpenAnimation(animationIndex, mIsAboveIcon));
         }
-        shortcutAnims.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mIsAnimatingOpen = false;
-            }
-        });
-        mIsAnimatingOpen = true;
         shortcutAnims.start();
     }
 
@@ -348,7 +338,6 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         Utilities.translateEventCoordinates(this, mLauncher.getDragLayer(), ev);
         final int dragLayerX = (int) ev.getX();
         final int dragLayerY = (int) ev.getY();
-        int childCount = getChildCount();
         if (action == MotionEvent.ACTION_MOVE) {
             if (mLastX != 0 || mLastY != 0) {
                 mDistanceDragged += Math.hypot(mLastX - x, mLastY - y);
@@ -356,48 +345,22 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
             mLastX = x;
             mLastY = y;
 
-            boolean containerContainsTouch = x >= 0 && y >= 0 && x < getWidth() && y < getHeight();
-            if (shouldStartDeferredDrag((int) x, (int) y, containerContainsTouch)) {
+            if (shouldStartDeferredDrag((int) x, (int) y)) {
                 mSrcIconDragStarted = true;
                 cleanupDeferredDrag(true);
                 mDeferredDragIcon.getParent().requestDisallowInterceptTouchEvent(false);
                 mDeferredDragIcon.getOnLongClickListener().onLongClick(mDeferredDragIcon);
                 mLauncher.getDragController().onTouchEvent(ev);
                 return true;
-            } else {
-                // Determine whether touch is over a shortcut.
-                boolean hoveringOverShortcut = false;
-                for (int i = 0; i < childCount && !mIsAnimatingOpen; i++) {
-                    DeepShortcutView shortcut = getShortcutAt(i);
-                    if (shortcut.updateHoverState(containerContainsTouch, hoveringOverShortcut, y)) {
-                        hoveringOverShortcut = true;
-                    }
-                }
-
-                if (!hoveringOverShortcut && mDistanceDragged > mDragDeadzone) {
-                    // After dragging further than a small deadzone,
-                    // have the drag view follow the user's finger.
-                    mDragView.setVisibility(VISIBLE);
-                    mDragView.move(dragLayerX, dragLayerY);
-                    mDeferredDragIcon.setVisibility(INVISIBLE);
-                } else if (hoveringOverShortcut) {
-                    // Jump drag view back to original place on grid,
-                    // so user doesn't think they are still dragging.
-                    // TODO: can we improve this interaction? maybe with a ghost icon or similar?
-                    mDragView.setVisibility(INVISIBLE);
-                    mDeferredDragIcon.setVisibility(VISIBLE);
-                }
+            } else if (mDistanceDragged > mDragDeadzone) {
+                // After dragging further than a small deadzone,
+                // have the drag view follow the user's finger.
+                mDragView.setVisibility(VISIBLE);
+                mDragView.move(dragLayerX, dragLayerY);
+                mDeferredDragIcon.setVisibility(INVISIBLE);
             }
         } else if (action == MotionEvent.ACTION_UP) {
             cleanupDeferredDrag(true);
-            // Launch a shortcut if user was hovering over it.
-            for (int i = 0; i < childCount; i++) {
-                DeepShortcutView shortcut = getShortcutAt(i);
-                if (shortcut.isHoveringOver()) {
-                    shortcut.getBubbleText().performClick();
-                    break;
-                }
-            }
         } else if (action == MotionEvent.ACTION_CANCEL) {
             // Do not change the source icon visibility if we are already dragging the source icon.
             cleanupDeferredDrag(!mSrcIconDragStarted);
@@ -410,19 +373,14 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
      * relative to the original icon and the shortcuts container.
      *
      * Current behavior:
-     * - Compute distance from original touch down to closest container edge.
-     * - Compute distance from latest touch (given x and y) and compare to original distance;
-     *   if the new distance is larger than a threshold, the deferred drag should start.
-     * - Never defer the drag if this container contains the touch.
+     * - Start the drag if the touch passes a certain distance from the original touch down.
      *
      * @param x the x touch coordinate relative to this container
      * @param y the y touch coordinate relative to this container
      */
-    private boolean shouldStartDeferredDrag(int x, int y, boolean containerContainsTouch) {
-        int closestEdgeY = mIsAboveIcon ? getMeasuredHeight() : 0;
-        double distToEdge = Math.abs(mTouchDown[1] - closestEdgeY);
-        double newDistToEdge = Math.hypot(x - mTouchDown[0], y - closestEdgeY);
-        return !containerContainsTouch && (newDistToEdge - distToEdge > mStartDragThreshold);
+    private boolean shouldStartDeferredDrag(int x, int y) {
+        double distFromTouchDown = Math.hypot(x - mTouchDown[0], y - mTouchDown[1]);
+        return distFromTouchDown > mStartDragThreshold;
     }
 
     public void cleanupDeferredDrag(boolean updateSrcVisibility) {
