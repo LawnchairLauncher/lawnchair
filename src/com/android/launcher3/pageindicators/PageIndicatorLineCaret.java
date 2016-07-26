@@ -9,14 +9,12 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Property;
-import android.view.TouchDelegate;
 import android.view.View;
 import android.view.ViewConfiguration;
 
@@ -24,6 +22,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dynamicui.ExtractedColors;
+import com.android.launcher3.util.TransformingTouchDelegate;
 
 /**
  * A PageIndicator that briefly shows a fraction of a line when moving between pages.
@@ -61,7 +60,7 @@ public class PageIndicatorLineCaret extends PageIndicator {
     private Paint mLinePaint;
     private Launcher mLauncher;
     private final int mLineHeight;
-    private final Rect mTouchHitRect = new Rect();
+    private final TransformingTouchDelegate mTouchDelegate;
     private final int mTouchExtensionHeight;
     private final int mCaretSizePx;
     private final int mCaretWorkspaceOffsetPx;
@@ -142,6 +141,13 @@ public class PageIndicatorLineCaret extends PageIndicator {
         mLineHeight = res.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_line_height);
         mTouchExtensionHeight = res.getDimensionPixelSize(
                 R.dimen.dynamic_grid_page_indicator_extra_touch_height);
+        mTouchDelegate = new TransformingTouchDelegate(this);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mLauncher.getDragLayer().setTouchDelegate(mTouchDelegate);
     }
 
     @Override
@@ -157,9 +163,8 @@ public class PageIndicatorLineCaret extends PageIndicator {
         View parent = mLauncher.getDragLayer();
         sTempCoords[0] = sTempCoords[1] = 0;
         Utilities.getDescendantCoordRelativeToAncestor(this, parent, sTempCoords, true);
-        mTouchHitRect.set(sTempCoords[0], sTempCoords[1], sTempCoords[0] + this.getWidth(),
+        mTouchDelegate.setBounds(sTempCoords[0], sTempCoords[1], sTempCoords[0] + this.getWidth(),
                 sTempCoords[1] + getHeight() + mTouchExtensionHeight);
-        parent.setTouchDelegate(new TouchDelegate(mTouchHitRect, this));
     }
 
     @Override
