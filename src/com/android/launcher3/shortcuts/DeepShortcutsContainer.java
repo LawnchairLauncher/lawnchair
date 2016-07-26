@@ -91,6 +91,8 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
     private boolean mIsAboveIcon;
     private boolean mIsAnimatingOpen;
 
+    private boolean mSrcIconDragStarted;
+
     /**
      * Sorts shortcuts in rank order, with manifest shortcuts coming before dynamic shortcuts.
      */
@@ -356,7 +358,8 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
             boolean containerContainsTouch = x >= 0 && y >= 0 && x < getWidth() && y < getHeight();
             if (shouldStartDeferredDrag((int) x, (int) y, containerContainsTouch)) {
-                cleanupDeferredDrag();
+                mSrcIconDragStarted = true;
+                cleanupDeferredDrag(true);
                 mDeferredDragIcon.getParent().requestDisallowInterceptTouchEvent(false);
                 mDeferredDragIcon.getOnLongClickListener().onLongClick(mDeferredDragIcon);
                 mLauncher.getDragController().onTouchEvent(ev);
@@ -386,7 +389,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
                 }
             }
         } else if (action == MotionEvent.ACTION_UP) {
-            cleanupDeferredDrag();
+            cleanupDeferredDrag(true);
             // Launch a shortcut if user was hovering over it.
             for (int i = 0; i < childCount; i++) {
                 DeepShortcutView shortcut = getShortcutAt(i);
@@ -396,7 +399,8 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
                 }
             }
         } else if (action == MotionEvent.ACTION_CANCEL) {
-            cleanupDeferredDrag();
+            // Do not change the source icon visibility if we are already dragging the source icon.
+            cleanupDeferredDrag(!mSrcIconDragStarted);
         }
         return true;
     }
@@ -421,11 +425,13 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         return !containerContainsTouch && (newDistToEdge - distToEdge > mStartDragThreshold);
     }
 
-    public void cleanupDeferredDrag() {
+    public void cleanupDeferredDrag(boolean updateSrcVisibility) {
         if (mDragView != null) {
             mDragView.remove();
         }
-        mDeferredDragIcon.setVisibility(VISIBLE);
+        if (updateSrcVisibility) {
+            mDeferredDragIcon.setVisibility(VISIBLE);
+        }
     }
 
     @Override
