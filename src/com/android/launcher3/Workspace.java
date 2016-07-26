@@ -2301,11 +2301,19 @@ public class Workspace extends PagedView
     }
 
     public void beginDragShared(View child, DragSource source, boolean accessible) {
-        beginDragShared(child, new Point(), source, accessible, new DragPreviewProvider(child));
+        Object dragObject = child.getTag();
+        if (!(dragObject instanceof ItemInfo)) {
+            String msg = "Drag started with a view that has no tag set. This "
+                    + "will cause a crash (issue 11627249) down the line. "
+                    + "View: " + child + "  tag: " + child.getTag();
+            throw new IllegalStateException(msg);
+        }
+        beginDragShared(child, new Point(), source, accessible,
+                (ItemInfo) dragObject, new DragPreviewProvider(child));
     }
 
     public void beginDragShared(View child, Point relativeTouchPos, DragSource source,
-                                boolean accessible, DragPreviewProvider previewProvider) {
+            boolean accessible, ItemInfo dragObject, DragPreviewProvider previewProvider) {
         child.clearFocus();
         child.setPressed(false);
 
@@ -2362,20 +2370,12 @@ public class Workspace extends PagedView
             icon.clearPressedBackground();
         }
 
-        Object dragObject = child.getTag();
-        if (!(dragObject instanceof ItemInfo)) {
-            String msg = "Drag started with a view that has no tag set. This "
-                    + "will cause a crash (issue 11627249) down the line. "
-                    + "View: " + child + "  tag: " + child.getTag();
-            throw new IllegalStateException(msg);
-        }
-
         if (child.getParent() instanceof ShortcutAndWidgetContainer) {
             mDragSourceInternal = (ShortcutAndWidgetContainer) child.getParent();
         }
 
         DragView dv = mDragController.startDrag(b, dragLayerX, dragLayerY, source,
-                (ItemInfo) dragObject, DragController.DRAG_ACTION_MOVE, dragVisualizeOffset,
+                dragObject, DragController.DRAG_ACTION_MOVE, dragVisualizeOffset,
                 dragRect, scale, accessible);
         dv.setIntrinsicIconScaleFactor(source.getIntrinsicIconScaleFactor());
 

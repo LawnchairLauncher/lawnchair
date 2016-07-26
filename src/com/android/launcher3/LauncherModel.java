@@ -1957,8 +1957,7 @@ public class LauncherModel extends BroadcastReceiver
                                         }
                                     }
                                     incrementPinnedShortcutCount(key, shouldPin);
-                                    info = ShortcutInfo.fromDeepShortcutInfo(
-                                            pinnedShortcut, context);
+                                    info = new ShortcutInfo(pinnedShortcut, context);
                                 } else { // item type == ITEM_TYPE_SHORTCUT
                                     info = getShortcutInfo(c, context, titleIndex, cursorIconInfo);
 
@@ -3289,6 +3288,22 @@ public class LauncherModel extends BroadcastReceiver
                 });
             }
         }
+    }
+
+    /**
+     * Repopulates the shortcut info, possibly updating any icon already on the workspace.
+     */
+    public void updateShortcutInfo(final ShortcutInfoCompat fullDetail, final ShortcutInfo info) {
+        enqueueItemUpdatedTask(new Runnable() {
+            @Override
+            public void run() {
+                info.updateFromDeepShortcutInfo(
+                        fullDetail, LauncherAppState.getInstance().getContext());
+                ArrayList<ShortcutInfo> update = new ArrayList<ShortcutInfo>();
+                update.add(info);
+                bindUpdatedShortcuts(update, fullDetail.getUserHandle());
+            }
+        });
     }
 
     private class ShortcutsChangedTask implements Runnable {
