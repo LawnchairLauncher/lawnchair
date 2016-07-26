@@ -264,18 +264,25 @@ public final class Utilities {
     }
 
     /**
+     * Creates a normalized bitmap suitable for the all apps view. The bitmap is also visually
+     * normalized with other icons and has enough spacing to add shadow.
+     */
+    public static Bitmap createScaledBitmapWithoutShadow(Drawable icon, Context context) {
+        RectF iconBounds = new RectF();
+        float scale = FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION ?
+                1 : IconNormalizer.getInstance().getScale(icon, iconBounds);
+        scale = Math.min(scale, ShadowGenerator.getScaleForBounds(iconBounds));
+        return createIconBitmap(icon, context, scale);
+    }
+
+    /**
      * Same as {@link #createBadgedIconBitmap} but adds a shadow before badging the icon
      */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static Bitmap createBadgedIconBitmapWithShadow(
             Drawable icon, UserHandleCompat user, Context context) {
-        RectF iconBounds = new RectF();
-        float scale = FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION ?
-                1 : IconNormalizer.getInstance().getScale(icon, iconBounds);
-        scale = Math.min(scale, ShadowGenerator.getScaleForBounds(iconBounds));
-
-        Bitmap bitmap = createIconBitmap(icon, context, scale);
-        bitmap = ShadowGenerator.getInstance().recreateIcon(bitmap);
+        Bitmap bitmap = ShadowGenerator.getInstance().recreateIcon(
+                createScaledBitmapWithoutShadow(icon, context));
         if (Utilities.ATLEAST_LOLLIPOP && user != null
                 && !UserHandleCompat.myUserHandle().equals(user)) {
             BitmapDrawable drawable = new FixedSizeBitmapDrawable(bitmap);

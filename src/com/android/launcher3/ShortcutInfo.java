@@ -162,19 +162,17 @@ public class ShortcutInfo extends ItemInfo {
         this.user = user;
     }
 
-    public ShortcutInfo(Context context, ShortcutInfo info) {
+    public ShortcutInfo(ShortcutInfo info) {
         super(info);
-        title = Utilities.trim(info.title);
+        title = info.title;
         intent = new Intent(info.intent);
-        if (info.iconResource != null) {
-            iconResource = new Intent.ShortcutIconResource();
-            iconResource.packageName = info.iconResource.packageName;
-            iconResource.resourceName = info.iconResource.resourceName;
-        }
+        iconResource = info.iconResource;
         mIcon = info.mIcon; // TODO: should make a copy here.  maybe we don't need this ctor at all
         flags = info.flags;
-        user = info.user;
         status = info.status;
+        mInstallProgress = info.mInstallProgress;
+        isDisabled = info.isDisabled;
+        usingFallbackIcon = info.usingFallbackIcon;
     }
 
     /** TODO: Remove this.  It's only called by ApplicationInfo.makeShortcut. */
@@ -184,6 +182,28 @@ public class ShortcutInfo extends ItemInfo {
         intent = new Intent(info.intent);
         flags = info.flags;
         isDisabled = info.isDisabled;
+    }
+
+    public ShortcutInfo(LauncherActivityInfoCompat info, Context context) {
+        user = info.getUser();
+        title = Utilities.trim(info.getLabel());
+        contentDescription = UserManagerCompat.getInstance(context)
+                .getBadgedLabelForUser(info.getLabel(), info.getUser());
+        intent = AppInfo.makeLaunchIntent(context, info, info.getUser());
+        itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
+        flags = AppInfo.initFlags(info);
+    }
+
+    /**
+     * Creates a {@link ShortcutInfo} from a {@link ShortcutInfoCompat}.
+     */
+    @TargetApi(Build.VERSION_CODES.N)
+    public ShortcutInfo(ShortcutInfoCompat shortcutInfo, Context context) {
+        user = shortcutInfo.getUserHandle();
+        itemType = LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
+        intent = shortcutInfo.makeIntent(context);
+        flags = 0;
+        updateFromDeepShortcutInfo(shortcutInfo, context);
     }
 
     public void setIcon(Bitmap b) {
@@ -265,33 +285,6 @@ public class ShortcutInfo extends ItemInfo {
         return usingLowResIcon && container >= 0 && rank >= FolderIcon.NUM_ITEMS_IN_PREVIEW;
     }
 
-    public static ShortcutInfo fromActivityInfo(LauncherActivityInfoCompat info, Context context) {
-        final ShortcutInfo shortcut = new ShortcutInfo();
-        shortcut.user = info.getUser();
-        shortcut.title = Utilities.trim(info.getLabel());
-        shortcut.contentDescription = UserManagerCompat.getInstance(context)
-                .getBadgedLabelForUser(info.getLabel(), info.getUser());
-        shortcut.intent = AppInfo.makeLaunchIntent(context, info, info.getUser());
-        shortcut.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
-        shortcut.flags = AppInfo.initFlags(info);
-        return shortcut;
-    }
-
-    /**
-     * Creates a {@link ShortcutInfo} from a {@link ShortcutInfoCompat}. Pardon the overloaded name.
-     */
-    @TargetApi(Build.VERSION_CODES.N)
-    public static ShortcutInfo fromDeepShortcutInfo(ShortcutInfoCompat shortcutInfo,
-            Context context) {
-        ShortcutInfo si = new ShortcutInfo();
-        si.user = shortcutInfo.getUserHandle();
-        si.itemType = LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
-        si.intent = shortcutInfo.makeIntent(context);
-        si.flags = 0;
-        si.updateFromDeepShortcutInfo(shortcutInfo, context);
-        return si;
-    }
-
     public void updateFromDeepShortcutInfo(ShortcutInfoCompat shortcutInfo, Context context) {
         title = shortcutInfo.getShortLabel();
 
@@ -306,9 +299,12 @@ public class ShortcutInfo extends ItemInfo {
         Drawable unbadgedIcon = launcherAppState.getShortcutManager()
                 .getShortcutIconDrawable(shortcutInfo,
                         launcherAppState.getInvariantDeviceProfile().fillResIconDpi);
-        Bitmap icon = unbadgedIcon == null ? null
-                : Utilities.createBadgedIconBitmapWithShadow(unbadgedIcon, user, context);
+        Bitmap icon = unbadgedIcon == null ? null : getBadgedIcon(unbadgedIcon, context);
         setIcon(icon != null ? icon : launcherAppState.getIconCache().getDefaultIcon(user));
+    }
+
+    protected Bitmap getBadgedIcon(Drawable unbadgedIcon, Context context) {
+        return Utilities.createBadgedIconBitmapWithShadow(unbadgedIcon, user, context);
     }
 
     /** Returns the ShortcutInfo id associated with the deep shortcut. */
@@ -322,4 +318,3 @@ public class ShortcutInfo extends ItemInfo {
         return isDisabled != 0;
     }
 }
-

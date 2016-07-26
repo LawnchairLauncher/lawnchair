@@ -25,6 +25,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -168,8 +169,8 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
                 Collections.sort(shortcuts, shortcutsComparator);
                 for (int i = 0; i < shortcuts.size(); i++) {
                     final ShortcutInfoCompat shortcut = shortcuts.get(i);
-                    final ShortcutInfo launcherShortcutInfo = ShortcutInfo
-                            .fromDeepShortcutInfo(shortcut, mLauncher);
+                    final ShortcutInfo launcherShortcutInfo =
+                            new UnbadgedShortcutInfo(shortcut, mLauncher);
                     CharSequence shortLabel = shortcut.getShortLabel();
                     CharSequence longLabel = shortcut.getLongLabel();
                     uiHandler.post(new UpdateShortcutChild(i, launcherShortcutInfo,
@@ -452,8 +453,14 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         // Return if global dragging is not enabled
         if (!mLauncher.isDraggingEnabled()) return false;
 
+        UnbadgedShortcutInfo unbadgedInfo = (UnbadgedShortcutInfo) v.getTag();
+        ShortcutInfo badged = new ShortcutInfo(unbadgedInfo);
+        // Queue an update task on the worker thread. This ensures that the badged
+        // shortcut eventually gets its icon updated.
+        mLauncher.getModel().updateShortcutInfo(unbadgedInfo.mDetail, badged);
+
         // Long clicked on a shortcut.
-        mLauncher.getWorkspace().beginDragShared(v, mIconLastTouchPos, this, false,
+        mLauncher.getWorkspace().beginDragShared(v, mIconLastTouchPos, this, false, badged,
                 new ScaledPreviewProvider(v));
         // TODO: support dragging from within folder without having to close it
         mLauncher.closeFolder();
@@ -535,5 +542,22 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
             return container;
         }
         return null;
+    }
+
+    /**
+     * Extension of {@link ShortcutInfo} which does not badge the icons.
+     */
+    private static class UnbadgedShortcutInfo extends ShortcutInfo {
+        private final ShortcutInfoCompat mDetail;
+
+        public UnbadgedShortcutInfo(ShortcutInfoCompat shortcutInfo, Context context) {
+            super(shortcutInfo, context);
+            mDetail = shortcutInfo;
+        }
+
+        @Override
+        protected Bitmap getBadgedIcon(Drawable unbadgedIcon, Context context) {
+            return Utilities.createScaledBitmapWithoutShadow(unbadgedIcon, context);
+        }
     }
 }
