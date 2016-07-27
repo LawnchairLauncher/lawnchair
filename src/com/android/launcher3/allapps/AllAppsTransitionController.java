@@ -6,6 +6,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -43,7 +44,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private static final boolean DBG = false;
 
     private final Interpolator mAccelInterpolator = new AccelerateInterpolator(2f);
-    private final Interpolator mDecelInterpolator = new DecelerateInterpolator(1f);
+    private final Interpolator mFastOutSlowInInterpolator = new FastOutSlowInInterpolator();
+    private final Interpolator mScrollInterpolator = new PagedView.ScrollInterpolator();
 
     private static final float ANIMATION_DURATION = 1200;
 
@@ -249,6 +251,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     public boolean isTransitioning() {
         return mDetector.isDraggingOrSettling();
     }
+
     /**
      * @param start {@code true} if start of new drag.
      */
@@ -345,6 +348,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     public void animateToAllApps(AnimatorSet animationOut, long duration) {
+        Interpolator interpolator;
         if (animationOut == null) {
             return;
         }
@@ -352,12 +356,15 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             preparePull(true);
             mAnimationDuration = duration;
             mShiftStart = mAppsView.getTranslationY();
+            interpolator = mFastOutSlowInInterpolator;
+        } else {
+            interpolator = mScrollInterpolator;
         }
         final float fromAllAppsTop = mAppsView.getTranslationY();
         ObjectAnimator driftAndAlpha = ObjectAnimator.ofFloat(this, "progress",
                 fromAllAppsTop / mShiftRange, 0f);
         driftAndAlpha.setDuration(mAnimationDuration);
-        driftAndAlpha.setInterpolator(new PagedView.ScrollInterpolator());
+        driftAndAlpha.setInterpolator(interpolator);
         animationOut.play(driftAndAlpha);
 
         animationOut.addListener(new AnimatorListenerAdapter() {
@@ -416,17 +423,21 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         if (animationOut == null) {
             return;
         }
+        Interpolator interpolator;
         if (mDetector.isIdleState()) {
             preparePull(true);
             mAnimationDuration = duration;
             mShiftStart = mAppsView.getTranslationY();
+            interpolator = mFastOutSlowInInterpolator;
+        } else {
+            interpolator = mScrollInterpolator;
         }
         final float fromAllAppsTop = mAppsView.getTranslationY();
 
         ObjectAnimator driftAndAlpha = ObjectAnimator.ofFloat(this, "progress",
                 fromAllAppsTop / mShiftRange, 1f);
         driftAndAlpha.setDuration(mAnimationDuration);
-        driftAndAlpha.setInterpolator(new PagedView.ScrollInterpolator());
+        driftAndAlpha.setInterpolator(interpolator);
         animationOut.play(driftAndAlpha);
 
         animationOut.addListener(new AnimatorListenerAdapter() {
