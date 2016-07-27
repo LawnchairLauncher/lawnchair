@@ -237,6 +237,8 @@ public class LauncherStateTransitionAnimation {
         final Resources res = mLauncher.getResources();
         final boolean material = Utilities.ATLEAST_LOLLIPOP;
         final int revealDuration = res.getInteger(R.integer.config_overlayRevealTime);
+        final int revealDurationSlide = res.getInteger(R.integer.config_overlaySlideRevealTime);
+
         final int itemsAlphaStagger = res.getInteger(R.integer.config_overlayItemsAlphaStagger);
 
         final View fromView = mLauncher.getWorkspace();
@@ -435,7 +437,7 @@ public class LauncherStateTransitionAnimation {
                       pCb.onTransitionComplete();
                   }
             });
-            mAllAppsController.animateToAllApps(animation, revealDuration);
+            mAllAppsController.animateToAllApps(animation, revealDurationSlide);
 
             dispatchOnLauncherTransitionPrepare(fromView, animated, false);
             dispatchOnLauncherTransitionPrepare(toView, animated, false);
@@ -680,6 +682,7 @@ public class LauncherStateTransitionAnimation {
         final Resources res = mLauncher.getResources();
         final boolean material = Utilities.ATLEAST_LOLLIPOP;
         final int revealDuration = res.getInteger(R.integer.config_overlayRevealTime);
+        final int revealDurationSlide = res.getInteger(R.integer.config_overlaySlideRevealTime);
         final int itemsAlphaStagger =
                 res.getInteger(R.integer.config_overlayItemsAlphaStagger);
 
@@ -918,7 +921,7 @@ public class LauncherStateTransitionAnimation {
                 }
 
             });
-            mAllAppsController.animateToWorkspace(animation, revealDuration);
+            mAllAppsController.animateToWorkspace(animation, revealDurationSlide);
 
             // Dispatch the prepare transition signal
             dispatchOnLauncherTransitionPrepare(fromView, animated, multiplePagesVisible);
