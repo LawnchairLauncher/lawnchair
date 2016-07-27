@@ -96,8 +96,10 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
     private boolean mIsLeftAligned;
     private boolean mIsAboveIcon;
     private View mArrow;
-
     private boolean mSrcIconDragStarted;
+    private LauncherViewPropertyAnimator mArrowHoverAnimator;
+    private boolean mIsRtl;
+    private int mArrowHorizontalOffset;
 
     /**
      * Sorts shortcuts in rank order, with manifest shortcuts coming before dynamic shortcuts.
@@ -128,6 +130,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         mStartDragThreshold = getResources().getDimensionPixelSize(
                 R.dimen.deep_shortcuts_start_drag_threshold);
         mAccessibilityDelegate = new ShortcutMenuAccessibilityDelegate(mLauncher);
+        mIsRtl = Utilities.isRtl(getResources());
     }
 
     public DeepShortcutsContainer(Context context, AttributeSet attrs) {
@@ -153,7 +156,20 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         }
 
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
-        animateOpen(originalIcon);
+        orientAboutIcon(originalIcon);
+
+        // Add the arrow.
+        final Resources resources = getResources();
+        final int arrowWidth = resources.getDimensionPixelSize(R.dimen.deep_shortcuts_arrow_width);
+        final int arrowHeight = resources.getDimensionPixelSize(R.dimen.deep_shortcuts_arrow_height);
+        mArrowHorizontalOffset = resources.getDimensionPixelSize(
+                R.dimen.deep_shortcuts_arrow_horizontal_offset);
+        final int arrowVerticalOffset = resources.getDimensionPixelSize(
+                R.dimen.deep_shortcuts_arrow_vertical_offset);
+        mArrow = addArrowView(mArrowHorizontalOffset, arrowVerticalOffset, arrowWidth, arrowHeight);
+        mArrowHoverAnimator = new LauncherViewPropertyAnimator(mArrow);
+
+        animateOpen();
 
         deferDrag(originalIcon);
 
@@ -230,25 +246,13 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         return getChildCount() - 1;
     }
 
-    private void animateOpen(BubbleTextView originalIcon) {
-        orientAboutIcon(originalIcon);
-        final Resources resources = getResources();
-        final int arrowWidth = resources.getDimensionPixelSize(R.dimen.deep_shortcuts_arrow_width);
-        final int arrowHeight = resources.getDimensionPixelSize(R.dimen.deep_shortcuts_arrow_height);
-        int iconWidth = originalIcon.getWidth() - originalIcon.getTotalPaddingLeft()
-                - originalIcon.getTotalPaddingRight();
-        iconWidth *= originalIcon.getScaleX();
-        final int arrowHorizontalOffset = iconWidth / 2 - arrowWidth / 2;
-        final int arrowVerticalOffset = resources.getDimensionPixelSize(
-                R.dimen.deep_shortcuts_arrow_vertical_offset);
-        mArrow = addArrowView(arrowHorizontalOffset, arrowVerticalOffset, arrowWidth, arrowHeight);
-
+    private void animateOpen() {
         setVisibility(View.VISIBLE);
 
         final AnimatorSet shortcutAnims = LauncherAnimUtils.createAnimatorSet();
         final int shortcutCount = getShortcutCount();
-        final int pivotX = mIsLeftAligned ? arrowHorizontalOffset
-                : getMeasuredWidth() - arrowHorizontalOffset;
+        final int pivotX = mIsLeftAligned ? mArrowHorizontalOffset
+                : getMeasuredWidth() - mArrowHorizontalOffset;
         final int pivotY = getShortcutAt(0).getMeasuredHeight() / 2;
         for (int i = 0; i < shortcutCount; i++) {
             DeepShortcutView deepShortcutView = getShortcutAt(i);
@@ -292,19 +296,39 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         Rect insets = dragLayer.getInsets();
 
         // Align left (right in RTL) if there is room.
-        boolean isRtl = Utilities.isRtl(getResources());
         int leftAlignedX = mTempRect.left + icon.getPaddingLeft();
         int rightAlignedX = mTempRect.right - width - icon.getPaddingRight();
         int x = leftAlignedX;
         boolean canBeLeftAligned = leftAlignedX + width < dragLayer.getRight() - insets.right;
         boolean canBeRightAligned = rightAlignedX > dragLayer.getLeft() + insets.left;
-        if (!canBeLeftAligned || (isRtl && canBeRightAligned)) {
+        if (!canBeLeftAligned || (mIsRtl && canBeRightAligned)) {
             x = rightAlignedX;
         }
         mIsLeftAligned = x == leftAlignedX;
-        if (isRtl) {
+        if (mIsRtl) {
             x -= dragLayer.getWidth() - width;
         }
+
+        // Offset x so that the arrow and shortcut icons are center-aligned with the original icon.
+        int iconWidth = icon.getWidth() - icon.getTotalPaddingLeft() - icon.getTotalPaddingRight();
+        iconWidth *= icon.getScaleX();
+        Resources resources = getResources();
+        int xOffset;
+        if (isAlignedWithStart()) {
+            // Aligning with the shortcut icon.
+            int shortcutIconWidth = resources.getDimensionPixelSize(R.dimen.deep_shortcut_icon_size);
+            int shortcutPaddingStart = resources.getDimensionPixelSize(
+                    R.dimen.deep_shortcut_padding_start);
+            xOffset = iconWidth / 2 - shortcutIconWidth / 2 - shortcutPaddingStart;
+        } else {
+            // Aligning with the drag handle.
+            int shortcutDragHandleWidth = resources.getDimensionPixelSize(
+                    R.dimen.deep_shortcut_drag_handle_size);
+            int shortcutPaddingEnd = resources.getDimensionPixelSize(
+                    R.dimen.deep_shortcut_padding_end);
+            xOffset = iconWidth / 2 - shortcutDragHandleWidth / 2 - shortcutPaddingEnd;
+        }
+        x += mIsLeftAligned ? xOffset : -xOffset;
 
         // Open above icon if there is room.
         int y = mTempRect.top - height;
@@ -318,6 +342,10 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
         setX(x);
         setY(y);
+    }
+
+    private boolean isAlignedWithStart() {
+        return mIsLeftAligned && !mIsRtl || !mIsLeftAligned && mIsRtl;
     }
 
     /**

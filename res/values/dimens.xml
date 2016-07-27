@@ -155,7 +155,7 @@
 
 <!-- Deep shortcuts -->
     <dimen name="deep_shortcuts_elevation">9dp</dimen>
-    <dimen name="bg_pill_width">180dp</dimen>
+    <dimen name="bg_pill_width">208dp</dimen>
     <dimen name="bg_pill_height">48dp</dimen>
     <dimen name="bg_pill_radius">24dp</dimen>
     <dimen name="deep_shortcuts_spacing">4dp</dimen>
@@ -164,9 +164,18 @@
          of the shortcut container before the container is removed. -->
     <dimen name="deep_shortcuts_start_drag_threshold">35dp</dimen>
     <dimen name="deep_shortcut_icon_size">36dp</dimen>
+    <dimen name="deep_shortcut_padding_start">6dp</dimen>
+    <dimen name="deep_shortcut_padding_end">16dp</dimen>
+    <dimen name="deep_shortcut_drawable_padding">8dp</dimen>
     <dimen name="deep_shortcut_anim_translation_y">5dp</dimen>
+    <dimen name="deep_shortcut_drag_handle_size">16dp</dimen>
     <dimen name="deep_shortcuts_arrow_width">10dp</dimen>
     <dimen name="deep_shortcuts_arrow_height">8dp</dimen>
     <dimen name="deep_shortcuts_arrow_vertical_offset">-2dp</dimen>
+    <!-- deep_shortcut_padding_start + deep_shortcut_icon_size / 2 - deep_shortcuts_arrow_width / 2-->
+    <!-- Note that this works for right-aligned shortcuts, too, because
+         deep_shortcut_padding_end + deep_shortcut_drag_handle_size / 2 - deep_shortcuts_arrow_width / 2
+         also happens to equal 19dp-->
+    <dimen name="deep_shortcuts_arrow_horizontal_offset">19dp</dimen>
 
 </resources>
