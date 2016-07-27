@@ -250,6 +250,6 @@
     <string name="widget_resized">Widget resized to width <xliff:g id="number" example="2">%1$s</xliff:g> height <xliff:g id="number" example="1">%2$s</xliff:g></string>
 
     <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
-    <string name="action_deep_shortcut" translatable="false">Quick links</string>
+    <string name="action_deep_shortcut">Shortcuts</string>
 
 </resources>
