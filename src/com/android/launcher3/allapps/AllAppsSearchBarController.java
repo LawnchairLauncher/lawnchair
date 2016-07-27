@@ -140,10 +140,11 @@ public abstract class AllAppsSearchBarController
      * Resets the search bar state.
      */
     public void reset() {
-        mQuery = null;
         unfocusSearchField();
         mCb.clearSearchResult();
         mInput.setText("");
+        // We need to reset this after we clear the input text
+        mQuery = null;
         hideKeyboard();
     }
 
