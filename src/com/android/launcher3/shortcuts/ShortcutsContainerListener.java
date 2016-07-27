@@ -4,7 +4,6 @@ import android.os.SystemClock;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.ViewParent;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CheckLongPressHelper;
@@ -22,17 +21,11 @@ public class ShortcutsContainerListener implements View.OnTouchListener,
     /** Scaled touch slop, used for detecting movement outside bounds. */
     private final float mScaledTouchSlop;
 
-    /** Timeout before disallowing intercept on the source's parent. */
-    private final int mTapTimeout;
-
     /** Timeout before accepting a long-press to start forwarding. */
     private final int mLongPressTimeout;
 
     /** Source view from which events are forwarded. */
     private final BubbleTextView mSrcIcon;
-
-    /** Runnable used to prevent conflicts with scrolling parents. */
-    private Runnable mDisallowIntercept;
 
     /** Runnable used to trigger forwarding on long-press. */
     private Runnable mTriggerLongPress;
@@ -56,7 +49,6 @@ public class ShortcutsContainerListener implements View.OnTouchListener,
     public ShortcutsContainerListener(BubbleTextView icon) {
         mSrcIcon = icon;
         mScaledTouchSlop = ViewConfiguration.get(icon.getContext()).getScaledTouchSlop();
-        mTapTimeout = ViewConfiguration.getTapTimeout();
 
         mLongPressTimeout = CheckLongPressHelper.DEFAULT_LONG_PRESS_TIMEOUT;
 
@@ -113,10 +105,6 @@ public class ShortcutsContainerListener implements View.OnTouchListener,
     public void onViewDetachedFromWindow(View v) {
         mForwarding = false;
         mActivePointerId = MotionEvent.INVALID_POINTER_ID;
-
-        if (mDisallowIntercept != null) {
-            mSrcIcon.removeCallbacks(mDisallowIntercept);
-        }
     }
 
     /**
@@ -158,11 +146,6 @@ public class ShortcutsContainerListener implements View.OnTouchListener,
             case MotionEvent.ACTION_DOWN:
                 mActivePointerId = srcEvent.getPointerId(0);
 
-                if (mDisallowIntercept == null) {
-                    mDisallowIntercept = new DisallowIntercept();
-                }
-                src.postDelayed(mDisallowIntercept, mTapTimeout);
-
                 if (mTriggerLongPress == null) {
                     mTriggerLongPress = new TriggerLongPress();
                 }
@@ -194,10 +177,6 @@ public class ShortcutsContainerListener implements View.OnTouchListener,
     private void clearCallbacks() {
         if (mTriggerLongPress != null) {
             mSrcIcon.removeCallbacks(mTriggerLongPress);
-        }
-
-        if (mDisallowIntercept != null) {
-            mSrcIcon.removeCallbacks(mDisallowIntercept);
         }
     }
 
@@ -263,14 +242,6 @@ public class ShortcutsContainerListener implements View.OnTouchListener,
                 && action != MotionEvent.ACTION_CANCEL;
 
         return handled && keepForwarding;
-    }
-
-    private class DisallowIntercept implements Runnable {
-        @Override
-        public void run() {
-            final ViewParent parent = mSrcIcon.getParent();
-            parent.requestDisallowInterceptTouchEvent(true);
-        }
     }
 
     private class TriggerLongPress implements Runnable {
