@@ -144,6 +144,10 @@ public abstract class AllAppsSearchBarController
         unfocusSearchField();
         mCb.clearSearchResult();
         mInput.setText("");
+        hideKeyboard();
+    }
+
+    protected void hideKeyboard() {
         mInputMethodManager.hideSoftInputFromWindow(mInput.getWindowToken(), 0);
     }
 
