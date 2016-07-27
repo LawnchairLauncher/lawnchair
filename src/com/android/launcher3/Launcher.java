@@ -3296,7 +3296,7 @@ public class Launcher extends Activity
     public boolean showWorkspace(boolean animated, Runnable onCompleteRunnable) {
         boolean changed = mState != State.WORKSPACE ||
                 mWorkspace.getState() != Workspace.State.NORMAL;
-        if (changed) {
+        if (changed || mAllAppsController.isTransitioning()) {
             mWorkspace.setVisibility(View.VISIBLE);
             mStateTransitionAnimation.startAnimationToWorkspace(mState, mWorkspace.getState(),
                     Workspace.State.NORMAL, animated, onCompleteRunnable);
@@ -3393,8 +3393,10 @@ public class Launcher extends Activity
     // TODO: calling method should use the return value so that when {@code false} is returned
     // the workspace transition doesn't fall into invalid state.
     private boolean showAppsOrWidgets(State toState, boolean animated, boolean focusSearchBar) {
-        if (mState != State.WORKSPACE &&  mState != State.APPS_SPRING_LOADED &&
-                mState != State.WIDGETS_SPRING_LOADED) {
+        if (!(mState == State.WORKSPACE ||
+                mState == State.APPS_SPRING_LOADED ||
+                mState == State.WIDGETS_SPRING_LOADED ||
+                (mState == State.APPS && mAllAppsController.isTransitioning()))) {
             return false;
         }
         if (toState != State.APPS && toState != State.WIDGETS) {

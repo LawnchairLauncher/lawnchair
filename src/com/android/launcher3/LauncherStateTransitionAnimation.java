@@ -207,7 +207,8 @@ public class LauncherStateTransitionAnimation {
             Log.e(TAG, "Unexpected call to startAnimationToWorkspace");
         }
 
-        if (fromState == Launcher.State.APPS || fromState == Launcher.State.APPS_SPRING_LOADED) {
+        if (fromState == Launcher.State.APPS || fromState == Launcher.State.APPS_SPRING_LOADED
+                || mAllAppsController.isTransitioning()) {
             int animType = CIRCULAR_REVEAL;
             if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
                 animType = PULLUP;
@@ -434,7 +435,7 @@ public class LauncherStateTransitionAnimation {
                       pCb.onTransitionComplete();
                   }
             });
-            mAllAppsController.animateToAllApps(animation, revealDuration, false);
+            mAllAppsController.animateToAllApps(animation, revealDuration);
 
             dispatchOnLauncherTransitionPrepare(fromView, animated, false);
             dispatchOnLauncherTransitionPrepare(toView, animated, false);
@@ -898,9 +899,8 @@ public class LauncherStateTransitionAnimation {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     if (canceled) return;
-                    dispatchOnLauncherTransitionEnd(fromView, animated, false);
-                    dispatchOnLauncherTransitionEnd(toView, animated, false);
-
+                    dispatchOnLauncherTransitionEnd(fromView, animated, true);
+                    dispatchOnLauncherTransitionEnd(toView, animated, true);
                     // Run any queued runnables
                     if (onCompleteRunnable != null) {
                         onCompleteRunnable.run();
@@ -918,7 +918,7 @@ public class LauncherStateTransitionAnimation {
                 }
 
             });
-            mAllAppsController.animateToWorkspace(animation, revealDuration, false);
+            mAllAppsController.animateToWorkspace(animation, revealDuration);
 
             // Dispatch the prepare transition signal
             dispatchOnLauncherTransitionPrepare(fromView, animated, multiplePagesVisible);

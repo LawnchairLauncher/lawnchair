@@ -153,7 +153,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         if (mDetector.isSettlingState() && (isInDisallowRecatchBottomZone() || isInDisallowRecatchTopZone())) {
             return false;
         }
-        return mDetector.shouldIntercept();
+        return mDetector.isDraggingOrSettling();
     }
 
     private boolean shouldPossiblyIntercept(MotionEvent ev) {
@@ -222,27 +222,17 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                             LauncherLogProto.Action.FLING,
                             LauncherLogProto.Action.UP,
                             LauncherLogProto.HOTSEAT);
-                    mLauncher.showAppsView(true, true, false, false);
-                } else {
-                    animateToAllApps(mCurrentAnimation, mAnimationDuration, true);
                 }
+                mLauncher.showAppsView(true, true, false, false);
             } else {
                 calculateDuration(velocity, Math.abs(mShiftRange - mAppsView.getTranslationY()));
-                if (mLauncher.isAllAppsVisible()) {
-                    mLauncher.showWorkspace(true);
-                } else {
-                    animateToWorkspace(mCurrentAnimation, mAnimationDuration, true);
-                }
+                mLauncher.showWorkspace(true);
             }
             // snap to top or bottom using the release velocity
         } else {
             if (mAppsView.getTranslationY() > mShiftRange / 2) {
                 calculateDuration(velocity, Math.abs(mShiftRange - mAppsView.getTranslationY()));
-                if (mLauncher.isAllAppsVisible()) {
-                    mLauncher.showWorkspace(true);
-                } else {
-                    animateToWorkspace(mCurrentAnimation, mAnimationDuration, true);
-                }
+                mLauncher.showWorkspace(true);
             } else {
                 calculateDuration(velocity, Math.abs(mAppsView.getTranslationY()));
                 if (!mLauncher.isAllAppsVisible()) {
@@ -250,15 +240,15 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                             LauncherLogProto.Action.SWIPE,
                             LauncherLogProto.Action.UP,
                             LauncherLogProto.HOTSEAT);
-                    mLauncher.showAppsView(true, true, false, false);
-                } else {
-                    animateToAllApps(mCurrentAnimation, mAnimationDuration, true);
                 }
-
+                mLauncher.showAppsView(true, true, false, false);
             }
         }
     }
 
+    public boolean isTransitioning() {
+        return mDetector.isDraggingOrSettling();
+    }
     /**
      * @param start {@code true} if start of new drag.
      */
@@ -354,7 +344,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         }
     }
 
-    public void animateToAllApps(AnimatorSet animationOut, long duration, boolean start) {
+    public void animateToAllApps(AnimatorSet animationOut, long duration) {
         if (animationOut == null) {
             return;
         }
@@ -390,9 +380,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             }
         });
         mCurrentAnimation = animationOut;
-        if (start) {
-            mCurrentAnimation.start();
-        }
     }
 
     public void showDiscoveryBounce() {
@@ -425,7 +412,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         });
     }
 
-    public void animateToWorkspace(AnimatorSet animationOut, long duration, boolean start) {
+    public void animateToWorkspace(AnimatorSet animationOut, long duration) {
         if (animationOut == null) {
             return;
         }
@@ -462,9 +449,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             }
         });
         mCurrentAnimation = animationOut;
-        if (start) {
-            mCurrentAnimation.start();
-        }
     }
 
     public void finishPullUp() {
