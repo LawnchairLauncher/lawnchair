@@ -3132,6 +3132,7 @@ public class Launcher extends Activity
     public void closeShortcutsContainer() {
         DeepShortcutsContainer deepShortcutsContainer = getOpenShortcutsContainer();
         if (deepShortcutsContainer != null) {
+            deepShortcutsContainer.cleanupDeferredDrag(true);
             mDragController.removeDragListener(deepShortcutsContainer);
             mDragLayer.removeView(deepShortcutsContainer);
         }
