@@ -72,7 +72,7 @@ public class VerticalPullDetector {
         mState = newState;
     }
 
-    public boolean shouldIntercept() {
+    public boolean isDraggingOrSettling() {
         return mState == ScrollState.DRAGGING || mState == ScrollState.SETTLING;
     }
 
