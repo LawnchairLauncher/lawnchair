@@ -24,6 +24,8 @@ import android.content.pm.ShortcutInfo;
 import android.os.Build;
 
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.compat.DeferredLauncherActivityInfo;
+import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.ComponentKey;
@@ -108,5 +110,9 @@ public class ShortcutInfoCompat {
     @Override
     public String toString() {
         return mShortcutInfo.toString();
+    }
+
+    public LauncherActivityInfoCompat getActivityInfo(Context context) {
+        return new DeferredLauncherActivityInfo(getActivity(), getUserHandle(), context);
     }
 }

@@ -46,6 +46,7 @@ import android.widget.LinearLayout;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
+import com.android.launcher3.IconCache;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
@@ -761,8 +762,9 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         }
 
         @Override
-        protected Bitmap getBadgedIcon(Drawable unbadgedIcon, Context context) {
-            return Utilities.createScaledBitmapWithoutShadow(unbadgedIcon, context);
+        protected Bitmap getBadgedIcon(Bitmap unbadgedBitmap, ShortcutInfoCompat shortcutInfo,
+                IconCache cache, Context context) {
+            return unbadgedBitmap;
         }
     }
 }
