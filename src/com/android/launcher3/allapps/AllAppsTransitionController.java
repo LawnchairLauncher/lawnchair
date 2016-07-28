@@ -59,6 +59,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private ObjectAnimator mCaretAnimator;
     private final long mCaretAnimationDuration;
     private final Interpolator mCaretInterpolator;
+    private CaretDrawable mCaretDrawable;
+    private float mLastCaretProgress;
 
     private float mStatusBarHeight;
 
@@ -75,6 +77,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private float mShiftStart;      // [0, mShiftRange]
     private float mShiftRange;      // changes depending on the orientation
     private float mProgress;        // [0, 1], mShiftRange * mProgress = shiftCurrent
+
+    private float mVelocityForCaret;
 
     private static final float DEFAULT_SHIFT_RANGE = 10;
 
@@ -203,8 +207,12 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         if (mAppsView == null) {
             return false;   // early termination.
         }
+
+        mVelocityForCaret = velocity;
+
         float shift = Math.min(Math.max(0, mShiftStart + displacement), mShiftRange);
         setProgress(shift / mShiftRange);
+
         return true;
     }
 
@@ -329,6 +337,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mWorkspace.setWorkspaceYTranslationAndAlpha(
                 PARALLAX_COEFFICIENT * (-mShiftRange + shiftCurrent),
                 interpolation);
+        updateCaret(progress);
         updateLightStatusBar(shiftCurrent);
     }
 
@@ -352,6 +361,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             return;
         }
         if (mDetector.isIdleState()) {
+            mVelocityForCaret = -VerticalPullDetector.RELEASE_VELOCITY_PX_MS;
             preparePull(true);
             mAnimationDuration = duration;
             mShiftStart = mAppsView.getTranslationY();
@@ -404,7 +414,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                finishPullDown(false);
+                finishPullDown();
                 mDiscoBounceAnimation = null;
                 mIsTranslateWithoutWorkspace = false;
             }
@@ -424,6 +434,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         }
         Interpolator interpolator;
         if (mDetector.isIdleState()) {
+            mVelocityForCaret = VerticalPullDetector.RELEASE_VELOCITY_PX_MS;
             preparePull(true);
             mAnimationDuration = duration;
             mShiftStart = mAppsView.getTranslationY();
@@ -452,7 +463,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                 if (canceled) {
                     return;
                 } else {
-                    finishPullDown(true);
+                    finishPullDown();
                     cleanUpAnimation();
                     mDetector.finishedScrolling();
                 }
@@ -464,21 +475,14 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     public void finishPullUp() {
         mHotseat.setVisibility(View.INVISIBLE);
         setProgress(0f);
-        animateCaret();
     }
 
-    public void finishPullDown(boolean animated) {
+    public void finishPullDown() {
         mAppsView.setVisibility(View.INVISIBLE);
         mHotseat.setBackgroundTransparent(false /* transparent */);
         mHotseat.setVisibility(View.VISIBLE);
         mAppsView.reset();
         setProgress(1f);
-        if (animated) {
-            animateCaret();
-        } else {
-            mWorkspace.getPageIndicator().getCaretDrawable()
-                    .setLevel(CaretDrawable.LEVEL_CARET_POINTING_UP);
-        }
     }
 
     private void cancelAnimation() {
@@ -501,17 +505,41 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mCurrentAnimation = null;
     }
 
-    private void animateCaret() {
+    private void updateCaret(float shift) {
+        // Animate to a neutral state by default
+        float newCaretProgress = CaretDrawable.PROGRESS_CARET_NEUTRAL;
+
+        // If we're in portrait and the shift is not 0 or 1, adjust the caret based on velocity
+        if (0f < shift && shift < 1f && !mLauncher.useVerticalBarLayout()) {
+            // How fast are we moving as a percentage of the minimum fling velocity?
+            final float pctOfFlingVelocity = Math.max(-1, Math.min(
+                    mVelocityForCaret / VerticalPullDetector.RELEASE_VELOCITY_PX_MS, 1));
+
+            mCaretDrawable.setCaretProgress(pctOfFlingVelocity);
+
+            // Set the last caret progress to this progress to prevent animator cancellation
+            mLastCaretProgress = pctOfFlingVelocity;
+        } else if (!mDetector.isDraggingState()) {
+            // Otherwise, if we're not dragging, match the caret to the appropriate state
+            if (Float.compare(shift, 0f) == 0) { // All Apps is up
+                newCaretProgress = CaretDrawable.PROGRESS_CARET_POINTING_DOWN;
+            } else if (Float.compare(shift, 1f) == 0) { // All Apps is down
+                newCaretProgress = CaretDrawable.PROGRESS_CARET_POINTING_UP;
+            }
+        }
+
+        // If the new progress is the same as the last progress we animated to, terminate early
+        if (Float.compare(mLastCaretProgress, newCaretProgress) == 0) {
+            return;
+        }
+
         if (mCaretAnimator.isRunning()) {
-            mCaretAnimator.cancel(); // stop the animator in its tracks
+            mCaretAnimator.cancel(); // Stop the animator in its tracks
         }
 
-        if (mLauncher.isAllAppsVisible()) {
-            mCaretAnimator.setIntValues(CaretDrawable.LEVEL_CARET_POINTING_DOWN);
-        } else {
-            mCaretAnimator.setIntValues(CaretDrawable.LEVEL_CARET_POINTING_UP);
-        }
-
+        // Update the progress and start the animation
+        mLastCaretProgress = newCaretProgress;
+        mCaretAnimator.setFloatValues(newCaretProgress);
         mCaretAnimator.start();
     }
 
@@ -519,12 +547,14 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mAppsView = appsView;
         mHotseat = hotseat;
         mWorkspace = workspace;
-        mCaretAnimator = ObjectAnimator.ofInt(mWorkspace.getPageIndicator().getCaretDrawable(),
-                "level", CaretDrawable.LEVEL_CARET_POINTING_UP); // we will set values later
-        mCaretAnimator.setDuration(mCaretAnimationDuration);
-        mCaretAnimator.setInterpolator(mCaretInterpolator);
+        mCaretDrawable = mWorkspace.getPageIndicator().getCaretDrawable();
         mHotseat.addOnLayoutChangeListener(this);
         mHotseat.bringToFront();
+
+        // we will set values later
+        mCaretAnimator = ObjectAnimator.ofFloat(mCaretDrawable, "caretProgress", 0);
+        mCaretAnimator.setDuration(mCaretAnimationDuration);
+        mCaretAnimator.setInterpolator(mCaretInterpolator);
     }
 
     @Override
@@ -537,6 +567,4 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         }
         setProgress(mProgress);
     }
-
-
 }
