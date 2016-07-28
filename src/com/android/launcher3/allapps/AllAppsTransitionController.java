@@ -12,7 +12,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AnimationUtils;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.DeviceProfile;
@@ -225,7 +224,9 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                             LauncherLogProto.Action.UP,
                             LauncherLogProto.HOTSEAT);
                 }
-                mLauncher.showAppsView(true, true, false, false);
+                mLauncher.showAppsView(true /* animated */,
+                        false /* updatePredictedApps */,
+                        false /* focusSearchBar */);
             } else {
                 calculateDuration(velocity, Math.abs(mShiftRange - mAppsView.getTranslationY()));
                 mLauncher.showWorkspace(true);
@@ -243,7 +244,9 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                             LauncherLogProto.Action.UP,
                             LauncherLogProto.HOTSEAT);
                 }
-                mLauncher.showAppsView(true, true, false, false);
+                mLauncher.showAppsView(true, /* animated */
+                        false /* updatePredictedApps */,
+                        false /* focusSearchBar */);
             }
         }
     }
@@ -260,15 +263,11 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             // Initialize values that should not change until #onDragEnd
             mStatusBarHeight = mLauncher.getDragLayer().getInsets().top;
             mHotseat.setVisibility(View.VISIBLE);
-            mHotseat.bringToFront();
             if (!mLauncher.isAllAppsVisible()) {
                 mLauncher.tryAndUpdatePredictedApps();
                 mHotseatBackgroundColor = mHotseat.getBackgroundDrawableColor();
                 mHotseat.setBackgroundTransparent(true /* transparent */);
                 mAppsView.setVisibility(View.VISIBLE);
-                mAppsView.getContentView().setVisibility(View.VISIBLE);
-                mAppsView.getContentView().setBackground(null);
-                mAppsView.getRevealView().setVisibility(View.VISIBLE);
                 mAppsView.setRevealDrawableColor(mHotseatBackgroundColor);
             }
         }
@@ -525,6 +524,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mCaretAnimator.setDuration(mCaretAnimationDuration);
         mCaretAnimator.setInterpolator(mCaretInterpolator);
         mHotseat.addOnLayoutChangeListener(this);
+        mHotseat.bringToFront();
     }
 
     @Override
