@@ -997,8 +997,8 @@ public class Launcher extends Activity
             // Don't update the predicted apps if the user is returning to launcher in the apps
             // view after launching an app, as they may be depending on the UI to be static to
             // switch to another app, otherwise, if it was
-            showAppsView(false /* animated */, false /* resetListToTop */,
-                    !launchedFromApp /* updatePredictedApps */, false /* focusSearchBar */);
+            showAppsView(false /* animated */, !launchedFromApp /* updatePredictedApps */,
+                    false /* focusSearchBar */);
         } else if (mOnResumeState == State.WIDGETS) {
             showWidgetsView(false, false);
         }
@@ -2601,8 +2601,8 @@ public class Launcher extends Activity
         if (!isAppsViewVisible()) {
             getUserEventDispatcher().logActionOnControl(LauncherLogProto.Action.TAP,
                     LauncherLogProto.ALL_APPS_BUTTON);
-            showAppsView(true /* animated */, false /* resetListToTop */,
-                    true /* updatePredictedApps */, false /* focusSearchBar */);
+            showAppsView(true /* animated */, true /* updatePredictedApps */,
+                    false /* focusSearchBar */);
         }
     }
 
@@ -2611,7 +2611,7 @@ public class Launcher extends Activity
         if (!isAppsViewVisible()) {
             getUserEventDispatcher().logActionOnControl(LauncherLogProto.Action.LONGPRESS,
                     LauncherLogProto.ALL_APPS_BUTTON);
-            showAppsView(true /* animated */, false /* resetListToTop */,
+            showAppsView(true /* animated */,
                     true /* updatePredictedApps */, true /* focusSearchBar */);
         }
     }
@@ -3355,12 +3355,9 @@ public class Launcher extends Activity
     /**
      * Shows the apps view.
      */
-    public void showAppsView(boolean animated, boolean resetListToTop, boolean updatePredictedApps,
+    public void showAppsView(boolean animated, boolean updatePredictedApps,
             boolean focusSearchBar) {
         markAppsViewShown();
-        if (resetListToTop) {
-            mAppsView.scrollToTop();
-        }
         if (updatePredictedApps) {
             tryAndUpdatePredictedApps();
         }
@@ -3487,7 +3484,7 @@ public class Launcher extends Activity
 
     void exitSpringLoadedDragMode() {
         if (mState == State.APPS_SPRING_LOADED) {
-            showAppsView(true /* animated */, false /* resetListToTop */,
+            showAppsView(true /* animated */,
                     false /* updatePredictedApps */, false /* focusSearchBar */);
         } else if (mState == State.WIDGETS_SPRING_LOADED) {
             showWidgetsView(true, false);
