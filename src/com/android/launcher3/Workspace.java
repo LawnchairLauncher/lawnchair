@@ -230,6 +230,8 @@ public class Workspace extends PagedView
     public static final int QSB_ALPHA_INDEX_STATE_CHANGE = 0;
     public static final int QSB_ALPHA_INDEX_Y_TRANSLATION = 1;
     public static final int QSB_ALPHA_INDEX_PAGE_SCROLL = 2;
+    public static final int QSB_ALPHA_INDEX_OVERLAY_SCROLL = 3;
+
 
     MultiStateAlphaController mQsbAlphaController;
 
@@ -482,7 +484,7 @@ public class Workspace extends PagedView
     public void initParentViews(View parent) {
         super.initParentViews(parent);
         mPageIndicator.setAccessibilityDelegate(new OverviewAccessibilityDelegate());
-        mQsbAlphaController = new MultiStateAlphaController(mLauncher.getQsbContainer(), 3);
+        mQsbAlphaController = new MultiStateAlphaController(mLauncher.getQsbContainer(), 4);
     }
 
     private int getDefaultPage() {
@@ -1465,6 +1467,8 @@ public class Workspace extends PagedView
         setWorkspaceTranslationAndAlpha(Direction.X, transX, alpha);
         setHotseatTranslationAndAlpha(Direction.X, transX, alpha);
         onWorkspaceOverallScrollChanged();
+
+        mQsbAlphaController.setAlphaAtIndex(alpha, QSB_ALPHA_INDEX_OVERLAY_SCROLL);
     }
 
     /**
