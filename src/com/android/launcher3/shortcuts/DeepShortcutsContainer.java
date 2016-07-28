@@ -43,6 +43,7 @@ import android.view.ViewConfiguration;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 
+import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
@@ -718,7 +719,8 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         }
         mIsOpen = false;
         mDeferContainerRemoval = false;
-        cleanupDeferredDrag(true);
+        // Make the original icon visible in All Apps, but not in Workspace or Folders.
+        cleanupDeferredDrag(mDeferredDragIcon.getTag() instanceof AppInfo);
         mLauncher.getDragController().removeDragListener(this);
         mLauncher.getDragLayer().removeView(this);
     }
