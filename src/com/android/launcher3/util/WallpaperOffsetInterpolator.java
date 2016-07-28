@@ -33,6 +33,7 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
     private float mFinalOffset = 0.0f;
     private float mCurrentOffset = 0.5f; // to force an initial update
     private boolean mWaitingForUpdate;
+    private boolean mLockedToDefaultPage;
 
     private boolean mAnimating;
     private long mAnimationStartTime;
@@ -68,6 +69,17 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
         }
     }
 
+    /**
+     * Locks the wallpaper offset to the offset in the default state of Launcher.
+     */
+    public void setLockToDefaultPage(boolean lockToDefaultPage) {
+        mLockedToDefaultPage = lockToDefaultPage;
+    }
+
+    public boolean isLockedToDefaultPage() {
+        return mLockedToDefaultPage;
+    }
+
     public boolean computeScrollOffset() {
         final float oldOffset = mCurrentOffset;
         if (mAnimating) {
@@ -97,7 +109,7 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
         // To match the default wallpaper behavior in the system, we default to either the left
         // or right edge on initialization
         int numScrollingPages = getNumScreensExcludingEmptyAndCustom();
-        if (numScrollingPages <= 1) {
+        if (mLockedToDefaultPage || numScrollingPages <= 1) {
             return mIsRtl ? 1f : 0f;
         }
 
@@ -194,7 +206,7 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
 
     public void setFinalX(float x) {
         scheduleUpdate();
-        mFinalOffset = Math.max(0f, Math.min(x, 1.0f));
+        mFinalOffset = Math.max(0f, Math.min(x, 1f));
         if (getNumScreensExcludingEmptyAndCustom() != mNumScreens) {
             if (mNumScreens > 0) {
                 // Don't animate if we're going from 0 screens
