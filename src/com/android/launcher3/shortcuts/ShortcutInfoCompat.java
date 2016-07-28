@@ -101,6 +101,10 @@ public class ShortcutInfoCompat {
         return mShortcutInfo.isDeclaredInManifest();
     }
 
+    public boolean isEnabled() {
+        return mShortcutInfo.isEnabled();
+    }
+
     public int getRank() {
         return mShortcutInfo.getRank();
     }

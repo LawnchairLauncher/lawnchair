@@ -2821,9 +2821,11 @@ public class LauncherModel extends BroadcastReceiver
 
         // Now add the new shortcuts to the map.
         for (ShortcutInfoCompat shortcut : shortcuts) {
-            ComponentKey targetComponent
-                    = new ComponentKey(shortcut.getActivity(), shortcut.getUserHandle());
-            mBgDeepShortcutMap.addToList(targetComponent, shortcut.getId());
+            if (shortcut.isEnabled()) {
+                ComponentKey targetComponent
+                        = new ComponentKey(shortcut.getActivity(), shortcut.getUserHandle());
+                mBgDeepShortcutMap.addToList(targetComponent, shortcut.getId());
+            }
         }
     }
 
