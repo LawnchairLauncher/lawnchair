@@ -26,7 +26,6 @@ import android.os.Build;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.util.ComponentKey;
 
 /**
  * Wrapper class for {@link android.content.pm.ShortcutInfo}, representing deep shortcuts into apps.
@@ -103,6 +102,10 @@ public class ShortcutInfoCompat {
 
     public boolean isEnabled() {
         return mShortcutInfo.isEnabled();
+    }
+
+    public boolean isDynamic() {
+        return mShortcutInfo.isDynamic();
     }
 
     public int getRank() {

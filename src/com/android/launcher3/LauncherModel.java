@@ -2842,7 +2842,9 @@ public class LauncherModel extends BroadcastReceiver
 
         // Now add the new shortcuts to the map.
         for (ShortcutInfoCompat shortcut : shortcuts) {
-            if (shortcut.isEnabled()) {
+            boolean shouldShowInContainer = shortcut.isEnabled()
+                    && (shortcut.isDeclaredInManifest() || shortcut.isDynamic());
+            if (shouldShowInContainer) {
                 ComponentKey targetComponent
                         = new ComponentKey(shortcut.getActivity(), shortcut.getUserHandle());
                 mBgDeepShortcutMap.addToList(targetComponent, shortcut.getId());
