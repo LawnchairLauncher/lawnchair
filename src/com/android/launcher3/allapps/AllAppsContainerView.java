@@ -348,9 +348,10 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mAppsRecyclerView.preMeasureViews(mAdapter);
         mAdapter.setIconFocusListener(focusedItemDecorator.getFocusListener());
 
-        // TODO(hyunyoungs): clean up setting the content and the reveal view.
         if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
             getRevealView().setVisibility(View.VISIBLE);
+            getContentView().setVisibility(View.VISIBLE);
+            getContentView().setBackground(null);
         }
     }
 
