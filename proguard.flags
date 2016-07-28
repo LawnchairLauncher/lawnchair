@@ -66,6 +66,11 @@
   public void setAnimationProgress(float);
 }
 
+-keep class com.android.launcher3.pageindicators.CaretDrawable {
+  public float getCaretProgress();
+  public void setCaretProgress(float);
+}
+
 -keep class com.android.launcher3.Workspace {
   public float getBackgroundAlpha();
   public void setBackgroundAlpha(float);

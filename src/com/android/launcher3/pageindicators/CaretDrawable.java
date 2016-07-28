@@ -28,11 +28,11 @@ import com.android.launcher3.R;
 import android.graphics.drawable.Drawable;
 
 public class CaretDrawable extends Drawable {
-    public static final int LEVEL_CARET_POINTING_UP = 0; // minimum possible level value
-    public static final int LEVEL_CARET_POINTING_DOWN = 10000; // maximum possible level value
-    public static final int LEVEL_CARET_NEUTRAL = LEVEL_CARET_POINTING_DOWN / 2;
+    public static final float PROGRESS_CARET_POINTING_UP = -1f;
+    public static final float PROGRESS_CARET_POINTING_DOWN = 1f;
+    public static final float PROGRESS_CARET_NEUTRAL = 0;
 
-    private float mCaretProgress;
+    private float mCaretProgress = PROGRESS_CARET_NEUTRAL;
 
     private Paint mShadowPaint = new Paint();
     private Paint mCaretPaint = new Paint();
@@ -72,23 +72,48 @@ public class CaretDrawable extends Drawable {
         final float left = getBounds().left + (mShadowPaint.getStrokeWidth() / 2);
         final float top = getBounds().top + (mShadowPaint.getStrokeWidth() / 2);
 
+        // When the bounds are square, this will result in a caret with a right angle
         final float verticalInset = (height / 4);
         final float caretHeight = (height - (verticalInset * 2));
 
         mPath.reset();
-        mPath.moveTo(left, top + caretHeight * (1 - mCaretProgress));
-        mPath.lineTo(left + (width / 2), top + caretHeight * mCaretProgress);
-        mPath.lineTo(left + width, top + caretHeight * (1 - mCaretProgress));
+        mPath.moveTo(left, top + caretHeight * (1 - getNormalizedCaretProgress()));
+        mPath.lineTo(left + (width / 2), top + caretHeight * getNormalizedCaretProgress());
+        mPath.lineTo(left + width, top + caretHeight * (1 - getNormalizedCaretProgress()));
 
         canvas.drawPath(mPath, mShadowPaint);
         canvas.drawPath(mPath, mCaretPaint);
     }
 
-    @Override
-    protected boolean onLevelChange(int level) {
-        mCaretProgress = (float) level / (float) LEVEL_CARET_POINTING_DOWN;
+    /**
+     * Sets the caret progress
+     *
+     * @param progress The progress ({@value #PROGRESS_CARET_POINTING_UP} for pointing up,
+     * {@value #PROGRESS_CARET_POINTING_DOWN} for pointing down, {@value #PROGRESS_CARET_NEUTRAL}
+     * for neutral)
+     */
+    public void setCaretProgress(float progress) {
+        mCaretProgress = progress;
         invalidateSelf();
-        return true;
+    }
+
+    /**
+     * Returns the caret progress
+     *
+     * @return The progress
+     */
+    public float getCaretProgress() {
+        return mCaretProgress;
+    }
+
+    /**
+     * Returns the caret progress normalized to [0..1]
+     *
+     * @return The normalized progress
+     */
+    public float getNormalizedCaretProgress() {
+        return (mCaretProgress - PROGRESS_CARET_POINTING_UP) /
+                (PROGRESS_CARET_POINTING_DOWN - PROGRESS_CARET_POINTING_UP);
     }
 
     @Override

@@ -26,7 +26,7 @@ public class VerticalPullDetector {
     /**
      * The minimum release velocity in pixels per millisecond that triggers fling..
      */
-    private static final float RELEASE_VELOCITY_PX_MS = 1.0f;
+    public static final float RELEASE_VELOCITY_PX_MS = 1.0f;
 
     /**
      * The time constant used to calculate dampening in the low-pass filter of scroll velocity.
@@ -85,6 +85,10 @@ public class VerticalPullDetector {
 
     public boolean isSettlingState() {
         return mState == ScrollState.SETTLING;
+    }
+
+    public boolean isDraggingState() {
+        return mState == ScrollState.DRAGGING;
     }
 
     private float mDownX;
