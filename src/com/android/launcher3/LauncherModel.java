@@ -3332,9 +3332,11 @@ public class LauncherModel extends BroadcastReceiver
             for (ItemInfo itemInfo : sBgItemsIdMap) {
                 if (itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
                     ShortcutInfo si = (ShortcutInfo) itemInfo;
-                    String shortcutId = si.getDeepShortcutId();
-                    if (idsToShortcuts.containsKey(shortcutId)) {
-                        idsToWorkspaceShortcutInfos.addToList(shortcutId, si);
+                    if (si.getIntent().getPackage().equals(mPackageName) && si.user.equals(mUser)) {
+                        String shortcutId = si.getDeepShortcutId();
+                        if (idsToShortcuts.containsKey(shortcutId)) {
+                            idsToWorkspaceShortcutInfos.addToList(shortcutId, si);
+                        }
                     }
                 }
             }
