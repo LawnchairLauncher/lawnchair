@@ -80,8 +80,9 @@
     <style name="Icon.DeepShortcut">
         <item name="android:gravity">start|center_vertical</item>
         <item name="android:elevation">@dimen/deep_shortcuts_elevation</item>
-        <item name="android:paddingStart">@dimen/deep_shortcut_padding_start</item>
+        <item name="android:paddingStart">@dimen/bg_pill_height</item>
         <item name="android:paddingEnd">@dimen/deep_shortcut_padding_end</item>
+        <item name="android:drawableEnd">@drawable/deep_shortcuts_drag_handle</item>
         <item name="android:drawablePadding">@dimen/deep_shortcut_drawable_padding</item>
         <item name="android:textColor">@color/quantum_panel_text_color</item>
         <item name="android:shadowRadius">0</item>

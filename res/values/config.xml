@@ -88,9 +88,10 @@
     <item type="id" name="cell_layout_jail_id" />
 
 <!-- Deep shortcuts -->
-    <integer name="config_deepShortcutOpenDuration">300</integer>
-    <integer name="config_deepShortcutOpenStagger">20</integer>
-    <integer name="config_deepShortcutHoverDuration">120</integer>
+    <integer name="config_deepShortcutOpenDuration">220</integer>
+    <integer name="config_deepShortcutOpenStagger">40</integer>
+    <integer name="config_deepShortcutCloseDuration">150</integer>
+    <integer name="config_deepShortcutCloseStagger">20</integer>
 
 <!-- Accessibility actions -->
     <item type="id" name="action_remove" />

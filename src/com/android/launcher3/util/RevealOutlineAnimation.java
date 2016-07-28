@@ -29,7 +29,12 @@ public abstract class RevealOutlineAnimation extends ViewOutlineProvider {
     abstract void setProgress(float progress);
 
     public ValueAnimator createRevealAnimator(final View revealView) {
-        ValueAnimator va = ValueAnimator.ofFloat(0f, 1f);
+        return createRevealAnimator(revealView, false);
+    }
+
+    public ValueAnimator createRevealAnimator(final View revealView, boolean isReversed) {
+        ValueAnimator va =
+                isReversed ? ValueAnimator.ofFloat(1f, 0f) : ValueAnimator.ofFloat(0f, 1f);
         final float elevation = revealView.getElevation();
 
         va.addListener(new AnimatorListenerAdapter() {
@@ -54,7 +59,7 @@ public abstract class RevealOutlineAnimation extends ViewOutlineProvider {
         va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator arg0) {
-                float progress = arg0.getAnimatedFraction();
+                float progress = (Float) arg0.getAnimatedValue();
                 setProgress(progress);
                 revealView.invalidateOutline();
                 if (!Utilities.ATLEAST_LOLLIPOP_MR1) {

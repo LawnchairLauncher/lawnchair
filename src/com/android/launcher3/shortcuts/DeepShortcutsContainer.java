@@ -17,6 +17,7 @@
 package com.android.launcher3.shortcuts;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.annotation.TargetApi;
 import android.content.ComponentName;
@@ -39,6 +40,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.BubbleTextView;
@@ -50,6 +52,7 @@ import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherViewPropertyAnimator;
+import com.android.launcher3.LogAccelerateInterpolator;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
@@ -59,7 +62,6 @@ import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
-import com.android.launcher3.graphics.ScaledPreviewProvider;
 import com.android.launcher3.graphics.TriangleShape;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -77,6 +79,8 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         View.OnTouchListener, DragSource, DragController.DragListener,
         UserEventDispatcher.LaunchSourceProvider {
     private static final String TAG = "ShortcutsContainer";
+
+    private final Point mIconShift = new Point();
 
     private final Launcher mLauncher;
     private final DeepShortcutManager mDeepShortcutsManager;
@@ -96,8 +100,12 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
     private boolean mIsLeftAligned;
     private boolean mIsAboveIcon;
     private View mArrow;
+
+    private Animator mOpenCloseAnimator;
+    private boolean mDeferContainerRemoval;
+    private boolean mIsOpen;
+
     private boolean mSrcIconDragStarted;
-    private LauncherViewPropertyAnimator mArrowHoverAnimator;
     private boolean mIsRtl;
     private int mArrowHorizontalOffset;
 
@@ -167,7 +175,6 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         final int arrowVerticalOffset = resources.getDimensionPixelSize(
                 R.dimen.deep_shortcuts_arrow_vertical_offset);
         mArrow = addArrowView(mArrowHorizontalOffset, arrowVerticalOffset, arrowWidth, arrowHeight);
-        mArrowHoverAnimator = new LauncherViewPropertyAnimator(mArrow);
 
         animateOpen();
 
@@ -218,9 +225,9 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
         @Override
         public void run() {
+            DeepShortcutView shortcutViewContainer = getShortcutAt(mShortcutChildIndex);
+            shortcutViewContainer.applyShortcutInfo(mShortcutChildInfo);
             BubbleTextView shortcutView = getShortcutAt(mShortcutChildIndex).getBubbleText();
-            shortcutView.applyFromShortcutInfo(mShortcutChildInfo,
-                    LauncherAppState.getInstance().getIconCache());
             // Use the long label as long as it exists and fits.
             int availableWidth = shortcutView.getWidth() - shortcutView.getTotalPaddingLeft()
                     - shortcutView.getTotalPaddingRight();
@@ -248,30 +255,54 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
     private void animateOpen() {
         setVisibility(View.VISIBLE);
+        mIsOpen = true;
 
         final AnimatorSet shortcutAnims = LauncherAnimUtils.createAnimatorSet();
         final int shortcutCount = getShortcutCount();
-        final int pivotX = mIsLeftAligned ? mArrowHorizontalOffset
-                : getMeasuredWidth() - mArrowHorizontalOffset;
-        final int pivotY = getShortcutAt(0).getMeasuredHeight() / 2;
+
+        final long duration = getResources().getInteger(
+                R.integer.config_deepShortcutOpenDuration);
+        final long stagger = getResources().getInteger(
+                R.integer.config_deepShortcutOpenStagger);
+
+        // Animate shortcuts
+        DecelerateInterpolator interpolator = new DecelerateInterpolator();
         for (int i = 0; i < shortcutCount; i++) {
-            DeepShortcutView deepShortcutView = getShortcutAt(i);
-            deepShortcutView.setPivotX(pivotX);
-            deepShortcutView.setPivotY(pivotY);
+            final DeepShortcutView deepShortcutView = getShortcutAt(i);
+            deepShortcutView.setVisibility(INVISIBLE);
+
+            Animator anim = deepShortcutView.createOpenCloseAnimation(
+                    mIsAboveIcon, mIsLeftAligned, false);
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    deepShortcutView.setVisibility(VISIBLE);
+                }
+            });
+            anim.setDuration(duration);
             int animationIndex = mIsAboveIcon ? shortcutCount - i - 1 : i;
-            long animationDelay = animationIndex * getResources().getInteger(
-                    R.integer.config_deepShortcutOpenStagger);
-            shortcutAnims.play(deepShortcutView.createOpenAnimation(animationDelay, mIsAboveIcon));
+            anim.setStartDelay(stagger * animationIndex);
+            anim.setInterpolator(interpolator);
+            shortcutAnims.play(anim);
         }
+        shortcutAnims.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mOpenCloseAnimator = null;
+            }
+        });
+
+        // Animate the arrow
         mArrow.setScaleX(0);
         mArrow.setScaleY(0);
-        final long shortcutAnimDuration = shortcutAnims.getChildAnimations().get(0).getDuration();
-        final long arrowScaleDelay = shortcutAnimDuration / 6;
-        final long arrowScaleDuration = shortcutAnimDuration - arrowScaleDelay;
+        final long arrowScaleDelay = duration / 6;
+        final long arrowScaleDuration = duration - arrowScaleDelay;
         Animator arrowScale = new LauncherViewPropertyAnimator(mArrow).scaleX(1).scaleY(1);
         arrowScale.setStartDelay(arrowScaleDelay);
         arrowScale.setDuration(arrowScaleDuration);
         shortcutAnims.play(arrowScale);
+
+        mOpenCloseAnimator = shortcutAnims;
         shortcutAnims.start();
     }
 
@@ -432,7 +463,6 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         Utilities.translateEventCoordinates(this, mLauncher.getDragLayer(), ev);
         final int dragLayerX = (int) ev.getX();
         final int dragLayerY = (int) ev.getY();
-        int shortcutCount = getShortcutCount();
         if (action == MotionEvent.ACTION_MOVE) {
             if (mLastX != 0 || mLastY != 0) {
                 mDistanceDragged += Math.hypot(mLastX - x, mLastY - y);
@@ -441,8 +471,6 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
             mLastY = y;
 
             if (shouldStartDeferredDrag((int) x, (int) y)) {
-            DeepShortcutView topShortcut = getShortcutAt(0);
-            DeepShortcutView bottomShortcut = getShortcutAt(shortcutCount - 1);
                 mSrcIconDragStarted = true;
                 cleanupDeferredDrag(true);
                 mDeferredDragIcon.getParent().requestDisallowInterceptTouchEvent(false);
@@ -480,7 +508,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         return distFromTouchDown > mStartDragThreshold;
     }
 
-    public void cleanupDeferredDrag(boolean updateSrcVisibility) {
+    private void cleanupDeferredDrag(boolean updateSrcVisibility) {
         if (mDragView != null) {
             mDragView.remove();
         }
@@ -502,8 +530,8 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
     }
 
     public boolean onLongClick(View v) {
-        // Return early if this is not initiated from a touch
-        if (!v.isInTouchMode()) return false;
+        // Return early if this is not initiated from a touch or not the correct view
+        if (!v.isInTouchMode() || !(v.getParent() instanceof DeepShortcutView)) return false;
         // Return if global dragging is not enabled
         if (!mLauncher.isDraggingEnabled()) return false;
 
@@ -514,8 +542,20 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         mLauncher.getModel().updateShortcutInfo(unbadgedInfo.mDetail, badged);
 
         // Long clicked on a shortcut.
-        mLauncher.getWorkspace().beginDragShared(v, mIconLastTouchPos, this, false, badged,
-                new ScaledPreviewProvider(v));
+
+        mDeferContainerRemoval = true;
+        DeepShortcutView sv = (DeepShortcutView) v.getParent();
+        sv.setWillDrawIcon(false);
+
+        // Move the icon to align with the center-top of the touch point
+        mIconShift.x = mIconLastTouchPos.x - sv.getIconCenter().x;
+        mIconShift.y = mIconLastTouchPos.y - mLauncher.getDeviceProfile().iconSizePx;
+
+        DragView dv = mLauncher.getWorkspace().beginDragShared(
+                sv.getBubbleText(), this, false, badged,
+                new ShortcutDragPreviewProvider(sv.getIconView(), mIconShift));
+        dv.animateShift(-mIconShift.x, -mIconShift.y);
+
         // TODO: support dragging from within folder without having to close it
         mLauncher.closeFolder();
         return false;
@@ -560,13 +600,25 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
     public void onDragStart(DragSource source, ItemInfo info, int dragAction) {
         // Either the original icon or one of the shortcuts was dragged.
         // Hide the container, but don't remove it yet because that interferes with touch events.
-        setVisibility(INVISIBLE);
+        animateClose();
     }
 
     @Override
     public void onDragEnd() {
-        // Now remove the container.
-        mLauncher.closeShortcutsContainer();
+        if (mIsOpen) {
+            animateClose();
+        } else {
+            if (mOpenCloseAnimator != null) {
+                // Close animation is running.
+                mDeferContainerRemoval = false;
+            } else {
+                // Close animation is not running.
+                if (mDeferContainerRemoval) {
+                    mDeferContainerRemoval = false;
+                    mLauncher.getDragLayer().removeView(this);
+                }
+            }
+        }
     }
 
     @Override
@@ -574,6 +626,105 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         target.itemType = LauncherLogProto.DEEPSHORTCUT;
         // TODO: add target.rank
         targetParent.containerType = LauncherLogProto.DEEPSHORTCUTS;
+    }
+
+    public void animateClose() {
+        if (!mIsOpen) {
+            return;
+        }
+        if (mOpenCloseAnimator != null) {
+            mOpenCloseAnimator.cancel();
+        }
+        mIsOpen = false;
+        mLauncher.getDragController().removeDragListener(this);
+
+        final AnimatorSet shortcutAnims = LauncherAnimUtils.createAnimatorSet();
+        final int numShortcuts = getShortcutCount();
+        final long duration = getResources().getInteger(
+                R.integer.config_deepShortcutCloseDuration);
+        final long stagger = getResources().getInteger(
+                R.integer.config_deepShortcutCloseStagger);
+
+        long arrowDelay = (numShortcuts - 1) * stagger + (duration * 4 / 6);
+        int firstShortcutIndex = mIsAboveIcon ? (numShortcuts - 1) : 0;
+        LogAccelerateInterpolator interpolator = new LogAccelerateInterpolator(100, 0);
+        for (int i = 0; i < numShortcuts; i++) {
+            final DeepShortcutView view = getShortcutAt(i);
+            Animator anim;
+            if (view.willDrawIcon()) {
+                anim = view.createOpenCloseAnimation(mIsAboveIcon, mIsLeftAligned, true);
+                int animationIndex = mIsAboveIcon ? i : numShortcuts - i - 1;
+                anim.setStartDelay(stagger * animationIndex);
+                anim.setDuration(duration);
+                anim.setInterpolator(interpolator);
+            } else {
+                // The view is being dragged. Animate it such that it collapses with the drag view
+                anim = view.collapseToIcon();
+                anim.setDuration(DragView.VIEW_ZOOM_DURATION);
+
+                // Scale and translate the view to follow the drag view.
+                Point iconCenter = view.getIconCenter();
+                view.setPivotX(iconCenter.x);
+                view.setPivotY(iconCenter.y);
+
+                float scale = ((float) mLauncher.getDeviceProfile().iconSizePx) / view.getHeight();
+                LauncherViewPropertyAnimator anim2 = new LauncherViewPropertyAnimator(view)
+                        .scaleX(scale)
+                        .scaleY(scale)
+                        .translationX(mIconShift.x)
+                        .translationY(mIconShift.y);
+                anim2.setDuration(DragView.VIEW_ZOOM_DURATION);
+                shortcutAnims.play(anim2);
+
+                if (i == firstShortcutIndex) {
+                    arrowDelay = 0;
+                }
+            }
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    view.setVisibility(INVISIBLE);
+                }
+            });
+            shortcutAnims.play(anim);
+        }
+        Animator arrowAnim = new LauncherViewPropertyAnimator(mArrow)
+                .scaleX(0).scaleY(0).setDuration(duration / 6);
+        arrowAnim.setStartDelay(arrowDelay);
+        shortcutAnims.play(arrowAnim);
+
+        shortcutAnims.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mOpenCloseAnimator = null;
+                if (mDeferContainerRemoval) {
+                    setVisibility(INVISIBLE);
+                } else {
+                    close();
+                }
+            }
+        });
+        mOpenCloseAnimator = shortcutAnims;
+        shortcutAnims.start();
+    }
+
+    /**
+     * Closes the folder without animation.
+     */
+    public void close() {
+        if (mOpenCloseAnimator != null) {
+            mOpenCloseAnimator.cancel();
+            mOpenCloseAnimator = null;
+        }
+        mIsOpen = false;
+        mDeferContainerRemoval = false;
+        cleanupDeferredDrag(true);
+        mLauncher.getDragController().removeDragListener(this);
+        mLauncher.getDragLayer().removeView(this);
+    }
+
+    public boolean isOpen() {
+        return mIsOpen;
     }
 
     /**

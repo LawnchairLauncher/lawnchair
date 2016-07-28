@@ -2312,12 +2312,13 @@ public class Workspace extends PagedView
                     + "View: " + child + "  tag: " + child.getTag();
             throw new IllegalStateException(msg);
         }
-        beginDragShared(child, new Point(), source, accessible,
-                (ItemInfo) dragObject, new DragPreviewProvider(child));
+        beginDragShared(child, source, accessible, (ItemInfo) dragObject,
+                new DragPreviewProvider(child));
     }
 
-    public void beginDragShared(View child, Point relativeTouchPos, DragSource source,
-            boolean accessible, ItemInfo dragObject, DragPreviewProvider previewProvider) {
+
+    public DragView beginDragShared(View child, DragSource source, boolean accessible,
+            ItemInfo dragObject, DragPreviewProvider previewProvider) {
         child.clearFocus();
         child.setPressed(false);
 
@@ -2329,34 +2330,19 @@ public class Workspace extends PagedView
         final Bitmap b = previewProvider.createDragBitmap(mCanvas);
         int halfPadding = previewProvider.previewPadding / 2;
 
-        final int bmpWidth = b.getWidth();
-        final int bmpHeight = b.getHeight();
-
-        float scale = mLauncher.getDragLayer().getLocationInDragLayer(child, mTempXY);
-        int dragLayerX = Math.round(mTempXY[0] - (bmpWidth - scale * child.getWidth()) / 2);
-        int dragLayerY = Math.round(mTempXY[1] - (bmpHeight - scale * bmpHeight) / 2 - halfPadding);
+        float scale = previewProvider.getScaleAndPosition(b, mTempXY);
+        int dragLayerX = mTempXY[0];
+        int dragLayerY = mTempXY[1];
 
         DeviceProfile grid = mLauncher.getDeviceProfile();
         Point dragVisualizeOffset = null;
         Rect dragRect = null;
         if (child instanceof BubbleTextView) {
-            BubbleTextView icon = (BubbleTextView) child;
             int iconSize = grid.iconSizePx;
             int top = child.getPaddingTop();
-            int left = (bmpWidth - iconSize) / 2;
+            int left = (b.getWidth() - iconSize) / 2;
             int right = left + iconSize;
             int bottom = top + iconSize;
-            if (icon.isLayoutHorizontal()) {
-                // If the layout is horizontal, then if we are just picking up the icon, then just
-                // use the child position since the icon is top-left aligned.  Otherwise, offset
-                // the drag layer position horizontally so that the icon is under the current
-                // touch position.
-                if (icon.getIcon().getBounds().contains(relativeTouchPos.x, relativeTouchPos.y)) {
-                    dragLayerX = Math.round(mTempXY[0]);
-                } else {
-                    dragLayerX = Math.round(mTempXY[0] + relativeTouchPos.x - (bmpWidth / 2));
-                }
-            }
             dragLayerY += top;
             // Note: The drag region is used to calculate drag layer offsets, but the
             // dragVisualizeOffset in addition to the dragRect (the size) to position the outline.
@@ -2388,6 +2374,7 @@ public class Workspace extends PagedView
         if (!FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND) {
             mLauncher.enterSpringLoadedDragMode();
         }
+        return dv;
     }
 
     public boolean transitionStateShouldAllowDrop() {
