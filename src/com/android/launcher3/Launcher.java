@@ -117,8 +117,10 @@ import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.DeepShortcutsContainer;
+import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.TestingUtils;
@@ -2655,14 +2657,17 @@ public class Launcher extends Activity
         final ShortcutInfo shortcut = (ShortcutInfo) tag;
 
         if (shortcut.isDisabled != 0) {
-            if ((shortcut.isDisabled & ShortcutInfo.FLAG_DISABLED_SUSPENDED) != 0
-                || (shortcut.isDisabled & ShortcutInfo.FLAG_DISABLED_QUIET_USER) != 0) {
-                // Launch activity anyway, framework will tell the user why the app is suspended.
+            if ((shortcut.isDisabled &
+                    ~ShortcutInfo.FLAG_DISABLED_SUSPENDED &
+                    ~ShortcutInfo.FLAG_DISABLED_QUIET_USER) == 0) {
+                // If the app is only disabled because of the above flags, launch activity anyway.
+                // Framework will tell the user why the app is suspended.
             } else {
                 int error = R.string.activity_not_available;
                 if ((shortcut.isDisabled & ShortcutInfo.FLAG_DISABLED_SAFEMODE) != 0) {
                     error = R.string.safemode_shortcut_error;
-                } else if ((shortcut.isDisabled & ShortcutInfo.FLAG_DISABLED_BY_PUBLISHER) != 0) {
+                } else if ((shortcut.isDisabled & ShortcutInfo.FLAG_DISABLED_BY_PUBLISHER) != 0 ||
+                        (shortcut.isDisabled & ShortcutInfo.FLAG_DISABLED_LOCKED_USER) != 0) {
                     error = R.string.shortcut_not_available;
                 }
                 Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
@@ -4208,8 +4213,12 @@ public class Launcher extends Activity
 
     /**
      * Some shortcuts were updated in the background.
-     *
      * Implementation of the method from LauncherModel.Callbacks.
+     *
+     * @param updated list of shortcuts which have changed.
+     * @param removed list of shortcuts which were deleted in the background. This can happen when
+     *                an app gets removed from the system or some of its components are no longer
+     *                available.
      */
     @Override
     public void bindShortcutsChanged(final ArrayList<ShortcutInfo> updated,
@@ -4228,13 +4237,28 @@ public class Launcher extends Activity
         }
 
         if (!removed.isEmpty()) {
-            HashSet<ComponentName> removedComponents = new HashSet<ComponentName>();
+            HashSet<ComponentName> removedComponents = new HashSet<>();
+            HashSet<ShortcutKey> removedDeepShortcuts = new HashSet<>();
+
             for (ShortcutInfo si : removed) {
-                removedComponents.add(si.getTargetComponent());
+                if (si.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+                    removedDeepShortcuts.add(ShortcutKey.fromItemInfo(si));
+                } else {
+                    removedComponents.add(si.getTargetComponent());
+                }
             }
-            mWorkspace.removeItemsByComponentName(removedComponents, user);
-            // Notify the drag controller
-            mDragController.onAppsRemoved(new HashSet<String>(), removedComponents);
+
+            if (!removedComponents.isEmpty()) {
+                ItemInfoMatcher matcher = ItemInfoMatcher.ofComponents(removedComponents, user);
+                mWorkspace.removeItemsByMatcher(matcher);
+                mDragController.onAppsRemoved(matcher);
+            }
+
+            if (!removedDeepShortcuts.isEmpty()) {
+                ItemInfoMatcher matcher = ItemInfoMatcher.ofShortcutKeys(removedDeepShortcuts);
+                mWorkspace.removeItemsByMatcher(matcher);
+                mDragController.onAppsRemoved(matcher);
+            }
         }
     }
 
@@ -4277,14 +4301,16 @@ public class Launcher extends Activity
             return;
         }
         if (!packageNames.isEmpty()) {
-            mWorkspace.removeItemsByPackageName(packageNames, user);
+            ItemInfoMatcher matcher = ItemInfoMatcher.ofPackages(packageNames, user);
+            mWorkspace.removeItemsByMatcher(matcher);
+            mDragController.onAppsRemoved(matcher);
+
         }
         if (!components.isEmpty()) {
-            mWorkspace.removeItemsByComponentName(components, user);
+            ItemInfoMatcher matcher = ItemInfoMatcher.ofComponents(components, user);
+            mWorkspace.removeItemsByMatcher(matcher);
+            mDragController.onAppsRemoved(matcher);
         }
-        // Notify the drag controller
-        mDragController.onAppsRemoved(packageNames, components);
-
     }
 
     @Override

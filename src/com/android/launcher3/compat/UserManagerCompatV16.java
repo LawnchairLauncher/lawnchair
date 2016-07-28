@@ -55,4 +55,9 @@ public class UserManagerCompatV16 extends UserManagerCompat {
     public boolean isQuietModeEnabled(UserHandleCompat user) {
         return false;
     }
+
+    @Override
+    public boolean isUserUnlocked(UserHandleCompat user) {
+        return true;
+    }
 }

@@ -322,8 +322,8 @@ public class LauncherModel extends BroadcastReceiver
             @Override
             public void run() {
                 synchronized (sBgLock) {
-                    final ArrayList<ShortcutInfo> updates = new ArrayList<>();
-                    final UserHandleCompat user = UserHandleCompat.myUserHandle();
+                    ArrayList<ShortcutInfo> updates = new ArrayList<>();
+                    UserHandleCompat user = UserHandleCompat.myUserHandle();
 
                     for (ItemInfo info : sBgItemsIdMap) {
                         if (info instanceof ShortcutInfo) {
@@ -345,19 +345,7 @@ public class LauncherModel extends BroadcastReceiver
                         }
                     }
 
-                    if (!updates.isEmpty()) {
-                        // Push changes to the callback.
-                        Runnable r = new Runnable() {
-                            public void run() {
-                                Callbacks callbacks = getCallback();
-                                if (callbacks != null) {
-                                    callbacks.bindShortcutsChanged(updates,
-                                            new ArrayList<ShortcutInfo>(), user);
-                                }
-                            }
-                        };
-                        mHandler.post(r);
-                    }
+                    bindUpdatedShortcuts(updates, user);
                 }
             }
         };
@@ -926,12 +914,8 @@ public class LauncherModel extends BroadcastReceiver
                                 }
                             }
                             if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
-                                ShortcutInfo shortcutInfo = (ShortcutInfo) item;
-                                ShortcutKey shortcutToPin = new ShortcutKey(
-                                        shortcutInfo.intent.getPackage(),
-                                        shortcutInfo.user,
-                                        shortcutInfo.getDeepShortcutId());
-                                incrementPinnedShortcutCount(shortcutToPin, true /* shouldPin */);
+                                incrementPinnedShortcutCount(
+                                        ShortcutKey.fromItemInfo(item), true /* shouldPin */);
                             }
                             break;
                         case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
@@ -1000,12 +984,7 @@ public class LauncherModel extends BroadcastReceiver
                                 sBgWorkspaceItems.remove(item);
                                 break;
                             case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
-                                ShortcutInfo shortcutInfo = ((ShortcutInfo) item);
-                                ShortcutKey pinnedShortcut = new ShortcutKey(
-                                        shortcutInfo.intent.getPackage(),
-                                        shortcutInfo.user,
-                                        shortcutInfo.getDeepShortcutId());
-                                decrementPinnedShortcutCount(pinnedShortcut);
+                                decrementPinnedShortcutCount(ShortcutKey.fromItemInfo(item));
                                 // Fall through.
                             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
@@ -1215,17 +1194,28 @@ public class LauncherModel extends BroadcastReceiver
         if (Intent.ACTION_LOCALE_CHANGED.equals(action)) {
             // If we have changed locale we need to clear out the labels in all apps/workspace.
             forceReload();
-        } else if (LauncherAppsCompat.ACTION_MANAGED_PROFILE_ADDED.equals(action)
-                || LauncherAppsCompat.ACTION_MANAGED_PROFILE_REMOVED.equals(action)) {
+        } else if (Intent.ACTION_MANAGED_PROFILE_ADDED.equals(action)
+                || Intent.ACTION_MANAGED_PROFILE_REMOVED.equals(action)) {
             UserManagerCompat.getInstance(context).enableAndResetCache();
             forceReload();
-        } else if (LauncherAppsCompat.ACTION_MANAGED_PROFILE_AVAILABLE.equals(action) ||
-                LauncherAppsCompat.ACTION_MANAGED_PROFILE_UNAVAILABLE.equals(action)) {
+        } else if (Intent.ACTION_MANAGED_PROFILE_AVAILABLE.equals(action) ||
+                Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE.equals(action) ||
+                Intent.ACTION_MANAGED_PROFILE_UNLOCKED.equals(action)) {
             UserHandleCompat user = UserHandleCompat.fromIntent(intent);
             if (user != null) {
-                enqueueItemUpdatedTask(new PackageUpdatedTask(
-                        PackageUpdatedTask.OP_USER_AVAILABILITY_CHANGE,
-                        new String[0], user));
+                if (Intent.ACTION_MANAGED_PROFILE_AVAILABLE.equals(action) ||
+                        Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE.equals(action)) {
+                    enqueueItemUpdatedTask(new PackageUpdatedTask(
+                            PackageUpdatedTask.OP_USER_AVAILABILITY_CHANGE,
+                            new String[0], user));
+                }
+
+                // ACTION_MANAGED_PROFILE_UNAVAILABLE sends the profile back to locked mode, so
+                // we need to run the state change task again.
+                if (Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE.equals(action) ||
+                        Intent.ACTION_MANAGED_PROFILE_UNLOCKED.equals(action)) {
+                    enqueueItemUpdatedTask(new UserLockStateChangedTask(user));
+                }
             }
         } else if (Intent.ACTION_WALLPAPER_CHANGED.equals(action)) {
             ExtractionUtils.startColorExtractionServiceIfNecessary(context);
@@ -1702,8 +1692,6 @@ public class LauncherModel extends BroadcastReceiver
                     final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
                     final int intentIndex = c.getColumnIndexOrThrow
                             (LauncherSettings.Favorites.INTENT);
-                    final int titleIndex = c.getColumnIndexOrThrow
-                            (LauncherSettings.Favorites.TITLE);
                     final int containerIndex = c.getColumnIndexOrThrow(
                             LauncherSettings.Favorites.CONTAINER);
                     final int itemTypeIndex = c.getColumnIndexOrThrow(
@@ -1730,20 +1718,27 @@ public class LauncherModel extends BroadcastReceiver
                             LauncherSettings.Favorites.PROFILE_ID);
                     final int optionsIndex = c.getColumnIndexOrThrow(
                             LauncherSettings.Favorites.OPTIONS);
-                    final CursorIconInfo cursorIconInfo = new CursorIconInfo(c);
+                    final CursorIconInfo cursorIconInfo = new CursorIconInfo(mContext, c);
 
                     final LongSparseArray<UserHandleCompat> allUsers = new LongSparseArray<>();
                     final LongSparseArray<Boolean> quietMode = new LongSparseArray<>();
+                    final LongSparseArray<Boolean> unlockedUsers = new LongSparseArray<>();
                     for (UserHandleCompat user : mUserManager.getUserProfiles()) {
                         long serialNo = mUserManager.getSerialNumberForUser(user);
                         allUsers.put(serialNo, user);
                         quietMode.put(serialNo, mUserManager.isQuietModeEnabled(user));
 
-                        List<ShortcutInfoCompat> pinnedShortcuts = mDeepShortcutManager
-                                .queryForPinnedShortcuts(null, user);
-                        for (ShortcutInfoCompat shortcut : pinnedShortcuts) {
-                            shortcutKeyToPinnedShortcuts.put(ShortcutKey.fromInfo(shortcut),
-                                    shortcut);
+                        boolean userUnlocked = mUserManager.isUserUnlocked(user);
+                        unlockedUsers.put(serialNo, userUnlocked);
+
+                        // We can only query for shortcuts when the user is unlocked.
+                        if (userUnlocked) {
+                            List<ShortcutInfoCompat> pinnedShortcuts = mDeepShortcutManager
+                                    .queryForPinnedShortcuts(null, user);
+                            for (ShortcutInfoCompat shortcut : pinnedShortcuts) {
+                                shortcutKeyToPinnedShortcuts.put(ShortcutKey.fromInfo(shortcut),
+                                        shortcut);
+                            }
                         }
                     }
 
@@ -1907,9 +1902,8 @@ public class LauncherModel extends BroadcastReceiver
 
                                 if (itemReplaced) {
                                     if (user.equals(UserHandleCompat.myUserHandle())) {
-                                        info = getAppShortcutInfo(intent, user, context, null,
-                                                cursorIconInfo.iconIndex, titleIndex,
-                                                false, useLowResIcon);
+                                        info = getAppShortcutInfo(intent, user, null,
+                                                cursorIconInfo, false, useLowResIcon);
                                     } else {
                                         // Don't replace items for other profiles.
                                         itemsToRemove.add(id);
@@ -1917,8 +1911,8 @@ public class LauncherModel extends BroadcastReceiver
                                     }
                                 } else if (restored) {
                                     if (user.equals(UserHandleCompat.myUserHandle())) {
-                                        info = getRestoredItemInfo(c, titleIndex, intent,
-                                                promiseType, itemType, cursorIconInfo, context);
+                                        info = getRestoredItemInfo(c, intent,
+                                                promiseType, itemType, cursorIconInfo);
                                         intent = getRestoredItemIntent(c, context, intent);
                                     } else {
                                         // Don't restore items for other profiles.
@@ -1927,46 +1921,34 @@ public class LauncherModel extends BroadcastReceiver
                                     }
                                 } else if (itemType ==
                                         LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-                                    info = getAppShortcutInfo(intent, user, context, c,
-                                            cursorIconInfo.iconIndex, titleIndex,
-                                            allowMissingTarget, useLowResIcon);
+                                    info = getAppShortcutInfo(intent, user, c,
+                                            cursorIconInfo, allowMissingTarget, useLowResIcon);
                                 } else if (itemType ==
                                         LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
-                                    String shortcutId = intent.getStringExtra(
-                                            ShortcutInfoCompat.EXTRA_SHORTCUT_ID);
-                                    String packageName = intent.getPackage();
-                                    ShortcutKey key = new ShortcutKey(intent.getPackage(),
-                                            user, shortcutId);
-                                    ShortcutInfoCompat pinnedShortcut =
-                                            shortcutKeyToPinnedShortcuts.get(key);
-                                    boolean shouldPin = false; // It's already pinned.
-                                    if (pinnedShortcut == null) {
-                                        // It shouldn't be possible for a shortcut to be on the
-                                        // workspace without being pinned, but if one somehow is,
-                                        // we should pin it now to get back to a good state.
-                                        Log.w(TAG, "Shortcut was on workspace but wasn't pinned");
-                                        // Get full details; incrementing the count will pin it.
-                                        List<ShortcutInfoCompat> fullDetails = mDeepShortcutManager
-                                                .queryForFullDetails(packageName,
-                                                Collections.singletonList(shortcutId), user);
-                                        if (fullDetails == null || fullDetails.isEmpty()) {
-                                            // There are no details for the shortcut. If this is due
-                                            // to a SecurityException, keep it in the database so
-                                            // we can restore the icon when the launcher regains
-                                            // permission. Otherwise remove the icon from the db.
-                                            if (!mDeepShortcutManager.wasLastCallSuccess()) {
-                                                itemsToRemove.add(id);
-                                                continue;
-                                            }
-                                        } else {
-                                            pinnedShortcut = fullDetails.get(0);
-                                            shouldPin = true;
+
+                                    ShortcutKey key = ShortcutKey.fromIntent(intent, user);
+                                    if (unlockedUsers.get(serialNumber)) {
+                                        ShortcutInfoCompat pinnedShortcut =
+                                                shortcutKeyToPinnedShortcuts.get(key);
+                                        if (pinnedShortcut == null) {
+                                            // The shortcut is no longer valid.
+                                            itemsToRemove.add(id);
+                                            continue;
                                         }
+                                        info = new ShortcutInfo(pinnedShortcut, context);
+                                        intent = info.intent;
+                                    } else {
+                                        // Create a shortcut info in disabled mode for now.
+                                        info = new ShortcutInfo();
+                                        info.user = user;
+                                        info.itemType = itemType;
+                                        loadInfoFromCursor(info, c, cursorIconInfo);
+
+                                        info.isDisabled |= ShortcutInfo.FLAG_DISABLED_LOCKED_USER;
                                     }
-                                    incrementPinnedShortcutCount(key, shouldPin);
-                                    info = new ShortcutInfo(pinnedShortcut, context);
+                                    incrementPinnedShortcutCount(key, false /* shouldPin */);
                                 } else { // item type == ITEM_TYPE_SHORTCUT
-                                    info = getShortcutInfo(c, context, titleIndex, cursorIconInfo);
+                                    info = getShortcutInfo(c, cursorIconInfo);
 
                                     // Shortcuts are only available on the primary profile
                                     if (PackageManagerHelper.isAppSuspended(manager, targetPackage)) {
@@ -2046,7 +2028,7 @@ public class LauncherModel extends BroadcastReceiver
                                 FolderInfo folderInfo = findOrMakeFolder(sBgFolders, id);
 
                                 // Do not trim the folder label, as is was set by the user.
-                                folderInfo.title = c.getString(titleIndex);
+                                folderInfo.title = c.getString(cursorIconInfo.titleIndex);
                                 folderInfo.id = id;
                                 folderInfo.container = container;
                                 folderInfo.screenId = c.getInt(screenIndex);
@@ -2800,9 +2782,11 @@ public class LauncherModel extends BroadcastReceiver
             if (!mDeepShortcutsLoaded) {
                 mBgDeepShortcutMap.clear();
                 for (UserHandleCompat user : mUserManager.getUserProfiles()) {
-                    List<ShortcutInfoCompat> shortcuts = mDeepShortcutManager
-                            .queryForAllShortcuts(user);
-                    updateDeepShortcutMap(null, user, shortcuts);
+                    if (mUserManager.isUserUnlocked(user)) {
+                        List<ShortcutInfoCompat> shortcuts = mDeepShortcutManager
+                                .queryForAllShortcuts(user);
+                        updateDeepShortcutMap(null, user, shortcuts);
+                    }
                 }
                 synchronized (LoaderTask.this) {
                     if (mStopped) {
@@ -2907,18 +2891,23 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
-    private void bindUpdatedShortcuts(final ArrayList<ShortcutInfo> updatedShortcuts,
-            UserHandleCompat user) {
-        if (!updatedShortcuts.isEmpty()) {
+    private void bindUpdatedShortcuts(
+            ArrayList<ShortcutInfo> updatedShortcuts, UserHandleCompat user) {
+        bindUpdatedShortcuts(updatedShortcuts, new ArrayList<ShortcutInfo>(), user);
+    }
+
+    private void bindUpdatedShortcuts(
+            final ArrayList<ShortcutInfo> updatedShortcuts,
+            final ArrayList<ShortcutInfo> removedShortcuts,
+            final UserHandleCompat user) {
+        if (!updatedShortcuts.isEmpty() || !removedShortcuts.isEmpty()) {
             final Callbacks callbacks = getCallback();
-            final UserHandleCompat userFinal = user;
             mHandler.post(new Runnable() {
 
                 public void run() {
                     Callbacks cb = getCallback();
                     if (cb != null && callbacks == cb) {
-                        cb.bindShortcutsChanged(updatedShortcuts,
-                                new ArrayList<ShortcutInfo>(), userFinal);
+                        cb.bindShortcutsChanged(updatedShortcuts, removedShortcuts, user);
                     }
                 }
             });
@@ -3210,22 +3199,11 @@ public class LauncherModel extends BroadcastReceiver
                     }
                 }
 
-                if (!updatedShortcuts.isEmpty() || !removedShortcuts.isEmpty()) {
-                    final Callbacks callbacks = getCallback();
-                    mHandler.post(new Runnable() {
-
-                        public void run() {
-                            Callbacks cb = getCallback();
-                            if (callbacks == cb && cb != null) {
-                                callbacks.bindShortcutsChanged(
-                                        updatedShortcuts, removedShortcuts, mUser);
-                            }
-                        }
-                    });
-                    if (!removedShortcuts.isEmpty()) {
-                        deleteItemsFromDatabase(context, removedShortcuts);
-                    }
+                bindUpdatedShortcuts(updatedShortcuts, removedShortcuts, mUser);
+                if (!removedShortcuts.isEmpty()) {
+                    deleteItemsFromDatabase(context, removedShortcuts);
                 }
+
                 if (!widgets.isEmpty()) {
                     final Callbacks callbacks = getCallback();
                     mHandler.post(new Runnable() {
@@ -3387,6 +3365,74 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
+    /**
+     * Task to handle changing of lock state of the user
+     */
+    private class UserLockStateChangedTask implements Runnable {
+
+        private final UserHandleCompat mUser;
+
+        public UserLockStateChangedTask(UserHandleCompat user) {
+            mUser = user;
+        }
+
+        @Override
+        public void run() {
+            boolean isUserUnlocked = mUserManager.isUserUnlocked(mUser);
+            Context context = mApp.getContext();
+
+            HashMap<ShortcutKey, ShortcutInfoCompat> pinnedShortcuts = new HashMap<>();
+            if (isUserUnlocked) {
+                for (ShortcutInfoCompat shortcut :
+                        mDeepShortcutManager.queryForPinnedShortcuts(null, mUser)) {
+                    pinnedShortcuts.put(ShortcutKey.fromInfo(shortcut), shortcut);
+                }
+            }
+
+            // Update the workspace to reflect the changes to updated shortcuts residing on it.
+            ArrayList<ShortcutInfo> updatedShortcutInfos = new ArrayList<>();
+            ArrayList<ShortcutInfo> deletedShortcutInfos = new ArrayList<>();
+            for (ItemInfo itemInfo : sBgItemsIdMap) {
+                if (itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
+                        && mUser.equals(itemInfo.user)) {
+                    ShortcutInfo si = (ShortcutInfo) itemInfo;
+                    if (isUserUnlocked) {
+                        ShortcutInfoCompat shortcut =
+                                pinnedShortcuts.get(ShortcutKey.fromItemInfo(si));
+                        // We couldn't verify the shortcut during loader. If its no longer available
+                        // (probably due to clear data), delete the workspace item as well
+                        if (shortcut == null) {
+                            deletedShortcutInfos.add(si);
+                            continue;
+                        }
+                        si.isDisabled &= ~ShortcutInfo.FLAG_DISABLED_LOCKED_USER;
+                        si.updateFromDeepShortcutInfo(shortcut, context);
+                    } else {
+                        si.isDisabled |= ShortcutInfo.FLAG_DISABLED_LOCKED_USER;
+                    }
+                    updatedShortcutInfos.add(si);
+                }
+            }
+            bindUpdatedShortcuts(updatedShortcutInfos, deletedShortcutInfos, mUser);
+            if (!deletedShortcutInfos.isEmpty()) {
+                deleteItemsFromDatabase(context, deletedShortcutInfos);
+            }
+
+            // Remove shortcut id map for that user
+            Iterator<ComponentKey> keysIter = mBgDeepShortcutMap.keySet().iterator();
+            while (keysIter.hasNext()) {
+                if (keysIter.next().user.equals(mUser)) {
+                    keysIter.remove();
+                }
+            }
+
+            if (isUserUnlocked) {
+                updateDeepShortcutMap(null, mUser, mDeepShortcutManager.queryForAllShortcuts(mUser));
+            }
+            bindDeepShortcuts();
+        }
+    }
+
     private void bindWidgetsModel(final Callbacks callbacks, final WidgetsModel model) {
         mHandler.post(new Runnable() {
             @Override
@@ -3447,12 +3493,12 @@ public class LauncherModel extends BroadcastReceiver
      * Make an ShortcutInfo object for a restored application or shortcut item that points
      * to a package that is not yet installed on the system.
      */
-    public ShortcutInfo getRestoredItemInfo(Cursor c, int titleIndex, Intent intent,
-            int promiseType, int itemType, CursorIconInfo iconInfo, Context context) {
+    public ShortcutInfo getRestoredItemInfo(Cursor c, Intent intent,
+            int promiseType, int itemType, CursorIconInfo iconInfo) {
         final ShortcutInfo info = new ShortcutInfo();
         info.user = UserHandleCompat.myUserHandle();
 
-        Bitmap icon = iconInfo.loadIcon(c, info, context);
+        Bitmap icon = iconInfo.loadIcon(c, info);
         // the fallback icon
         if (icon == null) {
             mIconCache.getTitleAndIcon(info, intent, info.user, false /* useLowResIcon */);
@@ -3461,13 +3507,13 @@ public class LauncherModel extends BroadcastReceiver
         }
 
         if ((promiseType & ShortcutInfo.FLAG_RESTORED_ICON) != 0) {
-            String title = (c != null) ? c.getString(titleIndex) : null;
+            String title = iconInfo.getTitle(c);
             if (!TextUtils.isEmpty(title)) {
                 info.title = Utilities.trim(title);
             }
         } else if  ((promiseType & ShortcutInfo.FLAG_AUTOINTALL_ICON) != 0) {
             if (TextUtils.isEmpty(info.title)) {
-                info.title = (c != null) ? Utilities.trim(c.getString(titleIndex)) : "";
+                info.title = iconInfo.getTitle(c);
             }
         } else {
             throw new InvalidParameterException("Invalid restoreType " + promiseType);
@@ -3504,7 +3550,7 @@ public class LauncherModel extends BroadcastReceiver
      * If c is not null, then it will be used to fill in missing data like the title and icon.
      */
     public ShortcutInfo getAppShortcutInfo(Intent intent,
-            UserHandleCompat user, Context context, Cursor c, int iconIndex, int titleIndex,
+            UserHandleCompat user, Cursor c, CursorIconInfo iconInfo,
             boolean allowMissingTarget, boolean useLowResIcon) {
         if (user == null) {
             Log.d(TAG, "Null user found in getShortcutInfo");
@@ -3529,7 +3575,7 @@ public class LauncherModel extends BroadcastReceiver
         final ShortcutInfo info = new ShortcutInfo();
         mIconCache.getTitleAndIcon(info, componentName, lai, user, false, useLowResIcon);
         if (mIconCache.isDefaultIcon(info.getIcon(mIconCache), user) && c != null) {
-            Bitmap icon = Utilities.createIconBitmap(c, iconIndex, context);
+            Bitmap icon = iconInfo.loadIcon(c);
             info.setIcon(icon == null ? mIconCache.getDefaultIcon(user) : icon);
         }
 
@@ -3539,7 +3585,7 @@ public class LauncherModel extends BroadcastReceiver
 
         // from the db
         if (TextUtils.isEmpty(info.title) && c != null) {
-            info.title =  Utilities.trim(c.getString(titleIndex));
+            info.title = iconInfo.getTitle(c);
         }
 
         // fall back to the class name of the activity
@@ -3603,8 +3649,7 @@ public class LauncherModel extends BroadcastReceiver
     /**
      * Make an ShortcutInfo object for a shortcut that isn't an application.
      */
-    @Thunk ShortcutInfo getShortcutInfo(Cursor c, Context context,
-            int titleIndex, CursorIconInfo iconInfo) {
+    @Thunk ShortcutInfo getShortcutInfo(Cursor c, CursorIconInfo iconInfo) {
         final ShortcutInfo info = new ShortcutInfo();
         // Non-app shortcuts are only supported for current user.
         info.user = UserHandleCompat.myUserHandle();
@@ -3612,16 +3657,22 @@ public class LauncherModel extends BroadcastReceiver
 
         // TODO: If there's an explicit component and we can't install that, delete it.
 
-        info.title = Utilities.trim(c.getString(titleIndex));
+        loadInfoFromCursor(info, c, iconInfo);
+        return info;
+    }
 
-        Bitmap icon = iconInfo.loadIcon(c, info, context);
+    /**
+     * Make an ShortcutInfo object for a shortcut that isn't an application.
+     */
+    public void loadInfoFromCursor(ShortcutInfo info, Cursor c, CursorIconInfo iconInfo) {
+        info.title = iconInfo.getTitle(c);
+        Bitmap icon = iconInfo.loadIcon(c, info);
         // the fallback icon
         if (icon == null) {
             icon = mIconCache.getDefaultIcon(info.user);
             info.usingFallbackIcon = true;
         }
         info.setIcon(icon);
-        return info;
     }
 
     ShortcutInfo infoFromShortcutIntent(Context context, Intent data) {

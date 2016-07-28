@@ -117,11 +117,15 @@ public class ShortcutInfo extends ItemInfo {
      */
     public static final int FLAG_DISABLED_QUIET_USER = 1 << 3;
 
-
     /**
      * Indicates that the icon is disabled as the publisher has disabled the actual shortcut.
      */
     public static final int FLAG_DISABLED_BY_PUBLISHER = 1 << 4;
+
+    /**
+     * Indicates that the icon is disabled as the user partition is currently locked.
+     */
+    public static final int FLAG_DISABLED_LOCKED_USER = 1 << 5;
 
     /**
      * Could be disabled, if the the app is installed but unavailable (eg. in safe mode or when
@@ -206,7 +210,6 @@ public class ShortcutInfo extends ItemInfo {
     public ShortcutInfo(ShortcutInfoCompat shortcutInfo, Context context) {
         user = shortcutInfo.getUserHandle();
         itemType = LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
-        intent = shortcutInfo.makeIntent(context);
         flags = 0;
         updateFromDeepShortcutInfo(shortcutInfo, context);
     }
@@ -291,6 +294,8 @@ public class ShortcutInfo extends ItemInfo {
     }
 
     public void updateFromDeepShortcutInfo(ShortcutInfoCompat shortcutInfo, Context context) {
+        // {@link ShortcutInfoCompat#getActivity} can change during an update. Recreate the intent
+        intent = shortcutInfo.makeIntent(context);
         title = shortcutInfo.getShortLabel();
 
         CharSequence label = shortcutInfo.getLongLabel();

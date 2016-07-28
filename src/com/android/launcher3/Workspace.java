@@ -80,6 +80,7 @@ import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutsContainerListener;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.MultiStateAlphaController;
 import com.android.launcher3.util.Thunk;
@@ -4023,66 +4024,30 @@ public class Workspace extends PagedView
         });
     }
 
-    // Removes ALL items that match a given package name, this is usually called when a package
-    // has been removed and we want to remove all components (widgets, shortcuts, apps) that
-    // belong to that package.
-    void removeItemsByPackageName(final HashSet<String> packageNames, final UserHandleCompat user) {
-        // Filter out all the ItemInfos that this is going to affect
-        final HashSet<ItemInfo> infos = new HashSet<ItemInfo>();
-        final HashSet<ComponentName> cns = new HashSet<ComponentName>();
-        ArrayList<CellLayout> cellLayouts = getWorkspaceAndHotseatCellLayouts();
-        for (CellLayout layoutParent : cellLayouts) {
-            ViewGroup layout = layoutParent.getShortcutsAndWidgets();
-            int childCount = layout.getChildCount();
-            for (int i = 0; i < childCount; ++i) {
-                View view = layout.getChildAt(i);
-                infos.add((ItemInfo) view.getTag());
-            }
-        }
-        LauncherModel.ItemInfoFilter filter = new LauncherModel.ItemInfoFilter() {
-            @Override
-            public boolean filterItem(ItemInfo parent, ItemInfo info,
-                                      ComponentName cn) {
-                if (packageNames.contains(cn.getPackageName())
-                        && info.user.equals(user)) {
-                    cns.add(cn);
-                    return true;
-                }
-                return false;
-            }
-        };
-        LauncherModel.filterItemInfos(infos, filter);
-
-        // Remove the affected components
-        removeItemsByComponentName(cns, user);
-    }
-
     /**
-     * Removes items that match the item info specified. When applications are removed
+     * Removes items that match the {@param matcher}. When applications are removed
      * as a part of an update, this is called to ensure that other widgets and application
      * shortcuts are not removed.
      */
-    void removeItemsByComponentName(final HashSet<ComponentName> componentNames,
-            final UserHandleCompat user) {
+    public void removeItemsByMatcher(final ItemInfoMatcher matcher) {
         ArrayList<CellLayout> cellLayouts = getWorkspaceAndHotseatCellLayouts();
         for (final CellLayout layoutParent: cellLayouts) {
             final ViewGroup layout = layoutParent.getShortcutsAndWidgets();
 
-            final HashMap<ItemInfo, View> children = new HashMap<ItemInfo, View>();
+            final HashMap<ItemInfo, View> children = new HashMap<>();
             for (int j = 0; j < layout.getChildCount(); j++) {
                 final View view = layout.getChildAt(j);
                 children.put((ItemInfo) view.getTag(), view);
             }
 
-            final ArrayList<View> childrenToRemove = new ArrayList<View>();
-            final HashMap<FolderInfo, ArrayList<ShortcutInfo>> folderAppsToRemove =
-                    new HashMap<FolderInfo, ArrayList<ShortcutInfo>>();
+            final ArrayList<View> childrenToRemove = new ArrayList<>();
+            final HashMap<FolderInfo, ArrayList<ShortcutInfo>> folderAppsToRemove = new HashMap<>();
             LauncherModel.ItemInfoFilter filter = new LauncherModel.ItemInfoFilter() {
                 @Override
                 public boolean filterItem(ItemInfo parent, ItemInfo info,
-                                          ComponentName cn) {
+                        ComponentName cn) {
                     if (parent instanceof FolderInfo) {
-                        if (componentNames.contains(cn) && info.user.equals(user)) {
+                        if (matcher.matches(info, cn)) {
                             FolderInfo folder = (FolderInfo) parent;
                             ArrayList<ShortcutInfo> appsToRemove;
                             if (folderAppsToRemove.containsKey(folder)) {
@@ -4095,7 +4060,7 @@ public class Workspace extends PagedView
                             return true;
                         }
                     } else {
-                        if (componentNames.contains(cn) && info.user.equals(user)) {
+                        if (matcher.matches(info, cn)) {
                             childrenToRemove.add(children.get(info));
                             return true;
                         }
@@ -4227,7 +4192,7 @@ public class Workspace extends PagedView
         HashSet<String> packages = new HashSet<>(1);
         packages.add(packageName);
         LauncherModel.deletePackageFromDatabase(mLauncher, packageName, user);
-        removeItemsByPackageName(packages, user);
+        removeItemsByMatcher(ItemInfoMatcher.ofPackages(packages, user));
     }
 
     public void updateRestoreItems(final HashSet<ItemInfo> updates) {

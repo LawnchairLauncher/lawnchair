@@ -31,15 +31,6 @@ import java.util.List;
 
 public abstract class LauncherAppsCompat {
 
-    public static final String ACTION_MANAGED_PROFILE_ADDED =
-            "android.intent.action.MANAGED_PROFILE_ADDED";
-    public static final String ACTION_MANAGED_PROFILE_REMOVED =
-            "android.intent.action.MANAGED_PROFILE_REMOVED";
-    public static final String ACTION_MANAGED_PROFILE_AVAILABLE =
-            "android.intent.action.MANAGED_PROFILE_AVAILABLE";
-    public static final String ACTION_MANAGED_PROFILE_UNAVAILABLE =
-            "android.intent.action.MANAGED_PROFILE_UNAVAILABLE";
-
     public interface OnAppsChangedCallbackCompat {
         void onPackageRemoved(String packageName, UserHandleCompat user);
         void onPackageAdded(String packageName, UserHandleCompat user);

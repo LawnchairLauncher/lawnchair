@@ -46,6 +46,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TouchController;
 
@@ -325,22 +326,14 @@ public class DragController implements DragDriver.EventListener, TouchController
         endDrag();
     }
 
-    public void onAppsRemoved(final HashSet<String> packageNames, HashSet<ComponentName> cns) {
+    public void onAppsRemoved(ItemInfoMatcher matcher) {
         // Cancel the current drag if we are removing an app that we are dragging
         if (mDragObject != null) {
-            Object rawDragInfo = mDragObject.dragInfo;
-            if (rawDragInfo instanceof ShortcutInfo) {
-                ShortcutInfo dragInfo = (ShortcutInfo) rawDragInfo;
-                for (ComponentName componentName : cns) {
-                    if (dragInfo.intent != null) {
-                        ComponentName cn = dragInfo.intent.getComponent();
-                        boolean isSameComponent = cn != null && (cn.equals(componentName) ||
-                                packageNames.contains(cn.getPackageName()));
-                        if (isSameComponent) {
-                            cancelDrag();
-                            return;
-                        }
-                    }
+            ItemInfo dragInfo = mDragObject.dragInfo;
+            if (dragInfo instanceof ShortcutInfo) {
+                ComponentName cn = dragInfo.getTargetComponent();
+                if (cn != null && matcher.matches(dragInfo, cn)) {
+                    cancelDrag();
                 }
             }
         }
