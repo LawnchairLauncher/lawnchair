@@ -100,22 +100,28 @@ public class ShortcutInfo extends ItemInfo {
     /**
      * Indicates that the icon is disabled due to safe mode restrictions.
      */
-    public static final int FLAG_DISABLED_SAFEMODE = 1;
+    public static final int FLAG_DISABLED_SAFEMODE = 1 << 0;
 
     /**
      * Indicates that the icon is disabled as the app is not available.
      */
-    public static final int FLAG_DISABLED_NOT_AVAILABLE = 2;
+    public static final int FLAG_DISABLED_NOT_AVAILABLE = 1 << 1;
 
     /**
      * Indicates that the icon is disabled as the app is suspended
      */
-    public static final int FLAG_DISABLED_SUSPENDED = 4;
+    public static final int FLAG_DISABLED_SUSPENDED = 1 << 2;
 
     /**
      * Indicates that the icon is disabled as the user is in quiet mode.
      */
-    public static final int FLAG_DISABLED_QUIET_USER = 8;
+    public static final int FLAG_DISABLED_QUIET_USER = 1 << 3;
+
+
+    /**
+     * Indicates that the icon is disabled as the publisher has disabled the actual shortcut.
+     */
+    public static final int FLAG_DISABLED_BY_PUBLISHER = 1 << 4;
 
     /**
      * Could be disabled, if the the app is installed but unavailable (eg. in safe mode or when
@@ -293,6 +299,11 @@ public class ShortcutInfo extends ItemInfo {
         }
         contentDescription = UserManagerCompat.getInstance(context)
                 .getBadgedLabelForUser(label, user);
+        if (shortcutInfo.isEnabled()) {
+            isDisabled &= ~FLAG_DISABLED_BY_PUBLISHER;
+        } else {
+            isDisabled |= FLAG_DISABLED_BY_PUBLISHER;
+        }
 
         LauncherAppState launcherAppState = LauncherAppState.getInstance();
         Drawable unbadgedIcon = launcherAppState.getShortcutManager()

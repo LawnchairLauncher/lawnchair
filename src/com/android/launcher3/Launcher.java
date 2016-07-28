@@ -2659,6 +2659,8 @@ public class Launcher extends Activity
                 int error = R.string.activity_not_available;
                 if ((shortcut.isDisabled & ShortcutInfo.FLAG_DISABLED_SAFEMODE) != 0) {
                     error = R.string.safemode_shortcut_error;
+                } else if ((shortcut.isDisabled & ShortcutInfo.FLAG_DISABLED_BY_PUBLISHER) != 0) {
+                    error = R.string.shortcut_not_available;
                 }
                 Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
                 return;

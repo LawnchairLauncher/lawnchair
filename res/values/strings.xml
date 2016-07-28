@@ -35,6 +35,8 @@
     <string name="safemode_shortcut_error">Downloaded app disabled in Safe mode</string>
     <!-- SafeMode widget error string -->
     <string name="safemode_widget_error">Widgets disabled in Safe mode</string>
+    <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
+    <string name="shortcut_not_available">Shortcut isn\'t available</string>
 
     <!-- Widgets -->
     <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
