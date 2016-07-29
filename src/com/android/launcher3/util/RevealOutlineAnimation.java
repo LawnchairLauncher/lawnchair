@@ -38,6 +38,8 @@ public abstract class RevealOutlineAnimation extends ViewOutlineProvider {
         final float elevation = revealView.getElevation();
 
         va.addListener(new AnimatorListenerAdapter() {
+            private boolean mWasCanceled = false;
+
             public void onAnimationStart(Animator animation) {
                 revealView.setOutlineProvider(RevealOutlineAnimation.this);
                 revealView.setClipToOutline(true);
@@ -46,11 +48,18 @@ public abstract class RevealOutlineAnimation extends ViewOutlineProvider {
                 }
             }
 
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                mWasCanceled = true;
+            }
+
             public void onAnimationEnd(Animator animation) {
-                revealView.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
-                revealView.setClipToOutline(false);
-                if (shouldRemoveElevationDuringAnimation()) {
-                    revealView.setTranslationZ(0);
+                if (!mWasCanceled) {
+                    revealView.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
+                    revealView.setClipToOutline(false);
+                    if (shouldRemoveElevationDuringAnimation()) {
+                        revealView.setTranslationZ(0);
+                    }
                 }
             }
 
