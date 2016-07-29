@@ -26,6 +26,8 @@
     <string name="activity_not_available" msgid="7456344436509528827">"Aplikácia nie je k dispozícii"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Stiahnutá aplikácia je v núdzovom režime zakázaná"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Miniaplikácie sú v núdzovom režime zakázané"</string>
+    <!-- no translation found for shortcut_not_available (2536503539825726397) -->
+    <skip />
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Miniaplikáciu pridáte stlačením a podržaním."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Miniaplikáciu pridáte dvojitým klepnutím a pridržaním alebo pomocou vlastných akcií."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -100,4 +102,6 @@
     <string name="action_decrease_width" msgid="1374549771083094654">"Znížiť šírku"</string>
     <string name="action_decrease_height" msgid="282377193880900022">"Znížiť výšku"</string>
     <string name="widget_resized" msgid="9130327887929620">"Veľkosť miniaplikácie bola zmenená na <xliff:g id="NUMBER_0">%1$s</xliff:g> x <xliff:g id="NUMBER_1">%2$s</xliff:g> (šírka x výška)"</string>
+    <!-- no translation found for action_deep_shortcut (2864038805849372848) -->
+    <skip />
 </resources>

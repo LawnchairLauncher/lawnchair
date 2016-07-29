@@ -26,6 +26,8 @@
     <string name="activity_not_available" msgid="7456344436509528827">"பயன்பாடு இல்லை"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"இறக்கிய பயன்பாடு பாதுகாப்பு முறையில் முடக்கப்பட்டது"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"பாதுகாப்புப் பயன்முறையில் விட்ஜெட்கள் முடக்கப்பட்டுள்ளன"</string>
+    <!-- no translation found for shortcut_not_available (2536503539825726397) -->
+    <skip />
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"விட்ஜெட்டைத் தேர்வுசெய்ய தொட்டுப் பிடிக்கவும்."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"விட்ஜெட்டைத் தேர்ந்தெடுக்க இருமுறை தட்டிப் பிடிக்கவும் அல்லது தனிப்பயன் செயல்களைப் பயன்படுத்தவும்."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -100,4 +102,6 @@
     <string name="action_decrease_width" msgid="1374549771083094654">"அகலத்தைக் குறை"</string>
     <string name="action_decrease_height" msgid="282377193880900022">"உயரத்தைக் குறை"</string>
     <string name="widget_resized" msgid="9130327887929620">"அகலம் <xliff:g id="NUMBER_0">%1$s</xliff:g> மற்றும் உயரம் <xliff:g id="NUMBER_1">%2$s</xliff:g>க்கு விட்ஜெட் அளவு மாற்றப்பட்டது"</string>
+    <!-- no translation found for action_deep_shortcut (2864038805849372848) -->
+    <skip />
 </resources>
