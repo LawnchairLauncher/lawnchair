@@ -35,7 +35,7 @@
     <string name="all_apps_search_market_message" msgid="5470761048755751471">"Գնալ <xliff:g id="QUERY">%1$s</xliff:g>"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Այլևս տեղ չկա այս հիմնական էկրանին:"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Ընտրյալների ցուցակում այլևս ազատ տեղ չկա"</string>
-    <string name="all_apps_button_label" msgid="9110807029020582876">"Ծրագրեր"</string>
+    <string name="all_apps_button_label" msgid="9110807029020582876">"Հավելվածներ"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Հիմնական"</string>
     <string name="delete_target_label" msgid="1822697352535677073">"Հեռացնել"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"Ապատեղադրել"</string>

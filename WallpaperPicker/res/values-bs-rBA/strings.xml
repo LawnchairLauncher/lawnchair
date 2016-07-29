@@ -19,7 +19,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="wallpaper_instructions" msgid="3524143401182707094">"Postavi pozadinu"</string>
+    <string name="wallpaper_instructions" msgid="3524143401182707094">"Postavi pozadinsku sliku"</string>
     <string name="image_load_fail" msgid="7538534580694411837">"Nije moguće učitati sliku"</string>
     <string name="wallpaper_load_fail" msgid="4800700444605404650">"Nije moguće učitati sliku kao pozadinu"</string>
     <string name="wallpaper_set_fail" msgid="7023180794008631780">"Nije moguće postaviti sliku kao pozadinu"</string>
@@ -28,7 +28,7 @@
       <item quantity="few">odabrana su %1$d</item>
       <item quantity="other">odabrano je %1$d</item>
     </plurals>
-    <string name="wallpaper_accessibility_name" msgid="4093221025304876354">"Pozadina %1$d od %2$d"</string>
+    <string name="wallpaper_accessibility_name" msgid="4093221025304876354">"Pozadinska slika %1$d od %2$d"</string>
     <string name="announce_selection" msgid="123723511662250539">"Odabrano: <xliff:g id="LABEL">%1$s</xliff:g>"</string>
     <string name="wallpaper_delete" msgid="1459353972739215344">"Izbriši"</string>
     <string name="pick_image" msgid="3189640419551368385">"Moje fotografije"</string>

@@ -22,15 +22,15 @@
     <string name="app_name" msgid="649227358658669779">"ဖွင့်တင်စက်၃"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"အလုပ်"</string>
-    <string name="activity_not_found" msgid="8071924732094499514">"အပ်ပလီကေးရှင်း မထည့်သွင်းထားပါ"</string>
-    <string name="activity_not_available" msgid="7456344436509528827">"App လက်လှမ်း မမှီပါ"</string>
+    <string name="activity_not_found" msgid="8071924732094499514">"အက်ပ်မထည့်သွင်းထားပါ"</string>
+    <string name="activity_not_available" msgid="7456344436509528827">"အက်ပ်လက်လှမ်း မမှီပါ"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"ဒေါင်းလုဒ် အက်ပ်ကို လုံခြုံရေး မုဒ်ထဲမှာ ပိတ်ထား"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"လုံခြုံရေး မုဒ်ထဲမှာ ဝီဂျက်များကို ပိတ်ထား"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"ဝဒ်ဂျက်တစ်ခုကို ကောက်ယူရန် ဖိနှိပ်ထားပါ"</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"ဝစ်ဂျက်တစ်ခုကိုရယူရန် သို့မဟုတ် စိတ်ကြိုက်လုပ်ဆောင်မှုများကို အသုံးပြုရန် နှစ်ချက်တို့ပြီး ကိုင်ထားပါ။"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="all_apps_search_bar_hint" msgid="6705987535534678581">"အက်ပ်များကို ရှာဖွေပါ…"</string>
-    <string name="all_apps_loading_message" msgid="7557140873644765180">"App များ ရယူနေစဉ်..."</string>
+    <string name="all_apps_loading_message" msgid="7557140873644765180">"အက်ပ်များ ရယူနေစဉ်..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" နှင့်ကိုက်ညီသည့် အပ်ဖ်များမတွေ့ပါ"</string>
     <string name="all_apps_search_market_message" msgid="5470761048755751471">"<xliff:g id="QUERY">%1$s</xliff:g>ကို သွားပါ"</string>
     <string name="out_of_space" msgid="4691004494942118364">"ဤပင်မမျက်နှာစာတွင် နေရာလွတ် မကျန်တော့ပါ"</string>
@@ -39,7 +39,7 @@
     <string name="all_apps_home_button_label" msgid="252062713717058851">"ပင်မစာမျက်နှာ"</string>
     <string name="delete_target_label" msgid="1822697352535677073">"ဖယ်ရှားပါ"</string>
     <string name="delete_target_uninstall_label" msgid="5100785476250872595">"ပြန်ထုတ်ပါ"</string>
-    <string name="info_target_label" msgid="8053346143994679532">"အပ်ပလီကေးရှင်း အချက်အလက်များ"</string>
+    <string name="info_target_label" msgid="8053346143994679532">"အက်ပ်အချက်အလက်များ"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"အတိုကောက်မှတ်သားမှုများအား ထည့်သွင်းခြင်း"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"အသုံးပြုသူ လုပ်ဆောင်မှုမရှိပဲ အပ်ပလီကေးရှင်းကို အတိုကောက်မှတ်သားမှုများ ပြုလုပ်ခွင့် ပေးခြင်း"</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"ပင်မမျက်နှာစာ အပြင်အဆင် နှင့် အတိုကောက်မှတ်သားမှုများအား ဖတ်ခြင်း"</string>
@@ -76,8 +76,8 @@
     <string name="package_state_unknown" msgid="7592128424511031410">"မသိရ"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ဖယ်ရှားရန်"</string>
     <string name="abandoned_search" msgid="891119232568284442">"ရှာဖွေရန်"</string>
-    <string name="abandoned_promises_title" msgid="7096178467971716750">"App မတပ်ဆင်ရသေးပါ"</string>
-    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ဤအိုင်ကွန်အတွက် အက်ပ် အားမထည့်သွင်းထားပါ။ You can remove it, or search for the အက်ပ် and install it manually."</string>
+    <string name="abandoned_promises_title" msgid="7096178467971716750">"အက်ပ်မတပ်ဆင်ရသေးပါ"</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ဤအိုင်ကွန်အတွက် အက်ပ်အားမထည့်သွင်းထားပါ။ You can remove it, or search for the အက်ပ်and install it manually."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ဒေါင်းလုဒ်လုပ်နေသည်၊ <xliff:g id="PROGRESS">%2$s</xliff:g> ပြီးပါပြီ"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ကိုထည့်သွင်းရန်စောင့်နေသည်"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"ပင်မမျက်နှာစာသို့ ထည့်ပါ"</string>
