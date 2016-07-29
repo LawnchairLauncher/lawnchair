@@ -90,7 +90,6 @@ import com.android.launcher3.widget.PendingAddWidgetInfo;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
@@ -253,6 +252,7 @@ public class Workspace extends PagedView
     private boolean mWorkspaceFadeInAdjacentScreens;
 
     final WallpaperOffsetInterpolator mWallpaperOffset;
+    private boolean mUnlockWallpaperFromDefaultPageOnLayout;
 
     @Thunk Runnable mDelayedResizeRunnable;
     private Runnable mDelayedSnapToPageRunnable;
@@ -1616,6 +1616,17 @@ public class Workspace extends PagedView
         });
     }
 
+    public void lockWallpaperToDefaultPage() {
+        mWallpaperOffset.setLockToDefaultPage(true);
+    }
+
+    public void unlockWallpaperFromDefaultPageOnNextLayout() {
+        if (mWallpaperOffset.isLockedToDefaultPage()) {
+            mUnlockWallpaperFromDefaultPageOnLayout = true;
+            requestLayout();
+        }
+    }
+
     protected void snapToPage(int whichPage, Runnable r) {
         snapToPage(whichPage, SLOW_PAGE_SNAP_ANIMATION_DURATION, r);
     }
@@ -1797,6 +1808,10 @@ public class Workspace extends PagedView
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        if (mUnlockWallpaperFromDefaultPageOnLayout) {
+            mWallpaperOffset.setLockToDefaultPage(false);
+            mUnlockWallpaperFromDefaultPageOnLayout = false;
+        }
         if (mFirstLayout && mCurrentPage >= 0 && mCurrentPage < getChildCount()) {
             mWallpaperOffset.syncWithScroll();
             mWallpaperOffset.jumpToFinal();

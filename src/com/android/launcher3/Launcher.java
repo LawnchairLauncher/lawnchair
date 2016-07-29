@@ -1376,6 +1376,9 @@ public class Launcher extends Activity
         mWorkspace.setHapticFeedbackEnabled(false);
         mWorkspace.setOnLongClickListener(this);
         mWorkspace.setup(mDragController);
+        // Until the workspace is bound, ensure that we keep the wallpaper offset locked to the
+        // default state, otherwise we will update to the wrong offsets in RTL
+        mWorkspace.lockWallpaperToDefaultPage();
         mWorkspace.bindAndInitFirstWorkspaceScreen(null /* recycled qsb */);
         mDragController.addDragListener(mWorkspace);
 
@@ -3679,6 +3682,11 @@ public class Launcher extends Activity
             mWorkspace.createCustomContentContainer();
             populateCustomContentContainer();
         }
+
+        // After we have added all the screens, if the wallpaper was locked to the default state,
+        // then notify to indicate that it can be released and a proper wallpaper offset can be
+        // computed before the next layout
+        mWorkspace.unlockWallpaperFromDefaultPageOnNextLayout();
     }
 
     private void bindAddScreens(ArrayList<Long> orderedScreenIds) {
