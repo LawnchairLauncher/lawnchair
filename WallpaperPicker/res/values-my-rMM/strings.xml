@@ -29,7 +29,7 @@
     </plurals>
     <string name="wallpaper_accessibility_name" msgid="4093221025304876354">"နောက်ခံ %1$d မှ %2$d"</string>
     <string name="announce_selection" msgid="123723511662250539">"ရွေးချယ်ထားသော <xliff:g id="LABEL">%1$s</xliff:g>"</string>
-    <string name="wallpaper_delete" msgid="1459353972739215344">"ဖျက်ပါ"</string>
+    <string name="wallpaper_delete" msgid="1459353972739215344">"ဖျက်ရန်"</string>
     <string name="pick_image" msgid="3189640419551368385">"ကျွန်ုပ်၏ ဓာတ်ပုံများ"</string>
     <string name="pick_wallpaper" msgid="4628969645948454559">"နောက်ခံများ"</string>
     <string name="crop_wallpaper" msgid="4882870800623585836">"နောက်ခံအား ဖြတ်ခြင်း"</string>

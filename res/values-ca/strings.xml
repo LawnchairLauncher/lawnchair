@@ -58,7 +58,7 @@
     <string name="migration_cling_title" msgid="9181776667882933767">"Copiar les icones d\'aplicació"</string>
     <string name="migration_cling_description" msgid="2752413805582227644">"Importar icones i carpetes de pantalles d\'inici anteriors?"</string>
     <string name="migration_cling_copy_apps" msgid="946331230090919440">"COPIA LES ICONES."</string>
-    <string name="migration_cling_use_default" msgid="2626475813981258626">"NOU COMENÇAMENT"</string>
+    <string name="migration_cling_use_default" msgid="2626475813981258626">"COMENÇA DE ZERO"</string>
     <string name="workspace_cling_longpress_title" msgid="9173998993909018310">"Fons de pantalla, widgets i configuració"</string>
     <string name="workspace_cling_longpress_description" msgid="4119994475505235248">"Mantén premut el fons per fer personalitzacions."</string>
     <string name="workspace_cling_longpress_dismiss" msgid="368660286867640874">"D\'ACORD"</string>
