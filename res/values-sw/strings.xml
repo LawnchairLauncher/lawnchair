@@ -26,6 +26,8 @@
     <string name="activity_not_available" msgid="7456344436509528827">"Programu haipatikani"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Programu iliyopakuliwa imezimwa katika Hali Salama"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Wijeti zimezimwa katika hali ya Usalama"</string>
+    <!-- no translation found for shortcut_not_available (2536503539825726397) -->
+    <skip />
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Gusa na ushikilie ili kuteua wijeti."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Gonga mara mbili na ushikilie ile uchague wijeti au utumie vitendo maalum."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -102,4 +104,6 @@
     <string name="action_decrease_width" msgid="1374549771083094654">"Punguza upana"</string>
     <string name="action_decrease_height" msgid="282377193880900022">"Punguza urefu"</string>
     <string name="widget_resized" msgid="9130327887929620">"Wijeti imepunguzwa hadi upana <xliff:g id="NUMBER_0">%1$s</xliff:g> urefu <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <!-- no translation found for action_deep_shortcut (2864038805849372848) -->
+    <skip />
 </resources>
