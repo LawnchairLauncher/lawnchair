@@ -32,9 +32,9 @@ public class BaseRecyclerViewFastScrollPopup {
 
     private static final float FAST_SCROLL_OVERLAY_Y_OFFSET_FACTOR = 1.5f;
 
-    private static final int SHADOW_INSET = 5;
-    private static final int SHADOW_SHIFT_Y = 4;
-    private static final float SHADOW_ALPHA_MULTIPLIER = 0.5f;
+    private static final int SHADOW_INSET = 3;
+    private static final int SHADOW_SHIFT_Y = 2;
+    private static final float SHADOW_ALPHA_MULTIPLIER = 0.67f;
 
     private Resources mRes;
     private BaseRecyclerView mRv;
