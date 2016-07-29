@@ -735,6 +735,11 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
      */
     public static DeepShortcutsContainer showForIcon(BubbleTextView icon) {
         Launcher launcher = Launcher.getLauncher(icon.getContext());
+        if (launcher.getOpenShortcutsContainer() != null) {
+            // There is already a shortcuts container open, so don't open this one.
+            icon.clearFocus();
+            return null;
+        }
         List<String> ids = launcher.getShortcutIdsForItem((ItemInfo) icon.getTag());
         if (!ids.isEmpty()) {
             // There are shortcuts associated with the app, so defer its drag.
