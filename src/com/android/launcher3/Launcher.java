@@ -348,6 +348,11 @@ public class Launcher extends Activity
         }
     }
 
+    // Exiting spring loaded mode happens with a delay. This runnable object triggers the
+    // state transition. If another state transition happened during this delay,
+    // simply unregister this runnable.
+    private Runnable mExitSpringLoadedModeRunnable;
+
     @Thunk Runnable mBuildLayersRunnable = new Runnable() {
         public void run() {
             if (mWorkspace != null) {
@@ -3416,6 +3421,12 @@ public class Launcher extends Activity
             return false;
         }
 
+        // This is a safe and supported transition to bypass spring_loaded mode.
+        if (mExitSpringLoadedModeRunnable != null) {
+            mHandler.removeCallbacks(mExitSpringLoadedModeRunnable);
+            mExitSpringLoadedModeRunnable = null;
+        }
+
         if (toState == State.APPS) {
             mStateTransitionAnimation.startAnimationToAllApps(mWorkspace.getState(), animated,
                     focusSearchBar);
@@ -3475,7 +3486,10 @@ public class Launcher extends Activity
             final Runnable onCompleteRunnable) {
         if (!isStateSpringLoaded()) return;
 
-        mHandler.postDelayed(new Runnable() {
+        if (mExitSpringLoadedModeRunnable != null) {
+            mHandler.removeCallbacks(mExitSpringLoadedModeRunnable);
+        }
+        mExitSpringLoadedModeRunnable = new Runnable() {
             @Override
             public void run() {
                 if (successfulDrop) {
@@ -3489,8 +3503,10 @@ public class Launcher extends Activity
                 } else {
                     exitSpringLoadedDragMode();
                 }
+                mExitSpringLoadedModeRunnable = null;
             }
-        }, delay);
+        };
+        mHandler.postDelayed(mExitSpringLoadedModeRunnable, delay);
     }
 
     boolean isStateSpringLoaded() {
