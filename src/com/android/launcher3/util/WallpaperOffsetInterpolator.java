@@ -18,7 +18,7 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
     private static final int ANIMATION_DURATION = 250;
 
     // Don't use all the wallpaper for parallax until you have at least this many pages
-    private static final int MIN_PARALLAX_PAGE_SPAN = 3;
+    private static final int MIN_PARALLAX_PAGE_SPAN = 4;
 
     private final Choreographer mChoreographer;
     private final Interpolator mInterpolator;
@@ -33,6 +33,7 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
     private float mFinalOffset = 0.0f;
     private float mCurrentOffset = 0.5f; // to force an initial update
     private boolean mWaitingForUpdate;
+    private boolean mLockedToDefaultPage;
 
     private boolean mAnimating;
     private long mAnimationStartTime;
@@ -68,6 +69,17 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
         }
     }
 
+    /**
+     * Locks the wallpaper offset to the offset in the default state of Launcher.
+     */
+    public void setLockToDefaultPage(boolean lockToDefaultPage) {
+        mLockedToDefaultPage = lockToDefaultPage;
+    }
+
+    public boolean isLockedToDefaultPage() {
+        return mLockedToDefaultPage;
+    }
+
     public boolean computeScrollOffset() {
         final float oldOffset = mCurrentOffset;
         if (mAnimating) {
@@ -90,57 +102,60 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
         return false;
     }
 
+    /**
+     * TODO: do different behavior if it's  a live wallpaper?
+     */
     public float wallpaperOffsetForScroll(int scroll) {
-        // TODO: do different behavior if it's  a live wallpaper?
-        // Don't use up all the wallpaper parallax until you have at least
-        // MIN_PARALLAX_PAGE_SPAN pages
+        // To match the default wallpaper behavior in the system, we default to either the left
+        // or right edge on initialization
         int numScrollingPages = getNumScreensExcludingEmptyAndCustom();
-        int parallaxPageSpan;
+        if (mLockedToDefaultPage || numScrollingPages <= 1) {
+            return mIsRtl ? 1f : 0f;
+        }
+
+        // Distribute the wallpaper parallax over a minimum of MIN_PARALLAX_PAGE_SPAN workspace
+        // screens, not including the custom screen, and empty screens (if > MIN_PARALLAX_PAGE_SPAN)
         if (mWallpaperIsLiveWallpaper) {
-            parallaxPageSpan = numScrollingPages - 1;
+            mNumPagesForWallpaperParallax = numScrollingPages;
         } else {
-            parallaxPageSpan = Math.max(MIN_PARALLAX_PAGE_SPAN, numScrollingPages - 1);
-        }
-        mNumPagesForWallpaperParallax = parallaxPageSpan;
-
-        if (mWorkspace.getChildCount() <= 1) {
-            if (mIsRtl) {
-                return 1 - 1.0f/mNumPagesForWallpaperParallax;
-            }
-            return 0;
+            mNumPagesForWallpaperParallax = Math.max(MIN_PARALLAX_PAGE_SPAN, numScrollingPages);
         }
 
-        // Exclude the leftmost page
-        int emptyExtraPages = numEmptyScreensToIgnore();
-        int firstIndex = mWorkspace.numCustomPages();
-        // Exclude the last extra empty screen (if we have > MIN_PARALLAX_PAGE_SPAN pages)
-        int lastIndex = mWorkspace.getChildCount() - 1 - emptyExtraPages;
+        // Offset by the custom screen
+        int leftPageIndex;
+        int rightPageIndex;
         if (mIsRtl) {
-            int temp = firstIndex;
-            firstIndex = lastIndex;
-            lastIndex = temp;
-        }
-
-        int firstPageScrollX = mWorkspace.getScrollForPage(firstIndex);
-        int scrollRange = mWorkspace.getScrollForPage(lastIndex) - firstPageScrollX;
-        if (scrollRange == 0) {
-            return 0;
+            rightPageIndex = mWorkspace.numCustomPages();
+            leftPageIndex = rightPageIndex + numScrollingPages - 1;
         } else {
-            // Sometimes the left parameter of the pages is animated during a layout transition;
-            // this parameter offsets it to keep the wallpaper from animating as well
-            int adjustedScroll =
-                    scroll - firstPageScrollX - mWorkspace.getLayoutTransitionOffsetForPage(0);
-            float offset = Math.min(1, adjustedScroll / (float) scrollRange);
-            offset = Math.max(0, offset);
-
-            // On RTL devices, push the wallpaper offset to the right if we don't have enough
-            // pages (ie if numScrollingPages < MIN_PARALLAX_PAGE_SPAN)
-            if (!mWallpaperIsLiveWallpaper && numScrollingPages < MIN_PARALLAX_PAGE_SPAN
-                    && mIsRtl) {
-                return offset * (parallaxPageSpan - numScrollingPages + 1) / parallaxPageSpan;
-            }
-            return offset * (numScrollingPages - 1) / parallaxPageSpan;
+            leftPageIndex = mWorkspace.numCustomPages();
+            rightPageIndex = leftPageIndex + numScrollingPages - 1;
         }
+
+        // Calculate the scroll range
+        int leftPageScrollX = mWorkspace.getScrollForPage(leftPageIndex);
+        int rightPageScrollX = mWorkspace.getScrollForPage(rightPageIndex);
+        int scrollRange = rightPageScrollX - leftPageScrollX;
+        if (scrollRange == 0) {
+            return 0f;
+        }
+
+        // Sometimes the left parameter of the pages is animated during a layout transition;
+        // this parameter offsets it to keep the wallpaper from animating as well
+        int adjustedScroll = scroll - leftPageScrollX -
+                mWorkspace.getLayoutTransitionOffsetForPage(0);
+        float offset = Utilities.boundToRange((float) adjustedScroll / scrollRange, 0f, 1f);
+
+        // The offset is now distributed 0..1 between the left and right pages that we care about,
+        // so we just map that between the pages that we are using for parallax
+        float rtlOffset = 0;
+        if (mIsRtl) {
+            // In RTL, the pages are right aligned, so adjust the offset from the end
+            rtlOffset = (float) ((mNumPagesForWallpaperParallax - 1) - (numScrollingPages - 1)) /
+                    (mNumPagesForWallpaperParallax - 1);
+        }
+        return rtlOffset + offset *
+                ((float) (numScrollingPages - 1) / (mNumPagesForWallpaperParallax - 1));
     }
 
     private float wallpaperOffsetForCurrentScroll() {
@@ -182,7 +197,7 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
 
     private void setWallpaperOffsetSteps() {
         // Set wallpaper offset steps (1 / (number of screens - 1))
-        float xOffset = 1.0f / mNumPagesForWallpaperParallax;
+        float xOffset = 1.0f / (mNumPagesForWallpaperParallax - 1);
         if (xOffset != mLastSetWallpaperOffsetSteps) {
             mWallpaperManager.setWallpaperOffsetSteps(xOffset, 1.0f);
             mLastSetWallpaperOffsetSteps = xOffset;
@@ -191,7 +206,7 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
 
     public void setFinalX(float x) {
         scheduleUpdate();
-        mFinalOffset = Math.max(0f, Math.min(x, 1.0f));
+        mFinalOffset = Math.max(0f, Math.min(x, 1f));
         if (getNumScreensExcludingEmptyAndCustom() != mNumScreens) {
             if (mNumScreens > 0) {
                 // Don't animate if we're going from 0 screens
