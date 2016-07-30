@@ -157,6 +157,8 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         final int arrowVerticalOffset = resources.getDimensionPixelSize(
                 R.dimen.deep_shortcuts_arrow_vertical_offset);
         mArrow = addArrowView(mArrowHorizontalOffset, arrowVerticalOffset, arrowWidth, arrowHeight);
+        mArrow.setPivotX(arrowWidth / 2);
+        mArrow.setPivotY(mIsAboveIcon ? 0 : arrowHeight);
 
         animateOpen();
 
