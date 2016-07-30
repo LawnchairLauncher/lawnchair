@@ -69,7 +69,6 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -110,29 +109,9 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
     private boolean mIsRtl;
     private int mArrowHorizontalOffset;
 
-    /**
-     * Sorts shortcuts in rank order, with manifest shortcuts coming before dynamic shortcuts.
-     */
-    private static final Comparator<ShortcutInfoCompat> sShortcutsComparator
-            = new Comparator<ShortcutInfoCompat>() {
-        @Override
-        public int compare(ShortcutInfoCompat a, ShortcutInfoCompat b) {
-            if (a.isDeclaredInManifest() && !b.isDeclaredInManifest()) {
-                return -1;
-            }
-            if (!a.isDeclaredInManifest() && b.isDeclaredInManifest()) {
-                return 1;
-            }
-            return Integer.compare(a.getRank(), b.getRank());
-        }
-    };
-
-    private static final Comparator<ShortcutInfoCompat> sShortcutsComparatorReversed
-            = Collections.reverseOrder(sShortcutsComparator);
-
     public DeepShortcutsContainer(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mLauncher = (Launcher) context;
+        mLauncher = Launcher.getLauncher(context);
         mDeepShortcutsManager = LauncherAppState.getInstance().getShortcutManager();
 
         mDragDeadzone = ViewConfiguration.get(context).getScaledTouchSlop();
@@ -154,10 +133,11 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         // Add dummy views first, and populate with real shortcut info when ready.
         final int spacing = getResources().getDimensionPixelSize(R.dimen.deep_shortcuts_spacing);
         final LayoutInflater inflater = mLauncher.getLayoutInflater();
-        for (int i = 0; i < ids.size(); i++) {
+        int numShortcuts = Math.min(ids.size(), ShortcutFilter.MAX_SHORTCUTS);
+        for (int i = 0; i < numShortcuts; i++) {
             final DeepShortcutView shortcut =
                     (DeepShortcutView) inflater.inflate(R.layout.deep_shortcut, this, false);
-            if (i < ids.size() - 1) {
+            if (i < numShortcuts - 1) {
                 ((LayoutParams) shortcut.getLayoutParams()).bottomMargin = spacing;
             }
             shortcut.getBubbleText().setAccessibilityDelegate(mAccessibilityDelegate);
@@ -190,12 +170,12 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         new Handler(workerLooper).postAtFrontOfQueue(new Runnable() {
             @Override
             public void run() {
-                final List<ShortcutInfoCompat> shortcuts = mDeepShortcutsManager
-                        .queryForShortcutsContainer(activity, ids, user);
+                final List<ShortcutInfoCompat> shortcuts = ShortcutFilter.sortAndFilterShortcuts(
+                        mDeepShortcutsManager.queryForShortcutsContainer(activity, ids, user));
                 // We want the lowest rank to be closest to the user's finger.
-                final Comparator<ShortcutInfoCompat> shortcutsComparator = mIsAboveIcon ?
-                        sShortcutsComparatorReversed : sShortcutsComparator;
-                Collections.sort(shortcuts, shortcutsComparator);
+                if (mIsAboveIcon) {
+                    Collections.reverse(shortcuts);
+                }
                 for (int i = 0; i < shortcuts.size(); i++) {
                     final ShortcutInfoCompat shortcut = shortcuts.get(i);
                     final ShortcutInfo launcherShortcutInfo =
