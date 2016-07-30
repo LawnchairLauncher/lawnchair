@@ -305,16 +305,33 @@ public class ShortcutInfo extends ItemInfo {
             isDisabled |= FLAG_DISABLED_BY_PUBLISHER;
         }
 
+        // TODO: Use cache for this
         LauncherAppState launcherAppState = LauncherAppState.getInstance();
-        Drawable unbadgedIcon = launcherAppState.getShortcutManager()
+        Drawable unbadgedDrawable = launcherAppState.getShortcutManager()
                 .getShortcutIconDrawable(shortcutInfo,
                         launcherAppState.getInvariantDeviceProfile().fillResIconDpi);
-        Bitmap icon = unbadgedIcon == null ? null : getBadgedIcon(unbadgedIcon, context);
-        setIcon(icon != null ? icon : launcherAppState.getIconCache().getDefaultIcon(user));
+
+        IconCache cache = launcherAppState.getIconCache();
+        Bitmap unbadgedBitmap = unbadgedDrawable == null
+                ? cache.getDefaultIcon(UserHandleCompat.myUserHandle())
+                : Utilities.createScaledBitmapWithoutShadow(unbadgedDrawable, context);
+        setIcon(getBadgedIcon(unbadgedBitmap, shortcutInfo, cache, context));
     }
 
-    protected Bitmap getBadgedIcon(Drawable unbadgedIcon, Context context) {
-        return Utilities.createBadgedIconBitmapWithShadow(unbadgedIcon, user, context);
+    protected Bitmap getBadgedIcon(Bitmap unbadgedBitmap, ShortcutInfoCompat shortcutInfo,
+            IconCache cache, Context context) {
+        unbadgedBitmap = Utilities.addShadowToIcon(unbadgedBitmap);
+        // Get the app info for the source activity.
+        AppInfo appInfo = new AppInfo();
+        appInfo.user = user;
+        appInfo.componentName = shortcutInfo.getActivity();
+        try {
+            cache.getTitleAndIcon(appInfo, shortcutInfo.getActivityInfo(context), false);
+        } catch (NullPointerException e) {
+            // This may happen when we fail to load the activity info. Worst case ignore badging.
+            return Utilities.badgeIconForUser(unbadgedBitmap, user, context);
+        }
+        return Utilities.badgeWithBitmap(unbadgedBitmap, appInfo.iconBitmap, context);
     }
 
     /** Returns the ShortcutInfo id associated with the deep shortcut. */

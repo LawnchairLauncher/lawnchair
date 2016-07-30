@@ -248,9 +248,16 @@ public final class Utilities {
         float scale = FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION ?
                 1 : IconNormalizer.getInstance().getScale(icon, null);
         Bitmap bitmap = createIconBitmap(icon, context, scale);
+        return badgeIconForUser(bitmap, user, context);
+    }
+
+    /**
+     * Badges the provided icon with the user badge if required.
+     */
+    public static Bitmap badgeIconForUser(Bitmap icon,  UserHandleCompat user, Context context) {
         if (Utilities.ATLEAST_LOLLIPOP && user != null
                 && !UserHandleCompat.myUserHandle().equals(user)) {
-            BitmapDrawable drawable = new FixedSizeBitmapDrawable(bitmap);
+            BitmapDrawable drawable = new FixedSizeBitmapDrawable(icon);
             Drawable badged = context.getPackageManager().getUserBadgedIcon(
                     drawable, user.getUser());
             if (badged instanceof BitmapDrawable) {
@@ -259,7 +266,7 @@ public final class Utilities {
                 return createIconBitmap(badged, context);
             }
         } else {
-            return bitmap;
+            return icon;
         }
     }
 
@@ -276,26 +283,28 @@ public final class Utilities {
     }
 
     /**
-     * Same as {@link #createBadgedIconBitmap} but adds a shadow before badging the icon
+     * Adds a shadow to the provided icon. It assumes that the icon has already been scaled using
+     * {@link #createScaledBitmapWithoutShadow(Drawable, Context)}
+     */
+    public static Bitmap addShadowToIcon(Bitmap icon) {
+        return ShadowGenerator.getInstance().recreateIcon(icon);
+    }
+
+    /**
+     * Adds the {@param badge} on top of {@param srcTgt} using the badge dimensions.
      */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public static Bitmap createBadgedIconBitmapWithShadow(
-            Drawable icon, UserHandleCompat user, Context context) {
-        Bitmap bitmap = ShadowGenerator.getInstance().recreateIcon(
-                createScaledBitmapWithoutShadow(icon, context));
-        if (Utilities.ATLEAST_LOLLIPOP && user != null
-                && !UserHandleCompat.myUserHandle().equals(user)) {
-            BitmapDrawable drawable = new FixedSizeBitmapDrawable(bitmap);
-            Drawable badged = context.getPackageManager().getUserBadgedIcon(
-                    drawable, user.getUser());
-            if (badged instanceof BitmapDrawable) {
-                return ((BitmapDrawable) badged).getBitmap();
-            } else {
-                return createIconBitmap(badged, context);
-            }
-        } else {
-            return bitmap;
+    public static Bitmap badgeWithBitmap(Bitmap srcTgt, Bitmap badge, Context context) {
+        int badgeSize = context.getResources().getDimensionPixelSize(R.dimen.profile_badge_size);
+        synchronized (sCanvas) {
+            sCanvas.setBitmap(srcTgt);
+            sCanvas.drawBitmap(badge, new Rect(0, 0, badge.getWidth(), badge.getHeight()),
+                    new Rect(srcTgt.getWidth() - badgeSize,
+                            srcTgt.getHeight() - badgeSize, srcTgt.getWidth(), srcTgt.getHeight()),
+                    new Paint(Paint.FILTER_BITMAP_FLAG));
+            sCanvas.setBitmap(null);
         }
+        return srcTgt;
     }
 
     /**
