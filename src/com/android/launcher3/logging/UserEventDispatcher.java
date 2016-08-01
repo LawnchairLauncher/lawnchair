@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewParent;
 
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.LauncherEvent;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -146,6 +147,17 @@ public class UserEventDispatcher {
         dispatchUserEvent(event, null);
     }
 
+    public void logDeepShortcutsOpen(int containerType) {
+        LauncherEvent event = LoggerUtils.initLauncherEvent(
+                Action.TOUCH, Target.ITEM, Target.CONTAINER);
+        event.action.touch = Action.LONGPRESS;
+        event.srcTarget[0].itemType = LauncherLogProto.DEEPSHORTCUT;
+        event.srcTarget[1].containerType = containerType;
+        event.elapsedContainerMillis = System.currentTimeMillis() - mElapsedContainerMillis;
+        event.elapsedSessionMillis = System.currentTimeMillis() - mElapsedSessionMillis;
+        dispatchUserEvent(event, null);
+    }
+
     public void logDragNDrop() {
         // TODO
     }
@@ -172,7 +184,7 @@ public class UserEventDispatcher {
 
     public void dispatchUserEvent(LauncherEvent ev, Intent intent) {
         if (DEBUG_LOGGING) {
-            Log.d("UserEvent", String.format(Locale.US,
+            Log.d(TAG, String.format(Locale.US,
                     "action:%s\nchild:%s\nparent:%s\nelapsed container %d ms session %d ms",
                     LoggerUtils.getActionStr(ev.action),
                     LoggerUtils.getTargetStr(ev.srcTarget != null ? ev.srcTarget[0] : null),

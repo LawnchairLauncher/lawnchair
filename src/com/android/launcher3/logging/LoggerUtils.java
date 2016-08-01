@@ -50,6 +50,7 @@ public class LoggerUtils {
             case LauncherLogProto.APP_ICON: typeStr = "ICON"; break;
             case LauncherLogProto.SHORTCUT: typeStr = "SHORTCUT"; break;
             case LauncherLogProto.WIDGET: typeStr = "WIDGET"; break;
+            case LauncherLogProto.DEEPSHORTCUT: typeStr = "DEEPSHORTCUT"; break;
             default: typeStr = "UNKNOWN";
         }
 
@@ -105,6 +106,9 @@ public class LoggerUtils {
                 break;
             case LauncherLogProto.SEARCHRESULT:
                 str = "SEARCHRESULT";
+                break;
+            case LauncherLogProto.DEEPSHORTCUTS:
+                str = "DEEPSHORTCUTS";
                 break;
             default:
                 str = "UNKNOWN";
