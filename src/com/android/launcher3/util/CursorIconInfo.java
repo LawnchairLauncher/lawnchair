@@ -34,13 +34,24 @@ public class CursorIconInfo {
     public final int iconResourceIndex;
     public final int iconIndex;
 
-    public CursorIconInfo(Cursor c) {
+    public final int titleIndex;
+
+    private final Context mContext;
+
+    public CursorIconInfo(Context context, Cursor c) {
+        mContext = context;
+
         iconIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON);
         iconPackageIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_PACKAGE);
         iconResourceIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_RESOURCE);
+
+        titleIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites.TITLE);
     }
 
-    public Bitmap loadIcon(Cursor c, ShortcutInfo info, Context context) {
+    /**
+     * Loads the icon from the cursor and updates the {@param info} if the icon is an app resource.
+     */
+    public Bitmap loadIcon(Cursor c, ShortcutInfo info) {
         Bitmap icon = null;
         String packageName = c.getString(iconPackageIndex);
         String resourceName = c.getString(iconResourceIndex);
@@ -48,12 +59,27 @@ public class CursorIconInfo {
             info.iconResource = new ShortcutIconResource();
             info.iconResource.packageName = packageName;
             info.iconResource.resourceName = resourceName;
-            icon = Utilities.createIconBitmap(packageName, resourceName, context);
+            icon = Utilities.createIconBitmap(packageName, resourceName, mContext);
         }
         if (icon == null) {
             // Failed to load from resource, try loading from DB.
-            icon = Utilities.createIconBitmap(c, iconIndex, context);
+            icon = loadIcon(c);
         }
         return icon;
+    }
+
+    /**
+     * Loads the fixed bitmap from the icon if available.
+     */
+    public Bitmap loadIcon(Cursor c) {
+        return Utilities.createIconBitmap(c, iconIndex, mContext);
+    }
+
+    /**
+     * Returns the title or empty string
+     */
+    public String getTitle(Cursor c) {
+        String title = c.getString(titleIndex);
+        return TextUtils.isEmpty(title) ? "" : Utilities.trim(c.getString(titleIndex));
     }
 }
