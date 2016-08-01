@@ -98,7 +98,7 @@ public class DeepShortcutManager {
     public void unpinShortcut(final ShortcutKey key) {
         if (Utilities.isNycMR1OrAbove()) {
             String packageName = key.componentName.getPackageName();
-            String id = key.id;
+            String id = key.getId();
             UserHandleCompat user = key.user;
             List<String> pinnedIds = extractIds(queryForPinnedShortcuts(packageName, user));
             pinnedIds.remove(id);
@@ -120,7 +120,7 @@ public class DeepShortcutManager {
     public void pinShortcut(final ShortcutKey key) {
         if (Utilities.isNycMR1OrAbove()) {
             String packageName = key.componentName.getPackageName();
-            String id = key.id;
+            String id = key.getId();
             UserHandleCompat user = key.user;
             List<String> pinnedIds = extractIds(queryForPinnedShortcuts(packageName, user));
             pinnedIds.add(id);

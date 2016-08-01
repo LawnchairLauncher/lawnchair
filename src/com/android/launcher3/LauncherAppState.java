@@ -109,10 +109,11 @@ public class LauncherAppState {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_LOCALE_CHANGED);
         // For handling managed profiles
-        filter.addAction(LauncherAppsCompat.ACTION_MANAGED_PROFILE_ADDED);
-        filter.addAction(LauncherAppsCompat.ACTION_MANAGED_PROFILE_REMOVED);
-        filter.addAction(LauncherAppsCompat.ACTION_MANAGED_PROFILE_AVAILABLE);
-        filter.addAction(LauncherAppsCompat.ACTION_MANAGED_PROFILE_UNAVAILABLE);
+        filter.addAction(Intent.ACTION_MANAGED_PROFILE_ADDED);
+        filter.addAction(Intent.ACTION_MANAGED_PROFILE_REMOVED);
+        filter.addAction(Intent.ACTION_MANAGED_PROFILE_AVAILABLE);
+        filter.addAction(Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE);
+        filter.addAction(Intent.ACTION_MANAGED_PROFILE_UNLOCKED);
         // For extracting colors from the wallpaper
         if (Utilities.isNycOrAbove()) {
             // TODO: add a broadcast entry to the manifest for pre-N.

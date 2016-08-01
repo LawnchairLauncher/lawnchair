@@ -16,15 +16,11 @@
 
 package com.android.launcher3.compat;
 
+import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.UserHandle;
-import android.os.UserManager;
-import android.util.Log;
+import android.os.Build;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-//TODO: Once gogole3 SDK is updated to N, add @TargetApi(Build.VERSION_CODES.N)
+@TargetApi(Build.VERSION_CODES.N)
 public class UserManagerCompatVN extends UserManagerCompatVL {
 
     private static final String TAG = "UserManagerCompatVN";
@@ -35,21 +31,17 @@ public class UserManagerCompatVN extends UserManagerCompatVL {
 
     @Override
     public boolean isQuietModeEnabled(UserHandleCompat user) {
-        if (user != null) {
-            try {
-                //TODO: Replace with proper API call once google3 SDK is updated.
-                Method isQuietModeEnabledMethod = UserManager.class.getMethod("isQuietModeEnabled",
-                        UserHandle.class);
-                return (boolean) isQuietModeEnabledMethod.invoke(mUserManager, user.getUser());
-            } catch (NoSuchMethodError | NoSuchMethodException | IllegalAccessException
-                    | InvocationTargetException e) {
-                Log.e(TAG, "Running on N without isQuietModeEnabled", e);
-            } catch (IllegalArgumentException e) {
-                // TODO remove this when API is fixed to not throw this
-                // when called on user that isn't a managed profile.
-            }
+        return mUserManager.isQuietModeEnabled(user.getUser());
+    }
+
+    @Override
+    public boolean isUserUnlocked(UserHandleCompat user) {
+        // TODO: Remove the try-catch block when the API permission has been relaxed (b/30475753)
+        try {
+            return mUserManager.isUserUnlocked(user.getUser());
+        } catch (RuntimeException e) {
+            return !isQuietModeEnabled(user);
         }
-        return false;
     }
 }
 
