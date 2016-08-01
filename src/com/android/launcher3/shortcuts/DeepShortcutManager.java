@@ -105,7 +105,7 @@ public class DeepShortcutManager {
             try {
                 mLauncherApps.pinShortcuts(packageName, pinnedIds, user.getUser());
                 mWasLastCallSuccess = true;
-            } catch (SecurityException e) {
+            } catch (SecurityException|IllegalStateException e) {
                 Log.w(TAG, "Failed to unpin shortcut", e);
                 mWasLastCallSuccess = false;
             }
@@ -127,7 +127,7 @@ public class DeepShortcutManager {
             try {
                 mLauncherApps.pinShortcuts(packageName, pinnedIds, user.getUser());
                 mWasLastCallSuccess = true;
-            } catch (SecurityException e) {
+            } catch (SecurityException|IllegalStateException e) {
                 Log.w(TAG, "Failed to pin shortcut", e);
                 mWasLastCallSuccess = false;
             }
@@ -142,7 +142,7 @@ public class DeepShortcutManager {
                 mLauncherApps.startShortcut(packageName, id, sourceBounds,
                         startActivityOptions, user.getUser());
                 mWasLastCallSuccess = true;
-            } catch (SecurityException e) {
+            } catch (SecurityException|IllegalStateException e) {
                 Log.e(TAG, "Failed to start shortcut", e);
                 mWasLastCallSuccess = false;
             }
@@ -157,7 +157,7 @@ public class DeepShortcutManager {
                         shortcutInfo.getShortcutInfo(), density);
                 mWasLastCallSuccess = true;
                 return icon;
-            } catch (SecurityException e) {
+            } catch (SecurityException|IllegalStateException e) {
                 Log.e(TAG, "Failed to get shortcut icon", e);
                 mWasLastCallSuccess = false;
             }
@@ -208,7 +208,7 @@ public class DeepShortcutManager {
             try {
                 shortcutInfos = mLauncherApps.getShortcuts(q, user.getUser());
                 mWasLastCallSuccess = true;
-            } catch (SecurityException e) {
+            } catch (SecurityException|IllegalStateException e) {
                 Log.e(TAG, "Failed to query for shortcuts", e);
                 mWasLastCallSuccess = false;
             }
