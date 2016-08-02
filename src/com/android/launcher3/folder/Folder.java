@@ -585,6 +585,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 public void run() {
                     mContent.setLayerType(LAYER_TYPE_NONE, null);
                     mFooter.setLayerType(LAYER_TYPE_NONE, null);
+                    mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
                 }
             };
         }
