@@ -93,10 +93,9 @@ public class VerticalPullDetector {
 
     private float mDownX;
     private float mDownY;
-    private float mDownMillis;
 
     private float mLastY;
-    private float mLastMillis;
+    private long mCurrentMillis;
 
     private float mVelocity;
     private float mLastDisplacement;
@@ -153,7 +152,6 @@ public class VerticalPullDetector {
     public boolean onTouchEvent(MotionEvent ev) {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                mDownMillis = ev.getDownTime();
                 mDownX = ev.getX();
                 mDownY = ev.getY();
                 mLastDisplacement = 0;
@@ -167,7 +165,7 @@ public class VerticalPullDetector {
             case MotionEvent.ACTION_MOVE:
                 mDisplacementX = ev.getX() - mDownX;
                 mDisplacementY = ev.getY() - mDownY;
-                mVelocity = computeVelocity(ev, mVelocity);
+                computeVelocity(ev);
 
                 // handle state and listener calls.
                 if (mState != ScrollState.DRAGGING && shouldScrollStart()) {
@@ -190,10 +188,7 @@ public class VerticalPullDetector {
         }
         // Do house keeping.
         mLastDisplacement = mDisplacementY;
-
         mLastY = ev.getY();
-        mLastMillis = ev.getEventTime();
-
         return true;
     }
 
@@ -245,21 +240,23 @@ public class VerticalPullDetector {
     /**
      * Computes the damped velocity using the two motion events and the previous velocity.
      */
-    private float computeVelocity(MotionEvent to, float previousVelocity) {
-        float delta = computeDelta(to);
-
-        float deltaTimeMillis = to.getEventTime() - mLastMillis;
-        float velocity = (deltaTimeMillis > 0) ? (delta / deltaTimeMillis) : 0;
-        if (Math.abs(previousVelocity) < 0.001f) {
-            return velocity;
-        }
-
-        float alpha = computeDampeningFactor(deltaTimeMillis);
-        return interpolate(previousVelocity, velocity, alpha);
+    private float computeVelocity(MotionEvent to) {
+        return computeVelocity(to.getY() - mLastY, to.getEventTime());
     }
 
-    private float computeDelta(MotionEvent to) {
-        return to.getY() - mLastY;
+    public float computeVelocity(float delta, long currentMillis) {
+        long previousMillis = mCurrentMillis;
+        mCurrentMillis = currentMillis;
+
+        float deltaTimeMillis = mCurrentMillis - previousMillis;
+        float velocity = (deltaTimeMillis > 0) ? (delta / deltaTimeMillis) : 0;
+        if (Math.abs(mVelocity) < 0.001f) {
+            mVelocity = velocity;
+        } else {
+            float alpha = computeDampeningFactor(deltaTimeMillis);
+            mVelocity = interpolate(mVelocity, velocity, alpha);
+        }
+        return mVelocity;
     }
 
     /**

@@ -78,7 +78,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private float mShiftRange;      // changes depending on the orientation
     private float mProgress;        // [0, 1], mShiftRange * mProgress = shiftCurrent
 
-    private float mVelocityForCaret;
+    private float mContainerVelocity;
 
     private static final float DEFAULT_SHIFT_RANGE = 10;
 
@@ -208,7 +208,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             return false;   // early termination.
         }
 
-        mVelocityForCaret = velocity;
+        mContainerVelocity = velocity;
 
         float shift = Math.min(Math.max(0, mShiftStart + displacement), mShiftRange);
         setProgress(shift / mShiftRange);
@@ -305,9 +305,10 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     /**
-     * @param progress value between 0 and 1
+     * @param progress       value between 0 and 1, 0 shows all apps and 1 shows workspace
      */
     public void setProgress(float progress) {
+        float shiftPrevious = mProgress * mShiftRange;
         mProgress = progress;
         float shiftCurrent = progress * mShiftRange;
 
@@ -339,6 +340,15 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                 interpolation);
         updateCaret(progress);
         updateLightStatusBar(shiftCurrent);
+
+        if (!mDetector.isDraggingState()) {
+            mContainerVelocity = mDetector.computeVelocity(shiftCurrent - shiftPrevious,
+                    System.currentTimeMillis());
+        }
+    }
+
+    public float getContainerVelocity() {
+        return mContainerVelocity;
     }
 
     public float getProgress() {
@@ -361,7 +371,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             return;
         }
         if (mDetector.isIdleState()) {
-            mVelocityForCaret = -VerticalPullDetector.RELEASE_VELOCITY_PX_MS;
             preparePull(true);
             mAnimationDuration = duration;
             mShiftStart = mAppsView.getTranslationY();
@@ -434,7 +443,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         }
         Interpolator interpolator;
         if (mDetector.isIdleState()) {
-            mVelocityForCaret = VerticalPullDetector.RELEASE_VELOCITY_PX_MS;
             preparePull(true);
             mAnimationDuration = duration;
             mShiftStart = mAppsView.getTranslationY();
@@ -513,7 +521,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         if (0f < shift && shift < 1f && !mLauncher.useVerticalBarLayout()) {
             // How fast are we moving as a percentage of the minimum fling velocity?
             final float pctOfFlingVelocity = Math.max(-1, Math.min(
-                    mVelocityForCaret / VerticalPullDetector.RELEASE_VELOCITY_PX_MS, 1));
+                    mContainerVelocity / VerticalPullDetector.RELEASE_VELOCITY_PX_MS, 1));
 
             mCaretDrawable.setCaretProgress(pctOfFlingVelocity);
 
