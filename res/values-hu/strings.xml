@@ -26,8 +26,7 @@
     <string name="activity_not_available" msgid="7456344436509528827">"Az alkalmazás nem érhető el"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"A letöltött alkalmazás Csökkentett módban ki van kapcsolva"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"A modulok ki vannak kapcsolva Csökkentett módban"</string>
-    <!-- no translation found for shortcut_not_available (2536503539825726397) -->
-    <skip />
+    <string name="shortcut_not_available" msgid="2536503539825726397">"A gyorsparancs nem áll rendelkezésre"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Modul felvételéhez érintse meg, és tartsa lenyomva"</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Modul mozgatásához koppintson rá duplán és tartsa lenyomva, vagy használjon egyéni műveleteket."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -102,6 +101,5 @@
     <string name="action_decrease_width" msgid="1374549771083094654">"Szélesség csökkentése"</string>
     <string name="action_decrease_height" msgid="282377193880900022">"Magasság csökkentése"</string>
     <string name="widget_resized" msgid="9130327887929620">"Modul átméretezve <xliff:g id="NUMBER_0">%1$s</xliff:g> szélességre és <xliff:g id="NUMBER_1">%2$s</xliff:g> magasságra"</string>
-    <!-- no translation found for action_deep_shortcut (2864038805849372848) -->
-    <skip />
+    <string name="action_deep_shortcut" msgid="2864038805849372848">"Gyorsparancsok"</string>
 </resources>
