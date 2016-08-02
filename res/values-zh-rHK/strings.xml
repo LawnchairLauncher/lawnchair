@@ -26,8 +26,7 @@
     <string name="activity_not_available" msgid="7456344436509528827">"目前無法使用這個應用程式"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"在安全模式中無法使用「已下載的應用程式」功能"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"在安全模式中無法使用小工具"</string>
-    <!-- no translation found for shortcut_not_available (2536503539825726397) -->
-    <skip />
+    <string name="shortcut_not_available" msgid="2536503539825726397">"沒有可用的捷徑"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"輕觸並按住小工具即可選取。"</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"連扲兩下，然後扲住，就可以新增小工具，或者執行自訂操作。"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -102,6 +101,5 @@
     <string name="action_decrease_width" msgid="1374549771083094654">"減少闊度"</string>
     <string name="action_decrease_height" msgid="282377193880900022">"減少高度"</string>
     <string name="widget_resized" msgid="9130327887929620">"已調整小工具的大小至闊 <xliff:g id="NUMBER_0">%1$s</xliff:g> 高 <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
-    <!-- no translation found for action_deep_shortcut (2864038805849372848) -->
-    <skip />
+    <string name="action_deep_shortcut" msgid="2864038805849372848">"捷徑"</string>
 </resources>

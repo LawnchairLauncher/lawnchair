@@ -26,8 +26,7 @@
     <string name="activity_not_available" msgid="7456344436509528827">"ઍપ્લિકેશન ઉપલબ્ધ નથી"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"સુરક્ષિત મોડમાં ડાઉનલોડ કરેલ ઍપ્લિકેશન અક્ષમ કરી"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"સુરક્ષિત મોડમાં વિજેટ્સ અક્ષમ કર્યા"</string>
-    <!-- no translation found for shortcut_not_available (2536503539825726397) -->
-    <skip />
+    <string name="shortcut_not_available" msgid="2536503539825726397">"શૉર્ટકટ ઉપલબ્ધ નથી"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"વિજેટ ચૂંટવા માટે ટચ કરો અને પકડી રાખો."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"વિજેટ ચૂંટવા અથવા કસ્ટમ ક્રિયાઓનો ઉપયોગ કરવા માટે બે વાર ટેપ કરો અને પકડી રાખો."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -102,6 +101,5 @@
     <string name="action_decrease_width" msgid="1374549771083094654">"પહોળાઈ ઘટાડો"</string>
     <string name="action_decrease_height" msgid="282377193880900022">"ઊંચાઈ ઘટાડો"</string>
     <string name="widget_resized" msgid="9130327887929620">"વિજેટનો આકાર બદલીને <xliff:g id="NUMBER_0">%1$s</xliff:g> પહોળાઈ <xliff:g id="NUMBER_1">%2$s</xliff:g> ઊંચાઈ કર્યો"</string>
-    <!-- no translation found for action_deep_shortcut (2864038805849372848) -->
-    <skip />
+    <string name="action_deep_shortcut" msgid="2864038805849372848">"શૉર્ટકટ્સ"</string>
 </resources>
