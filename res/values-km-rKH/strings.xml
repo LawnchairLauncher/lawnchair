@@ -26,8 +26,7 @@
     <string name="activity_not_available" msgid="7456344436509528827">"មិន​មាន​កម្មវិធី"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"បាន​បិទ​កម្មវិធី​ដែល​បាន​ទាញ​យក​ក្នុង​របៀប​សុវត្ថិភាព"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"បាន​បិទ​ធាតុ​ក្រាហ្វិក​ក្នុង​របៀប​សុវត្ថិភាព"</string>
-    <!-- no translation found for shortcut_not_available (2536503539825726397) -->
-    <skip />
+    <string name="shortcut_not_available" msgid="2536503539825726397">"ផ្លូវកាត់មិនអាចប្រើបានទេ"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"ប៉ះ &amp; សង្កត់ ដើម្បី​ជ្រើស​ធាតុ​ក្រាហ្វិក។"</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"ប៉ះពីរដង ហើយចុចឲ្យជាប់ដើម្បីជ្រើសយកធាតុក្រាហ្វិក ឬប្រើសកម្មភាពផ្ទាល់ខ្លួន។"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -102,6 +101,5 @@
     <string name="action_decrease_width" msgid="1374549771083094654">"បន្ថយទទឹង"</string>
     <string name="action_decrease_height" msgid="282377193880900022">"បន្ថយកម្ពស់"</string>
     <string name="widget_resized" msgid="9130327887929620">"ធាតុក្រាហ្វិកដែលបានប្តូរទំហំទៅទទឹងប្រវែង <xliff:g id="NUMBER_0">%1$s</xliff:g> កម្ពស់ប្រវែង <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
-    <!-- no translation found for action_deep_shortcut (2864038805849372848) -->
-    <skip />
+    <string name="action_deep_shortcut" msgid="2864038805849372848">"ផ្លូវកាត់"</string>
 </resources>
