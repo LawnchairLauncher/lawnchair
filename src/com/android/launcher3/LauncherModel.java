@@ -1729,17 +1729,24 @@ public class LauncherModel extends BroadcastReceiver
                         quietMode.put(serialNo, mUserManager.isQuietModeEnabled(user));
 
                         boolean userUnlocked = mUserManager.isUserUnlocked(user);
-                        unlockedUsers.put(serialNo, userUnlocked);
 
                         // We can only query for shortcuts when the user is unlocked.
                         if (userUnlocked) {
-                            List<ShortcutInfoCompat> pinnedShortcuts = mDeepShortcutManager
-                                    .queryForPinnedShortcuts(null, user);
-                            for (ShortcutInfoCompat shortcut : pinnedShortcuts) {
-                                shortcutKeyToPinnedShortcuts.put(ShortcutKey.fromInfo(shortcut),
-                                        shortcut);
+                            List<ShortcutInfoCompat> pinnedShortcuts =
+                                    mDeepShortcutManager.queryForPinnedShortcuts(null, user);
+                            if (mDeepShortcutManager.wasLastCallSuccess()) {
+                                for (ShortcutInfoCompat shortcut : pinnedShortcuts) {
+                                    shortcutKeyToPinnedShortcuts.put(ShortcutKey.fromInfo(shortcut),
+                                            shortcut);
+                                }
+                            } else {
+                                // Shortcut manager can fail due to some race condition when the
+                                // lock state changes too frequently. For the purpose of the loading
+                                // shortcuts, consider the user is still locked.
+                                userUnlocked = false;
                             }
                         }
+                        unlockedUsers.put(serialNo, userUnlocked);
                     }
 
                     ShortcutInfo info;
@@ -3383,9 +3390,17 @@ public class LauncherModel extends BroadcastReceiver
 
             HashMap<ShortcutKey, ShortcutInfoCompat> pinnedShortcuts = new HashMap<>();
             if (isUserUnlocked) {
-                for (ShortcutInfoCompat shortcut :
-                        mDeepShortcutManager.queryForPinnedShortcuts(null, mUser)) {
-                    pinnedShortcuts.put(ShortcutKey.fromInfo(shortcut), shortcut);
+                List<ShortcutInfoCompat> shortcuts =
+                        mDeepShortcutManager.queryForPinnedShortcuts(null, mUser);
+                if (mDeepShortcutManager.wasLastCallSuccess()) {
+                    for (ShortcutInfoCompat shortcut : shortcuts) {
+                        pinnedShortcuts.put(ShortcutKey.fromInfo(shortcut), shortcut);
+                    }
+                } else {
+                    // Shortcut manager can fail due to some race condition when the lock state
+                    // changes too frequently. For the purpose of the update,
+                    // consider it as still locked.
+                    isUserUnlocked = false;
                 }
             }
 
