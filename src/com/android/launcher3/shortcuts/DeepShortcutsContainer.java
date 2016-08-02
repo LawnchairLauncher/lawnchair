@@ -40,6 +40,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 
@@ -147,6 +148,8 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
             shortcut.getBubbleText().setAccessibilityDelegate(mAccessibilityDelegate);
             addView(shortcut);
         }
+        setContentDescription(getContext().getString(R.string.shortcuts_menu_description,
+                numShortcuts, originalIcon.getContentDescription().toString()));
 
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
         orientAboutIcon(originalIcon);
@@ -276,6 +279,8 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
             @Override
             public void onAnimationEnd(Animator animation) {
                 mOpenCloseAnimator = null;
+
+                sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
             }
         });
 
