@@ -29,10 +29,10 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.UserEventDispatcher.LaunchSourceProvider;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+
 import java.util.List;
 
 /**
@@ -208,8 +208,12 @@ public class AllAppsRecyclerView extends BaseRecyclerView
 
     @Override
     public void fillInLaunchSourceData(View v, ItemInfo info, Target target, Target targetParent) {
+        targetParent.containerType = getContainerType(v);
+    }
+
+    public int getContainerType(View v) {
         if (mApps.hasFilter()) {
-            targetParent.containerType = LauncherLogProto.SEARCHRESULT;
+            return LauncherLogProto.SEARCHRESULT;
         } else {
             if (v instanceof BubbleTextView) {
                 BubbleTextView icon = (BubbleTextView) v;
@@ -218,13 +222,11 @@ public class AllAppsRecyclerView extends BaseRecyclerView
                     List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
                     AlphabeticalAppsList.AdapterItem item = items.get(position);
                     if (item.viewType == AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON) {
-                        targetParent.containerType = LauncherLogProto.PREDICTION;
-                        return;
+                        return LauncherLogProto.PREDICTION;
                     }
                 }
             }
-
-            targetParent.containerType = LauncherLogProto.ALLAPPS;
+            return LauncherLogProto.ALLAPPS;
         }
     }
 
