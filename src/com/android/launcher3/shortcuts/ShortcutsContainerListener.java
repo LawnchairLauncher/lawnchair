@@ -218,8 +218,12 @@ public class ShortcutsContainerListener implements View.OnTouchListener,
         if (dst == null) {
             return false;
         }
+        // Always cancel forwarding when the touch stream ends.
+        final int action = srcEvent.getActionMasked();
+        final boolean keepForwarding = action != MotionEvent.ACTION_UP
+                && action != MotionEvent.ACTION_CANCEL;
         if (!dst.isLaidOut()) {
-            return true;
+            return keepForwarding;
         }
 
         // Convert event to destination-local coordinates.
@@ -235,11 +239,6 @@ public class ShortcutsContainerListener implements View.OnTouchListener,
         // Forward converted event to destination view, then recycle it.
         final boolean handled = dst.onForwardedEvent(dstEvent, mActivePointerId, mTouchDown);
         dstEvent.recycle();
-
-        // Always cancel forwarding when the touch stream ends.
-        final int action = srcEvent.getActionMasked();
-        final boolean keepForwarding = action != MotionEvent.ACTION_UP
-                && action != MotionEvent.ACTION_CANCEL;
 
         return handled && keepForwarding;
     }
