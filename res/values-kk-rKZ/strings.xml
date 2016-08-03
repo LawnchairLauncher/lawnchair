@@ -102,4 +102,6 @@
     <string name="action_decrease_height" msgid="282377193880900022">"Биіктігін азайту"</string>
     <string name="widget_resized" msgid="9130327887929620">"Виджет өлшемінің ені <xliff:g id="NUMBER_0">%1$s</xliff:g>, биіктігі <xliff:g id="NUMBER_1">%2$s</xliff:g> болып өзгертілді"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Таңбашалар"</string>
+    <!-- no translation found for shortcuts_menu_description (406159963824238648) -->
+    <skip />
 </resources>
