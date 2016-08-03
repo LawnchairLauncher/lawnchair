@@ -18,7 +18,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
-import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
@@ -44,11 +43,12 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     private final Interpolator mAccelInterpolator = new AccelerateInterpolator(2f);
     private final Interpolator mFastOutSlowInInterpolator = new FastOutSlowInInterpolator();
-    private final Interpolator mScrollInterpolator = new PagedView.ScrollInterpolator();
+    private final ScrollInterpolator mScrollInterpolator = new ScrollInterpolator();
 
     private static final float ANIMATION_DURATION = 1200;
-
     private static final float PARALLAX_COEFFICIENT = .125f;
+    private static final float FAST_FLING_PX_MS = 10;
+    private static final int SINGLE_FRAME_MS = 16;
 
     private AllAppsContainerView mAppsView;
     private int mAllAppsBackgroundColor;
@@ -78,6 +78,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private float mShiftRange;      // changes depending on the orientation
     private float mProgress;        // [0, 1], mShiftRange * mProgress = shiftCurrent
 
+    // Velocity of the container. Unit is in px/ms.
     private float mContainerVelocity;
 
     private static final float DEFAULT_SHIFT_RANGE = 10;
@@ -357,7 +358,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     private void calculateDuration(float velocity, float disp) {
         // TODO: make these values constants after tuning.
-        float velocityDivisor = Math.max(1.5f, Math.abs(0.5f * velocity));
+        float velocityDivisor = Math.max(2f, Math.abs(0.5f * velocity));
         float travelDistance = Math.max(0.2f, disp / mShiftRange);
         mAnimationDuration = (long) Math.max(100, ANIMATION_DURATION / velocityDivisor * travelDistance);
         if (DBG) {
@@ -365,22 +366,29 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         }
     }
 
-    public void animateToAllApps(AnimatorSet animationOut, long duration) {
-        Interpolator interpolator;
+    public boolean animateToAllApps(AnimatorSet animationOut, long duration) {
+        boolean shouldPost = true;
         if (animationOut == null) {
-            return;
+            return shouldPost;
         }
+        Interpolator interpolator;
         if (mDetector.isIdleState()) {
             preparePull(true);
             mAnimationDuration = duration;
             mShiftStart = mAppsView.getTranslationY();
             interpolator = mFastOutSlowInInterpolator;
         } else {
+            mScrollInterpolator.setVelocityAtZero(Math.abs(mContainerVelocity));
             interpolator = mScrollInterpolator;
+            float nextFrameProgress = mProgress + mContainerVelocity * SINGLE_FRAME_MS / mShiftRange;
+            if (nextFrameProgress >= 0f) {
+                mProgress = nextFrameProgress;
+            }
+            shouldPost = false;
         }
-        final float fromAllAppsTop = mAppsView.getTranslationY();
+
         ObjectAnimator driftAndAlpha = ObjectAnimator.ofFloat(this, "progress",
-                fromAllAppsTop / mShiftRange, 0f);
+                mProgress, 0f);
         driftAndAlpha.setDuration(mAnimationDuration);
         driftAndAlpha.setInterpolator(interpolator);
         animationOut.play(driftAndAlpha);
@@ -405,6 +413,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             }
         });
         mCurrentAnimation = animationOut;
+        return shouldPost;
     }
 
     public void showDiscoveryBounce() {
@@ -437,9 +446,10 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         });
     }
 
-    public void animateToWorkspace(AnimatorSet animationOut, long duration) {
+    public boolean animateToWorkspace(AnimatorSet animationOut, long duration) {
+        boolean shouldPost = true;
         if (animationOut == null) {
-            return;
+            return shouldPost;
         }
         Interpolator interpolator;
         if (mDetector.isIdleState()) {
@@ -448,12 +458,17 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             mShiftStart = mAppsView.getTranslationY();
             interpolator = mFastOutSlowInInterpolator;
         } else {
+            mScrollInterpolator.setVelocityAtZero(Math.abs(mContainerVelocity));
             interpolator = mScrollInterpolator;
+            float nextFrameProgress = mProgress + mContainerVelocity * SINGLE_FRAME_MS / mShiftRange;
+            if (nextFrameProgress <= 1f) {
+                mProgress = nextFrameProgress;
+            }
+            shouldPost = false;
         }
-        final float fromAllAppsTop = mAppsView.getTranslationY();
 
         ObjectAnimator driftAndAlpha = ObjectAnimator.ofFloat(this, "progress",
-                fromAllAppsTop / mShiftRange, 1f);
+                mProgress, 1f);
         driftAndAlpha.setDuration(mAnimationDuration);
         driftAndAlpha.setInterpolator(interpolator);
         animationOut.play(driftAndAlpha);
@@ -478,6 +493,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             }
         });
         mCurrentAnimation = animationOut;
+        return shouldPost;
     }
 
     public void finishPullUp() {
@@ -574,5 +590,23 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             mShiftRange = bottom;
         }
         setProgress(mProgress);
+    }
+
+    static class ScrollInterpolator implements Interpolator {
+
+        boolean mSteeper;
+
+        public void setVelocityAtZero(float velocity) {
+            mSteeper = velocity > FAST_FLING_PX_MS;
+        }
+
+        public float getInterpolation(float t) {
+            t -= 1.0f;
+            float output = t * t * t;
+            if (mSteeper) {
+                output *= t * t; // Make interpolation initial slope steeper
+            }
+            return output + 1;
+        }
     }
 }
