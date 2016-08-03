@@ -17,6 +17,7 @@
 package com.android.launcher3.shortcuts;
 
 import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -26,6 +27,7 @@ import android.widget.FrameLayout;
 
 import com.android.launcher3.IconCache;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LogAccelerateInterpolator;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
@@ -36,7 +38,7 @@ import com.android.launcher3.util.PillWidthRevealOutlineProvider;
  * A {@link android.widget.FrameLayout} that contains a {@link DeepShortcutView}.
  * This lets us animate the DeepShortcutView (icon and text) separately from the background.
  */
-public class DeepShortcutView extends FrameLayout {
+public class DeepShortcutView extends FrameLayout implements ValueAnimator.AnimatorUpdateListener {
 
     private static final Point sTempPoint = new Point();
 
@@ -44,6 +46,7 @@ public class DeepShortcutView extends FrameLayout {
 
     private DeepShortcutTextView mBubbleText;
     private View mIconView;
+    private float mOpenAnimationProgress;
 
     public DeepShortcutView(Context context) {
         this(context, null, 0);
@@ -95,14 +98,41 @@ public class DeepShortcutView extends FrameLayout {
     }
 
     /**
-     * Creates an animator to play when the shortcut container is being opened or closed.
+     * Creates an animator to play when the shortcut container is being opened.
      */
-    public Animator createOpenCloseAnimation(
-            boolean isContainerAboveIcon, boolean pivotLeft, boolean isReverse) {
+    public Animator createOpenAnimation(boolean isContainerAboveIcon, boolean pivotLeft) {
         Point center = getIconCenter();
-        return new ZoomRevealOutlineProvider(center.x, center.y, mPillRect,
-                this, mIconView, isContainerAboveIcon, pivotLeft)
-                .createRevealAnimator(this, isReverse);
+        ValueAnimator openAnimator =  new ZoomRevealOutlineProvider(center.x, center.y,
+                mPillRect, this, mIconView, isContainerAboveIcon, pivotLeft)
+                        .createRevealAnimator(this, false);
+        mOpenAnimationProgress = 0f;
+        openAnimator.addUpdateListener(this);
+        return openAnimator;
+    }
+
+    @Override
+    public void onAnimationUpdate(ValueAnimator valueAnimator) {
+        mOpenAnimationProgress = valueAnimator.getAnimatedFraction();
+    }
+
+    public boolean isOpenOrOpening() {
+        return mOpenAnimationProgress > 0;
+    }
+
+    /**
+     * Creates an animator to play when the shortcut container is being closed.
+     */
+    public Animator createCloseAnimation(boolean isContainerAboveIcon, boolean pivotLeft,
+            long duration) {
+        Point center = getIconCenter();
+        ValueAnimator closeAnimator =  new ZoomRevealOutlineProvider(center.x, center.y,
+                mPillRect, this, mIconView, isContainerAboveIcon, pivotLeft)
+                        .createRevealAnimator(this, true);
+        // Scale down the duration and interpolator according to the progress
+        // that the open animation was at when the close started.
+        closeAnimator.setDuration((long) (duration * mOpenAnimationProgress));
+        closeAnimator.setInterpolator(new CloseInterpolator(mOpenAnimationProgress));
+        return closeAnimator;
     }
 
     /**
@@ -113,7 +143,7 @@ public class DeepShortcutView extends FrameLayout {
         int iconCenterX = getIconCenter().x;
         return new PillWidthRevealOutlineProvider(mPillRect,
                 iconCenterX - halfHeight, iconCenterX + halfHeight)
-                .createRevealAnimator(this, true);
+                        .createRevealAnimator(this, true);
     }
 
     /**
@@ -166,6 +196,28 @@ public class DeepShortcutView extends FrameLayout {
 
             float pivotX = mPivotLeft ? (mOutline.left + height / 2) : (mOutline.right - height / 2);
             mTranslateView.setTranslationX(mTranslateX - pivotX);
+        }
+    }
+
+    /**
+     * An interpolator that reverses the current open animation progress.
+     */
+    private static class CloseInterpolator extends LogAccelerateInterpolator {
+        private float mStartProgress;
+        private float mRemainingProgress;
+
+        /**
+         * @param openAnimationProgress The progress that the open interpolator ended at.
+         */
+        public CloseInterpolator(float openAnimationProgress) {
+            super(100, 0);
+            mStartProgress = 1f - openAnimationProgress;
+            mRemainingProgress = openAnimationProgress;
+        }
+
+        @Override
+        public float getInterpolation(float v) {
+            return mStartProgress + super.getInterpolation(v) * mRemainingProgress;
         }
     }
 }

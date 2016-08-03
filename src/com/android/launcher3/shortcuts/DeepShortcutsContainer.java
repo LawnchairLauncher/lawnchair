@@ -56,7 +56,6 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherViewPropertyAnimator;
-import com.android.launcher3.LogAccelerateInterpolator;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
@@ -261,8 +260,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
             final DeepShortcutView deepShortcutView = getShortcutAt(i);
             deepShortcutView.setVisibility(INVISIBLE);
 
-            Animator anim = deepShortcutView.createOpenCloseAnimation(
-                    mIsAboveIcon, mIsLeftAligned, false);
+            Animator anim = deepShortcutView.createOpenAnimation(mIsAboveIcon, mIsLeftAligned);
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
@@ -631,24 +629,29 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         mLauncher.getDragController().removeDragListener(this);
 
         final AnimatorSet shortcutAnims = LauncherAnimUtils.createAnimatorSet();
-        final int numShortcuts = getShortcutCount();
+        final int shortcutCount = getShortcutCount();
+        int numOpenShortcuts = 0;
+        for (int i = 0; i < shortcutCount; i++) {
+            if (getShortcutAt(i).isOpenOrOpening()) {
+                numOpenShortcuts++;
+            }
+        }
         final long duration = getResources().getInteger(
                 R.integer.config_deepShortcutCloseDuration);
         final long stagger = getResources().getInteger(
                 R.integer.config_deepShortcutCloseStagger);
 
-        long arrowDelay = (numShortcuts - 1) * stagger + (duration * 4 / 6);
-        int firstShortcutIndex = mIsAboveIcon ? (numShortcuts - 1) : 0;
-        LogAccelerateInterpolator interpolator = new LogAccelerateInterpolator(100, 0);
-        for (int i = 0; i < numShortcuts; i++) {
+        long arrowDelay = (numOpenShortcuts - 1) * stagger + (duration * 4 / 6);
+        int firstOpenShortcutIndex = mIsAboveIcon ? shortcutCount - numOpenShortcuts : 0;
+        int shortcutWithArrowIndex = mIsAboveIcon ? (numOpenShortcuts - 1) : 0;
+        for (int i = firstOpenShortcutIndex; i < firstOpenShortcutIndex + numOpenShortcuts; i++) {
             final DeepShortcutView view = getShortcutAt(i);
             Animator anim;
             if (view.willDrawIcon()) {
-                anim = view.createOpenCloseAnimation(mIsAboveIcon, mIsLeftAligned, true);
-                int animationIndex = mIsAboveIcon ? i : numShortcuts - i - 1;
+                anim = view.createCloseAnimation(mIsAboveIcon, mIsLeftAligned, duration);
+                int animationIndex = mIsAboveIcon ? i - firstOpenShortcutIndex
+                        : numOpenShortcuts - i - 1;
                 anim.setStartDelay(stagger * animationIndex);
-                anim.setDuration(duration);
-                anim.setInterpolator(interpolator);
             } else {
                 // The view is being dragged. Animate it such that it collapses with the drag view
                 anim = view.collapseToIcon();
@@ -668,7 +671,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
                 anim2.setDuration(DragView.VIEW_ZOOM_DURATION);
                 shortcutAnims.play(anim2);
 
-                if (i == firstShortcutIndex) {
+                if (i == shortcutWithArrowIndex) {
                     arrowDelay = 0;
                 }
             }
