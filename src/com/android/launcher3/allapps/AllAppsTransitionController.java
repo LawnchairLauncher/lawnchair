@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.DeviceProfile;
@@ -22,7 +21,6 @@ import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.pageindicators.CaretDrawable;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.TouchController;
 
@@ -56,11 +54,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private Hotseat mHotseat;
     private int mHotseatBackgroundColor;
 
-    private ObjectAnimator mCaretAnimator;
-    private final long mCaretAnimationDuration;
-    private final Interpolator mCaretInterpolator;
-    private CaretDrawable mCaretDrawable;
-    private float mLastCaretProgress;
+    private AllAppsCaretController mCaretController;
 
     private float mStatusBarHeight;
 
@@ -104,11 +98,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mProgress = 1f;
         mBezelSwipeUpHeight = l.getResources().getDimensionPixelSize(
                 R.dimen.all_apps_bezel_swipe_height);
-
-        mCaretAnimationDuration = l.getResources().getInteger(
-                R.integer.config_caretAnimationDuration);
-        mCaretInterpolator = AnimationUtils.loadInterpolator(l,
-                R.interpolator.caret_animation_interpolator);
 
         mEvaluator = new ArgbEvaluator();
         mAllAppsBackgroundColor = l.getColor(R.color.all_apps_container_color);
@@ -196,6 +185,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     @Override
     public void onDragStart(boolean start) {
+        mCaretController.onDragStart();
         cancelAnimation();
         mCurrentAnimation = LauncherAnimUtils.createAnimatorSet();
         mShiftStart = mAppsView.getTranslationY();
@@ -336,19 +326,15 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             return;
         }
         mWorkspace.setWorkspaceYTranslationAndAlpha(
-                PARALLAX_COEFFICIENT * (-mShiftRange + shiftCurrent),
-                interpolation);
-        updateCaret(progress);
-        updateLightStatusBar(shiftCurrent);
+                PARALLAX_COEFFICIENT * (-mShiftRange + shiftCurrent), interpolation);
 
         if (!mDetector.isDraggingState()) {
             mContainerVelocity = mDetector.computeVelocity(shiftCurrent - shiftPrevious,
                     System.currentTimeMillis());
         }
-    }
 
-    public float getContainerVelocity() {
-        return mContainerVelocity;
+        mCaretController.updateCaret(progress, mContainerVelocity, mDetector.isDraggingState());
+        updateLightStatusBar(shiftCurrent);
     }
 
     public float getProgress() {
@@ -513,56 +499,14 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mCurrentAnimation = null;
     }
 
-    private void updateCaret(float shift) {
-        // Animate to a neutral state by default
-        float newCaretProgress = CaretDrawable.PROGRESS_CARET_NEUTRAL;
-
-        // If we're in portrait and the shift is not 0 or 1, adjust the caret based on velocity
-        if (0f < shift && shift < 1f && !mLauncher.useVerticalBarLayout()) {
-            // How fast are we moving as a percentage of the minimum fling velocity?
-            final float pctOfFlingVelocity = Math.max(-1, Math.min(
-                    mContainerVelocity / VerticalPullDetector.RELEASE_VELOCITY_PX_MS, 1));
-
-            mCaretDrawable.setCaretProgress(pctOfFlingVelocity);
-
-            // Set the last caret progress to this progress to prevent animator cancellation
-            mLastCaretProgress = pctOfFlingVelocity;
-        } else if (!mDetector.isDraggingState()) {
-            // Otherwise, if we're not dragging, match the caret to the appropriate state
-            if (Float.compare(shift, 0f) == 0) { // All Apps is up
-                newCaretProgress = CaretDrawable.PROGRESS_CARET_POINTING_DOWN;
-            } else if (Float.compare(shift, 1f) == 0) { // All Apps is down
-                newCaretProgress = CaretDrawable.PROGRESS_CARET_POINTING_UP;
-            }
-        }
-
-        // If the new progress is the same as the last progress we animated to, terminate early
-        if (Float.compare(mLastCaretProgress, newCaretProgress) == 0) {
-            return;
-        }
-
-        if (mCaretAnimator.isRunning()) {
-            mCaretAnimator.cancel(); // Stop the animator in its tracks
-        }
-
-        // Update the progress and start the animation
-        mLastCaretProgress = newCaretProgress;
-        mCaretAnimator.setFloatValues(newCaretProgress);
-        mCaretAnimator.start();
-    }
-
     public void setupViews(AllAppsContainerView appsView, Hotseat hotseat, Workspace workspace) {
         mAppsView = appsView;
         mHotseat = hotseat;
         mWorkspace = workspace;
-        mCaretDrawable = mWorkspace.getPageIndicator().getCaretDrawable();
         mHotseat.addOnLayoutChangeListener(this);
         mHotseat.bringToFront();
-
-        // we will set values later
-        mCaretAnimator = ObjectAnimator.ofFloat(mCaretDrawable, "caretProgress", 0);
-        mCaretAnimator.setDuration(mCaretAnimationDuration);
-        mCaretAnimator.setInterpolator(mCaretInterpolator);
+        mCaretController = new AllAppsCaretController(
+                mWorkspace.getPageIndicator().getCaretDrawable(), mLauncher);
     }
 
     @Override
