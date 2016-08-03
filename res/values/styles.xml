@@ -79,6 +79,7 @@
 
     <style name="Icon.DeepShortcut">
         <item name="android:gravity">start|center_vertical</item>
+        <item name="android:textAlignment">viewStart</item>
         <item name="android:elevation">@dimen/deep_shortcuts_elevation</item>
         <item name="android:paddingStart">@dimen/bg_pill_height</item>
         <item name="android:paddingEnd">@dimen/deep_shortcut_padding_end</item>
