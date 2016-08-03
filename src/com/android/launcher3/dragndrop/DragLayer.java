@@ -374,20 +374,30 @@ public class DragLayer extends InsettableFrameLayout {
 
     @Override
     public boolean onRequestSendAccessibilityEvent(View child, AccessibilityEvent event) {
-        Folder currentFolder = mLauncher.getWorkspace().getOpenFolder();
-        if (currentFolder != null) {
-            if (child == currentFolder) {
-                return super.onRequestSendAccessibilityEvent(child, event);
-            }
+        // Shortcuts can appear above folder
+        View topView = mLauncher.getOpenShortcutsContainer();
+        if (topView != null) {
+            return handleTopViewSendAccessibilityEvent(topView, child, event);
+        }
 
-            if (isInAccessibleDrag() && child instanceof DropTargetBar) {
-                return super.onRequestSendAccessibilityEvent(child, event);
-            }
-            // Skip propagating onRequestSendAccessibilityEvent all for other children
-            // when a folder is open
-            return false;
+        topView = mLauncher.getWorkspace().getOpenFolder();
+        if (topView != null) {
+            return handleTopViewSendAccessibilityEvent(topView, child, event);
         }
         return super.onRequestSendAccessibilityEvent(child, event);
+    }
+
+    private boolean handleTopViewSendAccessibilityEvent(
+            View topView, View child, AccessibilityEvent event) {
+        if (child == topView) {
+            return super.onRequestSendAccessibilityEvent(child, event);
+        }
+        if (isInAccessibleDrag() && child instanceof DropTargetBar) {
+            return super.onRequestSendAccessibilityEvent(child, event);
+        }
+        // Skip propagating onRequestSendAccessibilityEvent for all other children
+        // which are not topView
+        return false;
     }
 
     @Override
