@@ -1179,7 +1179,12 @@ public class LauncherModel extends BroadcastReceiver
     @Override
     public void onShortcutsChanged(String packageName, List<ShortcutInfoCompat> shortcuts,
             UserHandleCompat user) {
-        enqueueItemUpdatedTask(new ShortcutsChangedTask(packageName, shortcuts, user));
+        enqueueItemUpdatedTask(new ShortcutsChangedTask(packageName, shortcuts, user, true));
+    }
+
+    public void updatePinnedShortcuts(String packageName, List<ShortcutInfoCompat> shortcuts,
+            UserHandleCompat user) {
+        enqueueItemUpdatedTask(new ShortcutsChangedTask(packageName, shortcuts, user, false));
     }
 
     /**
@@ -3317,15 +3322,17 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     private class ShortcutsChangedTask implements Runnable {
-        private String mPackageName;
-        private List<ShortcutInfoCompat> mShortcuts;
-        private UserHandleCompat mUser;
+        private final String mPackageName;
+        private final List<ShortcutInfoCompat> mShortcuts;
+        private final UserHandleCompat mUser;
+        private final boolean mUpdateIdMap;
 
         public ShortcutsChangedTask(String packageName, List<ShortcutInfoCompat> shortcuts,
-                UserHandleCompat user) {
+                UserHandleCompat user, boolean updateIdMap) {
             mPackageName = packageName;
             mShortcuts = shortcuts;
             mUser = user;
+            mUpdateIdMap = updateIdMap;
         }
 
         @Override
@@ -3366,9 +3373,11 @@ public class LauncherModel extends BroadcastReceiver
             }
             bindUpdatedShortcuts(updatedShortcutInfos, mUser);
 
-            // Update the deep shortcut map, in case the list of ids has changed for an activity.
-            updateDeepShortcutMap(mPackageName, mUser, mShortcuts);
-            bindDeepShortcuts();
+            if (mUpdateIdMap) {
+                // Update the deep shortcut map if the list of ids has changed for an activity.
+                updateDeepShortcutMap(mPackageName, mUser, mShortcuts);
+                bindDeepShortcuts();
+            }
         }
     }
 
