@@ -271,10 +271,10 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             // Initialize values that should not change until #onDragEnd
             mStatusBarHeight = mLauncher.getDragLayer().getInsets().top;
             mHotseat.setVisibility(View.VISIBLE);
+            mHotseatBackgroundColor = mHotseat.getBackgroundDrawableColor();
+            mHotseat.setBackgroundTransparent(true /* transparent */);
             if (!mLauncher.isAllAppsVisible()) {
                 mLauncher.tryAndUpdatePredictedApps();
-                mHotseatBackgroundColor = mHotseat.getBackgroundDrawableColor();
-                mHotseat.setBackgroundTransparent(true /* transparent */);
                 mAppsView.setVisibility(View.VISIBLE);
                 mAppsView.setRevealDrawableColor(mHotseatBackgroundColor);
             }
