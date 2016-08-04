@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
@@ -102,7 +103,7 @@ public abstract class AllAppsSearchBarController
     }
 
     protected void refreshSearchResult() {
-        if (mQuery == null) {
+        if (TextUtils.isEmpty(mQuery)) {
             return;
         }
         // If play store continues auto updating an app, we want to show partial result.
@@ -143,7 +144,6 @@ public abstract class AllAppsSearchBarController
         unfocusSearchField();
         mCb.clearSearchResult();
         mInput.setText("");
-        // We need to reset this after we clear the input text
         mQuery = null;
         hideKeyboard();
     }
