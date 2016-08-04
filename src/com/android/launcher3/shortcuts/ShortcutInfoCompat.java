@@ -114,6 +114,10 @@ public class ShortcutInfoCompat {
         return mShortcutInfo.getRank();
     }
 
+    public CharSequence getDisabledMessage() {
+        return mShortcutInfo.getDisabledMessage();
+    }
+
     @Override
     public String toString() {
         return mShortcutInfo.toString();
