@@ -295,6 +295,8 @@ public class DragLayer extends InsettableFrameLayout {
         }
         clearAllResizeFrames();
 
+        mActiveController = null;
+
         if (mDragController.onInterceptTouchEvent(ev)) {
             mActiveController = mDragController;
             return true;
