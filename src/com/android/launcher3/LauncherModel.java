@@ -3380,40 +3380,55 @@ public class LauncherModel extends BroadcastReceiver
         public void run() {
             mDeepShortcutManager.onShortcutsChanged(mShortcuts);
 
-            Map<String, ShortcutInfoCompat> idsToShortcuts = new HashMap<>();
-            for (ShortcutInfoCompat shortcut : mShortcuts) {
-                idsToShortcuts.put(shortcut.getId(), shortcut);
-            }
-
             // Find ShortcutInfo's that have changed on the workspace.
+            final ArrayList<ShortcutInfo> removedShortcutInfos = new ArrayList<>();
             MultiHashMap<String, ShortcutInfo> idsToWorkspaceShortcutInfos = new MultiHashMap<>();
             for (ItemInfo itemInfo : sBgItemsIdMap) {
                 if (itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
                     ShortcutInfo si = (ShortcutInfo) itemInfo;
                     if (si.getPromisedIntent().getPackage().equals(mPackageName)
                             && si.user.equals(mUser)) {
-                        String shortcutId = si.getDeepShortcutId();
-                        if (idsToShortcuts.containsKey(shortcutId)) {
-                            idsToWorkspaceShortcutInfos.addToList(shortcutId, si);
-                        }
+                        idsToWorkspaceShortcutInfos.addToList(si.getDeepShortcutId(), si);
                     }
                 }
             }
 
-            // Update the workspace to reflect the changes to updated shortcuts residing on it.
-            List<ShortcutInfoCompat> shortcuts = mDeepShortcutManager.queryForFullDetails(
-                    mPackageName, new ArrayList<>(idsToWorkspaceShortcutInfos.keySet()), mUser);
-            ArrayList<ShortcutInfo> updatedShortcutInfos = new ArrayList<>();
-            Context context = LauncherAppState.getInstance().getContext();
-            for (ShortcutInfoCompat fullDetails : shortcuts) {
-                List<ShortcutInfo> shortcutInfos = idsToWorkspaceShortcutInfos
-                        .get(fullDetails.getId());
-                for (ShortcutInfo shortcutInfo : shortcutInfos) {
-                    shortcutInfo.updateFromDeepShortcutInfo(fullDetails, context);
-                    updatedShortcutInfos.add(shortcutInfo);
+            final Context context = LauncherAppState.getInstance().getContext();
+            final ArrayList<ShortcutInfo> updatedShortcutInfos = new ArrayList<>();
+            if (!idsToWorkspaceShortcutInfos.isEmpty()) {
+                // Update the workspace to reflect the changes to updated shortcuts residing on it.
+                List<ShortcutInfoCompat> shortcuts = mDeepShortcutManager.queryForFullDetails(
+                        mPackageName, new ArrayList<>(idsToWorkspaceShortcutInfos.keySet()), mUser);
+                for (ShortcutInfoCompat fullDetails : shortcuts) {
+                    List<ShortcutInfo> shortcutInfos = idsToWorkspaceShortcutInfos
+                            .remove(fullDetails.getId());
+                    if (!fullDetails.isPinned()) {
+                        // The shortcut was previously pinned but is no longer, so remove it from
+                        // the workspace and our pinned shortcut counts.
+                        // Note that we put this check here, after querying for full details,
+                        // because there's a possible race condition between pinning and
+                        // receiving this callback.
+                        removedShortcutInfos.addAll(shortcutInfos);
+                        continue;
+                    }
+                    for (ShortcutInfo shortcutInfo : shortcutInfos) {
+                        shortcutInfo.updateFromDeepShortcutInfo(fullDetails, context);
+                        updatedShortcutInfos.add(shortcutInfo);
+                    }
                 }
             }
-            bindUpdatedShortcuts(updatedShortcutInfos, mUser);
+
+            // If there are still entries in idsToWorkspaceShortcutInfos, that means that
+            // the corresponding shortcuts weren't passed in onShortcutsChanged(). This
+            // means they were cleared, so we remove and unpin them now.
+            for (String id : idsToWorkspaceShortcutInfos.keySet()) {
+                removedShortcutInfos.addAll(idsToWorkspaceShortcutInfos.get(id));
+            }
+
+            bindUpdatedShortcuts(updatedShortcutInfos, removedShortcutInfos, mUser);
+            if (!removedShortcutInfos.isEmpty()) {
+                deleteItemsFromDatabase(context, removedShortcutInfos);
+            }
 
             if (mUpdateIdMap) {
                 // Update the deep shortcut map if the list of ids has changed for an activity.
