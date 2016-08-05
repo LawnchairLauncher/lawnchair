@@ -38,7 +38,6 @@ import android.widget.TextView;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -48,7 +47,6 @@ import com.android.launcher3.shortcuts.ShortcutsContainerListener;
 
 import java.util.HashMap;
 import java.util.List;
-
 
 /**
  * The grid view adapter of all the apps.
@@ -133,6 +131,11 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             } else {
                 return super.getRowCountForAccessibility(recycler, state);
             }
+        }
+
+        @Override
+        public int getPaddingBottom() {
+            return mLauncher.getDragLayer().getInsets().bottom;
         }
     }
 

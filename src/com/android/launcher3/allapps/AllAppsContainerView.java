@@ -464,7 +464,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                 MarginLayoutParams mlp = (MarginLayoutParams) mAppsRecyclerView.getLayoutParams();
 
                 Rect insets = mLauncher.getDragLayer().getInsets();
-                getContentView().setPadding(0, 0, 0, insets.bottom);
+                getContentView().setPadding(0, 0, 0, 0);
                 int height = insets.top + grid.hotseatCellHeightPx;
 
                 mlp.topMargin = height;

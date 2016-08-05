@@ -136,11 +136,11 @@ public class BaseRecyclerViewFastScrollBar {
     // Setter/getter for the track bar width for animations
     public void setTrackWidth(int width) {
         mInvalidateRect.set(mThumbOffset.x - mThumbCurvature, 0, mThumbOffset.x + mThumbWidth,
-                mRv.getHeight());
+                mRv.getVisibleHeight());
         mTrackWidth = width;
         updateThumbPath();
         mInvalidateRect.union(mThumbOffset.x - mThumbCurvature, 0, mThumbOffset.x + mThumbWidth,
-                mRv.getHeight());
+                mRv.getVisibleHeight());
         mRv.invalidate(mInvalidateRect);
     }
 
@@ -198,7 +198,7 @@ public class BaseRecyclerViewFastScrollBar {
                 if (mIsDragging) {
                     // Update the fastscroller section name at this touch position
                     int top = mRv.getBackgroundPadding().top;
-                    int bottom = mRv.getHeight() - mRv.getBackgroundPadding().bottom - mThumbHeight;
+                    int bottom = top + mRv.getVisibleHeight() - mThumbHeight;
                     float boundedY = (float) Math.max(top, Math.min(bottom, y - mTouchOffset));
                     String sectionName = mRv.scrollToPositionAtProgress((boundedY - top) /
                             (bottom - top));
@@ -230,7 +230,8 @@ public class BaseRecyclerViewFastScrollBar {
 
         // Draw the scroll bar track and thumb
         if (mTrackPaint.getAlpha() > 0) {
-            canvas.drawRect(mThumbOffset.x, 0, mThumbOffset.x + mThumbWidth, mRv.getHeight(), mTrackPaint);
+            canvas.drawRect(mThumbOffset.x, 0, mThumbOffset.x + mThumbWidth,
+                    mRv.getVisibleHeight(), mTrackPaint);
         }
         canvas.drawPath(mThumbPath, mThumbPaint);
 
