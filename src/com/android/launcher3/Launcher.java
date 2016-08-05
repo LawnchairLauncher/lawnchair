@@ -2668,6 +2668,12 @@ public class Launcher extends Activity
                 // If the app is only disabled because of the above flags, launch activity anyway.
                 // Framework will tell the user why the app is suspended.
             } else {
+                if (!TextUtils.isEmpty(shortcut.disabledMessage)) {
+                    // Use a message specific to this shortcut, if it has one.
+                    Toast.makeText(this, shortcut.disabledMessage, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                // Otherwise just use a generic error message.
                 int error = R.string.activity_not_available;
                 if ((shortcut.isDisabled & ShortcutInfo.FLAG_DISABLED_SAFEMODE) != 0) {
                     error = R.string.safemode_shortcut_error;
