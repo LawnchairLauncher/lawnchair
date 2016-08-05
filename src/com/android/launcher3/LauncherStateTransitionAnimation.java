@@ -265,7 +265,6 @@ public class LauncherStateTransitionAnimation {
             toView.setScaleY(1.0f);
             toView.setAlpha(1.0f);
             toView.setVisibility(View.VISIBLE);
-            toView.bringToFront();
 
             // Show the content view
             contentView.setVisibility(View.VISIBLE);
