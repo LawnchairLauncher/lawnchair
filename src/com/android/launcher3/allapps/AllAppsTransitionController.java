@@ -111,7 +111,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             if (mLauncher.getWorkspace().isInOverviewMode() || mLauncher.isWidgetsViewVisible()) {
                 mNoIntercept = true;
             } else if (mLauncher.isAllAppsVisible() &&
-                    !mAppsView.shouldContainerScroll(ev.getX(), ev.getY())) {
+                    !mAppsView.shouldContainerScroll(ev)) {
                 mNoIntercept = true;
             } else if (!mLauncher.isAllAppsVisible() && !shouldPossiblyIntercept(ev)) {
                 mNoIntercept = true;
