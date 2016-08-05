@@ -133,6 +133,12 @@ public class ShortcutInfo extends ItemInfo {
      */
     int isDisabled = DEFAULT;
 
+    /**
+     * A message to display when the user tries to start a disabled shortcut.
+     * This is currently only used for deep shortcuts.
+     */
+    CharSequence disabledMessage;
+
     int status;
 
     /**
@@ -309,6 +315,7 @@ public class ShortcutInfo extends ItemInfo {
         } else {
             isDisabled |= FLAG_DISABLED_BY_PUBLISHER;
         }
+        disabledMessage = shortcutInfo.getDisabledMessage();
 
         // TODO: Use cache for this
         LauncherAppState launcherAppState = LauncherAppState.getInstance();
