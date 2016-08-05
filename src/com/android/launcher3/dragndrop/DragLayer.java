@@ -207,7 +207,7 @@ public class DragLayer extends InsettableFrameLayout {
         return isEventOverView(mLauncher.getDropTargetBar(), ev);
     }
 
-    private boolean isEventOverView(View view, MotionEvent ev) {
+    public boolean isEventOverView(View view, MotionEvent ev) {
         getDescendantRectRelativeToSelf(view, mHitRect);
         return mHitRect.contains((int) ev.getX(), (int) ev.getY());
     }
