@@ -112,7 +112,7 @@ public class BaseRecyclerViewFastScrollPopup {
             }
             mBgBounds.top = lastTouchY - (int) (FAST_SCROLL_OVERLAY_Y_OFFSET_FACTOR * bgHeight);
             mBgBounds.top = Math.max(edgePadding,
-                    Math.min(mBgBounds.top, mRv.getHeight() - edgePadding - bgHeight));
+                    Math.min(mBgBounds.top, mRv.getVisibleHeight() - edgePadding - bgHeight));
             mBgBounds.bottom = mBgBounds.top + bgHeight;
 
             // Generate a bitmap for a shadow matching these bounds
