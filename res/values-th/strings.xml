@@ -102,6 +102,5 @@
     <string name="action_decrease_height" msgid="282377193880900022">"ลดความสูง"</string>
     <string name="widget_resized" msgid="9130327887929620">"ปรับขนาดของวิดเจ็ตเป็นกว้าง <xliff:g id="NUMBER_0">%1$s</xliff:g> สูง <xliff:g id="NUMBER_1">%2$s</xliff:g> แล้ว"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"ทางลัด"</string>
-    <!-- no translation found for shortcuts_menu_description (406159963824238648) -->
-    <skip />
+    <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> ทางลัดสำหรับ <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
 </resources>
