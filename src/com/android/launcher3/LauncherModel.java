@@ -2849,8 +2849,7 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     public void bindDeepShortcuts() {
-        final MultiHashMap<ComponentKey, String> shortcutMapCopy = new MultiHashMap<>();
-        shortcutMapCopy.putAll(mBgDeepShortcutMap);
+        final MultiHashMap<ComponentKey, String> shortcutMapCopy = mBgDeepShortcutMap.clone();
         Runnable r = new Runnable() {
             @Override
             public void run() {
