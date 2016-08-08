@@ -134,6 +134,14 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
     }
 
     public void populateAndShow(final BubbleTextView originalIcon, final List<String> ids) {
+        final Resources resources = getResources();
+        final int arrowWidth = resources.getDimensionPixelSize(R.dimen.deep_shortcuts_arrow_width);
+        final int arrowHeight = resources.getDimensionPixelSize(R.dimen.deep_shortcuts_arrow_height);
+        mArrowHorizontalOffset = resources.getDimensionPixelSize(
+                R.dimen.deep_shortcuts_arrow_horizontal_offset);
+        final int arrowVerticalOffset = resources.getDimensionPixelSize(
+                R.dimen.deep_shortcuts_arrow_vertical_offset);
+
         // Add dummy views first, and populate with real shortcut info when ready.
         final int spacing = getResources().getDimensionPixelSize(R.dimen.deep_shortcuts_spacing);
         final LayoutInflater inflater = mLauncher.getLayoutInflater();
@@ -151,16 +159,9 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
                 numShortcuts, originalIcon.getContentDescription().toString()));
 
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
-        orientAboutIcon(originalIcon);
+        orientAboutIcon(originalIcon, arrowHeight + arrowVerticalOffset);
 
         // Add the arrow.
-        final Resources resources = getResources();
-        final int arrowWidth = resources.getDimensionPixelSize(R.dimen.deep_shortcuts_arrow_width);
-        final int arrowHeight = resources.getDimensionPixelSize(R.dimen.deep_shortcuts_arrow_height);
-        mArrowHorizontalOffset = resources.getDimensionPixelSize(
-                R.dimen.deep_shortcuts_arrow_horizontal_offset);
-        final int arrowVerticalOffset = resources.getDimensionPixelSize(
-                R.dimen.deep_shortcuts_arrow_vertical_offset);
         mArrow = addArrowView(mArrowHorizontalOffset, arrowVerticalOffset, arrowWidth, arrowHeight);
         mArrow.setPivotX(arrowWidth / 2);
         mArrow.setPivotY(mIsAboveIcon ? 0 : arrowHeight);
@@ -308,9 +309,9 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
      * So we always align left if there is enough horizontal space
      * and align above if there is enough vertical space.
      */
-    private void orientAboutIcon(BubbleTextView icon) {
+    private void orientAboutIcon(BubbleTextView icon, int arrowHeight) {
         int width = getMeasuredWidth();
-        int height = getMeasuredHeight();
+        int height = getMeasuredHeight() + arrowHeight;
 
         DragLayer dragLayer = mLauncher.getDragLayer();
         dragLayer.getDescendantRectRelativeToSelf(icon, mTempRect);
@@ -352,10 +353,12 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         x += mIsLeftAligned ? xOffset : -xOffset;
 
         // Open above icon if there is room.
-        int y = mTempRect.top - height;
-        mIsAboveIcon = mTempRect.top - height > dragLayer.getTop() + insets.top;
+        int iconHeight = icon.getIcon().getBounds().height();
+        int y = mTempRect.top + icon.getPaddingTop() - height;
+        mIsAboveIcon = y > dragLayer.getTop() + insets.top;
         if (!mIsAboveIcon) {
-            y = mTempRect.bottom;
+            y = mTempRect.top + icon.getPaddingTop() + iconHeight;
+            icon.setTextVisibility(false);
         }
 
         // Insets are added later, so subtract them now.
@@ -715,6 +718,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         mDeferContainerRemoval = false;
         // Make the original icon visible in All Apps, but not in Workspace or Folders.
         cleanupDeferredDrag(mDeferredDragIcon.getTag() instanceof AppInfo);
+        mDeferredDragIcon.setTextVisibility(true);
         mLauncher.getDragController().removeDragListener(this);
         mLauncher.getDragLayer().removeView(this);
     }
