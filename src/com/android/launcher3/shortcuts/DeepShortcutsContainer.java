@@ -566,7 +566,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
     @Override
     public boolean supportsDeleteDropTarget() {
-        return true;
+        return false;
     }
 
     @Override
