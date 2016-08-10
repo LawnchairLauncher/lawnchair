@@ -1090,6 +1090,9 @@ public class Launcher extends Activity
         if (!isWorkspaceLoading()) {
             // Process any items that were added while Launcher was away.
             InstallShortcutReceiver.disableAndFlushInstallQueue(this);
+
+            // Refresh shortcuts if the permission changed.
+            mModel.refreshShortcutsIfRequired();
         }
 
         if (shouldShowDiscoveryBounce()) {

@@ -224,4 +224,16 @@ public class DeepShortcutManager {
             return Collections.EMPTY_LIST;
         }
     }
+
+    @TargetApi(25)
+    public boolean hasHostPermission() {
+        if (Utilities.isNycMR1OrAbove()) {
+            try {
+                return mLauncherApps.hasShortcutHostPermission();
+            } catch (SecurityException|IllegalStateException e) {
+                Log.e(TAG, "Failed to make shortcut manager call", e);
+            }
+        }
+        return false;
+    }
 }
