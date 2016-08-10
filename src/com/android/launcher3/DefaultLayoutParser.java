@@ -1,6 +1,8 @@
 package com.android.launcher3;
 
 import android.appwidget.AppWidgetHost;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -9,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -41,6 +44,10 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     private static final String ATTR_CONTAINER = "container";
     private static final String ATTR_SCREEN = "screen";
     private static final String ATTR_FOLDER_ITEMS = "folderItems";
+
+    // TODO: Remove support for this broadcast, instead use widget options to send bind time options
+    private static final String ACTION_APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE =
+            "com.android.launcher.action.APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE";
 
     public DefaultLayoutParser(Context context, AppWidgetHost appWidgetHost,
             LayoutParserCallback callback, Resources sourceRes, int layoutId) {
@@ -268,6 +275,63 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
                 beginDocument(parser, TAG_FOLDER);
             }
             return super.parseAndAdd(parser);
+        }
+    }
+
+
+    /**
+     * AppWidget parser which enforces that the app is already installed when the layout is parsed.
+     */
+    protected class AppWidgetParser extends PendingWidgetParser {
+
+        @Override
+        protected long verifyAndInsert(ComponentName cn, Bundle extras) {
+            try {
+                mPackageManager.getReceiverInfo(cn, 0);
+            } catch (Exception e) {
+                String[] packages = mPackageManager.currentToCanonicalPackageNames(
+                        new String[] { cn.getPackageName() });
+                cn = new ComponentName(packages[0], cn.getClassName());
+                try {
+                    mPackageManager.getReceiverInfo(cn, 0);
+                } catch (Exception e1) {
+                    Log.d(TAG, "Can't find widget provider: " + cn.getClassName());
+                    return -1;
+                }
+            }
+
+            final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
+            long insertedId = -1;
+            try {
+                int appWidgetId = mAppWidgetHost.allocateAppWidgetId();
+
+                if (!appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId, cn)) {
+                    Log.e(TAG, "Unable to bind app widget id " + cn);
+                    mAppWidgetHost.deleteAppWidgetId(appWidgetId);
+                    return -1;
+                }
+
+                mValues.put(Favorites.APPWIDGET_ID, appWidgetId);
+                mValues.put(Favorites.APPWIDGET_PROVIDER, cn.flattenToString());
+                mValues.put(Favorites._ID, mCallback.generateNewItemId());
+                insertedId = mCallback.insertAndCheck(mDb, mValues);
+                if (insertedId < 0) {
+                    mAppWidgetHost.deleteAppWidgetId(appWidgetId);
+                    return insertedId;
+                }
+
+                // Send a broadcast to configure the widget
+                if (!extras.isEmpty()) {
+                    Intent intent = new Intent(ACTION_APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE);
+                    intent.setComponent(cn);
+                    intent.putExtras(extras);
+                    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+                    mContext.sendBroadcast(intent);
+                }
+            } catch (RuntimeException ex) {
+                Log.e(TAG, "Problem allocating appWidgetId", ex);
+            }
+            return insertedId;
         }
     }
 }

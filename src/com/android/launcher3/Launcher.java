@@ -3952,14 +3952,30 @@ public class Launcher extends Activity
                     pendingInfo.minSpanX = item.minSpanX;
                     pendingInfo.minSpanY = item.minSpanY;
                     Bundle options = WidgetHostViewLoader.getDefaultOptionsForWidget(this, pendingInfo);
+
+                    boolean isDirectConfig =
+                            item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_DIRECT_CONFIG);
+                    if (isDirectConfig && item.bindOptions != null) {
+                        Bundle newOptions = item.bindOptions.getExtras();
+                        if (options != null) {
+                            newOptions.putAll(options);
+                        }
+                        options = newOptions;
+                    }
                     boolean success = mAppWidgetManager.bindAppWidgetIdIfAllowed(
                             item.appWidgetId, appWidgetInfo, options);
+
+                    // We tried to bind once. If we were not able to bind, we would need to
+                    // go through the permission dialog, which means we cannot skip the config
+                    // activity.
+                    item.bindOptions = null;
+                    item.restoreStatus &= ~LauncherAppWidgetInfo.FLAG_DIRECT_CONFIG;
 
                     // Bind succeeded
                     if (success) {
                         // If the widget has a configure activity, it is still needs to set it up,
                         // otherwise the widget is ready to go.
-                        item.restoreStatus = (appWidgetInfo.configure == null)
+                        item.restoreStatus = (appWidgetInfo.configure == null) || isDirectConfig
                                 ? LauncherAppWidgetInfo.RESTORE_COMPLETED
                                 : LauncherAppWidgetInfo.FLAG_UI_NOT_READY;
                     }
