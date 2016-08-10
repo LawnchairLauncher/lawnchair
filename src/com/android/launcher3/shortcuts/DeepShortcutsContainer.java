@@ -33,7 +33,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
@@ -54,19 +53,16 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
-import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherViewPropertyAnimator;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.accessibility.ShortcutMenuAccessibilityDelegate;
-import com.android.launcher3.allapps.AllAppsRecyclerView;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
-import com.android.launcher3.folder.Folder;
 import com.android.launcher3.graphics.TriangleShape;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -476,6 +472,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
             }
         } else if (action == MotionEvent.ACTION_UP) {
             cleanupDeferredDrag(true);
+            mLauncher.getUserEventDispatcher().logDeepShortcutsOpen(mDeferredDragIcon);
         } else if (action == MotionEvent.ACTION_CANCEL) {
             // Do not change the source icon visibility if we are already dragging the source icon.
             cleanupDeferredDrag(!mSrcIconDragStarted);
@@ -745,31 +742,9 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
             container.populateAndShow(icon, ids);
             icon.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                     HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-            logOpen(launcher, icon);
             return container;
         }
         return null;
-    }
-
-    private static void logOpen(Launcher launcher, View icon) {
-        ItemInfo info = (ItemInfo) icon.getTag();
-        long iconContainer = info.container;
-        Folder openFolder = launcher.getWorkspace().getOpenFolder();
-        int containerType;
-        if (iconContainer == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-            containerType = LauncherLogProto.WORKSPACE;
-        } else if (iconContainer == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-            containerType = LauncherLogProto.HOTSEAT;
-        } else if (openFolder != null && iconContainer == openFolder.getInfo().id) {
-            containerType = LauncherLogProto.FOLDER;
-        } else if (icon.getParent() instanceof AllAppsRecyclerView) {
-            containerType = ((AllAppsRecyclerView) icon.getParent()).getContainerType(icon);
-        } else {
-            // This should not happen.
-            Log.w(TAG, "Couldn't determine parent of shortcut container");
-            containerType = LauncherLogProto.DEFAULT_CONTAINERTYPE;
-        }
-        launcher.getUserEventDispatcher().logDeepShortcutsOpen(containerType);
     }
 
     /**

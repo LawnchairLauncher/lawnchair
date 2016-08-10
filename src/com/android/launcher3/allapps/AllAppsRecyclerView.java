@@ -208,12 +208,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView
 
     @Override
     public void fillInLaunchSourceData(View v, ItemInfo info, Target target, Target targetParent) {
-        targetParent.containerType = getContainerType(v);
-    }
-
-    public int getContainerType(View v) {
         if (mApps.hasFilter()) {
-            return LauncherLogProto.SEARCHRESULT;
+            targetParent.containerType = LauncherLogProto.SEARCHRESULT;
         } else {
             if (v instanceof BubbleTextView) {
                 BubbleTextView icon = (BubbleTextView) v;
@@ -222,11 +218,12 @@ public class AllAppsRecyclerView extends BaseRecyclerView
                     List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
                     AlphabeticalAppsList.AdapterItem item = items.get(position);
                     if (item.viewType == AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON) {
-                        return LauncherLogProto.PREDICTION;
+                        targetParent.containerType = LauncherLogProto.PREDICTION;
+                        return;
                     }
                 }
             }
-            return LauncherLogProto.ALLAPPS;
+            targetParent.containerType = LauncherLogProto.ALLAPPS;
         }
     }
 
