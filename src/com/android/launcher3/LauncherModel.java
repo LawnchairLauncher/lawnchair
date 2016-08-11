@@ -146,6 +146,20 @@ public class LauncherModel extends BroadcastReceiver
     // Maps all launcher activities to the id's of their shortcuts (if they have any).
     private final MultiHashMap<ComponentKey, String> mBgDeepShortcutMap = new MultiHashMap<>();
 
+    private boolean mHasShortcutHostPermission;
+    // Runnable to check if the shortcuts permission has changed.
+    private final Runnable mShortcutPermissionCheckRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mDeepShortcutsLoaded) {
+                boolean hasShortcutHostPermission = mDeepShortcutManager.hasHostPermission();
+                if (hasShortcutHostPermission != mHasShortcutHostPermission) {
+                    mApp.reloadWorkspace();
+                }
+            }
+        }
+    };
+
     // The lock that must be acquired before referencing any static bg data structures.  Unlike
     // other locks, this one can generally be held long-term because we never expect any of these
     // static data structures to be referenced outside of the worker thread except on the first
@@ -1244,6 +1258,7 @@ public class LauncherModel extends BroadcastReceiver
             if (resetAllAppsLoaded) mAllAppsLoaded = false;
             if (resetWorkspaceLoaded) mWorkspaceLoaded = false;
             // Always reset deep shortcuts loaded.
+            // TODO: why?
             mDeepShortcutsLoaded = false;
         }
     }
@@ -1299,6 +1314,7 @@ public class LauncherModel extends BroadcastReceiver
                 // If there is already one running, tell it to stop.
                 stopLoaderLocked();
                 mLoaderTask = new LoaderTask(mApp.getContext(), synchronousBindPage);
+                // TODO: mDeepShortcutsLoaded does not need to be true for synchronous bind.
                 if (synchronousBindPage != PagedView.INVALID_RESTORE_PAGE && mAllAppsLoaded
                         && mWorkspaceLoaded && mDeepShortcutsLoaded && !mIsLoaderTaskRunning) {
                     mLoaderTask.runBindSynchronousPage(synchronousBindPage);
@@ -2793,11 +2809,14 @@ public class LauncherModel extends BroadcastReceiver
             }
             if (!mDeepShortcutsLoaded) {
                 mBgDeepShortcutMap.clear();
-                for (UserHandleCompat user : mUserManager.getUserProfiles()) {
-                    if (mUserManager.isUserUnlocked(user)) {
-                        List<ShortcutInfoCompat> shortcuts = mDeepShortcutManager
-                                .queryForAllShortcuts(user);
-                        updateDeepShortcutMap(null, user, shortcuts);
+                mHasShortcutHostPermission = mDeepShortcutManager.hasHostPermission();
+                if (mHasShortcutHostPermission) {
+                    for (UserHandleCompat user : mUserManager.getUserProfiles()) {
+                        if (mUserManager.isUserUnlocked(user)) {
+                            List<ShortcutInfoCompat> shortcuts = mDeepShortcutManager
+                                    .queryForAllShortcuts(user);
+                            updateDeepShortcutMap(null, user, shortcuts);
+                        }
                     }
                 }
                 synchronized (LoaderTask.this) {
@@ -2860,6 +2879,18 @@ public class LauncherModel extends BroadcastReceiver
             }
         };
         runOnMainThread(r);
+    }
+
+    /**
+     * Refreshes the cached shortcuts if the shortcut permission has changed.
+     * Current implementation simply reloads the workspace, but it can be optimized to
+     * use partial updates similar to {@link UserManagerCompat}
+     */
+    public void refreshShortcutsIfRequired() {
+        if (Utilities.isNycMR1OrAbove()) {
+            sWorker.removeCallbacks(mShortcutPermissionCheckRunnable);
+            sWorker.post(mShortcutPermissionCheckRunnable);
+        }
     }
 
     /**
