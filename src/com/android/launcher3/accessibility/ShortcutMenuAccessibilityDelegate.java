@@ -25,6 +25,7 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.shortcuts.DeepShortcutView;
 
 import java.util.ArrayList;
 
@@ -46,7 +47,10 @@ public class ShortcutMenuAccessibilityDelegate extends LauncherAccessibilityDele
     @Override
     public boolean performAction(View host, ItemInfo item, int action) {
         if (action == ADD_TO_WORKSPACE) {
-            final ShortcutInfo info = (ShortcutInfo) item;
+            if (!(host.getParent() instanceof DeepShortcutView)) {
+                return false;
+            }
+            final ShortcutInfo info = ((DeepShortcutView) host.getParent()).getFinalInfo();
             final int[] coordinates = new int[2];
             final long screenId = findSpaceOnWorkspace(item, coordinates);
             Runnable onComplete = new Runnable() {

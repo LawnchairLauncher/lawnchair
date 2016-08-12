@@ -21,16 +21,19 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 
 import com.android.launcher3.IconCache;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LogAccelerateInterpolator;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.shortcuts.DeepShortcutsContainer.UnbadgedShortcutInfo;
 import com.android.launcher3.util.PillRevealOutlineProvider;
 import com.android.launcher3.util.PillWidthRevealOutlineProvider;
 
@@ -47,6 +50,8 @@ public class DeepShortcutView extends FrameLayout implements ValueAnimator.Anima
     private DeepShortcutTextView mBubbleText;
     private View mIconView;
     private float mOpenAnimationProgress;
+
+    private UnbadgedShortcutInfo mInfo;
 
     public DeepShortcutView(Context context) {
         this(context, null, 0);
@@ -87,10 +92,36 @@ public class DeepShortcutView extends FrameLayout implements ValueAnimator.Anima
         mPillRect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
     }
 
-    public void applyShortcutInfo(ShortcutInfo info) {
+    /** package private **/
+    void applyShortcutInfo(UnbadgedShortcutInfo info, DeepShortcutsContainer container) {
+        mInfo = info;
         IconCache cache = LauncherAppState.getInstance().getIconCache();
         mBubbleText.applyFromShortcutInfo(info, cache);
         mIconView.setBackground(mBubbleText.getIcon());
+
+        // Use the long label as long as it exists and fits.
+        CharSequence longLabel = info.mDetail.getLongLabel();
+        int availableWidth = mBubbleText.getWidth() - mBubbleText.getTotalPaddingLeft()
+                - mBubbleText.getTotalPaddingRight();
+        boolean usingLongLabel = !TextUtils.isEmpty(longLabel)
+                && mBubbleText.getPaint().measureText(longLabel.toString()) <= availableWidth;
+        mBubbleText.setText(usingLongLabel ? longLabel : info.mDetail.getShortLabel());
+
+        // TODO: Add the click handler to this view directly and not the child view.
+        mBubbleText.setOnClickListener(Launcher.getLauncher(getContext()));
+        mBubbleText.setOnLongClickListener(container);
+        mBubbleText.setOnTouchListener(container);
+    }
+
+    /**
+     * Returns the shortcut info that is suitable to be added on the homescreen
+     */
+    public ShortcutInfo getFinalInfo() {
+        ShortcutInfo badged = new ShortcutInfo(mInfo);
+        // Queue an update task on the worker thread. This ensures that the badged
+        // shortcut eventually gets its icon updated.
+        Launcher.getLauncher(getContext()).getModel().updateShortcutInfo(mInfo.mDetail, badged);
+        return badged;
     }
 
     public View getIconView() {
