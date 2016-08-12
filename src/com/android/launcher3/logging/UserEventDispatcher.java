@@ -147,12 +147,14 @@ public class UserEventDispatcher {
         dispatchUserEvent(event, null);
     }
 
-    public void logDeepShortcutsOpen(int containerType) {
+    public void logDeepShortcutsOpen(View icon) {
         LauncherEvent event = LoggerUtils.initLauncherEvent(
                 Action.TOUCH, Target.ITEM, Target.CONTAINER);
-        event.action.touch = Action.LONGPRESS;
+        LaunchSourceProvider provider = getLaunchProviderRecursive(icon);
+        ItemInfo info = (ItemInfo) icon.getTag();
+        provider.fillInLaunchSourceData(icon, info, event.srcTarget[0], event.srcTarget[1]);
         event.srcTarget[0].itemType = LauncherLogProto.DEEPSHORTCUT;
-        event.srcTarget[1].containerType = containerType;
+        event.action.touch = Action.LONGPRESS;
         event.elapsedContainerMillis = System.currentTimeMillis() - mElapsedContainerMillis;
         event.elapsedSessionMillis = System.currentTimeMillis() - mElapsedSessionMillis;
         dispatchUserEvent(event, null);
