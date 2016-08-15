@@ -4318,7 +4318,6 @@ public class Workspace extends PagedView
 
     @Override
     public void fillInLaunchSourceData(View v, ItemInfo info, Target target, Target targetParent) {
-        target.itemType = LauncherLogProto.APP_ICON;
         target.gridX = info.cellX;
         target.gridY = info.cellY;
         target.pageIndex = getCurrentPage();

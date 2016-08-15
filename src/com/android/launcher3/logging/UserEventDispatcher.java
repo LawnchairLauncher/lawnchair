@@ -97,13 +97,16 @@ public class UserEventDispatcher {
 
     protected LauncherEvent createLauncherEvent(View v, Intent intent) {
         LauncherEvent event = LoggerUtils.initLauncherEvent(
-                Action.TOUCH, Target.ITEM, Target.CONTAINER);
+                Action.TOUCH, v, Target.CONTAINER);
         event.action.touch = Action.TAP;
 
         // Fill in grid(x,y), pageIndex of the child and container type of the parent
         // TODO: make this percolate up the view hierarchy if needed.
         int idx = 0;
         LaunchSourceProvider provider = getLaunchProviderRecursive(v);
+        if (!(v.getTag() instanceof ItemInfo)) {
+            return null;
+        }
         ItemInfo itemInfo = (ItemInfo) v.getTag();
         provider.fillInLaunchSourceData(v, itemInfo, event.srcTarget[idx], event.srcTarget[idx + 1]);
 
@@ -125,7 +128,11 @@ public class UserEventDispatcher {
     }
 
     public void logAppLaunch(View v, Intent intent) {
-        dispatchUserEvent(createLauncherEvent(v, intent), intent);
+        LauncherEvent ev = createLauncherEvent(v, intent);
+        if (ev == null) {
+            return;
+        }
+        dispatchUserEvent(ev, intent);
     }
 
     public void logActionOnControl(int action, int controlType) {
@@ -149,19 +156,17 @@ public class UserEventDispatcher {
 
     public void logDeepShortcutsOpen(View icon) {
         LauncherEvent event = LoggerUtils.initLauncherEvent(
-                Action.TOUCH, Target.ITEM, Target.CONTAINER);
+                Action.TOUCH, icon, Target.CONTAINER);
         LaunchSourceProvider provider = getLaunchProviderRecursive(icon);
+        if (!(icon.getTag() instanceof ItemInfo)) {
+            return;
+        }
         ItemInfo info = (ItemInfo) icon.getTag();
         provider.fillInLaunchSourceData(icon, info, event.srcTarget[0], event.srcTarget[1]);
-        event.srcTarget[0].itemType = LauncherLogProto.DEEPSHORTCUT;
         event.action.touch = Action.LONGPRESS;
         event.elapsedContainerMillis = System.currentTimeMillis() - mElapsedContainerMillis;
         event.elapsedSessionMillis = System.currentTimeMillis() - mElapsedSessionMillis;
         dispatchUserEvent(event, null);
-    }
-
-    public void logDragNDrop() {
-        // TODO
     }
 
     public void setPredictedApps(List<ComponentKey> predictedApps) {
@@ -187,17 +192,20 @@ public class UserEventDispatcher {
     public void dispatchUserEvent(LauncherEvent ev, Intent intent) {
         if (DEBUG_LOGGING) {
             Log.d(TAG, String.format(Locale.US,
-                    "action:%s\nchild:%s\nparent:%s\nelapsed container %d ms session %d ms",
+                    "\naction:%s\n Source child:%s\tparent:%s",
                     LoggerUtils.getActionStr(ev.action),
                     LoggerUtils.getTargetStr(ev.srcTarget != null ? ev.srcTarget[0] : null),
-                    LoggerUtils.getTargetStr(ev.srcTarget.length > 1 ? ev.srcTarget[1] : null),
+                    LoggerUtils.getTargetStr(ev.srcTarget.length > 1 ? ev.srcTarget[1] : null)));
+            if (ev.destTarget != null && ev.destTarget.length > 0) {
+                Log.d(TAG, String.format(Locale.US,
+                        " Destination child:%s\tparent:%s",
+                        LoggerUtils.getTargetStr(ev.destTarget != null ? ev.destTarget[0] : null),
+                        LoggerUtils.getTargetStr(ev.destTarget.length > 1 ? ev.destTarget[1] : null)));
+            }
+            Log.d(TAG, String.format(Locale.US,
+                    " Elapsed container %d ms session %d ms",
                     ev.elapsedContainerMillis,
                     ev.elapsedSessionMillis));
         }
-    }
-
-    public int getPredictedRank(ComponentKey key) {
-        if (mPredictedApps == null) return -1;
-        return mPredictedApps.indexOf(key);
     }
 }
