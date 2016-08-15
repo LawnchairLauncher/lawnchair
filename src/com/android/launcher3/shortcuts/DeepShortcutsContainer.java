@@ -183,12 +183,8 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
                 }
                 for (int i = 0; i < shortcuts.size(); i++) {
                     final ShortcutInfoCompat shortcut = shortcuts.get(i);
-                    final ShortcutInfo launcherShortcutInfo =
-                            new UnbadgedShortcutInfo(shortcut, mLauncher);
-                    CharSequence shortLabel = shortcut.getShortLabel();
-                    CharSequence longLabel = shortcut.getLongLabel();
-                    uiHandler.post(new UpdateShortcutChild(i, launcherShortcutInfo,
-                            shortLabel, longLabel));
+                    uiHandler.post(new UpdateShortcutChild(
+                            i, new UnbadgedShortcutInfo(shortcut, mLauncher)));
                 }
             }
         });
@@ -197,32 +193,17 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
     /** Updates the child of this container at the given index based on the given shortcut info. */
     private class UpdateShortcutChild implements Runnable {
         private int mShortcutChildIndex;
-        private ShortcutInfo mShortcutChildInfo;
-        private CharSequence mShortLabel;
-        private CharSequence mLongLabel;
+        private UnbadgedShortcutInfo mShortcutChildInfo;
 
-        public UpdateShortcutChild(int shortcutChildIndex, ShortcutInfo shortcutChildInfo,
-                CharSequence shortLabel, CharSequence longLabel) {
+        public UpdateShortcutChild(int shortcutChildIndex, UnbadgedShortcutInfo shortcutChildInfo) {
             mShortcutChildIndex = shortcutChildIndex;
             mShortcutChildInfo = shortcutChildInfo;
-            mShortLabel = shortLabel;
-            mLongLabel = longLabel;
         }
 
         @Override
         public void run() {
-            DeepShortcutView shortcutViewContainer = getShortcutAt(mShortcutChildIndex);
-            shortcutViewContainer.applyShortcutInfo(mShortcutChildInfo);
-            BubbleTextView shortcutView = getShortcutAt(mShortcutChildIndex).getBubbleText();
-            // Use the long label as long as it exists and fits.
-            int availableWidth = shortcutView.getWidth() - shortcutView.getTotalPaddingLeft()
-                    - shortcutView.getTotalPaddingRight();
-            boolean usingLongLabel = !TextUtils.isEmpty(mLongLabel)
-                    && shortcutView.getPaint().measureText(mLongLabel.toString()) <= availableWidth;
-            shortcutView.setText(usingLongLabel ? mLongLabel : mShortLabel);
-            shortcutView.setOnClickListener(mLauncher);
-            shortcutView.setOnLongClickListener(DeepShortcutsContainer.this);
-            shortcutView.setOnTouchListener(DeepShortcutsContainer.this);
+            getShortcutAt(mShortcutChildIndex)
+                    .applyShortcutInfo(mShortcutChildInfo, DeepShortcutsContainer.this);
         }
     }
 
@@ -525,14 +506,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         // Return if global dragging is not enabled
         if (!mLauncher.isDraggingEnabled()) return false;
 
-        UnbadgedShortcutInfo unbadgedInfo = (UnbadgedShortcutInfo) v.getTag();
-        ShortcutInfo badged = new ShortcutInfo(unbadgedInfo);
-        // Queue an update task on the worker thread. This ensures that the badged
-        // shortcut eventually gets its icon updated.
-        mLauncher.getModel().updateShortcutInfo(unbadgedInfo.mDetail, badged);
-
         // Long clicked on a shortcut.
-
         mDeferContainerRemoval = true;
         DeepShortcutView sv = (DeepShortcutView) v.getParent();
         sv.setWillDrawIcon(false);
@@ -542,7 +516,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         mIconShift.y = mIconLastTouchPos.y - mLauncher.getDeviceProfile().iconSizePx;
 
         DragView dv = mLauncher.getWorkspace().beginDragShared(
-                sv.getBubbleText(), this, false, badged,
+                sv.getBubbleText(), this, false, sv.getFinalInfo(),
                 new ShortcutDragPreviewProvider(sv.getIconView(), mIconShift));
         dv.animateShift(-mIconShift.x, -mIconShift.y);
 
@@ -754,8 +728,8 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
     /**
      * Extension of {@link ShortcutInfo} which does not badge the icons.
      */
-    private static class UnbadgedShortcutInfo extends ShortcutInfo {
-        private final ShortcutInfoCompat mDetail;
+    static class UnbadgedShortcutInfo extends ShortcutInfo {
+        public final ShortcutInfoCompat mDetail;
 
         public UnbadgedShortcutInfo(ShortcutInfoCompat shortcutInfo, Context context) {
             super(shortcutInfo, context);
