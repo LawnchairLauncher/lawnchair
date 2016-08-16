@@ -45,7 +45,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.os.Build;
-import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.text.Spannable;
@@ -59,7 +58,6 @@ import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewParent;
 import android.widget.Toast;
 
 import com.android.launcher3.compat.UserHandleCompat;
@@ -71,7 +69,6 @@ import com.android.launcher3.util.IconNormalizer;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -108,9 +105,7 @@ public final class Utilities {
     private static final int[] sLoc1 = new int[2];
 
     public static boolean isNycMR1OrAbove() {
-        // TODO: Use the check from support lib
-        return !"REL".equals(VERSION.CODENAME)
-                && "NMR1".compareTo(VERSION.CODENAME) <= 0;
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1;
     }
 
     public static final boolean ATLEAST_MARSHMALLOW =
