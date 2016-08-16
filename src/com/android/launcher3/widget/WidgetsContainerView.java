@@ -205,7 +205,7 @@ public class WidgetsContainerView extends BaseContainerView
 
         // Compose the drag image
         Bitmap preview;
-        float scale = 1f;
+        final float scale;
         final Rect bounds = image.getBitmapBounds();
 
         if (createItemInfo instanceof PendingAddWidgetInfo) {
@@ -242,19 +242,14 @@ public class WidgetsContainerView extends BaseContainerView
             scale = ((float) mLauncher.getDeviceProfile().iconSizePx) / preview.getWidth();
         }
 
-        // Don't clip alpha values for the drag outline if we're using the default widget preview
-        boolean clipAlpha = !(createItemInfo instanceof PendingAddWidgetInfo &&
-                (((PendingAddWidgetInfo) createItemInfo).previewImage == 0));
+        // Since we are not going through the workspace for starting the drag, set drag related
+        // information on the workspace before starting the drag.
+        mLauncher.getWorkspace().prepareDragWithProvider(
+                new PendingItemPreviewProvider(v, createItemInfo, preview));
 
         // Start the drag
-        mLauncher.lockScreenOrientation();
         mDragController.startDrag(image, preview, this, createItemInfo,
                 bounds, DragController.DRAG_ACTION_COPY, scale);
-        // This call expects the extra empty screen to already be created, which is why we call it
-        // after mDragController.startDrag().
-        mLauncher.getWorkspace().onDragStartedWithItem(createItemInfo, preview, clipAlpha);
-
-        preview.recycle();
         return true;
     }
 

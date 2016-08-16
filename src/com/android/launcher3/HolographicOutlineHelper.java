@@ -84,7 +84,7 @@ public class HolographicOutlineHelper {
         applyExpensiveOutlineWithBlur(srcDst, srcDstCanvas, color, outlineColor, true);
     }
 
-    void applyExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas, int color,
+    public void applyExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas, int color,
             int outlineColor, boolean clipAlpha) {
 
         // We start by removing most of the alpha channel so as to ignore shadows, and

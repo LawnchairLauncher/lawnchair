@@ -29,6 +29,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.PreloadIconDrawable;
 import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.folder.FolderIcon;
 
 /**
@@ -44,6 +45,8 @@ public class DragPreviewProvider {
 
     // The padding added to the drag view during the preview generation.
     public final int previewPadding;
+
+    public Bitmap gerenatedDragOutline;
 
     public DragPreviewProvider(View view) {
         mView = view;
@@ -116,6 +119,14 @@ public class DragPreviewProvider {
         canvas.setBitmap(null);
 
         return b;
+    }
+
+    public final void generateDragOutline(Canvas canvas) {
+        if (ProviderConfig.IS_DOGFOOD_BUILD && gerenatedDragOutline != null) {
+            throw new RuntimeException("Drag outline generated twice");
+        }
+
+        gerenatedDragOutline = createDragOutline(canvas);
     }
 
     /**

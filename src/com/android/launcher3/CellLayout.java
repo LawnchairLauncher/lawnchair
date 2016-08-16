@@ -54,6 +54,7 @@ import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.util.CellAndSpan;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.ParcelableSparseArray;
@@ -1047,15 +1048,16 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         return false;
     }
 
-    void visualizeDropLocation(View v, Bitmap dragOutline, int cellX, int cellY, int spanX,
-            int spanY, boolean resize, DropTarget.DragObject dragObject) {
+    void visualizeDropLocation(View v, DragPreviewProvider outlineProvider, int cellX, int cellY,
+            int spanX, int spanY, boolean resize, DropTarget.DragObject dragObject) {
         final int oldDragCellX = mDragCell[0];
         final int oldDragCellY = mDragCell[1];
 
-        if (dragOutline == null && v == null) {
+        if (outlineProvider == null || outlineProvider.gerenatedDragOutline == null) {
             return;
         }
 
+        Bitmap dragOutline = outlineProvider.gerenatedDragOutline;
         if (cellX != oldDragCellX || cellY != oldDragCellY) {
             Point dragOffset = dragObject.dragView.getDragVisualizeOffset();
             Rect dragRegion = dragObject.dragView.getDragRegion();
