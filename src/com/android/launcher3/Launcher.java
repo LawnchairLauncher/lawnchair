@@ -2809,7 +2809,7 @@ public class Launcher extends Activity
         mDragLayer.onAccessibilityStateChanged(enabled);
     }
 
-    public void onDragStarted(View view) {
+    public void onDragStarted() {
         if (isOnCustomContent()) {
             // Custom content screen doesn't participate in drag and drop. If on custom
             // content screen, move to default.

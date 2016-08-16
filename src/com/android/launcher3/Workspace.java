@@ -69,12 +69,12 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
-import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.dragndrop.DragScroller;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dragndrop.SpringLoadedDragController;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutsContainerListener;
@@ -247,8 +247,7 @@ public class Workspace extends PagedView
     /** Is the user is dragging an item near the edge of a page? */
     private boolean mInScrollArea = false;
 
-    private HolographicOutlineHelper mOutlineHelper;
-    @Thunk Bitmap mDragOutline = null;
+    private DragPreviewProvider mOutlineProvider = null;
     public static final int DRAG_BITMAP_PADDING = DragPreviewProvider.DRAG_BITMAP_PADDING;
     private boolean mWorkspaceFadeInAdjacentScreens;
 
@@ -343,8 +342,6 @@ public class Workspace extends PagedView
     public Workspace(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        mOutlineHelper = HolographicOutlineHelper.obtain(context);
-
         mLauncher = (Launcher) context;
         mStateTransitionAnimation = new WorkspaceStateTransitionAnimation(mLauncher, this);
         final Resources res = getResources();
@@ -417,7 +414,13 @@ public class Workspace extends PagedView
             enfoceDragParity("onDragStart", 0, 0);
         }
 
+        if (mOutlineProvider != null) {
+            // The outline is used to visualize where the item will land if dropped
+            mOutlineProvider.generateDragOutline(mCanvas);
+        }
+
         updateChildrenLayersEnabled(false);
+        mLauncher.onDragStarted();
         mLauncher.lockScreenOrientation();
         mLauncher.onInteractionBegin();
         // Prevent any Un/InstallShortcutReceivers from updating the db while we are dragging
@@ -426,6 +429,27 @@ public class Workspace extends PagedView
         if (mAddNewPageOnDrag) {
             mDeferRemoveExtraEmptyScreen = false;
             addExtraEmptyScreenOnDrag();
+
+            if (source != this && info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET) {
+                // When dragging a widget from different source, move to a page which has
+                // enough space to place this widget (after rearranging/resizing). We special case
+                // widgets as they cannot be placed inside a folder.
+                // Start at the current page and search right (on LTR) until finding a page with
+                // enough space. Since an empty screen is the furthest right, a page must be found.
+                int currentPage = getPageNearestToCenterOfScreen();
+                for (int pageIndex = currentPage; pageIndex < getPageCount(); pageIndex++) {
+                    CellLayout page = (CellLayout) getPageAt(pageIndex);
+                    if (page.hasReorderSolution(info)) {
+                        setCurrentPage(pageIndex);
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (!FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND) {
+            // Always enter the spring loaded mode
+            mLauncher.enterSpringLoadedDragMode();
         }
     }
 
@@ -1999,23 +2023,8 @@ public class Workspace extends PagedView
                 position[0], position[1], 0, null);
     }
 
-    public void onDragStartedWithItem(PendingAddItemInfo info, Bitmap b, boolean clipAlpha) {
-        // Find a page that has enough space to place this widget (after rearranging/resizing).
-        // Start at the current page and search right (on LTR) until finding a page with enough
-        // space. Since an empty screen is the furthest right, a page must be found.
-        int currentPageInOverview = getPageNearestToCenterOfScreen();
-        for (int pageIndex = currentPageInOverview; pageIndex < getPageCount(); pageIndex++) {
-            CellLayout page = (CellLayout) getPageAt(pageIndex);
-            if (page.hasReorderSolution(info)) {
-                setCurrentPage(pageIndex);
-                break;
-            }
-        }
-
-        int[] size = estimateItemSize(info, false);
-
-        // The outline is used to visualize where the item will land if dropped
-        mDragOutline = createDragOutline(b, DRAG_BITMAP_PADDING, size[0], size[1], clipAlpha);
+    public void prepareDragWithProvider(DragPreviewProvider outlineProvider) {
+        mOutlineProvider = outlineProvider;
     }
 
     public void exitWidgetResizeMode() {
@@ -2271,34 +2280,6 @@ public class Workspace extends PagedView
         return null;
     }
 
-    /**
-     * Returns a new bitmap to be used as the object outline, e.g. to visualize the drop location.
-     * Responsibility for the bitmap is transferred to the caller.
-     */
-    private Bitmap createDragOutline(Bitmap orig, int padding, int w, int h,
-            boolean clipAlpha) {
-        final int outlineColor = getResources().getColor(R.color.outline_color);
-        final Bitmap b = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        mCanvas.setBitmap(b);
-
-        Rect src = new Rect(0, 0, orig.getWidth(), orig.getHeight());
-        float scaleFactor = Math.min((w - padding) / (float) orig.getWidth(),
-                (h - padding) / (float) orig.getHeight());
-        int scaledWidth = (int) (scaleFactor * orig.getWidth());
-        int scaledHeight = (int) (scaleFactor * orig.getHeight());
-        Rect dst = new Rect(0, 0, scaledWidth, scaledHeight);
-
-        // center the image
-        dst.offset((w - scaledWidth) / 2, (h - scaledHeight) / 2);
-
-        mCanvas.drawBitmap(orig, src, dst, null);
-        mOutlineHelper.applyExpensiveOutlineWithBlur(b, mCanvas, outlineColor, outlineColor,
-                clipAlpha);
-        mCanvas.setBitmap(null);
-
-        return b;
-    }
-
     public void startDrag(CellLayout.CellInfo cellInfo) {
         startDrag(cellInfo, false);
     }
@@ -2337,11 +2318,8 @@ public class Workspace extends PagedView
             ItemInfo dragObject, DragPreviewProvider previewProvider) {
         child.clearFocus();
         child.setPressed(false);
+        mOutlineProvider = previewProvider;
 
-        // The outline is used to visualize where the item will land if dropped
-        mDragOutline = previewProvider.createDragOutline(mCanvas);
-
-        mLauncher.onDragStarted(child);
         // The drag bitmap follows the touch point around on the screen
         final Bitmap b = previewProvider.createDragBitmap(mCanvas);
         int halfPadding = previewProvider.previewPadding / 2;
@@ -2384,12 +2362,7 @@ public class Workspace extends PagedView
                 dragObject, DragController.DRAG_ACTION_MOVE, dragVisualizeOffset,
                 dragRect, scale, accessible);
         dv.setIntrinsicIconScaleFactor(source.getIntrinsicIconScaleFactor());
-
         b.recycle();
-
-        if (!FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND) {
-            mLauncher.enterSpringLoadedDragMode();
-        }
         return dv;
     }
 
@@ -3180,7 +3153,7 @@ public class Workspace extends PagedView
                     item.spanY, child, mTargetCell);
 
             if (!nearestDropOccupied) {
-                mDragTargetLayout.visualizeDropLocation(child, mDragOutline,
+                mDragTargetLayout.visualizeDropLocation(child, mOutlineProvider,
                         mTargetCell[0], mTargetCell[1], item.spanX, item.spanY, false, d);
             } else if ((mDragMode == DRAG_MODE_NONE || mDragMode == DRAG_MODE_REORDER)
                     && !mReorderAlarm.alarmPending() && (mLastReorderX != reorderX ||
@@ -3325,7 +3298,7 @@ public class Workspace extends PagedView
             }
 
             boolean resize = resultSpan[0] != spanX || resultSpan[1] != spanY;
-            mDragTargetLayout.visualizeDropLocation(child, mDragOutline,
+            mDragTargetLayout.visualizeDropLocation(child, mOutlineProvider,
                 mTargetCell[0], mTargetCell[1], resultSpan[0], resultSpan[1], resize, dragObject);
         }
     }
@@ -3716,7 +3689,7 @@ public class Workspace extends PagedView
                 && mDragInfo.cell != null) {
             mDragInfo.cell.setVisibility(VISIBLE);
         }
-        mDragOutline = null;
+        mOutlineProvider = null;
         mDragInfo = null;
 
         if (!isFlingToDelete) {
