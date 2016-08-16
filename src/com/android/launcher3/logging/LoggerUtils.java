@@ -1,5 +1,9 @@
 package com.android.launcher3.logging;
 
+import android.view.View;
+
+import com.android.launcher3.ItemInfo;
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -47,17 +51,25 @@ public class LoggerUtils {
             return typeStr;
         }
         switch(t.itemType){
-            case LauncherLogProto.APP_ICON: typeStr = "ICON"; break;
+            case LauncherLogProto.APP_ICON: typeStr = "APPICON"; break;
             case LauncherLogProto.SHORTCUT: typeStr = "SHORTCUT"; break;
             case LauncherLogProto.WIDGET: typeStr = "WIDGET"; break;
             case LauncherLogProto.DEEPSHORTCUT: typeStr = "DEEPSHORTCUT"; break;
+            case LauncherLogProto.FOLDER_ICON: typeStr = "FOLDERICON"; break;
+
             default: typeStr = "UNKNOWN";
         }
 
-        return typeStr + ", packageHash=" + t.packageNameHash
-                + ", componentHash=" + t.componentHash
-                + ", intentHash=" + t.intentHash
-                + ", grid=(" + t.gridX + "," + t.gridY + "), id=" + t.pageIndex;
+        if (t.packageNameHash != 0) {
+            typeStr += ", packageHash=" + t.packageNameHash;
+        }
+        if (t.componentHash != 0) {
+            typeStr += ", componentHash=" + t.componentHash;
+        }
+        if (t.intentHash != 0) {
+            typeStr += ", intentHash=" + t.intentHash;
+        }
+        return typeStr += ", grid=(" + t.gridX + "," + t.gridY + "), id=" + t.pageIndex;
     }
 
     private static String getControlStr(Target t) {
@@ -116,16 +128,17 @@ public class LoggerUtils {
         return str + " id=" + t.pageIndex;
     }
 
-
+    /**
+     * Used for launching an event by tapping on an icon.
+     */
     public static LauncherLogProto.LauncherEvent initLauncherEvent(
             int actionType,
-            int childTargetType,
+            View v,
             int parentTargetType){
         LauncherLogProto.LauncherEvent event = new LauncherLogProto.LauncherEvent();
 
         event.srcTarget = new LauncherLogProto.Target[2];
-        event.srcTarget[0] = new LauncherLogProto.Target();
-        event.srcTarget[0].type = childTargetType;
+        event.srcTarget[0] = initTarget(v);
         event.srcTarget[1] = new LauncherLogProto.Target();
         event.srcTarget[1].type = parentTargetType;
 
@@ -134,6 +147,9 @@ public class LoggerUtils {
         return event;
     }
 
+    /**
+     * Used for clicking on controls and buttons.
+     */
     public static LauncherLogProto.LauncherEvent initLauncherEvent(
             int actionType,
             int childTargetType){
@@ -146,5 +162,32 @@ public class LoggerUtils {
         event.action = new LauncherLogProto.Action();
         event.action.type = actionType;
         return event;
+    }
+
+    private static Target initTarget(View v) {
+        Target t = new LauncherLogProto.Target();
+        t.type = Target.ITEM;
+        if (!(v.getTag() instanceof ItemInfo)) {
+            return t;
+        }
+        ItemInfo itemInfo = (ItemInfo) v.getTag();
+        switch (itemInfo.itemType) {
+            case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
+                t.itemType = LauncherLogProto.APP_ICON;
+                break;
+            case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                t.itemType = LauncherLogProto.SHORTCUT;
+                break;
+            case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
+                t.itemType = LauncherLogProto.FOLDER_ICON;
+                break;
+            case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
+                t.itemType = LauncherLogProto.WIDGET;
+                break;
+            case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
+                t.itemType = LauncherLogProto.DEEPSHORTCUT;
+                break;
+        }
+        return t;
     }
 }
