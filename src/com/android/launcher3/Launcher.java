@@ -102,6 +102,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.folder.Folder;
@@ -3222,7 +3223,7 @@ public class Launcher extends Activity
                                         longClickCellInfo.cellX, longClickCellInfo.cellY));
                 if (!(itemUnderLongClick instanceof Folder || isAllAppsButton)) {
                     // User long pressed on an item
-                    mWorkspace.startDrag(longClickCellInfo);
+                    mWorkspace.startDrag(longClickCellInfo, new DragOptions());
                 }
             }
         }

@@ -22,6 +22,8 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeleteDropTarget;
 import com.android.launcher3.DragSource;
+import com.android.launcher3.DropTarget.DragObject;
+import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.InfoDropTarget;
@@ -73,7 +75,6 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
     @Thunk final Launcher mLauncher;
 
     private DragInfo mDragInfo = null;
-    private AccessibilityDragSource mDragSource = null;
 
     public LauncherAccessibilityDelegate(Launcher launcher) {
         mLauncher = launcher;
@@ -372,26 +373,25 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
 
         Folder folder = workspace.getOpenFolder();
         if (folder != null) {
-            if (folder.getItemsInReadingOrder().contains(item)) {
-                mDragSource = folder;
-            } else {
+            if (!folder.getItemsInReadingOrder().contains(item)) {
                 mLauncher.closeFolder();
+                folder = null;
             }
         }
-        if (mDragSource == null) {
-            mDragSource = workspace;
-        }
-        mDragSource.enableAccessibleDrag(true);
-        mDragSource.startDrag(cellInfo, true);
 
-        if (mLauncher.getDragController().isDragging()) {
-            mLauncher.getDragController().addDragListener(this);
+        mLauncher.getDragController().addDragListener(this);
+
+        DragOptions options = new DragOptions();
+        options.isAccessibleDrag = true;
+        if (folder != null) {
+            folder.startDrag(cellInfo.cell, options);
+        } else {
+            workspace.startDrag(cellInfo, options);
         }
     }
 
-
     @Override
-    public void onDragStart(DragSource source, ItemInfo info, int dragAction) {
+    public void onDragStart(DragObject dragObject, DragOptions options) {
         // No-op
     }
 
@@ -399,16 +399,6 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
     public void onDragEnd() {
         mLauncher.getDragController().removeDragListener(this);
         mDragInfo = null;
-        if (mDragSource != null) {
-            mDragSource.enableAccessibleDrag(false);
-            mDragSource = null;
-        }
-    }
-
-    public static interface AccessibilityDragSource {
-        void startDrag(CellLayout.CellInfo cellInfo, boolean accessible);
-
-        void enableAccessibleDrag(boolean enable);
     }
 
     /**

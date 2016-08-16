@@ -27,6 +27,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.dragndrop.DragController;
+import com.android.launcher3.dragndrop.DragOptions;
 
 /*
  * The top bar containing various drop targets: Delete/App Info/Uninstall.
@@ -120,17 +121,11 @@ public class DropTargetBar extends LinearLayout implements DragController.DragLi
         }
     }
 
-    public void enableAccessibleDrag(boolean enable) {
-        mDeleteDropTarget.enableAccessibleDrag(enable);
-        mAppInfoDropTarget.enableAccessibleDrag(enable);
-        mUninstallDropTarget.enableAccessibleDrag(enable);
-    }
-
     /*
      * DragController.DragListener implementation
      */
     @Override
-    public void onDragStart(DragSource source, ItemInfo info, int dragAction) {
+    public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
         animateToVisibility(true);
     }
 
