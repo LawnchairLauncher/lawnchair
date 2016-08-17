@@ -2144,7 +2144,7 @@ public class LauncherModel extends BroadcastReceiver
 
                                             // Id would be valid only if the widget restore broadcast was received.
                                             if (isIdValid) {
-                                                status = LauncherAppWidgetInfo.FLAG_UI_NOT_READY;
+                                                status |= LauncherAppWidgetInfo.FLAG_UI_NOT_READY;
                                             } else {
                                                 status &= ~LauncherAppWidgetInfo
                                                         .FLAG_PROVIDER_NOT_READY;
@@ -2174,6 +2174,14 @@ public class LauncherModel extends BroadcastReceiver
 
                                         appWidgetInfo.installProgress =
                                                 installProgress == null ? 0 : installProgress;
+                                    }
+                                    if (appWidgetInfo.hasRestoreFlag(
+                                            LauncherAppWidgetInfo.FLAG_DIRECT_CONFIG)) {
+                                        intentDescription = c.getString(intentIndex);
+                                        if (!TextUtils.isEmpty(intentDescription)) {
+                                            appWidgetInfo.bindOptions =
+                                                    Intent.parseUri(intentDescription, 0);
+                                        }
                                     }
 
                                     appWidgetInfo.id = id;

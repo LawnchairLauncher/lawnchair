@@ -20,6 +20,7 @@ import android.appwidget.AppWidgetHostView;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 
 import com.android.launcher3.compat.UserHandleCompat;
 
@@ -57,6 +58,12 @@ public class LauncherAppWidgetInfo extends ItemInfo {
     public static final int FLAG_ID_ALLOCATED = 16;
 
     /**
+     * Indicates that the widget does not need to show config activity, even if it has a
+     * configuration screen. It can also optionally have some extras which are sent during bind.
+     */
+    public static final int FLAG_DIRECT_CONFIG = 32;
+
+    /**
      * Indicates that the widget hasn't been instantiated yet.
      */
     static final int NO_ID = -1;
@@ -83,6 +90,11 @@ public class LauncherAppWidgetInfo extends ItemInfo {
      * Indicates the installation progress of the widget provider
      */
     int installProgress = -1;
+
+    /**
+     * Optional extras sent during widget bind. See {@link #FLAG_DIRECT_CONFIG}.
+     */
+    public Intent bindOptions;
 
     private boolean mHasNotifiedInitialWidgetSizeChanged;
 
@@ -115,6 +127,8 @@ public class LauncherAppWidgetInfo extends ItemInfo {
         values.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId);
         values.put(LauncherSettings.Favorites.APPWIDGET_PROVIDER, providerName.flattenToString());
         values.put(LauncherSettings.Favorites.RESTORED, restoreStatus);
+        values.put(LauncherSettings.Favorites.INTENT,
+                bindOptions == null ? null : bindOptions.toUri(0));
     }
 
     /**
