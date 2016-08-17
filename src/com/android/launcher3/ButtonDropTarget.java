@@ -62,6 +62,8 @@ public abstract class ButtonDropTarget extends TextView
 
     /** Whether this drop target is active for the current drag */
     protected boolean mActive;
+    /** Whether an accessible drag is in progress */
+    private boolean mAccessibleDrag;
     /** An item must be dragged at least this many pixels before this drop target is enabled. */
     private final int mDragDistanceThreshold;
 
@@ -218,8 +220,8 @@ public abstract class ButtonDropTarget extends TextView
 
     @Override
     public boolean isDropEnabled() {
-        return mActive
-                && mLauncher.getDragController().getDistanceDragged() >= mDragDistanceThreshold;
+        return mActive && (mAccessibleDrag ||
+                mLauncher.getDragController().getDistanceDragged() >= mDragDistanceThreshold);
     }
 
     @Override
@@ -307,6 +309,7 @@ public abstract class ButtonDropTarget extends TextView
     }
 
     public void enableAccessibleDrag(boolean enable) {
+        mAccessibleDrag = enable;
         setOnClickListener(enable ? this : null);
     }
 
