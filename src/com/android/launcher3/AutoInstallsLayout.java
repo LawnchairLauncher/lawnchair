@@ -316,7 +316,7 @@ public class AutoInstallsLayout {
         parsers.put(TAG_APP_ICON, new AppShortcutParser());
         parsers.put(TAG_AUTO_INSTALL, new AutoInstallParser());
         parsers.put(TAG_FOLDER, new FolderParser());
-        parsers.put(TAG_APPWIDGET, new AppWidgetParser());
+        parsers.put(TAG_APPWIDGET, new PendingWidgetParser());
         parsers.put(TAG_SHORTCUT, new ShortcutParser(mSourceRes));
         return parsers;
     }
@@ -459,8 +459,12 @@ public class AutoInstallsLayout {
     /**
      * AppWidget parser: Required attributes packageName, className, spanX and spanY.
      * Options child nodes: <extra key=... value=... />
+     * It adds a pending widget which allows the widget to come later. If there are extras, those
+     * are passed to widget options during bind.
+     * The config activity for the widget (if present) is not shown, so any optional configurations
+     * should be passed as extras and the widget should support reading these widget options.
      */
-    protected class AppWidgetParser implements TagParser {
+    protected class PendingWidgetParser implements TagParser {
 
         @Override
         public long parseAndAdd(XmlResourceParser parser)
@@ -468,27 +472,13 @@ public class AutoInstallsLayout {
             final String packageName = getAttributeValue(parser, ATTR_PACKAGE_NAME);
             final String className = getAttributeValue(parser, ATTR_CLASS_NAME);
             if (TextUtils.isEmpty(packageName) || TextUtils.isEmpty(className)) {
-                if (LOGD) Log.d(TAG, "Skipping invalid <favorite> with no component");
+                if (LOGD) Log.d(TAG, "Skipping invalid <appwidget> with no component");
                 return -1;
-            }
-
-            ComponentName cn = new ComponentName(packageName, className);
-            try {
-                mPackageManager.getReceiverInfo(cn, 0);
-            } catch (Exception e) {
-                String[] packages = mPackageManager.currentToCanonicalPackageNames(
-                        new String[] { packageName });
-                cn = new ComponentName(packages[0], className);
-                try {
-                    mPackageManager.getReceiverInfo(cn, 0);
-                } catch (Exception e1) {
-                    if (LOGD) Log.d(TAG, "Can't find widget provider: " + className);
-                    return -1;
-                }
             }
 
             mValues.put(Favorites.SPANX, getAttributeValue(parser, ATTR_SPAN_X));
             mValues.put(Favorites.SPANY, getAttributeValue(parser, ATTR_SPAN_Y));
+            mValues.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_APPWIDGET);
 
             // Read the extras
             Bundle extras = new Bundle();
@@ -513,38 +503,26 @@ public class AutoInstallsLayout {
                 }
             }
 
-            final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
-            long insertedId = -1;
-            try {
-                int appWidgetId = mAppWidgetHost.allocateAppWidgetId();
+            return verifyAndInsert(new ComponentName(packageName, className), extras);
+        }
 
-                if (!appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId, cn)) {
-                    if (LOGD) Log.e(TAG, "Unable to bind app widget id " + cn);
-                    return -1;
-                }
-
-                mValues.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_APPWIDGET);
-                mValues.put(Favorites.APPWIDGET_ID, appWidgetId);
-                mValues.put(Favorites.APPWIDGET_PROVIDER, cn.flattenToString());
-                mValues.put(Favorites._ID, mCallback.generateNewItemId());
-                insertedId = mCallback.insertAndCheck(mDb, mValues);
-                if (insertedId < 0) {
-                    mAppWidgetHost.deleteAppWidgetId(appWidgetId);
-                    return insertedId;
-                }
-
-                // Send a broadcast to configure the widget
-                if (!extras.isEmpty()) {
-                    Intent intent = new Intent(ACTION_APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE);
-                    intent.setComponent(cn);
-                    intent.putExtras(extras);
-                    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-                    mContext.sendBroadcast(intent);
-                }
-            } catch (RuntimeException ex) {
-                if (LOGD) Log.e(TAG, "Problem allocating appWidgetId", ex);
+        protected long verifyAndInsert(ComponentName cn, Bundle extras) {
+            mValues.put(Favorites.APPWIDGET_PROVIDER, cn.flattenToString());
+            mValues.put(Favorites.RESTORED,
+                    LauncherAppWidgetInfo.FLAG_ID_NOT_VALID |
+                            LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY |
+                            LauncherAppWidgetInfo.FLAG_DIRECT_CONFIG);
+            mValues.put(Favorites._ID, mCallback.generateNewItemId());
+            if (!extras.isEmpty()) {
+                mValues.put(Favorites.INTENT, new Intent().putExtras(extras).toUri(0));
             }
-            return insertedId;
+
+            long insertedId = mCallback.insertAndCheck(mDb, mValues);
+            if (insertedId < 0) {
+                return -1;
+            } else {
+                return insertedId;
+            }
         }
     }
 
