@@ -1356,12 +1356,9 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 // and that passed in.
                 int curDirectionScore = direction[0] * curDirection[0] +
                         direction[1] * curDirection[1];
-                boolean exactDirectionOnly = false;
-                boolean directionMatches = direction[0] == curDirection[0] &&
-                        direction[0] == curDirection[0];
-                if ((directionMatches || !exactDirectionOnly) &&
-                        Float.compare(distance,  bestDistance) < 0 || (Float.compare(distance,
-                        bestDistance) == 0 && curDirectionScore > bestDirectionScore)) {
+                if (Float.compare(distance,  bestDistance) < 0 ||
+                        (Float.compare(distance, bestDistance) == 0
+                                && curDirectionScore > bestDirectionScore)) {
                     bestDistance = distance;
                     bestDirectionScore = curDirectionScore;
                     bestXY[0] = x;
