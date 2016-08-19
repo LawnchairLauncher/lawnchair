@@ -68,6 +68,17 @@ public class WidgetItem extends ComponentKey implements Comparable<WidgetItem> {
             return thisWorkProfile ? 1 : -1;
         }
 
-        return sCollator.compare(label, another.label);
+        int labelCompare = sCollator.compare(label, another.label);
+        if (labelCompare != 0) {
+            return labelCompare;
+        }
+
+        // If the label is same, put the smaller widget before the larger widget. If the area is
+        // also same, put the widget with smaller height before.
+        int thisArea = spanX * spanY;
+        int otherArea = another.spanX * another.spanY;
+        return thisArea == otherArea
+                ? Integer.compare(spanY, another.spanY)
+                : Integer.compare(thisArea, otherArea);
     }
 }
