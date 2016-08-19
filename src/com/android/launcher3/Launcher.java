@@ -25,7 +25,6 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.app.SearchManager;
@@ -51,10 +50,8 @@ import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -81,7 +78,6 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.OvershootInterpolator;
@@ -164,10 +160,6 @@ public class Launcher extends Activity
 
     private static final int REQUEST_PERMISSION_CALL_PHONE = 13;
 
-    private static final int WORKSPACE_BACKGROUND_GRADIENT = 0;
-    private static final int WORKSPACE_BACKGROUND_TRANSPARENT = 1;
-    private static final int WORKSPACE_BACKGROUND_BLACK = 2;
-
     private static final float BOUNCE_ANIMATION_TENSION = 1.3f;
 
     /**
@@ -198,8 +190,6 @@ public class Launcher extends Activity
     // Type: parcelable
     private static final String RUNTIME_STATE_PENDING_ADD_WIDGET_ID = "launcher.add_widget_id";
 
-    static final String INTRO_SCREEN_DISMISSED = "launcher.intro_screen_dismissed";
-    static final String FIRST_RUN_ACTIVITY_DISPLAYED = "launcher.first_run_activity_displayed";
     static final String APPS_VIEW_SHOWN = "launcher.apps_view_shown";
 
     /** The different states that Launcher can be in. */
@@ -315,8 +305,6 @@ public class Launcher extends Activity
     // Determines how long to wait after a rotation before restoring the screen orientation to
     // match the sensor state.
     private static final int RESTORE_SCREEN_ORIENTATION_DELAY = 500;
-
-    @Thunk Drawable mWorkspaceBackgroundDrawable;
 
     private final ArrayList<Integer> mSynchronouslyBoundPages = new ArrayList<Integer>();
     private static final boolean DISABLE_SYNCHRONOUS_BINDING_CURRENT_PAGE = false;
@@ -503,12 +491,6 @@ public class Launcher extends Activity
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onCreate(savedInstanceState);
-        }
-
-        if (shouldShowIntroScreen()) {
-            showIntroScreen();
-        } else {
-            showFirstRunActivity();
         }
     }
 
@@ -1015,10 +997,6 @@ public class Launcher extends Activity
         }
         mOnResumeState = State.NONE;
 
-        // Background was set to gradient in onPause(), restore to transparent if in all apps.
-        setWorkspaceBackground(mState == State.WORKSPACE ? WORKSPACE_BACKGROUND_GRADIENT
-                : WORKSPACE_BACKGROUND_TRANSPARENT);
-
         mPaused = false;
         if (mRestoring || mOnResumeNeedsLoad) {
             setWorkspaceLoading(true);
@@ -1367,10 +1345,8 @@ public class Launcher extends Activity
         mLauncherView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-        mWorkspaceBackgroundDrawable = getResources().getDrawable(R.drawable.workspace_bg);
 
         // Setup the drag layer
-
         mDragLayer.setup(this, mDragController, mAllAppsController);
 
         // Setup the hotseat
@@ -3285,29 +3261,6 @@ public class Launcher extends Activity
         return (mState == State.WIDGETS) || (mOnResumeState == State.WIDGETS);
     }
 
-    private void setWorkspaceBackground(int background) {
-        switch (background) {
-            case WORKSPACE_BACKGROUND_TRANSPARENT:
-                getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                break;
-            case WORKSPACE_BACKGROUND_BLACK:
-                getWindow().setBackgroundDrawable(null);
-                break;
-            default:
-                getWindow().setBackgroundDrawable(mWorkspaceBackgroundDrawable);
-        }
-    }
-
-    protected void changeWallpaperVisiblity(boolean visible) {
-        int wpflags = visible ? WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER : 0;
-        int curflags = getWindow().getAttributes().flags
-                & WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
-        if (wpflags != curflags) {
-            getWindow().setFlags(wpflags, WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER);
-        }
-        setWorkspaceBackground(visible ? WORKSPACE_BACKGROUND_GRADIENT : WORKSPACE_BACKGROUND_BLACK);
-    }
-
     @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
@@ -4455,51 +4408,6 @@ public class Launcher extends Activity
         }
     }
 
-    /**
-     * To be overridden by subclasses to indicate that there is an activity to launch
-     * before showing the standard launcher experience.
-     */
-    protected boolean hasFirstRunActivity() {
-        if (mLauncherCallbacks != null) {
-            return mLauncherCallbacks.hasFirstRunActivity();
-        }
-        return false;
-    }
-
-    /**
-     * To be overridden by subclasses to launch any first run activity
-     */
-    protected Intent getFirstRunActivity() {
-        if (mLauncherCallbacks != null) {
-            return mLauncherCallbacks.getFirstRunActivity();
-        }
-        return null;
-    }
-
-    private boolean shouldRunFirstRunActivity() {
-        return !ActivityManager.isRunningInTestHarness() &&
-                !mSharedPrefs.getBoolean(FIRST_RUN_ACTIVITY_DISPLAYED, false);
-    }
-
-    public boolean showFirstRunActivity() {
-        if (shouldRunFirstRunActivity() &&
-                hasFirstRunActivity()) {
-            Intent firstRunIntent = getFirstRunActivity();
-            if (firstRunIntent != null) {
-                startActivity(firstRunIntent);
-                markFirstRunActivityShown();
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void markFirstRunActivityShown() {
-        SharedPreferences.Editor editor = mSharedPrefs.edit();
-        editor.putBoolean(FIRST_RUN_ACTIVITY_DISPLAYED, true);
-        editor.apply();
-    }
-
     private void markAppsViewShown() {
         if (mSharedPrefs.getBoolean(APPS_VIEW_SHOWN, false)) {
             return;
@@ -4521,44 +4429,6 @@ public class Launcher extends Activity
             return false;
         }
         return true;
-    }
-
-    /**
-     * To be overridden by subclasses to indicate that there is an in-activity full-screen intro
-     * screen that must be displayed and dismissed.
-     */
-    protected boolean hasDismissableIntroScreen() {
-        if (mLauncherCallbacks != null) {
-            return mLauncherCallbacks.hasDismissableIntroScreen();
-        }
-        return false;
-    }
-
-    /**
-     * Full screen intro screen to be shown and dismissed before the launcher can be used.
-     */
-    protected View getIntroScreen() {
-        if (mLauncherCallbacks != null) {
-            return mLauncherCallbacks.getIntroScreen();
-        }
-        return null;
-    }
-
-    /**
-     * To be overriden by subclasses to indicate whether the in-activity intro screen has been
-     * dismissed. This method is ignored if #hasDismissableIntroScreen returns false.
-     */
-    private boolean shouldShowIntroScreen() {
-        return hasDismissableIntroScreen() &&
-                !mSharedPrefs.getBoolean(INTRO_SCREEN_DISMISSED, false);
-    }
-
-    protected void showIntroScreen() {
-        View introScreen = getIntroScreen();
-        changeWallpaperVisiblity(false);
-        if (introScreen != null) {
-            mDragLayer.showOverlayView(introScreen);
-        }
     }
 
     // TODO: These method should be a part of LauncherSearchCallback

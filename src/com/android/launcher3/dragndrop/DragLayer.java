@@ -100,7 +100,6 @@ public class DragLayer extends InsettableFrameLayout {
 
     private TouchCompleteListener mTouchCompleteListener;
 
-    private View mOverlayView;
     private int mTopViewIndex;
     private int mChildCountOnLastUpdate = -1;
 
@@ -170,20 +169,6 @@ public class DragLayer extends InsettableFrameLayout {
     public void onAccessibilityStateChanged(boolean isAccessibilityEnabled) {
         mPinchListener = FeatureFlags.LAUNCHER3_DISABLE_PINCH_TO_OVERVIEW || isAccessibilityEnabled
                 ? null : new PinchToOverviewListener(mLauncher);
-    }
-
-    public void showOverlayView(View overlayView) {
-        LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        mOverlayView = overlayView;
-        addView(overlayView, lp);
-
-        // ensure that the overlay view stays on top. we can't use drawing order for this
-        // because in API level 16 touch dispatch doesn't respect drawing order.
-        mOverlayView.bringToFront();
-    }
-
-    public void dismissOverlayView() {
-        removeView(mOverlayView);
     }
 
     public boolean isEventOverPageIndicator(MotionEvent ev) {
@@ -903,11 +888,6 @@ public class DragLayer extends InsettableFrameLayout {
     @Override
     public void onChildViewAdded(View parent, View child) {
         super.onChildViewAdded(parent, child);
-        if (mOverlayView != null) {
-            // ensure that the overlay view stays on top. we can't use drawing order for this
-            // because in API level 16 touch dispatch doesn't respect drawing order.
-            mOverlayView.bringToFront();
-        }
         updateChildIndices();
     }
 
@@ -919,11 +899,6 @@ public class DragLayer extends InsettableFrameLayout {
     @Override
     public void bringChildToFront(View child) {
         super.bringChildToFront(child);
-        if (child != mOverlayView && mOverlayView != null) {
-            // ensure that the overlay view stays on top. we can't use drawing order for this
-            // because in API level 16 touch dispatch doesn't respect drawing order.
-            mOverlayView.bringToFront();
-        }
         updateChildIndices();
     }
 
