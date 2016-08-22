@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -52,6 +54,7 @@ public class Hotseat extends FrameLayout
     private int mBackgroundColor;
     @ViewDebug.ExportedProperty(category = "launcher")
     private ColorDrawable mBackground;
+    private ValueAnimator mBackgroundColorAnimator;
 
     public Hotseat(Context context) {
         this(context, null);
@@ -177,18 +180,27 @@ public class Hotseat extends FrameLayout
     public void updateColor(ExtractedColors extractedColors, boolean animate) {
         if (!mHasVerticalHotseat) {
             int color = extractedColors.getColor(ExtractedColors.HOTSEAT_INDEX, Color.TRANSPARENT);
+            if (mBackgroundColorAnimator != null) {
+                mBackgroundColorAnimator.cancel();
+            }
             if (!animate) {
                 setBackgroundColor(color);
             } else {
-                ValueAnimator animator = ValueAnimator.ofInt(mBackgroundColor, color);
-                animator.setEvaluator(new ArgbEvaluator());
-                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                mBackgroundColorAnimator = ValueAnimator.ofInt(mBackgroundColor, color);
+                mBackgroundColorAnimator.setEvaluator(new ArgbEvaluator());
+                mBackgroundColorAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
                         mBackground.setColor((Integer) animation.getAnimatedValue());
                     }
                 });
-                animator.start();
+                mBackgroundColorAnimator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mBackgroundColorAnimator = null;
+                    }
+                });
+                mBackgroundColorAnimator.start();
             }
             mBackgroundColor = color;
         }
