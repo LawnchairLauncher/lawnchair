@@ -589,9 +589,9 @@ public class DeviceProfile {
             return new int[] {0, 0};
         }
 
-        // In landscape, we just match the vertical display width
-        int containerWidth = heightPx;
-        int padding = (availableWidthPx - containerWidth) / 2;
+        // In landscape, we match the width of the workspace
+        int padding = (pageIndicatorLandGutterRightNavBarPx +
+                hotseatBarHeightPx + hotseatLandGutterPx + mInsets.left) / 2;
         return new int[]{ padding, padding };
     }
 }
