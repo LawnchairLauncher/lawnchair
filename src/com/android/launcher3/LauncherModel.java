@@ -862,7 +862,9 @@ public class LauncherModel extends BroadcastReceiver
                     Intent targetIntent = info.promisedIntent == null
                             ? info.intent : info.promisedIntent;
                     if (targetIntent != null && info.user.equals(user)) {
-                        String s = targetIntent.toUri(0);
+                        Intent copyIntent = new Intent(targetIntent);
+                        copyIntent.setSourceBounds(intent.getSourceBounds());
+                        String s = copyIntent.toUri(0);
                         if (intentWithPkg.equals(s) || intentWithoutPkg.equals(s)) {
                             return true;
                         }
