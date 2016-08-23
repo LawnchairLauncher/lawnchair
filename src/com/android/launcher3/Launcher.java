@@ -883,7 +883,7 @@ public class Launcher extends Activity
             } else {
                 // TODO: Show a snack bar with link to settings
                 Toast.makeText(this, getString(R.string.msg_no_phone_permission,
-                        getString(R.string.app_name)), Toast.LENGTH_SHORT).show();
+                        getString(R.string.derived_app_name)), Toast.LENGTH_SHORT).show();
             }
         }
         if (mLauncherCallbacks != null) {
