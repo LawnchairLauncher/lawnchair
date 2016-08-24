@@ -148,7 +148,6 @@ public class ImportDataTask {
 
         // Set of package names present in hotseat
         final HashSet<String> hotseatTargetApps = new HashSet<>();
-        final LongArrayMap<Intent> hotseatItems = new LongArrayMap<>();
         int maxId = 0;
 
         // Number of imported items on workspace and hotseat
@@ -270,7 +269,6 @@ public class ImportDataTask {
                     if (intent.getComponent() != null) {
                         intent.setPackage(intent.getComponent().getPackageName());
                     }
-                    hotseatItems.put(screen, intent);
                     hotseatTargetApps.add(getPackage(intent));
                 }
 
@@ -299,7 +297,13 @@ public class ImportDataTask {
         if (totalItemsOnWorkspace < MIN_ITEM_COUNT_FOR_SUCCESSFUL_MIGRATION) {
             throw new Exception("Insufficient data");
         }
+        if (!insertOperations.isEmpty()) {
+            mContext.getContentResolver().applyBatch(ProviderConfig.AUTHORITY,
+                    insertOperations);
+            insertOperations.clear();
+        }
 
+        LongArrayMap<Object> hotseatItems = GridSizeMigrationTask.removeBrokenHotseatItems(mContext);
         int myHotseatCount = LauncherAppState.getInstance().getInvariantDeviceProfile().numHotseatIcons;
         if (!FeatureFlags.NO_ALL_APPS_ICON) {
             myHotseatCount--;
@@ -307,14 +311,15 @@ public class ImportDataTask {
         if (hotseatItems.size() < myHotseatCount) {
             // Insufficient hotseat items. Add a few more.
             HotseatParserCallback parserCallback = new HotseatParserCallback(
-                    hotseatTargetApps, hotseatItems, insertOperations, maxId + 1);
+                    hotseatTargetApps, hotseatItems, insertOperations, maxId + 1, myHotseatCount);
             new HotseatLayoutParser(mContext,
                     parserCallback).loadLayout(null, new ArrayList<Long>());
             mHotseatSize = (int) hotseatItems.keyAt(hotseatItems.size() - 1) + 1;
-        }
-        if (!insertOperations.isEmpty()) {
-            mContext.getContentResolver().applyBatch(ProviderConfig.AUTHORITY,
-                    insertOperations);
+
+            if (!insertOperations.isEmpty()) {
+                mContext.getContentResolver().applyBatch(ProviderConfig.AUTHORITY,
+                        insertOperations);
+            }
         }
     }
 
@@ -404,16 +409,18 @@ public class ImportDataTask {
      */
     private static class HotseatParserCallback implements LayoutParserCallback {
         private final HashSet<String> mExisitingApps;
-        private final LongArrayMap<Intent> mExistingItems;
+        private final LongArrayMap<Object> mExistingItems;
         private final ArrayList<ContentProviderOperation> mOutOps;
+        private final int mRequiredSize;
         private int mStartItemId;
 
         HotseatParserCallback(
-                HashSet<String> existingApps, LongArrayMap<Intent> existingItems,
-                ArrayList<ContentProviderOperation> outOps, int startItemId) {
+                HashSet<String> existingApps, LongArrayMap<Object> existingItems,
+                ArrayList<ContentProviderOperation> outOps, int startItemId, int requiredSize) {
             mExisitingApps = existingApps;
             mExistingItems = existingItems;
             mOutOps = outOps;
+            mRequiredSize = requiredSize;
             mStartItemId = startItemId;
         }
 
@@ -424,6 +431,10 @@ public class ImportDataTask {
 
         @Override
         public long insertAndCheck(SQLiteDatabase db, ContentValues values) {
+            if (mExistingItems.size() >= mRequiredSize) {
+                // No need to add more items.
+                return 0;
+            }
             Intent intent;
             try {
                 intent = Intent.parseUri(values.getAsString(Favorites.INTENT), 0);
