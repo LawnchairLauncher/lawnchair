@@ -26,6 +26,12 @@ import com.android.launcher3.config.ProviderConfig;
  */
 public class Preconditions {
 
+    public static void assertNotNull(Object o) {
+        if (ProviderConfig.IS_DOGFOOD_BUILD && o == null) {
+            throw new IllegalStateException();
+        }
+    }
+
     public static void assertWorkerThread() {
         if (ProviderConfig.IS_DOGFOOD_BUILD && !isSameLooper(LauncherModel.getWorkerLooper())) {
             throw new IllegalStateException();
