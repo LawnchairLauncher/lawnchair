@@ -974,6 +974,26 @@ public class GridSizeMigrationTask {
     }
 
     /**
+     * Removes any broken item from the hotseat.
+     * @return a map with occupied hotseat position set to non-null value.
+     */
+    public static LongArrayMap<Object> removeBrokenHotseatItems(Context context) throws Exception {
+        GridSizeMigrationTask task = new GridSizeMigrationTask(context,
+                LauncherAppState.getInstance().getInvariantDeviceProfile(),
+                getValidPackages(context), Integer.MAX_VALUE, Integer.MAX_VALUE);
+
+        // Load all the valid entries
+        ArrayList<DbEntry> items = task.loadHotseatEntries();
+        // Delete any entry marked for deletion by above load.
+        task.applyOperations();
+        LongArrayMap<Object> positions = new LongArrayMap<>();
+        for (DbEntry item : items) {
+            positions.put(item.screenId, item);
+        }
+        return positions;
+    }
+
+    /**
      * Task to run grid migration in multiple steps when the size difference is more than 1.
      */
     protected static class MultiStepMigrationTask {
