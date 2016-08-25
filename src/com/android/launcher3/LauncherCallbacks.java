@@ -91,10 +91,6 @@ public interface LauncherCallbacks {
      * Extensions points for adding / replacing some other aspects of the Launcher experience.
      */
     public UserEventDispatcher getUserEventDispatcher();
-    public Intent getFirstRunActivity();
-    public boolean hasFirstRunActivity();
-    public boolean hasDismissableIntroScreen();
-    public View getIntroScreen();
     public boolean shouldMoveToDefaultScreenOnHomeIntent();
     public boolean hasSettings();
     public AllAppsSearchBarController getAllAppsSearchBarController();
