@@ -183,10 +183,6 @@ public final class Utilities {
         }
     }
 
-    // TODO: Use Intent.ACTION_APPLICATION_PREFERENCES when N SDK is available.
-    public static final String ACTION_APPLICATION_PREFERENCES
-            = "android.intent.action.APPLICATION_PREFERENCES";
-
     public static Bitmap createIconBitmap(Cursor c, int iconIndex, Context context) {
         byte[] data = c.getBlob(iconIndex);
         try {

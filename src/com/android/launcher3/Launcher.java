@@ -2784,8 +2784,10 @@ public class Launcher extends Activity
      */
     public void onClickSettingsButton(View v) {
         if (LOGD) Log.d(TAG, "onClickSettingsButton");
-        startActivity(new Intent(Utilities.ACTION_APPLICATION_PREFERENCES)
-                .setPackage(getPackageName()));
+        Intent intent = new Intent(Intent.ACTION_APPLICATION_PREFERENCES)
+                .setPackage(getPackageName());
+        intent.setSourceBounds(getViewBounds(v));
+        startActivity(intent, getActivityLaunchOptions(v));
     }
 
     public View.OnTouchListener getHapticFeedbackTouchListener() {
