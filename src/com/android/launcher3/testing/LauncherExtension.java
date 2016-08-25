@@ -198,26 +198,6 @@ public class LauncherExtension extends Launcher {
         }
 
         @Override
-        public Intent getFirstRunActivity() {
-            return null;
-        }
-
-        @Override
-        public boolean hasFirstRunActivity() {
-            return false;
-        }
-
-        @Override
-        public boolean hasDismissableIntroScreen() {
-            return false;
-        }
-
-        @Override
-        public View getIntroScreen() {
-            return null;
-        }
-
-        @Override
         public boolean shouldMoveToDefaultScreenOnHomeIntent() {
             return true;
         }
