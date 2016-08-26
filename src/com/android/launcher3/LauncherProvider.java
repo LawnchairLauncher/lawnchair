@@ -67,6 +67,7 @@ import com.android.launcher3.util.Thunk;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Locale;
 
 public class LauncherProvider extends ContentProvider {
     private static final String TAG = "LauncherProvider";
@@ -313,10 +314,32 @@ public class LauncherProvider extends ContentProvider {
         SqlArguments args = new SqlArguments(uri, selection, selectionArgs);
 
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        int count = db.delete(args.table, args.where, args.args);
-        if (count > 0) notifyListeners();
 
-        reloadLauncherIfExternal();
+        if (Binder.getCallingPid() != Process.myPid()
+                && Favorites.TABLE_NAME.equalsIgnoreCase(args.table)) {
+            String widgetSelection = TextUtils.isEmpty(args.where) ? "1=1" : args.where;
+            widgetSelection = String.format(Locale.ENGLISH, "%1$s = %2$d AND ( %3$s )",
+                    Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_APPWIDGET, widgetSelection);
+            try (Cursor c = db.query(Favorites.TABLE_NAME, new String[] { Favorites.APPWIDGET_ID },
+                    widgetSelection, args.args, null, null, null)) {
+                AppWidgetHost host = new AppWidgetHost(getContext(), Launcher.APPWIDGET_HOST_ID);
+                while (c.moveToNext()) {
+                    int widgetId = c.getInt(0);
+                    if (widgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+                        try {
+                            host.deleteAppWidgetId(widgetId);
+                        } catch (RuntimeException e) {
+                            Log.e(TAG, "Error deleting widget id " + widgetId, e);
+                        }
+                    }
+                }
+            }
+        }
+        int count = db.delete(args.table, args.where, args.args);
+        if (count > 0) {
+            notifyListeners();
+            reloadLauncherIfExternal();
+        }
         return count;
     }
 
