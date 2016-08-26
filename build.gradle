@@ -3,8 +3,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.0'
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.7.0'
+        classpath 'com.android.tools.build:gradle:2.1.3'
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.0'
     }
 }
 
@@ -16,13 +16,11 @@ android {
     buildToolsVersion '24.0.0'
 
     defaultConfig {
-        applicationId "com.android.launcher3"
         minSdkVersion 21
-        targetSdkVersion 'N'
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
 
-        testApplicationId "com.android.launcher3.tests"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -30,17 +28,28 @@ android {
             minifyEnabled false
         }
     }
+
+    productFlavors {
+        aosp {
+            applicationId 'com.android.launcher3'
+            testApplicationId 'com.android.launcher3.tests'
+        }
+    }
     sourceSets {
         main {
             res.srcDirs = ['res']
             java.srcDirs = ['src', 'src_config']
-            manifest.srcFile 'AndroidManifest.xml'
+            manifest.srcFile 'AndroidManifest-common.xml'
             proto.srcDirs 'protos/'
         }
 
         androidTest {
             java.srcDirs = ['tests/src']
             manifest.srcFile "tests/AndroidManifest.xml"
+        }
+
+        aosp {
+            manifest.srcFile "AndroidManifest.xml"
         }
     }
 }
@@ -65,5 +74,16 @@ protobuf {
     // Configure the protoc executable
     protoc {
         artifact = 'com.google.protobuf:protoc:3.0.0-alpha-3'
+
+        generateProtoTasks {
+            all().each { task ->
+                task.builtins {
+                    remove java
+                    javanano {
+                        option 'ignore_services=false'
+                    }
+                }
+            }
+        }
     }
 }
