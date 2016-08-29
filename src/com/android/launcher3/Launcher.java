@@ -4170,6 +4170,10 @@ public class Launcher extends Activity
             return Collections.EMPTY_LIST;
         }
         ComponentName component = info.getTargetComponent();
+        if (component == null) {
+            return Collections.EMPTY_LIST;
+        }
+
         List<String> ids = mDeepShortcutMap.get(new ComponentKey(component, info.user));
         return ids == null ? Collections.EMPTY_LIST : ids;
     }
