@@ -2954,7 +2954,8 @@ public class Launcher extends Activity
         try {
             if (Utilities.ATLEAST_MARSHMALLOW && item != null
                     && (item.itemType == Favorites.ITEM_TYPE_SHORTCUT
-                    || item.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT)) {
+                    || item.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT)
+                    && ((ShortcutInfo) item).promisedIntent == null) {
                 // Shortcuts need some special checks due to legacy reasons.
                 startShortcutIntentSafely(intent, optsBundle, item);
             } else if (user == null || user.equals(UserHandleCompat.myUserHandle())) {
@@ -4267,7 +4268,7 @@ public class Launcher extends Activity
 
             for (ShortcutInfo si : removed) {
                 if (si.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
-                    removedDeepShortcuts.add(ShortcutKey.fromItemInfo(si));
+                    removedDeepShortcuts.add(ShortcutKey.fromShortcutInfo(si));
                 } else {
                     removedComponents.add(si.getTargetComponent());
                 }

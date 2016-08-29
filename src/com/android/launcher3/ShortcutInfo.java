@@ -167,6 +167,11 @@ public class ShortcutInfo extends ItemInfo {
         return intent;
     }
 
+    /** Returns {@link #promisedIntent}, or {@link #intent} if promisedIntent is null. */
+    public Intent getPromisedIntent() {
+        return promisedIntent != null ? promisedIntent : intent;
+    }
+
     ShortcutInfo(Intent intent, CharSequence title, CharSequence contentDescription,
             Bitmap icon, UserHandleCompat user) {
         this();
@@ -349,7 +354,7 @@ public class ShortcutInfo extends ItemInfo {
     /** Returns the ShortcutInfo id associated with the deep shortcut. */
     public String getDeepShortcutId() {
         return itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT ?
-                intent.getStringExtra(ShortcutInfoCompat.EXTRA_SHORTCUT_ID) : null;
+                getPromisedIntent().getStringExtra(ShortcutInfoCompat.EXTRA_SHORTCUT_ID) : null;
     }
 
     @Override
