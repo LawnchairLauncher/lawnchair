@@ -3,7 +3,7 @@ package com.android.launcher3.shortcuts;
 import android.content.ComponentName;
 import android.content.Intent;
 
-import com.android.launcher3.ItemInfo;
+import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.util.ComponentKey;
 
@@ -32,7 +32,7 @@ public class ShortcutKey extends ComponentKey {
         return new ShortcutKey(intent.getPackage(), user, shortcutId);
     }
 
-    public static ShortcutKey fromItemInfo(ItemInfo info) {
-        return fromIntent(info.getIntent(), info.user);
+    public static ShortcutKey fromShortcutInfo(ShortcutInfo info) {
+        return fromIntent(info.getPromisedIntent(), info.user);
     }
 }

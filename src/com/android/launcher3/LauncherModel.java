@@ -930,7 +930,8 @@ public class LauncherModel extends BroadcastReceiver
                             }
                             if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
                                 incrementPinnedShortcutCount(
-                                        ShortcutKey.fromItemInfo(item), true /* shouldPin */);
+                                        ShortcutKey.fromShortcutInfo((ShortcutInfo) item),
+                                        true /* shouldPin */);
                             }
                             break;
                         case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
@@ -999,7 +1000,8 @@ public class LauncherModel extends BroadcastReceiver
                                 sBgWorkspaceItems.remove(item);
                                 break;
                             case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
-                                decrementPinnedShortcutCount(ShortcutKey.fromItemInfo(item));
+                                decrementPinnedShortcutCount(ShortcutKey.fromShortcutInfo(
+                                        (ShortcutInfo) item));
                                 // Fall through.
                             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
@@ -3388,7 +3390,8 @@ public class LauncherModel extends BroadcastReceiver
             for (ItemInfo itemInfo : sBgItemsIdMap) {
                 if (itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
                     ShortcutInfo si = (ShortcutInfo) itemInfo;
-                    if (si.getIntent().getPackage().equals(mPackageName) && si.user.equals(mUser)) {
+                    if (si.getPromisedIntent().getPackage().equals(mPackageName)
+                            && si.user.equals(mUser)) {
                         String shortcutId = si.getDeepShortcutId();
                         if (idsToShortcuts.containsKey(shortcutId)) {
                             idsToWorkspaceShortcutInfos.addToList(shortcutId, si);
@@ -3461,7 +3464,7 @@ public class LauncherModel extends BroadcastReceiver
                     ShortcutInfo si = (ShortcutInfo) itemInfo;
                     if (isUserUnlocked) {
                         ShortcutInfoCompat shortcut =
-                                pinnedShortcuts.get(ShortcutKey.fromItemInfo(si));
+                                pinnedShortcuts.get(ShortcutKey.fromShortcutInfo(si));
                         // We couldn't verify the shortcut during loader. If its no longer available
                         // (probably due to clear data), delete the workspace item as well
                         if (shortcut == null) {
