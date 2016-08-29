@@ -24,6 +24,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherProvider.DatabaseHelper;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.FileLog;
 
@@ -42,6 +43,13 @@ public class RestoreDbTask {
 
     private static final String INFO_COLUMN_NAME = "name";
     private static final String INFO_COLUMN_DEFAULT_VALUE = "dflt_value";
+
+    /**
+     * When enabled all icons are kept on the home screen, even if they don't have an active
+     * session. To enable use:
+     *      adb shell setprop log.tag.launcher_keep_all_icons VERBOSE
+     */
+    private static final String KEEP_ALL_ICONS = "launcher_keep_all_icons";
 
     public static boolean performRestore(DatabaseHelper helper) {
         SQLiteDatabase db = helper.getWritableDatabase();
@@ -77,15 +85,17 @@ public class RestoreDbTask {
         }
 
         // Mark all items as restored.
+        boolean keepAllIcons = Utilities.isPropertyEnabled(KEEP_ALL_ICONS);
         ContentValues values = new ContentValues();
-        values.put(Favorites.RESTORED, 1);
+        values.put(Favorites.RESTORED, ShortcutInfo.FLAG_RESTORED_ICON
+                | (keepAllIcons ? ShortcutInfo.FLAG_RESTORE_STARTED : 0));
         db.update(Favorites.TABLE_NAME, values, null, null);
 
         // Mark widgets with appropriate restore flag
-        values.put(Favorites.RESTORED,
-                LauncherAppWidgetInfo.FLAG_ID_NOT_VALID |
-                        LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY |
-                        LauncherAppWidgetInfo.FLAG_UI_NOT_READY);
+        values.put(Favorites.RESTORED,  LauncherAppWidgetInfo.FLAG_ID_NOT_VALID |
+                LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY |
+                LauncherAppWidgetInfo.FLAG_UI_NOT_READY |
+                (keepAllIcons ? LauncherAppWidgetInfo.FLAG_RESTORE_STARTED : 0));
         db.update(Favorites.TABLE_NAME, values, "itemType = ?",
                 new String[]{Integer.toString(Favorites.ITEM_TYPE_APPWIDGET)});
 

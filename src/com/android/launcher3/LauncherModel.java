@@ -103,7 +103,6 @@ public class LauncherModel extends BroadcastReceiver
         implements LauncherAppsCompat.OnAppsChangedCallbackCompat {
     static final boolean DEBUG_LOADERS = false;
     private static final boolean DEBUG_RECEIVER = false;
-    private static final boolean REMOVE_UNRESTORED_ICONS = true;
 
     static final String TAG = "Launcher.Model";
 
@@ -1881,12 +1880,12 @@ public class LauncherModel extends BroadcastReceiver
                                                     restored = false;
                                                     itemReplaced = true;
 
-                                                } else if (REMOVE_UNRESTORED_ICONS) {
+                                                } else {
                                                     FileLog.d(TAG, "Unrestored package removed: " + cn);
                                                     itemsToRemove.add(id);
                                                     continue;
                                                 }
-                                            } else if (REMOVE_UNRESTORED_ICONS) {
+                                            } else {
                                                 FileLog.d(TAG, "Unrestored package removed: " + cn);
                                                 itemsToRemove.add(id);
                                                 continue;
@@ -2168,7 +2167,7 @@ public class LauncherModel extends BroadcastReceiver
                                             // App restore has started. Update the flag
                                             appWidgetInfo.restoreStatus |=
                                                     LauncherAppWidgetInfo.FLAG_RESTORE_STARTED;
-                                        } else if (REMOVE_UNRESTORED_ICONS && !isSafeMode) {
+                                        } else if (!isSafeMode) {
                                             FileLog.d(TAG, "Unrestored widget removed: " + component);
                                             itemsToRemove.add(id);
                                             continue;
