@@ -20,6 +20,7 @@ import android.content.ComponentName;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 
@@ -57,7 +58,7 @@ public abstract class ItemInfoMatcher {
             @Override
             public boolean matches(ItemInfo info, ComponentName cn) {
                 return info.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT &&
-                        keys.contains(ShortcutKey.fromItemInfo(info));
+                        keys.contains(ShortcutKey.fromShortcutInfo((ShortcutInfo) info));
             }
         };
     }
