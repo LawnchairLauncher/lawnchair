@@ -776,16 +776,21 @@ public final class Utilities {
     }
 
     public static boolean isBootCompleted() {
+        return "1".equals(getSystemProperty("sys.boot_completed", "1"));
+    }
+
+    public static String getSystemProperty(String property, String defaultValue) {
         try {
             Class clazz = Class.forName("android.os.SystemProperties");
             Method getter = clazz.getDeclaredMethod("get", String.class);
-            String value = (String) getter.invoke(null, "sys.boot_completed");
-            return "1".equals(value);
+            String value = (String) getter.invoke(null, property);
+            if (!TextUtils.isEmpty(value)) {
+                return value;
+            }
         } catch (Exception e) {
             Log.d(TAG, "Unable to read system properties");
-            // Assume that boot has completed
-            return true;
         }
+        return defaultValue;
     }
 
     /**
