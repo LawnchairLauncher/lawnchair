@@ -624,8 +624,8 @@ public class Workspace extends PagedView
             ViewGroup.LayoutParams lp = qsbContainer.getLayoutParams();
             if (cellHeight > 0 && lp.height != cellHeight) {
                 lp.height = cellHeight;
+                qsbContainer.setLayoutParams(lp);
             }
-            qsbContainer.setLayoutParams(lp);
         }
     }
 
