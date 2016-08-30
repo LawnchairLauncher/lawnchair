@@ -31,7 +31,6 @@ import android.graphics.drawable.ShapeDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
@@ -53,6 +52,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherViewPropertyAnimator;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
@@ -689,7 +689,9 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         mDeferContainerRemoval = false;
         // Make the original icon visible in All Apps, but not in Workspace or Folders.
         cleanupDeferredDrag(mDeferredDragIcon.getTag() instanceof AppInfo);
-        mDeferredDragIcon.setTextVisibility(true);
+        boolean isInHotseat = ((ItemInfo) mDeferredDragIcon.getTag()).container
+                == LauncherSettings.Favorites.CONTAINER_HOTSEAT;
+        mDeferredDragIcon.setTextVisibility(!isInHotseat);
         mLauncher.getDragController().removeDragListener(this);
         mLauncher.getDragLayer().removeView(this);
     }
