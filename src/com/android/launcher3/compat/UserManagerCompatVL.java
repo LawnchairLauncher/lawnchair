@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2014 The Android Open Source Project
  *
@@ -94,9 +93,6 @@ public class UserManagerCompatVL extends UserManagerCompatV17 {
 
     @Override
     public long getUserCreationTime(UserHandleCompat user) {
-        if (Utilities.ATLEAST_MARSHMALLOW) {
-            return mUserManager.getUserCreationTime(user.getUser());
-        }
         SharedPreferences prefs = Utilities.getPrefs(mContext);
         String key = USER_CREATION_TIME_KEY + getSerialNumberForUser(user);
         if (!prefs.contains(key)) {
