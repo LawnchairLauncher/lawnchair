@@ -20,23 +20,15 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 
-import com.android.launcher3.Utilities;
+@TargetApi(Build.VERSION_CODES.N_MR1)
+public class UserManagerCompatVNMr1 extends UserManagerCompatVN {
 
-@TargetApi(Build.VERSION_CODES.N)
-public class UserManagerCompatVN extends UserManagerCompatVM {
-
-    UserManagerCompatVN(Context context) {
+    UserManagerCompatVNMr1(Context context) {
         super(context);
     }
 
     @Override
-    public boolean isQuietModeEnabled(UserHandleCompat user) {
-        return mUserManager.isQuietModeEnabled(user.getUser());
-    }
-
-    @Override
-    public boolean isUserUnlocked(UserHandleCompat user) {
-        return mUserManager.isUserUnlocked(user.getUser());
+    public boolean isDemoUser() {
+        return mUserManager.isDemoUser();
     }
 }
-
