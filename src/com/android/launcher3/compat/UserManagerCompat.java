@@ -58,4 +58,6 @@ public abstract class UserManagerCompat {
     public abstract long getUserCreationTime(UserHandleCompat user);
     public abstract boolean isQuietModeEnabled(UserHandleCompat user);
     public abstract boolean isUserUnlocked(UserHandleCompat user);
+
+    public abstract boolean isDemoUser();
 }
