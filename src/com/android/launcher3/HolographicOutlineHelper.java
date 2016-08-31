@@ -29,6 +29,10 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.SparseArray;
 
+import com.android.launcher3.config.ProviderConfig;
+
+import java.nio.ByteBuffer;
+
 /**
  * Utility class to generate shadow and outline effect, which are used for click feedback
  * and drag-n-drop respectively.
@@ -79,50 +83,53 @@ public class HolographicOutlineHelper {
      * Applies a more expensive and accurate outline to whatever is currently drawn in a specified
      * bitmap.
      */
-    public void applyExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas, int color,
-            int outlineColor) {
-        applyExpensiveOutlineWithBlur(srcDst, srcDstCanvas, color, outlineColor, true);
+    public void applyExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas) {
+        applyExpensiveOutlineWithBlur(srcDst, srcDstCanvas, true);
     }
 
-    public void applyExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas, int color,
-            int outlineColor, boolean clipAlpha) {
+    public void applyExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas,
+            boolean clipAlpha) {
+        if (ProviderConfig.IS_DOGFOOD_BUILD && srcDst.getConfig() != Bitmap.Config.ALPHA_8) {
+            throw new RuntimeException("Outline blue is only supported on alpha bitmaps");
+        }
 
         // We start by removing most of the alpha channel so as to ignore shadows, and
         // other types of partial transparency when defining the shape of the object
         if (clipAlpha) {
-            int[] srcBuffer = new int[srcDst.getWidth() * srcDst.getHeight()];
-            srcDst.getPixels(srcBuffer,
-                    0, srcDst.getWidth(), 0, 0, srcDst.getWidth(), srcDst.getHeight());
-            for (int i = 0; i < srcBuffer.length; i++) {
-                final int alpha = srcBuffer[i] >>> 24;
-                if (alpha < 188) {
-                    srcBuffer[i] = 0;
+            byte[] pixels = new byte[srcDst.getWidth() * srcDst.getHeight()];
+            ByteBuffer buffer = ByteBuffer.wrap(pixels);
+            buffer.rewind();
+            srcDst.copyPixelsToBuffer(buffer);
+
+            for (int i = 0; i < pixels.length; i++) {
+                if ((pixels[i] & 0xFF) < 188) {
+                    pixels[i] = 0;
                 }
             }
-            srcDst.setPixels(srcBuffer,
-                    0, srcDst.getWidth(), 0, 0, srcDst.getWidth(), srcDst.getHeight());
+
+            buffer.rewind();
+            srcDst.copyPixelsFromBuffer(buffer);
         }
-        Bitmap glowShape = srcDst.extractAlpha();
 
         // calculate the outer blur first
         mBlurPaint.setMaskFilter(mMediumOuterBlurMaskFilter);
         int[] outerBlurOffset = new int[2];
-        Bitmap thickOuterBlur = glowShape.extractAlpha(mBlurPaint, outerBlurOffset);
+        Bitmap thickOuterBlur = srcDst.extractAlpha(mBlurPaint, outerBlurOffset);
 
         mBlurPaint.setMaskFilter(mThinOuterBlurMaskFilter);
         int[] brightOutlineOffset = new int[2];
-        Bitmap brightOutline = glowShape.extractAlpha(mBlurPaint, brightOutlineOffset);
+        Bitmap brightOutline = srcDst.extractAlpha(mBlurPaint, brightOutlineOffset);
 
         // calculate the inner blur
-        srcDstCanvas.setBitmap(glowShape);
+        srcDstCanvas.setBitmap(srcDst);
         srcDstCanvas.drawColor(0xFF000000, PorterDuff.Mode.SRC_OUT);
         mBlurPaint.setMaskFilter(mMediumInnerBlurMaskFilter);
         int[] thickInnerBlurOffset = new int[2];
-        Bitmap thickInnerBlur = glowShape.extractAlpha(mBlurPaint, thickInnerBlurOffset);
+        Bitmap thickInnerBlur = srcDst.extractAlpha(mBlurPaint, thickInnerBlurOffset);
 
         // mask out the inner blur
         srcDstCanvas.setBitmap(thickInnerBlur);
-        srcDstCanvas.drawBitmap(glowShape, -thickInnerBlurOffset[0],
+        srcDstCanvas.drawBitmap(srcDst, -thickInnerBlurOffset[0],
                 -thickInnerBlurOffset[1], mErasePaint);
         srcDstCanvas.drawRect(0, 0, -thickInnerBlurOffset[0], thickInnerBlur.getHeight(),
                 mErasePaint);
@@ -132,14 +139,12 @@ public class HolographicOutlineHelper {
         // draw the inner and outer blur
         srcDstCanvas.setBitmap(srcDst);
         srcDstCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
-        mDrawPaint.setColor(color);
         srcDstCanvas.drawBitmap(thickInnerBlur, thickInnerBlurOffset[0], thickInnerBlurOffset[1],
                 mDrawPaint);
         srcDstCanvas.drawBitmap(thickOuterBlur, outerBlurOffset[0], outerBlurOffset[1],
                 mDrawPaint);
 
         // draw the bright outline
-        mDrawPaint.setColor(outlineColor);
         srcDstCanvas.drawBitmap(brightOutline, brightOutlineOffset[0], brightOutlineOffset[1],
                 mDrawPaint);
 
@@ -148,7 +153,6 @@ public class HolographicOutlineHelper {
         brightOutline.recycle();
         thickOuterBlur.recycle();
         thickInnerBlur.recycle();
-        glowShape.recycle();
     }
 
     Bitmap createMediumDropShadow(BubbleTextView view) {

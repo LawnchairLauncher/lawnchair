@@ -22,12 +22,9 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.view.View;
-import android.widget.ImageView;
 
-import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.HolographicOutlineHelper;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.DragPreviewProvider;
 
@@ -45,23 +42,22 @@ public class ShortcutDragPreviewProvider extends DragPreviewProvider {
 
     @Override
     public Bitmap createDragOutline(Canvas canvas) {
-        Bitmap b = drawScaledPreview(canvas);
+        Bitmap b = drawScaledPreview(canvas, Bitmap.Config.ALPHA_8);
 
-        final int outlineColor = mView.getResources().getColor(R.color.outline_color);
         HolographicOutlineHelper.obtain(mView.getContext())
-                .applyExpensiveOutlineWithBlur(b, canvas, outlineColor, outlineColor);
+                .applyExpensiveOutlineWithBlur(b, canvas);
         canvas.setBitmap(null);
         return b;
     }
 
     @Override
     public Bitmap createDragBitmap(Canvas canvas) {
-        Bitmap b = drawScaledPreview(canvas);
+        Bitmap b = drawScaledPreview(canvas, Bitmap.Config.ARGB_8888);
         canvas.setBitmap(null);
         return b;
     }
 
-    private Bitmap drawScaledPreview(Canvas canvas) {
+    private Bitmap drawScaledPreview(Canvas canvas, Bitmap.Config config) {
         Drawable d = mView.getBackground();
         Rect bounds = getDrawableBounds(d);
 
@@ -70,7 +66,7 @@ public class ShortcutDragPreviewProvider extends DragPreviewProvider {
         final Bitmap b = Bitmap.createBitmap(
                 size + DRAG_BITMAP_PADDING,
                 size + DRAG_BITMAP_PADDING,
-                Bitmap.Config.ARGB_8888);
+                config);
 
         canvas.setBitmap(b);
         canvas.save(Canvas.MATRIX_SAVE_FLAG);

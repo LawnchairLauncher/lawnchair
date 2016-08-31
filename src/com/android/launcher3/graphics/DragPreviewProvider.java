@@ -27,7 +27,6 @@ import android.widget.TextView;
 import com.android.launcher3.HolographicOutlineHelper;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.PreloadIconDrawable;
-import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.folder.FolderIcon;
@@ -134,14 +133,12 @@ public class DragPreviewProvider {
      * Responsibility for the bitmap is transferred to the caller.
      */
     public Bitmap createDragOutline(Canvas canvas) {
-        final int outlineColor = mView.getResources().getColor(R.color.outline_color);
         final Bitmap b = Bitmap.createBitmap(mView.getWidth() + DRAG_BITMAP_PADDING,
-                mView.getHeight() + DRAG_BITMAP_PADDING, Bitmap.Config.ARGB_8888);
-
+                mView.getHeight() + DRAG_BITMAP_PADDING, Bitmap.Config.ALPHA_8);
         canvas.setBitmap(b);
         drawDragView(canvas);
         HolographicOutlineHelper.obtain(mView.getContext())
-                .applyExpensiveOutlineWithBlur(b, canvas, outlineColor, outlineColor);
+                .applyExpensiveOutlineWithBlur(b, canvas);
         canvas.setBitmap(null);
         return b;
     }
