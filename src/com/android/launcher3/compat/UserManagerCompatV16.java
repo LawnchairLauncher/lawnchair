@@ -60,4 +60,9 @@ public class UserManagerCompatV16 extends UserManagerCompat {
     public boolean isUserUnlocked(UserHandleCompat user) {
         return true;
     }
+
+    @Override
+    public boolean isDemoUser() {
+        return false;
+    }
 }

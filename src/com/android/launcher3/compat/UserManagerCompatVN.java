@@ -20,10 +20,10 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 
+import com.android.launcher3.Utilities;
+
 @TargetApi(Build.VERSION_CODES.N)
 public class UserManagerCompatVN extends UserManagerCompatVL {
-
-    private static final String TAG = "UserManagerCompatVN";
 
     UserManagerCompatVN(Context context) {
         super(context);
@@ -36,11 +36,15 @@ public class UserManagerCompatVN extends UserManagerCompatVL {
 
     @Override
     public boolean isUserUnlocked(UserHandleCompat user) {
-        // TODO: Remove the try-catch block when the API permission has been relaxed (b/30475753)
-        try {
-            return mUserManager.isUserUnlocked(user.getUser());
-        } catch (RuntimeException e) {
-            return !isQuietModeEnabled(user);
+        return mUserManager.isUserUnlocked(user.getUser());
+    }
+
+    @Override
+    public boolean isDemoUser() {
+        if (Utilities.isNycMR1OrAbove()) {
+            return mUserManager.isDemoUser();
+        } else {
+            return super.isDemoUser();
         }
     }
 }
