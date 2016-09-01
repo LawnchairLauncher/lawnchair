@@ -108,6 +108,10 @@ public final class Utilities {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1;
     }
 
+    public static boolean isNycOrAbove() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
+    }
+
     public static final boolean ATLEAST_MARSHMALLOW =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
 
@@ -156,31 +160,12 @@ public final class Utilities {
         if (isNycOrAbove()) {
             // If the device was scaled, used the original dimensions to determine if rotation
             // is allowed of not.
-            try {
-                // TODO: Use the actual field when the API is finalized.
-                int originalDensity =
-                        DisplayMetrics.class.getField("DENSITY_DEVICE_STABLE").getInt(null);
-                Resources res = context.getResources();
-                int originalSmallestWidth = res.getConfiguration().smallestScreenWidthDp
-                        * res.getDisplayMetrics().densityDpi / originalDensity;
-                return originalSmallestWidth >= 600;
-            } catch (Exception e) {
-                // Ignore
-            }
+            Resources res = context.getResources();
+            int originalSmallestWidth = res.getConfiguration().smallestScreenWidthDp
+                    * res.getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEVICE_STABLE;
+            return originalSmallestWidth >= 600;
         }
         return false;
-    }
-
-    public static boolean isNycOrAbove() {
-        // TODO(vadimt): Replace using reflection with looking at the API version once
-        // Build.VERSION.SDK_INT gets bumped to 24. b/22942492.
-        try {
-            View.class.getDeclaredField("DRAG_FLAG_OPAQUE");
-            // View.DRAG_FLAG_OPAQUE doesn't exist in M-release, so it's an indication of N+.
-            return true;
-        } catch (NoSuchFieldException e) {
-            return false;
-        }
     }
 
     public static Bitmap createIconBitmap(Cursor c, int iconIndex, Context context) {
