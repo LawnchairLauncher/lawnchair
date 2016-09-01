@@ -2,8 +2,12 @@ package com.android.launcher3.logging;
 
 import android.view.View;
 
+import com.android.launcher3.ButtonDropTarget;
+import com.android.launcher3.DeleteDropTarget;
+import com.android.launcher3.InfoDropTarget;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.UninstallDropTarget;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -164,14 +168,35 @@ public class LoggerUtils {
         return event;
     }
 
-    private static Target initTarget(View v) {
+    /**
+     * Used for drag and drop interaction.
+     */
+    public static LauncherLogProto.LauncherEvent initLauncherEvent(
+            int actionType,
+            View v,
+            ItemInfo info,
+            int parentSrcTargetType,
+            View parentDestTargetType){
+        LauncherLogProto.LauncherEvent event = new LauncherLogProto.LauncherEvent();
+
+        event.srcTarget = new LauncherLogProto.Target[2];
+        event.srcTarget[0] = initTarget(v, info);
+        event.srcTarget[1] = new LauncherLogProto.Target();
+        event.srcTarget[1].type = parentSrcTargetType;
+
+        event.destTarget = new LauncherLogProto.Target[2];
+        event.destTarget[0] = initTarget(v, info);
+        event.destTarget[1] = initDropTarget(parentDestTargetType);
+
+        event.action = new LauncherLogProto.Action();
+        event.action.type = actionType;
+        return event;
+    }
+
+    private static Target initTarget(View v, ItemInfo info) {
         Target t = new LauncherLogProto.Target();
         t.type = Target.ITEM;
-        if (!(v.getTag() instanceof ItemInfo)) {
-            return t;
-        }
-        ItemInfo itemInfo = (ItemInfo) v.getTag();
-        switch (itemInfo.itemType) {
+        switch (info.itemType) {
             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                 t.itemType = LauncherLogProto.APP_ICON;
                 break;
@@ -189,5 +214,31 @@ public class LoggerUtils {
                 break;
         }
         return t;
+    }
+
+    private static Target initDropTarget(View v) {
+        Target t = new LauncherLogProto.Target();
+        t.type = (v instanceof ButtonDropTarget)? Target.CONTROL : Target.CONTAINER;
+        if (t.type == Target.CONTAINER) {
+            return t;
+        }
+
+        if (v instanceof InfoDropTarget) {
+            t.controlType = LauncherLogProto.APPINFO_TARGET;
+        } else if (v instanceof UninstallDropTarget) {
+            t.controlType = LauncherLogProto.UNINSTALL_TARGET;
+        } else if (v instanceof DeleteDropTarget) {
+            t.controlType = LauncherLogProto.REMOVE_TARGET;
+        }
+        return t;
+    }
+
+    private static Target initTarget(View v) {
+        Target t = new LauncherLogProto.Target();
+        t.type = Target.ITEM;
+        if (!(v.getTag() instanceof ItemInfo)) {
+            return t;
+        }
+        return initTarget(v, (ItemInfo) v.getTag());
     }
 }
