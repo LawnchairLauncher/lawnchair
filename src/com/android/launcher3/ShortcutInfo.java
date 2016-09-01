@@ -31,6 +31,7 @@ import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 
 /**
@@ -323,13 +324,13 @@ public class ShortcutInfo extends ItemInfo {
         IconCache cache = launcherAppState.getIconCache();
         Bitmap unbadgedBitmap = unbadgedDrawable == null
                 ? cache.getDefaultIcon(UserHandleCompat.myUserHandle())
-                : Utilities.createScaledBitmapWithoutShadow(unbadgedDrawable, context);
+                : LauncherIcons.createScaledBitmapWithoutShadow(unbadgedDrawable, context);
         setIcon(getBadgedIcon(unbadgedBitmap, shortcutInfo, cache, context));
     }
 
     protected Bitmap getBadgedIcon(Bitmap unbadgedBitmap, ShortcutInfoCompat shortcutInfo,
             IconCache cache, Context context) {
-        unbadgedBitmap = Utilities.addShadowToIcon(unbadgedBitmap);
+        unbadgedBitmap = LauncherIcons.addShadowToIcon(unbadgedBitmap);
         // Get the app info for the source activity.
         AppInfo appInfo = new AppInfo();
         appInfo.user = user;
@@ -338,9 +339,9 @@ public class ShortcutInfo extends ItemInfo {
             cache.getTitleAndIcon(appInfo, shortcutInfo.getActivityInfo(context), false);
         } catch (NullPointerException e) {
             // This may happen when we fail to load the activity info. Worst case ignore badging.
-            return Utilities.badgeIconForUser(unbadgedBitmap, user, context);
+            return LauncherIcons.badgeIconForUser(unbadgedBitmap, user, context);
         }
-        return Utilities.badgeWithBitmap(unbadgedBitmap, appInfo.iconBitmap, context);
+        return LauncherIcons.badgeWithBitmap(unbadgedBitmap, appInfo.iconBitmap, context);
     }
 
     /** Returns the ShortcutInfo id associated with the deep shortcut. */

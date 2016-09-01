@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.graphics;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -29,6 +29,8 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.SparseArray;
 
+import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.R;
 import com.android.launcher3.config.ProviderConfig;
 
 import java.nio.ByteBuffer;
@@ -72,9 +74,9 @@ public class HolographicOutlineHelper {
         mErasePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
     }
 
-    public static HolographicOutlineHelper obtain(Context context) {
+    public static HolographicOutlineHelper getInstance(Context context) {
         if (sInstance == null) {
-            sInstance = new HolographicOutlineHelper(context);
+            sInstance = new HolographicOutlineHelper(context.getApplicationContext());
         }
         return sInstance;
     }
@@ -155,11 +157,11 @@ public class HolographicOutlineHelper {
         thickInnerBlur.recycle();
     }
 
-    Bitmap createMediumDropShadow(BubbleTextView view) {
+    public Bitmap createMediumDropShadow(BubbleTextView view) {
         return createMediumDropShadow(view.getIcon(), view.getScaleX(), view.getScaleY(), true);
     }
 
-    Bitmap createMediumDropShadow(Drawable drawable, boolean shouldCache) {
+    public Bitmap createMediumDropShadow(Drawable drawable, boolean shouldCache) {
         return createMediumDropShadow(drawable, 1f, 1f, shouldCache);
     }
 
