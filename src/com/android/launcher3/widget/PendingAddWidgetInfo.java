@@ -59,10 +59,4 @@ public class PendingAddWidgetInfo extends PendingAddItemInfo {
     public boolean isCustomWidget() {
         return itemType == LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
     }
-
-    @Override
-    public String toString() {
-        return String.format("PendingAddWidgetInfo package=%s, name=%s",
-                componentName.getPackageName(), componentName.getShortClassName());
-    }
 }

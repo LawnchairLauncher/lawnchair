@@ -270,14 +270,6 @@ public class ShortcutInfo extends ItemInfo {
         }
     }
 
-    @Override
-    public String toString() {
-        return "ShortcutInfo(title=" + title + "intent=" + intent + "id=" + this.id
-                + " type=" + this.itemType + " container=" + this.container + " screen=" + screenId
-                + " cellX=" + cellX + " cellY=" + cellY + " spanX=" + spanX + " spanY=" + spanY
-                + " user=" + user + ")";
-    }
-
     public ComponentName getTargetComponent() {
         return promisedIntent != null ? promisedIntent.getComponent() : intent.getComponent();
     }
