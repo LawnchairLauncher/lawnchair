@@ -59,6 +59,7 @@ import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.GridSizeMigrationTask;
+import com.android.launcher3.model.SdCardAvailableReceiver;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.provider.ImportDataTask;
 import com.android.launcher3.provider.LauncherDbUtils;
@@ -187,10 +188,6 @@ public class LauncherModel extends BroadcastReceiver
     // sBgPinnedShortcutCounts is the ComponentKey representing a pinned shortcut to the number of
     // times it is pinned.
     static final Map<ShortcutKey, MutableInt> sBgPinnedShortcutCounts = new HashMap<>();
-
-    // sPendingPackages is a set of packages which could be on sdcard and are not available yet
-    static final HashMap<UserHandleCompat, HashSet<String>> sPendingPackages =
-            new HashMap<UserHandleCompat, HashSet<String>>();
 
     // </ only access in worker thread >
 
@@ -1150,9 +1147,12 @@ public class LauncherModel extends BroadcastReceiver
 
     @Override
     public void onPackageRemoved(String packageName, UserHandleCompat user) {
+        onPackagesRemoved(user, packageName);
+    }
+
+    public void onPackagesRemoved(UserHandleCompat user, String... packages) {
         int op = PackageUpdatedTask.OP_REMOVE;
-        enqueueItemUpdatedTask(new PackageUpdatedTask(op, new String[] { packageName },
-                user));
+        enqueueItemUpdatedTask(new PackageUpdatedTask(op, packages, user));
     }
 
     @Override
@@ -1663,6 +1663,7 @@ public class LauncherModel extends BroadcastReceiver
             final boolean isSafeMode = manager.isSafeMode();
             final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
             final boolean isSdCardReady = Utilities.isBootCompleted();
+            final MultiHashMap<UserHandleCompat, String> pendingPackages = new MultiHashMap<>();
 
             LauncherAppState app = LauncherAppState.getInstance();
             InvariantDeviceProfile profile = app.getInvariantDeviceProfile();
@@ -1901,12 +1902,7 @@ public class LauncherModel extends BroadcastReceiver
                                             // SdCard is not ready yet. Package might get available,
                                             // once it is ready.
                                             Log.d(TAG, "Invalid package: " + cn + " (check again later)");
-                                            HashSet<String> pkgs = sPendingPackages.get(user);
-                                            if (pkgs == null) {
-                                                pkgs = new HashSet<String>();
-                                                sPendingPackages.put(user, pkgs);
-                                            }
-                                            pkgs.add(cn.getPackageName());
+                                            pendingPackages.addToList(user, cn.getPackageName());
                                             allowMissingTarget = true;
                                             // Add the icon on the workspace anyway.
 
@@ -2298,10 +2294,13 @@ public class LauncherModel extends BroadcastReceiver
                                     LauncherSettings.Favorites._ID, restoredRows), null);
                 }
 
-                if (!isSdCardReady && !sPendingPackages.isEmpty()) {
-                    context.registerReceiver(new AppsAvailabilityCheck(),
+                if (!isSdCardReady && !pendingPackages.isEmpty()) {
+                    context.registerReceiver(
+                            new SdCardAvailableReceiver(
+                                    LauncherModel.this, mContext, pendingPackages),
                             new IntentFilter(Intent.ACTION_BOOT_COMPLETED),
-                            null, sWorker);
+                            null,
+                            sWorker);
                 }
 
                 // Remove any empty screens
@@ -2969,43 +2968,6 @@ public class LauncherModel extends BroadcastReceiver
 
     void enqueueItemUpdatedTask(Runnable task) {
         sWorker.post(task);
-    }
-
-    @Thunk class AppsAvailabilityCheck extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            synchronized (sBgLock) {
-                final LauncherAppsCompat launcherApps = LauncherAppsCompat
-                        .getInstance(mApp.getContext());
-                final PackageManager manager = context.getPackageManager();
-                final ArrayList<String> packagesRemoved = new ArrayList<String>();
-                final ArrayList<String> packagesUnavailable = new ArrayList<String>();
-                for (Entry<UserHandleCompat, HashSet<String>> entry : sPendingPackages.entrySet()) {
-                    UserHandleCompat user = entry.getKey();
-                    packagesRemoved.clear();
-                    packagesUnavailable.clear();
-                    for (String pkg : entry.getValue()) {
-                        if (!launcherApps.isPackageEnabledForProfile(pkg, user)) {
-                            if (PackageManagerHelper.isAppOnSdcard(manager, pkg)) {
-                                packagesUnavailable.add(pkg);
-                            } else {
-                                packagesRemoved.add(pkg);
-                            }
-                        }
-                    }
-                    if (!packagesRemoved.isEmpty()) {
-                        enqueueItemUpdatedTask(new PackageUpdatedTask(PackageUpdatedTask.OP_REMOVE,
-                                packagesRemoved.toArray(new String[packagesRemoved.size()]), user));
-                    }
-                    if (!packagesUnavailable.isEmpty()) {
-                        enqueueItemUpdatedTask(new PackageUpdatedTask(PackageUpdatedTask.OP_UNAVAILABLE,
-                                packagesUnavailable.toArray(new String[packagesUnavailable.size()]), user));
-                    }
-                }
-                sPendingPackages.clear();
-            }
-        }
     }
 
     private class PackageUpdatedTask implements Runnable {
