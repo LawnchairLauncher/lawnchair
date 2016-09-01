@@ -23,7 +23,7 @@ import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.util.FlagOp;
-import com.android.launcher3.util.StringFilter;
+import com.android.launcher3.util.ItemInfoMatcher;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -121,14 +121,13 @@ class AllAppsList {
     }
 
     /**
-     * Updates the apps for the given packageName and user based on {@param op}.
+     * Updates the disabled flags of apps matching {@param matcher} based on {@param op}.
      */
-    public void updatePackageFlags(StringFilter pkgFilter, UserHandleCompat user, FlagOp op) {
+    public void updateDisabledFlags(ItemInfoMatcher matcher, FlagOp op) {
         final List<AppInfo> data = this.data;
         for (int i = data.size() - 1; i >= 0; i--) {
             AppInfo info = data.get(i);
-            final ComponentName component = info.intent.getComponent();
-            if (info.user.equals(user) && pkgFilter.matches(component.getPackageName())) {
+            if (matcher.matches(info, info.intent.getComponent())) {
                 info.isDisabled = op.apply(info.isDisabled);
                 modified.add(info);
             }
