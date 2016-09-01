@@ -48,8 +48,11 @@ public interface DropTarget {
         /** The view that moves around while you drag.  */
         public DragView dragView = null;
 
-        /** The data associated with the object being dragged */
+        /** The data associated with the object, after item is dropped. */
         public ItemInfo dragInfo = null;
+
+        /** The data associated with the object  being dragged */
+        public ItemInfo originalDragInfo = null;
 
         /** Where the drag originated */
         public DragSource dragSource = null;

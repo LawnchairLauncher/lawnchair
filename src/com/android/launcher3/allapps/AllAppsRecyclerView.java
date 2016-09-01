@@ -27,20 +27,16 @@ import android.view.View;
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.logging.UserEventDispatcher.LaunchSourceProvider;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
 import java.util.List;
 
 /**
  * A RecyclerView with custom fast scroll support for the all apps view.
  */
-public class AllAppsRecyclerView extends BaseRecyclerView
-        implements LaunchSourceProvider {
+public class AllAppsRecyclerView extends BaseRecyclerView {
 
     private AlphabeticalAppsList mApps;
     private AllAppsFastScrollHelper mFastScrollHelper;
@@ -207,10 +203,9 @@ public class AllAppsRecyclerView extends BaseRecyclerView
         updateEmptySearchBackgroundBounds();
     }
 
-    @Override
-    public void fillInLaunchSourceData(View v, ItemInfo info, Target target, Target targetParent) {
+    public int getContainerType(View v) {
         if (mApps.hasFilter()) {
-            targetParent.containerType = LauncherLogProto.SEARCHRESULT;
+            return LauncherLogProto.SEARCHRESULT;
         } else {
             if (v instanceof BubbleTextView) {
                 BubbleTextView icon = (BubbleTextView) v;
@@ -219,12 +214,11 @@ public class AllAppsRecyclerView extends BaseRecyclerView
                     List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
                     AlphabeticalAppsList.AdapterItem item = items.get(position);
                     if (item.viewType == AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON) {
-                        targetParent.containerType = LauncherLogProto.PREDICTION;
-                        return;
+                        return LauncherLogProto.PREDICTION;
                     }
                 }
             }
-            targetParent.containerType = LauncherLogProto.ALLAPPS;
+            return LauncherLogProto.ALLAPPS;
         }
     }
 

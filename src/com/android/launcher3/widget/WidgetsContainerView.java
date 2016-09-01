@@ -45,6 +45,8 @@ import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.model.WidgetsModel;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.Thunk;
 
 /**
@@ -348,5 +350,10 @@ public class WidgetsContainerView extends BaseContainerView
             mWidgetPreviewLoader = LauncherAppState.getInstance().getWidgetCache();
         }
         return mWidgetPreviewLoader;
+    }
+
+    @Override
+    public void fillInLaunchSourceData(View v, ItemInfo info, Target target, Target targetParent) {
+        targetParent.containerType = LauncherLogProto.WIDGETS;
     }
 }

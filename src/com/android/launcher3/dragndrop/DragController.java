@@ -43,7 +43,6 @@ import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.Workspace;
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -51,7 +50,6 @@ import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TouchController;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 /**
  * Class for initiating a drag within a view or across multiple views.
@@ -271,6 +269,8 @@ public class DragController implements DragDriver.EventListener, TouchController
 
         mDragObject.dragSource = source;
         mDragObject.dragInfo = dragInfo;
+        mDragObject.originalDragInfo = new ItemInfo();
+        mDragObject.originalDragInfo.copyFrom(dragInfo);
 
         if (dragOffset != null) {
             dragView.setDragVisualizeOffset(new Point(dragOffset));
@@ -285,6 +285,7 @@ public class DragController implements DragDriver.EventListener, TouchController
         mLastTouch[0] = mMotionDownX;
         mLastTouch[1] = mMotionDownY;
         handleMoveEvent(mMotionDownX, mMotionDownY);
+        mLauncher.getUserEventDispatcher().resetActionDurationMillis();
         return dragView;
     }
 
@@ -507,7 +508,7 @@ public class DragController implements DragDriver.EventListener, TouchController
      */
     public void setMoveTarget(View view) {
         mMoveTarget = view;
-    }    
+    }
 
     public boolean dispatchUnhandledMove(View focused, int direction) {
         return mMoveTarget != null && mMoveTarget.dispatchUnhandledMove(focused, direction);
@@ -734,6 +735,7 @@ public class DragController implements DragDriver.EventListener, TouchController
         final View dropTargetAsView = dropTarget instanceof View ? (View) dropTarget : null;
         mDragObject.dragSource.onDropCompleted(
                 dropTargetAsView, mDragObject, flingVel != null, accepted);
+        mLauncher.getUserEventDispatcher().logDragNDrop(mDragObject, dropTargetAsView);
     }
 
     private DropTarget findDropTarget(int x, int y, int[] dropCoordinates) {

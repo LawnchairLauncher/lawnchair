@@ -19,11 +19,12 @@ package com.android.launcher3;
 import android.view.View;
 
 import com.android.launcher3.DropTarget.DragObject;
+import com.android.launcher3.logging.UserEventDispatcher.LaunchSourceProvider;
 
 /**
  * Interface defining an object that can originate a drag.
  */
-public interface DragSource {
+public interface DragSource extends LaunchSourceProvider {
 
     /**
      * @return whether items dragged from this source supports
