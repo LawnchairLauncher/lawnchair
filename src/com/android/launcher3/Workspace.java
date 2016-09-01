@@ -100,7 +100,7 @@ import java.util.HashSet;
 public class Workspace extends PagedView
         implements DropTarget, DragSource, DragScroller, View.OnTouchListener,
         DragController.DragListener, LauncherTransitionable, ViewGroup.OnHierarchyChangeListener,
-        Insettable, DropTargetSource, AccessibilityDragSource, UserEventDispatcher.LaunchSourceProvider {
+        Insettable, DropTargetSource, AccessibilityDragSource {
     private static final String TAG = "Launcher.Workspace";
 
     private static boolean ENFORCE_DRAG_EVENT_ORDER = false;
@@ -3426,6 +3426,7 @@ public class Workspace extends PagedView
                 if (info.container == NO_ID && info instanceof AppInfo) {
                     // Came from all apps -- make a copy
                     info = ((AppInfo) info).makeShortcut();
+                    d.dragInfo = info;
                 }
                 view = mLauncher.createShortcut(cellLayout, (ShortcutInfo) info);
                 break;
@@ -4295,6 +4296,12 @@ public class Workspace extends PagedView
         target.gridY = info.cellY;
         target.pageIndex = getCurrentPage();
         targetParent.containerType = LauncherLogProto.WORKSPACE;
+        if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+            target.rank = info.rank;
+            targetParent.containerType = LauncherLogProto.HOTSEAT;
+        } else if (info.container >= 0) {
+            targetParent.containerType = LauncherLogProto.FOLDER;
+        }
     }
 
     /**

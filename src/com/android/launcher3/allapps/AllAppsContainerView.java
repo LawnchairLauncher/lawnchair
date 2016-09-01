@@ -51,6 +51,8 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.graphics.TintedDrawableSpan;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ComponentKey;
 
 import java.nio.charset.Charset;
@@ -699,5 +701,10 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mSearchQueryBuilder.clear();
         mSearchQueryBuilder.clearSpans();
         Selection.setSelection(mSearchQueryBuilder, 0);
+    }
+
+    @Override
+    public void fillInLaunchSourceData(View v, ItemInfo info, Target target, Target targetParent) {
+        targetParent.containerType = mAppsRecyclerView.getContainerType(v);
     }
 }
