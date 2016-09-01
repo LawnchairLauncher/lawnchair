@@ -189,10 +189,24 @@ public class ItemInfo {
     }
 
     @Override
-    public String toString() {
-        return "Item(id=" + this.id + " type=" + this.itemType + " container=" + this.container
-            + " screen=" + screenId + " cellX=" + cellX + " cellY=" + cellY + " spanX=" + spanX
-            + " spanY=" + spanY + " user=" + user + ")";
+    public final String toString() {
+        return getClass().getSimpleName() + "(" + dumpProperties() + ")";
+    }
+
+    protected String dumpProperties() {
+        return "id=" + id
+                + " type=" + itemType
+                + " container=" + container
+                + " screen=" + screenId
+                + " cellX=" + cellX
+                + " cellY=" + cellY
+                + " spanX=" + spanX
+                + " spanY=" + spanY
+                + " minSpanX=" + minSpanX
+                + " minSpanY=" + minSpanY
+                + " rank=" + rank
+                + " user=" + user
+                + " title=" + title;
     }
 
     /**

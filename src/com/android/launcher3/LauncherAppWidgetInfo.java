@@ -143,8 +143,8 @@ public class LauncherAppWidgetInfo extends ItemInfo {
     }
 
     @Override
-    public String toString() {
-        return "AppWidget(id=" + Integer.toString(appWidgetId) + ")";
+    protected String dumpProperties() {
+        return super.dumpProperties() + " appWidgetId=" + appWidgetId;
     }
 
     public final boolean isWidgetIdAllocated() {

@@ -126,14 +126,6 @@ public class FolderInfo extends ItemInfo {
         public void onItemsChanged(boolean animate);
     }
 
-    @Override
-    public String toString() {
-        return "FolderInfo(id=" + this.id + " type=" + this.itemType
-                + " container=" + this.container + " screen=" + screenId
-                + " cellX=" + cellX + " cellY=" + cellY + " spanX=" + spanX
-                + " spanY=" + spanY + ")";
-    }
-
     public boolean hasOption(int optionFlag) {
         return (options & optionFlag) != 0;
     }

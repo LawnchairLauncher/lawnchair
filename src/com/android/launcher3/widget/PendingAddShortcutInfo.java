@@ -35,10 +35,4 @@ public class PendingAddShortcutInfo extends PendingAddItemInfo {
         componentName = new ComponentName(activityInfo.packageName, activityInfo.name);
         itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
     }
-
-    @Override
-    public String toString() {
-        return String.format("PendingAddShortcutInfo package=%s, name=%s",
-                activityInfo.packageName, activityInfo.name);
-    }
 }

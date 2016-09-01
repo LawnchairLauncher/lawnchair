@@ -29,4 +29,9 @@ public class PendingAddItemInfo extends ItemInfo {
      * The component that will be created.
      */
     public ComponentName componentName;
+
+    @Override
+    protected String dumpProperties() {
+        return super.dumpProperties() + " componentName=" + componentName;
+    }
 }
