@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.animation.AnimationUtils;
 
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.util.FlingAnimation;
 import com.android.launcher3.util.Thunk;
@@ -49,9 +50,9 @@ public class DeleteDropTarget extends ButtonDropTarget {
     }
 
     @Override
-    public void onDragStart(DragSource source, ItemInfo info, int dragAction) {
-        super.onDragStart(source, info, dragAction);
-        setTextBasedOnDragSource(source);
+    public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
+        super.onDragStart(dragObject, options);
+        setTextBasedOnDragSource(dragObject.dragSource);
     }
 
     /** @return true for items that should have a "Remove" action in accessibility. */

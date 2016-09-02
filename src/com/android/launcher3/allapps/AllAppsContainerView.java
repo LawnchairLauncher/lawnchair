@@ -48,6 +48,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.graphics.TintedDrawableSpan;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
@@ -539,7 +540,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         if (!mLauncher.isDraggingEnabled()) return false;
 
         // Start the drag
-        mLauncher.getWorkspace().beginDragShared(v, this, false);
+        mLauncher.getWorkspace().beginDragShared(v, this, new DragOptions());
         // Enter spring loaded mode
         mLauncher.enterSpringLoadedDragMode();
 

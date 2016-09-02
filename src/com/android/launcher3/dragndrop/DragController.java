@@ -57,12 +57,6 @@ import java.util.ArrayList;
 public class DragController implements DragDriver.EventListener, TouchController {
     private static final String TAG = "Launcher.DragController";
 
-    /** Indicates the drag is a move.  */
-    public static int DRAG_ACTION_MOVE = 0;
-
-    /** Indicates the drag is a copy.  */
-    public static int DRAG_ACTION_COPY = 1;
-
     public static final int SCROLL_DELAY = 500;
     public static final int RESCROLL_DELAY = PagedView.PAGE_SNAP_ANIMATION_DURATION + 150;
 
@@ -91,8 +85,8 @@ public class DragController implements DragDriver.EventListener, TouchController
      */
     private DragDriver mDragDriver = null;
 
-    /** Whether or not an accessible drag operation is in progress. */
-    private boolean mIsAccessibleDrag;
+    /** Options controlling the drag behavior. */
+    private DragOptions mOptions;
 
     /** X coordinate of the down event. */
     private int mMotionDownX;
@@ -145,12 +139,10 @@ public class DragController implements DragDriver.EventListener, TouchController
         /**
          * A drag has begun
          *
-         * @param source An object representing where the drag originated
-         * @param info The data associated with the object that is being dragged
-         * @param dragAction The drag action: either {@link DragController#DRAG_ACTION_MOVE}
-         *        or {@link DragController#DRAG_ACTION_COPY}
+         * @param dragObject The object being dragged
+         * @param options Options used to start the drag
          */
-        void onDragStart(DragSource source, ItemInfo info, int dragAction);
+        void onDragStart(DropTarget.DragObject dragObject, DragOptions options);
 
         /**
          * The drag has ended
@@ -160,8 +152,6 @@ public class DragController implements DragDriver.EventListener, TouchController
 
     /**
      * Used to create a new DragLayer from XML.
-     *
-     * @param context The application's context.
      */
     public DragController(Launcher launcher) {
         Resources r = launcher.getResources();
@@ -183,11 +173,9 @@ public class DragController implements DragDriver.EventListener, TouchController
      * @param source An object representing where the drag originated
      * @param dragInfo The data associated with the object that is being dragged
      * @param viewImageBounds the position of the image inside the view
-     * @param dragAction The drag action: either {@link #DRAG_ACTION_MOVE} or
-     *        {@link #DRAG_ACTION_COPY}
      */
     public void startDrag(View v, Bitmap bmp, DragSource source, ItemInfo dragInfo,
-            Rect viewImageBounds, int dragAction, float initialDragViewScale) {
+            Rect viewImageBounds, float initialDragViewScale, DragOptions options) {
         int[] loc = mCoordinatesTemp;
         mLauncher.getDragLayer().getLocationInDragLayer(v, loc);
         int dragLayerX = loc[0] + viewImageBounds.left
@@ -195,12 +183,8 @@ public class DragController implements DragDriver.EventListener, TouchController
         int dragLayerY = loc[1] + viewImageBounds.top
                 + (int) ((initialDragViewScale * bmp.getHeight() - bmp.getHeight()) / 2);
 
-        startDrag(bmp, dragLayerX, dragLayerY, source, dragInfo, dragAction, null,
-                null, initialDragViewScale, false);
-
-        if (dragAction == DRAG_ACTION_MOVE) {
-            v.setVisibility(View.GONE);
-        }
+        startDrag(bmp, dragLayerX, dragLayerY, source, dragInfo, null,
+                null, initialDragViewScale, options);
     }
 
     /**
@@ -212,15 +196,12 @@ public class DragController implements DragDriver.EventListener, TouchController
      * @param dragLayerY The y position in the DragLayer of the left-top of the bitmap.
      * @param source An object representing where the drag originated
      * @param dragInfo The data associated with the object that is being dragged
-     * @param dragAction The drag action: either {@link #DRAG_ACTION_MOVE} or
-     *        {@link #DRAG_ACTION_COPY}
      * @param dragRegion Coordinates within the bitmap b for the position of item being dragged.
      *          Makes dragging feel more precise, e.g. you can clip out a transparent border
-     * @param accessible whether this drag should occur in accessibility mode
      */
     public DragView startDrag(Bitmap b, int dragLayerX, int dragLayerY,
-            DragSource source, ItemInfo dragInfo, int dragAction, Point dragOffset, Rect dragRegion,
-            float initialDragViewScale, boolean accessible) {
+            DragSource source, ItemInfo dragInfo, Point dragOffset, Rect dragRegion,
+            float initialDragViewScale, DragOptions options) {
         if (PROFILE_DRAWING_DURING_DRAG) {
             android.os.Debug.startMethodTracing("Launcher");
         }
@@ -232,19 +213,15 @@ public class DragController implements DragDriver.EventListener, TouchController
         }
         mInputMethodManager.hideSoftInputFromWindow(mWindowToken, 0);
 
-        for (DragListener listener : mListeners) {
-            listener.onDragStart(source, dragInfo, dragAction);
-        }
-
         final int registrationX = mMotionDownX - dragLayerX;
         final int registrationY = mMotionDownY - dragLayerY;
 
         final int dragRegionLeft = dragRegion == null ? 0 : dragRegion.left;
         final int dragRegionTop = dragRegion == null ? 0 : dragRegion.top;
 
-        mIsAccessibleDrag = accessible;
         mLastDropTarget = null;
 
+        mOptions = options;
         mDragObject = new DropTarget.DragObject();
 
         final Resources res = mLauncher.getResources();
@@ -254,7 +231,7 @@ public class DragController implements DragDriver.EventListener, TouchController
                 registrationY, initialDragViewScale, scaleDps);
 
         mDragObject.dragComplete = false;
-        if (mIsAccessibleDrag) {
+        if (mOptions.isAccessibleDrag) {
             // For an accessible drag, we assume the view is being dragged from the center.
             mDragObject.xOffset = b.getWidth() / 2;
             mDragObject.yOffset = b.getHeight() / 2;
@@ -282,6 +259,11 @@ public class DragController implements DragDriver.EventListener, TouchController
         mLauncher.getDragLayer().performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
         dragView.show(mMotionDownX, mMotionDownY);
         mDistanceSinceScroll = 0;
+
+        for (DragListener listener : mListeners) {
+            listener.onDragStart(mDragObject, mOptions);
+        }
+
         mLastTouch[0] = mMotionDownX;
         mLastTouch[1] = mMotionDownY;
         handleMoveEvent(mMotionDownX, mMotionDownY);
@@ -308,7 +290,7 @@ public class DragController implements DragDriver.EventListener, TouchController
     }
 
     public boolean isDragging() {
-        return mDragDriver != null || mIsAccessibleDrag;
+        return mDragDriver != null || (mOptions != null && mOptions.isAccessibleDrag);
     }
 
     /**
@@ -343,7 +325,7 @@ public class DragController implements DragDriver.EventListener, TouchController
     private void endDrag() {
         if (isDragging()) {
             mDragDriver = null;
-            mIsAccessibleDrag = false;
+            mOptions = null;
             clearScrollRunnable();
             boolean isDeferred = false;
             if (mDragObject.dragView != null) {
@@ -422,10 +404,6 @@ public class DragController implements DragDriver.EventListener, TouchController
 
     @Override
     public void onDriverDragEnd(float x, float y, DropTarget dropTargetOverride) {
-        final int[] dragLayerPos = getClampedDragLayerPos(x, y);
-        final int dragLayerX = dragLayerPos[0];
-        final int dragLayerY = dragLayerPos[1];
-
         DropTarget dropTarget;
         PointF vec = null;
 
@@ -454,14 +432,7 @@ public class DragController implements DragDriver.EventListener, TouchController
      * Call this from a drag source view.
      */
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        @SuppressWarnings("all") // suppress dead code warning
-        final boolean debug = false;
-        if (debug) {
-            Log.d(Launcher.TAG, "DragController.onInterceptTouchEvent " + ev + " Dragging="
-                    + (mDragDriver != null));
-        }
-
-        if (mIsAccessibleDrag) {
+        if (mOptions != null && mOptions.isAccessibleDrag) {
             return false;
         }
 
@@ -604,7 +575,7 @@ public class DragController implements DragDriver.EventListener, TouchController
      * Call this from a drag source view.
      */
     public boolean onTouchEvent(MotionEvent ev) {
-        if (mDragDriver == null || mIsAccessibleDrag) {
+        if (mDragDriver == null || mOptions == null || mOptions.isAccessibleDrag) {
             return false;
         }
 

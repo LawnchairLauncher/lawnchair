@@ -43,6 +43,7 @@ import android.widget.TextView;
 
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.util.Thunk;
 
@@ -199,8 +200,8 @@ public abstract class ButtonDropTarget extends TextView
     }
 
     @Override
-    public void onDragStart(DragSource source, ItemInfo info, int dragAction) {
-        mActive = supportsDrop(source, info);
+    public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
+        mActive = supportsDrop(dragObject.dragSource, dragObject.dragInfo);
         mDrawable.setColorFilter(null);
         if (mCurrentColorAnim != null) {
             mCurrentColorAnim.cancel();
@@ -209,6 +210,9 @@ public abstract class ButtonDropTarget extends TextView
         setTextColor(mOriginalTextColor);
         (mHideParentOnDisable ? ((ViewGroup) getParent()) : this)
                 .setVisibility(mActive ? View.VISIBLE : View.GONE);
+
+        mAccessibleDrag = options.isAccessibleDrag;
+        setOnClickListener(mAccessibleDrag ? this : null);
     }
 
     @Override
@@ -227,6 +231,7 @@ public abstract class ButtonDropTarget extends TextView
     @Override
     public void onDragEnd() {
         mActive = false;
+        setOnClickListener(null);
     }
 
     /**
@@ -306,11 +311,6 @@ public abstract class ButtonDropTarget extends TextView
         to.offset(xOffset, yOffset);
 
         return to;
-    }
-
-    public void enableAccessibleDrag(boolean enable) {
-        mAccessibleDrag = enable;
-        setOnClickListener(enable ? this : null);
     }
 
     @Override

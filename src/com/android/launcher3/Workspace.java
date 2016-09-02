@@ -59,7 +59,7 @@ import android.widget.TextView;
 import com.android.launcher3.Launcher.CustomContentCallbacks;
 import com.android.launcher3.Launcher.LauncherOverlay;
 import com.android.launcher3.UninstallDropTarget.DropTargetSource;
-import com.android.launcher3.accessibility.LauncherAccessibilityDelegate.AccessibilityDragSource;
+import com.android.launcher3.accessibility.AccessibileDragListenerAdapter;
 import com.android.launcher3.accessibility.OverviewAccessibilityDelegate;
 import com.android.launcher3.accessibility.OverviewScreenAccessibilityDelegate;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
@@ -69,6 +69,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragScroller;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dragndrop.SpringLoadedDragController;
@@ -100,7 +101,7 @@ import java.util.HashSet;
 public class Workspace extends PagedView
         implements DropTarget, DragSource, DragScroller, View.OnTouchListener,
         DragController.DragListener, LauncherTransitionable, ViewGroup.OnHierarchyChangeListener,
-        Insettable, DropTargetSource, AccessibilityDragSource {
+        Insettable, DropTargetSource {
     private static final String TAG = "Launcher.Workspace";
 
     private static boolean ENFORCE_DRAG_EVENT_ORDER = false;
@@ -134,7 +135,6 @@ public class Workspace extends PagedView
 
     @Thunk Runnable mRemoveEmptyScreenRunnable;
     @Thunk boolean mDeferRemoveExtraEmptyScreen = false;
-    @Thunk boolean mAddNewPageOnDrag = true;
 
     /**
      * CellInfo for the cell that is currently being dragged
@@ -409,7 +409,7 @@ public class Workspace extends PagedView
     }
 
     @Override
-    public void onDragStart(final DragSource source, ItemInfo info, int dragAction) {
+    public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
         if (ENFORCE_DRAG_EVENT_ORDER) {
             enfoceDragParity("onDragStart", 0, 0);
         }
@@ -426,11 +426,19 @@ public class Workspace extends PagedView
         // Prevent any Un/InstallShortcutReceivers from updating the db while we are dragging
         InstallShortcutReceiver.enableInstallQueue();
 
-        if (mAddNewPageOnDrag) {
+        // Do not add a new page if it is a accessible drag which was not started by the workspace.
+        // We do not support accessibility drag from other sources and instead provide a direct
+        // action for move/add to homescreen.
+        // When a accessible drag is started by the folder, we only allow rearranging withing the
+        // folder.
+        boolean addNewPage = !(options.isAccessibleDrag && dragObject.dragSource != this);
+
+        if (addNewPage) {
             mDeferRemoveExtraEmptyScreen = false;
             addExtraEmptyScreenOnDrag();
 
-            if (source != this && info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET) {
+            if (dragObject.dragInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET
+                    && dragObject.dragSource != this) {
                 // When dragging a widget from different source, move to a page which has
                 // enough space to place this widget (after rearranging/resizing). We special case
                 // widgets as they cannot be placed inside a folder.
@@ -439,7 +447,7 @@ public class Workspace extends PagedView
                 int currentPage = getPageNearestToCenterOfScreen();
                 for (int pageIndex = currentPage; pageIndex < getPageCount(); pageIndex++) {
                     CellLayout page = (CellLayout) getPageAt(pageIndex);
-                    if (page.hasReorderSolution(info)) {
+                    if (page.hasReorderSolution(dragObject.dragInfo)) {
                         setCurrentPage(pageIndex);
                         break;
                     }
@@ -451,10 +459,6 @@ public class Workspace extends PagedView
             // Always enter the spring loaded mode
             mLauncher.enterSpringLoadedDragMode();
         }
-    }
-
-    public void setAddNewPageOnDrag(boolean addPage) {
-        mAddNewPageOnDrag = addPage;
     }
 
     public void deferRemoveExtraEmptyScreen() {
@@ -1722,26 +1726,6 @@ public class Workspace extends PagedView
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    @Override
-    public void enableAccessibleDrag(boolean enable) {
-        for (int i = 0; i < getChildCount(); i++) {
-            CellLayout child = (CellLayout) getChildAt(i);
-            child.enableAccessibleDrag(enable, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG);
-        }
-
-        if (enable) {
-            // We need to allow our individual children to become click handlers in this case
-            setOnClickListener(null);
-        } else {
-            // Reset our click listener
-            setOnClickListener(mLauncher);
-        }
-        mLauncher.getDropTargetBar().enableAccessibleDrag(enable);
-        mLauncher.getHotseat().getLayout()
-            .enableAccessibleDrag(enable, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG);
-    }
-
     public boolean hasCustomContent() {
         return (mScreenOrder.size() > 0 && mScreenOrder.get(0) == CUSTOM_CONTENT_SCREEN_ID);
     }
@@ -2280,12 +2264,7 @@ public class Workspace extends PagedView
         return null;
     }
 
-    public void startDrag(CellLayout.CellInfo cellInfo) {
-        startDrag(cellInfo, false);
-    }
-
-    @Override
-    public void startDrag(CellLayout.CellInfo cellInfo, boolean accessible) {
+    public void startDrag(CellLayout.CellInfo cellInfo, DragOptions options) {
         View child = cellInfo.cell;
 
         // Make sure the drag was started by a long press as opposed to a long click.
@@ -2298,10 +2277,25 @@ public class Workspace extends PagedView
         CellLayout layout = (CellLayout) child.getParent().getParent();
         layout.prepareChildForDrag(child);
 
-        beginDragShared(child, this, accessible);
+        if (options.isAccessibleDrag) {
+            mDragController.addDragListener(new AccessibileDragListenerAdapter(
+                    this, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG) {
+                @Override
+                protected void enableAccessibleDrag(boolean enable) {
+                    super.enableAccessibleDrag(enable);
+                    setEnableForLayout(mLauncher.getHotseat().getLayout(),enable);
+
+                    // We need to allow our individual children to become click handlers in this
+                    // case, so temporarily unset the click handlers.
+                    setOnClickListener(enable ? null : mLauncher);
+                }
+            });
+        }
+
+        beginDragShared(child, this, options);
     }
 
-    public void beginDragShared(View child, DragSource source, boolean accessible) {
+    public void beginDragShared(View child, DragSource source, DragOptions options) {
         Object dragObject = child.getTag();
         if (!(dragObject instanceof ItemInfo)) {
             String msg = "Drag started with a view that has no tag set. This "
@@ -2309,13 +2303,13 @@ public class Workspace extends PagedView
                     + "View: " + child + "  tag: " + child.getTag();
             throw new IllegalStateException(msg);
         }
-        beginDragShared(child, source, accessible, (ItemInfo) dragObject,
-                new DragPreviewProvider(child));
+        beginDragShared(child, source, (ItemInfo) dragObject,
+                new DragPreviewProvider(child), options);
     }
 
 
-    public DragView beginDragShared(View child, DragSource source, boolean accessible,
-            ItemInfo dragObject, DragPreviewProvider previewProvider) {
+    public DragView beginDragShared(View child, DragSource source, ItemInfo dragObject,
+            DragPreviewProvider previewProvider, DragOptions dragOptions) {
         child.clearFocus();
         child.setPressed(false);
         mOutlineProvider = previewProvider;
@@ -2359,8 +2353,7 @@ public class Workspace extends PagedView
         }
 
         DragView dv = mDragController.startDrag(b, dragLayerX, dragLayerY, source,
-                dragObject, DragController.DRAG_ACTION_MOVE, dragVisualizeOffset,
-                dragRect, scale, accessible);
+                dragObject, dragVisualizeOffset, dragRect, scale, dragOptions);
         dv.setIntrinsicIconScaleFactor(source.getIntrinsicIconScaleFactor());
         b.recycle();
         return dv;

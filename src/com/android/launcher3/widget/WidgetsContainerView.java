@@ -33,6 +33,7 @@ import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeleteDropTarget;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
+import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.ItemInfo;
@@ -251,7 +252,7 @@ public class WidgetsContainerView extends BaseContainerView
 
         // Start the drag
         mDragController.startDrag(image, preview, this, createItemInfo,
-                bounds, DragController.DRAG_ACTION_COPY, scale);
+                bounds, scale, new DragOptions());
         return true;
     }
 

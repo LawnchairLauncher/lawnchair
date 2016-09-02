@@ -71,11 +71,12 @@ import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.UninstallDropTarget.DropTargetSource;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace.ItemOperator;
-import com.android.launcher3.accessibility.LauncherAccessibilityDelegate.AccessibilityDragSource;
+import com.android.launcher3.accessibility.AccessibileDragListenerAdapter;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.logging.UserEventDispatcher.LaunchSourceProvider;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -92,7 +93,7 @@ import java.util.Comparator;
  */
 public class Folder extends LinearLayout implements DragSource, View.OnClickListener,
         View.OnLongClickListener, DropTarget, FolderListener, TextView.OnEditorActionListener,
-        View.OnFocusChangeListener, DragListener, DropTargetSource, AccessibilityDragSource {
+        View.OnFocusChangeListener, DragListener, DropTargetSource {
     private static final String TAG = "Launcher.Folder";
 
     /**
@@ -282,10 +283,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     public boolean onLongClick(View v) {
         // Return if global dragging is not enabled
         if (!mLauncher.isDraggingEnabled()) return true;
-        return beginDrag(v, false);
+        return startDrag(v, new DragOptions());
     }
 
-    private boolean beginDrag(View v, boolean accessible) {
+    public boolean startDrag(View v, DragOptions options) {
         Object tag = v.getTag();
         if (tag instanceof ShortcutInfo) {
             ShortcutInfo item = (ShortcutInfo) tag;
@@ -293,35 +294,48 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 return false;
             }
 
-            mLauncher.getWorkspace().beginDragShared(v, this, accessible);
-
             mCurrentDragInfo = item;
             mEmptyCellRank = item.rank;
             mCurrentDragView = v;
 
-            mContent.removeItem(mCurrentDragView);
-            mInfo.remove(mCurrentDragInfo, true);
-            mDragInProgress = true;
-            mItemAddedBackToSelfViaIcon = false;
+            mDragController.addDragListener(this);
+            if (options.isAccessibleDrag) {
+                mDragController.addDragListener(new AccessibileDragListenerAdapter(
+                        mContent, CellLayout.FOLDER_ACCESSIBILITY_DRAG) {
+
+                    @Override
+                    protected void enableAccessibleDrag(boolean enable) {
+                        super.enableAccessibleDrag(enable);
+                        mFooter.setImportantForAccessibility(enable
+                                ? IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
+                                : IMPORTANT_FOR_ACCESSIBILITY_AUTO);
+                    }
+                });
+            }
+
+            mLauncher.getWorkspace().beginDragShared(v, this, options);
         }
         return true;
     }
 
     @Override
-    public void startDrag(CellInfo cellInfo, boolean accessible) {
-        beginDrag(cellInfo.cell, accessible);
+    public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
+        if (dragObject.dragSource != this) {
+            return;
+        }
+
+        mContent.removeItem(mCurrentDragView);
+        mInfo.remove(mCurrentDragInfo, true);
+        mDragInProgress = true;
+        mItemAddedBackToSelfViaIcon = false;
     }
 
     @Override
-    public void enableAccessibleDrag(boolean enable) {
-        mLauncher.getDropTargetBar().enableAccessibleDrag(enable);
-        for (int i = 0; i < mContent.getChildCount(); i++) {
-            mContent.getPageAt(i).enableAccessibleDrag(enable, CellLayout.FOLDER_ACCESSIBILITY_DRAG);
+    public void onDragEnd() {
+        if (mIsExternalDrag && mDragInProgress) {
+            completeDragExit();
         }
-
-        mFooter.setImportantForAccessibility(enable ? IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS :
-                IMPORTANT_FOR_ACCESSIBILITY_AUTO);
-        mLauncher.getWorkspace().setAddNewPageOnDrag(!enable);
+        mDragController.removeDragListener(this);
     }
 
     public boolean isEditingName() {
@@ -659,17 +673,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         // Since this folder opened by another controller, it might not get onDrop or
         // onDropComplete. Perform cleanup once drag-n-drop ends.
         mDragController.addDragListener(this);
-    }
-
-    @Override
-    public void onDragStart(DragSource source, ItemInfo info, int dragAction) { }
-
-    @Override
-    public void onDragEnd() {
-        if (mIsExternalDrag && mDragInProgress) {
-            completeDragExit();
-        }
-        mDragController.removeDragListener(this);
     }
 
     @Thunk void sendCustomAccessibilityEvent(int type, String text) {

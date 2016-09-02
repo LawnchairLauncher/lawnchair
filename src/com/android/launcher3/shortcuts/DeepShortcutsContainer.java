@@ -62,6 +62,7 @@ import com.android.launcher3.accessibility.ShortcutMenuAccessibilityDelegate;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.graphics.TriangleShape;
 import com.android.launcher3.logging.UserEventDispatcher;
@@ -515,8 +516,8 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         mIconShift.y = mIconLastTouchPos.y - mLauncher.getDeviceProfile().iconSizePx;
 
         DragView dv = mLauncher.getWorkspace().beginDragShared(
-                sv.getBubbleText(), this, false, sv.getFinalInfo(),
-                new ShortcutDragPreviewProvider(sv.getIconView(), mIconShift));
+                sv.getBubbleText(), this, sv.getFinalInfo(),
+                new ShortcutDragPreviewProvider(sv.getIconView(), mIconShift), new DragOptions());
         dv.animateShift(-mIconShift.x, -mIconShift.y);
 
         // TODO: support dragging from within folder without having to close it
@@ -560,7 +561,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
     }
 
     @Override
-    public void onDragStart(DragSource source, ItemInfo info, int dragAction) {
+    public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
         // Either the original icon or one of the shortcuts was dragged.
         // Hide the container, but don't remove it yet because that interferes with touch events.
         animateClose();
