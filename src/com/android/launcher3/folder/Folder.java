@@ -42,7 +42,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.accessibility.AccessibilityEvent;
-import android.view.accessibility.AccessibilityManager;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
@@ -52,7 +51,6 @@ import android.widget.TextView;
 
 import com.android.launcher3.Alarm;
 import com.android.launcher3.CellLayout;
-import com.android.launcher3.CellLayout.CellInfo;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
@@ -77,7 +75,6 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
-import com.android.launcher3.logging.UserEventDispatcher.LaunchSourceProvider;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -366,7 +363,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         LauncherModel.updateItemInDatabase(mLauncher, mInfo);
 
         if (commit) {
-            sendCustomAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
+            Utilities.sendCustomAccessibilityEvent(
+                    this, AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
                     getContext().getString(R.string.folder_renamed, newTitle));
         }
 
@@ -605,7 +603,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         openFolderAnim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
-                sendCustomAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
+                Utilities.sendCustomAccessibilityEvent(
+                        Folder.this,
+                        AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
                         mContent.getAccessibilityDescription());
                 mState = STATE_ANIMATING;
             }
@@ -675,17 +675,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mDragController.addDragListener(this);
     }
 
-    @Thunk void sendCustomAccessibilityEvent(int type, String text) {
-        AccessibilityManager accessibilityManager = (AccessibilityManager)
-                getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
-        if (accessibilityManager.isEnabled()) {
-            AccessibilityEvent event = AccessibilityEvent.obtain(type);
-            onInitializeAccessibilityEvent(event);
-            event.getText().add(text);
-            accessibilityManager.sendAccessibilityEvent(event);
-        }
-    }
-
     public void animateClosed() {
         if (!(getParent() instanceof DragLayer)) return;
         final ObjectAnimator oa = LauncherAnimUtils.ofViewAlphaAndScale(this, 0, 0.9f, 0.9f);
@@ -697,7 +686,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             }
             @Override
             public void onAnimationStart(Animator animation) {
-                sendCustomAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
+                Utilities.sendCustomAccessibilityEvent(
+                        Folder.this,
+                        AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
                         getContext().getString(R.string.folder_closed));
                 mState = STATE_ANIMATING;
             }
