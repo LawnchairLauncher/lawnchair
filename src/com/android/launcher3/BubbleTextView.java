@@ -42,6 +42,7 @@ import android.widget.TextView;
 
 import com.android.launcher3.IconCache.IconLoadRequest;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.graphics.HolographicOutlineHelper;
 import com.android.launcher3.model.PackageItemInfo;
 
 import java.text.NumberFormat;
@@ -148,7 +149,7 @@ public class BubbleTextView extends TextView
         mLongPressHelper = new CheckLongPressHelper(this);
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
 
-        mOutlineHelper = HolographicOutlineHelper.obtain(getContext());
+        mOutlineHelper = HolographicOutlineHelper.getInstance(getContext());
         setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
     }
 
@@ -326,7 +327,7 @@ public class BubbleTextView extends TextView
     void setStayPressed(boolean stayPressed) {
         mStayPressed = stayPressed;
         if (!stayPressed) {
-            HolographicOutlineHelper.obtain(getContext()).recycleShadowBitmap(mPressedBackground);
+            HolographicOutlineHelper.getInstance(getContext()).recycleShadowBitmap(mPressedBackground);
             mPressedBackground = null;
         } else {
             if (mPressedBackground == null) {

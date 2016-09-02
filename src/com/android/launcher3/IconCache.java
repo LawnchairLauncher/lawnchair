@@ -47,6 +47,7 @@ import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.SQLiteCacheHelper;
@@ -187,7 +188,7 @@ public class IconCache {
 
     private Bitmap makeDefaultIcon(UserHandleCompat user) {
         Drawable unbadged = getFullResDefaultActivityIcon();
-        return Utilities.createBadgedIconBitmap(unbadged, user, mContext);
+        return LauncherIcons.createBadgedIconBitmap(unbadged, user, mContext);
     }
 
     /**
@@ -387,7 +388,7 @@ public class IconCache {
         }
         if (entry == null) {
             entry = new CacheEntry();
-            entry.icon = Utilities.createBadgedIconBitmap(
+            entry.icon = LauncherIcons.createBadgedIconBitmap(
                     mIconProvider.getIcon(app, mIconDpi), app.getUser(),
                     mContext);
         }
@@ -555,7 +556,7 @@ public class IconCache {
             // Check the DB first.
             if (!getEntryFromDB(cacheKey, entry, useLowResIcon) || DEBUG_IGNORE_CACHE) {
                 if (info != null) {
-                    entry.icon = Utilities.createBadgedIconBitmap(
+                    entry.icon = LauncherIcons.createBadgedIconBitmap(
                             mIconProvider.getIcon(info, mIconDpi), info.getUser(),
                             mContext);
                 } else {
@@ -606,7 +607,7 @@ public class IconCache {
             entry.title = title;
         }
         if (icon != null) {
-            entry.icon = Utilities.createIconBitmap(icon, mContext);
+            entry.icon = LauncherIcons.createIconBitmap(icon, mContext);
         }
     }
 
@@ -641,7 +642,7 @@ public class IconCache {
 
                     // Load the full res icon for the application, but if useLowResIcon is set, then
                     // only keep the low resolution icon instead of the larger full-sized icon
-                    Bitmap icon = Utilities.createBadgedIconBitmap(
+                    Bitmap icon = LauncherIcons.createBadgedIconBitmap(
                             appInfo.loadIcon(mPackageManager), user, mContext);
                     Bitmap lowResIcon =  generateLowResIcon(icon, mPackageBgColor);
                     entry.title = appInfo.loadLabel(mPackageManager);

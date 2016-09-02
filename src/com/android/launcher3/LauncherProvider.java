@@ -764,12 +764,7 @@ public class LauncherProvider extends ContentProvider {
                     }
                 }
                 case 16: {
-                    // We use the db version upgrade here to identify users who may not have seen
-                    // clings yet (because they weren't available), but for whom the clings are now
-                    // available (tablet users). Because one of the possible cling flows (migration)
-                    // is very destructive (wipes out workspaces), we want to prevent this from showing
-                    // until clear data. We do so by marking that the clings have been shown.
-                    LauncherClings.markFirstRunClingDismissed(mContext);
+                    // No-op
                 }
                 case 17: {
                     // No-op

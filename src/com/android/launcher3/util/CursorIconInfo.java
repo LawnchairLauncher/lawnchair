@@ -25,6 +25,7 @@ import android.text.TextUtils;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.graphics.LauncherIcons;
 
 /**
  * Utility class to load icon from a cursor.
@@ -59,7 +60,7 @@ public class CursorIconInfo {
             info.iconResource = new ShortcutIconResource();
             info.iconResource.packageName = packageName;
             info.iconResource.resourceName = resourceName;
-            icon = Utilities.createIconBitmap(packageName, resourceName, mContext);
+            icon = LauncherIcons.createIconBitmap(packageName, resourceName, mContext);
         }
         if (icon == null) {
             // Failed to load from resource, try loading from DB.
@@ -72,7 +73,7 @@ public class CursorIconInfo {
      * Loads the fixed bitmap from the icon if available.
      */
     public Bitmap loadIcon(Cursor c) {
-        return Utilities.createIconBitmap(c, iconIndex, mContext);
+        return LauncherIcons.createIconBitmap(c, iconIndex, mContext);
     }
 
     /**

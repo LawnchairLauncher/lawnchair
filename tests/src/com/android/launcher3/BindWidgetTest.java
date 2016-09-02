@@ -232,7 +232,6 @@ public class BindWidgetTest extends LauncherInstrumentationTestCase {
             runTestOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    LauncherClings.markFirstRunClingDismissed(mTargetContext);
                     ManagedProfileHeuristic.markExistingUsersForNoFolderCreation(mTargetContext);
                     LauncherAppState.getInstance().getModel().resetLoadedState(true, true);
                 }

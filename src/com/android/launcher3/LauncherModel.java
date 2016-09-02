@@ -57,6 +57,7 @@ import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.dynamicui.ExtractionUtils;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.GridSizeMigrationTask;
 import com.android.launcher3.model.SdCardAvailableReceiver;
@@ -3121,7 +3122,7 @@ public class LauncherModel extends BroadcastReceiver
                             // Update shortcuts which use iconResource.
                             if ((si.iconResource != null)
                                     && pkgFilter.matches(si.iconResource.packageName)) {
-                                Bitmap icon = Utilities.createIconBitmap(
+                                Bitmap icon = LauncherIcons.createIconBitmap(
                                         si.iconResource.packageName,
                                         si.iconResource.resourceName, context);
                                 if (icon != null) {
@@ -3715,17 +3716,15 @@ public class LauncherModel extends BroadcastReceiver
         }
 
         Bitmap icon = null;
-        boolean customIcon = false;
         ShortcutIconResource iconResource = null;
 
         if (bitmap instanceof Bitmap) {
-            icon = Utilities.createIconBitmap((Bitmap) bitmap, context);
-            customIcon = true;
+            icon = LauncherIcons.createIconBitmap((Bitmap) bitmap, context);
         } else {
             Parcelable extra = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE);
             if (extra instanceof ShortcutIconResource) {
                 iconResource = (ShortcutIconResource) extra;
-                icon = Utilities.createIconBitmap(iconResource.packageName,
+                icon = LauncherIcons.createIconBitmap(iconResource.packageName,
                         iconResource.resourceName, context);
             }
         }

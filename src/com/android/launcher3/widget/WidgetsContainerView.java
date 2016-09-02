@@ -45,6 +45,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.dragndrop.DragController;
+import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -240,7 +241,7 @@ public class WidgetsContainerView extends BaseContainerView
         } else {
             PendingAddShortcutInfo createShortcutInfo = (PendingAddShortcutInfo) v.getTag();
             Drawable icon = mIconCache.getFullResIcon(createShortcutInfo.activityInfo);
-            preview = Utilities.createIconBitmap(icon, mLauncher);
+            preview = LauncherIcons.createIconBitmap(icon, mLauncher);
             createItemInfo.spanX = createItemInfo.spanY = 1;
             scale = ((float) mLauncher.getDeviceProfile().iconSizePx) / preview.getWidth();
         }

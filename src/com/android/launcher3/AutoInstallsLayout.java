@@ -38,6 +38,7 @@ import android.util.Patterns;
 import com.android.launcher3.LauncherProvider.SqlArguments;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.util.Thunk;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -436,7 +437,7 @@ public class AutoInstallsLayout {
                 return -1;
             }
 
-            ItemInfo.writeBitmap(mValues, Utilities.createIconBitmap(icon, mContext));
+            ItemInfo.writeBitmap(mValues, LauncherIcons.createIconBitmap(icon, mContext));
             mValues.put(Favorites.ICON_PACKAGE, mIconRes.getResourcePackageName(iconId));
             mValues.put(Favorites.ICON_RESOURCE, mIconRes.getResourceName(iconId));
 

@@ -25,6 +25,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
+import com.android.launcher3.graphics.HolographicOutlineHelper;
+
 /**
  * The fast scroller popup that shows the section name the list will jump to.
  */
@@ -116,7 +118,7 @@ public class BaseRecyclerViewFastScrollPopup {
             mBgBounds.bottom = mBgBounds.top + bgHeight;
 
             // Generate a bitmap for a shadow matching these bounds
-            mShadow = HolographicOutlineHelper.obtain(
+            mShadow = HolographicOutlineHelper.getInstance(
                     mRv.getContext()).createMediumDropShadow(mBg, false /* shouldCache */);
         } else {
             mShadow = null;

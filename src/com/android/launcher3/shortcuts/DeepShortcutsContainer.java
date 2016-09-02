@@ -63,6 +63,7 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.graphics.TriangleShape;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -391,7 +392,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
     private void showDragView(BubbleTextView originalIcon) {
         // TODO: implement support for Drawable DragViews so we don't have to create a bitmap here.
-        Bitmap b = Utilities.createIconBitmap(originalIcon.getIcon(), mLauncher);
+        Bitmap b = LauncherIcons.createIconBitmap(originalIcon.getIcon(), mLauncher);
         float scale = mLauncher.getDragLayer().getLocationInDragLayer(originalIcon, mTempXY);
         int dragLayerX = Math.round(mTempXY[0] - (b.getWidth() - scale * originalIcon.getWidth()) / 2);
         int dragLayerY = Math.round(mTempXY[1] - (b.getHeight() - scale * b.getHeight()) / 2

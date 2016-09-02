@@ -24,7 +24,6 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.TextView;
 
-import com.android.launcher3.HolographicOutlineHelper;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.PreloadIconDrawable;
 import com.android.launcher3.Workspace;
@@ -137,7 +136,7 @@ public class DragPreviewProvider {
                 mView.getHeight() + DRAG_BITMAP_PADDING, Bitmap.Config.ALPHA_8);
         canvas.setBitmap(b);
         drawDragView(canvas);
-        HolographicOutlineHelper.obtain(mView.getContext())
+        HolographicOutlineHelper.getInstance(mView.getContext())
                 .applyExpensiveOutlineWithBlur(b, canvas);
         canvas.setBitmap(null);
         return b;
