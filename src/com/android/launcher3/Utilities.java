@@ -58,6 +58,8 @@ import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.Toast;
 
 import com.android.launcher3.compat.UserHandleCompat;
@@ -905,5 +907,16 @@ public final class Utilities {
         int colorAccent = ta.getColor(0, 0);
         ta.recycle();
         return colorAccent;
+    }
+
+    public static void sendCustomAccessibilityEvent(View target, int type, String text) {
+        AccessibilityManager accessibilityManager = (AccessibilityManager)
+                target.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
+        if (accessibilityManager.isEnabled()) {
+            AccessibilityEvent event = AccessibilityEvent.obtain(type);
+            target.onInitializeAccessibilityEvent(event);
+            event.getText().add(text);
+            accessibilityManager.sendAccessibilityEvent(event);
+        }
     }
 }

@@ -31,7 +31,6 @@ import android.graphics.drawable.ShapeDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
@@ -65,7 +64,6 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.graphics.TriangleShape;
-import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
@@ -255,8 +253,10 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
             @Override
             public void onAnimationEnd(Animator animation) {
                 mOpenCloseAnimator = null;
-
-                sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
+                Utilities.sendCustomAccessibilityEvent(
+                        DeepShortcutsContainer.this,
+                        AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
+                        getContext().getString(R.string.action_deep_shortcut));
             }
         });
 

@@ -102,8 +102,8 @@ public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleG
             // once the state switching animation is complete.
             return false;
         }
-        if (mWorkspace.getOpenFolder() != null) {
-            // Don't listen for the pinch gesture if a folder is open.
+        if (mLauncher.getTopFloatingView() != null) {
+            // Don't listen for the pinch gesture if a floating view is open.
             return false;
         }
 

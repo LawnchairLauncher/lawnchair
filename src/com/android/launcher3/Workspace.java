@@ -1858,36 +1858,11 @@ public class Workspace extends PagedView
     }
 
     @Override
-    protected boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
-        if (!mLauncher.isAppsViewVisible()) {
-            final Folder openFolder = getOpenFolder();
-            if (openFolder != null) {
-                return openFolder.requestFocus(direction, previouslyFocusedRect);
-            } else {
-                return super.onRequestFocusInDescendants(direction, previouslyFocusedRect);
-            }
-        }
-        return false;
-    }
-
-    @Override
     public int getDescendantFocusability() {
         if (workspaceInModalState()) {
             return ViewGroup.FOCUS_BLOCK_DESCENDANTS;
         }
         return super.getDescendantFocusability();
-    }
-
-    @Override
-    public void addFocusables(ArrayList<View> views, int direction, int focusableMode) {
-        if (!mLauncher.isAppsViewVisible()) {
-            final Folder openFolder = getOpenFolder();
-            if (openFolder != null) {
-                openFolder.addFocusables(views, direction);
-            } else {
-                super.addFocusables(views, direction, focusableMode);
-            }
-        }
     }
 
     public boolean workspaceInModalState() {

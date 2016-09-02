@@ -3151,6 +3151,14 @@ public class Launcher extends Activity
         }
     }
 
+    public View getTopFloatingView() {
+        View topView = getOpenShortcutsContainer();
+        if (topView == null) {
+            topView = getWorkspace().getOpenFolder();
+        }
+        return topView;
+    }
+
     /**
      * @return The open shortcuts container, or null if there is none
      */

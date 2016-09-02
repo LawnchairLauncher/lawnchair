@@ -343,16 +343,9 @@ public class DragLayer extends InsettableFrameLayout {
     }
 
     private void sendTapOutsideFolderAccessibilityEvent(boolean isEditingName) {
-        AccessibilityManager accessibilityManager = (AccessibilityManager)
-                getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
-        if (accessibilityManager.isEnabled()) {
-            int stringId = isEditingName ? R.string.folder_tap_to_rename : R.string.folder_tap_to_close;
-            AccessibilityEvent event = AccessibilityEvent.obtain(
-                    AccessibilityEvent.TYPE_VIEW_FOCUSED);
-            onInitializeAccessibilityEvent(event);
-            event.getText().add(getContext().getString(stringId));
-            accessibilityManager.sendAccessibilityEvent(event);
-        }
+        int stringId = isEditingName ? R.string.folder_tap_to_rename : R.string.folder_tap_to_close;
+        Utilities.sendCustomAccessibilityEvent(
+                this, AccessibilityEvent.TYPE_VIEW_FOCUSED, getContext().getString(stringId));
     }
 
     private boolean isInAccessibleDrag() {
@@ -362,37 +355,27 @@ public class DragLayer extends InsettableFrameLayout {
     @Override
     public boolean onRequestSendAccessibilityEvent(View child, AccessibilityEvent event) {
         // Shortcuts can appear above folder
-        View topView = mLauncher.getOpenShortcutsContainer();
+        View topView = mLauncher.getTopFloatingView();
         if (topView != null) {
-            return handleTopViewSendAccessibilityEvent(topView, child, event);
-        }
-
-        topView = mLauncher.getWorkspace().getOpenFolder();
-        if (topView != null) {
-            return handleTopViewSendAccessibilityEvent(topView, child, event);
+            if (child == topView) {
+                return super.onRequestSendAccessibilityEvent(child, event);
+            }
+            if (isInAccessibleDrag() && child instanceof DropTargetBar) {
+                return super.onRequestSendAccessibilityEvent(child, event);
+            }
+            // Skip propagating onRequestSendAccessibilityEvent for all other children
+            // which are not topView
+            return false;
         }
         return super.onRequestSendAccessibilityEvent(child, event);
     }
 
-    private boolean handleTopViewSendAccessibilityEvent(
-            View topView, View child, AccessibilityEvent event) {
-        if (child == topView) {
-            return super.onRequestSendAccessibilityEvent(child, event);
-        }
-        if (isInAccessibleDrag() && child instanceof DropTargetBar) {
-            return super.onRequestSendAccessibilityEvent(child, event);
-        }
-        // Skip propagating onRequestSendAccessibilityEvent for all other children
-        // which are not topView
-        return false;
-    }
-
     @Override
     public void addChildrenForAccessibility(ArrayList<View> childrenForAccessibility) {
-        Folder currentFolder = mLauncher.getWorkspace().getOpenFolder();
-        if (currentFolder != null) {
-            // Only add the folder as a child for accessibility when it is open
-            childrenForAccessibility.add(currentFolder);
+        View topView = mLauncher.getTopFloatingView();
+        if (topView != null) {
+            // Only add the top view as a child for accessibility when it is open
+            childrenForAccessibility.add(topView);
 
             if (isInAccessibleDrag()) {
                 childrenForAccessibility.add(mLauncher.getDropTargetBar());
@@ -1035,6 +1018,26 @@ public class DragLayer extends InsettableFrameLayout {
 
     public float getBackgroundAlpha() {
         return mBackgroundAlpha;
+    }
+
+    @Override
+    protected boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
+        View topView = mLauncher.getTopFloatingView();
+        if (topView != null) {
+            return topView.requestFocus(direction, previouslyFocusedRect);
+        } else {
+            return super.onRequestFocusInDescendants(direction, previouslyFocusedRect);
+        }
+    }
+
+    @Override
+    public void addFocusables(ArrayList<View> views, int direction, int focusableMode) {
+        View topView = mLauncher.getTopFloatingView();
+        if (topView != null) {
+            topView.addFocusables(views, direction);
+        } else {
+            super.addFocusables(views, direction, focusableMode);
+        }
     }
 
     public void setTouchCompleteListener(TouchCompleteListener listener) {
