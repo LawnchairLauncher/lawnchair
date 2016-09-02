@@ -24,7 +24,6 @@ import android.view.View;
 import com.android.launcher3.HolographicOutlineHelper;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.PendingAddItemInfo;
-import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.graphics.DragPreviewProvider;
 
@@ -50,7 +49,7 @@ public class PendingItemPreviewProvider extends DragPreviewProvider {
 
         int w = size[0];
         int h = size[1];
-        final Bitmap b = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        final Bitmap b = Bitmap.createBitmap(w, h, Bitmap.Config.ALPHA_8);
         canvas.setBitmap(b);
 
         Rect src = new Rect(0, 0, mPreviewBitmap.getWidth(), mPreviewBitmap.getHeight());
@@ -68,9 +67,8 @@ public class PendingItemPreviewProvider extends DragPreviewProvider {
         // Don't clip alpha values for the drag outline if we're using the default widget preview
         boolean clipAlpha = !(mAddInfo instanceof PendingAddWidgetInfo &&
                 (((PendingAddWidgetInfo) mAddInfo).previewImage == 0));
-        final int outlineColor = mView.getResources().getColor(R.color.outline_color);
         HolographicOutlineHelper.obtain(mView.getContext())
-                .applyExpensiveOutlineWithBlur(b, canvas, outlineColor, outlineColor, clipAlpha);
+                .applyExpensiveOutlineWithBlur(b, canvas, clipAlpha);
         canvas.setBitmap(null);
 
         return b;
