@@ -25,6 +25,15 @@ public class Wait {
             }
             SystemClock.sleep(sleepMillis);
         }
+
+        // Check once more before returning false.
+        try {
+            if (condition.isTrue()) {
+                return true;
+            }
+        } catch (Throwable t) {
+            // Ignore
+        }
         return false;
     }
 }
