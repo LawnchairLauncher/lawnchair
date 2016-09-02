@@ -59,6 +59,7 @@ import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.logging.FileLog;
+import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.GridSizeMigrationTask;
 import com.android.launcher3.model.SdCardAvailableReceiver;
 import com.android.launcher3.model.WidgetsModel;
@@ -161,34 +162,11 @@ public class LauncherModel extends BroadcastReceiver
         }
     };
 
-    // The lock that must be acquired before referencing any static bg data structures.  Unlike
-    // other locks, this one can generally be held long-term because we never expect any of these
-    // static data structures to be referenced outside of the worker thread except on the first
-    // load after configuration change.
-    static final Object sBgLock = new Object();
-
-    // sBgItemsIdMap maps *all* the ItemInfos (shortcuts, folders, and widgets) created by
-    // LauncherModel to their ids
-    static final LongArrayMap<ItemInfo> sBgItemsIdMap = new LongArrayMap<>();
-
-    // sBgWorkspaceItems is passed to bindItems, which expects a list of all folders and shortcuts
-    //       created by LauncherModel that are directly on the home screen (however, no widgets or
-    //       shortcuts within folders).
-    static final ArrayList<ItemInfo> sBgWorkspaceItems = new ArrayList<ItemInfo>();
-
-    // sBgAppWidgets is all LauncherAppWidgetInfo created by LauncherModel. Passed to bindAppWidget()
-    static final ArrayList<LauncherAppWidgetInfo> sBgAppWidgets =
-        new ArrayList<LauncherAppWidgetInfo>();
-
-    // sBgFolders is all FolderInfos created by LauncherModel. Passed to bindFolders()
-    static final LongArrayMap<FolderInfo> sBgFolders = new LongArrayMap<>();
-
-    // sBgWorkspaceScreens is the ordered set of workspace screens.
-    static final ArrayList<Long> sBgWorkspaceScreens = new ArrayList<Long>();
-
-    // sBgPinnedShortcutCounts is the ComponentKey representing a pinned shortcut to the number of
-    // times it is pinned.
-    static final Map<ShortcutKey, MutableInt> sBgPinnedShortcutCounts = new HashMap<>();
+    /**
+     * All the static data should be accessed on the background thread, A lock should be acquired
+     * on this object when accessing any data from this model.
+     */
+    static final BgDataModel sBgDataModel = new BgDataModel();
 
     // </ only access in worker thread >
 
@@ -270,7 +248,7 @@ public class LauncherModel extends BroadcastReceiver
 
             @Override
             public void run() {
-                synchronized (sBgLock) {
+                synchronized (sBgDataModel) {
                     final HashSet<ItemInfo> updates = new HashSet<>();
 
                     if (installInfo.state == PackageInstallerCompat.STATUS_INSTALLED) {
@@ -278,7 +256,7 @@ public class LauncherModel extends BroadcastReceiver
                         return;
                     }
 
-                    for (ItemInfo info : sBgItemsIdMap) {
+                    for (ItemInfo info : sBgDataModel.itemsIdMap) {
                         if (info instanceof ShortcutInfo) {
                             ShortcutInfo si = (ShortcutInfo) info;
                             ComponentName cn = si.getTargetComponent();
@@ -295,7 +273,7 @@ public class LauncherModel extends BroadcastReceiver
                         }
                     }
 
-                    for (LauncherAppWidgetInfo widget : sBgAppWidgets) {
+                    for (LauncherAppWidgetInfo widget : sBgDataModel.appWidgets) {
                         if (widget.providerName.getPackageName().equals(installInfo.packageName)) {
                             widget.installProgress = installInfo.progress;
                             updates.add(widget);
@@ -328,11 +306,11 @@ public class LauncherModel extends BroadcastReceiver
 
             @Override
             public void run() {
-                synchronized (sBgLock) {
+                synchronized (sBgDataModel) {
                     ArrayList<ShortcutInfo> updates = new ArrayList<>();
                     UserHandleCompat user = UserHandleCompat.myUserHandle();
 
-                    for (ItemInfo info : sBgItemsIdMap) {
+                    for (ItemInfo info : sBgDataModel.itemsIdMap) {
                         if (info instanceof ShortcutInfo) {
                             ShortcutInfo si = (ShortcutInfo) info;
                             ComponentName cn = si.getTargetComponent();
@@ -412,8 +390,8 @@ public class LauncherModel extends BroadcastReceiver
 
         // Use sBgItemsIdMap as all the items are already loaded.
         assertWorkspaceLoaded();
-        synchronized (sBgLock) {
-            for (ItemInfo info : sBgItemsIdMap) {
+        synchronized (sBgDataModel) {
+            for (ItemInfo info : sBgDataModel.itemsIdMap) {
                 if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
                     ArrayList<ItemInfo> items = screenItems.get(info.screenId);
                     if (items == null) {
@@ -490,7 +468,7 @@ public class LauncherModel extends BroadcastReceiver
                 // can not use sBgWorkspaceScreens because loadWorkspace() may not have been
                 // called.
                 ArrayList<Long> workspaceScreens = loadWorkspaceScreensDb(context);
-                synchronized(sBgLock) {
+                synchronized(sBgDataModel) {
                     for (ItemInfo item : workspaceApps) {
                         if (item instanceof ShortcutInfo) {
                             // Short-circuit this logic if the icon exists somewhere on the workspace
@@ -572,7 +550,7 @@ public class LauncherModel extends BroadcastReceiver
 
     static void checkItemInfoLocked(
             final long itemId, final ItemInfo item, StackTraceElement[] stackTrace) {
-        ItemInfo modelItem = sBgItemsIdMap.get(itemId);
+        ItemInfo modelItem = sBgDataModel.itemsIdMap.get(itemId);
         if (modelItem != null && item != modelItem) {
             // check all the data is consistent
             if (modelItem instanceof ShortcutInfo && item instanceof ShortcutInfo) {
@@ -613,7 +591,7 @@ public class LauncherModel extends BroadcastReceiver
         final long itemId = item.id;
         Runnable r = new Runnable() {
             public void run() {
-                synchronized (sBgLock) {
+                synchronized (sBgDataModel) {
                     checkItemInfoLocked(itemId, item, stackTrace);
                 }
             }
@@ -669,13 +647,13 @@ public class LauncherModel extends BroadcastReceiver
 
     static void updateItemArrays(ItemInfo item, long itemId, StackTraceElement[] stackTrace) {
         // Lock on mBgLock *after* the db operation
-        synchronized (sBgLock) {
+        synchronized (sBgDataModel) {
             checkItemInfoLocked(itemId, item, stackTrace);
 
             if (item.container != LauncherSettings.Favorites.CONTAINER_DESKTOP &&
                     item.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
                 // Item is in a folder, make sure this folder exists
-                if (!sBgFolders.containsKey(item.container)) {
+                if (!sBgDataModel.folders.containsKey(item.container)) {
                     // An items container is being set to a that of an item which is not in
                     // the list of Folders.
                     String msg = "item: " + item + " container being set to: " +
@@ -687,7 +665,7 @@ public class LauncherModel extends BroadcastReceiver
             // Items are added/removed from the corresponding FolderInfo elsewhere, such
             // as in Workspace.onDrop. Here, we just add/remove them from the list of items
             // that are on the desktop, as appropriate
-            ItemInfo modelItem = sBgItemsIdMap.get(itemId);
+            ItemInfo modelItem = sBgDataModel.itemsIdMap.get(itemId);
             if (modelItem != null &&
                     (modelItem.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
                      modelItem.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT)) {
@@ -696,15 +674,15 @@ public class LauncherModel extends BroadcastReceiver
                     case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                     case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
                     case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
-                        if (!sBgWorkspaceItems.contains(modelItem)) {
-                            sBgWorkspaceItems.add(modelItem);
+                        if (!sBgDataModel.workspaceItems.contains(modelItem)) {
+                            sBgDataModel.workspaceItems.add(modelItem);
                         }
                         break;
                     default:
                         break;
                 }
             } else {
-                sBgWorkspaceItems.remove(modelItem);
+                sBgDataModel.workspaceItems.remove(modelItem);
             }
         }
     }
@@ -848,8 +826,8 @@ public class LauncherModel extends BroadcastReceiver
             intentWithoutPkg = intent.toUri(0);
         }
 
-        synchronized (sBgLock) {
-            for (ItemInfo item : sBgItemsIdMap) {
+        synchronized (sBgDataModel) {
+            for (ItemInfo item : sBgDataModel.itemsIdMap) {
                 if (item instanceof ShortcutInfo) {
                     ShortcutInfo info = (ShortcutInfo) item;
                     Intent targetIntent = info.promisedIntent == null
@@ -900,38 +878,9 @@ public class LauncherModel extends BroadcastReceiver
             public void run() {
                 cr.insert(LauncherSettings.Favorites.CONTENT_URI, values);
 
-                // Lock on mBgLock *after* the db operation
-                synchronized (sBgLock) {
+                synchronized (sBgDataModel) {
                     checkItemInfoLocked(item.id, item, stackTrace);
-                    sBgItemsIdMap.put(item.id, item);
-                    switch (item.itemType) {
-                        case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
-                            sBgFolders.put(item.id, (FolderInfo) item);
-                            // Fall through
-                        case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
-                        case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                        case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
-                            if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
-                                    item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                                sBgWorkspaceItems.add(item);
-                            } else {
-                                if (!sBgFolders.containsKey(item.container)) {
-                                    // Adding an item to a folder that doesn't exist.
-                                    String msg = "adding item: " + item + " to a folder that " +
-                                            " doesn't exist";
-                                    Log.e(TAG, msg);
-                                }
-                            }
-                            if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
-                                incrementPinnedShortcutCount(
-                                        ShortcutKey.fromShortcutInfo((ShortcutInfo) item),
-                                        true /* shouldPin */);
-                            }
-                            break;
-                        case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
-                            sBgAppWidgets.add((LauncherAppWidgetInfo) item);
-                            break;
-                    }
+                    sBgDataModel.addItem(item, true);
                 }
             }
         };
@@ -951,7 +900,7 @@ public class LauncherModel extends BroadcastReceiver
      * Removes all the items from the database matching {@param matcher}.
      */
     public static void deleteItemsFromDatabase(Context context, ItemInfoMatcher matcher) {
-        deleteItemsFromDatabase(context, matcher.filterItemInfos(sBgItemsIdMap));
+        deleteItemsFromDatabase(context, matcher.filterItemInfos(sBgDataModel.itemsIdMap));
     }
 
     /**
@@ -965,73 +914,11 @@ public class LauncherModel extends BroadcastReceiver
                     final Uri uri = LauncherSettings.Favorites.getContentUri(item.id);
                     cr.delete(uri, null, null);
 
-                    // Lock on mBgLock *after* the db operation
-                    synchronized (sBgLock) {
-                        switch (item.itemType) {
-                            case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
-                                sBgFolders.remove(item.id);
-                                for (ItemInfo info: sBgItemsIdMap) {
-                                    if (info.container == item.id) {
-                                        // We are deleting a folder which still contains items that
-                                        // think they are contained by that folder.
-                                        String msg = "deleting a folder (" + item + ") which still " +
-                                                "contains items (" + info + ")";
-                                        Log.e(TAG, msg);
-                                    }
-                                }
-                                sBgWorkspaceItems.remove(item);
-                                break;
-                            case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
-                                decrementPinnedShortcutCount(ShortcutKey.fromShortcutInfo(
-                                        (ShortcutInfo) item));
-                                // Fall through.
-                            case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
-                            case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                                sBgWorkspaceItems.remove(item);
-                                break;
-                            case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
-                                sBgAppWidgets.remove((LauncherAppWidgetInfo) item);
-                                break;
-                        }
-                        sBgItemsIdMap.remove(item.id);
-                    }
+                    sBgDataModel.removeItem(item);
                 }
             }
         };
         runOnWorkerThread(r);
-    }
-
-    /**
-     * Decrement the count for the given pinned shortcut, unpinning it if the count becomes 0.
-     */
-    private static void decrementPinnedShortcutCount(final ShortcutKey pinnedShortcut) {
-        synchronized (sBgLock) {
-            MutableInt count = sBgPinnedShortcutCounts.get(pinnedShortcut);
-            if (count == null || --count.value == 0) {
-                LauncherAppState.getInstance().getShortcutManager().unpinShortcut(pinnedShortcut);
-            }
-        }
-    }
-
-    /**
-     * Increment the count for the given shortcut, pinning it if the count becomes 1.
-     *
-     * As an optimization, the caller can pass shouldPin == false to avoid
-     * unnecessary RPC's if the shortcut is already pinned.
-     */
-    private static void incrementPinnedShortcutCount(ShortcutKey pinnedShortcut, boolean shouldPin) {
-        synchronized (sBgLock) {
-            MutableInt count = sBgPinnedShortcutCounts.get(pinnedShortcut);
-            if (count == null) {
-                count = new MutableInt(1);
-                sBgPinnedShortcutCounts.put(pinnedShortcut, count);
-            } else {
-                count.value++;
-            }
-            if (shouldPin && count.value == 1) {
-                LauncherAppState.getInstance().getShortcutManager().pinShortcut(pinnedShortcut);
-            }
-        }
     }
 
     /**
@@ -1073,9 +960,9 @@ public class LauncherModel extends BroadcastReceiver
                     throw new RuntimeException(ex);
                 }
 
-                synchronized (sBgLock) {
-                    sBgWorkspaceScreens.clear();
-                    sBgWorkspaceScreens.addAll(screensCopy);
+                synchronized (sBgDataModel) {
+                    sBgDataModel.workspaceScreens.clear();
+                    sBgDataModel.workspaceScreens.addAll(screensCopy);
                 }
             }
         };
@@ -1090,22 +977,13 @@ public class LauncherModel extends BroadcastReceiver
 
         Runnable r = new Runnable() {
             public void run() {
-                cr.delete(LauncherSettings.Favorites.getContentUri(info.id), null, null);
-                // Lock on mBgLock *after* the db operation
-                synchronized (sBgLock) {
-                    sBgItemsIdMap.remove(info.id);
-                    sBgFolders.remove(info.id);
-                    sBgWorkspaceItems.remove(info);
-                }
-
                 cr.delete(LauncherSettings.Favorites.CONTENT_URI,
                         LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
-                // Lock on mBgLock *after* the db operation
-                synchronized (sBgLock) {
-                    for (ItemInfo childInfo : info.contents) {
-                        sBgItemsIdMap.remove(childInfo.id);
-                    }
-                }
+                sBgDataModel.removeItem(info.contents);
+                info.contents.clear();
+
+                cr.delete(LauncherSettings.Favorites.getContentUri(info.id), null, null);
+                sBgDataModel.removeItem(info);
             }
         };
         runOnWorkerThread(r);
@@ -1624,18 +1502,6 @@ public class LauncherModel extends BroadcastReceiver
             }
         }
 
-        /** Clears all the sBg data structures */
-        private void clearSBgDataStructures() {
-            synchronized (sBgLock) {
-                sBgWorkspaceItems.clear();
-                sBgAppWidgets.clear();
-                sBgFolders.clear();
-                sBgItemsIdMap.clear();
-                sBgWorkspaceScreens.clear();
-                sBgPinnedShortcutCounts.clear();
-            }
-        }
-
         private void loadWorkspace() {
             if (LauncherAppState.PROFILE_STARTUP) {
                 Trace.beginSection("Loading Workspace");
@@ -1679,11 +1545,12 @@ public class LauncherModel extends BroadcastReceiver
             LauncherSettings.Settings.call(contentResolver,
                     LauncherSettings.Settings.METHOD_LOAD_DEFAULT_FAVORITES);
 
-            synchronized (sBgLock) {
-                clearSBgDataStructures();
+            synchronized (sBgDataModel) {
+                sBgDataModel.clear();
+
                 final HashMap<String, Integer> installingPkgs = PackageInstallerCompat
                         .getInstance(mContext).updateAndGetActiveSessionCache();
-                sBgWorkspaceScreens.addAll(loadWorkspaceScreensDb(mContext));
+                sBgDataModel.workspaceScreens.addAll(loadWorkspaceScreensDb(mContext));
 
                 final ArrayList<Long> itemsToRemove = new ArrayList<>();
                 final ArrayList<Long> restoredRows = new ArrayList<>();
@@ -1958,7 +1825,6 @@ public class LauncherModel extends BroadcastReceiver
 
                                         info.isDisabled |= ShortcutInfo.FLAG_DISABLED_LOCKED_USER;
                                     }
-                                    incrementPinnedShortcutCount(key, false /* shouldPin */);
                                 } else { // item type == ITEM_TYPE_SHORTCUT
                                     info = getShortcutInfo(c, cursorIconInfo);
 
@@ -2000,7 +1866,7 @@ public class LauncherModel extends BroadcastReceiver
                                     }
 
                                     // check & update map of what's occupied
-                                    if (!checkItemPlacement(occupied, info, sBgWorkspaceScreens)) {
+                                    if (!checkItemPlacement(occupied, info, sBgDataModel.workspaceScreens)) {
                                         itemsToRemove.add(id);
                                         break;
                                     }
@@ -2017,19 +1883,7 @@ public class LauncherModel extends BroadcastReceiver
                                         }
                                     }
 
-                                    switch (container) {
-                                    case LauncherSettings.Favorites.CONTAINER_DESKTOP:
-                                    case LauncherSettings.Favorites.CONTAINER_HOTSEAT:
-                                        sBgWorkspaceItems.add(info);
-                                        break;
-                                    default:
-                                        // Item is in a user folder
-                                        FolderInfo folderInfo =
-                                                findOrMakeFolder(sBgFolders, container);
-                                        folderInfo.add(info, false);
-                                        break;
-                                    }
-                                    sBgItemsIdMap.put(info.id, info);
+                                    sBgDataModel.addItem(info, false);
                                 } else {
                                     throw new RuntimeException("Unexpected null ShortcutInfo");
                                 }
@@ -2037,7 +1891,7 @@ public class LauncherModel extends BroadcastReceiver
 
                             case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                                 id = c.getLong(idIndex);
-                                FolderInfo folderInfo = findOrMakeFolder(sBgFolders, id);
+                                FolderInfo folderInfo = sBgDataModel.findOrMakeFolder(id);
 
                                 // Do not trim the folder label, as is was set by the user.
                                 folderInfo.title = c.getString(cursorIconInfo.titleIndex);
@@ -2051,25 +1905,16 @@ public class LauncherModel extends BroadcastReceiver
                                 folderInfo.options = c.getInt(optionsIndex);
 
                                 // check & update map of what's occupied
-                                if (!checkItemPlacement(occupied, folderInfo, sBgWorkspaceScreens)) {
+                                if (!checkItemPlacement(occupied, folderInfo, sBgDataModel.workspaceScreens)) {
                                     itemsToRemove.add(id);
                                     break;
                                 }
-
-                                switch (container) {
-                                    case LauncherSettings.Favorites.CONTAINER_DESKTOP:
-                                    case LauncherSettings.Favorites.CONTAINER_HOTSEAT:
-                                        sBgWorkspaceItems.add(folderInfo);
-                                        break;
-                                }
-
                                 if (restored) {
                                     // no special handling required for restored folders
                                     restoredRows.add(id);
                                 }
 
-                                sBgItemsIdMap.put(folderInfo.id, folderInfo);
-                                sBgFolders.put(folderInfo.id, folderInfo);
+                                sBgDataModel.addItem(folderInfo, false);
                                 break;
 
                             case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
@@ -2186,7 +2031,7 @@ public class LauncherModel extends BroadcastReceiver
 
                                     appWidgetInfo.container = container;
                                     // check & update map of what's occupied
-                                    if (!checkItemPlacement(occupied, appWidgetInfo, sBgWorkspaceScreens)) {
+                                    if (!checkItemPlacement(occupied, appWidgetInfo, sBgDataModel.workspaceScreens)) {
                                         itemsToRemove.add(id);
                                         break;
                                     }
@@ -2205,8 +2050,7 @@ public class LauncherModel extends BroadcastReceiver
                                             updateItem(id, values);
                                         }
                                     }
-                                    sBgItemsIdMap.put(appWidgetInfo.id, appWidgetInfo);
-                                    sBgAppWidgets.add(appWidgetInfo);
+                                    sBgDataModel.addItem(appWidgetInfo, false);
                                 }
                                 break;
                             }
@@ -2220,7 +2064,7 @@ public class LauncherModel extends BroadcastReceiver
 
                 // Break early if we've stopped loading
                 if (mStopped) {
-                    clearSBgDataStructures();
+                    sBgDataModel.clear();
                     return;
                 }
 
@@ -2240,15 +2084,15 @@ public class LauncherModel extends BroadcastReceiver
                                     LauncherSettings.Settings.METHOD_DELETE_EMPTY_FOLDERS)
                             .getSerializable(LauncherSettings.Settings.EXTRA_VALUE);
                     for (long folderId : deletedFolderIds) {
-                        sBgWorkspaceItems.remove(sBgFolders.get(folderId));
-                        sBgFolders.remove(folderId);
-                        sBgItemsIdMap.remove(folderId);
+                        sBgDataModel.workspaceItems.remove(sBgDataModel.folders.get(folderId));
+                        sBgDataModel.folders.remove(folderId);
+                        sBgDataModel.itemsIdMap.remove(folderId);
                     }
                 }
 
                 // Unpin shortcuts that don't exist on the workspace.
                 for (ShortcutKey key : shortcutKeyToPinnedShortcuts.keySet()) {
-                    MutableInt numTimesPinned = sBgPinnedShortcutCounts.get(key);
+                    MutableInt numTimesPinned = sBgDataModel.pinnedShortcutCounts.get(key);
                     if (numTimesPinned == null || numTimesPinned.value == 0) {
                         // Shortcut is pinned but doesn't exist on the workspace; unpin it.
                         mDeepShortcutManager.unpinShortcut(key);
@@ -2256,7 +2100,7 @@ public class LauncherModel extends BroadcastReceiver
                 }
 
                 // Sort all the folder items and make sure the first 3 items are high resolution.
-                for (FolderInfo folder : sBgFolders) {
+                for (FolderInfo folder : sBgDataModel.folders) {
                     Collections.sort(folder.contents, Folder.ITEM_POS_COMPARATOR);
                     int pos = 0;
                     for (ShortcutInfo info : folder.contents) {
@@ -2289,8 +2133,8 @@ public class LauncherModel extends BroadcastReceiver
                 }
 
                 // Remove any empty screens
-                ArrayList<Long> unusedScreens = new ArrayList<Long>(sBgWorkspaceScreens);
-                for (ItemInfo item: sBgItemsIdMap) {
+                ArrayList<Long> unusedScreens = new ArrayList<Long>(sBgDataModel.workspaceScreens);
+                for (ItemInfo item: sBgDataModel.itemsIdMap) {
                     long screenId = item.screenId;
                     if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
                             unusedScreens.contains(screenId)) {
@@ -2300,8 +2144,8 @@ public class LauncherModel extends BroadcastReceiver
 
                 // If there are any empty screens remove them, and update.
                 if (unusedScreens.size() != 0) {
-                    sBgWorkspaceScreens.removeAll(unusedScreens);
-                    updateWorkspaceScreenOrder(context, sBgWorkspaceScreens);
+                    sBgDataModel.workspaceScreens.removeAll(unusedScreens);
+                    updateWorkspaceScreenOrder(context, sBgDataModel.workspaceScreens);
                 }
 
                 if (DEBUG_LOADERS) {
@@ -2514,10 +2358,10 @@ public class LauncherModel extends BroadcastReceiver
             ArrayList<LauncherAppWidgetInfo> appWidgets = new ArrayList<>();
             ArrayList<Long> orderedScreenIds = new ArrayList<>();
 
-            synchronized (sBgLock) {
-                workspaceItems.addAll(sBgWorkspaceItems);
-                appWidgets.addAll(sBgAppWidgets);
-                orderedScreenIds.addAll(sBgWorkspaceScreens);
+            synchronized (sBgDataModel) {
+                workspaceItems.addAll(sBgDataModel.workspaceItems);
+                appWidgets.addAll(sBgDataModel.appWidgets);
+                orderedScreenIds.addAll(sBgDataModel.workspaceScreens);
             }
 
             final int currentScreen;
@@ -2661,8 +2505,8 @@ public class LauncherModel extends BroadcastReceiver
         private void updateIconCache() {
             // Ignore packages which have a promise icon.
             HashSet<String> packagesToIgnore = new HashSet<>();
-            synchronized (sBgLock) {
-                for (ItemInfo info : sBgItemsIdMap) {
+            synchronized (sBgDataModel) {
+                for (ItemInfo info : sBgDataModel.itemsIdMap) {
                     if (info instanceof ShortcutInfo) {
                         ShortcutInfo si = (ShortcutInfo) info;
                         if (si.isPromise() && si.getTargetComponent() != null) {
@@ -2825,11 +2669,11 @@ public class LauncherModel extends BroadcastReceiver
         }
 
         public void dumpState() {
-            synchronized (sBgLock) {
+            synchronized (sBgDataModel) {
                 Log.d(TAG, "mLoaderTask.mContext=" + mContext);
                 Log.d(TAG, "mLoaderTask.mStopped=" + mStopped);
                 Log.d(TAG, "mLoaderTask.mLoadAndBindStepFinished=" + mLoadAndBindStepFinished);
-                Log.d(TAG, "mItems size=" + sBgWorkspaceItems.size());
+                Log.d(TAG, "mItems size=" + sBgDataModel.workspaceItems.size());
             }
         }
     }
@@ -2898,8 +2742,8 @@ public class LauncherModel extends BroadcastReceiver
 
         // If any package icon has changed (app was updated while launcher was dead),
         // update the corresponding shortcuts.
-        synchronized (sBgLock) {
-            for (ItemInfo info : sBgItemsIdMap) {
+        synchronized (sBgDataModel) {
+            for (ItemInfo info : sBgDataModel.itemsIdMap) {
                 if (info instanceof ShortcutInfo && user.equals(info.user)
                         && info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
                     ShortcutInfo si = (ShortcutInfo) info;
@@ -3096,8 +2940,8 @@ public class LauncherModel extends BroadcastReceiver
                 final ArrayList<ShortcutInfo> removedShortcuts = new ArrayList<>();
                 final ArrayList<LauncherAppWidgetInfo> widgets = new ArrayList<>();
 
-                synchronized (sBgLock) {
-                    for (ItemInfo info : sBgItemsIdMap) {
+                synchronized (sBgDataModel) {
+                    for (ItemInfo info : sBgDataModel.itemsIdMap) {
                         if (info instanceof ShortcutInfo && mUser.equals(info.user)) {
                             ShortcutInfo si = (ShortcutInfo) info;
                             boolean infoUpdated = false;
@@ -3332,7 +3176,7 @@ public class LauncherModel extends BroadcastReceiver
 
             // Find ShortcutInfo's that have changed on the workspace.
             MultiHashMap<String, ShortcutInfo> idsToWorkspaceShortcutInfos = new MultiHashMap<>();
-            for (ItemInfo itemInfo : sBgItemsIdMap) {
+            for (ItemInfo itemInfo : sBgDataModel.itemsIdMap) {
                 if (itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
                     ShortcutInfo si = (ShortcutInfo) itemInfo;
                     if (si.getPromisedIntent().getPackage().equals(mPackageName)
@@ -3403,7 +3247,7 @@ public class LauncherModel extends BroadcastReceiver
             // Update the workspace to reflect the changes to updated shortcuts residing on it.
             ArrayList<ShortcutInfo> updatedShortcutInfos = new ArrayList<>();
             ArrayList<ShortcutInfo> deletedShortcutInfos = new ArrayList<>();
-            for (ItemInfo itemInfo : sBgItemsIdMap) {
+            for (ItemInfo itemInfo : sBgDataModel.itemsIdMap) {
                 if (itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
                         && mUser.equals(itemInfo.user)) {
                     ShortcutInfo si = (ShortcutInfo) itemInfo;
@@ -3674,22 +3518,6 @@ public class LauncherModel extends BroadcastReceiver
         return info;
     }
 
-    /**
-     * Return an existing FolderInfo object if we have encountered this ID previously,
-     * or make a new one.
-     */
-    @Thunk static FolderInfo findOrMakeFolder(LongArrayMap<FolderInfo> folders, long id) {
-        // See if a placeholder was created for us already
-        FolderInfo folderInfo = folders.get(id);
-        if (folderInfo == null) {
-            // No placeholder -- create a new instance
-            folderInfo = new FolderInfo();
-            folders.put(id, folderInfo);
-        }
-        return folderInfo;
-    }
-
-
     static boolean isValidProvider(AppWidgetProviderInfo provider) {
         return (provider != null) && (provider.provider != null)
                 && (provider.provider.getPackageName() != null);
@@ -3716,8 +3544,8 @@ public class LauncherModel extends BroadcastReceiver
      * @return {@link FolderInfo} if its already loaded.
      */
     public FolderInfo findFolderById(Long folderId) {
-        synchronized (sBgLock) {
-            return sBgFolders.get(folderId);
+        synchronized (sBgDataModel) {
+            return sBgDataModel.folders.get(folderId);
         }
     }
 
