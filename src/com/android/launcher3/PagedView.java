@@ -1800,6 +1800,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         case MotionEvent.ACTION_CANCEL:
             if (mTouchState == TOUCH_STATE_SCROLLING) {
                 snapToDestination();
+                onScrollInteractionEnd();
             }
             resetTouchState();
             break;
