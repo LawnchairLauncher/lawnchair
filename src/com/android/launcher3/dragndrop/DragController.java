@@ -260,7 +260,7 @@ public class DragController implements DragDriver.EventListener, TouchController
         dragView.show(mMotionDownX, mMotionDownY);
         mDistanceSinceScroll = 0;
 
-        for (DragListener listener : mListeners) {
+        for (DragListener listener : new ArrayList<>(mListeners)) {
             listener.onDragStart(mDragObject, mOptions);
         }
 
