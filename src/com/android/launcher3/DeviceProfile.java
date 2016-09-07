@@ -533,7 +533,6 @@ public class DeviceProfile {
             } else {
                 // Put the page indicators above the hotseat
                 lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
-                lp.width = LayoutParams.WRAP_CONTENT;
                 lp.height = pageIndicatorHeightPx;
                 lp.bottomMargin = hotseatBarHeightPx + mInsets.bottom;
             }
