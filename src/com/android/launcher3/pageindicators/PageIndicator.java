@@ -18,20 +18,21 @@ package com.android.launcher3.pageindicators;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.view.View;
+import android.widget.FrameLayout;
 
 import com.android.launcher3.dynamicui.ExtractedColors;
 
 /**
  * Base class for a page indicator.
  */
-public abstract class PageIndicator extends View {
+public abstract class PageIndicator extends FrameLayout {
     private CaretDrawable mCaretDrawable;
 
     protected int mNumPages = 1;
 
     public PageIndicator(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        setWillNotDraw(false);
     }
 
     public void setScroll(int currentScroll, int totalScroll) {}

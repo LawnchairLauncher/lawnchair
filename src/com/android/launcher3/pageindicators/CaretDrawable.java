@@ -37,6 +37,7 @@ public class CaretDrawable extends Drawable {
     private Paint mShadowPaint = new Paint();
     private Paint mCaretPaint = new Paint();
     private Path mPath = new Path();
+    private final int mCaretSizePx;
 
     public CaretDrawable(Context context) {
         final Resources res = context.getResources();
@@ -57,6 +58,18 @@ public class CaretDrawable extends Drawable {
         mShadowPaint.setStyle(Paint.Style.STROKE);
         mShadowPaint.setStrokeCap(Paint.Cap.ROUND);
         mShadowPaint.setStrokeJoin(Paint.Join.ROUND);
+
+        mCaretSizePx = res.getDimensionPixelSize(R.dimen.all_apps_caret_size);
+    }
+
+    @Override
+    public int getIntrinsicHeight() {
+        return mCaretSizePx;
+    }
+
+    @Override
+    public int getIntrinsicWidth() {
+        return mCaretSizePx;
     }
 
     @Override
