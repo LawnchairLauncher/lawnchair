@@ -15,14 +15,13 @@ import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Property;
-import android.view.View;
 import android.view.ViewConfiguration;
+import android.widget.ImageView;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dynamicui.ExtractedColors;
-import com.android.launcher3.util.TransformingTouchDelegate;
 
 /**
  * A PageIndicator that briefly shows a fraction of a line when moving between pages.
@@ -60,10 +59,7 @@ public class PageIndicatorLineCaret extends PageIndicator {
     private Paint mLinePaint;
     private Launcher mLauncher;
     private final int mLineHeight;
-    private final TransformingTouchDelegate mTouchDelegate;
-    private final int mTouchExtensionHeight;
-    private final int mCaretSizePx;
-    private final int mCaretWorkspaceOffsetPx;
+    private ImageView mAllAppsHandle;
 
     private static final Property<PageIndicatorLineCaret, Integer> PAINT_ALPHA
             = new Property<PageIndicatorLineCaret, Integer>(Integer.class, "paint_alpha") {
@@ -128,48 +124,26 @@ public class PageIndicatorLineCaret extends PageIndicator {
         Resources res = context.getResources();
         mLinePaint = new Paint();
         mLinePaint.setAlpha(0);
-        mCaretSizePx = res.getDimensionPixelSize(R.dimen.all_apps_caret_size);
-        mCaretWorkspaceOffsetPx = res.getDimensionPixelSize(
-                R.dimen.all_apps_caret_workspace_offset);
 
         mLauncher = (Launcher) context;
-        setOnTouchListener(mLauncher.getHapticFeedbackTouchListener());
-        setOnClickListener(mLauncher);
-        setOnLongClickListener(mLauncher);
-        setOnFocusChangeListener(mLauncher.mFocusHandler);
-        setCaretDrawable(new CaretDrawable(context));
         mLineHeight = res.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_line_height);
-        mTouchExtensionHeight = res.getDimensionPixelSize(
-                R.dimen.dynamic_grid_page_indicator_extra_touch_height);
-        mTouchDelegate = new TransformingTouchDelegate(this);
+        setCaretDrawable(new CaretDrawable(context));
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        mLauncher.getDragLayer().setTouchDelegate(mTouchDelegate);
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-        // Top/center align the caret in the page indicator space
-        int l = (right - left) / 2 - mCaretSizePx / 2;
-        getCaretDrawable().setBounds(l, mCaretWorkspaceOffsetPx, l + mCaretSizePx,
-                mCaretWorkspaceOffsetPx + mCaretSizePx);
-
-        // The touch area is expanded below this view by #mTouchExtensionHeight
-        // which extends to the top of the hotseat.
-        View parent = mLauncher.getDragLayer();
-        sTempCoords[0] = sTempCoords[1] = 0;
-        Utilities.getDescendantCoordRelativeToAncestor(this, parent, sTempCoords, true);
-        mTouchDelegate.setBounds(sTempCoords[0], sTempCoords[1], sTempCoords[0] + this.getWidth(),
-                sTempCoords[1] + getHeight() + mTouchExtensionHeight);
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        mAllAppsHandle = (ImageView) findViewById(R.id.all_apps_handle);
+        mAllAppsHandle.setImageDrawable(getCaretDrawable());
+        mAllAppsHandle.setOnTouchListener(mLauncher.getHapticFeedbackTouchListener());
+        mAllAppsHandle.setOnClickListener(mLauncher);
+        mAllAppsHandle.setOnLongClickListener(mLauncher);
+        mAllAppsHandle.setOnFocusChangeListener(mLauncher.mFocusHandler);
+        mLauncher.setAllAppsButton(mAllAppsHandle);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        getCaretDrawable().draw(canvas);
         if (mTotalScroll == 0 || mNumPagesFloat == 0) {
             return;
         }
