@@ -35,7 +35,6 @@ import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentCallbacks2;
 import android.content.ComponentName;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
@@ -116,10 +115,12 @@ import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.DeepShortcutsContainer;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.util.ActivityResultInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.util.PendingRequestArgs;
 import com.android.launcher3.util.TestingUtils;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.ViewOnDrawExecutor;
@@ -184,12 +185,10 @@ public class Launcher extends Activity
     private static final String RUNTIME_STATE_CURRENT_SCREEN = "launcher.current_screen";
     // Type: int
     private static final String RUNTIME_STATE = "launcher.state";
-    // Type: Content Values / parcelable
-    private static final String RUNTIME_STATE_PENDING_ADD_ITEM = "launcher.add_item";
-    // Type: parcelable
-    private static final String RUNTIME_STATE_PENDING_ADD_WIDGET_INFO = "launcher.add_widget_info";
-    // Type: parcelable
-    private static final String RUNTIME_STATE_PENDING_ADD_WIDGET_ID = "launcher.add_widget_id";
+    // Type: PendingRequestArgs
+    private static final String RUNTIME_STATE_PENDING_REQUEST_ARGS = "launcher.request_args";
+    // Type: ActivityResultInfo
+    private static final String RUNTIME_STATE_PENDING_ACTIVITY_RESULT = "launcher.activity_result";
 
     static final String APPS_VIEW_SHOWN = "launcher.apps_view_shown";
 
@@ -237,10 +236,6 @@ public class Launcher extends Activity
     private AppWidgetManagerCompat mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
 
-    @Thunk final ItemInfo mPendingAddInfo = new ItemInfo();
-    private LauncherAppWidgetProviderInfo mPendingAddWidgetInfo;
-    private int mPendingAddWidgetId = -1;
-
     private int[] mTmpAddItemCellCoordinates = new int[2];
 
     @Thunk Hotseat mHotseat;
@@ -270,8 +265,6 @@ public class Launcher extends Activity
     @Thunk boolean mWorkspaceLoading = true;
 
     private boolean mPaused = true;
-    private boolean mRestoring;
-    private boolean mWaitingForResult;
     private boolean mOnResumeNeedsLoad;
 
     private ArrayList<Runnable> mBindOnResumeCallbacks = new ArrayList<Runnable>();
@@ -308,7 +301,6 @@ public class Launcher extends Activity
     private static final int RESTORE_SCREEN_ORIENTATION_DELAY = 500;
 
     private final ArrayList<Integer> mSynchronouslyBoundPages = new ArrayList<Integer>();
-    private static final boolean DISABLE_SYNCHRONOUS_BINDING_CURRENT_PAGE = false;
 
     // We only want to get the SharedPreferences once since it does an FS stat each time we get
     // it from the context.
@@ -352,17 +344,13 @@ public class Launcher extends Activity
         }
     };
 
-    private static PendingAddArguments sPendingAddItem;
-
-    @Thunk static class PendingAddArguments {
-        int requestCode;
-        Intent intent;
-        long container;
-        long screenId;
-        int cellX;
-        int cellY;
-        int appWidgetId;
-    }
+    // Activity result which needs to be processed after workspace has loaded.
+    private ActivityResultInfo mPendingActivityResult;
+    /**
+     * Holds extra information required to handle a result from an external call, like
+     * {@link #startActivityForResult(Intent, int)} or {@link #requestPermissions(String[], int)}
+     */
+    private PendingRequestArgs mPendingRequestArgs;
 
     private UserEventDispatcher mUserEventDispatcher;
 
@@ -453,20 +441,14 @@ public class Launcher extends Activity
             Trace.endSection();
         }
 
-        if (!mRestoring) {
-            if (DISABLE_SYNCHRONOUS_BINDING_CURRENT_PAGE) {
-                // If the user leaves launcher, then we should just load items asynchronously when
-                // they return.
-                mModel.startLoader(PagedView.INVALID_RESTORE_PAGE);
-            } else {
-                // We only load the page synchronously if the user rotates (or triggers a
-                // configuration change) while launcher is in the foreground
-                if (!mModel.startLoader(mWorkspace.getRestorePage())) {
-                    // If we are not binding synchronously, show a fade in animation when
-                    // the first page bind completes.
-                    mDragLayer.setAlpha(0);
-                }
-            }
+        // We only load the page synchronously if the user rotates (or triggers a
+        // configuration change) while launcher is in the foreground
+        if (!mModel.startLoader(mWorkspace.getRestorePage())) {
+            // If we are not binding synchronously, show a fade in animation when
+            // the first page bind completes.
+            mDragLayer.setAlpha(0);
+        } else {
+            setWorkspaceLoading(true);
         }
 
         // For handling default keys
@@ -659,53 +641,61 @@ public class Launcher extends Activity
      * Returns whether we should delay spring loaded mode -- for shortcuts and widgets that have
      * a configuration step, this allows the proper animations to run after other transitions.
      */
-    private long completeAdd(PendingAddArguments args) {
-        long screenId = args.screenId;
-        if (args.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+    private long completeAdd(
+            int requestCode, Intent intent, int appWidgetId, PendingRequestArgs info) {
+        long screenId = info.screenId;
+        if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
             // When the screen id represents an actual screen (as opposed to a rank) we make sure
             // that the drop page actually exists.
-            screenId = ensurePendingDropLayoutExists(args.screenId);
+            screenId = ensurePendingDropLayoutExists(info.screenId);
         }
 
-        switch (args.requestCode) {
+        switch (requestCode) {
             case REQUEST_CREATE_SHORTCUT:
-                completeAddShortcut(args.intent, args.container, screenId, args.cellX,
-                        args.cellY);
+                completeAddShortcut(intent, info.container, screenId, info.cellX, info.cellY);
                 break;
             case REQUEST_CREATE_APPWIDGET:
-                completeAddAppWidget(args.appWidgetId, args.container, screenId, null, null);
+                completeAddAppWidget(appWidgetId, info, null, null);
                 break;
             case REQUEST_RECONFIGURE_APPWIDGET:
-                completeRestoreAppWidget(args.appWidgetId, LauncherAppWidgetInfo.RESTORE_COMPLETED);
+                completeRestoreAppWidget(appWidgetId, LauncherAppWidgetInfo.RESTORE_COMPLETED);
                 break;
             case REQUEST_BIND_PENDING_APPWIDGET: {
-                int widgetId = args.appWidgetId;
-                LauncherAppWidgetInfo info =
+                int widgetId = appWidgetId;
+                LauncherAppWidgetInfo widgetInfo =
                         completeRestoreAppWidget(widgetId, LauncherAppWidgetInfo.FLAG_UI_NOT_READY);
-                if (info != null) {
+                if (widgetInfo != null) {
                     // Since the view was just bound, also launch the configure activity if needed
                     LauncherAppWidgetProviderInfo provider = mAppWidgetManager
                             .getLauncherAppWidgetInfo(widgetId);
                     if (provider != null && provider.configure != null) {
-                        startRestoredWidgetReconfigActivity(provider, info);
+                        startRestoredWidgetReconfigActivity(provider, widgetInfo);
                     }
                 }
                 break;
             }
         }
-        // Before adding this resetAddInfo(), after a shortcut was added to a workspace screen,
-        // if you turned the screen off and then back while in All Apps, Launcher would not
-        // return to the workspace. Clearing mAddInfo.container here fixes this issue
-        resetAddInfo();
+
         return screenId;
     }
 
     private void handleActivityResult(
             final int requestCode, final int resultCode, final Intent data) {
+        if (isWorkspaceLoading()) {
+            // process the result once the workspace has loaded.
+            mPendingActivityResult = new ActivityResultInfo(requestCode, resultCode, data);
+            return;
+        }
+        mPendingActivityResult = null;
+
         // Reset the startActivity waiting flag
-        setWaitingForResult(false);
-        final int pendingAddWidgetId = mPendingAddWidgetId;
-        mPendingAddWidgetId = -1;
+        final PendingRequestArgs requestArgs = mPendingRequestArgs;
+        setWaitingForResult(null);
+        if (requestArgs == null) {
+            return;
+        }
+
+        final int pendingAddWidgetId = requestArgs.getWidgetId();
 
         Runnable exitSpringLoaded = new Runnable() {
             @Override
@@ -720,12 +710,14 @@ public class Launcher extends Activity
             final int appWidgetId = data != null ?
                     data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1) : -1;
             if (resultCode == RESULT_CANCELED) {
-                completeTwoStageWidgetDrop(RESULT_CANCELED, appWidgetId);
+                completeTwoStageWidgetDrop(RESULT_CANCELED, appWidgetId, requestArgs);
                 mWorkspace.removeExtraEmptyScreenDelayed(true, exitSpringLoaded,
                         ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
             } else if (resultCode == RESULT_OK) {
-                addAppWidgetImpl(appWidgetId, mPendingAddInfo, null,
-                        mPendingAddWidgetInfo, ON_ACTIVITY_RESULT_ANIMATION_DELAY);
+                addAppWidgetImpl(
+                        appWidgetId, requestArgs, null,
+                        requestArgs.getWidgetProvider(),
+                        ON_ACTIVITY_RESULT_ANIMATION_DELAY);
             }
             return;
         } else if (requestCode == REQUEST_PICK_WALLPAPER) {
@@ -741,7 +733,6 @@ public class Launcher extends Activity
         boolean isWidgetDrop = (requestCode == REQUEST_PICK_APPWIDGET ||
                 requestCode == REQUEST_CREATE_APPWIDGET);
 
-        final boolean workspaceLocked = isWorkspaceLocked();
         // We have special handling for widgets
         if (isWidgetDrop) {
             final int appWidgetId;
@@ -758,46 +749,36 @@ public class Launcher extends Activity
                 Log.e(TAG, "Error: appWidgetId (EXTRA_APPWIDGET_ID) was not " +
                         "returned from the widget configuration activity.");
                 result = RESULT_CANCELED;
-                completeTwoStageWidgetDrop(result, appWidgetId);
+                completeTwoStageWidgetDrop(result, appWidgetId, requestArgs);
                 final Runnable onComplete = new Runnable() {
                     @Override
                     public void run() {
                         exitSpringLoadedDragModeDelayed(false, 0, null);
                     }
                 };
-                if (workspaceLocked) {
-                    // No need to remove the empty screen if we're mid-binding, as the
-                    // the bind will not add the empty screen.
-                    mWorkspace.postDelayed(onComplete, ON_ACTIVITY_RESULT_ANIMATION_DELAY);
-                } else {
-                    mWorkspace.removeExtraEmptyScreenDelayed(true, onComplete,
-                            ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
-                }
-            } else {
-                if (!workspaceLocked) {
-                    if (mPendingAddInfo.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                        // When the screen id represents an actual screen (as opposed to a rank)
-                        // we make sure that the drop page actually exists.
-                        mPendingAddInfo.screenId =
-                                ensurePendingDropLayoutExists(mPendingAddInfo.screenId);
-                    }
-                    final CellLayout dropLayout = mWorkspace.getScreenWithId(mPendingAddInfo.screenId);
 
-                    dropLayout.setDropPending(true);
-                    final Runnable onComplete = new Runnable() {
-                        @Override
-                        public void run() {
-                            completeTwoStageWidgetDrop(resultCode, appWidgetId);
-                            dropLayout.setDropPending(false);
-                        }
-                    };
-                    mWorkspace.removeExtraEmptyScreenDelayed(true, onComplete,
-                            ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
-                } else {
-                    PendingAddArguments args = preparePendingAddArgs(requestCode, data, appWidgetId,
-                            mPendingAddInfo);
-                    sPendingAddItem = args;
+                mWorkspace.removeExtraEmptyScreenDelayed(true, onComplete,
+                        ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
+            } else {
+                if (requestArgs.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                    // When the screen id represents an actual screen (as opposed to a rank)
+                    // we make sure that the drop page actually exists.
+                    requestArgs.screenId =
+                            ensurePendingDropLayoutExists(requestArgs.screenId);
                 }
+                final CellLayout dropLayout =
+                        mWorkspace.getScreenWithId(requestArgs.screenId);
+
+                dropLayout.setDropPending(true);
+                final Runnable onComplete = new Runnable() {
+                    @Override
+                    public void run() {
+                        completeTwoStageWidgetDrop(resultCode, appWidgetId, requestArgs);
+                        dropLayout.setDropPending(false);
+                    }
+                };
+                mWorkspace.removeExtraEmptyScreenDelayed(true, onComplete,
+                        ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
             }
             return;
         }
@@ -806,13 +787,7 @@ public class Launcher extends Activity
                 || requestCode == REQUEST_BIND_PENDING_APPWIDGET) {
             if (resultCode == RESULT_OK) {
                 // Update the widget view.
-                PendingAddArguments args = preparePendingAddArgs(requestCode, data,
-                        pendingAddWidgetId, mPendingAddInfo);
-                if (workspaceLocked) {
-                    sPendingAddItem = args;
-                } else {
-                    completeAdd(args);
-                }
+                completeAdd(requestCode, data, pendingAddWidgetId, requestArgs);
             }
             // Leave the widget in the pending state if the user canceled the configure.
             return;
@@ -820,23 +795,17 @@ public class Launcher extends Activity
 
         if (requestCode == REQUEST_CREATE_SHORTCUT) {
             // Handle custom shortcuts created using ACTION_CREATE_SHORTCUT.
-            if (resultCode == RESULT_OK && mPendingAddInfo.container != ItemInfo.NO_ID) {
-                final PendingAddArguments args = preparePendingAddArgs(requestCode, data, -1,
-                        mPendingAddInfo);
-                if (isWorkspaceLocked()) {
-                    sPendingAddItem = args;
-                } else {
-                    completeAdd(args);
-                    mWorkspace.removeExtraEmptyScreenDelayed(true, exitSpringLoaded,
-                            ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
-                }
+            if (resultCode == RESULT_OK && requestArgs.container != ItemInfo.NO_ID) {
+                completeAdd(requestCode, data, -1, requestArgs);
+                mWorkspace.removeExtraEmptyScreenDelayed(true, exitSpringLoaded,
+                        ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
+
             } else if (resultCode == RESULT_CANCELED) {
                 mWorkspace.removeExtraEmptyScreenDelayed(true, exitSpringLoaded,
                         ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
             }
         }
         mDragLayer.clearAnimatedView();
-
     }
 
     @Override
@@ -851,15 +820,18 @@ public class Launcher extends Activity
     /** @Override for MNC */
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
             int[] grantResults) {
-        if (requestCode == REQUEST_PERMISSION_CALL_PHONE && sPendingAddItem != null
-                && sPendingAddItem.requestCode == REQUEST_PERMISSION_CALL_PHONE) {
+        PendingRequestArgs pendingArgs = mPendingRequestArgs;
+        if (requestCode == REQUEST_PERMISSION_CALL_PHONE && pendingArgs != null
+                && pendingArgs.getRequestCode() == REQUEST_PERMISSION_CALL_PHONE) {
+            setWaitingForResult(null);
+
             View v = null;
-            CellLayout layout = getCellLayout(sPendingAddItem.container, sPendingAddItem.screenId);
+            CellLayout layout = getCellLayout(pendingArgs.container, pendingArgs.screenId);
             if (layout != null) {
-                v = layout.getChildAt(sPendingAddItem.cellX, sPendingAddItem.cellY);
+                v = layout.getChildAt(pendingArgs.cellX, pendingArgs.cellY);
             }
-            Intent intent = sPendingAddItem.intent;
-            sPendingAddItem = null;
+            Intent intent = pendingArgs.getPendingIntent();
+
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startActivitySafely(v, intent, null);
@@ -873,19 +845,6 @@ public class Launcher extends Activity
             mLauncherCallbacks.onRequestPermissionsResult(requestCode, permissions,
                     grantResults);
         }
-    }
-
-    private PendingAddArguments preparePendingAddArgs(int requestCode, Intent data, int
-            appWidgetId, ItemInfo info) {
-        PendingAddArguments args = new PendingAddArguments();
-        args.requestCode = requestCode;
-        args.intent = data;
-        args.container = info.container;
-        args.screenId = info.screenId;
-        args.cellX = info.cellX;
-        args.cellY = info.cellY;
-        args.appWidgetId = appWidgetId;
-        return args;
     }
 
     /**
@@ -906,8 +865,9 @@ public class Launcher extends Activity
         }
     }
 
-    @Thunk void completeTwoStageWidgetDrop(final int resultCode, final int appWidgetId) {
-        CellLayout cellLayout = mWorkspace.getScreenWithId(mPendingAddInfo.screenId);
+    @Thunk void completeTwoStageWidgetDrop(
+            final int resultCode, final int appWidgetId, final PendingRequestArgs requestArgs) {
+        CellLayout cellLayout = mWorkspace.getScreenWithId(requestArgs.screenId);
         Runnable onCompleteRunnable = null;
         int animationType = 0;
 
@@ -915,13 +875,12 @@ public class Launcher extends Activity
         if (resultCode == RESULT_OK) {
             animationType = Workspace.COMPLETE_TWO_STAGE_WIDGET_DROP_ANIMATION;
             final AppWidgetHostView layout = mAppWidgetHost.createView(this, appWidgetId,
-                    mPendingAddWidgetInfo);
+                    requestArgs.getWidgetProvider());
             boundWidget = layout;
             onCompleteRunnable = new Runnable() {
                 @Override
                 public void run() {
-                    completeAddAppWidget(appWidgetId, mPendingAddInfo.container,
-                            mPendingAddInfo.screenId, layout, null);
+                    completeAddAppWidget(appWidgetId, requestArgs, layout, null);
                     exitSpringLoadedDragModeDelayed((resultCode != RESULT_CANCELED),
                             EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
                 }
@@ -931,7 +890,7 @@ public class Launcher extends Activity
             animationType = Workspace.CANCEL_TWO_STAGE_WIDGET_DROP_ANIMATION;
         }
         if (mDragLayer.getAnimatedView() != null) {
-            mWorkspace.animateWidgetDrop(mPendingAddInfo, cellLayout,
+            mWorkspace.animateWidgetDrop(requestArgs, cellLayout,
                     (DragView) mDragLayer.getAnimatedView(), onCompleteRunnable,
                     animationType, boundWidget, true);
         } else if (onCompleteRunnable != null) {
@@ -999,10 +958,9 @@ public class Launcher extends Activity
         mOnResumeState = State.NONE;
 
         mPaused = false;
-        if (mRestoring || mOnResumeNeedsLoad) {
+        if (mOnResumeNeedsLoad) {
             setWorkspaceLoading(true);
             mModel.startLoader(getCurrentWorkspaceScreen());
-            mRestoring = false;
             mOnResumeNeedsLoad = false;
         }
         if (mBindOnResumeCallbacks.size() > 0) {
@@ -1317,18 +1275,12 @@ public class Launcher extends Activity
             mWorkspace.setRestorePage(currentScreen);
         }
 
-        ContentValues itemValues = savedState.getParcelable(RUNTIME_STATE_PENDING_ADD_ITEM);
-        if (itemValues != null) {
-            mPendingAddInfo.readFromValues(itemValues);
-            AppWidgetProviderInfo info = savedState.getParcelable(
-                    RUNTIME_STATE_PENDING_ADD_WIDGET_INFO);
-            mPendingAddWidgetInfo = info == null ?
-                    null : LauncherAppWidgetProviderInfo.fromProviderInfo(this, info);
-
-            mPendingAddWidgetId = savedState.getInt(RUNTIME_STATE_PENDING_ADD_WIDGET_ID);
-            setWaitingForResult(true);
-            mRestoring = true;
+        PendingRequestArgs requestArgs = savedState.getParcelable(RUNTIME_STATE_PENDING_REQUEST_ARGS);
+        if (requestArgs != null) {
+            setWaitingForResult(requestArgs);
         }
+
+        mPendingActivityResult = savedState.getParcelable(RUNTIME_STATE_PENDING_ACTIVITY_RESULT);
     }
 
     /**
@@ -1543,10 +1495,8 @@ public class Launcher extends Activity
 
         LauncherModel.addItemToDatabase(this, info, container, screenId, cellXY[0], cellXY[1]);
 
-        if (!mRestoring) {
-            mWorkspace.addInScreen(view, container, screenId, cellXY[0], cellXY[1], 1, 1,
-                    isWorkspaceLocked());
-        }
+        mWorkspace.addInScreen(view, container, screenId, cellXY[0], cellXY[1], 1, 1,
+                isWorkspaceLocked());
     }
 
     /**
@@ -1554,10 +1504,9 @@ public class Launcher extends Activity
      *
      * @param appWidgetId The app widget id
      */
-    @Thunk void completeAddAppWidget(int appWidgetId, long container, long screenId,
+    @Thunk void completeAddAppWidget(int appWidgetId, ItemInfo itemInfo,
             AppWidgetHostView hostView, LauncherAppWidgetProviderInfo appWidgetInfo) {
 
-        ItemInfo info = mPendingAddInfo;
         if (appWidgetInfo == null) {
             appWidgetInfo = mAppWidgetManager.getLauncherAppWidgetInfo(appWidgetId);
         }
@@ -1568,24 +1517,21 @@ public class Launcher extends Activity
 
         LauncherAppWidgetInfo launcherInfo;
         launcherInfo = new LauncherAppWidgetInfo(appWidgetId, appWidgetInfo.provider);
-        launcherInfo.spanX = info.spanX;
-        launcherInfo.spanY = info.spanY;
-        launcherInfo.minSpanX = info.minSpanX;
-        launcherInfo.minSpanY = info.minSpanY;
+        launcherInfo.spanX = itemInfo.spanX;
+        launcherInfo.spanY = itemInfo.spanY;
+        launcherInfo.minSpanX = itemInfo.minSpanX;
+        launcherInfo.minSpanY = itemInfo.minSpanY;
         launcherInfo.user = mAppWidgetManager.getUser(appWidgetInfo);
 
         LauncherModel.addItemToDatabase(this, launcherInfo,
-                container, screenId, info.cellX, info.cellY);
+                itemInfo.container, itemInfo.screenId, itemInfo.cellX, itemInfo.cellY);
 
-        if (!mRestoring) {
-            if (hostView == null) {
-                // Perform actual inflation because we're live
-                hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
-            }
-            hostView.setVisibility(View.VISIBLE);
-            addAppWidgetToWorkspace(hostView, launcherInfo, appWidgetInfo, isWorkspaceLocked());
+        if (hostView == null) {
+            // Perform actual inflation because we're live
+            hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
         }
-        resetAddInfo();
+        hostView.setVisibility(View.VISIBLE);
+        addAppWidgetToWorkspace(hostView, launcherInfo, appWidgetInfo, isWorkspaceLocked());
     }
 
     private void addAppWidgetToWorkspace(
@@ -1616,8 +1562,7 @@ public class Launcher extends Activity
 
                 // Reset AllApps to its initial state only if we are not in the middle of
                 // processing a multi-step drop
-                if (mAppsView != null && mWidgetsView != null &&
-                        mPendingAddInfo.container == ItemInfo.NO_ID) {
+                if (mAppsView != null && mWidgetsView != null && mPendingRequestArgs == null) {
                     if (!showWorkspace(false)) {
                         // If we are already on the workspace, then manually reset all apps
                         mAppsView.reset();
@@ -1829,7 +1774,7 @@ public class Launcher extends Activity
         getWindow().closeAllPanels();
 
         // Whatever we were doing is hereby canceled.
-        setWaitingForResult(false);
+        setWaitingForResult(null);
     }
 
     @Override
@@ -1947,13 +1892,11 @@ public class Launcher extends Activity
         closeFolder(false);
         closeShortcutsContainer(false);
 
-        if (mPendingAddInfo.container != ItemInfo.NO_ID && mPendingAddInfo.screenId > -1 &&
-                mWaitingForResult) {
-            ContentValues itemValues = new ContentValues();
-            mPendingAddInfo.writeToValues(itemValues);
-            outState.putParcelable(RUNTIME_STATE_PENDING_ADD_ITEM, itemValues);
-            outState.putParcelable(RUNTIME_STATE_PENDING_ADD_WIDGET_INFO, mPendingAddWidgetInfo);
-            outState.putInt(RUNTIME_STATE_PENDING_ADD_WIDGET_ID, mPendingAddWidgetId);
+        if (mPendingRequestArgs != null) {
+            outState.putParcelable(RUNTIME_STATE_PENDING_REQUEST_ARGS, mPendingRequestArgs);
+        }
+        if (mPendingActivityResult != null) {
+            outState.putParcelable(RUNTIME_STATE_PENDING_ACTIVITY_RESULT, mPendingActivityResult);
         }
 
         if (mLauncherCallbacks != null) {
@@ -2016,25 +1959,17 @@ public class Launcher extends Activity
 
     @Override
     public void startActivityForResult(Intent intent, int requestCode, Bundle options) {
-        onStartForResult(requestCode);
         super.startActivityForResult(intent, requestCode, options);
     }
 
     @Override
     public void startIntentSenderForResult (IntentSender intent, int requestCode,
             Intent fillInIntent, int flagsMask, int flagsValues, int extraFlags, Bundle options) {
-        onStartForResult(requestCode);
         try {
             super.startIntentSenderForResult(intent, requestCode,
                 fillInIntent, flagsMask, flagsValues, extraFlags, options);
         } catch (IntentSender.SendIntentException e) {
             throw new ActivityNotFoundException();
-        }
-    }
-
-    private void onStartForResult(int requestCode) {
-        if (requestCode >= 0) {
-            setWaitingForResult(true);
         }
     }
 
@@ -2148,7 +2083,7 @@ public class Launcher extends Activity
     }
 
     public boolean isWorkspaceLocked() {
-        return mWorkspaceLoading || mWaitingForResult;
+        return mWorkspaceLoading || mPendingRequestArgs != null;
     }
 
     public boolean isWorkspaceLoading() {
@@ -2163,9 +2098,9 @@ public class Launcher extends Activity
         }
     }
 
-    private void setWaitingForResult(boolean value) {
+    private void setWaitingForResult(PendingRequestArgs args) {
         boolean isLocked = isWorkspaceLocked();
-        mWaitingForResult = value;
+        mPendingRequestArgs = args;
         if (isLocked != isWorkspaceLocked()) {
             onWorkspaceLockedChanged();
         }
@@ -2177,33 +2112,23 @@ public class Launcher extends Activity
         }
     }
 
-    private void resetAddInfo() {
-        mPendingAddInfo.container = ItemInfo.NO_ID;
-        mPendingAddInfo.screenId = -1;
-        mPendingAddInfo.cellX = mPendingAddInfo.cellY = -1;
-        mPendingAddInfo.spanX = mPendingAddInfo.spanY = -1;
-        mPendingAddInfo.minSpanX = mPendingAddInfo.minSpanY = 1;
-    }
-
-    void addAppWidgetFromDropImpl(final int appWidgetId, final ItemInfo info, final
-            AppWidgetHostView boundWidget, final LauncherAppWidgetProviderInfo appWidgetInfo) {
+    void addAppWidgetFromDropImpl(int appWidgetId, ItemInfo info, AppWidgetHostView boundWidget,
+            LauncherAppWidgetProviderInfo appWidgetInfo) {
         if (LOGD) {
             Log.d(TAG, "Adding widget from drop");
         }
         addAppWidgetImpl(appWidgetId, info, boundWidget, appWidgetInfo, 0);
     }
 
-    void addAppWidgetImpl(final int appWidgetId, final ItemInfo info,
-            final AppWidgetHostView boundWidget, final LauncherAppWidgetProviderInfo appWidgetInfo,
+    void addAppWidgetImpl(int appWidgetId, ItemInfo info,
+            AppWidgetHostView boundWidget, LauncherAppWidgetProviderInfo appWidgetInfo,
             int delay) {
         if (appWidgetInfo.configure != null) {
-            mPendingAddWidgetInfo = appWidgetInfo;
-            mPendingAddWidgetId = appWidgetId;
+            setWaitingForResult(PendingRequestArgs.forWidgetInfo(appWidgetId, appWidgetInfo, info));
 
             // Launch over to configure widget, if needed
             mAppWidgetManager.startConfigActivity(appWidgetInfo, appWidgetId, this,
                     mAppWidgetHost, REQUEST_CREATE_APPWIDGET);
-
         } else {
             // Otherwise just add it
             Runnable onComplete = new Runnable() {
@@ -2214,8 +2139,7 @@ public class Launcher extends Activity
                             null);
                 }
             };
-            completeAddAppWidget(appWidgetId, info.container, info.screenId, boundWidget,
-                    appWidgetInfo);
+            completeAddAppWidget(appWidgetId, info, boundWidget, appWidgetInfo);
             mWorkspace.removeExtraEmptyScreenDelayed(true, onComplete, delay, false);
         }
     }
@@ -2228,17 +2152,22 @@ public class Launcher extends Activity
 
     public void addPendingItem(PendingAddItemInfo info, long container, long screenId,
             int[] cell, int spanX, int spanY) {
+        info.container = container;
+        info.screenId = screenId;
+        if (cell != null) {
+            info.cellX = cell[0];
+            info.cellY = cell[1];
+        }
+        info.spanX = spanX;
+        info.spanY = spanY;
+
         switch (info.itemType) {
             case LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET:
             case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
-                int span[] = new int[2];
-                span[0] = spanX;
-                span[1] = spanY;
-                addAppWidgetFromDrop((PendingAddWidgetInfo) info,
-                        container, screenId, cell, span);
+                addAppWidgetFromDrop((PendingAddWidgetInfo) info);
                 break;
             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                processShortcutFromDrop(info.componentName, container, screenId, cell);
+                processShortcutFromDrop(info);
                 break;
             default:
                 throw new IllegalStateException("Unknown item type: " + info.itemType);
@@ -2247,51 +2176,18 @@ public class Launcher extends Activity
 
     /**
      * Process a shortcut drop.
-     *
-     * @param componentName The name of the component
-     * @param screenId The ID of the screen where it should be added
-     * @param cell The cell it should be added to, optional
      */
-    private void processShortcutFromDrop(ComponentName componentName, long container, long screenId,
-            int[] cell) {
-        resetAddInfo();
-        mPendingAddInfo.container = container;
-        mPendingAddInfo.screenId = screenId;
-
-        if (cell != null) {
-            mPendingAddInfo.cellX = cell[0];
-            mPendingAddInfo.cellY = cell[1];
-        }
-
+    private void processShortcutFromDrop(PendingAddItemInfo info) {
+        setWaitingForResult(new PendingRequestArgs(info));
         Intent createShortcutIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
-        createShortcutIntent.setComponent(componentName);
+        createShortcutIntent.setComponent(info.componentName);
         Utilities.startActivityForResultSafely(this, createShortcutIntent, REQUEST_CREATE_SHORTCUT);
     }
 
     /**
      * Process a widget drop.
-     *
-     * @param info The PendingAppWidgetInfo of the widget being added.
-     * @param screenId The ID of the screen where it should be added
-     * @param cell The cell it should be added to, optional
      */
-    private void addAppWidgetFromDrop(PendingAddWidgetInfo info, long container, long screenId,
-            int[] cell, int[] span) {
-        resetAddInfo();
-        mPendingAddInfo.container = info.container = container;
-        mPendingAddInfo.screenId = info.screenId = screenId;
-        mPendingAddInfo.minSpanX = info.minSpanX;
-        mPendingAddInfo.minSpanY = info.minSpanY;
-
-        if (cell != null) {
-            mPendingAddInfo.cellX = cell[0];
-            mPendingAddInfo.cellY = cell[1];
-        }
-        if (span != null) {
-            mPendingAddInfo.spanX = span[0];
-            mPendingAddInfo.spanY = span[1];
-        }
-
+    private void addAppWidgetFromDrop(PendingAddWidgetInfo info) {
         AppWidgetHostView hostView = info.boundWidget;
         int appWidgetId;
         if (hostView != null) {
@@ -2317,11 +2213,11 @@ public class Launcher extends Activity
             if (success) {
                 addAppWidgetFromDropImpl(appWidgetId, info, null, info.info);
             } else {
-                mPendingAddWidgetInfo = info.info;
+                setWaitingForResult(PendingRequestArgs.forWidgetInfo(appWidgetId, info.info, info));
                 Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, info.componentName);
-                mAppWidgetManager.getUser(mPendingAddWidgetInfo)
+                mAppWidgetManager.getUser(info.info)
                     .addToIntent(intent, AppWidgetManager.EXTRA_APPWIDGET_PROVIDER_PROFILE);
                 // TODO: we need to make sure that this accounts for the options bundle.
                 // intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, options);
@@ -2540,14 +2436,13 @@ public class Launcher extends Activity
                 LauncherAppWidgetProviderInfo appWidgetInfo =
                         mAppWidgetManager.findProvider(info.providerName, info.user);
                 if (appWidgetInfo != null) {
-                    mPendingAddWidgetId = info.appWidgetId;
-                    mPendingAddInfo.copyFrom(info);
-                    mPendingAddWidgetInfo = appWidgetInfo;
+                    setWaitingForResult(PendingRequestArgs
+                            .forWidgetInfo(info.appWidgetId, appWidgetInfo, info));
 
                     Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
-                    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mPendingAddWidgetId);
+                    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, info.appWidgetId);
                     intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, appWidgetInfo.provider);
-                    mAppWidgetManager.getUser(mPendingAddWidgetInfo)
+                    mAppWidgetManager.getUser(appWidgetInfo)
                             .addToIntent(intent, AppWidgetManager.EXTRA_APPWIDGET_PROVIDER_PROFILE);
                     startActivityForResult(intent, REQUEST_BIND_PENDING_APPWIDGET);
                 }
@@ -2576,9 +2471,7 @@ public class Launcher extends Activity
 
     private void startRestoredWidgetReconfigActivity(
             LauncherAppWidgetProviderInfo provider, LauncherAppWidgetInfo info) {
-        mPendingAddWidgetInfo = provider;
-        mPendingAddInfo.copyFrom(info);
-        mPendingAddWidgetId = info.appWidgetId;
+        setWaitingForResult(PendingRequestArgs.forWidgetInfo(info.appWidgetId, provider, info));
         mAppWidgetManager.startConfigActivity(provider,
                 info.appWidgetId, this, mAppWidgetHost, REQUEST_RECONFIGURE_APPWIDGET);
     }
@@ -2748,6 +2641,7 @@ public class Launcher extends Activity
         int pageScroll = mWorkspace.getScrollForPage(mWorkspace.getPageNearestToCenterOfScreen());
         float offset = mWorkspace.mWallpaperOffset.wallpaperOffsetForScroll(pageScroll);
 
+        setWaitingForResult(new PendingRequestArgs(new ItemInfo()));
         Intent intent = new Intent(Intent.ACTION_SET_WALLPAPER)
                 .setPackage(pickerPackage)
                 .putExtra(Utilities.EXTRA_WALLPAPER_OFFSET, offset);
@@ -2864,9 +2758,9 @@ public class Launcher extends Activity
                     && Intent.ACTION_CALL.equals(intent.getAction())
                     && checkSelfPermission(Manifest.permission.CALL_PHONE) !=
                     PackageManager.PERMISSION_GRANTED) {
-                // TODO: Rename sPendingAddItem to a generic name.
-                sPendingAddItem = preparePendingAddArgs(REQUEST_PERMISSION_CALL_PHONE, intent,
-                        0, info);
+
+                setWaitingForResult(PendingRequestArgs
+                        .forIntent(REQUEST_PERMISSION_CALL_PHONE, intent, info));
                 requestPermissions(new String[]{Manifest.permission.CALL_PHONE},
                         REQUEST_PERMISSION_CALL_PHONE);
             } else {
@@ -3208,7 +3102,7 @@ public class Launcher extends Activity
             ItemInfo info = (ItemInfo) v.getTag();
             longClickCellInfo = new CellLayout.CellInfo(v, info);
             itemUnderLongClick = longClickCellInfo.cell;
-            resetAddInfo();
+            mPendingRequestArgs = null;
         }
 
         // The hotseat touch handling does not go through Workspace, and we always allow long press
@@ -4083,21 +3977,10 @@ public class Launcher extends Activity
 
         setWorkspaceLoading(false);
 
-        // If we received the result of any pending adds while the loader was running (e.g. the
-        // widget configuration forced an orientation change), process them now.
-        if (sPendingAddItem != null) {
-            final long screenId = completeAdd(sPendingAddItem);
-
-            // TODO: this moves the user to the page where the pending item was added. Ideally,
-            // the screen would be guaranteed to exist after bind, and the page would be set through
-            // the workspace restore process.
-            mWorkspace.post(new Runnable() {
-                @Override
-                public void run() {
-                    mWorkspace.snapToScreenId(screenId);
-                }
-            });
-            sPendingAddItem = null;
+        if (mPendingActivityResult != null) {
+            handleActivityResult(mPendingActivityResult.requestCode,
+                    mPendingActivityResult.resultCode, mPendingActivityResult.data);
+            mPendingActivityResult = null;
         }
 
         InstallShortcutReceiver.disableAndFlushInstallQueue(this);
@@ -4513,8 +4396,8 @@ public class Launcher extends Activity
         Log.d(TAG, "BEGIN launcher3 dump state for launcher " + this);
         Log.d(TAG, "mSavedState=" + mSavedState);
         Log.d(TAG, "mWorkspaceLoading=" + mWorkspaceLoading);
-        Log.d(TAG, "mRestoring=" + mRestoring);
-        Log.d(TAG, "mWaitingForResult=" + mWaitingForResult);
+        Log.d(TAG, "mPendingRequestArgs=" + mPendingRequestArgs);
+        Log.d(TAG, "mPendingActivityResult=" + mPendingActivityResult);
         mModel.dumpState();
         // TODO(hyunyoungs): add mWidgetsView.dumpState(); or mWidgetsModel.dumpState();
 
