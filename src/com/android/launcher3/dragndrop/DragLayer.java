@@ -506,7 +506,9 @@ public class DragLayer extends InsettableFrameLayout {
 
     @Override
     public boolean dispatchUnhandledMove(View focused, int direction) {
-        return mDragController.dispatchUnhandledMove(focused, direction);
+        // Consume the unhandled move if a container is open, to avoid switching pages underneath.
+        boolean isContainerOpen = mLauncher.getTopFloatingView() != null;
+        return isContainerOpen || mDragController.dispatchUnhandledMove(focused, direction);
     }
 
     @Override
