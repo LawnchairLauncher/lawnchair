@@ -52,7 +52,6 @@ import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.graphics.TintedDrawableSpan;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ComponentKey;
 
@@ -278,6 +277,12 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         if (mAppsRecyclerView.getScrollBar().isNearThumb(point[0], point[1])) {
             return false;
         }
+
+        // IF a shortcuts container is open, container should not be pulled down.
+        if (mLauncher.getOpenShortcutsContainer() != null) {
+            return false;
+        }
+
         // IF scroller is at the very top OR there is no scroll bar because there is probably not
         // enough items to scroll, THEN it's okay for the container to be pulled down.
         if (mAppsRecyclerView.getScrollBar().getThumbOffset().y <= 0) {
