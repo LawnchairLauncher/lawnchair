@@ -991,7 +991,7 @@ public class Launcher extends Activity
             // view after launching an app, as they may be depending on the UI to be static to
             // switch to another app, otherwise, if it was
             showAppsView(false /* animated */, !launchedFromApp /* updatePredictedApps */,
-                    false /* focusSearchBar */);
+                    mAppsView.shouldRestoreImeState() /* focusSearchBar */);
         } else if (mOnResumeState == State.WIDGETS) {
             showWidgetsView(false, false);
         }
