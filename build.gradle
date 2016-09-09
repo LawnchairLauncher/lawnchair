@@ -45,6 +45,7 @@ android {
 
         androidTest {
             java.srcDirs = ['tests/src']
+            res.srcDirs = ['tests/res']
             manifest.srcFile "tests/AndroidManifest.xml"
         }
 
@@ -65,6 +66,9 @@ dependencies {
     compile 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-2'
 
     testCompile 'junit:junit:4.12'
+    androidTestCompile "org.mockito:mockito-core:1.+"
+    androidTestCompile 'com.google.dexmaker:dexmaker:1.2'
+    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.2'
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
     androidTestCompile 'com.android.support:support-annotations:23.2.0'

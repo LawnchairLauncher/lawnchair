@@ -17,11 +17,12 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE_TAGS := tests
-LOCAL_STATIC_JAVA_LIBRARIES := android-support-test ub-uiautomator
+LOCAL_STATIC_JAVA_LIBRARIES := android-support-test ub-uiautomator mockito-target-minus-junit4
 
 LOCAL_SRC_FILES := $(call all-java-files-under, src)
 
 LOCAL_SDK_VERSION := current
+LOCAL_MIN_SDK_VERSION := 21
 
 LOCAL_PACKAGE_NAME := Launcher3Tests
 

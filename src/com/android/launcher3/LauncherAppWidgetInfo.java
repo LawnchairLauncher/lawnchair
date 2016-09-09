@@ -84,12 +84,12 @@ public class LauncherAppWidgetInfo extends ItemInfo {
     /**
      * Indicates the restore status of the widget.
      */
-    int restoreStatus;
+    public int restoreStatus;
 
     /**
      * Indicates the installation progress of the widget provider
      */
-    int installProgress = -1;
+    public int installProgress = -1;
 
     /**
      * Optional extras sent during widget bind. See {@link #FLAG_DIRECT_CONFIG}.
@@ -98,7 +98,7 @@ public class LauncherAppWidgetInfo extends ItemInfo {
 
     private boolean mHasNotifiedInitialWidgetSizeChanged;
 
-    LauncherAppWidgetInfo(int appWidgetId, ComponentName providerName) {
+    public LauncherAppWidgetInfo(int appWidgetId, ComponentName providerName) {
         if (appWidgetId == CUSTOM_WIDGET_ID) {
             itemType = LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
         } else {
@@ -115,6 +115,11 @@ public class LauncherAppWidgetInfo extends ItemInfo {
         // We only support app widgets on current user.
         user = UserHandleCompat.myUserHandle();
         restoreStatus = RESTORE_COMPLETED;
+    }
+
+    /** Used for testing **/
+    public LauncherAppWidgetInfo() {
+        itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
     }
 
     public boolean isCustomWidget() {
