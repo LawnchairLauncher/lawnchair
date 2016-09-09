@@ -579,8 +579,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
             } else {
                 // Close animation is not running.
                 if (mDeferContainerRemoval) {
-                    mDeferContainerRemoval = false;
-                    mLauncher.getDragLayer().removeView(this);
+                    close();
                 }
             }
         }
@@ -601,7 +600,6 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
             mOpenCloseAnimator.cancel();
         }
         mIsOpen = false;
-        mLauncher.getDragController().removeDragListener(this);
 
         final AnimatorSet shortcutAnims = LauncherAnimUtils.createAnimatorSet();
         final int shortcutCount = getShortcutCount();
