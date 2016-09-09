@@ -71,12 +71,12 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.CursorIconInfo;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.GridOccupancy;
+import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.ManagedProfileHeuristic;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Preconditions;
-import com.android.launcher3.util.StringFilter;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 
@@ -228,10 +228,6 @@ public class LauncherModel extends BroadcastReceiver
         public void onPageBoundSynchronously(int page);
         public void executeOnNextDraw(ViewOnDrawExecutor executor);
         public void bindDeepShortcutMap(MultiHashMap<ComponentKey, String> deepShortcutMap);
-    }
-
-    public interface ItemInfoFilter {
-        public boolean filterItem(ItemInfo parent, ItemInfo info, ComponentName cn);
     }
 
     LauncherModel(LauncherAppState app, IconCache iconCache, AppFilter appFilter,
@@ -942,38 +938,26 @@ public class LauncherModel extends BroadcastReceiver
         runOnWorkerThread(r);
     }
 
-    private static ArrayList<ItemInfo> getItemsByPackageName(
-            final String pn, final UserHandleCompat user) {
-        ItemInfoFilter filter  = new ItemInfoFilter() {
-            @Override
-            public boolean filterItem(ItemInfo parent, ItemInfo info, ComponentName cn) {
-                return cn.getPackageName().equals(pn) && info.user.equals(user);
-            }
-        };
-        return filterItemInfos(sBgItemsIdMap, filter);
-    }
-
-    /**
-     * Removes all the items from the database corresponding to the specified package.
-     */
-    static void deletePackageFromDatabase(Context context, final String pn,
-            final UserHandleCompat user) {
-        deleteItemsFromDatabase(context, getItemsByPackageName(pn, user));
-    }
-
     /**
      * Removes the specified item from the database
      */
     public static void deleteItemFromDatabase(Context context, final ItemInfo item) {
-        ArrayList<ItemInfo> items = new ArrayList<ItemInfo>();
+        ArrayList<ItemInfo> items = new ArrayList<>();
         items.add(item);
         deleteItemsFromDatabase(context, items);
     }
 
     /**
+     * Removes all the items from the database matching {@param matcher}.
+     */
+    public static void deleteItemsFromDatabase(Context context, ItemInfoMatcher matcher) {
+        deleteItemsFromDatabase(context, matcher.filterItemInfos(sBgItemsIdMap));
+    }
+
+    /**
      * Removes the specified items from the database
      */
-    static void deleteItemsFromDatabase(Context context, final ArrayList<? extends ItemInfo> items) {
+    static void deleteItemsFromDatabase(Context context, final Iterable<? extends ItemInfo> items) {
         final ContentResolver cr = context.getContentResolver();
         Runnable r = new Runnable() {
             public void run() {
@@ -2972,9 +2956,9 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     private class PackageUpdatedTask implements Runnable {
-        int mOp;
-        String[] mPackages;
-        UserHandleCompat mUser;
+        final int mOp;
+        final String[] mPackages;
+        final UserHandleCompat mUser;
 
         public static final int OP_NONE = 0;
         public static final int OP_ADD = 1;
@@ -3001,7 +2985,7 @@ public class LauncherModel extends BroadcastReceiver
             final String[] packages = mPackages;
             final int N = packages.length;
             FlagOp flagOp = FlagOp.NO_OP;
-            StringFilter pkgFilter = StringFilter.of(new HashSet<>(Arrays.asList(packages)));
+            final HashSet<String> packageSet = new HashSet<>(Arrays.asList(packages));
             switch (mOp) {
                 case OP_ADD: {
                     for (int i=0; i<N; i++) {
@@ -3051,15 +3035,15 @@ public class LauncherModel extends BroadcastReceiver
                             FlagOp.addFlag(ShortcutInfo.FLAG_DISABLED_SUSPENDED) :
                                     FlagOp.removeFlag(ShortcutInfo.FLAG_DISABLED_SUSPENDED);
                     if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.(un)suspend " + N);
-                    mBgAllAppsList.updatePackageFlags(pkgFilter, mUser, flagOp);
+                    mBgAllAppsList.updateDisabledFlags(
+                            ItemInfoMatcher.ofPackages(packageSet, mUser), flagOp);
                     break;
                 case OP_USER_AVAILABILITY_CHANGE:
                     flagOp = UserManagerCompat.getInstance(context).isQuietModeEnabled(mUser)
                             ? FlagOp.addFlag(ShortcutInfo.FLAG_DISABLED_QUIET_USER)
                             : FlagOp.removeFlag(ShortcutInfo.FLAG_DISABLED_QUIET_USER);
                     // We want to update all packages for this user.
-                    pkgFilter = StringFilter.matchesAll();
-                    mBgAllAppsList.updatePackageFlags(pkgFilter, mUser, flagOp);
+                    mBgAllAppsList.updateDisabledFlags(ItemInfoMatcher.ofUser(mUser), flagOp);
                     break;
             }
 
@@ -3108,9 +3092,9 @@ public class LauncherModel extends BroadcastReceiver
 
             // Update shortcut infos
             if (mOp == OP_ADD || flagOp != FlagOp.NO_OP) {
-                final ArrayList<ShortcutInfo> updatedShortcuts = new ArrayList<ShortcutInfo>();
-                final ArrayList<ShortcutInfo> removedShortcuts = new ArrayList<ShortcutInfo>();
-                final ArrayList<LauncherAppWidgetInfo> widgets = new ArrayList<LauncherAppWidgetInfo>();
+                final ArrayList<ShortcutInfo> updatedShortcuts = new ArrayList<>();
+                final ArrayList<ShortcutInfo> removedShortcuts = new ArrayList<>();
+                final ArrayList<LauncherAppWidgetInfo> widgets = new ArrayList<>();
 
                 synchronized (sBgLock) {
                     for (ItemInfo info : sBgItemsIdMap) {
@@ -3121,7 +3105,7 @@ public class LauncherModel extends BroadcastReceiver
 
                             // Update shortcuts which use iconResource.
                             if ((si.iconResource != null)
-                                    && pkgFilter.matches(si.iconResource.packageName)) {
+                                    && packageSet.contains(si.iconResource.packageName)) {
                                 Bitmap icon = LauncherIcons.createIconBitmap(
                                         si.iconResource.packageName,
                                         si.iconResource.resourceName, context);
@@ -3133,7 +3117,7 @@ public class LauncherModel extends BroadcastReceiver
                             }
 
                             ComponentName cn = si.getTargetComponent();
-                            if (cn != null && pkgFilter.matches(cn.getPackageName())) {
+                            if (cn != null && packageSet.contains(cn.getPackageName())) {
                                 AppInfo appInfo = addedOrUpdatedApps.get(cn);
 
                                 if (si.isPromise()) {
@@ -3198,7 +3182,7 @@ public class LauncherModel extends BroadcastReceiver
                             LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) info;
                             if (mUser.equals(widgetInfo.user)
                                     && widgetInfo.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)
-                                    && pkgFilter.matches(widgetInfo.providerName.getPackageName())) {
+                                    && packageSet.contains(widgetInfo.providerName.getPackageName())) {
                                 widgetInfo.restoreStatus &=
                                         ~LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY &
                                         ~LauncherAppWidgetInfo.FLAG_RESTORE_STARTED;
@@ -3256,12 +3240,10 @@ public class LauncherModel extends BroadcastReceiver
             }
 
             if (!removedPackages.isEmpty() || !removedComponents.isEmpty()) {
-                for (String pn : removedPackages) {
-                    deletePackageFromDatabase(context, pn, mUser);
-                }
-                for (ComponentName cn : removedComponents) {
-                    deleteItemsFromDatabase(context, getItemInfoForComponentName(cn, mUser));
-                }
+                deleteItemsFromDatabase(
+                        context, ItemInfoMatcher.ofPackages(removedPackages, mUser));
+                deleteItemsFromDatabase(
+                        context, ItemInfoMatcher.ofComponents(removedComponents, mUser));
 
                 // Remove any queued items from the install queue
                 InstallShortcutReceiver.removeFromInstallQueue(context, removedPackages, mUser);
@@ -3497,18 +3479,6 @@ public class LauncherModel extends BroadcastReceiver
         return !launcherApps.isPackageEnabledForProfile(packageName, user);
     }
 
-    public static boolean isValidPackageActivity(Context context, ComponentName cn,
-            UserHandleCompat user) {
-        if (cn == null) {
-            return false;
-        }
-        final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
-        if (!launcherApps.isPackageEnabledForProfile(cn.getPackageName(), user)) {
-            return false;
-        }
-        return launcherApps.isActivityEnabledForProfile(cn, user);
-    }
-
     public static boolean isValidPackage(Context context, String packageName,
             UserHandleCompat user) {
         if (packageName == null) {
@@ -3629,50 +3599,6 @@ public class LauncherModel extends BroadcastReceiver
             info.flags = AppInfo.initFlags(lai);
         }
         return info;
-    }
-
-    static ArrayList<ItemInfo> filterItemInfos(Iterable<ItemInfo> infos,
-            ItemInfoFilter f) {
-        HashSet<ItemInfo> filtered = new HashSet<ItemInfo>();
-        for (ItemInfo i : infos) {
-            if (i instanceof ShortcutInfo) {
-                ShortcutInfo info = (ShortcutInfo) i;
-                ComponentName cn = info.getTargetComponent();
-                if (cn != null && f.filterItem(null, info, cn)) {
-                    filtered.add(info);
-                }
-            } else if (i instanceof FolderInfo) {
-                FolderInfo info = (FolderInfo) i;
-                for (ShortcutInfo s : info.contents) {
-                    ComponentName cn = s.getTargetComponent();
-                    if (cn != null && f.filterItem(info, s, cn)) {
-                        filtered.add(s);
-                    }
-                }
-            } else if (i instanceof LauncherAppWidgetInfo) {
-                LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) i;
-                ComponentName cn = info.providerName;
-                if (cn != null && f.filterItem(null, info, cn)) {
-                    filtered.add(info);
-                }
-            }
-        }
-        return new ArrayList<ItemInfo>(filtered);
-    }
-
-    @Thunk ArrayList<ItemInfo> getItemInfoForComponentName(final ComponentName cname,
-            final UserHandleCompat user) {
-        ItemInfoFilter filter  = new ItemInfoFilter() {
-            @Override
-            public boolean filterItem(ItemInfo parent, ItemInfo info, ComponentName cn) {
-                if (info.user == null) {
-                    return cn.equals(cname);
-                } else {
-                    return cn.equals(cname) && info.user.equals(user);
-                }
-            }
-        };
-        return filterItemInfos(sBgItemsIdMap, filter);
     }
 
     /**

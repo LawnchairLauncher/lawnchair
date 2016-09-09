@@ -29,7 +29,6 @@ import android.annotation.TargetApi;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -3976,63 +3975,34 @@ public class Workspace extends PagedView
         for (final CellLayout layoutParent: cellLayouts) {
             final ViewGroup layout = layoutParent.getShortcutsAndWidgets();
 
-            final HashMap<ItemInfo, View> children = new HashMap<>();
+            LongArrayMap<View> idToViewMap = new LongArrayMap<>();
+            ArrayList<ItemInfo> items = new ArrayList<>();
             for (int j = 0; j < layout.getChildCount(); j++) {
                 final View view = layout.getChildAt(j);
-                children.put((ItemInfo) view.getTag(), view);
+                if (view.getTag() instanceof ItemInfo) {
+                    ItemInfo item = (ItemInfo) view.getTag();
+                    items.add(item);
+                    idToViewMap.put(item.id, view);
+                }
             }
 
-            final ArrayList<View> childrenToRemove = new ArrayList<>();
-            final HashMap<FolderInfo, ArrayList<ShortcutInfo>> folderAppsToRemove = new HashMap<>();
-            LauncherModel.ItemInfoFilter filter = new LauncherModel.ItemInfoFilter() {
-                @Override
-                public boolean filterItem(ItemInfo parent, ItemInfo info,
-                        ComponentName cn) {
-                    if (parent instanceof FolderInfo) {
-                        if (matcher.matches(info, cn)) {
-                            FolderInfo folder = (FolderInfo) parent;
-                            ArrayList<ShortcutInfo> appsToRemove;
-                            if (folderAppsToRemove.containsKey(folder)) {
-                                appsToRemove = folderAppsToRemove.get(folder);
-                            } else {
-                                appsToRemove = new ArrayList<ShortcutInfo>();
-                                folderAppsToRemove.put(folder, appsToRemove);
-                            }
-                            appsToRemove.add((ShortcutInfo) info);
-                            return true;
-                        }
-                    } else {
-                        if (matcher.matches(info, cn)) {
-                            childrenToRemove.add(children.get(info));
-                            return true;
-                        }
+            for (ItemInfo itemToRemove : matcher.filterItemInfos(items)) {
+                View child = idToViewMap.get(itemToRemove.id);
+
+                if (child != null) {
+                    // Note: We can not remove the view directly from CellLayoutChildren as this
+                    // does not re-mark the spaces as unoccupied.
+                    layoutParent.removeViewInLayout(child);
+                    if (child instanceof DropTarget) {
+                        mDragController.removeDropTarget((DropTarget) child);
                     }
-                    return false;
+                } else if (itemToRemove.container >= 0) {
+                    // The item may belong to a folder.
+                    View parent = idToViewMap.get(itemToRemove.container);
+                    if (parent != null) {
+                        ((FolderInfo) parent.getTag()).remove((ShortcutInfo) itemToRemove, false);
+                    }
                 }
-            };
-            LauncherModel.filterItemInfos(children.keySet(), filter);
-
-            // Remove all the apps from their folders
-            for (FolderInfo folder : folderAppsToRemove.keySet()) {
-                ArrayList<ShortcutInfo> appsToRemove = folderAppsToRemove.get(folder);
-                for (ShortcutInfo info : appsToRemove) {
-                    folder.remove(info, false);
-                }
-            }
-
-            // Remove all the other children
-            for (View child : childrenToRemove) {
-                // Note: We can not remove the view directly from CellLayoutChildren as this
-                // does not re-mark the spaces as unoccupied.
-                layoutParent.removeViewInLayout(child);
-                if (child instanceof DropTarget) {
-                    mDragController.removeDropTarget((DropTarget) child);
-                }
-            }
-
-            if (childrenToRemove.size() > 0) {
-                layout.requestLayout();
-                layout.invalidate();
             }
         }
 
@@ -4133,8 +4103,9 @@ public class Workspace extends PagedView
     public void removeAbandonedPromise(String packageName, UserHandleCompat user) {
         HashSet<String> packages = new HashSet<>(1);
         packages.add(packageName);
-        LauncherModel.deletePackageFromDatabase(mLauncher, packageName, user);
-        removeItemsByMatcher(ItemInfoMatcher.ofPackages(packages, user));
+        ItemInfoMatcher matcher = ItemInfoMatcher.ofPackages(packages, user);
+        LauncherModel.deleteItemsFromDatabase(mLauncher, matcher);
+        removeItemsByMatcher(matcher);
     }
 
     public void updateRestoreItems(final HashSet<ItemInfo> updates) {
@@ -4311,7 +4282,6 @@ public class Workspace extends PagedView
                 @Override
                 public boolean evaluate(ItemInfo info, View view) {
                     if (view instanceof PendingAppWidgetHostView && mInfos.contains(info)) {
-                        PendingAppWidgetHostView hostView = (PendingAppWidgetHostView) view;
                         mLauncher.removeItem(view, info, false /* deleteFromDb */);
                         mLauncher.bindAppWidget((LauncherAppWidgetInfo) info);
                     }

@@ -4449,14 +4449,6 @@ public class Launcher extends Activity
         return sCustomAppWidgets;
     }
 
-    public static List<View> getFolderContents(View icon) {
-        if (icon instanceof FolderIcon) {
-            return ((FolderIcon) icon).getFolder().getItemsInReadingOrder();
-        } else {
-            return Collections.EMPTY_LIST;
-        }
-    }
-
     public static Launcher getLauncher(Context context) {
         if (context instanceof Launcher) {
             return (Launcher) context;
