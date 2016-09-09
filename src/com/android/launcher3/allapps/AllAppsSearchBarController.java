@@ -163,8 +163,7 @@ public abstract class AllAppsSearchBarController
      * Focuses the search field to handle key events.
      */
     public void focusSearchField() {
-        mInput.requestFocus();
-        mInputMethodManager.showSoftInput(mInput, InputMethodManager.SHOW_IMPLICIT);
+        mInput.showKeyboard();
     }
 
     /**
