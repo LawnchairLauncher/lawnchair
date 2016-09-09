@@ -2907,7 +2907,7 @@ public class Workspace extends PagedView
 
     private void cleanupAddToFolder() {
         if (mDragOverFolderIcon != null) {
-            mDragOverFolderIcon.onDragExit(null);
+            mDragOverFolderIcon.onDragExit();
             mDragOverFolderIcon = null;
         }
     }

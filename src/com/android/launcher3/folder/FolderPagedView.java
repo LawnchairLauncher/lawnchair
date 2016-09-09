@@ -195,7 +195,7 @@ public class FolderPagedView extends PagedView {
      * Create space for a new item at the end, and returns the rank for that item.
      * Also sets the current page to the last page.
      */
-    public int allocateRankForNewItem(ShortcutInfo info) {
+    public int allocateRankForNewItem() {
         int rank = getItemCount();
         ArrayList<View> views = new ArrayList<>(mFolder.getItemsInReadingOrder());
         views.add(rank, null);
