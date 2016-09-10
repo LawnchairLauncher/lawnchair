@@ -652,7 +652,7 @@ public class Launcher extends Activity
 
         switch (requestCode) {
             case REQUEST_CREATE_SHORTCUT:
-                completeAddShortcut(intent, info.container, screenId, info.cellX, info.cellY);
+                completeAddShortcut(intent, info.container, screenId, info.cellX, info.cellY, info);
                 break;
             case REQUEST_CREATE_APPWIDGET:
                 completeAddAppWidget(appWidgetId, info, null, null);
@@ -1456,12 +1456,19 @@ public class Launcher extends Activity
      * @param data The intent describing the shortcut.
      */
     private void completeAddShortcut(Intent data, long container, long screenId, int cellX,
-            int cellY) {
+            int cellY, PendingRequestArgs args) {
         int[] cellXY = mTmpAddItemCellCoordinates;
         CellLayout layout = getCellLayout(container, screenId);
 
         ShortcutInfo info = InstallShortcutReceiver.fromShortcutIntent(this, data);
-        if (info == null) {
+        if (info == null || args.getRequestCode() != REQUEST_CREATE_SHORTCUT ||
+                args.getPendingIntent().getComponent() == null) {
+            return;
+        }
+        if (!PackageManagerHelper.hasPermissionForActivity(
+                this, info.intent, args.getPendingIntent().getComponent().getPackageName())) {
+            // The app is trying to add a shortcut without sufficient permissions
+            Log.e(TAG, "Ignoring malicious intent " + info.intent.toUri(0));
             return;
         }
         final View view = createShortcut(info);
@@ -2178,10 +2185,9 @@ public class Launcher extends Activity
      * Process a shortcut drop.
      */
     private void processShortcutFromDrop(PendingAddItemInfo info) {
-        setWaitingForResult(new PendingRequestArgs(info));
-        Intent createShortcutIntent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
-        createShortcutIntent.setComponent(info.componentName);
-        Utilities.startActivityForResultSafely(this, createShortcutIntent, REQUEST_CREATE_SHORTCUT);
+        Intent intent = new Intent(Intent.ACTION_CREATE_SHORTCUT).setComponent(info.componentName);
+        setWaitingForResult(PendingRequestArgs.forIntent(REQUEST_CREATE_SHORTCUT, intent, info));
+        Utilities.startActivityForResultSafely(this, intent, REQUEST_CREATE_SHORTCUT);
     }
 
     /**
