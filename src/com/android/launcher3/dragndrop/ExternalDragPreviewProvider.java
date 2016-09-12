@@ -23,10 +23,10 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.HolographicOutlineHelper;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.graphics.DragPreviewProvider;
+import com.android.launcher3.graphics.HolographicOutlineHelper;
 
 /**
  * Extension of {@link DragPreviewProvider} which provides a dummy outline when drag starts from
@@ -72,7 +72,7 @@ public class ExternalDragPreviewProvider extends DragPreviewProvider {
         canvas.drawCircle(DRAG_BITMAP_PADDING / 2 + radius,
                 DRAG_BITMAP_PADDING / 2 + radius, radius * 0.9f, paint);
 
-        HolographicOutlineHelper.obtain(mLauncher).applyExpensiveOutlineWithBlur(b, canvas);
+        HolographicOutlineHelper.getInstance(mLauncher).applyExpensiveOutlineWithBlur(b, canvas);
         canvas.setBitmap(null);
         return b;
     }
