@@ -159,7 +159,7 @@ public class ShortcutInfo extends ItemInfo {
      */
     Intent promisedIntent;
 
-    ShortcutInfo() {
+    public ShortcutInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
     }
 

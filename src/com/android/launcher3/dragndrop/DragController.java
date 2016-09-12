@@ -25,7 +25,6 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
@@ -213,6 +212,12 @@ public class DragController implements DragDriver.EventListener, TouchController
         }
         mInputMethodManager.hideSoftInputFromWindow(mWindowToken, 0);
 
+        mOptions = options;
+        if (mOptions.systemDndStartPoint != null) {
+            mMotionDownX = mOptions.systemDndStartPoint.x;
+            mMotionDownY = mOptions.systemDndStartPoint.y;
+        }
+
         final int registrationX = mMotionDownX - dragLayerX;
         final int registrationY = mMotionDownY - dragLayerY;
 
@@ -221,7 +226,6 @@ public class DragController implements DragDriver.EventListener, TouchController
 
         mLastDropTarget = null;
 
-        mOptions = options;
         mDragObject = new DropTarget.DragObject();
 
         final Resources res = mLauncher.getResources();
@@ -241,7 +245,7 @@ public class DragController implements DragDriver.EventListener, TouchController
             mDragObject.yOffset = mMotionDownY - (dragLayerY + dragRegionTop);
             mDragObject.stateAnnouncer = DragViewStateAnnouncer.createFor(dragView);
 
-            mDragDriver = DragDriver.create(this, dragInfo, dragView);
+            mDragDriver = DragDriver.create(mLauncher, this, mDragObject, mOptions);
         }
 
         mDragObject.dragSource = source;
@@ -291,6 +295,10 @@ public class DragController implements DragDriver.EventListener, TouchController
 
     public boolean isDragging() {
         return mDragDriver != null || (mOptions != null && mOptions.isAccessibleDrag);
+    }
+
+    public boolean isExternalDrag() {
+        return (mOptions != null && mOptions.systemDndStartPoint != null);
     }
 
     /**
