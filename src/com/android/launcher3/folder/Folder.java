@@ -50,6 +50,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.launcher3.Alarm;
+import com.android.launcher3.AppInfo;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragSource;
@@ -163,10 +164,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mRearrangeOnClose = false;
     boolean mItemsInvalidated = false;
-    private ShortcutInfo mCurrentDragInfo;
     private View mCurrentDragView;
     private boolean mIsExternalDrag;
-    boolean mSuppressOnAdd = false;
     private boolean mDragInProgress = false;
     private boolean mDeleteFolderOnDropCompleted = false;
     private boolean mSuppressFolderDeletion = false;
@@ -291,7 +290,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 return false;
             }
 
-            mCurrentDragInfo = item;
             mEmptyCellRank = item.rank;
             mCurrentDragView = v;
 
@@ -322,7 +320,15 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         }
 
         mContent.removeItem(mCurrentDragView);
-        mInfo.remove(mCurrentDragInfo, true);
+        if (dragObject.dragInfo instanceof ShortcutInfo) {
+            mItemsInvalidated = true;
+
+            // We do not want to get events for the item being removed, as they will get handled
+            // when the drop completes
+            try (SuppressInfoChanges s = new SuppressInfoChanges()) {
+                mInfo.remove((ShortcutInfo) dragObject.dragInfo, true);
+            }
+        }
         mDragInProgress = true;
         mItemAddedBackToSelfViaIcon = false;
     }
@@ -664,9 +670,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mContent.verifyVisibleHighResIcons(mContent.getNextPage());
     }
 
-    public void beginExternalDrag(ShortcutInfo item) {
-        mCurrentDragInfo = item;
-        mEmptyCellRank = mContent.allocateRankForNewItem(item);
+    public void beginExternalDrag() {
+        mEmptyCellRank = mContent.allocateRankForNewItem();
         mIsExternalDrag = true;
         mDragInProgress = true;
 
@@ -845,9 +850,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     private void clearDragInfo() {
-        mCurrentDragInfo = null;
         mCurrentDragView = null;
-        mSuppressOnAdd = false;
         mIsExternalDrag = false;
     }
 
@@ -911,9 +914,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             mContent.arrangeChildren(views, views.size());
             mItemsInvalidated = true;
 
-            mSuppressOnAdd = true;
-            mFolderIcon.onDrop(d);
-            mSuppressOnAdd = false;
+            try (SuppressInfoChanges s = new SuppressInfoChanges()) {
+                mFolderIcon.onDrop(d);
+            }
         }
 
         if (target != this) {
@@ -930,9 +933,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mDeleteFolderOnDropCompleted = false;
         mDragInProgress = false;
         mItemAddedBackToSelfViaIcon = false;
-        mCurrentDragInfo = null;
         mCurrentDragView = null;
-        mSuppressOnAdd = false;
 
         // Reordering may have occured, and we need to save the new item locations. We do this once
         // at the end to prevent unnecessary database operations.
@@ -1274,7 +1275,14 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mContent.completePendingPageChanges();
 
         View currentDragView;
-        ShortcutInfo si = mCurrentDragInfo;
+        final ShortcutInfo si;
+        if (d.dragInfo instanceof AppInfo) {
+            // Came from all apps -- make a copy.
+            si = ((AppInfo) d.dragInfo).makeShortcut();
+        } else {
+            // ShortcutInfo
+            si = (ShortcutInfo) d.dragInfo;
+        }
         if (mIsExternalDrag) {
             currentDragView = mContent.createAndAddViewForRank(si, mEmptyCellRank);
             // Actually move the item in the database if it was an external drag. Call this
@@ -1311,11 +1319,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         rearrangeChildren();
 
         // Temporarily suppress the listener, as we did all the work already here.
-        mSuppressOnAdd = true;
-        mInfo.add(si, false);
-        mSuppressOnAdd = false;
+        try (SuppressInfoChanges s = new SuppressInfoChanges()) {
+            mInfo.add(si, false);
+        }
+
         // Clear the drag info, as it is no longer being dragged.
-        mCurrentDragInfo = null;
         mDragInProgress = false;
 
         if (mContent.getPageCount() > 1) {
@@ -1338,10 +1346,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     @Override
     public void onAdd(ShortcutInfo item) {
-        // If the item was dropped onto this open folder, we have done the work associated
-        // with adding the item to the folder, as indicated by mSuppressOnAdd being set
-        if (mSuppressOnAdd) return;
-        mContent.createAndAddViewForRank(item, mContent.allocateRankForNewItem(item));
+        mContent.createAndAddViewForRank(item, mContent.allocateRankForNewItem());
         mItemsInvalidated = true;
         LauncherModel.addOrMoveItemInDatabase(
                 mLauncher, item, mInfo.id, 0, item.cellX, item.cellY);
@@ -1349,9 +1354,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     public void onRemove(ShortcutInfo item) {
         mItemsInvalidated = true;
-        // If this item is being dragged from this open folder, we have already handled
-        // the work associated with removing the item, so we don't have to do anything here.
-        if (item == mCurrentDragInfo) return;
         View v = getViewForInfo(item);
         mContent.removeItem(v);
         if (mState == STATE_ANIMATING) {
@@ -1490,4 +1492,20 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             }
         }
     };
+
+    /**
+     * Temporary resource held while we don't want to handle info changes
+     */
+    private class SuppressInfoChanges implements AutoCloseable {
+
+        SuppressInfoChanges() {
+            mInfo.removeListener(Folder.this);
+        }
+
+        @Override
+        public void close() {
+            mInfo.addListener(Folder.this);
+            updateTextViewFocus();
+        }
+    }
 }

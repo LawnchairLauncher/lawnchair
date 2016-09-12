@@ -125,8 +125,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     Paint mBgPaint = new Paint();
 
     private Alarm mOpenAlarm = new Alarm();
-    @Thunk
-    ItemInfo mDragInfo;
 
     public FolderIcon(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -195,8 +193,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         return super.onSaveInstanceState();
     }
 
-
-
     public Folder getFolder() {
         return mFolder;
     }
@@ -242,22 +238,11 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             // Workspace#onDropExternal.
             mOpenAlarm.setAlarm(ON_OPEN_DELAY);
         }
-        mDragInfo = dragInfo;
     }
 
     OnAlarmListener mOnOpenListener = new OnAlarmListener() {
         public void onAlarm(Alarm alarm) {
-            ShortcutInfo item;
-            if (mDragInfo instanceof AppInfo) {
-                // Came from all apps -- make a copy.
-                item = ((AppInfo) mDragInfo).makeShortcut();
-                item.spanX = 1;
-                item.spanY = 1;
-            } else {
-                // ShortcutInfo
-                item = (ShortcutInfo) mDragInfo;
-            }
-            mFolder.beginExternalDrag(item);
+            mFolder.beginExternalDrag();
             mLauncher.openFolder(FolderIcon.this);
         }
     };
@@ -284,7 +269,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         animateFirstItem(animateDrawable, INITIAL_ITEM_ANIMATION_DURATION, false, null);
 
         // This will animate the dragView (srcView) into the new folder
-        onDrop(srcInfo, srcView, dstRect, scaleRelativeToDragLayer, 1, postAnimationRunnable, null);
+        onDrop(srcInfo, srcView, dstRect, scaleRelativeToDragLayer, 1, postAnimationRunnable);
     }
 
     public void performDestroyAnimation(final View finalView, Runnable onCompleteRunnable) {
@@ -298,18 +283,13 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 onCompleteRunnable);
     }
 
-    public void onDragExit(Object dragInfo) {
-        onDragExit();
-    }
-
     public void onDragExit() {
         mBackground.animateToRest();
         mOpenAlarm.cancelAlarm();
     }
 
     private void onDrop(final ShortcutInfo item, DragView animateView, Rect finalRect,
-            float scaleRelativeToDragLayer, int index, Runnable postAnimationRunnable,
-            DragObject d) {
+            float scaleRelativeToDragLayer, int index, Runnable postAnimationRunnable) {
         item.cellX = -1;
         item.cellY = -1;
 
@@ -379,7 +359,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             item = (ShortcutInfo) d.dragInfo;
         }
         mFolder.notifyDrop();
-        onDrop(item, d.dragView, null, 1.0f, mInfo.contents.size(), d.postAnimationRunnable, d);
+        onDrop(item, d.dragView, null, 1.0f, mInfo.contents.size(), d.postAnimationRunnable);
     }
 
     private void computePreviewDrawingParams(int drawableSize, int totalSize) {
