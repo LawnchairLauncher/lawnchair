@@ -854,8 +854,7 @@ public class IconCache {
         values.put(IconDB.COLUMN_ICON_LOW_RES, Utilities.flattenBitmap(lowResIcon));
 
         values.put(IconDB.COLUMN_LABEL, label);
-        values.put(IconDB.COLUMN_SYSTEM_STATE,
-                mIconProvider.getIconSystemState(mIconProvider.getIconSystemState(packageName)));
+        values.put(IconDB.COLUMN_SYSTEM_STATE, mIconProvider.getIconSystemState(packageName));
 
         return values;
     }
