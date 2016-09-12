@@ -62,7 +62,7 @@ public class AppInfo extends ItemInfo {
      */
     int isDisabled = ShortcutInfo.DEFAULT;
 
-    AppInfo() {
+    public AppInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
     }
 
