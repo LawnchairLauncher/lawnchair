@@ -17,18 +17,19 @@
 package com.android.launcher3.dragndrop;
 
 import android.content.ClipData;
+import android.content.ClipDescription;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.Point;
 import android.view.DragEvent;
 import android.view.MotionEvent;
-import android.view.View;
 
-import com.android.launcher3.AnotherWindowDropTarget;
 import com.android.launcher3.DropTarget;
-import com.android.launcher3.ItemInfo;
+import com.android.launcher3.DropTarget.DragObject;
+import com.android.launcher3.InstallShortcutReceiver;
+import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
+
+import java.util.ArrayList;
 
 /**
  * Base class for driving a drag/drop operation.
@@ -50,7 +51,7 @@ public abstract class DragDriver {
     /**
      * Handles ending of the DragView animation.
      */
-    public abstract void onDragViewAnimationEnd();
+    public void onDragViewAnimationEnd() { }
 
     public boolean onTouchEvent(MotionEvent ev) {
         final int action = ev.getAction();
@@ -89,100 +90,46 @@ public abstract class DragDriver {
         return true;
     }
 
-    public static DragDriver create(
-            DragController dragController, ItemInfo dragInfo, DragView dragView) {
-        if (FeatureFlags.LAUNCHER3_USE_SYSTEM_DRAG_DRIVER && Utilities.isNycOrAbove()) {
-            return new SystemDragDriver(dragController, dragInfo.getIntent(), dragView);
+    public static DragDriver create(Context context, DragController dragController,
+            DragObject dragObject, DragOptions options) {
+        if (Utilities.isNycOrAbove() && options.systemDndStartPoint != null) {
+            return new SystemDragDriver(dragController, context, dragObject);
         } else {
             return new InternalDragDriver(dragController);
         }
     }
-
-};
+}
 
 /**
  * Class for driving a system (i.e. framework) drag/drop operation.
  */
 class SystemDragDriver extends DragDriver {
-    /** Intent associated with the drag operation, or null is there no associated intent.  */
-    private final Intent mDragIntent;
 
-    private final DragView mDragView;
-    boolean mIsFrameworkDragActive = false;
+    private final DragObject mDragObject;
+    private final Context mContext;
+
     boolean mReceivedDropEvent = false;
     float mLastX = 0;
     float mLastY = 0;
 
-    public SystemDragDriver(DragController dragController, Intent dragIntent, DragView dragView) {
+    public SystemDragDriver(DragController dragController, Context context, DragObject dragObject) {
         super(dragController);
-        mDragIntent = dragIntent;
-        mDragView = dragView;
-    }
-
-    private static class ShadowBuilder extends View.DragShadowBuilder {
-        final DragView mDragView;
-
-        public ShadowBuilder(DragView dragView) {
-            mDragView = dragView;
-        }
-
-        @Override
-        public void onProvideShadowMetrics (Point size, Point touch) {
-            mDragView.provideDragShadowMetrics(size, touch);
-        }
-
-        @Override
-        public void onDrawShadow(Canvas canvas) {
-            mDragView.drawDragShadow(canvas);
-        }
-    };
-
-    @Override
-    public void onDragViewAnimationEnd() {
-        // Clip data for the drag operation. If there is an intent, create an intent-based ClipData,
-        // which will be passed to a global DND.
-        // If there is no intent, craft a fake ClipData and start a local DND operation; this
-        // ClipData will be ignored.
-        final ClipData dragData = mDragIntent != null ?
-                ClipData.newIntent("", mDragIntent) :
-                ClipData.newPlainText("", "");
-
-        View.DragShadowBuilder shadowBuilder = new ShadowBuilder(mDragView);
-        // TODO: DND flags are in flux, once settled, use the appropriate constant.
-        final int flagGlobal = 1 << 0;
-        final int flagOpaque = 1 << 9;
-        final int flags = (mDragIntent != null ? flagGlobal : 0) | flagOpaque;
-
-        mIsFrameworkDragActive = true;
-
-        if (!mDragView.startDrag(dragData, shadowBuilder, null, flags)) {
-            mIsFrameworkDragActive = false;
-            mEventListener.onDriverDragCancel();
-            return;
-        }
-
-        // Starting from this point, the driver takes over showing the drag shadow, so hiding the
-        // drag view.
-        mDragView.setVisibility(View.INVISIBLE);
+        mDragObject = dragObject;
+        mContext = context;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        return !mIsFrameworkDragActive && super.onTouchEvent(ev);
+        return false;
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        return !mIsFrameworkDragActive && super.onInterceptTouchEvent(ev);
+        return false;
     }
 
     @Override
     public boolean onDragEvent (DragEvent event) {
-        if (!mIsFrameworkDragActive) {
-            // We are interested only in drag events started by this driver.
-            return false;
-        }
-
         final int action = event.getAction();
 
         switch (action) {
@@ -192,8 +139,6 @@ class SystemDragDriver extends DragDriver {
                 return true;
 
             case DragEvent.ACTION_DRAG_ENTERED:
-                mLastX = event.getX();
-                mLastY = event.getY();
                 return true;
 
             case DragEvent.ACTION_DRAG_LOCATION:
@@ -205,35 +150,66 @@ class SystemDragDriver extends DragDriver {
             case DragEvent.ACTION_DROP:
                 mLastX = event.getX();
                 mLastY = event.getY();
-                mReceivedDropEvent = true;
-                return true;
+                mReceivedDropEvent =
+                        updateInfoFromClipData(event.getClipData(), event.getClipDescription());
+                return mReceivedDropEvent;
 
             case DragEvent.ACTION_DRAG_EXITED:
-                mLastX = event.getX();
-                mLastY = event.getY();
                 mEventListener.onDriverDragExitWindow();
                 return true;
 
             case DragEvent.ACTION_DRAG_ENDED:
-                final boolean dragAccepted = event.getResult();
-                final boolean acceptedByAnotherWindow = dragAccepted && !mReceivedDropEvent;
-
-                // When the system drag ends, its drag shadow disappears. Resume showing the drag
-                // view for the possible final animation.
-                mDragView.setVisibility(View.VISIBLE);
-
-                final DropTarget dropTargetOverride = acceptedByAnotherWindow ?
-                        new AnotherWindowDropTarget(mDragView.getContext()) : null;
-
-                mEventListener.onDriverDragEnd(mLastX, mLastY, dropTargetOverride);
-                mIsFrameworkDragActive = false;
+                if (mReceivedDropEvent) {
+                    mEventListener.onDriverDragEnd(mLastX, mLastY, null);
+                } else {
+                    mEventListener.onDriverDragCancel();
+                }
                 return true;
 
             default:
                 return false;
         }
     }
-};
+
+    private boolean updateInfoFromClipData(ClipData data, ClipDescription desc) {
+        if (data == null) {
+            return false;
+        }
+        ArrayList<Intent> intents = new ArrayList<>();
+        int itemCount = data.getItemCount();
+        for (int i = 0; i < itemCount; i++) {
+            Intent intent = data.getItemAt(i).getIntent();
+            if (intent == null) {
+                continue;
+            }
+
+            // Give preference to shortcut intents.
+            if (!Intent.ACTION_CREATE_SHORTCUT.equals(intent.getAction())) {
+                intents.add(intent);
+                continue;
+            }
+            ShortcutInfo info = InstallShortcutReceiver.fromShortcutIntent(mContext, intent);
+            if (info != null) {
+                mDragObject.dragInfo = info;
+                return true;
+            }
+            return true;
+        }
+
+        // Try creating shortcuts just using the intent and label
+        Intent fullIntent = new Intent().putExtra(Intent.EXTRA_SHORTCUT_NAME, desc.getLabel());
+        for (Intent intent : intents) {
+            fullIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, intent);
+            ShortcutInfo info = InstallShortcutReceiver.fromShortcutIntent(mContext, fullIntent);
+            if (info != null) {
+                mDragObject.dragInfo = info;
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
 
 /**
  * Class for driving an internal (i.e. not using framework) drag/drop operation.
@@ -242,9 +218,6 @@ class InternalDragDriver extends DragDriver {
     public InternalDragDriver(DragController dragController) {
         super(dragController);
     }
-
-    @Override
-    public void onDragViewAnimationEnd() {}
 
     @Override
     public boolean onDragEvent (DragEvent event) { return false; }

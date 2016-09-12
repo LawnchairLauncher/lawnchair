@@ -16,6 +16,8 @@
 
 package com.android.launcher3.dragndrop;
 
+import android.graphics.Point;
+
 /**
  * Set of options to control the drag and drop behavior.
  */
@@ -23,4 +25,7 @@ public class DragOptions {
 
     /** Whether or not an accessible drag operation is in progress. */
     public boolean isAccessibleDrag = false;
+
+    /** Specifies the start location for the system DnD, null when using internal DnD */
+    public Point systemDndStartPoint = null;
 }

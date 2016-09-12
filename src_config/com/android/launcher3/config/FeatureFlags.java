@@ -27,7 +27,7 @@ public final class FeatureFlags {
     // As opposed to the new spring-loaded workspace.
     public static boolean LAUNCHER3_LEGACY_WORKSPACE_DND = false;
     public static boolean LAUNCHER3_LEGACY_FOLDER_ICON = false;
-    public static boolean LAUNCHER3_USE_SYSTEM_DRAG_DRIVER = false;
+    public static boolean LAUNCHER3_USE_SYSTEM_DRAG_DRIVER = true;
     public static boolean LAUNCHER3_DISABLE_PINCH_TO_OVERVIEW = false;
     public static boolean LAUNCHER3_ALL_APPS_PULL_UP = true;
 
