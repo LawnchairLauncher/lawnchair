@@ -25,7 +25,6 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
@@ -39,7 +38,6 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Parcelable;
@@ -2800,9 +2798,7 @@ public class Workspace extends PagedView
         mAddToExistingFolderOnDrop = false;
 
         mDropToLayout = null;
-        CellLayout layout = getCurrentDropLayout();
-        setCurrentDropLayout(layout);
-        setCurrentDragOverlappingLayout(layout);
+        setDropLayoutForDragObject(d);
 
         if (!workspaceInModalState() && FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND) {
             mLauncher.getDragLayer().showPageHints();
@@ -3061,7 +3057,6 @@ public class Workspace extends PagedView
         // Skip drag over events while we are dragging over side pages
         if (mInScrollArea || !transitionStateShouldAllowDrop()) return;
 
-        CellLayout layout = null;
         ItemInfo item = d.dragInfo;
         if (item == null) {
             if (ProviderConfig.IS_DOGFOOD_BUILD) {
@@ -3075,42 +3070,14 @@ public class Workspace extends PagedView
         mDragViewVisualCenter = d.getVisualCenter(mDragViewVisualCenter);
 
         final View child = (mDragInfo == null) ? null : mDragInfo.cell;
-        // Identify whether we have dragged over a side page
-        if (workspaceInModalState()) {
-            if (mLauncher.getHotseat() != null && !isDragWidget(d)) {
-                if (isPointInSelfOverHotseat(d.x, d.y)) {
-                    layout = mLauncher.getHotseat().getLayout();
+        if (setDropLayoutForDragObject(d)) {
+            boolean isInSpringLoadedMode = (mState == State.SPRING_LOADED);
+            if (isInSpringLoadedMode) {
+                if (mLauncher.isHotseatLayout(mDragTargetLayout)) {
+                    mSpringLoadedDragController.cancel();
+                } else {
+                    mSpringLoadedDragController.setAlarm(mDragTargetLayout);
                 }
-            }
-            if (layout == null) {
-                layout = findMatchingPageForDragOver(d.dragView, d.x, d.y, false);
-            }
-            if (layout != mDragTargetLayout) {
-                setCurrentDropLayout(layout);
-                setCurrentDragOverlappingLayout(layout);
-
-                boolean isInSpringLoadedMode = (mState == State.SPRING_LOADED);
-                if (isInSpringLoadedMode) {
-                    if (mLauncher.isHotseatLayout(layout)) {
-                        mSpringLoadedDragController.cancel();
-                    } else {
-                        mSpringLoadedDragController.setAlarm(mDragTargetLayout);
-                    }
-                }
-            }
-        } else {
-            // Test to see if we are over the hotseat otherwise just use the current page
-            if (mLauncher.getHotseat() != null && !isDragWidget(d)) {
-                if (isPointInSelfOverHotseat(d.x, d.y)) {
-                    layout = mLauncher.getHotseat().getLayout();
-                }
-            }
-            if (layout == null) {
-                layout = getCurrentDropLayout();
-            }
-            if (layout != mDragTargetLayout) {
-                setCurrentDropLayout(layout);
-                setCurrentDragOverlappingLayout(layout);
             }
         }
 
@@ -3174,6 +3141,40 @@ public class Workspace extends PagedView
                 }
             }
         }
+    }
+
+    /**
+     * Updates {@link #mDragTargetLayout} and {@link #mDragOverlappingLayout}
+     * based on the DragObject's position.
+     *
+     * The layout will be:
+     * - The Hotseat if the drag object is over it
+     * - A side page if we are in spring-loaded mode and the drag object is over it
+     * - The current page otherwise
+     *
+     * @return whether the layout is different from the current {@link #mDragTargetLayout}.
+     */
+    private boolean setDropLayoutForDragObject(DragObject d) {
+        CellLayout layout = null;
+        // Test to see if we are over the hotseat first
+        if (mLauncher.getHotseat() != null && !isDragWidget(d)) {
+            if (isPointInSelfOverHotseat(d.x, d.y)) {
+                layout = mLauncher.getHotseat().getLayout();
+            }
+        }
+        if (layout == null) {
+            // Identify whether we have dragged over a side page,
+            // otherwise just use the current page
+            layout = workspaceInModalState() ?
+                    findMatchingPageForDragOver(d.dragView, d.x, d.y, false)
+                    : getCurrentDropLayout();
+        }
+        if (layout != mDragTargetLayout) {
+            setCurrentDropLayout(layout);
+            setCurrentDragOverlappingLayout(layout);
+            return true;
+        }
+        return false;
     }
 
     private void manageFolderFeedback(CellLayout targetLayout,
