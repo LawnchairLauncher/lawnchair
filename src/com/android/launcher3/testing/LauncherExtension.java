@@ -139,13 +139,8 @@ public class LauncherExtension extends Launcher {
         }
 
         @Override
-        public boolean providesSearch() {
-            return false;
-        }
-
-        @Override
         public boolean startSearch(String initialQuery, boolean selectInitialQuery,
-                Bundle appSearchData, Rect sourceBounds) {
+                Bundle appSearchData) {
             return false;
         }
 

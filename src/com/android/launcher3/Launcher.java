@@ -1232,7 +1232,8 @@ public class Launcher extends Activity
         return mDefaultKeySsb.toString();
     }
 
-    private void clearTypedText() {
+    @Override
+    public void clearTypedText() {
         mDefaultKeySsb.clear();
         mDefaultKeySsb.clearSpans();
         Selection.setSelection(mDefaultKeySsb, 0);
@@ -1997,13 +1998,10 @@ public class Launcher extends Activity
             appSearchData.putString("source", "launcher-search");
         }
 
-        // TODO send proper bounds.
-        Rect sourceBounds = null;
-
-        boolean clearTextImmediately = startSearch(initialQuery, selectInitialQuery,
-                appSearchData, sourceBounds);
-        if (clearTextImmediately) {
-            clearTypedText();
+        if (mLauncherCallbacks == null ||
+                !mLauncherCallbacks.startSearch(initialQuery, selectInitialQuery, appSearchData)) {
+            // Starting search from the callbacks failed. Start the default global search.
+            startGlobalSearch(initialQuery, selectInitialQuery, appSearchData, null);
         }
 
         // We need to show the workspace after starting the search
@@ -2011,28 +2009,9 @@ public class Launcher extends Activity
     }
 
     /**
-     * Start a text search.
-     *
-     * @return {@code true} if the search will start immediately, so any further keypresses
-     * will be handled directly by the search UI. {@code false} if {@link Launcher} should continue
-     * to buffer keypresses.
-     */
-    public boolean startSearch(String initialQuery,
-            boolean selectInitialQuery, Bundle appSearchData, Rect sourceBounds) {
-        if (mLauncherCallbacks != null && mLauncherCallbacks.providesSearch()) {
-            return mLauncherCallbacks.startSearch(initialQuery, selectInitialQuery, appSearchData,
-                    sourceBounds);
-        }
-
-        startGlobalSearch(initialQuery, selectInitialQuery,
-                appSearchData, sourceBounds);
-        return false;
-    }
-
-    /**
      * Starts the global search activity. This code is a copied from SearchManager
      */
-    private void startGlobalSearch(String initialQuery,
+    public void startGlobalSearch(String initialQuery,
             boolean selectInitialQuery, Bundle appSearchData, Rect sourceBounds) {
         final SearchManager searchManager =
             (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -3424,10 +3403,6 @@ public class Launcher extends Activity
 
     void unlockAllApps() {
         // TODO
-    }
-
-    public boolean launcherCallbacksProvidesSearch() {
-        return (mLauncherCallbacks != null && mLauncherCallbacks.providesSearch());
     }
 
     @Override

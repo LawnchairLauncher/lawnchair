@@ -79,9 +79,11 @@ public interface LauncherCallbacks {
     @Deprecated
     public void onWorkspaceLockedChanged();
 
-    public boolean providesSearch();
-    public boolean startSearch(String initialQuery, boolean selectInitialQuery,
-            Bundle appSearchData, Rect sourceBounds);
+    /**
+     * Starts a search with {@param initialQuery}. Return false if search was not started.
+     */
+    public boolean startSearch(
+            String initialQuery, boolean selectInitialQuery, Bundle appSearchData);
     public boolean hasCustomContentToLeft();
     public void populateCustomContentContainer();
     public View getQsbBar();
