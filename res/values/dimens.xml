@@ -182,4 +182,8 @@
          also happens to equal 19dp-->
     <dimen name="deep_shortcuts_arrow_horizontal_offset">19dp</dimen>
 
+<!-- Other -->
+    <!-- Approximates the system status bar height. Not guaranteed to be always be correct. -->
+    <dimen name="status_bar_height">24dp</dimen>
+
 </resources>
