@@ -20,8 +20,6 @@ import android.appwidget.AppWidgetHostView;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Paint;
-import android.graphics.Paint.FontMetrics;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
@@ -100,6 +98,7 @@ public class DeviceProfile {
     public int folderIconPreviewPadding;
     public int folderCellWidthPx;
     public int folderCellHeightPx;
+    public int folderChildDrawablePaddingPx;
 
     // Hotseat
     public int hotseatCellWidthPx;
@@ -255,12 +254,9 @@ public class DeviceProfile {
         allAppsIconDrawablePaddingPx = iconDrawablePaddingPx;
         allAppsIconTextSizePx = iconTextSizePx;
 
-        // Calculate the actual text height
-        Paint textPaint = new Paint();
-        textPaint.setTextSize(iconTextSizePx);
-        FontMetrics fm = textPaint.getFontMetrics();
         cellWidthPx = iconSizePx;
-        cellHeightPx = iconSizePx + iconDrawablePaddingPx + (int) Math.ceil(fm.bottom - fm.top);
+        cellHeightPx = iconSizePx + iconDrawablePaddingPx
+                + Utilities.calculateTextHeight(iconTextSizePx);
         final float scaleDps = !FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND ? 0f
                 : res.getDimensionPixelSize(R.dimen.dragViewScale);
         dragViewScale = (iconSizePx + scaleDps) / iconSizePx;
@@ -281,12 +277,25 @@ public class DeviceProfile {
                     res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
         }
 
-        // Folder
-        int folderCellPadding = isTablet || isLandscape ? 6 * edgeMarginPx : 3 * edgeMarginPx;
+        // Folder cell
+        int cellPaddingX = res.getDimensionPixelSize(R.dimen.folder_cell_x_padding);
+        int cellPaddingY = res.getDimensionPixelSize(R.dimen.folder_cell_y_padding);
+        final int folderChildTextSize =
+                Utilities.calculateTextHeight(res.getDimension(R.dimen.folder_child_text_size));
+
+        final int folderBottomPanelSize =
+                2 * res.getDimensionPixelSize(R.dimen.folder_label_padding)
+                + Utilities.calculateTextHeight(res.getDimension(R.dimen.folder_label_text_size));
+
         // Don't let the folder get too close to the edges of the screen.
-        folderCellWidthPx = Math.min(cellWidthPx + folderCellPadding,
+        folderCellWidthPx = Math.min(iconSizePx + 2 * cellPaddingX,
                 (availableWidthPx - 4 * edgeMarginPx) / inv.numFolderColumns);
-        folderCellHeightPx = cellHeightPx + edgeMarginPx;
+        folderCellHeightPx = Math.min(iconSizePx + 3 * cellPaddingY + folderChildTextSize,
+                (availableHeightPx - 4 * edgeMarginPx - folderBottomPanelSize) / inv.numFolderRows);
+        folderChildDrawablePaddingPx = Math.max(0,
+                (folderCellHeightPx - iconSizePx - folderChildTextSize) / 3);
+
+        // Folder icon
         folderBackgroundOffset = -edgeMarginPx;
         folderIconSizePx = iconSizePx + 2 * -folderBackgroundOffset;
         folderIconPreviewPadding = res.getDimensionPixelSize(R.dimen.folder_preview_padding);
@@ -296,9 +305,6 @@ public class DeviceProfile {
         mInsets.set(insets);
     }
 
-    /**
-     * @param recyclerViewWidth the available width of the AllAppsRecyclerView
-     */
     public void updateAppsViewNumCols() {
         allAppsNumCols = allAppsNumPredictiveCols = inv.numColumns;
     }
