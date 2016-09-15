@@ -159,6 +159,11 @@ public class PageIndicatorLineCaret extends PageIndicator {
     }
 
     @Override
+    public void setContentDescription(CharSequence contentDescription) {
+        mAllAppsHandle.setContentDescription(contentDescription);
+    }
+
+    @Override
     public void setScroll(int currentScroll, int totalScroll) {
         if (getAlpha() == 0) {
             return;
