@@ -6,6 +6,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -101,7 +102,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                 R.dimen.all_apps_bezel_swipe_height);
 
         mEvaluator = new ArgbEvaluator();
-        mAllAppsBackgroundColor = l.getColor(R.color.all_apps_container_color);
+        mAllAppsBackgroundColor = ContextCompat.getColor(l, R.color.all_apps_container_color);
     }
 
     @Override
