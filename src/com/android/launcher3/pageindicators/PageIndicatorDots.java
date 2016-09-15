@@ -226,11 +226,6 @@ public class PageIndicatorDots extends PageIndicator {
     public void setActiveMarker(int activePage) {
         if (mActivePage != activePage) {
             mActivePage = activePage;
-
-            // Simulate a scroll change
-            int totalScroll = mNumPages - 1;
-            int currentScroll = mIsRtl ? (totalScroll - mActivePage) : mActivePage;
-            setScroll(currentScroll, totalScroll);
         }
     }
 
