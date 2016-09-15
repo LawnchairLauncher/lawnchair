@@ -75,7 +75,6 @@ import com.android.launcher3.dragndrop.SpringLoadedDragController;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.DragPreviewProvider;
-import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutsContainerListener;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -84,6 +83,7 @@ import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.MultiStateAlphaController;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.util.VerticalFlingDetector;
 import com.android.launcher3.util.WallpaperOffsetInterpolator;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
@@ -593,7 +593,18 @@ public class Workspace extends PagedView
         }
         // Add the first page
         CellLayout firstPage = insertNewWorkspaceScreen(Workspace.FIRST_SCREEN_ID, 0);
-
+        final VerticalFlingDetector detector = new VerticalFlingDetector(mLauncher){
+            @Override
+            public boolean onTouch(View v, MotionEvent ev) {
+                if (shouldConsumeTouch(v)) return true;
+                if (super.onTouch(v, ev)) {
+                    mLauncher.startSearch("", false, null, false);
+                }
+                return false;
+            }
+        };
+        firstPage.setOnTouchListener(detector);
+        firstPage.setOnInterceptTouchListener(detector);
         // Always add a QSB on the first screen.
         if (qsb == null) {
             // In transposed layout, we add the QSB in the Grid. As workspace does not touch the
@@ -685,7 +696,6 @@ public class Workspace extends PagedView
         // created CellLayout.
         CellLayout newScreen = (CellLayout) mLauncher.getLayoutInflater().inflate(
                         R.layout.workspace_screen, this, false /* attachToRoot */);
-
         newScreen.setOnLongClickListener(mLongClickListener);
         newScreen.setOnClickListener(mLauncher);
         newScreen.setSoundEffectsEnabled(false);
@@ -1171,6 +1181,10 @@ public class Workspace extends PagedView
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+        return shouldConsumeTouch(v);
+    }
+
+    private boolean shouldConsumeTouch(View v) {
         return (workspaceInModalState() || !isFinishedSwitchingState())
                 || (!workspaceInModalState() && indexOfChild(v) != mCurrentPage);
     }
