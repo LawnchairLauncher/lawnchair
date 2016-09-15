@@ -33,6 +33,10 @@ public class TransformingTouchDelegate extends TouchDelegate {
 
     private final RectF mBounds;
 
+    private final RectF mTouchCheckBounds;
+    private float mTouchExtension;
+    private boolean mWasTouchOutsideBounds;
+
     private View mDelegateView;
     private boolean mDelegateTargeted;
 
@@ -41,10 +45,22 @@ public class TransformingTouchDelegate extends TouchDelegate {
 
         mDelegateView = delegateView;
         mBounds = new RectF();
+        mTouchCheckBounds = new RectF();
     }
 
     public void setBounds(int left, int top, int right, int bottom) {
         mBounds.set(left, top, right, bottom);
+        updateTouchBounds();
+    }
+
+    public void extendTouchBounds(float extension) {
+        mTouchExtension = extension;
+        updateTouchBounds();
+    }
+
+    private void updateTouchBounds() {
+        mTouchCheckBounds.set(mBounds);
+        mTouchCheckBounds.inset(-mTouchExtension, -mTouchExtension);
     }
 
     public void setDelegateView(View view) {
@@ -62,8 +78,9 @@ public class TransformingTouchDelegate extends TouchDelegate {
         boolean sendToDelegate = false;
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                mDelegateTargeted = mBounds.contains(event.getX(), event.getY());
+                mDelegateTargeted = mTouchCheckBounds.contains(event.getX(), event.getY());
                 if (mDelegateTargeted) {
+                    mWasTouchOutsideBounds = !mBounds.contains(event.getX(), event.getY());
                     sendToDelegate = true;
                 }
                 break;
@@ -78,9 +95,15 @@ public class TransformingTouchDelegate extends TouchDelegate {
         }
         boolean handled = false;
         if (sendToDelegate) {
-            event.offsetLocation(-mBounds.left, -mBounds.top);
+            float x = event.getX();
+            float y = event.getY();
+            if (mWasTouchOutsideBounds) {
+                event.setLocation(mBounds.centerX(), mBounds.centerY());
+            } else {
+                event.offsetLocation(-mBounds.left, -mBounds.top);
+            }
             handled = mDelegateView.dispatchTouchEvent(event);
-            event.offsetLocation(mBounds.left, mBounds.top);
+            event.setLocation(x, y);
         }
         return handled;
     }
