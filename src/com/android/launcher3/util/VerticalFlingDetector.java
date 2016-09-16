@@ -79,6 +79,9 @@ public class VerticalFlingDetector implements View.OnTouchListener {
     }
 
     private void cleanUp() {
+        if (mVelocityTracker == null) {
+            return;
+        }
         mVelocityTracker.recycle();
         mVelocityTracker = null;
     }
