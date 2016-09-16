@@ -593,18 +593,31 @@ public class Workspace extends PagedView
         }
         // Add the first page
         CellLayout firstPage = insertNewWorkspaceScreen(Workspace.FIRST_SCREEN_ID, 0);
-        final VerticalFlingDetector detector = new VerticalFlingDetector(mLauncher){
-            @Override
-            public boolean onTouch(View v, MotionEvent ev) {
-                if (shouldConsumeTouch(v)) return true;
-                if (super.onTouch(v, ev)) {
-                    mLauncher.startSearch("", false, null, false);
+        if (FeatureFlags.PULLDOWN_SEARCH) {
+            firstPage.setOnTouchListener(new VerticalFlingDetector(mLauncher) {
+                // detect fling when touch started from empty space
+                @Override
+                public boolean onTouch(View v, MotionEvent ev) {
+                    if (workspaceInModalState()) return false;
+                    if (shouldConsumeTouch(v)) return true;
+                    if (super.onTouch(v, ev)) {
+                        mLauncher.startSearch("", false, null, false);
+                    }
+                    return false;
                 }
-                return false;
-            }
-        };
-        firstPage.setOnTouchListener(detector);
-        firstPage.setOnInterceptTouchListener(detector);
+            });
+            firstPage.setOnInterceptTouchListener(new VerticalFlingDetector(mLauncher) {
+                // detect fling when touch started from on top of the icons
+                @Override
+                public boolean onTouch(View v, MotionEvent ev) {
+                    if (shouldConsumeTouch(v)) return true;
+                    if (super.onTouch(v, ev)) {
+                        mLauncher.startSearch("", false, null, false);
+                    }
+                    return false;
+                }
+            });
+        }
         // Always add a QSB on the first screen.
         if (qsb == null) {
             // In transposed layout, we add the QSB in the Grid. As workspace does not touch the
