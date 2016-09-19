@@ -36,6 +36,7 @@ import android.view.ViewGroup;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BaseContainerView;
+import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeleteDropTarget;
 import com.android.launcher3.DeviceProfile;
@@ -53,6 +54,7 @@ import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.graphics.TintedDrawableSpan;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
+import com.android.launcher3.shortcuts.DeepShortcutsContainer;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ComponentKey;
 
@@ -542,13 +544,32 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         if (!mLauncher.isAppsViewVisible() ||
                 mLauncher.getWorkspace().isSwitchingState()) return false;
-        // Return if global dragging is not enabled
+        // Return if global dragging is not enabled or we are already dragging
         if (!mLauncher.isDraggingEnabled()) return false;
+        if (mLauncher.getDragController().isDragging()) return false;
 
         // Start the drag
-        mLauncher.getWorkspace().beginDragShared(v, this, new DragOptions());
-        // Enter spring loaded mode
-        mLauncher.enterSpringLoadedDragMode();
+        DragOptions dragOptions = new DragOptions();
+        if (v instanceof BubbleTextView) {
+            final BubbleTextView icon = (BubbleTextView) v;
+            if (icon.hasDeepShortcuts()) {
+                DeepShortcutsContainer dsc = DeepShortcutsContainer.showForIcon(icon);
+                if (dsc != null) {
+                    dragOptions.deferDragCondition = dsc.createDeferDragCondition(new Runnable() {
+                        @Override
+                        public void run() {
+                            icon.setVisibility(VISIBLE);
+                        }
+                    });
+                }
+            }
+        }
+        mLauncher.getWorkspace().beginDragShared(v, this, dragOptions);
+        if (FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND) {
+            // Enter spring loaded mode (the new workspace does this in
+            // onDragStart(), so we don't want to do it here)
+            mLauncher.enterSpringLoadedDragMode();
+        }
 
         return false;
     }
@@ -598,7 +619,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         // target layout we were dropping on.
         if (!success) {
             boolean showOutOfSpaceMessage = false;
-            if (target instanceof Workspace) {
+            if (target instanceof Workspace && !mLauncher.getDragController().isDeferringDrag()) {
                 int currentScreen = mLauncher.getCurrentWorkspaceScreen();
                 Workspace workspace = (Workspace) target;
                 CellLayout layout = (CellLayout) workspace.getChildAt(currentScreen);

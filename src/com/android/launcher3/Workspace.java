@@ -74,8 +74,6 @@ import com.android.launcher3.dragndrop.SpringLoadedDragController;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.DragPreviewProvider;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.shortcuts.ShortcutsContainerListener;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -1175,10 +1173,6 @@ public class Workspace extends PagedView
         if (!(child instanceof Folder)) {
             child.setHapticFeedbackEnabled(false);
             child.setOnLongClickListener(mLongClickListener);
-            if (child instanceof BubbleTextView && DeepShortcutManager.supportsShortcuts(info)) {
-                // TODO: only add this listener if the item has shortcuts associated with it.
-                child.setOnTouchListener(new ShortcutsContainerListener((BubbleTextView) child));
-            }
         }
         if (child instanceof DropTarget) {
             mDragController.addDropTarget((DropTarget) child);

@@ -51,6 +51,7 @@ import android.widget.TextView;
 
 import com.android.launcher3.Alarm;
 import com.android.launcher3.AppInfo;
+import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragSource;
@@ -77,6 +78,7 @@ import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
+import com.android.launcher3.shortcuts.DeepShortcutsContainer;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.CircleRevealOutlineProvider;
@@ -279,7 +281,17 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     public boolean onLongClick(View v) {
         // Return if global dragging is not enabled
         if (!mLauncher.isDraggingEnabled()) return true;
-        return startDrag(v, new DragOptions());
+        DragOptions dragOptions = new DragOptions();
+        if (v instanceof BubbleTextView) {
+            BubbleTextView icon = (BubbleTextView) v;
+            if (icon.hasDeepShortcuts()) {
+                DeepShortcutsContainer dsc = DeepShortcutsContainer.showForIcon(icon);
+                if (dsc != null) {
+                    dragOptions.deferDragCondition = dsc.createDeferDragCondition(null);
+                }
+            }
+        }
+        return startDrag(v, dragOptions);
     }
 
     public boolean startDrag(View v, DragOptions options) {
@@ -1297,7 +1309,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             mIsExternalDrag = false;
         } else {
             currentDragView = mCurrentDragView;
-            mContent.addViewForRank(currentDragView, si, mEmptyCellRank);
+            if (!mDragController.isDeferringDrag()) {
+                mContent.addViewForRank(currentDragView, si, mEmptyCellRank);
+            }
         }
 
         if (d.dragView.hasDrawn()) {
@@ -1318,9 +1332,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mItemsInvalidated = true;
         rearrangeChildren();
 
-        // Temporarily suppress the listener, as we did all the work already here.
-        try (SuppressInfoChanges s = new SuppressInfoChanges()) {
-            mInfo.add(si, false);
+        if (!mDragController.isDeferringDrag()) {
+            // Temporarily suppress the listener, as we did all the work already here.
+            try (SuppressInfoChanges s = new SuppressInfoChanges()) {
+                mInfo.add(si, false);
+            }
         }
 
         // Clear the drag info, as it is no longer being dragged.

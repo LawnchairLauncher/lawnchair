@@ -34,16 +34,13 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 
-import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
@@ -59,7 +56,6 @@ import com.android.launcher3.LogAccelerateInterpolator;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.Workspace;
 import com.android.launcher3.accessibility.ShortcutMenuAccessibilityDelegate;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.dragndrop.DragController;
@@ -85,18 +81,12 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
     private final Launcher mLauncher;
     private final DeepShortcutManager mDeepShortcutsManager;
-    private final int mDragDeadzone;
     private final int mStartDragThreshold;
     private final ShortcutMenuAccessibilityDelegate mAccessibilityDelegate;
+    private final boolean mIsRtl;
 
     private BubbleTextView mDeferredDragIcon;
-    private int mActivePointerId;
-    private int[] mTouchDown = null;
-    private DragView mDragView;
-    private float mLastX, mLastY;
-    private float mDistanceDragged = 0;
     private final Rect mTempRect = new Rect();
-    private final int[] mTempXY = new int[2];
     private Point mIconLastTouchPos = new Point();
     private boolean mIsLeftAligned;
     private boolean mIsAboveIcon;
@@ -106,16 +96,11 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
     private boolean mDeferContainerRemoval;
     private boolean mIsOpen;
 
-    private boolean mSrcIconDragStarted;
-    private boolean mIsRtl;
-    private int mArrowHorizontalOffset;
-
     public DeepShortcutsContainer(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mLauncher = Launcher.getLauncher(context);
         mDeepShortcutsManager = LauncherAppState.getInstance().getShortcutManager();
 
-        mDragDeadzone = ViewConfiguration.get(context).getScaledTouchSlop();
         mStartDragThreshold = getResources().getDimensionPixelSize(
                 R.dimen.deep_shortcuts_start_drag_threshold);
         mAccessibilityDelegate = new ShortcutMenuAccessibilityDelegate(mLauncher);
@@ -134,7 +119,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         final Resources resources = getResources();
         final int arrowWidth = resources.getDimensionPixelSize(R.dimen.deep_shortcuts_arrow_width);
         final int arrowHeight = resources.getDimensionPixelSize(R.dimen.deep_shortcuts_arrow_height);
-        mArrowHorizontalOffset = resources.getDimensionPixelSize(
+        final int arrowHorizontalOffset = resources.getDimensionPixelSize(
                 R.dimen.deep_shortcuts_arrow_horizontal_offset);
         final int arrowVerticalOffset = resources.getDimensionPixelSize(
                 R.dimen.deep_shortcuts_arrow_vertical_offset);
@@ -159,7 +144,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         orientAboutIcon(originalIcon, arrowHeight + arrowVerticalOffset);
 
         // Add the arrow.
-        mArrow = addArrowView(mArrowHorizontalOffset, arrowVerticalOffset, arrowWidth, arrowHeight);
+        mArrow = addArrowView(arrowHorizontalOffset, arrowVerticalOffset, arrowWidth, arrowHeight);
         mArrow.setPivotX(arrowWidth / 2);
         mArrow.setPivotY(mIsAboveIcon ? 0 : arrowHeight);
 
@@ -347,7 +332,6 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         mIsAboveIcon = y > dragLayer.getTop() + insets.top;
         if (!mIsAboveIcon) {
             y = mTempRect.top + icon.getPaddingTop() + iconHeight;
-            icon.setTextVisibility(false);
         }
 
         // Insets are added later, so subtract them now.
@@ -393,7 +377,6 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
     private void deferDrag(BubbleTextView originalIcon) {
         mDeferredDragIcon = originalIcon;
-        showDragView(originalIcon);
         mLauncher.getDragController().addDragListener(this);
     }
 
@@ -401,103 +384,39 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         return mDeferredDragIcon;
     }
 
-    private void showDragView(BubbleTextView originalIcon) {
-        // TODO: implement support for Drawable DragViews so we don't have to create a bitmap here.
-        Bitmap b = Utilities.createIconBitmap(originalIcon.getIcon(), mLauncher);
-        float scale = mLauncher.getDragLayer().getLocationInDragLayer(originalIcon, mTempXY);
-        int dragLayerX = Math.round(mTempXY[0] - (b.getWidth() - scale * originalIcon.getWidth()) / 2);
-        int dragLayerY = Math.round(mTempXY[1] - (b.getHeight() - scale * b.getHeight()) / 2
-                - Workspace.DRAG_BITMAP_PADDING / 2) + originalIcon.getPaddingTop();
-        int motionDownX = mLauncher.getDragController().getMotionDown().x;
-        int motionDownY = mLauncher.getDragController().getMotionDown().y;
-        final int registrationX = motionDownX - dragLayerX;
-        final int registrationY = motionDownY - dragLayerY;
-
-        float scaleDps = getResources().getDimensionPixelSize(R.dimen.deep_shortcuts_drag_view_scale);
-        mDragView = new DragView(mLauncher, b, registrationX, registrationY, 1f, scaleDps);
-        mLastX = mLastY = mDistanceDragged = 0;
-        mDragView.show(motionDownX, motionDownY);
-    }
-
-    public boolean onForwardedEvent(MotionEvent ev, int activePointerId, int[] touchDown) {
-        mActivePointerId = activePointerId;
-        mTouchDown = touchDown;
-        return dispatchTouchEvent(ev);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        if (mDeferredDragIcon == null) {
-            return false;
-        }
-
-        final int activePointerIndex = ev.findPointerIndex(mActivePointerId);
-        if (activePointerIndex < 0) {
-            return false;
-        }
-        final float x = ev.getX(activePointerIndex);
-        final float y = ev.getY(activePointerIndex);
-
-
-        int action = ev.getAction();
-        // The event was in this container's coordinate system before this,
-        // but will be in DragLayer's coordinate system from now on.
-        Utilities.translateEventCoordinates(this, mLauncher.getDragLayer(), ev);
-        final int dragLayerX = (int) ev.getX();
-        final int dragLayerY = (int) ev.getY();
-        if (action == MotionEvent.ACTION_MOVE) {
-            if (mLastX != 0 || mLastY != 0) {
-                mDistanceDragged += Math.hypot(mLastX - x, mLastY - y);
-            }
-            mLastX = x;
-            mLastY = y;
-
-            if (shouldStartDeferredDrag((int) x, (int) y)) {
-                mSrcIconDragStarted = true;
-                cleanupDeferredDrag(true);
-                mDeferredDragIcon.getParent().requestDisallowInterceptTouchEvent(false);
-                mDeferredDragIcon.getOnLongClickListener().onLongClick(mDeferredDragIcon);
-                mLauncher.getDragController().onTouchEvent(ev);
-                return true;
-            } else if (mDistanceDragged > mDragDeadzone) {
-                // After dragging further than a small deadzone,
-                // have the drag view follow the user's finger.
-                mDragView.setVisibility(VISIBLE);
-                mDragView.move(dragLayerX, dragLayerY);
-                mDeferredDragIcon.setVisibility(INVISIBLE);
-            }
-        } else if (action == MotionEvent.ACTION_UP) {
-            cleanupDeferredDrag(true);
-            mLauncher.getUserEventDispatcher().logDeepShortcutsOpen(mDeferredDragIcon);
-        } else if (action == MotionEvent.ACTION_CANCEL) {
-            // Do not change the source icon visibility if we are already dragging the source icon.
-            cleanupDeferredDrag(!mSrcIconDragStarted);
-        }
-        return true;
-    }
-
     /**
-     * Determines whether the deferred drag should be started based on touch coordinates
-     * relative to the original icon and the shortcuts container.
+     * Determines when the deferred drag should be started.
      *
      * Current behavior:
      * - Start the drag if the touch passes a certain distance from the original touch down.
-     *
-     * @param x the x touch coordinate relative to this container
-     * @param y the y touch coordinate relative to this container
      */
-    private boolean shouldStartDeferredDrag(int x, int y) {
-        double distFromTouchDown = Math.hypot(x - mTouchDown[0], y - mTouchDown[1]);
-        return distFromTouchDown > mStartDragThreshold;
-    }
+    public DragOptions.DeferDragCondition createDeferDragCondition(final Runnable onDragStart) {
+        return new DragOptions.DeferDragCondition() {
+            @Override
+            public boolean shouldStartDeferredDrag(double distanceDragged) {
+                return distanceDragged > mStartDragThreshold;
+            }
 
-    private void cleanupDeferredDrag(boolean updateSrcVisibility) {
-        if (mDragView != null) {
-            mDragView.remove();
-        }
-        if (updateSrcVisibility) {
-            mDeferredDragIcon.setVisibility(VISIBLE);
-        }
+            @Override
+            public void onDeferredDragStart() {
+                mDeferredDragIcon.setVisibility(INVISIBLE);
+            }
+
+            @Override
+            public void onDropBeforeDeferredDrag() {
+                mLauncher.getUserEventDispatcher().logDeepShortcutsOpen(mDeferredDragIcon);
+                if (!mIsAboveIcon) {
+                    mDeferredDragIcon.setTextVisibility(false);
+                }
+            }
+
+            @Override
+            public void onDragStart() {
+                if (onDragStart != null) {
+                    onDragStart.run();
+                }
+            }
+        };
     }
 
     @Override
@@ -581,9 +500,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
     @Override
     public void onDragEnd() {
-        if (mIsOpen) {
-            animateClose();
-        } else {
+        if (!mIsOpen) {
             if (mOpenCloseAnimator != null) {
                 // Close animation is running.
                 mDeferContainerRemoval = false;
@@ -594,6 +511,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
                 }
             }
         }
+        mDeferredDragIcon.setVisibility(VISIBLE);
     }
 
     @Override
@@ -701,8 +619,6 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         }
         mIsOpen = false;
         mDeferContainerRemoval = false;
-        // Make the original icon visible in All Apps, but not in Workspace or Folders.
-        cleanupDeferredDrag(mDeferredDragIcon.getTag() instanceof AppInfo);
         boolean isInHotseat = ((ItemInfo) mDeferredDragIcon.getTag()).container
                 == LauncherSettings.Favorites.CONTAINER_HOTSEAT;
         mDeferredDragIcon.setTextVisibility(!isInHotseat);
@@ -734,8 +650,6 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
             container.setVisibility(View.INVISIBLE);
             launcher.getDragLayer().addView(container);
             container.populateAndShow(icon, ids);
-            icon.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
-                    HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
             return container;
         }
         return null;
