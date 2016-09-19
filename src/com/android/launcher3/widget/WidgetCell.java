@@ -135,6 +135,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         mWidgetName.setText(mItem.label);
         mWidgetDims.setText(getContext().getString(R.string.widget_dims_format,
                 mItem.spanX, mItem.spanY));
+        mWidgetDims.setContentDescription(getContext().getString(
+                R.string.widget_accessible_dims_format, mItem.spanX, mItem.spanY));
         mWidgetPreviewLoader = loader;
 
         if (item.activityInfo != null) {
