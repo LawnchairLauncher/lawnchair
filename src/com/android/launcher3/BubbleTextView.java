@@ -66,6 +66,7 @@ public class BubbleTextView extends TextView
 
     private static final int DISPLAY_WORKSPACE = 0;
     private static final int DISPLAY_ALL_APPS = 1;
+    private static final int DISPLAY_FOLDER = 2;
 
     private final Launcher mLauncher;
     private Drawable mIcon;
@@ -126,12 +127,13 @@ public class BubbleTextView extends TextView
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.allAppsIconTextSizePx);
             setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
             defaultIconSize = grid.allAppsIconSizePx;
+        } else if (display == DISPLAY_FOLDER) {
+            setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
         }
         mCenterVertically = a.getBoolean(R.styleable.BubbleTextView_centerVertically, false);
 
         mIconSize = a.getDimensionPixelSize(R.styleable.BubbleTextView_iconSizeOverride,
                 defaultIconSize);
-
         a.recycle();
 
         if (mCustomShadowsEnabled) {

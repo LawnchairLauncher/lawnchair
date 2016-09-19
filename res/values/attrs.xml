@@ -25,7 +25,8 @@
         <attr name="iconDisplay" format="integer">
             <enum name="workspace" value="0" />
             <enum name="all_apps" value="1" />
-            <enum name="widget_section" value="2" />
+            <enum name="folder" value="2" />
+            <enum name="widget_section" value="3" />
         </attr>
         <attr name="deferShadowGeneration" format="boolean" />
         <attr name="customShadows" format="boolean" />

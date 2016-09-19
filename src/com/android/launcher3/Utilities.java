@@ -472,11 +472,11 @@ public final class Utilities {
     /**
      * Calculates the height of a given string at a specific text size.
      */
-    public static float calculateTextHeight(float textSizePx) {
+    public static int calculateTextHeight(float textSizePx) {
         Paint p = new Paint();
         p.setTextSize(textSizePx);
         Paint.FontMetrics fm = p.getFontMetrics();
-        return -fm.top + fm.bottom;
+        return (int) Math.ceil(fm.bottom - fm.top);
     }
 
     /**
