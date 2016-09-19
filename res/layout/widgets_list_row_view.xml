@@ -59,8 +59,8 @@
             android:id="@+id/widgets_cell_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/widget_row_padding"
-            android:layout_marginLeft="@dimen/widget_row_padding"
+            android:paddingStart="@dimen/widget_row_padding"
+            android:paddingEnd="0dp"
             android:orientation="horizontal"
             android:divider="@drawable/widgets_row_divider"
             android:showDividers="middle"/>
