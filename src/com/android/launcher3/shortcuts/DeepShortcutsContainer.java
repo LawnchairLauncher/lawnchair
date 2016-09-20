@@ -54,6 +54,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherViewPropertyAnimator;
+import com.android.launcher3.LogAccelerateInterpolator;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
@@ -228,6 +229,9 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
         final long duration = getResources().getInteger(
                 R.integer.config_deepShortcutOpenDuration);
+        final long arrowScaleDuration = getResources().getInteger(
+                R.integer.config_deepShortcutArrowOpenDuration);
+        final long arrowScaleDelay = duration - arrowScaleDuration;
         final long stagger = getResources().getInteger(
                 R.integer.config_deepShortcutOpenStagger);
 
@@ -236,6 +240,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         for (int i = 0; i < shortcutCount; i++) {
             final DeepShortcutView deepShortcutView = getShortcutAt(i);
             deepShortcutView.setVisibility(INVISIBLE);
+            deepShortcutView.setAlpha(0);
 
             Animator anim = deepShortcutView.createOpenAnimation(mIsAboveIcon, mIsLeftAligned);
             anim.addListener(new AnimatorListenerAdapter() {
@@ -249,6 +254,12 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
             anim.setStartDelay(stagger * animationIndex);
             anim.setInterpolator(interpolator);
             shortcutAnims.play(anim);
+
+            Animator fadeAnim = new LauncherViewPropertyAnimator(deepShortcutView).alpha(1);
+            fadeAnim.setInterpolator(new LogAccelerateInterpolator(100, 0));
+            // We want the shortcut to be fully opaque before the arrow starts animating.
+            fadeAnim.setDuration(arrowScaleDelay);
+            shortcutAnims.play(fadeAnim);
         }
         shortcutAnims.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -264,8 +275,6 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         // Animate the arrow
         mArrow.setScaleX(0);
         mArrow.setScaleY(0);
-        final long arrowScaleDelay = duration / 6;
-        final long arrowScaleDuration = duration - arrowScaleDelay;
         Animator arrowScale = new LauncherViewPropertyAnimator(mArrow).scaleX(1).scaleY(1);
         arrowScale.setStartDelay(arrowScaleDelay);
         arrowScale.setDuration(arrowScaleDuration);
@@ -611,12 +620,12 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         }
         final long duration = getResources().getInteger(
                 R.integer.config_deepShortcutCloseDuration);
+        final long arrowScaleDuration = getResources().getInteger(
+                R.integer.config_deepShortcutArrowOpenDuration);
         final long stagger = getResources().getInteger(
                 R.integer.config_deepShortcutCloseStagger);
 
-        long arrowDelay = (numOpenShortcuts - 1) * stagger + (duration * 4 / 6);
         int firstOpenShortcutIndex = mIsAboveIcon ? shortcutCount - numOpenShortcuts : 0;
-        int shortcutWithArrowIndex = mIsAboveIcon ? (numOpenShortcuts - 1) : 0;
         for (int i = firstOpenShortcutIndex; i < firstOpenShortcutIndex + numOpenShortcuts; i++) {
             final DeepShortcutView view = getShortcutAt(i);
             Animator anim;
@@ -625,6 +634,13 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
                 int animationIndex = mIsAboveIcon ? i - firstOpenShortcutIndex
                         : numOpenShortcuts - i - 1;
                 anim.setStartDelay(stagger * animationIndex);
+
+                Animator fadeAnim = new LauncherViewPropertyAnimator(view).alpha(0);
+                // Don't start fading until the arrow is gone.
+                fadeAnim.setStartDelay(stagger * animationIndex + arrowScaleDuration);
+                fadeAnim.setDuration(duration - arrowScaleDuration);
+                fadeAnim.setInterpolator(new LogAccelerateInterpolator(100, 0));
+                shortcutAnims.play(fadeAnim);
             } else {
                 // The view is being dragged. Animate it such that it collapses with the drag view
                 anim = view.collapseToIcon();
@@ -643,10 +659,6 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
                         .translationY(mIconShift.y);
                 anim2.setDuration(DragView.VIEW_ZOOM_DURATION);
                 shortcutAnims.play(anim2);
-
-                if (i == shortcutWithArrowIndex) {
-                    arrowDelay = 0;
-                }
             }
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -657,8 +669,8 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
             shortcutAnims.play(anim);
         }
         Animator arrowAnim = new LauncherViewPropertyAnimator(mArrow)
-                .scaleX(0).scaleY(0).setDuration(duration / 6);
-        arrowAnim.setStartDelay(arrowDelay);
+                .scaleX(0).scaleY(0).setDuration(arrowScaleDuration);
+        arrowAnim.setStartDelay(0);
         shortcutAnims.play(arrowAnim);
 
         shortcutAnims.addListener(new AnimatorListenerAdapter() {
