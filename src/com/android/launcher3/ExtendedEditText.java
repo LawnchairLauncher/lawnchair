@@ -40,11 +40,13 @@ public class ExtendedEditText extends EditText {
     private OnBackKeyListener mBackKeyListener;
 
     public ExtendedEditText(Context context) {
-        this(context, null, 0);
+        // ctor chaining breaks the touch handling
+        super(context);
     }
 
     public ExtendedEditText(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+        // ctor chaining breaks the touch handling
+        super(context, attrs);
     }
 
     public ExtendedEditText(Context context, AttributeSet attrs, int defStyleAttr) {
