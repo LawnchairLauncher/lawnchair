@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
@@ -27,6 +28,7 @@ import android.widget.FrameLayout;
 
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.util.TransformingTouchDelegate;
 
 /**
  * A base container view, which supports resizing.
@@ -39,11 +41,13 @@ public abstract class BaseContainerView extends FrameLayout
     protected int mContainerPaddingTop;
     protected int mContainerPaddingBottom;
 
-    private InsetDrawable mRevealDrawable;
     protected final Drawable mBaseDrawable;
+    private final Rect mBgPaddingRect = new Rect();
 
     private View mRevealView;
     private View mContent;
+
+    private TransformingTouchDelegate mTouchDelegate;
 
     public BaseContainerView(Context context) {
         this(context, null);
@@ -72,6 +76,12 @@ public abstract class BaseContainerView extends FrameLayout
 
         DeviceProfile grid = Launcher.getLauncher(getContext()).getDeviceProfile();
         grid.addLauncherLayoutChangedListener(this);
+
+        View touchDelegateTargetView = getTouchDelegateTargetView();
+        if (touchDelegateTargetView != null) {
+            mTouchDelegate = new TransformingTouchDelegate(touchDelegateTargetView);
+            ((View) touchDelegateTargetView.getParent()).setTouchDelegate(mTouchDelegate);
+        }
     }
 
     @Override
@@ -90,6 +100,21 @@ public abstract class BaseContainerView extends FrameLayout
         mRevealView = findViewById(R.id.reveal_view);
 
         updatePaddings();
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        getRevealView().getBackground().getPadding(mBgPaddingRect);
+
+        View touchDelegateTargetView = getTouchDelegateTargetView();
+        if (touchDelegateTargetView != null) {
+            mTouchDelegate.setBounds(
+                    touchDelegateTargetView.getLeft() - mBgPaddingRect.left,
+                    touchDelegateTargetView.getTop() - mBgPaddingRect.top,
+                    touchDelegateTargetView.getRight() + mBgPaddingRect.right,
+                    touchDelegateTargetView.getBottom() + mBgPaddingRect.bottom);
+        }
     }
 
     @Override
@@ -130,14 +155,12 @@ public abstract class BaseContainerView extends FrameLayout
             }
         }
 
-        mRevealDrawable = new InsetDrawable(mBaseDrawable,
+        InsetDrawable revealDrawable = new InsetDrawable(mBaseDrawable,
                 mContainerPaddingLeft, mContainerPaddingTop, mContainerPaddingRight,
                 mContainerPaddingBottom);
-        mRevealView.setBackground(mRevealDrawable);
-        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && this instanceof AllAppsContainerView) {
-            // Skip updating the content background
-        } else {
-            mContent.setBackground(mRevealDrawable);
-        }
+        mRevealView.setBackground(revealDrawable);
+        mContent.setBackground(revealDrawable);
     }
+
+    public abstract View getTouchDelegateTargetView();
 }
