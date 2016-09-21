@@ -40,8 +40,10 @@ public class ShortcutMenuAccessibilityDelegate extends LauncherAccessibilityDele
     }
 
     @Override
-    protected void addActions(View host, AccessibilityNodeInfo info) {
-        info.addAction(mActions.get(ADD_TO_WORKSPACE));
+    public void addSupportedActions(View host, AccessibilityNodeInfo info, boolean fromKeyboard) {
+        if ((host.getParent() instanceof DeepShortcutView)) {
+            info.addAction(mActions.get(ADD_TO_WORKSPACE));
+        }
     }
 
     @Override

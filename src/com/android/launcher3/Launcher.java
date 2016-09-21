@@ -69,6 +69,8 @@ import android.util.Log;
 import android.view.Display;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
+import android.view.KeyboardShortcutGroup;
+import android.view.KeyboardShortcutInfo;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -79,6 +81,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Advanceable;
@@ -106,6 +109,7 @@ import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.keyboard.CustomActionsPopup;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.logging.UserEventDispatcher;
@@ -4420,6 +4424,65 @@ public class Launcher extends Activity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.dump(prefix, fd, writer, args);
         }
+    }
+
+    @Override
+    @TargetApi(Build.VERSION_CODES.N)
+    public void onProvideKeyboardShortcuts(
+            List<KeyboardShortcutGroup> data, Menu menu, int deviceId) {
+
+        ArrayList<KeyboardShortcutInfo> shortcutInfos = new ArrayList<>();
+        if (mState == State.WORKSPACE) {
+            shortcutInfos.add(new KeyboardShortcutInfo(getString(R.string.all_apps_button_label),
+                    KeyEvent.KEYCODE_A, KeyEvent.META_CTRL_ON));
+        }
+        View currentFocus = getCurrentFocus();
+        if (new CustomActionsPopup(this, currentFocus).canShow()) {
+            shortcutInfos.add(new KeyboardShortcutInfo(getString(R.string.custom_actions),
+                    KeyEvent.KEYCODE_O, KeyEvent.META_CTRL_ON));
+        }
+        if (currentFocus instanceof BubbleTextView &&
+                ((BubbleTextView) currentFocus).hasDeepShortcuts()) {
+            shortcutInfos.add(new KeyboardShortcutInfo(getString(R.string.action_deep_shortcut),
+                    KeyEvent.KEYCODE_S, KeyEvent.META_CTRL_ON));
+        }
+        if (!shortcutInfos.isEmpty()) {
+            data.add(new KeyboardShortcutGroup(getString(R.string.home_screen), shortcutInfos));
+        }
+
+        super.onProvideKeyboardShortcuts(data, menu, deviceId);
+    }
+
+    @Override
+    public boolean onKeyShortcut(int keyCode, KeyEvent event) {
+        if (event.hasModifiers(KeyEvent.META_CTRL_ON)) {
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_A:
+                    if (mState == State.WORKSPACE) {
+                        showAppsView(true, true, false);
+                        return true;
+                    }
+                    break;
+                case KeyEvent.KEYCODE_S: {
+                    View focusedView = getCurrentFocus();
+                    if (focusedView instanceof BubbleTextView
+                            && focusedView.getTag() instanceof ItemInfo
+                            && mAccessibilityDelegate.performAction(focusedView,
+                                    (ItemInfo) focusedView.getTag(),
+                                    LauncherAccessibilityDelegate.DEEP_SHORTCUTS)) {
+                        getOpenShortcutsContainer().requestFocus();
+                        return true;
+                    }
+                    break;
+                }
+                case KeyEvent.KEYCODE_O:
+                    if (new CustomActionsPopup(this, getCurrentFocus()).show()) {
+                        return true;
+                    }
+                    break;
+            }
+        }
+        return super.onKeyShortcut(keyCode, event);
     }
 
     public static CustomAppWidget getCustomAppWidget(String name) {

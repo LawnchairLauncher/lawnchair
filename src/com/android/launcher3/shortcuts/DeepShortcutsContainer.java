@@ -677,6 +677,10 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         shortcutAnims.start();
     }
 
+    public ShortcutMenuAccessibilityDelegate getAccessibilityDelegate() {
+        return mAccessibilityDelegate;
+    }
+
     /**
      * Closes the folder without animation.
      */
