@@ -3235,7 +3235,6 @@ public class Launcher extends Activity
                     mWorkspace.startReordering(v);
                 } else {
                     showOverviewMode(true);
-                    mHotseat.requestDisallowInterceptTouchEvent(true);
                 }
             } else {
                 final boolean isAllAppsButton =
@@ -3386,6 +3385,9 @@ public class Launcher extends Activity
         mStateTransitionAnimation.startAnimationToWorkspace(mState, mWorkspace.getState(),
                 Workspace.State.OVERVIEW, animated, postAnimRunnable);
         mState = State.WORKSPACE;
+        // If animated from long press, then don't allow any of the controller in the drag
+        // layer to intercept any remaining touch.
+        mWorkspace.requestDisallowInterceptTouchEvent(animated);
     }
 
     /**
