@@ -21,7 +21,6 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView.State;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -50,7 +49,6 @@ import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.Thunk;
-import com.android.launcher3.util.TransformingTouchDelegate;
 
 /**
  * The widgets list view container.
@@ -65,12 +63,9 @@ public class WidgetsContainerView extends BaseContainerView
     private DragController mDragController;
     private IconCache mIconCache;
 
-    private final Rect mTmpBgPaddingRect = new Rect();
-
     /* Recycler view related member variables */
     private WidgetsRecyclerView mRecyclerView;
     private WidgetsListAdapter mAdapter;
-    private TransformingTouchDelegate mRecyclerViewTouchDelegate;
 
     /* Touch handling related member variables. */
     private Toast mWidgetInstructionToast;
@@ -98,14 +93,8 @@ public class WidgetsContainerView extends BaseContainerView
     }
 
     @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-        getRevealView().getBackground().getPadding(mTmpBgPaddingRect);
-        mRecyclerViewTouchDelegate.setBounds(
-                mRecyclerView.getLeft() - mTmpBgPaddingRect.left,
-                mRecyclerView.getTop() - mTmpBgPaddingRect.top,
-                mRecyclerView.getRight() + mTmpBgPaddingRect.right,
-                mRecyclerView.getBottom() + mTmpBgPaddingRect.bottom);
+    public View getTouchDelegateTargetView() {
+        return mRecyclerView;
     }
 
     @Override
@@ -114,13 +103,6 @@ public class WidgetsContainerView extends BaseContainerView
         mRecyclerView = (WidgetsRecyclerView) getContentView().findViewById(R.id.widgets_list_view);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRecyclerViewTouchDelegate = new TransformingTouchDelegate(mRecyclerView);
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        ((View) mRecyclerView.getParent()).setTouchDelegate(mRecyclerViewTouchDelegate);
     }
 
     //
