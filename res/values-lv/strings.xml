@@ -30,6 +30,8 @@
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Lai izvēlētos logrīku, pieskarieties un turiet to."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Lai atlasītu logrīku, veiciet dubultskārienu uz tā un turiet to vai arī veiciet pielāgotas darbības."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
+    <!-- no translation found for widget_accessible_dims_format (3640149169885301790) -->
+    <skip />
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Meklēt lietotnes"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Notiek lietotņu ielāde…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Vaicājumam “<xliff:g id="QUERY">%1$s</xliff:g>” neatbilda neviena lietotne."</string>
