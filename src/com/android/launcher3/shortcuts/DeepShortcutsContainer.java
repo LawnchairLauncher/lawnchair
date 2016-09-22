@@ -19,6 +19,7 @@ package com.android.launcher3.shortcuts;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.animation.TimeInterpolator;
 import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
@@ -234,6 +235,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         final long arrowScaleDelay = duration - arrowScaleDuration;
         final long stagger = getResources().getInteger(
                 R.integer.config_deepShortcutOpenStagger);
+        final TimeInterpolator fadeInterpolator = new LogAccelerateInterpolator(100, 0);
 
         // Animate shortcuts
         DecelerateInterpolator interpolator = new DecelerateInterpolator();
@@ -256,7 +258,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
             shortcutAnims.play(anim);
 
             Animator fadeAnim = new LauncherViewPropertyAnimator(deepShortcutView).alpha(1);
-            fadeAnim.setInterpolator(new LogAccelerateInterpolator(100, 0));
+            fadeAnim.setInterpolator(fadeInterpolator);
             // We want the shortcut to be fully opaque before the arrow starts animating.
             fadeAnim.setDuration(arrowScaleDelay);
             shortcutAnims.play(fadeAnim);
@@ -624,6 +626,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
                 R.integer.config_deepShortcutArrowOpenDuration);
         final long stagger = getResources().getInteger(
                 R.integer.config_deepShortcutCloseStagger);
+        final TimeInterpolator fadeInterpolator = new LogAccelerateInterpolator(100, 0);
 
         int firstOpenShortcutIndex = mIsAboveIcon ? shortcutCount - numOpenShortcuts : 0;
         for (int i = firstOpenShortcutIndex; i < firstOpenShortcutIndex + numOpenShortcuts; i++) {
@@ -639,7 +642,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
                 // Don't start fading until the arrow is gone.
                 fadeAnim.setStartDelay(stagger * animationIndex + arrowScaleDuration);
                 fadeAnim.setDuration(duration - arrowScaleDuration);
-                fadeAnim.setInterpolator(new LogAccelerateInterpolator(100, 0));
+                fadeAnim.setInterpolator(fadeInterpolator);
                 shortcutAnims.play(fadeAnim);
             } else {
                 // The view is being dragged. Animate it such that it collapses with the drag view
