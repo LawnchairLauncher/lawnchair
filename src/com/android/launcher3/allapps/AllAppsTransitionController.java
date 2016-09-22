@@ -109,7 +109,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             mNoIntercept = false;
-            if (mLauncher.getWorkspace().isInOverviewMode() || mLauncher.isWidgetsViewVisible()) {
+            if (!mLauncher.isAllAppsVisible() && mLauncher.getWorkspace().workspaceInModalState()) {
                 mNoIntercept = true;
             } else if (mLauncher.isAllAppsVisible() &&
                     !mAppsView.shouldContainerScroll(ev)) {
@@ -160,9 +160,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                     return true;
                 }
             } else {
-                if ((mLauncher.getDragLayer().isEventOverHotseat(ev)
-                        || mLauncher.getDragLayer().isEventOverPageIndicator(ev))
-                        && !grid.isVerticalBarLayout()) {
+                if (mLauncher.getDragLayer().isEventOverHotseat(ev) ||
+                        mLauncher.getDragLayer().isEventOverPageIndicator(ev)) {
                     return true;
                 }
             }
