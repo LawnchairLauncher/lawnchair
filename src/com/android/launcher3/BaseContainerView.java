@@ -16,14 +16,19 @@
 
 package com.android.launcher3;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
 
 import com.android.launcher3.allapps.AllAppsContainerView;
@@ -48,6 +53,8 @@ public abstract class BaseContainerView extends FrameLayout
     private View mContent;
 
     private TransformingTouchDelegate mTouchDelegate;
+
+    private final PointF mLastTouchDownPosPx = new PointF(-1.0f, -1.0f);
 
     public BaseContainerView(Context context) {
         this(context, null);
@@ -122,6 +129,17 @@ public abstract class BaseContainerView extends FrameLayout
         updatePaddings();
     }
 
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return handleTouchEvent(ev);
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        return handleTouchEvent(ev);
+    }
+
     public void setRevealDrawableColor(int color) {
         ((ColorDrawable) mBaseDrawable).setColor(color);
     }
@@ -160,6 +178,41 @@ public abstract class BaseContainerView extends FrameLayout
                 mContainerPaddingBottom);
         mRevealView.setBackground(revealDrawable);
         mContent.setBackground(revealDrawable);
+    }
+
+    /**
+     * Handles the touch events that shows the workspace when clicking outside the bounds of the
+     * touch delegate target view.
+     */
+    private boolean handleTouchEvent(MotionEvent ev) {
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                // Check if the touch is outside touch delegate target view
+                View touchDelegateTargetView = getTouchDelegateTargetView();
+                float leftBoundPx = touchDelegateTargetView.getLeft();
+                if (ev.getX() < leftBoundPx ||
+                        ev.getX() > (touchDelegateTargetView.getWidth() + leftBoundPx)) {
+                    mLastTouchDownPosPx.set((int) ev.getX(), (int) ev.getY());
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                if (mLastTouchDownPosPx.x > -1) {
+                    ViewConfiguration viewConfig = ViewConfiguration.get(getContext());
+                    float dx = ev.getX() - mLastTouchDownPosPx.x;
+                    float dy = ev.getY() - mLastTouchDownPosPx.y;
+                    float distance = PointF.length(dx, dy);
+                    if (distance < viewConfig.getScaledTouchSlop()) {
+                        // The background was clicked, so just go home
+                        Launcher.getLauncher(getContext()).showWorkspace(true);
+                        return true;
+                    }
+                }
+                // Fall through
+            case MotionEvent.ACTION_CANCEL:
+                mLastTouchDownPosPx.set(-1, -1);
+                break;
+        }
+        return false;
     }
 
     public abstract View getTouchDelegateTargetView();

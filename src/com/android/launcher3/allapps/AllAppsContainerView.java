@@ -143,9 +143,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     private final RecyclerView.LayoutManager mLayoutManager;
     private final RecyclerView.ItemDecoration mItemDecoration;
 
-    // The computed bounds of the container
-    private final Rect mContentBounds = new Rect();
-
     private AllAppsRecyclerView mAppsRecyclerView;
     private AllAppsSearchBarController mSearchBarController;
 
@@ -158,8 +155,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     private int mSectionNamesMargin;
     private int mNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
-    // This coordinate is relative to this container view
-    private final Point mBoundsCheckLastTouchDownPos = new Point(-1, -1);
+
 
     public AllAppsContainerView(Context context) {
         this(context, null);
@@ -368,10 +364,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int widthPx = MeasureSpec.getSize(widthMeasureSpec);
-        int heightPx = MeasureSpec.getSize(heightMeasureSpec);
-        mContentBounds.set(mContainerPaddingLeft, 0, widthPx - mContainerPaddingRight, heightPx);
-
         DeviceProfile grid = mLauncher.getDeviceProfile();
         grid.updateAppsViewNumCols();
         if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
@@ -443,17 +435,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         }
 
         return super.dispatchKeyEvent(event);
-    }
-
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        return handleTouchEvent(ev);
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        return handleTouchEvent(ev);
     }
 
     @Override
@@ -559,55 +540,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         if (toWorkspace) {
             reset();
         }
-    }
-
-    /**
-     * Handles the touch events to dismiss all apps when clicking outside the bounds of the
-     * recycler view.
-     */
-    private boolean handleTouchEvent(MotionEvent ev) {
-        DeviceProfile grid = mLauncher.getDeviceProfile();
-        int x = (int) ev.getX();
-        int y = (int) ev.getY();
-
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                if (!mContentBounds.isEmpty()) {
-                    // Outset the fixed bounds and check if the touch is outside all apps
-                    Rect tmpRect = new Rect(mContentBounds);
-                    tmpRect.inset(-grid.allAppsIconSizePx / 2, 0);
-                    if (ev.getX() < tmpRect.left || ev.getX() > tmpRect.right) {
-                        mBoundsCheckLastTouchDownPos.set(x, y);
-                        return true;
-                    }
-                } else {
-                    // Check if the touch is outside all apps
-                    if (ev.getX() < getPaddingLeft() ||
-                            ev.getX() > (getWidth() - getPaddingRight())) {
-                        mBoundsCheckLastTouchDownPos.set(x, y);
-                        return true;
-                    }
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-                if (mBoundsCheckLastTouchDownPos.x > -1) {
-                    ViewConfiguration viewConfig = ViewConfiguration.get(getContext());
-                    float dx = ev.getX() - mBoundsCheckLastTouchDownPos.x;
-                    float dy = ev.getY() - mBoundsCheckLastTouchDownPos.y;
-                    float distance = (float) Math.hypot(dx, dy);
-                    if (distance < viewConfig.getScaledTouchSlop()) {
-                        // The background was clicked, so just go home
-                        Launcher launcher = (Launcher) getContext();
-                        launcher.showWorkspace(true);
-                        return true;
-                    }
-                }
-                // Fall through
-            case MotionEvent.ACTION_CANCEL:
-                mBoundsCheckLastTouchDownPos.set(-1, -1);
-                break;
-        }
-        return false;
     }
 
     @Override
