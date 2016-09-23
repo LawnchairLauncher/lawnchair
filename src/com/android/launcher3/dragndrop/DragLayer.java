@@ -36,7 +36,6 @@ import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -53,8 +52,6 @@ import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DropTargetBar;
 import com.android.launcher3.InsettableFrameLayout;
-import com.android.launcher3.InstallShortcutReceiver;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetHostView;
 import com.android.launcher3.PinchToOverviewListener;
@@ -72,7 +69,6 @@ import com.android.launcher3.shortcuts.DeepShortcutsContainer;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TouchController;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 /**
@@ -90,11 +86,9 @@ public class DragLayer extends InsettableFrameLayout {
 
     @Thunk DragController mDragController;
 
-    private int mXDown, mYDown;
     private Launcher mLauncher;
 
     // Variables relating to resizing widgets
-    private final ArrayList<AppWidgetResizeFrame> mResizeFrames = new ArrayList<>();
     private final boolean mIsRtl;
     private AppWidgetResizeFrame mCurrentResizeFrame;
 
@@ -209,23 +203,6 @@ public class DragLayer extends InsettableFrameLayout {
     }
 
     private boolean handleTouchDown(MotionEvent ev, boolean intercept) {
-        Rect hitRect = new Rect();
-        int x = (int) ev.getX();
-        int y = (int) ev.getY();
-
-        for (AppWidgetResizeFrame child: mResizeFrames) {
-            child.getHitRect(hitRect);
-            if (hitRect.contains(x, y)) {
-                if (child.beginResizeIfPointInRegion(x - child.getLeft(), y - child.getTop())) {
-                    mCurrentResizeFrame = child;
-                    mXDown = x;
-                    mYDown = y;
-                    requestDisallowInterceptTouchEvent(true);
-                    return true;
-                }
-            }
-        }
-
         // Remove the shortcuts container when touching outside of it.
         DeepShortcutsContainer deepShortcutsContainer = mLauncher.getOpenShortcutsContainer();
         if (deepShortcutsContainer != null) {
@@ -289,21 +266,27 @@ public class DragLayer extends InsettableFrameLayout {
             }
             mTouchCompleteListener = null;
         }
-        clearAllResizeFrames();
-
         mActiveController = null;
 
-        if (mDragController.onInterceptTouchEvent(ev)) {
+        if (mCurrentResizeFrame != null
+                && mCurrentResizeFrame.onControllerInterceptTouchEvent(ev)) {
+            mActiveController = mCurrentResizeFrame;
+            return true;
+        } else {
+            clearResizeFrame();
+        }
+
+        if (mDragController.onControllerInterceptTouchEvent(ev)) {
             mActiveController = mDragController;
             return true;
         }
 
-        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && mAllAppsController.onInterceptTouchEvent(ev)) {
+        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && mAllAppsController.onControllerInterceptTouchEvent(ev)) {
             mActiveController = mAllAppsController;
             return true;
         }
 
-        if (mPinchListener != null && mPinchListener.onInterceptTouchEvent(ev)) {
+        if (mPinchListener != null && mPinchListener.onControllerInterceptTouchEvent(ev)) {
             // Stop listening for scrolling etc. (onTouchEvent() handles the rest of the pinch.)
             mActiveController = mPinchListener;
             return true;
@@ -405,11 +388,7 @@ public class DragLayer extends InsettableFrameLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        boolean handled = false;
         int action = ev.getAction();
-
-        int x = (int) ev.getX();
-        int y = (int) ev.getY();
 
         if (action == MotionEvent.ACTION_DOWN) {
             if (handleTouchDown(ev, false)) {
@@ -422,22 +401,8 @@ public class DragLayer extends InsettableFrameLayout {
             mTouchCompleteListener = null;
         }
 
-        if (mCurrentResizeFrame != null) {
-            handled = true;
-            switch (action) {
-                case MotionEvent.ACTION_MOVE:
-                    mCurrentResizeFrame.visualizeResizeForDelta(x - mXDown, y - mYDown);
-                    break;
-                case MotionEvent.ACTION_CANCEL:
-                case MotionEvent.ACTION_UP:
-                    mCurrentResizeFrame.visualizeResizeForDelta(x - mXDown, y - mYDown);
-                    mCurrentResizeFrame.onTouchUp();
-                    mCurrentResizeFrame = null;
-            }
-        }
-        if (handled) return true;
         if (mActiveController != null) {
-            return mActiveController.onTouchEvent(ev);
+            return mActiveController.onControllerTouchEvent(ev);
         }
         return false;
     }
@@ -645,36 +610,24 @@ public class DragLayer extends InsettableFrameLayout {
         }
     }
 
-    public void clearAllResizeFrames() {
-        if (mResizeFrames.size() > 0) {
-            for (AppWidgetResizeFrame frame: mResizeFrames) {
-                frame.commitResize();
-                removeView(frame);
-            }
-            mResizeFrames.clear();
+    public void clearResizeFrame() {
+        if (mCurrentResizeFrame != null) {
+            mCurrentResizeFrame.commitResize();
+            removeView(mCurrentResizeFrame);
+            mCurrentResizeFrame = null;
         }
     }
 
-    public boolean hasResizeFrames() {
-        return mResizeFrames.size() > 0;
-    }
+    public void addResizeFrame(LauncherAppWidgetHostView widget, CellLayout cellLayout) {
+        clearResizeFrame();
 
-    public boolean isWidgetBeingResized() {
-        return mCurrentResizeFrame != null;
-    }
-
-    public void addResizeFrame(ItemInfo itemInfo, LauncherAppWidgetHostView widget,
-            CellLayout cellLayout) {
-        AppWidgetResizeFrame resizeFrame = new AppWidgetResizeFrame(getContext(),
-                widget, cellLayout, this);
+        mCurrentResizeFrame = new AppWidgetResizeFrame(getContext(), widget, cellLayout, this);
 
         LayoutParams lp = new LayoutParams(-1, -1);
         lp.customPosition = true;
 
-        addView(resizeFrame, lp);
-        mResizeFrames.add(resizeFrame);
-
-        resizeFrame.snapToWidget(false);
+        addView(mCurrentResizeFrame, lp);
+        mCurrentResizeFrame.snapToWidget(false);
     }
 
     public void animateViewIntoPosition(DragView dragView, final int[] pos, float alpha,

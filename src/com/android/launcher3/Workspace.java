@@ -2012,7 +2012,7 @@ public class Workspace extends PagedView
 
     public void exitWidgetResizeMode() {
         DragLayer dragLayer = mLauncher.getDragLayer();
-        dragLayer.clearAllResizeFrames();
+        dragLayer.clearResizeFrame();
     }
 
     @Override
@@ -2713,7 +2713,7 @@ public class Workspace extends PagedView
                                 public void run() {
                                     if (!isPageMoving() && !mIsSwitchingState) {
                                         DragLayer dragLayer = mLauncher.getDragLayer();
-                                        dragLayer.addResizeFrame(info, hostView, cellLayout);
+                                        dragLayer.addResizeFrame(hostView, cellLayout);
                                     }
                                 }
                             };

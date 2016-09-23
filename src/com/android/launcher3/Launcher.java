@@ -1565,7 +1565,7 @@ public class Launcher extends Activity
             final String action = intent.getAction();
             if (Intent.ACTION_SCREEN_OFF.equals(action)) {
                 mUserPresent = false;
-                mDragLayer.clearAllResizeFrames();
+                mDragLayer.clearResizeFrame();
                 updateAutoAdvanceState();
 
                 // Reset AllApps to its initial state only if we are not in the middle of

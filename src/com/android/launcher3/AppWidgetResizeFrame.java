@@ -15,14 +15,17 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.util.FocusLogic;
+import com.android.launcher3.util.TouchController;
 
-public class AppWidgetResizeFrame extends FrameLayout implements View.OnKeyListener {
+public class AppWidgetResizeFrame extends FrameLayout
+        implements View.OnKeyListener, TouchController {
     private static final int SNAP_DURATION = 150;
     private static final float DIMMED_HANDLE_ALPHA = 0f;
     private static final float RESIZE_THRESHOLD = 0.66f;
@@ -75,6 +78,8 @@ public class AppWidgetResizeFrame extends FrameLayout implements View.OnKeyListe
 
     private int mTopTouchRegionAdjustment = 0;
     private int mBottomTouchRegionAdjustment = 0;
+
+    private int mXDown, mYDown;
 
     public AppWidgetResizeFrame(Context context,
             LauncherAppWidgetHostView widgetView, CellLayout cellLayout, DragLayer dragLayer) {
@@ -205,7 +210,7 @@ public class AppWidgetResizeFrame extends FrameLayout implements View.OnKeyListe
         }
     }
 
-    public void visualizeResizeForDelta(int deltaX, int deltaY) {
+    private void visualizeResizeForDelta(int deltaX, int deltaY) {
         visualizeResizeForDelta(deltaX, deltaY, false);
     }
 
@@ -398,7 +403,7 @@ public class AppWidgetResizeFrame extends FrameLayout implements View.OnKeyListe
         requestLayout();
     }
 
-    public void onTouchUp() {
+    private void onTouchUp() {
         int xThreshold = mCellLayout.getCellWidth() + mCellLayout.getWidthGap();
         int yThreshold = mCellLayout.getCellHeight() + mCellLayout.getHeightGap();
 
@@ -493,8 +498,54 @@ public class AppWidgetResizeFrame extends FrameLayout implements View.OnKeyListe
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         // Clear the frame and give focus to the widget host view when a directional key is pressed.
         if (FocusLogic.shouldConsume(keyCode)) {
-            mDragLayer.clearAllResizeFrames();
+            mDragLayer.clearResizeFrame();
             mWidgetView.requestFocus();
+            return true;
+        }
+        return false;
+    }
+
+    private boolean handleTouchDown(MotionEvent ev) {
+        Rect hitRect = new Rect();
+        int x = (int) ev.getX();
+        int y = (int) ev.getY();
+
+        getHitRect(hitRect);
+        if (hitRect.contains(x, y)) {
+            if (beginResizeIfPointInRegion(x - getLeft(), y - getTop())) {
+                mXDown = x;
+                mYDown = y;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onControllerTouchEvent(MotionEvent ev) {
+        int action = ev.getAction();
+        int x = (int) ev.getX();
+        int y = (int) ev.getY();
+
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                return handleTouchDown(ev);
+            case MotionEvent.ACTION_MOVE:
+                visualizeResizeForDelta(x - mXDown, y - mYDown);
+                break;
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_UP:
+                visualizeResizeForDelta(x - mXDown, y - mYDown);
+                onTouchUp();
+                mXDown = mYDown = 0;
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN && handleTouchDown(ev)) {
             return true;
         }
         return false;

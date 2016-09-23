@@ -106,7 +106,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
+    public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             mNoIntercept = false;
             if (!mLauncher.isAllAppsVisible() && mLauncher.getWorkspace().workspaceInModalState()) {
@@ -172,7 +172,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent ev) {
+    public boolean onControllerTouchEvent(MotionEvent ev) {
         return mDetector.onTouchEvent(ev);
     }
 
