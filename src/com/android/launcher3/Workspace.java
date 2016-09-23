@@ -25,7 +25,6 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
@@ -38,7 +37,6 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Parcelable;
@@ -2014,7 +2012,7 @@ public class Workspace extends PagedView
 
     public void exitWidgetResizeMode() {
         DragLayer dragLayer = mLauncher.getDragLayer();
-        dragLayer.clearAllResizeFrames();
+        dragLayer.clearResizeFrame();
     }
 
     @Override
@@ -2715,7 +2713,7 @@ public class Workspace extends PagedView
                                 public void run() {
                                     if (!isPageMoving() && !mIsSwitchingState) {
                                         DragLayer dragLayer = mLauncher.getDragLayer();
-                                        dragLayer.addResizeFrame(info, hostView, cellLayout);
+                                        dragLayer.addResizeFrame(hostView, cellLayout);
                                     }
                                 }
                             };

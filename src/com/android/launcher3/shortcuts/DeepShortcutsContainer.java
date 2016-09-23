@@ -447,7 +447,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
                 cleanupDeferredDrag(true);
                 mDeferredDragIcon.getParent().requestDisallowInterceptTouchEvent(false);
                 mDeferredDragIcon.getOnLongClickListener().onLongClick(mDeferredDragIcon);
-                mLauncher.getDragController().onTouchEvent(ev);
+                mLauncher.getDragController().onControllerTouchEvent(ev);
                 return true;
             } else if (mDistanceDragged > mDragDeadzone) {
                 // After dragging further than a small deadzone,
