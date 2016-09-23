@@ -182,4 +182,6 @@
          also happens to equal 19dp-->
     <dimen name="deep_shortcuts_arrow_horizontal_offset">19dp</dimen>
 
+<!-- Touch handling -->
+    <dimen name="edge_of_screen_threshold">8dp</dimen>
 </resources>

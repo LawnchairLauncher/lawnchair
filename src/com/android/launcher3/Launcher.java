@@ -354,6 +354,9 @@ public class Launcher extends Activity
 
     private UserEventDispatcher mUserEventDispatcher;
 
+    private float mLastDispatchTouchEventX = 0.0f;
+    private float mEdgeOfScreenThresholdPx = 0.0f;
+
     public ViewGroupFocusHelper mFocusHandler;
     private boolean mRotationEnabled = false;
 
@@ -423,6 +426,9 @@ public class Launcher extends Activity
         mPaused = false;
 
         setContentView(R.layout.launcher);
+
+        mEdgeOfScreenThresholdPx = getResources()
+                .getDimensionPixelSize(R.dimen.edge_of_screen_threshold);
 
         setupViews();
         mDeviceProfile.layout(this, false /* notifyListeners */);
@@ -3055,6 +3061,12 @@ public class Launcher extends Activity
     }
 
     @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        mLastDispatchTouchEventX = ev.getX();
+        return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
     public boolean onLongClick(View v) {
         if (!isDraggingEnabled()) return false;
         if (isWorkspaceLocked()) return false;
@@ -3066,9 +3078,12 @@ public class Launcher extends Activity
             return true;
         }
 
+        boolean fromEdgeOfScreen = mLastDispatchTouchEventX < mEdgeOfScreenThresholdPx
+                || mLastDispatchTouchEventX > (mDeviceProfile.widthPx - mEdgeOfScreenThresholdPx);
+
         if (v instanceof Workspace) {
             if (!mWorkspace.isInOverviewMode()) {
-                if (!mWorkspace.isTouchActive()) {
+                if (!mWorkspace.isTouchActive() && !fromEdgeOfScreen) {
                     showOverviewMode(true);
                     mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                             HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
@@ -3095,13 +3110,16 @@ public class Launcher extends Activity
         if (!mDragController.isDragging()) {
             if (itemUnderLongClick == null) {
                 // User long pressed on empty space
-                mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
-                        HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
                 if (mWorkspace.isInOverviewMode()) {
                     mWorkspace.startReordering(v);
                 } else {
+                    if (fromEdgeOfScreen) {
+                        return false;
+                    }
                     showOverviewMode(true);
                 }
+                mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
+                        HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
             } else {
                 final boolean isAllAppsButton =
                         !FeatureFlags.NO_ALL_APPS_ICON && isHotseatLayout(v) &&
