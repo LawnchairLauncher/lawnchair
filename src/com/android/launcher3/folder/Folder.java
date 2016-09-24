@@ -916,7 +916,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             if (mDeleteFolderOnDropCompleted && !mItemAddedBackToSelfViaIcon && target != this) {
                 replaceFolderWithFinalItem();
             }
-        } else {
+        } else if (!mDragController.isDeferringDrag()) {
             // The drag failed, we need to return the item to the folder
             ShortcutInfo info = (ShortcutInfo) d.dragInfo;
             View icon = (mCurrentDragView != null && mCurrentDragView.getTag() == info)
