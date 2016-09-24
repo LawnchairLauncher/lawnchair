@@ -42,8 +42,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.shortcuts.ShortcutsContainerListener;
 
 import java.util.HashMap;
 import java.util.List;
@@ -503,10 +501,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 AppInfo info = mApps.getAdapterItems().get(position).appInfo;
                 BubbleTextView icon = (BubbleTextView) holder.mContent;
                 icon.applyFromApplicationInfo(info);
-                if (DeepShortcutManager.supportsShortcuts(info)) {
-                    // TODO: only add this listener if the item has shortcuts associated with it.
-                    icon.setOnTouchListener(new ShortcutsContainerListener(icon));
-                }
                 icon.setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
                 break;
             }
@@ -514,10 +508,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 AppInfo info = mApps.getAdapterItems().get(position).appInfo;
                 BubbleTextView icon = (BubbleTextView) holder.mContent;
                 icon.applyFromApplicationInfo(info);
-                if (DeepShortcutManager.supportsShortcuts(info)) {
-                    // TODO: only add this listener if the item has shortcuts associated with it.
-                    icon.setOnTouchListener(new ShortcutsContainerListener(icon));
-                }
                 icon.setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
                 break;
             }
