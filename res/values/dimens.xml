@@ -64,8 +64,8 @@
     <dimen name="all_apps_grid_view_start_margin">0dp</dimen>
     <dimen name="all_apps_grid_section_y_offset">8dp</dimen>
     <dimen name="all_apps_grid_section_text_size">24sp</dimen>
+    <dimen name="all_apps_search_bar_field_height">48dp</dimen>
     <dimen name="all_apps_search_bar_height">60dp</dimen>
-    <dimen name="all_apps_search_bar_margin_top">12dp</dimen>
     <dimen name="all_apps_search_bar_icon_margin_right">4dp</dimen>
     <dimen name="all_apps_search_bar_icon_margin_top">1dp</dimen>
     <dimen name="all_apps_list_bottom_padding">8dp</dimen>

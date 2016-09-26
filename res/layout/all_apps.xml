@@ -46,10 +46,10 @@
         <!-- DO NOT CHANGE THE ID -->
         <com.android.launcher3.allapps.AllAppsRecyclerView
             android:id="@+id/apps_list_view"
+            android:layout_below="@+id/search_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal|top"
-            android:layout_marginTop="@dimen/all_apps_search_bar_height"
             android:clipToPadding="false"
             android:descendantFocusability="afterDescendants"
             android:focusable="true"
@@ -60,7 +60,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/all_apps_search_bar_height"
             android:layout_gravity="center|top"
-            android:paddingTop="@dimen/all_apps_search_bar_margin_top"
             android:gravity="center|bottom"
             android:orientation="horizontal"
             android:saveEnabled="false">
@@ -68,8 +67,9 @@
             <com.android.launcher3.ExtendedEditText
                 android:id="@+id/search_box_input"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="@dimen/all_apps_search_bar_field_height"
                 android:background="@android:color/transparent"
+                android:layout_gravity="bottom"
                 android:focusableInTouchMode="true"
                 android:gravity="center"
                 android:imeOptions="actionSearch|flagNoExtractUi"

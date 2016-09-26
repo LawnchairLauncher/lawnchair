@@ -15,10 +15,8 @@
  */
 package com.android.launcher3.allapps;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.text.Selection;
@@ -31,7 +29,6 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 
 import com.android.launcher3.AppInfo;
@@ -43,6 +40,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.ExtendedEditText;
+import com.android.launcher3.Insettable;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherTransitionable;
@@ -134,7 +132,8 @@ final class SimpleSectionMergeAlgorithm implements AlphabeticalAppsList.MergeAlg
  * The all apps view container.
  */
 public class AllAppsContainerView extends BaseContainerView implements DragSource,
-        LauncherTransitionable, View.OnLongClickListener, AllAppsSearchBarController.Callbacks {
+        LauncherTransitionable, View.OnLongClickListener, AllAppsSearchBarController.Callbacks,
+        Insettable {
 
     private static final int MIN_ROWS_IN_MERGED_SECTION_PHONE = 3;
     private static final int MAX_NUM_MERGES_PHONE = 2;
@@ -158,7 +157,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     private int mNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
 
-
     public AllAppsContainerView(Context context) {
         this(context, null);
     }
@@ -178,7 +176,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mApps.setAdapter(mAdapter);
         mLayoutManager = mAdapter.getLayoutManager();
         mItemDecoration = mAdapter.getItemDecoration();
-        DeviceProfile grid = mLauncher.getDeviceProfile();
         mSearchQueryBuilder = new SpannableStringBuilder();
         Selection.setSelection(mSearchQueryBuilder, 0);
     }
@@ -354,6 +351,14 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             getContentView().setVisibility(View.VISIBLE);
             getContentView().setBackground(null);
         }
+
+        int maxScrollBarWidth = mAppsRecyclerView.getMaxScrollbarWidth();
+        int startInset = Math.max(mSectionNamesMargin, maxScrollBarWidth);
+        if (Utilities.isRtl(getResources())) {
+            mAppsRecyclerView.setPadding(maxScrollBarWidth, 0, startInset, 0);
+        } else {
+            mAppsRecyclerView.setPadding(startInset, 0, maxScrollBarWidth, 0);
+        }
     }
 
     @Override
@@ -378,13 +383,11 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                 mAdapter.setNumAppsPerRow(mNumAppsPerRow);
                 mApps.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow, new FullMergeAlgorithm());
             }
-
             if (!grid.isVerticalBarLayout()) {
-                View navBarBg = findViewById(R.id.nav_bar_bg);
-                ViewGroup.LayoutParams params = navBarBg.getLayoutParams();
-                params.height = mLauncher.getDragLayer().getInsets().bottom;
-                navBarBg.setLayoutParams(params);
-                navBarBg.setVisibility(View.VISIBLE);
+                MarginLayoutParams searchContainerLp =
+                        (MarginLayoutParams) mSearchContainer.getLayoutParams();
+                searchContainerLp.height = grid.hotseatBarHeightPx;
+                mSearchContainer.setLayoutParams(searchContainerLp);
             }
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             return;
@@ -592,5 +595,23 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     public boolean shouldRestoreImeState() {
         return !TextUtils.isEmpty(mSearchInput.getText());
+    }
+
+    @Override
+    public void setInsets(Rect insets) {
+        DeviceProfile grid = mLauncher.getDeviceProfile();
+        if (grid.isVerticalBarLayout()) {
+            ViewGroup.MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
+            mlp.leftMargin = insets.left;
+            mlp.topMargin = insets.top;
+            mlp.rightMargin = insets.right;
+            setLayoutParams(mlp);
+        } else {
+            View navBarBg = findViewById(R.id.nav_bar_bg);
+            ViewGroup.LayoutParams navBarBgLp = navBarBg.getLayoutParams();
+            navBarBgLp.height = insets.bottom;
+            navBarBg.setLayoutParams(navBarBgLp);
+            navBarBg.setVisibility(View.VISIBLE);
+        }
     }
 }

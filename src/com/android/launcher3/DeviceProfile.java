@@ -104,7 +104,7 @@ public class DeviceProfile {
     public int hotseatCellWidthPx;
     public int hotseatCellHeightPx;
     public int hotseatIconSizePx;
-    private int hotseatBarHeightPx;
+    public int hotseatBarHeightPx;
     private int hotseatBarTopPaddingPx;
     private int hotseatLandGutterPx;
 
