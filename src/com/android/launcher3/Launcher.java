@@ -30,7 +30,6 @@ import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
-import android.appwidget.AppWidgetProviderInfo;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentCallbacks2;
@@ -56,7 +55,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.os.StrictMode;
 import android.os.SystemClock;
 import android.os.Trace;
@@ -81,7 +79,6 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Advanceable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -274,26 +271,15 @@ public class Launcher extends Activity
     private IconCache mIconCache;
     private ExtractedColors mExtractedColors;
     private LauncherAccessibilityDelegate mAccessibilityDelegate;
+    private Handler mHandler = new Handler();
     private boolean mIsResumeFromActionScreenOff;
-    @Thunk boolean mUserPresent = true;
-    private boolean mVisible;
-    private boolean mHasFocus;
-    private boolean mAttached;
+    private boolean mHasFocus = false;
+    private boolean mAttached = false;
 
     /** Maps launcher activity components to their list of shortcut ids. */
     private MultiHashMap<ComponentKey, String> mDeepShortcutMap = new MultiHashMap<>();
 
     private View.OnTouchListener mHapticFeedbackTouchListener;
-
-    // Related to the auto-advancing of widgets
-    private final int ADVANCE_MSG = 1;
-    private static final int ADVANCE_INTERVAL = 20000;
-    private static final int ADVANCE_STAGGER = 250;
-
-    private boolean mAutoAdvanceRunning = false;
-    private long mAutoAdvanceSentTime;
-    private long mAutoAdvanceTimeLeft = -1;
-    @Thunk HashMap<View, AppWidgetProviderInfo> mWidgetsToAdvance = new HashMap<>();
 
     // Determines how long to wait after a rotation before restoring the screen orientation to
     // match the sensor state.
@@ -1568,10 +1554,6 @@ public class Launcher extends Activity
 
         mWorkspace.addInScreen(hostView, item.container, item.screenId,
                 item.cellX, item.cellY, item.spanX, item.spanY, insert);
-
-        if (!item.isCustomWidget()) {
-            addWidgetToAutoAdvanceIfNeeded(hostView, appWidgetInfo);
-        }
     }
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -1579,9 +1561,7 @@ public class Launcher extends Activity
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
             if (Intent.ACTION_SCREEN_OFF.equals(action)) {
-                mUserPresent = false;
                 mDragLayer.clearResizeFrame();
-                updateAutoAdvanceState();
 
                 // Reset AllApps to its initial state only if we are not in the middle of
                 // processing a multi-step drop
@@ -1592,9 +1572,6 @@ public class Launcher extends Activity
                     }
                 }
                 mIsResumeFromActionScreenOff = true;
-            } else if (Intent.ACTION_USER_PRESENT.equals(action)) {
-                mUserPresent = true;
-                updateAutoAdvanceState();
             }
         }
     };
@@ -1606,11 +1583,9 @@ public class Launcher extends Activity
         // Listen for broadcasts related to user-presence
         final IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_OFF);
-        filter.addAction(Intent.ACTION_USER_PRESENT);
         registerReceiver(mReceiver, filter);
         FirstFrameAnimatorHelper.initializeDrawListener(getWindow().getDecorView());
         mAttached = true;
-        mVisible = true;
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onAttachedToWindow();
@@ -1620,13 +1595,10 @@ public class Launcher extends Activity
     @Override
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mVisible = false;
-
         if (mAttached) {
             unregisterReceiver(mReceiver);
             mAttached = false;
         }
-        updateAutoAdvanceState();
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onDetachedFromWindow();
@@ -1634,12 +1606,10 @@ public class Launcher extends Activity
     }
 
     public void onWindowVisibilityChanged(int visibility) {
-        mVisible = visibility == View.VISIBLE;
-        updateAutoAdvanceState();
         // The following code used to be in onResume, but it turns out onResume is called when
         // you're in All Apps and click home to go to the workspace. onWindowVisibilityChanged
         // is a more appropriate event to handle
-        if (mVisible) {
+        if (visibility == View.VISIBLE) {
             if (!mWorkspaceLoading) {
                 final ViewTreeObserver observer = mWorkspace.getViewTreeObserver();
                 // We want to let Launcher draw itself at least once before we force it to build
@@ -1671,72 +1641,6 @@ public class Launcher extends Activity
                 });
             }
             clearTypedText();
-        }
-    }
-
-    @Thunk void sendAdvanceMessage(long delay) {
-        mHandler.removeMessages(ADVANCE_MSG);
-        Message msg = mHandler.obtainMessage(ADVANCE_MSG);
-        mHandler.sendMessageDelayed(msg, delay);
-        mAutoAdvanceSentTime = System.currentTimeMillis();
-    }
-
-    @Thunk void updateAutoAdvanceState() {
-        boolean autoAdvanceRunning = mVisible && mUserPresent && !mWidgetsToAdvance.isEmpty();
-        if (autoAdvanceRunning != mAutoAdvanceRunning) {
-            mAutoAdvanceRunning = autoAdvanceRunning;
-            if (autoAdvanceRunning) {
-                long delay = mAutoAdvanceTimeLeft == -1 ? ADVANCE_INTERVAL : mAutoAdvanceTimeLeft;
-                sendAdvanceMessage(delay);
-            } else {
-                if (!mWidgetsToAdvance.isEmpty()) {
-                    mAutoAdvanceTimeLeft = Math.max(0, ADVANCE_INTERVAL -
-                            (System.currentTimeMillis() - mAutoAdvanceSentTime));
-                }
-                mHandler.removeMessages(ADVANCE_MSG);
-                mHandler.removeMessages(0); // Remove messages sent using postDelayed()
-            }
-        }
-    }
-
-    @Thunk final Handler mHandler = new Handler(new Handler.Callback() {
-
-        @Override
-        public boolean handleMessage(Message msg) {
-            if (msg.what == ADVANCE_MSG) {
-                int i = 0;
-                for (View key: mWidgetsToAdvance.keySet()) {
-                    final View v = key.findViewById(mWidgetsToAdvance.get(key).autoAdvanceViewId);
-                    final int delay = ADVANCE_STAGGER * i;
-                    if (v instanceof Advanceable) {
-                        mHandler.postDelayed(new Runnable() {
-                           public void run() {
-                               ((Advanceable) v).advance();
-                           }
-                       }, delay);
-                    }
-                    i++;
-                }
-                sendAdvanceMessage(ADVANCE_INTERVAL);
-            }
-            return true;
-        }
-    });
-
-    private void addWidgetToAutoAdvanceIfNeeded(View hostView, AppWidgetProviderInfo appWidgetInfo) {
-        if (appWidgetInfo == null || appWidgetInfo.autoAdvanceViewId == -1) return;
-        View v = hostView.findViewById(appWidgetInfo.autoAdvanceViewId);
-        if (v instanceof Advanceable) {
-            mWidgetsToAdvance.put(hostView, appWidgetInfo);
-            ((Advanceable) v).fyiWillBeAdvancedByHostKThx();
-            updateAutoAdvanceState();
-        }
-    }
-
-    private void removeWidgetToAutoAdvance(View hostView) {
-        if (mWidgetsToAdvance.containsKey(hostView)) {
-            mWidgetsToAdvance.remove(hostView);
-            updateAutoAdvanceState();
         }
     }
 
@@ -1934,9 +1838,6 @@ public class Launcher extends Activity
     public void onDestroy() {
         super.onDestroy();
 
-        // Remove all pending runnables
-        mHandler.removeMessages(ADVANCE_MSG);
-        mHandler.removeMessages(0);
         mWorkspace.removeCallbacks(mBuildLayersRunnable);
         mWorkspace.removeFolderListeners();
 
@@ -1958,8 +1859,6 @@ public class Launcher extends Activity
             Log.w(TAG, "problem while stopping AppWidgetHost during Launcher destruction", ex);
         }
         mAppWidgetHost = null;
-
-        mWidgetsToAdvance.clear();
 
         TextKeyListener.getInstance().release();
 
@@ -2280,7 +2179,6 @@ public class Launcher extends Activity
         } else if (itemInfo instanceof LauncherAppWidgetInfo) {
             final LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) itemInfo;
             mWorkspace.removeWorkspaceItem(v);
-            removeWidgetToAutoAdvance(v);
             if (deleteFromDb) {
                 deleteWidgetInfo(widgetInfo);
             }
@@ -3229,10 +3127,6 @@ public class Launcher extends Activity
         // Change the state *after* we've called all the transition code
         mState = State.WORKSPACE;
 
-        // Resume the auto-advance of widgets
-        mUserPresent = true;
-        updateAutoAdvanceState();
-
         if (changed) {
             // Send an accessibility event to announce the context change
             getWindow().getDecorView()
@@ -3338,9 +3232,6 @@ public class Launcher extends Activity
         // Change the state *after* we've called all the transition code
         mState = toState;
 
-        // Pause the auto-advance of widgets until we are out of AllApps
-        mUserPresent = false;
-        updateAutoAdvanceState();
         closeFolder();
         closeShortcutsContainer();
 
@@ -3566,7 +3457,6 @@ public class Launcher extends Activity
         mWorkspace.clearDropTargets();
         mWorkspace.removeAllWorkspaceScreens();
 
-        mWidgetsToAdvance.clear();
         if (mHotseat != null) {
             mHotseat.resetLayout();
         }
