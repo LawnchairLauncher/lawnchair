@@ -30,8 +30,7 @@
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"વિજેટ ચૂંટવા માટે ટચ કરો અને પકડી રાખો."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"વિજેટ ચૂંટવા અથવા કસ્ટમ ક્રિયાઓનો ઉપયોગ કરવા માટે બે વાર ટેપ કરો અને પકડી રાખો."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <!-- no translation found for widget_accessible_dims_format (3640149169885301790) -->
-    <skip />
+    <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d પહોળાઈ X %2$d ઊંચાઈ"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"શોધ ઍપ્લિકેશનો"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"ઍપ્લિકેશનો લોડ કરી રહ્યું છે…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" થી મેળ ખાતી કોઈ ઍપ્લિકેશનો મળી નથી"</string>

@@ -30,8 +30,7 @@
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"ဝဒ်ဂျက်တစ်ခုကို ကောက်ယူရန် ဖိနှိပ်ထားပါ"</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"ဝစ်ဂျက်တစ်ခုကိုရယူရန် သို့မဟုတ် စိတ်ကြိုက်လုပ်ဆောင်မှုများကို အသုံးပြုရန် နှစ်ချက်တို့ပြီး ကိုင်ထားပါ။"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <!-- no translation found for widget_accessible_dims_format (3640149169885301790) -->
-    <skip />
+    <string name="widget_accessible_dims_format" msgid="3640149169885301790">"အလျား %1$d နှင့် အမြင့် %2$d"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"ရှာဖွေမှု အက်ပ်များ"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"အက်ပ်များ ရယူနေစဉ်..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" နှင့်ကိုက်ညီသည့် အပ်ဖ်များမတွေ့ပါ"</string>
