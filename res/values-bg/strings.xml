@@ -30,8 +30,7 @@
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Докоснете и задръжте за избор на приспособление."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Докоснете двукратно и задръжте за избор на приспособление или използвайте персонализирани действия."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
-    <!-- no translation found for widget_accessible_dims_format (3640149169885301790) -->
-    <skip />
+    <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Ширина %1$d и височина %2$d"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Търсене в приложенията"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Приложенията се зареждат…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Няма намерени приложения, съответстващи на „<xliff:g id="QUERY">%1$s</xliff:g>“"</string>
