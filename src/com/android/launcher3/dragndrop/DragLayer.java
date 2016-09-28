@@ -219,7 +219,7 @@ public class DragLayer extends InsettableFrameLayout {
                     mLauncher.closeShortcutsContainer();
                     // We let touches on the original icon go through so that users can launch
                     // the app with one tap if they don't find a shortcut they want.
-                    return !isEventOverView(deepShortcutsContainer.getDeferredDragIcon(), ev);
+                    return !isEventOverView(deepShortcutsContainer.getOriginalIcon(), ev);
                 }
             }
         }

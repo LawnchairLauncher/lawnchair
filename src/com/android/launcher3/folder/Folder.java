@@ -281,17 +281,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     public boolean onLongClick(View v) {
         // Return if global dragging is not enabled
         if (!mLauncher.isDraggingEnabled()) return true;
-        DragOptions dragOptions = new DragOptions();
-        if (v instanceof BubbleTextView) {
-            BubbleTextView icon = (BubbleTextView) v;
-            if (icon.hasDeepShortcuts()) {
-                DeepShortcutsContainer dsc = DeepShortcutsContainer.showForIcon(icon);
-                if (dsc != null) {
-                    dragOptions.deferDragCondition = dsc.createDeferDragCondition(null);
-                }
-            }
-        }
-        return startDrag(v, dragOptions);
+        return startDrag(v, new DragOptions());
     }
 
     public boolean startDrag(View v, DragOptions options) {
@@ -916,7 +906,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             if (mDeleteFolderOnDropCompleted && !mItemAddedBackToSelfViaIcon && target != this) {
                 replaceFolderWithFinalItem();
             }
-        } else if (!mDragController.isDeferringDrag()) {
+        } else {
             // The drag failed, we need to return the item to the folder
             ShortcutInfo info = (ShortcutInfo) d.dragInfo;
             View icon = (mCurrentDragView != null && mCurrentDragView.getTag() == info)
@@ -1309,7 +1299,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             mIsExternalDrag = false;
         } else {
             currentDragView = mCurrentDragView;
-            if (!mDragController.isDeferringDrag()) {
+            // The view was never removed from this folder if we are still in the pre-drag.
+            if (!mDragController.isInPreDrag()) {
                 mContent.addViewForRank(currentDragView, si, mEmptyCellRank);
             }
         }
@@ -1332,7 +1323,8 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         mItemsInvalidated = true;
         rearrangeChildren();
 
-        if (!mDragController.isDeferringDrag()) {
+        // The ShortcutInfo was never removed if we are still in the pre-drag.
+        if (!mDragController.isInPreDrag()) {
             // Temporarily suppress the listener, as we did all the work already here.
             try (SuppressInfoChanges s = new SuppressInfoChanges()) {
                 mInfo.add(si, false);

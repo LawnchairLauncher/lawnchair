@@ -3042,17 +3042,7 @@ public class Launcher extends Activity
                                         longClickCellInfo.cellX, longClickCellInfo.cellY));
                 if (!(itemUnderLongClick instanceof Folder || isAllAppsButton)) {
                     // User long pressed on an item
-                    DragOptions dragOptions = new DragOptions();
-                    if (itemUnderLongClick instanceof BubbleTextView) {
-                        BubbleTextView icon = (BubbleTextView) itemUnderLongClick;
-                        if (icon.hasDeepShortcuts()) {
-                            DeepShortcutsContainer dsc = DeepShortcutsContainer.showForIcon(icon);
-                            if (dsc != null) {
-                                dragOptions.deferDragCondition = dsc.createDeferDragCondition(null);
-                            }
-                        }
-                    }
-                    mWorkspace.startDrag(longClickCellInfo, dragOptions);
+                    mWorkspace.startDrag(longClickCellInfo, new DragOptions());
                 }
             }
         }

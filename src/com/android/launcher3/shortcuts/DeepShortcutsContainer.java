@@ -62,7 +62,6 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
-import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.graphics.TriangleShape;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -86,7 +85,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
     private final ShortcutMenuAccessibilityDelegate mAccessibilityDelegate;
     private final boolean mIsRtl;
 
-    private BubbleTextView mDeferredDragIcon;
+    private BubbleTextView mOriginalIcon;
     private final Rect mTempRect = new Rect();
     private Point mIconLastTouchPos = new Point();
     private boolean mIsLeftAligned;
@@ -151,7 +150,8 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
         animateOpen();
 
-        deferDrag(originalIcon);
+        mOriginalIcon = originalIcon;
+        mLauncher.getDragController().addDragListener(this);
 
         // Load the shortcuts on a background thread and update the container as it animates.
         final Looper workerLooper = LauncherModel.getWorkerLooper();
@@ -376,13 +376,8 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         return arrowView;
     }
 
-    private void deferDrag(BubbleTextView originalIcon) {
-        mDeferredDragIcon = originalIcon;
-        mLauncher.getDragController().addDragListener(this);
-    }
-
-    public BubbleTextView getDeferredDragIcon() {
-        return mDeferredDragIcon;
+    public BubbleTextView getOriginalIcon() {
+        return mOriginalIcon;
     }
 
     /**
@@ -391,30 +386,26 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
      * Current behavior:
      * - Start the drag if the touch passes a certain distance from the original touch down.
      */
-    public DragOptions.DeferDragCondition createDeferDragCondition(final Runnable onDragStart) {
-        return new DragOptions.DeferDragCondition() {
+    public DragOptions.PreDragCondition createPreDragCondition() {
+        return new DragOptions.PreDragCondition() {
             @Override
-            public boolean shouldStartDeferredDrag(double distanceDragged) {
+            public boolean shouldStartDrag(double distanceDragged) {
                 return distanceDragged > mStartDragThreshold;
             }
 
             @Override
-            public void onDeferredDragStart() {
-                mDeferredDragIcon.setVisibility(INVISIBLE);
+            public void onPreDragStart() {
+                mOriginalIcon.setVisibility(INVISIBLE);
             }
 
             @Override
-            public void onDropBeforeDeferredDrag() {
-                mLauncher.getUserEventDispatcher().logDeepShortcutsOpen(mDeferredDragIcon);
-                if (!mIsAboveIcon) {
-                    mDeferredDragIcon.setTextVisibility(false);
-                }
-            }
-
-            @Override
-            public void onDragStart() {
-                if (onDragStart != null) {
-                    onDragStart.run();
+            public void onPreDragEnd(boolean dragStarted) {
+                if (!dragStarted) {
+                    mOriginalIcon.setVisibility(VISIBLE);
+                    mLauncher.getUserEventDispatcher().logDeepShortcutsOpen(mOriginalIcon);
+                    if (!mIsAboveIcon) {
+                        mOriginalIcon.setTextVisibility(false);
+                    }
                 }
             }
         };
@@ -512,7 +503,6 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
                 }
             }
         }
-        mDeferredDragIcon.setVisibility(VISIBLE);
     }
 
     @Override
@@ -624,9 +614,9 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         }
         mIsOpen = false;
         mDeferContainerRemoval = false;
-        boolean isInHotseat = ((ItemInfo) mDeferredDragIcon.getTag()).container
+        boolean isInHotseat = ((ItemInfo) mOriginalIcon.getTag()).container
                 == LauncherSettings.Favorites.CONTAINER_HOTSEAT;
-        mDeferredDragIcon.setTextVisibility(!isInHotseat);
+        mOriginalIcon.setTextVisibility(!isInHotseat);
         mLauncher.getDragController().removeDragListener(this);
         mLauncher.getDragLayer().removeView(this);
     }
@@ -648,7 +638,6 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         }
         List<String> ids = launcher.getShortcutIdsForItem((ItemInfo) icon.getTag());
         if (!ids.isEmpty()) {
-            // There are shortcuts associated with the app, so defer its drag.
             final DeepShortcutsContainer container =
                     (DeepShortcutsContainer) launcher.getLayoutInflater().inflate(
                             R.layout.deep_shortcuts_container, launcher.getDragLayer(), false);
