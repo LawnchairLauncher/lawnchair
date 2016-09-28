@@ -1808,11 +1808,14 @@ public class Launcher extends Activity
         }
         super.onNewIntent(intent);
 
-        // Close the menu
-        Folder openFolder = mWorkspace.getOpenFolder();
         boolean alreadyOnHome = mHasFocus && ((intent.getFlags() &
                 Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
                 != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+
+        // Check this condition before handling isActionMain, as this will get reset.
+        boolean shouldMoveToDefaultScreen = alreadyOnHome &&
+                mState == State.WORKSPACE && getTopFloatingView() == null;
+
         boolean isActionMain = Intent.ACTION_MAIN.equals(intent.getAction());
         if (isActionMain) {
             // also will cancel mWaitingForResult.
@@ -1867,10 +1870,10 @@ public class Launcher extends Activity
         // as slow logic in the callbacks eat into the time the scroller expects for the snapToPage
         // animation.
         if (isActionMain) {
-            boolean moveToDefaultScreen = mLauncherCallbacks != null ?
+            boolean callbackAllowsMoveToDefaultScreen = mLauncherCallbacks != null ?
                     mLauncherCallbacks.shouldMoveToDefaultScreenOnHomeIntent() : true;
-            if (alreadyOnHome && mState == State.WORKSPACE && !mWorkspace.isTouchActive() &&
-                    openFolder == null && moveToDefaultScreen) {
+            if (shouldMoveToDefaultScreen && !mWorkspace.isTouchActive()
+                    && callbackAllowsMoveToDefaultScreen) {
 
                 // We use this flag to suppress noisy callbacks above custom content state
                 // from onResume.
