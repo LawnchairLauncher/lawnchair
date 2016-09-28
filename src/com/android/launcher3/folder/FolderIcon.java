@@ -18,6 +18,7 @@ package com.android.launcher3.folder;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
@@ -56,7 +57,6 @@ import com.android.launcher3.IconCache;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.OnAlarmListener;
 import com.android.launcher3.PreloadIconDrawable;
@@ -142,6 +142,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         mPreviewLayoutRule = FeatureFlags.LAUNCHER3_LEGACY_FOLDER_ICON ?
                 new StackFolderIconLayoutRule() :
                 new ClippedFolderIconLayoutRule();
+        mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
     }
 
     public static FolderIcon fromXml(int resId, Launcher launcher, ViewGroup group,
@@ -202,16 +203,12 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         updateItemDrawingParams(false);
     }
 
-    public FolderInfo getFolderInfo() {
-        return mInfo;
-    }
-
     private boolean willAcceptItem(ItemInfo item) {
         final int itemType = item.itemType;
         return ((itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
                 itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT ||
                 itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) &&
-                !mFolder.isFull() && item != mInfo && !mInfo.opened);
+                !mFolder.isFull() && item != mInfo && !mFolder.isOpen());
     }
 
     public boolean acceptDrop(ItemInfo dragInfo) {
@@ -243,7 +240,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     OnAlarmListener mOnOpenListener = new OnAlarmListener() {
         public void onAlarm(Alarm alarm) {
             mFolder.beginExternalDrag();
-            mLauncher.openFolder(FolderIcon.this);
+            mFolder.animateOpen();
         }
     };
 
@@ -974,12 +971,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
-    }
-
-    @Override
     public void cancelLongPress() {
         super.cancelLongPress();
         mLongPressHelper.cancelLongPress();
@@ -990,13 +981,76 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         mInfo.removeListener(mFolder);
     }
 
+    public void shrinkAndFadeIn(boolean animate) {
+        final CellLayout cl = (CellLayout) getParent().getParent();
+        ((CellLayout.LayoutParams) getLayoutParams()).canReorder = true;
+
+        // We remove and re-draw the FolderIcon in-case it has changed
+        final PreviewImageView previewImage = PreviewImageView.get(getContext());
+        previewImage.removeFromParent();
+        copyToPreview(previewImage);
+
+        if (cl != null) {
+            cl.clearFolderLeaveBehind();
+        }
+
+        ObjectAnimator oa = LauncherAnimUtils.ofViewAlphaAndScale(previewImage, 1, 1, 1);
+        oa.setDuration(getResources().getInteger(R.integer.config_folderExpandDuration));
+        oa.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (cl != null) {
+                    // Remove the ImageView copy of the FolderIcon and make the original visible.
+                    previewImage.removeFromParent();
+                    setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        oa.start();
+        if (!animate) {
+            oa.end();
+        }
+    }
+
+    public void growAndFadeOut() {
+        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
+        // While the folder is open, the position of the icon cannot change.
+        lp.canReorder = false;
+        if (mInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+            CellLayout cl = (CellLayout) getParent().getParent();
+            cl.setFolderLeaveBehindCell(lp.cellX, lp.cellY);
+        }
+
+        // Push an ImageView copy of the FolderIcon into the DragLayer and hide the original
+        PreviewImageView previewImage = PreviewImageView.get(getContext());
+        copyToPreview(previewImage);
+        setVisibility(View.INVISIBLE);
+
+        ObjectAnimator oa = LauncherAnimUtils.ofViewAlphaAndScale(previewImage, 0, 1.5f, 1.5f);
+        oa.setDuration(getResources().getInteger(R.integer.config_folderExpandDuration));
+        oa.start();
+    }
+
+    /**
+     * This method draws the FolderIcon to an ImageView and then adds and positions that ImageView
+     * in the DragLayer in the exact absolute location of the original FolderIcon.
+     */
+    private void copyToPreview(PreviewImageView previewImageView) {
+        previewImageView.copy(this);
+        if (mFolder != null) {
+            previewImageView.setPivotX(mFolder.getPivotXForIconAnimation());
+            previewImageView.setPivotY(mFolder.getPivotYForIconAnimation());
+            mFolder.bringToFront();
+        }
+    }
+
     public interface PreviewLayoutRule {
-        public PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
+        PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
             PreviewItemDrawingParams params);
 
-        public void init(int availableSpace, int intrinsicIconSize, boolean rtl);
+        void init(int availableSpace, int intrinsicIconSize, boolean rtl);
 
-        public int numItems();
-        public boolean clipToBackground();
+        int numItems();
+        boolean clipToBackground();
     }
 }

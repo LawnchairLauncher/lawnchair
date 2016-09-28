@@ -99,4 +99,12 @@ public class ExtendedEditText extends EditText {
                 ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE))
                     .showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
     }
+
+    public void dispatchBackKey() {
+        ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE))
+                .hideSoftInputFromWindow(getWindowToken(), 0);
+        if (mBackKeyListener != null) {
+            mBackKeyListener.onBackKey();
+        }
+    }
 }

@@ -91,6 +91,9 @@
     <!-- View ID used by cell layout to jail its content -->
     <item type="id" name="cell_layout_jail_id" />
 
+    <!-- View ID used by PreviewImageView to cache its instance -->
+    <item type="id" name="preview_image_id" />
+
 <!-- Deep shortcuts -->
     <integer name="config_deepShortcutOpenDuration">220</integer>
     <integer name="config_deepShortcutArrowOpenDuration">80</integer>

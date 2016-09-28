@@ -192,8 +192,8 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
             });
             return true;
         } else if (action == MOVE_TO_WORKSPACE) {
-            Folder folder = mLauncher.getWorkspace().getOpenFolder();
-            mLauncher.closeFolder(folder, true);
+            Folder folder = Folder.getOpen(mLauncher);
+            folder.close(true);
             ShortcutInfo info = (ShortcutInfo) item;
             folder.getInfo().remove(info, false);
 
@@ -373,12 +373,10 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         mLauncher.getDragLayer().getDescendantRectRelativeToSelf(item, pos);
         mLauncher.getDragController().prepareAccessibleDrag(pos.centerX(), pos.centerY());
 
-        Workspace workspace = mLauncher.getWorkspace();
-
-        Folder folder = workspace.getOpenFolder();
+        Folder folder = Folder.getOpen(mLauncher);
         if (folder != null) {
             if (!folder.getItemsInReadingOrder().contains(item)) {
-                mLauncher.closeFolder();
+                folder.close(true);
                 folder = null;
             }
         }
@@ -390,7 +388,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         if (folder != null) {
             folder.startDrag(cellInfo.cell, options);
         } else {
-            workspace.startDrag(cellInfo, options);
+            mLauncher.getWorkspace().startDrag(cellInfo, options);
         }
     }
 

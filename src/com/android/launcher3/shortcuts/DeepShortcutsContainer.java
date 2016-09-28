@@ -41,6 +41,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
@@ -73,9 +74,9 @@ import java.util.List;
  * A container for shortcuts to deep links within apps.
  */
 @TargetApi(Build.VERSION_CODES.N)
-public class DeepShortcutsContainer extends LinearLayout implements View.OnLongClickListener,
+public class DeepShortcutsContainer extends AbstractFloatingView
+        implements View.OnLongClickListener,
         View.OnTouchListener, DragSource, DragController.DragListener {
-    private static final String TAG = "ShortcutsContainer";
 
     private final Point mIconShift = new Point();
 
@@ -94,7 +95,6 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
     private Animator mOpenCloseAnimator;
     private boolean mDeferContainerRemoval;
-    private boolean mIsOpen;
 
     public DeepShortcutsContainer(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -376,7 +376,8 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         return arrowView;
     }
 
-    public BubbleTextView getOriginalIcon() {
+    @Override
+    public View getExtendedTouchView() {
         return mOriginalIcon;
     }
 
@@ -444,7 +445,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         dv.animateShift(-mIconShift.x, -mIconShift.y);
 
         // TODO: support dragging from within folder without having to close it
-        mLauncher.closeFolder();
+        AbstractFloatingView.closeOpenContainer(mLauncher, AbstractFloatingView.TYPE_FOLDER);
         return false;
     }
 
@@ -499,7 +500,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
             } else {
                 // Close animation is not running.
                 if (mDeferContainerRemoval) {
-                    close();
+                    closeComplete();
                 }
             }
         }
@@ -512,7 +513,16 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         targetParent.containerType = LauncherLogProto.DEEPSHORTCUTS;
     }
 
-    public void animateClose() {
+    @Override
+    protected void handleClose(boolean animate) {
+        if (animate) {
+            animateClose();
+        } else {
+            closeComplete();
+        }
+    }
+
+    private void animateClose() {
         if (!mIsOpen) {
             return;
         }
@@ -592,7 +602,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
                 if (mDeferContainerRemoval) {
                     setVisibility(INVISIBLE);
                 } else {
-                    close();
+                    closeComplete();
                 }
             }
         });
@@ -607,7 +617,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
     /**
      * Closes the folder without animation.
      */
-    public void close() {
+    private void closeComplete() {
         if (mOpenCloseAnimator != null) {
             mOpenCloseAnimator.cancel();
             mOpenCloseAnimator = null;
@@ -621,8 +631,9 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         mLauncher.getDragLayer().removeView(this);
     }
 
-    public boolean isOpen() {
-        return mIsOpen;
+    @Override
+    protected boolean isOfType(int type) {
+        return (type & TYPE_DEEPSHORTCUT_CONTAINER) != 0;
     }
 
     /**
@@ -631,7 +642,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
      */
     public static DeepShortcutsContainer showForIcon(BubbleTextView icon) {
         Launcher launcher = Launcher.getLauncher(icon.getContext());
-        if (launcher.getOpenShortcutsContainer() != null) {
+        if (getOpen(launcher) != null) {
             // There is already a shortcuts container open, so don't open this one.
             icon.clearFocus();
             return null;
@@ -665,5 +676,12 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
                 IconCache cache, Context context) {
             return unbadgedBitmap;
         }
+    }
+
+    /**
+     * Returns a DeepShortcutsContainer which is already open or null
+     */
+    public static DeepShortcutsContainer getOpen(Launcher launcher) {
+        return getOpenView(launcher, TYPE_DEEPSHORTCUT_CONTAINER);
     }
 }
