@@ -20,4 +20,6 @@
     <dimen name="drop_target_drag_padding">20dp</dimen>
     <dimen name="drop_target_text_size">16sp</dimen>
 
+    <dimen name="dynamic_grid_edge_margin">6dp</dimen>
+
 </resources>
