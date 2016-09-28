@@ -86,8 +86,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private AnimatorSet mCurrentAnimation;
     private boolean mNoIntercept;
 
-    private boolean mLightStatusBar;
-
     // Used in discovery bounce animation to provide the transition without workspace changing.
     private boolean mIsTranslateWithoutWorkspace = false;
     private AnimatorSet mDiscoBounceAnimation;
@@ -273,26 +271,14 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     private void updateLightStatusBar(float shift) {
-        boolean enable = shift <= mStatusBarHeight / 2;
         // Do not modify status bar on landscape as all apps is not full bleed.
         if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
             return;
         }
-        // Already set correctly
-        if (mLightStatusBar == enable) {
-            return;
-        }
-        int systemUiFlags = mLauncher.getWindow().getDecorView().getSystemUiVisibility();
-        if (enable) {
-            mLauncher.getWindow().getDecorView().setSystemUiVisibility(systemUiFlags
-                    | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-
-        } else {
-            mLauncher.getWindow().getDecorView().setSystemUiVisibility(systemUiFlags
-                    & ~(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR));
-
-        }
-        mLightStatusBar = enable;
+        // Use a light status bar (dark icons) if all apps is behind at least half of the status
+        // bar. If the status bar is already light due to wallpaper extraction, keep it that way.
+        boolean enable = shift <= mStatusBarHeight / 2 || mLauncher.shouldBeLightStatusBar();
+        mLauncher.setLightStatusBar(enable);
     }
 
     /**

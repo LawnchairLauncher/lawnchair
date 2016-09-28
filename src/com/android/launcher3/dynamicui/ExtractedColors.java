@@ -38,6 +38,7 @@ public class ExtractedColors {
     // loading extracted colors. New colors should always be added at the end.
     public static final int VERSION_INDEX = 0;
     public static final int HOTSEAT_INDEX = 1;
+    public static final int STATUS_BAR_INDEX = 2;
     // public static final int VIBRANT_INDEX = 2;
     // public static final int VIBRANT_DARK_INDEX = 3;
     // public static final int VIBRANT_LIGHT_INDEX = 4;
@@ -45,8 +46,8 @@ public class ExtractedColors {
     // public static final int MUTED_DARK_INDEX = 6;
     // public static final int MUTED_LIGHT_INDEX = 7;
 
-    public static final int NUM_COLOR_PROFILES = 1;
-    private static final int VERSION = 1;
+    public static final int NUM_COLOR_PROFILES = 2;
+    private static final int VERSION = 2;
 
     private static final String COLOR_SEPARATOR = ",";
 
@@ -155,5 +156,10 @@ public class ExtractedColors {
             hotseatColor = ColorUtils.setAlphaComponent(Color.WHITE, (int) (0.25f * 255));
         }
         setColorAtIndex(HOTSEAT_INDEX, hotseatColor);
+    }
+
+    public void updateStatusBarPalette(Palette statusBarPalette) {
+        setColorAtIndex(STATUS_BAR_INDEX, ExtractionUtils.isSuperLight(statusBarPalette) ?
+                DEFAULT_LIGHT : DEFAULT_DARK);
     }
 }

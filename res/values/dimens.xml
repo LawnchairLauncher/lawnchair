@@ -184,4 +184,9 @@
 
 <!-- Touch handling -->
     <dimen name="edge_of_screen_threshold">8dp</dimen>
+
+<!-- Other -->
+    <!-- Approximates the system status bar height. Not guaranteed to be always be correct. -->
+    <dimen name="status_bar_height">24dp</dimen>
+
 </resources>

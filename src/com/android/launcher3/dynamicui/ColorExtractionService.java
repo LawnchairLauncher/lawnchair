@@ -26,6 +26,7 @@ import android.support.v7.graphics.Palette;
 
 import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.R;
 
 /**
  * Extracts colors from the wallpaper, and saves results to {@link LauncherProvider}.
@@ -52,16 +53,21 @@ public class ColorExtractionService extends IntentService {
             Bitmap wallpaper = ((BitmapDrawable) wallpaperManager.getDrawable()).getBitmap();
             Palette palette = Palette.from(wallpaper).generate();
             extractedColors.updatePalette(palette);
-            // We extract colors for the hotseat separately,
-            // since it only considers the lower part of the wallpaper.
-            // TODO(twickham): update Palette library to 23.3.1 or higher,
-            // which fixes a bug with using regions (b/28349435).
+            // We extract colors for the hotseat and status bar separately,
+            // since they only consider part of the wallpaper.
             Palette hotseatPalette = Palette.from(wallpaper)
                     .setRegion(0, (int) (wallpaper.getHeight() * (1f - HOTSEAT_FRACTION)),
                             wallpaper.getWidth(), wallpaper.getHeight())
                     .clearFilters()
                     .generate();
             extractedColors.updateHotseatPalette(hotseatPalette);
+
+            int statusBarHeight = getResources().getDimensionPixelSize(R.dimen.status_bar_height);
+            Palette statusBarPalette = Palette.from(wallpaper)
+                    .setRegion(0, 0, wallpaper.getWidth(), statusBarHeight)
+                    .clearFilters()
+                    .generate();
+            extractedColors.updateStatusBarPalette(statusBarPalette);
         }
 
         // Save the extracted colors and wallpaper id to LauncherProvider.

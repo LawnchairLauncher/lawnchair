@@ -276,9 +276,10 @@ public class Launcher extends Activity
     private LauncherAccessibilityDelegate mAccessibilityDelegate;
     private boolean mIsResumeFromActionScreenOff;
     @Thunk boolean mUserPresent = true;
-    private boolean mVisible = false;
-    private boolean mHasFocus = false;
-    private boolean mAttached = false;
+    private boolean mVisible;
+    private boolean mHasFocus;
+    private boolean mAttached;
+    private boolean mIsLightStatusBar;
 
     /** Maps launcher activity components to their list of shortcut ids. */
     private MultiHashMap<ComponentKey, String> mDeepShortcutMap = new MultiHashMap<>();
@@ -499,7 +500,29 @@ public class Launcher extends Activity
             mExtractedColors.load(this);
             mHotseat.updateColor(mExtractedColors, !mPaused);
             mWorkspace.getPageIndicator().updateColor(mExtractedColors);
+            setLightStatusBar(shouldBeLightStatusBar());
         }
+    }
+
+    /** Returns whether a light status bar (dark icons) should be used based on the wallpaper. */
+    public boolean shouldBeLightStatusBar() {
+        return mExtractedColors.getColor(ExtractedColors.STATUS_BAR_INDEX,
+                ExtractedColors.DEFAULT_LIGHT) == ExtractedColors.DEFAULT_LIGHT;
+    }
+
+    public void setLightStatusBar(boolean lightStatusBar) {
+        // Already set correctly
+        if (mIsLightStatusBar == lightStatusBar) {
+            return;
+        }
+        mIsLightStatusBar = lightStatusBar;
+        int systemUiFlags = getWindow().getDecorView().getSystemUiVisibility();
+        if (lightStatusBar) {
+            systemUiFlags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+        } else {
+            systemUiFlags &= ~(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
+        getWindow().getDecorView().setSystemUiVisibility(systemUiFlags);
     }
 
     private LauncherCallbacks mLauncherCallbacks;
