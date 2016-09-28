@@ -734,11 +734,7 @@ public class Workspace extends PagedView
         addFullScreenPage(customScreen);
 
         // Update the custom content hint
-        if (mRestorePage != INVALID_RESTORE_PAGE) {
-            mRestorePage = mRestorePage + 1;
-        } else {
-            setCurrentPage(getCurrentPage() + 1);
-        }
+        setCurrentPage(getCurrentPage() + 1);
     }
 
     public void removeCustomContentPage() {
@@ -759,11 +755,7 @@ public class Workspace extends PagedView
         mCustomContentCallbacks = null;
 
         // Update the custom content hint
-        if (mRestorePage != INVALID_RESTORE_PAGE) {
-            mRestorePage = mRestorePage - 1;
-        } else {
-            setCurrentPage(getCurrentPage() - 1);
-        }
+        setCurrentPage(getCurrentPage() - 1);
     }
 
     public void addToCustomContentPage(View customContent, CustomContentCallbacks callbacks,
@@ -1753,7 +1745,7 @@ public class Workspace extends PagedView
     }
 
     public boolean isOnOrMovingToCustomContent() {
-        return hasCustomContent() && getNextPage() == 0 && mRestorePage == INVALID_RESTORE_PAGE;
+        return hasCustomContent() && getNextPage() == 0;
     }
 
     private void updateStateForCustomContent(int screenCenter) {

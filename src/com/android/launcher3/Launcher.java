@@ -254,7 +254,6 @@ public class Launcher extends Activity
     @Thunk WidgetsContainerView mWidgetsView;
     @Thunk WidgetsModel mWidgetsModel;
 
-    private Bundle mSavedState;
     // We set the state in both onCreate and then onNewIntent in some cases, which causes both
     // scroll issues (because the workspace may not have been measured yet) and extra work.
     // Instead, just save the state that we need to restore Launcher to, and commit it in onResume.
@@ -440,8 +439,7 @@ public class Launcher extends Activity
 
         lockAllApps();
 
-        mSavedState = savedInstanceState;
-        restoreState(mSavedState);
+        restoreState(savedInstanceState);
 
         if (LauncherAppState.PROFILE_STARTUP) {
             Trace.endSection();
@@ -449,11 +447,18 @@ public class Launcher extends Activity
 
         // We only load the page synchronously if the user rotates (or triggers a
         // configuration change) while launcher is in the foreground
-        if (!mModel.startLoader(mWorkspace.getRestorePage())) {
+        int currentScreen = PagedView.INVALID_RESTORE_PAGE;
+        if (savedInstanceState != null) {
+            currentScreen = savedInstanceState.getInt(RUNTIME_STATE_CURRENT_SCREEN, currentScreen);
+        }
+        if (!mModel.startLoader(currentScreen)) {
             // If we are not binding synchronously, show a fade in animation when
             // the first page bind completes.
             mDragLayer.setAlpha(0);
         } else {
+            // Pages bound synchronously.
+            mWorkspace.setCurrentPage(currentScreen);
+
             setWorkspaceLoading(true);
         }
 
@@ -594,7 +599,7 @@ public class Launcher extends Activity
     }
 
     /**
-     * Invoked by subclasses to signal a change to the {@link #addCustomContentToLeft} value to
+     * Invoked by subclasses to signal a change to the {@link #addToCustomContentPage} value to
      * ensure the custom content page is added or removed if necessary.
      */
     protected void invalidateHasCustomContentToLeft() {
@@ -1246,22 +1251,6 @@ public class Launcher extends Activity
     }
 
     /**
-     * Given the integer (ordinal) value of a State enum instance, convert it to a variable of type
-     * State
-     */
-    private static State intToState(int stateOrdinal) {
-        State state = State.WORKSPACE;
-        final State[] stateValues = State.values();
-        for (int i = 0; i < stateValues.length; i++) {
-            if (stateValues[i].ordinal() == stateOrdinal) {
-                state = stateValues[i];
-                break;
-            }
-        }
-        return state;
-    }
-
-    /**
      * Restores the previous state, if it exists.
      *
      * @param savedState The previous state.
@@ -1271,15 +1260,12 @@ public class Launcher extends Activity
             return;
         }
 
-        State state = intToState(savedState.getInt(RUNTIME_STATE, State.WORKSPACE.ordinal()));
+        int stateOrdinal = savedState.getInt(RUNTIME_STATE, State.WORKSPACE.ordinal());
+        State[] stateValues = State.values();
+        State state = (stateOrdinal >= 0 && stateOrdinal < stateValues.length)
+                ? stateValues[stateOrdinal] : State.WORKSPACE;
         if (state == State.APPS || state == State.WIDGETS) {
             mOnResumeState = state;
-        }
-
-        int currentScreen = savedState.getInt(RUNTIME_STATE_CURRENT_SCREEN,
-                PagedView.INVALID_RESTORE_PAGE);
-        if (currentScreen != PagedView.INVALID_RESTORE_PAGE) {
-            mWorkspace.setRestorePage(currentScreen);
         }
 
         PendingRequestArgs requestArgs = savedState.getParcelable(RUNTIME_STATE_PENDING_REQUEST_ARGS);
@@ -2761,6 +2747,7 @@ public class Launcher extends Activity
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     private Bundle getActivityLaunchOptions(View v) {
         if (Utilities.ATLEAST_MARSHMALLOW) {
             int left = 0, top = 0;
@@ -3976,14 +3963,6 @@ public class Launcher extends Activity
         if (LauncherAppState.PROFILE_STARTUP) {
             Trace.beginSection("Page bind completed");
         }
-        if (mSavedState != null) {
-            if (!mWorkspace.hasFocus()) {
-                mWorkspace.getChildAt(mWorkspace.getCurrentPage()).requestFocus();
-            }
-
-            mSavedState = null;
-        }
-
         mWorkspace.restoreInstanceStateForRemainingPages();
 
         setWorkspaceLoading(false);
@@ -4405,7 +4384,6 @@ public class Launcher extends Activity
      */
     public void dumpState() {
         Log.d(TAG, "BEGIN launcher3 dump state for launcher " + this);
-        Log.d(TAG, "mSavedState=" + mSavedState);
         Log.d(TAG, "mWorkspaceLoading=" + mWorkspaceLoading);
         Log.d(TAG, "mPendingRequestArgs=" + mPendingRequestArgs);
         Log.d(TAG, "mPendingActivityResult=" + mPendingActivityResult);
