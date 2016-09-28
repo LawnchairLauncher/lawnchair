@@ -62,6 +62,7 @@ enum ItemType {
   WIDGET = 3;
   FOLDER_ICON = 4;
   DEEPSHORTCUT = 5;
+  SEARCHBOX = 6;
 }
 
 // Used to define what type of container a Target would represent.

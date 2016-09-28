@@ -37,6 +37,9 @@ import java.util.Locale;
 
 /**
  * Manages the creation of {@link LauncherEvent}.
+ * To debug this class, execute following command before sideloading a new apk.
+ *
+ * $ adb shell setprop log.tag.UserEvent VERBOSE
  */
 public class UserEventDispatcher {
 
@@ -150,6 +153,15 @@ public class UserEventDispatcher {
             return;
         }
         dispatchUserEvent(ev, intent);
+    }
+
+    public void logActionOnItem(int action, int itemType) {
+        LauncherEvent event = LoggerUtils.initLauncherEvent(Action.TOUCH, Target.ITEM);
+        event.action.touch = action;
+        event.srcTarget[0].itemType = itemType;
+        event.elapsedContainerMillis = SystemClock.uptimeMillis() - mElapsedContainerMillis;
+        event.elapsedSessionMillis = SystemClock.uptimeMillis() - mElapsedSessionMillis;
+        dispatchUserEvent(event, null);
     }
 
     public void logActionOnControl(int action, int controlType) {
