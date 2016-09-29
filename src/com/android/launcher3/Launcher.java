@@ -279,7 +279,6 @@ public class Launcher extends Activity
     private boolean mVisible;
     private boolean mHasFocus;
     private boolean mAttached;
-    private boolean mIsLightStatusBar;
 
     /** Maps launcher activity components to their list of shortcut ids. */
     private MultiHashMap<ComponentKey, String> mDeepShortcutMap = new MultiHashMap<>();
@@ -496,33 +495,34 @@ public class Launcher extends Activity
 
     private void loadExtractedColorsAndColorItems() {
         // TODO: do this in pre-N as well, once the extraction part is complete.
-        if (mExtractedColors != null && Utilities.isNycOrAbove()) {
+        if (Utilities.isNycOrAbove()) {
             mExtractedColors.load(this);
             mHotseat.updateColor(mExtractedColors, !mPaused);
             mWorkspace.getPageIndicator().updateColor(mExtractedColors);
-            setLightStatusBar(shouldBeLightStatusBar());
+            // It's possible that All Apps is visible when this is run,
+            // so always use light status bar in that case.
+            activateLightStatusBar(isAllAppsVisible());
         }
     }
 
-    /** Returns whether a light status bar (dark icons) should be used based on the wallpaper. */
-    public boolean shouldBeLightStatusBar() {
-        return mExtractedColors.getColor(ExtractedColors.STATUS_BAR_INDEX,
-                ExtractedColors.DEFAULT_LIGHT) == ExtractedColors.DEFAULT_LIGHT;
-    }
-
-    public void setLightStatusBar(boolean lightStatusBar) {
-        // Already set correctly
-        if (mIsLightStatusBar == lightStatusBar) {
-            return;
-        }
-        mIsLightStatusBar = lightStatusBar;
-        int systemUiFlags = getWindow().getDecorView().getSystemUiVisibility();
+    /**
+     * Sets the status bar to be light or not. Light status bar means dark icons.
+     * @param activate if true, make sure the status bar is light, otherwise base on wallpaper.
+     */
+    public void activateLightStatusBar(boolean activate) {
+        boolean lightStatusBar = activate
+                || mExtractedColors.getColor(ExtractedColors.STATUS_BAR_INDEX,
+                ExtractedColors.DEFAULT_DARK) == ExtractedColors.DEFAULT_LIGHT;
+        int oldSystemUiFlags = getWindow().getDecorView().getSystemUiVisibility();
+        int newSystemUiFlags = oldSystemUiFlags;
         if (lightStatusBar) {
-            systemUiFlags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            newSystemUiFlags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
         } else {
-            systemUiFlags &= ~(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            newSystemUiFlags &= ~(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
-        getWindow().getDecorView().setSystemUiVisibility(systemUiFlags);
+        if (newSystemUiFlags != oldSystemUiFlags) {
+            getWindow().getDecorView().setSystemUiVisibility(newSystemUiFlags);
+        }
     }
 
     private LauncherCallbacks mLauncherCallbacks;
