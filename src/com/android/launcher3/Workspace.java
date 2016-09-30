@@ -599,6 +599,7 @@ public class Workspace extends PagedView
                     if (shouldConsumeTouch(v)) return true;
                     if (super.onTouch(v, ev)) {
                         mLauncher.startSearch("", false, null, false);
+                        return true;
                     }
                     return false;
                 }
@@ -610,6 +611,7 @@ public class Workspace extends PagedView
                     if (shouldConsumeTouch(v)) return true;
                     if (super.onTouch(v, ev)) {
                         mLauncher.startSearch("", false, null, false);
+                        return true;
                     }
                     return false;
                 }
