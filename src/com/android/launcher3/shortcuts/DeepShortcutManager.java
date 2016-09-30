@@ -42,13 +42,8 @@ import java.util.List;
 public class DeepShortcutManager {
     private static final String TAG = "DeepShortcutManager";
 
-    // TODO: Replace this with platform constants when the new sdk is available.
-    public static final int FLAG_MATCH_DYNAMIC = 1 << 0;
-    public static final int FLAG_MATCH_MANIFEST = 1 << 3;
-    public static final int FLAG_MATCH_PINNED = 1 << 1;
-
-    private static final int FLAG_GET_ALL =
-            FLAG_MATCH_DYNAMIC | FLAG_MATCH_PINNED | FLAG_MATCH_MANIFEST;
+    private static final int FLAG_GET_ALL = ShortcutQuery.FLAG_MATCH_DYNAMIC
+            | ShortcutQuery.FLAG_MATCH_MANIFEST | ShortcutQuery.FLAG_MATCH_PINNED;
 
     private final LauncherApps mLauncherApps;
     private boolean mWasLastCallSuccess;
@@ -86,7 +81,7 @@ public class DeepShortcutManager {
      */
     public List<ShortcutInfoCompat> queryForShortcutsContainer(ComponentName activity,
             List<String> ids, UserHandleCompat user) {
-        return query(FLAG_MATCH_MANIFEST | FLAG_MATCH_DYNAMIC,
+        return query(ShortcutQuery.FLAG_MATCH_MANIFEST | ShortcutQuery.FLAG_MATCH_DYNAMIC,
                 activity.getPackageName(), activity, ids, user);
     }
 
@@ -172,7 +167,7 @@ public class DeepShortcutManager {
      */
     public List<ShortcutInfoCompat> queryForPinnedShortcuts(String packageName,
             UserHandleCompat user) {
-        return query(FLAG_MATCH_PINNED, packageName, null, null, user);
+        return query(ShortcutQuery.FLAG_MATCH_PINNED, packageName, null, null, user);
     }
 
     public List<ShortcutInfoCompat> queryForAllShortcuts(UserHandleCompat user) {
