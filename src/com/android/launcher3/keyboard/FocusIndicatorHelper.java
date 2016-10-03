@@ -143,7 +143,7 @@ public abstract class FocusIndicatorHelper implements
     }
 
     private Rect getDrawRect() {
-        if (mCurrentView != null) {
+        if (mCurrentView != null && mCurrentView.isAttachedToWindow()) {
             viewToRect(mCurrentView, sTempRect1);
 
             if (mShift > 0 && mTargetView != null) {

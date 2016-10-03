@@ -57,7 +57,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
     protected static final int MOVE = R.id.action_move;
     protected static final int MOVE_TO_WORKSPACE = R.id.action_move_to_workspace;
     protected static final int RESIZE = R.id.action_resize;
-    protected static final int DEEP_SHORTCUTS = R.id.action_deep_shortcuts;
+    public static final int DEEP_SHORTCUTS = R.id.action_deep_shortcuts;
 
     public enum DragType {
         ICON,
@@ -100,14 +100,17 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
     @Override
     public void onInitializeAccessibilityNodeInfo(View host, AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(host, info);
-        addActions(host, info);
+        addSupportedActions(host, info, false);
     }
 
-    protected void addActions(View host, AccessibilityNodeInfo info) {
+    public void addSupportedActions(View host, AccessibilityNodeInfo info, boolean fromKeyboard) {
         if (!(host.getTag() instanceof ItemInfo)) return;
         ItemInfo item = (ItemInfo) host.getTag();
 
-        if (host instanceof BubbleTextView && ((BubbleTextView) host).hasDeepShortcuts()) {
+        // If the request came from keyboard, do not add custom shortcuts as that is already
+        // exposed as a direct shortcut
+        if (!fromKeyboard && host instanceof BubbleTextView
+                && ((BubbleTextView) host).hasDeepShortcuts()) {
             info.addAction(mActions.get(DEEP_SHORTCUTS));
         }
 
@@ -121,9 +124,10 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
             info.addAction(mActions.get(INFO));
         }
 
-        if ((item instanceof ShortcutInfo)
+        // Do not add move actions for keyboard request as this uses virtual nodes.
+        if (!fromKeyboard && ((item instanceof ShortcutInfo)
                 || (item instanceof LauncherAppWidgetInfo)
-                || (item instanceof FolderInfo)) {
+                || (item instanceof FolderInfo))) {
             info.addAction(mActions.get(MOVE));
 
             if (item.container >= 0) {
