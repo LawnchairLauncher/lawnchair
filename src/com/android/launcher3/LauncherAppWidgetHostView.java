@@ -20,6 +20,9 @@ import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.graphics.Rect;
+import android.os.Handler;
+import android.os.SystemClock;
+import android.util.SparseBooleanArray;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -28,6 +31,7 @@ import android.view.ViewConfiguration;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.widget.Advanceable;
 import android.widget.RemoteViews;
 
 import com.android.launcher3.dragndrop.DragLayer.TouchCompleteListener;
@@ -38,6 +42,13 @@ import java.util.ArrayList;
  * {@inheritDoc}
  */
 public class LauncherAppWidgetHostView extends AppWidgetHostView implements TouchCompleteListener {
+
+    // Related to the auto-advancing of widgets
+    private static final long ADVANCE_INTERVAL = 20000;
+    private static final long ADVANCE_STAGGER = 250;
+
+    // Maintains a list of widget ids which are supposed to be auto advanced.
+    private static final SparseBooleanArray sAutoAdvanceWidgetIds = new SparseBooleanArray();
 
     LayoutInflater mInflater;
 
@@ -53,6 +64,10 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
     private boolean mChildrenFocused;
 
     protected int mErrorViewId = R.layout.appwidget_error;
+
+    private boolean mIsAttachedToWindow;
+    private boolean mIsAutoAdvanceRegistered;
+    private Runnable mAutoAdvanceRunnable;
 
     public LauncherAppWidgetHostView(Context context) {
         super(context);
@@ -78,6 +93,9 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
         // Store the orientation in which the widget was inflated
         updateLastInflationOrientation();
         super.updateAppWidget(remoteViews);
+
+        // The provider info or the views might have changed.
+        checkIfAutoAdvance();
     }
 
     public boolean isReinflateRequired() {
@@ -153,6 +171,19 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+
+        mIsAttachedToWindow = true;
+        checkIfAutoAdvance();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+        // We can't directly use isAttachedToWindow() here, as this is called before the internal
+        // state is updated. So isAttachedToWindow() will return true until next frame.
+        mIsAttachedToWindow = false;
+        checkIfAutoAdvance();
     }
 
     @Override
@@ -169,10 +200,6 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
                     + " LauncherAppWidgetProviderInfo");
         }
         return info;
-    }
-
-    public LauncherAppWidgetProviderInfo getLauncherAppWidgetProviderInfo() {
-        return (LauncherAppWidgetProviderInfo) getAppWidgetInfo();
     }
 
     @Override
@@ -295,5 +322,80 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
     public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(info);
         info.setClassName(getClass().getName());
+    }
+
+    @Override
+    protected void onWindowVisibilityChanged(int visibility) {
+        super.onWindowVisibilityChanged(visibility);
+        maybeRegisterAutoAdvance();
+    }
+
+    private void checkIfAutoAdvance() {
+        boolean isAutoAdvance = false;
+        Advanceable target = getAdvanceable();
+        if (target != null) {
+            isAutoAdvance = true;
+            target.fyiWillBeAdvancedByHostKThx();
+        }
+
+        boolean wasAutoAdvance = sAutoAdvanceWidgetIds.indexOfKey(getAppWidgetId()) >= 0;
+        if (isAutoAdvance != wasAutoAdvance) {
+            if (isAutoAdvance) {
+                sAutoAdvanceWidgetIds.put(getAppWidgetId(), true);
+            } else {
+                sAutoAdvanceWidgetIds.delete(getAppWidgetId());
+            }
+            maybeRegisterAutoAdvance();
+        }
+    }
+
+    private Advanceable getAdvanceable() {
+        AppWidgetProviderInfo info = getAppWidgetInfo();
+        if (info == null || info.autoAdvanceViewId == NO_ID || !mIsAttachedToWindow) {
+            return null;
+        }
+        View v = findViewById(info.autoAdvanceViewId);
+        return (v instanceof Advanceable) ? (Advanceable) v : null;
+    }
+
+    private void maybeRegisterAutoAdvance() {
+        Handler handler = getHandler();
+        boolean shouldRegisterAutoAdvance = getWindowVisibility() == VISIBLE && handler != null
+                && (sAutoAdvanceWidgetIds.indexOfKey(getAppWidgetId()) >= 0);
+        if (shouldRegisterAutoAdvance != mIsAutoAdvanceRegistered) {
+            mIsAutoAdvanceRegistered = shouldRegisterAutoAdvance;
+            if (mAutoAdvanceRunnable == null) {
+                mAutoAdvanceRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        runAutoAdvance();
+                    }
+                };
+            }
+
+            handler.removeCallbacks(mAutoAdvanceRunnable);
+            scheduleNextAdvance();
+        }
+    }
+
+    private void scheduleNextAdvance() {
+        if (!mIsAutoAdvanceRegistered) {
+            return;
+        }
+        long now = SystemClock.uptimeMillis();
+        long advanceTime = now + (ADVANCE_INTERVAL - (now % ADVANCE_INTERVAL)) +
+                ADVANCE_STAGGER * sAutoAdvanceWidgetIds.indexOfKey(getAppWidgetId());
+        Handler handler = getHandler();
+        if (handler != null) {
+            handler.postAtTime(mAutoAdvanceRunnable, advanceTime);
+        }
+    }
+
+    private void runAutoAdvance() {
+        Advanceable target = getAdvanceable();
+        if (target != null) {
+            target.advance();
+        }
+        scheduleNextAdvance();
     }
 }
