@@ -140,10 +140,6 @@ public class UserEventDispatcher {
                         new ComponentKey(cn, itemInfo.user));
             }
         }
-
-        // Fill in the duration of time spent navigating in Launcher and the container.
-        event.elapsedContainerMillis = SystemClock.uptimeMillis() - mElapsedContainerMillis;
-        event.elapsedSessionMillis = SystemClock.uptimeMillis() - mElapsedSessionMillis;
         return event;
     }
 
@@ -159,8 +155,6 @@ public class UserEventDispatcher {
         LauncherEvent event = LoggerUtils.initLauncherEvent(Action.TOUCH, Target.ITEM);
         event.action.touch = action;
         event.srcTarget[0].itemType = itemType;
-        event.elapsedContainerMillis = SystemClock.uptimeMillis() - mElapsedContainerMillis;
-        event.elapsedSessionMillis = SystemClock.uptimeMillis() - mElapsedSessionMillis;
         dispatchUserEvent(event, null);
     }
 
@@ -168,8 +162,6 @@ public class UserEventDispatcher {
         LauncherEvent event = LoggerUtils.initLauncherEvent(Action.TOUCH, Target.CONTROL);
         event.action.touch = action;
         event.srcTarget[0].controlType = controlType;
-        event.elapsedContainerMillis = SystemClock.uptimeMillis() - mElapsedContainerMillis;
-        event.elapsedSessionMillis = SystemClock.uptimeMillis() - mElapsedSessionMillis;
         dispatchUserEvent(event, null);
     }
 
@@ -178,8 +170,6 @@ public class UserEventDispatcher {
         event.action.touch = action;
         event.action.dir = dir;
         event.srcTarget[0].containerType = containerType;
-        event.elapsedContainerMillis = SystemClock.uptimeMillis() - mElapsedContainerMillis;
-        event.elapsedSessionMillis = SystemClock.uptimeMillis() - mElapsedSessionMillis;
         dispatchUserEvent(event, null);
     }
 
@@ -193,8 +183,6 @@ public class UserEventDispatcher {
         ItemInfo info = (ItemInfo) icon.getTag();
         provider.fillInLaunchSourceData(icon, info, event.srcTarget[0], event.srcTarget[1]);
         event.action.touch = Action.LONGPRESS;
-        event.elapsedContainerMillis = SystemClock.uptimeMillis() - mElapsedContainerMillis;
-        event.elapsedSessionMillis = SystemClock.uptimeMillis() - mElapsedSessionMillis;
         dispatchUserEvent(event, null);
     }
 
@@ -218,9 +206,6 @@ public class UserEventDispatcher {
                     dragObj.dragInfo, event.destTarget[0], event.destTarget[1]);
 
         }
-
-        event.elapsedContainerMillis = SystemClock.uptimeMillis() - mElapsedContainerMillis;
-        event.elapsedSessionMillis = SystemClock.uptimeMillis() - mElapsedSessionMillis;
         event.actionDurationMillis = SystemClock.uptimeMillis() - mActionDurationMillis;
         dispatchUserEvent(event, null);
     }
@@ -242,6 +227,9 @@ public class UserEventDispatcher {
     }
 
     public void dispatchUserEvent(LauncherEvent ev, Intent intent) {
+        ev.elapsedContainerMillis = SystemClock.uptimeMillis() - mElapsedContainerMillis;
+        ev.elapsedSessionMillis = SystemClock.uptimeMillis() - mElapsedSessionMillis;
+
         if (!mIsVerbose) {
             return;
         }
