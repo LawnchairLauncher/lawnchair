@@ -109,6 +109,8 @@ public class QsbContainerView extends FrameLayout {
             if (mWidgetInfo == null) {
                 // There is no search provider, just show the default widget.
                 return getDefaultView(inflater, container, false);
+            } else {
+                mWidgetInfo = LauncherAppWidgetProviderInfo.fromProviderInfo(launcher, mWidgetInfo);
             }
 
             SharedPreferences prefs = Utilities.getPrefs(launcher);
