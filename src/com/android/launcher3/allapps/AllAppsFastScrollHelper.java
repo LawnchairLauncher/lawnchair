@@ -34,7 +34,7 @@ public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallb
     private AllAppsRecyclerView mRv;
     private AlphabeticalAppsList mApps;
 
-    // Keeps track of the current and targetted fast scroll section (the section to scroll to after
+    // Keeps track of the current and targeted fast scroll section (the section to scroll to after
     // the initial delay)
     int mTargetFastScrollPosition = -1;
     @Thunk String mCurrentFastScrollSection;

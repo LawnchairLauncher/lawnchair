@@ -186,16 +186,16 @@ public class IconNormalizer {
     }
 
     /**
-     * Modifies {@param xCordinates} to represent a convex border. Fills in all missing values
+     * Modifies {@param xCoordinates} to represent a convex border. Fills in all missing values
      * (except on either ends) with appropriate values.
-     * @param xCordinates map of x coordinate per y.
+     * @param xCoordinates map of x coordinate per y.
      * @param direction 1 for left border and -1 for right border.
      * @param topY the first Y position (inclusive) with a valid value.
      * @param bottomY the last Y position (inclusive) with a valid value.
      */
     private static void convertToConvexArray(
-            float[] xCordinates, int direction, int topY, int bottomY) {
-        int total = xCordinates.length;
+            float[] xCoordinates, int direction, int topY, int bottomY) {
+        int total = xCoordinates.length;
         // The tangent at each pixel.
         float[] angles = new float[total - 1];
 
@@ -205,7 +205,7 @@ public class IconNormalizer {
         float lastAngle = Float.MAX_VALUE;
 
         for (int i = topY + 1; i <= bottomY; i++) {
-            if (xCordinates[i] <= -1) {
+            if (xCoordinates[i] <= -1) {
                 continue;
             }
             int start;
@@ -213,14 +213,14 @@ public class IconNormalizer {
             if (lastAngle == Float.MAX_VALUE) {
                 start = first;
             } else {
-                float currentAngle = (xCordinates[i] - xCordinates[last]) / (i - last);
+                float currentAngle = (xCoordinates[i] - xCoordinates[last]) / (i - last);
                 start = last;
                 // If this position creates a concave angle, keep moving up until we find a
                 // position which creates a convex angle.
                 if ((currentAngle - lastAngle) * direction < 0) {
                     while (start > first) {
                         start --;
-                        currentAngle = (xCordinates[i] - xCordinates[start]) / (i - start);
+                        currentAngle = (xCoordinates[i] - xCoordinates[start]) / (i - start);
                         if ((currentAngle - angles[start]) * direction >= 0) {
                             break;
                         }
@@ -229,11 +229,11 @@ public class IconNormalizer {
             }
 
             // Reset from last check
-            lastAngle = (xCordinates[i] - xCordinates[start]) / (i - start);
+            lastAngle = (xCoordinates[i] - xCoordinates[start]) / (i - start);
             // Update all the points from start.
             for (int j = start; j < i; j++) {
                 angles[j] = lastAngle;
-                xCordinates[j] = xCordinates[start] + lastAngle * (j - start);
+                xCoordinates[j] = xCoordinates[start] + lastAngle * (j - start);
             }
             last = i;
         }

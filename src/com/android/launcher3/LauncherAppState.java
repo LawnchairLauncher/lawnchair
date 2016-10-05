@@ -86,10 +86,10 @@ public class LauncherAppState {
 
     private LauncherAppState() {
         if (sContext == null) {
-            throw new IllegalStateException("LauncherAppState inited before app context set");
+            throw new IllegalStateException("LauncherAppState initiated before app context set");
         }
 
-        Log.v(Launcher.TAG, "LauncherAppState inited");
+        Log.v(Launcher.TAG, "LauncherAppState initiated");
 
         if (TestingUtils.MEMORY_DUMP_ENABLED) {
             TestingUtils.startTrackingMemory(sContext);

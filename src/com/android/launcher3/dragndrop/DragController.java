@@ -775,7 +775,7 @@ public class DragController implements DragDriver.EventListener, TouchController
 
                 dropCoordinates[0] = x;
                 dropCoordinates[1] = y;
-                mLauncher.getDragLayer().mapCoordInSelfToDescendent((View) target, dropCoordinates);
+                mLauncher.getDragLayer().mapCoordInSelfToDescendant((View) target, dropCoordinates);
 
                 return target;
             }
@@ -783,7 +783,7 @@ public class DragController implements DragDriver.EventListener, TouchController
         return null;
     }
 
-    public void setDragScoller(DragScroller scroller) {
+    public void setDragScroller(DragScroller scroller) {
         mDragScroller = scroller;
     }
 
@@ -792,7 +792,7 @@ public class DragController implements DragDriver.EventListener, TouchController
     }
 
     /**
-     * Sets the drag listner which will be notified when a drag starts or ends.
+     * Sets the drag listener which will be notified when a drag starts or ends.
      */
     public void addDragListener(DragListener l) {
         mListeners.add(l);

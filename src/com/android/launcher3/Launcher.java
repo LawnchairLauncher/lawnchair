@@ -1340,7 +1340,7 @@ public class Launcher extends Activity
         }
 
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
-        mDragController.setDragScoller(mWorkspace);
+        mDragController.setDragScroller(mWorkspace);
         mDragController.setScrollView(mDragLayer);
         mDragController.setMoveTarget(mWorkspace);
         mDragController.addDropTarget(mWorkspace);
@@ -2516,7 +2516,7 @@ public class Launcher extends Activity
      * on the home screen.
      */
     public void onClickWallpaperPicker(View v) {
-        if (!Utilities.isWallapaperAllowed(this)) {
+        if (!Utilities.isWallpaperAllowed(this)) {
             Toast.makeText(this, R.string.msg_disabled_by_admin, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -3693,7 +3693,7 @@ public class Launcher extends Activity
                 if (DEBUG_WIDGETS) {
                     Log.d(TAG, "Removing restored widget: id=" + item.appWidgetId
                             + " belongs to component " + item.providerName
-                            + ", as the povider is null");
+                            + ", as the provider is null");
                 }
                 LauncherModel.deleteItemFromDatabase(this, item);
                 return;

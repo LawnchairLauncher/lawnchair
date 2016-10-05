@@ -618,7 +618,7 @@ public final class Utilities {
         return ATLEAST_LOLLIPOP && powerManager.isPowerSaveMode();
     }
 
-    public static boolean isWallapaperAllowed(Context context) {
+    public static boolean isWallpaperAllowed(Context context) {
         if (isNycOrAbove()) {
             try {
                 WallpaperManager wm = context.getSystemService(WallpaperManager.class);

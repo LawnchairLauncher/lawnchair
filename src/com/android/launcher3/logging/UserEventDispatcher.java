@@ -37,7 +37,7 @@ import java.util.Locale;
 
 /**
  * Manages the creation of {@link LauncherEvent}.
- * To debug this class, execute following command before sideloading a new apk.
+ * To debug this class, execute following command before side loading a new apk.
  *
  * $ adb shell setprop log.tag.UserEvent VERBOSE
  */

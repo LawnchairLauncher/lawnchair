@@ -1054,11 +1054,11 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         final int oldDragCellX = mDragCell[0];
         final int oldDragCellY = mDragCell[1];
 
-        if (outlineProvider == null || outlineProvider.gerenatedDragOutline == null) {
+        if (outlineProvider == null || outlineProvider.generatedDragOutline == null) {
             return;
         }
 
-        Bitmap dragOutline = outlineProvider.gerenatedDragOutline;
+        Bitmap dragOutline = outlineProvider.generatedDragOutline;
         if (cellX != oldDragCellX || cellY != oldDragCellY) {
             Point dragOffset = dragObject.dragView.getDragVisualizeOffset();
             Rect dragRegion = dragObject.dragView.getDragRegion();

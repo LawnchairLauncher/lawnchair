@@ -56,7 +56,7 @@ import android.widget.TextView;
 import com.android.launcher3.Launcher.CustomContentCallbacks;
 import com.android.launcher3.Launcher.LauncherOverlay;
 import com.android.launcher3.UninstallDropTarget.DropTargetSource;
-import com.android.launcher3.accessibility.AccessibileDragListenerAdapter;
+import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.accessibility.OverviewAccessibilityDelegate;
 import com.android.launcher3.accessibility.OverviewScreenAccessibilityDelegate;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
@@ -303,7 +303,7 @@ public class Workspace extends PagedView
     LauncherOverlay mLauncherOverlay;
     boolean mScrollInteractionBegan;
     boolean mStartedSendingScrollEvents;
-    float mLastOverlaySroll = 0;
+    float mLastOverlayScroll = 0;
     // Total over scrollX in the overlay direction.
     private int mUnboundedScrollX;
     private boolean mForceDrawAdjacentPages = false;
@@ -407,7 +407,7 @@ public class Workspace extends PagedView
     @Override
     public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
         if (ENFORCE_DRAG_EVENT_ORDER) {
-            enfoceDragParity("onDragStart", 0, 0);
+            enforceDragParity("onDragStart", 0, 0);
         }
 
         if (mOutlineProvider != null) {
@@ -464,7 +464,7 @@ public class Workspace extends PagedView
     @Override
     public void onDragEnd() {
         if (ENFORCE_DRAG_EVENT_ORDER) {
-            enfoceDragParity("onDragEnd", 0, 0);
+            enforceDragParity("onDragEnd", 0, 0);
         }
 
         if (!mDeferRemoveExtraEmptyScreen) {
@@ -582,7 +582,7 @@ public class Workspace extends PagedView
 
     /**
      * Initializes and binds the first page
-     * @param qsb an exisitng qsb to recycle or null.
+     * @param qsb an existing qsb to recycle or null.
      */
     public void bindAndInitFirstWorkspaceScreen(View qsb) {
         if (!FeatureFlags.QSB_ON_FIRST_SCREEN) {
@@ -1462,7 +1462,7 @@ public class Workspace extends PagedView
         boolean shouldScrollOverlay = mLauncherOverlay != null &&
                 ((amount <= 0 && !mIsRtl) || (amount >= 0 && mIsRtl));
 
-        boolean shouldZeroOverlay = mLauncherOverlay != null && mLastOverlaySroll != 0 &&
+        boolean shouldZeroOverlay = mLauncherOverlay != null && mLastOverlayScroll != 0 &&
                 ((amount >= 0 && !mIsRtl) || (amount <= 0 && mIsRtl));
 
         if (shouldScrollOverlay) {
@@ -1471,8 +1471,8 @@ public class Workspace extends PagedView
                 mLauncherOverlay.onScrollInteractionBegin();
             }
 
-            mLastOverlaySroll = Math.abs(amount / getViewportWidth());
-            mLauncherOverlay.onScrollChange(mLastOverlaySroll, mIsRtl);
+            mLastOverlayScroll = Math.abs(amount / getViewportWidth());
+            mLauncherOverlay.onScrollChange(mLastOverlayScroll, mIsRtl);
         } else if (shouldOverScroll) {
             dampedOverScroll(amount);
         }
@@ -1616,7 +1616,7 @@ public class Workspace extends PagedView
     }
 
     @Override
-    protected void getEdgeVerticalPostion(int[] pos) {
+    protected void getEdgeVerticalPosition(int[] pos) {
         View child = getChildAt(getPageCount() - 1);
         pos[0] = child.getTop();
         pos[1] = child.getBottom();
@@ -2266,7 +2266,7 @@ public class Workspace extends PagedView
         layout.prepareChildForDrag(child);
 
         if (options.isAccessibleDrag) {
-            mDragController.addDragListener(new AccessibileDragListenerAdapter(
+            mDragController.addDragListener(new AccessibleDragListenerAdapter(
                     this, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG) {
                 @Override
                 protected void enableAccessibleDrag(boolean enable) {
@@ -2788,7 +2788,7 @@ public class Workspace extends PagedView
     @Override
     public void onDragEnter(DragObject d) {
         if (ENFORCE_DRAG_EVENT_ORDER) {
-            enfoceDragParity("onDragEnter", 1, 1);
+            enforceDragParity("onDragEnter", 1, 1);
         }
 
         mCreateUserFolderOnDrop = false;
@@ -2805,7 +2805,7 @@ public class Workspace extends PagedView
     @Override
     public void onDragExit(DragObject d) {
         if (ENFORCE_DRAG_EVENT_ORDER) {
-            enfoceDragParity("onDragExit", -1, 0);
+            enforceDragParity("onDragExit", -1, 0);
         }
 
         // Here we store the final page that will be dropped to, if the workspace in fact
@@ -2838,14 +2838,14 @@ public class Workspace extends PagedView
         mLauncher.getDragLayer().hidePageHints();
     }
 
-    private void enfoceDragParity(String event, int update, int expectedValue) {
-        enfoceDragParity(this, event, update, expectedValue);
+    private void enforceDragParity(String event, int update, int expectedValue) {
+        enforceDragParity(this, event, update, expectedValue);
         for (int i = 0; i < getChildCount(); i++) {
-            enfoceDragParity(getChildAt(i), event, update, expectedValue);
+            enforceDragParity(getChildAt(i), event, update, expectedValue);
         }
     }
 
-    private void enfoceDragParity(View v, String event, int update, int expectedValue) {
+    private void enforceDragParity(View v, String event, int update, int expectedValue) {
         Object tag = v.getTag(R.id.drag_event_parity);
         int value = tag == null ? 0 : (Integer) tag;
         value += update;
@@ -2966,7 +2966,7 @@ public class Workspace extends PagedView
        mTempXY[0] = (int) xy[0];
        mTempXY[1] = (int) xy[1];
        mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, mTempXY, true);
-       mLauncher.getDragLayer().mapCoordInSelfToDescendent(hotseat.getLayout(), mTempXY);
+       mLauncher.getDragLayer().mapCoordInSelfToDescendant(hotseat.getLayout(), mTempXY);
 
        xy[0] = mTempXY[0];
        xy[1] = mTempXY[1];

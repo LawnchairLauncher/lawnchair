@@ -230,7 +230,7 @@ public class VerticalPullDetector {
 
     private void reportDragEnd() {
         if (DBG) {
-            Log.d(TAG, String.format("onScrolEnd disp=%.1f, velocity=%.1f",
+            Log.d(TAG, String.format("onScrollEnd disp=%.1f, velocity=%.1f",
                     mDisplacementY, mVelocity));
         }
         mListener.onDragEnd(mVelocity, Math.abs(mVelocity) > RELEASE_VELOCITY_PX_MS);

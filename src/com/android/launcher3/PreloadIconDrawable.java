@@ -18,7 +18,7 @@ public class PreloadIconDrawable extends Drawable {
     private static final float ANIMATION_PROGRESS_STARTED = 0f;
     private static final float ANIMATION_PROGRESS_COMPLETED = 1.0f;
 
-    private static final float MIN_SATUNATION = 0.2f;
+    private static final float MIN_SATURATION = 0.2f;
     private static final float MIN_LIGHTNESS = 0.6f;
 
     private static final float ICON_SCALE_FACTOR = 0.5f;
@@ -242,7 +242,7 @@ public class PreloadIconDrawable extends Drawable {
         // Make sure that the dominant color has enough saturation to be visible properly.
         float[] hsv = new float[3];
         Color.colorToHSV(mIndicatorColor, hsv);
-        if (hsv[1] < MIN_SATUNATION) {
+        if (hsv[1] < MIN_SATURATION) {
             mIndicatorColor = DEFAULT_COLOR;
             return mIndicatorColor;
         }

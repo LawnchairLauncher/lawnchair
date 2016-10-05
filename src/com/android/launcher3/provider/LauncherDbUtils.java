@@ -56,7 +56,7 @@ public class LauncherDbUtils {
             if (screenIds.get(0) != 0) {
                 // First screen is not 0, we need to rename screens
                 if (screenIds.indexOf(0L) > -1) {
-                    // There is already a screen 0. First rename it to a differen screen.
+                    // There is already a screen 0. First rename it to a different screen.
                     long newScreenId = 1;
                     while (screenIds.indexOf(newScreenId) > -1) newScreenId++;
                     renameScreen(db, 0, newScreenId);

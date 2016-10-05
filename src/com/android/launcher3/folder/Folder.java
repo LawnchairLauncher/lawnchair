@@ -71,7 +71,7 @@ import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.UninstallDropTarget.DropTargetSource;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace.ItemOperator;
-import com.android.launcher3.accessibility.AccessibileDragListenerAdapter;
+import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragController.DragListener;
@@ -297,7 +297,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
             mDragController.addDragListener(this);
             if (options.isAccessibleDrag) {
-                mDragController.addDragListener(new AccessibileDragListenerAdapter(
+                mDragController.addDragListener(new AccessibleDragListenerAdapter(
                         mContent, CellLayout.FOLDER_ACCESSIBILITY_DRAG) {
 
                     @Override

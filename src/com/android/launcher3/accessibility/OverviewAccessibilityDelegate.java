@@ -44,7 +44,7 @@ public class OverviewAccessibilityDelegate extends AccessibilityDelegate {
         Context context = host.getContext();
         info.addAction(new AccessibilityAction(OVERVIEW, context.getText(OVERVIEW)));
 
-        if (Utilities.isWallapaperAllowed(context)) {
+        if (Utilities.isWallpaperAllowed(context)) {
             info.addAction(new AccessibilityAction(WALLPAPERS, context.getText(WALLPAPERS)));
         }
         info.addAction(new AccessibilityAction(WIDGETS, context.getText(WIDGETS)));

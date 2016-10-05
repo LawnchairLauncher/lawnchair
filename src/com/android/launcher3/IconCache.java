@@ -363,7 +363,7 @@ public class IconCache {
     }
 
     /**
-     * Updates {@param values} to contain versoning information and adds it to the DB.
+     * Updates {@param values} to contain versioning information and adds it to the DB.
      * @param values {@link ContentValues} containing icon & title
      */
     private void addIconToDB(ContentValues values, ComponentName key,

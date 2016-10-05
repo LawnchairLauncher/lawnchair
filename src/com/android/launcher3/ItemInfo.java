@@ -59,7 +59,7 @@ public class ItemInfo {
     public long container = NO_ID;
 
     /**
-     * Iindicates the screen in which the shortcut appears.
+     * Indicates the screen in which the shortcut appears.
      */
     public long screenId = -1;
 

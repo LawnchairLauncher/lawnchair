@@ -149,7 +149,7 @@ public class AlphabeticalAppsList {
             return item;
         }
 
-        public static AdapterItem asSearchDivder(int pos) {
+        public static AdapterItem asSearchDivider(int pos) {
             AdapterItem item = new AdapterItem();
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_DIVIDER;
             item.position = pos;
@@ -429,7 +429,7 @@ public class AlphabeticalAppsList {
         }
 
         // Add the search divider
-        mAdapterItems.add(AdapterItem.asSearchDivder(position++));
+        mAdapterItems.add(AdapterItem.asSearchDivider(position++));
 
         // Process the predicted app components
         mPredictedApps.clear();

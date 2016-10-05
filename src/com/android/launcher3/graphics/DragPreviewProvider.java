@@ -44,7 +44,7 @@ public class DragPreviewProvider {
     // The padding added to the drag view during the preview generation.
     public final int previewPadding;
 
-    public Bitmap gerenatedDragOutline;
+    public Bitmap generatedDragOutline;
 
     public DragPreviewProvider(View view) {
         mView = view;
@@ -120,11 +120,11 @@ public class DragPreviewProvider {
     }
 
     public final void generateDragOutline(Canvas canvas) {
-        if (ProviderConfig.IS_DOGFOOD_BUILD && gerenatedDragOutline != null) {
+        if (ProviderConfig.IS_DOGFOOD_BUILD && generatedDragOutline != null) {
             throw new RuntimeException("Drag outline generated twice");
         }
 
-        gerenatedDragOutline = createDragOutline(canvas);
+        generatedDragOutline = createDragOutline(canvas);
     }
 
     /**

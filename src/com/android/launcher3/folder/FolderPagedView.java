@@ -679,7 +679,7 @@ public class FolderPagedView extends PagedView {
     }
 
     @Override
-    protected void getEdgeVerticalPostion(int[] pos) {
+    protected void getEdgeVerticalPosition(int[] pos) {
         pos[0] = 0;
         pos[1] = getViewportHeight();
     }

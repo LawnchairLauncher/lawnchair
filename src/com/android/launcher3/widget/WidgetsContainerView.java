@@ -139,7 +139,7 @@ public class WidgetsContainerView extends BaseContainerView
     @Override
     public boolean onLongClick(View v) {
         if (LOGD) {
-            Log.d(TAG, String.format("onLonglick [v=%s]", v));
+            Log.d(TAG, String.format("onLongClick [v=%s]", v));
         }
         // Return early if this is not initiated from a touch
         if (!v.isInTouchMode()) return false;

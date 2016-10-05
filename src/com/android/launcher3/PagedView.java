@@ -1082,7 +1082,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 canvas.translate(display.left, display.top);
                 canvas.rotate(270);
 
-                getEdgeVerticalPostion(sTmpIntPoint);
+                getEdgeVerticalPosition(sTmpIntPoint);
                 canvas.translate(display.top - sTmpIntPoint[1], 0);
                 mEdgeGlowLeft.setSize(sTmpIntPoint[1] - sTmpIntPoint[0], display.width());
                 if (mEdgeGlowLeft.draw(canvas)) {
@@ -1096,7 +1096,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 canvas.translate(display.left + mPageScrolls[mIsRtl ? 0 : (getPageCount() - 1)], display.top);
                 canvas.rotate(90);
 
-                getEdgeVerticalPostion(sTmpIntPoint);
+                getEdgeVerticalPosition(sTmpIntPoint);
 
                 canvas.translate(sTmpIntPoint[0] - display.top, -display.width());
                 mEdgeGlowRight.setSize(sTmpIntPoint[1] - sTmpIntPoint[0], display.width());
@@ -1111,7 +1111,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     /**
      * Returns the top and bottom position for the edge effect.
      */
-    protected abstract void getEdgeVerticalPostion(int[] pos);
+    protected abstract void getEdgeVerticalPosition(int[] pos);
 
     @Override
     public boolean requestChildRectangleOnScreen(View child, Rect rectangle, boolean immediate) {
