@@ -23,7 +23,6 @@ import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -38,11 +37,9 @@ import android.view.animation.DecelerateInterpolator;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
-import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.util.Thunk;
-
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
+import com.android.launcher3.util.Thunk;
 
 import java.util.Arrays;
 
@@ -57,6 +54,8 @@ public class DragView extends View {
     @Thunk Paint mPaint;
     private final int mRegistrationX;
     private final int mRegistrationY;
+    private final float mInitialScale;
+    private final int[] mTempLoc = new int[2];
 
     private Point mDragVisualizeOffset = null;
     private Rect mDragRegion = null;
@@ -137,6 +136,8 @@ public class DragView extends View {
         // The point in our scaled bitmap that the touch events are located
         mRegistrationX = registrationX;
         mRegistrationY = registrationY;
+
+        mInitialScale = initialScale;
 
         // Force a measure, because Workspace uses getMeasuredHeight() before the layout pass
         int ms = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
@@ -354,6 +355,13 @@ public class DragView extends View {
         mLastTouchX = touchX;
         mLastTouchY = touchY;
         applyTranslation();
+    }
+
+    public void animateTo(int toTouchX, int toTouchY, Runnable onCompleteRunnable, int duration) {
+        mTempLoc[0] = toTouchX - mRegistrationX;
+        mTempLoc[1] = toTouchY - mRegistrationY;
+        mDragLayer.animateViewIntoPosition(this, mTempLoc, 1f, mInitialScale, mInitialScale,
+                DragLayer.ANIMATION_END_DISAPPEAR, onCompleteRunnable, duration);
     }
 
     public void animateShift(final int shiftX, final int shiftY) {
