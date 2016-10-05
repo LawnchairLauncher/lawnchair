@@ -1358,53 +1358,36 @@ public class Launcher extends Activity
     private void setupOverviewPanel() {
         mOverviewPanel = (ViewGroup) findViewById(R.id.overview_panel);
 
-        // Long-clicking buttons in the overview panel does the same thing as clicking them.
-        OnLongClickListener performClickOnLongClick = new OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                return v.performClick();
-            }
-        };
-
         // Bind wallpaper button actions
         View wallpaperButton = findViewById(R.id.wallpaper_button);
-        wallpaperButton.setOnClickListener(new OnClickListener() {
+        new OverviewButtonClickListener(LauncherLogProto.WALLPAPER_BUTTON) {
             @Override
-            public void onClick(View view) {
-                if (!mWorkspace.isSwitchingState()) {
-                    onClickWallpaperPicker(view);
-                }
+            public void handleViewClick(View view) {
+                onClickWallpaperPicker(view);
             }
-        });
-        wallpaperButton.setOnLongClickListener(performClickOnLongClick);
+        }.attachTo(wallpaperButton);
         wallpaperButton.setOnTouchListener(getHapticFeedbackTouchListener());
 
         // Bind widget button actions
         mWidgetsButton = findViewById(R.id.widget_button);
-        mWidgetsButton.setOnClickListener(new OnClickListener() {
+        new OverviewButtonClickListener(LauncherLogProto.WIDGETS_BUTTON) {
             @Override
-            public void onClick(View view) {
-                if (!mWorkspace.isSwitchingState()) {
-                    onClickAddWidgetButton(view);
-                }
+            public void handleViewClick(View view) {
+                onClickAddWidgetButton(view);
             }
-        });
-        mWidgetsButton.setOnLongClickListener(performClickOnLongClick);
+        }.attachTo(mWidgetsButton);
         mWidgetsButton.setOnTouchListener(getHapticFeedbackTouchListener());
 
         // Bind settings actions
         View settingsButton = findViewById(R.id.settings_button);
         boolean hasSettings = hasSettings();
         if (hasSettings) {
-            settingsButton.setOnClickListener(new OnClickListener() {
+            new OverviewButtonClickListener(LauncherLogProto.SETTINGS_BUTTON) {
                 @Override
-                public void onClick(View view) {
-                    if (!mWorkspace.isSwitchingState()) {
-                        onClickSettingsButton(view);
-                    }
+                public void handleViewClick(View view) {
+                    onClickSettingsButton(view);
                 }
-            });
-            settingsButton.setOnLongClickListener(performClickOnLongClick);
+            }.attachTo(settingsButton);
             settingsButton.setOnTouchListener(getHapticFeedbackTouchListener());
         } else {
             settingsButton.setVisibility(View.GONE);
@@ -2896,6 +2879,8 @@ public class Launcher extends Activity
         // the workspace items
         folder.sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
         getDragLayer().sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED);
+
+        getUserEventDispatcher().resetElapsedContainerMillis();
     }
 
     public void closeFolder() {
@@ -2934,6 +2919,8 @@ public class Launcher extends Activity
         // Notify the accessibility manager that this folder "window" has disappeared and no
         // longer occludes the workspace items
         getDragLayer().sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
+
+        getUserEventDispatcher().resetElapsedContainerMillis();
     }
 
     public void closeShortcutsContainer() {
@@ -2999,6 +2986,9 @@ public class Launcher extends Activity
         if (v instanceof Workspace) {
             if (!mWorkspace.isInOverviewMode()) {
                 if (!mWorkspace.isTouchActive() && !fromEdgeOfScreen) {
+                    getUserEventDispatcher().logActionOnContainer(LauncherLogProto.Action.LONGPRESS,
+                            LauncherLogProto.Action.NONE, LauncherLogProto.WORKSPACE,
+                            mWorkspace.getCurrentPage());
                     showOverviewMode(true);
                     mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                             HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
@@ -3027,10 +3017,15 @@ public class Launcher extends Activity
                 // User long pressed on empty space
                 if (mWorkspace.isInOverviewMode()) {
                     mWorkspace.startReordering(v);
+                    getUserEventDispatcher().logActionOnContainer(LauncherLogProto.Action.LONGPRESS,
+                            LauncherLogProto.Action.NONE, LauncherLogProto.OVERVIEW);
                 } else {
                     if (fromEdgeOfScreen) {
                         return false;
                     }
+                    getUserEventDispatcher().logActionOnContainer(LauncherLogProto.Action.LONGPRESS,
+                            LauncherLogProto.Action.NONE, LauncherLogProto.WORKSPACE,
+                            mWorkspace.getCurrentPage());
                     showOverviewMode(true);
                 }
                 mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,

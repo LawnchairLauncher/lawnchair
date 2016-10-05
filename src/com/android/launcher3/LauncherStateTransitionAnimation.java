@@ -607,6 +607,8 @@ public class LauncherStateTransitionAnimation {
         playCommonTransitionAnimations(toWorkspaceState, fromWorkspace, null,
                 animated, animated, animation, layerViews);
 
+        mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
+
         if (animated) {
             dispatchOnLauncherTransitionPrepare(fromWorkspace, animated, multiplePagesVisible);
 

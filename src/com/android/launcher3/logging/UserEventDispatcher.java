@@ -166,10 +166,15 @@ public class UserEventDispatcher {
     }
 
     public void logActionOnContainer(int action, int dir, int containerType) {
+        logActionOnContainer(action, dir, containerType, 0);
+    }
+
+    public void logActionOnContainer(int action, int dir, int containerType, int pageIndex) {
         LauncherEvent event = LoggerUtils.initLauncherEvent(Action.TOUCH, Target.CONTAINER);
         event.action.touch = action;
         event.action.dir = dir;
         event.srcTarget[0].containerType = containerType;
+        event.srcTarget[0].pageIndex = pageIndex;
         dispatchUserEvent(event, null);
     }
 
@@ -184,6 +189,8 @@ public class UserEventDispatcher {
         provider.fillInLaunchSourceData(icon, info, event.srcTarget[0], event.srcTarget[1]);
         event.action.touch = Action.LONGPRESS;
         dispatchUserEvent(event, null);
+
+        resetElapsedContainerMillis();
     }
 
     public void setPredictedApps(List<ComponentKey> predictedApps) {

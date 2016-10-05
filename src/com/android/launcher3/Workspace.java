@@ -2344,6 +2344,8 @@ public class Workspace extends PagedView
             DeepShortcutsContainer dsc = DeepShortcutsContainer.showForIcon((BubbleTextView) child);
             if (dsc != null) {
                 dragOptions.preDragCondition = dsc.createPreDragCondition();
+
+                mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
             }
         }
 
