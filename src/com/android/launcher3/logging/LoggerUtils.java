@@ -60,6 +60,7 @@ public class LoggerUtils {
             case LauncherLogProto.WIDGET: typeStr = "WIDGET"; break;
             case LauncherLogProto.DEEPSHORTCUT: typeStr = "DEEPSHORTCUT"; break;
             case LauncherLogProto.FOLDER_ICON: typeStr = "FOLDERICON"; break;
+            case LauncherLogProto.SEARCHBOX: typeStr = "SEARCHBOX"; break;
 
             default: typeStr = "UNKNOWN";
         }
@@ -72,6 +73,9 @@ public class LoggerUtils {
         }
         if (t.intentHash != 0) {
             typeStr += ", intentHash=" + t.intentHash;
+        }
+        if (t.spanX != 0) {
+            typeStr += ", spanX=" + t.spanX;
         }
         return typeStr += ", grid=(" + t.gridX + "," + t.gridY + "), id=" + t.pageIndex;
     }
