@@ -80,7 +80,7 @@ public class PageIndicatorDots extends PageIndicator {
         @Override
         public void onAnimationEnd(Animator animation) {
             mAnimator = null;
-            animateToPostion(mFinalPosition);
+            animateToPosition(mFinalPosition);
         }
     };
 
@@ -136,22 +136,25 @@ public class PageIndicatorDots extends PageIndicator {
                 currentScroll = totalScroll - currentScroll;
             }
             int scrollPerPage = totalScroll / (mNumPages - 1);
-            int absScroll = mActivePage * scrollPerPage;
-            float scrollThreshold = SHIFT_THRESHOLD * scrollPerPage;
+            int pageToLeft = currentScroll / scrollPerPage;
+            int pageToLeftScroll = pageToLeft * scrollPerPage;
+            int pageToRightScroll = pageToLeftScroll + scrollPerPage;
 
-            if ((absScroll - currentScroll) > scrollThreshold) {
-                // current scroll is before absolute scroll
-                animateToPostion(mActivePage - SHIFT_PER_ANIMATION);
-            } else if ((currentScroll - absScroll) > scrollThreshold) {
-                // current scroll is ahead of absolute scroll
-                animateToPostion(mActivePage + SHIFT_PER_ANIMATION);
+            float scrollThreshold = SHIFT_THRESHOLD * scrollPerPage;
+            if (currentScroll < pageToLeftScroll + scrollThreshold) {
+                // scroll is within the left page's threshold
+                animateToPosition(pageToLeft);
+            } else if (currentScroll > pageToRightScroll - scrollThreshold) {
+                // scroll is far enough from left page to go to the right page
+                animateToPosition(pageToLeft + 1);
             } else {
-                animateToPostion(mActivePage);
+                // scroll is between left and right page
+                animateToPosition(pageToLeft + SHIFT_PER_ANIMATION);
             }
         }
     }
 
-    private void animateToPostion(float position) {
+    private void animateToPosition(float position) {
         mFinalPosition = position;
         if (Math.abs(mCurrentPosition - mFinalPosition) < SHIFT_THRESHOLD) {
             mCurrentPosition = mFinalPosition;
