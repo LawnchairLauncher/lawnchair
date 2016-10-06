@@ -1681,9 +1681,27 @@ public class Launcher extends Activity
                 // Can be cases where mWorkspace is null, this prevents a NPE
                 return;
             }
-            // In all these cases, only animate if we're already on home
+
+            // Note: There should be at most one log per method call. This is enforced implicitly
+            // by using if-else statements.
+            UserEventDispatcher ued = getUserEventDispatcher();
+
+            // TODO: Log this case.
             mWorkspace.exitWidgetResizeMode();
 
+            AbstractFloatingView topOpenView = AbstractFloatingView.getTopOpenView(this);
+            if (topOpenView instanceof DeepShortcutsContainer) {
+                ued.logActionCommand(LauncherLogProto.Action.HOME_INTENT,
+                        topOpenView.getExtendedTouchView(), LauncherLogProto.DEEPSHORTCUTS);
+            } else if (topOpenView instanceof Folder) {
+                ued.logActionCommand(LauncherLogProto.Action.HOME_INTENT,
+                            ((Folder) topOpenView).getFolderIcon(), LauncherLogProto.FOLDER);
+            } else if (alreadyOnHome) {
+                ued.logActionCommand(LauncherLogProto.Action.HOME_INTENT,
+                        mWorkspace.getState().containerType, mWorkspace.getCurrentPage());
+            }
+
+            // In all these cases, only animate if we're already on home
             AbstractFloatingView.closeAllOpenViews(this, alreadyOnHome);
             exitSpringLoadedDragMode();
 
@@ -2187,20 +2205,34 @@ public class Launcher extends Activity
             return;
         }
 
+        // Note: There should be at most one log per method call. This is enforced implicitly
+        // by using if-else statements.
+        UserEventDispatcher ued = getUserEventDispatcher();
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(this);
         if (topView != null) {
             if (topView.getActiveTextView() != null) {
                 topView.getActiveTextView().dispatchBackKey();
             } else {
+                if (topView instanceof DeepShortcutsContainer) {
+                    ued.logActionCommand(LauncherLogProto.Action.BACK,
+                            topView.getExtendedTouchView(), LauncherLogProto.DEEPSHORTCUTS);
+                } else if (topView instanceof Folder) {
+                    ued.logActionCommand(LauncherLogProto.Action.BACK,
+                            ((Folder) topView).getFolderIcon(), LauncherLogProto.FOLDER);
+                }
                 topView.close(true);
             }
         } else if (isAppsViewVisible()) {
+            ued.logActionCommand(LauncherLogProto.Action.BACK, LauncherLogProto.ALLAPPS);
             showWorkspace(true);
         } else if (isWidgetsViewVisible())  {
+            ued.logActionCommand(LauncherLogProto.Action.BACK, LauncherLogProto.WIDGETS);
             showOverviewMode(true);
         } else if (mWorkspace.isInOverviewMode()) {
+            ued.logActionCommand(LauncherLogProto.Action.BACK, LauncherLogProto.OVERVIEW);
             showWorkspace(true);
         } else {
+            // TODO: Log this case.
             mWorkspace.exitWidgetResizeMode();
 
             // Back button is a no-op here, but give at least some feedback for the button press

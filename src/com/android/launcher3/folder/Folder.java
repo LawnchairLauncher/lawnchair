@@ -79,7 +79,6 @@ import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
-import com.android.launcher3.shortcuts.DeepShortcutsContainer;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.CircleRevealOutlineProvider;
@@ -386,6 +385,10 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     @Override
     public ExtendedEditText getActiveTextView() {
         return isEditingName() ? mFolderName : null;
+    }
+
+    public FolderIcon getFolderIcon() {
+        return mFolderIcon;
     }
 
     /**

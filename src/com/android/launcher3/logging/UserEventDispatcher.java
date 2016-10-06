@@ -117,27 +117,33 @@ public class UserEventDispatcher {
                 Action.TOUCH, v, Target.CONTAINER);
         event.action.touch = Action.TAP;
 
-        // Fill in grid(x,y), pageIndex of the child and container type of the parent
-        // TODO: make this percolate up the view hierarchy if needed.
+        // TODO: make idx percolate up the view hierarchy if needed.
         int idx = 0;
-        LogContainerProvider provider = getLaunchProviderRecursive(v);
-        if (v == null || !(v.getTag() instanceof ItemInfo) || provider == null) {
-            return null;
-        }
-        ItemInfo itemInfo = (ItemInfo) v.getTag();
-        provider.fillInLogContainerData(v, itemInfo, event.srcTarget[idx], event.srcTarget[idx + 1]);
-
-        event.srcTarget[idx].intentHash = intent.hashCode();
-        ComponentName cn = intent.getComponent();
-        if (cn != null) {
-            event.srcTarget[idx].packageNameHash = cn.getPackageName().hashCode();
-            event.srcTarget[idx].componentHash = cn.hashCode();
-            if (mPredictedApps != null) {
-                event.srcTarget[idx].predictedRank = mPredictedApps.indexOf(
-                        new ComponentKey(cn, itemInfo.user));
+        if (fillInLogContainerData(event, v)) {
+            ItemInfo itemInfo = (ItemInfo) v.getTag();
+            event.srcTarget[idx].intentHash = intent.hashCode();
+            ComponentName cn = intent.getComponent();
+            if (cn != null) {
+                event.srcTarget[idx].packageNameHash = cn.getPackageName().hashCode();
+                event.srcTarget[idx].componentHash = cn.hashCode();
+                if (mPredictedApps != null) {
+                    event.srcTarget[idx].predictedRank = mPredictedApps.indexOf(
+                            new ComponentKey(cn, itemInfo.user));
+                }
             }
         }
         return event;
+    }
+
+    public boolean fillInLogContainerData(LauncherEvent event, View v) {
+        // Fill in grid(x,y), pageIndex of the child and container type of the parent
+        LogContainerProvider provider = getLaunchProviderRecursive(v);
+        if (v == null || !(v.getTag() instanceof ItemInfo) || provider == null) {
+            return false;
+        }
+        ItemInfo itemInfo = (ItemInfo) v.getTag();
+        provider.fillInLogContainerData(v, itemInfo, event.srcTarget[0], event.srcTarget[1]);
+        return true;
     }
 
     public void logAppLaunch(View v, Intent intent) {
@@ -148,10 +154,30 @@ public class UserEventDispatcher {
         dispatchUserEvent(ev, intent);
     }
 
-    public void logActionOnItem(int action, int itemType) {
-        LauncherEvent event = LoggerUtils.initLauncherEvent(Action.TOUCH, Target.ITEM);
-        event.action.touch = action;
-        event.srcTarget[0].itemType = itemType;
+    public void logActionCommand(int command, int containerType) {
+        logActionCommand(command, containerType, 0);
+    }
+
+    public void logActionCommand(int command, int containerType, int pageIndex) {
+        LauncherEvent event = LoggerUtils.initLauncherEvent(command, true);
+        event.srcTarget[0].containerType = containerType;
+        event.srcTarget[0].pageIndex = pageIndex;
+        dispatchUserEvent(event, null);
+    }
+
+    /**
+     * TODO: Make this function work when a container view is passed as the 2nd param.
+     */
+    public void logActionCommand(int command, View itemView, int containerType) {
+        LauncherEvent event = LoggerUtils.initLauncherEvent(Action.COMMAND, itemView,
+                Target.CONTAINER);
+        event.action.command = command;
+        if (fillInLogContainerData(event, itemView)) {
+            // TODO: Remove the following two lines once fillInLogContainerData can take in a
+            // container view.
+            event.srcTarget[0].type = Target.CONTAINER;
+            event.srcTarget[0].containerType = containerType;
+        }
         dispatchUserEvent(event, null);
     }
 
@@ -215,7 +241,6 @@ public class UserEventDispatcher {
     }
     public void logDragNDrop(DropTarget.DragObject dragObj, View dropTargetAsView) {
         LauncherEvent event = LoggerUtils.initLauncherEvent(Action.TOUCH,
-                dragObj.dragView,
                 dragObj.originalDragInfo,
                 Target.CONTAINER,
                 dropTargetAsView);

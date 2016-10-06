@@ -63,6 +63,7 @@ enum ItemType {
   FOLDER_ICON = 4;
   DEEPSHORTCUT = 5;
   SEARCHBOX = 6;
+  EDITTEXT = 7;
 }
 
 // Used to define what type of container a Target would represent.
@@ -91,7 +92,9 @@ enum ControlType {
   APPINFO_TARGET = 7;
   RESIZE_HANDLE = 8;
   VERTICAL_SCROLL = 9;
-  // HOME, BACK, GO_TO_PLAYSTORE
+  HOME_INTENT = 10; // Deprecated, use enum Command instead
+  BACK_BUTTON = 11; // Deprecated, use enum Command instead
+  // GO_TO_PLAYSTORE
 }
 
 // Used to define the action component of the LauncherEvent.
@@ -99,6 +102,7 @@ message Action {
   enum Type {
     TOUCH = 0;
     AUTOMATED = 1;
+    COMMAND = 2;
     // SOFT_KEYBOARD, HARD_KEYBOARD, ASSIST
   }
   enum Touch {
@@ -116,9 +120,16 @@ message Action {
     LEFT = 3;
     RIGHT = 4;
   }
+  enum Command {
+    HOME_INTENT = 0;
+    BACK = 1;
+  }
   optional Type type = 1;
   optional Touch touch = 2;
   optional Direction dir = 3;
+  optional Command command = 4;
+  // Log if the action was performed on outside of the container
+  optional bool is_outside = 5;
 }
 
 //

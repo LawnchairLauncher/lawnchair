@@ -183,18 +183,20 @@ public class Workspace extends PagedView
     // in all apps or customize mode)
 
     public enum State {
-        NORMAL          (false, false),
-        NORMAL_HIDDEN   (false, false),
-        SPRING_LOADED   (false, true),
-        OVERVIEW        (true, true),
-        OVERVIEW_HIDDEN (true, false);
+        NORMAL          (false, false, LauncherLogProto.WORKSPACE),
+        NORMAL_HIDDEN   (false, false, LauncherLogProto.ALLAPPS),
+        SPRING_LOADED   (false, true, LauncherLogProto.WORKSPACE),
+        OVERVIEW        (true, true, LauncherLogProto.OVERVIEW),
+        OVERVIEW_HIDDEN (true, false, LauncherLogProto.WIDGETS);
 
         public final boolean shouldUpdateWidget;
         public final boolean hasMultipleVisiblePages;
+        public final int containerType;
 
-        State(boolean shouldUpdateWidget, boolean hasMultipleVisiblePages) {
+        State(boolean shouldUpdateWidget, boolean hasMultipleVisiblePages, int containerType) {
             this.shouldUpdateWidget = shouldUpdateWidget;
             this.hasMultipleVisiblePages = hasMultipleVisiblePages;
+            this.containerType = containerType;
         }
     }
 

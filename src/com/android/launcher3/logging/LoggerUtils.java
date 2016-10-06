@@ -20,14 +20,30 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 public class LoggerUtils {
     private static final String TAG = "LoggerUtils";
 
-    public static String getActionStr(LauncherLogProto.Action action) {
-        switch(action.touch) {
+    private static String getCommandStr(Action action) {
+        switch (action.command) {
+            case Action.HOME_INTENT: return "HOME_INTENT";
+            case Action.BACK: return "BACK";
+            default: return "UNKNOWN";
+        }
+    }
+
+    private static String getTouchStr(Action action) {
+        switch (action.touch) {
             case Action.TAP: return "TAP";
             case Action.LONGPRESS: return "LONGPRESS";
             case Action.DRAGDROP: return "DRAGDROP";
             case Action.PINCH: return "PINCH";
             case Action.SWIPE: return "SWIPE";
             case Action.FLING: return "FLING";
+            default: return "UNKNOWN";
+        }
+    }
+
+    public static String getActionStr(LauncherLogProto.Action action) {
+        switch (action.type) {
+            case Action.TOUCH: return getTouchStr(action);
+            case Action.COMMAND: return getCommandStr(action);
             default: return "UNKNOWN";
         }
     }
@@ -61,6 +77,7 @@ public class LoggerUtils {
             case LauncherLogProto.DEEPSHORTCUT: typeStr = "DEEPSHORTCUT"; break;
             case LauncherLogProto.FOLDER_ICON: typeStr = "FOLDERICON"; break;
             case LauncherLogProto.SEARCHBOX: typeStr = "SEARCHBOX"; break;
+            case LauncherLogProto.EDITTEXT: typeStr = "EDITTEXT"; break;
 
             default: typeStr = "UNKNOWN";
         }
@@ -173,23 +190,41 @@ public class LoggerUtils {
     }
 
     /**
+     * Used for commands.
+     */
+    public static LauncherLogProto.LauncherEvent initLauncherEvent(int command,
+            boolean createSrcTarget) {
+        LauncherLogProto.LauncherEvent event = new LauncherLogProto.LauncherEvent();
+        event.action = new LauncherLogProto.Action();
+        event.action.type = Action.COMMAND;
+        event.action.command = command;
+        event.srcTarget = null;
+
+        if (createSrcTarget) {
+            event.srcTarget = new LauncherLogProto.Target[1];
+            event.srcTarget[0] = new LauncherLogProto.Target();
+            event.srcTarget[0].type = Target.CONTAINER;
+        }
+        return event;
+    }
+
+    /**
      * Used for drag and drop interaction.
      */
     public static LauncherLogProto.LauncherEvent initLauncherEvent(
             int actionType,
-            View v,
             ItemInfo info,
             int parentSrcTargetType,
             View parentDestTargetType){
         LauncherLogProto.LauncherEvent event = new LauncherLogProto.LauncherEvent();
 
         event.srcTarget = new LauncherLogProto.Target[2];
-        event.srcTarget[0] = initTarget(v, info);
+        event.srcTarget[0] = initTarget(info);
         event.srcTarget[1] = new LauncherLogProto.Target();
         event.srcTarget[1].type = parentSrcTargetType;
 
         event.destTarget = new LauncherLogProto.Target[2];
-        event.destTarget[0] = initTarget(v, info);
+        event.destTarget[0] = initTarget(info);
         event.destTarget[1] = initDropTarget(parentDestTargetType);
 
         event.action = new LauncherLogProto.Action();
@@ -197,7 +232,7 @@ public class LoggerUtils {
         return event;
     }
 
-    private static Target initTarget(View v, ItemInfo info) {
+    private static Target initTarget(ItemInfo info) {
         Target t = new LauncherLogProto.Target();
         t.type = Target.ITEM;
         switch (info.itemType) {
@@ -243,6 +278,6 @@ public class LoggerUtils {
         if (!(v.getTag() instanceof ItemInfo)) {
             return t;
         }
-        return initTarget(v, (ItemInfo) v.getTag());
+        return initTarget((ItemInfo) v.getTag());
     }
 }
