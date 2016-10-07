@@ -67,7 +67,7 @@ public class Hotseat extends FrameLayout
 
     public Hotseat(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mLauncher = (Launcher) context;
+        mLauncher = Launcher.getLauncher(context);
         mHasVerticalHotseat = mLauncher.getDeviceProfile().isVerticalBarLayout();
         mBackgroundColor = ColorUtils.setAlphaComponent(
                 ContextCompat.getColor(context, R.color.all_apps_container_color), 0);

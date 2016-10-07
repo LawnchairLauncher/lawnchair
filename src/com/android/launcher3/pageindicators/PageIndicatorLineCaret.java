@@ -125,7 +125,7 @@ public class PageIndicatorLineCaret extends PageIndicator {
         mLinePaint = new Paint();
         mLinePaint.setAlpha(0);
 
-        mLauncher = (Launcher) context;
+        mLauncher = Launcher.getLauncher(context);
         mLineHeight = res.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_line_height);
         setCaretDrawable(new CaretDrawable(context));
     }

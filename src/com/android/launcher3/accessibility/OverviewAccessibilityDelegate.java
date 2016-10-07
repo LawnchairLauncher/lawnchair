@@ -53,7 +53,7 @@ public class OverviewAccessibilityDelegate extends AccessibilityDelegate {
 
     @Override
     public boolean performAccessibilityAction(View host, int action, Bundle args) {
-        Launcher launcher = (Launcher) host.getContext();
+        Launcher launcher = Launcher.getLauncher(host.getContext());
         if (action == OVERVIEW) {
             launcher.showOverviewMode(true);
             return true;

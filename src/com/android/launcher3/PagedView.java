@@ -1834,7 +1834,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     }
 
     protected void onUnhandledTap(MotionEvent ev) {
-        ((Launcher) getContext()).onClick(this);
+        Launcher.getLauncher(getContext()).onClick(this);
     }
 
     @Override

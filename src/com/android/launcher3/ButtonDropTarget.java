@@ -83,7 +83,7 @@ public abstract class ButtonDropTarget extends TextView
 
     public ButtonDropTarget(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mLauncher = (Launcher) context;
+        mLauncher = Launcher.getLauncher(context);
 
         Resources resources = getResources();
         mBottomDragPadding = resources.getDimensionPixelSize(R.dimen.drop_target_drag_padding);

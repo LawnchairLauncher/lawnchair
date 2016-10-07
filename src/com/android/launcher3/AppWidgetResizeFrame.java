@@ -80,7 +80,7 @@ public class AppWidgetResizeFrame extends FrameLayout implements View.OnKeyListe
             LauncherAppWidgetHostView widgetView, CellLayout cellLayout, DragLayer dragLayer) {
 
         super(context);
-        mLauncher = (Launcher) context;
+        mLauncher = Launcher.getLauncher(context);
         mCellLayout = cellLayout;
         mWidgetView = widgetView;
         LauncherAppWidgetProviderInfo info = (LauncherAppWidgetProviderInfo)

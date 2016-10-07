@@ -696,7 +696,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                     float distance = (float) Math.hypot(dx, dy);
                     if (distance < viewConfig.getScaledTouchSlop()) {
                         // The background was clicked, so just go home
-                        Launcher launcher = (Launcher) getContext();
+                        Launcher launcher = Launcher.getLauncher(getContext());
                         launcher.showWorkspace(true);
                         return true;
                     }
