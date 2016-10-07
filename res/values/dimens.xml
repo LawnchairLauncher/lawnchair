@@ -138,9 +138,10 @@
     <dimen name="page_indicator_dot_size">8dp</dimen>
 
     <dimen name="folder_cell_x_padding">9dp</dimen>
-    <dimen name="folder_cell_y_padding">8dp</dimen>
+    <dimen name="folder_cell_y_padding">6dp</dimen>
     <dimen name="folder_child_text_size">13sp</dimen>
-    <dimen name="folder_label_padding">12dp</dimen>
+    <dimen name="folder_label_padding_top">4dp</dimen>
+    <dimen name="folder_label_padding_bottom">12dp</dimen>
     <dimen name="folder_label_text_size">14sp</dimen>
 
 <!-- Sizes for managed profile badges -->
