@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.qsb;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -27,12 +27,15 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.android.launcher3.Launcher;
+import com.android.launcher3.Workspace;
+import com.android.launcher3.Workspace.OnStateChangeListener;
 import com.android.launcher3.Workspace.State;
 
 /**
  * A simple view used to show the region blocked by QSB during drag and drop.
  */
-public class QsbBlockerView extends View implements Workspace.OnStateChangeListener {
+public class QsbBlockerView extends View implements OnStateChangeListener {
 
     private static final int VISIBLE_ALPHA = 100;
 
