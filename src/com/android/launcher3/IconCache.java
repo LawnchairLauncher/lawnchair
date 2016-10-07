@@ -773,13 +773,15 @@ public class IconCache {
         public void run() {
             if (!mAppsToUpdate.isEmpty()) {
                 LauncherActivityInfoCompat app = mAppsToUpdate.pop();
-                String cn = app.getComponentName().flattenToString();
-                ContentValues values = updateCacheAndGetContentValues(app, true);
-                mIconDb.update(values,
-                        IconDB.COLUMN_COMPONENT + " = ? AND " + IconDB.COLUMN_USER + " = ?",
-                        new String[]{cn, Long.toString(mUserSerial)});
-                mUpdatedPackages.add(app.getComponentName().getPackageName());
-
+                String pkg = app.getComponentName().getPackageName();
+                PackageInfo info = mPkgInfoMap.get(pkg);
+                if (info != null) {
+                    synchronized (IconCache.this) {
+                        ContentValues values = updateCacheAndGetContentValues(app, true);
+                        addIconToDB(values, app.getComponentName(), info, mUserSerial);
+                    }
+                    mUpdatedPackages.add(pkg);
+                }
                 if (mAppsToUpdate.isEmpty() && !mUpdatedPackages.isEmpty()) {
                     // No more app to update. Notify model.
                     LauncherAppState.getInstance().getModel().onPackageIconsUpdated(
