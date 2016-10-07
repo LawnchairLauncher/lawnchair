@@ -143,6 +143,11 @@ public class PageIndicatorLineCaret extends PageIndicator {
     }
 
     @Override
+    public void setAccessibilityDelegate(AccessibilityDelegate delegate) {
+        mAllAppsHandle.setAccessibilityDelegate(delegate);
+    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
         if (mTotalScroll == 0 || mNumPagesFloat == 0) {
             return;
