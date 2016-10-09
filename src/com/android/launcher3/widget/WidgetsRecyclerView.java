@@ -121,7 +121,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
         // Skip early if, there no child laid out in the container.
         int scrollY = getCurrentScrollY();
         if (scrollY < 0) {
-            mScrollbar.setThumbOffset(-1, -1);
+            mScrollbar.setThumbOffsetY(-1);
             return;
         }
 

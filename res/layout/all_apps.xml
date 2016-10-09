@@ -55,6 +55,22 @@
             android:focusable="true"
             android:theme="@style/CustomOverscroll.Light" />
 
+        <!-- Fast scroller popup -->
+        <TextView
+            android:background="@drawable/container_fastscroll_popup_bg"
+            android:layout_width="@dimen/container_fastscroll_popup_size"
+            android:layout_height="@dimen/container_fastscroll_popup_size"
+            android:textSize="@dimen/container_fastscroll_popup_text_size"
+            android:layout_below="@+id/search_container"
+            android:id="@+id/fast_scroller_popup"
+            android:layout_alignParentEnd="true"
+            android:gravity="center"
+            android:alpha="0"
+            android:elevation="3dp"
+            android:saveEnabled="false"
+            android:layout_marginEnd="@dimen/container_fastscroll_popup_margin"
+            android:textColor="@android:color/white" />
+
         <FrameLayout
             android:id="@+id/search_container"
             android:layout_width="match_parent"

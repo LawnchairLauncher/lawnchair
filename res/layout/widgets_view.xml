@@ -49,6 +49,22 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+        <!-- Fast scroller popup -->
+        <TextView
+            android:background="@drawable/container_fastscroll_popup_bg"
+            android:layout_width="@dimen/container_fastscroll_popup_size"
+            android:layout_height="@dimen/container_fastscroll_popup_size"
+            android:textSize="@dimen/container_fastscroll_popup_text_size"
+            android:layout_below="@+id/search_container"
+            android:id="@+id/fast_scroller_popup"
+            android:elevation="3dp"
+            android:gravity="center"
+            android:alpha="0"
+            android:saveEnabled="false"
+            android:layout_gravity="top|end"
+            android:layout_marginEnd="@dimen/container_fastscroll_popup_margin"
+            android:textColor="@android:color/white" />
+
         <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
