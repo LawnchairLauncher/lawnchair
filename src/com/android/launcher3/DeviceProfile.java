@@ -284,7 +284,8 @@ public class DeviceProfile {
                 Utilities.calculateTextHeight(res.getDimension(R.dimen.folder_child_text_size));
 
         final int folderBottomPanelSize =
-                2 * res.getDimensionPixelSize(R.dimen.folder_label_padding)
+                res.getDimensionPixelSize(R.dimen.folder_label_padding_top)
+                 + res.getDimensionPixelSize(R.dimen.folder_label_padding_bottom)
                 + Utilities.calculateTextHeight(res.getDimension(R.dimen.folder_label_text_size));
 
         // Don't let the folder get too close to the edges of the screen.
