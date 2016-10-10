@@ -70,7 +70,7 @@ public class AnotherWindowDragSource implements DragSource {
     }
 
     @Override
-    public void fillInLaunchSourceData(View v, ItemInfo info, Target target, Target targetParent) {
+    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
         // TODO: Probably log something
     }
 }

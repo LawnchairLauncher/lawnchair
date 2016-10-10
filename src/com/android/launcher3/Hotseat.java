@@ -42,7 +42,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
 public class Hotseat extends FrameLayout
-        implements UserEventDispatcher.LaunchSourceProvider {
+        implements UserEventDispatcher.LogContainerProvider {
 
     private CellLayout mContent;
 
@@ -172,7 +172,7 @@ public class Hotseat extends FrameLayout
     }
 
     @Override
-    public void fillInLaunchSourceData(View v, ItemInfo info, Target target, Target targetParent) {
+    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
         target.gridX = info.cellX;
         target.gridY = info.cellY;
         targetParent.containerType = LauncherLogProto.HOTSEAT;

@@ -338,7 +338,7 @@ public class WidgetsContainerView extends BaseContainerView
     }
 
     @Override
-    public void fillInLaunchSourceData(View v, ItemInfo info, Target target, Target targetParent) {
+    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
         targetParent.containerType = LauncherLogProto.WIDGETS;
     }
 }

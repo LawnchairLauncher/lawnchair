@@ -506,7 +506,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
     }
 
     @Override
-    public void fillInLaunchSourceData(View v, ItemInfo info, Target target, Target targetParent) {
+    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
         target.itemType = LauncherLogProto.DEEPSHORTCUT;
         // TODO: add target.rank
         targetParent.containerType = LauncherLogProto.DEEPSHORTCUTS;
