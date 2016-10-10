@@ -224,7 +224,7 @@ public class IconCache {
                     PackageManager.GET_UNINSTALLED_PACKAGES);
             long userSerial = mUserManager.getSerialNumberForUser(user);
             for (LauncherActivityInfoCompat app : mLauncherApps.getActivityList(packageName, user)) {
-                addIconToDBAndMemCache(app, info, userSerial);
+                addIconToDBAndMemCache(app, info, userSerial, false /*replace existing*/);
             }
         } catch (NameNotFoundException e) {
             Log.d(TAG, "Package not found", e);
@@ -354,29 +354,14 @@ public class IconCache {
         }
     }
 
-    @Thunk void addIconToDBAndMemCache(LauncherActivityInfoCompat app, PackageInfo info,
-            long userSerial) {
-        // Reuse the existing entry if it already exists in the DB. This ensures that we do not
-        // create bitmap if it was already created during loader.
-        ContentValues values = updateCacheAndGetContentValues(app, false);
-        addIconToDB(values, app.getComponentName(), info, userSerial);
-    }
-
     /**
-     * Updates {@param values} to contain versioning information and adds it to the DB.
-     * @param values {@link ContentValues} containing icon & title
+     * Adds an entry into the DB and the in-memory cache.
+     * @param replaceExisting if true, it will recreate the bitmap even if it already exists in
+     *                        the memory. This is useful then the previous bitmap was created using
+     *                        old data.
      */
-    private void addIconToDB(ContentValues values, ComponentName key,
-            PackageInfo info, long userSerial) {
-        values.put(IconDB.COLUMN_COMPONENT, key.flattenToString());
-        values.put(IconDB.COLUMN_USER, userSerial);
-        values.put(IconDB.COLUMN_LAST_UPDATED, info.lastUpdateTime);
-        values.put(IconDB.COLUMN_VERSION, info.versionCode);
-        mIconDb.insertOrReplace(values);
-    }
-
-    @Thunk ContentValues updateCacheAndGetContentValues(LauncherActivityInfoCompat app,
-            boolean replaceExisting) {
+    @Thunk synchronized void addIconToDBAndMemCache(LauncherActivityInfoCompat app,
+            PackageInfo info, long userSerial, boolean replaceExisting) {
         final ComponentKey key = new ComponentKey(app.getComponentName(), app.getUser());
         CacheEntry entry = null;
         if (!replaceExisting) {
@@ -394,11 +379,25 @@ public class IconCache {
         }
         entry.title = app.getLabel();
         entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, app.getUser());
-        mCache.put(new ComponentKey(app.getComponentName(), app.getUser()), entry);
+        mCache.put(key, entry);
 
         Bitmap lowResIcon = generateLowResIcon(entry.icon, mActivityBgColor);
-        return newContentValues(entry.icon, lowResIcon, entry.title.toString(),
+        ContentValues values = newContentValues(entry.icon, lowResIcon, entry.title.toString(),
                 app.getApplicationInfo().packageName);
+        addIconToDB(values, app.getComponentName(), info, userSerial);
+    }
+
+    /**
+     * Updates {@param values} to contain versioning information and adds it to the DB.
+     * @param values {@link ContentValues} containing icon & title
+     */
+    private void addIconToDB(ContentValues values, ComponentName key,
+            PackageInfo info, long userSerial) {
+        values.put(IconDB.COLUMN_COMPONENT, key.flattenToString());
+        values.put(IconDB.COLUMN_USER, userSerial);
+        values.put(IconDB.COLUMN_LAST_UPDATED, info.lastUpdateTime);
+        values.put(IconDB.COLUMN_VERSION, info.versionCode);
+        mIconDb.insertOrReplace(values);
     }
 
     /**
@@ -775,13 +774,9 @@ public class IconCache {
                 LauncherActivityInfoCompat app = mAppsToUpdate.pop();
                 String pkg = app.getComponentName().getPackageName();
                 PackageInfo info = mPkgInfoMap.get(pkg);
-                if (info != null) {
-                    synchronized (IconCache.this) {
-                        ContentValues values = updateCacheAndGetContentValues(app, true);
-                        addIconToDB(values, app.getComponentName(), info, mUserSerial);
-                    }
-                    mUpdatedPackages.add(pkg);
-                }
+                addIconToDBAndMemCache(app, info, mUserSerial, true /*replace existing*/);
+                mUpdatedPackages.add(pkg);
+
                 if (mAppsToUpdate.isEmpty() && !mUpdatedPackages.isEmpty()) {
                     // No more app to update. Notify model.
                     LauncherAppState.getInstance().getModel().onPackageIconsUpdated(
@@ -793,10 +788,10 @@ public class IconCache {
             } else if (!mAppsToAdd.isEmpty()) {
                 LauncherActivityInfoCompat app = mAppsToAdd.pop();
                 PackageInfo info = mPkgInfoMap.get(app.getComponentName().getPackageName());
+                // We do not check the mPkgInfoMap when generating the mAppsToAdd. Although every
+                // app should have package info, this is not guaranteed by the api
                 if (info != null) {
-                    synchronized (IconCache.this) {
-                        addIconToDBAndMemCache(app, info, mUserSerial);
-                    }
+                    addIconToDBAndMemCache(app, info, mUserSerial, false /*replace existing*/);
                 }
 
                 if (!mAppsToAdd.isEmpty()) {
