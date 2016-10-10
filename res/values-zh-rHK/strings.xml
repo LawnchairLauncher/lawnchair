@@ -27,10 +27,8 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"在安全模式中無法使用「已下載的應用程式」功能"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"在安全模式中無法使用小工具"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"沒有可用的捷徑"</string>
-    <!-- no translation found for home_screen (806512411299847073) -->
-    <skip />
-    <!-- no translation found for custom_actions (3747508247759093328) -->
-    <skip />
+    <string name="home_screen" msgid="806512411299847073">"主畫面"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"自訂操作"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"輕觸並按住小工具即可選取。"</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"連扲兩下，然後扲住，就可以新增小工具，或者執行自訂操作。"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>

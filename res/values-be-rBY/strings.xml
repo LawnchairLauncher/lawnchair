@@ -27,10 +27,8 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Спампаваная праграма адключана ў Бяспечным рэжыме"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Віджэты адключаны ў Бяспечным рэжыме"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"Ярлык недаступны"</string>
-    <!-- no translation found for home_screen (806512411299847073) -->
-    <skip />
-    <!-- no translation found for custom_actions (3747508247759093328) -->
-    <skip />
+    <string name="home_screen" msgid="806512411299847073">"Галоўны экран"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"Спецыяльныя дзеянні"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Дакраніцеся і ўтрымлiвайце віджэт, каб выбр. яго."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Дакраніцеся двойчы і ўтрымлівайце, каб выбраць віджэт або выкарыстоўваць карыстальніцкія дзеянні."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>

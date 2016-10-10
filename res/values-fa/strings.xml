@@ -27,10 +27,8 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"برنامه بارگیری شده در حالت ایمن غیرفعال شد"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"ابزارک‌ها در حالت ایمن غیرفعال هستند"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"میان‌بر دردسترس نیست"</string>
-    <!-- no translation found for home_screen (806512411299847073) -->
-    <skip />
-    <!-- no translation found for custom_actions (3747508247759093328) -->
-    <skip />
+    <string name="home_screen" msgid="806512411299847073">"صفحه اصلی"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"عملکردهای سفارشی"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"برای انتخاب ابزارک لمس کنید و نگه دارید."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"برای انتخاب یک ابزارک، دو ضربه سریع بزنید و نگه‌دارید یا از اقدامات سفارشی استفاده کنید."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
