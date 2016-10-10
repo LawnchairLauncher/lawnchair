@@ -148,11 +148,6 @@ public class ShortcutInfo extends ItemInfo {
     private int mInstallProgress;
 
     /**
-     * TODO move this to {@link #status}
-     */
-    int flags = 0;
-
-    /**
      * If this shortcut is a placeholder, then intent will be a market intent for the package, and
      * this will hold the original intent from the database.  Otherwise, null.
      * Refer {@link #FLAG_RESTORED_ICON}, {@link #FLAG_AUTOINTALL_ICON}
@@ -189,7 +184,6 @@ public class ShortcutInfo extends ItemInfo {
         intent = new Intent(info.intent);
         iconResource = info.iconResource;
         mIcon = info.mIcon; // TODO: should make a copy here.  maybe we don't need this ctor at all
-        flags = info.flags;
         status = info.status;
         mInstallProgress = info.mInstallProgress;
         isDisabled = info.isDisabled;
@@ -201,7 +195,6 @@ public class ShortcutInfo extends ItemInfo {
         super(info);
         title = Utilities.trim(info.title);
         intent = new Intent(info.intent);
-        flags = info.flags;
         isDisabled = info.isDisabled;
     }
 
@@ -212,7 +205,6 @@ public class ShortcutInfo extends ItemInfo {
                 .getBadgedLabelForUser(info.getLabel(), info.getUser());
         intent = AppInfo.makeLaunchIntent(context, info, info.getUser());
         itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
-        flags = AppInfo.initFlags(info);
     }
 
     /**
@@ -222,7 +214,6 @@ public class ShortcutInfo extends ItemInfo {
     public ShortcutInfo(ShortcutInfoCompat shortcutInfo, Context context) {
         user = shortcutInfo.getUserHandle();
         itemType = LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
-        flags = 0;
         updateFromDeepShortcutInfo(shortcutInfo, context);
     }
 

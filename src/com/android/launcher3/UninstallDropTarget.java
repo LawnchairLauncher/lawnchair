@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,6 +13,8 @@ import android.util.AttributeSet;
 import android.util.Pair;
 import android.widget.Toast;
 
+import com.android.launcher3.compat.LauncherActivityInfoCompat;
+import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 
 public class UninstallDropTarget extends ButtonDropTarget {
@@ -49,23 +52,34 @@ public class UninstallDropTarget extends ButtonDropTarget {
             }
         }
 
-        Pair<ComponentName, Integer> componentInfo = getAppInfoFlags(info);
-        return componentInfo != null && (componentInfo.second & AppInfo.DOWNLOADED_FLAG) != 0;
+        return getUninstallTarget(context, info) != null;
     }
 
     /**
-     * @return the component name and flags if {@param info} is an AppInfo or an app shortcut.
+     * @return the component name that should be uninstalled or null.
      */
-    private static Pair<ComponentName, Integer> getAppInfoFlags(Object item) {
+    private static ComponentName getUninstallTarget(Context context, Object item) {
+        Intent intent = null;
+        UserHandleCompat user = null;
         if (item instanceof AppInfo) {
             AppInfo info = (AppInfo) item;
-            return Pair.create(info.componentName, info.flags);
+            intent = info.intent;
+            user = info.user;
         } else if (item instanceof ShortcutInfo) {
             ShortcutInfo info = (ShortcutInfo) item;
-            ComponentName component = info.getTargetComponent();
-            if (info.itemType == LauncherSettings.BaseLauncherColumns.ITEM_TYPE_APPLICATION
-                    && component != null) {
-                return Pair.create(component, info.flags);
+            if (info.itemType == LauncherSettings.BaseLauncherColumns.ITEM_TYPE_APPLICATION) {
+                // Do not use restore/target intent here as we cannot uninstall an app which is
+                // being installed/restored.
+                intent = info.intent;
+                user = info.user;
+            }
+        }
+        if (intent != null) {
+            LauncherActivityInfoCompat info = LauncherAppsCompat.getInstance(context)
+                    .resolveActivity(intent, user);
+            if (info != null
+                    && (info.getApplicationInfo().flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+                return info.getComponentName();
             }
         }
         return null;
@@ -93,11 +107,10 @@ public class UninstallDropTarget extends ButtonDropTarget {
 
     public static boolean startUninstallActivity(
             final Launcher launcher, ItemInfo info, DropTargetResultCallback callback) {
-        Pair<ComponentName, Integer> componentInfo = getAppInfoFlags(info);
-        ComponentName cn = componentInfo.first;
+        final ComponentName cn = getUninstallTarget(launcher, info);
 
         final boolean isUninstallable;
-        if ((componentInfo.second & AppInfo.DOWNLOADED_FLAG) == 0) {
+        if (cn == null) {
             // System applications cannot be installed. For now, show a toast explaining that.
             // We may give them the option of disabling apps this way.
             Toast.makeText(launcher, R.string.uninstall_system_app_text, Toast.LENGTH_SHORT).show();
@@ -112,8 +125,7 @@ public class UninstallDropTarget extends ButtonDropTarget {
             isUninstallable = true;
         }
         if (callback != null) {
-            sendUninstallResult(
-                    launcher, isUninstallable, componentInfo.first, info.user, callback);
+            sendUninstallResult(launcher, isUninstallable, cn, info.user, callback);
         }
         return isUninstallable;
     }

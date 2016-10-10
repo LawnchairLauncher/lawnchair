@@ -24,13 +24,19 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LongArrayMap;
+import com.android.launcher3.util.MultiHashMap;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -73,6 +79,11 @@ public class BgDataModel {
     public final Map<ShortcutKey, MutableInt> pinnedShortcutCounts = new HashMap<>();
 
     /**
+     * Maps all launcher activities to the id's of their shortcuts (if they have any).
+     */
+    public final MultiHashMap<ComponentKey, String> deepShortcutMap = new MultiHashMap<>();
+
+    /**
      * Clears all the data
      */
     public synchronized void clear() {
@@ -82,6 +93,7 @@ public class BgDataModel {
         itemsIdMap.clear();
         workspaceScreens.clear();
         pinnedShortcutCounts.clear();
+        deepShortcutMap.clear();
     }
 
     public synchronized void removeItem(ItemInfo... items) {
@@ -193,5 +205,33 @@ public class BgDataModel {
             folders.put(id, folderInfo);
         }
         return folderInfo;
+    }
+
+    /**
+     * Clear all the deep shortcuts for the given package, and re-add the new shortcuts.
+     */
+    public synchronized void updateDeepShortcutMap(
+            String packageName, UserHandleCompat user, List<ShortcutInfoCompat> shortcuts) {
+        if (packageName != null) {
+            Iterator<ComponentKey> keysIter = deepShortcutMap.keySet().iterator();
+            while (keysIter.hasNext()) {
+                ComponentKey next = keysIter.next();
+                if (next.componentName.getPackageName().equals(packageName)
+                        && next.user.equals(user)) {
+                    keysIter.remove();
+                }
+            }
+        }
+
+        // Now add the new shortcuts to the map.
+        for (ShortcutInfoCompat shortcut : shortcuts) {
+            boolean shouldShowInContainer = shortcut.isEnabled()
+                    && (shortcut.isDeclaredInManifest() || shortcut.isDynamic());
+            if (shouldShowInContainer) {
+                ComponentKey targetComponent
+                        = new ComponentKey(shortcut.getActivity(), shortcut.getUserHandle());
+                deepShortcutMap.addToList(targetComponent, shortcut.getId());
+            }
+        }
     }
 }

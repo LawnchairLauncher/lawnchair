@@ -52,11 +52,6 @@ public class AppInfo extends ItemInfo {
 
     public ComponentName componentName;
 
-    static final int DOWNLOADED_FLAG = 1;
-    static final int UPDATED_SYSTEM_APP_FLAG = 2;
-
-    int flags = 0;
-
     /**
      * {@see ShortcutInfo#isDisabled}
      */
@@ -88,7 +83,6 @@ public class AppInfo extends ItemInfo {
             IconCache iconCache, boolean quietModeEnabled) {
         this.componentName = info.getComponentName();
         this.container = ItemInfo.NO_ID;
-        flags = initFlags(info);
         if (PackageManagerHelper.isAppSuspended(info.getApplicationInfo())) {
             isDisabled |= ShortcutInfo.FLAG_DISABLED_SUSPENDED;
         }
@@ -101,25 +95,11 @@ public class AppInfo extends ItemInfo {
         this.user = user;
     }
 
-    public static int initFlags(LauncherActivityInfoCompat info) {
-        int appFlags = info.getApplicationInfo().flags;
-        int flags = 0;
-        if ((appFlags & android.content.pm.ApplicationInfo.FLAG_SYSTEM) == 0) {
-            flags |= DOWNLOADED_FLAG;
-
-            if ((appFlags & android.content.pm.ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0) {
-                flags |= UPDATED_SYSTEM_APP_FLAG;
-            }
-        }
-        return flags;
-    }
-
     public AppInfo(AppInfo info) {
         super(info);
         componentName = info.componentName;
         title = Utilities.trim(info.title);
         intent = new Intent(info.intent);
-        flags = info.flags;
         isDisabled = info.isDisabled;
         iconBitmap = info.iconBitmap;
     }
