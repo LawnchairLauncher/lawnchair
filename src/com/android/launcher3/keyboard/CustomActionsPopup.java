@@ -46,7 +46,7 @@ public class CustomActionsPopup implements OnMenuItemClickListener {
     public CustomActionsPopup(Launcher launcher, View icon) {
         mLauncher = launcher;
         mIcon = icon;
-        DeepShortcutsContainer container = launcher.getOpenShortcutsContainer();
+        DeepShortcutsContainer container = DeepShortcutsContainer.getOpen(launcher);
         if (container != null) {
             mDelegate = container.getAccessibilityDelegate();
         } else {

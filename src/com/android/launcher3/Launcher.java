@@ -18,9 +18,7 @@ package com.android.launcher3;
 
 import android.Manifest;
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -47,8 +45,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -79,10 +75,8 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
-import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -294,13 +288,6 @@ public class Launcher extends Activity
     // We only want to get the SharedPreferences once since it does an FS stat each time we get
     // it from the context.
     private SharedPreferences mSharedPrefs;
-
-    // Holds the page that we need to animate to, and the icon views that we need to animate up
-    // when we scroll to that page on resume.
-    @Thunk ImageView mFolderIconImageView;
-    private Bitmap mFolderIconBitmap;
-    private Canvas mFolderIconCanvas;
-    private Rect mRectForFolderAnimation = new Rect();
 
     private DeviceProfile mDeviceProfile;
 
@@ -1231,11 +1218,8 @@ public class Launcher extends Activity
         if (keyCode == KeyEvent.KEYCODE_MENU) {
             // Ignore the menu key if we are currently dragging or are on the custom content screen
             if (!isOnCustomContent() && !mDragController.isDragging()) {
-                // Close any open folders
-                closeFolder();
-
-                // Close any shortcuts containers
-                closeShortcutsContainer();
+                // Close any open floating view
+                AbstractFloatingView.closeAllOpenViews(this);
 
                 // Stop resizing any widgets
                 mWorkspace.exitWidgetResizeMode();
@@ -1705,7 +1689,7 @@ public class Launcher extends Activity
 
         // Check this condition before handling isActionMain, as this will get reset.
         boolean shouldMoveToDefaultScreen = alreadyOnHome &&
-                mState == State.WORKSPACE && getTopFloatingView() == null;
+                mState == State.WORKSPACE && AbstractFloatingView.getTopOpenView(this) == null;
 
         boolean isActionMain = Intent.ACTION_MAIN.equals(intent.getAction());
         if (isActionMain) {
@@ -1719,8 +1703,7 @@ public class Launcher extends Activity
             // In all these cases, only animate if we're already on home
             mWorkspace.exitWidgetResizeMode();
 
-            closeFolder(alreadyOnHome);
-            closeShortcutsContainer(alreadyOnHome);
+            AbstractFloatingView.closeAllOpenViews(this, alreadyOnHome);
             exitSpringLoadedDragMode();
 
             // If we are already on home, then just animate back to the workspace,
@@ -1803,11 +1786,9 @@ public class Launcher extends Activity
         super.onSaveInstanceState(outState);
 
         outState.putInt(RUNTIME_STATE, mState.ordinal());
-        // We close any open folder since it will not be re-opened, and we need to make sure
-        // this state is reflected.
-        // TODO: Move folderInfo.isOpened out of the model and make it a UI state.
-        closeFolder(false);
-        closeShortcutsContainer(false);
+        // We close any open folders and shortcut containers since they will not be re-opened,
+        // and we need to make sure this state is reflected.
+        AbstractFloatingView.closeAllOpenViews(this, false);
 
         if (mPendingRequestArgs != null) {
             outState.putParcelable(RUNTIME_STATE_PENDING_REQUEST_ARGS, mPendingRequestArgs);
@@ -2036,7 +2017,7 @@ public class Launcher extends Activity
 
     protected void moveToCustomContentScreen(boolean animate) {
         // Close any folders that may be open.
-        closeFolder();
+        AbstractFloatingView.closeAllOpenViews(this, animate);
         mWorkspace.moveToCustomContentScreen(animate);
     }
 
@@ -2227,21 +2208,19 @@ public class Launcher extends Activity
             return;
         }
 
-        if (getOpenShortcutsContainer() != null) {
-            closeShortcutsContainer();
+        AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(this);
+        if (topView != null) {
+            if (topView.getActiveTextView() != null) {
+                topView.getActiveTextView().dispatchBackKey();
+            } else {
+                topView.close(true);
+            }
         } else if (isAppsViewVisible()) {
             showWorkspace(true);
         } else if (isWidgetsViewVisible())  {
             showOverviewMode(true);
         } else if (mWorkspace.isInOverviewMode()) {
             showWorkspace(true);
-        } else if (mWorkspace.getOpenFolder() != null) {
-            Folder openFolder = mWorkspace.getOpenFolder();
-            if (openFolder.isEditingName()) {
-                openFolder.dismissEditingName();
-            } else {
-                closeFolder();
-            }
         } else {
             mWorkspace.exitWidgetResizeMode();
 
@@ -2491,10 +2470,10 @@ public class Launcher extends Activity
             throw new IllegalArgumentException("Input must be a FolderIcon");
         }
 
-        FolderIcon folderIcon = (FolderIcon) v;
-        if (!folderIcon.getFolderInfo().opened && !folderIcon.getFolder().isDestroyed()) {
+        Folder folder = ((FolderIcon) v).getFolder();
+        if (!folder.isOpen() && !folder.isDestroyed()) {
             // Open the requested folder
-            openFolder(folderIcon);
+            folder.animateOpen();
         }
     }
 
@@ -2733,233 +2712,6 @@ public class Launcher extends Activity
             Log.e(TAG, "Unable to launch. tag=" + item + " intent=" + intent, e);
         }
         return false;
-    }
-
-    /**
-     * This method draws the FolderIcon to an ImageView and then adds and positions that ImageView
-     * in the DragLayer in the exact absolute location of the original FolderIcon.
-     */
-    private void copyFolderIconToImage(FolderIcon fi) {
-        final int width = fi.getMeasuredWidth();
-        final int height = fi.getMeasuredHeight();
-
-        // Lazy load ImageView, Bitmap and Canvas
-        if (mFolderIconImageView == null) {
-            mFolderIconImageView = new ImageView(this);
-        }
-        if (mFolderIconBitmap == null || mFolderIconBitmap.getWidth() != width ||
-                mFolderIconBitmap.getHeight() != height) {
-            mFolderIconBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-            mFolderIconCanvas = new Canvas(mFolderIconBitmap);
-        }
-
-        DragLayer.LayoutParams lp;
-        if (mFolderIconImageView.getLayoutParams() instanceof DragLayer.LayoutParams) {
-            lp = (DragLayer.LayoutParams) mFolderIconImageView.getLayoutParams();
-        } else {
-            lp = new DragLayer.LayoutParams(width, height);
-        }
-
-        // The layout from which the folder is being opened may be scaled, adjust the starting
-        // view size by this scale factor.
-        float scale = mDragLayer.getDescendantRectRelativeToSelf(fi, mRectForFolderAnimation);
-        lp.customPosition = true;
-        lp.x = mRectForFolderAnimation.left;
-        lp.y = mRectForFolderAnimation.top;
-        lp.width = (int) (scale * width);
-        lp.height = (int) (scale * height);
-
-        mFolderIconCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
-        fi.draw(mFolderIconCanvas);
-        mFolderIconImageView.setImageBitmap(mFolderIconBitmap);
-        if (fi.getFolder() != null) {
-            mFolderIconImageView.setPivotX(fi.getFolder().getPivotXForIconAnimation());
-            mFolderIconImageView.setPivotY(fi.getFolder().getPivotYForIconAnimation());
-        }
-        // Just in case this image view is still in the drag layer from a previous animation,
-        // we remove it and re-add it.
-        if (mDragLayer.indexOfChild(mFolderIconImageView) != -1) {
-            mDragLayer.removeView(mFolderIconImageView);
-        }
-        mDragLayer.addView(mFolderIconImageView, lp);
-        if (fi.getFolder() != null) {
-            fi.getFolder().bringToFront();
-        }
-    }
-
-    private void growAndFadeOutFolderIcon(FolderIcon fi) {
-        if (fi == null) return;
-        FolderInfo info = (FolderInfo) fi.getTag();
-        if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-            CellLayout cl = (CellLayout) fi.getParent().getParent();
-            CellLayout.LayoutParams lp = (CellLayout.LayoutParams) fi.getLayoutParams();
-            cl.setFolderLeaveBehindCell(lp.cellX, lp.cellY);
-        }
-
-        // Push an ImageView copy of the FolderIcon into the DragLayer and hide the original
-        copyFolderIconToImage(fi);
-        fi.setVisibility(View.INVISIBLE);
-
-        ObjectAnimator oa = LauncherAnimUtils.ofViewAlphaAndScale(
-                mFolderIconImageView, 0, 1.5f, 1.5f);
-        if (Utilities.ATLEAST_LOLLIPOP) {
-            oa.setInterpolator(new LogDecelerateInterpolator(100, 0));
-        }
-        oa.setDuration(getResources().getInteger(R.integer.config_folderExpandDuration));
-        oa.start();
-    }
-
-    private void shrinkAndFadeInFolderIcon(final FolderIcon fi, boolean animate) {
-        if (fi == null) return;
-        final CellLayout cl = (CellLayout) fi.getParent().getParent();
-
-        // We remove and re-draw the FolderIcon in-case it has changed
-        mDragLayer.removeView(mFolderIconImageView);
-        copyFolderIconToImage(fi);
-
-        if (cl != null) {
-            cl.clearFolderLeaveBehind();
-        }
-
-        ObjectAnimator oa = LauncherAnimUtils.ofViewAlphaAndScale(mFolderIconImageView, 1, 1, 1);
-        oa.setDuration(getResources().getInteger(R.integer.config_folderExpandDuration));
-        oa.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (cl != null) {
-                    // Remove the ImageView copy of the FolderIcon and make the original visible.
-                    mDragLayer.removeView(mFolderIconImageView);
-                    fi.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-        oa.start();
-        if (!animate) {
-            oa.end();
-        }
-    }
-
-    /**
-     * Opens the user folder described by the specified tag. The opening of the folder
-     * is animated relative to the specified View. If the View is null, no animation
-     * is played.
-     *
-     * @param folderIcon The FolderIcon describing the folder to open.
-     */
-    public void openFolder(FolderIcon folderIcon) {
-
-        Folder folder = folderIcon.getFolder();
-        Folder openFolder = mWorkspace != null ? mWorkspace.getOpenFolder() : null;
-        if (openFolder != null && openFolder != folder) {
-            // Close any open folder before opening a folder.
-            closeFolder();
-        }
-
-        FolderInfo info = folder.mInfo;
-
-        info.opened = true;
-
-        // While the folder is open, the position of the icon cannot change.
-        ((CellLayout.LayoutParams) folderIcon.getLayoutParams()).canReorder = false;
-
-        // Just verify that the folder hasn't already been added to the DragLayer.
-        // There was a one-off crash where the folder had a parent already.
-        if (folder.getParent() == null) {
-            mDragLayer.addView(folder);
-            mDragController.addDropTarget(folder);
-        } else {
-            Log.w(TAG, "Opening folder (" + folder + ") which already has a parent (" +
-                    folder.getParent() + ").");
-        }
-        folder.animateOpen();
-
-        growAndFadeOutFolderIcon(folderIcon);
-
-        // Notify the accessibility manager that this folder "window" has appeared and occluded
-        // the workspace items
-        folder.sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
-        getDragLayer().sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED);
-
-        getUserEventDispatcher().resetElapsedContainerMillis();
-    }
-
-    public void closeFolder() {
-        closeFolder(true);
-    }
-
-    public void closeFolder(boolean animate) {
-        Folder folder = mWorkspace != null ? mWorkspace.getOpenFolder() : null;
-        if (folder != null) {
-            if (folder.isEditingName()) {
-                folder.dismissEditingName();
-            }
-            closeFolder(folder, animate);
-        }
-    }
-
-    public void closeFolder(Folder folder, boolean animate) {
-        animate &= !Utilities.isPowerSaverOn(this);
-
-        folder.getInfo().opened = false;
-
-        ViewGroup parent = (ViewGroup) folder.getParent().getParent();
-        if (parent != null) {
-            FolderIcon fi = (FolderIcon) mWorkspace.getViewForTag(folder.mInfo);
-            shrinkAndFadeInFolderIcon(fi, animate);
-            if (fi != null) {
-                ((CellLayout.LayoutParams) fi.getLayoutParams()).canReorder = true;
-            }
-        }
-        if (animate) {
-            folder.animateClosed();
-        } else {
-            folder.close(false);
-        }
-
-        // Notify the accessibility manager that this folder "window" has disappeared and no
-        // longer occludes the workspace items
-        getDragLayer().sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
-
-        getUserEventDispatcher().resetElapsedContainerMillis();
-    }
-
-    public void closeShortcutsContainer() {
-        closeShortcutsContainer(true);
-    }
-
-    public void closeShortcutsContainer(boolean animate) {
-        DeepShortcutsContainer deepShortcutsContainer = getOpenShortcutsContainer();
-        if (deepShortcutsContainer != null) {
-            if (animate) {
-                deepShortcutsContainer.animateClose();
-            } else {
-                deepShortcutsContainer.close();
-            }
-        }
-    }
-
-    public View getTopFloatingView() {
-        View topView = getOpenShortcutsContainer();
-        if (topView == null) {
-            topView = getWorkspace().getOpenFolder();
-        }
-        return topView;
-    }
-
-    /**
-     * @return The open shortcuts container, or null if there is none
-     */
-    public DeepShortcutsContainer getOpenShortcutsContainer() {
-        // Iterate in reverse order. Shortcuts container is added later to the dragLayer,
-        // and will be one of the last views.
-        for (int i = mDragLayer.getChildCount() - 1; i >= 0; i--) {
-            View child = mDragLayer.getChildAt(i);
-            if (child instanceof DeepShortcutsContainer
-                    && ((DeepShortcutsContainer) child).isOpen()) {
-                return (DeepShortcutsContainer) child;
-            }
-        }
-        return null;
     }
 
     @Override
@@ -3220,9 +2972,7 @@ public class Launcher extends Activity
 
         // Change the state *after* we've called all the transition code
         mState = toState;
-
-        closeFolder();
-        closeShortcutsContainer();
+        AbstractFloatingView.closeAllOpenViews(this);
 
         // Send an accessibility event to announce the context change
         getWindow().getDecorView()
@@ -4379,7 +4129,7 @@ public class Launcher extends Activity
                             && mAccessibilityDelegate.performAction(focusedView,
                                     (ItemInfo) focusedView.getTag(),
                                     LauncherAccessibilityDelegate.DEEP_SHORTCUTS)) {
-                        getOpenShortcutsContainer().requestFocus();
+                        DeepShortcutsContainer.getOpen(this).requestFocus();
                         return true;
                     }
                     break;

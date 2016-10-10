@@ -19,6 +19,7 @@ package com.android.launcher3.accessibility;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherModel;
@@ -64,7 +65,7 @@ public class ShortcutMenuAccessibilityDelegate extends LauncherAccessibilityDele
                     ArrayList<ItemInfo> itemList = new ArrayList<>();
                     itemList.add(info);
                     mLauncher.bindItems(itemList, 0, itemList.size(), true);
-                    mLauncher.closeShortcutsContainer();
+                    AbstractFloatingView.closeAllOpenViews(mLauncher);
                     announceConfirmation(R.string.item_added_to_workspace);
                 }
             };

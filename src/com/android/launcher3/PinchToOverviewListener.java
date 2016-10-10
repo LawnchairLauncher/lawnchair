@@ -102,7 +102,7 @@ public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleG
             // once the state switching animation is complete.
             return false;
         }
-        if (mLauncher.getTopFloatingView() != null) {
+        if (AbstractFloatingView.getTopOpenView(mLauncher) != null) {
             // Don't listen for the pinch gesture if a floating view is open.
             return false;
         }

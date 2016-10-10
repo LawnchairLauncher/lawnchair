@@ -45,11 +45,6 @@ public class FolderInfo extends ItemInfo {
      */
     public static final int FLAG_MULTI_PAGE_ANIMATION = 0x00000004;
 
-    /**
-     * Whether this folder has been opened
-     */
-    public boolean opened;
-
     public int options;
 
     /**

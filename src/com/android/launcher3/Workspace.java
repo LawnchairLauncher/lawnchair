@@ -553,24 +553,6 @@ public class Workspace extends PagedView
              cl.getBackgroundAlpha() > 0);
     }
 
-    /**
-     * @return The open folder on the current screen, or null if there is none
-     */
-    public Folder getOpenFolder() {
-        DragLayer dragLayer = mLauncher.getDragLayer();
-        // Iterate in reverse order. Folder is added later to the dragLayer,
-        // and will be one of the last views.
-        for (int i = dragLayer.getChildCount() - 1; i >= 0; i--) {
-            View child = dragLayer.getChildAt(i);
-            if (child instanceof Folder) {
-                Folder folder = (Folder) child;
-                if (folder.getInfo().opened)
-                    return folder;
-            }
-        }
-        return null;
-    }
-
     boolean isTouchActive() {
         return mTouchState != TOUCH_STATE_REST;
     }
@@ -3811,7 +3793,7 @@ public class Workspace extends PagedView
         if (!workspaceInModalState() && !mIsSwitchingState) {
             super.scrollLeft();
         }
-        Folder openFolder = getOpenFolder();
+        Folder openFolder = Folder.getOpen(mLauncher);
         if (openFolder != null) {
             openFolder.completeDragExit();
         }
@@ -3822,7 +3804,7 @@ public class Workspace extends PagedView
         if (!workspaceInModalState() && !mIsSwitchingState) {
             super.scrollRight();
         }
-        Folder openFolder = getOpenFolder();
+        Folder openFolder = Folder.getOpen(mLauncher);
         if (openFolder != null) {
             openFolder.completeDragExit();
         }
@@ -3841,7 +3823,7 @@ public class Workspace extends PagedView
         }
 
         boolean result = false;
-        if (!workspaceInModalState() && !mIsSwitchingState && getOpenFolder() == null) {
+        if (!workspaceInModalState() && !mIsSwitchingState && Folder.getOpen(mLauncher) == null) {
             mInScrollArea = true;
 
             final int page = getNextPage() +

@@ -52,6 +52,7 @@ import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.graphics.TintedDrawableSpan;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
+import com.android.launcher3.shortcuts.DeepShortcutsContainer;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ComponentKey;
 
@@ -265,7 +266,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         }
 
         // IF a shortcuts container is open, container should not be pulled down.
-        if (mLauncher.getOpenShortcutsContainer() != null) {
+        if (DeepShortcutsContainer.getOpen(mLauncher) != null) {
             return false;
         }
 
