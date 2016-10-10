@@ -38,6 +38,7 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.DragEvent;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -621,12 +622,12 @@ public class DragLayer extends InsettableFrameLayout {
     public void addResizeFrame(LauncherAppWidgetHostView widget, CellLayout cellLayout) {
         clearResizeFrame();
 
-        mCurrentResizeFrame = new AppWidgetResizeFrame(getContext(), widget, cellLayout, this);
+        mCurrentResizeFrame = (AppWidgetResizeFrame) LayoutInflater.from(mLauncher)
+                .inflate(R.layout.app_widget_resize_frame, this, false);
+        mCurrentResizeFrame.setupForWidget(widget, cellLayout, this);
+        ((LayoutParams) mCurrentResizeFrame.getLayoutParams()).customPosition = true;
 
-        LayoutParams lp = new LayoutParams(-1, -1);
-        lp.customPosition = true;
-
-        addView(mCurrentResizeFrame, lp);
+        addView(mCurrentResizeFrame);
         mCurrentResizeFrame.snapToWidget(false);
     }
 
