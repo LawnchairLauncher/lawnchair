@@ -1014,7 +1014,7 @@ public class LauncherProvider extends ContentProvider {
 
         public void checkId(String table, ContentValues values) {
             long id = values.getAsLong(LauncherSettings.BaseLauncherColumns._ID);
-            if (table == WorkspaceScreens.TABLE_NAME) {
+            if (WorkspaceScreens.TABLE_NAME.equals(table)) {
                 mMaxScreenId = Math.max(id, mMaxScreenId);
             }  else {
                 mMaxItemId = Math.max(id, mMaxItemId);

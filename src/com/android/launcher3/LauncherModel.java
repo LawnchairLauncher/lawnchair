@@ -93,7 +93,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.Executor;
 
@@ -144,9 +143,6 @@ public class LauncherModel extends BroadcastReceiver
     private final AllAppsList mBgAllAppsList;
     // Entire list of widgets.
     private final WidgetsModel mBgWidgetsModel;
-
-    // Maps all launcher activities to the id's of their shortcuts (if they have any).
-    private final MultiHashMap<ComponentKey, String> mBgDeepShortcutMap = new MultiHashMap<>();
 
     private boolean mHasShortcutHostPermission;
     // Runnable to check if the shortcuts permission has changed.
@@ -316,15 +312,7 @@ public class LauncherModel extends BroadcastReceiver
                             ComponentName cn = si.getTargetComponent();
                             if (si.isPromise() && (cn != null)
                                     && packageName.equals(cn.getPackageName())) {
-                                if (si.hasStatusFlag(ShortcutInfo.FLAG_AUTOINTALL_ICON)) {
-                                    // For auto install apps update the icon as well as label.
-                                    mIconCache.getTitleAndIcon(si,
-                                            si.promisedIntent, user,
-                                            si.shouldUseLowResIcon());
-                                } else {
-                                    // Only update the icon for restored apps.
-                                    si.updateIcon(mIconCache);
-                                }
+                                si.updateIcon(mIconCache);
                                 updates.add(si);
                             }
                         }
@@ -2647,14 +2635,14 @@ public class LauncherModel extends BroadcastReceiver
                 Log.d(TAG, "loadAndBindDeepShortcuts mDeepShortcutsLoaded=" + mDeepShortcutsLoaded);
             }
             if (!mDeepShortcutsLoaded) {
-                mBgDeepShortcutMap.clear();
+                sBgDataModel.deepShortcutMap.clear();
                 mHasShortcutHostPermission = mDeepShortcutManager.hasHostPermission();
                 if (mHasShortcutHostPermission) {
                     for (UserHandleCompat user : mUserManager.getUserProfiles()) {
                         if (mUserManager.isUserUnlocked(user)) {
                             List<ShortcutInfoCompat> shortcuts = mDeepShortcutManager
                                     .queryForAllShortcuts(user);
-                            updateDeepShortcutMap(null, user, shortcuts);
+                            sBgDataModel.updateDeepShortcutMap(null, user, shortcuts);
                         }
                     }
                 }
@@ -2678,36 +2666,9 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
-    /**
-     * Clear all the shortcuts for the given package, and re-add the new shortcuts.
-     */
-    private void updateDeepShortcutMap(
-            String packageName, UserHandleCompat user, List<ShortcutInfoCompat> shortcuts) {
-        if (packageName != null) {
-            Iterator<ComponentKey> keysIter = mBgDeepShortcutMap.keySet().iterator();
-            while (keysIter.hasNext()) {
-                ComponentKey next = keysIter.next();
-                if (next.componentName.getPackageName().equals(packageName)
-                        && next.user.equals(user)) {
-                    keysIter.remove();
-                }
-            }
-        }
-
-        // Now add the new shortcuts to the map.
-        for (ShortcutInfoCompat shortcut : shortcuts) {
-            boolean shouldShowInContainer = shortcut.isEnabled()
-                    && (shortcut.isDeclaredInManifest() || shortcut.isDynamic());
-            if (shouldShowInContainer) {
-                ComponentKey targetComponent
-                        = new ComponentKey(shortcut.getActivity(), shortcut.getUserHandle());
-                mBgDeepShortcutMap.addToList(targetComponent, shortcut.getId());
-            }
-        }
-    }
-
     public void bindDeepShortcuts() {
-        final MultiHashMap<ComponentKey, String> shortcutMapCopy = mBgDeepShortcutMap.clone();
+        final MultiHashMap<ComponentKey, String> shortcutMapCopy =
+                sBgDataModel.deepShortcutMap.clone();
         Runnable r = new Runnable() {
             @Override
             public void run() {
@@ -2989,11 +2950,6 @@ public class LauncherModel extends BroadcastReceiver
                                         }
                                     }
 
-                                    // Restore the shortcut.
-                                    if (appInfo != null) {
-                                        si.flags = appInfo.flags;
-                                    }
-
                                     si.intent = si.promisedIntent;
                                     si.promisedIntent = null;
                                     si.status = ShortcutInfo.DEFAULT;
@@ -3221,7 +3177,7 @@ public class LauncherModel extends BroadcastReceiver
 
             if (mUpdateIdMap) {
                 // Update the deep shortcut map if the list of ids has changed for an activity.
-                updateDeepShortcutMap(mPackageName, mUser, mShortcuts);
+                sBgDataModel.updateDeepShortcutMap(mPackageName, mUser, mShortcuts);
                 bindDeepShortcuts();
             }
         }
@@ -3289,7 +3245,7 @@ public class LauncherModel extends BroadcastReceiver
             }
 
             // Remove shortcut id map for that user
-            Iterator<ComponentKey> keysIter = mBgDeepShortcutMap.keySet().iterator();
+            Iterator<ComponentKey> keysIter = sBgDataModel.deepShortcutMap.keySet().iterator();
             while (keysIter.hasNext()) {
                 if (keysIter.next().user.equals(mUser)) {
                     keysIter.remove();
@@ -3297,7 +3253,8 @@ public class LauncherModel extends BroadcastReceiver
             }
 
             if (isUserUnlocked) {
-                updateDeepShortcutMap(null, mUser, mDeepShortcutManager.queryForAllShortcuts(mUser));
+                sBgDataModel.updateDeepShortcutMap(
+                        null, mUser, mDeepShortcutManager.queryForAllShortcuts(mUser));
             }
             bindDeepShortcuts();
         }
@@ -3336,15 +3293,6 @@ public class LauncherModel extends BroadcastReceiver
             UserHandleCompat user) {
         final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
         return !launcherApps.isPackageEnabledForProfile(packageName, user);
-    }
-
-    public static boolean isValidPackage(Context context, String packageName,
-            UserHandleCompat user) {
-        if (packageName == null) {
-            return false;
-        }
-        final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
-        return launcherApps.isPackageEnabledForProfile(packageName, user);
     }
 
     /**
@@ -3454,9 +3402,6 @@ public class LauncherModel extends BroadcastReceiver
         info.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
         info.user = user;
         info.contentDescription = mUserManager.getBadgedLabelForUser(info.title, info.user);
-        if (lai != null) {
-            info.flags = AppInfo.initFlags(lai);
-        }
         return info;
     }
 

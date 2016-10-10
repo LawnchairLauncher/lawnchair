@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * Stores the list of all applications for the all apps view.
  */
-class AllAppsList {
+public class AllAppsList {
     public static final int DEFAULT_APPLICATIONS_NUMBER = 42;
 
     /** The list off all apps. */
@@ -112,8 +112,7 @@ class AllAppsList {
         final List<AppInfo> data = this.data;
         for (int i = data.size() - 1; i >= 0; i--) {
             AppInfo info = data.get(i);
-            final ComponentName component = info.intent.getComponent();
-            if (info.user.equals(user) && packageName.equals(component.getPackageName())) {
+            if (info.user.equals(user) && packageName.equals(info.componentName.getPackageName())) {
                 removed.add(info);
                 data.remove(i);
             }
@@ -127,7 +126,7 @@ class AllAppsList {
         final List<AppInfo> data = this.data;
         for (int i = data.size() - 1; i >= 0; i--) {
             AppInfo info = data.get(i);
-            if (matcher.matches(info, info.intent.getComponent())) {
+            if (matcher.matches(info, info.componentName)) {
                 info.isDisabled = op.apply(info.isDisabled);
                 modified.add(info);
             }
