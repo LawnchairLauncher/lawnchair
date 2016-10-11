@@ -1370,6 +1370,10 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
             // The animation has already been shown while opening the folder.
             mInfo.setOption(FolderInfo.FLAG_MULTI_PAGE_ANIMATION, true, mLauncher);
         }
+
+        if (d.stateAnnouncer != null) {
+            d.stateAnnouncer.completeAction(R.string.item_moved);
+        }
     }
 
     // This is used so the item doesn't immediately appear in the folder when added. In one case

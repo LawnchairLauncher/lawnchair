@@ -21,6 +21,8 @@ import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 
+import com.android.launcher3.Launcher;
+
 /**
  * Periodically sends accessibility events to announce ongoing state changed. Based on the
  * implementation in ProgressBar.
@@ -48,6 +50,12 @@ public class DragViewStateAnnouncer implements Runnable {
     @Override
     public void run() {
         mTargetView.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
+    }
+
+    public void completeAction(int announceResId) {
+        cancel();
+        Launcher launcher = Launcher.getLauncher(mTargetView.getContext());
+        launcher.getDragLayer().announceForAccessibility(launcher.getText(announceResId));
     }
 
     public static DragViewStateAnnouncer createFor(View v) {
