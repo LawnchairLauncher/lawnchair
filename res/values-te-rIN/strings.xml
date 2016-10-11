@@ -27,10 +27,8 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"డౌన్‌లోడ్ చేసిన అనువర్తనం సురక్షిత మోడ్‌లో నిలిపివేయబడింది"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"సురక్షిత మోడ్‌లో విడ్జెట్‌లు నిలిపివేయబడ్డాయి"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"సత్వరమార్గం అందుబాటులో లేదు"</string>
-    <!-- no translation found for home_screen (806512411299847073) -->
-    <skip />
-    <!-- no translation found for custom_actions (3747508247759093328) -->
-    <skip />
+    <string name="home_screen" msgid="806512411299847073">"హోమ్ స్క్రీన్"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"అనుకూల చర్యలు"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"విడ్జెట్‌ను ఎంచుకోవడానికి తాకి &amp; నొక్కి పెట్టండి."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"విడ్జెట్‌ను ఎంచుకోవడానికి లేదా అనుకూల చర్యలను ఉపయోగించడానికి రెండుసార్లు నొక్కి, ఉంచండి."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
