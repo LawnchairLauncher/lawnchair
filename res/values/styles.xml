@@ -30,6 +30,20 @@
 
     <style name="Theme" parent="@style/LauncherTheme"></style>
 
+    <style name="FastScrollerPopup" >
+        <item name="android:background">@drawable/container_fastscroll_popup_bg</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:minWidth">@dimen/container_fastscroll_popup_size</item>
+        <item name="android:layout_height">@dimen/container_fastscroll_popup_size</item>
+        <item name="android:textSize">@dimen/container_fastscroll_popup_text_size</item>
+        <item name="android:gravity">center</item>
+        <item name="android:alpha">0</item>
+        <item name="android:elevation">3dp</item>
+        <item name="android:saveEnabled">false</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
     <!-- Theme for the widget container. Overridden on API 25. -->
     <style name="WidgetContainerTheme" parent="@android:style/Theme.DeviceDefault.Settings">
         <item name="colorSecondary">@color/fallback_secondary_color</item>
