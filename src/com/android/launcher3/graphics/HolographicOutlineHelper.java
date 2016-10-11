@@ -158,18 +158,13 @@ public class HolographicOutlineHelper {
     }
 
     public Bitmap createMediumDropShadow(BubbleTextView view) {
-        return createMediumDropShadow(view.getIcon(), view.getScaleX(), view.getScaleY(), true);
-    }
-
-    public Bitmap createMediumDropShadow(Drawable drawable, boolean shouldCache) {
-        return createMediumDropShadow(drawable, 1f, 1f, shouldCache);
-    }
-
-    Bitmap createMediumDropShadow(Drawable drawable, float scaleX, float scaleY,
-                boolean shouldCache) {
+        Drawable drawable = view.getIcon();
         if (drawable == null) {
             return null;
         }
+
+        float scaleX = view.getScaleX();
+        float scaleY = view.getScaleY();
         Rect rect = drawable.getBounds();
 
         int bitmapWidth = (int) (rect.width() * scaleX);
@@ -179,14 +174,11 @@ public class HolographicOutlineHelper {
         }
 
         int key = (bitmapWidth << 16) | bitmapHeight;
-        Bitmap cache = shouldCache ? mBitmapCache.get(key) : null;
+        Bitmap cache = mBitmapCache.get(key);
         if (cache == null) {
             cache = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ALPHA_8);
             mCanvas.setBitmap(cache);
-
-            if (shouldCache) {
-                mBitmapCache.put(key, cache);
-            }
+            mBitmapCache.put(key, cache);
         } else {
             mCanvas.setBitmap(cache);
             mCanvas.drawColor(Color.BLACK, PorterDuff.Mode.CLEAR);
@@ -206,7 +198,7 @@ public class HolographicOutlineHelper {
         int resultWidth = bitmapWidth + extraSize;
         int resultHeight = bitmapHeight + extraSize;
         key = (resultWidth << 16) | resultHeight;
-        Bitmap result = shouldCache ? mBitmapCache.get(key) : null;
+        Bitmap result = mBitmapCache.get(key);
         if (result == null) {
             result = Bitmap.createBitmap(resultWidth, resultHeight, Bitmap.Config.ALPHA_8);
             mCanvas.setBitmap(result);

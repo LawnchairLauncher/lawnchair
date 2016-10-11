@@ -22,6 +22,8 @@ import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.ViewGroup;
+
 import com.android.launcher3.util.Thunk;
 
 
@@ -41,7 +43,7 @@ public abstract class BaseRecyclerView extends RecyclerView
     @Thunk int mDy = 0;
     private float mDeltaThreshold;
 
-    protected BaseRecyclerViewFastScrollBar mScrollbar;
+    protected final BaseRecyclerViewFastScrollBar mScrollbar;
 
     private int mDownX;
     private int mDownY;
@@ -90,6 +92,12 @@ public abstract class BaseRecyclerView extends RecyclerView
     protected void onFinishInflate() {
         super.onFinishInflate();
         addOnItemTouchListener(this);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mScrollbar.setPopupView(((ViewGroup) getParent()).findViewById(R.id.fast_scroller_popup));
     }
 
     /**
@@ -235,7 +243,7 @@ public abstract class BaseRecyclerView extends RecyclerView
         // Only show the scrollbar if there is height to be scrolled
         int availableScrollBarHeight = getAvailableScrollBarHeight();
         if (availableScrollHeight <= 0) {
-            mScrollbar.setThumbOffset(-1, -1);
+            mScrollbar.setThumbOffsetY(-1);
             return;
         }
 
@@ -246,18 +254,7 @@ public abstract class BaseRecyclerView extends RecyclerView
                 (int) (((float) scrollY / availableScrollHeight) * availableScrollBarHeight);
 
         // Calculate the position and size of the scroll bar
-        mScrollbar.setThumbOffset(getScrollBarX(), scrollBarY);
-    }
-
-    /**
-     * @return the x position for the scrollbar thumb
-     */
-    protected int getScrollBarX() {
-        if (Utilities.isRtl(getResources())) {
-            return mBackgroundPadding.left;
-        } else {
-            return getWidth() - mBackgroundPadding.right - mScrollbar.getThumbWidth();
-        }
+        mScrollbar.setThumbOffsetY(scrollBarY);
     }
 
     /**

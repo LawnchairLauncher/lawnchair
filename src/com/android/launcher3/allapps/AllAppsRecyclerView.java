@@ -299,14 +299,14 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
 
         // Skip early if there are no items or we haven't been measured
         if (items.isEmpty() || mNumAppsPerRow == 0) {
-            mScrollbar.setThumbOffset(-1, -1);
+            mScrollbar.setThumbOffsetY(-1);
             return;
         }
 
         // Skip early if, there no child laid out in the container.
         int scrollY = getCurrentScrollY();
         if (scrollY < 0) {
-            mScrollbar.setThumbOffset(-1, -1);
+            mScrollbar.setThumbOffsetY(-1);
             return;
         }
 
@@ -314,7 +314,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         int availableScrollBarHeight = getAvailableScrollBarHeight();
         int availableScrollHeight = getAvailableScrollHeight();
         if (availableScrollHeight <= 0) {
-            mScrollbar.setThumbOffset(-1, -1);
+            mScrollbar.setThumbOffsetY(-1);
             return;
         }
 
@@ -323,11 +323,10 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
                 // Calculate the current scroll position, the scrollY of the recycler view accounts
                 // for the view padding, while the scrollBarY is drawn right up to the background
                 // padding (ignoring padding)
-                int scrollBarX = getScrollBarX();
                 int scrollBarY = mBackgroundPadding.top +
                         (int) (((float) scrollY / availableScrollHeight) * availableScrollBarHeight);
 
-                int thumbScrollY = mScrollbar.getThumbOffset().y;
+                int thumbScrollY = mScrollbar.getThumbOffsetY();
                 int diffScrollY = scrollBarY - thumbScrollY;
                 if (diffScrollY * dy > 0f) {
                     // User is scrolling in the same direction the thumb needs to catch up to the
@@ -344,7 +343,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
                         thumbScrollY += Math.min(offset, diffScrollY);
                     }
                     thumbScrollY = Math.max(0, Math.min(availableScrollBarHeight, thumbScrollY));
-                    mScrollbar.setThumbOffset(scrollBarX, thumbScrollY);
+                    mScrollbar.setThumbOffsetY(thumbScrollY);
                     if (scrollBarY == thumbScrollY) {
                         mScrollbar.reattachThumbToScroll();
                     }
@@ -352,7 +351,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
                     // User is scrolling in an opposite direction to the direction that the thumb
                     // needs to catch up to the scroll position.  Do nothing except for updating
                     // the scroll bar x to match the thumb width.
-                    mScrollbar.setThumbOffset(scrollBarX, thumbScrollY);
+                    mScrollbar.setThumbOffsetY(thumbScrollY);
                 }
             }
         } else {

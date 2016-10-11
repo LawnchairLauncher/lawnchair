@@ -54,6 +54,7 @@
 
     <dimen name="container_fastscroll_thumb_min_width">5dp</dimen>
     <dimen name="container_fastscroll_thumb_max_width">9dp</dimen>
+    <dimen name="container_fastscroll_popup_margin">18dp</dimen>
     <dimen name="container_fastscroll_thumb_height">72dp</dimen>
     <dimen name="container_fastscroll_thumb_touch_inset">-24dp</dimen>
     <dimen name="container_fastscroll_popup_size">72dp</dimen>
