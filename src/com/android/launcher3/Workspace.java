@@ -2760,6 +2760,9 @@ public class Workspace extends PagedView
             }
             parent.onDropChild(cell);
         }
+        if (d.stateAnnouncer != null) {
+            d.stateAnnouncer.completeAction(R.string.item_moved);
+        }
     }
 
     /**
