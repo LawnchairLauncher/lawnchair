@@ -49,7 +49,7 @@ public class AllAppsRecyclerViewContainerView extends FrameLayout
     public AllAppsRecyclerViewContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        Launcher launcher = (Launcher) context;
+        Launcher launcher = Launcher.getLauncher(context);
         DeviceProfile grid = launcher.getDeviceProfile();
 
         mTouchFeedbackView = new ClickShadowView(context);

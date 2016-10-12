@@ -209,7 +209,7 @@ public class AlphabeticalAppsList {
     private int mNumAppRowsInAdapter;
 
     public AlphabeticalAppsList(Context context) {
-        mLauncher = (Launcher) context;
+        mLauncher = Launcher.getLauncher(context);
         mIndexer = new AlphabeticIndexCompat(context);
         mAppNameComparator = new AppNameComparator(context);
     }

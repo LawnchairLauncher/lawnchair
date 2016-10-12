@@ -50,7 +50,7 @@ public abstract class DragAndDropAccessibilityDelegate extends ExploreByTouchHel
         super(forView);
         mView = forView;
         mContext = mView.getContext();
-        mDelegate = ((Launcher) mContext).getAccessibilityDelegate();
+        mDelegate = Launcher.getLauncher(mContext).getAccessibilityDelegate();
     }
 
     @Override

@@ -104,7 +104,7 @@ public class QsbContainerView extends FrameLayout {
         }
 
         private View createQsb(LayoutInflater inflater, ViewGroup container) {
-            Launcher launcher = (Launcher) getActivity();
+            Launcher launcher = Launcher.getLauncher(getActivity());
             mWidgetInfo = getSearchWidgetProvider(launcher);
             if (mWidgetInfo == null) {
                 // There is no search provider, just show the default widget.
@@ -168,7 +168,7 @@ public class QsbContainerView extends FrameLayout {
                 getActivity().startSearch("", false, null, true);
             } else if (view.getId() == R.id.btn_qsb_setup) {
                 // Allocate a new widget id for QSB
-                sSavedWidgetId = ((Launcher) getActivity())
+                sSavedWidgetId = Launcher.getLauncher(getActivity())
                         .getAppWidgetHost().allocateAppWidgetId();
                 // Start intent for bind the widget
                 Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
@@ -194,7 +194,8 @@ public class QsbContainerView extends FrameLayout {
                     sSavedWidgetId = -1;
                     rebindFragment();
                 } else if (sSavedWidgetId != -1) {
-                    ((Launcher) getActivity()).getAppWidgetHost().deleteAppWidgetId(sSavedWidgetId);
+                    Launcher.getLauncher(getActivity()).getAppWidgetHost()
+                            .deleteAppWidgetId(sSavedWidgetId);
                     sSavedWidgetId = -1;
                 }
             }
