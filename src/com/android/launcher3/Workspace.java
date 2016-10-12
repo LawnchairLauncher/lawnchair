@@ -338,7 +338,7 @@ public class Workspace extends PagedView
     public Workspace(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        mLauncher = (Launcher) context;
+        mLauncher = Launcher.getLauncher(context);
         mStateTransitionAnimation = new WorkspaceStateTransitionAnimation(mLauncher, this);
         final Resources res = getResources();
         DeviceProfile grid = mLauncher.getDeviceProfile();

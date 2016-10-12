@@ -27,7 +27,7 @@ import android.graphics.Rect;
 public class AnotherWindowDropTarget implements DropTarget {
     final Launcher mLauncher;
 
-    public AnotherWindowDropTarget (Context context) { mLauncher = (Launcher) context; }
+    public AnotherWindowDropTarget (Context context) { mLauncher = Launcher.getLauncher(context); }
 
     @Override
     public boolean isDropEnabled() { return true; }

@@ -196,7 +196,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         // the user where a dragged item will land when dropped.
         setWillNotDraw(false);
         setClipToPadding(false);
-        mLauncher = (Launcher) context;
+        mLauncher = Launcher.getLauncher(context);
 
         DeviceProfile grid = mLauncher.getDeviceProfile();
 

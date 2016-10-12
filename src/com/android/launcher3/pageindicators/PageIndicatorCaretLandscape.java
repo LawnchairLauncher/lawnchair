@@ -49,7 +49,7 @@ public class PageIndicatorCaretLandscape extends PageIndicator {
         caretDrawable.setBounds(0, 0, caretSize, caretSize);
         setCaretDrawable(caretDrawable);
 
-        Launcher l = (Launcher) context;
+        Launcher l = Launcher.getLauncher(context);
         setOnTouchListener(l.getHapticFeedbackTouchListener());
         setOnClickListener(l);
         setOnLongClickListener(l);

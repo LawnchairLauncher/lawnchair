@@ -252,7 +252,7 @@ public class FolderPagedView extends PagedView {
     }
 
     private CellLayout createAndAddNewPage() {
-        DeviceProfile grid = ((Launcher) getContext()).getDeviceProfile();
+        DeviceProfile grid = Launcher.getLauncher(getContext()).getDeviceProfile();
         CellLayout page = new CellLayout(getContext());
         page.setCellDimensions(grid.folderCellWidthPx, grid.folderCellHeightPx);
         page.getShortcutsAndWidgets().setMotionEventSplittingEnabled(false);
