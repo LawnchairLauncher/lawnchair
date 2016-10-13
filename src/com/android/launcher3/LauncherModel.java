@@ -61,7 +61,9 @@ import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.GridSizeMigrationTask;
+import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.model.SdCardAvailableReceiver;
+import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.provider.ImportDataTask;
 import com.android.launcher3.provider.LauncherDbUtils;
@@ -198,7 +200,7 @@ public class LauncherModel extends BroadcastReceiver
                 UserHandleCompat user);
         public void bindAppInfosRemoved(ArrayList<AppInfo> appInfos);
         public void notifyWidgetProvidersChanged();
-        public void bindWidgetsModel(WidgetsModel model);
+        public void bindAllWidgets(MultiHashMap<PackageItemInfo, WidgetItem> widgets);
         public void onPageBoundSynchronously(int page);
         public void executeOnNextDraw(ViewOnDrawExecutor executor);
         public void bindDeepShortcutMap(MultiHashMap<ComponentKey, String> deepShortcutMap);
@@ -209,7 +211,7 @@ public class LauncherModel extends BroadcastReceiver
         Context context = app.getContext();
         mApp = app;
         mBgAllAppsList = new AllAppsList(iconCache, appFilter);
-        mBgWidgetsModel = new WidgetsModel(context, iconCache, appFilter);
+        mBgWidgetsModel = new WidgetsModel(iconCache, appFilter);
         mIconCache = iconCache;
         mDeepShortcutManager = deepShortcutManager;
 
@@ -3263,13 +3265,15 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
-    private void bindWidgetsModel(final Callbacks callbacks, final WidgetsModel model) {
+    private void bindWidgetsModel(final Callbacks callbacks) {
+        final MultiHashMap<PackageItemInfo, WidgetItem> widgets
+                = mBgWidgetsModel.getWidgetsMap().clone();
         mHandler.post(new Runnable() {
             @Override
             public void run() {
                 Callbacks cb = getCallback();
                 if (callbacks == cb && cb != null) {
-                    callbacks.bindWidgetsModel(model);
+                    callbacks.bindAllWidgets(widgets);
                 }
             }
         });
@@ -3281,13 +3285,13 @@ public class LauncherModel extends BroadcastReceiver
             @Override
             public void run() {
                 if (bindFirst && !mBgWidgetsModel.isEmpty()) {
-                    bindWidgetsModel(callbacks, mBgWidgetsModel.clone());
+                    bindWidgetsModel(callbacks);
                 }
-                final WidgetsModel model = mBgWidgetsModel.updateAndClone(mApp.getContext());
-                bindWidgetsModel(callbacks, model);
+                ArrayList<WidgetItem> allWidgets = mBgWidgetsModel.update(mApp.getContext());
+                bindWidgetsModel(callbacks);
+
                 // update the Widget entries inside DB on the worker thread.
-                LauncherAppState.getInstance().getWidgetCache().removeObsoletePreviews(
-                        model.getRawList());
+                LauncherAppState.getInstance().getWidgetCache().removeObsoletePreviews(allWidgets);
             }
         });
     }

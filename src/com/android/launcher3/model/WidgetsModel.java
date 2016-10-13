@@ -18,7 +18,9 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
+import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.Preconditions;
 
 import java.util.ArrayList;
@@ -37,74 +39,31 @@ public class WidgetsModel {
     private static final String TAG = "WidgetsModel";
     private static final boolean DEBUG = false;
 
-    /* List of packages that is tracked by this model. */
-    private final ArrayList<PackageItemInfo> mPackageItemInfos;
-
     /* Map of widgets and shortcuts that are tracked per package. */
-    private final HashMap<PackageItemInfo, ArrayList<WidgetItem>> mWidgetsList;
+    private final MultiHashMap<PackageItemInfo, WidgetItem> mWidgetsList;
 
-    private final AppWidgetManagerCompat mAppWidgetMgr;
-    private final Comparator<ItemInfo> mAppNameComparator;
     private final IconCache mIconCache;
     private final AppFilter mAppFilter;
-    private final AlphabeticIndexCompat mIndexer;
 
-    private ArrayList<WidgetItem> mRawList;
-
-    public WidgetsModel(Context context,  IconCache iconCache, AppFilter appFilter) {
-        mAppWidgetMgr = AppWidgetManagerCompat.getInstance(context);
-        mAppNameComparator = (new AppNameComparator(context)).getAppInfoComparator();
+    public WidgetsModel(IconCache iconCache, AppFilter appFilter) {
         mIconCache = iconCache;
         mAppFilter = appFilter;
-        mIndexer = new AlphabeticIndexCompat(context);
-        mPackageItemInfos = new ArrayList<>();
-        mWidgetsList = new HashMap<>();
-
-        mRawList = new ArrayList<>();
+        mWidgetsList = new MultiHashMap<>();
     }
 
-    @SuppressWarnings("unchecked")
-    private WidgetsModel(WidgetsModel model) {
-        mAppWidgetMgr = model.mAppWidgetMgr;
-        mPackageItemInfos = (ArrayList<PackageItemInfo>) model.mPackageItemInfos.clone();
-        mWidgetsList = (HashMap<PackageItemInfo, ArrayList<WidgetItem>>) model.mWidgetsList.clone();
-        mAppNameComparator = model.mAppNameComparator;
-        mIconCache = model.mIconCache;
-        mAppFilter = model.mAppFilter;
-        mIndexer = model.mIndexer;
-        mRawList = (ArrayList<WidgetItem>) model.mRawList.clone();
-    }
-
-    // Access methods that may be deleted if the private fields are made package-private.
-    public int getPackageSize() {
-        return mPackageItemInfos.size();
-    }
-
-    // Access methods that may be deleted if the private fields are made package-private.
-    public PackageItemInfo getPackageItemInfo(int pos) {
-        if (pos >= mPackageItemInfos.size() || pos < 0) {
-            return null;
-        }
-        return mPackageItemInfos.get(pos);
-    }
-
-    public List<WidgetItem> getSortedWidgets(int pos) {
-        return mWidgetsList.get(mPackageItemInfos.get(pos));
-    }
-
-    public ArrayList<WidgetItem> getRawList() {
-        return mRawList;
+    public MultiHashMap<PackageItemInfo, WidgetItem> getWidgetsMap() {
+        return mWidgetsList;
     }
 
     public boolean isEmpty() {
-        return mRawList.isEmpty();
+        return mWidgetsList.isEmpty();
     }
 
-    public WidgetsModel updateAndClone(Context context) {
+    public ArrayList<WidgetItem> update(Context context) {
         Preconditions.assertWorkerThread();
 
+        final ArrayList<WidgetItem> widgetsAndShortcuts = new ArrayList<>();
         try {
-            final ArrayList<WidgetItem> widgetsAndShortcuts = new ArrayList<>();
             // Widgets
             AppWidgetManagerCompat widgetManager = AppWidgetManagerCompat.getInstance(context);
             for (AppWidgetProviderInfo widgetInfo : widgetManager.getAllProviders()) {
@@ -132,11 +91,10 @@ public class WidgetsModel {
                 throw e;
             }
         }
-        return clone();
+        return widgetsAndShortcuts;
     }
 
     private void setWidgetsAndShortcuts(ArrayList<WidgetItem> rawWidgetsShortcuts) {
-        mRawList = rawWidgetsShortcuts;
         if (DEBUG) {
             Log.d(TAG, "addWidgetsAndShortcuts, widgetsShortcuts#=" + rawWidgetsShortcuts.size());
         }
@@ -147,9 +105,9 @@ public class WidgetsModel {
 
         // clear the lists.
         mWidgetsList.clear();
-        mPackageItemInfos.clear();
 
         InvariantDeviceProfile idp = LauncherAppState.getInstance().getInvariantDeviceProfile();
+        UserHandleCompat myUser = UserHandleCompat.myUserHandle();
 
         // add and update.
         for (WidgetItem item: rawWidgetsShortcuts) {
@@ -177,43 +135,20 @@ public class WidgetsModel {
 
             String packageName = item.componentName.getPackageName();
             PackageItemInfo pInfo = tmpPackageItemInfos.get(packageName);
-            ArrayList<WidgetItem> widgetsShortcutsList = mWidgetsList.get(pInfo);
-
-            if (widgetsShortcutsList == null) {
-                widgetsShortcutsList = new ArrayList<>();
-
+            if (pInfo == null) {
                 pInfo = new PackageItemInfo(packageName);
+                pInfo.user = item.user;
                 tmpPackageItemInfos.put(packageName,  pInfo);
-
-                mPackageItemInfos.add(pInfo);
-                mWidgetsList.put(pInfo, widgetsShortcutsList);
+            } else if (!myUser.equals(pInfo.user)) {
+                // Keep updating the user, until we get the primary user.
+                pInfo.user = item.user;
             }
-
-            widgetsShortcutsList.add(item);
+            mWidgetsList.addToList(pInfo, item);
         }
 
         // Update each package entry
-        for (PackageItemInfo p : mPackageItemInfos) {
-            ArrayList<WidgetItem> widgetsShortcutsList = mWidgetsList.get(p);
-            Collections.sort(widgetsShortcutsList);
-
-            // Update the package entry based on the first item.
-            p.user = widgetsShortcutsList.get(0).user;
+        for (PackageItemInfo p : tmpPackageItemInfos.values()) {
             mIconCache.getTitleAndIconForApp(p, true /* userLowResIcon */);
-            p.titleSectionName = mIndexer.computeSectionName(p.title);
         }
-
-        // sort the package entries.
-        Collections.sort(mPackageItemInfos, mAppNameComparator);
-    }
-
-    /**
-     * Create a snapshot of the widgets model.
-     * <p>
-     * Usage case: view binding without being modified from package updates.
-     */
-    @Override
-    public WidgetsModel clone(){
-        return new WidgetsModel(this);
     }
 }

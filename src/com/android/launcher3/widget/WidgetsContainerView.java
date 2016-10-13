@@ -43,9 +43,12 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.graphics.LauncherIcons;
+import com.android.launcher3.model.PackageItemInfo;
+import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.Thunk;
 
 /**
@@ -297,9 +300,8 @@ public class WidgetsContainerView extends BaseContainerView
     /**
      * Initialize the widget data model.
      */
-    public void addWidgets(WidgetsModel model) {
-        mRecyclerView.setWidgets(model);
-        mAdapter.setWidgetsModel(model);
+    public void setWidgets(MultiHashMap<PackageItemInfo, WidgetItem> model) {
+        mAdapter.setWidgets(model);
         mAdapter.notifyDataSetChanged();
 
         View loader = getContentView().findViewById(R.id.loader);

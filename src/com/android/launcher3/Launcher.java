@@ -103,7 +103,8 @@ import com.android.launcher3.keyboard.CustomActionsPopup;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.logging.UserEventDispatcher;
-import com.android.launcher3.model.WidgetsModel;
+import com.android.launcher3.model.PackageItemInfo;
+import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.DeepShortcutsContainer;
@@ -229,7 +230,7 @@ public class Launcher extends Activity
 
     // Main container view and the model for the widget tray screen.
     @Thunk WidgetsContainerView mWidgetsView;
-    @Thunk WidgetsModel mWidgetsModel;
+    @Thunk MultiHashMap<PackageItemInfo, WidgetItem> mAllWidgets;
 
     // We set the state in both onCreate and then onNewIntent in some cases, which causes both
     // scroll issues (because the workspace may not have been measured yet) and extra work.
@@ -3836,22 +3837,22 @@ public class Launcher extends Activity
         }
     }
 
-    private Runnable mBindWidgetModelRunnable = new Runnable() {
+    private Runnable mBindAllWidgetsRunnable = new Runnable() {
             public void run() {
-                bindWidgetsModel(mWidgetsModel);
+                bindAllWidgets(mAllWidgets);
             }
         };
 
     @Override
-    public void bindWidgetsModel(WidgetsModel model) {
-        if (waitUntilResume(mBindWidgetModelRunnable, true)) {
-            mWidgetsModel = model;
+    public void bindAllWidgets(MultiHashMap<PackageItemInfo, WidgetItem> allWidgets) {
+        if (waitUntilResume(mBindAllWidgetsRunnable, true)) {
+            mAllWidgets = allWidgets;
             return;
         }
 
-        if (mWidgetsView != null && model != null) {
-            mWidgetsView.addWidgets(model);
-            mWidgetsModel = null;
+        if (mWidgetsView != null && allWidgets != null) {
+            mWidgetsView.setWidgets(allWidgets);
+            mAllWidgets = null;
         }
     }
 

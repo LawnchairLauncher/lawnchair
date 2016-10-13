@@ -31,10 +31,17 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WidgetPreviewLoader;
+import com.android.launcher3.compat.AlphabeticIndexCompat;
+import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.model.WidgetItem;
-import com.android.launcher3.model.WidgetsModel;
+import com.android.launcher3.util.LabelComparator;
+import com.android.launcher3.util.MultiHashMap;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * List view adapter for the widget tray.
@@ -55,7 +62,8 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
     private final View.OnClickListener mIconClickListener;
     private final View.OnLongClickListener mIconLongClickListener;
 
-    private WidgetsModel mWidgetsModel;
+    private final ArrayList<WidgetListRowEntry> mEntries = new ArrayList<>();
+    private final AlphabeticIndexCompat mIndexer;
 
     private final int mIndent;
 
@@ -65,26 +73,40 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
         mLayoutInflater = LayoutInflater.from(context);
         mWidgetPreviewLoader = LauncherAppState.getInstance().getWidgetCache();
 
+        mIndexer = new AlphabeticIndexCompat(context);
+
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
         mIndent = context.getResources().getDimensionPixelSize(R.dimen.widget_section_indent);
     }
 
-    public void setWidgetsModel(WidgetsModel w) {
-        mWidgetsModel = w;
+    public void setWidgets(MultiHashMap<PackageItemInfo, WidgetItem> widgets) {
+        mEntries.clear();
+        WidgetItemComparator widgetComparator = new WidgetItemComparator();
+
+        for (Map.Entry<PackageItemInfo, ArrayList<WidgetItem>> entry : widgets.entrySet()) {
+            WidgetListRowEntry row = new WidgetListRowEntry(entry.getKey(), entry.getValue());
+            row.titleSectionName = mIndexer.computeSectionName(row.pkgItem.title);
+            Collections.sort(row.widgets, widgetComparator);
+            mEntries.add(row);
+        }
+
+        Collections.sort(mEntries, new WidgetListRowEntryComparator());
     }
 
     @Override
     public int getItemCount() {
-        if (mWidgetsModel == null) {
-            return 0;
-        }
-        return mWidgetsModel.getPackageSize();
+        return mEntries.size();
+    }
+
+    public String getSectionName(int pos) {
+        return mEntries.get(pos).titleSectionName;
     }
 
     @Override
     public void onBindViewHolder(WidgetsRowViewHolder holder, int pos) {
-        List<WidgetItem> infoList = mWidgetsModel.getSortedWidgets(pos);
+        WidgetListRowEntry entry = mEntries.get(pos);
+        List<WidgetItem> infoList = entry.widgets;
 
         ViewGroup row = holder.cellContainer;
         if (DEBUG) {
@@ -119,7 +141,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
         }
 
         // Bind the views in the application info section.
-        holder.title.applyFromPackageItemInfo(mWidgetsModel.getPackageItemInfo(pos));
+        holder.title.applyFromPackageItemInfo(entry.pkgItem);
 
         // Bind the view in the widget horizontal tray region.
         for (int i=0; i < infoList.size(); i++) {
@@ -173,4 +195,18 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
     public long getItemId(int pos) {
         return pos;
     }
+
+    /**
+     * Comparator for sorting WidgetListRowEntry based on package title
+     */
+    public static class WidgetListRowEntryComparator implements Comparator<WidgetListRowEntry> {
+
+        private final LabelComparator mComparator = new LabelComparator();
+
+        @Override
+        public int compare(WidgetListRowEntry a, WidgetListRowEntry b) {
+            return mComparator.compare(a.pkgItem.title.toString(), b.pkgItem.title.toString());
+        }
+    }
+
 }

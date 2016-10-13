@@ -31,7 +31,7 @@ import com.android.launcher3.model.WidgetsModel;
 public class WidgetsRecyclerView extends BaseRecyclerView {
 
     private static final String TAG = "WidgetsRecyclerView";
-    private WidgetsModel mWidgets;
+    private WidgetsListAdapter mAdapter;
 
     public WidgetsRecyclerView(Context context) {
         this(context, null);
@@ -64,11 +64,10 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
         return Color.WHITE;
     }
 
-    /**
-     * Sets the widget model in this view, used to determine the fast scroll position.
-     */
-    public void setWidgets(WidgetsModel widgets) {
-        mWidgets = widgets;
+    @Override
+    public void setAdapter(Adapter adapter) {
+        super.setAdapter(adapter);
+        mAdapter = (WidgetsListAdapter) adapter;
     }
 
     /**
@@ -84,15 +83,14 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
         // Stop the scroller if it is scrolling
         stopScroll();
 
-        int rowCount = mWidgets.getPackageSize();
+        int rowCount = mAdapter.getItemCount();
         float pos = rowCount * touchFraction;
         int availableScrollHeight = getAvailableScrollHeight();
         LinearLayoutManager layoutManager = ((LinearLayoutManager) getLayoutManager());
         layoutManager.scrollToPositionWithOffset(0, (int) -(availableScrollHeight * touchFraction));
 
         int posInt = (int) ((touchFraction == 1)? pos -1 : pos);
-        PackageItemInfo p = mWidgets.getPackageItemInfo(posInt);
-        return p.titleSectionName;
+        return mAdapter.getSectionName(posInt);
     }
 
     /**
@@ -137,13 +135,13 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
     @Override
     protected int getAvailableScrollHeight() {
         View child = getChildAt(0);
-        int height = child.getMeasuredHeight() * mWidgets.getPackageSize();
+        int height = child.getMeasuredHeight() * mAdapter.getItemCount();
         int totalHeight = getPaddingTop() + height + getPaddingBottom();
         int availableScrollHeight = totalHeight - getScrollbarTrackHeight();
         return availableScrollHeight;
     }
 
     private boolean isModelNotReady() {
-        return mWidgets == null || mWidgets.getPackageSize() == 0;
+        return mAdapter.getItemCount() == 0;
     }
 }

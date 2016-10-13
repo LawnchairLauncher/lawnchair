@@ -23,8 +23,8 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.config.ProviderConfig;
-import com.android.launcher3.model.AppNameComparator;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.LabelComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -163,7 +163,7 @@ public class AlphabeticalAppsList {
     private HashMap<CharSequence, String> mCachedSectionNames = new HashMap<>();
     private AllAppsGridAdapter mAdapter;
     private AlphabeticIndexCompat mIndexer;
-    private AppNameComparator mAppNameComparator;
+    private AppInfoComparator mAppNameComparator;
     private int mNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
     private int mNumAppRowsInAdapter;
@@ -171,7 +171,7 @@ public class AlphabeticalAppsList {
     public AlphabeticalAppsList(Context context) {
         mLauncher = Launcher.getLauncher(context);
         mIndexer = new AlphabeticIndexCompat(context);
-        mAppNameComparator = new AppNameComparator(context);
+        mAppNameComparator = new AppInfoComparator(context);
     }
 
     /**
@@ -305,17 +305,16 @@ public class AlphabeticalAppsList {
         // Sort the list of apps
         mApps.clear();
         mApps.addAll(mComponentToAppMap.values());
-        Collections.sort(mApps, mAppNameComparator.getAppInfoComparator());
+        Collections.sort(mApps, mAppNameComparator);
 
         // As a special case for some languages (currently only Simplified Chinese), we may need to
         // coalesce sections
         Locale curLocale = mLauncher.getResources().getConfiguration().locale;
-        TreeMap<String, ArrayList<AppInfo>> sectionMap = null;
         boolean localeRequiresSectionSorting = curLocale.equals(Locale.SIMPLIFIED_CHINESE);
         if (localeRequiresSectionSorting) {
-            // Compute the section headers.  We use a TreeMap with the section name comparator to
+            // Compute the section headers. We use a TreeMap with the section name comparator to
             // ensure that the sections are ordered when we iterate over it later
-            sectionMap = new TreeMap<>(mAppNameComparator.getSectionNameComparator());
+            TreeMap<String, ArrayList<AppInfo>> sectionMap = new TreeMap<>(new LabelComparator());
             for (AppInfo info : mApps) {
                 // Add the section to the cache
                 String sectionName = getAndUpdateCachedSectionName(info.title);
@@ -330,13 +329,10 @@ public class AlphabeticalAppsList {
             }
 
             // Add each of the section apps to the list in order
-            List<AppInfo> allApps = new ArrayList<>(mApps.size());
-            for (Map.Entry<String, ArrayList<AppInfo>> entry : sectionMap.entrySet()) {
-                allApps.addAll(entry.getValue());
-            }
-
             mApps.clear();
-            mApps.addAll(allApps);
+            for (Map.Entry<String, ArrayList<AppInfo>> entry : sectionMap.entrySet()) {
+                mApps.addAll(entry.getValue());
+            }
         } else {
             // Just compute the section headers for use below
             for (AppInfo info : mApps) {

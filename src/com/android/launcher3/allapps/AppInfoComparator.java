@@ -13,36 +13,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.model;
+package com.android.launcher3.allapps;
 
 import android.content.Context;
 
-import com.android.launcher3.ItemInfo;
+import com.android.launcher3.AppInfo;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.util.LabelComparator;
 
 import java.util.Comparator;
 
 /**
  * A comparator to arrange items based on user profiles.
  */
-public abstract class AbstractUserComparator<T extends ItemInfo> implements Comparator<T> {
+public class AppInfoComparator implements Comparator<AppInfo> {
 
     private final UserManagerCompat mUserManager;
     private final UserHandleCompat mMyUser;
+    private final LabelComparator mLabelComparator;
 
-    public AbstractUserComparator(Context context) {
+    public AppInfoComparator(Context context) {
         mUserManager = UserManagerCompat.getInstance(context);
         mMyUser = UserHandleCompat.myUserHandle();
+        mLabelComparator = new LabelComparator();
     }
 
     @Override
-    public int compare(T lhs, T rhs) {
-        if (mMyUser.equals(lhs.user)) {
+    public int compare(AppInfo a, AppInfo b) {
+        // Order by the title in the current locale
+        int result = mLabelComparator.compare(a.title.toString(), b.title.toString());
+        if (result != 0) {
+            return result;
+        }
+
+        // If labels are same, compare component names
+        result = a.componentName.compareTo(b.componentName);
+        if (result != 0) {
+            return result;
+        }
+
+        if (mMyUser.equals(a.user)) {
             return -1;
         } else {
-            Long aUserSerial = mUserManager.getSerialNumberForUser(lhs.user);
-            Long bUserSerial = mUserManager.getSerialNumberForUser(rhs.user);
+            Long aUserSerial = mUserManager.getSerialNumberForUser(a.user);
+            Long bUserSerial = mUserManager.getSerialNumberForUser(b.user);
             return aUserSerial.compareTo(bUserSerial);
         }
     }
