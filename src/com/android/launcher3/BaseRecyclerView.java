@@ -173,13 +173,6 @@ public abstract class BaseRecyclerView extends RecyclerView
     }
 
     /**
-     * Returns the scroll bar width when the user is scrolling.
-     */
-    public int getMaxScrollbarWidth() {
-        return mScrollbar.getThumbMaxWidth();
-    }
-
-    /**
      * Returns the visible height of the recycler view:
      *   VisibleHeight = View height - top padding - bottom padding
      */

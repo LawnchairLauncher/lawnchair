@@ -49,18 +49,6 @@ public class AlphabeticalAppsList {
     private final int mFastScrollDistributionMode = FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS;
 
     /**
-     * Info about a section in the alphabetic list
-     */
-    public static class SectionInfo {
-        // The number of applications in this section
-        public int numApps;
-        // The section break AdapterItem for this section
-        public AdapterItem sectionBreakItem;
-        // The first app AdapterItem for this section
-        public AdapterItem firstAppItem;
-    }
-
-    /**
      * Info about a fast scroller section, depending if sections are merged, the fast scroller
      * sections will not be the same set as the section headers.
      */
@@ -87,16 +75,10 @@ public class AlphabeticalAppsList {
         // The type of this item
         public int viewType;
 
-        /** Section & App properties */
-        // The section for this item
-        public SectionInfo sectionInfo;
-
         /** App-only properties */
         // The section name of this app.  Note that there can be multiple items with different
         // sectionNames in the same section
         public String sectionName = null;
-        // The index of this app in the section
-        public int sectionAppIndex = -1;
         // The row that this item shows up on
         public int rowIndex;
         // The index of this app in the row
@@ -106,30 +88,19 @@ public class AlphabeticalAppsList {
         // The index of this app not including sections
         public int appIndex = -1;
 
-        public static AdapterItem asSectionBreak(int pos, SectionInfo section) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_SECTION_BREAK;
-            item.position = pos;
-            item.sectionInfo = section;
-            section.sectionBreakItem = item;
-            return item;
-        }
-
-        public static AdapterItem asPredictedApp(int pos, SectionInfo section, String sectionName,
-                int sectionAppIndex, AppInfo appInfo, int appIndex) {
-            AdapterItem item = asApp(pos, section, sectionName, sectionAppIndex, appInfo, appIndex);
+        public static AdapterItem asPredictedApp(int pos, String sectionName, AppInfo appInfo,
+                int appIndex) {
+            AdapterItem item = asApp(pos, sectionName, appInfo, appIndex);
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON;
             return item;
         }
 
-        public static AdapterItem asApp(int pos, SectionInfo section, String sectionName,
-                int sectionAppIndex, AppInfo appInfo, int appIndex) {
+        public static AdapterItem asApp(int pos, String sectionName, AppInfo appInfo,
+                int appIndex) {
             AdapterItem item = new AdapterItem();
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_ICON;
             item.position = pos;
-            item.sectionInfo = section;
             item.sectionName = sectionName;
-            item.sectionAppIndex = sectionAppIndex;
             item.appInfo = appInfo;
             item.appIndex = appIndex;
             return item;
@@ -171,14 +142,6 @@ public class AlphabeticalAppsList {
         }
     }
 
-    /**
-     * Common interface for different merging strategies.
-     */
-    public interface MergeAlgorithm {
-        boolean continueMerging(SectionInfo section, SectionInfo withSection,
-                int sectionAppCount, int numAppsPerRow, int mergeCount);
-    }
-
     private Launcher mLauncher;
 
     // The set of apps from the system not including predictions
@@ -189,8 +152,6 @@ public class AlphabeticalAppsList {
     private List<AppInfo> mFilteredApps = new ArrayList<>();
     // The current set of adapter items
     private List<AdapterItem> mAdapterItems = new ArrayList<>();
-    // The set of sections for the apps with the current filter
-    private List<SectionInfo> mSections = new ArrayList<>();
     // The set of sections that we allow fast-scrolling to (includes non-merged sections)
     private List<FastScrollSectionInfo> mFastScrollerSections = new ArrayList<>();
     // The set of predicted app component names
@@ -203,7 +164,6 @@ public class AlphabeticalAppsList {
     private AllAppsGridAdapter mAdapter;
     private AlphabeticIndexCompat mIndexer;
     private AppNameComparator mAppNameComparator;
-    private MergeAlgorithm mMergeAlgorithm;
     private int mNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
     private int mNumAppRowsInAdapter;
@@ -217,11 +177,9 @@ public class AlphabeticalAppsList {
     /**
      * Sets the number of apps per row.
      */
-    public void setNumAppsPerRow(int numAppsPerRow, int numPredictedAppsPerRow,
-            MergeAlgorithm mergeAlgorithm) {
+    public void setNumAppsPerRow(int numAppsPerRow, int numPredictedAppsPerRow) {
         mNumAppsPerRow = numAppsPerRow;
         mNumPredictedAppsPerRow = numPredictedAppsPerRow;
-        mMergeAlgorithm = mergeAlgorithm;
 
         updateAdapterItems();
     }
@@ -238,13 +196,6 @@ public class AlphabeticalAppsList {
      */
     public List<AppInfo> getApps() {
         return mApps;
-    }
-
-    /**
-     * Returns sections of all the current filtered applications.
-     */
-    public List<SectionInfo> getSections() {
-        return mSections;
     }
 
     /**
@@ -403,7 +354,6 @@ public class AlphabeticalAppsList {
      * mCachedSectionNames to have been calculated for the set of all apps in mApps.
      */
     private void updateAdapterItems() {
-        SectionInfo lastSectionInfo = null;
         String lastSectionName = null;
         FastScrollSectionInfo lastFastScrollerSectionInfo = null;
         int position = 0;
@@ -413,7 +363,6 @@ public class AlphabeticalAppsList {
         mFilteredApps.clear();
         mFastScrollerSections.clear();
         mAdapterItems.clear();
-        mSections.clear();
 
         if (DEBUG_PREDICTIONS) {
             if (mPredictedAppComponents.isEmpty() && !mApps.isEmpty()) {
@@ -451,19 +400,14 @@ public class AlphabeticalAppsList {
 
             if (!mPredictedApps.isEmpty()) {
                 // Add a section for the predictions
-                lastSectionInfo = new SectionInfo();
                 lastFastScrollerSectionInfo = new FastScrollSectionInfo("");
-                AdapterItem sectionItem = AdapterItem.asSectionBreak(position++, lastSectionInfo);
-                mSections.add(lastSectionInfo);
                 mFastScrollerSections.add(lastFastScrollerSectionInfo);
-                mAdapterItems.add(sectionItem);
 
                 // Add the predicted app items
                 for (AppInfo info : mPredictedApps) {
-                    AdapterItem appItem = AdapterItem.asPredictedApp(position++, lastSectionInfo,
-                            "", lastSectionInfo.numApps++, info, appIndex++);
-                    if (lastSectionInfo.firstAppItem == null) {
-                        lastSectionInfo.firstAppItem = appItem;
+                    AdapterItem appItem = AdapterItem.asPredictedApp(position++, "", info,
+                            appIndex++);
+                    if (lastFastScrollerSectionInfo.fastScrollToItem == null) {
                         lastFastScrollerSectionInfo.fastScrollToItem = appItem;
                     }
                     mAdapterItems.add(appItem);
@@ -480,25 +424,15 @@ public class AlphabeticalAppsList {
             String sectionName = getAndUpdateCachedSectionName(info.title);
 
             // Create a new section if the section names do not match
-            if (lastSectionInfo == null || !sectionName.equals(lastSectionName)) {
+            if (!sectionName.equals(lastSectionName)) {
                 lastSectionName = sectionName;
-                lastSectionInfo = new SectionInfo();
                 lastFastScrollerSectionInfo = new FastScrollSectionInfo(sectionName);
-                mSections.add(lastSectionInfo);
                 mFastScrollerSections.add(lastFastScrollerSectionInfo);
-
-                // Create a new section item to break the flow of items in the list
-                if (!hasFilter()) {
-                    AdapterItem sectionItem = AdapterItem.asSectionBreak(position++, lastSectionInfo);
-                    mAdapterItems.add(sectionItem);
-                }
             }
 
             // Create an app item
-            AdapterItem appItem = AdapterItem.asApp(position++, lastSectionInfo, sectionName,
-                    lastSectionInfo.numApps++, info, appIndex++);
-            if (lastSectionInfo.firstAppItem == null) {
-                lastSectionInfo.firstAppItem = appItem;
+            AdapterItem appItem = AdapterItem.asApp(position++, sectionName, info, appIndex++);
+            if (lastFastScrollerSectionInfo.fastScrollToItem == null) {
                 lastFastScrollerSectionInfo.fastScrollToItem = appItem;
             }
             mAdapterItems.add(appItem);
@@ -514,9 +448,6 @@ public class AlphabeticalAppsList {
             }
             mAdapterItems.add(AdapterItem.asMarketSearch(position++));
         }
-
-        // Merge multiple sections together as requested by the merge strategy for this device
-        mergeSections();
 
         if (mNumAppsPerRow != 0) {
             // Update the number of rows in the adapter after we do all the merging (otherwise, we
@@ -591,61 +522,6 @@ public class AlphabeticalAppsList {
             }
         }
         return result;
-    }
-
-    /**
-     * Merges multiple sections to reduce visual raggedness.
-     */
-    private void mergeSections() {
-        // Ignore merging until we have an algorithm and a valid row size
-        if (mMergeAlgorithm == null || mNumAppsPerRow == 0) {
-            return;
-        }
-
-        // Go through each section and try and merge some of the sections
-        if (!hasFilter()) {
-            int sectionAppCount = 0;
-            for (int i = 0; i < mSections.size() - 1; i++) {
-                SectionInfo section = mSections.get(i);
-                sectionAppCount = section.numApps;
-                int mergeCount = 1;
-
-                // Merge rows based on the current strategy
-                while (i < (mSections.size() - 1) &&
-                        mMergeAlgorithm.continueMerging(section, mSections.get(i + 1),
-                                sectionAppCount, mNumAppsPerRow, mergeCount)) {
-                    SectionInfo nextSection = mSections.remove(i + 1);
-
-                    // Remove the next section break
-                    mAdapterItems.remove(nextSection.sectionBreakItem);
-                    int pos = mAdapterItems.indexOf(section.firstAppItem);
-
-                    // Point the section for these new apps to the merged section
-                    int nextPos = pos + section.numApps;
-                    for (int j = nextPos; j < (nextPos + nextSection.numApps); j++) {
-                        AdapterItem item = mAdapterItems.get(j);
-                        item.sectionInfo = section;
-                        item.sectionAppIndex += section.numApps;
-                    }
-
-                    // Update the following adapter items of the removed section item
-                    pos = mAdapterItems.indexOf(nextSection.firstAppItem);
-                    for (int j = pos; j < mAdapterItems.size(); j++) {
-                        AdapterItem item = mAdapterItems.get(j);
-                        item.position--;
-                    }
-                    section.numApps += nextSection.numApps;
-                    sectionAppCount += nextSection.numApps;
-
-                    if (DEBUG) {
-                        Log.d(TAG, "Merging: " + nextSection.firstAppItem.sectionName +
-                                " to " + section.firstAppItem.sectionName +
-                                " mergedNumRows: " + (sectionAppCount / mNumAppsPerRow));
-                    }
-                    mergeCount++;
-                }
-            }
-        }
     }
 
     /**

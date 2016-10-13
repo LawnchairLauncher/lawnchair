@@ -53,6 +53,7 @@
             android:clipToPadding="false"
             android:descendantFocusability="afterDescendants"
             android:focusable="true"
+            android:paddingEnd="@dimen/container_fastscroll_thumb_max_width"
             android:theme="@style/CustomOverscroll.Light" />
 
         <!-- Fast scroller popup -->

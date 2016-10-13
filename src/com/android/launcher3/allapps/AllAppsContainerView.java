@@ -16,7 +16,6 @@
 package com.android.launcher3.allapps;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.text.Selection;
@@ -56,77 +55,8 @@ import com.android.launcher3.shortcuts.DeepShortcutsContainer;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ComponentKey;
 
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
 import java.util.List;
-
-
-/**
- * A merge algorithm that merges every section indiscriminately.
- */
-final class FullMergeAlgorithm implements AlphabeticalAppsList.MergeAlgorithm {
-
-    @Override
-    public boolean continueMerging(AlphabeticalAppsList.SectionInfo section,
-            AlphabeticalAppsList.SectionInfo withSection,
-            int sectionAppCount, int numAppsPerRow, int mergeCount) {
-        // Don't merge the predicted apps
-        if (section.firstAppItem.viewType != AllAppsGridAdapter.VIEW_TYPE_ICON) {
-            return false;
-        }
-        // Otherwise, merge every other section
-        return true;
-    }
-}
-
-/**
- * The logic we use to merge multiple sections.  We only merge sections when their final row
- * contains less than a certain number of icons, and stop at a specified max number of merges.
- * In addition, we will try and not merge sections that identify apps from different scripts.
- */
-final class SimpleSectionMergeAlgorithm implements AlphabeticalAppsList.MergeAlgorithm {
-
-    private int mMinAppsPerRow;
-    private int mMinRowsInMergedSection;
-    private int mMaxAllowableMerges;
-    private CharsetEncoder mAsciiEncoder;
-
-    public SimpleSectionMergeAlgorithm(int minAppsPerRow, int minRowsInMergedSection, int maxNumMerges) {
-        mMinAppsPerRow = minAppsPerRow;
-        mMinRowsInMergedSection = minRowsInMergedSection;
-        mMaxAllowableMerges = maxNumMerges;
-        mAsciiEncoder = Charset.forName("US-ASCII").newEncoder();
-    }
-
-    @Override
-    public boolean continueMerging(AlphabeticalAppsList.SectionInfo section,
-            AlphabeticalAppsList.SectionInfo withSection,
-            int sectionAppCount, int numAppsPerRow, int mergeCount) {
-        // Don't merge the predicted apps
-        if (section.firstAppItem.viewType != AllAppsGridAdapter.VIEW_TYPE_ICON) {
-            return false;
-        }
-
-        // Continue merging if the number of hanging apps on the final row is less than some
-        // fixed number (ragged), the merged rows has yet to exceed some minimum row count,
-        // and while the number of merged sections is less than some fixed number of merges
-        int rows = sectionAppCount / numAppsPerRow;
-        int cols = sectionAppCount % numAppsPerRow;
-
-        // Ensure that we do not merge across scripts, currently we only allow for english and
-        // native scripts so we can test if both can just be ascii encoded
-        boolean isCrossScript = false;
-        if (section.firstAppItem != null && withSection.firstAppItem != null) {
-            isCrossScript = mAsciiEncoder.canEncode(section.firstAppItem.sectionName) !=
-                    mAsciiEncoder.canEncode(withSection.firstAppItem.sectionName);
-        }
-        return (0 < cols && cols < mMinAppsPerRow) &&
-                rows < mMinRowsInMergedSection &&
-                mergeCount < mMaxAllowableMerges &&
-                !isCrossScript;
-    }
-}
 
 /**
  * The all apps view container.
@@ -135,14 +65,10 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         LauncherTransitionable, View.OnLongClickListener, AllAppsSearchBarController.Callbacks,
         Insettable {
 
-    private static final int MIN_ROWS_IN_MERGED_SECTION_PHONE = 3;
-    private static final int MAX_NUM_MERGES_PHONE = 2;
-
     private final Launcher mLauncher;
     private final AlphabeticalAppsList mApps;
     private final AllAppsGridAdapter mAdapter;
     private final RecyclerView.LayoutManager mLayoutManager;
-    private final RecyclerView.ItemDecoration mItemDecoration;
 
     private AllAppsRecyclerView mAppsRecyclerView;
     private AllAppsSearchBarController mSearchBarController;
@@ -153,7 +79,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     private SpannableStringBuilder mSearchQueryBuilder = null;
 
-    private int mSectionNamesMargin;
     private int mNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
 
@@ -167,15 +92,12 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     public AllAppsContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        Resources res = context.getResources();
 
         mLauncher = Launcher.getLauncher(context);
-        mSectionNamesMargin = res.getDimensionPixelSize(R.dimen.all_apps_grid_view_start_margin);
         mApps = new AlphabeticalAppsList(context);
         mAdapter = new AllAppsGridAdapter(mLauncher, mApps, mLauncher, this);
         mApps.setAdapter(mAdapter);
         mLayoutManager = mAdapter.getLayoutManager();
-        mItemDecoration = mAdapter.getItemDecoration();
         mSearchQueryBuilder = new SpannableStringBuilder();
         Selection.setSelection(mSearchQueryBuilder, 0);
     }
@@ -337,10 +259,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mAppsRecyclerView.addOnScrollListener(mElevationController);
         mAppsRecyclerView.setElevationController(mElevationController);
 
-        if (mItemDecoration != null) {
-            mAppsRecyclerView.addItemDecoration(mItemDecoration);
-        }
-
         FocusedItemDecorator focusedItemDecorator = new FocusedItemDecorator(mAppsRecyclerView);
         mAppsRecyclerView.addItemDecoration(focusedItemDecorator);
         mAppsRecyclerView.preMeasureViews(mAdapter);
@@ -350,14 +268,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             getRevealView().setVisibility(View.VISIBLE);
             getContentView().setVisibility(View.VISIBLE);
             getContentView().setBackground(null);
-        }
-
-        int maxScrollBarWidth = mAppsRecyclerView.getMaxScrollbarWidth();
-        int startInset = Math.max(mSectionNamesMargin, maxScrollBarWidth);
-        if (Utilities.isRtl(getResources())) {
-            mAppsRecyclerView.setPadding(maxScrollBarWidth, 0, startInset, 0);
-        } else {
-            mAppsRecyclerView.setPadding(startInset, 0, maxScrollBarWidth, 0);
         }
     }
 
@@ -381,7 +291,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
                 mAppsRecyclerView.setNumAppsPerRow(grid, mNumAppsPerRow);
                 mAdapter.setNumAppsPerRow(mNumAppsPerRow);
-                mApps.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow, new FullMergeAlgorithm());
+                mApps.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow);
             }
             if (!grid.isVerticalBarLayout()) {
                 MarginLayoutParams searchContainerLp =
@@ -396,25 +306,15 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         // --- remove START when {@code FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP} is enabled. ---
 
         // Update the number of items in the grid before we measure the view
-        // TODO: mSectionNamesMargin is currently 0, but also account for it,
-        // if it's enabled in the future.
         grid.updateAppsViewNumCols();
         if (mNumAppsPerRow != grid.allAppsNumCols ||
                 mNumPredictedAppsPerRow != grid.allAppsNumPredictiveCols) {
             mNumAppsPerRow = grid.allAppsNumCols;
             mNumPredictedAppsPerRow = grid.allAppsNumPredictiveCols;
 
-            // If there is a start margin to draw section names, determine how we are going to merge
-            // app sections
-            boolean mergeSectionsFully = mSectionNamesMargin == 0 || !grid.isPhone;
-            AlphabeticalAppsList.MergeAlgorithm mergeAlgorithm = mergeSectionsFully ?
-                    new FullMergeAlgorithm() :
-                    new SimpleSectionMergeAlgorithm((int) Math.ceil(mNumAppsPerRow / 2f),
-                            MIN_ROWS_IN_MERGED_SECTION_PHONE, MAX_NUM_MERGES_PHONE);
-
             mAppsRecyclerView.setNumAppsPerRow(grid, mNumAppsPerRow);
             mAdapter.setNumAppsPerRow(mNumAppsPerRow);
-            mApps.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow, mergeAlgorithm);
+            mApps.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow);
         }
 
         // --- remove END when {@code FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP} is enabled. ---

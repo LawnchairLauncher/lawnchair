@@ -101,7 +101,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_ICON, approxRows * mNumAppsPerRow);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON, mNumAppsPerRow);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_PREDICTION_DIVIDER, 1);
-        pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_SECTION_BREAK, approxRows);
     }
 
     /**
@@ -116,21 +115,21 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
 
         // Icons
         BubbleTextView icon = (BubbleTextView) adapter.onCreateViewHolder(this,
-                AllAppsGridAdapter.VIEW_TYPE_ICON).mContent;
+                AllAppsGridAdapter.VIEW_TYPE_ICON).itemView;
         int iconHeight = icon.getLayoutParams().height;
         mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_ICON, iconHeight);
         mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON, iconHeight);
 
         // Search divider
         View searchDivider = adapter.onCreateViewHolder(this,
-                AllAppsGridAdapter.VIEW_TYPE_SEARCH_DIVIDER).mContent;
+                AllAppsGridAdapter.VIEW_TYPE_SEARCH_DIVIDER).itemView;
         searchDivider.measure(widthMeasureSpec, heightMeasureSpec);
         int searchDividerHeight = searchDivider.getMeasuredHeight();
         mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_SEARCH_DIVIDER, searchDividerHeight);
 
         // Generic dividers
         View divider = adapter.onCreateViewHolder(this,
-                AllAppsGridAdapter.VIEW_TYPE_PREDICTION_DIVIDER).mContent;
+                AllAppsGridAdapter.VIEW_TYPE_PREDICTION_DIVIDER).itemView;
         divider.measure(widthMeasureSpec, heightMeasureSpec);
         int dividerHeight = divider.getMeasuredHeight();
         mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_PREDICTION_DIVIDER, dividerHeight);
@@ -138,18 +137,15 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
 
         // Search views
         View emptySearch = adapter.onCreateViewHolder(this,
-                AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH).mContent;
+                AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH).itemView;
         emptySearch.measure(widthMeasureSpec, heightMeasureSpec);
         mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH,
                 emptySearch.getMeasuredHeight());
         View searchMarket = adapter.onCreateViewHolder(this,
-                AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET).mContent;
+                AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET).itemView;
         searchMarket.measure(widthMeasureSpec, heightMeasureSpec);
         mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET,
                 searchMarket.getMeasuredHeight());
-
-        // Section breaks
-        mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_SECTION_BREAK, 0);
     }
 
     /**

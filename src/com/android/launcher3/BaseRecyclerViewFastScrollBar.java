@@ -177,10 +177,6 @@ public class BaseRecyclerViewFastScrollBar {
         return mThumbHeight;
     }
 
-    public int getThumbMaxWidth() {
-        return mMaxWidth;
-    }
-
     public boolean isDraggingThumb() {
         return mIsDragging;
     }
