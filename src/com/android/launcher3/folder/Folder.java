@@ -702,6 +702,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         }
 
         if (!(getParent() instanceof DragLayer)) return;
+        DragLayer parent = (DragLayer) getParent();
 
         if (animate) {
             animateClosed();
@@ -711,8 +712,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
 
         // Notify the accessibility manager that this folder "window" has disappeared and no
         // longer occludes the workspace items
-        ((DragLayer) getParent())
-                .sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
+        parent.sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
     }
 
     private void animateClosed() {
