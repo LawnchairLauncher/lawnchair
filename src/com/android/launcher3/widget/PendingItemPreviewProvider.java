@@ -53,8 +53,8 @@ public class PendingItemPreviewProvider extends DragPreviewProvider {
         canvas.setBitmap(b);
 
         Rect src = new Rect(0, 0, mPreviewBitmap.getWidth(), mPreviewBitmap.getHeight());
-        float scaleFactor = Math.min((w - DRAG_BITMAP_PADDING) / (float) mPreviewBitmap.getWidth(),
-                (h - DRAG_BITMAP_PADDING) / (float) mPreviewBitmap.getHeight());
+        float scaleFactor = Math.min((w - blurSizeOutline) / (float) mPreviewBitmap.getWidth(),
+                (h - blurSizeOutline) / (float) mPreviewBitmap.getHeight());
         int scaledWidth = (int) (scaleFactor * mPreviewBitmap.getWidth());
         int scaledHeight = (int) (scaleFactor * mPreviewBitmap.getHeight());
         Rect dst = new Rect(0, 0, scaledWidth, scaledHeight);

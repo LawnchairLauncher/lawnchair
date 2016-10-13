@@ -52,6 +52,7 @@ public class DragView extends View {
     private Bitmap mBitmap;
     private Bitmap mCrossFadeBitmap;
     @Thunk Paint mPaint;
+    private final int mBlurSizeOutline;
     private final int mRegistrationX;
     private final int mRegistrationY;
     private final float mInitialScale;
@@ -143,6 +144,8 @@ public class DragView extends View {
         int ms = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         measure(ms, ms);
         mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
+
+        mBlurSizeOutline = getResources().getDimensionPixelSize(R.dimen.blur_size_medium_outline);
 
         if (Utilities.ATLEAST_LOLLIPOP) {
             setElevation(getResources().getDimension(R.dimen.drag_elevation));
@@ -396,5 +399,9 @@ public class DragView extends View {
     public static void setColorScale(int color, ColorMatrix target) {
         target.setScale(Color.red(color) / 255f, Color.green(color) / 255f,
                 Color.blue(color) / 255f, Color.alpha(color) / 255f);
+    }
+
+    public int getBlurSizeOutline() {
+        return mBlurSizeOutline;
     }
 }

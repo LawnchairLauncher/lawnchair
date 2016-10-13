@@ -41,7 +41,7 @@ public class ExternalDragPreviewProvider extends DragPreviewProvider {
     private final int[] mOutlineSize;
 
     public ExternalDragPreviewProvider(Launcher launcher, ItemInfo addInfo) {
-        super(null);
+        super(null, launcher);
         mLauncher = launcher;
         mAddInfo = addInfo;
 
@@ -51,7 +51,7 @@ public class ExternalDragPreviewProvider extends DragPreviewProvider {
     public Rect getPreviewBounds() {
         Rect rect = new Rect();
         DeviceProfile dp = mLauncher.getDeviceProfile();
-        rect.left = DRAG_BITMAP_PADDING / 2;
+        rect.left = blurSizeOutline / 2;
         rect.top = (mOutlineSize[1] - dp.cellHeightPx) / 2;
         rect.right = rect.left + dp.iconSizePx;
         rect.bottom = rect.top + dp.iconSizePx;
@@ -69,8 +69,8 @@ public class ExternalDragPreviewProvider extends DragPreviewProvider {
 
         // Use 0.9f times the radius for the actual circle to account for icon normalization.
         float radius = getPreviewBounds().width() * 0.5f;
-        canvas.drawCircle(DRAG_BITMAP_PADDING / 2 + radius,
-                DRAG_BITMAP_PADDING / 2 + radius, radius * 0.9f, paint);
+        canvas.drawCircle(blurSizeOutline / 2 + radius,
+                blurSizeOutline / 2 + radius, radius * 0.9f, paint);
 
         HolographicOutlineHelper.getInstance(mLauncher).applyExpensiveOutlineWithBlur(b, canvas);
         canvas.setBitmap(null);

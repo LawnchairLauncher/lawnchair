@@ -655,7 +655,7 @@ public class DragLayer extends InsettableFrameLayout {
         } else if (child instanceof FolderIcon) {
             // Account for holographic blur padding on the drag view
             toY += Math.round(scale * (child.getPaddingTop() - dragView.getDragRegionTop()));
-            toY -= scale * Workspace.DRAG_BITMAP_PADDING / 2;
+            toY -= scale * dragView.getBlurSizeOutline() / 2;
             toY -= (1 - scale) * dragView.getMeasuredHeight() / 2;
             // Center in the x coordinate about the target's drawable
             toX -= (dragView.getMeasuredWidth() - Math.round(scale * child.getMeasuredWidth())) / 2;
