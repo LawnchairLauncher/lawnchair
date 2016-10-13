@@ -27,6 +27,7 @@ import android.support.v7.graphics.Palette;
 import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 
 /**
  * Extracts colors from the wallpaper, and saves results to {@link LauncherProvider}.
@@ -62,12 +63,15 @@ public class ColorExtractionService extends IntentService {
                     .generate();
             extractedColors.updateHotseatPalette(hotseatPalette);
 
-            int statusBarHeight = getResources().getDimensionPixelSize(R.dimen.status_bar_height);
-            Palette statusBarPalette = Palette.from(wallpaper)
-                    .setRegion(0, 0, wallpaper.getWidth(), statusBarHeight)
-                    .clearFilters()
-                    .generate();
-            extractedColors.updateStatusBarPalette(statusBarPalette);
+            if (FeatureFlags.LIGHT_STATUS_BAR) {
+                int statusBarHeight = getResources()
+                        .getDimensionPixelSize(R.dimen.status_bar_height);
+                Palette statusBarPalette = Palette.from(wallpaper)
+                        .setRegion(0, 0, wallpaper.getWidth(), statusBarHeight)
+                        .clearFilters()
+                        .generate();
+                extractedColors.updateStatusBarPalette(statusBarPalette);
+            }
         }
 
         // Save the extracted colors and wallpaper id to LauncherProvider.

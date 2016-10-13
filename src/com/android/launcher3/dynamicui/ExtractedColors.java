@@ -47,7 +47,7 @@ public class ExtractedColors {
     // public static final int MUTED_LIGHT_INDEX = 7;
 
     public static final int NUM_COLOR_PROFILES = 2;
-    private static final int VERSION = 2;
+    private static final int VERSION = 1;
 
     private static final String COLOR_SEPARATOR = ",";
 
