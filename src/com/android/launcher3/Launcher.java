@@ -215,9 +215,7 @@ public class Launcher extends Activity
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (Intent.ACTION_CLOSE_SYSTEM_DIALOGS.equals(intent.getAction())) {
-                closeSystemDialogs();
-            } else if (ACTION_APPWIDGET_HOST_RESET.equals(intent.getAction())) {
+            if (ACTION_APPWIDGET_HOST_RESET.equals(intent.getAction())) {
                 if (mAppWidgetHost != null) {
                     mAppWidgetHost.startListening();
                 }
@@ -455,8 +453,7 @@ public class Launcher extends Activity
         mDefaultKeySsb = new SpannableStringBuilder();
         Selection.setSelection(mDefaultKeySsb, 0);
 
-        IntentFilter filter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-        filter.addAction(ACTION_APPWIDGET_HOST_RESET);
+        IntentFilter filter = new IntentFilter(ACTION_APPWIDGET_HOST_RESET);
         registerReceiver(mUiBroadcastReceiver, filter);
 
         mRotationEnabled = getResources().getBoolean(R.bool.allow_rotation);
