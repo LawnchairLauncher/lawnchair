@@ -74,6 +74,7 @@ public class PendingRequestArgs extends ItemInfo implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         ContentValues itemValues = new ContentValues();
         writeToValues(itemValues);
+        itemValues.writeToParcel(dest, flags);
 
         dest.writeInt(mArg1);
         dest.writeInt(mObjectType);
