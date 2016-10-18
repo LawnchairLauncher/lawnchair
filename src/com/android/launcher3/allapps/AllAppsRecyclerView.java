@@ -162,27 +162,10 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         }
     }
 
-    /**
-     * We need to override the draw to ensure that we don't draw the overscroll effect beyond the
-     * background bounds.
-     */
-    @Override
-    protected void dispatchDraw(Canvas canvas) {
-        // Clip to ensure that we don't draw the overscroll effect beyond the background bounds
-        canvas.clipRect(mBackgroundPadding.left, mBackgroundPadding.top,
-                getWidth() - mBackgroundPadding.right,
-                getHeight() - mBackgroundPadding.bottom);
-        super.dispatchDraw(canvas);
-    }
-
     @Override
     public void onDraw(Canvas c) {
         // Draw the background
         if (mEmptySearchBackground != null && mEmptySearchBackground.getAlpha() > 0) {
-            c.clipRect(mBackgroundPadding.left, mBackgroundPadding.top,
-                    getWidth() - mBackgroundPadding.right,
-                    getHeight() - mBackgroundPadding.bottom);
-
             mEmptySearchBackground.draw(c);
         }
 
@@ -319,8 +302,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
                 // Calculate the current scroll position, the scrollY of the recycler view accounts
                 // for the view padding, while the scrollBarY is drawn right up to the background
                 // padding (ignoring padding)
-                int scrollBarY = mBackgroundPadding.top +
-                        (int) (((float) scrollY / availableScrollHeight) * availableScrollBarHeight);
+                int scrollBarY = (int)
+                        (((float) scrollY / availableScrollHeight) * availableScrollBarHeight);
 
                 int thumbScrollY = mScrollbar.getThumbOffsetY();
                 int diffScrollY = scrollBarY - thumbScrollY;
@@ -411,8 +394,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     }
 
     @Override
-    protected int getVisibleHeight() {
-        return super.getVisibleHeight()
+    protected int getScrollbarTrackHeight() {
+        return super.getScrollbarTrackHeight()
                 - Launcher.getLauncher(getContext()).getDragLayer().getInsets().bottom;
     }
 
@@ -424,7 +407,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     protected int getAvailableScrollHeight() {
         int paddedHeight = getCurrentScrollY(mApps.getAdapterItems().size(), 0);
         int totalHeight = paddedHeight + getPaddingBottom();
-        return totalHeight - getVisibleHeight();
+        return totalHeight - getScrollbarTrackHeight();
     }
 
     /**

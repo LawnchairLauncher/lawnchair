@@ -463,7 +463,6 @@ public class DeviceProfile {
     public void layout(Launcher launcher, boolean notifyListeners) {
         FrameLayout.LayoutParams lp;
         boolean hasVerticalBarLayout = isVerticalBarLayout();
-        final boolean isLayoutRtl = Utilities.isRtl(launcher.getResources());
 
         // Layout the search bar space
         Point searchBarBounds = getSearchBarDimensForWidgetOpts();

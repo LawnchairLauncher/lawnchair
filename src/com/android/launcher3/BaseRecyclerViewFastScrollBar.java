@@ -150,7 +150,7 @@ public class BaseRecyclerViewFastScrollBar {
         }
         int left = getDrawLeft();
         // Invalidate the whole scroll bar area.
-        mRv.invalidate(left, 0, left + mMaxWidth, mRv.getVisibleHeight());
+        mRv.invalidate(left, 0, left + mMaxWidth, mRv.getScrollbarTrackHeight());
 
         mWidth = width;
         updateThumbPath();
@@ -218,11 +218,9 @@ public class BaseRecyclerViewFastScrollBar {
                 }
                 if (mIsDragging) {
                     // Update the fastscroller section name at this touch position
-                    int top = mRv.getBackgroundPadding().top;
-                    int bottom = top + mRv.getVisibleHeight() - mThumbHeight;
-                    float boundedY = (float) Math.max(top, Math.min(bottom, y - mTouchOffsetY));
-                    String sectionName = mRv.scrollToPositionAtProgress((boundedY - top) /
-                            (bottom - top));
+                    int bottom = mRv.getScrollbarTrackHeight() - mThumbHeight;
+                    float boundedY = (float) Math.max(0, Math.min(bottom, y - mTouchOffsetY));
+                    String sectionName = mRv.scrollToPositionAtProgress(boundedY / bottom);
                     if (!sectionName.equals(mPopupSectionName)) {
                         mPopupSectionName = sectionName;
                         mPopupView.setText(sectionName);
@@ -257,7 +255,7 @@ public class BaseRecyclerViewFastScrollBar {
         }
         // Draw the track
         int thumbWidth = mIsRtl ? mWidth : -mWidth;
-        canvas.drawRect(0, 0, thumbWidth, mRv.getVisibleHeight(), mTrackPaint);
+        canvas.drawRect(0, 0, thumbWidth, mRv.getScrollbarTrackHeight(), mTrackPaint);
 
         canvas.translate(0, mThumbOffsetY);
         canvas.drawPath(mThumbPath, mThumbPaint);
@@ -299,7 +297,7 @@ public class BaseRecyclerViewFastScrollBar {
     private void updatePopupY(int lastTouchY) {
         int height = mPopupView.getHeight();
         float top = lastTouchY - (FAST_SCROLL_OVERLAY_Y_OFFSET_FACTOR * height);
-        top = Math.max(mMaxWidth, Math.min(top, mRv.getVisibleHeight() - mMaxWidth - height));
+        top = Math.max(mMaxWidth, Math.min(top, mRv.getScrollbarTrackHeight() - mMaxWidth - height));
         mPopupView.setTranslationY(top);
     }
 }
