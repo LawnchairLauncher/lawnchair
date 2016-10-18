@@ -145,10 +145,12 @@ public class DragLayer extends InsettableFrameLayout {
         setChildrenDrawingOrderEnabled(true);
 
         final Resources res = getResources();
-        mLeftHoverDrawable = res.getDrawable(R.drawable.page_hover_left);
-        mRightHoverDrawable = res.getDrawable(R.drawable.page_hover_right);
-        mLeftHoverDrawableActive = res.getDrawable(R.drawable.page_hover_left_active);
-        mRightHoverDrawableActive = res.getDrawable(R.drawable.page_hover_right_active);
+        if (FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND) {
+            mLeftHoverDrawable = res.getDrawable(R.drawable.page_hover_left);
+            mRightHoverDrawable = res.getDrawable(R.drawable.page_hover_right);
+            mLeftHoverDrawableActive = res.getDrawable(R.drawable.page_hover_left_active);
+            mRightHoverDrawableActive = res.getDrawable(R.drawable.page_hover_right_active);
+        }
         mIsRtl = Utilities.isRtl(res);
         mFocusIndicatorHelper = new ViewGroupFocusHelper(this);
     }
