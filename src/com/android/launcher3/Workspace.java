@@ -410,6 +410,11 @@ public class Workspace extends PagedView
             enforceDragParity("onDragStart", 0, 0);
         }
 
+        if (mDragInfo != null && mDragInfo.cell != null) {
+            CellLayout layout = (CellLayout) mDragInfo.cell.getParent().getParent();
+            layout.markCellsAsUnoccupiedForView(mDragInfo.cell);
+        }
+
         if (mOutlineProvider != null) {
             // The outline is used to visualize where the item will land if dropped
             mOutlineProvider.generateDragOutline(mCanvas);
@@ -477,6 +482,8 @@ public class Workspace extends PagedView
         // Re-enable any Un/InstallShortcutReceiver and now process any queued items
         InstallShortcutReceiver.disableAndFlushInstallQueue(getContext());
 
+        mOutlineProvider = null;
+        mDragInfo = null;
         mDragSourceInternal = null;
         mLauncher.onInteractionEnd();
     }
@@ -2244,8 +2251,6 @@ public class Workspace extends PagedView
 
         mDragInfo = cellInfo;
         child.setVisibility(INVISIBLE);
-        CellLayout layout = (CellLayout) child.getParent().getParent();
-        layout.prepareChildForDrag(child);
 
         if (options.isAccessibleDrag) {
             mDragController.addDragListener(new AccessibleDragListenerAdapter(
@@ -3668,8 +3673,6 @@ public class Workspace extends PagedView
                 && mDragInfo.cell != null) {
             mDragInfo.cell.setVisibility(VISIBLE);
         }
-        mOutlineProvider = null;
-        mDragInfo = null;
 
         if (!isFlingToDelete) {
             // Fling to delete already exits spring loaded mode after the animation finishes.
