@@ -18,7 +18,6 @@ package com.android.launcher3;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -48,7 +47,6 @@ public abstract class BaseRecyclerView extends RecyclerView
     private int mDownX;
     private int mDownY;
     private int mLastY;
-    protected Rect mBackgroundPadding = new Rect();
 
     public BaseRecyclerView(Context context) {
         this(context, null);
@@ -164,21 +162,11 @@ public abstract class BaseRecyclerView extends RecyclerView
         return false;
     }
 
-    public void updateBackgroundPadding(Rect padding) {
-        mBackgroundPadding.set(padding);
-    }
-
-    public Rect getBackgroundPadding() {
-        return mBackgroundPadding;
-    }
-
     /**
-     * Returns the visible height of the recycler view:
-     *   VisibleHeight = View height - top padding - bottom padding
+     * Returns the height of the fast scroll bar
      */
-    protected int getVisibleHeight() {
-        int visibleHeight = getHeight() - mBackgroundPadding.top - mBackgroundPadding.bottom;
-        return visibleHeight;
+    protected int getScrollbarTrackHeight() {
+        return getHeight();
     }
 
     /**
@@ -192,7 +180,7 @@ public abstract class BaseRecyclerView extends RecyclerView
      *   AvailableScrollBarHeight = Total height of the visible view - thumb height
      */
     protected int getAvailableScrollBarHeight() {
-        int availableScrollBarHeight = getVisibleHeight() - mScrollbar.getThumbHeight();
+        int availableScrollBarHeight = getScrollbarTrackHeight() - mScrollbar.getThumbHeight();
         return availableScrollBarHeight;
     }
 
@@ -201,13 +189,6 @@ public abstract class BaseRecyclerView extends RecyclerView
      */
     public int getFastScrollerTrackColor(int defaultTrackColor) {
         return defaultTrackColor;
-    }
-
-    /**
-     * Returns the inactive thumb color, can be overridden by each subclass.
-     */
-    public int getFastScrollerThumbInactiveColor(int defaultInactiveThumbColor) {
-        return defaultInactiveThumbColor;
     }
 
     /**
@@ -234,7 +215,6 @@ public abstract class BaseRecyclerView extends RecyclerView
     protected void synchronizeScrollBarThumbOffsetToViewScroll(int scrollY,
             int availableScrollHeight) {
         // Only show the scrollbar if there is height to be scrolled
-        int availableScrollBarHeight = getAvailableScrollBarHeight();
         if (availableScrollHeight <= 0) {
             mScrollbar.setThumbOffsetY(-1);
             return;
@@ -243,8 +223,8 @@ public abstract class BaseRecyclerView extends RecyclerView
         // Calculate the current scroll position, the scrollY of the recycler view accounts for the
         // view padding, while the scrollBarY is drawn right up to the background padding (ignoring
         // padding)
-        int scrollBarY = mBackgroundPadding.top +
-                (int) (((float) scrollY / availableScrollHeight) * availableScrollBarHeight);
+        int scrollBarY =
+                (int) (((float) scrollY / availableScrollHeight) * getAvailableScrollBarHeight());
 
         // Calculate the position and size of the scroll bar
         mScrollbar.setThumbOffsetY(scrollBarY);
