@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.qsb;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.SearchManager;
+import android.appwidget.AppWidgetHost;
+import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -35,6 +34,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.android.launcher3.AppWidgetResizeFrame;
+import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 
 /**
@@ -68,25 +72,14 @@ public class QsbContainerView extends FrameLayout {
         private static final int REQUEST_BIND_QSB = 1;
         private static final String QSB_WIDGET_ID = "qsb_widget_id";
 
-        private static int sSavedWidgetId = -1;
-
+        private QsbWidgetHost mQsbWidgetHost;
         private AppWidgetProviderInfo mWidgetInfo;
-        private LauncherAppWidgetHostView mQsb;
-
-        private BroadcastReceiver mRebindReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                rebindFragment();
-            }
-        };
+        private QsbWidgetHostView mQsb;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-
-            IntentFilter filter = new IntentFilter(Launcher.ACTION_APPWIDGET_HOST_RESET);
-            filter.addAction(SearchManager.INTENT_GLOBAL_SEARCH_ACTIVITY_CHANGED);
-            getActivity().registerReceiver(mRebindReceiver, filter);
+            mQsbWidgetHost = new QsbWidgetHost(getActivity());
         }
 
         private FrameLayout mWrapper;
@@ -95,110 +88,96 @@ public class QsbContainerView extends FrameLayout {
         public View onCreateView(
                 LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-            if (savedInstanceState != null) {
-                sSavedWidgetId = savedInstanceState.getInt(QSB_WIDGET_ID, -1);
-            }
             mWrapper = new FrameLayout(getActivity());
-            mWrapper.addView(createQsb(inflater, mWrapper));
+            mWrapper.addView(createQsb(mWrapper));
             return mWrapper;
         }
 
-        private View createQsb(LayoutInflater inflater, ViewGroup container) {
-            Launcher launcher = Launcher.getLauncher(getActivity());
-            mWidgetInfo = getSearchWidgetProvider(launcher);
+        private View createQsb(ViewGroup container) {
+            Activity activity = getActivity();
+            mWidgetInfo = getSearchWidgetProvider(activity);
             if (mWidgetInfo == null) {
                 // There is no search provider, just show the default widget.
-                return getDefaultView(inflater, container, false);
-            } else {
-                mWidgetInfo = LauncherAppWidgetProviderInfo.fromProviderInfo(launcher, mWidgetInfo);
+                return QsbWidgetHostView.getDefaultView(container);
             }
 
-            SharedPreferences prefs = Utilities.getPrefs(launcher);
-            AppWidgetManagerCompat widgetManager = AppWidgetManagerCompat.getInstance(launcher);
-            LauncherAppWidgetHost widgetHost = launcher.getAppWidgetHost();
+            AppWidgetManagerCompat widgetManager = AppWidgetManagerCompat.getInstance(activity);
             InvariantDeviceProfile idp = LauncherAppState.getInstance().getInvariantDeviceProfile();
 
             Bundle opts = new Bundle();
-            Rect size = AppWidgetResizeFrame.getWidgetSizeRanges(launcher, idp.numColumns, 1, null);
+            Rect size = AppWidgetResizeFrame.getWidgetSizeRanges(activity, idp.numColumns, 1, null);
             opts.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, size.left);
             opts.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, size.top);
             opts.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, size.right);
             opts.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, size.bottom);
 
-            int widgetId = prefs.getInt(QSB_WIDGET_ID, -1);
+            int widgetId = Utilities.getPrefs(activity).getInt(QSB_WIDGET_ID, -1);
             AppWidgetProviderInfo widgetInfo = widgetManager.getAppWidgetInfo(widgetId);
             boolean isWidgetBound = (widgetInfo != null) &&
                     widgetInfo.provider.equals(mWidgetInfo.provider);
 
+            int oldWidgetId = widgetId;
             if (!isWidgetBound) {
-                // widgetId is already bound and its not the correct provider.
-                // Delete the widget id.
                 if (widgetId > -1) {
-                    widgetHost.deleteAppWidgetId(widgetId);
+                    // widgetId is already bound and its not the correct provider. reset host.
+                    mQsbWidgetHost.deleteHost();
+                }
+
+                widgetId = mQsbWidgetHost.allocateAppWidgetId();
+                isWidgetBound = widgetManager.bindAppWidgetIdIfAllowed(widgetId, mWidgetInfo, opts);
+                if (!isWidgetBound) {
+                    mQsbWidgetHost.deleteAppWidgetId(widgetId);
                     widgetId = -1;
                 }
 
-                widgetId = widgetHost.allocateAppWidgetId();
-                isWidgetBound = widgetManager.bindAppWidgetIdIfAllowed(widgetId, mWidgetInfo, opts);
-                if (!isWidgetBound) {
-                    widgetHost.deleteAppWidgetId(widgetId);
-                    widgetId = -1;
+                if (oldWidgetId != widgetId) {
+                    saveWidgetId(widgetId);
                 }
             }
 
             if (isWidgetBound) {
-                mQsb = (LauncherAppWidgetHostView)
-                        widgetHost.createView(launcher, widgetId, mWidgetInfo);
+                mQsb = (QsbWidgetHostView) mQsbWidgetHost.createView(activity, widgetId, mWidgetInfo);
                 mQsb.setId(R.id.qsb_widget);
-                mQsb.mErrorViewId = R.layout.qsb_default_view;
 
-                if (!Utilities.containsAll(AppWidgetManager.getInstance(launcher)
+                if (!Utilities.containsAll(AppWidgetManager.getInstance(activity)
                         .getAppWidgetOptions(widgetId), opts)) {
                     mQsb.updateAppWidgetOptions(opts);
                 }
                 mQsb.setPadding(0, 0, 0, 0);
+                mQsbWidgetHost.startListening();
                 return mQsb;
             }
 
             // Return a default widget with setup icon.
-            return getDefaultView(inflater, container, true);
+            View v = QsbWidgetHostView.getDefaultView(container);
+            View setupButton = v.findViewById(R.id.btn_qsb_setup);
+            setupButton.setVisibility(View.VISIBLE);
+            setupButton.setOnClickListener(this);
+            return v;
+        }
+
+        private void saveWidgetId(int widgetId) {
+            Utilities.getPrefs(getActivity()).edit().putInt(QSB_WIDGET_ID, widgetId).apply();
         }
 
         @Override
         public void onClick(View view) {
-            if (view.getId() == R.id.btn_qsb_search) {
-                getActivity().startSearch("", false, null, true);
-            } else if (view.getId() == R.id.btn_qsb_setup) {
-                // Allocate a new widget id for QSB
-                sSavedWidgetId = Launcher.getLauncher(getActivity())
-                        .getAppWidgetHost().allocateAppWidgetId();
-                // Start intent for bind the widget
-                Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
-                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, sSavedWidgetId);
-                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, mWidgetInfo.provider);
-                startActivityForResult(intent, REQUEST_BIND_QSB);
-            }
-        }
-
-        @Override
-        public void onSaveInstanceState(Bundle outState) {
-            super.onSaveInstanceState(outState);
-            outState.putInt(QSB_WIDGET_ID, sSavedWidgetId);
+            // Start intent for bind the widget
+            Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
+            // Allocate a new widget id for QSB
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mQsbWidgetHost.allocateAppWidgetId());
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, mWidgetInfo.provider);
+            startActivityForResult(intent, REQUEST_BIND_QSB);
         }
 
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
             if (requestCode == REQUEST_BIND_QSB) {
                 if (resultCode == Activity.RESULT_OK) {
-                    int widgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-                            sSavedWidgetId);
-                    Utilities.getPrefs(getActivity()).edit().putInt(QSB_WIDGET_ID, widgetId).apply();
-                    sSavedWidgetId = -1;
+                    saveWidgetId(data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1));
                     rebindFragment();
-                } else if (sSavedWidgetId != -1) {
-                    Launcher.getLauncher(getActivity()).getAppWidgetHost()
-                            .deleteAppWidgetId(sSavedWidgetId);
-                    sSavedWidgetId = -1;
+                } else {
+                    mQsbWidgetHost.deleteHost();
                 }
             }
         }
@@ -213,26 +192,15 @@ public class QsbContainerView extends FrameLayout {
 
         @Override
         public void onDestroy() {
-            getActivity().unregisterReceiver(mRebindReceiver);
+            mQsbWidgetHost.stopListening();
             super.onDestroy();
         }
 
         private void rebindFragment() {
             if (mWrapper != null && getActivity() != null) {
                 mWrapper.removeAllViews();
-                mWrapper.addView(createQsb(getActivity().getLayoutInflater(), mWrapper));
+                mWrapper.addView(createQsb(mWrapper));
             }
-        }
-
-        private View getDefaultView(LayoutInflater inflater, ViewGroup parent, boolean showSetup) {
-            View v = inflater.inflate(R.layout.qsb_default_view, parent, false);
-            if (showSetup) {
-                View setupButton = v.findViewById(R.id.btn_qsb_setup);
-                setupButton.setVisibility(View.VISIBLE);
-                setupButton.setOnClickListener(this);
-            }
-            v.findViewById(R.id.btn_qsb_search).setOnClickListener(this);
-            return v;
         }
     }
 
@@ -262,5 +230,20 @@ public class QsbContainerView extends FrameLayout {
             }
         }
         return defaultWidgetForSearchPackage;
+    }
+
+    private static class QsbWidgetHost extends AppWidgetHost {
+
+        private static final int QSB_WIDGET_HOST_ID = 1026;
+
+        public QsbWidgetHost(Context context) {
+            super(context, QSB_WIDGET_HOST_ID);
+        }
+
+        @Override
+        protected AppWidgetHostView onCreateView(
+                Context context, int appWidgetId, AppWidgetProviderInfo appWidget) {
+            return new QsbWidgetHostView(context);
+        }
     }
 }

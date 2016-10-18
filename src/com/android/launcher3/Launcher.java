@@ -69,7 +69,6 @@ import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -173,9 +172,6 @@ public class Launcher extends Activity
     static final String INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION =
             "com.android.launcher3.intent.extra.shortcut.INGORE_LAUNCH_ANIMATION";
 
-    public static final String ACTION_APPWIDGET_HOST_RESET =
-            "com.android.launcher3.intent.ACTION_APPWIDGET_HOST_RESET";
-
     // Type: int
     private static final String RUNTIME_STATE_CURRENT_SCREEN = "launcher.current_screen";
     // Type: int
@@ -205,18 +201,6 @@ public class Launcher extends Activity
     private static int NEW_APPS_PAGE_MOVE_DELAY = 500;
     private static int NEW_APPS_ANIMATION_INACTIVE_TIMEOUT_SECONDS = 5;
     @Thunk static int NEW_APPS_ANIMATION_DELAY = 500;
-
-    private final BroadcastReceiver mUiBroadcastReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (ACTION_APPWIDGET_HOST_RESET.equals(intent.getAction())) {
-                if (mAppWidgetHost != null) {
-                    mAppWidgetHost.startListening();
-                }
-            }
-        }
-    };
 
     @Thunk Workspace mWorkspace;
     private View mLauncherView;
@@ -441,9 +425,6 @@ public class Launcher extends Activity
         mDefaultKeySsb = new SpannableStringBuilder();
         Selection.setSelection(mDefaultKeySsb, 0);
 
-        IntentFilter filter = new IntentFilter(ACTION_APPWIDGET_HOST_RESET);
-        registerReceiver(mUiBroadcastReceiver, filter);
-
         mRotationEnabled = getResources().getBoolean(R.bool.allow_rotation);
         // In case we are on a device with locked rotation, we should look at preferences to check
         // if the user has specifically allowed rotation.
@@ -465,6 +446,13 @@ public class Launcher extends Activity
     @Override
     public void onExtractedColorsChanged() {
         loadExtractedColorsAndColorItems();
+    }
+
+    @Override
+    public void onAppWidgetHostReset() {
+        if (mAppWidgetHost != null) {
+            mAppWidgetHost.startListening();
+        }
     }
 
     private void loadExtractedColorsAndColorItems() {
@@ -570,7 +558,7 @@ public class Launcher extends Activity
     }
 
     @Override
-    public void onLauncherProviderChange() {
+    public void onLauncherProviderChanged() {
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onLauncherProviderChange();
         }
@@ -1665,13 +1653,6 @@ public class Launcher extends Activity
         return mDeviceProfile;
     }
 
-    public void closeSystemDialogs() {
-        getWindow().closeAllPanels();
-
-        // Whatever we were doing is hereby canceled.
-        setWaitingForResult(null);
-    }
-
     @Override
     protected void onNewIntent(Intent intent) {
         long startTime = 0;
@@ -1690,9 +1671,6 @@ public class Launcher extends Activity
 
         boolean isActionMain = Intent.ACTION_MAIN.equals(intent.getAction());
         if (isActionMain) {
-            // also will cancel mWaitingForResult.
-            closeSystemDialogs();
-
             if (mWorkspace == null) {
                 // Can be cases where mWorkspace is null, this prevents a NPE
                 return;
@@ -1829,8 +1807,6 @@ public class Launcher extends Activity
 
         ((AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE))
                 .removeAccessibilityStateChangeListener(this);
-
-        unregisterReceiver(mUiBroadcastReceiver);
 
         LauncherAnimUtils.onDestroyActivity();
 
