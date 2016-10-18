@@ -52,6 +52,7 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.launcher3.Launcher.CustomContentCallbacks;
 import com.android.launcher3.Launcher.LauncherOverlay;
@@ -2406,18 +2407,7 @@ public class Workspace extends PagedView
 
             // Don't accept the drop if there's no room for the item
             if (!foundCell) {
-                // Don't show the message if we are dropping on the AllApps button and the hotseat
-                // is full
-                boolean isHotseat = mLauncher.isHotseatLayout(dropTargetLayout);
-                if (mTargetCell != null && isHotseat && !FeatureFlags.NO_ALL_APPS_ICON) {
-                    Hotseat hotseat = mLauncher.getHotseat();
-                    if (mLauncher.getDeviceProfile().inv.isAllAppsButtonRank(
-                            hotseat.getOrderInHotseat(mTargetCell[0], mTargetCell[1]))) {
-                        return false;
-                    }
-                }
-
-                mLauncher.showOutOfSpaceMessage(isHotseat);
+                onNoCellFound(dropTargetLayout);
                 return false;
             }
         }
@@ -2703,6 +2693,8 @@ public class Workspace extends PagedView
                     LauncherModel.modifyItemInDatabase(mLauncher, info, container, screenId, lp.cellX,
                             lp.cellY, item.spanX, item.spanY);
                 } else {
+                    onNoCellFound(dropTargetLayout);
+
                     // If we can't find a drop location, we return the item to its original position
                     CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell.getLayoutParams();
                     mTargetCell[0] = lp.cellX;
@@ -2746,6 +2738,26 @@ public class Workspace extends PagedView
         if (d.stateAnnouncer != null) {
             d.stateAnnouncer.completeAction(R.string.item_moved);
         }
+    }
+
+    public void onNoCellFound(View dropTargetLayout) {
+        if (mLauncher.isHotseatLayout(dropTargetLayout)) {
+            Hotseat hotseat = mLauncher.getHotseat();
+            boolean droppedOnAllAppsIcon = !FeatureFlags.NO_ALL_APPS_ICON
+                    && mTargetCell != null && !mLauncher.getDeviceProfile().inv.isAllAppsButtonRank(
+                    hotseat.getOrderInHotseat(mTargetCell[0], mTargetCell[1]));
+            if (!droppedOnAllAppsIcon) {
+                // Only show message when hotseat is full and drop target was not AllApps button
+                showOutOfSpaceMessage(true);
+            }
+        } else {
+            showOutOfSpaceMessage(false);
+        }
+    }
+
+    private void showOutOfSpaceMessage(boolean isHotseatLayout) {
+        int strId = (isHotseatLayout ? R.string.hotseat_out_of_space : R.string.out_of_space);
+        Toast.makeText(mLauncher, mLauncher.getString(strId), Toast.LENGTH_SHORT).show();
     }
 
     /**

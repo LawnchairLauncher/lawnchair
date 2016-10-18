@@ -32,7 +32,6 @@ import android.view.ViewGroup;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BaseContainerView;
-import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeleteDropTarget;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragSource;
@@ -44,7 +43,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherTransitionable;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -419,24 +417,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         }
         mLauncher.unlockScreenOrientation(false);
 
-        // Display an error message if the drag failed due to there not being enough space on the
-        // target layout we were dropping on.
         if (!success) {
-            boolean showOutOfSpaceMessage = false;
-            if (target instanceof Workspace) {
-                int currentScreen = mLauncher.getCurrentWorkspaceScreen();
-                Workspace workspace = (Workspace) target;
-                CellLayout layout = (CellLayout) workspace.getChildAt(currentScreen);
-                ItemInfo itemInfo = d.dragInfo;
-                if (layout != null) {
-                    showOutOfSpaceMessage =
-                            !layout.findCellForSpan(null, itemInfo.spanX, itemInfo.spanY);
-                }
-            }
-            if (showOutOfSpaceMessage) {
-                mLauncher.showOutOfSpaceMessage(false);
-            }
-
             d.deferDragViewCleanupPostAnimation = false;
         }
     }
