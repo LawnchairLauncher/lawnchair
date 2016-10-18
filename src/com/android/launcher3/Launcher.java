@@ -1454,7 +1454,7 @@ public class Launcher extends Activity
         }
 
         if (!foundCellSpan) {
-            showOutOfSpaceMessage(isHotseatLayout(layout));
+            mWorkspace.onNoCellFound(layout);
             return;
         }
 
@@ -1598,11 +1598,6 @@ public class Launcher extends Activity
             }
             clearTypedText();
         }
-    }
-
-    public void showOutOfSpaceMessage(boolean isHotseatLayout) {
-        int strId = (isHotseatLayout ? R.string.hotseat_out_of_space : R.string.out_of_space);
-        Toast.makeText(this, getString(strId), Toast.LENGTH_SHORT).show();
     }
 
     public DragLayer getDragLayer() {
