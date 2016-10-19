@@ -2215,10 +2215,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         return solution;
     }
 
-    public void prepareChildForDrag(View child) {
-        markCellsAsUnoccupiedForView(child);
-    }
-
     /* This seems like it should be obvious and straight-forward, but when the direction vector
     needs to match with the notion of the dragView pushing other views, we have to employ
     a slightly more subtle notion of the direction vector. The question is what two points is
