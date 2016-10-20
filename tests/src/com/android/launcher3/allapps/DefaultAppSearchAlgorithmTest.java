@@ -67,6 +67,10 @@ public class DefaultAppSearchAlgorithmTest extends InstrumentationTestCase {
 
         assertTrue(mAlgorithm.matches(getInfo("Q"), "q"));
         assertTrue(mAlgorithm.matches(getInfo("  Q"), "q"));
+
+        // match lower case words
+        assertTrue(mAlgorithm.matches(getInfo("elephant"), "e"));
+
     }
 
     private AppInfo getInfo(String title) {

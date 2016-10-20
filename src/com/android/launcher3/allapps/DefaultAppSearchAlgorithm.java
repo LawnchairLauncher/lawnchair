@@ -115,7 +115,7 @@ public class DefaultAppSearchAlgorithm {
                 return prevType != Character.UPPERCASE_LETTER;
             case Character.LOWERCASE_LETTER:
                 // Break point if previous was not a letter.
-                return prevType > Character.OTHER_LETTER;
+                return prevType > Character.OTHER_LETTER || prevType <= Character.UNASSIGNED;
             case Character.DECIMAL_DIGIT_NUMBER:
             case Character.LETTER_NUMBER:
             case Character.OTHER_NUMBER:
