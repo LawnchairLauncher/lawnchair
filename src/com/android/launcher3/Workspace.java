@@ -2647,12 +2647,12 @@ public class Workspace extends PagedView
                             resultSpan[1]);
                 }
 
-                if (getScreenIdForPageIndex(mCurrentPage) != screenId && !hasMovedIntoHotseat) {
-                    snapScreen = getPageIndexForScreenId(screenId);
-                    snapToPage(snapScreen);
-                }
-
                 if (foundCell) {
+                    if (getScreenIdForPageIndex(mCurrentPage) != screenId && !hasMovedIntoHotseat) {
+                        snapScreen = getPageIndexForScreenId(screenId);
+                        snapToPage(snapScreen);
+                    }
+
                     final ItemInfo info = (ItemInfo) cell.getTag();
                     if (hasMovedLayouts) {
                         // Reparent the view
