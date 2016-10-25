@@ -1068,6 +1068,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     @Override
     public void addFocusables(ArrayList<View> views, int direction, int focusableMode) {
+        if (getDescendantFocusability() == FOCUS_BLOCK_DESCENDANTS) {
+            return;
+        }
+
         // XXX-RTL: This will be fixed in a future CL
         if (mCurrentPage >= 0 && mCurrentPage < getPageCount()) {
             getPageAt(mCurrentPage).addFocusables(views, direction, focusableMode);
