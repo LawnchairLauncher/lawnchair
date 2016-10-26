@@ -524,12 +524,11 @@ public class FolderPagedView extends PagedView {
     }
 
     @Override
-    protected void onPageBeginMoving() {
-        super.onPageBeginMoving();
-        getVisiblePages(sTempPosArray);
-        for (int i = sTempPosArray[0]; i <= sTempPosArray[1]; i++) {
-            verifyVisibleHighResIcons(i);
-        }
+    protected void onPageBeginTransition() {
+        super.onPageBeginTransition();
+        // Ensure that adjacent pages have high resolution icons
+        verifyVisibleHighResIcons(getCurrentPage() - 1);
+        verifyVisibleHighResIcons(getCurrentPage() + 1);
     }
 
     /**

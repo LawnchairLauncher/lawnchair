@@ -32,7 +32,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -171,11 +170,10 @@ public class Workspace extends PagedView
     // These are temporary variables to prevent having to allocate a new object just to
     // return an (x, y) value from helper functions. Do NOT use them to maintain other state.
     private static final Rect sTempRect = new Rect();
+
     private final int[] mTempXY = new int[2];
     @Thunk float[] mDragViewVisualCenter = new float[2];
     private float[] mTempCellLayoutCenterCoordinates = new float[2];
-    private int[] mTempVisiblePagesRange = new int[2];
-    private Matrix mTempMatrix = new Matrix();
 
     private SpringLoadedDragController mSpringLoadedDragController;
     private float mOverviewModeShrinkFactor;
@@ -550,14 +548,6 @@ public class Workspace extends PagedView
         cl.setClickable(true);
         cl.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
         super.onChildViewAdded(parent, child);
-    }
-
-    protected boolean shouldDrawChild(View child) {
-        final CellLayout cl = (CellLayout) child;
-        return super.shouldDrawChild(child) &&
-            (mIsSwitchingState ||
-             cl.getShortcutsAndWidgets().getAlpha() > 0 ||
-             cl.getBackgroundAlpha() > 0);
     }
 
     boolean isTouchActive() {
@@ -993,7 +983,7 @@ public class Workspace extends PagedView
             return;
         }
 
-        if (isPageMoving()) {
+        if (isPageInTransition()) {
             mStripScreensOnPageStopMoving = true;
             return;
         }
@@ -1309,13 +1299,13 @@ public class Workspace extends PagedView
         }
     }
 
-    protected void onPageBeginMoving() {
-        super.onPageBeginMoving();
+    protected void onPageBeginTransition() {
+        super.onPageBeginTransition();
         updateChildrenLayersEnabled(false);
     }
 
-    protected void onPageEndMoving() {
-        super.onPageEndMoving();
+    protected void onPageEndTransition() {
+        super.onPageEndTransition();
         updateChildrenLayersEnabled(false);
 
         if (mDragController.isDragging()) {
@@ -1418,6 +1408,10 @@ public class Workspace extends PagedView
         if (!isTransitioning) {
             showPageIndicatorAtCurrentScroll();
         }
+
+        updatePageAlphaValues();
+        updateStateForCustomContent();
+        enableHwLayersOnVisiblePages();
     }
 
     private void showPageIndicatorAtCurrentScroll() {
@@ -1576,18 +1570,6 @@ public class Workspace extends PagedView
     }
 
     @Override
-    protected Matrix getPageShiftMatrix() {
-        if (Float.compare(mOverlayTranslation, 0) != 0) {
-            // The pages are translated by mOverlayTranslation. incorporate that in the
-            // visible page calculation by shifting everything back by that same amount.
-            mTempMatrix.set(getMatrix());
-            mTempMatrix.postTranslate(-mOverlayTranslation, 0);
-            return mTempMatrix;
-        }
-        return super.getPageShiftMatrix();
-    }
-
-    @Override
     protected void getEdgeVerticalPosition(int[] pos) {
         View child = getChildAt(getPageCount() - 1);
         pos[0] = child.getTop();
@@ -1687,15 +1669,16 @@ public class Workspace extends PagedView
     }
 
     public void showOutlinesTemporarily() {
-        if (!mIsPageMoving && !isTouchActive()) {
+        if (!mIsPageInTransition && !isTouchActive()) {
             snapToPage(mCurrentPage);
         }
     }
 
-    private void updatePageAlphaValues(int screenCenter) {
+    private void updatePageAlphaValues() {
         if (mWorkspaceFadeInAdjacentScreens &&
                 !workspaceInModalState() &&
                 !mIsSwitchingState) {
+            int screenCenter = getScrollX() + getViewportOffsetX() + getViewportWidth() / 2;
             for (int i = numCustomPages(); i < getChildCount(); i++) {
                 CellLayout child = (CellLayout) getChildAt(i);
                 if (child != null) {
@@ -1723,7 +1706,7 @@ public class Workspace extends PagedView
         return hasCustomContent() && getNextPage() == 0;
     }
 
-    private void updateStateForCustomContent(int screenCenter) {
+    private void updateStateForCustomContent() {
         float translationX = 0;
         float progress = 0;
         if (hasCustomContent()) {
@@ -1769,13 +1752,6 @@ public class Workspace extends PagedView
         if (mCustomContentCallbacks != null) {
             mCustomContentCallbacks.onScrollProgressChanged(progress);
         }
-    }
-
-    @Override
-    protected void screenScrolled(int screenCenter) {
-        updatePageAlphaValues(screenCenter);
-        updateStateForCustomContent(screenCenter);
-        enableHwLayersOnVisiblePages();
     }
 
     protected void onAttachedToWindow() {
@@ -1856,7 +1832,7 @@ public class Workspace extends PagedView
 
     @Thunk void updateChildrenLayersEnabled(boolean force) {
         boolean small = mState == State.OVERVIEW || mIsSwitchingState;
-        boolean enableChildrenLayers = force || small || mAnimatingViewIntoPlace || isPageMoving();
+        boolean enableChildrenLayers = force || small || mAnimatingViewIntoPlace || isPageInTransition();
 
         if (enableChildrenLayers != mChildrenLayersEnabled) {
             mChildrenLayersEnabled = enableChildrenLayers;
@@ -1874,9 +1850,37 @@ public class Workspace extends PagedView
     private void enableHwLayersOnVisiblePages() {
         if (mChildrenLayersEnabled) {
             final int screenCount = getChildCount();
-            getVisiblePages(mTempVisiblePagesRange);
-            int leftScreen = mTempVisiblePagesRange[0];
-            int rightScreen = mTempVisiblePagesRange[1];
+
+            float visibleLeft = getViewportOffsetX();
+            float visibleRight = visibleLeft + getViewportWidth();
+            float scaleX = getScaleX();
+            if (scaleX < 1 && scaleX > 0) {
+                float mid = getMeasuredWidth() / 2;
+                visibleLeft = mid - ((mid - visibleLeft) / scaleX);
+                visibleRight = mid + ((visibleRight - mid) / scaleX);
+            }
+
+            int leftScreen = -1;
+            int rightScreen = -1;
+            for (int i = numCustomPages(); i < screenCount; i++) {
+                final View child = getPageAt(i);
+
+                float left = child.getLeft() + child.getTranslationX() - getScrollX();
+                if (left <= visibleRight && (left + child.getMeasuredWidth()) >= visibleLeft) {
+                    if (leftScreen == -1) {
+                        leftScreen = i;
+                    }
+                    rightScreen = i;
+                }
+            }
+            if (mForceDrawAdjacentPages) {
+                // In overview mode, make sure that the two side pages are visible.
+                leftScreen = Utilities.boundToRange(getCurrentPage() - 1,
+                    numCustomPages(), rightScreen);
+                rightScreen = Utilities.boundToRange(getCurrentPage() + 1,
+                    leftScreen, getPageCount() - 1);
+            }
+
             if (leftScreen == rightScreen) {
                 // make sure we're caching at least two pages always
                 if (rightScreen < screenCount - 1) {
@@ -1886,14 +1890,10 @@ public class Workspace extends PagedView
                 }
             }
 
-            final CellLayout customScreen = mWorkspaceScreens.get(CUSTOM_CONTENT_SCREEN_ID);
-            for (int i = 0; i < screenCount; i++) {
+            for (int i = numCustomPages(); i < screenCount; i++) {
                 final CellLayout layout = (CellLayout) getPageAt(i);
-
-                // enable layers between left and right screen inclusive, except for the
-                // customScreen, which may animate its content during transitions.
-                boolean enableLayer = layout != customScreen &&
-                        leftScreen <= i && i <= rightScreen && shouldDrawChild(layout);
+                // enable layers between left and right screen inclusive.
+                boolean enableLayer = leftScreen <= i && i <= rightScreen;
                 layout.enableHardwareLayer(enableLayer);
             }
         }
@@ -1910,16 +1910,6 @@ public class Workspace extends PagedView
             }
         }
         updateChildrenLayersEnabled(false);
-    }
-
-    @Override
-    protected void getVisiblePages(int[] range) {
-        super.getVisiblePages(range);
-        if (mForceDrawAdjacentPages) {
-            // In overview mode, make sure that the two side pages are visible.
-            range[0] = Utilities.boundToRange(getCurrentPage() - 1, numCustomPages(), range[1]);
-            range[1] = Utilities.boundToRange(getCurrentPage() + 1, range[0], getPageCount() - 1);
-        }
     }
 
     protected void onWallpaperTap(MotionEvent ev) {
@@ -2637,7 +2627,7 @@ public class Workspace extends PagedView
                                 && !d.accessibleDrag) {
                             mDelayedResizeRunnable = new Runnable() {
                                 public void run() {
-                                    if (!isPageMoving() && !mIsSwitchingState) {
+                                    if (!isPageInTransition() && !mIsSwitchingState) {
                                         DragLayer dragLayer = mLauncher.getDragLayer();
                                         dragLayer.addResizeFrame(hostView, cellLayout);
                                     }
@@ -2764,7 +2754,7 @@ public class Workspace extends PagedView
         // Here we store the final page that will be dropped to, if the workspace in fact
         // receives the drop
         if (mInScrollArea) {
-            if (isPageMoving()) {
+            if (isPageInTransition()) {
                 // If the user drops while the page is scrolling, we should use that page as the
                 // destination instead of the page that is being hovered over.
                 mDropToLayout = (CellLayout) getPageAt(getNextPage());

@@ -60,7 +60,6 @@ public class PinchAnimationManager {
 
     private final Animator[] mAnimators = new Animator[4];
 
-    private final int[] mVisiblePageRange = new int[2];
     private Launcher mLauncher;
     private Workspace mWorkspace;
 
@@ -181,17 +180,13 @@ public class PinchAnimationManager {
     }
 
     private void setOverviewPanelsAlpha(float alpha, int duration) {
-        mWorkspace.getVisiblePages(mVisiblePageRange);
-        for (int i = mVisiblePageRange[0]; i <= mVisiblePageRange[1]; i++) {
-            View page = mWorkspace.getPageAt(i);
-            if (!mWorkspace.shouldDrawChild(page)) {
-                continue;
-            }
+        int childCount = mWorkspace.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            final CellLayout cl = (CellLayout) mWorkspace.getChildAt(i);
             if (duration == 0) {
-                ((CellLayout) page).setBackgroundAlpha(alpha);
+                cl.setBackgroundAlpha(alpha);
             } else {
-                ObjectAnimator.ofFloat(page, "backgroundAlpha", alpha)
-                        .setDuration(duration).start();
+                ObjectAnimator.ofFloat(cl, "backgroundAlpha", alpha).setDuration(duration).start();
             }
         }
     }
