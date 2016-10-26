@@ -3656,8 +3656,10 @@ public class Workspace extends PagedView
     public void onDropCompleted(final View target, final DragObject d,
             final boolean isFlingToDelete, final boolean success) {
         if (mDeferDropAfterUninstall) {
+            final CellLayout.CellInfo dragInfo = mDragInfo;
             mDeferredAction = new Runnable() {
                 public void run() {
+                    mDragInfo = dragInfo; // Restore the drag info that was cleared in onDragEnd()
                     onDropCompleted(target, d, isFlingToDelete, success);
                     mDeferredAction = null;
                 }
@@ -3685,6 +3687,7 @@ public class Workspace extends PagedView
                 && mDragInfo.cell != null) {
             mDragInfo.cell.setVisibility(VISIBLE);
         }
+        mDragInfo = null;
 
         if (!isFlingToDelete) {
             // Fling to delete already exits spring loaded mode after the animation finishes.
