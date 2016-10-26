@@ -500,7 +500,6 @@ public class Workspace extends PagedView
         setWillNotDraw(false);
         setClipChildren(false);
         setClipToPadding(false);
-        setChildrenDrawnWithCacheEnabled(true);
 
         setMinScale(mOverviewModeShrinkFactor);
         setupLayoutTransition();
@@ -1312,29 +1311,12 @@ public class Workspace extends PagedView
 
     protected void onPageBeginMoving() {
         super.onPageBeginMoving();
-
-        if (isHardwareAccelerated()) {
-            updateChildrenLayersEnabled(false);
-        } else {
-            if (mNextPage != INVALID_PAGE) {
-                // we're snapping to a particular screen
-                enableChildrenCache(mCurrentPage, mNextPage);
-            } else {
-                // this is when user is actively dragging a particular screen, they might
-                // swipe it either left or right (but we won't advance by more than one screen)
-                enableChildrenCache(mCurrentPage - 1, mCurrentPage + 1);
-            }
-        }
+        updateChildrenLayersEnabled(false);
     }
 
     protected void onPageEndMoving() {
         super.onPageEndMoving();
-
-        if (isHardwareAccelerated()) {
-            updateChildrenLayersEnabled(false);
-        } else {
-            clearChildrenCache();
-        }
+        updateChildrenLayersEnabled(false);
 
         if (mDragController.isDragging()) {
             if (workspaceInModalState()) {
@@ -1870,37 +1852,6 @@ public class Workspace extends PagedView
 
     public boolean workspaceInModalState() {
         return mState != State.NORMAL;
-    }
-
-    void enableChildrenCache(int fromPage, int toPage) {
-        if (fromPage > toPage) {
-            final int temp = fromPage;
-            fromPage = toPage;
-            toPage = temp;
-        }
-
-        final int screenCount = getChildCount();
-
-        fromPage = Math.max(fromPage, 0);
-        toPage = Math.min(toPage, screenCount - 1);
-
-        for (int i = fromPage; i <= toPage; i++) {
-            final CellLayout layout = (CellLayout) getChildAt(i);
-            layout.setChildrenDrawnWithCacheEnabled(true);
-            layout.setChildrenDrawingCacheEnabled(true);
-        }
-    }
-
-    void clearChildrenCache() {
-        final int screenCount = getChildCount();
-        for (int i = 0; i < screenCount; i++) {
-            final CellLayout layout = (CellLayout) getChildAt(i);
-            layout.setChildrenDrawnWithCacheEnabled(false);
-            // In software mode, we don't want the items to continue to be drawn into bitmaps
-            if (!isHardwareAccelerated()) {
-                layout.setChildrenDrawingCacheEnabled(false);
-            }
-        }
     }
 
     @Thunk void updateChildrenLayersEnabled(boolean force) {

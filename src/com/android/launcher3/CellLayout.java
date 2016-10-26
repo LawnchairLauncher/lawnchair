@@ -930,16 +930,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         return getMeasuredWidth() - getPaddingLeft() - getPaddingRight() - (mCountX * mCellWidth);
     }
 
-    @Override
-    protected void setChildrenDrawingCacheEnabled(boolean enabled) {
-        mShortcutsAndWidgets.setChildrenDrawingCacheEnabled(enabled);
-    }
-
-    @Override
-    protected void setChildrenDrawnWithCacheEnabled(boolean enabled) {
-        mShortcutsAndWidgets.setChildrenDrawnWithCacheEnabled(enabled);
-    }
-
     public float getBackgroundAlpha() {
         return mBackgroundAlpha;
     }

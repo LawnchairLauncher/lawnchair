@@ -201,28 +201,4 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
             child.cancelLongPress();
         }
     }
-
-    @Override
-    protected void setChildrenDrawingCacheEnabled(boolean enabled) {
-        final int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            final View view = getChildAt(i);
-            view.setDrawingCacheEnabled(enabled);
-            // Update the drawing caches
-            if (!view.isHardwareAccelerated() && enabled) {
-                view.buildDrawingCache(true);
-            }
-        }
-    }
-
-    protected void setChildrenDrawnWithCacheEnabled(boolean enabled) {
-        super.setChildrenDrawnWithCacheEnabled(enabled);
-    }
-
-    @Override
-    public void setLayerType(int layerType, Paint paint) {
-        // When clip children is disabled do not use hardware layer,
-        // as hardware layer forces clip children.
-        super.setLayerType(getClipChildren() ? layerType : LAYER_TYPE_NONE, paint);
-    }
 }
