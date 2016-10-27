@@ -301,7 +301,14 @@ public class WidgetPreviewLoader {
 
         Drawable drawable = null;
         if (info.previewImage != 0) {
-            drawable = mWidgetManager.loadPreview(info);
+            try {
+                drawable = mWidgetManager.loadPreview(info);
+            } catch (OutOfMemoryError e) {
+                Log.w(TAG, "Error loading widget preview for: " + info.provider, e);
+                // During OutOfMemoryError, the previous heap stack is not affected. Catching
+                // an OOM error here should be safe & not affect other parts of launcher.
+                drawable = null;
+            }
             if (drawable != null) {
                 drawable = mutateOnMainThread(drawable);
             } else {
