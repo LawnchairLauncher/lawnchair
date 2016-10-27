@@ -242,7 +242,7 @@ public class WidgetPreviewLoader {
                     CacheDb.COLUMN_COMPONENT + " = ? AND " + CacheDb.COLUMN_USER + " = ? AND "
                             + CacheDb.COLUMN_SIZE + " = ?",
                     new String[]{
-                            key.componentName.flattenToString(),
+                            key.componentName.flattenToShortString(),
                             Long.toString(mUserManager.getSerialNumberForUser(key.user)),
                             key.size
                     });
