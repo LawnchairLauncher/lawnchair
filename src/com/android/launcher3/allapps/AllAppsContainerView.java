@@ -43,7 +43,6 @@ import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherTransitionable;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
@@ -63,8 +62,7 @@ import java.util.List;
  * The all apps view container.
  */
 public class AllAppsContainerView extends BaseContainerView implements DragSource,
-        LauncherTransitionable, View.OnLongClickListener, AllAppsSearchBarController.Callbacks,
-        Insettable {
+        View.OnLongClickListener, AllAppsSearchBarController.Callbacks, Insettable {
 
     private final Launcher mLauncher;
     private final AlphabeticalAppsList mApps;
@@ -441,29 +439,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         if (!success) {
             d.deferDragViewCleanupPostAnimation = false;
-        }
-    }
-
-    @Override
-    public void onLauncherTransitionPrepare(Launcher l, boolean animated,
-            boolean multiplePagesVisible) {
-        // Do nothing
-    }
-
-    @Override
-    public void onLauncherTransitionStart(Launcher l, boolean animated, boolean toWorkspace) {
-        // Do nothing
-    }
-
-    @Override
-    public void onLauncherTransitionStep(Launcher l, float t) {
-        // Do nothing
-    }
-
-    @Override
-    public void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace) {
-        if (toWorkspace) {
-            reset();
         }
     }
 
