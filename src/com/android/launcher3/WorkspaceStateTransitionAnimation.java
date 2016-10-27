@@ -30,11 +30,10 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.DecelerateInterpolator;
 
+import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.Thunk;
-
-import java.util.HashMap;
 
 /**
  * A convenience class to update a view's visibility state after an alpha animation.
@@ -226,7 +225,7 @@ public class WorkspaceStateTransitionAnimation {
     }
 
     public AnimatorSet getAnimationToState(Workspace.State fromState, Workspace.State toState,
-            boolean animated, HashMap<View, Integer> layerViews) {
+            boolean animated, AnimationLayerSet layerViews) {
         AccessibilityManager am = (AccessibilityManager)
                 mLauncher.getSystemService(Context.ACCESSIBILITY_SERVICE);
         final boolean accessibilityEnabled = am.isEnabled();
@@ -262,8 +261,7 @@ public class WorkspaceStateTransitionAnimation {
      * Starts a transition animation for the workspace.
      */
     private void animateWorkspace(final TransitionStates states, final boolean animated,
-                                  final int duration, final HashMap<View, Integer> layerViews,
-                                  final boolean accessibilityEnabled) {
+            final int duration, AnimationLayerSet layerViews, final boolean accessibilityEnabled) {
         // Cancel existing workspace animations and create a new animator set if requested
         cancelAnimation();
         if (animated) {
@@ -396,12 +394,10 @@ public class WorkspaceStateTransitionAnimation {
 
             // For animation optimization, we may need to provide the Launcher transition
             // with a set of views on which to force build and manage layers in certain scenarios.
-            layerViews.put(overviewPanel, LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
-            layerViews.put(qsbContainer, LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
-            layerViews.put(mLauncher.getHotseat(),
-                    LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
-            layerViews.put(mWorkspace.getPageIndicator(),
-                    LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
+            layerViews.addView(overviewPanel);
+            layerViews.addView(qsbContainer);
+            layerViews.addView(mLauncher.getHotseat());
+            layerViews.addView(mWorkspace.getPageIndicator());
 
             if (states.workspaceToOverview) {
                 hotseatAlpha.setInterpolator(new DecelerateInterpolator(2));
