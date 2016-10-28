@@ -20,6 +20,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.TimeInterpolator;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
@@ -410,6 +411,15 @@ public class DeepShortcutsContainer extends AbstractFloatingView
                 }
             }
         };
+    }
+
+    /**
+     * We need to handle touch events to prevent them from falling through to the workspace below.
+     */
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        return true;
     }
 
     @Override
