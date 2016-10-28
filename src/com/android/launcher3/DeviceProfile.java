@@ -205,6 +205,13 @@ public class DeviceProfile {
         computeAllAppsButtonSize(context);
     }
 
+    DeviceProfile getMultiWindowProfile(Context context, Point mwSize) {
+        // In multi-window mode, we can have widthPx = availableWidthPx
+        // and heightPx = availableHeightPx because Launcher uses the InvariantDeviceProfiles'
+        // widthPx and heightPx values where it's needed.
+        return new DeviceProfile(context, inv, mwSize, mwSize, mwSize.x, mwSize.y, isLandscape);
+    }
+
     public void addLauncherLayoutChangedListener(LauncherLayoutChangeListener listener) {
         if (!mListeners.contains(listener)) {
             mListeners.add(listener);
@@ -598,5 +605,12 @@ public class DeviceProfile {
         int padding = (pageIndicatorLandGutterRightNavBarPx +
                 hotseatBarHeightPx + hotseatLandGutterPx + mInsets.left) / 2;
         return new int[]{ padding, padding };
+    }
+
+    public boolean shouldIgnoreLongPressToOverview(float touchX, float edgeThreshold) {
+        boolean inMultiWindowMode = this != inv.landscapeProfile && this != inv.portraitProfile;
+        boolean touchedLhsEdge = mInsets.left == 0 && touchX < edgeThreshold;
+        boolean touchedRhsEdge = mInsets.right == 0 && touchX > (widthPx - edgeThreshold);
+        return !inMultiWindowMode && (touchedLhsEdge || touchedRhsEdge);
     }
 }

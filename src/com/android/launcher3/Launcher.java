@@ -45,6 +45,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -359,10 +360,17 @@ public class Launcher extends Activity
         LauncherAppState app = LauncherAppState.getInstance();
 
         // Load configuration-specific DeviceProfile
-        mDeviceProfile = getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_LANDSCAPE ?
-                app.getInvariantDeviceProfile().landscapeProfile
-                : app.getInvariantDeviceProfile().portraitProfile;
+        mDeviceProfile =
+                getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
+                        ? app.getInvariantDeviceProfile().landscapeProfile
+                        : app.getInvariantDeviceProfile().portraitProfile;
+
+        if (Utilities.isNycOrAbove() && isInMultiWindowMode()) {
+            Display display = getWindowManager().getDefaultDisplay();
+            Point mwSize = new Point();
+            display.getSize(mwSize);
+            mDeviceProfile = mDeviceProfile.getMultiWindowProfile(this, mwSize);
+        }
 
         mSharedPrefs = Utilities.getPrefs(this);
         mIsSafeModeEnabled = getPackageManager().isSafeMode();
@@ -2708,12 +2716,13 @@ public class Launcher extends Activity
             return true;
         }
 
-        boolean fromEdgeOfScreen = mLastDispatchTouchEventX < mEdgeOfScreenThresholdPx
-                || mLastDispatchTouchEventX > (mDeviceProfile.widthPx - mEdgeOfScreenThresholdPx);
+
+        boolean ignoreLongPressToOverview = mDeviceProfile.shouldIgnoreLongPressToOverview(
+                mLastDispatchTouchEventX, mEdgeOfScreenThresholdPx);
 
         if (v instanceof Workspace) {
             if (!mWorkspace.isInOverviewMode()) {
-                if (!mWorkspace.isTouchActive() && !fromEdgeOfScreen) {
+                if (!mWorkspace.isTouchActive() && !ignoreLongPressToOverview) {
                     getUserEventDispatcher().logActionOnContainer(LauncherLogProto.Action.LONGPRESS,
                             LauncherLogProto.Action.NONE, LauncherLogProto.WORKSPACE,
                             mWorkspace.getCurrentPage());
@@ -2748,7 +2757,7 @@ public class Launcher extends Activity
                     getUserEventDispatcher().logActionOnContainer(LauncherLogProto.Action.LONGPRESS,
                             LauncherLogProto.Action.NONE, LauncherLogProto.OVERVIEW);
                 } else {
-                    if (fromEdgeOfScreen) {
+                    if (ignoreLongPressToOverview) {
                         return false;
                     }
                     getUserEventDispatcher().logActionOnContainer(LauncherLogProto.Action.LONGPRESS,
