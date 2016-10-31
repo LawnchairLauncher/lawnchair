@@ -28,15 +28,12 @@ import android.text.TextUtils;
 
 import com.android.launcher3.Utilities;
 
-import java.util.ArrayList;
-
 /**
  * Utility methods using package manager
  */
 public class PackageManagerHelper {
 
     private static final int FLAG_SUSPENDED = 1<<30;
-    private static final String LIVE_WALLPAPER_PICKER_PKG = "com.android.wallpaper.livepicker";
 
     /**
      * Returns true if the app can possibly be on the SDCard. This is just a workaround and doesn't
@@ -77,29 +74,6 @@ public class PackageManagerHelper {
         } else {
             return false;
         }
-    }
-
-    /**
-     * Returns the package for a wallpaper picker system app giving preference to a app which
-     * is not as image picker.
-     */
-    public static String getWallpaperPickerPackage(PackageManager pm) {
-        ArrayList<String> excludePackages = new ArrayList<>();
-        // Exclude packages which contain an image picker
-        for (ResolveInfo info : pm.queryIntentActivities(
-                new Intent(Intent.ACTION_GET_CONTENT).setType("image/*"), 0)) {
-            excludePackages.add(info.activityInfo.packageName);
-        }
-        excludePackages.add(LIVE_WALLPAPER_PICKER_PKG);
-
-        for (ResolveInfo info : pm.queryIntentActivities(
-                new Intent(Intent.ACTION_SET_WALLPAPER), 0)) {
-            if (!excludePackages.contains(info.activityInfo.packageName) &&
-                    (info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
-                return info.activityInfo.packageName;
-            }
-        }
-        return excludePackages.get(0);
     }
 
     /**

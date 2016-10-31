@@ -2469,20 +2469,27 @@ public class Launcher extends Activity
             return;
         }
 
-        String pickerPackage = getString(R.string.wallpaper_picker_package);
-        if (TextUtils.isEmpty(pickerPackage)) {
-            pickerPackage =  PackageManagerHelper.getWallpaperPickerPackage(getPackageManager());
-        }
-
         int pageScroll = mWorkspace.getScrollForPage(mWorkspace.getPageNearestToCenterOfScreen());
         float offset = mWorkspace.mWallpaperOffset.wallpaperOffsetForScroll(pageScroll);
-
         setWaitingForResult(new PendingRequestArgs(new ItemInfo()));
         Intent intent = new Intent(Intent.ACTION_SET_WALLPAPER)
-                .setPackage(pickerPackage)
                 .putExtra(Utilities.EXTRA_WALLPAPER_OFFSET, offset);
+
+        String pickerPackage = getString(R.string.wallpaper_picker_package);
+        boolean hasTargetPackage = TextUtils.isEmpty(pickerPackage);
+        if (!hasTargetPackage) {
+            intent.setPackage(pickerPackage);
+        }
+
         intent.setSourceBounds(getViewBounds(v));
-        startActivityForResult(intent, REQUEST_PICK_WALLPAPER, getActivityLaunchOptions(v));
+        try {
+            startActivityForResult(intent, REQUEST_PICK_WALLPAPER,
+                    // If there is no target package, use the default intent chooser animation
+                    hasTargetPackage ? getActivityLaunchOptions(v) : null);
+        } catch (ActivityNotFoundException e) {
+            setWaitingForResult(null);
+            Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
