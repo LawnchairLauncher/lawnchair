@@ -28,6 +28,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.ShapeDrawable;
 import android.os.Build;
@@ -38,6 +39,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
@@ -89,6 +91,7 @@ public class DeepShortcutsContainer extends AbstractFloatingView
 
     private BubbleTextView mOriginalIcon;
     private final Rect mTempRect = new Rect();
+    private PointF mInterceptTouchDown = new PointF();
     private Point mIconLastTouchPos = new Point();
     private boolean mIsLeftAligned;
     private boolean mIsAboveIcon;
@@ -411,6 +414,17 @@ public class DeepShortcutsContainer extends AbstractFloatingView
                 }
             }
         };
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            mInterceptTouchDown.set(ev.getX(), ev.getY());
+            return false;
+        }
+        // Stop sending touch events to deep shortcut views if user moved beyond touch slop.
+        return Math.hypot(mInterceptTouchDown.x - ev.getX(), mInterceptTouchDown.y - ev.getY())
+                > ViewConfiguration.get(getContext()).getScaledTouchSlop();
     }
 
     /**
