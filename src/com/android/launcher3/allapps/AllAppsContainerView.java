@@ -16,7 +16,10 @@
 package com.android.launcher3.allapps;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.InsetDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.text.Selection;
 import android.text.Spannable;
@@ -98,6 +101,24 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mLayoutManager = mAdapter.getLayoutManager();
         mSearchQueryBuilder = new SpannableStringBuilder();
         Selection.setSelection(mSearchQueryBuilder, 0);
+    }
+
+    @Override
+    protected void updateBackground(
+            int paddingLeft, int paddingTop, int paddingRight, int paddingBottom) {
+        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
+            if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+                getRevealView().setBackground(new InsetDrawable(mBaseDrawable,
+                        paddingLeft, paddingTop, paddingRight, paddingBottom));
+                getContentView().setBackground(
+                        new InsetDrawable(new ColorDrawable(Color.TRANSPARENT),
+                                paddingLeft, paddingTop, paddingRight, paddingBottom));
+            } else {
+                getRevealView().setBackground(mBaseDrawable);
+            }
+        } else {
+            super.updateBackground(paddingLeft, paddingTop, paddingRight, paddingBottom);
+        }
     }
 
     /**
