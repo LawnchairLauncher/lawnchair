@@ -1678,7 +1678,7 @@ public class Workspace extends PagedView
         if (mWorkspaceFadeInAdjacentScreens &&
                 !workspaceInModalState() &&
                 !mIsSwitchingState) {
-            int screenCenter = getScrollX() + getViewportOffsetX() + getViewportWidth() / 2;
+            int screenCenter = getScrollX() + getViewportWidth() / 2;
             for (int i = numCustomPages(); i < getChildCount(); i++) {
                 CellLayout child = (CellLayout) getChildAt(i);
                 if (child != null) {
@@ -1815,7 +1815,7 @@ public class Workspace extends PagedView
                 }
             });
         }
-
+        updatePageAlphaValues();
     }
 
     @Override
