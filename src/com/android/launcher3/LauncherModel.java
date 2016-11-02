@@ -2692,7 +2692,7 @@ public class LauncherModel extends BroadcastReceiver
      * use partial updates similar to {@link UserManagerCompat}
      */
     public void refreshShortcutsIfRequired() {
-        if (Utilities.isNycMR1OrAbove()) {
+        if (Utilities.ATLEAST_NOUGAT_MR1) {
             sWorker.removeCallbacks(mShortcutPermissionCheckRunnable);
             sWorker.post(mShortcutPermissionCheckRunnable);
         }

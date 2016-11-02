@@ -115,7 +115,7 @@ public class LauncherAppState {
         filter.addAction(Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE);
         filter.addAction(Intent.ACTION_MANAGED_PROFILE_UNLOCKED);
         // For extracting colors from the wallpaper
-        if (Utilities.isNycOrAbove()) {
+        if (Utilities.ATLEAST_NOUGAT) {
             // TODO: add a broadcast entry to the manifest for pre-N.
             filter.addAction(Intent.ACTION_WALLPAPER_CHANGED);
         }

@@ -62,7 +62,7 @@ public class ExtractionUtils {
     }
 
     private static boolean hasWallpaperIdChanged(Context context) {
-        if (!Utilities.isNycOrAbove()) {
+        if (!Utilities.ATLEAST_NOUGAT) {
             // TODO: update an id in sharedprefs in onWallpaperChanged broadcast, and read it here.
             return false;
         }
@@ -74,7 +74,7 @@ public class ExtractionUtils {
 
     @TargetApi(Build.VERSION_CODES.N)
     public static int getWallpaperId(WallpaperManager wallpaperManager) {
-        return Utilities.isNycOrAbove() ?
+        return Utilities.ATLEAST_NOUGAT ?
                 wallpaperManager.getWallpaperId(WallpaperManager.FLAG_SYSTEM) : -1;
     }
 
