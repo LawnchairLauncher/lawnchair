@@ -365,7 +365,7 @@ public class Launcher extends Activity
                         ? app.getInvariantDeviceProfile().landscapeProfile
                         : app.getInvariantDeviceProfile().portraitProfile;
 
-        if (Utilities.isNycOrAbove() && isInMultiWindowMode()) {
+        if (Utilities.ATLEAST_NOUGAT && isInMultiWindowMode()) {
             Display display = getWindowManager().getDefaultDisplay();
             Point mwSize = new Point();
             display.getSize(mwSize);
@@ -466,7 +466,7 @@ public class Launcher extends Activity
 
     private void loadExtractedColorsAndColorItems() {
         // TODO: do this in pre-N as well, once the extraction part is complete.
-        if (Utilities.isNycOrAbove()) {
+        if (Utilities.ATLEAST_NOUGAT) {
             mExtractedColors.load(this);
             mHotseat.updateColor(mExtractedColors, !mPaused);
             mWorkspace.getPageIndicator().updateColor(mExtractedColors);
@@ -913,7 +913,7 @@ public class Launcher extends Activity
             mLauncherCallbacks.onStop();
         }
 
-        if (Utilities.isNycMR1OrAbove()) {
+        if (Utilities.ATLEAST_NOUGAT_MR1) {
             mAppWidgetHost.stopListening();
         }
     }
@@ -927,7 +927,7 @@ public class Launcher extends Activity
             mLauncherCallbacks.onStart();
         }
 
-        if (Utilities.isNycMR1OrAbove()) {
+        if (Utilities.ATLEAST_NOUGAT_MR1) {
             mAppWidgetHost.startListening();
         }
     }

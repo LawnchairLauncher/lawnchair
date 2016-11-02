@@ -91,7 +91,7 @@ public class DeepShortcutManager {
      */
     @TargetApi(25)
     public void unpinShortcut(final ShortcutKey key) {
-        if (Utilities.isNycMR1OrAbove()) {
+        if (Utilities.ATLEAST_NOUGAT_MR1) {
             String packageName = key.componentName.getPackageName();
             String id = key.getId();
             UserHandleCompat user = key.user;
@@ -113,7 +113,7 @@ public class DeepShortcutManager {
      */
     @TargetApi(25)
     public void pinShortcut(final ShortcutKey key) {
-        if (Utilities.isNycMR1OrAbove()) {
+        if (Utilities.ATLEAST_NOUGAT_MR1) {
             String packageName = key.componentName.getPackageName();
             String id = key.getId();
             UserHandleCompat user = key.user;
@@ -132,7 +132,7 @@ public class DeepShortcutManager {
     @TargetApi(25)
     public void startShortcut(String packageName, String id, Rect sourceBounds,
           Bundle startActivityOptions, UserHandleCompat user) {
-        if (Utilities.isNycMR1OrAbove()) {
+        if (Utilities.ATLEAST_NOUGAT_MR1) {
             try {
                 mLauncherApps.startShortcut(packageName, id, sourceBounds,
                         startActivityOptions, user.getUser());
@@ -146,7 +146,7 @@ public class DeepShortcutManager {
 
     @TargetApi(25)
     public Drawable getShortcutIconDrawable(ShortcutInfoCompat shortcutInfo, int density) {
-        if (Utilities.isNycMR1OrAbove()) {
+        if (Utilities.ATLEAST_NOUGAT_MR1) {
             try {
                 Drawable icon = mLauncherApps.getShortcutIconDrawable(
                         shortcutInfo.getShortcutInfo(), density);
@@ -191,7 +191,7 @@ public class DeepShortcutManager {
     @TargetApi(25)
     private List<ShortcutInfoCompat> query(int flags, String packageName,
             ComponentName activity, List<String> shortcutIds, UserHandleCompat user) {
-        if (Utilities.isNycMR1OrAbove()) {
+        if (Utilities.ATLEAST_NOUGAT_MR1) {
             ShortcutQuery q = new ShortcutQuery();
             q.setQueryFlags(flags);
             if (packageName != null) {
@@ -222,7 +222,7 @@ public class DeepShortcutManager {
 
     @TargetApi(25)
     public boolean hasHostPermission() {
-        if (Utilities.isNycMR1OrAbove()) {
+        if (Utilities.ATLEAST_NOUGAT_MR1) {
             try {
                 return mLauncherApps.hasShortcutHostPermission();
             } catch (SecurityException|IllegalStateException e) {

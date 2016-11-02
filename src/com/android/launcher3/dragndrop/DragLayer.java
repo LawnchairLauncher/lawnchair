@@ -390,7 +390,7 @@ public class DragLayer extends InsettableFrameLayout {
 
     @TargetApi(Build.VERSION_CODES.N)
     private void handleSystemDragStart(DragEvent event) {
-        if (!FeatureFlags.LAUNCHER3_USE_SYSTEM_DRAG_DRIVER || !Utilities.isNycOrAbove()) {
+        if (!FeatureFlags.LAUNCHER3_USE_SYSTEM_DRAG_DRIVER || !Utilities.ATLEAST_NOUGAT) {
             return;
         }
         if (mLauncher.isWorkspaceLocked()) {

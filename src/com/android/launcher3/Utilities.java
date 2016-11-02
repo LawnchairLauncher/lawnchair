@@ -84,13 +84,11 @@ public final class Utilities {
     private static final int[] sLoc0 = new int[2];
     private static final int[] sLoc1 = new int[2];
 
-    public static boolean isNycMR1OrAbove() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1;
-    }
+    public static final boolean ATLEAST_NOUGAT_MR1 =
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1;
 
-    public static boolean isNycOrAbove() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
-    }
+    public static final boolean ATLEAST_NOUGAT =
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
 
     public static final boolean ATLEAST_MARSHMALLOW =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
@@ -137,7 +135,7 @@ public final class Utilities {
     }
 
     public static boolean getAllowRotationDefaultValue(Context context) {
-        if (isNycOrAbove()) {
+        if (ATLEAST_NOUGAT) {
             // If the device was scaled, used the original dimensions to determine if rotation
             // is allowed of not.
             Resources res = context.getResources();
@@ -619,7 +617,7 @@ public final class Utilities {
     }
 
     public static boolean isWallpaperAllowed(Context context) {
-        if (isNycOrAbove()) {
+        if (ATLEAST_NOUGAT) {
             try {
                 WallpaperManager wm = context.getSystemService(WallpaperManager.class);
                 return (Boolean) wm.getClass().getDeclaredMethod("isSetWallpaperAllowed")
