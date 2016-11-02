@@ -116,10 +116,6 @@ public class DeviceProfile {
     public int allAppsIconDrawablePaddingPx;
     public float allAppsIconTextSizePx;
 
-    // Containers
-    private final int containerLeftPaddingPx;
-    private final int containerRightPaddingPx;
-
     // Drop Target
     public int dropTargetBarSizePx;
 
@@ -184,10 +180,6 @@ public class DeviceProfile {
         hotseatBarTopPaddingPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_top_padding);
         hotseatLandGutterPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_gutter_width);
-        containerLeftPaddingPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_container_land_left_padding);
-        containerRightPaddingPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_container_land_right_padding);
 
         // Determine sizes.
         widthPx = width;
@@ -588,9 +580,7 @@ public class DeviceProfile {
     /**
      * @return the left/right paddings for all containers.
      */
-    public final int[] getContainerPadding(Context context) {
-        Resources res = context.getResources();
-
+    public final int[] getContainerPadding() {
         // No paddings for portrait phone
         if (isPhone && !isVerticalBarLayout()) {
             return new int[] {0, 0};

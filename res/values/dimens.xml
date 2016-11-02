@@ -33,8 +33,6 @@
     <dimen name="dynamic_grid_workspace_page_spacing">8dp</dimen>
     <!-- Minimum space between workspace and hotseat in spring loaded mode -->
     <dimen name="dynamic_grid_min_spring_loaded_space">8dp</dimen>
-    <dimen name="dynamic_grid_container_land_left_padding">118dp</dimen>
-    <dimen name="dynamic_grid_container_land_right_padding">66dp</dimen>
 
 <!-- Drop target bar -->
     <dimen name="dynamic_grid_drop_target_size">48dp</dimen>

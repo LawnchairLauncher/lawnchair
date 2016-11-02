@@ -120,7 +120,7 @@ public abstract class BaseContainerView extends FrameLayout
         int paddingBottom;
 
         DeviceProfile grid = Launcher.getLauncher(context).getDeviceProfile();
-        int[] padding = grid.getContainerPadding(context);
+        int[] padding = grid.getContainerPadding();
         paddingLeft = padding[0] + grid.edgeMarginPx;
         paddingRight = padding[1] + grid.edgeMarginPx;
         if (!grid.isVerticalBarLayout()) {
