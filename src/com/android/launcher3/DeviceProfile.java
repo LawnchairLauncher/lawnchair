@@ -96,8 +96,14 @@ public class DeviceProfile {
     public int folderBackgroundOffset;
     public int folderIconSizePx;
     public int folderIconPreviewPadding;
+
+    // Folder cell
     public int folderCellWidthPx;
     public int folderCellHeightPx;
+
+    // Folder child
+    public int folderChildIconSizePx;
+    public int folderChildTextSizePx;
     public int folderChildDrawablePaddingPx;
 
     // Hotseat
@@ -228,19 +234,17 @@ public class DeviceProfile {
     }
 
     private void updateAvailableDimensions(DisplayMetrics dm, Resources res) {
-        // Check to see if the icons fit in the new available height.  If not, then we need to
-        // shrink the icon size.
-        float scale = 1f;
-        int drawablePadding = iconDrawablePaddingOriginalPx;
-        updateIconSize(1f, drawablePadding, res, dm);
-        float usedHeight = (cellHeightPx * inv.numRows);
+        updateIconSize(1f, iconDrawablePaddingOriginalPx, res, dm);
 
+        // Check to see if the icons fit within the available height.  If not, then scale down.
+        float usedHeight = (cellHeightPx * inv.numRows);
         int maxHeight = (availableHeightPx - getTotalWorkspacePadding().y);
         if (usedHeight > maxHeight) {
-            scale = maxHeight / usedHeight;
-            drawablePadding = 0;
+            float scale = maxHeight / usedHeight;
+            updateIconSize(scale, 0, res, dm);
         }
-        updateIconSize(scale, drawablePadding, res, dm);
+
+        updateAvailableFolderCellDimensions(dm, res);
     }
 
     private void updateIconSize(float scale, int drawablePadding, Resources res,
@@ -276,29 +280,45 @@ public class DeviceProfile {
                     res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
         }
 
-        // Folder cell
-        int cellPaddingX = res.getDimensionPixelSize(R.dimen.folder_cell_x_padding);
-        int cellPaddingY = res.getDimensionPixelSize(R.dimen.folder_cell_y_padding);
-        final int folderChildTextSize =
-                Utilities.calculateTextHeight(res.getDimension(R.dimen.folder_child_text_size));
-
-        final int folderBottomPanelSize =
-                res.getDimensionPixelSize(R.dimen.folder_label_padding_top)
-                 + res.getDimensionPixelSize(R.dimen.folder_label_padding_bottom)
-                + Utilities.calculateTextHeight(res.getDimension(R.dimen.folder_label_text_size));
-
-        // Don't let the folder get too close to the edges of the screen.
-        folderCellWidthPx = Math.min(iconSizePx + 2 * cellPaddingX,
-                (availableWidthPx - 4 * edgeMarginPx) / inv.numFolderColumns);
-        folderCellHeightPx = Math.min(iconSizePx + 3 * cellPaddingY + folderChildTextSize,
-                (availableHeightPx - 4 * edgeMarginPx - folderBottomPanelSize) / inv.numFolderRows);
-        folderChildDrawablePaddingPx = Math.max(0,
-                (folderCellHeightPx - iconSizePx - folderChildTextSize) / 3);
-
         // Folder icon
         folderBackgroundOffset = -edgeMarginPx;
         folderIconSizePx = iconSizePx + 2 * -folderBackgroundOffset;
         folderIconPreviewPadding = res.getDimensionPixelSize(R.dimen.folder_preview_padding);
+    }
+
+    private void updateAvailableFolderCellDimensions(DisplayMetrics dm, Resources res) {
+        int folderBottomPanelSize = res.getDimensionPixelSize(R.dimen.folder_label_padding_top)
+                + res.getDimensionPixelSize(R.dimen.folder_label_padding_bottom)
+                + Utilities.calculateTextHeight(res.getDimension(R.dimen.folder_label_text_size));
+
+        updateFolderCellSize(1f, dm, res, folderBottomPanelSize);
+
+        // Check to see if the icons fit within the available height.  If not, then scale down.
+        float usedHeight = (folderCellHeightPx * inv.numFolderRows) + folderBottomPanelSize;
+        int maxHeight = availableHeightPx - getTotalWorkspacePadding().y - (2 * edgeMarginPx);
+        if (usedHeight > maxHeight) {
+            float scale = maxHeight / usedHeight;
+            updateFolderCellSize(scale, dm, res, folderBottomPanelSize);
+        }
+    }
+
+    private void updateFolderCellSize(float scale, DisplayMetrics dm, Resources res,
+             int folderBottomPanelSize) {
+        folderChildIconSizePx = (int) (Utilities.pxFromDp(inv.iconSize, dm) * scale);
+        folderChildTextSizePx =
+                (int) (res.getDimensionPixelSize(R.dimen.folder_child_text_size) * scale);
+
+        int textHeight = Utilities.calculateTextHeight(folderChildTextSizePx);
+        int cellPaddingX = (int) (res.getDimensionPixelSize(R.dimen.folder_cell_x_padding) * scale);
+        int cellPaddingY = (int) (res.getDimensionPixelSize(R.dimen.folder_cell_y_padding) * scale);
+
+        // Don't let the folder get too close to the edges of the screen.
+        folderCellWidthPx = Math.min(folderChildIconSizePx + 2 * cellPaddingX,
+                (availableWidthPx - 4 * edgeMarginPx) / inv.numFolderColumns);
+        folderCellHeightPx = Math.min(folderChildIconSizePx + 2 * cellPaddingY + textHeight,
+                (availableHeightPx - 4 * edgeMarginPx - folderBottomPanelSize) / inv.numFolderRows);
+        folderChildDrawablePaddingPx = Math.max(0,
+                (folderCellHeightPx - folderChildIconSizePx - textHeight) / 3);
     }
 
     public void updateInsets(Rect insets) {
