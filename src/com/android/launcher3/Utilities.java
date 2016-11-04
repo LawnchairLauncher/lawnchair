@@ -38,7 +38,9 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.DeadObjectException;
 import android.os.PowerManager;
+import android.os.TransactionTooLargeException;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -655,5 +657,10 @@ public final class Utilities {
             event.getText().add(text);
             accessibilityManager.sendAccessibilityEvent(event);
         }
+    }
+
+    public static boolean isBinderSizeError(Exception e) {
+        return e.getCause() instanceof TransactionTooLargeException
+                || e.getCause() instanceof DeadObjectException;
     }
 }

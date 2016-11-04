@@ -19,6 +19,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:elevation="2dp"
+    android:theme="@style/WidgetContainerTheme"
     android:background="@drawable/quantum_panel_dark"
     android:textAppearance="?android:attr/textAppearanceMediumInverse"
     android:textColor="@color/widgets_view_item_text_color"

@@ -72,7 +72,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
         mContext = context;
         mLongPressHelper = new CheckLongPressHelper(this);
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
-        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mInflater = LayoutInflater.from(context);
         setAccessibilityDelegate(Launcher.getLauncher(context).getAccessibilityDelegate());
         setBackgroundResource(R.drawable.widget_internal_focus_bg);
     }
@@ -301,6 +301,11 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
         setSelected(childIsFocused);
     }
 
+    public void switchToErrorView() {
+        // Update the widget with 0 Layout id, to reset the view to error view.
+        updateAppWidget(new RemoteViews(getAppWidgetInfo().provider.getPackageName(), 0));
+    }
+
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         try {
@@ -309,8 +314,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
             post(new Runnable() {
                 @Override
                 public void run() {
-                    // Update the widget with 0 Layout id, to reset the view to error view.
-                    updateAppWidget(new RemoteViews(getAppWidgetInfo().provider.getPackageName(), 0));
+                    switchToErrorView();
                 }
             });
         }
