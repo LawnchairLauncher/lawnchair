@@ -193,7 +193,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         int[] point = new int[2];
         point[0] = (int) ev.getX();
         point[1] = (int) ev.getY();
-        Utilities.mapCoordInSelfToDescendent(mAppsRecyclerView, this, point);
+        Utilities.mapCoordInSelfToDescendant(mAppsRecyclerView, this, point);
 
         // IF the MotionEvent is inside the search box, and the container keeps on receiving
         // touch input, container should move down.

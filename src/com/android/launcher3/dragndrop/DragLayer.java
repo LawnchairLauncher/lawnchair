@@ -480,8 +480,8 @@ public class DragLayer extends InsettableFrameLayout {
     /**
      * Inverse of {@link #getDescendantCoordRelativeToSelf(View, int[])}.
      */
-    public float mapCoordInSelfToDescendant(View descendant, int[] coord) {
-        return Utilities.mapCoordInSelfToDescendent(descendant, this, coord);
+    public void mapCoordInSelfToDescendant(View descendant, int[] coord) {
+        Utilities.mapCoordInSelfToDescendant(descendant, this, coord);
     }
 
     public void getViewRectRelativeToSelf(View v, Rect r) {
