@@ -34,12 +34,11 @@ import android.view.animation.DecelerateInterpolator;
 
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
+import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.CircleRevealOutlineProvider;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.WidgetsContainerView;
-
-import java.util.HashMap;
 
 /**
  * TODO: figure out what kind of tests we can write for this
@@ -119,9 +118,6 @@ public class LauncherStateTransitionAnimation {
 
     public static final String TAG = "LSTAnimation";
 
-    // Flags to determine how to set the layers on views before the transition animation
-    public static final int BUILD_LAYER = 0;
-    public static final int BUILD_AND_SET_LAYER = 1;
     public static final int SINGLE_FRAME_DELAY = 16;
 
     @Thunk Launcher mLauncher;
@@ -243,7 +239,7 @@ public class LauncherStateTransitionAnimation {
 
         final View fromView = mLauncher.getWorkspace();
 
-        final HashMap<View, Integer> layerViews = new HashMap<>();
+        final AnimationLayerSet layerViews = new AnimationLayerSet();
 
         // If for some reason our views aren't initialized, don't animate
         boolean initialized = buttonView != null;
@@ -319,14 +315,14 @@ public class LauncherStateTransitionAnimation {
             panelAlphaAndDrift.setInterpolator(new LogDecelerateInterpolator(100, 0));
 
             // Play the animation
-            layerViews.put(revealView, BUILD_AND_SET_LAYER);
+            layerViews.addView(revealView);
             animation.play(panelAlphaAndDrift);
 
             // Setup the animation for the content view
             contentView.setVisibility(View.VISIBLE);
             contentView.setAlpha(0f);
             contentView.setTranslationY(revealViewToYDrift);
-            layerViews.put(contentView, BUILD_AND_SET_LAYER);
+            layerViews.addView(contentView);
 
             // Create the individual animators
             ObjectAnimator pageDrift = ObjectAnimator.ofFloat(contentView, "translationY",
@@ -365,13 +361,6 @@ public class LauncherStateTransitionAnimation {
                     // Hide the reveal view
                     revealView.setVisibility(View.INVISIBLE);
 
-                    // Disable all necessary layers
-                    for (View v : layerViews.keySet()) {
-                        if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
-                            v.setLayerType(View.LAYER_TYPE_NONE, null);
-                        }
-                    }
-
                     // This can hold unnecessary references to views.
                     cleanupAnimation();
                     pCb.onTransitionComplete();
@@ -393,16 +382,6 @@ public class LauncherStateTransitionAnimation {
                     dispatchOnLauncherTransitionStart(fromView, animated, false);
                     dispatchOnLauncherTransitionStart(toView, animated, false);
 
-                    // Enable all necessary layers
-                    for (View v : layerViews.keySet()) {
-                        if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
-                            v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-                        }
-                        if (Utilities.ATLEAST_LOLLIPOP && v.isAttachedToWindow()) {
-                            v.buildLayer();
-                        }
-                    }
-
                     // Focus the new view
                     toView.requestFocus();
 
@@ -411,25 +390,19 @@ public class LauncherStateTransitionAnimation {
             };
             toView.bringToFront();
             toView.setVisibility(View.VISIBLE);
+
+            animation.addListener(layerViews);
             toView.post(startAnimRunnable);
             mCurrentAnimation = animation;
         } else if (animType == PULLUP) {
             // We are animating the content view alpha, so ensure we have a layer for it
-            layerViews.put(contentView, BUILD_AND_SET_LAYER);
+            layerViews.addView(contentView);
 
             animation.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     dispatchOnLauncherTransitionEnd(fromView, animated, false);
                     dispatchOnLauncherTransitionEnd(toView, animated, false);
-
-                    // Disable all necessary layers
-                    for (View v : layerViews.keySet()) {
-                        if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
-                            v.setLayerType(View.LAYER_TYPE_NONE, null);
-                        }
-                    }
-
                     cleanupAnimation();
                     pCb.onTransitionComplete();
                 }
@@ -450,21 +423,12 @@ public class LauncherStateTransitionAnimation {
                     dispatchOnLauncherTransitionStart(fromView, animated, false);
                     dispatchOnLauncherTransitionStart(toView, animated, false);
 
-                    // Enable all necessary layers
-                    for (View v : layerViews.keySet()) {
-                        if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
-                            v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-                        }
-                        if (Utilities.ATLEAST_LOLLIPOP && v.isAttachedToWindow()) {
-                            v.buildLayer();
-                        }
-                    }
-
                     toView.requestFocus();
                     stateAnimation.start();
                 }
             };
             mCurrentAnimation = animation;
+            mCurrentAnimation.addListener(layerViews);
             if (shouldPost) {
                 toView.post(startAnimRunnable);
             } else {
@@ -479,7 +443,7 @@ public class LauncherStateTransitionAnimation {
     private void playCommonTransitionAnimations(
             Workspace.State toWorkspaceState, View fromView, View toView,
             boolean animated, boolean initialized, AnimatorSet animation,
-            HashMap<View, Integer> layerViews) {
+            AnimationLayerSet layerViews) {
         // Create the workspace animation.
         // NOTE: this call apparently also sets the state for the workspace if !animated
         Animator workspaceAnim = mLauncher.startWorkspaceStateChangeAnimation(toWorkspaceState,
@@ -594,10 +558,8 @@ public class LauncherStateTransitionAnimation {
             final Workspace.State toWorkspaceState, final boolean animated,
             final Runnable onCompleteRunnable) {
         final View fromWorkspace = mLauncher.getWorkspace();
-        final HashMap<View, Integer> layerViews = new HashMap<>();
+        final AnimationLayerSet layerViews = new AnimationLayerSet();
         final AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
-        final int revealDuration = mLauncher.getResources()
-                .getInteger(R.integer.config_overlayRevealTime);
 
         // Cancel the current animation
         cancelAnimation();
@@ -622,16 +584,6 @@ public class LauncherStateTransitionAnimation {
                         return;
 
                     dispatchOnLauncherTransitionStart(fromWorkspace, animated, true);
-
-                    // Enable all necessary layers
-                    for (View v : layerViews.keySet()) {
-                        if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
-                            v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-                        }
-                        if (Utilities.ATLEAST_LOLLIPOP && v.isAttachedToWindow()) {
-                            v.buildLayer();
-                        }
-                    }
                     stateAnimation.start();
                 }
             };
@@ -645,17 +597,11 @@ public class LauncherStateTransitionAnimation {
                         onCompleteRunnable.run();
                     }
 
-                    // Disable all necessary layers
-                    for (View v : layerViews.keySet()) {
-                        if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
-                            v.setLayerType(View.LAYER_TYPE_NONE, null);
-                        }
-                    }
-
                     // This can hold unnecessary references to views.
                     cleanupAnimation();
                 }
             });
+            stateAnimation.addListener(layerViews);
             fromWorkspace.post(startAnimRunnable);
             mCurrentAnimation = animation;
         } else /* if (!animated) */ {
@@ -692,7 +638,7 @@ public class LauncherStateTransitionAnimation {
         final View revealView = fromView.getRevealView();
         final View contentView = fromView.getContentView();
 
-        final HashMap<View, Integer> layerViews = new HashMap<>();
+        final AnimationLayerSet layerViews = new AnimationLayerSet();
 
         // If for some reason our views aren't initialized, don't animate
         boolean initialized = buttonView != null;
@@ -735,7 +681,7 @@ public class LauncherStateTransitionAnimation {
                 revealView.setVisibility(View.VISIBLE);
                 revealView.setAlpha(1f);
                 revealView.setTranslationY(0);
-                layerViews.put(revealView, BUILD_AND_SET_LAYER);
+                layerViews.addView(revealView);
 
                 // Calculate the final animation values
                 final float revealViewToXDrift;
@@ -783,7 +729,7 @@ public class LauncherStateTransitionAnimation {
                 }
 
                 // Setup the animation for the content view
-                layerViews.put(contentView, BUILD_AND_SET_LAYER);
+                layerViews.addView(contentView);
 
                 // Create the individual animators
                 ObjectAnimator pageDrift = ObjectAnimator.ofFloat(contentView, "translationY",
@@ -843,13 +789,6 @@ public class LauncherStateTransitionAnimation {
                         onCompleteRunnable.run();
                     }
 
-                    // Disable all necessary layers
-                    for (View v : layerViews.keySet()) {
-                        if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
-                            v.setLayerType(View.LAYER_TYPE_NONE, null);
-                        }
-                    }
-
                     // Reset page transforms
                     if (contentView != null) {
                         contentView.setTranslationX(0);
@@ -874,24 +813,15 @@ public class LauncherStateTransitionAnimation {
 
                     dispatchOnLauncherTransitionStart(fromView, animated, false);
                     dispatchOnLauncherTransitionStart(toView, animated, false);
-
-                    // Enable all necessary layers
-                    for (View v : layerViews.keySet()) {
-                        if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
-                            v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-                        }
-                        if (Utilities.ATLEAST_LOLLIPOP && v.isAttachedToWindow()) {
-                            v.buildLayer();
-                        }
-                    }
                     stateAnimation.start();
                 }
             };
             mCurrentAnimation = animation;
+            mCurrentAnimation.addListener(layerViews);
             fromView.post(startAnimRunnable);
         } else if (animType == PULLUP) {
             // We are animating the content view alpha, so ensure we have a layer for it
-            layerViews.put(contentView, BUILD_AND_SET_LAYER);
+            layerViews.addView(contentView);
 
             animation.addListener(new AnimatorListenerAdapter() {
                 boolean canceled = false;
@@ -908,13 +838,6 @@ public class LauncherStateTransitionAnimation {
                     // Run any queued runnables
                     if (onCompleteRunnable != null) {
                         onCompleteRunnable.run();
-                    }
-
-                    // Disable all necessary layers
-                    for (View v : layerViews.keySet()) {
-                        if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
-                            v.setLayerType(View.LAYER_TYPE_NONE, null);
-                        }
                     }
 
                     cleanupAnimation();
@@ -939,22 +862,13 @@ public class LauncherStateTransitionAnimation {
                     dispatchOnLauncherTransitionStart(fromView, animated, false);
                     dispatchOnLauncherTransitionStart(toView, animated, false);
 
-                    // Enable all necessary layers
-                    for (View v : layerViews.keySet()) {
-                        if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
-                            v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-                        }
-                        if (Utilities.ATLEAST_LOLLIPOP && v.isAttachedToWindow()) {
-                            v.buildLayer();
-                        }
-                    }
-
                     // Focus the new view
                     toView.requestFocus();
                     stateAnimation.start();
                 }
             };
             mCurrentAnimation = animation;
+            mCurrentAnimation.addListener(layerViews);
             if (shouldPost) {
                 fromView.post(startAnimRunnable);
             } else {

@@ -86,6 +86,7 @@ import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DefaultAppSearchController;
+import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -2970,7 +2971,7 @@ public class Launcher extends Activity
      * new state.
      */
     public Animator startWorkspaceStateChangeAnimation(Workspace.State toState,
-            boolean animated, HashMap<View, Integer> layerViews) {
+            boolean animated, AnimationLayerSet layerViews) {
         Workspace.State fromState = mWorkspace.getState();
         Animator anim = mWorkspace.setStateWithAnimation(toState, animated, layerViews);
         updateInteraction(fromState, toState);
