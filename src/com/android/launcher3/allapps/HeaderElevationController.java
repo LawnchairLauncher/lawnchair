@@ -7,7 +7,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
@@ -86,7 +85,7 @@ public abstract class HeaderElevationController extends RecyclerView.OnScrollLis
 
         public ControllerVL(View header) {
             mHeader = header;
-            Resources res = mHeader.getContext().getResources();
+            final Resources res = mHeader.getContext().getResources();
             mMaxElevation = res.getDimension(R.dimen.all_apps_header_max_elevation);
             mScrollToElevation = res.getDimension(R.dimen.all_apps_header_scroll_to_elevation);
 
@@ -98,15 +97,12 @@ public abstract class HeaderElevationController extends RecyclerView.OnScrollLis
                 public void getOutline(View view, Outline outline) {
                     final View parent = (View) mHeader.getParent();
 
-                    DisplayMetrics metrics = new DisplayMetrics();
-                    view.getDisplay().getMetrics(metrics);
-                    int offset = Utilities.pxFromDp(mMaxElevation, metrics);
-
                     final int left = parent.getLeft(); // Use the parent to account for offsets
                     final int top = view.getTop();
                     final int right = left + view.getWidth();
                     final int bottom = view.getBottom();
 
+                    final int offset = Utilities.pxFromDp(mMaxElevation, res.getDisplayMetrics());
                     outline.setRect(left - offset, top - offset, right + offset, bottom);
                 }
             };
