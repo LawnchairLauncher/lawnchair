@@ -34,6 +34,8 @@ import android.util.SparseArray;
 import android.view.animation.DecelerateInterpolator;
 
 public class FastBitmapDrawable extends Drawable {
+    private static final float DISABLED_DESATURATION = 1f;
+    private static final float DISABLED_BRIGHTNESS = 0.5f;
 
     /**
      * The possible states that a FastBitmapDrawable can be in.
@@ -43,8 +45,7 @@ public class FastBitmapDrawable extends Drawable {
         NORMAL                      (0f, 0f, 1f, new DecelerateInterpolator()),
         PRESSED                     (0f, 100f / 255f, 1f, CLICK_FEEDBACK_INTERPOLATOR),
         FAST_SCROLL_HIGHLIGHTED     (0f, 0f, 1.15f, new DecelerateInterpolator()),
-        FAST_SCROLL_UNHIGHLIGHTED   (0f, 0f, 1f, new DecelerateInterpolator()),
-        DISABLED                    (1f, 0.5f, 1f, new DecelerateInterpolator());
+        FAST_SCROLL_UNHIGHLIGHTED   (0f, 0f, 1f, new DecelerateInterpolator());
 
         public final float desaturation;
         public final float brightness;
@@ -96,6 +97,7 @@ public class FastBitmapDrawable extends Drawable {
     private final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
     private final Bitmap mBitmap;
     private State mState = State.NORMAL;
+    private boolean mIsDisabled;
 
     // The saturation and brightness are values that are mapped to REDUCED_FILTER_VALUE_SPACE and
     // as a result, can be used to compose the key for the cached ColorMatrixColorFilters
@@ -177,13 +179,14 @@ public class FastBitmapDrawable extends Drawable {
         if (mState != newState) {
             mState = newState;
 
+            float desaturation = mIsDisabled ? DISABLED_DESATURATION : newState.desaturation;
+            float brightness = mIsDisabled ? DISABLED_BRIGHTNESS: newState.brightness;
+
             mPropertyAnimator = cancelAnimator(mPropertyAnimator);
             mPropertyAnimator = new AnimatorSet();
             mPropertyAnimator.playTogether(
-                    ObjectAnimator
-                            .ofFloat(this, "desaturation", newState.desaturation),
-                    ObjectAnimator
-                            .ofFloat(this, "brightness", newState.brightness));
+                    ObjectAnimator.ofFloat(this, "desaturation", desaturation),
+                    ObjectAnimator.ofFloat(this, "brightness", brightness));
             mPropertyAnimator.setInterpolator(newState.interpolator);
             mPropertyAnimator.setDuration(getDurationForStateChange(prevState, newState));
             mPropertyAnimator.setStartDelay(getStartDelayForStateChange(prevState, newState));
@@ -204,11 +207,15 @@ public class FastBitmapDrawable extends Drawable {
 
             mPropertyAnimator = cancelAnimator(mPropertyAnimator);
 
-            setDesaturation(newState.desaturation);
-            setBrightness(newState.brightness);
+            invalidateDesaturationAndBrightness();
             return true;
         }
         return false;
+    }
+
+    private void invalidateDesaturationAndBrightness() {
+        setDesaturation(mIsDisabled ? DISABLED_DESATURATION : mState.desaturation);
+        setBrightness(mIsDisabled ? DISABLED_BRIGHTNESS: mState.brightness);
     }
 
     /**
@@ -216,6 +223,13 @@ public class FastBitmapDrawable extends Drawable {
      */
     public State getCurrentState() {
         return mState;
+    }
+
+    public void setIsDisabled(boolean isDisabled) {
+        if (mIsDisabled != isDisabled) {
+            mIsDisabled = isDisabled;
+            invalidateDesaturationAndBrightness();
+        }
     }
 
     /**

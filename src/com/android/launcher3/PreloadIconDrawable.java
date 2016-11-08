@@ -177,10 +177,8 @@ public class PreloadIconDrawable extends Drawable {
             // Set the paint color only when the level changes, so that the dominant color
             // is only calculated when needed.
             mPaint.setColor(getIndicatorColor());
-        }
-        if (mIcon instanceof FastBitmapDrawable) {
-            ((FastBitmapDrawable) mIcon).setState(level <= 0 ?
-                    FastBitmapDrawable.State.DISABLED : FastBitmapDrawable.State.NORMAL);
+        } else if (mIcon instanceof FastBitmapDrawable) {
+            ((FastBitmapDrawable) mIcon).setIsDisabled(true);
         }
 
         invalidateSelf();

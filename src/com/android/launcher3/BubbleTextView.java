@@ -191,9 +191,7 @@ public class BubbleTextView extends TextView
 
     private void applyIconAndLabel(Bitmap icon, ItemInfo info) {
         FastBitmapDrawable iconDrawable = mLauncher.createIconDrawable(icon);
-        if (info.isDisabled()) {
-            iconDrawable.setState(FastBitmapDrawable.State.DISABLED);
-        }
+        iconDrawable.setIsDisabled(info.isDisabled());
         setIcon(iconDrawable);
         setText(info.title);
         if (info.contentDescription != null) {
@@ -262,10 +260,7 @@ public class BubbleTextView extends TextView
     private void updateIconState() {
         if (mIcon instanceof FastBitmapDrawable) {
             FastBitmapDrawable d = (FastBitmapDrawable) mIcon;
-            if (getTag() instanceof ItemInfo
-                    && ((ItemInfo) getTag()).isDisabled()) {
-                d.animateState(FastBitmapDrawable.State.DISABLED);
-            } else if (isPressed() || mStayPressed) {
+            if (isPressed() || mStayPressed) {
                 d.animateState(FastBitmapDrawable.State.PRESSED);
             } else {
                 d.animateState(FastBitmapDrawable.State.NORMAL);
