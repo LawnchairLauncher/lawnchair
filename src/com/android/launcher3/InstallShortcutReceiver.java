@@ -22,7 +22,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.text.TextUtils;
@@ -434,22 +433,16 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             // Already an activity target
             return original;
         }
-        if (!Utilities.isLauncherAppTarget(original.launchIntent)
-                || !original.user.equals(UserHandleCompat.myUserHandle())) {
-            // We can only convert shortcuts which point to a main activity in the current user.
+        if (!Utilities.isLauncherAppTarget(original.launchIntent)) {
             return original;
         }
 
-        PackageManager pm = original.mContext.getPackageManager();
-        ResolveInfo info = pm.resolveActivity(original.launchIntent, 0);
-
+        LauncherActivityInfoCompat info = LauncherAppsCompat.getInstance(original.mContext)
+                .resolveActivity(original.launchIntent, original.user);
         if (info == null) {
             return original;
         }
-
         // Ignore any conflicts in the label name, as that can change based on locale.
-        LauncherActivityInfoCompat launcherInfo = LauncherActivityInfoCompat
-                .fromResolveInfo(info, original.mContext);
-        return new PendingInstallShortcutInfo(launcherInfo, original.mContext);
+        return new PendingInstallShortcutInfo(info, original.mContext);
     }
 }
