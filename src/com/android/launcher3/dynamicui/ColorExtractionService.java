@@ -64,17 +64,10 @@ public class ColorExtractionService extends IntentService {
         } else {
             // We extract colors for the hotseat and status bar separately,
             // since they only consider part of the wallpaper.
-            extractedColors.updateHotseatPalette(getHotseatPallete());
+            extractedColors.updateHotseatPalette(getHotseatPalette());
 
             if (FeatureFlags.LIGHT_STATUS_BAR) {
-                int statusBarHeight = getResources()
-                        .getDimensionPixelSize(R.dimen.status_bar_height);
-                Bitmap wallpaper = ((BitmapDrawable) wallpaperManager.getDrawable()).getBitmap();
-                Palette statusBarPalette = Palette.from(wallpaper)
-                        .setRegion(0, 0, wallpaper.getWidth(), statusBarHeight)
-                        .clearFilters()
-                        .generate();
-                extractedColors.updateStatusBarPalette(statusBarPalette);
+                extractedColors.updateStatusBarPalette(getStatusBarPalette());
             }
         }
 
@@ -90,7 +83,7 @@ public class ColorExtractionService extends IntentService {
     }
 
     @TargetApi(Build.VERSION_CODES.N)
-    private Palette getHotseatPallete() {
+    private Palette getHotseatPalette() {
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
         if (Utilities.ATLEAST_NOUGAT) {
             try (ParcelFileDescriptor fd = wallpaperManager
@@ -114,6 +107,36 @@ public class ColorExtractionService extends IntentService {
         return Palette.from(wallpaper)
                 .setRegion(0, (int) (wallpaper.getHeight() * (1f - HOTSEAT_FRACTION)),
                         wallpaper.getWidth(), wallpaper.getHeight())
+                .clearFilters()
+                .generate();
+    }
+
+    @TargetApi(Build.VERSION_CODES.N)
+    private Palette getStatusBarPalette() {
+        WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
+        int statusBarHeight = getResources()
+                .getDimensionPixelSize(R.dimen.status_bar_height);
+
+        if (Utilities.ATLEAST_NOUGAT) {
+            try (ParcelFileDescriptor fd = wallpaperManager
+                    .getWallpaperFile(WallpaperManager.FLAG_SYSTEM)) {
+                BitmapRegionDecoder decoder = BitmapRegionDecoder
+                        .newInstance(fd.getFileDescriptor(), false);
+                Rect decodeRegion = new Rect(0, 0,
+                        decoder.getWidth(), statusBarHeight);
+                Bitmap bitmap = decoder.decodeRegion(decodeRegion, null);
+                decoder.recycle();
+                if (bitmap != null) {
+                    return Palette.from(bitmap).clearFilters().generate();
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "Fetching partial bitmap failed, trying old method", e);
+            }
+        }
+
+        Bitmap wallpaper = ((BitmapDrawable) wallpaperManager.getDrawable()).getBitmap();
+        return Palette.from(wallpaper)
+                .setRegion(0, 0, wallpaper.getWidth(), statusBarHeight)
                 .clearFilters()
                 .generate();
     }
