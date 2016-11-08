@@ -315,7 +315,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             if (!grid.isVerticalBarLayout()) {
                 MarginLayoutParams searchContainerLp =
                         (MarginLayoutParams) mSearchContainer.getLayoutParams();
-                searchContainerLp.height = grid.hotseatBarHeightPx;
+                searchContainerLp.height = mLauncher.getDragLayer().getInsets().top
+                        + grid.hotseatCellHeightPx;
                 mSearchContainer.setLayoutParams(searchContainerLp);
             }
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
