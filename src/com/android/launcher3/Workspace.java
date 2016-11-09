@@ -172,7 +172,6 @@ public class Workspace extends PagedView
     private CellLayout mDropToLayout = null;
 
     @Thunk Launcher mLauncher;
-    @Thunk IconCache mIconCache;
     @Thunk DragController mDragController;
 
     // These are temporary variables to prevent having to allocate a new object just to
@@ -502,9 +501,7 @@ public class Workspace extends PagedView
      */
     protected void initWorkspace() {
         mCurrentPage = getDefaultPage();
-        LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        mIconCache = app.getIconCache();
         setWillNotDraw(false);
         setClipChildren(false);
         setClipToPadding(false);
@@ -3397,7 +3394,7 @@ public class Workspace extends PagedView
                 break;
             case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                 view = FolderIcon.fromXml(R.layout.folder_icon, mLauncher, cellLayout,
-                        (FolderInfo) info, mIconCache);
+                        (FolderInfo) info);
                 break;
             default:
                 throw new IllegalStateException("Unknown item type: " + info.itemType);
@@ -4078,8 +4075,7 @@ public class Workspace extends PagedView
                     Drawable oldIcon = getTextViewIcon(shortcut);
                     boolean oldPromiseState = (oldIcon instanceof PreloadIconDrawable)
                             && ((PreloadIconDrawable) oldIcon).hasNotCompleted();
-                    shortcut.applyFromShortcutInfo(si, mIconCache,
-                            si.isPromise() != oldPromiseState);
+                    shortcut.applyFromShortcutInfo(si, si.isPromise() != oldPromiseState);
                 }
                 // process all the shortcuts
                 return false;

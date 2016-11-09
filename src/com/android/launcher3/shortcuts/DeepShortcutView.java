@@ -26,9 +26,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.android.launcher3.IconCache;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LogAccelerateInterpolator;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
@@ -95,8 +93,7 @@ public class DeepShortcutView extends FrameLayout implements ValueAnimator.Anima
     /** package private **/
     void applyShortcutInfo(UnbadgedShortcutInfo info, DeepShortcutsContainer container) {
         mInfo = info;
-        IconCache cache = LauncherAppState.getInstance().getIconCache();
-        mBubbleText.applyFromShortcutInfo(info, cache);
+        mBubbleText.applyFromShortcutInfo(info);
         mIconView.setBackground(mBubbleText.getIcon());
 
         // Use the long label as long as it exists and fits.

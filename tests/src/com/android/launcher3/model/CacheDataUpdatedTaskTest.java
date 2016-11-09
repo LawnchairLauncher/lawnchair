@@ -1,14 +1,11 @@
 package com.android.launcher3.model;
 
 import com.android.launcher3.AppInfo;
-import com.android.launcher3.IconCache;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.ShortcutInfo;
 
 import java.util.Arrays;
 import java.util.HashSet;
-
-import static org.mockito.Mockito.mock;
 
 /**
  * Tests for {@link CacheDataUpdatedTask}
@@ -67,14 +64,13 @@ public class CacheDataUpdatedTaskTest extends BaseModelUpdateTaskTestCase {
 
     private void verifyUpdate(Long... idsUpdated) {
         HashSet<Long> updates = new HashSet<>(Arrays.asList(idsUpdated));
-        IconCache noOpIconCache = mock(IconCache.class);
         for (ItemInfo info : bgDataModel.itemsIdMap) {
             if (updates.contains(info.id)) {
                 assertEquals(NEW_LABEL_PREFIX + info.id, info.title);
-                assertNotNull(((ShortcutInfo) info).getIcon(noOpIconCache));
+                assertNotNull(((ShortcutInfo) info).iconBitmap);
             } else {
                 assertNotSame(NEW_LABEL_PREFIX + info.id, info.title);
-                assertNull(((ShortcutInfo) info).getIcon(noOpIconCache));
+                assertNull(((ShortcutInfo) info).iconBitmap);
             }
         }
     }

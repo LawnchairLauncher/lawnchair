@@ -490,7 +490,7 @@ public class IconCache {
         // null info means not installed, but if we have a component from the intent then
         // we should still look in the cache for restored app icons.
         if (component == null) {
-            shortcutInfo.setIcon(getDefaultIcon(user));
+            shortcutInfo.iconBitmap = getDefaultIcon(user);
             shortcutInfo.title = "";
             shortcutInfo.contentDescription = "";
             shortcutInfo.usingLowResIcon = false;
@@ -507,7 +507,7 @@ public class IconCache {
             ShortcutInfo shortcutInfo, ComponentName component, LauncherActivityInfoCompat info,
             UserHandleCompat user, boolean usePkgIcon, boolean useLowResIcon) {
         CacheEntry entry = cacheLocked(component, info, user, usePkgIcon, useLowResIcon);
-        shortcutInfo.setIcon(getNonNullIcon(entry, user));
+        shortcutInfo.iconBitmap = getNonNullIcon(entry, user);
         shortcutInfo.title = Utilities.trim(entry.title);
         shortcutInfo.contentDescription = entry.contentDescription;
         shortcutInfo.usingLowResIcon = entry.isLowResIcon;

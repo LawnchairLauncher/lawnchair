@@ -26,10 +26,8 @@ import android.os.Build;
 import android.text.TextUtils;
 
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
@@ -80,7 +78,7 @@ public class ShortcutInfo extends ItemInfo {
     /**
      * Indicates whether we're using a low res icon
      */
-    boolean usingLowResIcon;
+    public boolean usingLowResIcon;
 
     /**
      * If isShortcut=true and customIcon=false, this contains a reference to the
@@ -91,7 +89,7 @@ public class ShortcutInfo extends ItemInfo {
     /**
      * The application icon.
      */
-    private Bitmap mIcon;
+    public Bitmap iconBitmap;
 
     /**
      * Indicates that the icon is disabled due to safe mode restrictions.
@@ -163,22 +161,12 @@ public class ShortcutInfo extends ItemInfo {
         return promisedIntent != null ? promisedIntent : intent;
     }
 
-    ShortcutInfo(Intent intent, CharSequence title, CharSequence contentDescription,
-            Bitmap icon, UserHandleCompat user) {
-        this();
-        this.intent = intent;
-        this.title = Utilities.trim(title);
-        this.contentDescription = contentDescription;
-        mIcon = icon;
-        this.user = user;
-    }
-
     public ShortcutInfo(ShortcutInfo info) {
         super(info);
         title = info.title;
         intent = new Intent(info.intent);
         iconResource = info.iconResource;
-        mIcon = info.mIcon; // TODO: should make a copy here.  maybe we don't need this ctor at all
+        iconBitmap = info.iconBitmap;
         status = info.status;
         mInstallProgress = info.mInstallProgress;
         isDisabled = info.isDisabled;
@@ -190,15 +178,8 @@ public class ShortcutInfo extends ItemInfo {
         title = Utilities.trim(info.title);
         intent = new Intent(info.intent);
         isDisabled = info.isDisabled;
-    }
-
-    public ShortcutInfo(LauncherActivityInfoCompat info, Context context) {
-        user = info.getUser();
-        title = Utilities.trim(info.getLabel());
-        contentDescription = UserManagerCompat.getInstance(context)
-                .getBadgedLabelForUser(info.getLabel(), info.getUser());
-        intent = AppInfo.makeLaunchIntent(context, info, info.getUser());
-        itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
+        iconBitmap = info.iconBitmap;
+        usingLowResIcon = info.usingLowResIcon;
     }
 
     /**
@@ -211,28 +192,6 @@ public class ShortcutInfo extends ItemInfo {
         updateFromDeepShortcutInfo(shortcutInfo, context);
     }
 
-    public void setIcon(Bitmap b) {
-        mIcon = b;
-    }
-
-    public Bitmap getIcon(IconCache iconCache) {
-        if (mIcon == null) {
-            updateIcon(iconCache);
-        }
-        return mIcon;
-    }
-
-    public void updateIcon(IconCache iconCache, boolean useLowRes) {
-        if (itemType == Favorites.ITEM_TYPE_APPLICATION) {
-            iconCache.getTitleAndIcon(this, promisedIntent != null ? promisedIntent : intent, user,
-                    useLowRes);
-        }
-    }
-
-    public void updateIcon(IconCache iconCache) {
-        updateIcon(iconCache, shouldUseLowResIcon());
-    }
-
     @Override
     void onAddToDatabase(ContentWriter writer) {
         super.onAddToDatabase(writer);
@@ -241,7 +200,7 @@ public class ShortcutInfo extends ItemInfo {
                 .put(LauncherSettings.Favorites.RESTORED, status);
 
         if (!usingLowResIcon) {
-            writer.putIcon(mIcon, user);
+            writer.putIcon(iconBitmap, user);
         }
         if (iconResource != null) {
             writer.put(LauncherSettings.BaseLauncherColumns.ICON_PACKAGE, iconResource.packageName)
@@ -251,7 +210,7 @@ public class ShortcutInfo extends ItemInfo {
     }
 
     public ComponentName getTargetComponent() {
-        return promisedIntent != null ? promisedIntent.getComponent() : intent.getComponent();
+        return getPromisedIntent().getComponent();
     }
 
     public boolean hasStatusFlag(int flag) {
@@ -270,10 +229,6 @@ public class ShortcutInfo extends ItemInfo {
     public void setInstallProgress(int progress) {
         mInstallProgress = progress;
         status |= FLAG_INSTALL_SESSION_ACTIVE;
-    }
-
-    public boolean shouldUseLowResIcon() {
-        return usingLowResIcon && container >= 0 && rank >= FolderIcon.NUM_ITEMS_IN_PREVIEW;
     }
 
     public void updateFromDeepShortcutInfo(ShortcutInfoCompat shortcutInfo, Context context) {
@@ -304,7 +259,7 @@ public class ShortcutInfo extends ItemInfo {
         Bitmap unbadgedBitmap = unbadgedDrawable == null
                 ? cache.getDefaultIcon(UserHandleCompat.myUserHandle())
                 : LauncherIcons.createScaledBitmapWithoutShadow(unbadgedDrawable, context);
-        setIcon(getBadgedIcon(unbadgedBitmap, shortcutInfo, cache, context));
+        iconBitmap = getBadgedIcon(unbadgedBitmap, shortcutInfo, cache, context);
     }
 
     protected Bitmap getBadgedIcon(Bitmap unbadgedBitmap, ShortcutInfoCompat shortcutInfo,

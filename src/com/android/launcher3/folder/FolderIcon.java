@@ -146,7 +146,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     public static FolderIcon fromXml(int resId, Launcher launcher, ViewGroup group,
-            FolderInfo folderInfo, IconCache iconCache) {
+            FolderInfo folderInfo) {
         @SuppressWarnings("all") // suppress dead code warning
         final boolean error = INITIAL_ITEM_ANIMATION_DURATION >= DROP_IN_ANIMATION_DURATION;
         if (error) {

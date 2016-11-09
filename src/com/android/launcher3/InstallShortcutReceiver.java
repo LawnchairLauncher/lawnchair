@@ -433,7 +433,10 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 
         public ItemInfo getItemInfo() {
             if (activityInfo != null) {
-                return new ShortcutInfo(activityInfo, mContext);
+                return new AppInfo(mContext, activityInfo, user,
+                        LauncherAppState.getInstance().getIconCache(),
+                        UserManagerCompat.getInstance(mContext).isQuietModeEnabled(user),
+                        false /* useLowResIcon */).makeShortcut();
             } else if (shortcutInfo != null) {
                 return new ShortcutInfo(shortcutInfo, mContext);
             } else if (providerInfo != null) {

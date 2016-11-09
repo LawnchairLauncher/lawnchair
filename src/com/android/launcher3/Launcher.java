@@ -1424,7 +1424,7 @@ public class Launcher extends Activity
     public View createShortcut(ViewGroup parent, ShortcutInfo info) {
         BubbleTextView favorite = (BubbleTextView) getLayoutInflater().inflate(R.layout.app_icon,
                 parent, false);
-        favorite.applyFromShortcutInfo(info, mIconCache);
+        favorite.applyFromShortcutInfo(info);
         favorite.setCompoundDrawablePadding(mDeviceProfile.iconDrawablePaddingPx);
         favorite.setOnClickListener(this);
         favorite.setOnFocusChangeListener(mFocusHandler);
@@ -2108,8 +2108,7 @@ public class Launcher extends Activity
                 cellX, cellY);
 
         // Create the view
-        FolderIcon newFolder =
-            FolderIcon.fromXml(R.layout.folder_icon, this, layout, folderInfo, mIconCache);
+        FolderIcon newFolder = FolderIcon.fromXml(R.layout.folder_icon, this, layout, folderInfo);
         mWorkspace.addInScreen(newFolder, folderInfo);
         // Force measure the new folder icon
         CellLayout parent = mWorkspace.getParentCellLayoutForView(newFolder);
@@ -3346,7 +3345,7 @@ public class Launcher extends Activity
                 case LauncherSettings.Favorites.ITEM_TYPE_FOLDER: {
                     view = FolderIcon.fromXml(R.layout.folder_icon, this,
                             (ViewGroup) workspace.getChildAt(workspace.getCurrentPage()),
-                            (FolderInfo) item, mIconCache);
+                            (FolderInfo) item);
                     break;
                 }
                 case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET: {
@@ -4035,13 +4034,6 @@ public class Launcher extends Activity
             return null;
         }
         return new AppInfo(this, activityInfo, user, mIconCache);
-    }
-
-    // TODO: This method should be a part of LauncherSearchCallback
-    public ItemInfo createShortcutDragInfo(Intent shortcutIntent, CharSequence caption,
-            Bitmap icon) {
-        return new ShortcutInfo(shortcutIntent, caption, caption, icon,
-                UserHandleCompat.myUserHandle());
     }
 
     protected void moveWorkspaceToDefaultScreen() {

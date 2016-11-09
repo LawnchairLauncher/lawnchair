@@ -1792,8 +1792,10 @@ public class LauncherModel extends BroadcastReceiver
                     Collections.sort(folder.contents, Folder.ITEM_POS_COMPARATOR);
                     int pos = 0;
                     for (ShortcutInfo info : folder.contents) {
-                        if (info.usingLowResIcon) {
-                            info.updateIcon(mIconCache, false);
+                        if (info.usingLowResIcon &&
+                                info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+                            mIconCache.getTitleAndIcon(
+                                    info, info.getPromisedIntent(), info.user, false);
                         }
                         pos ++;
                         if (pos >= FolderIcon.NUM_ITEMS_IN_PREVIEW) {
@@ -2518,13 +2520,10 @@ public class LauncherModel extends BroadcastReceiver
             int promiseType, int itemType, CursorIconInfo iconInfo) {
         final ShortcutInfo info = new ShortcutInfo();
         info.user = UserHandleCompat.myUserHandle();
-
-        Bitmap icon = iconInfo.loadIcon(c, info);
+        info.iconBitmap = iconInfo.loadIcon(c, info);
         // the fallback icon
-        if (icon == null) {
+        if (info.iconBitmap == null) {
             mIconCache.getTitleAndIcon(info, intent, info.user, false /* useLowResIcon */);
-        } else {
-            info.setIcon(icon);
         }
 
         if ((promiseType & ShortcutInfo.FLAG_RESTORED_ICON) != 0) {
@@ -2595,9 +2594,9 @@ public class LauncherModel extends BroadcastReceiver
 
         final ShortcutInfo info = new ShortcutInfo();
         mIconCache.getTitleAndIcon(info, componentName, lai, user, false, useLowResIcon);
-        if (mIconCache.isDefaultIcon(info.getIcon(mIconCache), user) && c != null) {
+        if (mIconCache.isDefaultIcon(info.iconBitmap, user) && c != null) {
             Bitmap icon = iconInfo.loadIcon(c);
-            info.setIcon(icon == null ? mIconCache.getDefaultIcon(user) : icon);
+            info.iconBitmap = icon != null ? icon : mIconCache.getDefaultIcon(user);
         }
 
         if (lai != null && PackageManagerHelper.isAppSuspended(lai.getApplicationInfo())) {
@@ -2640,12 +2639,11 @@ public class LauncherModel extends BroadcastReceiver
      */
     public void loadInfoFromCursor(ShortcutInfo info, Cursor c, CursorIconInfo iconInfo) {
         info.title = iconInfo.getTitle(c);
-        Bitmap icon = iconInfo.loadIcon(c, info);
+        info.iconBitmap = iconInfo.loadIcon(c, info);
         // the fallback icon
-        if (icon == null) {
-            icon = mIconCache.getDefaultIcon(info.user);
+        if (info.iconBitmap == null) {
+            info.iconBitmap = mIconCache.getDefaultIcon(info.user);
         }
-        info.setIcon(icon);
     }
 
     ShortcutInfo infoFromShortcutIntent(Context context, Intent data) {
@@ -2659,34 +2657,28 @@ public class LauncherModel extends BroadcastReceiver
             return null;
         }
 
-        Bitmap icon = null;
-        ShortcutIconResource iconResource = null;
-
-        if (bitmap instanceof Bitmap) {
-            icon = LauncherIcons.createIconBitmap((Bitmap) bitmap, context);
-        } else {
-            Parcelable extra = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE);
-            if (extra instanceof ShortcutIconResource) {
-                iconResource = (ShortcutIconResource) extra;
-                icon = LauncherIcons.createIconBitmap(iconResource.packageName,
-                        iconResource.resourceName, context);
-            }
-        }
-
         final ShortcutInfo info = new ShortcutInfo();
 
         // Only support intents for current user for now. Intents sent from other
         // users wouldn't get here without intent forwarding anyway.
         info.user = UserHandleCompat.myUserHandle();
-        if (icon == null) {
-            icon = mIconCache.getDefaultIcon(info.user);
+
+        if (bitmap instanceof Bitmap) {
+            info.iconBitmap = LauncherIcons.createIconBitmap((Bitmap) bitmap, context);
+        } else {
+            Parcelable extra = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE);
+            if (extra instanceof ShortcutIconResource) {
+                info.iconResource = (ShortcutIconResource) extra;
+                info.iconBitmap = LauncherIcons.createIconBitmap(info.iconResource, context);
+            }
         }
-        info.setIcon(icon);
+        if (info.iconBitmap == null) {
+            info.iconBitmap = mIconCache.getDefaultIcon(info.user);
+        }
 
         info.title = Utilities.trim(name);
         info.contentDescription = mUserManager.getBadgedLabelForUser(info.title, info.user);
         info.intent = intent;
-        info.iconResource = iconResource;
 
         return info;
     }
