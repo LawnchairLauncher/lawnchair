@@ -79,7 +79,7 @@ public class IconCache {
 
     @Thunk static final Object ICON_UPDATE_TOKEN = new Object();
 
-    @Thunk static class CacheEntry {
+    public static class CacheEntry {
         public Bitmap icon;
         public CharSequence title = "";
         public CharSequence contentDescription = "";
@@ -544,7 +544,7 @@ public class IconCache {
      * Retrieves the entry from the cache. If the entry is not present, it creates a new entry.
      * This method is not thread safe, it must be called from a synchronized method.
      */
-    private CacheEntry cacheLocked(ComponentName componentName, LauncherActivityInfoCompat info,
+    protected CacheEntry cacheLocked(ComponentName componentName, LauncherActivityInfoCompat info,
             UserHandleCompat user, boolean usePackageIcon, boolean useLowResIcon) {
         ComponentKey cacheKey = new ComponentKey(componentName, user);
         CacheEntry entry = mCache.get(cacheKey);

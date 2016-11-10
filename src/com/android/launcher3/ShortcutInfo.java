@@ -80,7 +80,7 @@ public class ShortcutInfo extends ItemInfo {
      * Indicates whether we're using the default fallback icon instead of something from the
      * app.
      */
-    boolean usingFallbackIcon;
+    public boolean usingFallbackIcon;
 
     /**
      * Indicates whether we're using a low res icon
@@ -132,7 +132,7 @@ public class ShortcutInfo extends ItemInfo {
      * Could be disabled, if the the app is installed but unavailable (eg. in safe mode or when
      * sd-card is not available).
      */
-    int isDisabled = DEFAULT;
+    public int isDisabled = DEFAULT;
 
     /**
      * A message to display when the user tries to start a disabled shortcut.
@@ -140,7 +140,7 @@ public class ShortcutInfo extends ItemInfo {
      */
     CharSequence disabledMessage;
 
-    int status;
+    public int status;
 
     /**
      * The installation progress [0-100] of the package that this shortcut represents.
@@ -152,7 +152,7 @@ public class ShortcutInfo extends ItemInfo {
      * this will hold the original intent from the database.  Otherwise, null.
      * Refer {@link #FLAG_RESTORED_ICON}, {@link #FLAG_AUTOINTALL_ICON}
      */
-    Intent promisedIntent;
+    public Intent promisedIntent;
 
     public ShortcutInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;

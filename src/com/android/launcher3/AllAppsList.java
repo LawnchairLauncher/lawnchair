@@ -155,10 +155,9 @@ public class AllAppsList {
             // to the removed list.
             for (int i = data.size() - 1; i >= 0; i--) {
                 final AppInfo applicationInfo = data.get(i);
-                final ComponentName component = applicationInfo.intent.getComponent();
                 if (user.equals(applicationInfo.user)
-                        && packageName.equals(component.getPackageName())) {
-                    if (!findActivity(matches, component)) {
+                        && packageName.equals(applicationInfo.componentName.getPackageName())) {
+                    if (!findActivity(matches, applicationInfo.componentName)) {
                         removed.add(applicationInfo);
                         data.remove(i);
                     }
@@ -182,11 +181,10 @@ public class AllAppsList {
             // Remove all data for this package.
             for (int i = data.size() - 1; i >= 0; i--) {
                 final AppInfo applicationInfo = data.get(i);
-                final ComponentName component = applicationInfo.intent.getComponent();
                 if (user.equals(applicationInfo.user)
-                        && packageName.equals(component.getPackageName())) {
+                        && packageName.equals(applicationInfo.componentName.getPackageName())) {
                     removed.add(applicationInfo);
-                    mIconCache.remove(component, user);
+                    mIconCache.remove(applicationInfo.componentName, user);
                     data.remove(i);
                 }
             }
@@ -238,9 +236,8 @@ public class AllAppsList {
     private AppInfo findApplicationInfoLocked(String packageName, UserHandleCompat user,
             String className) {
         for (AppInfo info: data) {
-            final ComponentName component = info.intent.getComponent();
-            if (user.equals(info.user) && packageName.equals(component.getPackageName())
-                    && className.equals(component.getClassName())) {
+            if (user.equals(info.user) && packageName.equals(info.componentName.getPackageName())
+                    && className.equals(info.componentName.getClassName())) {
                 return info;
             }
         }
