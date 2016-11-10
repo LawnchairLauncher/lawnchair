@@ -85,6 +85,12 @@ public final class Utilities {
     private static final Matrix sMatrix = new Matrix();
     private static final Matrix sInverseMatrix = new Matrix();
 
+    public static boolean isAtLeastO() {
+        // TODO: Clean this up: b/32610406
+        return !"REL".equals(Build.VERSION.CODENAME)
+                && "O".compareTo(Build.VERSION.CODENAME) <= 0;
+    }
+
     public static final boolean ATLEAST_NOUGAT_MR1 =
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1;
 
