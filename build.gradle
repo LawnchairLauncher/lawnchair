@@ -80,7 +80,7 @@ protobuf {
                 task.builtins {
                     remove java
                     javanano {
-                        option 'ignore_services=false'
+                        option "java_package=launcher_log.proto|com.android.launcher3.userevent.nano"
                     }
                 }
             }
