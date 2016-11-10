@@ -86,7 +86,7 @@
 # next row when focus is on the last item of last row when using a RecyclerView
 # Keep optimized and shrunk proguard to prevent issues like this when using
 # support jar.
--keep allowoptimization,allowshrinking class android.support.** {
+-keep,allowoptimization,allowshrinking class android.support.** {
   *;
 }
 
