@@ -108,6 +108,7 @@
         <item name="android:shadowRadius">0</item>
         <item name="customShadows">false</item>
         <item name="layoutHorizontal">true</item>
+        <item name="iconDisplay">shortcut_popup</item>
         <item name="iconSizeOverride">@dimen/deep_shortcut_icon_size</item>
     </style>
 
