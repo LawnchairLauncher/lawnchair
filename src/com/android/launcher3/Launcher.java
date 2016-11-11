@@ -392,7 +392,7 @@ public class Launcher extends Activity
         // LauncherModel load.
         mPaused = false;
 
-        setContentView(R.layout.launcher);
+        mLauncherView = getLayoutInflater().inflate(R.layout.launcher, null);
 
         setupViews();
         mDeviceProfile.layout(this, false /* notifyListeners */);
@@ -444,9 +444,15 @@ public class Launcher extends Activity
         // we want the screen to auto-rotate based on the current orientation
         setOrientation();
 
+        setContentView(mLauncherView);
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onCreate(savedInstanceState);
         }
+    }
+
+    @Override
+    public View findViewById(int id) {
+        return mLauncherView.findViewById(id);
     }
 
     @Override
@@ -1268,7 +1274,6 @@ public class Launcher extends Activity
      * Finds all the views we need and configure them properly.
      */
     private void setupViews() {
-        mLauncherView = findViewById(R.id.launcher);
         mDragLayer = (DragLayer) findViewById(R.id.drag_layer);
         mFocusHandler = mDragLayer.getFocusIndicatorHelper();
         mWorkspace = (Workspace) mDragLayer.findViewById(R.id.workspace);
