@@ -18,7 +18,6 @@ package com.android.launcher3;
 
 import android.annotation.TargetApi;
 import android.content.ComponentName;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -33,6 +32,7 @@ import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
+import com.android.launcher3.util.ContentWriter;
 
 /**
  * Represents a launchable icon on the workspaces and in folders.
@@ -75,12 +75,6 @@ public class ShortcutInfo extends ItemInfo {
      * The intent used to start the application.
      */
     public Intent intent;
-
-    /**
-     * Indicates whether we're using the default fallback icon instead of something from the
-     * app.
-     */
-    public boolean usingFallbackIcon;
 
     /**
      * Indicates whether we're using a low res icon
@@ -187,7 +181,6 @@ public class ShortcutInfo extends ItemInfo {
         status = info.status;
         mInstallProgress = info.mInstallProgress;
         isDisabled = info.isDisabled;
-        usingFallbackIcon = info.usingFallbackIcon;
     }
 
     /** TODO: Remove this.  It's only called by ApplicationInfo.makeShortcut. */
@@ -240,25 +233,19 @@ public class ShortcutInfo extends ItemInfo {
     }
 
     @Override
-    void onAddToDatabase(Context context, ContentValues values) {
-        super.onAddToDatabase(context, values);
+    void onAddToDatabase(ContentWriter writer) {
+        super.onAddToDatabase(writer);
+        writer.put(LauncherSettings.BaseLauncherColumns.TITLE, title)
+                .put(LauncherSettings.BaseLauncherColumns.INTENT, getPromisedIntent())
+                .put(LauncherSettings.Favorites.RESTORED, status);
 
-        String titleStr = title != null ? title.toString() : null;
-        values.put(LauncherSettings.BaseLauncherColumns.TITLE, titleStr);
-
-        String uri = promisedIntent != null ? promisedIntent.toUri(0)
-                : (intent != null ? intent.toUri(0) : null);
-        values.put(LauncherSettings.BaseLauncherColumns.INTENT, uri);
-        values.put(LauncherSettings.Favorites.RESTORED, status);
-
-        if (!usingFallbackIcon && !usingLowResIcon) {
-            writeBitmap(values, mIcon);
+        if (!usingLowResIcon) {
+            writer.putIcon(mIcon, user);
         }
         if (iconResource != null) {
-            values.put(LauncherSettings.BaseLauncherColumns.ICON_PACKAGE,
-                    iconResource.packageName);
-            values.put(LauncherSettings.BaseLauncherColumns.ICON_RESOURCE,
-                    iconResource.resourceName);
+            writer.put(LauncherSettings.BaseLauncherColumns.ICON_PACKAGE, iconResource.packageName)
+                    .put(LauncherSettings.BaseLauncherColumns.ICON_RESOURCE,
+                            iconResource.resourceName);
         }
     }
 

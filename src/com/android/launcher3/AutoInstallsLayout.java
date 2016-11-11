@@ -17,7 +17,6 @@
 package com.android.launcher3;
 
 import android.appwidget.AppWidgetHost;
-import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
@@ -437,7 +436,8 @@ public class AutoInstallsLayout {
                 return -1;
             }
 
-            ItemInfo.writeBitmap(mValues, LauncherIcons.createIconBitmap(icon, mContext));
+            mValues.put(LauncherSettings.Favorites.ICON,
+                    Utilities.flattenBitmap(LauncherIcons.createIconBitmap(icon, mContext)));
             mValues.put(Favorites.ICON_PACKAGE, mIconRes.getResourcePackageName(iconId));
             mValues.put(Favorites.ICON_RESOURCE, mIconRes.getResourceName(iconId));
 
