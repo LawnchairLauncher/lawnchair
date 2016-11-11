@@ -612,10 +612,10 @@ public class DeviceProfile {
         return new int[]{ padding, padding };
     }
 
-    public boolean shouldIgnoreLongPressToOverview(float touchX, float edgeThreshold) {
+    public boolean shouldIgnoreLongPressToOverview(float touchX) {
         boolean inMultiWindowMode = this != inv.landscapeProfile && this != inv.portraitProfile;
-        boolean touchedLhsEdge = mInsets.left == 0 && touchX < edgeThreshold;
-        boolean touchedRhsEdge = mInsets.right == 0 && touchX > (widthPx - edgeThreshold);
+        boolean touchedLhsEdge = mInsets.left == 0 && touchX < edgeMarginPx;
+        boolean touchedRhsEdge = mInsets.right == 0 && touchX > (widthPx - edgeMarginPx);
         return !inMultiWindowMode && (touchedLhsEdge || touchedRhsEdge);
     }
 }

@@ -316,7 +316,6 @@ public class Launcher extends Activity
     private UserEventDispatcher mUserEventDispatcher;
 
     private float mLastDispatchTouchEventX = 0.0f;
-    private float mEdgeOfScreenThresholdPx = 0.0f;
 
     public ViewGroupFocusHelper mFocusHandler;
     private boolean mRotationEnabled = false;
@@ -394,9 +393,6 @@ public class Launcher extends Activity
         mPaused = false;
 
         setContentView(R.layout.launcher);
-
-        mEdgeOfScreenThresholdPx = getResources()
-                .getDimensionPixelSize(R.dimen.edge_of_screen_threshold);
 
         setupViews();
         mDeviceProfile.layout(this, false /* notifyListeners */);
@@ -2718,8 +2714,8 @@ public class Launcher extends Activity
         }
 
 
-        boolean ignoreLongPressToOverview = mDeviceProfile.shouldIgnoreLongPressToOverview(
-                mLastDispatchTouchEventX, mEdgeOfScreenThresholdPx);
+        boolean ignoreLongPressToOverview =
+                mDeviceProfile.shouldIgnoreLongPressToOverview(mLastDispatchTouchEventX);
 
         if (v instanceof Workspace) {
             if (!mWorkspace.isInOverviewMode()) {
