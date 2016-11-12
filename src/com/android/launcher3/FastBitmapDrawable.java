@@ -94,7 +94,7 @@ public class FastBitmapDrawable extends Drawable {
     private static final ColorMatrix sTempBrightnessMatrix = new ColorMatrix();
     private static final ColorMatrix sTempFilterMatrix = new ColorMatrix();
 
-    private final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
+    protected final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
     private final Bitmap mBitmap;
     private State mState = State.NORMAL;
     private boolean mIsDisabled;
@@ -116,6 +116,17 @@ public class FastBitmapDrawable extends Drawable {
 
     @Override
     public void draw(Canvas canvas) {
+        drawInternal(canvas);
+    }
+
+    public void drawWithBrightness(Canvas canvas, float brightness) {
+        float oldBrightness = getBrightness();
+        setBrightness(brightness);
+        drawInternal(canvas);
+        setBrightness(oldBrightness);
+    }
+
+    protected void drawInternal(Canvas canvas) {
         canvas.drawBitmap(mBitmap, null, getBounds(), mPaint);
     }
 
@@ -278,7 +289,7 @@ public class FastBitmapDrawable extends Drawable {
     /**
      * Sets the saturation of this icon, 0 [full color] -> 1 [desaturated]
      */
-    public void setDesaturation(float desaturation) {
+    private void setDesaturation(float desaturation) {
         int newDesaturation = (int) Math.floor(desaturation * REDUCED_FILTER_VALUE_SPACE);
         if (mDesaturation != newDesaturation) {
             mDesaturation = newDesaturation;
@@ -293,7 +304,7 @@ public class FastBitmapDrawable extends Drawable {
     /**
      * Sets the brightness of this icon, 0 [no add. brightness] -> 1 [2bright2furious]
      */
-    public void setBrightness(float brightness) {
+    private void setBrightness(float brightness) {
         int newBrightness = (int) Math.floor(brightness * REDUCED_FILTER_VALUE_SPACE);
         if (mBrightness != newBrightness) {
             mBrightness = newBrightness;
@@ -301,7 +312,7 @@ public class FastBitmapDrawable extends Drawable {
         }
     }
 
-    public float getBrightness() {
+    private float getBrightness() {
         return (float) mBrightness / REDUCED_FILTER_VALUE_SPACE;
     }
 

@@ -129,14 +129,15 @@ public class Hotseat extends FrameLayout
         if (!FeatureFlags.NO_ALL_APPS_ICON) {
             // Add the Apps button
             Context context = getContext();
-            int allAppsButtonRank = mLauncher.getDeviceProfile().inv.getAllAppsButtonRank();
+            DeviceProfile grid = mLauncher.getDeviceProfile();
+            int allAppsButtonRank = grid.inv.getAllAppsButtonRank();
 
             LayoutInflater inflater = LayoutInflater.from(context);
             TextView allAppsButton = (TextView)
                     inflater.inflate(R.layout.all_apps_button, mContent, false);
             Drawable d = context.getResources().getDrawable(R.drawable.all_apps_button_icon);
+            d.setBounds(0, 0, grid.iconSizePx, grid.iconSizePx);
 
-            mLauncher.resizeIconDrawable(d);
             int scaleDownPx = getResources().getDimensionPixelSize(R.dimen.all_apps_button_scale_down);
             Rect bounds = d.getBounds();
             d.setBounds(bounds.left, bounds.top + scaleDownPx / 2, bounds.right - scaleDownPx,

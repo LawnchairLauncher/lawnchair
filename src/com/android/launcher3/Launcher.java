@@ -4035,24 +4035,6 @@ public class Launcher extends Activity
     }
 
     /**
-     * Returns a FastBitmapDrawable with the icon, accurately sized.
-     */
-    public FastBitmapDrawable createIconDrawable(Bitmap icon) {
-        FastBitmapDrawable d = new FastBitmapDrawable(icon);
-        d.setFilterBitmap(true);
-        resizeIconDrawable(d);
-        return d;
-    }
-
-    /**
-     * Resizes an icon drawable to the correct icon size.
-     */
-    public Drawable resizeIconDrawable(Drawable icon) {
-        icon.setBounds(0, 0, mDeviceProfile.iconSizePx, mDeviceProfile.iconSizePx);
-        return icon;
-    }
-
-    /**
      * Prints out out state for debugging.
      */
     public void dumpState() {

@@ -36,6 +36,8 @@ import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import com.android.launcher3.graphics.DrawableFactory;
+
 public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implements OnClickListener {
     private static final float SETUP_ICON_SIZE_FACTOR = 2f / 5;
     private static final float MIN_SATUNATION = 0.7f;
@@ -132,13 +134,14 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
             //   1) App icon in the center
             //   2) Preload icon in the center
             //   3) Setup icon in the center and app icon in the top right corner.
+            DrawableFactory drawableFactory = DrawableFactory.get(getContext());
             if (mDisabledForSafeMode) {
-                FastBitmapDrawable disabledIcon = mLauncher.createIconDrawable(mIcon);
+                FastBitmapDrawable disabledIcon = drawableFactory.newIcon(mIcon, mInfo);
                 disabledIcon.setIsDisabled(true);
                 mCenterDrawable = disabledIcon;
                 mSettingIconDrawable = null;
             } else if (isReadyForClickSetup()) {
-                mCenterDrawable = new FastBitmapDrawable(mIcon);
+                mCenterDrawable = drawableFactory.newIcon(mIcon, mInfo);
                 mSettingIconDrawable = getResources().getDrawable(R.drawable.ic_setting).mutate();
 
                 updateSettingColor();
@@ -148,7 +151,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
                     sPreloaderTheme.applyStyle(R.style.PreloadIcon, true);
                 }
 
-                FastBitmapDrawable drawable = mLauncher.createIconDrawable(mIcon);
+                FastBitmapDrawable drawable = drawableFactory.newIcon(mIcon, mInfo);
                 mCenterDrawable = new PreloadIconDrawable(drawable, sPreloaderTheme);
                 mCenterDrawable.setCallback(this);
                 mSettingIconDrawable = null;

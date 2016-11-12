@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -26,9 +25,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Region;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.util.TypedValue;
@@ -42,6 +39,7 @@ import android.widget.TextView;
 
 import com.android.launcher3.IconCache.IconLoadRequest;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.graphics.HolographicOutlineHelper;
 import com.android.launcher3.model.PackageItemInfo;
 
@@ -190,7 +188,7 @@ public class BubbleTextView extends TextView
     }
 
     private void applyIconAndLabel(Bitmap icon, ItemInfo info) {
-        FastBitmapDrawable iconDrawable = mLauncher.createIconDrawable(icon);
+        FastBitmapDrawable iconDrawable = DrawableFactory.get(getContext()).newIcon(icon, info);
         iconDrawable.setIsDisabled(info.isDisabled());
         setIcon(iconDrawable);
         setText(info.title);
@@ -199,15 +197,6 @@ public class BubbleTextView extends TextView
                     ? getContext().getString(R.string.disabled_app_label, info.contentDescription)
                     : info.contentDescription);
         }
-    }
-
-    /**
-     * Used for measurement only, sets some dummy values on this view.
-     */
-    public void applyDummyInfo() {
-        ColorDrawable d = new ColorDrawable();
-        setIcon(mLauncher.resizeIconDrawable(d));
-        setText("");
     }
 
     /**
@@ -528,12 +517,9 @@ public class BubbleTextView extends TextView
     /**
      * Sets the icon for this view based on the layout direction.
      */
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void setIcon(Drawable icon) {
         mIcon = icon;
-        if (mIconSize != -1) {
-            mIcon.setBounds(0, 0, mIconSize, mIconSize);
-        }
+        mIcon.setBounds(0, 0, mIconSize, mIconSize);
         applyCompoundDrawables(mIcon);
     }
 

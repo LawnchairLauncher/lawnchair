@@ -459,10 +459,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             d.setBounds(0, 0, mIntrinsicIconSize, mIntrinsicIconSize);
             if (d instanceof FastBitmapDrawable) {
                 FastBitmapDrawable fd = (FastBitmapDrawable) d;
-                float oldBrightness = fd.getBrightness();
-                fd.setBrightness(params.overlayAlpha);
-                d.draw(canvas);
-                fd.setBrightness(oldBrightness);
+                fd.drawWithBrightness(canvas, params.overlayAlpha);
             } else {
                 d.setColorFilter(Color.argb((int) (params.overlayAlpha * 255), 255, 255, 255),
                         PorterDuff.Mode.SRC_ATOP);
