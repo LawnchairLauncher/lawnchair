@@ -5,7 +5,6 @@ import android.support.test.uiautomator.UiObject2;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.view.View;
 
-import com.android.launcher3.CellLayout;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetInfo;
@@ -51,7 +50,7 @@ public class AddWidgetTest extends LauncherInstrumentationTestCase {
         // Drag widget to homescreen
         UiObject2 widget = scrollAndFind(widgetContainer, By.clazz(WidgetCell.class)
                 .hasDescendant(By.text(widgetInfo.getLabel(mTargetContext.getPackageManager()))));
-        dragToWorkspace(widget);
+        dragToWorkspace(widget, false);
 
         assertNotNull(launcher.getWorkspace().getFirstMatch(new ItemOperator() {
             @Override

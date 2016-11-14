@@ -47,7 +47,7 @@ public class AllAppsIconToHomeTest extends LauncherInstrumentationTestCase {
 
         // Drag icon to homescreen.
         UiObject2 icon = scrollAndFind(appsContainer, By.text(mSettingsApp.getLabel().toString()));
-        dragToWorkspace(icon);
+        dragToWorkspace(icon, true);
 
         // Verify that the icon works on homescreen.
         mDevice.findObject(By.text(mSettingsApp.getLabel().toString())).click();

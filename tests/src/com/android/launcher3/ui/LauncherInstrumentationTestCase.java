@@ -140,27 +140,50 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
     /**
      * Drags an icon to the center of homescreen.
      */
-    protected void dragToWorkspace(UiObject2 icon) {
+    protected void dragToWorkspace(UiObject2 icon, boolean expectedToShowShortcuts) {
         Point center = icon.getVisibleCenter();
 
         // Action Down
         sendPointer(MotionEvent.ACTION_DOWN, center);
 
-        // Wait until "Remove/Delete target is visible
+        UiObject2 dragLayer = findViewById(R.id.drag_layer);
+
+        if (expectedToShowShortcuts) {
+            // Make sure shortcuts show up, and then move a bit to hide them.
+            assertNotNull(findViewById(R.id.deep_shortcuts_container));
+
+            Point moveLocation = new Point(center);
+            int distanceToMove = mTargetContext.getResources().getDimensionPixelSize(
+                    R.dimen.deep_shortcuts_start_drag_threshold) + 50;
+            if (moveLocation.y - distanceToMove >= dragLayer.getVisibleBounds().top) {
+                moveLocation.y -= distanceToMove;
+            } else {
+                moveLocation.y += distanceToMove;
+            }
+            movePointer(center, moveLocation);
+
+            assertNull(findViewById(R.id.deep_shortcuts_container));
+        }
+
+        // Wait until Remove/Delete target is visible
         assertNotNull(findViewById(R.id.delete_target_text));
 
-        Point moveLocation = findViewById(R.id.drag_layer).getVisibleCenter();
+        Point moveLocation = dragLayer.getVisibleCenter();
 
         // Move to center
-        while(!moveLocation.equals(center)) {
-            center.x = getNextMoveValue(moveLocation.x, center.x);
-            center.y = getNextMoveValue(moveLocation.y, center.y);
-            sendPointer(MotionEvent.ACTION_MOVE, center);
-        }
+        movePointer(center, moveLocation);
         sendPointer(MotionEvent.ACTION_UP, center);
 
         // Wait until remove target is gone.
         mDevice.wait(Until.gone(getSelectorForId(R.id.delete_target_text)), DEFAULT_UI_TIMEOUT);
+    }
+
+    private void movePointer(Point from, Point to) {
+        while(!from.equals(to)) {
+            from.x = getNextMoveValue(to.x, from.x);
+            from.y = getNextMoveValue(to.y, from.y);
+            sendPointer(MotionEvent.ACTION_MOVE, from);
+        }
     }
 
     private int getNextMoveValue(int targetValue, int oldValue) {
