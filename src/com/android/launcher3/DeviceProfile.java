@@ -112,6 +112,7 @@ public class DeviceProfile {
     public int hotseatIconSizePx;
     public int hotseatBarHeightPx;
     private int hotseatBarTopPaddingPx;
+    private int hotseatBarBottomPaddingPx;
     private int hotseatLandGutterPx;
 
     // All apps
@@ -185,6 +186,7 @@ public class DeviceProfile {
         hotseatBarHeightPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_height);
         hotseatBarTopPaddingPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_top_padding);
+        hotseatBarBottomPaddingPx = 0;
         hotseatLandGutterPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_gutter_width);
 
         // Determine sizes.
@@ -214,6 +216,9 @@ public class DeviceProfile {
         profile.iconTextSizePx = 0;
         profile.cellHeightPx = profile.iconSizePx + profile.iconDrawablePaddingPx
                 + Utilities.calculateTextHeight(profile.iconTextSizePx);
+
+        // The nav bar is black so we add bottom padding to visually center hotseat icons.
+        profile.hotseatBarBottomPaddingPx = profile.hotseatBarTopPaddingPx;
 
         return profile;
     }
@@ -404,7 +409,8 @@ public class DeviceProfile {
                 availablePaddingX = (int) Math.min(availablePaddingX,
                             width * MAX_HORIZONTAL_PADDING_PERCENT);
                 int availablePaddingY = Math.max(0, height - topWorkspacePadding - paddingBottom
-                        - (int) (2 * inv.numRows * cellHeightPx));
+                        - (2 * inv.numRows * cellHeightPx) - hotseatBarTopPaddingPx
+                        - hotseatBarBottomPaddingPx);
                 padding.set(availablePaddingX / 2, topWorkspacePadding + availablePaddingY / 2,
                         availablePaddingX / 2, paddingBottom + availablePaddingY / 2);
             } else {
@@ -537,7 +543,7 @@ public class DeviceProfile {
             lp.height = hotseatBarHeightPx + mInsets.bottom;
             hotseat.getLayout().setPadding(hotseatAdjustment + workspacePadding.left,
                     hotseatBarTopPaddingPx, hotseatAdjustment + workspacePadding.right,
-                    mInsets.bottom);
+                    hotseatBarBottomPaddingPx + mInsets.bottom);
         } else {
             // For phones, layout the hotseat without any bottom margin
             // to ensure that we have space for the folders
@@ -546,7 +552,7 @@ public class DeviceProfile {
             lp.height = hotseatBarHeightPx + mInsets.bottom;
             hotseat.getLayout().setPadding(hotseatAdjustment + workspacePadding.left,
                     hotseatBarTopPaddingPx, hotseatAdjustment + workspacePadding.right,
-                    mInsets.bottom);
+                    hotseatBarBottomPaddingPx + mInsets.bottom);
         }
         hotseat.setLayoutParams(lp);
 
