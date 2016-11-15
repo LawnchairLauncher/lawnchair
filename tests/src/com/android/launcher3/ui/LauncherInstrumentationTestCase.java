@@ -196,7 +196,7 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
         }
     }
 
-    private void sendPointer(int action, Point point) {
+    protected void sendPointer(int action, Point point) {
         MotionEvent event = MotionEvent.obtain(SystemClock.uptimeMillis(),
                 SystemClock.uptimeMillis(), action, point.x, point.y, 0);
         getInstrumentation().sendPointerSync(event);
