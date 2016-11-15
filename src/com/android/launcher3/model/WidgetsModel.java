@@ -6,17 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.os.DeadObjectException;
-import android.os.TransactionTooLargeException;
 import android.util.Log;
 
 import com.android.launcher3.AppFilter;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
-import com.android.launcher3.compat.AlphabeticIndexCompat;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.config.ProviderConfig;
@@ -24,10 +21,7 @@ import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.Preconditions;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Widgets data model that is used by the adapters of the widget views and controllers.
@@ -80,9 +74,7 @@ public class WidgetsModel {
             }
             setWidgetsAndShortcuts(widgetsAndShortcuts);
         } catch (Exception e) {
-            if (!ProviderConfig.IS_DOGFOOD_BUILD &&
-                    (e.getCause() instanceof TransactionTooLargeException ||
-                            e.getCause() instanceof DeadObjectException)) {
+            if (!ProviderConfig.IS_DOGFOOD_BUILD && Utilities.isBinderSizeError(e)) {
                 // the returned value may be incomplete and will not be refreshed until the next
                 // time Launcher starts.
                 // TODO: after figuring out a repro step, introduce a dirty bit to check when
