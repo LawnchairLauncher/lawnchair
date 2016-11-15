@@ -75,6 +75,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     private AllAppsSearchBarController mSearchBarController;
 
     private View mSearchContainer;
+    private int mSearchContainerMinHeight;
     private ExtendedEditText mSearchInput;
     private HeaderElevationController mElevationController;
 
@@ -100,6 +101,9 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mApps.setAdapter(mAdapter);
         mLayoutManager = mAdapter.getLayoutManager();
         mSearchQueryBuilder = new SpannableStringBuilder();
+        mSearchContainerMinHeight
+                = getResources().getDimensionPixelSize(R.dimen.all_apps_search_bar_height);
+
         Selection.setSelection(mSearchQueryBuilder, 0);
     }
 
@@ -315,8 +319,9 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             if (!grid.isVerticalBarLayout()) {
                 MarginLayoutParams searchContainerLp =
                         (MarginLayoutParams) mSearchContainer.getLayoutParams();
+
                 searchContainerLp.height = mLauncher.getDragLayer().getInsets().top
-                        + grid.hotseatCellHeightPx;
+                        + mSearchContainerMinHeight;
                 mSearchContainer.setLayoutParams(searchContainerLp);
             }
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
