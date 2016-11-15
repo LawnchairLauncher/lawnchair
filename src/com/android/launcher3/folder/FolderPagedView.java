@@ -256,6 +256,7 @@ public class FolderPagedView extends PagedView {
         CellLayout page = new CellLayout(getContext());
         page.setCellDimensions(grid.folderCellWidthPx, grid.folderCellHeightPx);
         page.getShortcutsAndWidgets().setMotionEventSplittingEnabled(false);
+        page.getShortcutsAndWidgets().setContainerType(ShortcutAndWidgetContainer.FOLDER);
         page.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
         page.setInvertIfRtl(true);
         page.setGridSize(mGridCountX, mGridCountY);

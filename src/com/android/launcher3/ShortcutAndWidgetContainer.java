@@ -18,21 +18,31 @@ package com.android.launcher3;
 
 import android.app.WallpaperManager;
 import android.content.Context;
-import android.graphics.Paint;
 import android.graphics.Rect;
+import android.support.annotation.IntDef;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 public class ShortcutAndWidgetContainer extends ViewGroup {
-    static final String TAG = "CellLayoutChildren";
+    static final String TAG = "ShortcutAndWidgetContainer";
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({DEFAULT, HOTSEAT, FOLDER})
+    public @interface ContainerType{}
+    public static final int DEFAULT = 0;
+    public static final int HOTSEAT = 1;
+    public static final int FOLDER = 2;
+
+    private int mContainerType = DEFAULT;
 
     // These are temporary variables to prevent having to allocate a new object just to
     // return an (x, y) value from helper functions. Do NOT use them to maintain other state.
     private final int[] mTmpCellXY = new int[2];
 
     private final WallpaperManager mWallpaperManager;
-
-    private boolean mIsHotseatLayout;
 
     private int mCellWidth;
     private int mCellHeight;
@@ -101,20 +111,19 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
         mInvertIfRtl = invert;
     }
 
-    public void setIsHotseat(boolean isHotseat) {
-        mIsHotseatLayout = isHotseat;
-    }
-
-    int getCellContentWidth() {
-        final DeviceProfile grid = mLauncher.getDeviceProfile();
-        return Math.min(getMeasuredHeight(), mIsHotseatLayout ?
-                grid.hotseatCellWidthPx: grid.cellWidthPx);
+    public void setContainerType(@ContainerType int containerType) {
+        mContainerType = containerType;
     }
 
     int getCellContentHeight() {
         final DeviceProfile grid = mLauncher.getDeviceProfile();
-        return Math.min(getMeasuredHeight(), mIsHotseatLayout ?
-                grid.hotseatCellHeightPx : grid.cellHeightPx);
+        int cellContentHeight = grid.cellHeightPx;
+        if (mContainerType == HOTSEAT) {
+            cellContentHeight = grid.hotseatCellHeightPx;
+        } else if (mContainerType == FOLDER) {
+            cellContentHeight = grid.folderCellHeightPx;
+        }
+        return Math.min(getMeasuredHeight(), cellContentHeight);
     }
 
     public void measureChild(View child) {

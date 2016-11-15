@@ -618,7 +618,9 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     public void setIsHotseat(boolean isHotseat) {
         mIsHotseat = isHotseat;
-        mShortcutsAndWidgets.setIsHotseat(isHotseat);
+        mShortcutsAndWidgets.setContainerType(isHotseat
+                ? ShortcutAndWidgetContainer.HOTSEAT
+                : ShortcutAndWidgetContainer.DEFAULT);
     }
 
     public boolean isHotseat() {

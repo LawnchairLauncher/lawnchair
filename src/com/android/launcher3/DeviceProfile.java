@@ -207,7 +207,15 @@ public class DeviceProfile {
         // In multi-window mode, we can have widthPx = availableWidthPx
         // and heightPx = availableHeightPx because Launcher uses the InvariantDeviceProfiles'
         // widthPx and heightPx values where it's needed.
-        return new DeviceProfile(context, inv, mwSize, mwSize, mwSize.x, mwSize.y, isLandscape);
+        DeviceProfile profile = new DeviceProfile(context, inv, mwSize, mwSize, mwSize.x, mwSize.y,
+                isLandscape);
+
+        // Hide labels on the workspace.
+        profile.iconTextSizePx = 0;
+        profile.cellHeightPx = profile.iconSizePx + profile.iconDrawablePaddingPx
+                + Utilities.calculateTextHeight(profile.iconTextSizePx);
+
+        return profile;
     }
 
     public void addLauncherLayoutChangedListener(LauncherLayoutChangeListener listener) {
