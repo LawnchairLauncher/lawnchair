@@ -2528,6 +2528,7 @@ public class Workspace extends PagedView
             onDropExternal(touchXY, d.dragInfo, dropTargetLayout, false, d);
         } else if (mDragInfo != null) {
             final View cell = mDragInfo.cell;
+            boolean droppedOnOriginalCellDuringTransition = false;
 
             if (dropTargetLayout != null && !d.cancelled) {
                 // Move internally
@@ -2569,6 +2570,10 @@ public class Workspace extends PagedView
                     minSpanX = item.minSpanX;
                     minSpanY = item.minSpanY;
                 }
+
+                droppedOnOriginalCellDuringTransition = mIsSwitchingState
+                        && item.screenId == screenId && item.container == container
+                        && item.cellX == mTargetCell[0] && item.cellY == mTargetCell[1];
 
                 int[] resultSpan = new int[2];
                 mTargetCell = dropTargetLayout.performReorder((int) mDragViewVisualCenter[0],
@@ -2627,7 +2632,7 @@ public class Workspace extends PagedView
                                 && !d.accessibleDrag) {
                             mDelayedResizeRunnable = new Runnable() {
                                 public void run() {
-                                    if (!isPageInTransition() && !mIsSwitchingState) {
+                                    if (!isPageInTransition()) {
                                         DragLayer dragLayer = mLauncher.getDragLayer();
                                         dragLayer.addResizeFrame(hostView, cellLayout);
                                     }
@@ -2662,6 +2667,17 @@ public class Workspace extends PagedView
             };
             mAnimatingViewIntoPlace = true;
             if (d.dragView.hasDrawn()) {
+                if (droppedOnOriginalCellDuringTransition) {
+                    // Animate the item to its original position, while simultaneously exiting
+                    // spring-loaded mode so the page meets the icon where it was picked up.
+                    mLauncher.getDragController().animateDragViewToOriginalPosition(
+                            mDelayedResizeRunnable, cell,
+                            mStateTransitionAnimation.mSpringLoadedTransitionTime);
+                    mLauncher.exitSpringLoadedDragMode();
+                    mLauncher.getDropTargetBar().onDragEnd();
+                    parent.onDropChild(cell);
+                    return;
+                }
                 final ItemInfo info = (ItemInfo) cell.getTag();
                 boolean isWidget = info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET
                         || info.itemType == LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;

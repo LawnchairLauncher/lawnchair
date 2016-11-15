@@ -295,10 +295,6 @@ public class DragController implements DragDriver.EventListener, TouchController
         mIsInPreDrag = false;
     }
 
-    public boolean isInPreDrag() {
-        return mIsInPreDrag;
-    }
-
     /**
      * Call this from a drag source view like this:
      *
@@ -361,6 +357,8 @@ public class DragController implements DragDriver.EventListener, TouchController
                 isDeferred = mDragObject.deferDragViewCleanupPostAnimation;
                 if (!isDeferred) {
                     mDragObject.dragView.remove();
+                } else if (mIsInPreDrag) {
+                    animateDragViewToOriginalPosition(null, null, -1);
                 }
                 mDragObject.dragView = null;
             }
@@ -372,6 +370,22 @@ public class DragController implements DragDriver.EventListener, TouchController
         }
 
         releaseVelocityTracker();
+    }
+
+    public void animateDragViewToOriginalPosition(final Runnable onComplete,
+            final View originalIcon, int duration) {
+        Runnable onCompleteRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (originalIcon != null) {
+                    originalIcon.setVisibility(View.VISIBLE);
+                }
+                if (onComplete != null) {
+                    onComplete.run();
+                }
+            }
+        };
+        mDragObject.dragView.animateTo(mMotionDownX, mMotionDownY, onCompleteRunnable, duration);
     }
 
     private void callOnDragEnd() {
@@ -738,7 +752,7 @@ public class DragController implements DragDriver.EventListener, TouchController
             if (dropTarget.acceptDrop(mDragObject)) {
                 if (flingVel != null) {
                     dropTarget.onFlingToDelete(mDragObject, flingVel);
-                } else {
+                } else if (!mIsInPreDrag) {
                     dropTarget.onDrop(mDragObject);
                 }
                 accepted = true;
@@ -749,11 +763,6 @@ public class DragController implements DragDriver.EventListener, TouchController
         if (!mIsInPreDrag) {
             mDragObject.dragSource.onDropCompleted(
                     dropTargetAsView, mDragObject, flingVel != null, accepted);
-        } else {
-            // Only defer the drag view cleanup if the drag source handles the drop.
-            if (!(mDragObject.dragSource instanceof DropTarget)) {
-                mDragObject.deferDragViewCleanupPostAnimation = false;
-            }
         }
     }
 

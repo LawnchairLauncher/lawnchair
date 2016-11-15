@@ -1331,10 +1331,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
             mIsExternalDrag = false;
         } else {
             currentDragView = mCurrentDragView;
-            // The view was never removed from this folder if we are still in the pre-drag.
-            if (!mDragController.isInPreDrag()) {
-                mContent.addViewForRank(currentDragView, si, mEmptyCellRank);
-            }
+            mContent.addViewForRank(currentDragView, si, mEmptyCellRank);
         }
 
         if (d.dragView.hasDrawn()) {
@@ -1355,12 +1352,9 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         mItemsInvalidated = true;
         rearrangeChildren();
 
-        // The ShortcutInfo was never removed if we are still in the pre-drag.
-        if (!mDragController.isInPreDrag()) {
-            // Temporarily suppress the listener, as we did all the work already here.
-            try (SuppressInfoChanges s = new SuppressInfoChanges()) {
-                mInfo.add(si, false);
-            }
+        // Temporarily suppress the listener, as we did all the work already here.
+        try (SuppressInfoChanges s = new SuppressInfoChanges()) {
+            mInfo.add(si, false);
         }
 
         // Clear the drag info, as it is no longer being dragged.
