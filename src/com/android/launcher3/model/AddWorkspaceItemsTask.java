@@ -33,26 +33,29 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.util.GridOccupancy;
+import com.android.launcher3.util.Provider;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Task to add auto-created workspace items.
  */
 public class AddWorkspaceItemsTask extends ExtendedModelTask {
 
-    private final ArrayList<? extends ItemInfo> mWorkspaceApps;
+    private final Provider<List<ItemInfo>> mAppsProvider;
 
     /**
-     * @param workspaceApps items to add on the workspace
+     * @param appsProvider items to add on the workspace
      */
-    public AddWorkspaceItemsTask(ArrayList<? extends ItemInfo> workspaceApps) {
-        mWorkspaceApps = workspaceApps;
+    public AddWorkspaceItemsTask(Provider<List<ItemInfo>> appsProvider) {
+        mAppsProvider = appsProvider;
     }
 
     @Override
     public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
-        if (mWorkspaceApps.isEmpty()) {
+        List<ItemInfo> workspaceApps = mAppsProvider.get();
+        if (workspaceApps.isEmpty()) {
             return;
         }
         Context context = app.getContext();
@@ -65,7 +68,7 @@ public class AddWorkspaceItemsTask extends ExtendedModelTask {
         // called.
         ArrayList<Long> workspaceScreens = LauncherModel.loadWorkspaceScreensDb(context);
         synchronized(dataModel) {
-            for (ItemInfo item : mWorkspaceApps) {
+            for (ItemInfo item : workspaceApps) {
                 if (item instanceof ShortcutInfo) {
                     // Short-circuit this logic if the icon exists somewhere on the workspace
                     if (shortcutExists(dataModel, item.getIntent(), item.user)) {
@@ -258,5 +261,4 @@ public class AddWorkspaceItemsTask extends ExtendedModelTask {
         }
         return occupied.findVacantCell(xy, spanX, spanY);
     }
-
 }

@@ -84,6 +84,7 @@ import com.android.launcher3.util.ManagedProfileHeuristic;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Preconditions;
+import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 
@@ -261,9 +262,16 @@ public class LauncherModel extends BroadcastReceiver
     /**
      * Adds the provided items to the workspace.
      */
+    public void addAndBindAddedWorkspaceItems(List<ItemInfo> workspaceApps) {
+        addAndBindAddedWorkspaceItems(Provider.of(workspaceApps));
+    }
+
+    /**
+     * Adds the provided items to the workspace.
+     */
     public void addAndBindAddedWorkspaceItems(
-            final ArrayList<? extends ItemInfo> workspaceApps) {
-        enqueueModelUpdateTask(new AddWorkspaceItemsTask(workspaceApps));
+            Provider<List<ItemInfo>> appsProvider) {
+        enqueueModelUpdateTask(new AddWorkspaceItemsTask(appsProvider));
     }
 
     /**

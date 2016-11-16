@@ -121,7 +121,7 @@ public class ManagedProfileHeuristic {
             // getting filled with the managed user apps, when it start with a fresh DB (or after
             // a very long time).
             if (userAppsExisted && !homescreenApps.isEmpty()) {
-                mModel.addAndBindAddedWorkspaceItems(homescreenApps);
+                mModel.addAndBindAddedWorkspaceItems(new ArrayList<ItemInfo>(homescreenApps));
             }
         }
 
@@ -173,7 +173,7 @@ public class ManagedProfileHeuristic {
                 }
 
                 // Add the item to home screen and DB. This also generates an item id synchronously.
-                ArrayList<ItemInfo> itemList = new ArrayList<ItemInfo>(1);
+                ArrayList<ItemInfo> itemList = new ArrayList<>(1);
                 itemList.add(workFolder);
                 mModel.addAndBindAddedWorkspaceItems(itemList);
                 mPrefs.edit().putLong(folderIdKey, workFolder.id).apply();
