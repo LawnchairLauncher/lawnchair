@@ -87,6 +87,7 @@ public class PackageUpdatedTask extends ExtendedModelTask {
         final int N = packages.length;
         FlagOp flagOp = FlagOp.NO_OP;
         final HashSet<String> packageSet = new HashSet<>(Arrays.asList(packages));
+        ItemInfoMatcher matcher = ItemInfoMatcher.ofPackages(packageSet, mUser);
         switch (mOp) {
             case OP_ADD: {
                 for (int i = 0; i < N; i++) {
@@ -135,15 +136,15 @@ public class PackageUpdatedTask extends ExtendedModelTask {
                         FlagOp.addFlag(ShortcutInfo.FLAG_DISABLED_SUSPENDED) :
                         FlagOp.removeFlag(ShortcutInfo.FLAG_DISABLED_SUSPENDED);
                 if (DEBUG) Log.d(TAG, "mAllAppsList.(un)suspend " + N);
-                appsList.updateDisabledFlags(
-                        ItemInfoMatcher.ofPackages(packageSet, mUser), flagOp);
+                appsList.updateDisabledFlags(matcher, flagOp);
                 break;
             case OP_USER_AVAILABILITY_CHANGE:
                 flagOp = UserManagerCompat.getInstance(context).isQuietModeEnabled(mUser)
                         ? FlagOp.addFlag(ShortcutInfo.FLAG_DISABLED_QUIET_USER)
                         : FlagOp.removeFlag(ShortcutInfo.FLAG_DISABLED_QUIET_USER);
                 // We want to update all packages for this user.
-                appsList.updateDisabledFlags(ItemInfoMatcher.ofUser(mUser), flagOp);
+                matcher = ItemInfoMatcher.ofUser(mUser);
+                appsList.updateDisabledFlags(matcher, flagOp);
                 break;
         }
 
@@ -219,10 +220,10 @@ public class PackageUpdatedTask extends ExtendedModelTask {
                         }
 
                         ComponentName cn = si.getTargetComponent();
-                        if (cn != null && packageSet.contains(cn.getPackageName())) {
+                        if (cn != null && matcher.matches(si, cn)) {
                             AppInfo appInfo = addedOrUpdatedApps.get(cn);
 
-                            if (si.isPromise()) {
+                            if (si.isPromise() && mOp == OP_ADD) {
                                 if (si.hasStatusFlag(ShortcutInfo.FLAG_AUTOINTALL_ICON)) {
                                     // Auto install icon
                                     PackageManager pm = context.getPackageManager();
