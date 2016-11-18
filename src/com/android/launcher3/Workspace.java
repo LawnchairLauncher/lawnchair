@@ -48,6 +48,7 @@ import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityManager;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
@@ -96,7 +97,7 @@ import java.util.HashSet;
  */
 public class Workspace extends PagedView
         implements DropTarget, DragSource, DragScroller, View.OnTouchListener,
-        DragController.DragListener, LauncherTransitionable, ViewGroup.OnHierarchyChangeListener,
+        DragController.DragListener, ViewGroup.OnHierarchyChangeListener,
         Insettable, DropTargetSource {
     private static final String TAG = "Launcher.Workspace";
 
@@ -2048,6 +2049,20 @@ public class Workspace extends PagedView
             mOnStateChangeListener.prepareStateChange(toState, animated ? workspaceAnim : null);
         }
 
+        onPrepareStateTransition(mState.hasMultipleVisiblePages);
+
+        StateTransitionListener listener = new StateTransitionListener();
+        if (animated) {
+            ValueAnimator stepAnimator = ValueAnimator.ofFloat(0, 1);
+            stepAnimator.addListener(listener);
+
+            workspaceAnim.play(stepAnimator);
+            workspaceAnim.addListener(listener);
+        } else {
+            listener.onAnimationStart(null);
+            listener.onAnimationEnd(null);
+        }
+
         return workspaceAnim;
     }
 
@@ -2100,9 +2115,7 @@ public class Workspace extends PagedView
         }
     }
 
-    @Override
-    public void onLauncherTransitionPrepare(Launcher l, boolean animated,
-            boolean multiplePagesVisible) {
+    public void onPrepareStateTransition(boolean multiplePagesVisible) {
         mIsSwitchingState = true;
         mTransitionProgress = 0;
 
@@ -2115,32 +2128,12 @@ public class Workspace extends PagedView
         hideCustomContentIfNecessary();
     }
 
-    @Override
-    public void onLauncherTransitionStart(Launcher l, boolean animated, boolean toWorkspace) {
-        if (mPageIndicator != null) {
-            boolean isNewStateSpringLoaded = mState == State.SPRING_LOADED;
-            mPageIndicator.setShouldAutoHide(!isNewStateSpringLoaded);
-            if (isNewStateSpringLoaded) {
-                // Show the page indicator at the same time as the rest of the transition.
-                showPageIndicatorAtCurrentScroll();
-            }
-        }
-    }
-
-    @Override
-    public void onLauncherTransitionStep(Launcher l, float t) {
-        mTransitionProgress = t;
-    }
-
-    @Override
-    public void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace) {
+    public void onEndStateTransition() {
         mIsSwitchingState = false;
         updateChildrenLayersEnabled(false);
         showCustomContentIfNecessary();
         mForceDrawAdjacentPages = false;
-        if (mState == State.SPRING_LOADED) {
-            showPageIndicatorAtCurrentScroll();
-        }
+        mTransitionProgress = 1;
     }
 
     void updateCustomContentVisibility() {
@@ -4290,5 +4283,27 @@ public class Workspace extends PagedView
 
     public static final boolean isQsbContainerPage(int pageNo) {
         return pageNo == 0;
+    }
+
+    private class StateTransitionListener extends AnimatorListenerAdapter
+            implements AnimatorUpdateListener {
+        @Override
+        public void onAnimationUpdate(ValueAnimator anim) {
+            mTransitionProgress = anim.getAnimatedFraction();
+        }
+
+        @Override
+        public void onAnimationStart(Animator animation) {
+            if (mState == State.SPRING_LOADED) {
+                // Show the page indicator at the same time as the rest of the transition.
+                showPageIndicatorAtCurrentScroll();
+            }
+            mTransitionProgress = 0;
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            onEndStateTransition();
+        }
     }
 }

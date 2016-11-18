@@ -422,6 +422,11 @@ public class WorkspaceStateTransitionAnimation {
                 }
 
                 @Override
+                public void onAnimationStart(Animator animation) {
+                    mWorkspace.getPageIndicator().setShouldAutoHide(!states.stateIsSpringLoaded);
+                }
+
+                @Override
                 public void onAnimationEnd(Animator animation) {
                     mStateAnimator = null;
                     if (canceled) return;
@@ -434,6 +439,7 @@ public class WorkspaceStateTransitionAnimation {
         } else {
             overviewPanel.setAlpha(finalOverviewPanelAlpha);
             AlphaUpdateListener.updateVisibility(overviewPanel, accessibilityEnabled);
+            mWorkspace.getPageIndicator().setShouldAutoHide(!states.stateIsSpringLoaded);
 
             qsbAlphaAnimation.end();
             mWorkspace.createHotseatAlphaAnimator(finalHotseatAlpha).end();

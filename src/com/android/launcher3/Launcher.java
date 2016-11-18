@@ -2951,10 +2951,9 @@ public class Launcher extends Activity
         }
 
         if (toState == State.APPS) {
-            mStateTransitionAnimation.startAnimationToAllApps(mWorkspace.getState(), animated,
-                    focusSearchBar);
+            mStateTransitionAnimation.startAnimationToAllApps(animated, focusSearchBar);
         } else {
-            mStateTransitionAnimation.startAnimationToWidgets(mWorkspace.getState(), animated);
+            mStateTransitionAnimation.startAnimationToWidgets(animated);
         }
 
         // Change the state *after* we've called all the transition code
