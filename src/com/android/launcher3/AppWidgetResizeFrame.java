@@ -223,8 +223,8 @@ public class AppWidgetResizeFrame extends FrameLayout
      *  Based on the current deltas, we determine if and how to resize the widget.
      */
     private void resizeWidgetIfNeeded(boolean onDismiss) {
-        float xThreshold = mCellLayout.getCellWidth() + mCellLayout.getWidthGap();
-        float yThreshold = mCellLayout.getCellHeight() + mCellLayout.getHeightGap();
+        float xThreshold = mCellLayout.getCellWidth();
+        float yThreshold = mCellLayout.getCellHeight();
 
         int hSpanInc = getSpanIncrement((mDeltaX + mDeltaXAddOn) / xThreshold - mRunningHInc);
         int vSpanInc = getSpanIncrement((mDeltaY + mDeltaYAddOn) / yThreshold - mRunningVInc);
@@ -337,8 +337,8 @@ public class AppWidgetResizeFrame extends FrameLayout
     }
 
     private void onTouchUp() {
-        int xThreshold = mCellLayout.getCellWidth() + mCellLayout.getWidthGap();
-        int yThreshold = mCellLayout.getCellHeight() + mCellLayout.getHeightGap();
+        int xThreshold = mCellLayout.getCellWidth();
+        int yThreshold = mCellLayout.getCellHeight();
 
         mDeltaXAddOn = mRunningHInc * xThreshold; 
         mDeltaYAddOn = mRunningVInc * yThreshold; 

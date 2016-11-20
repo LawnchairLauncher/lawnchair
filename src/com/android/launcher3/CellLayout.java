@@ -87,13 +87,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     @ViewDebug.ExportedProperty(category = "launcher")
     private int mCountY;
 
-    private int mOriginalWidthGap;
-    private int mOriginalHeightGap;
-    @ViewDebug.ExportedProperty(category = "launcher")
-    @Thunk int mWidthGap;
-    @ViewDebug.ExportedProperty(category = "launcher")
-    @Thunk int mHeightGap;
-    private int mMaxGap;
     private boolean mDropPending = false;
     private boolean mIsDragTarget = true;
     private boolean mJailContent = true;
@@ -202,9 +195,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
         mCellWidth = mCellHeight = -1;
         mFixedCellWidth = mFixedCellHeight = -1;
-        mWidthGap = mOriginalWidthGap = 0;
-        mHeightGap = mOriginalHeightGap = 0;
-        mMaxGap = Integer.MAX_VALUE;
 
         mCountX = grid.inv.numColumns;
         mCountY = grid.inv.numRows;
@@ -287,8 +277,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         }
 
         mShortcutsAndWidgets = new ShortcutAndWidgetContainer(context);
-        mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap,
-                mCountX, mCountY);
+        mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mCountX, mCountY);
 
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
 
@@ -373,8 +362,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     public void setCellDimensions(int width, int height) {
         mFixedCellWidth = mCellWidth = width;
         mFixedCellHeight = mCellHeight = height;
-        mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap,
-                mCountX, mCountY);
+        mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mCountX, mCountY);
     }
 
     public void setGridSize(int x, int y) {
@@ -383,8 +371,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         mOccupied = new GridOccupancy(mCountX, mCountY);
         mTmpOccupied = new GridOccupancy(mCountX, mCountY);
         mTempRectStack.clear();
-        mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap,
-                mCountX, mCountY);
+        mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mCountX, mCountY);
         requestLayout();
     }
 
@@ -719,8 +706,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         final int hStartPadding = getPaddingLeft();
         final int vStartPadding = getPaddingTop();
 
-        result[0] = (x - hStartPadding) / (mCellWidth + mWidthGap);
-        result[1] = (y - vStartPadding) / (mCellHeight + mHeightGap);
+        result[0] = (x - hStartPadding) / mCellWidth;
+        result[1] = (y - vStartPadding) / mCellHeight;
 
         final int xAxis = mCountX;
         final int yAxis = mCountY;
@@ -753,8 +740,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         final int hStartPadding = getPaddingLeft();
         final int vStartPadding = getPaddingTop();
 
-        result[0] = hStartPadding + cellX * (mCellWidth + mWidthGap);
-        result[1] = vStartPadding + cellY * (mCellHeight + mHeightGap);
+        result[0] = hStartPadding + cellX * mCellWidth;
+        result[1] = vStartPadding + cellY * mCellHeight;
     }
 
     /**
@@ -780,10 +767,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     void regionToCenterPoint(int cellX, int cellY, int spanX, int spanY, int[] result) {
         final int hStartPadding = getPaddingLeft();
         final int vStartPadding = getPaddingTop();
-        result[0] = hStartPadding + cellX * (mCellWidth + mWidthGap) +
-                (spanX * mCellWidth + (spanX - 1) * mWidthGap) / 2;
-        result[1] = vStartPadding + cellY * (mCellHeight + mHeightGap) +
-                (spanY * mCellHeight + (spanY - 1) * mHeightGap) / 2;
+        result[0] = hStartPadding + cellX * mCellWidth + (spanX * mCellWidth) / 2;
+        result[1] = vStartPadding + cellY * mCellHeight + (spanY * mCellHeight) / 2;
     }
 
      /**
@@ -796,10 +781,9 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
      void regionToRect(int cellX, int cellY, int spanX, int spanY, Rect result) {
         final int hStartPadding = getPaddingLeft();
         final int vStartPadding = getPaddingTop();
-        final int left = hStartPadding + cellX * (mCellWidth + mWidthGap);
-        final int top = vStartPadding + cellY * (mCellHeight + mHeightGap);
-        result.set(left, top, left + (spanX * mCellWidth + (spanX - 1) * mWidthGap),
-                top + (spanY * mCellHeight + (spanY - 1) * mHeightGap));
+        final int left = hStartPadding + cellX * mCellWidth;
+        final int top = vStartPadding + cellY * mCellHeight;
+        result.set(left, top, left + (spanX * mCellWidth), top + (spanY * mCellHeight));
     }
 
     public float getDistanceFromCell(float x, float y, int[] cell) {
@@ -813,14 +797,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     int getCellHeight() {
         return mCellHeight;
-    }
-
-    int getWidthGap() {
-        return mWidthGap;
-    }
-
-    int getHeightGap() {
-        return mHeightGap;
     }
 
     public void setFixedSize(int width, int height) {
@@ -842,8 +818,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             if (cw != mCellWidth || ch != mCellHeight) {
                 mCellWidth = cw;
                 mCellHeight = ch;
-                mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap,
-                        mHeightGap, mCountX, mCountY);
+                mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mCountX, mCountY);
             }
         }
 
@@ -854,23 +829,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             newHeight = mFixedHeight;
         } else if (widthSpecMode == MeasureSpec.UNSPECIFIED || heightSpecMode == MeasureSpec.UNSPECIFIED) {
             throw new RuntimeException("CellLayout cannot have UNSPECIFIED dimensions");
-        }
-
-        int numWidthGaps = mCountX - 1;
-        int numHeightGaps = mCountY - 1;
-
-        if (mOriginalWidthGap < 0 || mOriginalHeightGap < 0) {
-            int hSpace = childWidthSize;
-            int vSpace = childHeightSize;
-            int hFreeSpace = hSpace - (mCountX * mCellWidth);
-            int vFreeSpace = vSpace - (mCountY * mCellHeight);
-            mWidthGap = Math.min(mMaxGap, numWidthGaps > 0 ? (hFreeSpace / numWidthGaps) : 0);
-            mHeightGap = Math.min(mMaxGap,numHeightGaps > 0 ? (vFreeSpace / numHeightGaps) : 0);
-            mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap,
-                    mHeightGap, mCountX, mCountY);
-        } else {
-            mWidthGap = mOriginalWidthGap;
-            mHeightGap = mOriginalHeightGap;
         }
 
         // Make the feedback view large enough to hold the blur bitmap.
@@ -1085,23 +1043,19 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                     // outside the bounds of the view.
                     top += (v.getHeight() - dragOutline.getHeight()) / 2;
                     // We center about the x axis
-                    left += ((mCellWidth * spanX) + ((spanX - 1) * mWidthGap)
-                            - dragOutline.getWidth()) / 2;
+                    left += ((mCellWidth * spanX) - dragOutline.getWidth()) / 2;
                 } else {
                     if (dragOffset != null && dragRegion != null) {
                         // Center the drag region *horizontally* in the cell and apply a drag
                         // outline offset
-                        left += dragOffset.x + ((mCellWidth * spanX) + ((spanX - 1) * mWidthGap)
-                                - dragRegion.width()) / 2;
+                        left += dragOffset.x + ((mCellWidth * spanX) - dragRegion.width()) / 2;
                         int cHeight = getShortcutsAndWidgets().getCellContentHeight();
                         int cellPaddingY = (int) Math.max(0, ((mCellHeight - cHeight) / 2f));
                         top += dragOffset.y + cellPaddingY;
                     } else {
                         // Center the drag outline in the cell
-                        left += ((mCellWidth * spanX) + ((spanX - 1) * mWidthGap)
-                                - dragOutline.getWidth()) / 2;
-                        top += ((mCellHeight * spanY) + ((spanY - 1) * mHeightGap)
-                                - dragOutline.getHeight()) / 2;
+                        left += ((mCellWidth * spanX) - dragOutline.getWidth()) / 2;
+                        top += ((mCellHeight * spanY) - dragOutline.getHeight()) / 2;
                     }
                 }
                 r.set(left, top, left + dragOutline.getWidth(), top + dragOutline.getHeight());
@@ -1190,8 +1144,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         // For items with a spanX / spanY > 1, the passed in point (pixelX, pixelY) corresponds
         // to the center of the item, but we are searching based on the top-left cell, so
         // we translate the point over to correspond to the top-left.
-        pixelX -= (mCellWidth + mWidthGap) * (spanX - 1) / 2f;
-        pixelY -= (mCellHeight + mHeightGap) * (spanY - 1) / 2f;
+        pixelX -= mCellWidth * (spanX - 1) / 2f;
+        pixelY -= mCellHeight * (spanY - 1) / 2f;
 
         // Keep track of best-scoring drop area
         final int[] bestXY = result != null ? result : new int[2];
@@ -2586,17 +2540,14 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     public void cellToRect(int cellX, int cellY, int cellHSpan, int cellVSpan, Rect resultRect) {
         final int cellWidth = mCellWidth;
         final int cellHeight = mCellHeight;
-        final int widthGap = mWidthGap;
-        final int heightGap = mHeightGap;
 
         final int hStartPadding = getPaddingLeft();
         final int vStartPadding = getPaddingTop();
 
-        int width = cellHSpan * cellWidth + ((cellHSpan - 1) * widthGap);
-        int height = cellVSpan * cellHeight + ((cellVSpan - 1) * heightGap);
-
-        int x = hStartPadding + cellX * (cellWidth + widthGap);
-        int y = vStartPadding + cellY * (cellHeight + heightGap);
+        int width = cellHSpan * cellWidth;
+        int height = cellVSpan * cellHeight;
+        int x = hStartPadding + cellX * cellWidth;
+        int y = vStartPadding + cellY * cellHeight;
 
         resultRect.set(x, y, x + width, y + height);
     }
@@ -2614,13 +2565,11 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     }
 
     public int getDesiredWidth() {
-        return getPaddingLeft() + getPaddingRight() + (mCountX * mCellWidth) +
-                (Math.max((mCountX - 1), 0) * mWidthGap);
+        return getPaddingLeft() + getPaddingRight() + (mCountX * mCellWidth);
     }
 
     public int getDesiredHeight()  {
-        return getPaddingTop() + getPaddingBottom() + (mCountY * mCellHeight) +
-                (Math.max((mCountY - 1), 0) * mHeightGap);
+        return getPaddingTop() + getPaddingBottom() + (mCountY * mCellHeight);
     }
 
     public boolean isOccupied(int x, int y) {
@@ -2740,8 +2689,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             this.cellVSpan = cellVSpan;
         }
 
-        public void setup(int cellWidth, int cellHeight, int widthGap, int heightGap,
-                boolean invertHorizontally, int colCount) {
+        public void setup(int cellWidth, int cellHeight, boolean invertHorizontally, int colCount) {
             if (isLockedToGrid) {
                 final int myCellHSpan = cellHSpan;
                 final int myCellVSpan = cellVSpan;
@@ -2752,12 +2700,10 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                     myCellX = colCount - myCellX - cellHSpan;
                 }
 
-                width = myCellHSpan * cellWidth + ((myCellHSpan - 1) * widthGap) -
-                        leftMargin - rightMargin;
-                height = myCellVSpan * cellHeight + ((myCellVSpan - 1) * heightGap) -
-                        topMargin - bottomMargin;
-                x = (int) (myCellX * (cellWidth + widthGap) + leftMargin);
-                y = (int) (myCellY * (cellHeight + heightGap) + topMargin);
+                width = myCellHSpan * cellWidth - leftMargin - rightMargin;
+                height = myCellVSpan * cellHeight - topMargin - bottomMargin;
+                x = (myCellX * cellWidth + leftMargin);
+                y = (myCellY * cellHeight + topMargin);
             }
         }
 

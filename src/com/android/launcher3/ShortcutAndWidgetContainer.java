@@ -47,9 +47,6 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
     private int mCellWidth;
     private int mCellHeight;
 
-    private int mWidthGap;
-    private int mHeightGap;
-
     private int mCountX;
 
     private Launcher mLauncher;
@@ -62,12 +59,9 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
         mWallpaperManager = WallpaperManager.getInstance(context);
     }
 
-    public void setCellDimensions(int cellWidth, int cellHeight, int widthGap, int heightGap,
-            int countX, int countY) {
+    public void setCellDimensions(int cellWidth, int cellHeight, int countX, int countY) {
         mCellWidth = cellWidth;
         mCellHeight = cellHeight;
-        mWidthGap = widthGap;
-        mHeightGap = heightGap;
         mCountX = countX;
     }
 
@@ -102,8 +96,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
     }
 
     public void setupLp(CellLayout.LayoutParams lp) {
-        lp.setup(mCellWidth, mCellHeight, mWidthGap, mHeightGap, invertLayoutHorizontally(),
-                mCountX);
+        lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX);
     }
 
     // Set whether or not to invert the layout horizontally if the layout is in RTL mode.
@@ -132,8 +125,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
         final int cellHeight = mCellHeight;
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
         if (!lp.isFullscreen) {
-            lp.setup(cellWidth, cellHeight, mWidthGap, mHeightGap, invertLayoutHorizontally(),
-                    mCountX);
+            lp.setup(cellWidth, cellHeight, invertLayoutHorizontally(), mCountX);
 
             if (child instanceof LauncherAppWidgetHostView) {
                 // Widgets have their own padding, so skip
