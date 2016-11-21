@@ -27,6 +27,7 @@ import com.android.launcher3.DropTarget;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.LauncherEvent;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -193,6 +194,25 @@ public class UserEventDispatcher {
         mPredictedApps = predictedApps;
     }
 
+    /* Currently we are only interested in whether this event happens or not and don't
+    * care about which screen moves to where. */
+    public void logOverviewReorder() {
+        LauncherEvent event = new LauncherLogProto.LauncherEvent();
+
+        event.srcTarget = new LauncherLogProto.Target[2];
+        event.srcTarget[0] = new LauncherLogProto.Target();
+        event.srcTarget[0].type = Target.CONTAINER;
+        event.srcTarget[0].containerType = LauncherLogProto.WORKSPACE;
+        event.srcTarget[1] = new LauncherLogProto.Target();
+        event.srcTarget[1].type = Target.CONTAINER;
+        event.srcTarget[1].containerType = LauncherLogProto.OVERVIEW;
+
+        event.action = new LauncherLogProto.Action();
+        event.action.type = Action.TOUCH;
+        event.action.touch = Action.DRAGDROP;
+        dispatchUserEvent(event, null);
+
+    }
     public void logDragNDrop(DropTarget.DragObject dragObj, View dropTargetAsView) {
         LauncherEvent event = LoggerUtils.initLauncherEvent(Action.TOUCH,
                 dragObj.dragView,

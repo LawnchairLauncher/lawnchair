@@ -1969,7 +1969,7 @@ public class Workspace extends PagedView
             CellLayout cl = ((CellLayout) getChildAt(i));
             mScreenOrder.add(getIdForScreen(cl));
         }
-
+        mLauncher.getUserEventDispatcher().logOverviewReorder();
         mLauncher.getModel().updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
 
         // Re-enable auto layout transitions for page deletion.
