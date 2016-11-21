@@ -45,10 +45,22 @@ public class DeepShortcutManager {
     private static final int FLAG_GET_ALL = ShortcutQuery.FLAG_MATCH_DYNAMIC
             | ShortcutQuery.FLAG_MATCH_MANIFEST | ShortcutQuery.FLAG_MATCH_PINNED;
 
+    private static DeepShortcutManager sInstance;
+    private static final Object sInstanceLock = new Object();
+
+    public static DeepShortcutManager getInstance(Context context) {
+        synchronized (sInstanceLock) {
+            if (sInstance == null) {
+                sInstance = new DeepShortcutManager(context.getApplicationContext());
+            }
+            return sInstance;
+        }
+    }
+
     private final LauncherApps mLauncherApps;
     private boolean mWasLastCallSuccess;
 
-    public DeepShortcutManager(Context context, ShortcutCache shortcutCache) {
+    private DeepShortcutManager(Context context) {
         mLauncherApps = (LauncherApps) context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
     }
 

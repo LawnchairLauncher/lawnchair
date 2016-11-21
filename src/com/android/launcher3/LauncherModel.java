@@ -155,7 +155,8 @@ public class LauncherModel extends BroadcastReceiver
         @Override
         public void run() {
             if (mDeepShortcutsLoaded) {
-                boolean hasShortcutHostPermission = mDeepShortcutManager.hasHostPermission();
+                boolean hasShortcutHostPermission =
+                        DeepShortcutManager.getInstance(mApp.getContext()).hasHostPermission();
                 if (hasShortcutHostPermission != mHasShortcutHostPermission) {
                     mApp.reloadWorkspace();
                 }
@@ -172,7 +173,6 @@ public class LauncherModel extends BroadcastReceiver
     // </ only access in worker thread >
 
     private final IconCache mIconCache;
-    private final DeepShortcutManager mDeepShortcutManager;
 
     private final LauncherAppsCompat mLauncherApps;
     private final UserManagerCompat mUserManager;
@@ -209,14 +209,12 @@ public class LauncherModel extends BroadcastReceiver
         public void bindDeepShortcutMap(MultiHashMap<ComponentKey, String> deepShortcutMap);
     }
 
-    LauncherModel(LauncherAppState app, IconCache iconCache, AppFilter appFilter,
-            DeepShortcutManager deepShortcutManager) {
+    LauncherModel(LauncherAppState app, IconCache iconCache, AppFilter appFilter) {
         Context context = app.getContext();
         mApp = app;
         mBgAllAppsList = new AllAppsList(iconCache, appFilter);
         mBgWidgetsModel = new WidgetsModel(iconCache, appFilter);
         mIconCache = iconCache;
-        mDeepShortcutManager = deepShortcutManager;
 
         mLauncherApps = LauncherAppsCompat.getInstance(context);
         mUserManager = UserManagerCompat.getInstance(context);
@@ -1190,6 +1188,7 @@ public class LauncherModel extends BroadcastReceiver
             final PackageManager manager = context.getPackageManager();
             final boolean isSafeMode = manager.isSafeMode();
             final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
+            final DeepShortcutManager shortcutManager = DeepShortcutManager.getInstance(context);
             final boolean isSdCardReady = Utilities.isBootCompleted();
             final MultiHashMap<UserHandleCompat, String> pendingPackages = new MultiHashMap<>();
 
@@ -1287,8 +1286,8 @@ public class LauncherModel extends BroadcastReceiver
                         // We can only query for shortcuts when the user is unlocked.
                         if (userUnlocked) {
                             List<ShortcutInfoCompat> pinnedShortcuts =
-                                    mDeepShortcutManager.queryForPinnedShortcuts(null, user);
-                            if (mDeepShortcutManager.wasLastCallSuccess()) {
+                                    shortcutManager.queryForPinnedShortcuts(null, user);
+                            if (shortcutManager.wasLastCallSuccess()) {
                                 for (ShortcutInfoCompat shortcut : pinnedShortcuts) {
                                     shortcutKeyToPinnedShortcuts.put(ShortcutKey.fromInfo(shortcut),
                                             shortcut);
@@ -1772,7 +1771,7 @@ public class LauncherModel extends BroadcastReceiver
                     MutableInt numTimesPinned = sBgDataModel.pinnedShortcutCounts.get(key);
                     if (numTimesPinned == null || numTimesPinned.value == 0) {
                         // Shortcut is pinned but doesn't exist on the workspace; unpin it.
-                        mDeepShortcutManager.unpinShortcut(key);
+                        shortcutManager.unpinShortcut(key);
                     }
                 }
 
@@ -2325,12 +2324,13 @@ public class LauncherModel extends BroadcastReceiver
             }
             if (!mDeepShortcutsLoaded) {
                 sBgDataModel.deepShortcutMap.clear();
-                mHasShortcutHostPermission = mDeepShortcutManager.hasHostPermission();
+                DeepShortcutManager shortcutManager = DeepShortcutManager.getInstance(mContext);
+                mHasShortcutHostPermission = shortcutManager.hasHostPermission();
                 if (mHasShortcutHostPermission) {
                     for (UserHandleCompat user : mUserManager.getUserProfiles()) {
                         if (mUserManager.isUserUnlocked(user)) {
-                            List<ShortcutInfoCompat> shortcuts = mDeepShortcutManager
-                                    .queryForAllShortcuts(user);
+                            List<ShortcutInfoCompat> shortcuts =
+                                    shortcutManager.queryForAllShortcuts(user);
                             sBgDataModel.updateDeepShortcutMap(null, user, shortcuts);
                         }
                     }

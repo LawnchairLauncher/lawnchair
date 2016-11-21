@@ -51,7 +51,8 @@ public class ShortcutsChangedTask extends ExtendedModelTask {
 
     @Override
     public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
-        DeepShortcutManager deepShortcutManager = app.getShortcutManager();
+        final Context context = app.getContext();
+        DeepShortcutManager deepShortcutManager = DeepShortcutManager.getInstance(context);
         deepShortcutManager.onShortcutsChanged(mShortcuts);
 
         // Find ShortcutInfo's that have changed on the workspace.
@@ -67,7 +68,6 @@ public class ShortcutsChangedTask extends ExtendedModelTask {
             }
         }
 
-        final Context context = LauncherAppState.getInstance().getContext();
         final ArrayList<ShortcutInfo> updatedShortcutInfos = new ArrayList<>();
         if (!idsToWorkspaceShortcutInfos.isEmpty()) {
             // Update the workspace to reflect the changes to updated shortcuts residing on it.

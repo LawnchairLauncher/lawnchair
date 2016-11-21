@@ -32,6 +32,7 @@ import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.LauncherIcons;
+import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 
 /**
@@ -308,7 +309,7 @@ public class ShortcutInfo extends ItemInfo {
 
         // TODO: Use cache for this
         LauncherAppState launcherAppState = LauncherAppState.getInstance();
-        Drawable unbadgedDrawable = launcherAppState.getShortcutManager()
+        Drawable unbadgedDrawable = DeepShortcutManager.getInstance(context)
                 .getShortcutIconDrawable(shortcutInfo,
                         launcherAppState.getInvariantDeviceProfile().fillResIconDpi);
 
