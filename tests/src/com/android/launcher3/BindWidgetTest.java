@@ -17,6 +17,7 @@ import android.test.suitebuilder.annotation.LargeTest;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.ui.LauncherInstrumentationTestCase;
+import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.ManagedProfileHeuristic;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetHostViewLoader;
@@ -218,14 +219,14 @@ public class BindWidgetTest extends LauncherInstrumentationTestCase {
         mResolver.insert(LauncherSettings.WorkspaceScreens.CONTENT_URI, v);
 
         // Insert the item
-        v = new ContentValues();
+        ContentWriter writer = new ContentWriter(mTargetContext);
         item.id = LauncherSettings.Settings.call(
                 mResolver, LauncherSettings.Settings.METHOD_NEW_ITEM_ID)
                 .getLong(LauncherSettings.Settings.EXTRA_VALUE);
         item.screenId = screenId;
-        item.onAddToDatabase(mTargetContext, v);
-        v.put(LauncherSettings.Favorites._ID, item.id);
-        mResolver.insert(LauncherSettings.Favorites.CONTENT_URI, v);
+        item.onAddToDatabase(writer);
+        writer.put(LauncherSettings.Favorites._ID, item.id);
+        mResolver.insert(LauncherSettings.Favorites.CONTENT_URI, writer.getValues());
 
         // Reset loader
         try {

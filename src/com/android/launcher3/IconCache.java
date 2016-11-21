@@ -494,7 +494,6 @@ public class IconCache {
             shortcutInfo.setIcon(getDefaultIcon(user));
             shortcutInfo.title = "";
             shortcutInfo.contentDescription = "";
-            shortcutInfo.usingFallbackIcon = true;
             shortcutInfo.usingLowResIcon = false;
         } else {
             LauncherActivityInfoCompat info = mLauncherApps.resolveActivity(intent, user);
@@ -512,7 +511,6 @@ public class IconCache {
         shortcutInfo.setIcon(getNonNullIcon(entry, user));
         shortcutInfo.title = Utilities.trim(entry.title);
         shortcutInfo.contentDescription = entry.contentDescription;
-        shortcutInfo.usingFallbackIcon = isDefaultIcon(entry.icon, user);
         shortcutInfo.usingLowResIcon = entry.isLowResIcon;
     }
 

@@ -214,7 +214,6 @@ public class PackageUpdatedTask extends ExtendedModelTask {
                                     si.iconResource.resourceName, context);
                             if (icon != null) {
                                 si.setIcon(icon);
-                                si.usingFallbackIcon = false;
                                 infoUpdated = true;
                             }
                         }

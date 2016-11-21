@@ -16,10 +16,10 @@
 
 package com.android.launcher3;
 
-import android.content.ContentValues;
 import android.content.Context;
 
 import com.android.launcher3.compat.UserHandleCompat;
+import com.android.launcher3.util.ContentWriter;
 
 import java.util.ArrayList;
 
@@ -93,10 +93,10 @@ public class FolderInfo extends ItemInfo {
     }
 
     @Override
-    void onAddToDatabase(Context context, ContentValues values) {
-        super.onAddToDatabase(context, values);
-        values.put(LauncherSettings.Favorites.TITLE, title.toString());
-        values.put(LauncherSettings.Favorites.OPTIONS, options);
+    void onAddToDatabase(ContentWriter writer) {
+        super.onAddToDatabase(writer);
+        writer.put(LauncherSettings.Favorites.TITLE, title)
+                .put(LauncherSettings.Favorites.OPTIONS, options);
 
     }
 

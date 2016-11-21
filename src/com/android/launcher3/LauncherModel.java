@@ -76,6 +76,7 @@ import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.CursorIconInfo;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -332,7 +333,7 @@ public class LauncherModel extends BroadcastReceiver
         runOnWorkerThread(r);
     }
 
-    static void updateItemInDatabaseHelper(Context context, final ContentValues values,
+    static void updateItemInDatabaseHelper(Context context, final ContentWriter writer,
             final ItemInfo item, final String callingFunction) {
         final long itemId = item.id;
         final Uri uri = LauncherSettings.Favorites.getContentUri(itemId);
@@ -341,7 +342,7 @@ public class LauncherModel extends BroadcastReceiver
         final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
         Runnable r = new Runnable() {
             public void run() {
-                cr.update(uri, values, null, null);
+                cr.update(uri, writer.getValues(), null, null);
                 updateItemArrays(item, itemId, stackTrace);
             }
         };
@@ -439,14 +440,14 @@ public class LauncherModel extends BroadcastReceiver
             item.screenId = screenId;
         }
 
-        final ContentValues values = new ContentValues();
-        values.put(LauncherSettings.Favorites.CONTAINER, item.container);
-        values.put(LauncherSettings.Favorites.CELLX, item.cellX);
-        values.put(LauncherSettings.Favorites.CELLY, item.cellY);
-        values.put(LauncherSettings.Favorites.RANK, item.rank);
-        values.put(LauncherSettings.Favorites.SCREEN, item.screenId);
+        final ContentWriter writer = new ContentWriter(context)
+                .put(LauncherSettings.Favorites.CONTAINER, item.container)
+                .put(LauncherSettings.Favorites.CELLX, item.cellX)
+                .put(LauncherSettings.Favorites.CELLY, item.cellY)
+                .put(LauncherSettings.Favorites.RANK, item.rank)
+                .put(LauncherSettings.Favorites.SCREEN, item.screenId);
 
-        updateItemInDatabaseHelper(context, values, item, "moveItemInDatabase");
+        updateItemInDatabaseHelper(context, writer, item, "moveItemInDatabase");
     }
 
     /**
@@ -506,25 +507,25 @@ public class LauncherModel extends BroadcastReceiver
             item.screenId = screenId;
         }
 
-        final ContentValues values = new ContentValues();
-        values.put(LauncherSettings.Favorites.CONTAINER, item.container);
-        values.put(LauncherSettings.Favorites.CELLX, item.cellX);
-        values.put(LauncherSettings.Favorites.CELLY, item.cellY);
-        values.put(LauncherSettings.Favorites.RANK, item.rank);
-        values.put(LauncherSettings.Favorites.SPANX, item.spanX);
-        values.put(LauncherSettings.Favorites.SPANY, item.spanY);
-        values.put(LauncherSettings.Favorites.SCREEN, item.screenId);
+        final ContentWriter writer = new ContentWriter(context)
+                .put(LauncherSettings.Favorites.CONTAINER, item.container)
+                .put(LauncherSettings.Favorites.CELLX, item.cellX)
+                .put(LauncherSettings.Favorites.CELLY, item.cellY)
+                .put(LauncherSettings.Favorites.RANK, item.rank)
+                .put(LauncherSettings.Favorites.SPANX, item.spanX)
+                .put(LauncherSettings.Favorites.SPANY, item.spanY)
+                .put(LauncherSettings.Favorites.SCREEN, item.screenId);
 
-        updateItemInDatabaseHelper(context, values, item, "modifyItemInDatabase");
+        updateItemInDatabaseHelper(context, writer, item, "modifyItemInDatabase");
     }
 
     /**
      * Update an item to the database in a specified container.
      */
     public static void updateItemInDatabase(Context context, final ItemInfo item) {
-        final ContentValues values = new ContentValues();
-        item.onAddToDatabase(context, values);
-        updateItemInDatabaseHelper(context, values, item, "updateItemInDatabase");
+        ContentWriter writer = new ContentWriter(context);
+        item.onAddToDatabase(writer);
+        updateItemInDatabaseHelper(context, writer, item, "updateItemInDatabase");
     }
 
     /**
@@ -546,19 +547,19 @@ public class LauncherModel extends BroadcastReceiver
             item.screenId = screenId;
         }
 
-        final ContentValues values = new ContentValues();
+        final ContentWriter writer = new ContentWriter(context);
         final ContentResolver cr = context.getContentResolver();
-        item.onAddToDatabase(context, values);
+        item.onAddToDatabase(writer);
 
         item.id = LauncherSettings.Settings.call(cr, LauncherSettings.Settings.METHOD_NEW_ITEM_ID)
                 .getLong(LauncherSettings.Settings.EXTRA_VALUE);
 
-        values.put(LauncherSettings.Favorites._ID, item.id);
+        writer.put(LauncherSettings.Favorites._ID, item.id);
 
         final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
         Runnable r = new Runnable() {
             public void run() {
-                cr.insert(LauncherSettings.Favorites.CONTENT_URI, values);
+                cr.insert(LauncherSettings.Favorites.CONTENT_URI, writer.getValues());
 
                 synchronized (sBgDataModel) {
                     checkItemInfoLocked(item.id, item, stackTrace);
@@ -2632,7 +2633,6 @@ public class LauncherModel extends BroadcastReceiver
         // the fallback icon
         if (icon == null) {
             icon = mIconCache.getDefaultIcon(info.user);
-            info.usingFallbackIcon = true;
         }
         info.setIcon(icon);
     }
@@ -2669,7 +2669,6 @@ public class LauncherModel extends BroadcastReceiver
         info.user = UserHandleCompat.myUserHandle();
         if (icon == null) {
             icon = mIconCache.getDefaultIcon(info.user);
-            info.usingFallbackIcon = true;
         }
         info.setIcon(icon);
 

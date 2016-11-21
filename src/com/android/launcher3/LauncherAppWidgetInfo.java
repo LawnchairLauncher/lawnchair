@@ -18,11 +18,10 @@ package com.android.launcher3;
 
 import android.appwidget.AppWidgetHostView;
 import android.content.ComponentName;
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 
 import com.android.launcher3.compat.UserHandleCompat;
+import com.android.launcher3.util.ContentWriter;
 
 /**
  * Represents a widget (either instantiated or about to be) in the Launcher.
@@ -127,13 +126,12 @@ public class LauncherAppWidgetInfo extends ItemInfo {
     }
 
     @Override
-    void onAddToDatabase(Context context, ContentValues values) {
-        super.onAddToDatabase(context, values);
-        values.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId);
-        values.put(LauncherSettings.Favorites.APPWIDGET_PROVIDER, providerName.flattenToString());
-        values.put(LauncherSettings.Favorites.RESTORED, restoreStatus);
-        values.put(LauncherSettings.Favorites.INTENT,
-                bindOptions == null ? null : bindOptions.toUri(0));
+    void onAddToDatabase(ContentWriter writer) {
+        super.onAddToDatabase(writer);
+        writer.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId)
+                .put(LauncherSettings.Favorites.APPWIDGET_PROVIDER, providerName.flattenToString())
+                .put(LauncherSettings.Favorites.RESTORED, restoreStatus)
+                .put(LauncherSettings.Favorites.INTENT, bindOptions);
     }
 
     /**
