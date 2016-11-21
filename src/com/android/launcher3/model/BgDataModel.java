@@ -15,10 +15,12 @@
  */
 package com.android.launcher3.model;
 
+import android.content.Context;
 import android.util.Log;
 import android.util.MutableInt;
 
 import com.android.launcher3.FolderInfo;
+import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetInfo;
@@ -123,9 +125,11 @@ public class BgDataModel {
                     // Decrement pinned shortcut count
                     ShortcutKey pinnedShortcut = ShortcutKey.fromShortcutInfo((ShortcutInfo) item);
                     MutableInt count = pinnedShortcutCounts.get(pinnedShortcut);
-                    if (count == null || --count.value == 0) {
-                        DeepShortcutManager.getInstance(LauncherAppState.getInstance().getContext())
-                                .unpinShortcut(pinnedShortcut);
+                    Context context = LauncherAppState.getInstance().getContext();
+                    if ((count == null || --count.value == 0)
+                            && !InstallShortcutReceiver.getPendingShortcuts(context)
+                                .contains(pinnedShortcut)) {
+                        DeepShortcutManager.getInstance(context).unpinShortcut(pinnedShortcut);
                     }
                     // Fall through.
                 }

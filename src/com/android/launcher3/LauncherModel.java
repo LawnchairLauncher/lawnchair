@@ -1776,9 +1776,12 @@ public class LauncherModel extends BroadcastReceiver
                 }
 
                 // Unpin shortcuts that don't exist on the workspace.
+                HashSet<ShortcutKey> pendingShortcuts =
+                        InstallShortcutReceiver.getPendingShortcuts(context);
                 for (ShortcutKey key : shortcutKeyToPinnedShortcuts.keySet()) {
                     MutableInt numTimesPinned = sBgDataModel.pinnedShortcutCounts.get(key);
-                    if (numTimesPinned == null || numTimesPinned.value == 0) {
+                    if ((numTimesPinned == null || numTimesPinned.value == 0)
+                            && !pendingShortcuts.contains(key)) {
                         // Shortcut is pinned but doesn't exist on the workspace; unpin it.
                         shortcutManager.unpinShortcut(key);
                     }
