@@ -26,6 +26,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
@@ -123,8 +124,8 @@ public class BgDataModel {
                     ShortcutKey pinnedShortcut = ShortcutKey.fromShortcutInfo((ShortcutInfo) item);
                     MutableInt count = pinnedShortcutCounts.get(pinnedShortcut);
                     if (count == null || --count.value == 0) {
-                        LauncherAppState.getInstance()
-                                .getShortcutManager().unpinShortcut(pinnedShortcut);
+                        DeepShortcutManager.getInstance(LauncherAppState.getInstance().getContext())
+                                .unpinShortcut(pinnedShortcut);
                     }
                     // Fall through.
                 }
@@ -161,7 +162,7 @@ public class BgDataModel {
 
                 // Since this is a new item, pin the shortcut in the system server.
                 if (newItem && count.value == 1) {
-                    LauncherAppState.getInstance().getShortcutManager()
+                    DeepShortcutManager.getInstance(LauncherAppState.getInstance().getContext())
                             .pinShortcut(pinnedShortcut);
                 }
                 // Fall through

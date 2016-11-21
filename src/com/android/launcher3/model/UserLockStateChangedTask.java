@@ -50,7 +50,7 @@ public class UserLockStateChangedTask extends ExtendedModelTask {
     public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
         Context context = app.getContext();
         boolean isUserUnlocked = UserManagerCompat.getInstance(context).isUserUnlocked(mUser);
-        DeepShortcutManager deepShortcutManager = app.getShortcutManager();
+        DeepShortcutManager deepShortcutManager = DeepShortcutManager.getInstance(context);
 
         HashMap<ShortcutKey, ShortcutInfoCompat> pinnedShortcuts = new HashMap<>();
         if (isUserUnlocked) {
