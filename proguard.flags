@@ -91,3 +91,6 @@
 #}
 -keep class android.support.v7.widget.RecyclerView { *; }
 
+-keep interface com.android.launcher3.userevent.nano.LauncherLogProto.** {
+  *;
+}

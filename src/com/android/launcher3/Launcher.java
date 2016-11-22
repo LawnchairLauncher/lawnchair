@@ -111,7 +111,9 @@ import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.DeepShortcutsContainer;
 import com.android.launcher3.shortcuts.ShortcutKey;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.util.ActivityResultInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -1350,7 +1352,7 @@ public class Launcher extends Activity
 
         // Bind wallpaper button actions
         View wallpaperButton = findViewById(R.id.wallpaper_button);
-        new OverviewButtonClickListener(LauncherLogProto.WALLPAPER_BUTTON) {
+        new OverviewButtonClickListener(ControlType.WALLPAPER_BUTTON) {
             @Override
             public void handleViewClick(View view) {
                 onClickWallpaperPicker(view);
@@ -1360,7 +1362,7 @@ public class Launcher extends Activity
 
         // Bind widget button actions
         mWidgetsButton = findViewById(R.id.widget_button);
-        new OverviewButtonClickListener(LauncherLogProto.WIDGETS_BUTTON) {
+        new OverviewButtonClickListener(ControlType.WIDGETS_BUTTON) {
             @Override
             public void handleViewClick(View view) {
                 onClickAddWidgetButton(view);
@@ -1372,7 +1374,7 @@ public class Launcher extends Activity
         View settingsButton = findViewById(R.id.settings_button);
         boolean hasSettings = hasSettings();
         if (hasSettings) {
-            new OverviewButtonClickListener(LauncherLogProto.SETTINGS_BUTTON) {
+            new OverviewButtonClickListener(ControlType.SETTINGS_BUTTON) {
                 @Override
                 public void handleViewClick(View view) {
                     onClickSettingsButton(view);
@@ -1694,13 +1696,13 @@ public class Launcher extends Activity
 
             AbstractFloatingView topOpenView = AbstractFloatingView.getTopOpenView(this);
             if (topOpenView instanceof DeepShortcutsContainer) {
-                ued.logActionCommand(LauncherLogProto.Action.HOME_INTENT,
-                        topOpenView.getExtendedTouchView(), LauncherLogProto.DEEPSHORTCUTS);
+                ued.logActionCommand(Action.Command.HOME_INTENT,
+                        topOpenView.getExtendedTouchView(), ContainerType.DEEPSHORTCUTS);
             } else if (topOpenView instanceof Folder) {
-                ued.logActionCommand(LauncherLogProto.Action.HOME_INTENT,
-                            ((Folder) topOpenView).getFolderIcon(), LauncherLogProto.FOLDER);
+                ued.logActionCommand(Action.Command.HOME_INTENT,
+                            ((Folder) topOpenView).getFolderIcon(), ContainerType.FOLDER);
             } else if (alreadyOnHome) {
-                ued.logActionCommand(LauncherLogProto.Action.HOME_INTENT,
+                ued.logActionCommand(Action.Command.HOME_INTENT,
                         mWorkspace.getState().containerType, mWorkspace.getCurrentPage());
             }
 
@@ -2216,22 +2218,22 @@ public class Launcher extends Activity
                 topView.getActiveTextView().dispatchBackKey();
             } else {
                 if (topView instanceof DeepShortcutsContainer) {
-                    ued.logActionCommand(LauncherLogProto.Action.BACK,
-                            topView.getExtendedTouchView(), LauncherLogProto.DEEPSHORTCUTS);
+                    ued.logActionCommand(Action.Command.BACK,
+                            topView.getExtendedTouchView(), ContainerType.DEEPSHORTCUTS);
                 } else if (topView instanceof Folder) {
-                    ued.logActionCommand(LauncherLogProto.Action.BACK,
-                            ((Folder) topView).getFolderIcon(), LauncherLogProto.FOLDER);
+                    ued.logActionCommand(Action.Command.BACK,
+                            ((Folder) topView).getFolderIcon(), ContainerType.FOLDER);
                 }
                 topView.close(true);
             }
         } else if (isAppsViewVisible()) {
-            ued.logActionCommand(LauncherLogProto.Action.BACK, LauncherLogProto.ALLAPPS);
+            ued.logActionCommand(Action.Command.BACK, ContainerType.ALLAPPS);
             showWorkspace(true);
         } else if (isWidgetsViewVisible())  {
-            ued.logActionCommand(LauncherLogProto.Action.BACK, LauncherLogProto.WIDGETS);
+            ued.logActionCommand(Action.Command.BACK, ContainerType.WIDGETS);
             showOverviewMode(true);
         } else if (mWorkspace.isInOverviewMode()) {
-            ued.logActionCommand(LauncherLogProto.Action.BACK, LauncherLogProto.OVERVIEW);
+            ued.logActionCommand(Action.Command.BACK, ContainerType.OVERVIEW);
             showWorkspace(true);
         } else {
             // TODO: Log this case.
@@ -2365,8 +2367,8 @@ public class Launcher extends Activity
     protected void onClickAllAppsButton(View v) {
         if (LOGD) Log.d(TAG, "onClickAllAppsButton");
         if (!isAppsViewVisible()) {
-            getUserEventDispatcher().logActionOnControl(LauncherLogProto.Action.TAP,
-                    LauncherLogProto.ALL_APPS_BUTTON);
+            getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
+                    ControlType.ALL_APPS_BUTTON);
             showAppsView(true /* animated */, true /* updatePredictedApps */,
                     false /* focusSearchBar */);
         }
@@ -2375,8 +2377,8 @@ public class Launcher extends Activity
     protected void onLongClickAllAppsButton(View v) {
         if (LOGD) Log.d(TAG, "onLongClickAllAppsButton");
         if (!isAppsViewVisible()) {
-            getUserEventDispatcher().logActionOnControl(LauncherLogProto.Action.LONGPRESS,
-                    LauncherLogProto.ALL_APPS_BUTTON);
+            getUserEventDispatcher().logActionOnControl(Action.Touch.LONGPRESS,
+                    ControlType.ALL_APPS_BUTTON);
             showAppsView(true /* animated */,
                     true /* updatePredictedApps */, true /* focusSearchBar */);
         }
@@ -2759,8 +2761,8 @@ public class Launcher extends Activity
         if (v instanceof Workspace) {
             if (!mWorkspace.isInOverviewMode()) {
                 if (!mWorkspace.isTouchActive() && !ignoreLongPressToOverview) {
-                    getUserEventDispatcher().logActionOnContainer(LauncherLogProto.Action.LONGPRESS,
-                            LauncherLogProto.Action.NONE, LauncherLogProto.WORKSPACE,
+                    getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
+                            Action.Direction.NONE, ContainerType.WORKSPACE,
                             mWorkspace.getCurrentPage());
                     showOverviewMode(true);
                     mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
@@ -2790,14 +2792,14 @@ public class Launcher extends Activity
                 // User long pressed on empty space
                 if (mWorkspace.isInOverviewMode()) {
                     mWorkspace.startReordering(v);
-                    getUserEventDispatcher().logActionOnContainer(LauncherLogProto.Action.LONGPRESS,
-                            LauncherLogProto.Action.NONE, LauncherLogProto.OVERVIEW);
+                    getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
+                            Action.Direction.NONE, ContainerType.OVERVIEW);
                 } else {
                     if (ignoreLongPressToOverview) {
                         return false;
                     }
-                    getUserEventDispatcher().logActionOnContainer(LauncherLogProto.Action.LONGPRESS,
-                            LauncherLogProto.Action.NONE, LauncherLogProto.WORKSPACE,
+                    getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
+                            Action.Direction.NONE, ContainerType.WORKSPACE,
                             mWorkspace.getCurrentPage());
                     showOverviewMode(true);
                 }

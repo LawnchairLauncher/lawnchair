@@ -46,6 +46,7 @@ import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.Thunk;
@@ -309,6 +310,6 @@ public class WidgetsContainerView extends BaseContainerView
 
     @Override
     public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
-        targetParent.containerType = LauncherLogProto.WIDGETS;
+        targetParent.containerType = ContainerType.WIDGETS;
     }
 }

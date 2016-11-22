@@ -27,8 +27,8 @@ import com.android.launcher3.DropTarget;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.ProviderConfig;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.LauncherEvent;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ComponentKey;
@@ -54,7 +54,9 @@ public class UserEventDispatcher {
 
     private final static int MAXIMUM_VIEW_HIERARCHY_LEVEL = 5;
 
-    private final boolean mIsVerbose;
+    private static final String TAG = "UserEvent";
+    private static final boolean IS_VERBOSE =
+            ProviderConfig.IS_DOGFOOD_BUILD && Utilities.isPropertyEnabled(TAG);
 
     /**
      * Implemented by containers to provide a container source for a given child.
@@ -76,8 +78,7 @@ public class UserEventDispatcher {
      * Recursively finds the parent of the given child which implements IconLogInfoProvider
      */
     public static LogContainerProvider getLaunchProviderRecursive(View v) {
-        ViewParent parent = null;
-
+        ViewParent parent;
         if (v != null) {
             parent = v.getParent();
         } else {
@@ -96,22 +97,12 @@ public class UserEventDispatcher {
         return null;
     }
 
-    private String TAG = "UserEvent";
-
     private long mElapsedContainerMillis;
     private long mElapsedSessionMillis;
     private long mActionDurationMillis;
 
     // Used for filling in predictedRank on {@link Target}s.
     private List<ComponentKey> mPredictedApps;
-
-    public UserEventDispatcher() {
-        if (ProviderConfig.IS_DOGFOOD_BUILD) {
-            mIsVerbose = Utilities.isPropertyEnabled(TAG);
-        } else {
-            mIsVerbose = false;
-        }
-    }
 
     //                      APP_ICON    SHORTCUT    WIDGET
     // --------------------------------------------------------------
@@ -121,8 +112,8 @@ public class UserEventDispatcher {
     // --------------------------------------------------------------
 
     protected LauncherEvent createLauncherEvent(View v, Intent intent) {
-        LauncherEvent event = newLauncherEvent(newTouchAction(Action.TAP),
-                newItemTarget(v), newTarget(Target.CONTAINER));
+        LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.TAP),
+                newItemTarget(v), newTarget(Target.Type.CONTAINER));
 
         // TODO: make idx percolate up the view hierarchy if needed.
         int idx = 0;
@@ -176,20 +167,21 @@ public class UserEventDispatcher {
      * TODO: Make this function work when a container view is passed as the 2nd param.
      */
     public void logActionCommand(int command, View itemView, int containerType) {
-        LauncherEvent event = newLauncherEvent(
-                newCommandAction(command), newItemTarget(itemView), newTarget(Target.CONTAINER));
+        LauncherEvent event = newLauncherEvent(newCommandAction(command),
+                newItemTarget(itemView), newTarget(Target.Type.CONTAINER));
 
         if (fillInLogContainerData(event, itemView)) {
             // TODO: Remove the following two lines once fillInLogContainerData can take in a
             // container view.
-            event.srcTarget[0].type = Target.CONTAINER;
+            event.srcTarget[0].type = Target.Type.CONTAINER;
             event.srcTarget[0].containerType = containerType;
         }
         dispatchUserEvent(event, null);
     }
 
     public void logActionOnControl(int action, int controlType) {
-        LauncherEvent event = newLauncherEvent(newTouchAction(action), newTarget(Target.CONTROL));
+        LauncherEvent event = newLauncherEvent(
+                newTouchAction(action), newTarget(Target.Type.CONTROL));
         event.srcTarget[0].controlType = controlType;
         dispatchUserEvent(event, null);
     }
@@ -212,8 +204,8 @@ public class UserEventDispatcher {
             return;
         }
         ItemInfo info = (ItemInfo) icon.getTag();
-        LauncherEvent event = newLauncherEvent(
-                newTouchAction(Action.LONGPRESS), newItemTarget(info), newTarget(Target.CONTAINER));
+        LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.LONGPRESS),
+                newItemTarget(info), newTarget(Target.Type.CONTAINER));
         provider.fillInLogContainerData(icon, info, event.srcTarget[0], event.srcTarget[1]);
         dispatchUserEvent(event, null);
 
@@ -227,16 +219,16 @@ public class UserEventDispatcher {
     /* Currently we are only interested in whether this event happens or not and don't
     * care about which screen moves to where. */
     public void logOverviewReorder() {
-        LauncherEvent event = newLauncherEvent(newTouchAction(Action.DRAGDROP),
-                newContainerTarget(LauncherLogProto.WORKSPACE),
-                newContainerTarget(LauncherLogProto.OVERVIEW));
+        LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.DRAGDROP),
+                newContainerTarget(ContainerType.WORKSPACE),
+                newContainerTarget(ContainerType.OVERVIEW));
         dispatchUserEvent(event, null);
     }
 
     public void logDragNDrop(DropTarget.DragObject dragObj, View dropTargetAsView) {
-        LauncherEvent event = newLauncherEvent(newTouchAction(Action.DRAGDROP),
-                newItemTarget(dragObj.originalDragInfo), newTarget(Target.CONTAINER));
-        event.destTarget = new LauncherLogProto.Target[] {
+        LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.DRAGDROP),
+                newItemTarget(dragObj.originalDragInfo), newTarget(Target.Type.CONTAINER));
+        event.destTarget = new Target[] {
                 newItemTarget(dragObj.originalDragInfo), newDropTarget(dropTargetAsView)
         };
 
@@ -272,26 +264,26 @@ public class UserEventDispatcher {
         ev.elapsedContainerMillis = SystemClock.uptimeMillis() - mElapsedContainerMillis;
         ev.elapsedSessionMillis = SystemClock.uptimeMillis() - mElapsedSessionMillis;
 
-        if (!mIsVerbose) {
+        if (!IS_VERBOSE) {
             return;
         }
-        Log.d(TAG, String.format(Locale.US,
-                "\naction:%s\n Source child:%s\tparent:%s",
-                LoggerUtils.getActionStr(ev.action),
-                LoggerUtils.getTargetStr(ev.srcTarget != null ? ev.srcTarget[0] : null),
-                LoggerUtils.getTargetStr(ev.srcTarget != null && ev.srcTarget.length > 1 ?
-                        ev.srcTarget[1] : null)));
-        if (ev.destTarget != null && ev.destTarget.length > 0) {
-            Log.d(TAG, String.format(Locale.US,
-                    " Destination child:%s\tparent:%s",
-                    LoggerUtils.getTargetStr(ev.destTarget != null ? ev.destTarget[0] : null),
-                    LoggerUtils.getTargetStr(ev.destTarget != null && ev.destTarget.length > 1 ?
-                            ev.destTarget[1] : null)));
+        String log = "action:" + LoggerUtils.getActionStr(ev.action);
+        if (ev.srcTarget != null && ev.srcTarget.length > 0) {
+            log += "\n Source " + getTargetsStr(ev.srcTarget);
         }
-        Log.d(TAG, String.format(Locale.US,
-                " Elapsed container %d ms session %d ms action %d ms",
+        if (ev.destTarget != null && ev.destTarget.length > 0) {
+            log += "\n Destination " + getTargetsStr(ev.destTarget);
+        }
+        log += String.format(Locale.US,
+                "\n Elapsed container %d ms session %d ms action %d ms",
                 ev.elapsedContainerMillis,
                 ev.elapsedSessionMillis,
-                ev.actionDurationMillis));
+                ev.actionDurationMillis);
+        Log.d(TAG, log);
+    }
+
+    private static String getTargetsStr(Target[] targets) {
+        return "child:" + LoggerUtils.getTargetStr(targets[0]) +
+                (targets.length > 1 ? "\tparent:" + LoggerUtils.getTargetStr(targets[1]) : "");
     }
 }

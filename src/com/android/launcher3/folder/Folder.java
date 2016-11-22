@@ -76,7 +76,7 @@ import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.CircleRevealOutlineProvider;
 import com.android.launcher3.util.Thunk;
@@ -1448,7 +1448,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         target.gridX = info.cellX;
         target.gridY = info.cellY;
         target.pageIndex = mContent.getCurrentPage();
-        targetParent.containerType = LauncherLogProto.FOLDER;
+        targetParent.containerType = ContainerType.FOLDER;
     }
 
     private class OnScrollHintListener implements OnAlarmListener {

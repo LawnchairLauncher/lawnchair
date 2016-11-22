@@ -27,6 +27,8 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.shortcuts.DeepShortcutsContainer;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.TouchController;
 
 /**
@@ -225,9 +227,9 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
                 if (!mLauncher.isAllAppsVisible()) {
                     mLauncher.getUserEventDispatcher().logActionOnContainer(
-                            LauncherLogProto.Action.FLING,
-                            LauncherLogProto.Action.UP,
-                            LauncherLogProto.HOTSEAT);
+                            Action.Touch.FLING,
+                            Action.Direction.UP,
+                            ContainerType.HOTSEAT);
                 }
                 mLauncher.showAppsView(true /* animated */,
                         false /* updatePredictedApps */,
@@ -245,9 +247,9 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                 calculateDuration(velocity, Math.abs(mAppsView.getTranslationY()));
                 if (!mLauncher.isAllAppsVisible()) {
                     mLauncher.getUserEventDispatcher().logActionOnContainer(
-                            LauncherLogProto.Action.SWIPE,
-                            LauncherLogProto.Action.UP,
-                            LauncherLogProto.HOTSEAT);
+                            Action.Touch.SWIPE,
+                            Action.Direction.UP,
+                            ContainerType.HOTSEAT);
                 }
                 mLauncher.showAppsView(true, /* animated */
                         false /* updatePredictedApps */,

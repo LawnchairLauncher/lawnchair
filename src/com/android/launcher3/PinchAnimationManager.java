@@ -24,7 +24,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 
-import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
 import static com.android.launcher3.Workspace.State.NORMAL;
 import static com.android.launcher3.Workspace.State.OVERVIEW;
@@ -164,14 +165,14 @@ public class PinchAnimationManager {
             // Passing threshold 3 ends the pinch and snaps to the new state.
             if (startState == OVERVIEW && goingTowards == NORMAL) {
                 mLauncher.getUserEventDispatcher().logActionOnContainer(
-                        LauncherLogProto.Action.PINCH, LauncherLogProto.Action.NONE,
-                        LauncherLogProto.OVERVIEW, mWorkspace.getCurrentPage());
+                        Action.Touch.PINCH, Action.Direction.NONE,
+                        ContainerType.OVERVIEW, mWorkspace.getCurrentPage());
                 mLauncher.showWorkspace(true);
                 mWorkspace.snapToPage(mWorkspace.getCurrentPage());
             } else if (startState == NORMAL && goingTowards == OVERVIEW) {
                 mLauncher.getUserEventDispatcher().logActionOnContainer(
-                        LauncherLogProto.Action.PINCH, LauncherLogProto.Action.NONE,
-                        LauncherLogProto.WORKSPACE, mWorkspace.getCurrentPage());
+                        Action.Touch.PINCH, Action.Direction.NONE,
+                        ContainerType.WORKSPACE, mWorkspace.getCurrentPage());
                 mLauncher.showOverviewMode(true);
             }
         } else {

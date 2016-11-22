@@ -73,7 +73,7 @@ import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.shortcuts.DeepShortcutsContainer;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LongArrayMap;
@@ -188,11 +188,11 @@ public class Workspace extends PagedView
     // in all apps or customize mode)
 
     public enum State {
-        NORMAL          (false, false, LauncherLogProto.WORKSPACE),
-        NORMAL_HIDDEN   (false, false, LauncherLogProto.ALLAPPS),
-        SPRING_LOADED   (false, true, LauncherLogProto.WORKSPACE),
-        OVERVIEW        (true, true, LauncherLogProto.OVERVIEW),
-        OVERVIEW_HIDDEN (true, false, LauncherLogProto.WIDGETS);
+        NORMAL          (false, false, ContainerType.WORKSPACE),
+        NORMAL_HIDDEN   (false, false, ContainerType.ALLAPPS),
+        SPRING_LOADED   (false, true, ContainerType.WORKSPACE),
+        OVERVIEW        (true, true, ContainerType.OVERVIEW),
+        OVERVIEW_HIDDEN (true, false, ContainerType.WIDGETS);
 
         public final boolean shouldUpdateWidget;
         public final boolean hasMultipleVisiblePages;
@@ -4155,12 +4155,12 @@ public class Workspace extends PagedView
         target.gridX = info.cellX;
         target.gridY = info.cellY;
         target.pageIndex = getCurrentPage();
-        targetParent.containerType = LauncherLogProto.WORKSPACE;
+        targetParent.containerType = ContainerType.WORKSPACE;
         if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             target.rank = info.rank;
-            targetParent.containerType = LauncherLogProto.HOTSEAT;
+            targetParent.containerType = ContainerType.HOTSEAT;
         } else if (info.container >= 0) {
-            targetParent.containerType = LauncherLogProto.FOLDER;
+            targetParent.containerType = ContainerType.FOLDER;
         }
     }
 

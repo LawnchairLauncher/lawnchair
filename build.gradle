@@ -85,6 +85,7 @@ protobuf {
                     remove java
                     javanano {
                         option "java_package=launcher_log.proto|com.android.launcher3.userevent.nano"
+                        option "enum_style=java"
                     }
                 }
             }

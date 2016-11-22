@@ -41,6 +41,8 @@ LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 
 LOCAL_PROTOC_OPTIMIZE_TYPE := nano
 LOCAL_PROTOC_FLAGS := --proto_path=$(LOCAL_PATH)/protos/
+LOCAL_PROTO_JAVA_OUTPUT_PARAMS := enum_style=java
+
 LOCAL_AAPT_FLAGS := \
     --auto-add-overlay \
     --extra-packages android.support.v7.recyclerview \
@@ -66,6 +68,7 @@ LOCAL_SRC_FILES := $(call all-proto-files-under, protos)
 
 LOCAL_PROTOC_OPTIMIZE_TYPE := nano
 LOCAL_PROTOC_FLAGS := --proto_path=$(LOCAL_PATH)/protos/
+LOCAL_PROTO_JAVA_OUTPUT_PARAMS := enum_style=java
 
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE := launcher_proto_lib

@@ -66,7 +66,8 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.graphics.TriangleShape;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ItemType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
 import java.util.Collections;
@@ -523,9 +524,9 @@ public class DeepShortcutsContainer extends AbstractFloatingView
 
     @Override
     public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
-        target.itemType = LauncherLogProto.DEEPSHORTCUT;
+        target.itemType = ItemType.DEEPSHORTCUT;
         // TODO: add target.rank
-        targetParent.containerType = LauncherLogProto.DEEPSHORTCUTS;
+        targetParent.containerType = ContainerType.DEEPSHORTCUTS;
     }
 
     @Override

@@ -38,7 +38,7 @@ import android.widget.TextView;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.logging.UserEventDispatcher;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
 public class Hotseat extends FrameLayout
@@ -175,7 +175,7 @@ public class Hotseat extends FrameLayout
     public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
         target.gridX = info.cellX;
         target.gridY = info.cellY;
-        targetParent.containerType = LauncherLogProto.HOTSEAT;
+        targetParent.containerType = ContainerType.HOTSEAT;
     }
 
     public void updateColor(ExtractedColors extractedColors, boolean animate) {

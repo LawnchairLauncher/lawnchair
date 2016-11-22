@@ -29,7 +29,7 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
 import java.util.List;
 
@@ -184,7 +184,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
 
     public int getContainerType(View v) {
         if (mApps.hasFilter()) {
-            return LauncherLogProto.SEARCHRESULT;
+            return ContainerType.SEARCHRESULT;
         } else {
             if (v instanceof BubbleTextView) {
                 BubbleTextView icon = (BubbleTextView) v;
@@ -193,11 +193,11 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
                     List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
                     AlphabeticalAppsList.AdapterItem item = items.get(position);
                     if (item.viewType == AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON) {
-                        return LauncherLogProto.PREDICTION;
+                        return ContainerType.PREDICTION;
                     }
                 }
             }
-            return LauncherLogProto.ALLAPPS;
+            return ContainerType.ALLAPPS;
         }
     }
 
