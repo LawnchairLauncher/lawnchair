@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import android.app.WallpaperManager;
 import android.content.Context;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.support.annotation.IntDef;
 import android.view.View;
@@ -120,20 +121,20 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
     }
 
     public void measureChild(View child) {
-        final DeviceProfile grid = mLauncher.getDeviceProfile();
-        final int cellWidth = mCellWidth;
-        final int cellHeight = mCellHeight;
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
         if (!lp.isFullscreen) {
-            lp.setup(cellWidth, cellHeight, invertLayoutHorizontally(), mCountX);
+            final DeviceProfile profile = mLauncher.getDeviceProfile();
 
             if (child instanceof LauncherAppWidgetHostView) {
-                // Widgets have their own padding, so skip
+                lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX,
+                        profile.appWidgetScale.x, profile.appWidgetScale.y);
+                // Widgets have their own padding
             } else {
-                // Otherwise, center the icon/folder
+                lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX);
+                // Center the icon/folder
                 int cHeight = getCellContentHeight();
                 int cellPaddingY = (int) Math.max(0, ((lp.height - cHeight) / 2f));
-                int cellPaddingX = (int) (grid.edgeMarginPx / 2f);
+                int cellPaddingX = (int) (profile.edgeMarginPx / 2f);
                 child.setPadding(cellPaddingX, cellPaddingY, cellPaddingX, 0);
             }
         } else {
@@ -158,6 +159,21 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
             final View child = getChildAt(i);
             if (child.getVisibility() != GONE) {
                 CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
+
+                if (child instanceof LauncherAppWidgetHostView) {
+                    // Scale and center the widget to fit within its cells.
+                    DeviceProfile profile = mLauncher.getDeviceProfile();
+                    float scaleX = profile.appWidgetScale.x;
+                    float scaleY = profile.appWidgetScale.y;
+
+                    float scale = Math.min(scaleX, scaleY);
+                    child.setScaleX(scale);
+                    child.setScaleY(scale);
+
+                    child.setTranslationX(-(lp.width - (lp.width * scaleX)) / 2.0f);
+                    child.setTranslationY(-(lp.height - (lp.height * scaleY)) / 2.0f);
+                }
+
                 int childLeft = lp.x;
                 int childTop = lp.y;
                 child.layout(childLeft, childTop, childLeft + lp.width, childTop + lp.height);

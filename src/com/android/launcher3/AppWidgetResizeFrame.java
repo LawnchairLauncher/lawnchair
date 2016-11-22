@@ -355,10 +355,11 @@ public class AppWidgetResizeFrame extends FrameLayout
 
     public void snapToWidget(boolean animate) {
         final DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
-        int newWidth = mWidgetView.getWidth() + 2 * mBackgroundPadding
-                - mWidgetPadding.left - mWidgetPadding.right;
-        int newHeight = mWidgetView.getHeight() + 2 * mBackgroundPadding
-                - mWidgetPadding.top - mWidgetPadding.bottom;
+        DeviceProfile profile = mLauncher.getDeviceProfile();
+        int newWidth = (int) (mWidgetView.getWidth() * profile.appWidgetScale.x)
+                + 2 * mBackgroundPadding - mWidgetPadding.left - mWidgetPadding.right;
+        int newHeight = (int) (mWidgetView.getHeight() * profile.appWidgetScale.y)
+                + 2 * mBackgroundPadding - mWidgetPadding.top - mWidgetPadding.bottom;
 
         mTmpPt[0] = mWidgetView.getLeft();
         mTmpPt[1] = mWidgetView.getTop();

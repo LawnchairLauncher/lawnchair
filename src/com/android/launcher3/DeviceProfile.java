@@ -21,6 +21,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
@@ -123,6 +124,9 @@ public class DeviceProfile {
     public int allAppsIconDrawablePaddingPx;
     public float allAppsIconTextSizePx;
 
+    // Widgets
+    public final PointF appWidgetScale = new PointF(1.0f, 1.0f);
+
     // Drop Target
     public int dropTargetBarSizePx;
 
@@ -219,6 +223,12 @@ public class DeviceProfile {
 
         // The nav bar is black so we add bottom padding to visually center hotseat icons.
         profile.hotseatBarBottomPaddingPx = profile.hotseatBarTopPaddingPx;
+
+        // We use these scales to measure and layout the widgets using their full invariant profile
+        // sizes and then draw them scaled and centered to fit in their multi-window mode cellspans.
+        float appWidgetScaleX = (float) profile.getCellSize().x / getCellSize().x;
+        float appWidgetScaleY = (float) profile.getCellSize().y / getCellSize().y;
+        profile.appWidgetScale.set(appWidgetScaleX, appWidgetScaleY);
 
         return profile;
     }

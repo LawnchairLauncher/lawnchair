@@ -2690,6 +2690,18 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         }
 
         public void setup(int cellWidth, int cellHeight, boolean invertHorizontally, int colCount) {
+            setup(cellWidth, cellHeight, invertHorizontally, colCount, 1.0f, 1.0f);
+        }
+
+        /**
+         * Use this method, as opposed to {@link #setup(int, int, boolean, int)}, if the view needs
+         * to be scaled.
+         *
+         * ie. In multi-window mode, we setup widgets so that they are measured and laid out
+         * using their full/invariant device profile sizes.
+         */
+        public void setup(int cellWidth, int cellHeight, boolean invertHorizontally, int colCount,
+                float cellScaleX, float cellScaleY) {
             if (isLockedToGrid) {
                 final int myCellHSpan = cellHSpan;
                 final int myCellVSpan = cellVSpan;
@@ -2700,8 +2712,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                     myCellX = colCount - myCellX - cellHSpan;
                 }
 
-                width = myCellHSpan * cellWidth - leftMargin - rightMargin;
-                height = myCellVSpan * cellHeight - topMargin - bottomMargin;
+                width = (int) (myCellHSpan * cellWidth / cellScaleX - leftMargin - rightMargin);
+                height = (int) (myCellVSpan * cellHeight / cellScaleY - topMargin - bottomMargin);
                 x = (myCellX * cellWidth + leftMargin);
                 y = (myCellY * cellHeight + topMargin);
             }
