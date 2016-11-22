@@ -10,6 +10,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.UninstallDropTarget;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
+import com.android.launcher3.userevent.nano.LauncherLogProto.LauncherEvent;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
 /**
@@ -153,88 +154,14 @@ public class LoggerUtils {
         return str + " id=" + t.pageIndex;
     }
 
-    /**
-     * Used for launching an event by tapping on an icon.
-     */
-    public static LauncherLogProto.LauncherEvent initLauncherEvent(
-            int actionType,
-            View v,
-            int parentTargetType){
-        LauncherLogProto.LauncherEvent event = new LauncherLogProto.LauncherEvent();
-
-        event.srcTarget = new LauncherLogProto.Target[2];
-        event.srcTarget[0] = initTarget(v);
-        event.srcTarget[1] = new LauncherLogProto.Target();
-        event.srcTarget[1].type = parentTargetType;
-
-        event.action = new LauncherLogProto.Action();
-        event.action.type = actionType;
-        return event;
+    public static Target newItemTarget(View v) {
+        return (v.getTag() instanceof ItemInfo)
+                ? newItemTarget((ItemInfo) v.getTag())
+                : newTarget(Target.ITEM);
     }
 
-    /**
-     * Used for clicking on controls and buttons.
-     */
-    public static LauncherLogProto.LauncherEvent initLauncherEvent(
-            int actionType,
-            int childTargetType){
-        LauncherLogProto.LauncherEvent event = new LauncherLogProto.LauncherEvent();
-
-        event.srcTarget = new LauncherLogProto.Target[1];
-        event.srcTarget[0] = new LauncherLogProto.Target();
-        event.srcTarget[0].type = childTargetType;
-
-        event.action = new LauncherLogProto.Action();
-        event.action.type = actionType;
-        return event;
-    }
-
-    /**
-     * Used for commands.
-     */
-    public static LauncherLogProto.LauncherEvent initLauncherEvent(int command,
-            boolean createSrcTarget) {
-        LauncherLogProto.LauncherEvent event = new LauncherLogProto.LauncherEvent();
-        event.action = new LauncherLogProto.Action();
-        event.action.type = Action.COMMAND;
-        event.action.command = command;
-        event.srcTarget = null;
-
-        if (createSrcTarget) {
-            event.srcTarget = new LauncherLogProto.Target[1];
-            event.srcTarget[0] = new LauncherLogProto.Target();
-            event.srcTarget[0].type = Target.CONTAINER;
-        }
-        return event;
-    }
-
-    /**
-     * Used for drag and drop interaction.
-     */
-    public static LauncherLogProto.LauncherEvent initLauncherEvent(
-            int actionType,
-            ItemInfo info,
-            int parentSrcTargetType,
-            View parentDestTargetType){
-        LauncherLogProto.LauncherEvent event = new LauncherLogProto.LauncherEvent();
-
-        event.srcTarget = new LauncherLogProto.Target[2];
-        event.srcTarget[0] = initTarget(info);
-        event.srcTarget[1] = new LauncherLogProto.Target();
-        event.srcTarget[1].type = parentSrcTargetType;
-
-        event.destTarget = new LauncherLogProto.Target[2];
-        event.destTarget[0] = initTarget(info);
-        event.destTarget[1] = initDropTarget(parentDestTargetType);
-
-        event.action = new LauncherLogProto.Action();
-        event.action.type = actionType;
-        return event;
-    }
-
-    private static Target initTarget(ItemInfo info) {
-        Target t = new LauncherLogProto.Target();
-        t.type = Target.ITEM;
+    public static Target newItemTarget(ItemInfo info) {
+        Target t = newTarget(Target.ITEM);
         switch (info.itemType) {
             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                 t.itemType = LauncherLogProto.APP_ICON;
@@ -255,13 +182,11 @@ public class LoggerUtils {
         return t;
     }
 
-    private static Target initDropTarget(View v) {
-        Target t = new LauncherLogProto.Target();
-        t.type = (v instanceof ButtonDropTarget)? Target.CONTROL : Target.CONTAINER;
-        if (t.type == Target.CONTAINER) {
-            return t;
+    public static Target newDropTarget(View v) {
+        if (!(v instanceof ButtonDropTarget)) {
+            return newTarget(Target.CONTAINER);
         }
-
+        Target t = newTarget(Target.CONTROL);
         if (v instanceof InfoDropTarget) {
             t.controlType = LauncherLogProto.APPINFO_TARGET;
         } else if (v instanceof UninstallDropTarget) {
@@ -272,12 +197,37 @@ public class LoggerUtils {
         return t;
     }
 
-    private static Target initTarget(View v) {
+    public static Target newTarget(int targetType) {
         Target t = new LauncherLogProto.Target();
-        t.type = Target.ITEM;
-        if (!(v.getTag() instanceof ItemInfo)) {
-            return t;
-        }
-        return initTarget((ItemInfo) v.getTag());
+        t.type = targetType;
+        return t;
+    }
+    public static Target newContainerTarget(int containerType) {
+        Target t = newTarget(Target.CONTAINER);
+        t.containerType = containerType;
+        return t;
+    }
+
+    public static Action newAction(int type) {
+        Action a = new Action();
+        a.type = type;
+        return a;
+    }
+    public static Action newCommandAction(int command) {
+        Action a = newAction(Action.COMMAND);
+        a.command = command;
+        return a;
+    }
+    public static Action newTouchAction(int touch) {
+        Action a = newAction(Action.TOUCH);
+        a.touch = touch;
+        return a;
+    }
+
+    public static LauncherEvent newLauncherEvent(Action action, Target... srcTargets) {
+        LauncherLogProto.LauncherEvent event = new LauncherLogProto.LauncherEvent();
+        event.srcTarget = srcTargets;
+        event.action = action;
+        return event;
     }
 }

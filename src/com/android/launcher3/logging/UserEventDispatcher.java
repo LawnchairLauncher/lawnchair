@@ -36,6 +36,14 @@ import com.android.launcher3.util.ComponentKey;
 import java.util.List;
 import java.util.Locale;
 
+import static com.android.launcher3.logging.LoggerUtils.newCommandAction;
+import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
+import static com.android.launcher3.logging.LoggerUtils.newDropTarget;
+import static com.android.launcher3.logging.LoggerUtils.newItemTarget;
+import static com.android.launcher3.logging.LoggerUtils.newLauncherEvent;
+import static com.android.launcher3.logging.LoggerUtils.newTarget;
+import static com.android.launcher3.logging.LoggerUtils.newTouchAction;
+
 /**
  * Manages the creation of {@link LauncherEvent}.
  * To debug this class, execute following command before side loading a new apk.
@@ -113,9 +121,8 @@ public class UserEventDispatcher {
     // --------------------------------------------------------------
 
     protected LauncherEvent createLauncherEvent(View v, Intent intent) {
-        LauncherEvent event = LoggerUtils.initLauncherEvent(
-                Action.TOUCH, v, Target.CONTAINER);
-        event.action.touch = Action.TAP;
+        LauncherEvent event = newLauncherEvent(newTouchAction(Action.TAP),
+                newItemTarget(v), newTarget(Target.CONTAINER));
 
         // TODO: make idx percolate up the view hierarchy if needed.
         int idx = 0;
@@ -159,8 +166,8 @@ public class UserEventDispatcher {
     }
 
     public void logActionCommand(int command, int containerType, int pageIndex) {
-        LauncherEvent event = LoggerUtils.initLauncherEvent(command, true);
-        event.srcTarget[0].containerType = containerType;
+        LauncherEvent event = newLauncherEvent(
+                newCommandAction(command), newContainerTarget(containerType));
         event.srcTarget[0].pageIndex = pageIndex;
         dispatchUserEvent(event, null);
     }
@@ -169,9 +176,9 @@ public class UserEventDispatcher {
      * TODO: Make this function work when a container view is passed as the 2nd param.
      */
     public void logActionCommand(int command, View itemView, int containerType) {
-        LauncherEvent event = LoggerUtils.initLauncherEvent(Action.COMMAND, itemView,
-                Target.CONTAINER);
-        event.action.command = command;
+        LauncherEvent event = newLauncherEvent(
+                newCommandAction(command), newItemTarget(itemView), newTarget(Target.CONTAINER));
+
         if (fillInLogContainerData(event, itemView)) {
             // TODO: Remove the following two lines once fillInLogContainerData can take in a
             // container view.
@@ -182,8 +189,7 @@ public class UserEventDispatcher {
     }
 
     public void logActionOnControl(int action, int controlType) {
-        LauncherEvent event = LoggerUtils.initLauncherEvent(Action.TOUCH, Target.CONTROL);
-        event.action.touch = action;
+        LauncherEvent event = newLauncherEvent(newTouchAction(action), newTarget(Target.CONTROL));
         event.srcTarget[0].controlType = controlType;
         dispatchUserEvent(event, null);
     }
@@ -193,24 +199,22 @@ public class UserEventDispatcher {
     }
 
     public void logActionOnContainer(int action, int dir, int containerType, int pageIndex) {
-        LauncherEvent event = LoggerUtils.initLauncherEvent(Action.TOUCH, Target.CONTAINER);
-        event.action.touch = action;
+        LauncherEvent event = newLauncherEvent(newTouchAction(action),
+                newContainerTarget(containerType));
         event.action.dir = dir;
-        event.srcTarget[0].containerType = containerType;
         event.srcTarget[0].pageIndex = pageIndex;
         dispatchUserEvent(event, null);
     }
 
     public void logDeepShortcutsOpen(View icon) {
-        LauncherEvent event = LoggerUtils.initLauncherEvent(
-                Action.TOUCH, icon, Target.CONTAINER);
         LogContainerProvider provider = getLaunchProviderRecursive(icon);
         if (icon == null && !(icon.getTag() instanceof ItemInfo)) {
             return;
         }
         ItemInfo info = (ItemInfo) icon.getTag();
+        LauncherEvent event = newLauncherEvent(
+                newTouchAction(Action.LONGPRESS), newItemTarget(info), newTarget(Target.CONTAINER));
         provider.fillInLogContainerData(icon, info, event.srcTarget[0], event.srcTarget[1]);
-        event.action.touch = Action.LONGPRESS;
         dispatchUserEvent(event, null);
 
         resetElapsedContainerMillis();
@@ -223,28 +227,18 @@ public class UserEventDispatcher {
     /* Currently we are only interested in whether this event happens or not and don't
     * care about which screen moves to where. */
     public void logOverviewReorder() {
-        LauncherEvent event = new LauncherLogProto.LauncherEvent();
-
-        event.srcTarget = new LauncherLogProto.Target[2];
-        event.srcTarget[0] = new LauncherLogProto.Target();
-        event.srcTarget[0].type = Target.CONTAINER;
-        event.srcTarget[0].containerType = LauncherLogProto.WORKSPACE;
-        event.srcTarget[1] = new LauncherLogProto.Target();
-        event.srcTarget[1].type = Target.CONTAINER;
-        event.srcTarget[1].containerType = LauncherLogProto.OVERVIEW;
-
-        event.action = new LauncherLogProto.Action();
-        event.action.type = Action.TOUCH;
-        event.action.touch = Action.DRAGDROP;
+        LauncherEvent event = newLauncherEvent(newTouchAction(Action.DRAGDROP),
+                newContainerTarget(LauncherLogProto.WORKSPACE),
+                newContainerTarget(LauncherLogProto.OVERVIEW));
         dispatchUserEvent(event, null);
-
     }
+
     public void logDragNDrop(DropTarget.DragObject dragObj, View dropTargetAsView) {
-        LauncherEvent event = LoggerUtils.initLauncherEvent(Action.TOUCH,
-                dragObj.originalDragInfo,
-                Target.CONTAINER,
-                dropTargetAsView);
-        event.action.touch = Action.DRAGDROP;
+        LauncherEvent event = newLauncherEvent(newTouchAction(Action.DRAGDROP),
+                newItemTarget(dragObj.originalDragInfo), newTarget(Target.CONTAINER));
+        event.destTarget = new LauncherLogProto.Target[] {
+                newItemTarget(dragObj.originalDragInfo), newDropTarget(dropTargetAsView)
+        };
 
         dragObj.dragSource.fillInLogContainerData(null, dragObj.originalDragInfo,
                 event.srcTarget[0], event.srcTarget[1]);
