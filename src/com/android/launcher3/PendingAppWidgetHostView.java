@@ -63,7 +63,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public PendingAppWidgetHostView(Context context, LauncherAppWidgetInfo info,
-            boolean disabledForSafeMode) {
+            IconCache cache, boolean disabledForSafeMode) {
         super(new ContextThemeWrapper(context, R.style.WidgetContainerTheme));
 
         mLauncher = Launcher.getLauncher(context);
@@ -82,6 +82,10 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
         if (Utilities.ATLEAST_LOLLIPOP) {
             setElevation(getResources().getDimension(R.dimen.pending_widget_elevation));
         }
+
+        updateIcon(cache);
+        updateAppWidget(null);
+        setOnClickListener(mLauncher);
     }
 
     @Override
@@ -117,7 +121,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
         mDrawableSizeChanged = true;
     }
 
-    public void updateIcon(IconCache cache) {
+    private void updateIcon(IconCache cache) {
         Bitmap icon = cache.getIcon(mIconLookupIntent, mInfo.user);
         if (mIcon == icon) {
             return;

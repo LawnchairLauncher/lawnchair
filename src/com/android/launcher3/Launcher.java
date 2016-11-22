@@ -1470,9 +1470,7 @@ public class Launcher extends Activity
         }
 
         LauncherModel.addItemToDatabase(this, info, container, screenId, cellXY[0], cellXY[1]);
-
-        mWorkspace.addInScreen(view, container, screenId, cellXY[0], cellXY[1], 1, 1,
-                isWorkspaceLocked());
+        mWorkspace.addInScreen(view, info);
     }
 
     /**
@@ -1507,20 +1505,15 @@ public class Launcher extends Activity
             hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
         }
         hostView.setVisibility(View.VISIBLE);
-        addAppWidgetToWorkspace(hostView, launcherInfo, appWidgetInfo, isWorkspaceLocked());
+        prepareAppWidget(hostView, launcherInfo);
+        mWorkspace.addInScreen(hostView, launcherInfo);
     }
 
-    private void addAppWidgetToWorkspace(
-            AppWidgetHostView hostView, LauncherAppWidgetInfo item,
-            LauncherAppWidgetProviderInfo appWidgetInfo, boolean insert) {
+    private void prepareAppWidget(AppWidgetHostView hostView, LauncherAppWidgetInfo item) {
         hostView.setTag(item);
         item.onBindAppWidget(this, hostView);
-
         hostView.setFocusable(true);
         hostView.setOnFocusChangeListener(mFocusHandler);
-
-        mWorkspace.addInScreen(hostView, item.container, item.screenId,
-                item.cellX, item.cellY, item.spanX, item.spanY, insert);
     }
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -2105,8 +2098,7 @@ public class Launcher extends Activity
         // Create the view
         FolderIcon newFolder =
             FolderIcon.fromXml(R.layout.folder_icon, this, layout, folderInfo, mIconCache);
-        mWorkspace.addInScreen(newFolder, container, screenId, cellX, cellY, 1, 1,
-                isWorkspaceLocked());
+        mWorkspace.addInScreen(newFolder, folderInfo);
         // Force measure the new folder icon
         CellLayout parent = mWorkspace.getParentCellLayoutForView(newFolder);
         parent.getShortcutsAndWidgets().measureChild(newFolder);
@@ -3365,8 +3357,7 @@ public class Launcher extends Activity
                     }
                 }
             }
-            workspace.addInScreenFromBind(view, item.container, item.screenId, item.cellX,
-                    item.cellY, 1, 1);
+            workspace.addInScreenFromBind(view, item);
             if (animateIcons) {
                 // Animate all the applications up now
                 view.setAlpha(0f);
@@ -3408,15 +3399,6 @@ public class Launcher extends Activity
         workspace.requestLayout();
     }
 
-    private void bindSafeModeWidget(LauncherAppWidgetInfo item) {
-        PendingAppWidgetHostView view = new PendingAppWidgetHostView(this, item, true);
-        view.updateIcon(mIconCache);
-        view.updateAppWidget(null);
-        view.setOnClickListener(this);
-        addAppWidgetToWorkspace(view, item, null, false);
-        mWorkspace.requestLayout();
-    }
-
     /**
      * Add the views for a widget to the workspace.
      *
@@ -3433,7 +3415,11 @@ public class Launcher extends Activity
         }
 
         if (mIsSafeModeEnabled) {
-            bindSafeModeWidget(item);
+            PendingAppWidgetHostView view =
+                    new PendingAppWidgetHostView(this, item, mIconCache, true);
+            prepareAppWidget(view, item);
+            mWorkspace.addInScreen(view, item);
+            mWorkspace.requestLayout();
             return;
         }
 
@@ -3521,6 +3507,7 @@ public class Launcher extends Activity
             }
         }
 
+        final AppWidgetHostView view;
         if (item.restoreStatus == LauncherAppWidgetInfo.RESTORE_COMPLETED) {
             if (DEBUG_WIDGETS) {
                 Log.d(TAG, "bindAppWidget: id=" + item.appWidgetId + " belongs to component "
@@ -3536,16 +3523,12 @@ public class Launcher extends Activity
 
             item.minSpanX = appWidgetInfo.minSpanX;
             item.minSpanY = appWidgetInfo.minSpanY;
-            addAppWidgetToWorkspace(
-                    mAppWidgetHost.createView(this, item.appWidgetId, appWidgetInfo),
-                    item, appWidgetInfo, false);
+            view = mAppWidgetHost.createView(this, item.appWidgetId, appWidgetInfo);
         } else {
-            PendingAppWidgetHostView view = new PendingAppWidgetHostView(this, item, false);
-            view.updateIcon(mIconCache);
-            view.updateAppWidget(null);
-            view.setOnClickListener(this);
-            addAppWidgetToWorkspace(view, item, null, false);
+            view = new PendingAppWidgetHostView(this, item, mIconCache, false);
         }
+        prepareAppWidget(view, item);
+        mWorkspace.addInScreen(view, item);
         mWorkspace.requestLayout();
 
         if (DEBUG_WIDGETS) {

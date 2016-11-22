@@ -1043,23 +1043,28 @@ public class Workspace extends PagedView
         }
     }
 
-    // See implementation for parameter definition.
-    void addInScreen(View child, long container, long screenId,
-            int x, int y, int spanX, int spanY) {
-        addInScreen(child, container, screenId, x, y, spanX, spanY, false, false);
+    /**
+     * At bind time, we use the rank (screenId) to compute x and y for hotseat items.
+     * See {@link #addInScreen}.
+     */
+    public void addInScreenFromBind(View child, ItemInfo info) {
+        int x = info.cellX;
+        int y = info.cellY;
+        if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+            int screenId = (int) info.screenId;
+            x = mLauncher.getHotseat().getCellXFromOrder(screenId);
+            y = mLauncher.getHotseat().getCellYFromOrder(screenId);
+        }
+        addInScreen(child, info.container, info.screenId, x, y, info.spanX, info.spanY);
     }
 
-    // At bind time, we use the rank (screenId) to compute x and y for hotseat items.
-    // See implementation for parameter definition.
-    public void addInScreenFromBind(View child, long container, long screenId, int x, int y,
-            int spanX, int spanY) {
-        addInScreen(child, container, screenId, x, y, spanX, spanY, false, true);
-    }
-
-    // See implementation for parameter definition.
-    void addInScreen(View child, long container, long screenId, int x, int y, int spanX, int spanY,
-            boolean insert) {
-        addInScreen(child, container, screenId, x, y, spanX, spanY, insert, false);
+    /**
+     * Adds the specified child in the specified screen based on the {@param info}
+     * See {@link #addInScreen}.
+     */
+    public void addInScreen(View child, ItemInfo info) {
+        addInScreen(child, info.container, info.screenId, info.cellX, info.cellY,
+                info.spanX, info.spanY);
     }
 
     /**
@@ -1072,13 +1077,9 @@ public class Workspace extends PagedView
      * @param y The Y position of the child in the screen's grid.
      * @param spanX The number of cells spanned horizontally by the child.
      * @param spanY The number of cells spanned vertically by the child.
-     * @param insert When true, the child is inserted at the beginning of the children list.
-     * @param computeXYFromRank When true, we use the rank (stored in screenId) to compute
-     *                          the x and y position in which to place hotseat items. Otherwise
-     *                          we use the x and y position to compute the rank.
      */
-    void addInScreen(View child, long container, long screenId, int x, int y, int spanX, int spanY,
-            boolean insert, boolean computeXYFromRank) {
+    private void addInScreen(View child, long container, long screenId, int x, int y,
+            int spanX, int spanY) {
         if (container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
             if (getScreenWithId(screenId) == null) {
                 Log.e(TAG, "Skipping child, screenId " + screenId + " not found");
@@ -1100,13 +1101,6 @@ public class Workspace extends PagedView
             // Hide folder title in the hotseat
             if (child instanceof FolderIcon) {
                 ((FolderIcon) child).setTextVisible(false);
-            }
-
-            if (computeXYFromRank) {
-                x = mLauncher.getHotseat().getCellXFromOrder((int) screenId);
-                y = mLauncher.getHotseat().getCellYFromOrder((int) screenId);
-            } else {
-                screenId = mLauncher.getHotseat().getOrderInHotseat(x, y);
             }
         } else {
             // Show folder title if not in the hotseat
@@ -1138,7 +1132,7 @@ public class Workspace extends PagedView
         int childId = mLauncher.getViewIdForItem(info);
 
         boolean markCellsAsOccupied = !(child instanceof Folder);
-        if (!layout.addViewToCellLayout(child, insert ? 0 : -1, childId, lp, markCellsAsOccupied)) {
+        if (!layout.addViewToCellLayout(child, -1, childId, lp, markCellsAsOccupied)) {
             // TODO: This branch occurs when the workspace is adding views
             // outside of the defined grid
             // maybe we should be deleting these items from the LauncherModel?
@@ -2519,7 +2513,7 @@ public class Workspace extends PagedView
         if (d.dragSource != this) {
             final int[] touchXY = new int[] { (int) mDragViewVisualCenter[0],
                     (int) mDragViewVisualCenter[1] };
-            onDropExternal(touchXY, d.dragInfo, dropTargetLayout, false, d);
+            onDropExternal(touchXY, d.dragInfo, dropTargetLayout, d);
         } else if (mDragInfo != null) {
             final View cell = mDragInfo.cell;
             boolean droppedOnOriginalCellDuringTransition = false;
@@ -3265,7 +3259,7 @@ public class Workspace extends PagedView
      * to add an item to one of the workspace screens.
      */
     private void onDropExternal(final int[] touchXY, final ItemInfo dragInfo,
-            final CellLayout cellLayout, boolean insertAtFirst, DragObject d) {
+            final CellLayout cellLayout, DragObject d) {
         final Runnable exitSpringLoadedRunnable = new Runnable() {
             @Override
             public void run() {
@@ -3415,8 +3409,8 @@ public class Workspace extends PagedView
             LauncherModel.addOrMoveItemInDatabase(mLauncher, info, container, screenId,
                     mTargetCell[0], mTargetCell[1]);
 
-            addInScreen(view, container, screenId, mTargetCell[0], mTargetCell[1], info.spanX,
-                    info.spanY, insertAtFirst);
+            addInScreen(view, container, screenId, mTargetCell[0], mTargetCell[1],
+                    info.spanX, info.spanY);
             cellLayout.onDropChild(view);
             cellLayout.getShortcutsAndWidgets().measureChild(view);
 
