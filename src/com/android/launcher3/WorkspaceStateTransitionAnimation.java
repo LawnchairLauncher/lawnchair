@@ -356,7 +356,8 @@ public class WorkspaceStateTransitionAnimation {
                 cl.setShortcutAndWidgetAlpha(finalAlpha);
             }
 
-            if (Workspace.isQsbContainerPage(i)) {
+            if (Workspace.isQsbContainerPage(i) &&
+                    states.stateIsNormal && mWorkspaceFadeInAdjacentScreens) {
                 if (animated) {
                     Animator anim = mWorkspace.mQsbAlphaController
                             .animateAlphaAtIndex(finalAlpha, Workspace.QSB_ALPHA_INDEX_PAGE_SCROLL);
@@ -371,8 +372,6 @@ public class WorkspaceStateTransitionAnimation {
         }
 
         final ViewGroup overviewPanel = mLauncher.getOverviewPanel();
-
-        final View qsbContainer = mLauncher.getQsbContainer();
 
         Animator qsbAlphaAnimation = mWorkspace.mQsbAlphaController
                 .animateAlphaAtIndex(finalQsbAlpha, Workspace.QSB_ALPHA_INDEX_STATE_CHANGE);
@@ -395,7 +394,7 @@ public class WorkspaceStateTransitionAnimation {
             // For animation optimization, we may need to provide the Launcher transition
             // with a set of views on which to force build and manage layers in certain scenarios.
             layerViews.addView(overviewPanel);
-            layerViews.addView(qsbContainer);
+            layerViews.addView(mLauncher.getQsbContainer());
             layerViews.addView(mLauncher.getHotseat());
             layerViews.addView(mWorkspace.getPageIndicator());
 

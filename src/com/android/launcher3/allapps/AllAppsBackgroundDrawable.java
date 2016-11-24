@@ -188,7 +188,6 @@ public class AllAppsBackgroundDrawable extends Drawable {
 
     private ObjectAnimator cancelAnimator(ObjectAnimator animator) {
         if (animator != null) {
-            animator.removeAllListeners();
             animator.cancel();
         }
         return null;
