@@ -650,7 +650,7 @@ public class LauncherProvider extends ContentProvider {
             if (mWidgetHostResetHandler != null) {
                 new AppWidgetHost(mContext, Launcher.APPWIDGET_HOST_ID).deleteHost();
                 mWidgetHostResetHandler.sendEmptyMessage(
-                        ChangeListenerWrapper.MSG_EXTRACTED_COLORS_CHANGED);
+                        ChangeListenerWrapper.MSG_APP_WIDGET_HOST_RESET);
             }
 
             // Set the flag for empty DB
