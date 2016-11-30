@@ -215,9 +215,18 @@ public class PinchAnimationManager {
             view.setVisibility(View.VISIBLE);
         } else {
             animator.addListener(new AnimatorListenerAdapter() {
+                private boolean mCancelled = false;
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    mCancelled = true;
+                }
+
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    view.setVisibility(View.INVISIBLE);
+                    if (!mCancelled) {
+                        view.setVisibility(View.INVISIBLE);
+                    }
                 }
             });
         }
@@ -226,7 +235,6 @@ public class PinchAnimationManager {
 
     private void startAnimator(int index, Animator animator, long duration) {
         if (mAnimators[index] != null) {
-            mAnimators[index].removeAllListeners();
             mAnimators[index].cancel();
         }
         mAnimators[index] = animator;

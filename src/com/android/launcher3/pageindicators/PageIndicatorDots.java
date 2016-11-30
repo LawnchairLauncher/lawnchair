@@ -72,18 +72,6 @@ public class PageIndicatorDots extends PageIndicator {
         }
     };
 
-    /**
-     * Listener for keep running the animation until the final state is reached.
-     */
-    private final AnimatorListenerAdapter mAnimCycleListener = new AnimatorListenerAdapter() {
-
-        @Override
-        public void onAnimationEnd(Animator animation) {
-            mAnimator = null;
-            animateToPosition(mFinalPosition);
-        }
-    };
-
     private final Paint mCirclePaint;
     private final float mDotRadius;
     private final int mActiveColor;
@@ -163,7 +151,7 @@ public class PageIndicatorDots extends PageIndicator {
             float positionForThisAnim = mCurrentPosition > mFinalPosition ?
                     mCurrentPosition - SHIFT_PER_ANIMATION : mCurrentPosition + SHIFT_PER_ANIMATION;
             mAnimator = ObjectAnimator.ofFloat(this, CURRENT_POSITION, positionForThisAnim);
-            mAnimator.addListener(mAnimCycleListener);
+            mAnimator.addListener(new AnimationCycleListener());
             mAnimator.setDuration(ANIMATION_DURATION);
             mAnimator.start();
         }
@@ -171,7 +159,6 @@ public class PageIndicatorDots extends PageIndicator {
 
     public void stopAllAnimations() {
         if (mAnimator != null) {
-            mAnimator.removeAllListeners();
             mAnimator.cancel();
             mAnimator = null;
         }
@@ -323,6 +310,27 @@ public class PageIndicatorDots extends PageIndicator {
                         (int) activeRect.bottom,
                         mDotRadius
                 );
+            }
+        }
+    }
+
+    /**
+     * Listener for keep running the animation until the final state is reached.
+     */
+    private class AnimationCycleListener extends AnimatorListenerAdapter {
+
+        private boolean mCancelled = false;
+
+        @Override
+        public void onAnimationCancel(Animator animation) {
+            mCancelled = true;
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            if (!mCancelled) {
+                mAnimator = null;
+                animateToPosition(mFinalPosition);
             }
         }
     }
