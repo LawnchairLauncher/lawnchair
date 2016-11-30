@@ -33,6 +33,8 @@ import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.util.Preconditions;
+import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.Thunk;
 
 import org.json.JSONException;
@@ -44,6 +46,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 public class InstallShortcutReceiver extends BroadcastReceiver {
@@ -76,11 +79,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             String encoded = info.encodeToString();
             if (encoded != null) {
                 Set<String> strings = sharedPrefs.getStringSet(APPS_PENDING_INSTALL, null);
-                if (strings == null) {
-                    strings = new HashSet<String>(1);
-                } else {
-                    strings = new HashSet<String>(strings);
-                }
+                strings = (strings != null) ? new HashSet<>(strings) : new HashSet<String>(1);
                 strings.add(encoded);
                 sharedPrefs.edit().putStringSet(APPS_PENDING_INSTALL, strings).apply();
             }
@@ -115,16 +114,15 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         }
     }
 
-    private static ArrayList<PendingInstallShortcutInfo> getAndClearInstallQueue(
-            SharedPreferences sharedPrefs, Context context) {
+    private static ArrayList<PendingInstallShortcutInfo> getAndClearInstallQueue(Context context) {
+        SharedPreferences sharedPrefs = Utilities.getPrefs(context);
         synchronized(sLock) {
+            ArrayList<PendingInstallShortcutInfo> infos = new ArrayList<>();
             Set<String> strings = sharedPrefs.getStringSet(APPS_PENDING_INSTALL, null);
             if (DBG) Log.d(TAG, "Getting and clearing APPS_PENDING_INSTALL: " + strings);
             if (strings == null) {
-                return new ArrayList<PendingInstallShortcutInfo>();
+                return infos;
             }
-            ArrayList<PendingInstallShortcutInfo> infos =
-                new ArrayList<PendingInstallShortcutInfo>();
             for (String encoded : strings) {
                 PendingInstallShortcutInfo info = decode(encoded, context);
                 if (info != null) {
@@ -212,36 +210,12 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         mUseInstallQueue = false;
         flushInstallQueue(context);
     }
+
     static void flushInstallQueue(Context context) {
-        SharedPreferences sp = Utilities.getPrefs(context);
-        ArrayList<PendingInstallShortcutInfo> installQueue = getAndClearInstallQueue(sp, context);
-        if (!installQueue.isEmpty()) {
-            Iterator<PendingInstallShortcutInfo> iter = installQueue.iterator();
-            ArrayList<ItemInfo> addShortcuts = new ArrayList<ItemInfo>();
-            while (iter.hasNext()) {
-                final PendingInstallShortcutInfo pendingInfo = iter.next();
-
-                // If the intent specifies a package, make sure the package exists
-                String packageName = pendingInfo.getTargetPackage();
-                if (!TextUtils.isEmpty(packageName)) {
-                    UserHandleCompat myUserHandle = UserHandleCompat.myUserHandle();
-                    if (!LauncherAppsCompat.getInstance(context)
-                            .isPackageEnabledForProfile(packageName, myUserHandle)) {
-                        if (DBG) Log.d(TAG, "Ignoring shortcut for absent package: "
-                                + pendingInfo.launchIntent);
-                        continue;
-                    }
-                }
-
-                // Generate a shortcut info to add into the model
-                addShortcuts.add(pendingInfo.getShortcutInfo());
-            }
-
-            // Add the new apps to the model and bind them
-            if (!addShortcuts.isEmpty()) {
-                LauncherAppState app = LauncherAppState.getInstance();
-                app.getModel().addAndBindAddedWorkspaceItems(addShortcuts);
-            }
+        ArrayList<PendingInstallShortcutInfo> items = getAndClearInstallQueue(context);
+        if (!items.isEmpty()) {
+            LauncherAppState.getInstance().getModel().addAndBindAddedWorkspaceItems(
+                    new LazyShortcutsProvider(context.getApplicationContext(), items));
         }
     }
 
@@ -444,5 +418,41 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         }
         // Ignore any conflicts in the label name, as that can change based on locale.
         return new PendingInstallShortcutInfo(info, original.mContext);
+    }
+
+    private static class LazyShortcutsProvider extends Provider<List<ItemInfo>> {
+
+        private final Context mContext;
+        private final ArrayList<PendingInstallShortcutInfo> mPendingItems;
+
+        public LazyShortcutsProvider(Context context, ArrayList<PendingInstallShortcutInfo> items) {
+            mContext = context;
+            mPendingItems = items;
+        }
+
+        /**
+         * This must be called on the background thread as this requires multiple calls to
+         * packageManager and icon cache.
+         */
+        @Override
+        public ArrayList<ItemInfo> get() {
+            Preconditions.assertNonUiThread();
+            ArrayList<ItemInfo> installQueue = new ArrayList<>();
+            LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(mContext);
+            for (PendingInstallShortcutInfo pendingInfo : mPendingItems) {
+                // If the intent specifies a package, make sure the package exists
+                String packageName = pendingInfo.getTargetPackage();
+                if (!TextUtils.isEmpty(packageName) && !launcherApps.isPackageEnabledForProfile(
+                        packageName, pendingInfo.user)) {
+                    if (DBG) Log.d(TAG, "Ignoring shortcut for absent package: "
+                            + pendingInfo.launchIntent);
+                    continue;
+                }
+
+                // Generate a shortcut info to add into the model
+                installQueue.add(pendingInfo.getShortcutInfo());
+            }
+            return installQueue;
+        }
     }
 }

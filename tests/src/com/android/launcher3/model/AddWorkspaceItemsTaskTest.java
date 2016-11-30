@@ -15,6 +15,7 @@ import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.LongArrayMap;
+import com.android.launcher3.util.Provider;
 
 import org.mockito.ArgumentCaptor;
 
@@ -48,8 +49,8 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
         idp.numRows = 5;
     }
 
-    private <T extends ItemInfo> AddWorkspaceItemsTask newTask(T... items) {
-        return new AddWorkspaceItemsTask(new ArrayList<>(Arrays.asList(items))) {
+    private AddWorkspaceItemsTask newTask(ItemInfo... items) {
+        return new AddWorkspaceItemsTask(Provider.of(Arrays.asList(items))) {
 
             @Override
             protected void addItemToDatabase(Context context, ItemInfo item,
