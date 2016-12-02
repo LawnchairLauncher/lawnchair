@@ -1160,7 +1160,7 @@ public class Workspace extends PagedView
     }
 
     private boolean shouldConsumeTouch(View v) {
-        return (workspaceInModalState() || !isFinishedSwitchingState())
+        return !workspaceIconsCanBeDragged()
                 || (!workspaceInModalState() && indexOfChild(v) != mCurrentPage);
     }
 
@@ -1824,6 +1824,11 @@ public class Workspace extends PagedView
 
     public boolean workspaceInModalState() {
         return mState != State.NORMAL;
+    }
+
+    /** Returns whether a drag should be allowed to be started from the current workspace state. */
+    public boolean workspaceIconsCanBeDragged() {
+        return mState == State.NORMAL || mState == State.SPRING_LOADED;
     }
 
     @Thunk void updateChildrenLayersEnabled(boolean force) {
