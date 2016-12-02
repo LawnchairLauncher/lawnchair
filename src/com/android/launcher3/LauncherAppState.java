@@ -38,7 +38,6 @@ public class LauncherAppState {
 
     public static final boolean PROFILE_STARTUP = ProviderConfig.IS_DOGFOOD_BUILD;
 
-    private final AppFilter mAppFilter;
     @Thunk final LauncherModel mModel;
     private final IconCache mIconCache;
     private final WidgetPreviewLoader mWidgetCache;
@@ -96,8 +95,8 @@ public class LauncherAppState {
         mIconCache = new IconCache(sContext, mInvariantDeviceProfile);
         mWidgetCache = new WidgetPreviewLoader(sContext, mIconCache);
 
-        mAppFilter = AppFilter.loadByName(sContext.getString(R.string.app_filter_class));
-        mModel = new LauncherModel(this, mIconCache, mAppFilter);
+        mModel = new LauncherModel(this, mIconCache,
+                Utilities.getOverrideObject(AppFilter.class, sContext, R.string.app_filter_class));
 
         LauncherAppsCompat.getInstance(sContext).addOnAppsChangedCallback(mModel);
 

@@ -18,13 +18,11 @@ package com.android.launcher3.graphics;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.text.TextUtils;
 
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
-
-import java.lang.reflect.InvocationTargetException;
+import com.android.launcher3.Utilities;
 
 /**
  * Factory for creating new drawables.
@@ -37,25 +35,11 @@ public class DrawableFactory {
     public static DrawableFactory get(Context context) {
         synchronized (LOCK) {
             if (sInstance == null) {
-                context = context.getApplicationContext();
-                sInstance = loadByName(context.getString(R.string.drawable_factory_class), context);
+                sInstance = Utilities.getOverrideObject(DrawableFactory.class,
+                        context.getApplicationContext(), R.string.drawable_factory_class);
             }
             return sInstance;
         }
-    }
-
-    public static DrawableFactory loadByName(String className, Context context) {
-        if (!TextUtils.isEmpty(className)) {
-            try {
-                Class<?> cls = Class.forName(className);
-                return (DrawableFactory)
-                        cls.getDeclaredConstructor(Context.class).newInstance(context);
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-                    | ClassCastException | NoSuchMethodException | InvocationTargetException e) {
-                return new DrawableFactory();
-            }
-        }
-        return new DrawableFactory();
     }
 
     /**

@@ -123,9 +123,8 @@ public class IconCache {
         mLowResCanvas = new Canvas();
         mLowResPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
 
-        mIconProvider = IconProvider.loadByName(context.getString(R.string.icon_provider_class),
-                context);
-
+        mIconProvider = Utilities.getOverrideObject(
+                IconProvider.class, context, R.string.icon_provider_class);
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
 
         mActivityBgColor = context.getResources().getColor(R.color.quantum_panel_bg_color);
