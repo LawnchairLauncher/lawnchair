@@ -3467,14 +3467,14 @@ public class Workspace extends PagedView
                 mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(layout, loc, true);
         resetTransitionTransform(layout);
 
-        float dragViewScaleX;
-        float dragViewScaleY;
+        float dragViewScaleX = 1f;
+        float dragViewScaleY = 1f;
         if (scale) {
-            dragViewScaleX = (1.0f * r.width()) / dragView.getMeasuredWidth();
-            dragViewScaleY = (1.0f * r.height()) / dragView.getMeasuredHeight();
-        } else {
-            dragViewScaleX = 1f;
-            dragViewScaleY = 1f;
+            float width = info.spanX * layout.mCellWidth;
+            float height = info.spanY * layout.mCellHeight;
+
+            dragViewScaleX = r.width() / width;
+            dragViewScaleY = r.height() / height;
         }
 
         // The animation will scale the dragView about its center, so we need to center about

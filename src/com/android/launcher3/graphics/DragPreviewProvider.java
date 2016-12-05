@@ -24,7 +24,9 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.TextView;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppWidgetHostView;
 import com.android.launcher3.PreloadIconDrawable;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.ProviderConfig;
@@ -100,20 +102,31 @@ public class DragPreviewProvider {
      * Responsibility for the bitmap is transferred to the caller.
      */
     public Bitmap createDragBitmap(Canvas canvas) {
-        Bitmap b;
+        float scale = 1f;
+        int width = mView.getWidth();
+        int height = mView.getHeight();
 
         if (mView instanceof TextView) {
             Drawable d = Workspace.getTextViewIcon((TextView) mView);
             Rect bounds = getDrawableBounds(d);
-            b = Bitmap.createBitmap(bounds.width() + DRAG_BITMAP_PADDING,
-                    bounds.height() + DRAG_BITMAP_PADDING, Bitmap.Config.ARGB_8888);
-        } else {
-            b = Bitmap.createBitmap(mView.getWidth() + DRAG_BITMAP_PADDING,
-                    mView.getHeight() + DRAG_BITMAP_PADDING, Bitmap.Config.ARGB_8888);
+            width = bounds.width();
+            height = bounds.height();
+        } else if (mView instanceof LauncherAppWidgetHostView) {
+            DeviceProfile profile = Launcher.getLauncher(mView.getContext()).getDeviceProfile();
+            scale = Math.min(profile.appWidgetScale.x, profile.appWidgetScale.y);
+            width = (int) (mView.getWidth() * scale);
+            height = (int) (mView.getHeight() * scale);
         }
 
+        Bitmap b = Bitmap.createBitmap(width + DRAG_BITMAP_PADDING, height + DRAG_BITMAP_PADDING,
+                Bitmap.Config.ARGB_8888);
         canvas.setBitmap(b);
+
+        canvas.save();
+        canvas.scale(scale, scale);
         drawDragView(canvas);
+        canvas.restore();
+
         canvas.setBitmap(null);
 
         return b;
@@ -132,12 +145,29 @@ public class DragPreviewProvider {
      * Responsibility for the bitmap is transferred to the caller.
      */
     public Bitmap createDragOutline(Canvas canvas) {
-        final Bitmap b = Bitmap.createBitmap(mView.getWidth() + DRAG_BITMAP_PADDING,
-                mView.getHeight() + DRAG_BITMAP_PADDING, Bitmap.Config.ALPHA_8);
+        float scale = 1f;
+        int width = mView.getWidth();
+        int height = mView.getHeight();
+
+        if (mView instanceof LauncherAppWidgetHostView) {
+            DeviceProfile profile = Launcher.getLauncher(mView.getContext()).getDeviceProfile();
+            scale = Math.min(profile.appWidgetScale.x, profile.appWidgetScale.y);
+            width = (int) Math.floor(mView.getWidth() * scale);
+            height = (int) Math.floor(mView.getHeight() * scale);
+        }
+
+        Bitmap b = Bitmap.createBitmap(width + DRAG_BITMAP_PADDING, height + DRAG_BITMAP_PADDING,
+                Bitmap.Config.ALPHA_8);
         canvas.setBitmap(b);
+
+        canvas.save();
+        canvas.scale(scale, scale);
         drawDragView(canvas);
+        canvas.restore();
+
         HolographicOutlineHelper.getInstance(mView.getContext())
                 .applyExpensiveOutlineWithBlur(b, canvas);
+
         canvas.setBitmap(null);
         return b;
     }
@@ -160,8 +190,17 @@ public class DragPreviewProvider {
     public float getScaleAndPosition(Bitmap preview, int[] outPos) {
         float scale = Launcher.getLauncher(mView.getContext())
                 .getDragLayer().getLocationInDragLayer(mView, outPos);
-        outPos[0] = Math.round(outPos[0] - (preview.getWidth() - scale * mView.getWidth()) / 2);
-        outPos[1] = Math.round(outPos[1] - (1 - scale) * preview.getHeight() / 2 - previewPadding / 2);
+        DeviceProfile profile = Launcher.getLauncher(mView.getContext()).getDeviceProfile();
+        if (mView instanceof LauncherAppWidgetHostView) {
+            // App widgets are technically scaled, but are drawn at their expected size -- so the
+            // app widget scale should not affect the scale of the preview.
+            scale /= Math.min(profile.appWidgetScale.x, profile.appWidgetScale.y);
+        }
+
+        outPos[0] = Math.round(outPos[0] -
+                (preview.getWidth() - scale * mView.getWidth() * mView.getScaleX()) / 2);
+        outPos[1] = Math.round(outPos[1] - (1 - scale) * preview.getHeight() / 2
+                - previewPadding / 2);
         return scale;
     }
 }
