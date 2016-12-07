@@ -383,17 +383,37 @@ public class Workspace extends PagedView
         mOnStateChangeListener = listener;
     }
 
-    // estimate the size of a widget with spans hSpan, vSpan. return MAX_VALUE for each
-    // dimension if unsuccessful
-    public int[] estimateItemSize(ItemInfo itemInfo, boolean springLoaded) {
+    /**
+     * Estimates the size of an item using spans: hSpan, vSpan.
+     *
+     * @param springLoaded True if we are in spring loaded mode.
+     * @param unscaledSize True if caller wants to return the unscaled size
+     * @return MAX_VALUE for each dimension if unsuccessful.
+     */
+    public int[] estimateItemSize(ItemInfo itemInfo, boolean springLoaded, boolean unscaledSize) {
         float shrinkFactor = mLauncher.getDeviceProfile().workspaceSpringLoadShrinkFactor;
         int[] size = new int[2];
         if (getChildCount() > 0) {
             // Use the first non-custom page to estimate the child position
             CellLayout cl = (CellLayout) getChildAt(numCustomPages());
+            boolean isWidget = itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
+
             Rect r = estimateItemPosition(cl, 0, 0, itemInfo.spanX, itemInfo.spanY);
+
+            float scale = 1;
+            if (isWidget) {
+                DeviceProfile profile = mLauncher.getDeviceProfile();
+                scale = Utilities.shrinkRectAboutCenter(r, profile.appWidgetScale.x,
+                        profile.appWidgetScale.y);
+            }
             size[0] = r.width();
             size[1] = r.height();
+
+            if (isWidget && unscaledSize) {
+                size[0] /= scale;
+                size[1] /= scale;
+            }
+
             if (springLoaded) {
                 size[0] *= shrinkFactor;
                 size[1] *= shrinkFactor;
@@ -3451,7 +3471,7 @@ public class Workspace extends PagedView
     }
 
     public Bitmap createWidgetBitmap(ItemInfo widgetInfo, View layout) {
-        int[] unScaledSize = mLauncher.getWorkspace().estimateItemSize(widgetInfo, false);
+        int[] unScaledSize = mLauncher.getWorkspace().estimateItemSize(widgetInfo, false, true);
         int visibility = layout.getVisibility();
         layout.setVisibility(VISIBLE);
 
@@ -3477,6 +3497,10 @@ public class Workspace extends PagedView
         int spanY = info.spanY;
 
         Rect r = estimateItemPosition(layout, targetCell[0], targetCell[1], spanX, spanY);
+        if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET) {
+            DeviceProfile profile = mLauncher.getDeviceProfile();
+            Utilities.shrinkRectAboutCenter(r, profile.appWidgetScale.x, profile.appWidgetScale.y);
+        }
         loc[0] = r.left;
         loc[1] = r.top;
 
@@ -3488,11 +3512,8 @@ public class Workspace extends PagedView
         float dragViewScaleX = 1f;
         float dragViewScaleY = 1f;
         if (scale) {
-            float width = info.spanX * layout.mCellWidth;
-            float height = info.spanY * layout.mCellHeight;
-
-            dragViewScaleX = r.width() / width;
-            dragViewScaleY = r.height() / height;
+            dragViewScaleX = (1.0f * r.width()) / dragView.getMeasuredWidth();
+            dragViewScaleY = (1.0f * r.height()) / dragView.getMeasuredHeight();
         }
 
         // The animation will scale the dragView about its center, so we need to center about

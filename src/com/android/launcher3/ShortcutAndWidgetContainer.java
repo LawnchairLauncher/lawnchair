@@ -86,8 +86,15 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
         }
     }
 
-    public void setupLp(CellLayout.LayoutParams lp) {
-        lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX);
+    public void setupLp(View child) {
+        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
+        if (child instanceof LauncherAppWidgetHostView) {
+            DeviceProfile profile = mLauncher.getDeviceProfile();
+            lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX,
+                    profile.appWidgetScale.x, profile.appWidgetScale.y);
+        } else {
+            lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX);
+        }
     }
 
     // Set whether or not to invert the layout horizontally if the layout is in RTL mode.

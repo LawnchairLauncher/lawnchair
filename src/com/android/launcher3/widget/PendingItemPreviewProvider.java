@@ -45,7 +45,7 @@ public class PendingItemPreviewProvider extends DragPreviewProvider {
     @Override
     public Bitmap createDragOutline(Canvas canvas) {
         Workspace workspace = Launcher.getLauncher(mView.getContext()).getWorkspace();
-        int[] size = workspace.estimateItemSize(mAddInfo, false);
+        int[] size = workspace.estimateItemSize(mAddInfo, false, false);
 
         int w = size[0];
         int h = size[1];

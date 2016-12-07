@@ -200,7 +200,7 @@ public class WidgetsContainerView extends BaseContainerView
             // the widget if this is null, so we break out.
 
             PendingAddWidgetInfo createWidgetInfo = (PendingAddWidgetInfo) createItemInfo;
-            int[] size = mLauncher.getWorkspace().estimateItemSize(createWidgetInfo, true);
+            int[] size = mLauncher.getWorkspace().estimateItemSize(createWidgetInfo, true, false);
 
             Bitmap icon = image.getBitmap();
             float minScale = 1.25f;

@@ -45,7 +45,7 @@ public class ExternalDragPreviewProvider extends DragPreviewProvider {
         mLauncher = launcher;
         mAddInfo = addInfo;
 
-        mOutlineSize = mLauncher.getWorkspace().estimateItemSize(mAddInfo, false);
+        mOutlineSize = mLauncher.getWorkspace().estimateItemSize(mAddInfo, false, false);
     }
 
     public Rect getPreviewBounds() {

@@ -951,7 +951,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 lp.tmpCellX = cellX;
                 lp.tmpCellY = cellY;
             }
-            clc.setupLp(lp);
+            clc.setupLp(child);
             lp.isLockedToGrid = false;
             final int newX = lp.x;
             final int newY = lp.y;
@@ -972,7 +972,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             va.addUpdateListener(new AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    float r = ((Float) animation.getAnimatedValue()).floatValue();
+                    float r = (Float) animation.getAnimatedValue();
                     lp.x = (int) ((1 - r) * oldX + r * newX);
                     lp.y = (int) ((1 - r) * oldY + r * newY);
                     child.requestLayout();
@@ -1027,6 +1027,11 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
             if (resize) {
                 cellToRect(cellX, cellY, spanX, spanY, r);
+                if (v instanceof LauncherAppWidgetHostView) {
+                    DeviceProfile profile = mLauncher.getDeviceProfile();
+                    Utilities.shrinkRectAboutCenter(r, profile.appWidgetScale.x,
+                            profile.appWidgetScale.y);
+                }
             } else {
                 // Find the top left corner of the rect the object will occupy
                 final int[] topLeft = mTmpPoint;
@@ -1065,7 +1070,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 r.set(left, top, left + dragOutline.getWidth(), top + dragOutline.getHeight());
             }
 
-            Utilities.scaleRectAboutCenter(r, mChildScale);
+            Utilities.shrinkRectAboutCenter(r, mChildScale, mChildScale);
             mDragOutlineAnims[mDragOutlineCurrent].setTag(dragOutline);
             mDragOutlineAnims[mDragOutlineCurrent].animateIn();
 
@@ -1836,7 +1841,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
      * the provided point and the provided cell
      */
     private void computeDirectionVector(float deltaX, float deltaY, int[] result) {
-        double angle = Math.atan(((float) deltaY) / deltaX);
+        double angle = Math.atan(deltaY / deltaX);
 
         result[0] = 0;
         result[1] = 0;
@@ -2051,7 +2056,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             va.addUpdateListener(new AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    float r = ((Float) animation.getAnimatedValue()).floatValue();
+                    float r = (Float) animation.getAnimatedValue();
                     float r1 = (mode == MODE_HINT && repeating) ? 1.0f : r;
                     float x = r1 * finalDeltaX + (1 - r1) * initDeltaX;
                     float y = r1 * finalDeltaY + (1 - r1) * initDeltaY;
