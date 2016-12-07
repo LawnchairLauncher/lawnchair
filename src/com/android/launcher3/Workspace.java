@@ -48,7 +48,6 @@ import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityManager;
-import android.view.animation.Animation.AnimationListener;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
@@ -2056,7 +2055,7 @@ public class Workspace extends PagedView
         StateTransitionListener listener = new StateTransitionListener();
         if (animated) {
             ValueAnimator stepAnimator = ValueAnimator.ofFloat(0, 1);
-            stepAnimator.addListener(listener);
+            stepAnimator.addUpdateListener(listener);
 
             workspaceAnim.play(stepAnimator);
             workspaceAnim.addListener(listener);
