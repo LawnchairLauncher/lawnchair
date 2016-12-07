@@ -2569,10 +2569,19 @@ public class Workspace extends PagedView
                         && item.screenId == screenId && item.container == container
                         && item.cellX == mTargetCell[0] && item.cellY == mTargetCell[1];
 
+                // When quickly moving an item, a user may accidentally rearrange their
+                // workspace. So instead we move the icon back safely to its original position.
+                boolean returnToOriginalCellToPreventShuffling = !isFinishedSwitchingState()
+                        && !droppedOnOriginalCellDuringTransition && !dropTargetLayout
+                        .isRegionVacant(mTargetCell[0], mTargetCell[1], spanX, spanY);
                 int[] resultSpan = new int[2];
-                mTargetCell = dropTargetLayout.performReorder((int) mDragViewVisualCenter[0],
-                        (int) mDragViewVisualCenter[1], minSpanX, minSpanY, spanX, spanY, cell,
-                        mTargetCell, resultSpan, CellLayout.MODE_ON_DROP);
+                if (returnToOriginalCellToPreventShuffling) {
+                    mTargetCell[0] = mTargetCell[1] = -1;
+                } else {
+                    mTargetCell = dropTargetLayout.performReorder((int) mDragViewVisualCenter[0],
+                            (int) mDragViewVisualCenter[1], minSpanX, minSpanY, spanX, spanY, cell,
+                            mTargetCell, resultSpan, CellLayout.MODE_ON_DROP);
+                }
 
                 boolean foundCell = mTargetCell[0] >= 0 && mTargetCell[1] >= 0;
 
@@ -2638,7 +2647,9 @@ public class Workspace extends PagedView
                     LauncherModel.modifyItemInDatabase(mLauncher, info, container, screenId, lp.cellX,
                             lp.cellY, item.spanX, item.spanY);
                 } else {
-                    onNoCellFound(dropTargetLayout);
+                    if (!returnToOriginalCellToPreventShuffling) {
+                        onNoCellFound(dropTargetLayout);
+                    }
 
                     // If we can't find a drop location, we return the item to its original position
                     CellLayout.LayoutParams lp = (CellLayout.LayoutParams) cell.getLayoutParams();
