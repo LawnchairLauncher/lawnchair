@@ -1225,8 +1225,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
                         // We add the child after removing the folder to prevent both from existing
                         // at the same time in the CellLayout.  We need to add the new item with
                         // addInScreenFromBind() to ensure that hotseat items are placed correctly.
-                        mLauncher.getWorkspace().addInScreenFromBind(newIcon, mInfo.container,
-                                mInfo.screenId, mInfo.cellX, mInfo.cellY, mInfo.spanX, mInfo.spanY);
+                        mLauncher.getWorkspace().addInScreenFromBind(newIcon, mInfo);
 
                         // Focus the newly created child
                         newIcon.requestFocus();
