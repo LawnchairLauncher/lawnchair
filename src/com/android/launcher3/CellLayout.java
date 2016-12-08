@@ -1041,7 +1041,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                     // Offsets due to the size difference between the View and the dragOutline.
                     // There is a size difference to account for the outer blur, which may lie
                     // outside the bounds of the view.
-                    top += (v.getHeight() - dragOutline.getHeight()) / 2;
+                    top += ((mCellHeight * spanY) - dragOutline.getHeight()) / 2;
                     // We center about the x axis
                     left += ((mCellWidth * spanX) - dragOutline.getWidth()) / 2;
                 } else {
