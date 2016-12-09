@@ -489,6 +489,10 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             setLayoutParams(mlp);
         } else {
             View navBarBg = findViewById(R.id.nav_bar_bg);
+            if (Utilities.isAtLeastO()) {
+                navBarBg.setBackgroundColor(getResources().getColor(
+                        R.color.all_apps_light_navbar_color));
+            }
             ViewGroup.LayoutParams navBarBgLp = navBarBg.getLayoutParams();
             navBarBgLp.height = insets.bottom;
             navBarBg.setLayoutParams(navBarBgLp);

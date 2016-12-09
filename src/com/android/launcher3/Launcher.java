@@ -475,24 +475,36 @@ public class Launcher extends Activity
             mWorkspace.getPageIndicator().updateColor(mExtractedColors);
             // It's possible that All Apps is visible when this is run,
             // so always use light status bar in that case.
-            activateLightStatusBar(isAllAppsVisible());
+            activateLightStatusBar(isAllAppsVisible(), false);
         }
     }
+
+    // TODO: use platform flag on API >= 26
+    private static final int SYSTEM_UI_FLAG_LIGHT_NAV_BAR = 0x10;
 
     /**
      * Sets the status bar to be light or not. Light status bar means dark icons.
      * @param activate if true, make sure the status bar is light, otherwise base on wallpaper.
+     * @param changeNavBar make sure the nav bar is light only if this param and {@param activate}
+     *                     is also true.
      */
-    public void activateLightStatusBar(boolean activate) {
+    public void activateLightStatusBar(boolean activate, boolean changeNavBar) {
         boolean lightStatusBar = activate || (FeatureFlags.LIGHT_STATUS_BAR
                 && mExtractedColors.getColor(ExtractedColors.STATUS_BAR_INDEX,
                 ExtractedColors.DEFAULT_DARK) == ExtractedColors.DEFAULT_LIGHT);
         int oldSystemUiFlags = getWindow().getDecorView().getSystemUiVisibility();
         int newSystemUiFlags = oldSystemUiFlags;
         if (lightStatusBar) {
-            newSystemUiFlags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            newSystemUiFlags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR ;
         } else {
             newSystemUiFlags &= ~(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
+        if (Utilities.isAtLeastO() && activate) {
+            if (changeNavBar) {
+                newSystemUiFlags |= SYSTEM_UI_FLAG_LIGHT_NAV_BAR;
+            } else {
+                newSystemUiFlags &= ~(SYSTEM_UI_FLAG_LIGHT_NAV_BAR);
+            }
         }
         if (newSystemUiFlags != oldSystemUiFlags) {
             getWindow().getDecorView().setSystemUiVisibility(newSystemUiFlags);
