@@ -42,6 +42,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -306,7 +307,8 @@ public class DeepShortcutsContainer extends AbstractFloatingView
         int leftAlignedX = mTempRect.left + icon.getPaddingLeft();
         int rightAlignedX = mTempRect.right - width - icon.getPaddingRight();
         int x = leftAlignedX;
-        boolean canBeLeftAligned = leftAlignedX + width < dragLayer.getRight() - insets.right;
+        boolean canBeLeftAligned = leftAlignedX + width + insets.left
+                < dragLayer.getRight() - insets.right;
         boolean canBeRightAligned = rightAlignedX > dragLayer.getLeft() + insets.left;
         if (!canBeLeftAligned || (mIsRtl && canBeRightAligned)) {
             x = rightAlignedX;
@@ -346,10 +348,51 @@ public class DeepShortcutsContainer extends AbstractFloatingView
         }
 
         // Insets are added later, so subtract them now.
+        if (mIsRtl) {
+            x += insets.right;
+        } else {
+            x -= insets.left;
+        }
         y -= insets.top;
 
-        setX(x);
-        setY(y);
+        if (y < dragLayer.getTop() || y + height > dragLayer.getBottom()) {
+            // The container is opening off the screen, so just center it in the drag layer instead.
+            ((FrameLayout.LayoutParams) getLayoutParams()).gravity = Gravity.CENTER_VERTICAL;
+            // Put the container next to the icon, preferring the right side in ltr (left in rtl).
+            int rightSide = leftAlignedX + iconWidth - insets.left;
+            int leftSide = rightAlignedX - iconWidth - insets.left;
+            if (!mIsRtl) {
+                if (rightSide + width < dragLayer.getRight()) {
+                    x = rightSide;
+                    mIsLeftAligned = true;
+                } else {
+                    x = leftSide;
+                    mIsLeftAligned = false;
+                }
+            } else {
+                if (leftSide > dragLayer.getLeft()) {
+                    x = leftSide;
+                    mIsLeftAligned = false;
+                } else {
+                    x = rightSide;
+                    mIsLeftAligned = true;
+                }
+            }
+            mIsAboveIcon = true;
+        }
+
+        if (x < dragLayer.getLeft() || x + width > dragLayer.getRight()) {
+            // If we are still off screen, center horizontally too.
+            ((FrameLayout.LayoutParams) getLayoutParams()).gravity |= Gravity.CENTER_HORIZONTAL;
+        }
+
+        int gravity = ((FrameLayout.LayoutParams) getLayoutParams()).gravity;
+        if (!Gravity.isHorizontal(gravity)) {
+            setX(x);
+        }
+        if (!Gravity.isVertical(gravity)) {
+            setY(y);
+        }
     }
 
     private boolean isAlignedWithStart() {
@@ -377,11 +420,17 @@ public class DeepShortcutsContainer extends AbstractFloatingView
         }
 
         View arrowView = new View(getContext());
-        ShapeDrawable arrowDrawable = new ShapeDrawable(TriangleShape.create(
-                width, height, !mIsAboveIcon));
-        arrowDrawable.getPaint().setColor(Color.WHITE);
-        arrowView.setBackground(arrowDrawable);
-        arrowView.setElevation(getElevation());
+        if (Gravity.isVertical(((FrameLayout.LayoutParams) getLayoutParams()).gravity)) {
+            // This is only true if there wasn't room for the container next to the icon,
+            // so we centered it instead. In that case we don't want to show the arrow.
+            arrowView.setVisibility(INVISIBLE);
+        } else {
+            ShapeDrawable arrowDrawable = new ShapeDrawable(TriangleShape.create(
+                    width, height, !mIsAboveIcon));
+            arrowDrawable.getPaint().setColor(Color.WHITE);
+            arrowView.setBackground(arrowDrawable);
+            arrowView.setElevation(getElevation());
+        }
         addView(arrowView, mIsAboveIcon ? getChildCount() : 0, layoutParams);
         return arrowView;
     }
