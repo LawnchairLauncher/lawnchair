@@ -100,6 +100,14 @@ public class Workspace extends PagedView
         Insettable, DropTargetSource {
     private static final String TAG = "Launcher.Workspace";
 
+    /** The value that {@link #mTransitionProgress} must be greater than for
+     * {@link #transitionStateShouldAllowDrop()} to return true. */
+    private static final float ALLOW_DROP_TRANSITION_PROGRESS = 0.25f;
+
+    /** The value that {@link #mTransitionProgress} must be greater than for
+     * {@link #isFinishedSwitchingState()} ()} to return true. */
+    private static final float FINISHED_SWITCHING_STATE_TRANSITION_PROGRESS = 0.5f;
+
     private static boolean ENFORCE_DRAG_EVENT_ORDER = false;
 
     private static final int SNAP_OFF_EMPTY_SCREEN_DURATION = 400;
@@ -1171,7 +1179,8 @@ public class Workspace extends PagedView
     /** This differs from isSwitchingState in that we take into account how far the transition
      *  has completed. */
     public boolean isFinishedSwitchingState() {
-        return !mIsSwitchingState || (mTransitionProgress > 0.5f);
+        return !mIsSwitchingState
+                || (mTransitionProgress > FINISHED_SWITCHING_STATE_TRANSITION_PROGRESS);
     }
 
     protected void onWindowVisibilityChanged (int visibility) {
@@ -2278,8 +2287,8 @@ public class Workspace extends PagedView
         return dv;
     }
 
-    public boolean transitionStateShouldAllowDrop() {
-        return ((!isSwitchingState() || mTransitionProgress > 0.5f) &&
+    private boolean transitionStateShouldAllowDrop() {
+        return ((!isSwitchingState() || mTransitionProgress > ALLOW_DROP_TRANSITION_PROGRESS) &&
                 (mState == State.NORMAL || mState == State.SPRING_LOADED));
     }
 
