@@ -354,19 +354,18 @@ public class AppWidgetResizeFrame extends FrameLayout
     }
 
     public void snapToWidget(boolean animate) {
-        final DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
         DeviceProfile profile = mLauncher.getDeviceProfile();
-        int newWidth = (int) (mWidgetView.getWidth() * profile.appWidgetScale.x)
-                + 2 * mBackgroundPadding - mWidgetPadding.left - mWidgetPadding.right;
-        int newHeight = (int) (mWidgetView.getHeight() * profile.appWidgetScale.y)
-                + 2 * mBackgroundPadding - mWidgetPadding.top - mWidgetPadding.bottom;
+        float scale = Math.min(profile.appWidgetScale.x, profile.appWidgetScale.y);
 
-        mTmpPt[0] = mWidgetView.getLeft();
-        mTmpPt[1] = mWidgetView.getTop();
-        mDragLayer.getDescendantCoordRelativeToSelf(mCellLayout.getShortcutsAndWidgets(), mTmpPt);
+        mDragLayer.getViewRectRelativeToSelf(mWidgetView, sTmpRect);
 
-        int newX = mTmpPt[0] - mBackgroundPadding + mWidgetPadding.left;
-        int newY = mTmpPt[1] - mBackgroundPadding + mWidgetPadding.top;
+        int newWidth = 2 * mBackgroundPadding
+                + (int) (scale * (sTmpRect.width() - mWidgetPadding.left - mWidgetPadding.right));
+        int newHeight = 2 * mBackgroundPadding
+                + (int) (scale * (sTmpRect.height() - mWidgetPadding.top - mWidgetPadding.bottom));
+
+        int newX = (int) (sTmpRect.left - mBackgroundPadding + scale * mWidgetPadding.left);
+        int newY = (int) (sTmpRect.top - mBackgroundPadding + scale * mWidgetPadding.top);
 
         // We need to make sure the frame's touchable regions lie fully within the bounds of the
         // DragLayer. We allow the actual handles to be clipped, but we shift the touch regions
@@ -384,6 +383,7 @@ public class AppWidgetResizeFrame extends FrameLayout
             mBottomTouchRegionAdjustment = 0;
         }
 
+        final DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
         if (!animate) {
             lp.width = newWidth;
             lp.height = newHeight;
