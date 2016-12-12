@@ -66,7 +66,7 @@ public class AllAppsList {
      * If the app is already in the list, doesn't add it.
      */
     public void add(AppInfo info) {
-        if (mAppFilter != null && !mAppFilter.shouldShowApp(info.componentName)) {
+        if (!mAppFilter.shouldShowApp(info.componentName)) {
             return;
         }
         if (findActivity(data, info.componentName, info.user)) {

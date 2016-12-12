@@ -60,6 +60,7 @@ import com.android.launcher3.config.ProviderConfig;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Locale;
@@ -654,5 +655,24 @@ public final class Utilities {
     public static boolean isBinderSizeError(Exception e) {
         return e.getCause() instanceof TransactionTooLargeException
                 || e.getCause() instanceof DeadObjectException;
+    }
+
+    public static <T> T getOverrideObject(Class<T> clazz, Context context, int resId) {
+        String className = context.getString(resId);
+        if (!TextUtils.isEmpty(className)) {
+            try {
+                Class<?> cls = Class.forName(className);
+                return (T) cls.getDeclaredConstructor(Context.class).newInstance(context);
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+                    | ClassCastException | NoSuchMethodException | InvocationTargetException e) {
+                Log.e(TAG, "Bad overriden class", e);
+            }
+        }
+
+        try {
+            return clazz.newInstance();
+        } catch (InstantiationException|IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
