@@ -3295,25 +3295,25 @@ public class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     @Override
-    public void bindItems(final ArrayList<ItemInfo> shortcuts, final int start, final int end,
+    public void bindItems(final ArrayList<ItemInfo> items, final int start, final int end,
                           final boolean forceAnimateIcons) {
         Runnable r = new Runnable() {
             public void run() {
-                bindItems(shortcuts, start, end, forceAnimateIcons);
+                bindItems(items, start, end, forceAnimateIcons);
             }
         };
         if (waitUntilResume(r)) {
             return;
         }
 
-        // Get the list of added shortcuts and intersect them with the set of shortcuts here
+        // Get the list of added items and intersect them with the set of items here
         final AnimatorSet anim = LauncherAnimUtils.createAnimatorSet();
         final Collection<Animator> bounceAnims = new ArrayList<Animator>();
         final boolean animateIcons = forceAnimateIcons && canRunNewAppsAnimation();
         Workspace workspace = mWorkspace;
-        long newShortcutsScreenId = -1;
+        long newItemsScreenId = -1;
         for (int i = start; i < end; i++) {
-            final ItemInfo item = shortcuts.get(i);
+            final ItemInfo item = items.get(i);
 
             // Short circuit if we are loading dock items for a configuration which has no dock
             if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
@@ -3325,15 +3325,33 @@ public class Launcher extends Activity
             switch (item.itemType) {
                 case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                 case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
+                case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT: {
                     ShortcutInfo info = (ShortcutInfo) item;
                     view = createShortcut(info);
                     break;
-                case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
+                }
+                case LauncherSettings.Favorites.ITEM_TYPE_FOLDER: {
                     view = FolderIcon.fromXml(R.layout.folder_icon, this,
                             (ViewGroup) workspace.getChildAt(workspace.getCurrentPage()),
                             (FolderInfo) item, mIconCache);
                     break;
+                }
+                case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET: {
+                    LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) item;
+                    if (mIsSafeModeEnabled) {
+                        view = new PendingAppWidgetHostView(this, info, mIconCache, true);
+                    } else {
+                        LauncherAppWidgetProviderInfo providerInfo =
+                                mAppWidgetManager.getLauncherAppWidgetInfo(info.appWidgetId);
+                        if (providerInfo == null) {
+                            deleteWidgetInfo(info);
+                            continue;
+                        }
+                        view = mAppWidgetHost.createView(this, info.appWidgetId, providerInfo);
+                    }
+                    prepareAppWidget((AppWidgetHostView) view, info);
+                    break;
+                }
                 default:
                     throw new RuntimeException("Invalid Item Type");
             }
@@ -3364,22 +3382,22 @@ public class Launcher extends Activity
                 view.setScaleX(0f);
                 view.setScaleY(0f);
                 bounceAnims.add(createNewAppBounceAnimation(view, i));
-                newShortcutsScreenId = item.screenId;
+                newItemsScreenId = item.screenId;
             }
         }
 
         if (animateIcons) {
             // Animate to the correct page
-            if (newShortcutsScreenId > -1) {
+            if (newItemsScreenId > -1) {
                 long currentScreenId = mWorkspace.getScreenIdForPageIndex(mWorkspace.getNextPage());
-                final int newScreenIndex = mWorkspace.getPageIndexForScreenId(newShortcutsScreenId);
+                final int newScreenIndex = mWorkspace.getPageIndexForScreenId(newItemsScreenId);
                 final Runnable startBounceAnimRunnable = new Runnable() {
                     public void run() {
                         anim.playTogether(bounceAnims);
                         anim.start();
                     }
                 };
-                if (newShortcutsScreenId != currentScreenId) {
+                if (newItemsScreenId != currentScreenId) {
                     // We post the animation slightly delayed to prevent slowdowns
                     // when we are loading right after we return to launcher.
                     mWorkspace.postDelayed(new Runnable() {

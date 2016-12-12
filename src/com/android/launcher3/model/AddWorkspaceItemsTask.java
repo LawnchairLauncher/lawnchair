@@ -26,6 +26,7 @@ import com.android.launcher3.FolderInfo;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherModel.Callbacks;
@@ -60,8 +61,8 @@ public class AddWorkspaceItemsTask extends ExtendedModelTask {
         }
         Context context = app.getContext();
 
-        final ArrayList<ItemInfo> addedShortcutsFinal = new ArrayList<ItemInfo>();
-        final ArrayList<Long> addedWorkspaceScreensFinal = new ArrayList<Long>();
+        final ArrayList<ItemInfo> addedItemsFinal = new ArrayList<>();
+        final ArrayList<Long> addedWorkspaceScreensFinal = new ArrayList<>();
 
         // Get the list of workspace screens.  We need to append to this list and
         // can not use sBgWorkspaceScreens because loadWorkspace() may not have been
@@ -77,13 +78,14 @@ public class AddWorkspaceItemsTask extends ExtendedModelTask {
                 }
 
                 // Find appropriate space for the item.
-                Pair<Long, int[]> coords = findSpaceForItem(
-                        app, dataModel, workspaceScreens, addedWorkspaceScreensFinal, 1, 1);
+                Pair<Long, int[]> coords = findSpaceForItem(app, dataModel, workspaceScreens,
+                        addedWorkspaceScreensFinal, item.spanX, item.spanY);
                 long screenId = coords.first;
                 int[] cordinates = coords.second;
 
                 ItemInfo itemInfo;
-                if (item instanceof ShortcutInfo || item instanceof FolderInfo) {
+                if (item instanceof ShortcutInfo || item instanceof FolderInfo ||
+                        item instanceof LauncherAppWidgetInfo) {
                     itemInfo = item;
                 } else if (item instanceof AppInfo) {
                     itemInfo = ((AppInfo) item).makeShortcut();
@@ -95,23 +97,23 @@ public class AddWorkspaceItemsTask extends ExtendedModelTask {
                 addItemToDatabase(context, itemInfo, screenId, cordinates);
 
                 // Save the ShortcutInfo for binding in the workspace
-                addedShortcutsFinal.add(itemInfo);
+                addedItemsFinal.add(itemInfo);
             }
         }
 
         // Update the workspace screens
         updateScreens(context, workspaceScreens);
 
-        if (!addedShortcutsFinal.isEmpty()) {
+        if (!addedItemsFinal.isEmpty()) {
             scheduleCallbackTask(new CallbackTask() {
                 @Override
                 public void execute(Callbacks callbacks) {
                     final ArrayList<ItemInfo> addAnimated = new ArrayList<ItemInfo>();
                     final ArrayList<ItemInfo> addNotAnimated = new ArrayList<ItemInfo>();
-                    if (!addedShortcutsFinal.isEmpty()) {
-                        ItemInfo info = addedShortcutsFinal.get(addedShortcutsFinal.size() - 1);
+                    if (!addedItemsFinal.isEmpty()) {
+                        ItemInfo info = addedItemsFinal.get(addedItemsFinal.size() - 1);
                         long lastScreenId = info.screenId;
-                        for (ItemInfo i : addedShortcutsFinal) {
+                        for (ItemInfo i : addedItemsFinal) {
                             if (i.screenId == lastScreenId) {
                                 addAnimated.add(i);
                             } else {
