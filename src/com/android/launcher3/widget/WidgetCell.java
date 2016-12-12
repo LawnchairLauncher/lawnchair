@@ -29,11 +29,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.SimpleOnStylusPressListener;
 import com.android.launcher3.R;
+import com.android.launcher3.SimpleOnStylusPressListener;
 import com.android.launcher3.StylusEventHelper;
 import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.WidgetPreviewLoader.PreviewLoadRequest;
@@ -180,14 +178,6 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             int oldTop, int oldRight, int oldBottom) {
         removeOnLayoutChangeListener(this);
         ensurePreview();
-    }
-
-    public int getActualItemWidth() {
-        ItemInfo info = (ItemInfo) getTag();
-        int[] size = getPreviewSize();
-        int cellWidth = mLauncher.getDeviceProfile().cellWidthPx;
-
-        return Math.min(size[0], info.spanX * cellWidth);
     }
 
     @Override

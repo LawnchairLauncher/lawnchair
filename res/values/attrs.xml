@@ -112,4 +112,12 @@
         <attr name="defaultLayoutId" format="reference" />
     </declare-styleable>
 
+    <declare-styleable name="CellLayout">
+        <attr name="containerType" format="integer">
+            <enum name="workspace" value="0" />
+            <enum name="hotseat" value="1" />
+            <enum name="folder" value="2" />
+        </attr>
+    </declare-styleable>
+
 </resources>

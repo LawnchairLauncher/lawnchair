@@ -30,6 +30,7 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
 
+import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.config.FeatureFlags;
 
 import java.util.ArrayList;
@@ -620,6 +621,19 @@ public class DeviceProfile {
                 : Math.max(widthPx, heightPx);
     }
 
+    public int getCellHeight(@ContainerType int containerType) {
+        switch (containerType) {
+            case CellLayout.WORKSPACE:
+                return cellHeightPx;
+            case CellLayout.FOLDER:
+                return folderCellHeightPx;
+            case CellLayout.HOTSEAT:
+                return hotseatCellHeightPx;
+            default:
+                // ??
+                return 0;
+        }
+    }
 
     /**
      * @return the left/right paddings for all containers.

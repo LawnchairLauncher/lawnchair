@@ -2808,6 +2808,7 @@ public class Launcher extends Activity
     }
 
     boolean isHotseatLayout(View layout) {
+        // TODO: Remove this method
         return mHotseat != null && layout != null &&
                 (layout instanceof CellLayout) && (layout == mHotseat.getLayout());
     }

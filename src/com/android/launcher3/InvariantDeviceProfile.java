@@ -85,6 +85,7 @@ public class InvariantDeviceProfile {
      */
     public int numHotseatIcons;
     float hotseatIconSize;
+    public float hotseatScale;
     int defaultLayoutId;
 
     DeviceProfile landscapeProfile;
@@ -117,6 +118,8 @@ public class InvariantDeviceProfile {
         numHotseatIcons = hs;
         hotseatIconSize = his;
         defaultLayoutId = dlId;
+
+        hotseatScale = hotseatIconSize / iconSize;
     }
 
     @TargetApi(23)
@@ -157,6 +160,8 @@ public class InvariantDeviceProfile {
         // If the partner customization apk contains any grid overrides, apply them
         // Supported overrides: numRows, numColumns, iconSize
         applyPartnerDeviceProfileOverrides(context, dm);
+
+        hotseatScale = hotseatIconSize / iconSize;
 
         Point realSize = new Point();
         display.getRealSize(realSize);

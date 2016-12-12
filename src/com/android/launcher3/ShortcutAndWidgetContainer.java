@@ -20,29 +20,19 @@ import android.app.WallpaperManager;
 import android.content.Context;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.support.annotation.IntDef;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import com.android.launcher3.CellLayout.ContainerType;
 
 public class ShortcutAndWidgetContainer extends ViewGroup {
     static final String TAG = "ShortcutAndWidgetContainer";
-
-    @Retention(RetentionPolicy.SOURCE)
-    @IntDef({DEFAULT, HOTSEAT, FOLDER})
-    public @interface ContainerType{}
-    public static final int DEFAULT = 0;
-    public static final int HOTSEAT = 1;
-    public static final int FOLDER = 2;
-
-    private int mContainerType = DEFAULT;
 
     // These are temporary variables to prevent having to allocate a new object just to
     // return an (x, y) value from helper functions. Do NOT use them to maintain other state.
     private final int[] mTmpCellXY = new int[2];
 
+    @ContainerType private final int mContainerType;
     private final WallpaperManager mWallpaperManager;
 
     private int mCellWidth;
@@ -51,13 +41,13 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
     private int mCountX;
 
     private Launcher mLauncher;
-
     private boolean mInvertIfRtl = false;
 
-    public ShortcutAndWidgetContainer(Context context) {
+    public ShortcutAndWidgetContainer(Context context, @ContainerType int containerType) {
         super(context);
         mLauncher = Launcher.getLauncher(context);
         mWallpaperManager = WallpaperManager.getInstance(context);
+        mContainerType = containerType;
     }
 
     public void setCellDimensions(int cellWidth, int cellHeight, int countX, int countY) {
@@ -105,19 +95,9 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
         mInvertIfRtl = invert;
     }
 
-    public void setContainerType(@ContainerType int containerType) {
-        mContainerType = containerType;
-    }
-
     int getCellContentHeight() {
-        final DeviceProfile grid = mLauncher.getDeviceProfile();
-        int cellContentHeight = grid.cellHeightPx;
-        if (mContainerType == HOTSEAT) {
-            cellContentHeight = grid.hotseatCellHeightPx;
-        } else if (mContainerType == FOLDER) {
-            cellContentHeight = grid.folderCellHeightPx;
-        }
-        return Math.min(getMeasuredHeight(), cellContentHeight);
+        return Math.min(getMeasuredHeight(),
+                mLauncher.getDeviceProfile().getCellHeight(mContainerType));
     }
 
     public void measureChild(View child) {

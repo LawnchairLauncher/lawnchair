@@ -24,6 +24,7 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -35,6 +36,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
 import android.os.Parcelable;
+import android.support.annotation.IntDef;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -60,6 +62,8 @@ import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.ParcelableSparseArray;
 import com.android.launcher3.util.Thunk;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -145,8 +149,16 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     private TimeInterpolator mEaseOutInterpolator;
     private ShortcutAndWidgetContainer mShortcutsAndWidgets;
 
-    private boolean mIsHotseat = false;
-    private float mHotseatScale = 1f;
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({WORKSPACE, HOTSEAT, FOLDER})
+    public @interface ContainerType{}
+    public static final int WORKSPACE = 0;
+    public static final int HOTSEAT = 1;
+    public static final int FOLDER = 2;
+
+    @ContainerType private final int mContainerType;
+
+    private final float mChildScale;
 
     public static final int MODE_SHOW_REORDER_HINT = 0;
     public static final int MODE_DRAG_OVER = 1;
@@ -158,7 +170,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     private static final float REORDER_PREVIEW_MAGNITUDE = 0.12f;
     private static final int REORDER_ANIMATION_DURATION = 150;
-    @Thunk float mReorderPreviewAnimationMagnitude;
+    @Thunk final float mReorderPreviewAnimationMagnitude;
 
     private ArrayList<View> mIntersectingViews = new ArrayList<View>();
     private Rect mOccupiedRect = new Rect();
@@ -184,6 +196,9 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     public CellLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CellLayout, defStyle, 0);
+        mContainerType = a.getInteger(R.styleable.CellLayout_containerType, WORKSPACE);
+        a.recycle();
 
         // A ViewGroup usually does not draw, but CellLayout needs to draw a rectangle to show
         // the user where a dragged item will land when dropped.
@@ -207,9 +222,10 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         mFolderLeaveBehind.delegateCellX = -1;
         mFolderLeaveBehind.delegateCellY = -1;
 
+        mChildScale = mContainerType == HOTSEAT ? grid.inv.hotseatScale : 1f;
+
         setAlwaysDrawnWithCacheEnabled(false);
         final Resources res = getResources();
-        mHotseatScale = (float) grid.hotseatIconSizePx / grid.iconSizePx;
 
         mBackground = (TransitionDrawable) res.getDrawable(
                 FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND ? R.drawable.bg_screenpanel
@@ -217,8 +233,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         mBackground.setCallback(this);
         mBackground.setAlpha((int) (mBackgroundAlpha * 255));
 
-        mReorderPreviewAnimationMagnitude = (REORDER_PREVIEW_MAGNITUDE *
-                grid.iconSizePx);
+        mReorderPreviewAnimationMagnitude = (REORDER_PREVIEW_MAGNITUDE * grid.iconSizePx);
 
         // Initialize the data structures used for the drag visualization.
         mEaseOutInterpolator = new DecelerateInterpolator(2.5f); // Quint ease out
@@ -276,7 +291,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             mDragOutlineAnims[i] = anim;
         }
 
-        mShortcutsAndWidgets = new ShortcutAndWidgetContainer(context);
+        mShortcutsAndWidgets = new ShortcutAndWidgetContainer(context, mContainerType);
         mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mCountX, mCountY);
 
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
@@ -353,10 +368,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     public void buildHardwareLayer() {
         mShortcutsAndWidgets.buildLayer();
-    }
-
-    public float getChildrenScale() {
-        return mIsHotseat ? mHotseatScale : 1.0f;
     }
 
     public void setCellDimensions(int width, int height) {
@@ -603,15 +614,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         return mCountY;
     }
 
-    public void setIsHotseat(boolean isHotseat) {
-        mIsHotseat = isHotseat;
-        mShortcutsAndWidgets.setContainerType(isHotseat
-                ? ShortcutAndWidgetContainer.HOTSEAT
-                : ShortcutAndWidgetContainer.DEFAULT);
-    }
-
-    public boolean isHotseat() {
-        return mIsHotseat;
+    public boolean acceptsWidget() {
+        return mContainerType == WORKSPACE;
     }
 
     public boolean addViewToCellLayout(View child, int index, int childId, LayoutParams params,
@@ -621,11 +625,11 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         // Hotseat icons - remove text
         if (child instanceof BubbleTextView) {
             BubbleTextView bubbleChild = (BubbleTextView) child;
-            bubbleChild.setTextVisibility(!mIsHotseat);
+            bubbleChild.setTextVisibility(mContainerType != HOTSEAT);
         }
 
-        child.setScaleX(getChildrenScale());
-        child.setScaleY(getChildrenScale());
+        child.setScaleX(mChildScale);
+        child.setScaleY(mChildScale);
 
         // Generate an id for each view, this assumes we have at most 256x256 cells
         // per workspace screen
@@ -1061,21 +1065,23 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 r.set(left, top, left + dragOutline.getWidth(), top + dragOutline.getHeight());
             }
 
-            Utilities.scaleRectAboutCenter(r, getChildrenScale());
+            Utilities.scaleRectAboutCenter(r, mChildScale);
             mDragOutlineAnims[mDragOutlineCurrent].setTag(dragOutline);
             mDragOutlineAnims[mDragOutlineCurrent].animateIn();
 
             if (dragObject.stateAnnouncer != null) {
-                String msg;
-                if (isHotseat()) {
-                    msg = getContext().getString(R.string.move_to_hotseat_position,
-                            Math.max(cellX, cellY) + 1);
-                } else {
-                    msg = getContext().getString(R.string.move_to_empty_cell,
-                            cellY + 1, cellX + 1);
-                }
-                dragObject.stateAnnouncer.announce(msg);
+                dragObject.stateAnnouncer.announce(getItemMoveDescription(cellX, cellY));
             }
+        }
+    }
+
+    public String getItemMoveDescription(int cellX, int cellY) {
+        if (mContainerType == HOTSEAT) {
+            return getContext().getString(R.string.move_to_hotseat_position,
+                    Math.max(cellX, cellY) + 1);
+        } else {
+            return getContext().getString(R.string.move_to_empty_cell,
+                    cellY + 1, cellX + 1);
         }
     }
 
@@ -2011,7 +2017,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             this.mode = mode;
             initDeltaX = child.getTranslationX();
             initDeltaY = child.getTranslationY();
-            finalScale = getChildrenScale() - 4.0f / child.getWidth();
+            finalScale = mChildScale - 4.0f / child.getWidth();
             initScale = child.getScaleX();
             this.child = child;
         }
@@ -2061,7 +2067,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                     // We make sure to end only after a full period
                     initDeltaX = 0;
                     initDeltaY = 0;
-                    initScale = getChildrenScale();
+                    initScale = mChildScale;
                     repeating = true;
                 }
             });
@@ -2081,8 +2087,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             }
 
             a = new LauncherViewPropertyAnimator(child)
-                .scaleX(getChildrenScale())
-                .scaleY(getChildrenScale())
+                .scaleX(mChildScale)
+                .scaleY(mChildScale)
                 .translationX(0)
                 .translationY(0)
                 .setDuration(REORDER_ANIMATION_DURATION);
@@ -2104,7 +2110,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         long screenId = mLauncher.getWorkspace().getIdForScreen(this);
         int container = Favorites.CONTAINER_DESKTOP;
 
-        if (mLauncher.isHotseatLayout(this)) {
+        if (mContainerType == HOTSEAT) {
             screenId = -1;
             container = Favorites.CONTAINER_HOTSEAT;
         }
@@ -2127,7 +2133,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 info.spanY = lp.cellVSpan;
 
                 if (requiresDbUpdate) {
-                    LauncherModel.modifyItemInDatabase(mLauncher, info, container, screenId,
+                    LauncherModel.modifyItemInDatabase(getContext(), info, container, screenId,
                             info.cellX, info.cellY, info.spanX, info.spanY);
                 }
             }
