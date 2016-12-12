@@ -167,7 +167,7 @@ public class Hotseat extends FrameLayout
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         // We don't want any clicks to go through to the hotseat unless the workspace is in
         // the normal state or an accessible drag is in progress.
-        return mLauncher.getWorkspace().workspaceInModalState() &&
+        return !mLauncher.getWorkspace().workspaceIconsCanBeDragged() &&
                 !mLauncher.getAccessibilityDelegate().isInAccessibleDrag();
     }
 
