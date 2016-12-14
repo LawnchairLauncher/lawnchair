@@ -75,7 +75,6 @@ public class DeviceProfile {
     public final Rect defaultWidgetPadding;
     private final int defaultPageSpacingPx;
     private final int topWorkspacePadding;
-    private float dragViewScale;
     public float workspaceSpringLoadShrinkFactor;
     public final int workspaceSpringLoadedBottomSpace;
 
@@ -284,9 +283,6 @@ public class DeviceProfile {
         cellWidthPx = iconSizePx;
         cellHeightPx = iconSizePx + iconDrawablePaddingPx
                 + Utilities.calculateTextHeight(iconTextSizePx);
-        final float scaleDps = !FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND ? 0f
-                : res.getDimensionPixelSize(R.dimen.dragViewScale);
-        dragViewScale = (iconSizePx + scaleDps) / iconSizePx;
 
         // Hotseat
         hotseatCellWidthPx = iconSizePx;
@@ -417,12 +413,11 @@ public class DeviceProfile {
             if (isTablet) {
                 // Pad the left and right of the workspace to ensure consistent spacing
                 // between all icons
-                float gapScale = 1f + (dragViewScale - 1f) / 2f;
                 int width = getCurrentWidth();
                 int height = getCurrentHeight();
                 // The amount of screen space available for left/right padding.
-                int availablePaddingX = Math.max(0, width - (int) ((inv.numColumns * cellWidthPx) +
-                        ((inv.numColumns - 1) * gapScale * cellWidthPx)));
+                int availablePaddingX = Math.max(0, width - ((inv.numColumns * cellWidthPx) +
+                        ((inv.numColumns - 1) * cellWidthPx)));
                 availablePaddingX = (int) Math.min(availablePaddingX,
                             width * MAX_HORIZONTAL_PADDING_PERCENT);
                 int availablePaddingY = Math.max(0, height - topWorkspacePadding - paddingBottom

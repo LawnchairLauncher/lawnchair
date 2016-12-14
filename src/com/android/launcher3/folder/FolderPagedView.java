@@ -486,7 +486,7 @@ public class FolderPagedView extends PagedView {
      * Scrolls the current view by a fraction
      */
     public void showScrollHint(int direction) {
-        float fraction = (direction == DragController.SCROLL_LEFT) ^ mIsRtl
+        float fraction = (direction == Folder.SCROLL_LEFT) ^ mIsRtl
                 ? -SCROLL_HINT_FRACTION : SCROLL_HINT_FRACTION;
         int hint = (int) (fraction * getWidth());
         int scroll = getScrollForPage(getNextPage()) + hint;

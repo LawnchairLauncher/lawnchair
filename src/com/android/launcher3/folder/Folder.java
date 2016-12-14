@@ -43,7 +43,6 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -63,6 +62,7 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LogDecelerateInterpolator;
 import com.android.launcher3.OnAlarmListener;
+import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.UninstallDropTarget.DropTargetSource;
@@ -108,7 +108,12 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     /**
      * Time for which the scroll hint is shown before automatically changing page.
      */
-    public static final int SCROLL_HINT_DURATION = DragController.SCROLL_DELAY;
+    public static final int SCROLL_HINT_DURATION = 500;
+    public static final int RESCROLL_DELAY = PagedView.PAGE_SNAP_ANIMATION_DURATION + 150;
+
+    public static final int SCROLL_NONE = -1;
+    public static final int SCROLL_LEFT = 0;
+    public static final int SCROLL_RIGHT = 1;
 
     /**
      * Fraction of icon width which behave as scroll region.
@@ -134,8 +139,6 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     private final int mExpandDuration;
     private final int mMaterialExpandDuration;
     private final int mMaterialExpandStagger;
-
-    private final InputMethodManager mInputMethodManager;
 
     protected final Launcher mLauncher;
     protected DragController mDragController;
@@ -184,8 +187,8 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     // Folder scrolling
     private int mScrollAreaOffset;
 
-    @Thunk int mScrollHintDir = DragController.SCROLL_NONE;
-    @Thunk int mCurrentScrollDir = DragController.SCROLL_NONE;
+    @Thunk int mScrollHintDir = SCROLL_NONE;
+    @Thunk int mCurrentScrollDir = SCROLL_NONE;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -196,9 +199,6 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     public Folder(Context context, AttributeSet attrs) {
         super(context, attrs);
         setAlwaysDrawnWithCacheEnabled(false);
-        mInputMethodManager = (InputMethodManager)
-                getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-
         Resources res = getResources();
         mExpandDuration = res.getInteger(R.integer.config_folderExpandDuration);
         mMaterialExpandDuration = res.getInteger(R.integer.config_materialFolderExpandDuration);
@@ -833,15 +833,15 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         boolean isOutsideRightEdge = x > (getWidth() - cellOverlap);
 
         if (currentPage > 0 && (mContent.mIsRtl ? isOutsideRightEdge : isOutsideLeftEdge)) {
-            showScrollHint(DragController.SCROLL_LEFT, d);
+            showScrollHint(SCROLL_LEFT, d);
         } else if (currentPage < (mContent.getPageCount() - 1)
                 && (mContent.mIsRtl ? isOutsideLeftEdge : isOutsideRightEdge)) {
-            showScrollHint(DragController.SCROLL_RIGHT, d);
+            showScrollHint(SCROLL_RIGHT, d);
         } else {
             mOnScrollHintAlarm.cancelAlarm();
-            if (mScrollHintDir != DragController.SCROLL_NONE) {
+            if (mScrollHintDir != SCROLL_NONE) {
                 mContent.clearScrollHint();
-                mScrollHintDir = DragController.SCROLL_NONE;
+                mScrollHintDir = SCROLL_NONE;
             }
         }
     }
@@ -899,9 +899,9 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
 
         mOnScrollHintAlarm.cancelAlarm();
         mScrollPauseAlarm.cancelAlarm();
-        if (mScrollHintDir != DragController.SCROLL_NONE) {
+        if (mScrollHintDir != SCROLL_NONE) {
             mContent.clearScrollHint();
-            mScrollHintDir = DragController.SCROLL_NONE;
+            mScrollHintDir = SCROLL_NONE;
         }
     }
 
@@ -1008,7 +1008,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
 
     @Override
     public boolean supportsAppInfoDropTarget() {
-        return !FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND;
+        return true;
     }
 
     @Override
@@ -1464,21 +1464,21 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
          */
         @Override
         public void onAlarm(Alarm alarm) {
-            if (mCurrentScrollDir == DragController.SCROLL_LEFT) {
+            if (mCurrentScrollDir == SCROLL_LEFT) {
                 mContent.scrollLeft();
-                mScrollHintDir = DragController.SCROLL_NONE;
-            } else if (mCurrentScrollDir == DragController.SCROLL_RIGHT) {
+                mScrollHintDir = SCROLL_NONE;
+            } else if (mCurrentScrollDir == SCROLL_RIGHT) {
                 mContent.scrollRight();
-                mScrollHintDir = DragController.SCROLL_NONE;
+                mScrollHintDir = SCROLL_NONE;
             } else {
                 // This should not happen
                 return;
             }
-            mCurrentScrollDir = DragController.SCROLL_NONE;
+            mCurrentScrollDir = SCROLL_NONE;
 
             // Pause drag event until the scrolling is finished
             mScrollPauseAlarm.setOnAlarmListener(new OnScrollFinishedListener(mDragObject));
-            mScrollPauseAlarm.setAlarm(DragController.RESCROLL_DELAY);
+            mScrollPauseAlarm.setAlarm(RESCROLL_DELAY);
         }
     }
 

@@ -1332,8 +1332,6 @@ public class Launcher extends Activity
         }
 
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
-        mDragController.setDragScroller(mWorkspace);
-        mDragController.setScrollView(mDragLayer);
         mDragController.setMoveTarget(mWorkspace);
         mDragController.addDropTarget(mWorkspace);
         mDropTargetBar.setup(mDragController);
@@ -3024,16 +3022,7 @@ public class Launcher extends Activity
         mStateTransitionAnimation.startAnimationToWorkspace(mState, mWorkspace.getState(),
                 Workspace.State.SPRING_LOADED, true /* animated */,
                 null /* onCompleteRunnable */);
-
-        if (isAppsViewVisible()) {
-            mState = State.APPS_SPRING_LOADED;
-        } else if (isWidgetsViewVisible()) {
-            mState = State.WIDGETS_SPRING_LOADED;
-        } else if (!FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND) {
-            mState = State.WORKSPACE_SPRING_LOADED;
-        } else {
-            mState = State.WORKSPACE;
-        }
+        mState = State.WORKSPACE_SPRING_LOADED;
     }
 
     public void exitSpringLoadedDragModeDelayed(final boolean successfulDrop, int delay,

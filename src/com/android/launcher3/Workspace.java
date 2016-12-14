@@ -67,7 +67,6 @@ import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
-import com.android.launcher3.dragndrop.DragScroller;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dragndrop.SpringLoadedDragController;
 import com.android.launcher3.folder.Folder;
@@ -94,7 +93,7 @@ import java.util.HashSet;
  * interact with. A workspace is meant to be used with a fixed width only.
  */
 public class Workspace extends PagedView
-        implements DropTarget, DragSource, DragScroller, View.OnTouchListener,
+        implements DropTarget, DragSource, View.OnTouchListener,
         DragController.DragListener, ViewGroup.OnHierarchyChangeListener,
         Insettable, DropTargetSource {
     private static final String TAG = "Launcher.Workspace";
@@ -247,9 +246,6 @@ public class Workspace extends PagedView
     boolean mChildrenLayersEnabled = true;
 
     private boolean mStripScreensOnPageStopMoving = false;
-
-    /** Is the user is dragging an item near the edge of a page? */
-    private boolean mInScrollArea = false;
 
     private DragPreviewProvider mOutlineProvider = null;
     public static final int DRAG_BITMAP_PADDING = DragPreviewProvider.DRAG_BITMAP_PADDING;
@@ -484,10 +480,8 @@ public class Workspace extends PagedView
             }
         }
 
-        if (!FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND) {
-            // Always enter the spring loaded mode
-            mLauncher.enterSpringLoadedDragMode();
-        }
+        // Always enter the spring loaded mode
+        mLauncher.enterSpringLoadedDragMode();
     }
 
     public void deferRemoveExtraEmptyScreen() {
@@ -2572,7 +2566,7 @@ public class Workspace extends PagedView
 
                 // If the item being dropped is a shortcut and the nearest drop
                 // cell also contains a shortcut, then create a folder with the two shortcuts.
-                if (!mInScrollArea && createUserFolderIfNecessary(cell, container,
+                if (createUserFolderIfNecessary(cell, container,
                         dropTargetLayout, mTargetCell, distance, false, d.dragView, null)) {
                     return;
                 }
@@ -2787,10 +2781,6 @@ public class Workspace extends PagedView
 
         mDropToLayout = null;
         setDropLayoutForDragObject(d);
-
-        if (!workspaceInModalState() && FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND) {
-            mLauncher.getDragLayer().showPageHints();
-        }
     }
 
     @Override
@@ -2801,32 +2791,18 @@ public class Workspace extends PagedView
 
         // Here we store the final page that will be dropped to, if the workspace in fact
         // receives the drop
-        if (mInScrollArea) {
-            if (isPageInTransition()) {
-                // If the user drops while the page is scrolling, we should use that page as the
-                // destination instead of the page that is being hovered over.
-                mDropToLayout = (CellLayout) getPageAt(getNextPage());
-            } else {
-                mDropToLayout = mDragOverlappingLayout;
-            }
-        } else {
-            mDropToLayout = mDragTargetLayout;
-        }
-
+        mDropToLayout = mDragTargetLayout;
         if (mDragMode == DRAG_MODE_CREATE_FOLDER) {
             mCreateUserFolderOnDrop = true;
         } else if (mDragMode == DRAG_MODE_ADD_TO_FOLDER) {
             mAddToExistingFolderOnDrop = true;
         }
 
-        // Reset the scroll area and previous drag target
-        onResetScrollArea();
+        // Reset the previous drag target
         setCurrentDropLayout(null);
         setCurrentDragOverlappingLayout(null);
 
         mSpringLoadedDragController.cancel();
-
-        mLauncher.getDragLayer().hidePageHints();
     }
 
     private void enforceDragParity(String event, int update, int expectedValue) {
@@ -3043,7 +3019,7 @@ public class Workspace extends PagedView
 
     public void onDragOver(DragObject d) {
         // Skip drag over events while we are dragging over side pages
-        if (mInScrollArea || !transitionStateShouldAllowDrop()) return;
+        if (!transitionStateShouldAllowDrop()) return;
 
         ItemInfo item = d.dragInfo;
         if (item == null) {
@@ -3743,7 +3719,7 @@ public class Workspace extends PagedView
 
     @Override
     public boolean supportsAppInfoDropTarget() {
-        return !FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND;
+        return true;
     }
 
     @Override
@@ -3804,65 +3780,6 @@ public class Workspace extends PagedView
         if (openFolder != null) {
             openFolder.completeDragExit();
         }
-    }
-
-    @Override
-    public boolean onEnterScrollArea(int x, int y, int direction) {
-        // Ignore the scroll area if we are dragging over the hot seat
-        boolean isPortrait = !mLauncher.getDeviceProfile().isLandscape;
-        if (mLauncher.getHotseat() != null && isPortrait) {
-            Rect r = new Rect();
-            mLauncher.getHotseat().getHitRect(r);
-            if (r.contains(x, y)) {
-                return false;
-            }
-        }
-
-        boolean result = false;
-        if (!workspaceInModalState() && !mIsSwitchingState && Folder.getOpen(mLauncher) == null) {
-            mInScrollArea = true;
-
-            final int page = getNextPage() +
-                       (direction == DragController.SCROLL_LEFT ? -1 : 1);
-            // We always want to exit the current layout to ensure parity of enter / exit
-            setCurrentDropLayout(null);
-
-            if (0 <= page && page < getChildCount()) {
-                // Ensure that we are not dragging over to the custom content screen
-                if (getScreenIdForPageIndex(page) == CUSTOM_CONTENT_SCREEN_ID) {
-                    return false;
-                }
-
-                CellLayout layout = (CellLayout) getChildAt(page);
-                setCurrentDragOverlappingLayout(layout);
-
-                // Workspace is responsible for drawing the edge glow on adjacent pages,
-                // so we need to redraw the workspace when this may have changed.
-                invalidate();
-                result = true;
-            }
-        }
-        return result;
-    }
-
-    @Override
-    public boolean onExitScrollArea() {
-        boolean result = false;
-        if (mInScrollArea) {
-            invalidate();
-            CellLayout layout = getCurrentDropLayout();
-            setCurrentDropLayout(layout);
-            setCurrentDragOverlappingLayout(layout);
-
-            result = true;
-            mInScrollArea = false;
-        }
-        return result;
-    }
-
-    private void onResetScrollArea() {
-        setCurrentDragOverlappingLayout(null);
-        mInScrollArea = false;
     }
 
     /**

@@ -51,7 +51,6 @@ import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.graphics.TintedDrawableSpan;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
-import com.android.launcher3.shortcuts.DeepShortcutsContainer;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ComponentKey;
 
@@ -387,12 +386,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             }
         });
         mLauncher.getWorkspace().beginDragShared(v, this, new DragOptions());
-        if (FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND) {
-            // Enter spring loaded mode (the new workspace does this in
-            // onDragStart(), so we don't want to do it here)
-            mLauncher.enterSpringLoadedDragMode();
-        }
-
         return false;
     }
 

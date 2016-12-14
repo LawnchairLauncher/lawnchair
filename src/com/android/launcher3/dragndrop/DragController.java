@@ -21,24 +21,20 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.os.Handler;
 import android.os.IBinder;
 import android.view.DragEvent;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.inputmethod.InputMethodManager;
 
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -51,26 +47,14 @@ import java.util.ArrayList;
  * Class for initiating a drag within a view or across multiple views.
  */
 public class DragController implements DragDriver.EventListener, TouchController {
-    public static final int SCROLL_DELAY = 500;
-    public static final int RESCROLL_DELAY = PagedView.PAGE_SNAP_ANIMATION_DURATION + 150;
-
     private static final boolean PROFILE_DRAWING_DURING_DRAG = false;
 
-    private static final int SCROLL_OUTSIDE_ZONE = 0;
-    private static final int SCROLL_WAITING_IN_ZONE = 1;
-
-    public static final int SCROLL_NONE = -1;
-    public static final int SCROLL_LEFT = 0;
-    public static final int SCROLL_RIGHT = 1;
-
     @Thunk Launcher mLauncher;
-    private Handler mHandler;
     private FlingToDeleteHelper mFlingToDeleteHelper;
 
     // temporaries to avoid gc thrash
     private Rect mRectTemp = new Rect();
     private final int[] mCoordinatesTemp = new int[2];
-    private final boolean mIsRtl;
 
     /**
      * Drag driver for the current drag/drop operation, or null if there is no active DND operation.
@@ -87,28 +71,16 @@ public class DragController implements DragDriver.EventListener, TouchController
     /** Y coordinate of the down event. */
     private int mMotionDownY;
 
-    /** the area at the edge of the screen that makes the workspace go left
-     *   or right while you're dragging.
-     */
-    private final int mScrollZone;
-
     private DropTarget.DragObject mDragObject;
 
     /** Who can receive drop events */
-    private ArrayList<DropTarget> mDropTargets = new ArrayList<DropTarget>();
-    private ArrayList<DragListener> mListeners = new ArrayList<DragListener>();
+    private ArrayList<DropTarget> mDropTargets = new ArrayList<>();
+    private ArrayList<DragListener> mListeners = new ArrayList<>();
 
     /** The window token used as the parent for the DragView. */
     private IBinder mWindowToken;
 
-    /** The view that will be scrolled when dragging to the left and right edges of the screen. */
-    private View mScrollView;
-
     private View mMoveTarget;
-
-    @Thunk DragScroller mDragScroller;
-    @Thunk int mScrollState = SCROLL_OUTSIDE_ZONE;
-    private ScrollRunnable mScrollRunnable = new ScrollRunnable();
 
     private DropTarget mLastDropTarget;
 
@@ -143,11 +115,7 @@ public class DragController implements DragDriver.EventListener, TouchController
      * Used to create a new DragLayer from XML.
      */
     public DragController(Launcher launcher) {
-        Resources r = launcher.getResources();
         mLauncher = launcher;
-        mHandler = new Handler();
-        mScrollZone = r.getDimensionPixelSize(R.dimen.scroll_zone);
-        mIsRtl = Utilities.isRtl(r);
         mFlingToDeleteHelper = new FlingToDeleteHelper(launcher);
     }
 
@@ -216,11 +184,8 @@ public class DragController implements DragDriver.EventListener, TouchController
                 && !mOptions.preDragCondition.shouldStartDrag(0);
 
         final Resources res = mLauncher.getResources();
-        final float scaleDps = FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND
-                ? res.getDimensionPixelSize(R.dimen.dragViewScale)
-                : mIsInPreDrag
-                    ? res.getDimensionPixelSize(R.dimen.pre_drag_view_scale)
-                    : 0f;
+        final float scaleDps = mIsInPreDrag
+                ? res.getDimensionPixelSize(R.dimen.pre_drag_view_scale) : 0f;
         final DragView dragView = mDragObject.dragView = new DragView(mLauncher, b, registrationX,
                 registrationY, initialDragViewScale, scaleDps);
 
@@ -333,7 +298,6 @@ public class DragController implements DragDriver.EventListener, TouchController
     private void endDrag() {
         if (isDragging()) {
             mDragDriver = null;
-            clearScrollRunnable();
             boolean isDeferred = false;
             if (mDragObject.dragView != null) {
                 isDeferred = mDragObject.deferDragViewCleanupPostAnimation;
@@ -507,16 +471,6 @@ public class DragController implements DragDriver.EventListener, TouchController
         return mMoveTarget != null && mMoveTarget.dispatchUnhandledMove(focused, direction);
     }
 
-    private void clearScrollRunnable() {
-        mHandler.removeCallbacks(mScrollRunnable);
-        if (mScrollState == SCROLL_WAITING_IN_ZONE) {
-            mScrollState = SCROLL_OUTSIDE_ZONE;
-            mScrollRunnable.setDirection(SCROLL_RIGHT);
-            mDragScroller.onExitScrollArea();
-            mLauncher.getDragLayer().onExitScrollArea();
-        }
-    }
-
     private void handleMoveEvent(int x, int y) {
         mDragObject.dragView.move(x, y);
 
@@ -531,7 +485,6 @@ public class DragController implements DragDriver.EventListener, TouchController
         mDistanceSinceScroll += Math.hypot(mLastTouch[0] - x, mLastTouch[1] - y);
         mLastTouch[0] = x;
         mLastTouch[1] = y;
-        checkScrollState(x, y);
 
         if (mIsInPreDrag && mOptions.preDragCondition != null
                 && mOptions.preDragCondition.shouldStartDrag(mDistanceSinceScroll)) {
@@ -568,36 +521,6 @@ public class DragController implements DragDriver.EventListener, TouchController
         mLastDropTarget = dropTarget;
     }
 
-    @Thunk void checkScrollState(int x, int y) {
-        final int slop = ViewConfiguration.get(mLauncher).getScaledWindowTouchSlop();
-        final int delay = mDistanceSinceScroll < slop ? RESCROLL_DELAY : SCROLL_DELAY;
-        final DragLayer dragLayer = mLauncher.getDragLayer();
-        final int forwardDirection = mIsRtl ? SCROLL_RIGHT : SCROLL_LEFT;
-        final int backwardsDirection = mIsRtl ? SCROLL_LEFT : SCROLL_RIGHT;
-
-        if (x < mScrollZone) {
-            if (mScrollState == SCROLL_OUTSIDE_ZONE) {
-                mScrollState = SCROLL_WAITING_IN_ZONE;
-                if (mDragScroller.onEnterScrollArea(x, y, forwardDirection)) {
-                    dragLayer.onEnterScrollArea();
-                    mScrollRunnable.setDirection(forwardDirection);
-                    mHandler.postDelayed(mScrollRunnable, delay);
-                }
-            }
-        } else if (x > mScrollView.getWidth() - mScrollZone) {
-            if (mScrollState == SCROLL_OUTSIDE_ZONE) {
-                mScrollState = SCROLL_WAITING_IN_ZONE;
-                if (mDragScroller.onEnterScrollArea(x, y, backwardsDirection)) {
-                    dragLayer.onEnterScrollArea();
-                    mScrollRunnable.setDirection(backwardsDirection);
-                    mHandler.postDelayed(mScrollRunnable, delay);
-                }
-            }
-        } else {
-            clearScrollRunnable();
-        }
-    }
-
     /**
      * Call this from a drag source view.
      */
@@ -619,17 +542,6 @@ public class DragController implements DragDriver.EventListener, TouchController
                 // Remember where the motion event started
                 mMotionDownX = dragLayerX;
                 mMotionDownY = dragLayerY;
-
-                if ((dragLayerX < mScrollZone) || (dragLayerX > mScrollView.getWidth() - mScrollZone)) {
-                    mScrollState = SCROLL_WAITING_IN_ZONE;
-                    mHandler.postDelayed(mScrollRunnable, SCROLL_DELAY);
-                } else {
-                    mScrollState = SCROLL_OUTSIDE_ZONE;
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                mHandler.removeCallbacks(mScrollRunnable);
                 break;
         }
 
@@ -729,10 +641,6 @@ public class DragController implements DragDriver.EventListener, TouchController
         return null;
     }
 
-    public void setDragScroller(DragScroller scroller) {
-        mDragScroller = scroller;
-    }
-
     public void setWindowToken(IBinder token) {
         mWindowToken = token;
     }
@@ -765,40 +673,4 @@ public class DragController implements DragDriver.EventListener, TouchController
         mDropTargets.remove(target);
     }
 
-    /**
-     * Set which view scrolls for touch events near the edge of the screen.
-     */
-    public void setScrollView(View v) {
-        mScrollView = v;
-    }
-
-    private class ScrollRunnable implements Runnable {
-        private int mDirection;
-
-        ScrollRunnable() {
-        }
-
-        public void run() {
-            if (mDragScroller != null) {
-                if (mDirection == SCROLL_LEFT) {
-                    mDragScroller.scrollLeft();
-                } else {
-                    mDragScroller.scrollRight();
-                }
-                mScrollState = SCROLL_OUTSIDE_ZONE;
-                mDistanceSinceScroll = 0;
-                mDragScroller.onExitScrollArea();
-                mLauncher.getDragLayer().onExitScrollArea();
-
-                if (isDragging()) {
-                    // Check the scroll again so that we can requeue the scroller if necessary
-                    checkScrollState(mLastTouch[0], mLastTouch[1]);
-                }
-            }
-        }
-
-        void setDirection(int direction) {
-            mDirection = direction;
-        }
-    }
 }

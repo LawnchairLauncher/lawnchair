@@ -109,14 +109,6 @@
     <!-- the distance an icon must be dragged before button drop targets accept it -->
     <dimen name="drag_distanceThreshold">30dp</dimen>
 
-    <!-- the area at the edge of the screen that makes the workspace go left
-         or right while you're dragging. -->
-    <dimen name="scroll_zone">20dp</dimen>
-
-    <!-- When dragging an item, how much bigger (fixed dps) the dragged view
-         should be. If 0, it will not be scaled at all. -->
-    <dimen name="dragViewScale">12dp</dimen>
-
     <!-- Elevation for the drag view. It should be larger than elevation of all other drag sources
          and drop targets like all-apps and folders -->
     <dimen name="drag_elevation">30dp</dimen>

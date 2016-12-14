@@ -33,7 +33,6 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
@@ -53,7 +52,6 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
 import com.android.launcher3.accessibility.FolderAccessibilityHelper;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.DragPreviewProvider;
@@ -112,9 +110,9 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     private float mBackgroundAlpha;
 
-    private static final int BACKGROUND_ACTIVATE_DURATION =
-            FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND ? 120 : 0;
-    private final TransitionDrawable mBackground;
+    private static final int[] BACKGROUND_STATE_ACTIVE = new int[] { android.R.attr.state_active };
+    private static final int[] BACKGROUND_STATE_DEFAULT = new int[0];
+    private final Drawable mBackground;
 
     // These values allow a fixed measurement to be set on the CellLayout.
     private int mFixedWidth = -1;
@@ -227,9 +225,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         setAlwaysDrawnWithCacheEnabled(false);
         final Resources res = getResources();
 
-        mBackground = (TransitionDrawable) res.getDrawable(
-                FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND ? R.drawable.bg_screenpanel
-                        : R.drawable.bg_celllayout);
+        mBackground = res.getDrawable(R.drawable.bg_celllayout);
         mBackground.setCallback(this);
         mBackground.setAlpha((int) (mBackgroundAlpha * 255));
 
@@ -424,15 +420,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     void setIsDragOverlapping(boolean isDragOverlapping) {
         if (mIsDragOverlapping != isDragOverlapping) {
             mIsDragOverlapping = isDragOverlapping;
-            if (mIsDragOverlapping) {
-                mBackground.startTransition(BACKGROUND_ACTIVATE_DURATION);
-            } else {
-                if (mBackgroundAlpha > 0f) {
-                    mBackground.reverseTransition(BACKGROUND_ACTIVATE_DURATION);
-                } else {
-                    mBackground.resetTransition();
-                }
-            }
+            mBackground.setState(mIsDragOverlapping
+                    ? BACKGROUND_STATE_ACTIVE : BACKGROUND_STATE_DEFAULT);
             invalidate();
         }
     }
