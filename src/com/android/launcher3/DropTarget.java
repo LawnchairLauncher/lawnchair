@@ -16,12 +16,10 @@
 
 package com.android.launcher3;
 
-import com.android.launcher3.dragndrop.DragView;
-
-import android.graphics.PointF;
 import android.graphics.Rect;
 
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
+import com.android.launcher3.dragndrop.DragView;
 
 /**
  * Interface defining an object that can receive a drag.
@@ -115,13 +113,6 @@ public interface DropTarget {
     void onDragOver(DragObject dragObject);
 
     void onDragExit(DragObject dragObject);
-
-    /**
-     * Handle an object being dropped as a result of flinging to delete and will be called in place
-     * of onDrop().  (This is only called on objects that are set as the DragController's
-     * fling-to-delete target.
-     */
-    void onFlingToDelete(DragObject dragObject, PointF vec);
 
     /**
      * Check if a drop action can occur at, or near, the requested location.

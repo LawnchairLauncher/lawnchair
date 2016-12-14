@@ -23,7 +23,6 @@ import android.content.Intent;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 
-import com.android.launcher3.DropTarget;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.ShortcutInfo;
@@ -40,7 +39,7 @@ public abstract class DragDriver {
     public interface EventListener {
         void onDriverDragMove(float x, float y);
         void onDriverDragExitWindow();
-        void onDriverDragEnd(float x, float y, DropTarget dropTargetOverride);
+        void onDriverDragEnd(float x, float y);
         void onDriverDragCancel();
     }
 
@@ -62,7 +61,7 @@ public abstract class DragDriver {
                 break;
             case MotionEvent.ACTION_UP:
                 mEventListener.onDriverDragMove(ev.getX(), ev.getY());
-                mEventListener.onDriverDragEnd(ev.getX(), ev.getY(), null);
+                mEventListener.onDriverDragEnd(ev.getX(), ev.getY());
                 break;
             case MotionEvent.ACTION_CANCEL:
                 mEventListener.onDriverDragCancel();
@@ -80,7 +79,7 @@ public abstract class DragDriver {
 
         switch (action) {
             case MotionEvent.ACTION_UP:
-                mEventListener.onDriverDragEnd(ev.getX(), ev.getY(), null);
+                mEventListener.onDriverDragEnd(ev.getX(), ev.getY());
                 break;
             case MotionEvent.ACTION_CANCEL:
                 mEventListener.onDriverDragCancel();
@@ -160,7 +159,7 @@ class SystemDragDriver extends DragDriver {
 
             case DragEvent.ACTION_DRAG_ENDED:
                 if (mReceivedDropEvent) {
-                    mEventListener.onDriverDragEnd(mLastX, mLastY, null);
+                    mEventListener.onDriverDragEnd(mLastX, mLastY);
                 } else {
                     mEventListener.onDriverDragCancel();
                 }

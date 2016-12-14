@@ -402,11 +402,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     }
 
     @Override
-    public boolean supportsFlingToDelete() {
-        return true;
-    }
-
-    @Override
     public boolean supportsAppInfoDropTarget() {
         return true;
     }
@@ -420,14 +415,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     public float getIntrinsicIconScaleFactor() {
         DeviceProfile grid = mLauncher.getDeviceProfile();
         return (float) grid.allAppsIconSizePx / grid.iconSizePx;
-    }
-
-    @Override
-    public void onFlingToDeleteCompleted() {
-        // We just dismiss the drag when we fling, so cleanup here
-        mLauncher.exitSpringLoadedDragModeDelayed(true,
-                Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
-        mLauncher.unlockScreenOrientation(false);
     }
 
     @Override

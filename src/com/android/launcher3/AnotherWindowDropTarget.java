@@ -48,9 +48,6 @@ public class AnotherWindowDropTarget implements DropTarget {
     public void onDragExit(DragObject dragObject) {}
 
     @Override
-    public void onFlingToDelete(DragObject dragObject, PointF vec) {}
-
-    @Override
     public boolean acceptDrop(DragObject dragObject) {
         return dragObject.dragInfo instanceof ShortcutInfo;
     }

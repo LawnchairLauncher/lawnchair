@@ -33,7 +33,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -3722,11 +3721,6 @@ public class Workspace extends PagedView
     }
 
     @Override
-    public boolean supportsFlingToDelete() {
-        return true;
-    }
-
-    @Override
     public boolean supportsAppInfoDropTarget() {
         return !FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND;
     }
@@ -3734,16 +3728,6 @@ public class Workspace extends PagedView
     @Override
     public boolean supportsDeleteDropTarget() {
         return true;
-    }
-
-    @Override
-    public void onFlingToDelete(DragObject d, PointF vec) {
-        // Do nothing
-    }
-
-    @Override
-    public void onFlingToDeleteCompleted() {
-        // Do nothing
     }
 
     public boolean isDropEnabled() {

@@ -31,8 +31,6 @@ import com.android.launcher3.BaseContainerView;
 import com.android.launcher3.DeleteDropTarget;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
-import com.android.launcher3.dragndrop.DragOptions;
-import com.android.launcher3.folder.Folder;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
@@ -42,10 +40,11 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.dragndrop.DragController;
+import com.android.launcher3.dragndrop.DragOptions;
+import com.android.launcher3.folder.Folder;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.model.WidgetItem;
-import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.MultiHashMap;
@@ -246,11 +245,6 @@ public class WidgetsContainerView extends BaseContainerView
     //
 
     @Override
-    public boolean supportsFlingToDelete() {
-        return true;
-    }
-
-    @Override
     public boolean supportsAppInfoDropTarget() {
         return true;
     }
@@ -267,14 +261,6 @@ public class WidgetsContainerView extends BaseContainerView
     @Override
     public float getIntrinsicIconScaleFactor() {
         return 0;
-    }
-
-    @Override
-    public void onFlingToDeleteCompleted() {
-        // We just dismiss the drag when we fling, so cleanup here
-        mLauncher.exitSpringLoadedDragModeDelayed(true,
-                Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
-        mLauncher.unlockScreenOrientation(false);
     }
 
     @Override
