@@ -49,7 +49,7 @@ public class InfoDropTarget extends UninstallDropTarget {
     }
 
     @Override
-    void completeDrop(DragObject d) {
+    public void completeDrop(DragObject d) {
         DropTargetResultCallback callback = d.dragSource instanceof DropTargetResultCallback
                 ? (DropTargetResultCallback) d.dragSource : null;
         startDetailsActivityForInfo(d.dragInfo, mLauncher, callback);

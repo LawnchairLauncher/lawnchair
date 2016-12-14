@@ -16,19 +16,13 @@
 
 package com.android.launcher3;
 
-import android.animation.TimeInterpolator;
 import android.content.Context;
-import android.graphics.PointF;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.animation.AnimationUtils;
 
-import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
-import com.android.launcher3.util.FlingAnimation;
-import com.android.launcher3.util.Thunk;
 
 public class DeleteDropTarget extends ButtonDropTarget {
 
@@ -78,7 +72,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
     }
 
     @Override
-    @Thunk void completeDrop(DragObject d) {
+    public void completeDrop(DragObject d) {
         ItemInfo item = d.dragInfo;
         if ((d.dragSource instanceof Workspace) || (d.dragSource instanceof Folder)) {
             removeWorkspaceOrFolderItem(mLauncher, item, null);
@@ -95,54 +89,5 @@ public class DeleteDropTarget extends ButtonDropTarget {
         launcher.removeItem(view, item, true /* deleteFromDb */);
         launcher.getWorkspace().stripEmptyScreens();
         launcher.getDragLayer().announceForAccessibility(launcher.getString(R.string.item_removed));
-    }
-
-    @Override
-    public void onFlingToDelete(final DragObject d, PointF vel) {
-        // Don't highlight the icon as it's animating
-        d.dragView.setColor(0);
-
-        final DragLayer dragLayer = mLauncher.getDragLayer();
-        FlingAnimation fling = new FlingAnimation(d, vel,
-                getIconRect(d.dragView.getMeasuredWidth(), d.dragView.getMeasuredHeight(),
-                        mDrawable.getIntrinsicWidth(), mDrawable.getIntrinsicHeight()),
-                        dragLayer);
-
-        final int duration = fling.getDuration();
-        final long startTime = AnimationUtils.currentAnimationTimeMillis();
-
-        // NOTE: Because it takes time for the first frame of animation to actually be
-        // called and we expect the animation to be a continuation of the fling, we have
-        // to account for the time that has elapsed since the fling finished.  And since
-        // we don't have a startDelay, we will always get call to update when we call
-        // start() (which we want to ignore).
-        final TimeInterpolator tInterpolator = new TimeInterpolator() {
-            private int mCount = -1;
-            private float mOffset = 0f;
-
-            @Override
-            public float getInterpolation(float t) {
-                if (mCount < 0) {
-                    mCount++;
-                } else if (mCount == 0) {
-                    mOffset = Math.min(0.5f, (float) (AnimationUtils.currentAnimationTimeMillis() -
-                            startTime) / duration);
-                    mCount++;
-                }
-                return Math.min(1f, mOffset + t);
-            }
-        };
-
-        Runnable onAnimationEndRunnable = new Runnable() {
-            @Override
-            public void run() {
-                mLauncher.exitSpringLoadedDragMode();
-                completeDrop(d);
-                mLauncher.getDragController().onDeferredEndFling(d);
-            }
-        };
-
-        dragLayer.animateView(d.dragView, fling, duration, tInterpolator, onAnimationEndRunnable,
-                DragLayer.ANIMATION_END_DISAPPEAR, null);
     }
 }

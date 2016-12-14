@@ -475,11 +475,6 @@ public class DeepShortcutsContainer extends AbstractFloatingView
     }
 
     @Override
-    public boolean supportsFlingToDelete() {
-        return true;
-    }
-
-    @Override
     public boolean supportsAppInfoDropTarget() {
         return true;
     }
@@ -492,11 +487,6 @@ public class DeepShortcutsContainer extends AbstractFloatingView
     @Override
     public float getIntrinsicIconScaleFactor() {
         return 1f;
-    }
-
-    @Override
-    public void onFlingToDeleteCompleted() {
-        // Don't care; ignore.
     }
 
     @Override

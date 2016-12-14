@@ -3068,7 +3068,7 @@ public class Launcher extends Activity
                 || mState == State.WIDGETS_SPRING_LOADED;
     }
 
-    void exitSpringLoadedDragMode() {
+    public void exitSpringLoadedDragMode() {
         if (mState == State.APPS_SPRING_LOADED) {
             showAppsView(true /* animated */,
                     false /* updatePredictedApps */, false /* focusSearchBar */);

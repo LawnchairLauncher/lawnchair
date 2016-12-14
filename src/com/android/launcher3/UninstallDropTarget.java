@@ -95,7 +95,7 @@ public class UninstallDropTarget extends ButtonDropTarget {
     }
 
     @Override
-    void completeDrop(final DragObject d) {
+    public void completeDrop(final DragObject d) {
         DropTargetResultCallback callback = d.dragSource instanceof DropTargetResultCallback
                 ? (DropTargetResultCallback) d.dragSource : null;
         startUninstallActivity(mLauncher, d.dragInfo, callback);

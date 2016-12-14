@@ -28,7 +28,6 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -117,9 +116,6 @@ public abstract class ButtonDropTarget extends TextView
     public void setDropTargetBar(DropTargetBar dropTargetBar) {
         mDropTargetBar = dropTargetBar;
     }
-
-    @Override
-    public void onFlingToDelete(DragObject d, PointF vec) { }
 
     @Override
     public final void onDragEnter(DragObject d) {
@@ -243,10 +239,7 @@ public abstract class ButtonDropTarget extends TextView
         final Rect from = new Rect();
         dragLayer.getViewRectRelativeToSelf(d.dragView, from);
 
-        int width = mDrawable.getIntrinsicWidth();
-        int height = mDrawable.getIntrinsicHeight();
-        final Rect to = getIconRect(d.dragView.getMeasuredWidth(), d.dragView.getMeasuredHeight(),
-                width, height);
+        final Rect to = getIconRect(d);
         final float scale = (float) to.width() / from.width();
         mDropTargetBar.deferOnDragEnd();
 
@@ -268,7 +261,7 @@ public abstract class ButtonDropTarget extends TextView
     @Override
     public void prepareAccessibilityDrop() { }
 
-    @Thunk abstract void completeDrop(DragObject d);
+    public abstract void completeDrop(DragObject d);
 
     @Override
     public void getHitRectRelativeToDragLayer(android.graphics.Rect outRect) {
@@ -280,7 +273,11 @@ public abstract class ButtonDropTarget extends TextView
         outRect.offsetTo(coords[0], coords[1]);
     }
 
-    protected Rect getIconRect(int viewWidth, int viewHeight, int drawableWidth, int drawableHeight) {
+    public Rect getIconRect(DragObject dragObject) {
+        int viewWidth = dragObject.dragView.getMeasuredWidth();
+        int viewHeight = dragObject.dragView.getMeasuredHeight();
+        int drawableWidth = mDrawable.getIntrinsicWidth();
+        int drawableHeight = mDrawable.getIntrinsicHeight();
         DragLayer dragLayer = mLauncher.getDragLayer();
 
         // Find the rect to animate to (the view is center aligned)

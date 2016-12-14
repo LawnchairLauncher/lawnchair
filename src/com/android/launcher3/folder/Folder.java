@@ -25,12 +25,10 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
 import android.text.InputType;
 import android.text.Selection;
-import android.text.Spannable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ActionMode;
@@ -51,7 +49,6 @@ import android.widget.TextView;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Alarm;
 import com.android.launcher3.AppInfo;
-import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragSource;
@@ -1010,11 +1007,6 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     }
 
     @Override
-    public boolean supportsFlingToDelete() {
-        return true;
-    }
-
-    @Override
     public boolean supportsAppInfoDropTarget() {
         return !FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND;
     }
@@ -1022,16 +1014,6 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     @Override
     public boolean supportsDeleteDropTarget() {
         return true;
-    }
-
-    @Override
-    public void onFlingToDelete(DragObject d, PointF vec) {
-        // Do nothing
-    }
-
-    @Override
-    public void onFlingToDeleteCompleted() {
-        // Do nothing
     }
 
     private void updateItemLocationsInDatabaseBatch() {
