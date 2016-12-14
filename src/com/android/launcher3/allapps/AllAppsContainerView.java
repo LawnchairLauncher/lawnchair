@@ -208,11 +208,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             return false;
         }
 
-        // IF a shortcuts container is open, container should not be pulled down.
-        if (DeepShortcutsContainer.getOpen(mLauncher) != null) {
-            return false;
-        }
-
         // IF scroller is at the very top OR there is no scroll bar because there is probably not
         // enough items to scroll, THEN it's okay for the container to be pulled down.
         if (mAppsRecyclerView.getScrollBar().getThumbOffsetY() <= 0) {

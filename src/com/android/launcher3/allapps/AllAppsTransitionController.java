@@ -17,6 +17,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
@@ -24,6 +25,7 @@ import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.shortcuts.DeepShortcutsContainer;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.TouchController;
 
@@ -117,6 +119,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                     !mAppsView.shouldContainerScroll(ev)) {
                 mNoIntercept = true;
             } else if (!mLauncher.isAllAppsVisible() && !shouldPossiblyIntercept(ev)) {
+                mNoIntercept = true;
+            } else if (AbstractFloatingView.getTopOpenView(mLauncher) != null) {
                 mNoIntercept = true;
             } else {
                 // Now figure out which direction scroll events the controller will start
