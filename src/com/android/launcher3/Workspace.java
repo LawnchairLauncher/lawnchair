@@ -178,7 +178,7 @@ public class Workspace extends PagedView
 
     private final int[] mTempXY = new int[2];
     @Thunk float[] mDragViewVisualCenter = new float[2];
-    private float[] mTempCellLayoutCenterCoordinates = new float[2];
+    private float[] mTempTouchCoordinates = new float[2];
 
     private SpringLoadedDragController mSpringLoadedDragController;
     private float mOverviewModeShrinkFactor;
@@ -2776,7 +2776,8 @@ public class Workspace extends PagedView
         mAddToExistingFolderOnDrop = false;
 
         mDropToLayout = null;
-        setDropLayoutForDragObject(d);
+        mDragViewVisualCenter = d.getVisualCenter(mDragViewVisualCenter);
+        setDropLayoutForDragObject(d, mDragViewVisualCenter[0], mDragViewVisualCenter[1]);
     }
 
     @Override
@@ -2946,68 +2947,6 @@ public class Workspace extends PagedView
        xy[1] += v.getTop();
    }
 
-   static private float squaredDistance(float[] point1, float[] point2) {
-        float distanceX = point1[0] - point2[0];
-        float distanceY = point2[1] - point2[1];
-        return distanceX * distanceX + distanceY * distanceY;
-   }
-
-    /*
-     *
-     * This method returns the CellLayout that is currently being dragged to. In order to drag
-     * to a CellLayout, either the touch point must be directly over the CellLayout, or as a second
-     * strategy, we see if the dragView is overlapping any CellLayout and choose the closest one
-     *
-     * Return null if no CellLayout is currently being dragged over
-     *
-     */
-    private CellLayout findMatchingPageForDragOver(
-            DragView dragView, float originX, float originY, boolean exact) {
-        // We loop through all the screens (ie CellLayouts) and see which ones overlap
-        // with the item being dragged and then choose the one that's closest to the touch point
-        final int screenCount = getChildCount();
-        CellLayout bestMatchingScreen = null;
-        float smallestDistSoFar = Float.MAX_VALUE;
-
-        for (int i = 0; i < screenCount; i++) {
-            // The custom content screen is not a valid drag over option
-            if (mScreenOrder.get(i) == CUSTOM_CONTENT_SCREEN_ID) {
-                continue;
-            }
-
-            CellLayout cl = (CellLayout) getChildAt(i);
-
-            final float[] touchXy = {originX, originY};
-            mapPointFromSelfToChild(cl, touchXy);
-
-            if (touchXy[0] >= 0 && touchXy[0] <= cl.getWidth() &&
-                    touchXy[1] >= 0 && touchXy[1] <= cl.getHeight()) {
-                return cl;
-            }
-
-            if (!exact) {
-                // Get the center of the cell layout in screen coordinates
-                final float[] cellLayoutCenter = mTempCellLayoutCenterCoordinates;
-                cellLayoutCenter[0] = cl.getWidth()/2;
-                cellLayoutCenter[1] = cl.getHeight()/2;
-                mapPointFromChildToSelf(cl, cellLayoutCenter);
-
-                touchXy[0] = originX;
-                touchXy[1] = originY;
-
-                // Calculate the distance between the center of the CellLayout
-                // and the touch point
-                float dist = squaredDistance(touchXy, cellLayoutCenter);
-
-                if (dist < smallestDistSoFar) {
-                    smallestDistSoFar = dist;
-                    bestMatchingScreen = cl;
-                }
-            }
-        }
-        return bestMatchingScreen;
-    }
-
     private boolean isDragWidget(DragObject d) {
         return (d.dragInfo instanceof LauncherAppWidgetInfo ||
                 d.dragInfo instanceof PendingAddWidgetInfo);
@@ -3030,14 +2969,11 @@ public class Workspace extends PagedView
         mDragViewVisualCenter = d.getVisualCenter(mDragViewVisualCenter);
 
         final View child = (mDragInfo == null) ? null : mDragInfo.cell;
-        if (setDropLayoutForDragObject(d)) {
-            boolean isInSpringLoadedMode = (mState == State.SPRING_LOADED);
-            if (isInSpringLoadedMode) {
-                if (mLauncher.isHotseatLayout(mDragTargetLayout)) {
-                    mSpringLoadedDragController.cancel();
-                } else {
-                    mSpringLoadedDragController.setAlarm(mDragTargetLayout);
-                }
+        if (setDropLayoutForDragObject(d, mDragViewVisualCenter[0], mDragViewVisualCenter[1])) {
+            if (mLauncher.isHotseatLayout(mDragTargetLayout)) {
+                mSpringLoadedDragController.cancel();
+            } else {
+                mSpringLoadedDragController.setAlarm(mDragTargetLayout);
             }
         }
 
@@ -3114,7 +3050,7 @@ public class Workspace extends PagedView
      *
      * @return whether the layout is different from the current {@link #mDragTargetLayout}.
      */
-    private boolean setDropLayoutForDragObject(DragObject d) {
+    private boolean setDropLayoutForDragObject(DragObject d, float centerX, float centerY) {
         CellLayout layout = null;
         // Test to see if we are over the hotseat first
         if (mLauncher.getHotseat() != null && !isDragWidget(d)) {
@@ -3122,12 +3058,25 @@ public class Workspace extends PagedView
                 layout = mLauncher.getHotseat().getLayout();
             }
         }
-        if (layout == null) {
-            // Identify whether we have dragged over a side page,
-            // otherwise just use the current page
-            layout = workspaceInModalState() ?
-                    findMatchingPageForDragOver(d.dragView, d.x, d.y, false)
-                    : getCurrentDropLayout();
+
+        int nextPage = getNextPage();
+        if (layout == null && !isPageInTransition()) {
+            // Check if the item is dragged over left page
+            mTempTouchCoordinates[0] = Math.min(centerX, d.x);
+            mTempTouchCoordinates[1] = d.y;
+            layout = verifyInsidePage(nextPage + (mIsRtl ? 1 : -1), mTempTouchCoordinates);
+        }
+
+        if (layout == null && !isPageInTransition()) {
+            // Check if the item is dragged over right page
+            mTempTouchCoordinates[0] = Math.max(centerX, d.x);
+            mTempTouchCoordinates[1] = d.y;
+            layout = verifyInsidePage(nextPage + (mIsRtl ? -1 : 1), mTempTouchCoordinates);
+        }
+
+        // Always pick the current page.
+        if (layout == null && nextPage >= numCustomPages() && nextPage < getPageCount()) {
+            layout = (CellLayout) getChildAt(nextPage);
         }
         if (layout != mDragTargetLayout) {
             setCurrentDropLayout(layout);
@@ -3135,6 +3084,22 @@ public class Workspace extends PagedView
             return true;
         }
         return false;
+    }
+
+    /**
+     * Returns the child CellLayout if the point is inside the page coordinates, null otherwise.
+     */
+    private CellLayout verifyInsidePage(int pageNo, float[] touchXy)  {
+        if (pageNo >= numCustomPages() && pageNo < getPageCount()) {
+            CellLayout cl = (CellLayout) getChildAt(pageNo);
+            mapPointFromSelfToChild(cl, touchXy);
+            if (touchXy[0] >= 0 && touchXy[0] <= cl.getWidth() &&
+                    touchXy[1] >= 0 && touchXy[1] <= cl.getHeight()) {
+                // This point is inside the cell layout
+                return cl;
+            }
+        }
+        return null;
     }
 
     private void manageFolderFeedback(CellLayout targetLayout,
@@ -3568,14 +3533,6 @@ public class Workspace extends PagedView
 
     public WorkspaceStateTransitionAnimation getStateTransitionAnimation() {
         return mStateTransitionAnimation;
-    }
-
-    /**
-     * Return the current {@link CellLayout}, correctly picking the destination
-     * screen while a scroll is in progress.
-     */
-    public CellLayout getCurrentDropLayout() {
-        return (CellLayout) getChildAt(getNextPage());
     }
 
     /**
