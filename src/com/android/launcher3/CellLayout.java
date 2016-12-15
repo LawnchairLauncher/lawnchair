@@ -1029,8 +1029,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 cellToRect(cellX, cellY, spanX, spanY, r);
                 if (v instanceof LauncherAppWidgetHostView) {
                     DeviceProfile profile = mLauncher.getDeviceProfile();
-                    Utilities.shrinkRectAboutCenter(r, profile.appWidgetScale.x,
-                            profile.appWidgetScale.y);
+                    Utilities.shrinkRect(r, profile.appWidgetScale.x, profile.appWidgetScale.y);
                 }
             } else {
                 // Find the top left corner of the rect the object will occupy
@@ -1070,7 +1069,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 r.set(left, top, left + dragOutline.getWidth(), top + dragOutline.getHeight());
             }
 
-            Utilities.shrinkRectAboutCenter(r, mChildScale, mChildScale);
+            Utilities.scaleRectAboutCenter(r, mChildScale);
             mDragOutlineAnims[mDragOutlineCurrent].setTag(dragOutline);
             mDragOutlineAnims[mDragOutlineCurrent].animateIn();
 
