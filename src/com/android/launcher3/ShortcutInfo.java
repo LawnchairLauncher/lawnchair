@@ -23,10 +23,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Process;
+import android.os.UserHandle;
 import android.text.TextUtils;
 
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
@@ -257,7 +258,7 @@ public class ShortcutInfo extends ItemInfo {
 
         IconCache cache = launcherAppState.getIconCache();
         Bitmap unbadgedBitmap = unbadgedDrawable == null
-                ? cache.getDefaultIcon(UserHandleCompat.myUserHandle())
+                ? cache.getDefaultIcon(Process.myUserHandle())
                 : LauncherIcons.createScaledBitmapWithoutShadow(unbadgedDrawable, context);
         iconBitmap = getBadgedIcon(unbadgedBitmap, shortcutInfo, cache, context);
     }

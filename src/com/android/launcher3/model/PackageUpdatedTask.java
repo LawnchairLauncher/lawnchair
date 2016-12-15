@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.os.UserHandle;
 import android.util.Log;
 
 import com.android.launcher3.AllAppsList;
@@ -38,7 +39,6 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.util.FlagOp;
@@ -70,10 +70,10 @@ public class PackageUpdatedTask extends ExtendedModelTask {
     public static final int OP_USER_AVAILABILITY_CHANGE = 7; // user available/unavailable
 
     private final int mOp;
-    private final UserHandleCompat mUser;
+    private final UserHandle mUser;
     private final String[] mPackages;
 
-    public PackageUpdatedTask(int op, UserHandleCompat user, String... packages) {
+    public PackageUpdatedTask(int op, UserHandle user, String... packages) {
         mOp = op;
         mUser = user;
         mPackages = packages;

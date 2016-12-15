@@ -16,6 +16,9 @@
 
 package com.android.launcher3.compat;
 
+import android.os.Process;
+import android.os.UserHandle;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,26 +27,26 @@ public class UserManagerCompatV16 extends UserManagerCompat {
     UserManagerCompatV16() {
     }
 
-    public List<UserHandleCompat> getUserProfiles() {
-        List<UserHandleCompat> profiles = new ArrayList<UserHandleCompat>(1);
-        profiles.add(UserHandleCompat.myUserHandle());
+    public List<UserHandle> getUserProfiles() {
+        List<UserHandle> profiles = new ArrayList<UserHandle>(1);
+        profiles.add(Process.myUserHandle());
         return profiles;
     }
 
-    public UserHandleCompat getUserForSerialNumber(long serialNumber) {
-        return UserHandleCompat.myUserHandle();
+    public UserHandle getUserForSerialNumber(long serialNumber) {
+        return Process.myUserHandle();
     }
 
-    public long getSerialNumberForUser(UserHandleCompat user) {
+    public long getSerialNumberForUser(UserHandle user) {
         return 0;
     }
 
-    public CharSequence getBadgedLabelForUser(CharSequence label, UserHandleCompat user) {
+    public CharSequence getBadgedLabelForUser(CharSequence label, UserHandle user) {
         return label;
     }
 
     @Override
-    public long getUserCreationTime(UserHandleCompat user) {
+    public long getUserCreationTime(UserHandle user) {
         return 0;
     }
 
@@ -52,12 +55,12 @@ public class UserManagerCompatV16 extends UserManagerCompat {
     }
 
     @Override
-    public boolean isQuietModeEnabled(UserHandleCompat user) {
+    public boolean isQuietModeEnabled(UserHandle user) {
         return false;
     }
 
     @Override
-    public boolean isUserUnlocked(UserHandleCompat user) {
+    public boolean isUserUnlocked(UserHandle user) {
         return true;
     }
 

@@ -15,7 +15,9 @@
  */
 package com.android.launcher3.widget;
 
-import com.android.launcher3.compat.UserHandleCompat;
+import android.os.Process;
+import android.os.UserHandle;
+
 import com.android.launcher3.model.WidgetItem;
 
 import java.text.Collator;
@@ -26,7 +28,7 @@ import java.util.Comparator;
  */
 public class WidgetItemComparator implements Comparator<WidgetItem> {
 
-    private final UserHandleCompat mMyUserHandle = UserHandleCompat.myUserHandle();
+    private final UserHandle mMyUserHandle = Process.myUserHandle();
     private final Collator mCollator = Collator.getInstance();
 
     @Override

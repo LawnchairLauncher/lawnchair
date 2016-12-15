@@ -15,11 +15,12 @@
  */
 package com.android.launcher3.model;
 
+import android.os.UserHandle;
+
+import com.android.launcher3.LauncherModel.BaseModelUpdateTask;
 import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherModel.Callbacks;
-import com.android.launcher3.LauncherModel.BaseModelUpdateTask;
 import com.android.launcher3.ShortcutInfo;
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.MultiHashMap;
 
@@ -31,14 +32,14 @@ import java.util.ArrayList;
 public abstract class ExtendedModelTask extends BaseModelUpdateTask {
 
     public void bindUpdatedShortcuts(
-            ArrayList<ShortcutInfo> updatedShortcuts, UserHandleCompat user) {
+            ArrayList<ShortcutInfo> updatedShortcuts, UserHandle user) {
         bindUpdatedShortcuts(updatedShortcuts, new ArrayList<ShortcutInfo>(), user);
     }
 
     public void bindUpdatedShortcuts(
             final ArrayList<ShortcutInfo> updatedShortcuts,
             final ArrayList<ShortcutInfo> removedShortcuts,
-            final UserHandleCompat user) {
+            final UserHandle user) {
         if (!updatedShortcuts.isEmpty() || !removedShortcuts.isEmpty()) {
             scheduleCallbackTask(new CallbackTask() {
                 @Override

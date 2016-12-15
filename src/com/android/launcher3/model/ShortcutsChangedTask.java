@@ -16,6 +16,7 @@
 package com.android.launcher3.model;
 
 import android.content.Context;
+import android.os.UserHandle;
 
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.ItemInfo;
@@ -23,7 +24,6 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.MultiHashMap;
@@ -38,11 +38,11 @@ public class ShortcutsChangedTask extends ExtendedModelTask {
 
     private final String mPackageName;
     private final List<ShortcutInfoCompat> mShortcuts;
-    private final UserHandleCompat mUser;
+    private final UserHandle mUser;
     private final boolean mUpdateIdMap;
 
     public ShortcutsChangedTask(String packageName, List<ShortcutInfoCompat> shortcuts,
-            UserHandleCompat user, boolean updateIdMap) {
+            UserHandle user, boolean updateIdMap) {
         mPackageName = packageName;
         mShortcuts = shortcuts;
         mUser = user;

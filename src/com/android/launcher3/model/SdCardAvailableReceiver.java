@@ -20,11 +20,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.UserHandle;
 
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
 
@@ -43,10 +42,10 @@ public class SdCardAvailableReceiver extends BroadcastReceiver {
 
     private final LauncherModel mModel;
     private final Context mContext;
-    private final MultiHashMap<UserHandleCompat, String> mPackages;
+    private final MultiHashMap<UserHandle, String> mPackages;
 
     public SdCardAvailableReceiver(LauncherModel model, Context context,
-            MultiHashMap<UserHandleCompat, String> packages) {
+            MultiHashMap<UserHandle, String> packages) {
         mModel = model;
         mContext = context;
         mPackages = packages;
@@ -56,8 +55,8 @@ public class SdCardAvailableReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
         final PackageManager manager = context.getPackageManager();
-        for (Entry<UserHandleCompat, ArrayList<String>> entry : mPackages.entrySet()) {
-            UserHandleCompat user = entry.getKey();
+        for (Entry<UserHandle, ArrayList<String>> entry : mPackages.entrySet()) {
+            UserHandle user = entry.getKey();
 
             final ArrayList<String> packagesRemoved = new ArrayList<>();
             final ArrayList<String> packagesUnavailable = new ArrayList<>();

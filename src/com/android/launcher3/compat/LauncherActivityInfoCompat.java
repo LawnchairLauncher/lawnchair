@@ -19,6 +19,7 @@ package com.android.launcher3.compat;
 import android.content.ComponentName;
 import android.content.pm.ApplicationInfo;
 import android.graphics.drawable.Drawable;
+import android.os.UserHandle;
 
 public abstract class LauncherActivityInfoCompat {
 
@@ -26,7 +27,7 @@ public abstract class LauncherActivityInfoCompat {
     }
 
     public abstract ComponentName getComponentName();
-    public abstract UserHandleCompat getUser();
+    public abstract UserHandle getUser();
     public abstract CharSequence getLabel();
     public abstract Drawable getIcon(int density);
     public abstract ApplicationInfo getApplicationInfo();

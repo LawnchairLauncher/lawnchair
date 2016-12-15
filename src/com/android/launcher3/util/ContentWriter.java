@@ -20,11 +20,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.UserHandle;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 
 /**
@@ -36,7 +36,7 @@ public class ContentWriter {
     private final Context mContext;
 
     private Bitmap mIcon;
-    private UserHandleCompat mUser;
+    private UserHandle mUser;
 
     public ContentWriter(Context context) {
         this(new ContentValues(), context);
@@ -72,13 +72,13 @@ public class ContentWriter {
         return this;
     }
 
-    public ContentWriter putIcon(Bitmap value, UserHandleCompat user) {
+    public ContentWriter putIcon(Bitmap value, UserHandle user) {
         mIcon = value;
         mUser = user;
         return this;
     }
 
-    public ContentWriter put(String key, UserHandleCompat user) {
+    public ContentWriter put(String key, UserHandle user) {
         return put(key, UserManagerCompat.getInstance(mContext).getSerialNumberForUser(user));
     }
 

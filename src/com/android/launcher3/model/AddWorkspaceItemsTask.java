@@ -17,6 +17,7 @@ package com.android.launcher3.model;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.UserHandle;
 import android.util.LongSparseArray;
 import android.util.Pair;
 
@@ -32,7 +33,6 @@ import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.Provider;
 
@@ -141,7 +141,7 @@ public class AddWorkspaceItemsTask extends ExtendedModelTask {
      * Returns true if the shortcuts already exists on the workspace. This must be called after
      * the workspace has been loaded. We identify a shortcut by its intent.
      */
-    protected boolean shortcutExists(BgDataModel dataModel, Intent intent, UserHandleCompat user) {
+    protected boolean shortcutExists(BgDataModel dataModel, Intent intent, UserHandle user) {
         final String intentWithPkg, intentWithoutPkg;
         if (intent.getComponent() != null) {
             // If component is not null, an intent with null package will produce

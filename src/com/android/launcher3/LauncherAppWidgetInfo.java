@@ -19,8 +19,8 @@ package com.android.launcher3;
 import android.appwidget.AppWidgetHostView;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.os.Process;
 
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.util.ContentWriter;
 
 /**
@@ -112,7 +112,7 @@ public class LauncherAppWidgetInfo extends ItemInfo {
         spanX = -1;
         spanY = -1;
         // We only support app widgets on current user.
-        user = UserHandleCompat.myUserHandle();
+        user = Process.myUserHandle();
         restoreStatus = RESTORE_COMPLETED;
     }
 

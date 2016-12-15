@@ -34,6 +34,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.UserHandle;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -60,7 +61,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.accessibility.ShortcutMenuAccessibilityDelegate;
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -161,7 +161,7 @@ public class DeepShortcutsContainer extends AbstractFloatingView
         final Looper workerLooper = LauncherModel.getWorkerLooper();
         final Handler uiHandler = new Handler(Looper.getMainLooper());
         final ItemInfo originalInfo = (ItemInfo) originalIcon.getTag();
-        final UserHandleCompat user = originalInfo.user;
+        final UserHandle user = originalInfo.user;
         final ComponentName activity = originalInfo.getTargetComponent();
         new Handler(workerLooper).postAtFrontOfQueue(new Runnable() {
             @Override

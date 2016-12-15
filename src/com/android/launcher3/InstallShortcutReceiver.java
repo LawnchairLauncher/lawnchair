@@ -26,13 +26,14 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Process;
+import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
@@ -94,7 +95,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     }
 
     public static void removeFromInstallQueue(Context context, HashSet<String> packageNames,
-            UserHandleCompat user) {
+            UserHandle user) {
         if (packageNames.isEmpty()) {
             return;
         }
@@ -192,7 +193,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         }
 
         PendingInstallShortcutInfo info = new PendingInstallShortcutInfo(
-                data, UserHandleCompat.myUserHandle(), context);
+                data, Process.myUserHandle(), context);
         if (info.launchIntent == null || info.label == null) {
             if (DBG) Log.e(TAG, "Invalid install shortcut intent");
             return null;
@@ -289,12 +290,12 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         final Context mContext;
         final Intent launchIntent;
         final String label;
-        final UserHandleCompat user;
+        final UserHandle user;
 
         /**
          * Initializes a PendingInstallShortcutInfo received from a different app.
          */
-        public PendingInstallShortcutInfo(Intent data, UserHandleCompat user, Context context) {
+        public PendingInstallShortcutInfo(Intent data, UserHandle user, Context context) {
             activityInfo = null;
             shortcutInfo = null;
             providerInfo = null;
@@ -351,7 +352,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 
             data = null;
             mContext = context;
-            user = UserHandleCompat.fromUser(info.getProfile());
+            user = info.getProfile();
 
             launchIntent = new Intent().setComponent(info.provider)
                     .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
@@ -490,7 +491,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 AppWidgetProviderInfo info = AppWidgetManager.getInstance(context)
                         .getAppWidgetInfo(widgetId);
                 if (info == null || !info.provider.equals(decoder.launcherIntent.getComponent()) ||
-                        !info.getProfile().equals(decoder.user.getUser())) {
+                        !info.getProfile().equals(decoder.user)) {
                     return null;
                 }
                 return new PendingInstallShortcutInfo(info, widgetId, context);
@@ -524,14 +525,14 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 
     private static class Decoder extends JSONObject {
         public final Intent launcherIntent;
-        public final UserHandleCompat user;
+        public final UserHandle user;
 
         private Decoder(String encoded, Context context) throws JSONException, URISyntaxException {
             super(encoded);
             launcherIntent = Intent.parseUri(getString(LAUNCH_INTENT_KEY), 0);
             user = has(USER_HANDLE_KEY) ? UserManagerCompat.getInstance(context)
                     .getUserForSerialNumber(getLong(USER_HANDLE_KEY))
-                    : UserHandleCompat.myUserHandle();
+                    : Process.myUserHandle();
             if (user == null) {
                 throw new JSONException("Invalid user");
             }

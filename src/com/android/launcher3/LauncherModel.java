@@ -37,6 +37,7 @@ import android.os.Parcelable;
 import android.os.Process;
 import android.os.SystemClock;
 import android.os.Trace;
+import android.os.UserHandle;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
 import android.util.Log;
@@ -48,7 +49,6 @@ import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.ProviderConfig;
@@ -58,17 +58,17 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.AddWorkspaceItemsTask;
-import com.android.launcher3.model.ExtendedModelTask;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.CacheDataUpdatedTask;
+import com.android.launcher3.model.ExtendedModelTask;
 import com.android.launcher3.model.GridSizeMigrationTask;
-import com.android.launcher3.model.PackageItemInfo;
-import com.android.launcher3.model.SdCardAvailableReceiver;
-import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.PackageInstallStateChangedTask;
+import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.model.PackageUpdatedTask;
+import com.android.launcher3.model.SdCardAvailableReceiver;
 import com.android.launcher3.model.ShortcutsChangedTask;
 import com.android.launcher3.model.UserLockStateChangedTask;
+import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.provider.ImportDataTask;
 import com.android.launcher3.provider.LauncherDbUtils;
@@ -197,12 +197,12 @@ public class LauncherModel extends BroadcastReceiver
                                   ArrayList<AppInfo> addedApps);
         public void bindAppsUpdated(ArrayList<AppInfo> apps);
         public void bindShortcutsChanged(ArrayList<ShortcutInfo> updated,
-                ArrayList<ShortcutInfo> removed, UserHandleCompat user);
+                ArrayList<ShortcutInfo> removed, UserHandle user);
         public void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
         public void bindRestoreItemsChange(HashSet<ItemInfo> updates);
         public void bindWorkspaceComponentsRemoved(
                 HashSet<String> packageNames, HashSet<ComponentName> components,
-                UserHandleCompat user);
+                UserHandle user);
         public void bindAppInfosRemoved(ArrayList<AppInfo> appInfos);
         public void notifyWidgetProvidersChanged();
         public void bindAllWidgets(MultiHashMap<PackageItemInfo, WidgetItem> widgets);
@@ -255,7 +255,7 @@ public class LauncherModel extends BroadcastReceiver
         HashSet<String> packages = new HashSet<>();
         packages.add(packageName);
         enqueueModelUpdateTask(new CacheDataUpdatedTask(
-                CacheDataUpdatedTask.OP_SESSION_UPDATE, UserHandleCompat.myUserHandle(), packages));
+                CacheDataUpdatedTask.OP_SESSION_UPDATE, Process.myUserHandle(), packages));
     }
 
     /**
@@ -692,36 +692,36 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     @Override
-    public void onPackageChanged(String packageName, UserHandleCompat user) {
+    public void onPackageChanged(String packageName, UserHandle user) {
         int op = PackageUpdatedTask.OP_UPDATE;
         enqueueModelUpdateTask(new PackageUpdatedTask(op, user, packageName));
     }
 
     @Override
-    public void onPackageRemoved(String packageName, UserHandleCompat user) {
+    public void onPackageRemoved(String packageName, UserHandle user) {
         onPackagesRemoved(user, packageName);
     }
 
-    public void onPackagesRemoved(UserHandleCompat user, String... packages) {
+    public void onPackagesRemoved(UserHandle user, String... packages) {
         int op = PackageUpdatedTask.OP_REMOVE;
         enqueueModelUpdateTask(new PackageUpdatedTask(op, user, packages));
     }
 
     @Override
-    public void onPackageAdded(String packageName, UserHandleCompat user) {
+    public void onPackageAdded(String packageName, UserHandle user) {
         int op = PackageUpdatedTask.OP_ADD;
         enqueueModelUpdateTask(new PackageUpdatedTask(op, user, packageName));
     }
 
     @Override
-    public void onPackagesAvailable(String[] packageNames, UserHandleCompat user,
+    public void onPackagesAvailable(String[] packageNames, UserHandle user,
             boolean replacing) {
         enqueueModelUpdateTask(
                 new PackageUpdatedTask(PackageUpdatedTask.OP_UPDATE, user, packageNames));
     }
 
     @Override
-    public void onPackagesUnavailable(String[] packageNames, UserHandleCompat user,
+    public void onPackagesUnavailable(String[] packageNames, UserHandle user,
             boolean replacing) {
         if (!replacing) {
             enqueueModelUpdateTask(new PackageUpdatedTask(
@@ -730,25 +730,25 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     @Override
-    public void onPackagesSuspended(String[] packageNames, UserHandleCompat user) {
+    public void onPackagesSuspended(String[] packageNames, UserHandle user) {
         enqueueModelUpdateTask(new PackageUpdatedTask(
                 PackageUpdatedTask.OP_SUSPEND, user, packageNames));
     }
 
     @Override
-    public void onPackagesUnsuspended(String[] packageNames, UserHandleCompat user) {
+    public void onPackagesUnsuspended(String[] packageNames, UserHandle user) {
         enqueueModelUpdateTask(new PackageUpdatedTask(
                 PackageUpdatedTask.OP_UNSUSPEND, user, packageNames));
     }
 
     @Override
     public void onShortcutsChanged(String packageName, List<ShortcutInfoCompat> shortcuts,
-            UserHandleCompat user) {
+            UserHandle user) {
         enqueueModelUpdateTask(new ShortcutsChangedTask(packageName, shortcuts, user, true));
     }
 
     public void updatePinnedShortcuts(String packageName, List<ShortcutInfoCompat> shortcuts,
-            UserHandleCompat user) {
+            UserHandle user) {
         enqueueModelUpdateTask(new ShortcutsChangedTask(packageName, shortcuts, user, false));
     }
 
@@ -771,7 +771,7 @@ public class LauncherModel extends BroadcastReceiver
         } else if (Intent.ACTION_MANAGED_PROFILE_AVAILABLE.equals(action) ||
                 Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE.equals(action) ||
                 Intent.ACTION_MANAGED_PROFILE_UNLOCKED.equals(action)) {
-            UserHandleCompat user = UserHandleCompat.fromIntent(intent);
+            UserHandle user = intent.getParcelableExtra(Intent.EXTRA_USER);
             if (user != null) {
                 if (Intent.ACTION_MANAGED_PROFILE_AVAILABLE.equals(action) ||
                         Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE.equals(action)) {
@@ -1199,7 +1199,7 @@ public class LauncherModel extends BroadcastReceiver
             final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
             final DeepShortcutManager shortcutManager = DeepShortcutManager.getInstance(context);
             final boolean isSdCardReady = Utilities.isBootCompleted();
-            final MultiHashMap<UserHandleCompat, String> pendingPackages = new MultiHashMap<>();
+            final MultiHashMap<UserHandle, String> pendingPackages = new MultiHashMap<>();
 
             LauncherAppState app = LauncherAppState.getInstance();
             InvariantDeviceProfile profile = app.getInvariantDeviceProfile();
@@ -1282,10 +1282,10 @@ public class LauncherModel extends BroadcastReceiver
                             LauncherSettings.Favorites.OPTIONS);
                     final CursorIconInfo cursorIconInfo = new CursorIconInfo(mContext, c);
 
-                    final LongSparseArray<UserHandleCompat> allUsers = new LongSparseArray<>();
+                    final LongSparseArray<UserHandle> allUsers = new LongSparseArray<>();
                     final LongSparseArray<Boolean> quietMode = new LongSparseArray<>();
                     final LongSparseArray<Boolean> unlockedUsers = new LongSparseArray<>();
-                    for (UserHandleCompat user : mUserManager.getUserProfiles()) {
+                    for (UserHandle user : mUserManager.getUserProfiles()) {
                         long serialNo = mUserManager.getSerialNumberForUser(user);
                         allUsers.put(serialNo, user);
                         quietMode.put(serialNo, mUserManager.isQuietModeEnabled(user));
@@ -1318,7 +1318,7 @@ public class LauncherModel extends BroadcastReceiver
                     long id;
                     long serialNumber;
                     Intent intent;
-                    UserHandleCompat user;
+                    UserHandle user;
                     String targetPackage;
 
                     while (!mStopped && c.moveToNext()) {
@@ -1465,7 +1465,7 @@ public class LauncherModel extends BroadcastReceiver
                                         c.getInt(rankIndex) >= FolderIcon.NUM_ITEMS_IN_PREVIEW;
 
                                 if (itemReplaced) {
-                                    if (user.equals(UserHandleCompat.myUserHandle())) {
+                                    if (user.equals(Process.myUserHandle())) {
                                         info = getAppShortcutInfo(intent, user, null,
                                                 cursorIconInfo, false, useLowResIcon);
                                     } else {
@@ -1474,7 +1474,7 @@ public class LauncherModel extends BroadcastReceiver
                                         continue;
                                     }
                                 } else if (restored) {
-                                    if (user.equals(UserHandleCompat.myUserHandle())) {
+                                    if (user.equals(Process.myUserHandle())) {
                                         info = getRestoredItemInfo(c, intent,
                                                 promiseType, itemType, cursorIconInfo);
                                         intent = getRestoredItemIntent(c, context, intent);
@@ -2251,11 +2251,11 @@ public class LauncherModel extends BroadcastReceiver
                 return;
             }
 
-            final List<UserHandleCompat> profiles = mUserManager.getUserProfiles();
+            final List<UserHandle> profiles = mUserManager.getUserProfiles();
 
             // Clear the list of apps
             mBgAllAppsList.clear();
-            for (UserHandleCompat user : profiles) {
+            for (UserHandle user : profiles) {
                 // Query for the set of apps
                 final long qiaTime = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
                 final List<LauncherActivityInfoCompat> apps = mLauncherApps.getActivityList(null, user);
@@ -2341,7 +2341,7 @@ public class LauncherModel extends BroadcastReceiver
                 DeepShortcutManager shortcutManager = DeepShortcutManager.getInstance(mContext);
                 mHasShortcutHostPermission = shortcutManager.hasHostPermission();
                 if (mHasShortcutHostPermission) {
-                    for (UserHandleCompat user : mUserManager.getUserProfiles()) {
+                    for (UserHandle user : mUserManager.getUserProfiles()) {
                         if (mUserManager.isUserUnlocked(user)) {
                             List<ShortcutInfoCompat> shortcuts =
                                     shortcutManager.queryForAllShortcuts(user);
@@ -2399,7 +2399,7 @@ public class LauncherModel extends BroadcastReceiver
     /**
      * Called when the icons for packages have been updated in the icon cache.
      */
-    public void onPackageIconsUpdated(HashSet<String> updatedPackages, UserHandleCompat user) {
+    public void onPackageIconsUpdated(HashSet<String> updatedPackages, UserHandle user) {
         // If any package icon has changed (app was updated while launcher was dead),
         // update the corresponding shortcuts.
         enqueueModelUpdateTask(new CacheDataUpdatedTask(
@@ -2519,7 +2519,7 @@ public class LauncherModel extends BroadcastReceiver
     public ShortcutInfo getRestoredItemInfo(Cursor c, Intent intent,
             int promiseType, int itemType, CursorIconInfo iconInfo) {
         final ShortcutInfo info = new ShortcutInfo();
-        info.user = UserHandleCompat.myUserHandle();
+        info.user = Process.myUserHandle();
         info.iconBitmap = iconInfo.loadIcon(c, info);
         // the fallback icon
         if (info.iconBitmap == null) {
@@ -2569,9 +2569,8 @@ public class LauncherModel extends BroadcastReceiver
      *
      * If c is not null, then it will be used to fill in missing data like the title and icon.
      */
-    public ShortcutInfo getAppShortcutInfo(Intent intent,
-            UserHandleCompat user, Cursor c, CursorIconInfo iconInfo,
-            boolean allowMissingTarget, boolean useLowResIcon) {
+    public ShortcutInfo getAppShortcutInfo(Intent intent, UserHandle user, Cursor c,
+            CursorIconInfo iconInfo, boolean allowMissingTarget, boolean useLowResIcon) {
         if (user == null) {
             Log.d(TAG, "Null user found in getShortcutInfo");
             return null;
@@ -2625,7 +2624,7 @@ public class LauncherModel extends BroadcastReceiver
     @Thunk ShortcutInfo getShortcutInfo(Cursor c, CursorIconInfo iconInfo) {
         final ShortcutInfo info = new ShortcutInfo();
         // Non-app shortcuts are only supported for current user.
-        info.user = UserHandleCompat.myUserHandle();
+        info.user = Process.myUserHandle();
         info.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
 
         // TODO: If there's an explicit component and we can't install that, delete it.
@@ -2661,7 +2660,7 @@ public class LauncherModel extends BroadcastReceiver
 
         // Only support intents for current user for now. Intents sent from other
         // users wouldn't get here without intent forwarding anyway.
-        info.user = UserHandleCompat.myUserHandle();
+        info.user = Process.myUserHandle();
 
         if (bitmap instanceof Bitmap) {
             info.iconBitmap = LauncherIcons.createIconBitmap((Bitmap) bitmap, context);

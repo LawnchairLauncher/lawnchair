@@ -16,6 +16,7 @@
 package com.android.launcher3.model;
 
 import android.content.ComponentName;
+import android.os.UserHandle;
 
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppInfo;
@@ -27,7 +28,6 @@ import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.ShortcutInfo;
-import com.android.launcher3.compat.UserHandleCompat;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -41,10 +41,10 @@ public class CacheDataUpdatedTask extends ExtendedModelTask {
     public static final int OP_SESSION_UPDATE = 2;
 
     private final int mOp;
-    private final UserHandleCompat mUser;
+    private final UserHandle mUser;
     private final HashSet<String> mPackages;
 
-    public CacheDataUpdatedTask(int op, UserHandleCompat user, HashSet<String> packages) {
+    public CacheDataUpdatedTask(int op, UserHandle user, HashSet<String> packages) {
         mOp = op;
         mUser = user;
         mPackages = packages;

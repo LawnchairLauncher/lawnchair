@@ -33,6 +33,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.view.View;
@@ -81,11 +82,11 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
     }
 
     @Override
-    public UserHandleCompat getUser(LauncherAppWidgetProviderInfo info) {
+    public UserHandle getUser(LauncherAppWidgetProviderInfo info) {
         if (info.isCustomWidget) {
-            return UserHandleCompat.myUserHandle();
+            return Process.myUserHandle();
         }
-        return UserHandleCompat.fromUser(info.getProfile());
+        return info.getProfile();
     }
 
     @Override
@@ -150,9 +151,9 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
     }
 
     @Override
-    public LauncherAppWidgetProviderInfo findProvider(ComponentName provider, UserHandleCompat user) {
+    public LauncherAppWidgetProviderInfo findProvider(ComponentName provider, UserHandle user) {
         for (AppWidgetProviderInfo info : mAppWidgetManager
-                .getInstalledProvidersForProfile(user.getUser())) {
+                .getInstalledProvidersForProfile(user)) {
             if (info.provider.equals(provider)) {
                 return LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, info);
             }
@@ -164,10 +165,9 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
     public HashMap<ComponentKey, AppWidgetProviderInfo> getAllProvidersMap() {
         HashMap<ComponentKey, AppWidgetProviderInfo> result = new HashMap<>();
         for (UserHandle user : mUserManager.getUserProfiles()) {
-            UserHandleCompat userHandle = UserHandleCompat.fromUser(user);
             for (AppWidgetProviderInfo info :
                     mAppWidgetManager.getInstalledProvidersForProfile(user)) {
-                result.put(new ComponentKey(info.provider, userHandle), info);
+                result.put(new ComponentKey(info.provider, user), info);
             }
         }
         return result;

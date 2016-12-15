@@ -17,6 +17,7 @@
 package com.android.launcher3.compat;
 
 import android.content.Context;
+import android.os.UserHandle;
 
 import com.android.launcher3.Utilities;
 
@@ -55,13 +56,13 @@ public abstract class UserManagerCompat {
      */
     public abstract void enableAndResetCache();
 
-    public abstract List<UserHandleCompat> getUserProfiles();
-    public abstract long getSerialNumberForUser(UserHandleCompat user);
-    public abstract UserHandleCompat getUserForSerialNumber(long serialNumber);
-    public abstract CharSequence getBadgedLabelForUser(CharSequence label, UserHandleCompat user);
-    public abstract long getUserCreationTime(UserHandleCompat user);
-    public abstract boolean isQuietModeEnabled(UserHandleCompat user);
-    public abstract boolean isUserUnlocked(UserHandleCompat user);
+    public abstract List<UserHandle> getUserProfiles();
+    public abstract long getSerialNumberForUser(UserHandle user);
+    public abstract UserHandle getUserForSerialNumber(long serialNumber);
+    public abstract CharSequence getBadgedLabelForUser(CharSequence label, UserHandle user);
+    public abstract long getUserCreationTime(UserHandle user);
+    public abstract boolean isQuietModeEnabled(UserHandle user);
+    public abstract boolean isUserUnlocked(UserHandle user);
 
     public abstract boolean isDemoUser();
 }

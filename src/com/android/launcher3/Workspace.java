@@ -38,6 +38,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Parcelable;
+import android.os.UserHandle;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Property;
@@ -61,7 +62,6 @@ import com.android.launcher3.accessibility.OverviewScreenAccessibilityDelegate;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.dragndrop.DragController;
@@ -4016,7 +4016,7 @@ public class Workspace extends PagedView
         });
     }
 
-    public void removeAbandonedPromise(String packageName, UserHandleCompat user) {
+    public void removeAbandonedPromise(String packageName, UserHandle user) {
         HashSet<String> packages = new HashSet<>(1);
         packages.add(packageName);
         ItemInfoMatcher matcher = ItemInfoMatcher.ofPackages(packages, user);

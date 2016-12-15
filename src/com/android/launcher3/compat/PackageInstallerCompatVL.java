@@ -23,6 +23,8 @@ import android.content.pm.PackageInstaller.SessionCallback;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Process;
+import android.os.UserHandle;
 import android.util.SparseArray;
 
 import com.android.launcher3.IconCache;
@@ -52,7 +54,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
     @Override
     public HashMap<String, Integer> updateAndGetActiveSessionCache() {
         HashMap<String, Integer> activePackages = new HashMap<>();
-        UserHandleCompat user = UserHandleCompat.myUserHandle();
+        UserHandle user = Process.myUserHandle();
         for (SessionInfo info : mInstaller.getAllSessions()) {
             addSessionInfoToCache(info, user);
             if (info.getAppPackageName() != null) {
@@ -63,7 +65,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         return activePackages;
     }
 
-    @Thunk void addSessionInfoToCache(SessionInfo info, UserHandleCompat user) {
+    @Thunk void addSessionInfoToCache(SessionInfo info, UserHandle user) {
         String packageName = info.getAppPackageName();
         if (packageName != null) {
             mCache.cachePackageInstallInfo(packageName, user, info.getAppIcon(),
@@ -124,7 +126,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         private void pushSessionDisplayToLauncher(int sessionId) {
             SessionInfo session = mInstaller.getSessionInfo(sessionId);
             if (session != null && session.getAppPackageName() != null) {
-                addSessionInfoToCache(session, UserHandleCompat.myUserHandle());
+                addSessionInfoToCache(session, Process.myUserHandle());
                 LauncherAppState app = LauncherAppState.getInstanceNoCreate();
 
                 if (app != null) {

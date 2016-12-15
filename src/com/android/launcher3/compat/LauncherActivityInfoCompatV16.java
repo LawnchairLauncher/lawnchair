@@ -18,14 +18,16 @@ package com.android.launcher3.compat;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.os.Process;
+import android.os.UserHandle;
 
 
 public class LauncherActivityInfoCompatV16 extends LauncherActivityInfoCompat {
@@ -46,8 +48,8 @@ public class LauncherActivityInfoCompatV16 extends LauncherActivityInfoCompat {
         return mComponentName;
     }
 
-    public UserHandleCompat getUser() {
-        return UserHandleCompat.myUserHandle();
+    public UserHandle getUser() {
+        return Process.myUserHandle();
     }
 
     public CharSequence getLabel() {

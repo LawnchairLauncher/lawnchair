@@ -22,6 +22,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.UserHandle;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class LauncherActivityInfoCompatVL extends LauncherActivityInfoCompat {
@@ -36,8 +37,8 @@ public class LauncherActivityInfoCompatVL extends LauncherActivityInfoCompat {
         return mLauncherActivityInfo.getComponentName();
     }
 
-    public UserHandleCompat getUser() {
-        return UserHandleCompat.fromUser(mLauncherActivityInfo.getUser());
+    public UserHandle getUser() {
+        return mLauncherActivityInfo.getUser();
     }
 
     public CharSequence getLabel() {

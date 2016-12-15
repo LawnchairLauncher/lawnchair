@@ -17,13 +17,13 @@
 package com.android.launcher3.util;
 
 import android.content.ComponentName;
+import android.os.UserHandle;
 
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.ShortcutInfo;
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 
 import java.util.HashSet;
@@ -66,7 +66,7 @@ public abstract class ItemInfoMatcher {
         return filtered;
     }
 
-    public static ItemInfoMatcher ofUser(final UserHandleCompat user) {
+    public static ItemInfoMatcher ofUser(final UserHandle user) {
         return new ItemInfoMatcher() {
             @Override
             public boolean matches(ItemInfo info, ComponentName cn) {
@@ -76,7 +76,7 @@ public abstract class ItemInfoMatcher {
     }
 
     public static ItemInfoMatcher ofComponents(
-            final HashSet<ComponentName> components, final UserHandleCompat user) {
+            final HashSet<ComponentName> components, final UserHandle user) {
         return new ItemInfoMatcher() {
             @Override
             public boolean matches(ItemInfo info, ComponentName cn) {
@@ -86,7 +86,7 @@ public abstract class ItemInfoMatcher {
     }
 
     public static ItemInfoMatcher ofPackages(
-            final HashSet<String> packageNames, final UserHandleCompat user) {
+            final HashSet<String> packageNames, final UserHandle user) {
         return new ItemInfoMatcher() {
             @Override
             public boolean matches(ItemInfo info, ComponentName cn) {

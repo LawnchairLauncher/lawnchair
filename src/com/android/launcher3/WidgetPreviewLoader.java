@@ -25,11 +25,11 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.UserHandle;
 import android.util.Log;
 import android.util.LongSparseArray;
 
 import com.android.launcher3.compat.AppWidgetManagerCompat;
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.util.ComponentKey;
@@ -149,11 +149,11 @@ public class WidgetPreviewLoader {
         mDb.insertOrReplace(values);
     }
 
-    public void removePackage(String packageName, UserHandleCompat user) {
+    public void removePackage(String packageName, UserHandle user) {
         removePackage(packageName, user, mUserManager.getSerialNumberForUser(user));
     }
 
-    private void removePackage(String packageName, UserHandleCompat user, long userSerial) {
+    private void removePackage(String packageName, UserHandle user, long userSerial) {
         synchronized(mPackageVersions) {
             mPackageVersions.remove(packageName);
         }
@@ -217,7 +217,7 @@ public class WidgetPreviewLoader {
 
             for (int i = 0; i < packagesToDelete.size(); i++) {
                 long userId = packagesToDelete.keyAt(i);
-                UserHandleCompat user = mUserManager.getUserForSerialNumber(userId);
+                UserHandle user = mUserManager.getUserForSerialNumber(userId);
                 for (String pkg : packagesToDelete.valueAt(i)) {
                     removePackage(pkg, user, userId);
                 }
@@ -652,7 +652,7 @@ public class WidgetPreviewLoader {
         // TODO: remove dependency on size
         @Thunk final String size;
 
-        public WidgetCacheKey(ComponentName componentName, UserHandleCompat user, String size) {
+        public WidgetCacheKey(ComponentName componentName, UserHandle user, String size) {
             super(componentName, user);
             this.size = size;
         }

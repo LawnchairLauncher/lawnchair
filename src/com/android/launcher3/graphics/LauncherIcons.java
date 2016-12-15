@@ -33,11 +33,12 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.os.Build;
+import android.os.Process;
+import android.os.UserHandle;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.config.FeatureFlags;
 
 /**
@@ -105,7 +106,7 @@ public class LauncherIcons {
      */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static Bitmap createBadgedIconBitmap(
-            Drawable icon, UserHandleCompat user, Context context) {
+            Drawable icon, UserHandle user, Context context) {
         float scale = FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION ?
                 1 : IconNormalizer.getInstance().getScale(icon, null);
         Bitmap bitmap = createIconBitmap(icon, context, scale);
@@ -115,12 +116,12 @@ public class LauncherIcons {
     /**
      * Badges the provided icon with the user badge if required.
      */
-    public static Bitmap badgeIconForUser(Bitmap icon,  UserHandleCompat user, Context context) {
+    public static Bitmap badgeIconForUser(Bitmap icon, UserHandle user, Context context) {
         if (Utilities.ATLEAST_LOLLIPOP && user != null
-                && !UserHandleCompat.myUserHandle().equals(user)) {
+                && !Process.myUserHandle().equals(user)) {
             BitmapDrawable drawable = new FixedSizeBitmapDrawable(icon);
             Drawable badged = context.getPackageManager().getUserBadgedIcon(
-                    drawable, user.getUser());
+                    drawable, user);
             if (badged instanceof BitmapDrawable) {
                 return ((BitmapDrawable) badged).getBitmap();
             } else {

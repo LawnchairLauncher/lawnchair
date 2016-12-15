@@ -17,8 +17,8 @@
 package com.android.launcher3;
 
 import android.content.Context;
+import android.os.Process;
 
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.util.ContentWriter;
 
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ public class FolderInfo extends ItemInfo {
 
     public FolderInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
-        user = UserHandleCompat.myUserHandle();
+        user = Process.myUserHandle();
     }
 
     /**

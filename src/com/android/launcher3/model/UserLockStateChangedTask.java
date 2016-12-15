@@ -16,6 +16,7 @@
 package com.android.launcher3.model;
 
 import android.content.Context;
+import android.os.UserHandle;
 
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.ItemInfo;
@@ -23,7 +24,6 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
@@ -40,9 +40,9 @@ import java.util.List;
  */
 public class UserLockStateChangedTask extends ExtendedModelTask {
 
-    private final UserHandleCompat mUser;
+    private final UserHandle mUser;
 
-    public UserLockStateChangedTask(UserHandleCompat user) {
+    public UserLockStateChangedTask(UserHandle user) {
         mUser = user;
     }
 

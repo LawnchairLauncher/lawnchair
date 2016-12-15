@@ -16,9 +16,10 @@
 package com.android.launcher3.allapps;
 
 import android.content.Context;
+import android.os.Process;
+import android.os.UserHandle;
 
 import com.android.launcher3.AppInfo;
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.LabelComparator;
 
@@ -30,12 +31,12 @@ import java.util.Comparator;
 public class AppInfoComparator implements Comparator<AppInfo> {
 
     private final UserManagerCompat mUserManager;
-    private final UserHandleCompat mMyUser;
+    private final UserHandle mMyUser;
     private final LabelComparator mLabelComparator;
 
     public AppInfoComparator(Context context) {
         mUserManager = UserManagerCompat.getInstance(context);
-        mMyUser = UserHandleCompat.myUserHandle();
+        mMyUser = Process.myUserHandle();
         mLabelComparator = new LabelComparator();
     }
 

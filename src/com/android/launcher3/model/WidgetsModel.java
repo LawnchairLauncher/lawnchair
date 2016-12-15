@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.os.Process;
+import android.os.UserHandle;
 import android.util.Log;
 
 import com.android.launcher3.AppFilter;
@@ -15,7 +17,6 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.Preconditions;
@@ -99,7 +100,7 @@ public class WidgetsModel {
         mWidgetsList.clear();
 
         InvariantDeviceProfile idp = LauncherAppState.getInstance().getInvariantDeviceProfile();
-        UserHandleCompat myUser = UserHandleCompat.myUserHandle();
+        UserHandle myUser = Process.myUserHandle();
 
         // add and update.
         for (WidgetItem item: rawWidgetsShortcuts) {

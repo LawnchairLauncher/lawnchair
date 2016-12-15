@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.os.Process;
+import android.os.UserHandle;
 import android.support.test.InstrumentationRegistry;
 import android.test.ProviderTestCase2;
 
@@ -17,10 +19,9 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
-import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherModel.BaseModelUpdateTask;
+import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.TestLauncherProvider;
@@ -46,7 +47,7 @@ public class BaseModelUpdateTaskTestCase extends ProviderTestCase2<TestLauncherP
     public final HashMap<Class, HashMap<String, Field>> fieldCache = new HashMap<>();
 
     public Context targetContext;
-    public UserHandleCompat myUser;
+    public UserHandle myUser;
 
     public InvariantDeviceProfile idp;
     public LauncherAppState appState;
@@ -66,7 +67,7 @@ public class BaseModelUpdateTaskTestCase extends ProviderTestCase2<TestLauncherP
 
         callbacks = mock(Callbacks.class);
         appState = mock(LauncherAppState.class);
-        myUser = UserHandleCompat.myUserHandle();
+        myUser = Process.myUserHandle();
 
         bgDataModel = new BgDataModel();
         targetContext = InstrumentationRegistry.getTargetContext();
@@ -184,7 +185,7 @@ public class BaseModelUpdateTaskTestCase extends ProviderTestCase2<TestLauncherP
 
         @Override
         protected CacheEntry cacheLocked(ComponentName componentName,
-                LauncherActivityInfoCompat info, UserHandleCompat user,
+                LauncherActivityInfoCompat info, UserHandle user,
                 boolean usePackageIcon, boolean useLowResIcon) {
             CacheEntry entry = mCache.get(new ComponentKey(componentName, user));
             if (entry == null) {
@@ -198,7 +199,7 @@ public class BaseModelUpdateTaskTestCase extends ProviderTestCase2<TestLauncherP
             CacheEntry entry = new CacheEntry();
             entry.icon = newIcon();
             entry.title = title;
-            mCache.put(new ComponentKey(key, UserHandleCompat.myUserHandle()), entry);
+            mCache.put(new ComponentKey(key, Process.myUserHandle()), entry);
         }
 
         public Bitmap newIcon() {

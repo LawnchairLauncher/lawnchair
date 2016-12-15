@@ -44,7 +44,6 @@ import com.android.launcher3.LauncherSettings.WorkspaceScreens;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.ProviderConfig;
@@ -130,7 +129,7 @@ public class ImportDataTask {
     private void importWorkspaceItems(
             long firsetScreenId, LongSparseArray<Long> screenIdMap) throws Exception {
         String profileId = Long.toString(UserManagerCompat.getInstance(mContext)
-                .getSerialNumberForUser(UserHandleCompat.myUserHandle()));
+                .getSerialNumberForUser(Process.myUserHandle()));
 
         boolean createEmptyRowOnFirstScreen = false;
         if (FeatureFlags.QSB_ON_FIRST_SCREEN) {

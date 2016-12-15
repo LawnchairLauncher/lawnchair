@@ -16,6 +16,7 @@
 package com.android.launcher3.model;
 
 import android.content.Context;
+import android.os.UserHandle;
 import android.util.Log;
 import android.util.MutableInt;
 
@@ -26,7 +27,6 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
@@ -216,7 +216,7 @@ public class BgDataModel {
      * Clear all the deep shortcuts for the given package, and re-add the new shortcuts.
      */
     public synchronized void updateDeepShortcutMap(
-            String packageName, UserHandleCompat user, List<ShortcutInfoCompat> shortcuts) {
+            String packageName, UserHandle user, List<ShortcutInfoCompat> shortcuts) {
         if (packageName != null) {
             Iterator<ComponentKey> keysIter = deepShortcutMap.keySet().iterator();
             while (keysIter.hasNext()) {
