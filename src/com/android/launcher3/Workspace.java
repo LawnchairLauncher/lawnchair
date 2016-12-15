@@ -399,8 +399,7 @@ public class Workspace extends PagedView
             float scale = 1;
             if (isWidget) {
                 DeviceProfile profile = mLauncher.getDeviceProfile();
-                scale = Utilities.shrinkRectAboutCenter(r, profile.appWidgetScale.x,
-                        profile.appWidgetScale.y);
+                scale = Utilities.shrinkRect(r, profile.appWidgetScale.x, profile.appWidgetScale.y);
             }
             size[0] = r.width();
             size[1] = r.height();
@@ -3475,7 +3474,7 @@ public class Workspace extends PagedView
         Rect r = estimateItemPosition(layout, targetCell[0], targetCell[1], spanX, spanY);
         if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET) {
             DeviceProfile profile = mLauncher.getDeviceProfile();
-            Utilities.shrinkRectAboutCenter(r, profile.appWidgetScale.x, profile.appWidgetScale.y);
+            Utilities.shrinkRect(r, profile.appWidgetScale.x, profile.appWidgetScale.y);
         }
         loc[0] = r.left;
         loc[1] = r.top;

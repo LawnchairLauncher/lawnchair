@@ -249,7 +249,22 @@ public final class Utilities {
         return delta;
     }
 
-    public static float shrinkRectAboutCenter(Rect r, float scaleX, float scaleY) {
+    public static void scaleRectAboutCenter(Rect r, float scale) {
+        if (scale != 1.0f) {
+            int cx = r.centerX();
+            int cy = r.centerY();
+            r.offset(-cx, -cy);
+
+            r.left = (int) (r.left * scale + 0.5f);
+            r.top = (int) (r.top * scale + 0.5f);
+            r.right = (int) (r.right * scale + 0.5f);
+            r.bottom = (int) (r.bottom * scale + 0.5f);
+
+            r.offset(cx, cy);
+        }
+    }
+
+    public static float shrinkRect(Rect r, float scaleX, float scaleY) {
         float scale = Math.min(Math.min(scaleX, scaleY), 1.0f);
         if (scale < 1.0f) {
             int deltaX = (int) (r.width() * (scaleX - scale) * 0.5f);
