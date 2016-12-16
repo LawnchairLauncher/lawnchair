@@ -1794,8 +1794,7 @@ public class LauncherModel extends BroadcastReceiver
                     for (ShortcutInfo info : folder.contents) {
                         if (info.usingLowResIcon &&
                                 info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-                            mIconCache.getTitleAndIcon(
-                                    info, info.getPromisedIntent(), info.user, false);
+                            mIconCache.getTitleAndIcon(info, false);
                         }
                         pos ++;
                         if (pos >= FolderIcon.NUM_ITEMS_IN_PREVIEW) {
@@ -2520,10 +2519,12 @@ public class LauncherModel extends BroadcastReceiver
             int promiseType, int itemType, CursorIconInfo iconInfo) {
         final ShortcutInfo info = new ShortcutInfo();
         info.user = Process.myUserHandle();
+        info.promisedIntent = intent;
+
         info.iconBitmap = iconInfo.loadIcon(c, info);
         // the fallback icon
         if (info.iconBitmap == null) {
-            mIconCache.getTitleAndIcon(info, intent, info.user, false /* useLowResIcon */);
+            mIconCache.getTitleAndIcon(info, false /* useLowResIcon */);
         }
 
         if ((promiseType & ShortcutInfo.FLAG_RESTORED_ICON) != 0) {
@@ -2541,7 +2542,6 @@ public class LauncherModel extends BroadcastReceiver
 
         info.contentDescription = mUserManager.getBadgedLabelForUser(info.title, info.user);
         info.itemType = itemType;
-        info.promisedIntent = intent;
         info.status = promiseType;
         return info;
     }
@@ -2592,7 +2592,11 @@ public class LauncherModel extends BroadcastReceiver
         }
 
         final ShortcutInfo info = new ShortcutInfo();
-        mIconCache.getTitleAndIcon(info, componentName, lai, user, false, useLowResIcon);
+        info.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
+        info.user = user;
+        info.intent = newIntent;
+
+        mIconCache.getTitleAndIcon(info, lai, useLowResIcon);
         if (mIconCache.isDefaultIcon(info.iconBitmap, user) && c != null) {
             Bitmap icon = iconInfo.loadIcon(c);
             info.iconBitmap = icon != null ? icon : mIconCache.getDefaultIcon(user);
@@ -2612,8 +2616,6 @@ public class LauncherModel extends BroadcastReceiver
             info.title = componentName.getClassName();
         }
 
-        info.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
-        info.user = user;
         info.contentDescription = mUserManager.getBadgedLabelForUser(info.title, info.user);
         return info;
     }

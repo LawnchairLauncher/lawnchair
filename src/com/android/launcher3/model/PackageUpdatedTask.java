@@ -251,15 +251,13 @@ public class PackageUpdatedTask extends ExtendedModelTask {
                                 si.status = ShortcutInfo.DEFAULT;
                                 infoUpdated = true;
                                 if (si.itemType == Favorites.ITEM_TYPE_APPLICATION) {
-                                    iconCache.getTitleAndIcon(si, si.getPromisedIntent(),
-                                            si.user, si.usingLowResIcon);
+                                    iconCache.getTitleAndIcon(si, si.usingLowResIcon);
                                 }
                             }
 
                             if (appInfo != null && Intent.ACTION_MAIN.equals(si.intent.getAction())
                                     && si.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-                                iconCache.getTitleAndIcon(
-                                        si, si.getPromisedIntent(), si.user, si.usingLowResIcon);
+                                iconCache.getTitleAndIcon(si, si.usingLowResIcon);
                                 infoUpdated = true;
                             }
 

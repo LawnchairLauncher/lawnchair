@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 The Android Open Source Project
+ * Copyright (C) 2017 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,28 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.model;
+package com.android.launcher3;
 
-import com.android.launcher3.ItemInfoWithIcon;
+import android.graphics.Bitmap;
 
 /**
- * Represents a {@link Package} in the widget tray section.
+ * Represents an ItemInfo which also holds an icon.
  */
-public class PackageItemInfo extends ItemInfoWithIcon {
+public abstract class ItemInfoWithIcon extends ItemInfo {
 
     /**
-     * Package name of the {@link PackageItemInfo}.
+     * A bitmap version of the application icon.
      */
-    public String packageName;
+    public Bitmap iconBitmap;
 
-    PackageItemInfo(String packageName) {
-        this.packageName = packageName;
-    }
+    /**
+     * Indicates whether we're using a low res icon
+     */
+    public boolean usingLowResIcon;
 
-    @Override
-    protected String dumpProperties() {
-        return super.dumpProperties() + " packageName=" + packageName;
+    protected ItemInfoWithIcon() { }
+
+    protected ItemInfoWithIcon(ItemInfo info) {
+        super(info);
     }
 }

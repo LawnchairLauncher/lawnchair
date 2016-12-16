@@ -61,7 +61,7 @@ public class ShortcutsChangedTask extends ExtendedModelTask {
         for (ItemInfo itemInfo : dataModel.itemsIdMap) {
             if (itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
                 ShortcutInfo si = (ShortcutInfo) itemInfo;
-                if (si.getPromisedIntent().getPackage().equals(mPackageName)
+                if (si.getIntent().getPackage().equals(mPackageName)
                         && si.user.equals(mUser)) {
                     idsToWorkspaceShortcutInfos.addToList(si.getDeepShortcutId(), si);
                 }

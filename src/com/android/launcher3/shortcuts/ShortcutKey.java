@@ -4,7 +4,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.os.UserHandle;
 
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.ItemInfo;
 import com.android.launcher3.util.ComponentKey;
 
 /**
@@ -32,7 +32,7 @@ public class ShortcutKey extends ComponentKey {
         return new ShortcutKey(intent.getPackage(), user, shortcutId);
     }
 
-    public static ShortcutKey fromShortcutInfo(ShortcutInfo info) {
-        return fromIntent(info.getPromisedIntent(), info.user);
+    public static ShortcutKey fromItemInfo(ItemInfo info) {
+        return fromIntent(info.getIntent(), info.user);
     }
 }

@@ -76,8 +76,7 @@ public class UserLockStateChangedTask extends ExtendedModelTask {
                     && mUser.equals(itemInfo.user)) {
                 ShortcutInfo si = (ShortcutInfo) itemInfo;
                 if (isUserUnlocked) {
-                    ShortcutInfoCompat shortcut =
-                            pinnedShortcuts.get(ShortcutKey.fromShortcutInfo(si));
+                    ShortcutInfoCompat shortcut = pinnedShortcuts.get(ShortcutKey.fromItemInfo(si));
                     // We couldn't verify the shortcut during loader. If its no longer available
                     // (probably due to clear data), delete the workspace item as well
                     if (shortcut == null) {

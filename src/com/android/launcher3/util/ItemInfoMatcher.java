@@ -100,7 +100,7 @@ public abstract class ItemInfoMatcher {
             @Override
             public boolean matches(ItemInfo info, ComponentName cn) {
                 return info.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT &&
-                        keys.contains(ShortcutKey.fromShortcutInfo((ShortcutInfo) info));
+                        keys.contains(ShortcutKey.fromItemInfo(info));
             }
         };
     }
