@@ -18,6 +18,7 @@ package com.android.launcher3.graphics;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent.ShortcutIconResource;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -66,14 +67,13 @@ public class LauncherIcons {
      * Returns a bitmap suitable for the all apps view. If the package or the resource do not
      * exist, it returns null.
      */
-    public static Bitmap createIconBitmap(String packageName, String resourceName,
-            Context context) {
+    public static Bitmap createIconBitmap(ShortcutIconResource iconRes, Context context) {
         PackageManager packageManager = context.getPackageManager();
         // the resource
         try {
-            Resources resources = packageManager.getResourcesForApplication(packageName);
+            Resources resources = packageManager.getResourcesForApplication(iconRes.packageName);
             if (resources != null) {
-                final int id = resources.getIdentifier(resourceName, null, null);
+                final int id = resources.getIdentifier(iconRes.resourceName, null, null);
                 return createIconBitmap(
                         resources.getDrawableForDensity(id, LauncherAppState.getInstance()
                                 .getInvariantDeviceProfile().fillResIconDpi), context);

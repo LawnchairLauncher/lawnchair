@@ -60,7 +60,7 @@ public class CursorIconInfo {
             info.iconResource = new ShortcutIconResource();
             info.iconResource.packageName = packageName;
             info.iconResource.resourceName = resourceName;
-            icon = LauncherIcons.createIconBitmap(packageName, resourceName, mContext);
+            icon = LauncherIcons.createIconBitmap(info.iconResource, mContext);
         }
         if (icon == null) {
             // Failed to load from resource, try loading from DB.

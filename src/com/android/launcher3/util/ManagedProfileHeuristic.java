@@ -19,7 +19,9 @@ package com.android.launcher3.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.android.launcher3.AppInfo;
 import com.android.launcher3.FolderInfo;
+import com.android.launcher3.IconCache;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherFiles;
@@ -65,11 +67,13 @@ public class ManagedProfileHeuristic {
     private final Context mContext;
     private final LauncherModel mModel;
     private final UserHandleCompat mUser;
+    private final IconCache mIconCache;
 
     private ManagedProfileHeuristic(Context context, UserHandleCompat user) {
         mContext = context;
         mUser = user;
         mModel = LauncherAppState.getInstance().getModel();
+        mIconCache = LauncherAppState.getInstance().getIconCache();
     }
 
     public void processPackageRemoved(String[] packages) {
@@ -108,10 +112,12 @@ public class ManagedProfileHeuristic {
             long folderCreationTime =
                     mUserManager.getUserCreationTime(user) + AUTO_ADD_TO_FOLDER_DURATION;
 
+            boolean quietModeEnabled = UserManagerCompat.getInstance(mContext)
+                    .isQuietModeEnabled(user);
             for (int i = 0; i < count; i++) {
                 LauncherActivityInstallInfo info = apps.get(i);
-
-                ShortcutInfo si = new ShortcutInfo(info.info, mContext);
+                ShortcutInfo si = new AppInfo(mContext, info.info, user, mIconCache,
+                        quietModeEnabled, false /* useLowResIcon */).makeShortcut();
                 ((info.installTime <= folderCreationTime) ? workFolderApps : homescreenApps).add(si);
             }
 

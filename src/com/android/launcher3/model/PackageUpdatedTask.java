@@ -34,6 +34,7 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -209,11 +210,9 @@ public class PackageUpdatedTask extends ExtendedModelTask {
                         // Update shortcuts which use iconResource.
                         if ((si.iconResource != null)
                                 && packageSet.contains(si.iconResource.packageName)) {
-                            Bitmap icon = LauncherIcons.createIconBitmap(
-                                    si.iconResource.packageName,
-                                    si.iconResource.resourceName, context);
+                            Bitmap icon = LauncherIcons.createIconBitmap(si.iconResource, context);
                             if (icon != null) {
-                                si.setIcon(icon);
+                                si.iconBitmap = icon;
                                 infoUpdated = true;
                             }
                         }
@@ -251,14 +250,16 @@ public class PackageUpdatedTask extends ExtendedModelTask {
                                 si.promisedIntent = null;
                                 si.status = ShortcutInfo.DEFAULT;
                                 infoUpdated = true;
-                                si.updateIcon(iconCache);
+                                if (si.itemType == Favorites.ITEM_TYPE_APPLICATION) {
+                                    iconCache.getTitleAndIcon(si, si.getPromisedIntent(),
+                                            si.user, si.usingLowResIcon);
+                                }
                             }
 
                             if (appInfo != null && Intent.ACTION_MAIN.equals(si.intent.getAction())
                                     && si.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-                                si.updateIcon(iconCache);
-                                si.title = Utilities.trim(appInfo.title);
-                                si.contentDescription = appInfo.contentDescription;
+                                iconCache.getTitleAndIcon(
+                                        si, si.getPromisedIntent(), si.user, si.usingLowResIcon);
                                 infoUpdated = true;
                             }
 

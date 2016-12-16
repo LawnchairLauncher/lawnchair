@@ -31,7 +31,6 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.FocusHelper.PagedFolderKeyEventListener;
-import com.android.launcher3.IconCache;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
@@ -73,7 +72,6 @@ public class FolderPagedView extends PagedView {
     public final boolean mIsRtl;
 
     private final LayoutInflater mInflater;
-    private final IconCache mIconCache;
     private final ViewGroupFocusHelper mFocusIndicatorHelper;
 
     @Thunk final HashMap<View, Runnable> mPendingAnimations = new HashMap<>();
@@ -107,7 +105,6 @@ public class FolderPagedView extends PagedView {
         mMaxItemsPerPage = mMaxCountX * mMaxCountY;
 
         mInflater = LayoutInflater.from(context);
-        mIconCache = app.getIconCache();
 
         mIsRtl = Utilities.isRtl(getResources());
         setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
@@ -231,7 +228,7 @@ public class FolderPagedView extends PagedView {
     public View createNewView(ShortcutInfo item) {
         final BubbleTextView textView = (BubbleTextView) mInflater.inflate(
                 R.layout.folder_application, null, false);
-        textView.applyFromShortcutInfo(item, mIconCache);
+        textView.applyFromShortcutInfo(item);
         textView.setOnClickListener(mFolder);
         textView.setOnLongClickListener(mFolder);
         textView.setOnFocusChangeListener(mFocusIndicatorHelper);

@@ -155,13 +155,12 @@ public class BubbleTextView extends TextView
         setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
     }
 
-    public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache) {
-        applyFromShortcutInfo(info, iconCache, false);
+    public void applyFromShortcutInfo(ShortcutInfo info) {
+        applyFromShortcutInfo(info, false);
     }
 
-    public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache,
-            boolean promiseStateChanged) {
-        applyIconAndLabel(info.getIcon(iconCache), info);
+    public void applyFromShortcutInfo(ShortcutInfo info, boolean promiseStateChanged) {
+        applyIconAndLabel(info.iconBitmap, info);
         setTag(info);
         if (promiseStateChanged || info.isPromise()) {
             applyState(promiseStateChanged);
@@ -557,8 +556,7 @@ public class BubbleTextView extends TextView
             if (info instanceof AppInfo) {
                 applyFromApplicationInfo((AppInfo) info);
             } else if (info instanceof ShortcutInfo) {
-                applyFromShortcutInfo((ShortcutInfo) info,
-                        LauncherAppState.getInstance().getIconCache());
+                applyFromShortcutInfo((ShortcutInfo) info);
                 if ((info.rank < FolderIcon.NUM_ITEMS_IN_PREVIEW) && (info.container >= 0)) {
                     View folderIcon =
                             mLauncher.getWorkspace().getHomescreenIconByItemId(info.container);
