@@ -41,6 +41,7 @@ import android.os.Bundle;
 import android.os.DeadObjectException;
 import android.os.PowerManager;
 import android.os.TransactionTooLargeException;
+import android.support.v4.os.BuildCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -89,9 +90,7 @@ public final class Utilities {
     private static final Matrix sInverseMatrix = new Matrix();
 
     public static boolean isAtLeastO() {
-        // TODO: Clean this up: b/32610406
-        return !"REL".equals(Build.VERSION.CODENAME)
-                && "O".compareTo(Build.VERSION.CODENAME) <= 0;
+        return BuildCompat.isAtLeastO();
     }
 
     public static final boolean ATLEAST_NOUGAT_MR1 =
