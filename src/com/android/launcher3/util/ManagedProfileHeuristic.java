@@ -31,7 +31,6 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
@@ -211,9 +210,6 @@ public class ManagedProfileHeuristic {
      * Verifies that entries corresponding to {@param users} exist and removes all invalid entries.
      */
     public static void processAllUsers(List<UserHandle> users, Context context) {
-        if (!Utilities.ATLEAST_LOLLIPOP) {
-            return;
-        }
         UserManagerCompat userManager = UserManagerCompat.getInstance(context);
         HashSet<String> validKeys = new HashSet<String>();
         for (UserHandle user : users) {

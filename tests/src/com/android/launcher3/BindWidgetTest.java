@@ -1,6 +1,5 @@
 package com.android.launcher3;
 
-import android.annotation.TargetApi;
 import android.appwidget.AppWidgetHost;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -9,7 +8,6 @@ import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionParams;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.test.uiautomator.UiSelector;
 import android.test.suitebuilder.annotation.LargeTest;
@@ -33,7 +31,6 @@ import java.util.concurrent.TimeUnit;
  * Note running these tests will clear the workspace on the device.
  */
 @LargeTest
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class BindWidgetTest extends LauncherInstrumentationTestCase {
 
     private ContentResolver mResolver;
@@ -264,13 +261,13 @@ public class BindWidgetTest extends LauncherInstrumentationTestCase {
         item.spanY = info.minSpanY;
         item.minSpanX = info.minSpanX;
         item.minSpanY = info.minSpanY;
-        item.user = mWidgetManager.getUser(info);
+        item.user = info.getUser();
         item.cellX = 0;
         item.cellY = 1;
         item.container = LauncherSettings.Favorites.CONTAINER_DESKTOP;
 
         if (bindWidget) {
-            PendingAddWidgetInfo pendingInfo = new PendingAddWidgetInfo(mTargetContext, info);
+            PendingAddWidgetInfo pendingInfo = new PendingAddWidgetInfo(info);
             pendingInfo.spanX = item.spanX;
             pendingInfo.spanY = item.spanY;
             pendingInfo.minSpanX = item.minSpanX;

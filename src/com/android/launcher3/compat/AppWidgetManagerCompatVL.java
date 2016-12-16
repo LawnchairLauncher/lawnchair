@@ -16,7 +16,6 @@
 
 package com.android.launcher3.compat;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetProviderInfo;
@@ -31,15 +30,12 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.view.View;
 import android.widget.Toast;
 
-import com.android.launcher3.IconCache;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.util.ComponentKey;
@@ -48,7 +44,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
 
     private final UserManager mUserManager;
@@ -70,23 +65,10 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
     }
 
     @Override
-    public String loadLabel(LauncherAppWidgetProviderInfo info) {
-        return info.getLabel(mPm);
-    }
-
-    @Override
     public boolean bindAppWidgetIdIfAllowed(int appWidgetId, AppWidgetProviderInfo info,
             Bundle options) {
         return mAppWidgetManager.bindAppWidgetIdIfAllowed(
                 appWidgetId, info.getProfile(), info.provider, options);
-    }
-
-    @Override
-    public UserHandle getUser(LauncherAppWidgetProviderInfo info) {
-        if (info.isCustomWidget) {
-            return Process.myUserHandle();
-        }
-        return info.getProfile();
     }
 
     @Override
@@ -97,16 +79,6 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
         } catch (ActivityNotFoundException | SecurityException e) {
             Toast.makeText(activity, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
         }
-    }
-
-    @Override
-    public Drawable loadPreview(AppWidgetProviderInfo info) {
-        return info.loadPreviewImage(mContext, 0);
-    }
-
-    @Override
-    public Drawable loadIcon(LauncherAppWidgetProviderInfo info, IconCache cache) {
-        return info.getIcon(mContext, cache);
     }
 
     @Override

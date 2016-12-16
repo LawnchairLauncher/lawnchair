@@ -524,11 +524,7 @@ public class BubbleTextView extends TextView
 
     protected void applyCompoundDrawables(Drawable icon) {
         if (mLayoutHorizontal) {
-            if (Utilities.ATLEAST_JB_MR1) {
-                setCompoundDrawablesRelative(icon, null, null, null);
-            } else {
-                setCompoundDrawables(icon, null, null, null);
-            }
+            setCompoundDrawablesRelative(icon, null, null, null);
         } else {
             setCompoundDrawables(null, icon, null, null);
         }

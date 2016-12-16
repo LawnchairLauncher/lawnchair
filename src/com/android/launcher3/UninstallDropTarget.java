@@ -1,12 +1,10 @@
 package com.android.launcher3;
 
-import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.UserHandle;
 import android.os.UserManager;
@@ -40,15 +38,12 @@ public class UninstallDropTarget extends ButtonDropTarget {
         return supportsDrop(getContext(), info);
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public static boolean supportsDrop(Context context, Object info) {
-        if (Utilities.ATLEAST_JB_MR2) {
-            UserManager userManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
-            Bundle restrictions = userManager.getUserRestrictions();
-            if (restrictions.getBoolean(UserManager.DISALLOW_APPS_CONTROL, false)
-                    || restrictions.getBoolean(UserManager.DISALLOW_UNINSTALL_APPS, false)) {
-                return false;
-            }
+        UserManager userManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
+        Bundle restrictions = userManager.getUserRestrictions();
+        if (restrictions.getBoolean(UserManager.DISALLOW_APPS_CONTROL, false)
+                || restrictions.getBoolean(UserManager.DISALLOW_UNINSTALL_APPS, false)) {
+            return false;
         }
 
         return getUninstallTarget(context, info) != null;

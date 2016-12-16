@@ -11,7 +11,6 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.util.ComponentKey;
 
 import java.text.Collator;
@@ -32,10 +31,10 @@ public class WidgetItem extends ComponentKey implements Comparable<WidgetItem> {
     public final String label;
     public final int spanX, spanY;
 
-    public WidgetItem(LauncherAppWidgetProviderInfo info, AppWidgetManagerCompat widgetManager) {
-        super(info.provider, widgetManager.getUser(info));
+    public WidgetItem(LauncherAppWidgetProviderInfo info, PackageManager pm) {
+        super(info.provider, info.getProfile());
 
-        label = Utilities.trim(widgetManager.loadLabel(info));
+        label = Utilities.trim(info.getLabel(pm));
         widgetInfo = info;
         activityInfo = null;
 

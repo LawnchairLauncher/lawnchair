@@ -23,7 +23,6 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.UserHandle;
 
-import com.android.launcher3.Utilities;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 
 import java.util.List;
@@ -51,11 +50,7 @@ public abstract class LauncherAppsCompat {
     public static LauncherAppsCompat getInstance(Context context) {
         synchronized (sInstanceLock) {
             if (sInstance == null) {
-                if (Utilities.ATLEAST_LOLLIPOP) {
-                    sInstance = new LauncherAppsCompatVL(context.getApplicationContext());
-                } else {
-                    sInstance = new LauncherAppsCompatV16(context.getApplicationContext());
-                }
+                sInstance = new LauncherAppsCompatVL(context.getApplicationContext());
             }
             return sInstance;
         }
@@ -73,5 +68,4 @@ public abstract class LauncherAppsCompat {
     public abstract boolean isPackageEnabledForProfile(String packageName, UserHandle user);
     public abstract boolean isActivityEnabledForProfile(ComponentName component,
             UserHandle user);
-    public abstract boolean isPackageSuspendedForProfile(String packageName, UserHandle user);
 }

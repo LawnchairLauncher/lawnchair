@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources.Theme;
@@ -26,7 +25,6 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Layout;
 import android.text.StaticLayout;
@@ -63,7 +61,6 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
     private final TextPaint mPaint;
     private Layout mSetupTextLayout;
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public PendingAppWidgetHostView(Context context, LauncherAppWidgetInfo info,
             IconCache cache, boolean disabledForSafeMode) {
         super(new ContextThemeWrapper(context, R.style.WidgetContainerTheme));
@@ -81,10 +78,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
         setBackgroundResource(R.drawable.quantum_panel_dark);
         setWillNotDraw(false);
 
-        if (Utilities.ATLEAST_LOLLIPOP) {
-            setElevation(getResources().getDimension(R.dimen.pending_widget_elevation));
-        }
-
+        setElevation(getResources().getDimension(R.dimen.pending_widget_elevation));
         updateIcon(cache);
         updateAppWidget(null);
         setOnClickListener(mLauncher);

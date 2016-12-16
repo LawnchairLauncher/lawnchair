@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import android.annotation.TargetApi;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
@@ -39,7 +38,6 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.database.sqlite.SQLiteStatement;
 import android.net.Uri;
 import android.os.Binder;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -534,13 +532,7 @@ public class LauncherProvider extends ContentProvider {
      *
      * @return the loader if the restrictions are set and the resource exists; null otherwise.
      */
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     private AutoInstallsLayout createWorkspaceLoaderFromAppRestriction(AppWidgetHost widgetHost) {
-        // UserManager.getApplicationRestrictions() requires minSdkVersion >= 18
-        if (!Utilities.ATLEAST_JB_MR2) {
-            return null;
-        }
-
         Context ctx = getContext();
         UserManager um = (UserManager) ctx.getSystemService(Context.USER_SERVICE);
         Bundle bundle = um.getApplicationRestrictions(ctx.getPackageName());

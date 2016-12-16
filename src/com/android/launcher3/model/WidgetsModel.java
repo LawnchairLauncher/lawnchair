@@ -59,16 +59,16 @@ public class WidgetsModel {
 
         final ArrayList<WidgetItem> widgetsAndShortcuts = new ArrayList<>();
         try {
+            PackageManager pm = context.getPackageManager();
+
             // Widgets
-            AppWidgetManagerCompat widgetManager = AppWidgetManagerCompat.getInstance(context);
-            for (AppWidgetProviderInfo widgetInfo : widgetManager.getAllProviders()) {
+            for (AppWidgetProviderInfo widgetInfo :
+                    AppWidgetManagerCompat.getInstance(context).getAllProviders()) {
                 widgetsAndShortcuts.add(new WidgetItem(
-                        LauncherAppWidgetProviderInfo.fromProviderInfo(context, widgetInfo),
-                        widgetManager));
+                        LauncherAppWidgetProviderInfo.fromProviderInfo(context, widgetInfo), pm));
             }
 
             // Shortcuts
-            PackageManager pm = context.getPackageManager();
             for (ResolveInfo info :
                     pm.queryIntentActivities(new Intent(Intent.ACTION_CREATE_SHORTCUT), 0)) {
                 widgetsAndShortcuts.add(new WidgetItem(info, pm));

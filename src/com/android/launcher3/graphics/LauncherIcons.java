@@ -16,7 +16,6 @@
 
 package com.android.launcher3.graphics;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent.ShortcutIconResource;
 import android.content.pm.PackageManager;
@@ -32,13 +31,11 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
-import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 
 /**
@@ -104,7 +101,6 @@ public class LauncherIcons {
      * Returns a bitmap suitable for the all apps view. The icon is badged for {@param user}.
      * The bitmap is also visually normalized with other icons.
      */
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static Bitmap createBadgedIconBitmap(
             Drawable icon, UserHandle user, Context context) {
         float scale = FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION ?
@@ -117,8 +113,7 @@ public class LauncherIcons {
      * Badges the provided icon with the user badge if required.
      */
     public static Bitmap badgeIconForUser(Bitmap icon, UserHandle user, Context context) {
-        if (Utilities.ATLEAST_LOLLIPOP && user != null
-                && !Process.myUserHandle().equals(user)) {
+        if (user != null && !Process.myUserHandle().equals(user)) {
             BitmapDrawable drawable = new FixedSizeBitmapDrawable(icon);
             Drawable badged = context.getPackageManager().getUserBadgedIcon(
                     drawable, user);
@@ -155,7 +150,6 @@ public class LauncherIcons {
     /**
      * Adds the {@param badge} on top of {@param srcTgt} using the badge dimensions.
      */
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static Bitmap badgeWithBitmap(Bitmap srcTgt, Bitmap badge, Context context) {
         int badgeSize = context.getResources().getDimensionPixelSize(R.dimen.profile_badge_size);
         synchronized (sCanvas) {

@@ -12,12 +12,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.protobuf'
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 26
     buildToolsVersion '24.0.0'
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
 
@@ -59,10 +59,11 @@ repositories {
     mavenCentral()
 }
 
+final String SUPPORT_LIBS_VERSION = '26.0.0-SNAPSHOT'
 dependencies {
-    compile 'com.android.support:support-v4:23.1.1'
-    compile 'com.android.support:recyclerview-v7:23.1.1'
-    compile 'com.android.support:palette-v7:23.2.0'
+    compile "com.android.support:support-v4:${SUPPORT_LIBS_VERSION}"
+    compile "com.android.support:recyclerview-v7:${SUPPORT_LIBS_VERSION}"
+    compile "com.android.support:palette-v7:${SUPPORT_LIBS_VERSION}"
     compile 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-2'
 
     testCompile 'junit:junit:4.12'

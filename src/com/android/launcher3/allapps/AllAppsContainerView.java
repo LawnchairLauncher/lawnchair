@@ -261,9 +261,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                 0, 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
         mSearchInput.setHint(spanned);
 
-        mElevationController = Utilities.ATLEAST_LOLLIPOP
-                ? new HeaderElevationController.ControllerVL(mSearchContainer)
-                : new HeaderElevationController.ControllerV16(mSearchContainer);
+        mElevationController = new HeaderElevationController(mSearchContainer);
 
         // Load the all apps recycler view
         mAppsRecyclerView = (AllAppsRecyclerView) findViewById(R.id.apps_list_view);

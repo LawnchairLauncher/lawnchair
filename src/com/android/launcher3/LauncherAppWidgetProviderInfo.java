@@ -1,6 +1,5 @@
 package com.android.launcher3;
 
-import android.annotation.TargetApi;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
@@ -9,8 +8,9 @@ import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Parcel;
+import android.os.Process;
+import android.os.UserHandle;
 
 /**
  * This class is a thin wrapper around the framework AppWidgetProviderInfo class. This class affords
@@ -92,7 +92,6 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
                 (minResizeHeight + widgetPadding.top + widgetPadding.bottom) / smallestCellHeight));
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public String getLabel(PackageManager packageManager) {
         if (isCustomWidget) {
             return Utilities.trim(label);
@@ -100,7 +99,6 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
         return super.loadLabel(packageManager);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public Drawable getIcon(Context context, IconCache cache) {
         if (isCustomWidget) {
             return cache.getFullResIcon(provider.getPackageName(), icon);
@@ -121,5 +119,9 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
         return new Point(
                 (resizeMode & RESIZE_HORIZONTAL) != 0 ? minSpanX : -1,
                         (resizeMode & RESIZE_VERTICAL) != 0 ? minSpanY : -1);
+    }
+
+    public UserHandle getUser() {
+        return isCustomWidget ? Process.myUserHandle() : getProfile();
     }
  }

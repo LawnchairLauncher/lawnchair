@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.WallpaperManager;
 import android.content.ActivityNotFoundException;
@@ -104,18 +103,6 @@ public final class Utilities {
 
     public static final boolean ATLEAST_LOLLIPOP_MR1 =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1;
-
-    public static final boolean ATLEAST_LOLLIPOP =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
-
-    public static final boolean ATLEAST_KITKAT =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
-
-    public static final boolean ATLEAST_JB_MR1 =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1;
-
-    public static final boolean ATLEAST_JB_MR2 =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2;
 
     // An intent extra to indicate the horizontal scroll of the wallpaper.
     public static final String EXTRA_WALLPAPER_OFFSET = "com.android.launcher3.WALLPAPER_OFFSET";
@@ -229,7 +216,7 @@ public final class Utilities {
                 localY < (v.getHeight() + slop);
     }
 
-    public static int[] getCenterDeltaInScreenSpace(View v0, View v1, int[] delta) {
+    public static int[] getCenterDeltaInScreenSpace(View v0, View v1) {
         v0.getLocationInWindow(sLoc0);
         v1.getLocationInWindow(sLoc1);
 
@@ -237,15 +224,7 @@ public final class Utilities {
         sLoc0[1] += (v0.getMeasuredHeight() * v0.getScaleY()) / 2;
         sLoc1[0] += (v1.getMeasuredWidth() * v1.getScaleX()) / 2;
         sLoc1[1] += (v1.getMeasuredHeight() * v1.getScaleY()) / 2;
-
-        if (delta == null) {
-            delta = new int[2];
-        }
-
-        delta[0] = sLoc1[0] - sLoc0[0];
-        delta[1] = sLoc1[1] - sLoc0[1];
-
-        return delta;
+        return new int[] {sLoc1[0] - sLoc0[0], sLoc1[1] - sLoc0[1]};
     }
 
     public static void scaleRectAboutCenter(Rect r, float scale) {
@@ -479,10 +458,8 @@ public final class Utilities {
         System.out.println(b.toString());
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static boolean isRtl(Resources res) {
-        return ATLEAST_JB_MR1 &&
-                (res.getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL);
+        return res.getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
     }
 
     /**
@@ -569,16 +546,11 @@ public final class Utilities {
      * @param msg original message
      * @param ttsMsg message to be spoken
      */
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static CharSequence wrapForTts(CharSequence msg, String ttsMsg) {
-        if (Utilities.ATLEAST_LOLLIPOP) {
-            SpannableString spanned = new SpannableString(msg);
-            spanned.setSpan(new TtsSpan.TextBuilder(ttsMsg).build(),
-                    0, spanned.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-            return spanned;
-        } else {
-            return msg;
-        }
+        SpannableString spanned = new SpannableString(msg);
+        spanned.setSpan(new TtsSpan.TextBuilder(ttsMsg).build(),
+                0, spanned.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        return spanned;
     }
 
     /**
@@ -593,10 +565,9 @@ public final class Utilities {
                 LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static boolean isPowerSaverOn(Context context) {
         PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        return ATLEAST_LOLLIPOP && powerManager.isPowerSaveMode();
+        return powerManager.isPowerSaveMode();
     }
 
     public static boolean isWallpaperAllowed(Context context) {
