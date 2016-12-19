@@ -475,9 +475,13 @@ public class Launcher extends Activity
             mExtractedColors.load(this);
             mHotseat.updateColor(mExtractedColors, !mPaused);
             mWorkspace.getPageIndicator().updateColor(mExtractedColors);
+            boolean lightStatusBar = (FeatureFlags.LIGHT_STATUS_BAR
+                    && mExtractedColors.getColor(ExtractedColors.STATUS_BAR_INDEX,
+                    ExtractedColors.DEFAULT_DARK) == ExtractedColors.DEFAULT_LIGHT);
             // It's possible that All Apps is visible when this is run,
-            // so always use light status bar in that case.
-            activateLightStatusBar(isAllAppsVisible(), false);
+            // so always use light status bar in that case. Only change nav bar color to status bar
+            // color when All Apps is visible.
+            activateLightStatusBar(lightStatusBar || isAllAppsVisible(), isAllAppsVisible());
         }
     }
 
@@ -486,28 +490,24 @@ public class Launcher extends Activity
 
     /**
      * Sets the status bar to be light or not. Light status bar means dark icons.
-     * @param activate if true, make sure the status bar is light, otherwise base on wallpaper.
-     * @param changeNavBar make sure the nav bar is light only if this param and {@param activate}
-     *                     is also true.
+     * @param lightStatusBar make sure the status bar is light
+     * @param changeNavBar if true, make the nav bar theme in sync with status bar.
      */
-    public void activateLightStatusBar(boolean activate, boolean changeNavBar) {
-        boolean lightStatusBar = activate || (FeatureFlags.LIGHT_STATUS_BAR
-                && mExtractedColors.getColor(ExtractedColors.STATUS_BAR_INDEX,
-                ExtractedColors.DEFAULT_DARK) == ExtractedColors.DEFAULT_LIGHT);
+    public void activateLightStatusBar(boolean lightStatusBar, boolean changeNavBar) {
         int oldSystemUiFlags = getWindow().getDecorView().getSystemUiVisibility();
         int newSystemUiFlags = oldSystemUiFlags;
         if (lightStatusBar) {
             newSystemUiFlags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR ;
+            if (changeNavBar && Utilities.isAtLeastO()) {
+                newSystemUiFlags |= SYSTEM_UI_FLAG_LIGHT_NAV_BAR;
+            }
         } else {
             newSystemUiFlags &= ~(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        }
-        if (Utilities.isAtLeastO() && activate) {
-            if (changeNavBar) {
-                newSystemUiFlags |= SYSTEM_UI_FLAG_LIGHT_NAV_BAR;
-            } else {
+            if (changeNavBar && Utilities.isAtLeastO()) {
                 newSystemUiFlags &= ~(SYSTEM_UI_FLAG_LIGHT_NAV_BAR);
             }
         }
+
         if (newSystemUiFlags != oldSystemUiFlags) {
             getWindow().getDecorView().setSystemUiVisibility(newSystemUiFlags);
         }
