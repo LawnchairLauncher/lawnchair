@@ -18,7 +18,6 @@ package com.android.launcher3;
 
 import android.app.WallpaperManager;
 import android.content.Context;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
@@ -148,17 +147,16 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
                 CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
 
                 if (child instanceof LauncherAppWidgetHostView) {
+                    LauncherAppWidgetHostView lahv = (LauncherAppWidgetHostView) child;
+
                     // Scale and center the widget to fit within its cells.
                     DeviceProfile profile = mLauncher.getDeviceProfile();
                     float scaleX = profile.appWidgetScale.x;
                     float scaleY = profile.appWidgetScale.y;
 
-                    float scale = Math.min(scaleX, scaleY);
-                    child.setScaleX(scale);
-                    child.setScaleY(scale);
-
-                    child.setTranslationX(-(lp.width - (lp.width * scaleX)) / 2.0f);
-                    child.setTranslationY(-(lp.height - (lp.height * scaleY)) / 2.0f);
+                    lahv.setScaleToFit(Math.min(scaleX, scaleY));
+                    lahv.setTranslationForCentering(-(lp.width - (lp.width * scaleX)) / 2.0f,
+                            -(lp.height - (lp.height * scaleY)) / 2.0f);
                 }
 
                 int childLeft = lp.x;

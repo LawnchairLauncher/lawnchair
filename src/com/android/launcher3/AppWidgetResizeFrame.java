@@ -354,8 +354,7 @@ public class AppWidgetResizeFrame extends FrameLayout
     }
 
     public void snapToWidget(boolean animate) {
-        DeviceProfile profile = mLauncher.getDeviceProfile();
-        float scale = Math.min(profile.appWidgetScale.x, profile.appWidgetScale.y);
+        float scale = mWidgetView.getScaleToFit();
 
         mDragLayer.getViewRectRelativeToSelf(mWidgetView, sTmpRect);
 

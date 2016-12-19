@@ -24,7 +24,6 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.TextView;
 
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetHostView;
 import com.android.launcher3.PreloadIconDrawable;
@@ -112,8 +111,7 @@ public class DragPreviewProvider {
             width = bounds.width();
             height = bounds.height();
         } else if (mView instanceof LauncherAppWidgetHostView) {
-            DeviceProfile profile = Launcher.getLauncher(mView.getContext()).getDeviceProfile();
-            scale = Math.min(profile.appWidgetScale.x, profile.appWidgetScale.y);
+            scale = ((LauncherAppWidgetHostView) mView).getScaleToFit();
             width = (int) (mView.getWidth() * scale);
             height = (int) (mView.getHeight() * scale);
         }
@@ -150,8 +148,7 @@ public class DragPreviewProvider {
         int height = mView.getHeight();
 
         if (mView instanceof LauncherAppWidgetHostView) {
-            DeviceProfile profile = Launcher.getLauncher(mView.getContext()).getDeviceProfile();
-            scale = Math.min(profile.appWidgetScale.x, profile.appWidgetScale.y);
+            scale = ((LauncherAppWidgetHostView) mView).getScaleToFit();
             width = (int) Math.floor(mView.getWidth() * scale);
             height = (int) Math.floor(mView.getHeight() * scale);
         }
@@ -190,11 +187,10 @@ public class DragPreviewProvider {
     public float getScaleAndPosition(Bitmap preview, int[] outPos) {
         float scale = Launcher.getLauncher(mView.getContext())
                 .getDragLayer().getLocationInDragLayer(mView, outPos);
-        DeviceProfile profile = Launcher.getLauncher(mView.getContext()).getDeviceProfile();
         if (mView instanceof LauncherAppWidgetHostView) {
             // App widgets are technically scaled, but are drawn at their expected size -- so the
             // app widget scale should not affect the scale of the preview.
-            scale /= Math.min(profile.appWidgetScale.x, profile.appWidgetScale.y);
+            scale /= ((LauncherAppWidgetHostView) mView).getScaleToFit();
         }
 
         outPos[0] = Math.round(outPos[0] -
