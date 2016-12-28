@@ -212,6 +212,23 @@ public class AppWidgetResizeFrame extends FrameLayout
         lp.height = mTempRange1.size();
 
         resizeWidgetIfNeeded(false);
+
+        // When the widget resizes in multi-window mode, the translation value changes to maintain
+        // a center fit. These overrides ensure the resize frame always aligns with the widget view.
+        getSnappedRectRelativeToDragLayer(sTmpRect);
+        if (mLeftBorderActive) {
+            lp.width = sTmpRect.width() + sTmpRect.left - lp.x;
+        }
+        if (mTopBorderActive) {
+            lp.height = sTmpRect.height() + sTmpRect.top - lp.y;
+        }
+        if (mRightBorderActive) {
+            lp.x = sTmpRect.left;
+        }
+        if (mBottomBorderActive) {
+            lp.y = sTmpRect.top;
+        }
+
         requestLayout();
     }
 
@@ -340,8 +357,8 @@ public class AppWidgetResizeFrame extends FrameLayout
         int xThreshold = mCellLayout.getCellWidth();
         int yThreshold = mCellLayout.getCellHeight();
 
-        mDeltaXAddOn = mRunningHInc * xThreshold; 
-        mDeltaYAddOn = mRunningVInc * yThreshold; 
+        mDeltaXAddOn = mRunningHInc * xThreshold;
+        mDeltaYAddOn = mRunningVInc * yThreshold;
         mDeltaX = 0;
         mDeltaY = 0;
 
@@ -353,18 +370,35 @@ public class AppWidgetResizeFrame extends FrameLayout
         });
     }
 
-    public void snapToWidget(boolean animate) {
+    /**
+     * Returns the rect of this view when the frame is snapped around the widget, with the bounds
+     * relative to the {@link DragLayer}.
+     */
+    private void getSnappedRectRelativeToDragLayer(Rect out) {
         float scale = mWidgetView.getScaleToFit();
 
-        mDragLayer.getViewRectRelativeToSelf(mWidgetView, sTmpRect);
+        mDragLayer.getViewRectRelativeToSelf(mWidgetView, out);
 
-        int newWidth = 2 * mBackgroundPadding
-                + (int) (scale * (sTmpRect.width() - mWidgetPadding.left - mWidgetPadding.right));
-        int newHeight = 2 * mBackgroundPadding
-                + (int) (scale * (sTmpRect.height() - mWidgetPadding.top - mWidgetPadding.bottom));
+        int width = 2 * mBackgroundPadding
+                + (int) (scale * (out.width() - mWidgetPadding.left - mWidgetPadding.right));
+        int height = 2 * mBackgroundPadding
+                + (int) (scale * (out.height() - mWidgetPadding.top - mWidgetPadding.bottom));
 
-        int newX = (int) (sTmpRect.left - mBackgroundPadding + scale * mWidgetPadding.left);
-        int newY = (int) (sTmpRect.top - mBackgroundPadding + scale * mWidgetPadding.top);
+        int x = (int) (out.left - mBackgroundPadding + scale * mWidgetPadding.left);
+        int y = (int) (out.top - mBackgroundPadding + scale * mWidgetPadding.top);
+
+        out.left = x;
+        out.top = y;
+        out.right = out.left + width;
+        out.bottom = out.top + height;
+    }
+
+    public void snapToWidget(boolean animate) {
+        getSnappedRectRelativeToDragLayer(sTmpRect);
+        int newWidth = sTmpRect.width();
+        int newHeight = sTmpRect.height();
+        int newX = sTmpRect.left;
+        int newY = sTmpRect.top;
 
         // We need to make sure the frame's touchable regions lie fully within the bounds of the
         // DragLayer. We allow the actual handles to be clipped, but we shift the touch regions
