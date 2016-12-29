@@ -16,12 +16,9 @@
 
 package com.android.launcher3.util;
 
-import android.annotation.TargetApi;
 import android.graphics.Rect;
-import android.os.Build;
 import android.view.ViewOutlineProvider;
 
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 /**
  * A {@link ViewOutlineProvider} that animates a reveal in a "pill" shape.
  * A pill is simply a round rect, but we assume the width is greater than

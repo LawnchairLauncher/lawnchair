@@ -16,15 +16,12 @@
 
 package com.android.launcher3.compat;
 
-import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.UserHandle;
 
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class LauncherActivityInfoCompatVL extends LauncherActivityInfoCompat {
     private LauncherActivityInfo mLauncherActivityInfo;
 

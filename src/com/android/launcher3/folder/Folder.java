@@ -22,11 +22,9 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
-import android.os.Build;
 import android.text.InputType;
 import android.text.Selection;
 import android.util.AttributeSet;
@@ -643,10 +641,8 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
                 public void onAnimationEnd(Animator animation) {
                     mFolderName.animate().setDuration(FOLDER_NAME_ANIMATION_DURATION)
                         .translationX(0)
-                        .setInterpolator(Utilities.ATLEAST_LOLLIPOP ?
-                                AnimationUtils.loadInterpolator(mLauncher,
-                                        android.R.interpolator.fast_out_slow_in)
-                                : new LogDecelerateInterpolator(100, 0));
+                        .setInterpolator(AnimationUtils.loadInterpolator(
+                                mLauncher, android.R.interpolator.fast_out_slow_in));
                     mPageIndicator.playEntryAnimation();
 
                     if (updateAnimationFlag) {
@@ -789,7 +785,6 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         }
     };
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public boolean isLayoutRtl() {
         return (getLayoutDirection() == LAYOUT_DIRECTION_RTL);
     }

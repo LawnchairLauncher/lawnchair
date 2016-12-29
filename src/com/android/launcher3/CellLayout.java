@@ -21,7 +21,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -33,7 +32,6 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.v4.view.ViewCompat;
@@ -297,7 +295,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         addView(mShortcutsAndWidgets);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void enableAccessibleDrag(boolean enable, int dragType) {
         mUseTouchHelper = enable;
         if (!enable) {

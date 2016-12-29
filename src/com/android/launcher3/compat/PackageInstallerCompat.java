@@ -18,8 +18,6 @@ package com.android.launcher3.compat;
 
 import android.content.Context;
 
-import com.android.launcher3.Utilities;
-
 import java.util.HashMap;
 
 public abstract class PackageInstallerCompat {
@@ -34,11 +32,7 @@ public abstract class PackageInstallerCompat {
     public static PackageInstallerCompat getInstance(Context context) {
         synchronized (sInstanceLock) {
             if (sInstance == null) {
-                if (Utilities.ATLEAST_LOLLIPOP) {
-                    sInstance = new PackageInstallerCompatVL(context);
-                } else {
-                    sInstance = new PackageInstallerCompatV16();
-                }
+                sInstance = new PackageInstallerCompatVL(context);
             }
             return sInstance;
         }

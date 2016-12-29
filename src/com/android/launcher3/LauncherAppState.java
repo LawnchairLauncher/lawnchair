@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -41,8 +40,6 @@ public class LauncherAppState {
     @Thunk final LauncherModel mModel;
     private final IconCache mIconCache;
     private final WidgetPreviewLoader mWidgetCache;
-
-    @Thunk boolean mWallpaperChangedSinceLastCheck;
 
     private static WeakReference<LauncherProvider> sLauncherProvider;
     private static Context sContext;
@@ -117,15 +114,6 @@ public class LauncherAppState {
 
         sContext.registerReceiver(mModel, filter);
         UserManagerCompat.getInstance(sContext).enableAndResetCache();
-        if (!Utilities.ATLEAST_KITKAT) {
-            sContext.registerReceiver(new BroadcastReceiver() {
-
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    mWallpaperChangedSinceLastCheck = true;
-                }
-            }, new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED));
-        }
         new ConfigMonitor(sContext).register();
 
         ExtractionUtils.startColorExtractionServiceIfNecessary(sContext);
@@ -166,12 +154,6 @@ public class LauncherAppState {
 
     public WidgetPreviewLoader getWidgetCache() {
         return mWidgetCache;
-    }
-
-    public boolean hasWallpaperChangedSinceLastCheck() {
-        boolean result = mWallpaperChangedSinceLastCheck;
-        mWallpaperChangedSinceLastCheck = false;
-        return result;
     }
 
     public InvariantDeviceProfile getInvariantDeviceProfile() {

@@ -22,13 +22,11 @@ import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -2100,7 +2098,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     /* Accessibility */
     @SuppressWarnings("deprecation")
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(info);
@@ -2117,9 +2114,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         // Besides disabling the accessibility long-click, this also prevents this view from getting
         // accessibility focus.
         info.setLongClickable(false);
-        if (Utilities.ATLEAST_LOLLIPOP) {
-            info.removeAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_LONG_CLICK);
-        }
+        info.removeAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_LONG_CLICK);
     }
 
     @Override

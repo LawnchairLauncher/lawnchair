@@ -140,7 +140,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         if (item.activityInfo != null) {
             setTag(new PendingAddShortcutInfo(item.activityInfo));
         } else {
-            setTag(new PendingAddWidgetInfo(mLauncher, item.widgetInfo));
+            setTag(new PendingAddWidgetInfo(item.widgetInfo));
         }
     }
 

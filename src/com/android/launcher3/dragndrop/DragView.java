@@ -22,7 +22,6 @@ import android.animation.FloatArrayEvaluator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -31,14 +30,12 @@ import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.os.Build;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Thunk;
 
 import java.util.Arrays;
@@ -89,7 +86,6 @@ public class DragView extends View {
      * @param registrationX The x coordinate of the registration point.
      * @param registrationY The y coordinate of the registration point.
      */
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public DragView(Launcher launcher, Bitmap bitmap, int registrationX, int registrationY,
                     final float initialScale, final float finalScaleDps) {
         super(launcher);
@@ -147,9 +143,7 @@ public class DragView extends View {
 
         mBlurSizeOutline = getResources().getDimensionPixelSize(R.dimen.blur_size_medium_outline);
 
-        if (Utilities.ATLEAST_LOLLIPOP) {
-            setElevation(getResources().getDimension(R.dimen.drag_elevation));
-        }
+        setElevation(getResources().getDimension(R.dimen.drag_elevation));
     }
 
     /** Sets the scale of the view over the normal workspace icon size. */
@@ -268,14 +262,9 @@ public class DragView extends View {
             setColorScale(color, m2);
             m1.postConcat(m2);
 
-            if (Utilities.ATLEAST_LOLLIPOP) {
-                animateFilterTo(m1.getArray());
-            } else {
-                mPaint.setColorFilter(new ColorMatrixColorFilter(m1));
-                invalidate();
-            }
+            animateFilterTo(m1.getArray());
         } else {
-            if (!Utilities.ATLEAST_LOLLIPOP || mCurrentFilter == null) {
+            if (mCurrentFilter == null) {
                 mPaint.setColorFilter(null);
                 invalidate();
             } else {
@@ -284,7 +273,6 @@ public class DragView extends View {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void animateFilterTo(float[] targetFilter) {
         float[] oldFilter = mCurrentFilter == null ? new ColorMatrix().getArray() : mCurrentFilter;
         mCurrentFilter = Arrays.copyOf(oldFilter, oldFilter.length);

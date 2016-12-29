@@ -44,7 +44,6 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -69,7 +68,6 @@ import android.view.KeyboardShortcutGroup;
 import android.view.KeyboardShortcutInfo;
 import android.view.Menu;
 import android.view.MotionEvent;
-import android.view.Surface;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
@@ -89,7 +87,6 @@ import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DefaultAppSearchController;
 import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
-import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
@@ -1507,7 +1504,7 @@ public class Launcher extends Activity
         launcherInfo.spanY = itemInfo.spanY;
         launcherInfo.minSpanX = itemInfo.minSpanX;
         launcherInfo.minSpanY = itemInfo.minSpanY;
-        launcherInfo.user = mAppWidgetManager.getUser(appWidgetInfo);
+        launcherInfo.user = appWidgetInfo.getUser();
 
         LauncherModel.addItemToDatabase(this, launcherInfo,
                 itemInfo.container, itemInfo.screenId, itemInfo.cellX, itemInfo.cellY);
@@ -2090,7 +2087,7 @@ public class Launcher extends Activity
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, info.componentName);
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER_PROFILE,
-                        mAppWidgetManager.getUser(info.info));
+                        info.info.getUser());
                 // TODO: we need to make sure that this accounts for the options bundle.
                 // intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, options);
                 startActivityForResult(intent, REQUEST_BIND_APPWIDGET);
@@ -2324,7 +2321,7 @@ public class Launcher extends Activity
                     intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, info.appWidgetId);
                     intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, appWidgetInfo.provider);
                     intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER_PROFILE,
-                            mAppWidgetManager.getUser(appWidgetInfo));
+                            appWidgetInfo.getUser());
                     startActivityForResult(intent, REQUEST_BIND_PENDING_APPWIDGET);
                 }
             } else {
@@ -3483,7 +3480,7 @@ public class Launcher extends Activity
 
                     // Also try to bind the widget. If the bind fails, the user will be shown
                     // a click to setup UI, which will ask for the bind permission.
-                    PendingAddWidgetInfo pendingInfo = new PendingAddWidgetInfo(this, appWidgetInfo);
+                    PendingAddWidgetInfo pendingInfo = new PendingAddWidgetInfo(appWidgetInfo);
                     pendingInfo.spanX = item.spanX;
                     pendingInfo.spanY = item.spanY;
                     pendingInfo.minSpanX = item.minSpanX;
@@ -3916,47 +3913,9 @@ public class Launcher extends Activity
         }
     }
 
-    private int mapConfigurationOriActivityInfoOri(int configOri) {
-        final Display d = getWindowManager().getDefaultDisplay();
-        int naturalOri = Configuration.ORIENTATION_LANDSCAPE;
-        switch (d.getRotation()) {
-        case Surface.ROTATION_0:
-        case Surface.ROTATION_180:
-            // We are currently in the same basic orientation as the natural orientation
-            naturalOri = configOri;
-            break;
-        case Surface.ROTATION_90:
-        case Surface.ROTATION_270:
-            // We are currently in the other basic orientation to the natural orientation
-            naturalOri = (configOri == Configuration.ORIENTATION_LANDSCAPE) ?
-                    Configuration.ORIENTATION_PORTRAIT : Configuration.ORIENTATION_LANDSCAPE;
-            break;
-        }
-
-        int[] oriMap = {
-                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT,
-                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE,
-                ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT,
-                ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE
-        };
-        // Since the map starts at portrait, we need to offset if this device's natural orientation
-        // is landscape.
-        int indexOffset = 0;
-        if (naturalOri == Configuration.ORIENTATION_LANDSCAPE) {
-            indexOffset = 1;
-        }
-        return oriMap[(d.getRotation() + indexOffset) % 4];
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public void lockScreenOrientation() {
         if (mRotationEnabled) {
-            if (Utilities.ATLEAST_JB_MR2) {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
-            } else {
-                setRequestedOrientation(mapConfigurationOriActivityInfoOri(getResources()
-                        .getConfiguration().orientation));
-            }
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         }
     }
 

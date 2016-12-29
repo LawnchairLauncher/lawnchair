@@ -302,7 +302,7 @@ public class WidgetPreviewLoader {
         Drawable drawable = null;
         if (info.previewImage != 0) {
             try {
-                drawable = mWidgetManager.loadPreview(info);
+                drawable = info.loadPreviewImage(launcher.getApplicationContext(), 0);
             } catch (OutOfMemoryError e) {
                 Log.w(TAG, "Error loading widget preview for: " + info.provider, e);
                 // During OutOfMemoryError, the previous heap stack is not affected. Catching
@@ -395,7 +395,7 @@ public class WidgetPreviewLoader {
             float iconScale = Math.min((float) smallestSide / (appIconSize + 2 * minOffset), scale);
 
             try {
-                Drawable icon = mWidgetManager.loadIcon(info, mIconCache);
+                Drawable icon = info.getIcon(launcher, mIconCache);
                 if (icon != null) {
                     icon = mutateOnMainThread(icon);
                     int hoffset = (int) ((tileW - appIconSize * iconScale) / 2) + x;

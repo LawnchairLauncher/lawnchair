@@ -21,7 +21,6 @@ import android.animation.FloatArrayEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -30,7 +29,6 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -100,17 +98,11 @@ public abstract class ButtonDropTarget extends TextView
         mOriginalTextColor = getTextColors();
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     protected void setDrawable(int resId) {
         // We do not set the drawable in the xml as that inflates two drawables corresponding to
         // drawableLeft and drawableStart.
         mDrawable = getResources().getDrawable(resId);
-
-        if (Utilities.ATLEAST_JB_MR1) {
-            setCompoundDrawablesRelativeWithIntrinsicBounds(mDrawable, null, null, null);
-        } else {
-            setCompoundDrawablesWithIntrinsicBounds(mDrawable, null, null, null);
-        }
+        setCompoundDrawablesRelativeWithIntrinsicBounds(mDrawable, null, null, null);
     }
 
     public void setDropTargetBar(DropTargetBar dropTargetBar) {
@@ -120,16 +112,7 @@ public abstract class ButtonDropTarget extends TextView
     @Override
     public final void onDragEnter(DragObject d) {
         d.dragView.setColor(mHoverColor);
-        if (Utilities.ATLEAST_LOLLIPOP) {
-            animateTextColor(mHoverColor);
-        } else {
-            if (mCurrentFilter == null) {
-                mCurrentFilter = new ColorMatrix();
-            }
-            DragView.setColorScale(mHoverColor, mCurrentFilter);
-            mDrawable.setColorFilter(new ColorMatrixColorFilter(mCurrentFilter));
-            setTextColor(mHoverColor);
-        }
+        animateTextColor(mHoverColor);
         if (d.stateAnnouncer != null) {
             d.stateAnnouncer.cancel();
         }
@@ -142,15 +125,9 @@ public abstract class ButtonDropTarget extends TextView
     }
 
     protected void resetHoverColor() {
-        if (Utilities.ATLEAST_LOLLIPOP) {
-            animateTextColor(mOriginalTextColor.getDefaultColor());
-        } else {
-            mDrawable.setColorFilter(null);
-            setTextColor(mOriginalTextColor);
-        }
+        animateTextColor(mOriginalTextColor.getDefaultColor());
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void animateTextColor(int targetColor) {
         if (mCurrentColorAnim != null) {
             mCurrentColorAnim.cancel();

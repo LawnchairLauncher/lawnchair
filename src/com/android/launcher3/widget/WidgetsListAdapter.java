@@ -15,9 +15,7 @@
  */
 package com.android.launcher3.widget;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.util.Log;
@@ -29,7 +27,6 @@ import android.widget.LinearLayout;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.model.PackageItemInfo;
@@ -152,7 +149,6 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public WidgetsRowViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (DEBUG) {
@@ -165,11 +161,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
         // if the end padding is 0, then container view (horizontal scroll view) doesn't respect
         // the end of the linear layout width + the start padding and doesn't allow scrolling.
-        if (Utilities.ATLEAST_JB_MR1) {
-            cellList.setPaddingRelative(mIndent, 0, 1, 0);
-        } else {
-            cellList.setPadding(mIndent, 0, 1, 0);
-        }
+        cellList.setPaddingRelative(mIndent, 0, 1, 0);
 
         return new WidgetsRowViewHolder(container);
     }
