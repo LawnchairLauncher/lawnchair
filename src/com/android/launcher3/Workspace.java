@@ -4103,6 +4103,16 @@ public class Workspace extends PagedView
         }
     }
 
+    @Override
+    public boolean enableFreeScroll() {
+        if (getState() == State.OVERVIEW) {
+            return super.enableFreeScroll();
+        } else {
+            Log.w(TAG, "enableFreeScroll called but not in overview: state=" + getState());
+            return false;
+        }
+    }
+
     /**
      * Used as a workaround to ensure that the AppWidgetService receives the
      * PACKAGE_ADDED broadcast before updating widgets.

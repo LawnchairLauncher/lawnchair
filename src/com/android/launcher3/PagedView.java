@@ -1370,8 +1370,12 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         dampedOverScroll(amount);
     }
 
-    public void enableFreeScroll() {
+    /**
+     * return true if freescroll has been enabled, false otherwise
+     */
+    public boolean enableFreeScroll() {
         setEnableFreeScroll(true);
+        return true;
     }
 
     public void disableFreeScroll() {
@@ -2072,20 +2076,14 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         if (!mReorderingStarted) return;
         mReorderingStarted = false;
 
-        // If we haven't flung-to-delete the current child, then we just animate the drag view
-        // back into position
-        final Runnable onCompleteRunnable = new Runnable() {
-            @Override
-            public void run() {
-                onEndReordering();
-            }
-        };
-
         mPostReorderingPreZoomInRunnable = new Runnable() {
             public void run() {
-                onCompleteRunnable.run();
+                // If we haven't flung-to-delete the current child,
+                // then we just animate the drag view back into position
+                onEndReordering();
+
                 enableFreeScroll();
-            };
+            }
         };
 
         mPostReorderingPreZoomInRemainingAnimationCount =
