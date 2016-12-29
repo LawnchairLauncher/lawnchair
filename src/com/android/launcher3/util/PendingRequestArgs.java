@@ -15,7 +15,9 @@
  */
 package com.android.launcher3.util;
 
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -57,9 +59,8 @@ public class PendingRequestArgs extends ItemInfo implements Parcelable {
         mArg1 = parcel.readInt();
         mObjectType = parcel.readInt();
         if (parcel.readInt() != 0) {
-            mObject = mObjectType == TYPE_INTENT
-                    ? Intent.CREATOR.createFromParcel(parcel)
-                    : new LauncherAppWidgetProviderInfo(parcel);
+            mObject = (mObjectType == TYPE_INTENT ? Intent.CREATOR : AppWidgetProviderInfo.CREATOR)
+                    .createFromParcel(parcel);
         } else {
             mObject = null;
         }
@@ -86,8 +87,10 @@ public class PendingRequestArgs extends ItemInfo implements Parcelable {
         }
     }
 
-    public LauncherAppWidgetProviderInfo getWidgetProvider() {
-        return mObjectType == TYPE_APP_WIDGET ? (LauncherAppWidgetProviderInfo) mObject : null;
+    public LauncherAppWidgetProviderInfo getWidgetProvider(Context context) {
+        return mObjectType == TYPE_APP_WIDGET ?
+                LauncherAppWidgetProviderInfo.fromProviderInfo(
+                        context, (AppWidgetProviderInfo) mObject) : null;
     }
 
     public int getWidgetId() {
@@ -103,7 +106,7 @@ public class PendingRequestArgs extends ItemInfo implements Parcelable {
     }
 
     public static PendingRequestArgs forWidgetInfo(
-            int appWidgetId, LauncherAppWidgetProviderInfo widgetInfo, ItemInfo info) {
+            int appWidgetId, AppWidgetProviderInfo widgetInfo, ItemInfo info) {
         PendingRequestArgs args = new PendingRequestArgs(appWidgetId, TYPE_APP_WIDGET, widgetInfo);
         args.copyFrom(info);
         return args;

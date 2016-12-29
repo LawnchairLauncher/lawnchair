@@ -29,22 +29,27 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
 
     public static LauncherAppWidgetProviderInfo fromProviderInfo(Context context,
             AppWidgetProviderInfo info) {
+        final LauncherAppWidgetProviderInfo launcherInfo;
+        if (info instanceof LauncherAppWidgetProviderInfo) {
+            launcherInfo = (LauncherAppWidgetProviderInfo) info;
+        } else {
 
-        // In lieu of a public super copy constructor, we first write the AppWidgetProviderInfo
-        // into a parcel, and then construct a new LauncherAppWidgetProvider info from the
-        // associated super parcel constructor. This allows us to copy non-public members without
-        // using reflection.
-        Parcel p = Parcel.obtain();
-        info.writeToParcel(p, 0);
-        p.setDataPosition(0);
-        LauncherAppWidgetProviderInfo lawpi = new LauncherAppWidgetProviderInfo(p);
-        p.recycle();
-        return lawpi;
+            // In lieu of a public super copy constructor, we first write the AppWidgetProviderInfo
+            // into a parcel, and then construct a new LauncherAppWidgetProvider info from the
+            // associated super parcel constructor. This allows us to copy non-public members without
+            // using reflection.
+            Parcel p = Parcel.obtain();
+            info.writeToParcel(p, 0);
+            p.setDataPosition(0);
+            launcherInfo = new LauncherAppWidgetProviderInfo(p);
+            p.recycle();
+        }
+        launcherInfo.initSpans(context);
+        return launcherInfo;
     }
 
-    public LauncherAppWidgetProviderInfo(Parcel in) {
+    private LauncherAppWidgetProviderInfo(Parcel in) {
         super(in);
-        initSpans();
     }
 
     public LauncherAppWidgetProviderInfo(Context context, CustomAppWidget widget) {
@@ -56,12 +61,11 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
         previewImage = widget.getPreviewImage();
         initialLayout = widget.getWidgetLayout();
         resizeMode = widget.getResizeMode();
-        initSpans();
+        initSpans(context);
     }
 
-    public void initSpans() {
-        LauncherAppState app = LauncherAppState.getInstance();
-        InvariantDeviceProfile idp = app.getInvariantDeviceProfile();
+    public void initSpans(Context context) {
+        InvariantDeviceProfile idp = LauncherAppState.getInstance().getInvariantDeviceProfile();
 
         Point paddingLand = idp.landscapeProfile.getTotalWorkspacePadding();
         Point paddingPort = idp.portraitProfile.getTotalWorkspacePadding();
@@ -80,7 +84,7 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
         // We want to account for the extra amount of padding that we are adding to the widget
         // to ensure that it gets the full amount of space that it has requested.
         Rect widgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(
-                app.getContext(), provider, null);
+                context, provider, null);
         spanX = Math.max(1, (int) Math.ceil(
                         (minWidth + widgetPadding.left + widgetPadding.right) / smallestCellWidth));
         spanY = Math.max(1, (int) Math.ceil(

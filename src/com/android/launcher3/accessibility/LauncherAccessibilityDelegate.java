@@ -115,7 +115,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         if (UninstallDropTarget.supportsDrop(host.getContext(), item)) {
             info.addAction(mActions.get(UNINSTALL));
         }
-        if (InfoDropTarget.supportsDrop(item)) {
+        if (InfoDropTarget.supportsDrop(host.getContext(), item)) {
             info.addAction(mActions.get(INFO));
         }
 

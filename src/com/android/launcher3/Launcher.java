@@ -735,7 +735,7 @@ public class Launcher extends Activity
             } else if (resultCode == RESULT_OK) {
                 addAppWidgetImpl(
                         appWidgetId, requestArgs, null,
-                        requestArgs.getWidgetProvider(),
+                        requestArgs.getWidgetProvider(this),
                         ON_ACTIVITY_RESULT_ANIMATION_DELAY);
             }
             return;
@@ -894,7 +894,7 @@ public class Launcher extends Activity
         if (resultCode == RESULT_OK) {
             animationType = Workspace.COMPLETE_TWO_STAGE_WIDGET_DROP_ANIMATION;
             final AppWidgetHostView layout = mAppWidgetHost.createView(this, appWidgetId,
-                    requestArgs.getWidgetProvider());
+                    requestArgs.getWidgetProvider(this));
             boundWidget = layout;
             onCompleteRunnable = new Runnable() {
                 @Override

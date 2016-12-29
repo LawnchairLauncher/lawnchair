@@ -18,7 +18,6 @@ package com.android.launcher3;
 
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.provider.Settings;
 import android.util.AttributeSet;
@@ -90,13 +89,12 @@ public class InfoDropTarget extends UninstallDropTarget {
 
     @Override
     protected boolean supportsDrop(DragSource source, ItemInfo info) {
-        return source.supportsAppInfoDropTarget() && supportsDrop(info);
+        return source.supportsAppInfoDropTarget() && supportsDrop(getContext(), info);
     }
 
-    public static boolean supportsDrop(ItemInfo info) {
+    public static boolean supportsDrop(Context context, ItemInfo info) {
         // Only show the App Info drop target if developer settings are enabled.
-        ContentResolver resolver = LauncherAppState.getInstance().getContext().getContentResolver();
-        boolean developmentSettingsEnabled = Settings.Global.getInt(resolver,
+        boolean developmentSettingsEnabled = Settings.Global.getInt(context.getContentResolver(),
                 Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) == 1;
         return developmentSettingsEnabled
                 && (info instanceof AppInfo || info instanceof ShortcutInfo

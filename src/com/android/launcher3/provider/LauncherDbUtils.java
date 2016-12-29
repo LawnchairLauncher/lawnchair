@@ -17,6 +17,7 @@
 package com.android.launcher3.provider;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -42,7 +43,7 @@ public class LauncherDbUtils {
      * the first row. The items in the first screen are moved and resized but the carry-forward
      * items are simply deleted.
      */
-    public static boolean prepareScreenZeroToHostQsb(SQLiteDatabase db) {
+    public static boolean prepareScreenZeroToHostQsb(Context context, SQLiteDatabase db) {
         db.beginTransaction();
         try {
             // Get the existing screens
@@ -75,8 +76,8 @@ public class LauncherDbUtils {
                 }
             }
 
-            LauncherAppState app = LauncherAppState.getInstance();
-            new LossyScreenMigrationTask(app.getContext(), app.getInvariantDeviceProfile(), db)
+            new LossyScreenMigrationTask(
+                    context, LauncherAppState.getInstance().getInvariantDeviceProfile(), db)
                     .migrateScreen0();
             db.setTransactionSuccessful();
             return true;
