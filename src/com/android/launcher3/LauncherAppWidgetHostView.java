@@ -19,6 +19,7 @@ package com.android.launcher3;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -71,6 +72,16 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
     private boolean mIsAttachedToWindow;
     private boolean mIsAutoAdvanceRegistered;
     private Runnable mAutoAdvanceRunnable;
+
+    /**
+     * The scaleX and scaleY value such that the widget fits within its cellspans, scaleX = scaleY.
+     */
+    private float mScaleToFit = 1f;
+
+    /**
+     * The translation values to center the widget within its cellspans.
+     */
+    private final PointF mTranslationForCentering = new PointF(0, 0);
 
     public LauncherAppWidgetHostView(Context context) {
         super(context);
@@ -414,5 +425,25 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
             target.advance();
         }
         scheduleNextAdvance();
+    }
+
+    public void setScaleToFit(float scale) {
+        mScaleToFit = scale;
+        setScaleX(scale);
+        setScaleY(scale);
+    }
+
+    public float getScaleToFit() {
+        return mScaleToFit;
+    }
+
+    public void setTranslationForCentering(float x, float y) {
+        mTranslationForCentering.set(x, y);
+        setTranslationX(x);
+        setTranslationY(y);
+    }
+
+    public PointF getTranslationForCentering() {
+        return mTranslationForCentering;
     }
 }

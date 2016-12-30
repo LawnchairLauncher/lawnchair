@@ -1972,6 +1972,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         private static final int PREVIEW_DURATION = 300;
         private static final int HINT_DURATION = Workspace.REORDER_TIMEOUT;
 
+        private static final float CHILD_DIVIDEND = 4.0f;
+
         public static final int MODE_HINT = 0;
         public static final int MODE_PREVIEW = 1;
 
@@ -1987,42 +1989,62 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             final int y1 = mTmpPoint[1];
             final int dX = x1 - x0;
             final int dY = y1 - y0;
-            finalDeltaX = 0;
-            finalDeltaY = 0;
+
+            this.child = child;
+            this.mode = mode;
+            setInitialAnimationValues(false);
+            finalScale = (mChildScale - (CHILD_DIVIDEND / child.getWidth())) * initScale;
+            finalDeltaX = initDeltaX;
+            finalDeltaY = initDeltaY;
             int dir = mode == MODE_HINT ? -1 : 1;
             if (dX == dY && dX == 0) {
             } else {
                 if (dY == 0) {
-                    finalDeltaX = - dir * Math.signum(dX) * mReorderPreviewAnimationMagnitude;
+                    finalDeltaX += - dir * Math.signum(dX) * mReorderPreviewAnimationMagnitude;
                 } else if (dX == 0) {
-                    finalDeltaY = - dir * Math.signum(dY) * mReorderPreviewAnimationMagnitude;
+                    finalDeltaY += - dir * Math.signum(dY) * mReorderPreviewAnimationMagnitude;
                 } else {
                     double angle = Math.atan( (float) (dY) / dX);
-                    finalDeltaX = (int) (- dir * Math.signum(dX) *
+                    finalDeltaX += (int) (- dir * Math.signum(dX) *
                             Math.abs(Math.cos(angle) * mReorderPreviewAnimationMagnitude));
-                    finalDeltaY = (int) (- dir * Math.signum(dY) *
+                    finalDeltaY += (int) (- dir * Math.signum(dY) *
                             Math.abs(Math.sin(angle) * mReorderPreviewAnimationMagnitude));
                 }
             }
-            this.mode = mode;
-            initDeltaX = child.getTranslationX();
-            initDeltaY = child.getTranslationY();
-            finalScale = mChildScale - 4.0f / child.getWidth();
-            initScale = child.getScaleX();
-            this.child = child;
+        }
+
+        void setInitialAnimationValues(boolean restoreOriginalValues) {
+            if (restoreOriginalValues) {
+                if (child instanceof LauncherAppWidgetHostView) {
+                    LauncherAppWidgetHostView lahv = (LauncherAppWidgetHostView) child;
+                    initScale = lahv.getScaleToFit();
+                    initDeltaX = lahv.getTranslationForCentering().x;
+                    initDeltaY = lahv.getTranslationForCentering().y;
+                } else {
+                    initScale = mChildScale;
+                    initDeltaX = 0;
+                    initDeltaY = 0;
+                }
+            } else {
+                initScale = child.getScaleX();
+                initDeltaX = child.getTranslationX();
+                initDeltaY = child.getTranslationY();
+            }
         }
 
         void animate() {
+            boolean noMovement = (finalDeltaX == initDeltaX) && (finalDeltaY == initDeltaY);
+
             if (mShakeAnimators.containsKey(child)) {
                 ReorderPreviewAnimation oldAnimation = mShakeAnimators.get(child);
                 oldAnimation.cancel();
                 mShakeAnimators.remove(child);
-                if (finalDeltaX == 0 && finalDeltaY == 0) {
+                if (noMovement) {
                     completeAnimationImmediately();
                     return;
                 }
             }
-            if (finalDeltaX == 0 && finalDeltaY == 0) {
+            if (noMovement) {
                 return;
             }
             ValueAnimator va = LauncherAnimUtils.ofFloat(child, 0f, 1f);
@@ -2055,9 +2077,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             va.addListener(new AnimatorListenerAdapter() {
                 public void onAnimationRepeat(Animator animation) {
                     // We make sure to end only after a full period
-                    initDeltaX = 0;
-                    initDeltaY = 0;
-                    initScale = mChildScale;
+                    setInitialAnimationValues(true);
                     repeating = true;
                 }
             });
@@ -2077,10 +2097,10 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             }
 
             a = new LauncherViewPropertyAnimator(child)
-                .scaleX(mChildScale)
-                .scaleY(mChildScale)
-                .translationX(0)
-                .translationY(0)
+                .scaleX(initScale)
+                .scaleY(initScale)
+                .translationX(initDeltaX)
+                .translationY(initDeltaY)
                 .setDuration(REORDER_ANIMATION_DURATION);
             a.setInterpolator(new android.view.animation.DecelerateInterpolator(1.5f));
             a.start();
