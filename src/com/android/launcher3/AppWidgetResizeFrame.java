@@ -518,10 +518,10 @@ public class AppWidgetResizeFrame extends FrameLayout
         public int applyDeltaAndBound(boolean moveStart, boolean moveEnd, int delta,
                 int minSize, int maxEnd, IntRange out) {
             applyDelta(moveStart, moveEnd, delta, out);
-            if (start < 0) {
+            if (out.start < 0) {
                 out.start = 0;
             }
-            if (end > maxEnd) {
+            if (out.end > maxEnd) {
                 out.end = maxEnd;
             }
             if (out.size() < minSize) {
