@@ -563,7 +563,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected boolean computeScrollHelper(boolean shouldInvalidate) {
         if (mScroller.computeScrollOffset()) {
             // Don't bother scrolling if the page does not need to be moved
-            if (getScrollX() != mScroller.getCurrX()
+            if (getUnboundedScrollX() != mScroller.getCurrX()
                     || getScrollY() != mScroller.getCurrY()) {
                 float scaleX = mFreeScroll ? getScaleX() : 1f;
                 int scrollX = (int) (mScroller.getCurrX() * (1 / scaleX));
@@ -1945,6 +1945,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         // Trigger a compute() to finish switching pages if necessary
         if (immediate) {
             computeScroll();
+            pageEndTransition();
         }
 
         invalidate();
