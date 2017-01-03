@@ -54,7 +54,7 @@ public class ViewGroupFocusHelper extends FocusIndicatorHelper {
         outRect.left += child.getX();
         outRect.top += child.getY();
 
-        if (parent != mContainer) {
+        if (parent != null && parent != mContainer) {
             if (parent instanceof PagedView) {
                 PagedView page = (PagedView) parent;
                 outRect.left -= page.getScrollForPage(page.indexOfChild(child));
