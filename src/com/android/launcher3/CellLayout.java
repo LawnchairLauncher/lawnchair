@@ -2096,6 +2096,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 a.cancel();
             }
 
+            setInitialAnimationValues(true);
             a = new LauncherViewPropertyAnimator(child)
                 .scaleX(initScale)
                 .scaleY(initScale)
