@@ -1386,12 +1386,10 @@ public class Workspace extends PagedView
         // it's own settling, and every gesture to the overlay should be self-contained and start
         // from 0, so we zero it out here.
         if (isScrollingOverlay()) {
-            int finalScroll = mIsRtl ? mMaxScrollX : 0;
-
             // We reset mWasInOverscroll so that PagedView doesn't zero out the overscroll
-            // interaction when we call scrollTo.
+            // interaction when we call snapToPageImmediately.
             mWasInOverscroll = false;
-            scrollTo(finalScroll, getScrollY());
+            snapToPageImmediately(0);
         } else {
             super.snapToDestination();
         }
