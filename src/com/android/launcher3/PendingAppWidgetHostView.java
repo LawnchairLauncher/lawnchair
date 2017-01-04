@@ -17,7 +17,6 @@
 package com.android.launcher3;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources.Theme;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -35,8 +34,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 import com.android.launcher3.graphics.DrawableFactory;
+import com.android.launcher3.IconCache.ItemInfoUpdateReceiver;
+import com.android.launcher3.model.PackageItemInfo;
 
-public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implements OnClickListener {
+public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
+        implements OnClickListener, ItemInfoUpdateReceiver {
     private static final float SETUP_ICON_SIZE_FACTOR = 2f / 5;
     private static final float MIN_SATUNATION = 0.7f;
 
@@ -47,7 +49,6 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
     private OnClickListener mClickListener;
     private final LauncherAppWidgetInfo mInfo;
     private final int mStartState;
-    private final Intent mIconLookupIntent;
     private final boolean mDisabledForSafeMode;
     private Launcher mLauncher;
 
@@ -68,7 +69,6 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
         mLauncher = Launcher.getLauncher(context);
         mInfo = info;
         mStartState = info.restoreStatus;
-        mIconLookupIntent = new Intent().setComponent(info.providerName);
         mDisabledForSafeMode = disabledForSafeMode;
 
         mPaint = new TextPaint();
@@ -79,9 +79,13 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
         setWillNotDraw(false);
 
         setElevation(getResources().getDimension(R.dimen.pending_widget_elevation));
-        updateIcon(cache);
         updateAppWidget(null);
         setOnClickListener(mLauncher);
+
+        // Load icon
+        PackageItemInfo item = new PackageItemInfo(info.providerName.getPackageName());
+        item.user = info.user;
+        cache.updateIconInBackground(this, item);
     }
 
     @Override
@@ -117,8 +121,9 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
         mDrawableSizeChanged = true;
     }
 
-    private void updateIcon(IconCache cache) {
-        Bitmap icon = cache.getIcon(mIconLookupIntent, mInfo.user);
+    @Override
+    public void reapplyItemInfo(ItemInfoWithIcon info) {
+        Bitmap icon = info.iconBitmap;
         if (mIcon == icon) {
             return;
         }
@@ -157,6 +162,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
             }
             mDrawableSizeChanged = true;
         }
+        invalidate();
     }
 
     private void updateSettingColor() {

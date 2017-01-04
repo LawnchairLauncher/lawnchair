@@ -406,13 +406,14 @@ public class IconCache {
      * Fetches high-res icon for the provided ItemInfo and updates the caller when done.
      * @return a request ID that can be used to cancel the request.
      */
-    public IconLoadRequest updateIconInBackground(final BubbleTextView caller, final ItemInfo info) {
+    public IconLoadRequest updateIconInBackground(final ItemInfoUpdateReceiver caller,
+            final ItemInfoWithIcon info) {
         Runnable request = new Runnable() {
 
             @Override
             public void run() {
                 if (info instanceof AppInfo || info instanceof ShortcutInfo) {
-                    getTitleAndIcon((ItemInfoWithIcon) info, false);
+                    getTitleAndIcon(info, false);
                 } else if (info instanceof PackageItemInfo) {
                     getTitleAndIconForApp((PackageItemInfo) info, false);
                 }
@@ -427,20 +428,6 @@ public class IconCache {
         };
         mWorkerHandler.post(request);
         return new IconLoadRequest(request, mWorkerHandler);
-    }
-
-    /**
-     * Returns a high res icon for the given intent and user
-     */
-    public synchronized Bitmap getIcon(Intent intent, UserHandle user) {
-        ComponentName component = intent.getComponent();
-        // null info means not installed, but if we have a component from the intent then
-        // we should still look in the cache for restored app icons.
-        if (component == null) {
-            return getDefaultIcon(user);
-        }
-        return cacheLocked(component, new ActivityInfoProvider(intent, user),
-                user, true, false /* useLowRes */).icon;
     }
 
     /**
@@ -528,7 +515,7 @@ public class IconCache {
      */
     protected CacheEntry cacheLocked(
             @NonNull ComponentName componentName,
-            @NonNull Provider<LauncherActivityInfoCompat> infoProfider,
+            @NonNull Provider<LauncherActivityInfoCompat> infoProvider,
             UserHandle user, boolean usePackageIcon, boolean useLowResIcon) {
         ComponentKey cacheKey = new ComponentKey(componentName, user);
         CacheEntry entry = mCache.get(cacheKey);
@@ -541,7 +528,7 @@ public class IconCache {
             boolean providerFetchedOnce = false;
 
             if (!getEntryFromDB(cacheKey, entry, useLowResIcon) || DEBUG_IGNORE_CACHE) {
-                info = infoProfider.get();
+                info = infoProvider.get();
                 providerFetchedOnce = true;
 
                 if (info != null) {
@@ -570,7 +557,7 @@ public class IconCache {
 
             if (TextUtils.isEmpty(entry.title)) {
                 if (info == null && !providerFetchedOnce) {
-                    info = infoProfider.get();
+                    info = infoProvider.get();
                     providerFetchedOnce = true;
                 }
                 if (info != null) {
@@ -867,5 +854,13 @@ public class IconCache {
         public LauncherActivityInfoCompat get() {
             return mLauncherApps.resolveActivity(mIntent, mUser);
         }
+    }
+
+    /**
+     * Interface for receiving itemInfo with high-res icon.
+     */
+    public interface ItemInfoUpdateReceiver {
+
+        void reapplyItemInfo(ItemInfoWithIcon info);
     }
 }

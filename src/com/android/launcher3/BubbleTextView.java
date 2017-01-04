@@ -38,6 +38,7 @@ import android.view.ViewParent;
 import android.widget.TextView;
 
 import com.android.launcher3.IconCache.IconLoadRequest;
+import com.android.launcher3.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.graphics.HolographicOutlineHelper;
@@ -51,7 +52,7 @@ import java.text.NumberFormat;
  * too aggressive.
  */
 public class BubbleTextView extends TextView
-        implements BaseRecyclerViewFastScrollBar.FastScrollFocusableView {
+        implements BaseRecyclerViewFastScrollBar.FastScrollFocusableView, ItemInfoUpdateReceiver {
 
     private static SparseArray<Theme> sPreloaderThemes = new SparseArray<Theme>(2);
 
@@ -540,7 +541,8 @@ public class BubbleTextView extends TextView
     /**
      * Applies the item info if it is same as what the view is pointing to currently.
      */
-    public void reapplyItemInfo(final ItemInfo info) {
+    @Override
+    public void reapplyItemInfo(ItemInfoWithIcon info) {
         if (getTag() == info) {
             FastBitmapDrawable.State prevState = FastBitmapDrawable.State.NORMAL;
             if (mIcon instanceof FastBitmapDrawable) {
@@ -582,20 +584,8 @@ public class BubbleTextView extends TextView
             mIconLoadRequest.cancel();
             mIconLoadRequest = null;
         }
-        if (getTag() instanceof AppInfo) {
-            AppInfo info = (AppInfo) getTag();
-            if (info.usingLowResIcon) {
-                mIconLoadRequest = LauncherAppState.getInstance().getIconCache()
-                        .updateIconInBackground(BubbleTextView.this, info);
-            }
-        } else if (getTag() instanceof ShortcutInfo) {
-            ShortcutInfo info = (ShortcutInfo) getTag();
-            if (info.usingLowResIcon) {
-                mIconLoadRequest = LauncherAppState.getInstance().getIconCache()
-                        .updateIconInBackground(BubbleTextView.this, info);
-            }
-        } else if (getTag() instanceof PackageItemInfo) {
-            PackageItemInfo info = (PackageItemInfo) getTag();
+        if (getTag() instanceof ItemInfoWithIcon) {
+            ItemInfoWithIcon info = (ItemInfoWithIcon) getTag();
             if (info.usingLowResIcon) {
                 mIconLoadRequest = LauncherAppState.getInstance().getIconCache()
                         .updateIconInBackground(BubbleTextView.this, info);
