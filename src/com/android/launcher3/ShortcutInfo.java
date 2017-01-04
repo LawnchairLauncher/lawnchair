@@ -17,7 +17,6 @@
 package com.android.launcher3;
 
 import android.annotation.TargetApi;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -37,7 +36,7 @@ import com.android.launcher3.util.ContentWriter;
 /**
  * Represents a launchable icon on the workspaces and in folders.
  */
-public class ShortcutInfo extends ItemInfo {
+public class ShortcutInfo extends ItemInfoWithIcon {
 
     public static final int DEFAULT = 0;
 
@@ -77,20 +76,10 @@ public class ShortcutInfo extends ItemInfo {
     public Intent intent;
 
     /**
-     * Indicates whether we're using a low res icon
-     */
-    public boolean usingLowResIcon;
-
-    /**
      * If isShortcut=true and customIcon=false, this contains a reference to the
      * shortcut icon as an application's resource.
      */
     public Intent.ShortcutIconResource iconResource;
-
-    /**
-     * The application icon.
-     */
-    public Bitmap iconBitmap;
 
     /**
      * Indicates that the icon is disabled due to safe mode restrictions.
@@ -152,16 +141,6 @@ public class ShortcutInfo extends ItemInfo {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
     }
 
-    @Override
-    public Intent getIntent() {
-        return intent;
-    }
-
-    /** Returns {@link #promisedIntent}, or {@link #intent} if promisedIntent is null. */
-    public Intent getPromisedIntent() {
-        return promisedIntent != null ? promisedIntent : intent;
-    }
-
     public ShortcutInfo(ShortcutInfo info) {
         super(info);
         title = info.title;
@@ -197,7 +176,7 @@ public class ShortcutInfo extends ItemInfo {
     void onAddToDatabase(ContentWriter writer) {
         super.onAddToDatabase(writer);
         writer.put(LauncherSettings.BaseLauncherColumns.TITLE, title)
-                .put(LauncherSettings.BaseLauncherColumns.INTENT, getPromisedIntent())
+                .put(LauncherSettings.BaseLauncherColumns.INTENT, getIntent())
                 .put(LauncherSettings.Favorites.RESTORED, status);
 
         if (!usingLowResIcon) {
@@ -210,8 +189,12 @@ public class ShortcutInfo extends ItemInfo {
         }
     }
 
-    public ComponentName getTargetComponent() {
-        return getPromisedIntent().getComponent();
+    /**
+     *  Returns {@link #promisedIntent}, or {@link #intent} if promisedIntent is null.
+     */
+    @Override
+    public Intent getIntent() {
+        return promisedIntent != null ? promisedIntent : intent;
     }
 
     public boolean hasStatusFlag(int flag) {
@@ -270,19 +253,14 @@ public class ShortcutInfo extends ItemInfo {
         AppInfo appInfo = new AppInfo();
         appInfo.user = user;
         appInfo.componentName = shortcutInfo.getActivity();
-        try {
-            cache.getTitleAndIcon(appInfo, shortcutInfo.getActivityInfo(context), false);
-        } catch (NullPointerException e) {
-            // This may happen when we fail to load the activity info. Worst case ignore badging.
-            return LauncherIcons.badgeIconForUser(unbadgedBitmap, user, context);
-        }
+        cache.getTitleAndIcon(appInfo, false);
         return LauncherIcons.badgeWithBitmap(unbadgedBitmap, appInfo.iconBitmap, context);
     }
 
     /** Returns the ShortcutInfo id associated with the deep shortcut. */
     public String getDeepShortcutId() {
         return itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT ?
-                getPromisedIntent().getStringExtra(ShortcutInfoCompat.EXTRA_SHORTCUT_ID) : null;
+                getIntent().getStringExtra(ShortcutInfoCompat.EXTRA_SHORTCUT_ID) : null;
     }
 
     @Override

@@ -3799,7 +3799,7 @@ public class Launcher extends Activity
 
             for (ShortcutInfo si : removed) {
                 if (si.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
-                    removedDeepShortcuts.add(ShortcutKey.fromShortcutInfo(si));
+                    removedDeepShortcuts.add(ShortcutKey.fromItemInfo(si));
                 } else {
                     removedComponents.add(si.getTargetComponent());
                 }

@@ -19,7 +19,6 @@ package com.android.launcher3;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.UserHandle;
 import android.util.Log;
 
@@ -33,22 +32,12 @@ import java.util.ArrayList;
 /**
  * Represents an app in AllAppsView.
  */
-public class AppInfo extends ItemInfo {
+public class AppInfo extends ItemInfoWithIcon {
 
     /**
      * The intent used to start the application.
      */
     public Intent intent;
-
-    /**
-     * A bitmap version of the application icon.
-     */
-    public Bitmap iconBitmap;
-
-    /**
-     * Indicates whether we're using a low res icon
-     */
-    boolean usingLowResIcon;
 
     public ComponentName componentName;
 
@@ -64,10 +53,6 @@ public class AppInfo extends ItemInfo {
     @Override
     public Intent getIntent() {
         return intent;
-    }
-
-    protected Intent getRestoredIntent() {
-        return null;
     }
 
     /**
@@ -96,8 +81,8 @@ public class AppInfo extends ItemInfo {
             isDisabled |= ShortcutInfo.FLAG_DISABLED_QUIET_USER;
         }
 
-        iconCache.getTitleAndIcon(this, info, useLowResIcon);
         intent = makeLaunchIntent(context, info, user);
+        iconCache.getTitleAndIcon(this, info, useLowResIcon);
     }
 
     public AppInfo(AppInfo info) {

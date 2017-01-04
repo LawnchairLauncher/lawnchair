@@ -123,7 +123,7 @@ public class BgDataModel {
                     break;
                 case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT: {
                     // Decrement pinned shortcut count
-                    ShortcutKey pinnedShortcut = ShortcutKey.fromShortcutInfo((ShortcutInfo) item);
+                    ShortcutKey pinnedShortcut = ShortcutKey.fromItemInfo(item);
                     MutableInt count = pinnedShortcutCounts.get(pinnedShortcut);
                     Context context = LauncherAppState.getInstance().getContext();
                     if ((count == null || --count.value == 0)
@@ -155,7 +155,7 @@ public class BgDataModel {
                 break;
             case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT: {
                 // Increment the count for the given shortcut
-                ShortcutKey pinnedShortcut = ShortcutKey.fromShortcutInfo((ShortcutInfo) item);
+                ShortcutKey pinnedShortcut = ShortcutKey.fromItemInfo(item);
                 MutableInt count = pinnedShortcutCounts.get(pinnedShortcut);
                 if (count == null) {
                     count = new MutableInt(1);

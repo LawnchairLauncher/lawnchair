@@ -25,8 +25,6 @@ import android.os.Build;
 import android.os.UserHandle;
 
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.compat.DeferredLauncherActivityInfo;
-import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 
 /**
@@ -121,9 +119,5 @@ public class ShortcutInfoCompat {
     @Override
     public String toString() {
         return mShortcutInfo.toString();
-    }
-
-    public LauncherActivityInfoCompat getActivityInfo(Context context) {
-        return new DeferredLauncherActivityInfo(getActivity(), getUserHandle(), context);
     }
 }
