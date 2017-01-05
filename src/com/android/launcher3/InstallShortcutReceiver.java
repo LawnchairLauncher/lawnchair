@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -34,7 +35,6 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 
-import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.graphics.LauncherIcons;
@@ -285,7 +285,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 
     private static class PendingInstallShortcutInfo {
 
-        final LauncherActivityInfoCompat activityInfo;
+        final LauncherActivityInfo activityInfo;
         final ShortcutInfoCompat shortcutInfo;
         final AppWidgetProviderInfo providerInfo;
 
@@ -315,7 +315,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         /**
          * Initializes a PendingInstallShortcutInfo to represent a launcher target.
          */
-        public PendingInstallShortcutInfo(LauncherActivityInfoCompat info, Context context) {
+        public PendingInstallShortcutInfo(LauncherActivityInfo info, Context context) {
             activityInfo = info;
             shortcutInfo = null;
             providerInfo = null;
@@ -489,7 +489,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         try {
             Decoder decoder = new Decoder(encoded, context);
             if (decoder.optBoolean(APP_SHORTCUT_TYPE_KEY)) {
-                LauncherActivityInfoCompat info = LauncherAppsCompat.getInstance(context)
+                LauncherActivityInfo info = LauncherAppsCompat.getInstance(context)
                         .resolveActivity(decoder.launcherIntent, decoder.user);
                 return info == null ? null : new PendingInstallShortcutInfo(info, context);
             } else if (decoder.optBoolean(DEEPSHORTCUT_TYPE_KEY)) {
@@ -571,7 +571,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             return original;
         }
 
-        LauncherActivityInfoCompat info = LauncherAppsCompat.getInstance(original.mContext)
+        LauncherActivityInfo info = LauncherAppsCompat.getInstance(original.mContext)
                 .resolveActivity(original.launchIntent, original.user);
         if (info == null) {
             return original;

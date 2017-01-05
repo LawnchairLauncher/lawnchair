@@ -18,9 +18,9 @@ package com.android.launcher3;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.LauncherActivityInfo;
 import android.os.UserHandle;
 
-import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -65,7 +65,7 @@ public class AllAppsList {
      *
      * If the app is already in the list, doesn't add it.
      */
-    public void add(AppInfo info, LauncherActivityInfoCompat activityInfo) {
+    public void add(AppInfo info, LauncherActivityInfo activityInfo) {
         if (!mAppFilter.shouldShowApp(info.componentName)) {
             return;
         }
@@ -99,10 +99,10 @@ public class AllAppsList {
      */
     public void addPackage(Context context, String packageName, UserHandle user) {
         final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
-        final List<LauncherActivityInfoCompat> matches = launcherApps.getActivityList(packageName,
+        final List<LauncherActivityInfo> matches = launcherApps.getActivityList(packageName,
                 user);
 
-        for (LauncherActivityInfoCompat info : matches) {
+        for (LauncherActivityInfo info : matches) {
             add(new AppInfo(context, info, user), info);
         }
     }
@@ -150,7 +150,7 @@ public class AllAppsList {
      */
     public void updatePackage(Context context, String packageName, UserHandle user) {
         final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
-        final List<LauncherActivityInfoCompat> matches = launcherApps.getActivityList(packageName,
+        final List<LauncherActivityInfo> matches = launcherApps.getActivityList(packageName,
                 user);
         if (matches.size() > 0) {
             // Find disabled/removed activities and remove them from data and add them
@@ -168,7 +168,7 @@ public class AllAppsList {
 
             // Find enabled activities and add them to the adapter
             // Also updates existing activities with new labels/icons
-            for (final LauncherActivityInfoCompat info : matches) {
+            for (final LauncherActivityInfo info : matches) {
                 AppInfo applicationInfo = findApplicationInfoLocked(
                         info.getComponentName().getPackageName(), user,
                         info.getComponentName().getClassName());
@@ -197,9 +197,9 @@ public class AllAppsList {
     /**
      * Returns whether <em>apps</em> contains <em>component</em>.
      */
-    private static boolean findActivity(List<LauncherActivityInfoCompat> apps,
+    private static boolean findActivity(List<LauncherActivityInfo> apps,
             ComponentName component) {
-        for (LauncherActivityInfoCompat info : apps) {
+        for (LauncherActivityInfo info : apps) {
             if (info.getComponentName().equals(component)) {
                 return true;
             }

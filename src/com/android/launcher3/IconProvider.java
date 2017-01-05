@@ -1,8 +1,7 @@
 package com.android.launcher3;
 
+import android.content.pm.LauncherActivityInfo;
 import android.graphics.drawable.Drawable;
-
-import com.android.launcher3.compat.LauncherActivityInfoCompat;
 
 import java.util.Locale;
 
@@ -26,7 +25,7 @@ public class IconProvider {
     }
 
 
-    public Drawable getIcon(LauncherActivityInfoCompat info, int iconDpi) {
+    public Drawable getIcon(LauncherActivityInfo info, int iconDpi) {
         return info.getIcon(iconDpi);
     }
 }

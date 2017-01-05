@@ -18,10 +18,10 @@ package com.android.launcher3.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.LauncherActivityInfo;
 import android.os.UserHandle;
 
 import com.android.launcher3.Utilities;
-import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.LauncherAppsCompat.OnAppsChangedCallbackCompat;
 import com.android.launcher3.compat.UserManagerCompat;
@@ -55,7 +55,7 @@ public abstract class CachedPackageTracker implements OnAppsChangedCallbackCompa
      * Checks the list of user apps, and generates package event accordingly.
      * {@see #onLauncherAppsAdded}, {@see #onLauncherPackageRemoved}
      */
-    public void processUserApps(List<LauncherActivityInfoCompat> apps, UserHandle user) {
+    public void processUserApps(List<LauncherActivityInfo> apps, UserHandle user) {
         String prefKey = INSTALLED_PACKAGES_PREFIX + mUserManager.getSerialNumberForUser(user);
         HashSet<String> oldPackageSet = new HashSet<>();
         final boolean userAppsExisted = getUserApps(oldPackageSet, prefKey);
@@ -64,7 +64,7 @@ public abstract class CachedPackageTracker implements OnAppsChangedCallbackCompa
         HashSet<String> newPackageSet = new HashSet<>();
         ArrayList<LauncherActivityInstallInfo> packagesAdded = new ArrayList<>();
 
-        for (LauncherActivityInfoCompat info : apps) {
+        for (LauncherActivityInfo info : apps) {
             String packageName = info.getComponentName().getPackageName();
             newPackageSet.add(packageName);
             packagesRemoved.remove(packageName);
@@ -123,10 +123,10 @@ public abstract class CachedPackageTracker implements OnAppsChangedCallbackCompa
         HashSet<String> packageSet = new HashSet<>();
         final boolean userAppsExisted = getUserApps(packageSet, prefKey);
         if (!packageSet.contains(packageName)) {
-            List<LauncherActivityInfoCompat> activities =
+            List<LauncherActivityInfo> activities =
                     mLauncherApps.getActivityList(packageName, user);
             if (!activities.isEmpty()) {
-                LauncherActivityInfoCompat activityInfo = activities.get(0);
+                LauncherActivityInfo activityInfo = activities.get(0);
 
                 packageSet.add(packageName);
                 mPrefs.edit().putStringSet(prefKey, packageSet).apply();
@@ -172,10 +172,10 @@ public abstract class CachedPackageTracker implements OnAppsChangedCallbackCompa
 
     public static class LauncherActivityInstallInfo
             implements Comparable<LauncherActivityInstallInfo> {
-        public final LauncherActivityInfoCompat info;
+        public final LauncherActivityInfo info;
         public final long installTime;
 
-        public LauncherActivityInstallInfo(LauncherActivityInfoCompat info, long installTime) {
+        public LauncherActivityInstallInfo(LauncherActivityInfo info, long installTime) {
             this.info = info;
             this.installTime = installTime;
         }

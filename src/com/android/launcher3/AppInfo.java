@@ -19,10 +19,10 @@ package com.android.launcher3;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.LauncherActivityInfo;
 import android.os.UserHandle;
 import android.util.Log;
 
-import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -58,11 +58,11 @@ public class AppInfo extends ItemInfoWithIcon {
     /**
      * Must not hold the Context.
      */
-    public AppInfo(Context context, LauncherActivityInfoCompat info, UserHandle user) {
+    public AppInfo(Context context, LauncherActivityInfo info, UserHandle user) {
         this(context, info, user, UserManagerCompat.getInstance(context).isQuietModeEnabled(user));
     }
 
-    public AppInfo(Context context, LauncherActivityInfoCompat info, UserHandle user,
+    public AppInfo(Context context, LauncherActivityInfo info, UserHandle user,
             boolean quietModeEnabled) {
         this.componentName = info.getComponentName();
         this.container = ItemInfo.NO_ID;
@@ -110,7 +110,7 @@ public class AppInfo extends ItemInfoWithIcon {
         return new ComponentKey(componentName, user);
     }
 
-    public static Intent makeLaunchIntent(Context context, LauncherActivityInfoCompat info,
+    public static Intent makeLaunchIntent(Context context, LauncherActivityInfo info,
             UserHandle user) {
         long serialNumber = UserManagerCompat.getInstance(context).getSerialNumberForUser(user);
         return new Intent(Intent.ACTION_MAIN)

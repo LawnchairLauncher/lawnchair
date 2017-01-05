@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.LauncherActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.UserHandle;
@@ -11,7 +12,6 @@ import android.os.UserManager;
 import android.util.AttributeSet;
 import android.widget.Toast;
 
-import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 
 public class UninstallDropTarget extends ButtonDropTarget {
@@ -69,7 +69,7 @@ public class UninstallDropTarget extends ButtonDropTarget {
             }
         }
         if (intent != null) {
-            LauncherActivityInfoCompat info = LauncherAppsCompat.getInstance(context)
+            LauncherActivityInfo info = LauncherAppsCompat.getInstance(context)
                     .resolveActivity(intent, user);
             if (info != null
                     && (info.getApplicationInfo().flags & ApplicationInfo.FLAG_SYSTEM) == 0) {

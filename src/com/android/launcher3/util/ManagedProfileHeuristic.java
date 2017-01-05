@@ -18,6 +18,7 @@ package com.android.launcher3.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.LauncherActivityInfo;
 import android.os.Process;
 import android.os.UserHandle;
 
@@ -31,7 +32,6 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
-import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 
@@ -92,7 +92,7 @@ public class ManagedProfileHeuristic {
         }
     }
 
-    public void processUserApps(List<LauncherActivityInfoCompat> apps) {
+    public void processUserApps(List<LauncherActivityInfo> apps) {
         Preconditions.assertWorkerThread();
         new ManagedProfilePackageHandler().processUserApps(apps, mUser);
     }

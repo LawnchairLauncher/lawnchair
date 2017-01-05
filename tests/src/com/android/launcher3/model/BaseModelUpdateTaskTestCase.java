@@ -3,6 +3,7 @@ package com.android.launcher3.model;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.LauncherActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -23,7 +24,6 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherModel.BaseModelUpdateTask;
 import com.android.launcher3.LauncherModel.Callbacks;
-import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.Provider;
@@ -189,7 +189,7 @@ public class BaseModelUpdateTaskTestCase extends ProviderTestCase2<TestLauncherP
         @Override
         protected CacheEntry cacheLocked(
                 @NonNull ComponentName componentName,
-                @NonNull Provider<LauncherActivityInfoCompat> infoProvider,
+                @NonNull Provider<LauncherActivityInfo> infoProvider,
                 UserHandle user, boolean usePackageIcon, boolean useLowResIcon) {
             CacheEntry entry = mCache.get(new ComponentKey(componentName, user));
             if (entry == null) {

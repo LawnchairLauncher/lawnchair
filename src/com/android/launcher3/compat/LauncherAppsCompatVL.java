@@ -29,7 +29,6 @@ import android.os.UserHandle;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,26 +44,13 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
     }
 
     @Override
-    public List<LauncherActivityInfoCompat> getActivityList(String packageName, UserHandle user) {
-        List<LauncherActivityInfo> list = mLauncherApps.getActivityList(packageName, user);
-        if (list.size() == 0) {
-            return Collections.emptyList();
-        }
-        ArrayList<LauncherActivityInfoCompat> compatList = new ArrayList<>(list.size());
-        for (LauncherActivityInfo info : list) {
-            compatList.add(new LauncherActivityInfoCompatVL(info));
-        }
-        return compatList;
+    public List<LauncherActivityInfo> getActivityList(String packageName, UserHandle user) {
+        return mLauncherApps.getActivityList(packageName, user);
     }
 
     @Override
-    public LauncherActivityInfoCompat resolveActivity(Intent intent, UserHandle user) {
-        LauncherActivityInfo activity = mLauncherApps.resolveActivity(intent, user);
-        if (activity != null) {
-            return new LauncherActivityInfoCompatVL(activity);
-        } else {
-            return null;
-        }
+    public LauncherActivityInfo resolveActivity(Intent intent, UserHandle user) {
+        return mLauncherApps.resolveActivity(intent, user);
     }
 
     @Override

@@ -25,6 +25,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Handler;
@@ -40,7 +41,6 @@ import android.util.LongSparseArray;
 import android.util.MutableInt;
 
 import com.android.launcher3.compat.AppWidgetManagerCompat;
-import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
@@ -2015,7 +2015,7 @@ public class LauncherModel extends BroadcastReceiver
             for (UserHandle user : profiles) {
                 // Query for the set of apps
                 final long qiaTime = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
-                final List<LauncherActivityInfoCompat> apps = mLauncherApps.getActivityList(null, user);
+                final List<LauncherActivityInfo> apps = mLauncherApps.getActivityList(null, user);
                 if (DEBUG_LOADERS) {
                     Log.d(TAG, "getActivityList took "
                             + (SystemClock.uptimeMillis()-qiaTime) + "ms for user " + user);
@@ -2029,7 +2029,7 @@ public class LauncherModel extends BroadcastReceiver
                 boolean quietMode = mUserManager.isQuietModeEnabled(user);
                 // Create the ApplicationInfos
                 for (int i = 0; i < apps.size(); i++) {
-                    LauncherActivityInfoCompat app = apps.get(i);
+                    LauncherActivityInfo app = apps.get(i);
                     // This builds the icon bitmaps.
                     mBgAllAppsList.add(new AppInfo(mContext, app, user, quietMode), app);
                 }
