@@ -68,6 +68,7 @@ public class ShortcutInfo extends ItemInfoWithIcon {
      * Indicates if it represents a common type mentioned in {@link CommonAppTypeParser}.
      * Upto 15 different types supported.
      */
+    @Deprecated
     public static final int FLAG_RESTORED_APP_TYPE = 0B0011110000;
 
     /**
