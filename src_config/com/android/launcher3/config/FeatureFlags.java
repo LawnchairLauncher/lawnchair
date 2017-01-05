@@ -37,4 +37,6 @@ public final class FeatureFlags {
     public static final boolean PULLDOWN_SEARCH = false;
     // When enabled the status bar may show dark icons based on the top of the wallpaper.
     public static final boolean LIGHT_STATUS_BAR = false;
+    // When enabled allows to use any point on the fast scrollbar to start dragging.
+    public static final boolean LAUNCHER3_DIRECT_SCROLL = true;
 }

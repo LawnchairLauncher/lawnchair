@@ -28,6 +28,8 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.TextView;
 
+import com.android.launcher3.config.FeatureFlags;
+
 /**
  * The track and scrollbar that shows when you scroll the list.
  */
@@ -198,6 +200,11 @@ public class BaseRecyclerViewFastScrollBar {
             case MotionEvent.ACTION_DOWN:
                 if (isNearThumb(downX, downY)) {
                     mTouchOffsetY = downY - mThumbOffsetY;
+                } else if (FeatureFlags.LAUNCHER3_DIRECT_SCROLL
+                        && mRv.supportsFastScrolling()
+                        && isNearScrollBar(downX)) {
+                    calcTouchOffsetAndPrepToFastScroll(downY, lastY);
+                    updateFastScrollSectionNameAndThumbOffset(lastY, y);
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -207,28 +214,10 @@ public class BaseRecyclerViewFastScrollBar {
                 if (!mIsDragging && !mIgnoreDragGesture && mRv.supportsFastScrolling() &&
                         isNearThumb(downX, lastY) &&
                         Math.abs(y - downY) > config.getScaledTouchSlop()) {
-                    mRv.getParent().requestDisallowInterceptTouchEvent(true);
-                    mIsDragging = true;
-                    if (mCanThumbDetach) {
-                        mIsThumbDetached = true;
-                    }
-                    mTouchOffsetY += (lastY - downY);
-                    animatePopupVisibility(true);
-                    showActiveScrollbar(true);
+                    calcTouchOffsetAndPrepToFastScroll(downY, lastY);
                 }
                 if (mIsDragging) {
-                    // Update the fastscroller section name at this touch position
-                    int bottom = mRv.getScrollbarTrackHeight() - mThumbHeight;
-                    float boundedY = (float) Math.max(0, Math.min(bottom, y - mTouchOffsetY));
-                    String sectionName = mRv.scrollToPositionAtProgress(boundedY / bottom);
-                    if (!sectionName.equals(mPopupSectionName)) {
-                        mPopupSectionName = sectionName;
-                        mPopupView.setText(sectionName);
-                    }
-                    animatePopupVisibility(!sectionName.isEmpty());
-                    updatePopupY(lastY);
-                    mLastTouchY = boundedY;
-                    setThumbOffsetY((int) mLastTouchY);
+                    updateFastScrollSectionNameAndThumbOffset(lastY, y);
                 }
                 break;
             case MotionEvent.ACTION_UP:
@@ -243,6 +232,32 @@ public class BaseRecyclerViewFastScrollBar {
                 }
                 break;
         }
+    }
+
+    private void calcTouchOffsetAndPrepToFastScroll(int downY, int lastY) {
+        mRv.getParent().requestDisallowInterceptTouchEvent(true);
+        mIsDragging = true;
+        if (mCanThumbDetach) {
+            mIsThumbDetached = true;
+        }
+        mTouchOffsetY += (lastY - downY);
+        animatePopupVisibility(true);
+        showActiveScrollbar(true);
+    }
+
+    private void updateFastScrollSectionNameAndThumbOffset(int lastY, int y) {
+        // Update the fastscroller section name at this touch position
+        int bottom = mRv.getScrollbarTrackHeight() - mThumbHeight;
+        float boundedY = (float) Math.max(0, Math.min(bottom, y - mTouchOffsetY));
+        String sectionName = mRv.scrollToPositionAtProgress(boundedY / bottom);
+        if (!sectionName.equals(mPopupSectionName)) {
+            mPopupSectionName = sectionName;
+            mPopupView.setText(sectionName);
+        }
+        animatePopupVisibility(!sectionName.isEmpty());
+        updatePopupY(lastY);
+        mLastTouchY = boundedY;
+        setThumbOffsetY((int) mLastTouchY);
     }
 
     public void draw(Canvas canvas) {
@@ -277,13 +292,21 @@ public class BaseRecyclerViewFastScrollBar {
     }
 
     /**
-     * Returns whether the specified points are near the scroll bar bounds.
+     * Returns whether the specified point is inside the thumb bounds.
      */
     public boolean isNearThumb(int x, int y) {
         int left = getDrawLeft();
         mTmpRect.set(left, mThumbOffsetY, left + mMaxWidth, mThumbOffsetY + mThumbHeight);
         mTmpRect.inset(mTouchInset, mTouchInset);
         return mTmpRect.contains(x, y);
+    }
+
+    /**
+     * Returns whether the specified x position is near the scroll bar.
+     */
+    public boolean isNearScrollBar(int x) {
+        int left = getDrawLeft();
+        return x >= left && x <= left + mMaxWidth;
     }
 
     private void animatePopupVisibility(boolean visible) {
