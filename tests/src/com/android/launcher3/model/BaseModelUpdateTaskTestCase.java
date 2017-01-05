@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.os.Process;
 import android.os.UserHandle;
+import android.support.annotation.NonNull;
 import android.support.test.InstrumentationRegistry;
 import android.test.ProviderTestCase2;
 
@@ -24,6 +25,7 @@ import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.TestLauncherProvider;
 
 import org.mockito.ArgumentCaptor;
@@ -184,9 +186,10 @@ public class BaseModelUpdateTaskTestCase extends ProviderTestCase2<TestLauncherP
         }
 
         @Override
-        protected CacheEntry cacheLocked(ComponentName componentName,
-                LauncherActivityInfoCompat info, UserHandle user,
-                boolean usePackageIcon, boolean useLowResIcon) {
+        protected CacheEntry cacheLocked(
+                @NonNull ComponentName componentName,
+                @NonNull Provider<LauncherActivityInfoCompat> infoProvider,
+                UserHandle user, boolean usePackageIcon, boolean useLowResIcon) {
             CacheEntry entry = mCache.get(new ComponentKey(componentName, user));
             if (entry == null) {
                 entry = new CacheEntry();
