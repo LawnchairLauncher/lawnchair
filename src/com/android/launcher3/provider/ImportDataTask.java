@@ -89,10 +89,12 @@ public class ImportDataTask {
         ArrayList<Long> allScreens = LauncherDbUtils.getScreenIdsFromCursor(
                 mContext.getContentResolver().query(mOtherScreensUri, null, null, null,
                         LauncherSettings.WorkspaceScreens.SCREEN_RANK));
+        FileLog.d(TAG, "Importing DB from " + mOtherFavoritesUri);
 
         // During import we reset the screen IDs to 0-indexed values.
         if (allScreens.isEmpty()) {
             // No thing to migrate
+            FileLog.e(TAG, "No data found to import");
             return false;
         }
 
@@ -293,6 +295,7 @@ public class ImportDataTask {
                 }
             }
         }
+        FileLog.d(TAG, totalItemsOnWorkspace + " items imported from external source");
         if (totalItemsOnWorkspace < MIN_ITEM_COUNT_FOR_SUCCESSFUL_MIGRATION) {
             throw new Exception("Insufficient data");
         }

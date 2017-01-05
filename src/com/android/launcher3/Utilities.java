@@ -104,6 +104,12 @@ public final class Utilities {
     public static final boolean ATLEAST_LOLLIPOP_MR1 =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1;
 
+    /**
+     * Indicates if the device has a debug build. Should only be used to store additional info or
+     * add extra logging and not for changing the app behavior.
+     */
+    public static final boolean IS_DEBUG_DEVICE = Build.TYPE.toLowerCase().contains("debug");
+
     // An intent extra to indicate the horizontal scroll of the wallpaper.
     public static final String EXTRA_WALLPAPER_OFFSET = "com.android.launcher3.WALLPAPER_OFFSET";
 

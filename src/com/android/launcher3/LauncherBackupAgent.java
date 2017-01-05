@@ -5,9 +5,17 @@ import android.app.backup.BackupDataInput;
 import android.app.backup.BackupDataOutput;
 import android.os.ParcelFileDescriptor;
 
+import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.provider.RestoreDbTask;
 
 public class LauncherBackupAgent extends BackupAgent {
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        // Set the log dir as LauncherAppState is not initialized during restore.
+        FileLog.setDir(getFilesDir());
+    }
 
     @Override
     public void onRestore(
