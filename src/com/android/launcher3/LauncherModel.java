@@ -1338,7 +1338,6 @@ public class LauncherModel extends BroadcastReceiver
                                 user = allUsers.get(serialNumber);
                                 int promiseType = c.getInt(restoredIndex);
                                 int disabledState = 0;
-                                boolean itemReplaced = false;
                                 targetPackage = null;
                                 if (user == null) {
                                     // User has been deleted remove the item.
@@ -1406,25 +1405,6 @@ public class LauncherModel extends BroadcastReceiver
                                                 values.put(LauncherSettings.Favorites.RESTORED,
                                                         promiseType);
                                                 updateItem(id, values);
-                                            } else if ((promiseType & ShortcutInfo.FLAG_RESTORED_APP_TYPE) != 0) {
-                                                // This is a common app. Try to replace this.
-                                                int appType = CommonAppTypeParser.decodeItemTypeFromFlag(promiseType);
-                                                CommonAppTypeParser parser = new CommonAppTypeParser(id, appType, context);
-                                                if (parser.findDefaultApp()) {
-                                                    // Default app found. Replace it.
-                                                    intent = parser.parsedIntent;
-                                                    cn = intent.getComponent();
-                                                    ContentValues values = parser.parsedValues;
-                                                    values.put(LauncherSettings.Favorites.RESTORED, 0);
-                                                    updateItem(id, values);
-                                                    restored = false;
-                                                    itemReplaced = true;
-
-                                                } else {
-                                                    FileLog.d(TAG, "Unrestored package removed: " + cn);
-                                                    itemsToRemove.add(id);
-                                                    continue;
-                                                }
                                             } else {
                                                 FileLog.d(TAG, "Unrestored package removed: " + cn);
                                                 itemsToRemove.add(id);
@@ -1464,16 +1444,7 @@ public class LauncherModel extends BroadcastReceiver
                                 boolean useLowResIcon = container >= 0 &&
                                         c.getInt(rankIndex) >= FolderIcon.NUM_ITEMS_IN_PREVIEW;
 
-                                if (itemReplaced) {
-                                    if (user.equals(Process.myUserHandle())) {
-                                        info = getAppShortcutInfo(intent, user, null,
-                                                cursorIconInfo, false, useLowResIcon);
-                                    } else {
-                                        // Don't replace items for other profiles.
-                                        itemsToRemove.add(id);
-                                        continue;
-                                    }
-                                } else if (restored) {
+                                if (restored) {
                                     if (user.equals(Process.myUserHandle())) {
                                         info = getRestoredItemInfo(c, intent,
                                                 promiseType, itemType, cursorIconInfo);
