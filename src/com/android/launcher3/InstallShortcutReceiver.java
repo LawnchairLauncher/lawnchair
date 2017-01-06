@@ -26,6 +26,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Parcelable;
 import android.os.Process;
 import android.os.UserHandle;
 import android.text.TextUtils;
@@ -35,6 +36,7 @@ import android.util.Log;
 import com.android.launcher3.compat.LauncherActivityInfoCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
@@ -454,7 +456,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 widgetInfo.spanY = Math.min(info.spanY, idp.numRows);
                 return widgetInfo;
             } else {
-                return LauncherAppState.getInstance().getModel().infoFromShortcutIntent(mContext, data);
+                return createShortcutInfo(data, LauncherAppState.getInstance());
             }
         }
 
@@ -598,4 +600,42 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             return installQueue;
         }
     }
+
+    private static ShortcutInfo createShortcutInfo(Intent data, LauncherAppState app) {
+        Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
+        String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
+        Parcelable bitmap = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON);
+
+        if (intent == null) {
+            // If the intent is null, we can't construct a valid ShortcutInfo, so we return null
+            Log.e(TAG, "Can't construct ShorcutInfo with null intent");
+            return null;
+        }
+
+        final ShortcutInfo info = new ShortcutInfo();
+
+        // Only support intents for current user for now. Intents sent from other
+        // users wouldn't get here without intent forwarding anyway.
+        info.user = Process.myUserHandle();
+
+        if (bitmap instanceof Bitmap) {
+            info.iconBitmap = LauncherIcons.createIconBitmap((Bitmap) bitmap, app.getContext());
+        } else {
+            Parcelable extra = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE);
+            if (extra instanceof Intent.ShortcutIconResource) {
+                info.iconResource = (Intent.ShortcutIconResource) extra;
+                info.iconBitmap = LauncherIcons.createIconBitmap(info.iconResource, app.getContext());
+            }
+        }
+        if (info.iconBitmap == null) {
+            info.iconBitmap = app.getIconCache().getDefaultIcon(info.user);
+        }
+
+        info.title = Utilities.trim(name);
+        info.contentDescription = UserManagerCompat.getInstance(app.getContext())
+                .getBadgedLabelForUser(info.title, info.user);
+        info.intent = intent;
+        return info;
+    }
+
 }

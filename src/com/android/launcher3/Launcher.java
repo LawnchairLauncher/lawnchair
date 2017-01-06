@@ -2337,13 +2337,14 @@ public class Launcher extends Activity
             showBrokenAppInstallDialog(packageName,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        startActivitySafely(v, LauncherModel.getMarketIntent(packageName), info);
+                        startActivitySafely(
+                                v, PackageManagerHelper.getMarketIntent(packageName), info);
                     }
                 });
         } else {
             // Download has started.
             final String packageName = info.providerName.getPackageName();
-            startActivitySafely(v, LauncherModel.getMarketIntent(packageName), info);
+            startActivitySafely(v, PackageManagerHelper.getMarketIntent(packageName), info);
         }
     }
 

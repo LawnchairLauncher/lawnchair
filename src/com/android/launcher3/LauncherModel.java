@@ -24,21 +24,16 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.Intent.ShortcutIconResource;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
-import android.os.Parcelable;
 import android.os.Process;
 import android.os.SystemClock;
 import android.os.Trace;
 import android.os.UserHandle;
-import android.provider.BaseColumns;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.LongSparseArray;
@@ -50,18 +45,17 @@ import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.dynamicui.ExtractionUtils;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
-import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.AddWorkspaceItemsTask;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.CacheDataUpdatedTask;
 import com.android.launcher3.model.ExtendedModelTask;
 import com.android.launcher3.model.GridSizeMigrationTask;
+import com.android.launcher3.model.LoaderCursor;
 import com.android.launcher3.model.PackageInstallStateChangedTask;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.model.PackageUpdatedTask;
@@ -77,10 +71,7 @@ import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ContentWriter;
-import com.android.launcher3.util.CursorIconInfo;
-import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.ItemInfoMatcher;
-import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.ManagedProfileHeuristic;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -91,7 +82,6 @@ import com.android.launcher3.util.ViewOnDrawExecutor;
 
 import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -1096,96 +1086,6 @@ public class LauncherModel extends BroadcastReceiver
             }
         }
 
-        // check & update map of what's occupied; used to discard overlapping/invalid items
-        private boolean checkItemPlacement(LongArrayMap<GridOccupancy> occupied, ItemInfo item,
-                   ArrayList<Long> workspaceScreens) {
-            LauncherAppState app = LauncherAppState.getInstance();
-            InvariantDeviceProfile profile = app.getInvariantDeviceProfile();
-
-            long containerIndex = item.screenId;
-            if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                // Return early if we detect that an item is under the hotseat button
-                if (!FeatureFlags.NO_ALL_APPS_ICON &&
-                        profile.isAllAppsButtonRank((int) item.screenId)) {
-                    Log.e(TAG, "Error loading shortcut into hotseat " + item
-                            + " into position (" + item.screenId + ":" + item.cellX + ","
-                            + item.cellY + ") occupied by all apps");
-                    return false;
-                }
-
-                final GridOccupancy hotseatOccupancy =
-                        occupied.get((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT);
-
-                if (item.screenId >= profile.numHotseatIcons) {
-                    Log.e(TAG, "Error loading shortcut " + item
-                            + " into hotseat position " + item.screenId
-                            + ", position out of bounds: (0 to " + (profile.numHotseatIcons - 1)
-                            + ")");
-                    return false;
-                }
-
-                if (hotseatOccupancy != null) {
-                    if (hotseatOccupancy.cells[(int) item.screenId][0]) {
-                        Log.e(TAG, "Error loading shortcut into hotseat " + item
-                                + " into position (" + item.screenId + ":" + item.cellX + ","
-                                + item.cellY + ") already occupied");
-                            return false;
-                    } else {
-                        hotseatOccupancy.cells[(int) item.screenId][0] = true;
-                        return true;
-                    }
-                } else {
-                    final GridOccupancy occupancy = new GridOccupancy(profile.numHotseatIcons, 1);
-                    occupancy.cells[(int) item.screenId][0] = true;
-                    occupied.put((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT, occupancy);
-                    return true;
-                }
-            } else if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                if (!workspaceScreens.contains((Long) item.screenId)) {
-                    // The item has an invalid screen id.
-                    return false;
-                }
-            } else {
-                // Skip further checking if it is not the hotseat or workspace container
-                return true;
-            }
-
-            final int countX = profile.numColumns;
-            final int countY = profile.numRows;
-            if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
-                    item.cellX < 0 || item.cellY < 0 ||
-                    item.cellX + item.spanX > countX || item.cellY + item.spanY > countY) {
-                Log.e(TAG, "Error loading shortcut " + item
-                        + " into cell (" + containerIndex + "-" + item.screenId + ":"
-                        + item.cellX + "," + item.cellY
-                        + ") out of screen bounds ( " + countX + "x" + countY + ")");
-                return false;
-            }
-
-            if (!occupied.containsKey(item.screenId)) {
-                GridOccupancy screen = new GridOccupancy(countX + 1, countY + 1);
-                if (item.screenId == Workspace.FIRST_SCREEN_ID) {
-                    // Mark the first row as occupied (if the feature is enabled)
-                    // in order to account for the QSB.
-                    screen.markCells(0, 0, countX + 1, 1, FeatureFlags.QSB_ON_FIRST_SCREEN);
-                }
-                occupied.put(item.screenId, screen);
-            }
-            final GridOccupancy occupancy = occupied.get(item.screenId);
-
-            // Check if any workspace icons overlap with each other
-            if (occupancy.isRegionVacant(item.cellX, item.cellY, item.spanX, item.spanY)) {
-                occupancy.markCells(item, true);
-                return true;
-            } else {
-                Log.e(TAG, "Error loading shortcut " + item
-                        + " into cell (" + containerIndex + "-" + item.screenId + ":"
-                        + item.cellX + "," + item.cellX + "," + item.spanX + "," + item.spanY
-                        + ") already occupied");
-                return false;
-            }
-        }
-
         private void loadWorkspace() {
             if (LauncherAppState.PROFILE_STARTUP) {
                 Trace.beginSection("Loading Workspace");
@@ -1237,37 +1137,19 @@ public class LauncherModel extends BroadcastReceiver
                         .getInstance(mContext).updateAndGetActiveSessionCache();
                 sBgDataModel.workspaceScreens.addAll(loadWorkspaceScreensDb(mContext));
 
-                final ArrayList<Long> itemsToRemove = new ArrayList<>();
-                final ArrayList<Long> restoredRows = new ArrayList<>();
                 Map<ShortcutKey, ShortcutInfoCompat> shortcutKeyToPinnedShortcuts = new HashMap<>();
-                final Uri contentUri = LauncherSettings.Favorites.CONTENT_URI;
-                if (DEBUG_LOADERS) Log.d(TAG, "loading model from " + contentUri);
-                final Cursor c = contentResolver.query(contentUri, null, null, null, null);
+                final LoaderCursor c = new LoaderCursor(contentResolver.query(
+                        LauncherSettings.Favorites.CONTENT_URI, null, null, null, null), mApp);
 
-                // +1 for the hotseat (it can be larger than the workspace)
-                // Load workspace in reverse order to ensure that latest items are loaded first (and
-                // before any earlier duplicates)
-                final LongArrayMap<GridOccupancy> occupied = new LongArrayMap<>();
                 HashMap<ComponentKey, AppWidgetProviderInfo> widgetProvidersMap = null;
 
                 try {
-                    final int idIndex = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
                     final int intentIndex = c.getColumnIndexOrThrow
                             (LauncherSettings.Favorites.INTENT);
-                    final int containerIndex = c.getColumnIndexOrThrow(
-                            LauncherSettings.Favorites.CONTAINER);
-                    final int itemTypeIndex = c.getColumnIndexOrThrow(
-                            LauncherSettings.Favorites.ITEM_TYPE);
                     final int appWidgetIdIndex = c.getColumnIndexOrThrow(
                             LauncherSettings.Favorites.APPWIDGET_ID);
                     final int appWidgetProviderIndex = c.getColumnIndexOrThrow(
                             LauncherSettings.Favorites.APPWIDGET_PROVIDER);
-                    final int screenIndex = c.getColumnIndexOrThrow(
-                            LauncherSettings.Favorites.SCREEN);
-                    final int cellXIndex = c.getColumnIndexOrThrow
-                            (LauncherSettings.Favorites.CELLX);
-                    final int cellYIndex = c.getColumnIndexOrThrow
-                            (LauncherSettings.Favorites.CELLY);
                     final int spanXIndex = c.getColumnIndexOrThrow
                             (LauncherSettings.Favorites.SPANX);
                     final int spanYIndex = c.getColumnIndexOrThrow(
@@ -1276,13 +1158,10 @@ public class LauncherModel extends BroadcastReceiver
                             LauncherSettings.Favorites.RANK);
                     final int restoredIndex = c.getColumnIndexOrThrow(
                             LauncherSettings.Favorites.RESTORED);
-                    final int profileIdIndex = c.getColumnIndexOrThrow(
-                            LauncherSettings.Favorites.PROFILE_ID);
                     final int optionsIndex = c.getColumnIndexOrThrow(
                             LauncherSettings.Favorites.OPTIONS);
-                    final CursorIconInfo cursorIconInfo = new CursorIconInfo(mContext, c);
 
-                    final LongSparseArray<UserHandle> allUsers = new LongSparseArray<>();
+                    final LongSparseArray<UserHandle> allUsers = c.allUsers;
                     final LongSparseArray<Boolean> quietMode = new LongSparseArray<>();
                     final LongSparseArray<Boolean> unlockedUsers = new LongSparseArray<>();
                     for (UserHandle user : mUserManager.getUserProfiles()) {
@@ -1314,44 +1193,42 @@ public class LauncherModel extends BroadcastReceiver
                     ShortcutInfo info;
                     String intentDescription;
                     LauncherAppWidgetInfo appWidgetInfo;
-                    int container;
-                    long id;
-                    long serialNumber;
                     Intent intent;
-                    UserHandle user;
                     String targetPackage;
 
                     while (!mStopped && c.moveToNext()) {
                         try {
-                            int itemType = c.getInt(itemTypeIndex);
+                            if (c.user == null) {
+                                // User has been deleted, remove the item.
+                                c.markDeleted("User has been deleted");
+                                continue;
+                            }
+
                             boolean restored = 0 != c.getInt(restoredIndex);
                             boolean allowMissingTarget = false;
-                            container = c.getInt(containerIndex);
-
-                            switch (itemType) {
+                            switch (c.itemType) {
+                            case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT: {
+                                if (!Process.myUserHandle().equals(c.user)) {
+                                    c.markDeleted("Legacy shortcuts are only allowed for default user");
+                                    continue;
+                                }
+                                // Follow through.
+                            }
                             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
-                            case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                             case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
-                                id = c.getLong(idIndex);
                                 intentDescription = c.getString(intentIndex);
-                                serialNumber = c.getInt(profileIdIndex);
-                                user = allUsers.get(serialNumber);
                                 int promiseType = c.getInt(restoredIndex);
                                 int disabledState = 0;
                                 targetPackage = null;
-                                if (user == null) {
-                                    // User has been deleted remove the item.
-                                    itemsToRemove.add(id);
-                                    continue;
-                                }
+
                                 try {
                                     intent = Intent.parseUri(intentDescription, 0);
                                     ComponentName cn = intent.getComponent();
                                     if (cn != null && cn.getPackageName() != null) {
                                         boolean validPkg = launcherApps.isPackageEnabledForProfile(
-                                                cn.getPackageName(), user);
+                                                cn.getPackageName(), c.user);
                                         boolean validComponent = validPkg &&
-                                                launcherApps.isActivityEnabledForProfile(cn, user);
+                                                launcherApps.isActivityEnabledForProfile(cn, c.user);
                                         if (validPkg) {
                                             targetPackage = cn.getPackageName();
                                         }
@@ -1359,10 +1236,10 @@ public class LauncherModel extends BroadcastReceiver
                                         if (validComponent) {
                                             if (restored) {
                                                 // no special handling necessary for this item
-                                                restoredRows.add(id);
+                                                c.markRestored();
                                                 restored = false;
                                             }
-                                            if (quietMode.get(serialNumber)) {
+                                            if (quietMode.get(c.serialNumber)) {
                                                 disabledState = ShortcutInfo.FLAG_DISABLED_QUIET_USER;
                                             }
                                         } else if (validPkg) {
@@ -1373,22 +1250,20 @@ public class LauncherModel extends BroadcastReceiver
                                                 intent = manager.getLaunchIntentForPackage(
                                                         cn.getPackageName());
                                                 if (intent != null) {
-                                                    ContentValues values = new ContentValues();
-                                                    values.put(LauncherSettings.Favorites.INTENT,
-                                                            intent.toUri(0));
-                                                    updateItem(id, values);
+                                                    c.updater().put(
+                                                            LauncherSettings.Favorites.INTENT,
+                                                            intent.toUri(0)).commit();
                                                 }
                                             }
 
                                             if (intent == null) {
                                                 // The app is installed but the component is no
                                                 // longer available.
-                                                FileLog.d(TAG, "Invalid component removed: " + cn);
-                                                itemsToRemove.add(id);
+                                                c.markDeleted("Invalid component removed: " + cn);
                                                 continue;
                                             } else {
                                                 // no special handling necessary for this item
-                                                restoredRows.add(id);
+                                                c.markRestored();
                                                 restored = false;
                                             }
                                         } else if (restored) {
@@ -1401,13 +1276,11 @@ public class LauncherModel extends BroadcastReceiver
                                             } else if (installingPkgs.containsKey(cn.getPackageName())) {
                                                 // App restore has started. Update the flag
                                                 promiseType |= ShortcutInfo.FLAG_RESTORE_STARTED;
-                                                ContentValues values = new ContentValues();
-                                                values.put(LauncherSettings.Favorites.RESTORED,
-                                                        promiseType);
-                                                updateItem(id, values);
+                                                c.updater().put(
+                                                        LauncherSettings.Favorites.RESTORED,
+                                                        promiseType).commit();
                                             } else {
-                                                FileLog.d(TAG, "Unrestored package removed: " + cn);
-                                                itemsToRemove.add(id);
+                                                c.markDeleted("Unrestored package removed: " + cn);
                                                 continue;
                                             }
                                         } else if (PackageManagerHelper.isAppOnSdcard(
@@ -1419,70 +1292,64 @@ public class LauncherModel extends BroadcastReceiver
                                             // SdCard is not ready yet. Package might get available,
                                             // once it is ready.
                                             Log.d(TAG, "Invalid package: " + cn + " (check again later)");
-                                            pendingPackages.addToList(user, cn.getPackageName());
+                                            pendingPackages.addToList(c.user, cn.getPackageName());
                                             allowMissingTarget = true;
                                             // Add the icon on the workspace anyway.
 
                                         } else {
                                             // Do not wait for external media load anymore.
                                             // Log the invalid package, and remove it
-                                            FileLog.d(TAG, "Invalid package removed: " + cn);
-                                            itemsToRemove.add(id);
+                                            c.markDeleted("Invalid package removed: " + cn);
                                             continue;
                                         }
                                     } else if (cn == null) {
                                         // For shortcuts with no component, keep them as they are
-                                        restoredRows.add(id);
+                                        c.markRestored();
                                         restored = false;
                                     }
                                 } catch (URISyntaxException e) {
-                                    FileLog.d(TAG, "Invalid uri: " + intentDescription);
-                                    itemsToRemove.add(id);
+                                    c.markDeleted("Invalid uri: " + intentDescription);
                                     continue;
                                 }
 
-                                boolean useLowResIcon = container >= 0 &&
+                                boolean useLowResIcon = !c.isOnWorkspaceOrHotseat() &&
                                         c.getInt(rankIndex) >= FolderIcon.NUM_ITEMS_IN_PREVIEW;
 
                                 if (restored) {
-                                    if (user.equals(Process.myUserHandle())) {
-                                        info = getRestoredItemInfo(c, intent,
-                                                promiseType, itemType, cursorIconInfo);
-                                        intent = getRestoredItemIntent(c, context, intent);
+                                    if (c.user.equals(Process.myUserHandle())) {
+                                        info = c.getRestoredItemInfo(intent, promiseType);
+                                        intent = PackageManagerHelper.getMarketIntent(
+                                                intent.getComponent().getPackageName());
                                     } else {
                                         // Don't restore items for other profiles.
-                                        itemsToRemove.add(id);
+                                        c.markDeleted("Restore from managed profile not supported");
                                         continue;
                                     }
-                                } else if (itemType ==
+                                } else if (c.itemType ==
                                         LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-                                    info = getAppShortcutInfo(intent, user, c,
-                                            cursorIconInfo, allowMissingTarget, useLowResIcon);
-                                } else if (itemType ==
+                                    info = c.getAppShortcutInfo(
+                                            intent, allowMissingTarget, useLowResIcon);
+                                } else if (c.itemType ==
                                         LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
 
-                                    ShortcutKey key = ShortcutKey.fromIntent(intent, user);
-                                    if (unlockedUsers.get(serialNumber)) {
+                                    ShortcutKey key = ShortcutKey.fromIntent(intent, c.user);
+                                    if (unlockedUsers.get(c.serialNumber)) {
                                         ShortcutInfoCompat pinnedShortcut =
                                                 shortcutKeyToPinnedShortcuts.get(key);
                                         if (pinnedShortcut == null) {
                                             // The shortcut is no longer valid.
-                                            itemsToRemove.add(id);
+                                            c.markDeleted("Pinned shortcut not found");
                                             continue;
                                         }
                                         info = new ShortcutInfo(pinnedShortcut, context);
                                         intent = info.intent;
                                     } else {
                                         // Create a shortcut info in disabled mode for now.
-                                        info = new ShortcutInfo();
-                                        info.user = user;
-                                        info.itemType = itemType;
-                                        loadInfoFromCursor(info, c, cursorIconInfo);
-
+                                        info = c.loadSimpleShortcut();
                                         info.isDisabled |= ShortcutInfo.FLAG_DISABLED_LOCKED_USER;
                                     }
                                 } else { // item type == ITEM_TYPE_SHORTCUT
-                                    info = getShortcutInfo(c, cursorIconInfo);
+                                    info = c.loadSimpleShortcut();
 
                                     // Shortcuts are only available on the primary profile
                                     if (PackageManagerHelper.isAppSuspended(manager, targetPackage)) {
@@ -1503,28 +1370,21 @@ public class LauncherModel extends BroadcastReceiver
                                 }
 
                                 if (info != null) {
-                                    info.id = id;
+                                    c.applyCommonProperties(info);
+
                                     info.intent = intent;
-                                    info.container = container;
-                                    info.screenId = c.getInt(screenIndex);
-                                    info.cellX = c.getInt(cellXIndex);
-                                    info.cellY = c.getInt(cellYIndex);
                                     info.rank = c.getInt(rankIndex);
                                     info.spanX = 1;
                                     info.spanY = 1;
-                                    info.intent.putExtra(ItemInfo.EXTRA_PROFILE, serialNumber);
+                                    // TODO: Remove this extra. Instead we should be using
+                                    // itemInfo#user.
+                                    info.intent.putExtra(ItemInfo.EXTRA_PROFILE, c.serialNumber);
                                     if (info.promisedIntent != null) {
-                                        info.promisedIntent.putExtra(ItemInfo.EXTRA_PROFILE, serialNumber);
+                                        info.promisedIntent.putExtra(ItemInfo.EXTRA_PROFILE, c.serialNumber);
                                     }
                                     info.isDisabled |= disabledState;
                                     if (isSafeMode && !Utilities.isSystemApp(context, intent)) {
                                         info.isDisabled |= ShortcutInfo.FLAG_DISABLED_SAFEMODE;
-                                    }
-
-                                    // check & update map of what's occupied
-                                    if (!checkItemPlacement(occupied, info, sBgDataModel.workspaceScreens)) {
-                                        itemsToRemove.add(id);
-                                        break;
                                     }
 
                                     if (restored) {
@@ -1539,55 +1399,38 @@ public class LauncherModel extends BroadcastReceiver
                                         }
                                     }
 
-                                    sBgDataModel.addItem(info, false);
+                                    c.checkAndAddItem(info, sBgDataModel);
                                 } else {
                                     throw new RuntimeException("Unexpected null ShortcutInfo");
                                 }
                                 break;
 
                             case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
-                                id = c.getLong(idIndex);
-                                FolderInfo folderInfo = sBgDataModel.findOrMakeFolder(id);
+                                FolderInfo folderInfo = sBgDataModel.findOrMakeFolder(c.id);
+                                c.applyCommonProperties(folderInfo);
 
                                 // Do not trim the folder label, as is was set by the user.
-                                folderInfo.title = c.getString(cursorIconInfo.titleIndex);
-                                folderInfo.id = id;
-                                folderInfo.container = container;
-                                folderInfo.screenId = c.getInt(screenIndex);
-                                folderInfo.cellX = c.getInt(cellXIndex);
-                                folderInfo.cellY = c.getInt(cellYIndex);
+                                folderInfo.title = c.getString(c.titleIndex);
                                 folderInfo.spanX = 1;
                                 folderInfo.spanY = 1;
                                 folderInfo.options = c.getInt(optionsIndex);
 
-                                // check & update map of what's occupied
-                                if (!checkItemPlacement(occupied, folderInfo, sBgDataModel.workspaceScreens)) {
-                                    itemsToRemove.add(id);
-                                    break;
-                                }
                                 if (restored) {
                                     // no special handling required for restored folders
-                                    restoredRows.add(id);
+                                    c.markRestored();
                                 }
 
-                                sBgDataModel.addItem(folderInfo, false);
+                                c.checkAndAddItem(folderInfo, sBgDataModel);
                                 break;
 
                             case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
                             case LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET:
                                 // Read all Launcher-specific widget details
-                                boolean customWidget = itemType ==
+                                boolean customWidget = c.itemType ==
                                     LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
 
                                 int appWidgetId = c.getInt(appWidgetIdIndex);
-                                serialNumber = c.getLong(profileIdIndex);
                                 String savedProvider = c.getString(appWidgetProviderIndex);
-                                id = c.getLong(idIndex);
-                                user = allUsers.get(serialNumber);
-                                if (user == null) {
-                                    itemsToRemove.add(id);
-                                    continue;
-                                }
 
                                 final ComponentName component =
                                         ComponentName.unflattenFromString(savedProvider);
@@ -1605,14 +1448,14 @@ public class LauncherModel extends BroadcastReceiver
                                 final AppWidgetProviderInfo provider = widgetProvidersMap.get(
                                         new ComponentKey(
                                                 ComponentName.unflattenFromString(savedProvider),
-                                                user));
+                                                c.user));
 
                                 final boolean isProviderReady = isValidProvider(provider);
                                 if (!isSafeMode && !customWidget &&
                                         wasProviderReady && !isProviderReady) {
-                                    FileLog.d(TAG, "Deleting widget that isn't installed anymore: "
+                                    c.markDeleted(
+                                            "Deleting widget that isn't installed anymore: "
                                             + provider);
-                                    itemsToRemove.add(id);
                                 } else {
                                     if (isProviderReady) {
                                         appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId,
@@ -1637,7 +1480,7 @@ public class LauncherModel extends BroadcastReceiver
                                         }
                                         appWidgetInfo.restoreStatus = status;
                                     } else {
-                                        Log.v(TAG, "Widget restore pending id=" + id
+                                        Log.v(TAG, "Widget restore pending id=" + c.id
                                                 + " appWidgetId=" + appWidgetId
                                                 + " status =" + restoreStatus);
                                         appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId,
@@ -1652,8 +1495,7 @@ public class LauncherModel extends BroadcastReceiver
                                             appWidgetInfo.restoreStatus |=
                                                     LauncherAppWidgetInfo.FLAG_RESTORE_STARTED;
                                         } else if (!isSafeMode) {
-                                            FileLog.d(TAG, "Unrestored widget removed: " + component);
-                                            itemsToRemove.add(id);
+                                            c.markDeleted("Unrestored widget removed: " + component);
                                             continue;
                                         }
 
@@ -1669,27 +1511,15 @@ public class LauncherModel extends BroadcastReceiver
                                         }
                                     }
 
-                                    appWidgetInfo.id = id;
-                                    appWidgetInfo.screenId = c.getInt(screenIndex);
-                                    appWidgetInfo.cellX = c.getInt(cellXIndex);
-                                    appWidgetInfo.cellY = c.getInt(cellYIndex);
+                                    c.applyCommonProperties(appWidgetInfo);
                                     appWidgetInfo.spanX = c.getInt(spanXIndex);
                                     appWidgetInfo.spanY = c.getInt(spanYIndex);
-                                    appWidgetInfo.user = user;
+                                    appWidgetInfo.user = c.user;
 
-                                    if (container != LauncherSettings.Favorites.CONTAINER_DESKTOP &&
-                                        container != LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                                        Log.e(TAG, "Widget found where container != " +
+                                    if (!c.isOnWorkspaceOrHotseat()) {
+                                        c.markDeleted("Widget found where container != " +
                                                 "CONTAINER_DESKTOP nor CONTAINER_HOTSEAT - ignoring!");
-                                        itemsToRemove.add(id);
                                         continue;
-                                    }
-
-                                    appWidgetInfo.container = container;
-                                    // check & update map of what's occupied
-                                    if (!checkItemPlacement(occupied, appWidgetInfo, sBgDataModel.workspaceScreens)) {
-                                        itemsToRemove.add(id);
-                                        break;
                                     }
 
                                     if (!customWidget) {
@@ -1697,16 +1527,15 @@ public class LauncherModel extends BroadcastReceiver
                                                 appWidgetInfo.providerName.flattenToString();
                                         if (!providerName.equals(savedProvider) ||
                                                 (appWidgetInfo.restoreStatus != restoreStatus)) {
-                                            ContentValues values = new ContentValues();
-                                            values.put(
-                                                    LauncherSettings.Favorites.APPWIDGET_PROVIDER,
-                                                    providerName);
-                                            values.put(LauncherSettings.Favorites.RESTORED,
-                                                    appWidgetInfo.restoreStatus);
-                                            updateItem(id, values);
+                                            c.updater()
+                                                    .put(LauncherSettings.Favorites.APPWIDGET_PROVIDER,
+                                                            providerName)
+                                                    .put(LauncherSettings.Favorites.RESTORED,
+                                                            appWidgetInfo.restoreStatus)
+                                                    .commit();
                                         }
                                     }
-                                    sBgDataModel.addItem(appWidgetInfo, false);
+                                    c.checkAndAddItem(appWidgetInfo, sBgDataModel);
                                 }
                                 break;
                             }
@@ -1724,16 +1553,8 @@ public class LauncherModel extends BroadcastReceiver
                     return;
                 }
 
-                if (itemsToRemove.size() > 0) {
-                    // Remove dead items
-                    contentResolver.delete(LauncherSettings.Favorites.CONTENT_URI,
-                            Utilities.createDbSelectionQuery(
-                                    LauncherSettings.Favorites._ID, itemsToRemove), null);
-                    if (DEBUG_LOADERS) {
-                        Log.d(TAG, "Removed = " + Utilities.createDbSelectionQuery(
-                                LauncherSettings.Favorites._ID, itemsToRemove));
-                    }
-
+                // Remove dead items
+                if (c.commitDeleted()) {
                     // Remove any empty folder
                     ArrayList<Long> deletedFolderIds = (ArrayList<Long>) LauncherSettings.Settings
                             .call(contentResolver,
@@ -1774,15 +1595,7 @@ public class LauncherModel extends BroadcastReceiver
                     }
                 }
 
-                if (restoredRows.size() > 0) {
-                    // Update restored items that no longer require special handling
-                    ContentValues values = new ContentValues();
-                    values.put(LauncherSettings.Favorites.RESTORED, 0);
-                    contentResolver.update(LauncherSettings.Favorites.CONTENT_URI, values,
-                            Utilities.createDbSelectionQuery(
-                                    LauncherSettings.Favorites._ID, restoredRows), null);
-                }
-
+                c.commitRestoredItems();
                 if (!isSdCardReady && !pendingPackages.isEmpty()) {
                     context.registerReceiver(
                             new SdCardAvailableReceiver(
@@ -1793,7 +1606,7 @@ public class LauncherModel extends BroadcastReceiver
                 }
 
                 // Remove any empty screens
-                ArrayList<Long> unusedScreens = new ArrayList<Long>(sBgDataModel.workspaceScreens);
+                ArrayList<Long> unusedScreens = new ArrayList<>(sBgDataModel.workspaceScreens);
                 for (ItemInfo item: sBgDataModel.itemsIdMap) {
                     long screenId = item.screenId;
                     if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
@@ -1807,38 +1620,10 @@ public class LauncherModel extends BroadcastReceiver
                     sBgDataModel.workspaceScreens.removeAll(unusedScreens);
                     updateWorkspaceScreenOrder(context, sBgDataModel.workspaceScreens);
                 }
-
-                if (DEBUG_LOADERS) {
-                    Log.d(TAG, "loaded workspace in " + (SystemClock.uptimeMillis()-t) + "ms");
-                    Log.d(TAG, "workspace layout: ");
-                    int nScreens = occupied.size();
-                    for (int y = 0; y < countY; y++) {
-                        String line = "";
-
-                        for (int i = 0; i < nScreens; i++) {
-                            long screenId = occupied.keyAt(i);
-                            if (screenId > 0) {
-                                line += " | ";
-                            }
-                        }
-                        Log.d(TAG, "[ " + line + " ]");
-                    }
-                }
             }
             if (LauncherAppState.PROFILE_STARTUP) {
                 Trace.endSection();
             }
-        }
-
-        /**
-         * Partially updates the item without any notification. Must be called on the worker thread.
-         */
-        private void updateItem(long itemId, ContentValues update) {
-            mContext.getContentResolver().update(
-                    LauncherSettings.Favorites.CONTENT_URI,
-                    update,
-                    BaseColumns._ID + "= ?",
-                    new String[]{Long.toString(itemId)});
         }
 
         /** Filters the set of items who are directly or indirectly (via another container) on the
@@ -2480,179 +2265,6 @@ public class LauncherModel extends BroadcastReceiver
                 LauncherAppState.getInstance().getWidgetCache().removeObsoletePreviews(allWidgets);
             }
         });
-    }
-
-    /**
-     * Make an ShortcutInfo object for a restored application or shortcut item that points
-     * to a package that is not yet installed on the system.
-     */
-    public ShortcutInfo getRestoredItemInfo(Cursor c, Intent intent,
-            int promiseType, int itemType, CursorIconInfo iconInfo) {
-        final ShortcutInfo info = new ShortcutInfo();
-        info.user = Process.myUserHandle();
-        info.promisedIntent = intent;
-
-        info.iconBitmap = iconInfo.loadIcon(c, info);
-        // the fallback icon
-        if (info.iconBitmap == null) {
-            mIconCache.getTitleAndIcon(info, false /* useLowResIcon */);
-        }
-
-        if ((promiseType & ShortcutInfo.FLAG_RESTORED_ICON) != 0) {
-            String title = iconInfo.getTitle(c);
-            if (!TextUtils.isEmpty(title)) {
-                info.title = Utilities.trim(title);
-            }
-        } else if  ((promiseType & ShortcutInfo.FLAG_AUTOINTALL_ICON) != 0) {
-            if (TextUtils.isEmpty(info.title)) {
-                info.title = iconInfo.getTitle(c);
-            }
-        } else {
-            throw new InvalidParameterException("Invalid restoreType " + promiseType);
-        }
-
-        info.contentDescription = mUserManager.getBadgedLabelForUser(info.title, info.user);
-        info.itemType = itemType;
-        info.status = promiseType;
-        return info;
-    }
-
-    /**
-     * Make an Intent object for a restored application or shortcut item that points
-     * to the market page for the item.
-     */
-    @Thunk Intent getRestoredItemIntent(Cursor c, Context context, Intent intent) {
-        ComponentName componentName = intent.getComponent();
-        return getMarketIntent(componentName.getPackageName());
-    }
-
-    static Intent getMarketIntent(String packageName) {
-        return new Intent(Intent.ACTION_VIEW)
-            .setData(new Uri.Builder()
-                .scheme("market")
-                .authority("details")
-                .appendQueryParameter("id", packageName)
-                .build());
-    }
-
-    /**
-     * Make an ShortcutInfo object for a shortcut that is an application.
-     *
-     * If c is not null, then it will be used to fill in missing data like the title and icon.
-     */
-    public ShortcutInfo getAppShortcutInfo(Intent intent, UserHandle user, Cursor c,
-            CursorIconInfo iconInfo, boolean allowMissingTarget, boolean useLowResIcon) {
-        if (user == null) {
-            Log.d(TAG, "Null user found in getShortcutInfo");
-            return null;
-        }
-
-        ComponentName componentName = intent.getComponent();
-        if (componentName == null) {
-            Log.d(TAG, "Missing component found in getShortcutInfo");
-            return null;
-        }
-
-        Intent newIntent = new Intent(intent.getAction(), null);
-        newIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        newIntent.setComponent(componentName);
-        LauncherActivityInfoCompat lai = mLauncherApps.resolveActivity(newIntent, user);
-        if ((lai == null) && !allowMissingTarget) {
-            Log.d(TAG, "Missing activity found in getShortcutInfo: " + componentName);
-            return null;
-        }
-
-        final ShortcutInfo info = new ShortcutInfo();
-        info.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
-        info.user = user;
-        info.intent = newIntent;
-
-        mIconCache.getTitleAndIcon(info, lai, useLowResIcon);
-        if (mIconCache.isDefaultIcon(info.iconBitmap, user) && c != null) {
-            Bitmap icon = iconInfo.loadIcon(c);
-            info.iconBitmap = icon != null ? icon : mIconCache.getDefaultIcon(user);
-        }
-
-        if (lai != null && PackageManagerHelper.isAppSuspended(lai.getApplicationInfo())) {
-            info.isDisabled = ShortcutInfo.FLAG_DISABLED_SUSPENDED;
-        }
-
-        // from the db
-        if (TextUtils.isEmpty(info.title) && c != null) {
-            info.title = iconInfo.getTitle(c);
-        }
-
-        // fall back to the class name of the activity
-        if (info.title == null) {
-            info.title = componentName.getClassName();
-        }
-
-        info.contentDescription = mUserManager.getBadgedLabelForUser(info.title, info.user);
-        return info;
-    }
-
-    /**
-     * Make an ShortcutInfo object for a shortcut that isn't an application.
-     */
-    @Thunk ShortcutInfo getShortcutInfo(Cursor c, CursorIconInfo iconInfo) {
-        final ShortcutInfo info = new ShortcutInfo();
-        // Non-app shortcuts are only supported for current user.
-        info.user = Process.myUserHandle();
-        info.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
-
-        // TODO: If there's an explicit component and we can't install that, delete it.
-
-        loadInfoFromCursor(info, c, iconInfo);
-        return info;
-    }
-
-    /**
-     * Make an ShortcutInfo object for a shortcut that isn't an application.
-     */
-    public void loadInfoFromCursor(ShortcutInfo info, Cursor c, CursorIconInfo iconInfo) {
-        info.title = iconInfo.getTitle(c);
-        info.iconBitmap = iconInfo.loadIcon(c, info);
-        // the fallback icon
-        if (info.iconBitmap == null) {
-            info.iconBitmap = mIconCache.getDefaultIcon(info.user);
-        }
-    }
-
-    ShortcutInfo infoFromShortcutIntent(Context context, Intent data) {
-        Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
-        String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
-        Parcelable bitmap = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON);
-
-        if (intent == null) {
-            // If the intent is null, we can't construct a valid ShortcutInfo, so we return null
-            Log.e(TAG, "Can't construct ShorcutInfo with null intent");
-            return null;
-        }
-
-        final ShortcutInfo info = new ShortcutInfo();
-
-        // Only support intents for current user for now. Intents sent from other
-        // users wouldn't get here without intent forwarding anyway.
-        info.user = Process.myUserHandle();
-
-        if (bitmap instanceof Bitmap) {
-            info.iconBitmap = LauncherIcons.createIconBitmap((Bitmap) bitmap, context);
-        } else {
-            Parcelable extra = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE);
-            if (extra instanceof ShortcutIconResource) {
-                info.iconResource = (ShortcutIconResource) extra;
-                info.iconBitmap = LauncherIcons.createIconBitmap(info.iconResource, context);
-            }
-        }
-        if (info.iconBitmap == null) {
-            info.iconBitmap = mIconCache.getDefaultIcon(info.user);
-        }
-
-        info.title = Utilities.trim(name);
-        info.contentDescription = mUserManager.getBadgedLabelForUser(info.title, info.user);
-        info.intent = intent;
-
-        return info;
     }
 
     static boolean isValidProvider(AppWidgetProviderInfo provider) {
