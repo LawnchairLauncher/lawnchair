@@ -26,6 +26,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Looper;
 import android.os.Parcelable;
 import android.os.Process;
 import android.os.UserHandle;
@@ -436,10 +437,25 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 
         public ItemInfo getItemInfo() {
             if (activityInfo != null) {
-                return new AppInfo(mContext, activityInfo, user,
-                        LauncherAppState.getInstance().getIconCache(),
-                        UserManagerCompat.getInstance(mContext).isQuietModeEnabled(user),
-                        false /* useLowResIcon */).makeShortcut();
+                AppInfo appInfo = new AppInfo(mContext, activityInfo, user);
+                final LauncherAppState app = LauncherAppState.getInstance();
+                // Set default values until proper values is loaded.
+                appInfo.title = "";
+                appInfo.iconBitmap = app.getIconCache().getDefaultIcon(user);
+                final ShortcutInfo si = appInfo.makeShortcut();
+                if (Looper.myLooper() == LauncherModel.getWorkerLooper()) {
+                    app.getIconCache().getTitleAndIcon(si, activityInfo, false /* useLowResIcon */);
+                } else {
+                    app.getModel().updateAndBindShortcutInfo(new Provider<ShortcutInfo>() {
+                        @Override
+                        public ShortcutInfo get() {
+                            app.getIconCache().getTitleAndIcon(
+                                    si, activityInfo, false /* useLowResIcon */);
+                            return si;
+                        }
+                    });
+                }
+                return si;
             } else if (shortcutInfo != null) {
                 return new ShortcutInfo(shortcutInfo, mContext);
             } else if (providerInfo != null) {

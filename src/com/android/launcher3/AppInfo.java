@@ -58,19 +58,12 @@ public class AppInfo extends ItemInfoWithIcon {
     /**
      * Must not hold the Context.
      */
-    public AppInfo(Context context, LauncherActivityInfoCompat info, UserHandle user,
-            IconCache iconCache) {
-        this(context, info, user, iconCache,
-                UserManagerCompat.getInstance(context).isQuietModeEnabled(user));
+    public AppInfo(Context context, LauncherActivityInfoCompat info, UserHandle user) {
+        this(context, info, user, UserManagerCompat.getInstance(context).isQuietModeEnabled(user));
     }
 
     public AppInfo(Context context, LauncherActivityInfoCompat info, UserHandle user,
-            IconCache iconCache, boolean quietModeEnabled) {
-        this(context, info, user, iconCache, quietModeEnabled, true /* useLowResIcon */);
-    }
-
-    public AppInfo(Context context, LauncherActivityInfoCompat info, UserHandle user,
-            IconCache iconCache, boolean quietModeEnabled, boolean useLowResIcon) {
+            boolean quietModeEnabled) {
         this.componentName = info.getComponentName();
         this.container = ItemInfo.NO_ID;
         this.user = user;
@@ -82,7 +75,6 @@ public class AppInfo extends ItemInfoWithIcon {
         }
 
         intent = makeLaunchIntent(context, info, user);
-        iconCache.getTitleAndIcon(this, info, useLowResIcon);
     }
 
     public AppInfo(AppInfo info) {

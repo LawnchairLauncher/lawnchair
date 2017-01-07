@@ -52,6 +52,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.SQLiteCacheHelper;
 import com.android.launcher3.util.Thunk;
@@ -188,7 +189,7 @@ public class IconCache {
         return getFullResDefaultActivityIcon();
     }
 
-    private Bitmap makeDefaultIcon(UserHandle user) {
+    protected Bitmap makeDefaultIcon(UserHandle user) {
         Drawable unbadged = getFullResDefaultActivityIcon();
         return LauncherIcons.createBadgedIconBitmap(unbadged, user, mContext);
     }
@@ -517,6 +518,7 @@ public class IconCache {
             @NonNull ComponentName componentName,
             @NonNull Provider<LauncherActivityInfoCompat> infoProvider,
             UserHandle user, boolean usePackageIcon, boolean useLowResIcon) {
+        Preconditions.assertWorkerThread();
         ComponentKey cacheKey = new ComponentKey(componentName, user);
         CacheEntry entry = mCache.get(cacheKey);
         if (entry == null || (entry.isLowResIcon && !useLowResIcon)) {
@@ -604,6 +606,7 @@ public class IconCache {
      */
     private CacheEntry getEntryForPackageLocked(String packageName, UserHandle user,
             boolean useLowResIcon) {
+        Preconditions.assertWorkerThread();
         ComponentKey cacheKey = getPackageKey(packageName, user);
         CacheEntry entry = mCache.get(cacheKey);
 

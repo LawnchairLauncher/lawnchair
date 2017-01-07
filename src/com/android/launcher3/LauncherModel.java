@@ -2029,7 +2029,7 @@ public class LauncherModel extends BroadcastReceiver
                 for (int i = 0; i < apps.size(); i++) {
                     LauncherActivityInfoCompat app = apps.get(i);
                     // This builds the icon bitmaps.
-                    mBgAllAppsList.add(new AppInfo(mContext, app, user, mIconCache, quietMode));
+                    mBgAllAppsList.add(new AppInfo(mContext, app, user, quietMode), app);
                 }
 
                 final ManagedProfileHeuristic heuristic = ManagedProfileHeuristic.get(mContext, user);
@@ -2221,17 +2221,16 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     /**
-     * Repopulates the shortcut info, possibly updating any icon already on the workspace.
+     * Utility method to update a shortcut on the background thread.
      */
-    public void updateShortcutInfo(final ShortcutInfoCompat fullDetail, final ShortcutInfo info) {
+    public void updateAndBindShortcutInfo(final Provider<ShortcutInfo> shortcutProvider) {
         enqueueModelUpdateTask(new ExtendedModelTask() {
             @Override
             public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
-                info.updateFromDeepShortcutInfo(fullDetail, app.getContext());
-
+                ShortcutInfo info = shortcutProvider.get();
                 ArrayList<ShortcutInfo> update = new ArrayList<>();
                 update.add(info);
-                bindUpdatedShortcuts(update, fullDetail.getUserHandle());
+                bindUpdatedShortcuts(update, info.user);
             }
         });
     }

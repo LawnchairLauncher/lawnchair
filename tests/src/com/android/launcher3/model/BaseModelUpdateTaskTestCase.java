@@ -13,6 +13,7 @@ import android.support.test.InstrumentationRegistry;
 import android.test.ProviderTestCase2;
 
 import com.android.launcher3.AllAppsList;
+import com.android.launcher3.AppFilter;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.DeferredHandler;
 import com.android.launcher3.IconCache;
@@ -76,7 +77,7 @@ public class BaseModelUpdateTaskTestCase extends ProviderTestCase2<TestLauncherP
         idp = new InvariantDeviceProfile();
         iconCache = new MyIconCache(targetContext, idp);
 
-        allAppsList = new AllAppsList(iconCache, null);
+        allAppsList = new AllAppsList(iconCache, new AppFilter());
 
         when(appState.getIconCache()).thenReturn(iconCache);
         when(appState.getInvariantDeviceProfile()).thenReturn(idp);
@@ -131,7 +132,7 @@ public class BaseModelUpdateTaskTestCase extends ProviderTestCase2<TestLauncherP
                                 (ItemInfo) initItem(classMap.get(commands[1]), commands, 2), false);
                         break;
                     case "allApps":
-                        allAppsList.add((AppInfo) initItem(AppInfo.class, commands, 1));
+                        allAppsList.add((AppInfo) initItem(AppInfo.class, commands, 1), null);
                         break;
                 }
             }
@@ -207,6 +208,11 @@ public class BaseModelUpdateTaskTestCase extends ProviderTestCase2<TestLauncherP
 
         public Bitmap newIcon() {
             return Bitmap.createBitmap(1, 1, Config.ARGB_8888);
+        }
+
+        @Override
+        protected Bitmap makeDefaultIcon(UserHandle user) {
+            return newIcon();
         }
     }
 }

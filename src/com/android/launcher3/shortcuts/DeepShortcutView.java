@@ -34,6 +34,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.shortcuts.DeepShortcutsContainer.UnbadgedShortcutInfo;
 import com.android.launcher3.util.PillRevealOutlineProvider;
 import com.android.launcher3.util.PillWidthRevealOutlineProvider;
+import com.android.launcher3.util.Provider;
 
 /**
  * A {@link android.widget.FrameLayout} that contains a {@link DeepShortcutView}.
@@ -114,10 +115,17 @@ public class DeepShortcutView extends FrameLayout implements ValueAnimator.Anima
      * Returns the shortcut info that is suitable to be added on the homescreen
      */
     public ShortcutInfo getFinalInfo() {
-        ShortcutInfo badged = new ShortcutInfo(mInfo);
+        final ShortcutInfo badged = new ShortcutInfo(mInfo);
         // Queue an update task on the worker thread. This ensures that the badged
         // shortcut eventually gets its icon updated.
-        Launcher.getLauncher(getContext()).getModel().updateShortcutInfo(mInfo.mDetail, badged);
+        Launcher.getLauncher(getContext()).getModel().updateAndBindShortcutInfo(
+                new Provider<ShortcutInfo>() {
+                    @Override
+                    public ShortcutInfo get() {
+                        badged.updateFromDeepShortcutInfo(mInfo.mDetail, getContext());
+                        return badged;
+                    }
+        });
         return badged;
     }
 

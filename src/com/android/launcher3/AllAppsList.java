@@ -65,13 +65,15 @@ public class AllAppsList {
      *
      * If the app is already in the list, doesn't add it.
      */
-    public void add(AppInfo info) {
+    public void add(AppInfo info, LauncherActivityInfoCompat activityInfo) {
         if (!mAppFilter.shouldShowApp(info.componentName)) {
             return;
         }
         if (findActivity(data, info.componentName, info.user)) {
             return;
         }
+        mIconCache.getTitleAndIcon(info, activityInfo, true /* useLowResIcon */);
+
         data.add(info);
         added.add(info);
     }
@@ -101,7 +103,7 @@ public class AllAppsList {
                 user);
 
         for (LauncherActivityInfoCompat info : matches) {
-            add(new AppInfo(context, info, user, mIconCache));
+            add(new AppInfo(context, info, user), info);
         }
     }
 
@@ -171,7 +173,7 @@ public class AllAppsList {
                         info.getComponentName().getPackageName(), user,
                         info.getComponentName().getClassName());
                 if (applicationInfo == null) {
-                    add(new AppInfo(context, info, user, mIconCache));
+                    add(new AppInfo(context, info, user), info);
                 } else {
                     mIconCache.getTitleAndIcon(applicationInfo, info, true /* useLowResIcon */);
                     modified.add(applicationInfo);

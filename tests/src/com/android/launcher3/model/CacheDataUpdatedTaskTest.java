@@ -30,6 +30,11 @@ public class CacheDataUpdatedTaskTest extends BaseModelUpdateTaskTestCase {
     }
 
     public void testCacheUpdate_update_apps() throws Exception {
+        // Clear all icons from apps list so that its easy to check what was updated
+        for (AppInfo info : allAppsList.data) {
+            info.iconBitmap = null;
+        }
+
         executeTaskForTest(newTask(CacheDataUpdatedTask.OP_CACHE_UPDATE, "app1"));
 
         // Verify that only the app icons of app1 (id 1 & 2) are updated. Custom shortcut (id 7)
