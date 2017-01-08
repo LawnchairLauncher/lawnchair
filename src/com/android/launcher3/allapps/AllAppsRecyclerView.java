@@ -22,6 +22,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.SparseIntArray;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.android.launcher3.BaseRecyclerView;
@@ -29,6 +30,7 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
 import java.util.List;
@@ -207,7 +209,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
 
         if (mApps.hasNoFilteredResults()) {
             if (mEmptySearchBackground == null) {
-                mEmptySearchBackground = new AllAppsBackgroundDrawable(getContext());
+                mEmptySearchBackground = DrawableFactory.get(getContext())
+                        .getAllAppsBackground(getContext());
                 mEmptySearchBackground.setAlpha(0);
                 mEmptySearchBackground.setCallback(this);
                 updateEmptySearchBackgroundBounds();
@@ -218,6 +221,16 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
             // not overlap with the results
             mEmptySearchBackground.setBgAlpha(0f);
         }
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent e) {
+        boolean result = super.onInterceptTouchEvent(e);
+        if (!result && e.getAction() == MotionEvent.ACTION_DOWN
+                && mEmptySearchBackground != null && mEmptySearchBackground.getAlpha() > 0) {
+            mEmptySearchBackground.setHotspot(e.getX(), e.getY());
+        }
+        return result;
     }
 
     /**

@@ -23,6 +23,7 @@ import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.allapps.AllAppsBackgroundDrawable;
 
 /**
  * Factory for creating new drawables.
@@ -49,5 +50,9 @@ public class DrawableFactory {
         FastBitmapDrawable d = new FastBitmapDrawable(icon);
         d.setFilterBitmap(true);
         return d;
+    }
+
+    public AllAppsBackgroundDrawable getAllAppsBackground(Context context) {
+        return new AllAppsBackgroundDrawable(context);
     }
 }
