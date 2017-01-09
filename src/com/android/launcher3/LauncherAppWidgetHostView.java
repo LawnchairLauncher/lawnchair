@@ -33,9 +33,11 @@ import android.view.ViewConfiguration;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.widget.AdapterView;
 import android.widget.Advanceable;
 import android.widget.RemoteViews;
 
+import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragLayer.TouchCompleteListener;
 
 import java.lang.reflect.Method;
@@ -45,7 +47,8 @@ import java.util.concurrent.Executor;
 /**
  * {@inheritDoc}
  */
-public class LauncherAppWidgetHostView extends AppWidgetHostView implements TouchCompleteListener {
+public class LauncherAppWidgetHostView extends AppWidgetHostView
+        implements TouchCompleteListener, View.OnLongClickListener {
 
     private static final String TAG = "LauncherWidgetHostView";
 
@@ -56,11 +59,12 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
     // Maintains a list of widget ids which are supposed to be auto advanced.
     private static final SparseBooleanArray sAutoAdvanceWidgetIds = new SparseBooleanArray();
 
-    LayoutInflater mInflater;
+    protected final LayoutInflater mInflater;
 
-    private CheckLongPressHelper mLongPressHelper;
-    private StylusEventHelper mStylusEventHelper;
-    private Context mContext;
+    private final CheckLongPressHelper mLongPressHelper;
+    private final StylusEventHelper mStylusEventHelper;
+    private final Context mContext;
+
     @ViewDebug.ExportedProperty(category = "launcher")
     private int mPreviousOrientation;
 
@@ -69,6 +73,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mChildrenFocused;
 
+    private boolean mIsScrollable;
     private boolean mIsAttachedToWindow;
     private boolean mIsAutoAdvanceRegistered;
     private Runnable mAutoAdvanceRunnable;
@@ -86,7 +91,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
     public LauncherAppWidgetHostView(Context context) {
         super(context);
         mContext = context;
-        mLongPressHelper = new CheckLongPressHelper(this);
+        mLongPressHelper = new CheckLongPressHelper(this, this);
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
         mInflater = LayoutInflater.from(context);
         setAccessibilityDelegate(Launcher.getLauncher(context).getAccessibilityDelegate());
@@ -101,6 +106,16 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
                 Log.e(TAG, "Unable to set async executor", e);
             }
         }
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        if (mIsScrollable) {
+            DragLayer dragLayer = Launcher.getLauncher(getContext()).getDragLayer();
+            dragLayer.requestDisallowInterceptTouchEvent(false);
+        }
+        view.performLongClick();
+        return true;
     }
 
     @Override
@@ -120,6 +135,24 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
 
         // The provider info or the views might have changed.
         checkIfAutoAdvance();
+
+        mIsScrollable = checkScrollableRecursively(this);
+    }
+
+    private boolean checkScrollableRecursively(ViewGroup viewGroup) {
+        if (viewGroup instanceof AdapterView) {
+            return true;
+        } else {
+            for (int i=0; i < viewGroup.getChildCount(); i++) {
+                View child = viewGroup.getChildAt(i);
+                if (child instanceof ViewGroup) {
+                    if (checkScrollableRecursively((ViewGroup) child)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     public boolean isReinflateRequired() {
@@ -150,12 +183,18 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
             mLongPressHelper.cancelLongPress();
             return true;
         }
+
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN: {
+                DragLayer dragLayer = Launcher.getLauncher(getContext()).getDragLayer();
+
+                if (mIsScrollable) {
+                     dragLayer.requestDisallowInterceptTouchEvent(true);
+                }
                 if (!mStylusEventHelper.inStylusButtonPressed()) {
                     mLongPressHelper.postCheckForLongPress();
                 }
-                Launcher.getLauncher(getContext()).getDragLayer().setTouchCompleteListener(this);
+                dragLayer.setTouchCompleteListener(this);
                 break;
             }
 

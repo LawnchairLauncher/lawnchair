@@ -81,8 +81,6 @@
 
     <dimen name="all_apps_divider_margin_vertical">8dp</dimen>
 
-    <dimen name="all_apps_bezel_swipe_height">24dp</dimen>
-
 <!-- Widget tray -->
     <dimen name="widget_preview_label_vertical_padding">8dp</dimen>
     <dimen name="widget_preview_label_horizontal_padding">8dp</dimen>
