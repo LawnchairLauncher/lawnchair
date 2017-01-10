@@ -254,6 +254,9 @@ public class ShortcutInfo extends ItemInfoWithIcon {
         AppInfo appInfo = new AppInfo();
         appInfo.user = user;
         appInfo.componentName = shortcutInfo.getActivity();
+        appInfo.intent = new Intent(Intent.ACTION_MAIN)
+                .addCategory(Intent.CATEGORY_LAUNCHER)
+                .setComponent(shortcutInfo.getActivity());
         cache.getTitleAndIcon(appInfo, false);
         return LauncherIcons.badgeWithBitmap(unbadgedBitmap, appInfo.iconBitmap, context);
     }
