@@ -20,9 +20,7 @@ import android.content.Context;
 import android.content.Intent.ShortcutIconResource;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
@@ -49,16 +47,6 @@ public class LauncherIcons {
     static {
         sCanvas.setDrawFilter(new PaintFlagsDrawFilter(Paint.DITHER_FLAG,
                 Paint.FILTER_BITMAP_FLAG));
-    }
-
-
-    public static Bitmap createIconBitmap(Cursor c, int iconIndex, Context context) {
-        byte[] data = c.getBlob(iconIndex);
-        try {
-            return createIconBitmap(BitmapFactory.decodeByteArray(data, 0, data.length), context);
-        } catch (Exception e) {
-            return null;
-        }
     }
 
     /**
