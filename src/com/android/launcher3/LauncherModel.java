@@ -1105,10 +1105,6 @@ public class LauncherModel extends BroadcastReceiver
             final boolean isSdCardReady = Utilities.isBootCompleted();
             final MultiHashMap<UserHandle, String> pendingPackages = new MultiHashMap<>();
 
-            InvariantDeviceProfile profile = mApp.getInvariantDeviceProfile();
-            int countX = profile.numColumns;
-            int countY = profile.numRows;
-
             boolean clearDb = false;
             try {
                 ImportDataTask.performImportIfPossible(context);
@@ -1159,8 +1155,6 @@ public class LauncherModel extends BroadcastReceiver
                             LauncherSettings.Favorites.SPANY);
                     final int rankIndex = c.getColumnIndexOrThrow(
                             LauncherSettings.Favorites.RANK);
-                    final int restoredIndex = c.getColumnIndexOrThrow(
-                            LauncherSettings.Favorites.RESTORED);
                     final int optionsIndex = c.getColumnIndexOrThrow(
                             LauncherSettings.Favorites.OPTIONS);
 
@@ -1207,7 +1201,6 @@ public class LauncherModel extends BroadcastReceiver
                                 continue;
                             }
 
-                            boolean restored = 0 != c.getInt(restoredIndex);
                             boolean allowMissingTarget = false;
                             switch (c.itemType) {
                             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT: {
@@ -1220,7 +1213,6 @@ public class LauncherModel extends BroadcastReceiver
                             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                             case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
                                 intentDescription = c.getString(intentIndex);
-                                int promiseType = c.getInt(restoredIndex);
                                 int disabledState = 0;
                                 targetPackage = null;
 
@@ -1237,17 +1229,14 @@ public class LauncherModel extends BroadcastReceiver
                                         }
 
                                         if (validComponent) {
-                                            if (restored) {
-                                                // no special handling necessary for this item
-                                                c.markRestored();
-                                                restored = false;
-                                            }
+                                            // no special handling necessary for this item
+                                            c.markRestored();
                                             if (quietMode.get(c.serialNumber)) {
                                                 disabledState = ShortcutInfo.FLAG_DISABLED_QUIET_USER;
                                             }
                                         } else if (validPkg) {
                                             intent = null;
-                                            if ((promiseType & ShortcutInfo.FLAG_AUTOINTALL_ICON) != 0) {
+                                            if (c.hasRestoreFlag(ShortcutInfo.FLAG_AUTOINTALL_ICON)) {
                                                 // We allow auto install apps to have their intent
                                                 // updated after an install.
                                                 intent = manager.getLaunchIntentForPackage(
@@ -1267,21 +1256,20 @@ public class LauncherModel extends BroadcastReceiver
                                             } else {
                                                 // no special handling necessary for this item
                                                 c.markRestored();
-                                                restored = false;
                                             }
-                                        } else if (restored) {
+                                        } else if (c.restoreFlag != 0) {
                                             // Package is not yet available but might be
                                             // installed later.
                                             FileLog.d(TAG, "package not yet restored: " + cn);
 
-                                            if ((promiseType & ShortcutInfo.FLAG_RESTORE_STARTED) != 0) {
+                                            if (c.hasRestoreFlag(ShortcutInfo.FLAG_RESTORE_STARTED)) {
                                                 // Restore has started once.
                                             } else if (installingPkgs.containsKey(cn.getPackageName())) {
                                                 // App restore has started. Update the flag
-                                                promiseType |= ShortcutInfo.FLAG_RESTORE_STARTED;
+                                                c.restoreFlag |= ShortcutInfo.FLAG_RESTORE_STARTED;
                                                 c.updater().put(
                                                         LauncherSettings.Favorites.RESTORED,
-                                                        promiseType).commit();
+                                                        c.restoreFlag).commit();
                                             } else {
                                                 c.markDeleted("Unrestored package removed: " + cn);
                                                 continue;
@@ -1308,7 +1296,6 @@ public class LauncherModel extends BroadcastReceiver
                                     } else if (cn == null) {
                                         // For shortcuts with no component, keep them as they are
                                         c.markRestored();
-                                        restored = false;
                                     }
                                 } catch (URISyntaxException e) {
                                     c.markDeleted("Invalid uri: " + intentDescription);
@@ -1318,9 +1305,9 @@ public class LauncherModel extends BroadcastReceiver
                                 boolean useLowResIcon = !c.isOnWorkspaceOrHotseat() &&
                                         c.getInt(rankIndex) >= FolderIcon.NUM_ITEMS_IN_PREVIEW;
 
-                                if (restored) {
+                                if (c.restoreFlag != 0) {
                                     if (c.user.equals(Process.myUserHandle())) {
-                                        info = c.getRestoredItemInfo(intent, promiseType);
+                                        info = c.getRestoredItemInfo(intent);
                                     } else {
                                         // Don't restore items for other profiles.
                                         c.markDeleted("Restore from managed profile not supported");
@@ -1385,7 +1372,7 @@ public class LauncherModel extends BroadcastReceiver
                                         info.isDisabled |= ShortcutInfo.FLAG_DISABLED_SAFEMODE;
                                     }
 
-                                    if (restored) {
+                                    if (c.restoreFlag != 0) {
                                         ComponentName cn = info.getTargetComponent();
                                         if (cn != null) {
                                             Integer progress = installingPkgs.get(cn.getPackageName());
@@ -1413,10 +1400,8 @@ public class LauncherModel extends BroadcastReceiver
                                 folderInfo.spanY = 1;
                                 folderInfo.options = c.getInt(optionsIndex);
 
-                                if (restored) {
-                                    // no special handling required for restored folders
-                                    c.markRestored();
-                                }
+                                // no special handling required for restored folders
+                                c.markRestored();
 
                                 c.checkAndAddItem(folderInfo, sBgDataModel);
                                 break;
@@ -1433,11 +1418,10 @@ public class LauncherModel extends BroadcastReceiver
                                 final ComponentName component =
                                         ComponentName.unflattenFromString(savedProvider);
 
-                                final int restoreStatus = c.getInt(restoredIndex);
-                                final boolean isIdValid = (restoreStatus &
-                                        LauncherAppWidgetInfo.FLAG_ID_NOT_VALID) == 0;
-                                final boolean wasProviderReady = (restoreStatus &
-                                        LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY) == 0;
+                                final boolean isIdValid = !c.hasRestoreFlag(
+                                        LauncherAppWidgetInfo.FLAG_ID_NOT_VALID);
+                                final boolean wasProviderReady = !c.hasRestoreFlag(
+                                        LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY);
 
                                 if (widgetProvidersMap == null) {
                                     widgetProvidersMap = AppWidgetManagerCompat
@@ -1462,7 +1446,7 @@ public class LauncherModel extends BroadcastReceiver
                                         // The provider is available. So the widget is either
                                         // available or not available. We do not need to track
                                         // any future restore updates.
-                                        int status = restoreStatus &
+                                        int status = c.restoreFlag &
                                                 ~LauncherAppWidgetInfo.FLAG_RESTORE_STARTED;
                                         if (!wasProviderReady) {
                                             // If provider was not previously ready, update the
@@ -1480,13 +1464,13 @@ public class LauncherModel extends BroadcastReceiver
                                     } else {
                                         Log.v(TAG, "Widget restore pending id=" + c.id
                                                 + " appWidgetId=" + appWidgetId
-                                                + " status =" + restoreStatus);
+                                                + " status =" + c.restoreFlag);
                                         appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId,
                                                 component);
-                                        appWidgetInfo.restoreStatus = restoreStatus;
+                                        appWidgetInfo.restoreStatus = c.restoreFlag;
                                         Integer installProgress = installingPkgs.get(component.getPackageName());
 
-                                        if ((restoreStatus & LauncherAppWidgetInfo.FLAG_RESTORE_STARTED) != 0) {
+                                        if (c.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_RESTORE_STARTED)) {
                                             // Restore has started once.
                                         } else if (installProgress != null) {
                                             // App restore has started. Update the flag
@@ -1524,7 +1508,7 @@ public class LauncherModel extends BroadcastReceiver
                                         String providerName =
                                                 appWidgetInfo.providerName.flattenToString();
                                         if (!providerName.equals(savedProvider) ||
-                                                (appWidgetInfo.restoreStatus != restoreStatus)) {
+                                                (appWidgetInfo.restoreStatus != c.restoreFlag)) {
                                             c.updater()
                                                     .put(LauncherSettings.Favorites.APPWIDGET_PROVIDER,
                                                             providerName)
