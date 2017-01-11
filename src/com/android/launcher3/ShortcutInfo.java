@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import android.annotation.TargetApi;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -29,6 +30,7 @@ import android.text.TextUtils;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.graphics.LauncherIcons;
+import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.ContentWriter;
@@ -250,15 +252,25 @@ public class ShortcutInfo extends ItemInfoWithIcon {
     protected Bitmap getBadgedIcon(Bitmap unbadgedBitmap, ShortcutInfoCompat shortcutInfo,
             IconCache cache, Context context) {
         unbadgedBitmap = LauncherIcons.addShadowToIcon(unbadgedBitmap, context);
-        // Get the app info for the source activity.
-        AppInfo appInfo = new AppInfo();
-        appInfo.user = user;
-        appInfo.componentName = shortcutInfo.getActivity();
-        appInfo.intent = new Intent(Intent.ACTION_MAIN)
-                .addCategory(Intent.CATEGORY_LAUNCHER)
-                .setComponent(shortcutInfo.getActivity());
-        cache.getTitleAndIcon(appInfo, false);
-        return LauncherIcons.badgeWithBitmap(unbadgedBitmap, appInfo.iconBitmap, context);
+
+        final Bitmap badgeBitmap;
+        ComponentName cn = shortcutInfo.getActivity();
+        if (cn != null) {
+            // Get the app info for the source activity.
+            AppInfo appInfo = new AppInfo();
+            appInfo.user = user;
+            appInfo.componentName = cn;
+            appInfo.intent = new Intent(Intent.ACTION_MAIN)
+                    .addCategory(Intent.CATEGORY_LAUNCHER)
+                    .setComponent(cn);
+            cache.getTitleAndIcon(appInfo, false);
+            badgeBitmap = appInfo.iconBitmap;
+        } else {
+            PackageItemInfo pkgInfo = new PackageItemInfo(shortcutInfo.getPackage());
+            cache.getTitleAndIconForApp(pkgInfo, false);
+            badgeBitmap = pkgInfo.iconBitmap;
+        }
+        return LauncherIcons.badgeWithBitmap(unbadgedBitmap, badgeBitmap, context);
     }
 
     /** Returns the ShortcutInfo id associated with the deep shortcut. */
