@@ -306,7 +306,7 @@ public final class Utilities {
      * @param bitmap The bitmap to scan
      * @param samples The approximate max number of samples to use.
      */
-    static int findDominantColorByHue(Bitmap bitmap, int samples) {
+    public static int findDominantColorByHue(Bitmap bitmap, int samples) {
         final int height = bitmap.getHeight();
         final int width = bitmap.getWidth();
         int sampleStride = (int) Math.sqrt((height * width) / samples);

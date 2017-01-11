@@ -31,7 +31,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
 
 import com.android.launcher3.CellLayout.ContainerType;
-import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.badge.BadgeRenderer;
 
 import java.util.ArrayList;
 
@@ -136,6 +136,9 @@ public class DeviceProfile {
     // Listeners
     private ArrayList<LauncherLayoutChangeListener> mListeners = new ArrayList<>();
 
+    // Icon badges
+    public BadgeRenderer mBadgeRenderer;
+
     public DeviceProfile(Context context, InvariantDeviceProfile inv,
             Point minSize, Point maxSize,
             int width, int height, boolean isLandscape) {
@@ -192,6 +195,10 @@ public class DeviceProfile {
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_top_padding);
         hotseatBarBottomPaddingPx = 0;
         hotseatLandGutterPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_gutter_width);
+
+        int badgeSize = res.getDimensionPixelSize(R.dimen.badge_size);
+        int badgeTextSize = res.getDimensionPixelSize(R.dimen.badge_text_size);
+        mBadgeRenderer = new BadgeRenderer(badgeSize, badgeTextSize);
 
         // Determine sizes.
         widthPx = width;
