@@ -36,7 +36,11 @@ import android.os.UserHandle;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.config.ProviderConfig;
+
+import java.lang.reflect.Method;
 
 /**
  * Helper methods for generating various launcher icons
@@ -174,6 +178,7 @@ public class LauncherIcons {
      * @param scale the scale to apply before drawing {@param icon} on the canvas
      */
     public static Bitmap createIconBitmap(Drawable icon, Context context, float scale) {
+        icon = castToMaskableIconDrawable(icon);
         synchronized (sCanvas) {
             final int iconBitmapSize = getIconBitmapSize();
 
@@ -226,6 +231,19 @@ public class LauncherIcons {
             canvas.setBitmap(null);
 
             return bitmap;
+        }
+    }
+
+    static Drawable castToMaskableIconDrawable(Drawable drawable) {
+        if (!(ProviderConfig.IS_DOGFOOD_BUILD && Utilities.isAtLeastO())) {
+            return drawable;
+        }
+        try {
+            Class clazz = Class.forName("android.graphics.drawable.MaskableIconDrawable");
+            Method method = clazz.getDeclaredMethod("wrap", Drawable.class);
+            return (Drawable) method.invoke(null, drawable);
+        } catch (Exception e) {
+            return drawable;
         }
     }
 
