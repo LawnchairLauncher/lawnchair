@@ -48,7 +48,7 @@ public class LauncherAppState {
 
     private InvariantDeviceProfile mInvariantDeviceProfile;
 
-    public static LauncherAppState getInstance() {
+    public static LauncherAppState getInstance(Context context) {
         if (INSTANCE == null) {
             INSTANCE = new LauncherAppState();
         }
@@ -158,5 +158,12 @@ public class LauncherAppState {
 
     public InvariantDeviceProfile getInvariantDeviceProfile() {
         return mInvariantDeviceProfile;
+    }
+
+    /**
+     * Shorthand for {@link #getInvariantDeviceProfile()}
+     */
+    public static InvariantDeviceProfile getIDP(Context context) {
+        return LauncherAppState.getInstance(context).getInvariantDeviceProfile();
     }
 }

@@ -96,9 +96,7 @@ public class FolderPagedView extends PagedView {
 
     public FolderPagedView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        LauncherAppState app = LauncherAppState.getInstance();
-
-        InvariantDeviceProfile profile = app.getInvariantDeviceProfile();
+        InvariantDeviceProfile profile = LauncherAppState.getIDP(context);
         mMaxCountX = profile.numFolderColumns;
         mMaxCountY = profile.numFolderRows;
 

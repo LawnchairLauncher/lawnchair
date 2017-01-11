@@ -1613,8 +1613,7 @@ public class Workspace extends PagedView
         Utilities.THREAD_POOL_EXECUTOR.execute(new Runnable() {
             @Override
             public void run() {
-                final Point size = LauncherAppState.getInstance()
-                        .getInvariantDeviceProfile().defaultWallpaperSize;
+                final Point size = LauncherAppState.getIDP(getContext()).defaultWallpaperSize;
                 if (size.x != mWallpaperManager.getDesiredMinimumWidth()
                         || size.y != mWallpaperManager.getDesiredMinimumHeight()) {
                     mWallpaperManager.suggestDesiredDimensions(size.x, size.y);

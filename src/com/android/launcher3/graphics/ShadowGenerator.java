@@ -16,6 +16,7 @@
 
 package com.android.launcher3.graphics;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BlurMaskFilter;
@@ -52,8 +53,8 @@ public class ShadowGenerator {
     private final Paint mBlurPaint;
     private final Paint mDrawPaint;
 
-    private ShadowGenerator() {
-        mIconSize = LauncherAppState.getInstance().getInvariantDeviceProfile().iconBitmapSize;
+    private ShadowGenerator(Context context) {
+        mIconSize = LauncherAppState.getIDP(context).iconBitmapSize;
         mCanvas = new Canvas();
         mBlurPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
         mBlurPaint.setMaskFilter(new BlurMaskFilter(mIconSize * BLUR_FACTOR, Blur.NORMAL));
@@ -82,11 +83,11 @@ public class ShadowGenerator {
         return result;
     }
 
-    public static ShadowGenerator getInstance() {
+    public static ShadowGenerator getInstance(Context context) {
         Preconditions.assertNonUiThread();
         synchronized (LOCK) {
             if (sShadowGenerator == null) {
-                sShadowGenerator = new ShadowGenerator();
+                sShadowGenerator = new ShadowGenerator(context);
             }
         }
         return sShadowGenerator;

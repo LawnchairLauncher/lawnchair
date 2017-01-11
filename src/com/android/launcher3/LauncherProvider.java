@@ -556,8 +556,7 @@ public class LauncherProvider extends ContentProvider {
     }
 
     private DefaultLayoutParser getDefaultLayoutParser(AppWidgetHost widgetHost) {
-        int defaultLayout = LauncherAppState.getInstance()
-                .getInvariantDeviceProfile().defaultLayoutId;
+        int defaultLayout = LauncherAppState.getIDP(getContext()).defaultLayoutId;
         return new DefaultLayoutParser(getContext(), widgetHost,
                 mOpenHelper, getContext().getResources(), defaultLayout);
     }

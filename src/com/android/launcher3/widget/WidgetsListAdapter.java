@@ -68,7 +68,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
             View.OnLongClickListener iconLongClickListener,
             Context context) {
         mLayoutInflater = LayoutInflater.from(context);
-        mWidgetPreviewLoader = LauncherAppState.getInstance().getWidgetCache();
+        mWidgetPreviewLoader = LauncherAppState.getInstance(context).getWidgetCache();
 
         mIndexer = new AlphabeticIndexCompat(context);
 

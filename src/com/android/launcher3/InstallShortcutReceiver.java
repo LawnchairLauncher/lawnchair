@@ -241,7 +241,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 
     private static void queuePendingShortcutInfo(PendingInstallShortcutInfo info, Context context) {
         // Queue the item up for adding if launcher has not loaded properly yet
-        LauncherAppState app = LauncherAppState.getInstance();
+        LauncherAppState app = LauncherAppState.getInstance(context);
         boolean launcherNotLoaded = app.getModel().getCallback() == null;
 
         addToInstallQueue(Utilities.getPrefs(context), info);
@@ -261,7 +261,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     static void flushInstallQueue(Context context) {
         ArrayList<PendingInstallShortcutInfo> items = getAndClearInstallQueue(context);
         if (!items.isEmpty()) {
-            LauncherAppState.getInstance().getModel().addAndBindAddedWorkspaceItems(
+            LauncherAppState.getInstance(context).getModel().addAndBindAddedWorkspaceItems(
                     new LazyShortcutsProvider(context.getApplicationContext(), items));
         }
     }
@@ -438,7 +438,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         public ItemInfo getItemInfo() {
             if (activityInfo != null) {
                 AppInfo appInfo = new AppInfo(mContext, activityInfo, user);
-                final LauncherAppState app = LauncherAppState.getInstance();
+                final LauncherAppState app = LauncherAppState.getInstance(mContext);
                 // Set default values until proper values is loaded.
                 appInfo.title = "";
                 appInfo.iconBitmap = app.getIconCache().getDefaultIcon(user);
@@ -464,15 +464,14 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 LauncherAppWidgetInfo widgetInfo = new LauncherAppWidgetInfo(
                         launchIntent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0),
                         info.provider);
-                InvariantDeviceProfile idp = LauncherAppState.getInstance()
-                        .getInvariantDeviceProfile();
+                InvariantDeviceProfile idp = LauncherAppState.getIDP(mContext);
                 widgetInfo.minSpanX = info.minSpanX;
                 widgetInfo.minSpanY = info.minSpanY;
                 widgetInfo.spanX = Math.min(info.spanX, idp.numColumns);
                 widgetInfo.spanY = Math.min(info.spanY, idp.numRows);
                 return widgetInfo;
             } else {
-                return createShortcutInfo(data, LauncherAppState.getInstance());
+                return createShortcutInfo(data, LauncherAppState.getInstance(mContext));
             }
         }
 

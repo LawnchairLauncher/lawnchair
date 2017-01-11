@@ -87,7 +87,7 @@ public class WidgetsContainerView extends BaseContainerView
         mLauncher = Launcher.getLauncher(context);
         mDragController = mLauncher.getDragController();
         mAdapter = new WidgetsListAdapter(this, this, context);
-        mIconCache = (LauncherAppState.getInstance()).getIconCache();
+        mIconCache = LauncherAppState.getInstance(context).getIconCache();
         if (LOGD) {
             Log.d(TAG, "WidgetsContainerView constructor");
         }
@@ -303,7 +303,7 @@ public class WidgetsContainerView extends BaseContainerView
 
     private WidgetPreviewLoader getWidgetPreviewLoader() {
         if (mWidgetPreviewLoader == null) {
-            mWidgetPreviewLoader = LauncherAppState.getInstance().getWidgetCache();
+            mWidgetPreviewLoader = LauncherAppState.getInstance(getContext()).getWidgetCache();
         }
         return mWidgetPreviewLoader;
     }

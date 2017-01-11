@@ -587,7 +587,7 @@ public class BubbleTextView extends TextView
         if (getTag() instanceof ItemInfoWithIcon) {
             ItemInfoWithIcon info = (ItemInfoWithIcon) getTag();
             if (info.usingLowResIcon) {
-                mIconLoadRequest = LauncherAppState.getInstance().getIconCache()
+                mIconLoadRequest = LauncherAppState.getInstance(getContext()).getIconCache()
                         .updateIconInBackground(BubbleTextView.this, info);
             }
         }

@@ -336,9 +336,10 @@ public class LauncherModel extends BroadcastReceiver
         final ContentResolver cr = context.getContentResolver();
 
         final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
+        final Context appContext = context.getApplicationContext();
         Runnable r = new Runnable() {
             public void run() {
-                cr.update(uri, writer.getValues(), null, null);
+                cr.update(uri, writer.getValues(appContext), null, null);
                 updateItemArrays(item, itemId, stackTrace);
             }
         };
@@ -553,13 +554,14 @@ public class LauncherModel extends BroadcastReceiver
         writer.put(LauncherSettings.Favorites._ID, item.id);
 
         final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
+        final Context appContext = context.getApplicationContext();
         Runnable r = new Runnable() {
             public void run() {
-                cr.insert(LauncherSettings.Favorites.CONTENT_URI, writer.getValues());
+                cr.insert(LauncherSettings.Favorites.CONTENT_URI, writer.getValues(appContext));
 
                 synchronized (sBgDataModel) {
                     checkItemInfoLocked(item.id, item, stackTrace);
-                    sBgDataModel.addItem(item, true);
+                    sBgDataModel.addItem(appContext, item, true);
                 }
             }
         };
@@ -588,13 +590,14 @@ public class LauncherModel extends BroadcastReceiver
     public static void deleteItemsFromDatabase(Context context,
             final Iterable<? extends ItemInfo> items) {
         final ContentResolver cr = context.getContentResolver();
+        final Context appContext = context.getApplicationContext();
         Runnable r = new Runnable() {
             public void run() {
                 for (ItemInfo item : items) {
                     final Uri uri = LauncherSettings.Favorites.getContentUri(item.id);
                     cr.delete(uri, null, null);
 
-                    sBgDataModel.removeItem(item);
+                    sBgDataModel.removeItem(appContext, item);
                 }
             }
         };
@@ -654,16 +657,17 @@ public class LauncherModel extends BroadcastReceiver
      */
     public static void deleteFolderAndContentsFromDatabase(Context context, final FolderInfo info) {
         final ContentResolver cr = context.getContentResolver();
+        final Context appContext = context.getApplicationContext();
 
         Runnable r = new Runnable() {
             public void run() {
                 cr.delete(LauncherSettings.Favorites.CONTENT_URI,
                         LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
-                sBgDataModel.removeItem(info.contents);
+                sBgDataModel.removeItem(appContext, info.contents);
                 info.contents.clear();
 
                 cr.delete(LauncherSettings.Favorites.getContentUri(info.id), null, null);
-                sBgDataModel.removeItem(info);
+                sBgDataModel.removeItem(appContext, info);
             }
         };
         runOnWorkerThread(r);
@@ -1101,8 +1105,7 @@ public class LauncherModel extends BroadcastReceiver
             final boolean isSdCardReady = Utilities.isBootCompleted();
             final MultiHashMap<UserHandle, String> pendingPackages = new MultiHashMap<>();
 
-            LauncherAppState app = LauncherAppState.getInstance();
-            InvariantDeviceProfile profile = app.getInvariantDeviceProfile();
+            InvariantDeviceProfile profile = mApp.getInvariantDeviceProfile();
             int countX = profile.numColumns;
             int countY = profile.numRows;
 
@@ -1693,8 +1696,7 @@ public class LauncherModel extends BroadcastReceiver
         /** Sorts the set of items by hotseat, workspace (spatially from top to bottom, left to
          * right) */
         private void sortWorkspaceItemsSpatially(ArrayList<ItemInfo> workspaceItems) {
-            final LauncherAppState app = LauncherAppState.getInstance();
-            final InvariantDeviceProfile profile = app.getInvariantDeviceProfile();
+            final InvariantDeviceProfile profile = mApp.getInvariantDeviceProfile();
             final int screenCols = profile.numColumns;
             final int screenCellCount = profile.numColumns * profile.numRows;
             Collections.sort(workspaceItems, new Comparator<ItemInfo>() {
@@ -2261,7 +2263,7 @@ public class LauncherModel extends BroadcastReceiver
                 bindWidgetsModel(callbacks);
 
                 // update the Widget entries inside DB on the worker thread.
-                LauncherAppState.getInstance().getWidgetCache().removeObsoletePreviews(allWidgets);
+                mApp.getWidgetCache().removeObsoletePreviews(allWidgets);
             }
         });
     }

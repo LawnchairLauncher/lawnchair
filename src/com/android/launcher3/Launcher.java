@@ -356,7 +356,7 @@ public class Launcher extends Activity
 
         super.onCreate(savedInstanceState);
 
-        LauncherAppState app = LauncherAppState.getInstance();
+        LauncherAppState app = LauncherAppState.getInstance(this);
 
         // Load configuration-specific DeviceProfile
         mDeviceProfile =
@@ -1815,7 +1815,7 @@ public class Launcher extends Activity
         // been created. In this case, don't interfere with the new Launcher.
         if (mModel.isCurrentCallbacks(this)) {
             mModel.stopLoader();
-            LauncherAppState.getInstance().setLauncher(null);
+            LauncherAppState.getInstance(this).setLauncher(null);
         }
 
         if (mRotationPrefChangeHandler != null) {

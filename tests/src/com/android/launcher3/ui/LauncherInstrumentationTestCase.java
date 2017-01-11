@@ -211,15 +211,22 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
                 LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
         LauncherSettings.Settings.call(mTargetContext.getContentResolver(),
                 LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG);
-        ManagedProfileHeuristic.markExistingUsersForNoFolderCreation(mTargetContext);
+        resetLoaderState();
+    }
 
-        runTestOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                // Reset the loader state
-                LauncherAppState.getInstance().getModel().resetLoadedState(true, true);
-            }
-        });
+    protected void resetLoaderState() {
+        try {
+            runTestOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ManagedProfileHeuristic.markExistingUsersForNoFolderCreation(mTargetContext);
+                    LauncherAppState.getInstance(mTargetContext).getModel()
+                            .resetLoadedState(true, true);
+                }
+            });
+        } catch (Throwable t) {
+            throw new IllegalArgumentException(t);
+        }
     }
 
     /**
@@ -248,8 +255,7 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
         LauncherAppWidgetProviderInfo info = getOnUiThread(new Callable<LauncherAppWidgetProviderInfo>() {
             @Override
             public LauncherAppWidgetProviderInfo call() throws Exception {
-                InvariantDeviceProfile idv =
-                        LauncherAppState.getInstance().getInvariantDeviceProfile();
+                InvariantDeviceProfile idv = LauncherAppState.getIDP(mTargetContext);
 
                 ComponentName searchComponent = ((SearchManager) mTargetContext
                         .getSystemService(Context.SEARCH_SERVICE)).getGlobalSearchActivity();

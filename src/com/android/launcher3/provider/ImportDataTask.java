@@ -306,7 +306,7 @@ public class ImportDataTask {
         }
 
         LongArrayMap<Object> hotseatItems = GridSizeMigrationTask.removeBrokenHotseatItems(mContext);
-        int myHotseatCount = LauncherAppState.getInstance().getInvariantDeviceProfile().numHotseatIcons;
+        int myHotseatCount = LauncherAppState.getIDP(mContext).numHotseatIcons;
         if (!FeatureFlags.NO_ALL_APPS_ICON) {
             myHotseatCount--;
         }
@@ -381,8 +381,8 @@ public class ImportDataTask {
         return c.getSharedPreferences(LauncherFiles.DEVICE_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
-    private static final int getMyHotseatLayoutId() {
-        return LauncherAppState.getInstance().getInvariantDeviceProfile().numHotseatIcons <= 5
+    private static final int getMyHotseatLayoutId(Context context) {
+        return LauncherAppState.getIDP(context).numHotseatIcons <= 5
                 ? R.xml.dw_phone_hotseat
                 : R.xml.dw_tablet_hotseat;
     }
@@ -392,7 +392,7 @@ public class ImportDataTask {
      */
     private static class HotseatLayoutParser extends DefaultLayoutParser {
         public HotseatLayoutParser(Context context, LayoutParserCallback callback) {
-            super(context, null, callback, context.getResources(), getMyHotseatLayoutId());
+            super(context, null, callback, context.getResources(), getMyHotseatLayoutId(context));
         }
 
         @Override

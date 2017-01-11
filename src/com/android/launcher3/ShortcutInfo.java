@@ -235,7 +235,7 @@ public class ShortcutInfo extends ItemInfoWithIcon {
         disabledMessage = shortcutInfo.getDisabledMessage();
 
         // TODO: Use cache for this
-        LauncherAppState launcherAppState = LauncherAppState.getInstance();
+        LauncherAppState launcherAppState = LauncherAppState.getInstance(context);
         Drawable unbadgedDrawable = DeepShortcutManager.getInstance(context)
                 .getShortcutIconDrawable(shortcutInfo,
                         launcherAppState.getInvariantDeviceProfile().fillResIconDpi);
@@ -249,7 +249,7 @@ public class ShortcutInfo extends ItemInfoWithIcon {
 
     protected Bitmap getBadgedIcon(Bitmap unbadgedBitmap, ShortcutInfoCompat shortcutInfo,
             IconCache cache, Context context) {
-        unbadgedBitmap = LauncherIcons.addShadowToIcon(unbadgedBitmap);
+        unbadgedBitmap = LauncherIcons.addShadowToIcon(unbadgedBitmap, context);
         // Get the app info for the source activity.
         AppInfo appInfo = new AppInfo();
         appInfo.user = user;

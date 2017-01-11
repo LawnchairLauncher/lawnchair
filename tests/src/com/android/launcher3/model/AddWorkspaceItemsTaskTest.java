@@ -164,7 +164,7 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
                 info.cellX = x;
                 info.cellY = y;
                 info.container = LauncherSettings.Favorites.CONTAINER_DESKTOP;
-                bgDataModel.addItem(info, false);
+                bgDataModel.addItem(targetContext, info, false);
             }
         }
         return startId;

@@ -102,7 +102,7 @@ public class QsbContainerView extends FrameLayout {
             }
 
             AppWidgetManagerCompat widgetManager = AppWidgetManagerCompat.getInstance(activity);
-            InvariantDeviceProfile idp = LauncherAppState.getInstance().getInvariantDeviceProfile();
+            InvariantDeviceProfile idp = LauncherAppState.getIDP(activity);
 
             Bundle opts = new Bundle();
             Rect size = AppWidgetResizeFrame.getWidgetSizeRanges(activity, idp.numColumns, 1, null);

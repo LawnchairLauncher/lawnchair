@@ -320,7 +320,7 @@ public class AppWidgetResizeFrame extends FrameLayout
 
     public static Rect getWidgetSizeRanges(Context context, int spanX, int spanY, Rect rect) {
         if (sCellSize == null) {
-            InvariantDeviceProfile inv = LauncherAppState.getInstance().getInvariantDeviceProfile();
+            InvariantDeviceProfile inv = LauncherAppState.getIDP(context);
 
             // Initiate cell sizes.
             sCellSize = new Point[2];

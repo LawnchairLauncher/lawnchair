@@ -60,9 +60,8 @@ public class LauncherIcons {
             Resources resources = packageManager.getResourcesForApplication(iconRes.packageName);
             if (resources != null) {
                 final int id = resources.getIdentifier(iconRes.resourceName, null, null);
-                return createIconBitmap(
-                        resources.getDrawableForDensity(id, LauncherAppState.getInstance()
-                                .getInvariantDeviceProfile().fillResIconDpi), context);
+                return createIconBitmap(resources.getDrawableForDensity(
+                        id, LauncherAppState.getIDP(context).fillResIconDpi), context);
             }
         } catch (Exception e) {
             // Icon not found.
@@ -70,15 +69,11 @@ public class LauncherIcons {
         return null;
     }
 
-    private static int getIconBitmapSize() {
-        return LauncherAppState.getInstance().getInvariantDeviceProfile().iconBitmapSize;
-    }
-
     /**
      * Returns a bitmap which is of the appropriate size to be displayed as an icon
      */
     public static Bitmap createIconBitmap(Bitmap icon, Context context) {
-        final int iconBitmapSize = getIconBitmapSize();
+        final int iconBitmapSize = LauncherAppState.getIDP(context).iconBitmapSize;
         if (iconBitmapSize == icon.getWidth() && iconBitmapSize == icon.getHeight()) {
             return icon;
         }
@@ -92,7 +87,7 @@ public class LauncherIcons {
     public static Bitmap createBadgedIconBitmap(
             Drawable icon, UserHandle user, Context context) {
         float scale = FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION ?
-                1 : IconNormalizer.getInstance().getScale(icon, null);
+                1 : IconNormalizer.getInstance(context).getScale(icon, null);
         Bitmap bitmap = createIconBitmap(icon, context, scale);
         return badgeIconForUser(bitmap, user, context);
     }
@@ -122,7 +117,7 @@ public class LauncherIcons {
     public static Bitmap createScaledBitmapWithoutShadow(Drawable icon, Context context) {
         RectF iconBounds = new RectF();
         float scale = FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION ?
-                1 : IconNormalizer.getInstance().getScale(icon, iconBounds);
+                1 : IconNormalizer.getInstance(context).getScale(icon, iconBounds);
         scale = Math.min(scale, ShadowGenerator.getScaleForBounds(iconBounds));
         return createIconBitmap(icon, context, scale);
     }
@@ -131,8 +126,8 @@ public class LauncherIcons {
      * Adds a shadow to the provided icon. It assumes that the icon has already been scaled using
      * {@link #createScaledBitmapWithoutShadow(Drawable, Context)}
      */
-    public static Bitmap addShadowToIcon(Bitmap icon) {
-        return ShadowGenerator.getInstance().recreateIcon(icon);
+    public static Bitmap addShadowToIcon(Bitmap icon, Context context) {
+        return ShadowGenerator.getInstance(context).recreateIcon(icon);
     }
 
     /**
@@ -163,7 +158,7 @@ public class LauncherIcons {
      */
     public static Bitmap createIconBitmap(Drawable icon, Context context, float scale) {
         synchronized (sCanvas) {
-            final int iconBitmapSize = getIconBitmapSize();
+            final int iconBitmapSize = LauncherAppState.getIDP(context).iconBitmapSize;
 
             int width = iconBitmapSize;
             int height = iconBitmapSize;

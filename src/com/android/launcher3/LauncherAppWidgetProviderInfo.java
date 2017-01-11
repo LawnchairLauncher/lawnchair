@@ -65,7 +65,7 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
     }
 
     public void initSpans(Context context) {
-        InvariantDeviceProfile idp = LauncherAppState.getInstance().getInvariantDeviceProfile();
+        InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
 
         Point paddingLand = idp.landscapeProfile.getTotalWorkspacePadding();
         Point paddingPort = idp.portraitProfile.getTotalWorkspacePadding();
@@ -107,8 +107,7 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
         if (isCustomWidget) {
             return cache.getFullResIcon(provider.getPackageName(), icon);
         }
-        return super.loadIcon(context,
-                LauncherAppState.getInstance().getInvariantDeviceProfile().fillResIconDpi);
+        return super.loadIcon(context, LauncherAppState.getIDP(context).fillResIconDpi);
     }
 
     public String toString(PackageManager pm) {

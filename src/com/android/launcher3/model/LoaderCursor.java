@@ -349,7 +349,7 @@ public class LoaderCursor extends CursorWrapper {
      */
     public void checkAndAddItem(ItemInfo info, BgDataModel dataModel) {
         if (checkItemPlacement(info, dataModel.workspaceScreens)) {
-            dataModel.addItem(info, false);
+            dataModel.addItem(mContext, info, false);
         } else {
             markDeleted("Item position overlap");
         }

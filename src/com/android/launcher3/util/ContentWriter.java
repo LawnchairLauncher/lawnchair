@@ -93,9 +93,9 @@ public class ContentWriter {
      * Commits any pending validation and returns the final values.
      * Must not be called on UI thread.
      */
-    public ContentValues getValues() {
+    public ContentValues getValues(Context context) {
         Preconditions.assertNonUiThread();
-        if (mIcon != null && !LauncherAppState.getInstance().getIconCache()
+        if (mIcon != null && !LauncherAppState.getInstance(context).getIconCache()
                 .isDefaultIcon(mIcon, mUser)) {
             mValues.put(LauncherSettings.Favorites.ICON, Utilities.flattenBitmap(mIcon));
             mIcon = null;
@@ -105,7 +105,7 @@ public class ContentWriter {
 
     public int commit() {
         if (mCommitParams != null) {
-            return mContext.getContentResolver().update(mCommitParams.mUri, getValues(),
+            return mContext.getContentResolver().update(mCommitParams.mUri, getValues(mContext),
                     mCommitParams.mWhere, mCommitParams.mSelectionArgs);
         }
         return 0;

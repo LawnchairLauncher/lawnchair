@@ -60,12 +60,13 @@ public class WidgetsModel {
         final ArrayList<WidgetItem> widgetsAndShortcuts = new ArrayList<>();
         try {
             PackageManager pm = context.getPackageManager();
+            InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
 
             // Widgets
             for (AppWidgetProviderInfo widgetInfo :
                     AppWidgetManagerCompat.getInstance(context).getAllProviders()) {
-                widgetsAndShortcuts.add(new WidgetItem(
-                        LauncherAppWidgetProviderInfo.fromProviderInfo(context, widgetInfo), pm));
+                widgetsAndShortcuts.add(new WidgetItem(LauncherAppWidgetProviderInfo
+                        .fromProviderInfo(context, widgetInfo), pm, idp));
             }
 
             // Shortcuts
@@ -73,7 +74,7 @@ public class WidgetsModel {
                     pm.queryIntentActivities(new Intent(Intent.ACTION_CREATE_SHORTCUT), 0)) {
                 widgetsAndShortcuts.add(new WidgetItem(info, pm));
             }
-            setWidgetsAndShortcuts(widgetsAndShortcuts);
+            setWidgetsAndShortcuts(widgetsAndShortcuts, context);
         } catch (Exception e) {
             if (!ProviderConfig.IS_DOGFOOD_BUILD && Utilities.isBinderSizeError(e)) {
                 // the returned value may be incomplete and will not be refreshed until the next
@@ -87,7 +88,8 @@ public class WidgetsModel {
         return widgetsAndShortcuts;
     }
 
-    private void setWidgetsAndShortcuts(ArrayList<WidgetItem> rawWidgetsShortcuts) {
+    private void setWidgetsAndShortcuts(ArrayList<WidgetItem> rawWidgetsShortcuts,
+            Context context) {
         if (DEBUG) {
             Log.d(TAG, "addWidgetsAndShortcuts, widgetsShortcuts#=" + rawWidgetsShortcuts.size());
         }
@@ -99,7 +101,7 @@ public class WidgetsModel {
         // clear the lists.
         mWidgetsList.clear();
 
-        InvariantDeviceProfile idp = LauncherAppState.getInstance().getInvariantDeviceProfile();
+        InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
         UserHandle myUser = Process.myUserHandle();
 
         // add and update.

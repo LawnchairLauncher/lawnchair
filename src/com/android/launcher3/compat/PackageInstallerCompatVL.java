@@ -42,7 +42,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
     PackageInstallerCompatVL(Context context) {
         mInstaller = context.getPackageManager().getPackageInstaller();
-        mCache = LauncherAppState.getInstance().getIconCache();
+        mCache = LauncherAppState.getInstance(context).getIconCache();
         mWorker = new Handler(LauncherModel.getWorkerLooper());
 
         mInstaller.registerSessionCallback(mCallback, mWorker);

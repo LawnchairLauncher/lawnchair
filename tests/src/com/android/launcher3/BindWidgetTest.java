@@ -16,7 +16,6 @@ import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.ui.LauncherInstrumentationTestCase;
 import com.android.launcher3.util.ContentWriter;
-import com.android.launcher3.util.ManagedProfileHeuristic;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 
@@ -223,20 +222,9 @@ public class BindWidgetTest extends LauncherInstrumentationTestCase {
         item.screenId = screenId;
         item.onAddToDatabase(writer);
         writer.put(LauncherSettings.Favorites._ID, item.id);
-        mResolver.insert(LauncherSettings.Favorites.CONTENT_URI, writer.getValues());
+        mResolver.insert(LauncherSettings.Favorites.CONTENT_URI, writer.getValues(mTargetContext));
+        resetLoaderState();
 
-        // Reset loader
-        try {
-            runTestOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    ManagedProfileHeuristic.markExistingUsersForNoFolderCreation(mTargetContext);
-                    LauncherAppState.getInstance().getModel().resetLoadedState(true, true);
-                }
-            });
-        } catch (Throwable t) {
-            throw new IllegalArgumentException(t);
-        }
         // Launch the home activity
         startLauncher();
         // Verify UI

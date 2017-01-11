@@ -734,7 +734,7 @@ public class IconCache {
 
                 if (mAppsToUpdate.isEmpty() && !mUpdatedPackages.isEmpty()) {
                     // No more app to update. Notify model.
-                    LauncherAppState.getInstance().getModel().onPackageIconsUpdated(
+                    LauncherAppState.getInstance(mContext).getModel().onPackageIconsUpdated(
                             mUpdatedPackages, mUserManager.getUserForSerialNumber(mUserSerial));
                 }
 

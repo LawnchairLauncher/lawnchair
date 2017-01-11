@@ -99,11 +99,11 @@ public class BgDataModel {
         deepShortcutMap.clear();
     }
 
-    public synchronized void removeItem(ItemInfo... items) {
-        removeItem(Arrays.asList(items));
+    public synchronized void removeItem(Context context, ItemInfo... items) {
+        removeItem(context, Arrays.asList(items));
     }
 
-    public synchronized void removeItem(Iterable<? extends ItemInfo> items) {
+    public synchronized void removeItem(Context context, Iterable<? extends ItemInfo> items) {
         for (ItemInfo item : items) {
             switch (item.itemType) {
                 case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
@@ -125,7 +125,6 @@ public class BgDataModel {
                     // Decrement pinned shortcut count
                     ShortcutKey pinnedShortcut = ShortcutKey.fromItemInfo(item);
                     MutableInt count = pinnedShortcutCounts.get(pinnedShortcut);
-                    Context context = LauncherAppState.getInstance().getContext();
                     if ((count == null || --count.value == 0)
                             && !InstallShortcutReceiver.getPendingShortcuts(context)
                                 .contains(pinnedShortcut)) {
@@ -146,7 +145,7 @@ public class BgDataModel {
         }
     }
 
-    public synchronized void addItem(ItemInfo item, boolean newItem) {
+    public synchronized void addItem(Context context, ItemInfo item, boolean newItem) {
         itemsIdMap.put(item.id, item);
         switch (item.itemType) {
             case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
@@ -166,8 +165,7 @@ public class BgDataModel {
 
                 // Since this is a new item, pin the shortcut in the system server.
                 if (newItem && count.value == 1) {
-                    DeepShortcutManager.getInstance(LauncherAppState.getInstance().getContext())
-                            .pinShortcut(pinnedShortcut);
+                    DeepShortcutManager.getInstance(context).pinShortcut(pinnedShortcut);
                 }
                 // Fall through
             }

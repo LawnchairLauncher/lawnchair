@@ -128,7 +128,7 @@ public class BaseModelUpdateTaskTestCase extends ProviderTestCase2<TestLauncherP
                         classMap.put(commands[1], Class.forName(commands[2]));
                         break;
                     case "bgItem":
-                        bgDataModel.addItem(
+                        bgDataModel.addItem(targetContext,
                                 (ItemInfo) initItem(classMap.get(commands[1]), commands, 2), false);
                         break;
                     case "allApps":

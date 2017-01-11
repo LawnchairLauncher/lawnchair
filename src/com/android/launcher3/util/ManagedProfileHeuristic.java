@@ -72,8 +72,8 @@ public class ManagedProfileHeuristic {
     private ManagedProfileHeuristic(Context context, UserHandle user) {
         mContext = context;
         mUser = user;
-        mModel = LauncherAppState.getInstance().getModel();
-        mIconCache = LauncherAppState.getInstance().getIconCache();
+        mModel = LauncherAppState.getInstance(context).getModel();
+        mIconCache = LauncherAppState.getInstance(context).getIconCache();
     }
 
     public void processPackageRemoved(String[] packages) {

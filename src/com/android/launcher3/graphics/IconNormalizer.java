@@ -16,6 +16,7 @@
 
 package com.android.launcher3.graphics;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -53,9 +54,9 @@ public class IconNormalizer {
     private final float[] mLeftBorder;
     private final float[] mRightBorder;
 
-    private IconNormalizer() {
+    private IconNormalizer(Context context) {
         // Use twice the icon size as maximum size to avoid scaling down twice.
-        mMaxSize = LauncherAppState.getInstance().getInvariantDeviceProfile().iconBitmapSize * 2;
+        mMaxSize = LauncherAppState.getIDP(context).iconBitmapSize * 2;
         mBitmap = Bitmap.createBitmap(mMaxSize, mMaxSize, Bitmap.Config.ALPHA_8);
         mCanvas = new Canvas(mBitmap);
         mPixels = new byte[mMaxSize * mMaxSize];
@@ -239,10 +240,10 @@ public class IconNormalizer {
         }
     }
 
-    public static IconNormalizer getInstance() {
+    public static IconNormalizer getInstance(Context context) {
         synchronized (LOCK) {
             if (sIconNormalizer == null) {
-                sIconNormalizer = new IconNormalizer();
+                sIconNormalizer = new IconNormalizer(context);
             }
         }
         return sIconNormalizer;

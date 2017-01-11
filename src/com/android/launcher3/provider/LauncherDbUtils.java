@@ -76,8 +76,7 @@ public class LauncherDbUtils {
                 }
             }
 
-            new LossyScreenMigrationTask(
-                    context, LauncherAppState.getInstance().getInvariantDeviceProfile(), db)
+            new LossyScreenMigrationTask(context, LauncherAppState.getIDP(context), db)
                     .migrateScreen0();
             db.setTransactionSuccessful();
             return true;
