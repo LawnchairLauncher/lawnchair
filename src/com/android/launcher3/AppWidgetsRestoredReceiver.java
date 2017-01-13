@@ -8,6 +8,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Handler;
 import android.util.Log;
 
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -18,12 +19,19 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
     private static final String TAG = "AWRestoredReceiver";
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, Intent intent) {
         if (AppWidgetManager.ACTION_APPWIDGET_HOST_RESTORED.equals(intent.getAction())) {
-            int[] oldIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_OLD_IDS);
-            int[] newIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
+            final int[] oldIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_OLD_IDS);
+            final int[] newIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
             if (oldIds.length == newIds.length) {
-                restoreAppWidgetIds(context, oldIds, newIds);
+                final PendingResult asyncResult = goAsync();
+                new Handler(LauncherModel.getWorkerLooper())
+                        .postAtFrontOfQueue(new Runnable() {
+                            @Override
+                            public void run() {
+                                restoreAppWidgetIds(context, asyncResult, oldIds, newIds);
+                            }
+                        });
             } else {
                 Log.e(TAG, "Invalid host restored received");
             }
@@ -33,7 +41,8 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
     /**
      * Updates the app widgets whose id has changed during the restore process.
      */
-    static void restoreAppWidgetIds(Context context, int[] oldWidgetIds, int[] newWidgetIds) {
+    static void restoreAppWidgetIds(Context context, PendingResult asyncResult,
+            int[] oldWidgetIds, int[] newWidgetIds) {
         final ContentResolver cr = context.getContentResolver();
         final AppWidgetManager widgets = AppWidgetManager.getInstance(context);
         AppWidgetHost appWidgetHost = new AppWidgetHost(context, Launcher.APPWIDGET_HOST_ID);
@@ -76,5 +85,6 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
         if (app != null) {
             app.reloadWorkspace();
         }
+        asyncResult.finish();
     }
 }
