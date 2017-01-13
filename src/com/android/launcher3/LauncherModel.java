@@ -1321,8 +1321,6 @@ public class LauncherModel extends BroadcastReceiver
                                 if (restored) {
                                     if (c.user.equals(Process.myUserHandle())) {
                                         info = c.getRestoredItemInfo(intent, promiseType);
-                                        intent = PackageManagerHelper.getMarketIntent(
-                                                intent.getComponent().getPackageName());
                                     } else {
                                         // Don't restore items for other profiles.
                                         c.markDeleted("Restore from managed profile not supported");
@@ -1382,9 +1380,6 @@ public class LauncherModel extends BroadcastReceiver
                                     // TODO: Remove this extra. Instead we should be using
                                     // itemInfo#user.
                                     info.intent.putExtra(ItemInfo.EXTRA_PROFILE, c.serialNumber);
-                                    if (info.promisedIntent != null) {
-                                        info.promisedIntent.putExtra(ItemInfo.EXTRA_PROFILE, c.serialNumber);
-                                    }
                                     info.isDisabled |= disabledState;
                                     if (isSafeMode && !Utilities.isSystemApp(context, intent)) {
                                         info.isDisabled |= ShortcutInfo.FLAG_DISABLED_SAFEMODE;

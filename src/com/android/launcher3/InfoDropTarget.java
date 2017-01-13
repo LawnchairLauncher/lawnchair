@@ -96,9 +96,14 @@ public class InfoDropTarget extends UninstallDropTarget {
         // Only show the App Info drop target if developer settings are enabled.
         boolean developmentSettingsEnabled = Settings.Global.getInt(context.getContentResolver(),
                 Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) == 1;
-        return developmentSettingsEnabled
-                && (info instanceof AppInfo || info instanceof ShortcutInfo
-                || info instanceof PendingAddItemInfo || info instanceof LauncherAppWidgetInfo)
-                && info.itemType != LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+        if (!developmentSettingsEnabled) {
+            return false;
+        }
+        return info.itemType != LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT &&
+                (info instanceof AppInfo ||
+                (info instanceof ShortcutInfo && !((ShortcutInfo) info).isPromise()) ||
+                (info instanceof LauncherAppWidgetInfo &&
+                        ((LauncherAppWidgetInfo) info).restoreStatus == 0) ||
+                info instanceof PendingAddItemInfo);
     }
 }

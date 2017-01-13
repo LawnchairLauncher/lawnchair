@@ -2331,20 +2331,9 @@ public class Launcher extends Activity
                     startRestoredWidgetReconfigActivity(appWidgetInfo, info);
                 }
             }
-        } else if (info.installProgress < 0) {
-            // The install has not been queued
-            final String packageName = info.providerName.getPackageName();
-            showBrokenAppInstallDialog(packageName,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        startActivitySafely(
-                                v, PackageManagerHelper.getMarketIntent(packageName), info);
-                    }
-                });
         } else {
-            // Download has started.
             final String packageName = info.providerName.getPackageName();
-            startActivitySafely(v, PackageManagerHelper.getMarketIntent(packageName), info);
+            onClickPendingAppItem(v, packageName, info.installProgress >= 0);
         }
     }
 
@@ -2381,12 +2370,22 @@ public class Launcher extends Activity
         }
     }
 
-    private void showBrokenAppInstallDialog(final String packageName,
-            DialogInterface.OnClickListener onSearchClickListener) {
+    private void onClickPendingAppItem(final View v, final String packageName,
+            boolean downloadStarted) {
+        if (downloadStarted) {
+            // If the download has started, simply direct to the market app.
+            startMarketIntentForPackage(v, packageName);
+            return;
+        }
         new AlertDialog.Builder(this)
             .setTitle(R.string.abandoned_promises_title)
             .setMessage(R.string.abandoned_promise_explanation)
-            .setPositiveButton(R.string.abandoned_search, onSearchClickListener)
+            .setPositiveButton(R.string.abandoned_search, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    startMarketIntentForPackage(v, packageName);
+                }
+            })
             .setNeutralButton(R.string.abandoned_clean_this,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -2395,7 +2394,16 @@ public class Launcher extends Activity
                     }
                 })
             .create().show();
-        return;
+    }
+
+    private void startMarketIntentForPackage(View v, String packageName) {
+        ItemInfo item = (ItemInfo) v.getTag();
+        Intent intent = PackageManagerHelper.getMarketIntent(packageName);
+        boolean success = startActivitySafely(v, intent, item);
+        if (success && v instanceof BubbleTextView) {
+            mWaitingForResume = (BubbleTextView) v;
+            mWaitingForResume.setStayPressed(true);
+        }
     }
 
     /**
@@ -2439,17 +2447,14 @@ public class Launcher extends Activity
         }
 
         // Check for abandoned promise
-        if ((v instanceof BubbleTextView)
-                && shortcut.isPromise()
-                && !shortcut.hasStatusFlag(ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE)) {
-            showBrokenAppInstallDialog(
-                    shortcut.getTargetComponent().getPackageName(),
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            startAppShortcutOrInfoActivity(v);
-                        }
-                    });
-            return;
+        if ((v instanceof BubbleTextView) && shortcut.isPromise()) {
+            String packageName = shortcut.intent.getComponent() != null ?
+                    shortcut.intent.getComponent().getPackageName() : shortcut.intent.getPackage();
+            if (!TextUtils.isEmpty(packageName)) {
+                onClickPendingAppItem(v, packageName,
+                        shortcut.hasStatusFlag(ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE));
+                return;
+            }
         }
 
         // Start activities
@@ -2715,7 +2720,7 @@ public class Launcher extends Activity
             if (Utilities.ATLEAST_MARSHMALLOW && item != null
                     && (item.itemType == Favorites.ITEM_TYPE_SHORTCUT
                     || item.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT)
-                    && ((ShortcutInfo) item).promisedIntent == null) {
+                    && !((ShortcutInfo) item).isPromise()) {
                 // Shortcuts need some special checks due to legacy reasons.
                 startShortcutIntentSafely(intent, optsBundle, item);
             } else if (user == null || user.equals(Process.myUserHandle())) {

@@ -131,13 +131,6 @@ public class ShortcutInfo extends ItemInfoWithIcon {
      */
     private int mInstallProgress;
 
-    /**
-     * If this shortcut is a placeholder, then intent will be a market intent for the package, and
-     * this will hold the original intent from the database.  Otherwise, null.
-     * Refer {@link #FLAG_RESTORED_ICON}, {@link #FLAG_AUTOINTALL_ICON}
-     */
-    public Intent promisedIntent;
-
     public ShortcutInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
     }
@@ -190,12 +183,9 @@ public class ShortcutInfo extends ItemInfoWithIcon {
         }
     }
 
-    /**
-     *  Returns {@link #promisedIntent}, or {@link #intent} if promisedIntent is null.
-     */
     @Override
     public Intent getIntent() {
-        return promisedIntent != null ? promisedIntent : intent;
+        return intent;
     }
 
     public boolean hasStatusFlag(int flag) {

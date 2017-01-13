@@ -163,10 +163,8 @@ public class AddWorkspaceItemsTask extends ExtendedModelTask {
             for (ItemInfo item : dataModel.itemsIdMap) {
                 if (item instanceof ShortcutInfo) {
                     ShortcutInfo info = (ShortcutInfo) item;
-                    Intent targetIntent = info.promisedIntent == null
-                            ? info.intent : info.promisedIntent;
-                    if (targetIntent != null && info.user.equals(user)) {
-                        Intent copyIntent = new Intent(targetIntent);
+                    if (item.getIntent() != null && info.user.equals(user)) {
+                        Intent copyIntent = new Intent(item.getIntent());
                         copyIntent.setSourceBounds(intent.getSourceBounds());
                         String s = copyIntent.toUri(0);
                         if (intentWithPkg.equals(s) || intentWithoutPkg.equals(s)) {
