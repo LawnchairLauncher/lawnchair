@@ -188,7 +188,7 @@ public class LoaderCursor extends CursorWrapper {
     public ShortcutInfo getRestoredItemInfo(Intent intent, int promiseType) {
         final ShortcutInfo info = new ShortcutInfo();
         info.user = user;
-        info.promisedIntent = intent;
+        info.intent = intent;
 
         info.iconBitmap = loadIcon(info);
         // the fallback icon

@@ -242,12 +242,10 @@ public class PackageUpdatedTask extends ExtendedModelTask {
                                             removedShortcuts.add(si);
                                             continue;
                                         }
-                                        si.promisedIntent = intent;
+                                        si.intent = intent;
                                     }
                                 }
 
-                                si.intent = si.promisedIntent;
-                                si.promisedIntent = null;
                                 si.status = ShortcutInfo.DEFAULT;
                                 infoUpdated = true;
                                 if (si.itemType == Favorites.ITEM_TYPE_APPLICATION) {
