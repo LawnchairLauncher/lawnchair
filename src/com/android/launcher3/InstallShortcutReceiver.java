@@ -498,7 +498,9 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 DeepShortcutManager sm = DeepShortcutManager.getInstance(context);
                 List<ShortcutInfoCompat> si = sm.queryForFullDetails(
                         decoder.launcherIntent.getPackage(),
-                        Arrays.asList(ShortcutInfoCompat.EXTRA_SHORTCUT_ID), decoder.user);
+                        Arrays.asList(decoder.launcherIntent.getStringExtra(
+                                ShortcutInfoCompat.EXTRA_SHORTCUT_ID)),
+                        decoder.user);
                 if (si.isEmpty()) {
                     return null;
                 } else {

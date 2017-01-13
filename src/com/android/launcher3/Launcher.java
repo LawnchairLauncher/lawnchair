@@ -22,7 +22,6 @@ import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.app.SearchManager;
@@ -42,7 +41,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -136,7 +134,7 @@ import java.util.List;
 /**
  * Default launcher application.
  */
-public class Launcher extends Activity
+public class Launcher extends BaseActivity
         implements LauncherExterns, View.OnClickListener, OnLongClickListener,
                    LauncherModel.Callbacks, View.OnTouchListener, LauncherProviderChangeListener,
                    AccessibilityManager.AccessibilityStateChangeListener {
@@ -194,7 +192,7 @@ public class Launcher extends Activity
 
     private boolean mIsSafeModeEnabled;
 
-    static final int APPWIDGET_HOST_ID = 1024;
+    public static final int APPWIDGET_HOST_ID = 1024;
     public static final int EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT = 500;
     private static final int ON_ACTIVITY_RESULT_ANIMATION_DELAY = 500;
     private static final int ACTIVITY_START_DELAY = 1000;
@@ -272,8 +270,6 @@ public class Launcher extends Activity
     // We only want to get the SharedPreferences once since it does an FS stat each time we get
     // it from the context.
     private SharedPreferences mSharedPrefs;
-
-    private DeviceProfile mDeviceProfile;
 
     private boolean mMoveToDefaultScreenFromNewIntent;
 
@@ -359,11 +355,7 @@ public class Launcher extends Activity
         LauncherAppState app = LauncherAppState.getInstance(this);
 
         // Load configuration-specific DeviceProfile
-        mDeviceProfile =
-                getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
-                        ? app.getInvariantDeviceProfile().landscapeProfile
-                        : app.getInvariantDeviceProfile().portraitProfile;
-
+        mDeviceProfile = app.getInvariantDeviceProfile().getDeviceProfile(this);
         if (Utilities.ATLEAST_NOUGAT && isInMultiWindowMode()) {
             Display display = getWindowManager().getDefaultDisplay();
             Point mwSize = new Point();
@@ -1655,10 +1647,6 @@ public class Launcher extends Activity
 
     public SharedPreferences getSharedPrefs() {
         return mSharedPrefs;
-    }
-
-    public DeviceProfile getDeviceProfile() {
-        return mDeviceProfile;
     }
 
     @Override

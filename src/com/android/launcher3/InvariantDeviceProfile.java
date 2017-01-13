@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.Point;
@@ -324,6 +325,11 @@ public class InvariantDeviceProfile {
 
     public boolean isAllAppsButtonRank(int rank) {
         return rank == getAllAppsButtonRank();
+    }
+
+    public DeviceProfile getDeviceProfile(Context context) {
+        return context.getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE ? landscapeProfile : portraitProfile;
     }
 
     private float weight(float x0, float y0, float x1, float y1, float pow) {

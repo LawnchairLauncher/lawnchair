@@ -17,7 +17,6 @@
 package com.android.launcher3.widget;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -28,8 +27,8 @@ import android.view.ViewPropertyAnimator;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.SimpleOnStylusPressListener;
 import com.android.launcher3.StylusEventHelper;
@@ -72,7 +71,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     private PreviewLoadRequest mActiveRequest;
     private StylusEventHelper mStylusEventHelper;
 
-    private final Launcher mLauncher;
+    private final BaseActivity mActivity;
 
     public WidgetCell(Context context) {
         this(context, null);
@@ -85,18 +84,17 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     public WidgetCell(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        final Resources r = context.getResources();
-        mLauncher = Launcher.getLauncher(context);
+        mActivity = BaseActivity.fromContext(context);
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
 
         setContainerWidth();
         setWillNotDraw(false);
         setClipToPadding(false);
-        setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
+        setAccessibilityDelegate(mActivity.getAccessibilityDelegate());
     }
 
     private void setContainerWidth() {
-        DeviceProfile profile = mLauncher.getDeviceProfile();
+        DeviceProfile profile = mActivity.getDeviceProfile();
         cellSize = (int) (profile.cellWidthPx * WIDTH_SCALE);
         mPresetPreviewSize = (int) (cellSize * PREVIEW_SCALE);
     }

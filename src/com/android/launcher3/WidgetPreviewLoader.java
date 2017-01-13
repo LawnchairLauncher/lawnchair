@@ -272,7 +272,7 @@ public class WidgetPreviewLoader {
         return null;
     }
 
-    private Bitmap generatePreview(Launcher launcher, WidgetItem item, Bitmap recycle,
+    private Bitmap generatePreview(BaseActivity launcher, WidgetItem item, Bitmap recycle,
             int previewWidth, int previewHeight) {
         if (item.widgetInfo != null) {
             return generateWidgetPreview(launcher, item.widgetInfo,
@@ -294,7 +294,7 @@ public class WidgetPreviewLoader {
      * @param preScaledWidthOut           return the width of the returned bitmap
      * @return
      */
-    public Bitmap generateWidgetPreview(Launcher launcher, LauncherAppWidgetProviderInfo info,
+    public Bitmap generateWidgetPreview(BaseActivity launcher, LauncherAppWidgetProviderInfo info,
             int maxPreviewWidth, Bitmap preview, int[] preScaledWidthOut) {
         // Load the preview image if possible
         if (maxPreviewWidth < 0) maxPreviewWidth = Integer.MAX_VALUE;
@@ -415,7 +415,7 @@ public class WidgetPreviewLoader {
     }
 
     private Bitmap generateShortcutPreview(
-            Launcher launcher, ActivityInfo info, int maxWidth, int maxHeight, Bitmap preview) {
+            BaseActivity launcher, ActivityInfo info, int maxWidth, int maxHeight, Bitmap preview) {
         final Canvas c = new Canvas();
         if (preview == null) {
             preview = Bitmap.createBitmap(maxWidth, maxHeight, Config.ARGB_8888);
@@ -591,7 +591,7 @@ public class WidgetPreviewLoader {
                 // which would gets re-written next time.
                 mVersions = getPackageVersion(mKey.componentName.getPackageName());
 
-                Launcher launcher = Launcher.getLauncher(mCaller.getContext());
+                BaseActivity launcher = BaseActivity.fromContext(mCaller.getContext());
 
                 // it's not in the db... we need to generate it
                 preview = generatePreview(launcher, mInfo, unusedBitmap, mPreviewWidth, mPreviewHeight);

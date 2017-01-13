@@ -70,7 +70,8 @@ public class AddWorkspaceItemsTask extends ExtendedModelTask {
         ArrayList<Long> workspaceScreens = LauncherModel.loadWorkspaceScreensDb(context);
         synchronized(dataModel) {
             for (ItemInfo item : workspaceApps) {
-                if (item instanceof ShortcutInfo) {
+                if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
+                        item.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
                     // Short-circuit this logic if the icon exists somewhere on the workspace
                     if (shortcutExists(dataModel, item.getIntent(), item.user)) {
                         continue;
@@ -143,6 +144,10 @@ public class AddWorkspaceItemsTask extends ExtendedModelTask {
      */
     protected boolean shortcutExists(BgDataModel dataModel, Intent intent, UserHandle user) {
         final String intentWithPkg, intentWithoutPkg;
+        if (intent == null) {
+            // Skip items with null intents
+            return true;
+        }
         if (intent.getComponent() != null) {
             // If component is not null, an intent with null package will produce
             // the same result and should also be a match.

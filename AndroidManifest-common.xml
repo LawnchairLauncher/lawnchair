@@ -79,5 +79,13 @@
         <meta-data android:name="android.nfc.disable_beam_default"
                        android:value="true" />
 
+        <activity android:name="com.android.launcher3.dragndrop.AddItemActivity"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog.Alert"
+            android:label="@string/action_add_to_workspace" >
+            <intent-filter>
+                <action android:name="android.content.pm.action.CONFIRM_PIN_ITEM" />
+            </intent-filter>
+        </activity>
+
     </application>
 </manifest>
