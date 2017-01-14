@@ -50,6 +50,7 @@ import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.PackageManagerHelper;
 
+import java.net.URISyntaxException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
@@ -84,6 +85,7 @@ public class LoaderCursor extends CursorWrapper {
     private final int cellYIndex;
     private final int profileIdIndex;
     private final int restoredIndex;
+    private final int intentIndex;
 
     // Properties loaded per iteration
     public long serialNumber;
@@ -114,6 +116,7 @@ public class LoaderCursor extends CursorWrapper {
         cellYIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.CELLY);
         profileIdIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.PROFILE_ID);
         restoredIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.RESTORED);
+        intentIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.INTENT);
     }
 
     @Override
@@ -129,6 +132,17 @@ public class LoaderCursor extends CursorWrapper {
             restoreFlag = getInt(restoredIndex);
         }
         return result;
+    }
+
+    public Intent parseIntent() {
+        String intentDescription = getString(intentIndex);
+        try {
+            return TextUtils.isEmpty(intentDescription) ?
+                    null : Intent.parseUri(intentDescription, 0);
+        } catch (URISyntaxException e) {
+            Log.e(TAG, "Error parsing Intent");
+            return null;
+        }
     }
 
     public ShortcutInfo loadSimpleShortcut() {
