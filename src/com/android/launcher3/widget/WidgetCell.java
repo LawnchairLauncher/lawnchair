@@ -34,6 +34,7 @@ import com.android.launcher3.SimpleOnStylusPressListener;
 import com.android.launcher3.StylusEventHelper;
 import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.WidgetPreviewLoader.PreviewLoadRequest;
+import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.model.WidgetItem;
 
 /**
@@ -116,7 +117,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             Log.d(TAG, "reset called on:" + mWidgetName.getText());
         }
         mWidgetImage.animate().cancel();
-        mWidgetImage.setBitmap(null);
+        mWidgetImage.setBitmap(null, null);
         mWidgetName.setText(null);
         mWidgetDims.setText(null);
 
@@ -152,7 +153,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
     public void applyPreview(Bitmap bitmap) {
         if (bitmap != null) {
-            mWidgetImage.setBitmap(bitmap);
+            mWidgetImage.setBitmap(bitmap,
+                    DrawableFactory.get(getContext()).getBadgeForUser(mItem.user, getContext()));
             mWidgetImage.setAlpha(0f);
             ViewPropertyAnimator anim = mWidgetImage.animate();
             anim.alpha(1.0f).setDuration(FADE_IN_DURATION_MS);

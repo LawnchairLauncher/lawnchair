@@ -70,7 +70,6 @@ public class WidgetPreviewLoader {
     private final UserManagerCompat mUserManager;
     private final AppWidgetManagerCompat mWidgetManager;
     private final CacheDb mDb;
-    private final int mProfileBadgeMargin;
 
     private final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
     @Thunk final Handler mWorkerHandler;
@@ -82,8 +81,6 @@ public class WidgetPreviewLoader {
         mUserManager = UserManagerCompat.getInstance(context);
         mDb = new CacheDb(context);
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
-        mProfileBadgeMargin = context.getResources()
-                .getDimensionPixelSize(R.dimen.profile_badge_margin);
     }
 
     /**
@@ -107,7 +104,7 @@ public class WidgetPreviewLoader {
      * sizes (landscape vs portrait).
      */
     private static class CacheDb extends SQLiteCacheHelper {
-        private static final int DB_VERSION = 4;
+        private static final int DB_VERSION = 5;
 
         private static final String TABLE_NAME = "shortcut_and_widget_previews";
         private static final String COLUMN_COMPONENT = "componentName";
@@ -344,7 +341,7 @@ public class WidgetPreviewLoader {
             preScaledWidthOut[0] = previewWidth;
         }
         if (previewWidth > maxPreviewWidth) {
-            scale = (maxPreviewWidth - 2 * mProfileBadgeMargin) / (float) (previewWidth);
+            scale = maxPreviewWidth / (float) (previewWidth);
         }
         if (scale != 1f) {
             previewWidth = (int) (scale * previewWidth);
@@ -357,6 +354,12 @@ public class WidgetPreviewLoader {
             preview = Bitmap.createBitmap(previewWidth, previewHeight, Config.ARGB_8888);
             c.setBitmap(preview);
         } else {
+            // We use the preview bitmap height to determine where the badge will be drawn in the
+            // UI. If its larger than what we need, resize the preview bitmap so that there are
+            // no transparent pixels between the preview and the badge.
+            if (preview.getHeight() > previewHeight) {
+                preview.reconfigure(preview.getWidth(), previewHeight, preview.getConfig());
+            }
             // Reusing bitmap. Clear it.
             c.setBitmap(preview);
             c.drawColor(0, PorterDuff.Mode.CLEAR);
@@ -409,9 +412,7 @@ public class WidgetPreviewLoader {
             }
             c.setBitmap(null);
         }
-        int imageWidth = Math.min(preview.getWidth(), previewWidth + mProfileBadgeMargin);
-        int imageHeight = Math.min(preview.getHeight(), previewHeight + mProfileBadgeMargin);
-        return mWidgetManager.getBadgeBitmap(info, preview, imageWidth, imageHeight);
+        return preview;
     }
 
     private Bitmap generateShortcutPreview(
@@ -538,6 +539,7 @@ public class WidgetPreviewLoader {
         private final int mPreviewHeight;
         private final int mPreviewWidth;
         private final WidgetCell mCaller;
+        private final BaseActivity mActivity;
         @Thunk long[] mVersions;
         @Thunk Bitmap mBitmapToRecycle;
 
@@ -548,6 +550,7 @@ public class WidgetPreviewLoader {
             mPreviewHeight = previewHeight;
             mPreviewWidth = previewWidth;
             mCaller = caller;
+            mActivity = BaseActivity.fromContext(mCaller.getContext());
             if (DEBUG) {
                 Log.d(TAG, String.format("%s, %s, %d, %d",
                         mKey, mInfo, mPreviewHeight, mPreviewWidth));
@@ -591,10 +594,8 @@ public class WidgetPreviewLoader {
                 // which would gets re-written next time.
                 mVersions = getPackageVersion(mKey.componentName.getPackageName());
 
-                BaseActivity launcher = BaseActivity.fromContext(mCaller.getContext());
-
                 // it's not in the db... we need to generate it
-                preview = generatePreview(launcher, mInfo, unusedBitmap, mPreviewWidth, mPreviewHeight);
+                preview = generatePreview(mActivity, mInfo, unusedBitmap, mPreviewWidth, mPreviewHeight);
             }
             return preview;
         }

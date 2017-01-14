@@ -17,13 +17,24 @@
 package com.android.launcher3.graphics;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Process;
+import android.os.UserHandle;
+import android.support.annotation.UiThread;
 
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsBackgroundDrawable;
+
+import java.util.HashMap;
 
 /**
  * Factory for creating new drawables.
@@ -43,6 +54,9 @@ public class DrawableFactory {
         }
     }
 
+    protected final UserHandle mMyUser = Process.myUserHandle();
+    protected final HashMap<UserHandle, Bitmap> mUserBadges = new HashMap<>();
+
     /**
      * Returns a FastBitmapDrawable with the icon.
      */
@@ -54,5 +68,48 @@ public class DrawableFactory {
 
     public AllAppsBackgroundDrawable getAllAppsBackground(Context context) {
         return new AllAppsBackgroundDrawable(context);
+    }
+
+    /**
+     * Returns a drawable that can be used as a badge for the user or null.
+     */
+    @UiThread
+    public Drawable getBadgeForUser(UserHandle user, Context context) {
+        if (mMyUser.equals(user)) {
+            return null;
+        }
+
+        Bitmap badgeBitmap = getUserBadge(user, context);
+        FastBitmapDrawable d = new FastBitmapDrawable(badgeBitmap);
+        d.setFilterBitmap(true);
+        d.setBounds(0, 0, badgeBitmap.getWidth(), badgeBitmap.getHeight());
+        return d;
+    }
+
+    protected synchronized Bitmap getUserBadge(UserHandle user, Context context) {
+        Bitmap badgeBitmap = mUserBadges.get(user);
+        if (badgeBitmap != null) {
+            return badgeBitmap;
+        }
+
+        final Resources res = context.getApplicationContext().getResources();
+        int badgeSize = res.getDimensionPixelSize(R.dimen.profile_badge_size);
+        badgeBitmap = Bitmap.createBitmap(badgeSize, badgeSize, Bitmap.Config.ARGB_8888);
+
+        Drawable drawable = context.getPackageManager().getUserBadgedDrawableForDensity(
+                new BitmapDrawable(res, badgeBitmap), user, new Rect(0, 0, badgeSize, badgeSize),
+                0);
+        if (drawable instanceof BitmapDrawable) {
+            badgeBitmap = ((BitmapDrawable) drawable).getBitmap();
+        } else {
+            badgeBitmap.eraseColor(Color.TRANSPARENT);
+            Canvas c = new Canvas(badgeBitmap);
+            drawable.setBounds(0, 0, badgeSize, badgeSize);
+            drawable.draw(c);
+            c.setBitmap(null);
+        }
+
+        mUserBadges.put(user, badgeBitmap);
+        return badgeBitmap;
     }
 }

@@ -83,7 +83,7 @@
 
 <!-- Widget tray -->
     <dimen name="widget_preview_label_vertical_padding">8dp</dimen>
-    <dimen name="widget_preview_label_horizontal_padding">8dp</dimen>
+    <dimen name="widget_preview_label_horizontal_padding">16dp</dimen>
 
     <dimen name="widget_section_height">56dp</dimen>
     <dimen name="widget_section_icon_size">40dp</dimen>

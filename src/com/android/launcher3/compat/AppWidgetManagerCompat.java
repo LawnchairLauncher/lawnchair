@@ -71,9 +71,6 @@ public abstract class AppWidgetManagerCompat {
     public abstract void startConfigActivity(AppWidgetProviderInfo info, int widgetId,
             Activity activity, AppWidgetHost host, int requestCode);
 
-    public abstract Bitmap getBadgeBitmap(LauncherAppWidgetProviderInfo info, Bitmap bitmap,
-            int imageWidth, int imageHeight);
-
     public abstract LauncherAppWidgetProviderInfo findProvider(
             ComponentName provider, UserHandle user);
 
