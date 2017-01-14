@@ -37,6 +37,7 @@ import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
 import static com.android.launcher3.LauncherSettings.Favorites.PROFILE_ID;
+import static com.android.launcher3.LauncherSettings.Favorites.RESTORED;
 import static com.android.launcher3.LauncherSettings.Favorites.SCREEN;
 import static com.android.launcher3.LauncherSettings.Favorites.TITLE;
 import static com.android.launcher3.LauncherSettings.Favorites._ID;
@@ -72,7 +73,7 @@ public class LoaderCursorTest {
         mCursor = new MatrixCursor(new String[] {
                 ICON, ICON_PACKAGE, ICON_RESOURCE, TITLE,
                 _ID, CONTAINER, ITEM_TYPE, PROFILE_ID,
-                SCREEN, CELLX, CELLY,
+                SCREEN, CELLX, CELLY, RESTORED
         });
         mContext = InstrumentationRegistry.getTargetContext();
 

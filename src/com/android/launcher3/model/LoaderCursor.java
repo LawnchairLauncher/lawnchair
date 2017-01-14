@@ -83,6 +83,7 @@ public class LoaderCursor extends CursorWrapper {
     private final int cellXIndex;
     private final int cellYIndex;
     private final int profileIdIndex;
+    private final int restoredIndex;
 
     // Properties loaded per iteration
     public long serialNumber;
@@ -90,6 +91,7 @@ public class LoaderCursor extends CursorWrapper {
     public long id;
     public long container;
     public int itemType;
+    public int restoreFlag;
 
     public LoaderCursor(Cursor c, LauncherAppState app) {
         super(c);
@@ -111,6 +113,7 @@ public class LoaderCursor extends CursorWrapper {
         cellXIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.CELLX);
         cellYIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.CELLY);
         profileIdIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.PROFILE_ID);
+        restoredIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.RESTORED);
     }
 
     @Override
@@ -123,6 +126,7 @@ public class LoaderCursor extends CursorWrapper {
             id = getLong(idIndex);
             serialNumber = getInt(profileIdIndex);
             user = allUsers.get(serialNumber);
+            restoreFlag = getInt(restoredIndex);
         }
         return result;
     }
@@ -185,7 +189,7 @@ public class LoaderCursor extends CursorWrapper {
      * Make an ShortcutInfo object for a restored application or shortcut item that points
      * to a package that is not yet installed on the system.
      */
-    public ShortcutInfo getRestoredItemInfo(Intent intent, int promiseType) {
+    public ShortcutInfo getRestoredItemInfo(Intent intent) {
         final ShortcutInfo info = new ShortcutInfo();
         info.user = user;
         info.intent = intent;
@@ -196,22 +200,22 @@ public class LoaderCursor extends CursorWrapper {
             mIconCache.getTitleAndIcon(info, false /* useLowResIcon */);
         }
 
-        if ((promiseType & ShortcutInfo.FLAG_RESTORED_ICON) != 0) {
+        if (hasRestoreFlag(ShortcutInfo.FLAG_RESTORED_ICON)) {
             String title = getTitle();
             if (!TextUtils.isEmpty(title)) {
                 info.title = Utilities.trim(title);
             }
-        } else if  ((promiseType & ShortcutInfo.FLAG_AUTOINTALL_ICON) != 0) {
+        } else if  (hasRestoreFlag(ShortcutInfo.FLAG_AUTOINTALL_ICON)) {
             if (TextUtils.isEmpty(info.title)) {
                 info.title = getTitle();
             }
         } else {
-            throw new InvalidParameterException("Invalid restoreType " + promiseType);
+            throw new InvalidParameterException("Invalid restoreType " + restoreFlag);
         }
 
         info.contentDescription = mUserManager.getBadgedLabelForUser(info.title, info.user);
         info.itemType = itemType;
-        info.status = promiseType;
+        info.status = restoreFlag;
         return info;
     }
 
@@ -305,7 +309,14 @@ public class LoaderCursor extends CursorWrapper {
      * Marks the current item as restored
      */
     public void markRestored() {
-        restoredRows.add(id);
+        if (restoreFlag != 0) {
+            restoredRows.add(id);
+            restoreFlag = 0;
+        }
+    }
+
+    public boolean hasRestoreFlag(int flagMask) {
+        return (restoreFlag & flagMask) != 0;
     }
 
     public void commitRestoredItems() {
