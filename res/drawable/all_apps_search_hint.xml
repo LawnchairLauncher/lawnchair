@@ -15,6 +15,6 @@
      limitations under the License.
 -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:color="@android:color/transparent" android:state_focused="true" />
+    <item android:color="#00FFFFFF" android:state_focused="true" />
     <item android:color="?android:attr/colorAccent"/>
 </selector>
