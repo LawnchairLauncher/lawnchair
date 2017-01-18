@@ -24,6 +24,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.MultiHashMap;
@@ -87,6 +88,8 @@ public class ShortcutsChangedTask extends ExtendedModelTask {
                 }
                 for (ShortcutInfo shortcutInfo : shortcutInfos) {
                     shortcutInfo.updateFromDeepShortcutInfo(fullDetails, context);
+                    shortcutInfo.iconBitmap =
+                            LauncherIcons.createShortcutIcon(fullDetails, context);
                     updatedShortcutInfos.add(shortcutInfo);
                 }
             }

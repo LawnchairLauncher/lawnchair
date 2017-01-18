@@ -31,10 +31,8 @@ import com.android.launcher3.LogAccelerateInterpolator;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.shortcuts.DeepShortcutsContainer.UnbadgedShortcutInfo;
 import com.android.launcher3.util.PillRevealOutlineProvider;
 import com.android.launcher3.util.PillWidthRevealOutlineProvider;
-import com.android.launcher3.util.Provider;
 
 /**
  * A {@link android.widget.FrameLayout} that contains a {@link DeepShortcutView}.
@@ -50,7 +48,8 @@ public class DeepShortcutView extends FrameLayout implements ValueAnimator.Anima
     private View mIconView;
     private float mOpenAnimationProgress;
 
-    private UnbadgedShortcutInfo mInfo;
+    private ShortcutInfo mInfo;
+    private ShortcutInfoCompat mDetail;
 
     public DeepShortcutView(Context context) {
         this(context, null, 0);
@@ -92,18 +91,20 @@ public class DeepShortcutView extends FrameLayout implements ValueAnimator.Anima
     }
 
     /** package private **/
-    void applyShortcutInfo(UnbadgedShortcutInfo info, DeepShortcutsContainer container) {
+    void applyShortcutInfo(ShortcutInfo info, ShortcutInfoCompat detail,
+            DeepShortcutsContainer container) {
         mInfo = info;
+        mDetail = detail;
         mBubbleText.applyFromShortcutInfo(info);
         mIconView.setBackground(mBubbleText.getIcon());
 
         // Use the long label as long as it exists and fits.
-        CharSequence longLabel = info.mDetail.getLongLabel();
+        CharSequence longLabel = mDetail.getLongLabel();
         int availableWidth = mBubbleText.getWidth() - mBubbleText.getTotalPaddingLeft()
                 - mBubbleText.getTotalPaddingRight();
         boolean usingLongLabel = !TextUtils.isEmpty(longLabel)
                 && mBubbleText.getPaint().measureText(longLabel.toString()) <= availableWidth;
-        mBubbleText.setText(usingLongLabel ? longLabel : info.mDetail.getShortLabel());
+        mBubbleText.setText(usingLongLabel ? longLabel : mDetail.getShortLabel());
 
         // TODO: Add the click handler to this view directly and not the child view.
         mBubbleText.setOnClickListener(Launcher.getLauncher(getContext()));
@@ -118,14 +119,8 @@ public class DeepShortcutView extends FrameLayout implements ValueAnimator.Anima
         final ShortcutInfo badged = new ShortcutInfo(mInfo);
         // Queue an update task on the worker thread. This ensures that the badged
         // shortcut eventually gets its icon updated.
-        Launcher.getLauncher(getContext()).getModel().updateAndBindShortcutInfo(
-                new Provider<ShortcutInfo>() {
-                    @Override
-                    public ShortcutInfo get() {
-                        badged.updateFromDeepShortcutInfo(mInfo.mDetail, getContext());
-                        return badged;
-                    }
-        });
+        Launcher.getLauncher(getContext()).getModel()
+                .updateAndBindShortcutInfo(badged, mDetail);
         return badged;
     }
 

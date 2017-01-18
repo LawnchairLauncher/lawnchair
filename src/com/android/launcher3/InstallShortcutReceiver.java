@@ -457,7 +457,9 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 }
                 return si;
             } else if (shortcutInfo != null) {
-                return new ShortcutInfo(shortcutInfo, mContext);
+                ShortcutInfo si = new ShortcutInfo(shortcutInfo, mContext);
+                si.iconBitmap = LauncherIcons.createShortcutIcon(shortcutInfo, mContext);
+                return si;
             } else if (providerInfo != null) {
                 LauncherAppWidgetProviderInfo info = LauncherAppWidgetProviderInfo
                         .fromProviderInfo(mContext, providerInfo);

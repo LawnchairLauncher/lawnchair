@@ -49,6 +49,7 @@ import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.dynamicui.ExtractionUtils;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.AddWorkspaceItemsTask;
 import com.android.launcher3.model.BgDataModel;
@@ -1330,6 +1331,8 @@ public class LauncherModel extends BroadcastReceiver
                                             continue;
                                         }
                                         info = new ShortcutInfo(pinnedShortcut, context);
+                                        info.iconBitmap = LauncherIcons
+                                                .createShortcutIcon(pinnedShortcut, context);
                                         intent = info.intent;
                                     } else {
                                         // Create a shortcut info in disabled mode for now.
@@ -2199,6 +2202,17 @@ public class LauncherModel extends BroadcastReceiver
                 }
             });
         }
+    }
+
+    public void updateAndBindShortcutInfo(final ShortcutInfo si, final ShortcutInfoCompat info) {
+        updateAndBindShortcutInfo(new Provider<ShortcutInfo>() {
+            @Override
+            public ShortcutInfo get() {
+                si.updateFromDeepShortcutInfo(info, mApp.getContext());
+                si.iconBitmap = LauncherIcons.createShortcutIcon(info, mApp.getContext());
+                return si;
+            }
+        });
     }
 
     /**
