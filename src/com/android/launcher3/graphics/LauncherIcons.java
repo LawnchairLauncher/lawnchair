@@ -29,10 +29,13 @@ import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
+import android.graphics.drawable.ScaleDrawable;
 import android.os.Process;
 import android.os.UserHandle;
+import android.view.Gravity;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.IconCache;
@@ -45,12 +48,12 @@ import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 
-import java.lang.reflect.Method;
-
 /**
  * Helper methods for generating various launcher icons
  */
 public class LauncherIcons {
+    // TODO b/33553066 use the constant defined in MaskableIconDrawable
+    private static final float LEGACY_ICON_SCALE = .7f * .6667f;
 
     private static final Rect sOldBounds = new Rect();
     private static final Canvas sCanvas = new Canvas();
@@ -168,7 +171,7 @@ public class LauncherIcons {
      * @param scale the scale to apply before drawing {@param icon} on the canvas
      */
     public static Bitmap createIconBitmap(Drawable icon, Context context, float scale) {
-        icon = castToMaskableIconDrawable(icon);
+        icon = wrapToMaskableIconDrawable(context, icon);
         synchronized (sCanvas) {
             final int iconBitmapSize = LauncherAppState.getIDP(context).iconBitmapSize;
 
@@ -224,17 +227,31 @@ public class LauncherIcons {
         }
     }
 
-    static Drawable castToMaskableIconDrawable(Drawable drawable) {
+    /**
+     * If the platform is running O but the app is not providing MaskableIconDrawable, then
+     * shrink the legacy icon and set it as foreground. Use color drawable as background to
+     * create MaskableIconDrawable.
+     */
+    static Drawable wrapToMaskableIconDrawable(Context context, Drawable drawable) {
         if (!(ProviderConfig.IS_DOGFOOD_BUILD && Utilities.isAtLeastO())) {
             return drawable;
         }
+        int color = context.getResources().getColor(R.color.legacy_icon_background);
+        ColorDrawable colorDrawable = new ColorDrawable(color);
+        ScaleDrawable scaleDrawable = new ScaleDrawable(drawable,
+                Gravity.CENTER, LEGACY_ICON_SCALE, LEGACY_ICON_SCALE);
+        scaleDrawable.setLevel(1);
         try {
             Class clazz = Class.forName("android.graphics.drawable.MaskableIconDrawable");
-            Method method = clazz.getDeclaredMethod("wrap", Drawable.class);
-            return (Drawable) method.invoke(null, drawable);
+            if (!clazz.isAssignableFrom(drawable.getClass())){
+
+                return (Drawable) clazz.getConstructor(Drawable.class, Drawable.class)
+                        .newInstance(colorDrawable, scaleDrawable);
+            }
         } catch (Exception e) {
             return drawable;
         }
+        return drawable;
     }
 
     public static Bitmap createShortcutIcon(ShortcutInfoCompat shortcutInfo, Context context) {

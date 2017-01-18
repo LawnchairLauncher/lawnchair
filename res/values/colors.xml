@@ -52,4 +52,5 @@
     <color name="fallback_secondary_color">#FF37474F</color>
 
     <color name="notification_icon_default_color">#757575</color> <!-- Gray 600 -->
+    <color name="legacy_icon_background">#FFE0E0E0</color>
 </resources>
