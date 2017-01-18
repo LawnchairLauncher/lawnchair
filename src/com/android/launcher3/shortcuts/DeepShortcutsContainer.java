@@ -25,7 +25,6 @@ import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -49,7 +48,6 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
-import com.android.launcher3.IconCache;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
@@ -65,6 +63,7 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.graphics.TriangleShape;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ItemType;
@@ -174,8 +173,11 @@ public class DeepShortcutsContainer extends AbstractFloatingView
                 }
                 for (int i = 0; i < shortcuts.size(); i++) {
                     final ShortcutInfoCompat shortcut = shortcuts.get(i);
-                    uiHandler.post(new UpdateShortcutChild(
-                            i, new UnbadgedShortcutInfo(shortcut, mLauncher)));
+                    ShortcutInfo si = new ShortcutInfo(shortcut, mLauncher);
+                    // Use unbadged icon for the menu.
+                    si.iconBitmap = LauncherIcons.createShortcutIcon(
+                            shortcut, mLauncher, false /* badged */);
+                    uiHandler.post(new UpdateShortcutChild(i, si, shortcut));
                 }
             }
         });
@@ -183,18 +185,22 @@ public class DeepShortcutsContainer extends AbstractFloatingView
 
     /** Updates the child of this container at the given index based on the given shortcut info. */
     private class UpdateShortcutChild implements Runnable {
-        private int mShortcutChildIndex;
-        private UnbadgedShortcutInfo mShortcutChildInfo;
+        private final int mShortcutChildIndex;
+        private final ShortcutInfo mShortcutChildInfo;
+        private final ShortcutInfoCompat mDetail;
 
-        public UpdateShortcutChild(int shortcutChildIndex, UnbadgedShortcutInfo shortcutChildInfo) {
+
+        public UpdateShortcutChild(int shortcutChildIndex, ShortcutInfo shortcutChildInfo,
+                ShortcutInfoCompat detail) {
             mShortcutChildIndex = shortcutChildIndex;
             mShortcutChildInfo = shortcutChildInfo;
+            mDetail = detail;
         }
 
         @Override
         public void run() {
             getShortcutAt(mShortcutChildIndex)
-                    .applyShortcutInfo(mShortcutChildInfo, DeepShortcutsContainer.this);
+                    .applyShortcutInfo(mShortcutChildInfo, mDetail, DeepShortcutsContainer.this);
         }
     }
 
@@ -674,24 +680,6 @@ public class DeepShortcutsContainer extends AbstractFloatingView
             return container;
         }
         return null;
-    }
-
-    /**
-     * Extension of {@link ShortcutInfo} which does not badge the icons.
-     */
-    static class UnbadgedShortcutInfo extends ShortcutInfo {
-        public final ShortcutInfoCompat mDetail;
-
-        public UnbadgedShortcutInfo(ShortcutInfoCompat shortcutInfo, Context context) {
-            super(shortcutInfo, context);
-            mDetail = shortcutInfo;
-        }
-
-        @Override
-        protected Bitmap getBadgedIcon(Bitmap unbadgedBitmap, ShortcutInfoCompat shortcutInfo,
-                IconCache cache, Context context) {
-            return unbadgedBitmap;
-        }
     }
 
     /**

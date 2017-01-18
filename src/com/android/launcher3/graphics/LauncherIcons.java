@@ -16,7 +16,9 @@
 
 package com.android.launcher3.graphics;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -32,11 +34,16 @@ import android.graphics.drawable.PaintDrawable;
 import android.os.Process;
 import android.os.UserHandle;
 
+import com.android.launcher3.AppInfo;
+import com.android.launcher3.IconCache;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.model.PackageItemInfo;
+import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 
 import java.lang.reflect.Method;
 
@@ -228,6 +235,46 @@ public class LauncherIcons {
         } catch (Exception e) {
             return drawable;
         }
+    }
+
+    public static Bitmap createShortcutIcon(ShortcutInfoCompat shortcutInfo, Context context) {
+        return createShortcutIcon(shortcutInfo, context, true /* badged */);
+    }
+
+    public static Bitmap createShortcutIcon(ShortcutInfoCompat shortcutInfo, Context context,
+            boolean badged) {
+        LauncherAppState app = LauncherAppState.getInstance(context);
+        Drawable unbadgedDrawable = DeepShortcutManager.getInstance(context)
+                .getShortcutIconDrawable(shortcutInfo,
+                        app.getInvariantDeviceProfile().fillResIconDpi);
+        IconCache cache = app.getIconCache();
+        Bitmap unbadgedBitmap = unbadgedDrawable == null
+                ? cache.getDefaultIcon(Process.myUserHandle())
+                : LauncherIcons.createScaledBitmapWithoutShadow(unbadgedDrawable, context);
+
+        if (!badged) {
+            return unbadgedBitmap;
+        }
+        unbadgedBitmap = LauncherIcons.addShadowToIcon(unbadgedBitmap, context);
+
+        final Bitmap badgeBitmap;
+        ComponentName cn = shortcutInfo.getActivity();
+        if (cn != null) {
+            // Get the app info for the source activity.
+            AppInfo appInfo = new AppInfo();
+            appInfo.user = shortcutInfo.getUserHandle();
+            appInfo.componentName = cn;
+            appInfo.intent = new Intent(Intent.ACTION_MAIN)
+                    .addCategory(Intent.CATEGORY_LAUNCHER)
+                    .setComponent(cn);
+            cache.getTitleAndIcon(appInfo, false);
+            badgeBitmap = appInfo.iconBitmap;
+        } else {
+            PackageItemInfo pkgInfo = new PackageItemInfo(shortcutInfo.getPackage());
+            cache.getTitleAndIconForApp(pkgInfo, false);
+            badgeBitmap = pkgInfo.iconBitmap;
+        }
+        return badgeWithBitmap(unbadgedBitmap, badgeBitmap, context);
     }
 
     /**

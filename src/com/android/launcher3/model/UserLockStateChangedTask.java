@@ -25,6 +25,7 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
@@ -85,6 +86,7 @@ public class UserLockStateChangedTask extends ExtendedModelTask {
                     }
                     si.isDisabled &= ~ShortcutInfo.FLAG_DISABLED_LOCKED_USER;
                     si.updateFromDeepShortcutInfo(shortcut, context);
+                    si.iconBitmap = LauncherIcons.createShortcutIcon(shortcut, context);
                 } else {
                     si.isDisabled |= ShortcutInfo.FLAG_DISABLED_LOCKED_USER;
                 }
