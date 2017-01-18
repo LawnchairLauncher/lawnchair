@@ -33,6 +33,10 @@ import android.graphics.drawable.Drawable;
 import android.util.SparseArray;
 import android.view.animation.DecelerateInterpolator;
 
+import com.android.launcher3.graphics.IconPalette;
+import com.android.launcher3.badge.BadgeRenderer;
+import com.android.launcher3.badge.BadgeInfo;
+
 public class FastBitmapDrawable extends Drawable {
     private static final float DISABLED_DESATURATION = 1f;
     private static final float DISABLED_BRIGHTNESS = 0.5f;
@@ -99,6 +103,10 @@ public class FastBitmapDrawable extends Drawable {
     private State mState = State.NORMAL;
     private boolean mIsDisabled;
 
+    private BadgeInfo mBadgeInfo;
+    private BadgeRenderer mBadgeRenderer;
+    private IconPalette mIconPalette;
+
     // The saturation and brightness are values that are mapped to REDUCED_FILTER_VALUE_SPACE and
     // as a result, can be used to compose the key for the cached ColorMatrixColorFilters
     private int mDesaturation = 0;
@@ -114,9 +122,21 @@ public class FastBitmapDrawable extends Drawable {
         setBounds(0, 0, b.getWidth(), b.getHeight());
     }
 
+    public void applyIconBadge(BadgeInfo badgeInfo, BadgeRenderer badgeRenderer) {
+        mBadgeInfo = badgeInfo;
+        mBadgeRenderer = badgeRenderer;
+        if (mIconPalette == null) {
+            mIconPalette = IconPalette.fromDominantColor(Utilities
+                    .findDominantColorByHue(mBitmap, 20));
+        }
+        invalidateSelf();
+    }
+
     @Override
     public void draw(Canvas canvas) {
         drawInternal(canvas);
+        // Draw the icon badge in the top right corner.
+        drawBadgeIfNecessary(canvas);
     }
 
     public void drawWithBrightness(Canvas canvas, float brightness) {
@@ -128,6 +148,16 @@ public class FastBitmapDrawable extends Drawable {
 
     protected void drawInternal(Canvas canvas) {
         canvas.drawBitmap(mBitmap, null, getBounds(), mPaint);
+    }
+
+    protected void drawBadgeIfNecessary(Canvas canvas) {
+        if (hasBadge()) {
+            mBadgeRenderer.draw(canvas, mIconPalette, mBadgeInfo, getBounds());
+        }
+    }
+
+    private boolean hasBadge() {
+        return mBadgeInfo != null && mBadgeInfo.getNotificationCount() != null;
     }
 
     @Override

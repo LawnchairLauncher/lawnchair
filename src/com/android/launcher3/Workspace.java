@@ -3971,7 +3971,7 @@ public class Workspace extends PagedView
             public boolean evaluate(ItemInfo info, View v) {
                 if (info instanceof ShortcutInfo && v instanceof BubbleTextView
                         && updates.contains(info)) {
-                    ((BubbleTextView) v).applyState(false);
+                    ((BubbleTextView) v).applyPromiseState(false /* promiseStateChanged */);
                 } else if (v instanceof PendingAppWidgetHostView
                         && info instanceof LauncherAppWidgetInfo
                         && updates.contains(info)) {

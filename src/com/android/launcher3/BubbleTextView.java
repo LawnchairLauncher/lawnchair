@@ -39,6 +39,8 @@ import android.widget.TextView;
 
 import com.android.launcher3.IconCache.IconLoadRequest;
 import com.android.launcher3.IconCache.ItemInfoUpdateReceiver;
+import com.android.launcher3.badge.BadgeRenderer;
+import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.graphics.HolographicOutlineHelper;
@@ -164,7 +166,7 @@ public class BubbleTextView extends TextView
         applyIconAndLabel(info.iconBitmap, info);
         setTag(info);
         if (promiseStateChanged || info.isPromise()) {
-            applyState(promiseStateChanged);
+            applyPromiseState(promiseStateChanged);
         }
     }
 
@@ -470,7 +472,7 @@ public class BubbleTextView extends TextView
         mLongPressHelper.cancelLongPress();
     }
 
-    public void applyState(boolean promiseStateChanged) {
+    public void applyPromiseState(boolean promiseStateChanged) {
         if (getTag() instanceof ShortcutInfo) {
             ShortcutInfo info = (ShortcutInfo) getTag();
             final boolean isPromise = info.isPromise();
@@ -479,8 +481,8 @@ public class BubbleTextView extends TextView
                             info.getInstallProgress() : 0)) : 100;
 
             setContentDescription(progressLevel > 0 ?
-                getContext().getString(R.string.app_downloading_title, info.title,
-                        NumberFormat.getPercentInstance().format(progressLevel * 0.01)) :
+                    getContext().getString(R.string.app_downloading_title, info.title,
+                            NumberFormat.getPercentInstance().format(progressLevel * 0.01)) :
                     getContext().getString(R.string.app_waiting_download_title, info.title));
 
             if (mIcon != null) {
@@ -497,6 +499,13 @@ public class BubbleTextView extends TextView
                     preloadDrawable.maybePerformFinishedAnimation();
                 }
             }
+        }
+    }
+
+    public void applyBadgeState(BadgeInfo badgeInfo) {
+        if (mIcon instanceof FastBitmapDrawable) {
+            BadgeRenderer badgeRenderer = mLauncher.getDeviceProfile().mBadgeRenderer;
+            ((FastBitmapDrawable) mIcon).applyIconBadge(badgeInfo, badgeRenderer);
         }
     }
 
