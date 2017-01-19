@@ -17,6 +17,9 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
+import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.compat.ShortcutConfigActivityInfo;
+import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.Preconditions;
@@ -70,9 +73,9 @@ public class WidgetsModel {
             }
 
             // Shortcuts
-            for (ResolveInfo info :
-                    pm.queryIntentActivities(new Intent(Intent.ACTION_CREATE_SHORTCUT), 0)) {
-                widgetsAndShortcuts.add(new WidgetItem(info, pm));
+            for (ShortcutConfigActivityInfo info : LauncherAppsCompat.getInstance(context)
+                    .getCustomShortcutActivityList()) {
+                widgetsAndShortcuts.add(new WidgetItem(info));
             }
             setWidgetsAndShortcuts(widgetsAndShortcuts, context);
         } catch (Exception e) {

@@ -3,7 +3,6 @@ package com.android.launcher3;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -30,6 +29,7 @@ import android.util.Log;
 import android.util.LongSparseArray;
 
 import com.android.launcher3.compat.AppWidgetManagerCompat;
+import com.android.launcher3.compat.ShortcutConfigActivityInfo;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.util.ComponentKey;
@@ -414,8 +414,8 @@ public class WidgetPreviewLoader {
         return mWidgetManager.getBadgeBitmap(info, preview, imageWidth, imageHeight);
     }
 
-    private Bitmap generateShortcutPreview(
-            BaseActivity launcher, ActivityInfo info, int maxWidth, int maxHeight, Bitmap preview) {
+    private Bitmap generateShortcutPreview(BaseActivity launcher, ShortcutConfigActivityInfo info,
+            int maxWidth, int maxHeight, Bitmap preview) {
         final Canvas c = new Canvas();
         if (preview == null) {
             preview = Bitmap.createBitmap(maxWidth, maxHeight, Config.ARGB_8888);
@@ -428,7 +428,7 @@ public class WidgetPreviewLoader {
             c.drawColor(0, PorterDuff.Mode.CLEAR);
         }
 
-        Drawable icon = mutateOnMainThread(mIconCache.getFullResIcon(info));
+        Drawable icon = mutateOnMainThread(info.getFullResIcon(mIconCache));
         icon.setFilterBitmap(true);
 
         // Draw a desaturated/scaled version of the icon in the background as a watermark

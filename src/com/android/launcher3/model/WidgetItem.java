@@ -1,16 +1,14 @@
 package com.android.launcher3.model;
 
-import android.content.ComponentName;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.os.Process;
 import android.os.UserHandle;
 
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.compat.ShortcutConfigActivityInfo;
 import com.android.launcher3.util.ComponentKey;
 
 import java.text.Collator;
@@ -26,7 +24,7 @@ public class WidgetItem extends ComponentKey implements Comparable<WidgetItem> {
     private static Collator sCollator;
 
     public final LauncherAppWidgetProviderInfo widgetInfo;
-    public final ActivityInfo activityInfo;
+    public final ShortcutConfigActivityInfo activityInfo;
 
     public final String label;
     public final int spanX, spanY;
@@ -43,12 +41,11 @@ public class WidgetItem extends ComponentKey implements Comparable<WidgetItem> {
         spanY = Math.min(info.spanY, idp.numRows);
     }
 
-    public WidgetItem(ResolveInfo info, PackageManager pm) {
-        super(new ComponentName(info.activityInfo.packageName, info.activityInfo.name),
-                Process.myUserHandle());
-        label = Utilities.trim(info.loadLabel(pm));
+    public WidgetItem(ShortcutConfigActivityInfo info) {
+        super(info.getComponent(), info.getUser());
+        label = Utilities.trim(info.getLabel());
         widgetInfo = null;
-        activityInfo = info.activityInfo;
+        activityInfo = info;
         spanX = spanY = 1;
     }
 
