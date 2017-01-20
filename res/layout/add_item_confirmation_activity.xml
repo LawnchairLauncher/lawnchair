@@ -22,18 +22,28 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:padding="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         android:text="@string/add_item_request_drag_hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <TextView
+    <FrameLayout
+        android:theme="@style/WidgetContainerTheme"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_margin="10dp"
-        android:gravity="center"
-        android:id="@+id/drag_target"
-        android:background="@drawable/bg_drag_box" />
+        android:background="?android:attr/colorPrimary"
+        android:layout_height="wrap_content">
+
+        <include
+            layout="@layout/widget_cell"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/widget_cell" />
+    </FrameLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

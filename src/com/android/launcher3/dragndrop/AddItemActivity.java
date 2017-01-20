@@ -19,17 +19,12 @@ package com.android.launcher3.dragndrop;
 import android.annotation.TargetApi;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
-import android.appwidget.AppWidgetProviderInfo;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
-import android.widget.TextView;
 
 import com.android.launcher3.BaseActivity;
-import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
@@ -38,10 +33,10 @@ import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.PinItemRequestCompat;
-import com.android.launcher3.graphics.LauncherIcons;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
+import com.android.launcher3.widget.WidgetCell;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 
 @TargetApi(Build.VERSION_CODES.N_MR1)
@@ -54,7 +49,7 @@ public class AddItemActivity extends BaseActivity {
     private LauncherAppState mApp;
     private InvariantDeviceProfile mIdp;
 
-    private TextView mTextView;
+    private WidgetCell mWidgetCell;
 
     // Widget request specific options.
     private AppWidgetHost mAppWidgetHost;
@@ -73,15 +68,15 @@ public class AddItemActivity extends BaseActivity {
             return;
         }
 
-        setContentView(R.layout.add_item_confirmation_activity);
-        mTextView = (TextView) findViewById(R.id.drag_target);
-
         mApp = LauncherAppState.getInstance(this);
         mIdp = mApp.getInvariantDeviceProfile();
 
         // Use the application context to get the device profile, as in multiwindow-mode, the
         // confirmation activity might be rotated.
         mDeviceProfile = mIdp.getDeviceProfile(getApplicationContext());
+
+        setContentView(R.layout.add_item_confirmation_activity);
+        mWidgetCell = (WidgetCell) findViewById(R.id.widget_cell);
 
         if (mRequest.getRequestType() == PinItemRequestCompat.REQUEST_TYPE_SHORTCUT) {
             setupShortcut();
@@ -94,20 +89,15 @@ public class AddItemActivity extends BaseActivity {
     }
 
     private void setupShortcut() {
-        ShortcutInfoCompat shortcut = new ShortcutInfoCompat(mRequest.getShortcutInfo());
-        FastBitmapDrawable d = new FastBitmapDrawable(LauncherIcons.createIconBitmap(
-                DeepShortcutManager.getInstance(this).getShortcutIconDrawable(
-                        shortcut, mIdp.fillResIconDpi), this));
-        d.setFilterBitmap(true);
-        mTextView.setText(TextUtils.isEmpty(shortcut.getLongLabel())
-                ? shortcut.getShortLabel() : shortcut.getLongLabel());
-        mTextView.setCompoundDrawables(null, d, null, null);
+        WidgetItem item = new WidgetItem(new PinShortcutRequestActivityInfo(
+                mRequest.getShortcutInfo(), this));
+        mWidgetCell.applyFromCellItem(item, mApp.getWidgetCache());
+        mWidgetCell.ensurePreview();
     }
 
     private boolean setupWidget() {
-        AppWidgetProviderInfo info = mRequest.getAppWidgetProviderInfo();
-        LauncherAppWidgetProviderInfo widgetInfo = AppWidgetManagerCompat.getInstance(this)
-                .findProvider(info.provider, info.getProfile());
+        LauncherAppWidgetProviderInfo widgetInfo = LauncherAppWidgetProviderInfo
+                .fromProviderInfo(this, mRequest.getAppWidgetProviderInfo(this));
         if (widgetInfo.minSpanX > mIdp.numColumns || widgetInfo.minSpanY > mIdp.numRows) {
             // Cannot add widget
             return false;
@@ -121,12 +111,9 @@ public class AddItemActivity extends BaseActivity {
         mPendingWidgetInfo.spanY = Math.min(mIdp.numRows, widgetInfo.spanY);
         mWidgetOptions = WidgetHostViewLoader.getDefaultOptionsForWidget(this, mPendingWidgetInfo);
 
-        Bitmap preview = mApp.getWidgetCache().generateWidgetPreview(this, widgetInfo,
-                mPendingWidgetInfo.spanX * mDeviceProfile.cellWidthPx, null, null);
-        FastBitmapDrawable d = new FastBitmapDrawable(preview);
-        d.setFilterBitmap(true);
-        mTextView.setText(widgetInfo.getLabel(getPackageManager()));
-        mTextView.setCompoundDrawables(null, d, null, null);
+        WidgetItem item = new WidgetItem(widgetInfo, getPackageManager(), mIdp);
+        mWidgetCell.applyFromCellItem(item, mApp.getWidgetCache());
+        mWidgetCell.ensurePreview();
         return true;
     }
 
@@ -151,7 +138,7 @@ public class AddItemActivity extends BaseActivity {
 
         mPendingBindWidgetId = mAppWidgetHost.allocateAppWidgetId();
         boolean success = mAppWidgetManager.bindAppWidgetIdIfAllowed(
-                mPendingBindWidgetId, mRequest.getAppWidgetProviderInfo(), mWidgetOptions);
+                mPendingBindWidgetId, mRequest.getAppWidgetProviderInfo(this), mWidgetOptions);
         if (success) {
             acceptWidget(mPendingBindWidgetId);
             return;
@@ -163,12 +150,12 @@ public class AddItemActivity extends BaseActivity {
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER,
                 mPendingWidgetInfo.componentName);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER_PROFILE,
-                mRequest.getAppWidgetProviderInfo().getProfile());
+                mRequest.getAppWidgetProviderInfo(this).getProfile());
         startActivityForResult(intent, REQUEST_BIND_APPWIDGET);
     }
 
     private void acceptWidget(int widgetId) {
-        InstallShortcutReceiver.queueWidget(mRequest.getAppWidgetProviderInfo(), widgetId, this);
+        InstallShortcutReceiver.queueWidget(mRequest.getAppWidgetProviderInfo(this), widgetId, this);
         mWidgetOptions.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
         mRequest.accept(mWidgetOptions);
         finish();
