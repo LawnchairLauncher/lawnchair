@@ -56,7 +56,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"यह एक सिस्टम ऐप्लिकेशन है और इसे अनइंस्टॉल नहीं किया जा सकता."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"अनामित फ़ोल्डर"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> अक्षम है"</string>
-    <string name="default_scroll_format" msgid="7475544710230993317">"पृष्ठ %2$d में से %1$d"</string>
+    <string name="default_scroll_format" msgid="7475544710230993317">"पेज %2$d में से %1$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"होम स्क्रीन %2$d में से %1$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"नया होम स्‍क्रीन पृष्‍ठ"</string>
     <string name="folder_opened" msgid="94695026776264709">"फ़ोल्डर खोला गया, <xliff:g id="WIDTH">%1$d</xliff:g> गुणा <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>

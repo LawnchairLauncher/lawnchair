@@ -30,7 +30,7 @@
     <string name="home_screen" msgid="806512411299847073">"गृह स्क्रिन"</string>
     <string name="custom_actions" msgid="3747508247759093328">"आफू अनुकूलका कारबाहीहरू"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"एउटा विजेटलाई टिप्नको लागि टच गरेर होल्ड गर्नुहोस्।"</string>
-    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"विजेटलाई छान्न वा अनुकूलन कार्यहरू प्रयोग गर्न डबल ट्याप गरी होल्ड गर्नुहोस्।"</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"विजेटलाई छान्न वा आफू अनुकूल कार्यहरू प्रयोग गर्न डबल ट्याप गरी होल्ड गर्नुहोस्।"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d चौडाइ गुणा %2$d उचाइ"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"अनुप्रयोगहरू खोज्नुहोस्"</string>

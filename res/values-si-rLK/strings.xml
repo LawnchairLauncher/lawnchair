@@ -90,7 +90,7 @@
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"ප්‍රියතම ස්ථානය <xliff:g id="NUMBER">%1$s</xliff:g> වෙත ගෙන යන්න"</string>
     <string name="item_moved" msgid="4606538322571412879">"අයිතමය ගෙන යන ලදි"</string>
     <string name="add_to_folder" msgid="9040534766770853243">"ෆෝල්ඩරය එක් කරන්න: <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="add_to_folder_with_app" msgid="4534929978967147231">"<xliff:g id="NAME">%1$s</xliff:g> සමග ෆෝල්ඩරය වෙත එකතු කරන්න"</string>
+    <string name="add_to_folder_with_app" msgid="4534929978967147231">"<xliff:g id="NAME">%1$s</xliff:g> සමඟ ෆෝල්ඩරය වෙත එක් කරන්න"</string>
     <string name="added_to_folder" msgid="4793259502305558003">"අයිතමය ෆෝඩරය වෙතට එක් කරන ලදි"</string>
     <string name="create_folder_with" msgid="4050141361160214248">"මේ සමග ෆෝල්ඩරය සාදන්න: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"ෆෝල්ඩරය සාදන ලදි"</string>
