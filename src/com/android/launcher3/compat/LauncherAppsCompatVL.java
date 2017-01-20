@@ -21,11 +21,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.pm.ShortcutInfo;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.UserHandle;
 
+import com.android.launcher3.compat.ShortcutConfigActivityInfo.ShortcutConfigActivityInfoVL;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 
 import java.util.ArrayList;
@@ -35,11 +38,13 @@ import java.util.Map;
 
 public class LauncherAppsCompatVL extends LauncherAppsCompat {
 
-    protected LauncherApps mLauncherApps;
+    protected final LauncherApps mLauncherApps;
+    protected final Context mContext;
 
     private Map<OnAppsChangedCallbackCompat, WrappedCallback> mCallbacks = new HashMap<>();
 
     LauncherAppsCompatVL(Context context) {
+        mContext = context;
         mLauncherApps = (LauncherApps) context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
     }
 
@@ -139,6 +144,17 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
 
             mCallback.onShortcutsChanged(packageName, shortcutInfoCompats, user);
         }
+    }
+
+    @Override
+    public List<ShortcutConfigActivityInfo> getCustomShortcutActivityList() {
+        PackageManager pm = mContext.getPackageManager();
+        List<ShortcutConfigActivityInfo> result = new ArrayList<>();
+        for (ResolveInfo info :
+                pm.queryIntentActivities(new Intent(Intent.ACTION_CREATE_SHORTCUT), 0)) {
+            result.add(new ShortcutConfigActivityInfoVL(info.activityInfo, pm));
+        }
+        return result;
     }
 }
 

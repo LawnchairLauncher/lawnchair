@@ -189,6 +189,10 @@ public class IconCache {
         return getFullResDefaultActivityIcon();
     }
 
+    public Drawable getFullResIcon(LauncherActivityInfo info) {
+        return mIconProvider.getIcon(info, mIconDpi);
+    }
+
     protected Bitmap makeDefaultIcon(UserHandle user) {
         Drawable unbadged = getFullResDefaultActivityIcon();
         return LauncherIcons.createBadgedIconBitmap(unbadged, user, mContext);
@@ -376,8 +380,7 @@ public class IconCache {
         }
         if (entry == null) {
             entry = new CacheEntry();
-            entry.icon = LauncherIcons.createBadgedIconBitmap(
-                    mIconProvider.getIcon(app, mIconDpi), app.getUser(),
+            entry.icon = LauncherIcons.createBadgedIconBitmap(getFullResIcon(app), app.getUser(),
                     mContext);
         }
         entry.title = app.getLabel();
@@ -535,8 +538,7 @@ public class IconCache {
 
                 if (info != null) {
                     entry.icon = LauncherIcons.createBadgedIconBitmap(
-                            mIconProvider.getIcon(info, mIconDpi), info.getUser(),
-                            mContext);
+                            getFullResIcon(info), info.getUser(), mContext);
                 } else {
                     if (usePackageIcon) {
                         CacheEntry packageEntry = getEntryForPackageLocked(

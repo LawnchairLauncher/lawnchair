@@ -86,6 +86,7 @@ import com.android.launcher3.allapps.DefaultAppSearchController;
 import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.compat.PinItemRequestCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.ProviderConfig;
@@ -96,6 +97,7 @@ import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.keyboard.CustomActionsPopup;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logging.FileLog;
@@ -105,6 +107,7 @@ import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.DeepShortcutsContainer;
+import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -118,6 +121,7 @@ import com.android.launcher3.util.PendingRequestArgs;
 import com.android.launcher3.util.TestingUtils;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.ViewOnDrawExecutor;
+import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetsContainerView;
@@ -1430,19 +1434,42 @@ public class Launcher extends BaseActivity
         int[] cellXY = mTmpAddItemCellCoordinates;
         CellLayout layout = getCellLayout(container, screenId);
 
-        ShortcutInfo info = InstallShortcutReceiver.fromShortcutIntent(this, data);
-        if (info == null || args.getRequestCode() != REQUEST_CREATE_SHORTCUT ||
+        if (args.getRequestCode() != REQUEST_CREATE_SHORTCUT ||
                 args.getPendingIntent().getComponent() == null) {
             return;
         }
-        if (!PackageManagerHelper.hasPermissionForActivity(
-                this, info.intent, args.getPendingIntent().getComponent().getPackageName())) {
-            // The app is trying to add a shortcut without sufficient permissions
-            Log.e(TAG, "Ignoring malicious intent " + info.intent.toUri(0));
-            return;
-        }
-        final View view = createShortcut(info);
 
+        ShortcutInfo info = null;
+        if (Utilities.isAtLeastO()) {
+            PinItemRequestCompat request = PinItemRequestCompat.getPinItemRequest(data);
+            // request.accept will initiate a shortcutChanged callback. To ensure that the model is
+            // consistent, that callback must be processed by the model, after the ShortcutInfo is
+            // added to the model. This is guaranteed here the callback comes on the UI thread, and
+            // we will add the shortcut on the UI thread as well.
+            if (request != null &&
+                    request.getRequestType() == PinItemRequestCompat.REQUEST_TYPE_SHORTCUT &&
+                    request.isValid() && request.accept()) {
+                ShortcutInfoCompat compat = new ShortcutInfoCompat(request.getShortcutInfo());
+                info = new ShortcutInfo(compat, this);
+                // Apply the unbadged icon and fetch the actual icon asynchronously.
+                info.iconBitmap = LauncherIcons
+                        .createShortcutIcon(compat, this, false /* badged */);
+                getModel().updateAndBindShortcutInfo(info, compat);
+            }
+        }
+
+        if (info == null) {
+            info = InstallShortcutReceiver.fromShortcutIntent(this, data);
+
+            if (info == null || !PackageManagerHelper.hasPermissionForActivity(
+                    this, info.intent, args.getPendingIntent().getComponent().getPackageName())) {
+                // The app is trying to add a shortcut without sufficient permissions
+                Log.e(TAG, "Ignoring malicious intent " + info.intent.toUri(0));
+                return;
+            }
+        }
+
+        final View view = createShortcut(info);
         boolean foundCellSpan = false;
         // First we check if we already know the exact location where we want to add this item.
         if (cellX >= 0 && cellY >= 0) {
@@ -2025,7 +2052,7 @@ public class Launcher extends BaseActivity
                 addAppWidgetFromDrop((PendingAddWidgetInfo) info);
                 break;
             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                processShortcutFromDrop(info);
+                processShortcutFromDrop((PendingAddShortcutInfo) info);
                 break;
             default:
                 throw new IllegalStateException("Unknown item type: " + info.itemType);
@@ -2035,10 +2062,12 @@ public class Launcher extends BaseActivity
     /**
      * Process a shortcut drop.
      */
-    private void processShortcutFromDrop(PendingAddItemInfo info) {
+    private void processShortcutFromDrop(PendingAddShortcutInfo info) {
         Intent intent = new Intent(Intent.ACTION_CREATE_SHORTCUT).setComponent(info.componentName);
         setWaitingForResult(PendingRequestArgs.forIntent(REQUEST_CREATE_SHORTCUT, intent, info));
-        Utilities.startActivityForResultSafely(this, intent, REQUEST_CREATE_SHORTCUT);
+        if (!info.activityInfo.startConfigActivity(this, REQUEST_CREATE_SHORTCUT)) {
+            handleActivityResult(REQUEST_CREATE_SHORTCUT, RESULT_CANCELED, null);
+        }
     }
 
     /**

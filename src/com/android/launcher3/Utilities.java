@@ -16,9 +16,7 @@
 
 package com.android.launcher3;
 
-import android.app.Activity;
 import android.app.WallpaperManager;
-import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -53,7 +51,6 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
-import android.widget.Toast;
 
 import com.android.launcher3.config.ProviderConfig;
 
@@ -260,20 +257,6 @@ public final class Utilities {
             r.bottom -= deltaY;
         }
         return scale;
-    }
-
-    public static void startActivityForResultSafely(
-            Activity activity, Intent intent, int requestCode) {
-        try {
-            activity.startActivityForResult(intent, requestCode);
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(activity, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
-        } catch (SecurityException e) {
-            Toast.makeText(activity, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Launcher does not have the permission to launch " + intent +
-                    ". Make sure to create a MAIN intent-filter for the corresponding activity " +
-                    "or use the exported attribute for this activity.", e);
-        }
     }
 
     static boolean isSystemApp(Context context, Intent intent) {
