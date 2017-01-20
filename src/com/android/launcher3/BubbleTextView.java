@@ -44,6 +44,7 @@ import com.android.launcher3.badge.BadgeRenderer;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.graphics.HolographicOutlineHelper;
+import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.model.PackageItemInfo;
 
 import java.text.NumberFormat;
@@ -512,6 +513,11 @@ public class BubbleTextView extends TextView
             BadgeRenderer badgeRenderer = mLauncher.getDeviceProfile().mBadgeRenderer;
             ((FastBitmapDrawable) mIcon).applyIconBadge(badgeInfo, badgeRenderer);
         }
+    }
+
+    public IconPalette getIconPalette() {
+        return mIcon instanceof FastBitmapDrawable ? ((FastBitmapDrawable) mIcon).getIconPalette()
+                : null;
     }
 
     private Theme getPreloaderTheme() {

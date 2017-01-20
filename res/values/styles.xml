@@ -112,6 +112,26 @@
         <item name="iconSizeOverride">@dimen/deep_shortcut_icon_size</item>
     </style>
 
+    <style name="Icon.DeepNotification">
+        <item name="android:gravity">start</item>
+        <item name="android:textAlignment">viewStart</item>
+        <item name="android:elevation">@dimen/deep_shortcuts_elevation</item>
+        <item name="android:textColor">#FF212121</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:shadowRadius">0</item>
+        <item name="customShadows">false</item>
+        <item name="layoutHorizontal">true</item>
+        <item name="iconDisplay">shortcut_popup</item>
+        <item name="iconSizeOverride">@dimen/deep_shortcut_icon_size</item>
+    </style>
+
+    <style name="Icon.DeepNotification.SubText">
+        <item name="android:textColor">#FF757575</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:paddingEnd">4dp</item>
+    </style>
+
     <!-- Drop targets -->
     <style name="DropTargetButtonBase">
         <item name="android:drawablePadding">7.5dp</item>

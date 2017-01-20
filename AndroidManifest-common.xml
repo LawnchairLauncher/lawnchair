@@ -76,7 +76,7 @@
             android:process=":wallpaper_chooser">
         </service>
 
-        <service android:name="com.android.launcher3.badging.NotificationListener"
+        <service android:name="com.android.launcher3.notification.NotificationListener"
                  android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />

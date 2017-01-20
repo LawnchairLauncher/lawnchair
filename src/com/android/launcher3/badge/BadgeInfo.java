@@ -16,6 +16,7 @@
 
 package com.android.launcher3.badge;
 
+import com.android.launcher3.notification.NotificationInfo;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.util.HashSet;

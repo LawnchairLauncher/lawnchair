@@ -23,7 +23,7 @@ import android.util.Log;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.badge.BadgeInfo;
-import com.android.launcher3.badge.NotificationListener;
+import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.MultiHashMap;
@@ -75,6 +75,11 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
                 mPackageUserToBadgeInfos.remove(removedPackageUserKey);
             }
             mLauncher.updateIconBadges(Collections.singleton(removedPackageUserKey));
+
+            PopupContainerWithArrow openContainer = PopupContainerWithArrow.getOpen(mLauncher);
+            if (openContainer != null) {
+                openContainer.trimNotifications(mPackageUserToBadgeInfos);
+            }
         }
     }
 
@@ -110,6 +115,11 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         if (!updatedBadges.isEmpty()) {
             mLauncher.updateIconBadges(updatedBadges.keySet());
         }
+
+        PopupContainerWithArrow openContainer = PopupContainerWithArrow.getOpen(mLauncher);
+        if (openContainer != null) {
+            openContainer.trimNotifications(updatedBadges);
+        }
     }
 
     public void setDeepShortcutMap(MultiHashMap<ComponentKey, String> deepShortcutMapCopy) {
@@ -140,6 +150,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
 
     public String[] getNotificationKeysForItem(ItemInfo info) {
         BadgeInfo badgeInfo = mPackageUserToBadgeInfos.get(PackageUserKey.fromItemInfo(info));
+        if (badgeInfo == null) { return new String[0]; }
         Set<String> notificationKeys = badgeInfo.getNotificationKeys();
         return notificationKeys.toArray(new String[notificationKeys.size()]);
     }

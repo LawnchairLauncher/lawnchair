@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.badge;
+package com.android.launcher3.notification;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -44,26 +44,28 @@ public class NotificationInfo implements View.OnClickListener {
     public final Drawable iconDrawable;
     public final PendingIntent intent;
     public final boolean autoCancel;
+    public final boolean dismissable;
 
     /**
      * Extracts the data that we need from the StatusBarNotification.
      */
-    public NotificationInfo(Context context, StatusBarNotification notification) {
-        packageUserKey = PackageUserKey.fromNotification(notification);
-        notificationKey = notification.getKey();
-        title = notification.getNotification().extras.getCharSequence(Notification.EXTRA_TITLE);
-        text = notification.getNotification().extras.getCharSequence(Notification.EXTRA_TEXT);
-        Icon icon = notification.getNotification().getLargeIcon();
+    public NotificationInfo(Context context, StatusBarNotification statusBarNotification) {
+        packageUserKey = PackageUserKey.fromNotification(statusBarNotification);
+        notificationKey = statusBarNotification.getKey();
+        Notification notification = statusBarNotification.getNotification();
+        title = notification.extras.getCharSequence(Notification.EXTRA_TITLE);
+        text = notification.extras.getCharSequence(Notification.EXTRA_TEXT);
+        Icon icon = notification.getLargeIcon();
         if (icon == null) {
-            icon = notification.getNotification().getSmallIcon();
+            icon = notification.getSmallIcon();
             iconDrawable = icon.loadDrawable(context);
-            iconDrawable.setTint(notification.getNotification().color);
+            iconDrawable.setTint(statusBarNotification.getNotification().color);
         } else {
             iconDrawable = icon.loadDrawable(context);
         }
-        intent = notification.getNotification().contentIntent;
-        autoCancel = (notification.getNotification().flags
-                & Notification.FLAG_AUTO_CANCEL) != 0;
+        intent = notification.contentIntent;
+        autoCancel = (notification.flags & Notification.FLAG_AUTO_CANCEL) != 0;
+        dismissable = (notification.flags & Notification.FLAG_ONGOING_EVENT) == 0;
     }
 
     @Override

@@ -26,16 +26,18 @@ public class IconPalette {
 
     public int backgroundColor;
     public int textColor;
+    public int secondaryColor;
 
     public static IconPalette fromDominantColor(int dominantColor) {
         IconPalette palette = new IconPalette();
         palette.backgroundColor = getMutedColor(dominantColor);
         palette.textColor = getTextColorForBackground(palette.backgroundColor);
+        palette.secondaryColor = getLowContrastColor(palette.backgroundColor);
         return palette;
     }
 
     private static int getMutedColor(int color) {
-        int alpha = (int) (255 * 0.2f);
+        int alpha = (int) (255 * 0.15f);
         return ColorUtils.compositeColors(ColorUtils.setAlphaComponent(color, alpha), Color.WHITE);
     }
 

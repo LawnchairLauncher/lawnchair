@@ -20,6 +20,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -70,6 +71,10 @@ public abstract class PopupItemView extends FrameLayout
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         mPillRect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
+    }
+
+    protected ColorStateList getAttachedArrowColor() {
+        return getBackgroundTintList();
     }
 
     public boolean willDrawIcon() {
@@ -158,7 +163,8 @@ public abstract class PopupItemView extends FrameLayout
 
         public ZoomRevealOutlineProvider(int x, int y, Rect pillRect,
                 View translateView, View zoomView, boolean isContainerAboveIcon, boolean pivotLeft) {
-            super(x, y, pillRect);
+            super(x, y, pillRect, zoomView.getResources().getDimensionPixelSize(
+                    R.dimen.bg_pill_radius));
             mTranslateView = translateView;
             mZoomView = zoomView;
             mFullHeight = pillRect.height();

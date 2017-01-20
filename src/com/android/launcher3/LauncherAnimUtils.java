@@ -23,7 +23,9 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.util.Property;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.ViewAnimator;
 
 import java.util.HashSet;
 import java.util.WeakHashMap;
@@ -125,6 +127,20 @@ public class LauncherAnimUtils {
         ObjectAnimator anim = ObjectAnimator.ofPropertyValuesHolder(target, values);
         cancelOnDestroyActivity(anim);
         new FirstFrameAnimatorHelper(anim, view);
+        return anim;
+    }
+
+    public static ValueAnimator animateViewHeight(final View v, int fromHeight, int toHeight) {
+        ValueAnimator anim = ValueAnimator.ofInt(fromHeight, toHeight);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                int val = (Integer) valueAnimator.getAnimatedValue();
+                ViewGroup.LayoutParams layoutParams = v.getLayoutParams();
+                layoutParams.height = val;
+                v.setLayoutParams(layoutParams);
+            }
+        });
         return anim;
     }
 }

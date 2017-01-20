@@ -172,9 +172,22 @@
 <!-- Icon badges (with notification counts) -->
     <dimen name="badge_size">24dp</dimen>
     <dimen name="badge_text_size">12dp</dimen>
+    <dimen name="notification_icon_size">28dp</dimen>
+    <dimen name="notification_footer_icon_size">24dp</dimen>
+    <!-- (icon_size - secondary_icon_size) / 2 -->
+
+<!-- Notifications -->
+    <dimen name="notification_footer_icon_row_padding">2dp</dimen>
+    <dimen name="notification_icon_margin_start">8dp</dimen>
+    <dimen name="notification_text_margin_start">8dp</dimen>
+    <dimen name="notification_footer_height">36dp</dimen>
+    <!-- The height to use when there are no icons in the footer -->
+    <dimen name="notification_footer_collapsed_height">@dimen/bg_pill_radius</dimen>
+    <dimen name="notification_elevation">2dp</dimen>
+    <dimen name="notification_divider_height">0.5dp</dimen>
+    <dimen name="swipe_helper_falsing_threshold">70dp</dimen>
 
 <!-- Other -->
     <!-- Approximates the system status bar height. Not guaranteed to be always be correct. -->
     <dimen name="status_bar_height">24dp</dimen>
-
 </resources>

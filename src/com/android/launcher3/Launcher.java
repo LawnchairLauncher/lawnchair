@@ -85,7 +85,7 @@ import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DefaultAppSearchController;
 import com.android.launcher3.anim.AnimationLayerSet;
-import com.android.launcher3.badge.NotificationListener;
+import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;

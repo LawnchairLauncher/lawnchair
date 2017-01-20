@@ -28,6 +28,7 @@ public class PillRevealOutlineProvider extends RevealOutlineAnimation {
 
     private int mCenterX;
     private int mCenterY;
+    private float mFinalRadius;
     protected Rect mPillRect;
 
     /**
@@ -36,10 +37,14 @@ public class PillRevealOutlineProvider extends RevealOutlineAnimation {
      * @param pillRect round rect that represents the final pill shape
      */
     public PillRevealOutlineProvider(int x, int y, Rect pillRect) {
+        this(x, y, pillRect, pillRect.height() / 2f);
+    }
+
+    public PillRevealOutlineProvider(int x, int y, Rect pillRect, float radius) {
         mCenterX = x;
         mCenterY = y;
         mPillRect = pillRect;
-        mOutlineRadius = pillRect.height() / 2f;
+        mOutlineRadius = mFinalRadius = radius;
     }
 
     @Override
@@ -58,6 +63,6 @@ public class PillRevealOutlineProvider extends RevealOutlineAnimation {
         mOutline.top = Math.max(mPillRect.top, mCenterY - currentSize);
         mOutline.right = Math.min(mPillRect.right, mCenterX + currentSize);
         mOutline.bottom = Math.min(mPillRect.bottom, mCenterY + currentSize);
-        mOutlineRadius = mOutline.height() / 2;
+        mOutlineRadius = Math.min(mFinalRadius, mOutline.height() / 2);
     }
 }

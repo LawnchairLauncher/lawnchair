@@ -19,12 +19,15 @@ package com.android.launcher3.popup;
 import android.content.ComponentName;
 import android.os.Handler;
 import android.os.UserHandle;
+import android.service.notification.StatusBarNotification;
 import android.support.annotation.VisibleForTesting;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.notification.NotificationInfo;
+import com.android.launcher3.notification.NotificationItemView;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.DeepShortcutView;
@@ -45,7 +48,8 @@ public class PopupPopulator {
     @VisibleForTesting static final int NUM_DYNAMIC = 2;
 
     public enum Item {
-        SHORTCUT(R.layout.deep_shortcut);
+        SHORTCUT(R.layout.deep_shortcut),
+        NOTIFICATION(R.layout.notification);
 
         public final int layoutId;
 
@@ -54,11 +58,17 @@ public class PopupPopulator {
         }
     }
 
-    public static Item[] getItemsToPopulate(List<String> shortcutIds) {
-        int numItems = Math.min(MAX_ITEMS, shortcutIds.size());
+    public static Item[] getItemsToPopulate(List<String> shortcutIds, String[] notificationKeys) {
+        boolean hasNotifications = notificationKeys.length > 0;
+        int numNotificationItems = hasNotifications ? 1 : 0;
+        int numItems = Math.min(MAX_ITEMS, shortcutIds.size() + numNotificationItems);
         Item[] items = new Item[numItems];
         for (int i = 0; i < numItems; i++) {
             items[i] = Item.SHORTCUT;
+        }
+        if (hasNotifications) {
+            // The notification layout is always first.
+            items[0] = Item.NOTIFICATION;
         }
         return items;
     }
@@ -134,12 +144,24 @@ public class PopupPopulator {
 
     public static Runnable createUpdateRunnable(final Launcher launcher, ItemInfo originalInfo,
             final Handler uiHandler, final PopupContainerWithArrow container,
-            final List<String> shortcutIds, final List<DeepShortcutView> shortcutViews) {
+            final List<String> shortcutIds, final List<DeepShortcutView> shortcutViews,
+            final String[] notificationKeys, final NotificationItemView notificationView) {
         final ComponentName activity = originalInfo.getTargetComponent();
         final UserHandle user = originalInfo.user;
         return new Runnable() {
             @Override
             public void run() {
+                if (notificationView != null) {
+                    List<StatusBarNotification> notifications = launcher.getPopupDataProvider()
+                            .getStatusBarNotificationsForKeys(notificationKeys);
+                    List<NotificationInfo> infos = new ArrayList<>(notifications.size());
+                    for (int i = 0; i < notifications.size(); i++) {
+                        StatusBarNotification notification = notifications.get(i);
+                        infos.add(new NotificationInfo(launcher, notification));
+                    }
+                    uiHandler.post(new UpdateNotificationChild(notificationView, infos));
+                }
+
                 final List<ShortcutInfoCompat> shortcuts = PopupPopulator.sortAndFilterShortcuts(
                         DeepShortcutManager.getInstance(launcher).queryForShortcutsContainer(
                                 activity, shortcutIds, user));
@@ -174,6 +196,23 @@ public class PopupPopulator {
         @Override
         public void run() {
             mShortcutChild.applyShortcutInfo(mShortcutChildInfo, mDetail, mContainer);
+        }
+    }
+
+    /** Updates the child of this container at the given index based on the given shortcut info. */
+    private static class UpdateNotificationChild implements Runnable {
+        private NotificationItemView mNotificationView;
+        private List<NotificationInfo> mNotificationInfos;
+
+        public UpdateNotificationChild(NotificationItemView notificationView,
+                List<NotificationInfo> notificationInfos) {
+            mNotificationView = notificationView;
+            mNotificationInfos = notificationInfos;
+        }
+
+        @Override
+        public void run() {
+            mNotificationView.applyNotificationInfos(mNotificationInfos);
         }
     }
 }

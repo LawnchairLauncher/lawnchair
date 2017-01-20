@@ -129,10 +129,7 @@ public class FastBitmapDrawable extends Drawable {
         mBadgeInfo = badgeInfo;
         mBadgeRenderer = badgeRenderer;
         if (wasBadged || isBadged) {
-            if (mBadgeInfo != null && mIconPalette == null) {
-                mIconPalette = IconPalette.fromDominantColor(Utilities
-                        .findDominantColorByHue(mBitmap, 20));
-            }
+            mIconPalette = getIconPalette();
             invalidateSelf();
         }
     }
@@ -159,6 +156,14 @@ public class FastBitmapDrawable extends Drawable {
         if (hasBadge()) {
             mBadgeRenderer.draw(canvas, mIconPalette, mBadgeInfo, getBounds());
         }
+    }
+
+    public IconPalette getIconPalette() {
+        if (mIconPalette == null) {
+            mIconPalette = IconPalette.fromDominantColor(Utilities
+                    .findDominantColorByHue(mBitmap, 20));
+        }
+        return mIconPalette;
     }
 
     private boolean hasBadge() {

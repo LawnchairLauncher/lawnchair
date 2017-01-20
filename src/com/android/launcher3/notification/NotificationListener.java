@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.badge;
+package com.android.launcher3.notification;
 
 import android.app.Notification;
 import android.os.Handler;
@@ -24,6 +24,7 @@ import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
+import android.util.Log;
 
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.config.FeatureFlags;
