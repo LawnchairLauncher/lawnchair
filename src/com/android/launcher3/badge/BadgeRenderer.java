@@ -61,7 +61,7 @@ public class BadgeRenderer {
         mBackgroundRect.set(iconBounds.right - size, iconBounds.top, iconBounds.right,
                 iconBounds.top + size);
         canvas.drawOval(mBackgroundRect, mBackgroundPaint);
-        String notificationCount = badgeInfo.getNotificationCount();
+        String notificationCount = String.valueOf(badgeInfo.getNotificationCount());
         canvas.drawText(notificationCount,
                 mBackgroundRect.centerX(),
                 mBackgroundRect.centerY() + mTextHeight / 2,

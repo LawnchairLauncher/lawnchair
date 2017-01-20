@@ -78,6 +78,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.MultiStateAlphaController;
+import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.VerticalFlingDetector;
 import com.android.launcher3.util.WallpaperOffsetInterpolator;
@@ -86,6 +87,7 @@ import com.android.launcher3.widget.PendingAddWidgetInfo;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
@@ -3950,6 +3952,23 @@ public class Workspace extends PagedView
             public boolean evaluate(ItemInfo info, View v) {
                 if (info instanceof FolderInfo && folderIds.contains(info.id)) {
                     ((FolderInfo) info).itemsChanged(false);
+                }
+                // process all the shortcuts
+                return false;
+            }
+        });
+    }
+
+    public void updateIconBadges(final Set<PackageUserKey> updatedBadges) {
+        final PackageUserKey packageUserKey = new PackageUserKey(null, null);
+        mapOverItems(MAP_RECURSE, new ItemOperator() {
+            @Override
+            public boolean evaluate(ItemInfo info, View v) {
+                if (info instanceof ShortcutInfo && v instanceof BubbleTextView) {
+                    packageUserKey.updateFromItemInfo(info);
+                    if (updatedBadges.contains(packageUserKey)) {
+                        ((BubbleTextView) v).applyBadgeState(info);
+                    }
                 }
                 // process all the shortcuts
                 return false;

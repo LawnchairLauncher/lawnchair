@@ -39,4 +39,6 @@ public final class FeatureFlags {
     public static final boolean LIGHT_STATUS_BAR = false;
     // When enabled allows to use any point on the fast scrollbar to start dragging.
     public static final boolean LAUNCHER3_DIRECT_SCROLL = true;
+    // When enabled icons are badged with the number of notifications associated with that app.
+    public static final boolean BADGE_ICONS = true;
 }
