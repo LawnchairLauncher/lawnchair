@@ -144,12 +144,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         }
     }
 
-    public int[] getPreviewSize() {
-        int[] maxSize = new int[2];
-
-        maxSize[0] = mPresetPreviewSize;
-        maxSize[1] = mPresetPreviewSize;
-        return maxSize;
+    public WidgetImageView getWidgetView() {
+        return mWidgetImage;
     }
 
     public void applyPreview(Bitmap bitmap) {
@@ -166,12 +162,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         if (mActiveRequest != null) {
             return;
         }
-        int[] size = getPreviewSize();
-        if (DEBUG) {
-            Log.d(TAG, String.format("[tag=%s] ensurePreview (%d, %d):",
-                    getTagToString(), size[0], size[1]));
-        }
-        mActiveRequest = mWidgetPreviewLoader.getPreview(mItem, size[0], size[1], this);
+        mActiveRequest = mWidgetPreviewLoader.getPreview(
+                mItem, mPresetPreviewSize, mPresetPreviewSize, this);
     }
 
     @Override

@@ -21,13 +21,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
  * A wrapper around platform implementation of PinItemRequestCompat until the
  * updated SDK is available.
  */
-public class PinItemRequestCompat {
+public class PinItemRequestCompat implements Parcelable {
 
     public static final String EXTRA_PIN_ITEM_REQUEST = "android.content.pm.extra.PIN_ITEM_REQUEST";
 
@@ -82,6 +83,32 @@ public class PinItemRequestCompat {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeParcelable(mObject, i);
+    }
+
+    public Intent toIntent() {
+        return new Intent().putExtra(EXTRA_PIN_ITEM_REQUEST, mObject);
+    }
+
+    public static final Parcelable.Creator<PinItemRequestCompat> CREATOR =
+            new Parcelable.Creator<PinItemRequestCompat>() {
+                public PinItemRequestCompat createFromParcel(Parcel source) {
+                    Parcelable object = source.readParcelable(null);
+                    return new PinItemRequestCompat(object);
+                }
+
+                public PinItemRequestCompat[] newArray(int size) {
+                    return new PinItemRequestCompat[size];
+                }
+            };
 
     public static PinItemRequestCompat getPinItemRequest(Intent intent) {
         Parcelable extra = intent.getParcelableExtra(EXTRA_PIN_ITEM_REQUEST);

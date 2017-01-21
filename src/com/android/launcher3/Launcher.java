@@ -49,6 +49,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.os.Process;
 import android.os.StrictMode;
 import android.os.SystemClock;
@@ -94,6 +95,7 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.dragndrop.PinItemDragListener;
 import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
@@ -826,7 +828,7 @@ public class Launcher extends BaseActivity
     }
 
     @Override
-    protected void onActivityResult(
+    public void onActivityResult(
             final int requestCode, final int resultCode, final Intent data) {
         handleActivityResult(requestCode, resultCode, data);
         if (mLauncherCallbacks != null) {
@@ -1751,6 +1753,14 @@ public class Launcher extends BaseActivity
 
             if (mLauncherCallbacks != null) {
                 mLauncherCallbacks.onHomeIntent();
+            }
+
+            Parcelable dragExtra = intent
+                    .getParcelableExtra(PinItemDragListener.EXTRA_PIN_ITEM_DRAG_LISTENER);
+            if (dragExtra instanceof PinItemDragListener) {
+                PinItemDragListener dragListener = (PinItemDragListener) dragExtra;
+                dragListener.setLauncher(this);
+                mDragLayer.setOnDragListener(dragListener);
             }
         }
 

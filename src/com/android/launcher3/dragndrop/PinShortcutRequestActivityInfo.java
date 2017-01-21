@@ -26,7 +26,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 
 import com.android.launcher3.IconCache;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.compat.PinItemRequestCompat;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
 
 /**
@@ -40,12 +42,15 @@ class PinShortcutRequestActivityInfo extends ShortcutConfigActivityInfo {
     // actual existing class.
     private static final String DUMMY_COMPONENT_CLASS = "pinned-shortcut";
 
+    private final PinItemRequestCompat mRequest;
     private final ShortcutInfo mInfo;
     private final Context mContext;
 
-    public PinShortcutRequestActivityInfo(ShortcutInfo info, Context context) {
-        super(new ComponentName(info.getPackage(), DUMMY_COMPONENT_CLASS), info.getUserHandle());
-        mInfo = info;
+    public PinShortcutRequestActivityInfo(PinItemRequestCompat request, Context context) {
+        super(new ComponentName(request.getShortcutInfo().getPackage(), DUMMY_COMPONENT_CLASS),
+                request.getShortcutInfo().getUserHandle());
+        mRequest = request;
+        mInfo = request.getShortcutInfo();
         mContext = context;
     }
 
@@ -61,8 +66,9 @@ class PinShortcutRequestActivityInfo extends ShortcutConfigActivityInfo {
     }
 
     @Override
-    public boolean startConfigActivity(Activity activity, int requestCode) {
-        throw new RuntimeException("Not supported");
+    public boolean startConfigActivity(Launcher activity, int requestCode) {
+        activity.onActivityResult(requestCode, Activity.RESULT_OK, mRequest.toIntent());
+        return true;
     }
 
     @Override
