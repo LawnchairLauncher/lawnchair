@@ -50,7 +50,7 @@ public abstract class ShortcutConfigActivityInfo {
     private final ComponentName mCn;
     private final UserHandle mUser;
 
-    private ShortcutConfigActivityInfo(ComponentName cn, UserHandle user) {
+    protected ShortcutConfigActivityInfo(ComponentName cn, UserHandle user) {
         mCn = cn;
         mUser = user;
     }
@@ -82,6 +82,14 @@ public abstract class ShortcutConfigActivityInfo {
                     "or use the exported attribute for this activity.", e);
         }
         return false;
+    }
+
+    /**
+     * Returns true if various properties ({@link #getLabel()}, {@link #getFullResIcon}) can
+     * be safely persisted.
+     */
+    public boolean isPersistable() {
+        return true;
     }
 
     static class ShortcutConfigActivityInfoVL extends ShortcutConfigActivityInfo {

@@ -22,7 +22,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.LauncherAppState;
@@ -124,11 +123,6 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
                 // set up touch.
                 widget.setOnClickListener(mIconClickListener);
                 widget.setOnLongClickListener(mIconLongClickListener);
-                LayoutParams lp = widget.getLayoutParams();
-                lp.height = widget.cellSize;
-                lp.width = widget.cellSize;
-                widget.setLayoutParams(lp);
-
                 row.addView(widget);
             }
         } else if (diff < 0) {

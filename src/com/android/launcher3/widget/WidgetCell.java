@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLayoutChangeListener;
+import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -60,7 +61,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     private static final float PREVIEW_SCALE = 0.8f;
 
     private int mPresetPreviewSize;
-    int cellSize;
+    private int mCellSize;
 
     private WidgetImageView mWidgetImage;
     private TextView mWidgetName;
@@ -96,8 +97,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
     private void setContainerWidth() {
         DeviceProfile profile = mActivity.getDeviceProfile();
-        cellSize = (int) (profile.cellWidthPx * WIDTH_SCALE);
-        mPresetPreviewSize = (int) (cellSize * PREVIEW_SCALE);
+        mCellSize = (int) (profile.cellWidthPx * WIDTH_SCALE);
+        mPresetPreviewSize = (int) (mCellSize * PREVIEW_SCALE);
     }
 
     @Override
@@ -198,6 +199,12 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             return getTag().toString();
         }
         return "";
+    }
+
+    @Override
+    public void setLayoutParams(ViewGroup.LayoutParams params) {
+        params.width = params.height = mCellSize;
+        super.setLayoutParams(params);
     }
 
     @Override

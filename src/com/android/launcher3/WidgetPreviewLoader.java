@@ -592,7 +592,10 @@ public class WidgetPreviewLoader {
                 // Fetch the version info before we generate the preview, so that, in-case the
                 // app was updated while we are generating the preview, we use the old version info,
                 // which would gets re-written next time.
-                mVersions = getPackageVersion(mKey.componentName.getPackageName());
+                boolean persistable = mInfo.activityInfo == null
+                        || mInfo.activityInfo.isPersistable();
+                mVersions = persistable ? getPackageVersion(mKey.componentName.getPackageName())
+                        : null;
 
                 // it's not in the db... we need to generate it
                 preview = generatePreview(mActivity, mInfo, unusedBitmap, mPreviewWidth, mPreviewHeight);

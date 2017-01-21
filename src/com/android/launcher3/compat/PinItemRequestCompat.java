@@ -17,6 +17,7 @@
 package com.android.launcher3.compat;
 
 import android.appwidget.AppWidgetProviderInfo;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
 import android.os.Bundle;
@@ -47,8 +48,14 @@ public class PinItemRequestCompat {
         return (ShortcutInfo) invokeMethod("getShortcutInfo");
     }
 
-    public AppWidgetProviderInfo getAppWidgetProviderInfo() {
-        return (AppWidgetProviderInfo) invokeMethod("getAppWidgetProviderInfo");
+    public AppWidgetProviderInfo getAppWidgetProviderInfo(Context context) {
+        try {
+            return (AppWidgetProviderInfo) mObject.getClass()
+                    .getDeclaredMethod("getAppWidgetProviderInfo", Context.class)
+                    .invoke(mObject, context);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public boolean isValid() {
