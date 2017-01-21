@@ -95,7 +95,7 @@
     <string name="create_folder_with" msgid="4050141361160214248">"এর সাথে ফোল্ডার তৈরি করুন: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"ফোল্ডার তৈরি করা হয়েছে"</string>
     <string name="action_move_to_workspace" msgid="1603837886334246317">"হোম স্ক্রীনে সরান"</string>
-    <string name="action_move_screen_left" msgid="8854216831569401665">"স্ক্রীন বাম দিকে সরান"</string>
+    <string name="action_move_screen_left" msgid="8854216831569401665">"স্ক্রীন বাঁ দিকে সরান"</string>
     <string name="action_move_screen_right" msgid="329334910274311123">"স্ক্রীন ডান দিকে সরান"</string>
     <string name="screen_moved" msgid="266230079505650577">"স্ক্রীন সরানো হয়েছে"</string>
     <string name="action_resize" msgid="1802976324781771067">"পুনরায় আকার দিন"</string>
