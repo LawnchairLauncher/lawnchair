@@ -123,6 +123,7 @@ import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
+import com.android.launcher3.widget.WidgetAddFlowHandler;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetsContainerView;
 
@@ -683,8 +684,9 @@ public class Launcher extends BaseActivity
                     // Since the view was just bound, also launch the configure activity if needed
                     LauncherAppWidgetProviderInfo provider = mAppWidgetManager
                             .getLauncherAppWidgetInfo(widgetId);
-                    if (provider != null && provider.configure != null) {
-                        startRestoredWidgetReconfigActivity(provider, widgetInfo);
+                    if (provider != null) {
+                        new WidgetAddFlowHandler(provider)
+                                .startConfigActivity(this, widgetInfo, REQUEST_RECONFIGURE_APPWIDGET);
                     }
                 }
                 break;
@@ -731,7 +733,7 @@ public class Launcher extends BaseActivity
             } else if (resultCode == RESULT_OK) {
                 addAppWidgetImpl(
                         appWidgetId, requestArgs, null,
-                        requestArgs.getWidgetProvider(this),
+                        requestArgs.getWidgetHandler(),
                         ON_ACTIVITY_RESULT_ANIMATION_DELAY);
             }
             return;
@@ -890,7 +892,7 @@ public class Launcher extends BaseActivity
         if (resultCode == RESULT_OK) {
             animationType = Workspace.COMPLETE_TWO_STAGE_WIDGET_DROP_ANIMATION;
             final AppWidgetHostView layout = mAppWidgetHost.createView(this, appWidgetId,
-                    requestArgs.getWidgetProvider(this));
+                    requestArgs.getWidgetHandler().getProviderInfo(this));
             boundWidget = layout;
             onCompleteRunnable = new Runnable() {
                 @Override
@@ -1983,7 +1985,7 @@ public class Launcher extends BaseActivity
         }
     }
 
-    private void setWaitingForResult(PendingRequestArgs args) {
+    public void setWaitingForResult(PendingRequestArgs args) {
         boolean isLocked = isWorkspaceLocked();
         mPendingRequestArgs = args;
         if (isLocked != isWorkspaceLocked()) {
@@ -1998,24 +2000,18 @@ public class Launcher extends BaseActivity
     }
 
     void addAppWidgetFromDropImpl(int appWidgetId, ItemInfo info, AppWidgetHostView boundWidget,
-            LauncherAppWidgetProviderInfo appWidgetInfo) {
+            WidgetAddFlowHandler addFlowHandler) {
         if (LOGD) {
             Log.d(TAG, "Adding widget from drop");
         }
-        addAppWidgetImpl(appWidgetId, info, boundWidget, appWidgetInfo, 0);
+        addAppWidgetImpl(appWidgetId, info, boundWidget, addFlowHandler, 0);
     }
 
     void addAppWidgetImpl(int appWidgetId, ItemInfo info,
-            AppWidgetHostView boundWidget, LauncherAppWidgetProviderInfo appWidgetInfo,
-            int delay) {
-        if (appWidgetInfo.configure != null) {
-            setWaitingForResult(PendingRequestArgs.forWidgetInfo(appWidgetId, appWidgetInfo, info));
+            AppWidgetHostView boundWidget, WidgetAddFlowHandler addFlowHandler, int delay) {
+        if (!addFlowHandler.startConfigActivity(this, appWidgetId, info, REQUEST_CREATE_APPWIDGET)) {
+            // If the configuration flow was not started, add the widget
 
-            // Launch over to configure widget, if needed
-            mAppWidgetManager.startConfigActivity(appWidgetInfo, appWidgetId, this,
-                    mAppWidgetHost, REQUEST_CREATE_APPWIDGET);
-        } else {
-            // Otherwise just add it
             Runnable onComplete = new Runnable() {
                 @Override
                 public void run() {
@@ -2024,7 +2020,7 @@ public class Launcher extends BaseActivity
                             null);
                 }
             };
-            completeAddAppWidget(appWidgetId, info, boundWidget, appWidgetInfo);
+            completeAddAppWidget(appWidgetId, info, boundWidget, addFlowHandler.getProviderInfo(this));
             mWorkspace.removeExtraEmptyScreenDelayed(true, onComplete, delay, false);
         }
     }
@@ -2076,6 +2072,7 @@ public class Launcher extends BaseActivity
     private void addAppWidgetFromDrop(PendingAddWidgetInfo info) {
         AppWidgetHostView hostView = info.boundWidget;
         int appWidgetId;
+        WidgetAddFlowHandler addFlowHandler = info.getHander();
         if (hostView != null) {
             // In the case where we've prebound the widget, we remove it from the DragLayer
             if (LOGD) {
@@ -2084,7 +2081,7 @@ public class Launcher extends BaseActivity
             getDragLayer().removeView(hostView);
 
             appWidgetId = hostView.getAppWidgetId();
-            addAppWidgetFromDropImpl(appWidgetId, info, hostView, info.info);
+            addAppWidgetFromDropImpl(appWidgetId, info, hostView, addFlowHandler);
 
             // Clear the boundWidget so that it doesn't get destroyed.
             info.boundWidget = null;
@@ -2097,17 +2094,9 @@ public class Launcher extends BaseActivity
             boolean success = mAppWidgetManager.bindAppWidgetIdIfAllowed(
                     appWidgetId, info.info, options);
             if (success) {
-                addAppWidgetFromDropImpl(appWidgetId, info, null, info.info);
+                addAppWidgetFromDropImpl(appWidgetId, info, null, addFlowHandler);
             } else {
-                setWaitingForResult(PendingRequestArgs.forWidgetInfo(appWidgetId, info.info, info));
-                Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
-                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, info.componentName);
-                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER_PROFILE,
-                        info.info.getUser());
-                // TODO: we need to make sure that this accounts for the options bundle.
-                // intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, options);
-                startActivityForResult(intent, REQUEST_BIND_APPWIDGET);
+                addFlowHandler.startBindFlow(this, appWidgetId, info, REQUEST_BIND_APPWIDGET);
             }
         }
     }
@@ -2323,42 +2312,27 @@ public class Launcher extends BaseActivity
 
         final LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) v.getTag();
         if (v.isReadyForClickSetup()) {
+            LauncherAppWidgetProviderInfo appWidgetInfo =
+                    mAppWidgetManager.findProvider(info.providerName, info.user);
+            if (appWidgetInfo == null) {
+                return;
+            }
+            WidgetAddFlowHandler addFlowHandler = new WidgetAddFlowHandler(appWidgetInfo);
+
             if (info.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)) {
                 if (!info.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_ALLOCATED)) {
                     // This should not happen, as we make sure that an Id is allocated during bind.
                     return;
                 }
-                LauncherAppWidgetProviderInfo appWidgetInfo =
-                        mAppWidgetManager.findProvider(info.providerName, info.user);
-                if (appWidgetInfo != null) {
-                    setWaitingForResult(PendingRequestArgs
-                            .forWidgetInfo(info.appWidgetId, appWidgetInfo, info));
-
-                    Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
-                    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, info.appWidgetId);
-                    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, appWidgetInfo.provider);
-                    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER_PROFILE,
-                            appWidgetInfo.getUser());
-                    startActivityForResult(intent, REQUEST_BIND_PENDING_APPWIDGET);
-                }
+                addFlowHandler.startBindFlow(this, info.appWidgetId, info,
+                        REQUEST_BIND_PENDING_APPWIDGET);
             } else {
-                LauncherAppWidgetProviderInfo appWidgetInfo =
-                        mAppWidgetManager.getLauncherAppWidgetInfo(info.appWidgetId);
-                if (appWidgetInfo != null) {
-                    startRestoredWidgetReconfigActivity(appWidgetInfo, info);
-                }
+                addFlowHandler.startConfigActivity(this, info, REQUEST_RECONFIGURE_APPWIDGET);
             }
         } else {
             final String packageName = info.providerName.getPackageName();
             onClickPendingAppItem(v, packageName, info.installProgress >= 0);
         }
-    }
-
-    private void startRestoredWidgetReconfigActivity(
-            LauncherAppWidgetProviderInfo provider, LauncherAppWidgetInfo info) {
-        setWaitingForResult(PendingRequestArgs.forWidgetInfo(info.appWidgetId, provider, info));
-        mAppWidgetManager.startConfigActivity(provider,
-                info.appWidgetId, this, mAppWidgetHost, REQUEST_RECONFIGURE_APPWIDGET);
     }
 
     /**

@@ -51,4 +51,8 @@ public class PendingAddWidgetInfo extends PendingAddItemInfo {
         minSpanX = i.minSpanX;
         minSpanY = i.minSpanY;
     }
+
+    public WidgetAddFlowHandler getHander() {
+        return new WidgetAddFlowHandler(info);
+    }
 }
