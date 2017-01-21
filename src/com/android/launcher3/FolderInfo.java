@@ -93,7 +93,7 @@ public class FolderInfo extends ItemInfo {
     }
 
     @Override
-    void onAddToDatabase(ContentWriter writer) {
+    public void onAddToDatabase(ContentWriter writer) {
         super.onAddToDatabase(writer);
         writer.put(LauncherSettings.Favorites.TITLE, title)
                 .put(LauncherSettings.Favorites.OPTIONS, options);

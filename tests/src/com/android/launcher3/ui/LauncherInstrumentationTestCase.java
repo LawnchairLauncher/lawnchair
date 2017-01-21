@@ -1,13 +1,27 @@
+/*
+ * Copyright (C) 2017 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.android.launcher3.ui;
 
-import android.app.SearchManager;
-import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.os.ParcelFileDescriptor;
+import android.os.Process;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.test.uiautomator.By;
@@ -19,22 +33,23 @@ import android.support.test.uiautomator.Until;
 import android.test.InstrumentationTestCase;
 import android.view.MotionEvent;
 
-import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.testcomponent.AppWidgetNoConfig;
+import com.android.launcher3.testcomponent.AppWidgetWithConfig;
 import com.android.launcher3.util.ManagedProfileHeuristic;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Base class for all instrumentation tests providing various utility methods.
@@ -42,6 +57,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
 
     public static final long DEFAULT_UI_TIMEOUT = 3000;
+    public static final long DEFAULT_WORKER_TIMEOUT_SECS = 5;
 
     protected UiDevice mDevice;
     protected Context mTargetContext;
@@ -233,18 +249,11 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
      * Runs the callback on the UI thread and returns the result.
      */
     protected <T> T getOnUiThread(final Callable<T> callback) {
-        final AtomicReference<T> result = new AtomicReference<>(null);
         try {
-            runTestOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        result.set(callback.call());
-                    } catch (Exception e) { }
-                }
-            });
-        } catch (Throwable t) { }
-        return result.get();
+            return new MainThreadExecutor().submit(callback).get();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -252,35 +261,14 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
      * @param hasConfigureScreen if true, a provider with a config screen is returned.
      */
     protected LauncherAppWidgetProviderInfo findWidgetProvider(final boolean hasConfigureScreen) {
-        LauncherAppWidgetProviderInfo info = getOnUiThread(new Callable<LauncherAppWidgetProviderInfo>() {
+        LauncherAppWidgetProviderInfo info =
+                getOnUiThread(new Callable<LauncherAppWidgetProviderInfo>() {
             @Override
             public LauncherAppWidgetProviderInfo call() throws Exception {
-                InvariantDeviceProfile idv = LauncherAppState.getIDP(mTargetContext);
-
-                ComponentName searchComponent = ((SearchManager) mTargetContext
-                        .getSystemService(Context.SEARCH_SERVICE)).getGlobalSearchActivity();
-                String searchPackage = searchComponent == null
-                        ? null : searchComponent.getPackageName();
-
-                for (AppWidgetProviderInfo info :
-                        AppWidgetManagerCompat.getInstance(mTargetContext).getAllProviders()) {
-                    if ((info.configure != null) ^ hasConfigureScreen) {
-                        continue;
-                    }
-                    // Exclude the widgets in search package, as Launcher already binds them in
-                    // QSB, so they can cause conflicts.
-                    if (info.provider.getPackageName().equals(searchPackage)) {
-                        continue;
-                    }
-                    LauncherAppWidgetProviderInfo widgetInfo = LauncherAppWidgetProviderInfo
-                            .fromProviderInfo(mTargetContext, info);
-                    if (widgetInfo.minSpanX >= idv.numColumns
-                            || widgetInfo.minSpanY >= idv.numRows) {
-                        continue;
-                    }
-                    return widgetInfo;
-                }
-                return null;
+                ComponentName cn = new ComponentName(getInstrumentation().getContext(),
+                        hasConfigureScreen ? AppWidgetWithConfig.class : AppWidgetNoConfig.class);
+                return AppWidgetManagerCompat.getInstance(mTargetContext)
+                        .findProvider(cn, Process.myUserHandle());
             }
         });
         if (info == null) {

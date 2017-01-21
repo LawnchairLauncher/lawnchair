@@ -65,7 +65,7 @@ public class LauncherAppWidgetInfo extends ItemInfo {
     /**
      * Indicates that the widget hasn't been instantiated yet.
      */
-    static final int NO_ID = -1;
+    public static final int NO_ID = -1;
 
     /**
      * Indicates that this is a locally defined widget and hence has no system allocated id.
@@ -126,7 +126,7 @@ public class LauncherAppWidgetInfo extends ItemInfo {
     }
 
     @Override
-    void onAddToDatabase(ContentWriter writer) {
+    public void onAddToDatabase(ContentWriter writer) {
         super.onAddToDatabase(writer);
         writer.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId)
                 .put(LauncherSettings.Favorites.APPWIDGET_PROVIDER, providerName.flattenToString())

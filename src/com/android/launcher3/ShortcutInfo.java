@@ -161,7 +161,7 @@ public class ShortcutInfo extends ItemInfoWithIcon {
     }
 
     @Override
-    void onAddToDatabase(ContentWriter writer) {
+    public void onAddToDatabase(ContentWriter writer) {
         super.onAddToDatabase(writer);
         writer.put(LauncherSettings.BaseLauncherColumns.TITLE, title)
                 .put(LauncherSettings.BaseLauncherColumns.INTENT, getIntent())

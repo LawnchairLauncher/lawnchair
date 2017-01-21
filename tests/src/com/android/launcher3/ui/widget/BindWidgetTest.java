@@ -1,4 +1,19 @@
-package com.android.launcher3;
+/*
+ * Copyright (C) 2017 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package com.android.launcher3.ui.widget;
 
 import android.appwidget.AppWidgetHost;
 import android.content.ComponentName;
@@ -12,10 +27,19 @@ import android.os.Bundle;
 import android.support.test.uiautomator.UiSelector;
 import android.test.suitebuilder.annotation.LargeTest;
 
+import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppWidgetHostView;
+import com.android.launcher3.LauncherAppWidgetInfo;
+import com.android.launcher3.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.LauncherModel;
+import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.PendingAppWidgetHostView;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.ui.LauncherInstrumentationTestCase;
 import com.android.launcher3.util.ContentWriter;
+import com.android.launcher3.util.LooperExecuter;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 
@@ -315,14 +339,11 @@ public class BindWidgetTest extends LauncherInstrumentationTestCase {
     /**
      * Blocks the current thread until all the jobs in the main worker thread are complete.
      */
-    private void waitUntilLoaderIdle() throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
-        LauncherModel.sWorker.post(new Runnable() {
-            @Override
-            public void run() {
-                latch.countDown();
-            }
-        });
-        assertTrue(latch.await(5, TimeUnit.SECONDS));
+    private void waitUntilLoaderIdle() throws Exception {
+        new LooperExecuter(LauncherModel.getWorkerLooper())
+                .submit(new Runnable() {
+                    @Override
+                    public void run() { }
+                }).get(DEFAULT_WORKER_TIMEOUT_SECS, TimeUnit.SECONDS);
     }
 }

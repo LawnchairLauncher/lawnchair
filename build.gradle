@@ -46,11 +46,15 @@ android {
         androidTest {
             java.srcDirs = ['tests/src']
             res.srcDirs = ['tests/res']
-            manifest.srcFile "tests/AndroidManifest.xml"
+            manifest.srcFile "tests/AndroidManifest-common.xml"
         }
 
         aosp {
             manifest.srcFile "AndroidManifest.xml"
+        }
+
+        aospAndroidTest {
+            manifest.srcFile "tests/AndroidManifest.xml"
         }
     }
 }
