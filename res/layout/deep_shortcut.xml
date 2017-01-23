@@ -30,7 +30,7 @@
         android:background="@drawable/bg_pill_focused" />
 
     <View
-        android:id="@+id/deep_shortcut_icon"
+        android:id="@+id/popup_item_icon"
         android:layout_width="@dimen/deep_shortcut_icon_size"
         android:layout_height="@dimen/deep_shortcut_icon_size"
         android:layout_margin="@dimen/deep_shortcut_padding_start"

@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.shortcuts;
+package com.android.launcher3.popup;
 
 import android.content.pm.ShortcutInfo;
 import android.support.test.runner.AndroidJUnit4;
+
+import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,40 +28,41 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.android.launcher3.shortcuts.ShortcutFilter.MAX_SHORTCUTS;
-import static com.android.launcher3.shortcuts.ShortcutFilter.NUM_DYNAMIC;
+import static com.android.launcher3.popup.PopupPopulator.MAX_ITEMS;
+import static com.android.launcher3.popup.PopupPopulator.NUM_DYNAMIC;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Tests the sorting and filtering of shortcuts in {@link ShortcutFilter}.
+ * Tests the sorting and filtering of shortcuts in {@link PopupPopulator}.
  */
 @RunWith(AndroidJUnit4.class)
-public class ShortcutFilterTest {
+public class PopupPopulatorTest {
 
     @Test
     public void testSortAndFilterShortcuts() {
         filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(3, 0), 3, 0);
         filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(0, 3), 0, 3);
-        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(5, 0), MAX_SHORTCUTS, 0);
-        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(0, 5), 0, MAX_SHORTCUTS);
+        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(5, 0), MAX_ITEMS, 0);
+        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(0, 5), 0, MAX_ITEMS);
         filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(3, 3),
-                MAX_SHORTCUTS - NUM_DYNAMIC, NUM_DYNAMIC);
+                MAX_ITEMS - NUM_DYNAMIC, NUM_DYNAMIC);
         filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(5, 5),
-                MAX_SHORTCUTS - NUM_DYNAMIC, NUM_DYNAMIC);
-        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(5, 1), MAX_SHORTCUTS - 1, 1);
-        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(1, 5), 1, MAX_SHORTCUTS - 1);
+                MAX_ITEMS - NUM_DYNAMIC, NUM_DYNAMIC);
+        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(5, 1), MAX_ITEMS - 1, 1);
+        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(1, 5), 1, MAX_ITEMS - 1);
         filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(5, 3),
-                MAX_SHORTCUTS - NUM_DYNAMIC, NUM_DYNAMIC);
+                MAX_ITEMS - NUM_DYNAMIC, NUM_DYNAMIC);
         filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(3, 5),
-                MAX_SHORTCUTS - NUM_DYNAMIC, NUM_DYNAMIC);
+                MAX_ITEMS - NUM_DYNAMIC, NUM_DYNAMIC);
     }
 
     private void filterShortcutsAndAssertNumStaticAndDynamic(
             List<ShortcutInfoCompat> shortcuts, int expectedStatic, int expectedDynamic) {
         Collections.shuffle(shortcuts);
-        List<ShortcutInfoCompat> filteredShortcuts = ShortcutFilter.sortAndFilterShortcuts(shortcuts);
+        List<ShortcutInfoCompat> filteredShortcuts = PopupPopulator.sortAndFilterShortcuts(
+                shortcuts);
         assertIsSorted(filteredShortcuts);
 
         int numStatic = 0;

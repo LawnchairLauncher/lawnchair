@@ -32,11 +32,11 @@ import java.lang.annotation.RetentionPolicy;
  */
 public abstract class AbstractFloatingView extends LinearLayout {
 
-    @IntDef(flag = true, value = {TYPE_FOLDER, TYPE_DEEPSHORTCUT_CONTAINER})
+    @IntDef(flag = true, value = {TYPE_FOLDER, TYPE_POPUP_CONTAINER_WITH_ARROW})
     @Retention(RetentionPolicy.SOURCE)
     public @interface FloatingViewType {}
     public static final int TYPE_FOLDER = 1 << 0;
-    public static final int TYPE_DEEPSHORTCUT_CONTAINER = 1 << 1;
+    public static final int TYPE_POPUP_CONTAINER_WITH_ARROW = 1 << 1;
 
     protected boolean mIsOpen;
 
@@ -119,6 +119,6 @@ public abstract class AbstractFloatingView extends LinearLayout {
     }
 
     public static AbstractFloatingView getTopOpenView(Launcher launcher) {
-        return getOpenView(launcher, TYPE_FOLDER | TYPE_DEEPSHORTCUT_CONTAINER);
+        return getOpenView(launcher, TYPE_FOLDER | TYPE_POPUP_CONTAINER_WITH_ARROW);
     }
 }

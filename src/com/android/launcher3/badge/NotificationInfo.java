@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.badging;
+package com.android.launcher3.badge;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -25,7 +25,7 @@ import android.service.notification.StatusBarNotification;
 import android.view.View;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.shortcuts.DeepShortcutsContainer;
+import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.util.PackageUserKey;
 
 /**
@@ -77,6 +77,6 @@ public class NotificationInfo implements View.OnClickListener {
         if (autoCancel) {
             launcher.getPopupDataProvider().cancelNotification(notificationKey);
         }
-        DeepShortcutsContainer.getOpen(launcher).close(true);
+        PopupContainerWithArrow.getOpen(launcher).close(true);
     }
 }

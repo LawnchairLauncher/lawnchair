@@ -18,6 +18,7 @@ import com.android.launcher3.AppInfo;
 import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
+import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.DeleteDropTarget;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.FolderInfo;
@@ -36,7 +37,6 @@ import com.android.launcher3.Workspace;
 import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
-import com.android.launcher3.shortcuts.DeepShortcutsContainer;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
@@ -231,7 +231,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
                 .show();
             return true;
         } else if (action == DEEP_SHORTCUTS) {
-            return DeepShortcutsContainer.showForIcon((BubbleTextView) host) != null;
+            return PopupContainerWithArrow.showForIcon((BubbleTextView) host) != null;
         }
         return false;
     }

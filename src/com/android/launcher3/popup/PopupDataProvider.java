@@ -23,7 +23,7 @@ import android.util.Log;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.badge.BadgeInfo;
-import com.android.launcher3.badging.NotificationListener;
+import com.android.launcher3.badge.NotificationListener;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.MultiHashMap;

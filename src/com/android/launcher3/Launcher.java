@@ -85,7 +85,7 @@ import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DefaultAppSearchController;
 import com.android.launcher3.anim.AnimationLayerSet;
-import com.android.launcher3.badging.NotificationListener;
+import com.android.launcher3.badge.NotificationListener;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -109,8 +109,8 @@ import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.pageindicators.PageIndicator;
+import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.shortcuts.DeepShortcutsContainer;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
@@ -1738,7 +1738,7 @@ public class Launcher extends BaseActivity
             mWorkspace.exitWidgetResizeMode();
 
             AbstractFloatingView topOpenView = AbstractFloatingView.getTopOpenView(this);
-            if (topOpenView instanceof DeepShortcutsContainer) {
+            if (topOpenView instanceof PopupContainerWithArrow) {
                 ued.logActionCommand(Action.Command.HOME_INTENT,
                         topOpenView.getExtendedTouchView(), ContainerType.DEEPSHORTCUTS);
             } else if (topOpenView instanceof Folder) {
@@ -2256,7 +2256,7 @@ public class Launcher extends BaseActivity
             if (topView.getActiveTextView() != null) {
                 topView.getActiveTextView().dispatchBackKey();
             } else {
-                if (topView instanceof DeepShortcutsContainer) {
+                if (topView instanceof PopupContainerWithArrow) {
                     ued.logActionCommand(Action.Command.BACK,
                             topView.getExtendedTouchView(), ContainerType.DEEPSHORTCUTS);
                 } else if (topView instanceof Folder) {
@@ -4077,7 +4077,7 @@ public class Launcher extends BaseActivity
                             && mAccessibilityDelegate.performAction(focusedView,
                                     (ItemInfo) focusedView.getTag(),
                                     LauncherAccessibilityDelegate.DEEP_SHORTCUTS)) {
-                        DeepShortcutsContainer.getOpen(this).requestFocus();
+                        PopupContainerWithArrow.getOpen(this).requestFocus();
                         return true;
                     }
                     break;
