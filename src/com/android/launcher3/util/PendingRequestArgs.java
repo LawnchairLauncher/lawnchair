@@ -15,15 +15,13 @@
  */
 package com.android.launcher3.util;
 
-import android.appwidget.AppWidgetProviderInfo;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.widget.WidgetAddFlowHandler;
 
 /**
  * Utility class to store information regarding a pending request made by launcher. This information
@@ -58,12 +56,7 @@ public class PendingRequestArgs extends ItemInfo implements Parcelable {
 
         mArg1 = parcel.readInt();
         mObjectType = parcel.readInt();
-        if (parcel.readInt() != 0) {
-            mObject = (mObjectType == TYPE_INTENT ? Intent.CREATOR : AppWidgetProviderInfo.CREATOR)
-                    .createFromParcel(parcel);
-        } else {
-            mObject = null;
-        }
+        mObject = parcel.readParcelable(null);
     }
 
     @Override
@@ -79,18 +72,11 @@ public class PendingRequestArgs extends ItemInfo implements Parcelable {
 
         dest.writeInt(mArg1);
         dest.writeInt(mObjectType);
-        if (mObject != null) {
-            dest.writeInt(1);
-            mObject.writeToParcel(dest, flags);
-        } else {
-            dest.writeInt(0);
-        }
+        dest.writeParcelable(mObject, flags);
     }
 
-    public LauncherAppWidgetProviderInfo getWidgetProvider(Context context) {
-        return mObjectType == TYPE_APP_WIDGET ?
-                LauncherAppWidgetProviderInfo.fromProviderInfo(
-                        context, (AppWidgetProviderInfo) mObject) : null;
+    public WidgetAddFlowHandler getWidgetHandler() {
+        return mObjectType == TYPE_APP_WIDGET ? (WidgetAddFlowHandler) mObject : null;
     }
 
     public int getWidgetId() {
@@ -106,8 +92,9 @@ public class PendingRequestArgs extends ItemInfo implements Parcelable {
     }
 
     public static PendingRequestArgs forWidgetInfo(
-            int appWidgetId, AppWidgetProviderInfo widgetInfo, ItemInfo info) {
-        PendingRequestArgs args = new PendingRequestArgs(appWidgetId, TYPE_APP_WIDGET, widgetInfo);
+            int appWidgetId, WidgetAddFlowHandler widgetHandler, ItemInfo info) {
+        PendingRequestArgs args =
+                new PendingRequestArgs(appWidgetId, TYPE_APP_WIDGET, widgetHandler);
         args.copyFrom(info);
         return args;
     }

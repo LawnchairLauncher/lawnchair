@@ -76,7 +76,7 @@ public class LauncherAppWidgetInfo extends ItemInfo {
      * Identifier for this widget when talking with
      * {@link android.appwidget.AppWidgetManager} for updates.
      */
-    int appWidgetId = NO_ID;
+    public int appWidgetId = NO_ID;
 
     public ComponentName providerName;
 
