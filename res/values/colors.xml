@@ -46,8 +46,7 @@
     <color name="spring_loaded_highlighted_panel_border_color">#FFF</color>
 
     <!-- Widgets view -->
-    <color name="widgets_view_section_text_color">#FFFFFF</color>
-    <color name="widgets_view_item_text_color">#C4C4C4</color>
+    <color name="widgets_view_item_text_color">#3B3B3B</color>
 
     <!-- Used as a fallback since colorSecondary doesn't exist pre-API 25 -->
     <color name="fallback_secondary_color">#FF37474F</color>
