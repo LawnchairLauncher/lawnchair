@@ -48,6 +48,8 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.PendingItemPreviewProvider;
+import com.android.launcher3.widget.WidgetAddFlowHandler;
+import com.android.launcher3.widget.WidgetHostViewLoader;
 
 import java.util.UUID;
 
@@ -141,6 +143,7 @@ public class PinItemDragListener implements Parcelable, View.OnDragListener, Dra
 
         final PendingAddItemInfo item;
         final Bitmap preview;
+        final View view = new View(mLauncher);
 
         Point dragShift = new Point(mPreviewRect.left, mPreviewRect.top);
         if (mRequest.getRequestType() == PinItemRequestCompat.REQUEST_TYPE_SHORTCUT) {
@@ -160,9 +163,18 @@ public class PinItemDragListener implements Parcelable, View.OnDragListener, Dra
                     (size[1] - icon.getHeight() - dp.iconTextSizePx - dp.iconDrawablePaddingPx) / 2,
                     new Paint(Paint.FILTER_BITMAP_FLAG));
         } else {
-            PendingAddWidgetInfo info = new PendingAddWidgetInfo(
+            // mRequest.getRequestType() == PinItemRequestCompat.REQUEST_TYPE_APPWIDGET
+            LauncherAppWidgetProviderInfo providerInfo =
                     LauncherAppWidgetProviderInfo.fromProviderInfo(
-                            mLauncher, mRequest.getAppWidgetProviderInfo(mLauncher)));
+                            mLauncher, mRequest.getAppWidgetProviderInfo(mLauncher));
+            final PinWidgetFlowHandler flowHandler =
+                    new PinWidgetFlowHandler(providerInfo, mRequest);
+            PendingAddWidgetInfo info = new PendingAddWidgetInfo(providerInfo) {
+                @Override
+                public WidgetAddFlowHandler getHandler() {
+                    return flowHandler;
+                }
+            };
             int[] size = mLauncher.getWorkspace().estimateItemSize(info, true, false);
 
             float minScale = 1.25f;
@@ -176,10 +188,13 @@ public class PinItemDragListener implements Parcelable, View.OnDragListener, Dra
                     (mPreviewRect.width() - preview.getWidth()) / 2,
                     (mPreviewRect.height() - preview.getHeight()) / 2);
             item = info;
+
+            view.setTag(info);
+            mDragController.addDragListener(new WidgetHostViewLoader(mLauncher, view));
         }
 
         PendingItemPreviewProvider previewProvider =
-                new PendingItemPreviewProvider(new View(mLauncher), item, preview);
+                new PendingItemPreviewProvider(view, item, preview);
 
         // Since we are not going through the workspace for starting the drag, set drag related
         // information on the workspace before starting the drag.

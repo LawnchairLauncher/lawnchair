@@ -46,7 +46,9 @@ public class WidgetHostViewLoader implements DragController.DragListener {
     }
 
     @Override
-    public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) { }
+    public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
+        preloadWidget();
+    }
 
     @Override
     public void onDragEnd() {
@@ -80,7 +82,7 @@ public class WidgetHostViewLoader implements DragController.DragListener {
     /**
      * Start preloading the widget.
      */
-    public boolean preloadWidget() {
+    private boolean preloadWidget() {
         final LauncherAppWidgetProviderInfo pInfo = mInfo.info;
 
         if (pInfo.isCustomWidget) {
@@ -89,7 +91,7 @@ public class WidgetHostViewLoader implements DragController.DragListener {
         final Bundle options = getDefaultOptionsForWidget(mLauncher, mInfo);
 
         // If there is a configuration activity, do not follow thru bound and inflate.
-        if (pInfo.configure != null) {
+        if (mInfo.getHandler().needsConfigure()) {
             mInfo.bindOptions = options;
             return false;
         }

@@ -150,16 +150,7 @@ public class WidgetsContainerView extends BaseContainerView
         // Return if global dragging is not enabled
         if (!mLauncher.isDraggingEnabled()) return false;
 
-        boolean status = beginDragging(v);
-        if (status && v.getTag() instanceof PendingAddWidgetInfo) {
-            WidgetHostViewLoader hostLoader = new WidgetHostViewLoader(mLauncher, v);
-            boolean preloadStatus = hostLoader.preloadWidget();
-            if (LOGD) {
-                Log.d(TAG, String.format("preloading widget [status=%s]", preloadStatus));
-            }
-            mLauncher.getDragController().addDragListener(hostLoader);
-        }
-        return status;
+        return beginDragging(v);
     }
 
     private boolean beginDragging(View v) {
@@ -222,6 +213,8 @@ public class WidgetsContainerView extends BaseContainerView
                 bounds.right -= padding;
             }
             scale = bounds.width() / (float) preview.getWidth();
+
+            mLauncher.getDragController().addDragListener(new WidgetHostViewLoader(mLauncher, v));
         } else {
             PendingAddShortcutInfo createShortcutInfo = (PendingAddShortcutInfo) v.getTag();
             Drawable icon = createShortcutInfo.activityInfo.getFullResIcon(mIconCache);

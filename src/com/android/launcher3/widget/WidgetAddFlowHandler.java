@@ -40,7 +40,7 @@ public class WidgetAddFlowHandler implements Parcelable {
         mProviderInfo = providerInfo;
     }
 
-    private WidgetAddFlowHandler(Parcel parcel) {
+    protected WidgetAddFlowHandler(Parcel parcel) {
         mProviderInfo = AppWidgetProviderInfo.CREATOR.createFromParcel(parcel);
     }
 
@@ -81,7 +81,7 @@ public class WidgetAddFlowHandler implements Parcelable {
      */
     public boolean startConfigActivity(Launcher launcher, int appWidgetId, ItemInfo info,
             int requestCode) {
-        if (mProviderInfo.configure == null) {
+        if (!needsConfigure()) {
             return false;
         }
         launcher.setWaitingForResult(PendingRequestArgs.forWidgetInfo(appWidgetId, this, info));
@@ -89,6 +89,10 @@ public class WidgetAddFlowHandler implements Parcelable {
         AppWidgetManagerCompat.getInstance(launcher).startConfigActivity(
                 mProviderInfo, appWidgetId, launcher, launcher.getAppWidgetHost(), requestCode);
         return true;
+    }
+
+    public boolean needsConfigure() {
+        return mProviderInfo.configure != null;
     }
 
     public LauncherAppWidgetProviderInfo getProviderInfo(Context context) {

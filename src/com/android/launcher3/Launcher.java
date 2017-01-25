@@ -2109,7 +2109,7 @@ public class Launcher extends BaseActivity
     private void addAppWidgetFromDrop(PendingAddWidgetInfo info) {
         AppWidgetHostView hostView = info.boundWidget;
         int appWidgetId;
-        WidgetAddFlowHandler addFlowHandler = info.getHander();
+        WidgetAddFlowHandler addFlowHandler = info.getHandler();
         if (hostView != null) {
             // In the case where we've prebound the widget, we remove it from the DragLayer
             if (LOGD) {
