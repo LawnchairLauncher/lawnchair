@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.badging;
+package com.android.launcher3.badge;
 
 import android.app.Notification;
 import android.os.Handler;

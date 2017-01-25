@@ -72,7 +72,7 @@ import com.android.launcher3.dragndrop.SpringLoadedDragController;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.DragPreviewProvider;
-import com.android.launcher3.shortcuts.DeepShortcutsContainer;
+import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -2267,9 +2267,10 @@ public class Workspace extends PagedView
         }
 
         if (child instanceof BubbleTextView) {
-            DeepShortcutsContainer dsc = DeepShortcutsContainer.showForIcon((BubbleTextView) child);
-            if (dsc != null) {
-                dragOptions.preDragCondition = dsc.createPreDragCondition();
+            PopupContainerWithArrow popupContainer = PopupContainerWithArrow
+                    .showForIcon((BubbleTextView) child);
+            if (popupContainer != null) {
+                dragOptions.preDragCondition = popupContainer.createPreDragCondition();
 
                 mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
             }

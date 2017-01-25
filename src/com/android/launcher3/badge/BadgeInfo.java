@@ -30,7 +30,7 @@ public class BadgeInfo {
     private PackageUserKey mPackageUserKey;
     /**
      * The keys of the notifications that this badge represents. These keys can later be
-     * used to retrieve {@link com.android.launcher3.badging.NotificationInfo}'s.
+     * used to retrieve {@link NotificationInfo}'s.
      */
     private Set<String> mNotificationKeys;
 

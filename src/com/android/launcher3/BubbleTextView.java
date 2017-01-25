@@ -41,14 +41,12 @@ import com.android.launcher3.IconCache.IconLoadRequest;
 import com.android.launcher3.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.badge.BadgeRenderer;
-import com.android.launcher3.badging.NotificationInfo;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.graphics.HolographicOutlineHelper;
 import com.android.launcher3.model.PackageItemInfo;
 
 import java.text.NumberFormat;
-import java.util.List;
 
 /**
  * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan

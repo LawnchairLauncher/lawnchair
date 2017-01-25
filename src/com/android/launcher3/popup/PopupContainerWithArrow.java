@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.shortcuts;
+package com.android.launcher3.popup;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -22,8 +22,8 @@ import android.animation.AnimatorSet;
 import android.animation.TimeInterpolator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.content.ComponentName;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -33,7 +33,6 @@ import android.graphics.drawable.ShapeDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.UserHandle;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -43,7 +42,6 @@ import android.view.ViewConfiguration;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
@@ -57,69 +55,101 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherViewPropertyAnimator;
 import com.android.launcher3.LogAccelerateInterpolator;
 import com.android.launcher3.R;
-import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.accessibility.ShortcutMenuAccessibilityDelegate;
+import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
-import com.android.launcher3.graphics.LauncherIcons;
+import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.TriangleShape;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ItemType;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+import com.android.launcher3.shortcuts.DeepShortcutView;
+import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
+import com.android.launcher3.util.PackageUserKey;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import static com.android.launcher3.userevent.nano.LauncherLogProto.*;
 
 /**
  * A container for shortcuts to deep links within apps.
  */
 @TargetApi(Build.VERSION_CODES.N)
-public class DeepShortcutsContainer extends AbstractFloatingView
-        implements View.OnLongClickListener,
-        View.OnTouchListener, DragSource, DragController.DragListener {
+public class PopupContainerWithArrow extends AbstractFloatingView
+        implements View.OnLongClickListener, View.OnTouchListener, DragSource,
+        DragController.DragListener {
 
     private final Point mIconShift = new Point();
+    private final Point mIconLastTouchPos = new Point();
 
-    private final Launcher mLauncher;
-    private final DeepShortcutManager mDeepShortcutsManager;
+    protected final Launcher mLauncher;
     private final int mStartDragThreshold;
-    private final ShortcutMenuAccessibilityDelegate mAccessibilityDelegate;
+    private LauncherAccessibilityDelegate mAccessibilityDelegate;
     private final boolean mIsRtl;
 
-    private BubbleTextView mOriginalIcon;
+    protected BubbleTextView mOriginalIcon;
     private final Rect mTempRect = new Rect();
     private PointF mInterceptTouchDown = new PointF();
-    private Point mIconLastTouchPos = new Point();
     private boolean mIsLeftAligned;
-    private boolean mIsAboveIcon;
+    protected boolean mIsAboveIcon;
     private View mArrow;
 
-    private Animator mOpenCloseAnimator;
+    protected Animator mOpenCloseAnimator;
     private boolean mDeferContainerRemoval;
 
-    public DeepShortcutsContainer(Context context, AttributeSet attrs, int defStyleAttr) {
+    public PopupContainerWithArrow(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mLauncher = Launcher.getLauncher(context);
-        mDeepShortcutsManager = DeepShortcutManager.getInstance(context);
 
         mStartDragThreshold = getResources().getDimensionPixelSize(
                 R.dimen.deep_shortcuts_start_drag_threshold);
+        // TODO: make sure the delegate works for all items, not just shortcuts.
         mAccessibilityDelegate = new ShortcutMenuAccessibilityDelegate(mLauncher);
         mIsRtl = Utilities.isRtl(getResources());
     }
 
-    public DeepShortcutsContainer(Context context, AttributeSet attrs) {
+    public PopupContainerWithArrow(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public DeepShortcutsContainer(Context context) {
+    public PopupContainerWithArrow(Context context) {
         this(context, null, 0);
     }
 
-    public void populateAndShow(final BubbleTextView originalIcon, final List<String> ids) {
+    public LauncherAccessibilityDelegate getAccessibilityDelegate() {
+        return mAccessibilityDelegate;
+    }
+
+    /**
+     * Shows the notifications and deep shortcuts associated with {@param icon}.
+     * @return the container if shown or null.
+     */
+    public static PopupContainerWithArrow showForIcon(BubbleTextView icon) {
+        Launcher launcher = Launcher.getLauncher(icon.getContext());
+        if (getOpen(launcher) != null) {
+            // There is already an items container open, so don't open this one.
+            icon.clearFocus();
+            return null;
+        }
+        ItemInfo itemInfo = (ItemInfo) icon.getTag();
+        List<String> shortcutIds = launcher.getPopupDataProvider().getShortcutIdsForItem(itemInfo);
+        if (shortcutIds.size() > 0) {
+            final PopupContainerWithArrow container =
+                    (PopupContainerWithArrow) launcher.getLayoutInflater().inflate(
+                            R.layout.popup_container, launcher.getDragLayer(), false);
+            container.setVisibility(View.INVISIBLE);
+            launcher.getDragLayer().addView(container);
+            container.populateAndShow(icon, shortcutIds);
+            return container;
+        }
+        return null;
+    }
+
+    public void populateAndShow(final BubbleTextView originalIcon, final List<String> shortcutIds) {
         final Resources resources = getResources();
         final int arrowWidth = resources.getDimensionPixelSize(R.dimen.deep_shortcuts_arrow_width);
         final int arrowHeight = resources.getDimensionPixelSize(R.dimen.deep_shortcuts_arrow_height);
@@ -128,24 +158,36 @@ public class DeepShortcutsContainer extends AbstractFloatingView
         final int arrowVerticalOffset = resources.getDimensionPixelSize(
                 R.dimen.deep_shortcuts_arrow_vertical_offset);
 
-        // Add dummy views first, and populate with real shortcut info when ready.
-        final int spacing = getResources().getDimensionPixelSize(R.dimen.deep_shortcuts_spacing);
-        final LayoutInflater inflater = mLauncher.getLayoutInflater();
-        int numShortcuts = Math.min(ids.size(), ShortcutFilter.MAX_SHORTCUTS);
-        for (int i = 0; i < numShortcuts; i++) {
-            final DeepShortcutView shortcut =
-                    (DeepShortcutView) inflater.inflate(R.layout.deep_shortcut, this, false);
-            if (i < numShortcuts - 1) {
-                ((LayoutParams) shortcut.getLayoutParams()).bottomMargin = spacing;
-            }
-            shortcut.getBubbleText().setAccessibilityDelegate(mAccessibilityDelegate);
-            addView(shortcut);
-        }
-        setContentDescription(getContext().getString(R.string.shortcuts_menu_description,
-                numShortcuts, originalIcon.getContentDescription().toString()));
+        // Add dummy views first, and populate with real info when ready.
+        PopupPopulator.Item[] itemsToPopulate = PopupPopulator.getItemsToPopulate(shortcutIds);
+        addDummyViews(originalIcon, itemsToPopulate);
 
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
         orientAboutIcon(originalIcon, arrowHeight + arrowVerticalOffset);
+
+        boolean reverseOrder = mIsAboveIcon;
+        if (reverseOrder) {
+            removeAllViews();
+            itemsToPopulate = PopupPopulator.reverseItems(itemsToPopulate);
+            addDummyViews(originalIcon, itemsToPopulate);
+
+            measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
+            orientAboutIcon(originalIcon, arrowHeight + arrowVerticalOffset);
+        }
+
+        List<DeepShortcutView> shortcutViews = new ArrayList<>();
+        for (int i = 0; i < getChildCount(); i++) {
+            View item = getChildAt(i);
+            switch (itemsToPopulate[i]) {
+                case SHORTCUT:
+                    if (reverseOrder) {
+                        shortcutViews.add(0, (DeepShortcutView) item);
+                    } else {
+                        shortcutViews.add((DeepShortcutView) item);
+                    }
+                    break;
+            }
+        }
 
         // Add the arrow.
         mArrow = addArrowView(arrowHorizontalOffset, arrowVerticalOffset, arrowWidth, arrowHeight);
@@ -155,66 +197,44 @@ public class DeepShortcutsContainer extends AbstractFloatingView
         animateOpen();
 
         mOriginalIcon = originalIcon;
+
         mLauncher.getDragController().addDragListener(this);
 
         // Load the shortcuts on a background thread and update the container as it animates.
         final Looper workerLooper = LauncherModel.getWorkerLooper();
-        final Handler uiHandler = new Handler(Looper.getMainLooper());
-        final ItemInfo originalInfo = (ItemInfo) originalIcon.getTag();
-        final UserHandle user = originalInfo.user;
-        final ComponentName activity = originalInfo.getTargetComponent();
-        new Handler(workerLooper).postAtFrontOfQueue(new Runnable() {
-            @Override
-            public void run() {
-                final List<ShortcutInfoCompat> shortcuts = ShortcutFilter.sortAndFilterShortcuts(
-                        mDeepShortcutsManager.queryForShortcutsContainer(activity, ids, user));
-                // We want the lowest rank to be closest to the user's finger.
-                if (mIsAboveIcon) {
-                    Collections.reverse(shortcuts);
-                }
-                for (int i = 0; i < shortcuts.size(); i++) {
-                    final ShortcutInfoCompat shortcut = shortcuts.get(i);
-                    ShortcutInfo si = new ShortcutInfo(shortcut, mLauncher);
-                    // Use unbadged icon for the menu.
-                    si.iconBitmap = LauncherIcons.createShortcutIcon(
-                            shortcut, mLauncher, false /* badged */);
-                    uiHandler.post(new UpdateShortcutChild(i, si, shortcut));
-                }
+        new Handler(workerLooper).postAtFrontOfQueue(PopupPopulator.createUpdateRunnable(
+                mLauncher, (ItemInfo) originalIcon.getTag(), new Handler(Looper.getMainLooper()),
+                this, shortcutIds, shortcutViews));
+    }
+
+    private void addDummyViews(BubbleTextView originalIcon, PopupPopulator.Item[] itemsToPopulate) {
+        final int spacing = getResources().getDimensionPixelSize(R.dimen.deep_shortcuts_spacing);
+        final LayoutInflater inflater = mLauncher.getLayoutInflater();
+        int numItems = itemsToPopulate.length;
+        for (int i = 0; i < numItems; i++) {
+            final PopupItemView item = (PopupItemView) inflater.inflate(
+                    itemsToPopulate[i].layoutId, this, false);
+            if (i < numItems - 1) {
+                ((LayoutParams) item.getLayoutParams()).bottomMargin = spacing;
             }
-        });
+            item.setAccessibilityDelegate(mAccessibilityDelegate);
+            addView(item);
+        }
+        // TODO: update this, since not all items are shortcuts
+        setContentDescription(getContext().getString(R.string.shortcuts_menu_description,
+                numItems, originalIcon.getContentDescription().toString()));
     }
 
-    /** Updates the child of this container at the given index based on the given shortcut info. */
-    private class UpdateShortcutChild implements Runnable {
-        private final int mShortcutChildIndex;
-        private final ShortcutInfo mShortcutChildInfo;
-        private final ShortcutInfoCompat mDetail;
-
-
-        public UpdateShortcutChild(int shortcutChildIndex, ShortcutInfo shortcutChildInfo,
-                ShortcutInfoCompat detail) {
-            mShortcutChildIndex = shortcutChildIndex;
-            mShortcutChildInfo = shortcutChildInfo;
-            mDetail = detail;
-        }
-
-        @Override
-        public void run() {
-            getShortcutAt(mShortcutChildIndex)
-                    .applyShortcutInfo(mShortcutChildInfo, mDetail, DeepShortcutsContainer.this);
-        }
-    }
-
-    private DeepShortcutView getShortcutAt(int index) {
+    protected PopupItemView getItemViewAt(int index) {
         if (!mIsAboveIcon) {
             // Opening down, so arrow is the first view.
             index++;
         }
-        return (DeepShortcutView) getChildAt(index);
+        return (PopupItemView) getChildAt(index);
     }
 
-    private int getShortcutCount() {
-        // All children except the arrow are shortcuts.
+    protected int getItemCount() {
+        // All children except the arrow are items.
         return getChildCount() - 1;
     }
 
@@ -223,7 +243,7 @@ public class DeepShortcutsContainer extends AbstractFloatingView
         mIsOpen = true;
 
         final AnimatorSet shortcutAnims = LauncherAnimUtils.createAnimatorSet();
-        final int shortcutCount = getShortcutCount();
+        final int itemCount = getItemCount();
 
         final long duration = getResources().getInteger(
                 R.integer.config_deepShortcutOpenDuration);
@@ -236,25 +256,25 @@ public class DeepShortcutsContainer extends AbstractFloatingView
 
         // Animate shortcuts
         DecelerateInterpolator interpolator = new DecelerateInterpolator();
-        for (int i = 0; i < shortcutCount; i++) {
-            final DeepShortcutView deepShortcutView = getShortcutAt(i);
-            deepShortcutView.setVisibility(INVISIBLE);
-            deepShortcutView.setAlpha(0);
+        for (int i = 0; i < itemCount; i++) {
+            final PopupItemView popupItemView = getItemViewAt(i);
+            popupItemView.setVisibility(INVISIBLE);
+            popupItemView.setAlpha(0);
 
-            Animator anim = deepShortcutView.createOpenAnimation(mIsAboveIcon, mIsLeftAligned);
+            Animator anim = popupItemView.createOpenAnimation(mIsAboveIcon, mIsLeftAligned);
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
-                    deepShortcutView.setVisibility(VISIBLE);
+                    popupItemView.setVisibility(VISIBLE);
                 }
             });
             anim.setDuration(duration);
-            int animationIndex = mIsAboveIcon ? shortcutCount - i - 1 : i;
+            int animationIndex = mIsAboveIcon ? itemCount - i - 1 : i;
             anim.setStartDelay(stagger * animationIndex);
             anim.setInterpolator(interpolator);
             shortcutAnims.play(anim);
 
-            Animator fadeAnim = new LauncherViewPropertyAnimator(deepShortcutView).alpha(1);
+            Animator fadeAnim = new LauncherViewPropertyAnimator(popupItemView).alpha(1);
             fadeAnim.setInterpolator(fadeInterpolator);
             // We want the shortcut to be fully opaque before the arrow starts animating.
             fadeAnim.setDuration(arrowScaleDelay);
@@ -265,7 +285,7 @@ public class DeepShortcutsContainer extends AbstractFloatingView
             public void onAnimationEnd(Animator animation) {
                 mOpenCloseAnimator = null;
                 Utilities.sendCustomAccessibilityEvent(
-                        DeepShortcutsContainer.this,
+                        PopupContainerWithArrow.this,
                         AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
                         getContext().getString(R.string.action_deep_shortcut));
             }
@@ -405,7 +425,7 @@ public class DeepShortcutsContainer extends AbstractFloatingView
      *                              points at the center of the original icon
      */
     private View addArrowView(int horizontalOffset, int verticalOffset, int width, int height) {
-        LinearLayout.LayoutParams layoutParams = new LayoutParams(width, height);
+        LayoutParams layoutParams = new LayoutParams(width, height);
         if (mIsLeftAligned) {
             layoutParams.gravity = Gravity.LEFT;
             layoutParams.leftMargin = horizontalOffset;
@@ -593,7 +613,7 @@ public class DeepShortcutsContainer extends AbstractFloatingView
         }
     }
 
-    private void animateClose() {
+    protected void animateClose() {
         if (!mIsOpen) {
             return;
         }
@@ -603,10 +623,10 @@ public class DeepShortcutsContainer extends AbstractFloatingView
         mIsOpen = false;
 
         final AnimatorSet shortcutAnims = LauncherAnimUtils.createAnimatorSet();
-        final int shortcutCount = getShortcutCount();
+        final int itemCount = getItemCount();
         int numOpenShortcuts = 0;
-        for (int i = 0; i < shortcutCount; i++) {
-            if (getShortcutAt(i).isOpenOrOpening()) {
+        for (int i = 0; i < itemCount; i++) {
+            if (getItemViewAt(i).isOpenOrOpening()) {
                 numOpenShortcuts++;
             }
         }
@@ -618,13 +638,13 @@ public class DeepShortcutsContainer extends AbstractFloatingView
                 R.integer.config_deepShortcutCloseStagger);
         final TimeInterpolator fadeInterpolator = new LogAccelerateInterpolator(100, 0);
 
-        int firstOpenShortcutIndex = mIsAboveIcon ? shortcutCount - numOpenShortcuts : 0;
-        for (int i = firstOpenShortcutIndex; i < firstOpenShortcutIndex + numOpenShortcuts; i++) {
-            final DeepShortcutView view = getShortcutAt(i);
+        int firstOpenItemIndex = mIsAboveIcon ? itemCount - numOpenShortcuts : 0;
+        for (int i = firstOpenItemIndex; i < firstOpenItemIndex + numOpenShortcuts; i++) {
+            final PopupItemView view = getItemViewAt(i);
             Animator anim;
             if (view.willDrawIcon()) {
                 anim = view.createCloseAnimation(mIsAboveIcon, mIsLeftAligned, duration);
-                int animationIndex = mIsAboveIcon ? i - firstOpenShortcutIndex
+                int animationIndex = mIsAboveIcon ? i - firstOpenItemIndex
                         : numOpenShortcuts - i - 1;
                 anim.setStartDelay(stagger * animationIndex);
 
@@ -681,14 +701,10 @@ public class DeepShortcutsContainer extends AbstractFloatingView
         shortcutAnims.start();
     }
 
-    public ShortcutMenuAccessibilityDelegate getAccessibilityDelegate() {
-        return mAccessibilityDelegate;
-    }
-
     /**
      * Closes the folder without animation.
      */
-    private void closeComplete() {
+    protected void closeComplete() {
         if (mOpenCloseAnimator != null) {
             mOpenCloseAnimator.cancel();
             mOpenCloseAnimator = null;
@@ -704,38 +720,13 @@ public class DeepShortcutsContainer extends AbstractFloatingView
 
     @Override
     protected boolean isOfType(int type) {
-        return (type & TYPE_DEEPSHORTCUT_CONTAINER) != 0;
-    }
-
-    /**
-     * Shows the shortcuts container for {@param icon}
-     * @return the container if shown or null.
-     */
-    public static DeepShortcutsContainer showForIcon(BubbleTextView icon) {
-        Launcher launcher = Launcher.getLauncher(icon.getContext());
-        if (getOpen(launcher) != null) {
-            // There is already a shortcuts container open, so don't open this one.
-            icon.clearFocus();
-            return null;
-        }
-        List<String> ids = launcher.getPopupDataProvider().getShortcutIdsForItem(
-                (ItemInfo) icon.getTag());
-        if (!ids.isEmpty()) {
-            final DeepShortcutsContainer container =
-                    (DeepShortcutsContainer) launcher.getLayoutInflater().inflate(
-                            R.layout.deep_shortcuts_container, launcher.getDragLayer(), false);
-            container.setVisibility(View.INVISIBLE);
-            launcher.getDragLayer().addView(container);
-            container.populateAndShow(icon, ids);
-            return container;
-        }
-        return null;
+        return (type & TYPE_POPUP_CONTAINER_WITH_ARROW) != 0;
     }
 
     /**
      * Returns a DeepShortcutsContainer which is already open or null
      */
-    public static DeepShortcutsContainer getOpen(Launcher launcher) {
-        return getOpenView(launcher, TYPE_DEEPSHORTCUT_CONTAINER);
+    public static PopupContainerWithArrow getOpen(Launcher launcher) {
+        return getOpenView(launcher, TYPE_POPUP_CONTAINER_WITH_ARROW);
     }
 }
