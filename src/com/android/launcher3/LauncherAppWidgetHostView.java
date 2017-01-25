@@ -135,8 +135,6 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
 
         // The provider info or the views might have changed.
         checkIfAutoAdvance();
-
-        mIsScrollable = checkScrollableRecursively(this);
     }
 
     private boolean checkScrollableRecursively(ViewGroup viewGroup) {
@@ -383,6 +381,8 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
                 }
             });
         }
+
+        mIsScrollable = checkScrollableRecursively(this);
     }
 
     @Override
