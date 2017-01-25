@@ -35,6 +35,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.android.launcher3.IconCache;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 
@@ -67,7 +68,7 @@ public abstract class ShortcutConfigActivityInfo {
 
     public abstract Drawable getFullResIcon(IconCache cache);
 
-    public boolean startConfigActivity(Activity activity, int requestCode) {
+    public boolean startConfigActivity(Launcher activity, int requestCode) {
         Intent intent = new Intent(Intent.ACTION_CREATE_SHORTCUT)
                 .setComponent(getComponent());
         try {
@@ -136,7 +137,7 @@ public abstract class ShortcutConfigActivityInfo {
         }
 
         @Override
-        public boolean startConfigActivity(Activity activity, int requestCode) {
+        public boolean startConfigActivity(Launcher activity, int requestCode) {
             if (getUser().equals(Process.myUserHandle())) {
                 return super.startConfigActivity(activity, requestCode);
             }

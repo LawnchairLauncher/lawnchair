@@ -17,12 +17,23 @@
 package com.android.launcher3.dragndrop;
 
 import android.annotation.TargetApi;
+import android.app.ActivityOptions;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
+import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Point;
+import android.graphics.PointF;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.*;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.InstallShortcutReceiver;
@@ -38,12 +49,17 @@ import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetCell;
 import com.android.launcher3.widget.WidgetHostViewLoader;
+import com.android.launcher3.widget.WidgetImageView;
 
 @TargetApi(Build.VERSION_CODES.N_MR1)
-public class AddItemActivity extends BaseActivity {
+public class AddItemActivity extends BaseActivity implements OnLongClickListener, OnTouchListener {
+
+    private static final int SHADOW_SIZE = 10;
 
     private static final int REQUEST_BIND_APPWIDGET = 1;
     private static final String STATE_EXTRA_WIDGET_ID = "state.widget.id";
+
+    private final PointF mLastTouchPos = new PointF();
 
     private PinItemRequestCompat mRequest;
     private LauncherAppState mApp;
@@ -86,11 +102,54 @@ public class AddItemActivity extends BaseActivity {
                 finish();
             }
         }
+
+        mWidgetCell.setOnTouchListener(this);
+        mWidgetCell.setOnLongClickListener(this);
+    }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        mLastTouchPos.set(motionEvent.getX(), motionEvent.getY());
+        return false;
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        // Find the position of the preview relative to the touch location.
+        WidgetImageView img = mWidgetCell.getWidgetView();
+        Rect bounds = img.getBitmapBounds();
+        bounds.offset(img.getLeft() - (int) mLastTouchPos.x, img.getTop() - (int) mLastTouchPos.y);
+
+        // Start home and pass the draw request params
+        PinItemDragListener listener = new PinItemDragListener(mRequest, bounds);
+        Intent homeIntent = new Intent(Intent.ACTION_MAIN)
+                .addCategory(Intent.CATEGORY_HOME)
+                .setPackage(getPackageName())
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .putExtra(PinItemDragListener.EXTRA_PIN_ITEM_DRAG_LISTENER, listener);
+        startActivity(homeIntent,
+                ActivityOptions.makeCustomAnimation(this, 0, android.R.anim.fade_out).toBundle());
+
+        // Start a system drag and drop. We use a transparent bitmap as preview for system drag
+        // as the preview is handled internally by launcher.
+        ClipDescription description = new ClipDescription("", new String[]{listener.getMimeType()});
+        ClipData data = new ClipData(description, new ClipData.Item(""));
+        view.startDragAndDrop(data, new DragShadowBuilder(view) {
+
+            @Override
+            public void onDrawShadow(Canvas canvas) { }
+
+            @Override
+            public void onProvideShadowMetrics(Point outShadowSize, Point outShadowTouchPoint) {
+                outShadowSize.set(SHADOW_SIZE, SHADOW_SIZE);
+                outShadowTouchPoint.set(SHADOW_SIZE / 2, SHADOW_SIZE / 2);
+            }
+        }, null, View.DRAG_FLAG_GLOBAL);
+        return false;
     }
 
     private void setupShortcut() {
-        WidgetItem item = new WidgetItem(new PinShortcutRequestActivityInfo(
-                mRequest.getShortcutInfo(), this));
+        WidgetItem item = new WidgetItem(new PinShortcutRequestActivityInfo(mRequest, this));
         mWidgetCell.applyFromCellItem(item, mApp.getWidgetCache());
         mWidgetCell.ensurePreview();
     }

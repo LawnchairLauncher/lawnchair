@@ -21,21 +21,13 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
-import android.annotation.TargetApi;
-import android.content.ClipDescription;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Region;
-import android.os.Build;
 import android.util.AttributeSet;
-import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -59,9 +51,7 @@ import com.android.launcher3.LauncherAppWidgetHostView;
 import com.android.launcher3.PinchToOverviewListener;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
-import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.Workspace;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
@@ -371,49 +361,6 @@ public class DragLayer extends InsettableFrameLayout {
             return mActiveController.onControllerTouchEvent(ev);
         }
         return false;
-    }
-
-    @TargetApi(Build.VERSION_CODES.N)
-    private void handleSystemDragStart(DragEvent event) {
-        if (!FeatureFlags.LAUNCHER3_USE_SYSTEM_DRAG_DRIVER || !Utilities.ATLEAST_NOUGAT) {
-            return;
-        }
-        if (mLauncher.isWorkspaceLocked()) {
-            return;
-        }
-
-        ClipDescription description = event.getClipDescription();
-        if (!description.hasMimeType(ClipDescription.MIMETYPE_TEXT_INTENT)) {
-            return;
-        }
-        ShortcutInfo info = new ShortcutInfo();
-        // Set a dummy intent until we get the final value
-        info.intent = new Intent();
-
-        // Since we are not going through the workspace for starting the drag, set drag related
-        // information on the workspace before starting the drag.
-        ExternalDragPreviewProvider previewProvider =
-                new ExternalDragPreviewProvider(mLauncher, info);
-        mLauncher.getWorkspace().prepareDragWithProvider(previewProvider);
-
-        DragOptions options = new DragOptions();
-        options.systemDndStartPoint = new Point((int) event.getX(), (int) event.getY());
-
-        int halfPadding = previewProvider.previewPadding / 2;
-        mDragController.startDrag(
-                Bitmap.createBitmap(1, 1, Config.ARGB_8888),
-                0, 0,
-                new AnotherWindowDragSource(mLauncher), info,
-                new Point(- halfPadding, halfPadding),
-                previewProvider.getPreviewBounds(), 1f, options);
-    }
-
-    @Override
-    public boolean onDragEvent (DragEvent event) {
-        if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
-            handleSystemDragStart(event);
-        }
-        return mDragController.onDragEvent(event);
     }
 
     /**
