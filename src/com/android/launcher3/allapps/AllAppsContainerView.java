@@ -53,9 +53,11 @@ import com.android.launcher3.graphics.TintedDrawableSpan;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The all apps view container.
@@ -470,6 +472,18 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             navBarBgLp.height = insets.bottom;
             navBarBg.setLayoutParams(navBarBgLp);
             navBarBg.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void updateIconBadges(Set<PackageUserKey> updatedBadges) {
+        final PackageUserKey packageUserKey = new PackageUserKey(null, null);
+        for (AlphabeticalAppsList.AdapterItem app : mApps.getAdapterItems()) {
+            if (app.appInfo != null) {
+                packageUserKey.updateFromItemInfo(app.appInfo);
+                if (updatedBadges.contains(packageUserKey)) {
+                    mAdapter.notifyItemChanged(app.position);
+                }
+            }
         }
     }
 }

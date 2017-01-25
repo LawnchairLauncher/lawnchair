@@ -30,12 +30,13 @@ import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.animation.DecelerateInterpolator;
 
-import com.android.launcher3.graphics.IconPalette;
-import com.android.launcher3.badge.BadgeRenderer;
 import com.android.launcher3.badge.BadgeInfo;
+import com.android.launcher3.badge.BadgeRenderer;
+import com.android.launcher3.graphics.IconPalette;
 
 public class FastBitmapDrawable extends Drawable {
     private static final float DISABLED_DESATURATION = 1f;
@@ -123,13 +124,17 @@ public class FastBitmapDrawable extends Drawable {
     }
 
     public void applyIconBadge(BadgeInfo badgeInfo, BadgeRenderer badgeRenderer) {
+        boolean wasBadged = mBadgeInfo != null;
+        boolean isBadged = badgeInfo != null;
         mBadgeInfo = badgeInfo;
         mBadgeRenderer = badgeRenderer;
-        if (mIconPalette == null) {
-            mIconPalette = IconPalette.fromDominantColor(Utilities
-                    .findDominantColorByHue(mBitmap, 20));
+        if (wasBadged || isBadged) {
+            if (mBadgeInfo != null && mIconPalette == null) {
+                mIconPalette = IconPalette.fromDominantColor(Utilities
+                        .findDominantColorByHue(mBitmap, 20));
+            }
+            invalidateSelf();
         }
-        invalidateSelf();
     }
 
     @Override
@@ -157,7 +162,7 @@ public class FastBitmapDrawable extends Drawable {
     }
 
     private boolean hasBadge() {
-        return mBadgeInfo != null && mBadgeInfo.getNotificationCount() != null;
+        return mBadgeInfo != null && mBadgeInfo.getNotificationCount() != 0;
     }
 
     @Override

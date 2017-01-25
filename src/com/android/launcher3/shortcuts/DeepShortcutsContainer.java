@@ -718,7 +718,8 @@ public class DeepShortcutsContainer extends AbstractFloatingView
             icon.clearFocus();
             return null;
         }
-        List<String> ids = launcher.getShortcutIdsForItem((ItemInfo) icon.getTag());
+        List<String> ids = launcher.getPopupDataProvider().getShortcutIdsForItem(
+                (ItemInfo) icon.getTag());
         if (!ids.isEmpty()) {
             final DeepShortcutsContainer container =
                     (DeepShortcutsContainer) launcher.getLayoutInflater().inflate(

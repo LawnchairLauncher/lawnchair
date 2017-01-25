@@ -39,14 +39,16 @@ import android.widget.TextView;
 
 import com.android.launcher3.IconCache.IconLoadRequest;
 import com.android.launcher3.IconCache.ItemInfoUpdateReceiver;
-import com.android.launcher3.badge.BadgeRenderer;
 import com.android.launcher3.badge.BadgeInfo;
+import com.android.launcher3.badge.BadgeRenderer;
+import com.android.launcher3.badging.NotificationInfo;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.graphics.HolographicOutlineHelper;
 import com.android.launcher3.model.PackageItemInfo;
 
 import java.text.NumberFormat;
+import java.util.List;
 
 /**
  * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan
@@ -168,6 +170,8 @@ public class BubbleTextView extends TextView
         if (promiseStateChanged || info.isPromise()) {
             applyPromiseState(promiseStateChanged);
         }
+
+        applyBadgeState(info);
     }
 
     public void applyFromApplicationInfo(AppInfo info) {
@@ -178,6 +182,8 @@ public class BubbleTextView extends TextView
 
         // Verify high res immediately
         verifyHighRes();
+
+        applyBadgeState(info);
     }
 
     public void applyFromPackageItemInfo(PackageItemInfo info) {
@@ -502,8 +508,9 @@ public class BubbleTextView extends TextView
         }
     }
 
-    public void applyBadgeState(BadgeInfo badgeInfo) {
+    public void applyBadgeState(ItemInfo itemInfo) {
         if (mIcon instanceof FastBitmapDrawable) {
+            BadgeInfo badgeInfo = mLauncher.getPopupDataProvider().getBadgeInfoForItem(itemInfo);
             BadgeRenderer badgeRenderer = mLauncher.getDeviceProfile().mBadgeRenderer;
             ((FastBitmapDrawable) mIcon).applyIconBadge(badgeInfo, badgeRenderer);
         }
@@ -634,7 +641,8 @@ public class BubbleTextView extends TextView
      * Returns true if the view can show custom shortcuts.
      */
     public boolean hasDeepShortcuts() {
-        return !mLauncher.getShortcutIdsForItem((ItemInfo) getTag()).isEmpty();
+        return !mLauncher.getPopupDataProvider().getShortcutIdsForItem((ItemInfo) getTag())
+                .isEmpty();
     }
 
     /**

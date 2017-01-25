@@ -85,6 +85,8 @@ import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DefaultAppSearchController;
 import com.android.launcher3.anim.AnimationLayerSet;
+import com.android.launcher3.badging.NotificationListener;
+import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PinItemRequestCompat;
@@ -119,6 +121,7 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.PendingRequestArgs;
 import com.android.launcher3.util.TestingUtils;
 import com.android.launcher3.util.Thunk;
@@ -133,10 +136,10 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Default launcher application.
@@ -263,8 +266,7 @@ public class Launcher extends BaseActivity
     private boolean mHasFocus = false;
     private boolean mAttached = false;
 
-    /** Maps launcher activity components to their list of shortcut ids. */
-    private MultiHashMap<ComponentKey, String> mDeepShortcutMap = new MultiHashMap<>();
+    private PopupDataProvider mPopupDataProvider;
 
     private View.OnTouchListener mHapticFeedbackTouchListener;
 
@@ -396,6 +398,8 @@ public class Launcher extends BaseActivity
         mDeviceProfile.layout(this, false /* notifyListeners */);
         mExtractedColors = new ExtractedColors();
         loadExtractedColorsAndColorItems();
+
+        mPopupDataProvider = new PopupDataProvider(this);
 
         ((AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE))
                 .addAccessibilityStateChangeListener(this);
@@ -653,6 +657,10 @@ public class Launcher extends BaseActivity
         // Since we jail all the dynamically generated views, there should be no clashes
         // with any other views.
         return (int) info.id;
+    }
+
+    public PopupDataProvider getPopupDataProvider() {
+        return mPopupDataProvider;
     }
 
     /**
@@ -930,6 +938,8 @@ public class Launcher extends BaseActivity
         if (Utilities.ATLEAST_NOUGAT_MR1) {
             mAppWidgetHost.stopListening();
         }
+
+        NotificationListener.removeNotificationsChangedListener();
     }
 
     @Override
@@ -943,6 +953,10 @@ public class Launcher extends BaseActivity
 
         if (Utilities.ATLEAST_NOUGAT_MR1) {
             mAppWidgetHost.startListening();
+        }
+
+        if (!isWorkspaceLoading()) {
+            NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
         }
     }
 
@@ -1567,6 +1581,19 @@ public class Launcher extends BaseActivity
             }
         }
     };
+
+    public void updateIconBadges(final Set<PackageUserKey> updatedBadges) {
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                mWorkspace.updateIconBadges(updatedBadges);
+                mAppsView.updateIconBadges(updatedBadges);
+            }
+        };
+        if (!waitUntilResume(r)) {
+            r.run();
+        }
+    }
 
     @Override
     public void onAttachedToWindow() {
@@ -3656,6 +3683,8 @@ public class Launcher extends BaseActivity
 
         InstallShortcutReceiver.disableAndFlushInstallQueue(this);
 
+        NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
+
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.finishBindingItems(false);
         }
@@ -3725,21 +3754,7 @@ public class Launcher extends BaseActivity
      */
     @Override
     public void bindDeepShortcutMap(MultiHashMap<ComponentKey, String> deepShortcutMapCopy) {
-        mDeepShortcutMap = deepShortcutMapCopy;
-        if (LOGD) Log.d(TAG, "bindDeepShortcutMap: " + mDeepShortcutMap);
-    }
-
-    public List<String> getShortcutIdsForItem(ItemInfo info) {
-        if (!DeepShortcutManager.supportsShortcuts(info)) {
-            return Collections.EMPTY_LIST;
-        }
-        ComponentName component = info.getTargetComponent();
-        if (component == null) {
-            return Collections.EMPTY_LIST;
-        }
-
-        List<String> ids = mDeepShortcutMap.get(new ComponentKey(component, info.user));
-        return ids == null ? Collections.EMPTY_LIST : ids;
+        mPopupDataProvider.setDeepShortcutMap(deepShortcutMapCopy);
     }
 
     /**
