@@ -41,6 +41,7 @@ public class AddWidgetTest extends LauncherInstrumentationTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        grantWidgetPermission();
 
         widgetInfo = findWidgetProvider(false /* hasConfigureScreen */);
     }

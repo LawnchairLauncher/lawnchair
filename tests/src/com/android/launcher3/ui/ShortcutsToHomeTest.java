@@ -25,6 +25,7 @@ public class ShortcutsToHomeTest extends LauncherInstrumentationTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        setDefaultLauncher();
 
         mSettingsApp = LauncherAppsCompat.getInstance(mTargetContext)
                 .getActivityList("com.android.settings", Process.myUserHandle()).get(0);

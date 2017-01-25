@@ -15,10 +15,14 @@
  */
 package com.android.launcher3.ui;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Point;
 import android.os.ParcelFileDescriptor;
 import android.os.Process;
@@ -46,15 +50,23 @@ import com.android.launcher3.testcomponent.AppWidgetNoConfig;
 import com.android.launcher3.testcomponent.AppWidgetWithConfig;
 import com.android.launcher3.util.ManagedProfileHeuristic;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Base class for all instrumentation tests providing various utility methods.
  */
 public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
+
+    public static final long DEFAULT_ACTIVITY_TIMEOUT = TimeUnit.SECONDS.toMillis(10);
+    public static final long DEFAULT_BROADCAST_TIMEOUT_SECS = 5;
 
     public static final long DEFAULT_UI_TIMEOUT = 3000;
     public static final long DEFAULT_WORKER_TIMEOUT_SECS = 5;
@@ -89,11 +101,14 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
      * Starts the launcher activity in the target package and returns the Launcher instance.
      */
     protected Launcher startLauncher() {
-        Intent homeIntent = new Intent(Intent.ACTION_MAIN)
+        return (Launcher) getInstrumentation().startActivitySync(getHomeIntent());
+    }
+
+    protected Intent getHomeIntent() {
+        return new Intent(Intent.ACTION_MAIN)
                 .addCategory(Intent.CATEGORY_HOME)
                 .setPackage(mTargetPackage)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        return (Launcher) getInstrumentation().startActivitySync(homeIntent);
     }
 
     /**
@@ -104,13 +119,28 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
         if (mTargetContext.getPackageManager().checkPermission(
                 mTargetPackage, android.Manifest.permission.BIND_APPWIDGET)
                 != PackageManager.PERMISSION_GRANTED) {
-            ParcelFileDescriptor pfd = getInstrumentation().getUiAutomation().executeShellCommand(
-                    "appwidget grantbind --package " + mTargetPackage);
-            // Read the input stream fully.
-            FileInputStream fis = new ParcelFileDescriptor.AutoCloseInputStream(pfd);
-            while (fis.read() != -1);
-            fis.close();
+            runShellCommand("appwidget grantbind --package " + mTargetPackage);
         }
+    }
+
+    /**
+     * Sets the target launcher as default launcher.
+     */
+    protected void setDefaultLauncher() throws IOException {
+        ActivityInfo launcher = mTargetContext.getPackageManager()
+                .queryIntentActivities(getHomeIntent(), 0).get(0).activityInfo;
+        runShellCommand("cmd package set-home-activity " +
+                new ComponentName(launcher.packageName, launcher.name).flattenToString());
+    }
+
+    protected void runShellCommand(String command) throws IOException {
+        ParcelFileDescriptor pfd = getInstrumentation().getUiAutomation()
+                .executeShellCommand(command);
+
+        // Read the input stream fully.
+        FileInputStream fis = new ParcelFileDescriptor.AutoCloseInputStream(pfd);
+        while (fis.read() != -1);
+        fis.close();
     }
 
     /**
@@ -284,5 +314,36 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
     protected BySelector getSelectorForId(int id) {
         String name = mTargetContext.getResources().getResourceEntryName(id);
         return By.res(mTargetPackage, name);
+    }
+
+
+    /**
+     * Broadcast receiver which blocks until the result is received.
+     */
+    public class BlockingBroadcastReceiver extends BroadcastReceiver {
+
+        private final CountDownLatch latch = new CountDownLatch(1);
+        private Intent mIntent;
+
+        public BlockingBroadcastReceiver(String action) {
+            mTargetContext.registerReceiver(this, new IntentFilter(action));
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mIntent = intent;
+            latch.countDown();
+        }
+
+        public Intent blockingGetIntent() throws InterruptedException {
+            latch.await(DEFAULT_BROADCAST_TIMEOUT_SECS, TimeUnit.SECONDS);
+            mTargetContext.unregisterReceiver(this);
+            return mIntent;
+        }
+
+        public Intent blockingGetExtraIntent() throws InterruptedException {
+            Intent intent = blockingGetIntent();
+            return intent == null ? null : (Intent) intent.getParcelableExtra(Intent.EXTRA_INTENT);
+        }
     }
 }
