@@ -37,7 +37,7 @@ public class LauncherSettings {
         public static final String MODIFIED = "modified";
     }
 
-    static interface BaseLauncherColumns extends ChangeLogColumns {
+    static public interface BaseLauncherColumns extends ChangeLogColumns {
         /**
          * Descriptive name of the gesture that can be displayed to the user.
          * <P>Type: TEXT</P>

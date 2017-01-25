@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static com.android.launcher3.LauncherSettings.BaseLauncherColumns.INTENT;
 import static com.android.launcher3.LauncherSettings.Favorites.CELLX;
 import static com.android.launcher3.LauncherSettings.Favorites.CELLY;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER;
@@ -73,7 +74,7 @@ public class LoaderCursorTest {
         mCursor = new MatrixCursor(new String[] {
                 ICON, ICON_PACKAGE, ICON_RESOURCE, TITLE,
                 _ID, CONTAINER, ITEM_TYPE, PROFILE_ID,
-                SCREEN, CELLX, CELLY, RESTORED
+                SCREEN, CELLX, CELLY, RESTORED, INTENT
         });
         mContext = InstrumentationRegistry.getTargetContext();
 
