@@ -55,6 +55,8 @@ public class NotificationInfo implements View.OnClickListener {
         Notification notification = statusBarNotification.getNotification();
         title = notification.extras.getCharSequence(Notification.EXTRA_TITLE);
         text = notification.extras.getCharSequence(Notification.EXTRA_TEXT);
+        // Load the icon. Since it is backed by ashmem, we won't copy the entire bitmap
+        // into our process as long as we don't touch it and it exists in systemui.
         Icon icon = notification.getLargeIcon();
         if (icon == null) {
             icon = notification.getSmallIcon();

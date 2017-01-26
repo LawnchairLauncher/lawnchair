@@ -24,6 +24,8 @@ import android.view.animation.PathInterpolator;
 
 /**
  * Utility class to calculate general fling animation when the finger is released.
+ *
+ * This class was copied from com.android.systemui.statusbar.
  */
 public class FlingAnimationUtils {
 

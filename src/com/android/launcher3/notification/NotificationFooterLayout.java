@@ -43,8 +43,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A {@link LinearLayout} that contains icons of notifications. If there is only one icon,
- * we also supply the notification text/secondary text like we do for the main notification.
+ * A {@link LinearLayout} that contains only icons of notifications.
  * If there are more than {@link #MAX_FOOTER_NOTIFICATIONS} icons, we add a "+x" overflow.
  */
 public class NotificationFooterLayout extends LinearLayout {

@@ -35,6 +35,9 @@ import com.android.launcher3.R;
 
 import java.util.HashMap;
 
+/**
+ * This class was copied from com.android.systemui.
+ */
 public class SwipeHelper {
     static final String TAG = "SwipeHelper";
     private static final boolean DEBUG = false;
