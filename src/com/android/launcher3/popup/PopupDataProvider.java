@@ -33,7 +33,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Provides data for the popup menu that appears after long-clicking on apps.
@@ -59,10 +58,10 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         BadgeInfo oldBadgeInfo = mPackageUserToBadgeInfos.get(postedPackageUserKey);
         if (oldBadgeInfo == null) {
             BadgeInfo newBadgeInfo = new BadgeInfo(postedPackageUserKey);
-            newBadgeInfo.addNotificationKey(notificationKey);
+            newBadgeInfo.addNotificationKeyIfNotExists(notificationKey);
             mPackageUserToBadgeInfos.put(postedPackageUserKey, newBadgeInfo);
             mLauncher.updateIconBadges(Collections.singleton(postedPackageUserKey));
-        } else if (oldBadgeInfo.addNotificationKey(notificationKey)) {
+        } else if (oldBadgeInfo.addNotificationKeyIfNotExists(notificationKey)) {
             mLauncher.updateIconBadges(Collections.singleton(postedPackageUserKey));
         }
     }
@@ -96,7 +95,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
                 badgeInfo = new BadgeInfo(packageUserKey);
                 mPackageUserToBadgeInfos.put(packageUserKey, badgeInfo);
             }
-            badgeInfo.addNotificationKey(notification.getKey());
+            badgeInfo.addNotificationKeyIfNotExists(notification.getKey());
         }
 
         // Add and remove from updatedBadges so it contains the PackageUserKeys of updated badges.
@@ -151,7 +150,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     public String[] getNotificationKeysForItem(ItemInfo info) {
         BadgeInfo badgeInfo = mPackageUserToBadgeInfos.get(PackageUserKey.fromItemInfo(info));
         if (badgeInfo == null) { return new String[0]; }
-        Set<String> notificationKeys = badgeInfo.getNotificationKeys();
+        List<String> notificationKeys = badgeInfo.getNotificationKeys();
         return notificationKeys.toArray(new String[notificationKeys.size()]);
     }
 

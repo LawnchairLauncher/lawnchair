@@ -19,8 +19,8 @@ package com.android.launcher3.badge;
 import com.android.launcher3.notification.NotificationInfo;
 import com.android.launcher3.util.PackageUserKey;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Contains data to be used in an icon badge.
@@ -33,17 +33,20 @@ public class BadgeInfo {
      * The keys of the notifications that this badge represents. These keys can later be
      * used to retrieve {@link NotificationInfo}'s.
      */
-    private Set<String> mNotificationKeys;
+    private List<String> mNotificationKeys;
 
     public BadgeInfo(PackageUserKey packageUserKey) {
         mPackageUserKey = packageUserKey;
-        mNotificationKeys = new HashSet<>();
+        mNotificationKeys = new ArrayList<>();
     }
 
     /**
      * Returns whether the notification was added (false if it already existed).
      */
-    public boolean addNotificationKey(String notificationKey) {
+    public boolean addNotificationKeyIfNotExists(String notificationKey) {
+        if (mNotificationKeys.contains(notificationKey)) {
+            return false;
+        }
         return mNotificationKeys.add(notificationKey);
     }
 
@@ -54,7 +57,7 @@ public class BadgeInfo {
         return mNotificationKeys.remove(notificationKey);
     }
 
-    public Set<String> getNotificationKeys() {
+    public List<String> getNotificationKeys() {
         return mNotificationKeys;
     }
 
