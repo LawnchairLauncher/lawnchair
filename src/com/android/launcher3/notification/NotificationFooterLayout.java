@@ -40,7 +40,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * A {@link LinearLayout} that contains only icons of notifications.
@@ -190,7 +189,7 @@ public class NotificationFooterLayout extends LinearLayout {
         animation.start();
     }
 
-    public void trimNotifications(Set<String> notifications) {
+    public void trimNotifications(List<String> notifications) {
         if (!isAttachedToWindow() || mIconRow.getChildCount() == 0) {
             return;
         }
