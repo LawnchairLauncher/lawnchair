@@ -121,28 +121,6 @@ public class DragController implements DragDriver.EventListener, TouchController
     /**
      * Starts a drag.
      *
-     * @param v The view that is being dragged
-     * @param bmp The bitmap that represents the view being dragged
-     * @param source An object representing where the drag originated
-     * @param dragInfo The data associated with the object that is being dragged
-     * @param viewImageBounds the position of the image inside the view
-     */
-    public void startDrag(View v, Bitmap bmp, DragSource source, ItemInfo dragInfo,
-            Rect viewImageBounds, float initialDragViewScale, DragOptions options) {
-        int[] loc = mCoordinatesTemp;
-        mLauncher.getDragLayer().getLocationInDragLayer(v, loc);
-        int dragLayerX = loc[0] + viewImageBounds.left
-                + (int) ((initialDragViewScale * bmp.getWidth() - bmp.getWidth()) / 2);
-        int dragLayerY = loc[1] + viewImageBounds.top
-                + (int) ((initialDragViewScale * bmp.getHeight() - bmp.getHeight()) / 2);
-
-        startDrag(bmp, dragLayerX, dragLayerY, source, dragInfo, null,
-                null, initialDragViewScale, options);
-    }
-
-    /**
-     * Starts a drag.
-     *
      * @param b The bitmap to display as the drag image.  It will be re-scaled to the
      *          enlarged size.
      * @param dragLayerX The x position in the DragLayer of the left-top of the bitmap.
@@ -257,10 +235,6 @@ public class DragController implements DragDriver.EventListener, TouchController
 
     public boolean isDragging() {
         return mDragDriver != null || (mOptions != null && mOptions.isAccessibleDrag);
-    }
-
-    public boolean isExternalDrag() {
-        return (mOptions != null && mOptions.systemDndStartPoint != null);
     }
 
     /**

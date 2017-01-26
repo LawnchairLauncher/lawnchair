@@ -17,9 +17,6 @@
 package com.android.launcher3.dragndrop;
 
 import android.content.ClipDescription;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Handler;
@@ -32,30 +29,25 @@ import android.view.DragEvent;
 import android.view.View;
 
 import com.android.launcher3.DeleteDropTarget;
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.compat.PinItemRequestCompat;
 import com.android.launcher3.folder.Folder;
-import com.android.launcher3.graphics.LauncherIcons;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
-import com.android.launcher3.widget.PendingItemPreviewProvider;
+import com.android.launcher3.widget.PendingItemDragHelper;
 import com.android.launcher3.widget.WidgetAddFlowHandler;
-import com.android.launcher3.widget.WidgetHostViewLoader;
 
 import java.util.UUID;
 
 /**
- * {@link DragSource} for handling drop from from a different window. This object is initialized
+ * {@link DragSource} for handling drop from a different window. This object is initialized
  * in the source window and is passed on to the Launcher activity as an Intent extra.
  */
 public class PinItemDragListener
@@ -71,6 +63,9 @@ public class PinItemDragListener
     // Position of preview relative to the touch location
     private final Rect mPreviewRect;
 
+    private final int mPreviewBitmapWidth;
+    private final int mPreviewViewWidth;
+
     // Randomly generated id used to verify the drag event.
     private final String mId;
 
@@ -78,15 +73,20 @@ public class PinItemDragListener
     private DragController mDragController;
     private long mDragStartTime;
 
-    public PinItemDragListener(PinItemRequestCompat request, Rect previewRect) {
+    public PinItemDragListener(PinItemRequestCompat request, Rect previewRect,
+            int previewBitmapWidth, int previewViewWidth) {
         mRequest = request;
         mPreviewRect = previewRect;
+        mPreviewBitmapWidth = previewBitmapWidth;
+        mPreviewViewWidth = previewViewWidth;
         mId = UUID.randomUUID().toString();
     }
 
     private PinItemDragListener(Parcel parcel) {
         mRequest = PinItemRequestCompat.CREATOR.createFromParcel(parcel);
         mPreviewRect = Rect.CREATOR.createFromParcel(parcel);
+        mPreviewBitmapWidth = parcel.readInt();
+        mPreviewViewWidth = parcel.readInt();
         mId = parcel.readString();
     }
 
@@ -103,6 +103,8 @@ public class PinItemDragListener
     public void writeToParcel(Parcel parcel, int i) {
         mRequest.writeToParcel(parcel, i);
         mPreviewRect.writeToParcel(parcel, i);
+        parcel.writeInt(mPreviewBitmapWidth);
+        parcel.writeInt(mPreviewViewWidth);
         parcel.writeString(mId);
     }
 
@@ -139,26 +141,9 @@ public class PinItemDragListener
         }
 
         final PendingAddItemInfo item;
-        final Bitmap preview;
-        final View view = new View(mLauncher);
-
-        Point dragShift = new Point(mPreviewRect.left, mPreviewRect.top);
         if (mRequest.getRequestType() == PinItemRequestCompat.REQUEST_TYPE_SHORTCUT) {
             item = new PendingAddShortcutInfo(
                     new PinShortcutRequestActivityInfo(mRequest, mLauncher));
-
-            ShortcutInfoCompat compat = new ShortcutInfoCompat(mRequest.getShortcutInfo());
-            Bitmap icon = LauncherIcons.createShortcutIcon(compat, mLauncher, false /* badged */);
-
-            // Create a preview same as the workspace cell size and draw the icon at the
-            // appropriate position.
-            int[] size = mLauncher.getWorkspace().estimateItemSize(item, true, false);
-            preview = Bitmap.createBitmap(size[0], size[1], Bitmap.Config.ARGB_8888);
-            Canvas c = new Canvas(preview);
-            DeviceProfile dp = mLauncher.getDeviceProfile();
-            c.drawBitmap(icon, (size[0] - icon.getWidth()) / 2,
-                    (size[1] - icon.getHeight() - dp.iconTextSizePx - dp.iconDrawablePaddingPx) / 2,
-                    new Paint(Paint.FILTER_BITMAP_FLAG));
         } else {
             // mRequest.getRequestType() == PinItemRequestCompat.REQUEST_TYPE_APPWIDGET
             LauncherAppWidgetProviderInfo providerInfo =
@@ -166,46 +151,28 @@ public class PinItemDragListener
                             mLauncher, mRequest.getAppWidgetProviderInfo(mLauncher));
             final PinWidgetFlowHandler flowHandler =
                     new PinWidgetFlowHandler(providerInfo, mRequest);
-            PendingAddWidgetInfo info = new PendingAddWidgetInfo(providerInfo) {
+            item = new PendingAddWidgetInfo(providerInfo) {
                 @Override
                 public WidgetAddFlowHandler getHandler() {
                     return flowHandler;
                 }
             };
-            int[] size = mLauncher.getWorkspace().estimateItemSize(info, true, false);
-
-            float minScale = 1.25f;
-            int maxWidth = Math.min((int) (mPreviewRect.width() * minScale), size[0]);
-            int[] previewSizeBeforeScale = new int[1];
-            preview = LauncherAppState.getInstance(mLauncher).getWidgetCache()
-                    .generateWidgetPreview(mLauncher, info.info, maxWidth, null,
-                            previewSizeBeforeScale);
-
-            dragShift.offset(
-                    (mPreviewRect.width() - preview.getWidth()) / 2,
-                    (mPreviewRect.height() - preview.getHeight()) / 2);
-            item = info;
-
-            view.setTag(info);
-            mDragController.addDragListener(new WidgetHostViewLoader(mLauncher, view));
         }
-
-        PendingItemPreviewProvider previewProvider =
-                new PendingItemPreviewProvider(view, item, preview);
-
-        // Since we are not going through the workspace for starting the drag, set drag related
-        // information on the workspace before starting the drag.
-        mLauncher.getWorkspace().prepareDragWithProvider(previewProvider);
+        View view = new View(mLauncher);
+        view.setTag(item);
 
         Point downPos = new Point((int) event.getX(), (int) event.getY());
         DragOptions options = new DragOptions();
         options.systemDndStartPoint = downPos;
         options.preDragCondition = this;
 
-        int x = downPos.x + dragShift.x;
-        int y = downPos.y + dragShift.y;
-        mDragController.startDrag(
-                preview, x, y, this, item, null, null, 1f, options);
+        // We use drag event position as the screenPos for the preview image. Since mPreviewRect
+        // already includes the view position relative to the drag event on the source window,
+        // and the absolute position (position relative to the screen) of drag event is same
+        // across windows, using drag position here give a good estimate for relative position
+        // to source window.
+        new PendingItemDragHelper(view).startDrag(new Rect(mPreviewRect),
+                mPreviewBitmapWidth, mPreviewViewWidth, downPos,  this, options);
         mDragStartTime = SystemClock.uptimeMillis();
         return true;
     }

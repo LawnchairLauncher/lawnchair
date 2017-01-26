@@ -101,7 +101,6 @@ import com.android.launcher3.dragndrop.PinItemDragListener;
 import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
-import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.keyboard.CustomActionsPopup;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logging.FileLog;
@@ -111,7 +110,6 @@ import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -836,7 +834,7 @@ public class Launcher extends BaseActivity
     }
 
     @Override
-    public void onActivityResult(
+    protected void onActivityResult(
             final int requestCode, final int resultCode, final Intent data) {
         handleActivityResult(requestCode, resultCode, data);
         if (mLauncherCallbacks != null) {
@@ -1459,21 +1457,8 @@ public class Launcher extends BaseActivity
 
         ShortcutInfo info = null;
         if (Utilities.isAtLeastO()) {
-            PinItemRequestCompat request = PinItemRequestCompat.getPinItemRequest(data);
-            // request.accept will initiate a shortcutChanged callback. To ensure that the model is
-            // consistent, that callback must be processed by the model, after the ShortcutInfo is
-            // added to the model. This is guaranteed here the callback comes on the UI thread, and
-            // we will add the shortcut on the UI thread as well.
-            if (request != null &&
-                    request.getRequestType() == PinItemRequestCompat.REQUEST_TYPE_SHORTCUT &&
-                    request.isValid() && request.accept()) {
-                ShortcutInfoCompat compat = new ShortcutInfoCompat(request.getShortcutInfo());
-                info = new ShortcutInfo(compat, this);
-                // Apply the unbadged icon and fetch the actual icon asynchronously.
-                info.iconBitmap = LauncherIcons
-                        .createShortcutIcon(compat, this, false /* badged */);
-                getModel().updateAndBindShortcutInfo(info, compat);
-            }
+            info = LauncherAppsCompat.createShortcutInfoFromPinItemRequest(
+                    this, PinItemRequestCompat.getPinItemRequest(data));
         }
 
         if (info == null) {

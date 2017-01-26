@@ -673,15 +673,11 @@ public class DragLayer extends InsettableFrameLayout {
 
         // If duration < 0, this is a cue to compute the duration based on the distance
         if (duration < 0) {
-            if (mDragController != null && mDragController.isExternalDrag()) {
-                duration = 1;
-            } else {
-                duration = res.getInteger(R.integer.config_dropAnimMaxDuration);
-                if (dist < maxDist) {
-                    duration *= mCubicEaseOutInterpolator.getInterpolation(dist / maxDist);
-                }
-                duration = Math.max(duration, res.getInteger(R.integer.config_dropAnimMinDuration));
+            duration = res.getInteger(R.integer.config_dropAnimMaxDuration);
+            if (dist < maxDist) {
+                duration *= mCubicEaseOutInterpolator.getInterpolation(dist / maxDist);
             }
+            duration = Math.max(duration, res.getInteger(R.integer.config_dropAnimMinDuration));
         }
 
         // Fall back to cubic ease out interpolator for the animation if none is specified

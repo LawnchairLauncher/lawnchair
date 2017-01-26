@@ -2523,7 +2523,7 @@ public class Workspace extends PagedView
         if (d.dragSource != this) {
             final int[] touchXY = new int[] { (int) mDragViewVisualCenter[0],
                     (int) mDragViewVisualCenter[1] };
-            onDropExternal(touchXY, d.dragInfo, dropTargetLayout, d);
+            onDropExternal(touchXY, dropTargetLayout, d);
         } else if (mDragInfo != null) {
             final View cell = mDragInfo.cell;
             boolean droppedOnOriginalCellDuringTransition = false;
@@ -3226,8 +3226,7 @@ public class Workspace extends PagedView
      * NOTE: This can also be called when we are outside of a drag event, when we want
      * to add an item to one of the workspace screens.
      */
-    private void onDropExternal(final int[] touchXY, final ItemInfo dragInfo,
-            final CellLayout cellLayout, DragObject d) {
+    private void onDropExternal(final int[] touchXY, final CellLayout cellLayout, DragObject d) {
         final Runnable exitSpringLoadedRunnable = new Runnable() {
             @Override
             public void run() {
@@ -3236,7 +3235,15 @@ public class Workspace extends PagedView
             }
         };
 
-        ItemInfo info = dragInfo;
+        if (d.dragInfo instanceof PendingAddShortcutInfo) {
+            ShortcutInfo si = ((PendingAddShortcutInfo) d.dragInfo)
+                    .activityInfo.createShortcutInfo();
+            if (si != null) {
+                d.dragInfo = si;
+            }
+        }
+
+        ItemInfo info = d.dragInfo;
         int spanX = info.spanX;
         int spanY = info.spanY;
         if (mDragInfo != null) {
@@ -3255,7 +3262,7 @@ public class Workspace extends PagedView
         }
 
         if (info instanceof PendingAddItemInfo) {
-            final PendingAddItemInfo pendingInfo = (PendingAddItemInfo) dragInfo;
+            final PendingAddItemInfo pendingInfo = (PendingAddItemInfo) info;
 
             boolean findNearestVacantCell = true;
             if (pendingInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
@@ -3318,7 +3325,7 @@ public class Workspace extends PagedView
 
             int animationStyle = ANIMATE_INTO_POSITION_AND_DISAPPEAR;
             if (isWidget && ((PendingAddWidgetInfo) pendingInfo).info != null &&
-                    ((PendingAddWidgetInfo) pendingInfo).info.configure != null) {
+                    ((PendingAddWidgetInfo) pendingInfo).getHandler().needsConfigure()) {
                 animationStyle = ANIMATE_INTO_POSITION_AND_REMAIN;
             }
             animateWidgetDrop(info, cellLayout, d.dragView, onAnimationCompleteRunnable,
@@ -3433,21 +3440,32 @@ public class Workspace extends PagedView
                 mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(layout, loc, true);
         resetTransitionTransform(layout);
 
-        float dragViewScaleX = 1f;
-        float dragViewScaleY = 1f;
         if (scale) {
-            dragViewScaleX = (1.0f * r.width()) / dragView.getMeasuredWidth();
-            dragViewScaleY = (1.0f * r.height()) / dragView.getMeasuredHeight();
+            float dragViewScaleX = (1.0f * r.width()) / dragView.getMeasuredWidth();
+            float dragViewScaleY = (1.0f * r.height()) / dragView.getMeasuredHeight();
+
+            // The animation will scale the dragView about its center, so we need to center about
+            // the final location.
+            loc[0] -= (dragView.getMeasuredWidth() - cellLayoutScale * r.width()) / 2
+                    - Math.ceil(layout.getUnusedHorizontalSpace() / 2f);
+            loc[1] -= (dragView.getMeasuredHeight() - cellLayoutScale * r.height()) / 2;
+            scaleXY[0] = dragViewScaleX * cellLayoutScale;
+            scaleXY[1] = dragViewScaleY * cellLayoutScale;
+        } else {
+            // Since we are not cross-fading the dragView, align the drag view to the
+            // final cell position.
+            float dragScale = dragView.getInitialScale() * cellLayoutScale;
+            loc[0] += (dragScale - 1) * dragView.getWidth() / 2;
+            loc[1] += (dragScale - 1) * dragView.getHeight() / 2;
+            scaleXY[0] = scaleXY[1] = dragScale;
+
+            // If a dragRegion was provided, offset the final position accordingly.
+            Rect dragRegion = dragView.getDragRegion();
+            if (dragRegion != null) {
+                loc[0] += cellLayoutScale * dragRegion.left;
+                loc[1] += cellLayoutScale * dragRegion.top;
+            }
         }
-
-        // The animation will scale the dragView about its center, so we need to center about
-        // the final location.
-        loc[0] -= (dragView.getMeasuredWidth() - cellLayoutScale * r.width()) / 2
-                - Math.ceil(layout.getUnusedHorizontalSpace() / 2f);
-        loc[1] -= (dragView.getMeasuredHeight() - cellLayoutScale * r.height()) / 2;
-
-        scaleXY[0] = dragViewScaleX * cellLayoutScale;
-        scaleXY[1] = dragViewScaleY * cellLayoutScale;
     }
 
     public void animateWidgetDrop(ItemInfo info, CellLayout cellLayout, final DragView dragView,

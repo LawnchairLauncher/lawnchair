@@ -392,4 +392,8 @@ public class DragView extends View {
     public int getBlurSizeOutline() {
         return mBlurSizeOutline;
     }
+
+    public float getInitialScale() {
+        return mInitialScale;
+    }
 }

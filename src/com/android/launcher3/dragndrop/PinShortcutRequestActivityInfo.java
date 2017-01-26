@@ -26,8 +26,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 
 import com.android.launcher3.IconCache;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PinItemRequestCompat;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
 
@@ -66,9 +66,13 @@ class PinShortcutRequestActivityInfo extends ShortcutConfigActivityInfo {
     }
 
     @Override
-    public boolean startConfigActivity(Launcher activity, int requestCode) {
-        activity.onActivityResult(requestCode, Activity.RESULT_OK, mRequest.toIntent());
-        return true;
+    public com.android.launcher3.ShortcutInfo createShortcutInfo() {
+        return LauncherAppsCompat.createShortcutInfoFromPinItemRequest(mContext, mRequest);
+    }
+
+    @Override
+    public boolean startConfigActivity(Activity activity, int requestCode) {
+        return false;
     }
 
     @Override

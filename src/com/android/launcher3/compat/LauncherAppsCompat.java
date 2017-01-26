@@ -23,8 +23,12 @@ import android.content.pm.LauncherActivityInfo;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.UserHandle;
+import android.support.annotation.Nullable;
 
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 
 import java.util.List;
@@ -75,4 +79,38 @@ public abstract class LauncherAppsCompat {
     public abstract boolean isActivityEnabledForProfile(ComponentName component,
             UserHandle user);
     public abstract List<ShortcutConfigActivityInfo> getCustomShortcutActivityList();
+
+    /**
+     * request.accept() will initiate the following flow:
+     *      -> go-to-system-process for actual processing (a)
+     *      -> callback-to-launcher on UI thread (b)
+     *      -> post callback on the worker thread (c)
+     *      -> Update model and unpin (in system) any shortcut not in out model. (d)
+     *
+     * Note that (b) will take at-least one frame as it involves posting callback from binder
+     * thread to UI thread.
+     * If (d) happens before we add this shortcut to our model, we will end up unpinning
+     * the shortcut in the system.
+     * Here its the caller's responsibility to add the newly created ShortcutInfo immediately
+     * to the model (which may involves a single post-to-worker-thread). That will guarantee
+     * that (d) happens after model is updated.
+     */
+    @Nullable
+    public static ShortcutInfo createShortcutInfoFromPinItemRequest(
+            Context context, PinItemRequestCompat request) {
+        if (request != null &&
+                request.getRequestType() == PinItemRequestCompat.REQUEST_TYPE_SHORTCUT &&
+                request.isValid() && request.accept()) {
+            ShortcutInfoCompat compat = new ShortcutInfoCompat(request.getShortcutInfo());
+            ShortcutInfo info = new ShortcutInfo(compat, context);
+            // Apply the unbadged icon and fetch the actual icon asynchronously.
+            info.iconBitmap = LauncherIcons
+                    .createShortcutIcon(compat, context, false /* badged */);
+            LauncherAppState.getInstance(context).getModel()
+                    .updateAndBindShortcutInfo(info, compat);
+            return info;
+        } else {
+            return null;
+        }
+    }
 }

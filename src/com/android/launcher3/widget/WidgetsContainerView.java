@@ -17,9 +17,7 @@
 package com.android.launcher3.widget;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
+import android.graphics.Point;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -35,17 +33,13 @@ import com.android.launcher3.IconCache;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
-import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.model.WidgetItem;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.MultiHashMap;
@@ -70,9 +64,6 @@ public class WidgetsContainerView extends BaseContainerView
 
     /* Touch handling related member variables. */
     private Toast mWidgetInstructionToast;
-
-    /* Rendering related. */
-    private WidgetPreviewLoader mWidgetPreviewLoader;
 
     public WidgetsContainerView(Context context) {
         this(context, null);
@@ -174,7 +165,6 @@ public class WidgetsContainerView extends BaseContainerView
     private boolean beginDraggingWidget(WidgetCell v) {
         // Get the widget preview as the drag representation
         WidgetImageView image = (WidgetImageView) v.findViewById(R.id.widget_preview);
-        PendingAddItemInfo createItemInfo = (PendingAddItemInfo) v.getTag();
 
         // If the ImageView doesn't have a drawable yet, the widget preview hasn't been loaded and
         // we abort the drag.
@@ -182,55 +172,12 @@ public class WidgetsContainerView extends BaseContainerView
             return false;
         }
 
-        // Compose the drag image
-        Bitmap preview;
-        final float scale;
-        final Rect bounds = image.getBitmapBounds();
+        int[] loc = new int[2];
+        mLauncher.getDragLayer().getLocationInDragLayer(image, loc);
 
-        if (createItemInfo instanceof PendingAddWidgetInfo) {
-            // This can happen in some weird cases involving multi-touch. We can't start dragging
-            // the widget if this is null, so we break out.
-
-            PendingAddWidgetInfo createWidgetInfo = (PendingAddWidgetInfo) createItemInfo;
-            int[] size = mLauncher.getWorkspace().estimateItemSize(createWidgetInfo, true, false);
-
-            Bitmap icon = image.getBitmap();
-            float minScale = 1.25f;
-            int maxWidth = Math.min((int) (icon.getWidth() * minScale), size[0]);
-
-            int[] previewSizeBeforeScale = new int[1];
-            preview = getWidgetPreviewLoader().generateWidgetPreview(mLauncher,
-                    createWidgetInfo.info, maxWidth, null, previewSizeBeforeScale);
-
-            if (previewSizeBeforeScale[0] < icon.getWidth()) {
-                // The icon has extra padding around it.
-                int padding = (icon.getWidth() - previewSizeBeforeScale[0]) / 2;
-                if (icon.getWidth() > image.getWidth()) {
-                    padding = padding * image.getWidth() / icon.getWidth();
-                }
-
-                bounds.left += padding;
-                bounds.right -= padding;
-            }
-            scale = bounds.width() / (float) preview.getWidth();
-
-            mLauncher.getDragController().addDragListener(new WidgetHostViewLoader(mLauncher, v));
-        } else {
-            PendingAddShortcutInfo createShortcutInfo = (PendingAddShortcutInfo) v.getTag();
-            Drawable icon = createShortcutInfo.activityInfo.getFullResIcon(mIconCache);
-            preview = LauncherIcons.createIconBitmap(icon, mLauncher);
-            createItemInfo.spanX = createItemInfo.spanY = 1;
-            scale = ((float) mLauncher.getDeviceProfile().iconSizePx) / preview.getWidth();
-        }
-
-        // Since we are not going through the workspace for starting the drag, set drag related
-        // information on the workspace before starting the drag.
-        mLauncher.getWorkspace().prepareDragWithProvider(
-                new PendingItemPreviewProvider(v, createItemInfo, preview));
-
-        // Start the drag
-        mDragController.startDrag(image, preview, this, createItemInfo,
-                bounds, scale, new DragOptions());
+        new PendingItemDragHelper(v).startDrag(
+                image.getBitmapBounds(), image.getBitmap().getWidth(), image.getWidth(),
+                new Point(loc[0], loc[1]), this, new DragOptions());
         return true;
     }
 
@@ -292,13 +239,6 @@ public class WidgetsContainerView extends BaseContainerView
 
     public boolean isEmpty() {
         return mAdapter.getItemCount() == 0;
-    }
-
-    private WidgetPreviewLoader getWidgetPreviewLoader() {
-        if (mWidgetPreviewLoader == null) {
-            mWidgetPreviewLoader = LauncherAppState.getInstance(getContext()).getWidgetCache();
-        }
-        return mWidgetPreviewLoader;
     }
 
     @Override

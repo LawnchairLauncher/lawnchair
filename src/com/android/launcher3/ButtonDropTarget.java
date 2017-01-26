@@ -229,7 +229,7 @@ public abstract class ButtonDropTarget extends TextView
             }
         };
         dragLayer.animateView(d.dragView, from, to, scale, 1f, 1f, 0.1f, 0.1f,
-                mLauncher.getDragController().isExternalDrag() ? 1 : DRAG_VIEW_DROP_DURATION,
+                DRAG_VIEW_DROP_DURATION,
                 new DecelerateInterpolator(2),
                 new LinearInterpolator(), onAnimationEndRunnable,
                 DragLayer.ANIMATION_END_DISAPPEAR, null);

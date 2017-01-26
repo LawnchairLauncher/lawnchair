@@ -94,10 +94,6 @@ public class PinItemRequestCompat implements Parcelable {
         parcel.writeParcelable(mObject, i);
     }
 
-    public Intent toIntent() {
-        return new Intent().putExtra(EXTRA_PIN_ITEM_REQUEST, mObject);
-    }
-
     public static final Parcelable.Creator<PinItemRequestCompat> CREATOR =
             new Parcelable.Creator<PinItemRequestCompat>() {
                 public PinItemRequestCompat createFromParcel(Parcel source) {

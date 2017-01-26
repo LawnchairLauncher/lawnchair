@@ -26,18 +26,15 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.os.Process;
 import android.os.UserHandle;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.android.launcher3.IconCache;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
+import com.android.launcher3.ShortcutInfo;
 
 import java.lang.reflect.Method;
 
@@ -68,7 +65,15 @@ public abstract class ShortcutConfigActivityInfo {
 
     public abstract Drawable getFullResIcon(IconCache cache);
 
-    public boolean startConfigActivity(Launcher activity, int requestCode) {
+    /**
+     * Return a shortcut info, if it can be created directly on drop, without requiring any
+     * {@link #startConfigActivity(Activity, int)}.
+     */
+    public ShortcutInfo createShortcutInfo() {
+        return null;
+    }
+
+    public boolean startConfigActivity(Activity activity, int requestCode) {
         Intent intent = new Intent(Intent.ACTION_CREATE_SHORTCUT)
                 .setComponent(getComponent());
         try {
@@ -137,7 +142,7 @@ public abstract class ShortcutConfigActivityInfo {
         }
 
         @Override
-        public boolean startConfigActivity(Launcher activity, int requestCode) {
+        public boolean startConfigActivity(Activity activity, int requestCode) {
             if (getUser().equals(Process.myUserHandle())) {
                 return super.startConfigActivity(activity, requestCode);
             }

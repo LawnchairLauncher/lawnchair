@@ -117,11 +117,19 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     public boolean onLongClick(View view) {
         // Find the position of the preview relative to the touch location.
         WidgetImageView img = mWidgetCell.getWidgetView();
+
+        // If the ImageView doesn't have a drawable yet, the widget preview hasn't been loaded and
+        // we abort the drag.
+        if (img.getBitmap() == null) {
+            return false;
+        }
+
         Rect bounds = img.getBitmapBounds();
         bounds.offset(img.getLeft() - (int) mLastTouchPos.x, img.getTop() - (int) mLastTouchPos.y);
 
         // Start home and pass the draw request params
-        PinItemDragListener listener = new PinItemDragListener(mRequest, bounds);
+        PinItemDragListener listener = new PinItemDragListener(mRequest, bounds,
+                img.getBitmap().getWidth(), img.getWidth());
         Intent homeIntent = new Intent(Intent.ACTION_MAIN)
                 .addCategory(Intent.CATEGORY_HOME)
                 .setPackage(getPackageName())
