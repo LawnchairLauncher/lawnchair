@@ -50,4 +50,6 @@
 
     <!-- Used as a fallback since colorSecondary doesn't exist pre-API 25 -->
     <color name="fallback_secondary_color">#FF37474F</color>
+
+    <color name="notification_icon_default_color">#757575</color> <!-- Gray 600 -->
 </resources>

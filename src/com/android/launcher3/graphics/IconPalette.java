@@ -16,13 +16,21 @@
 
 package com.android.launcher3.graphics;
 
+import android.app.Notification;
+import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.graphics.ColorUtils;
+import android.util.Log;
+
+import com.android.launcher3.R;
 
 /**
  * Contains colors based on the dominant color of an icon.
  */
 public class IconPalette {
+
+    private static final boolean DEBUG = false;
+    private static final String TAG = "IconPalette";
 
     public int backgroundColor;
     public int textColor;
@@ -34,6 +42,100 @@ public class IconPalette {
         palette.textColor = getTextColorForBackground(palette.backgroundColor);
         palette.secondaryColor = getLowContrastColor(palette.backgroundColor);
         return palette;
+    }
+
+    /**
+     * Resolves a color such that it has enough contrast to be used as the
+     * color of an icon or text on the given background color.
+     *
+     * @return a color of the same hue with enough contrast against the background.
+     *
+     * This was copied from com.android.internal.util.NotificationColorUtil.
+     */
+    public static int resolveContrastColor(Context context, int color, int background) {
+        final int resolvedColor = resolveColor(context, color);
+
+        int contrastingColor = ensureTextContrast(resolvedColor, background);
+
+        if (contrastingColor != resolvedColor) {
+            if (DEBUG){
+                Log.w(TAG, String.format(
+                        "Enhanced contrast of notification for %s " +
+                                "%s (over background) by changing #%s to %s",
+                        context.getPackageName(),
+                        contrastChange(resolvedColor, contrastingColor, background),
+                        Integer.toHexString(resolvedColor), Integer.toHexString(contrastingColor)));
+            }
+        }
+        return contrastingColor;
+    }
+
+    /**
+     * Resolves {@param color} to an actual color if it is {@link Notification#COLOR_DEFAULT}
+     *
+     * This was copied from com.android.internal.util.NotificationColorUtil.
+     */
+    private static int resolveColor(Context context, int color) {
+        if (color == Notification.COLOR_DEFAULT) {
+            return context.getColor(R.color.notification_icon_default_color);
+        }
+        return color;
+    }
+
+    /** For debugging. This was copied from com.android.internal.util.NotificationColorUtil. */
+    private static String contrastChange(int colorOld, int colorNew, int bg) {
+        return String.format("from %.2f:1 to %.2f:1",
+                ColorUtils.calculateContrast(colorOld, bg),
+                ColorUtils.calculateContrast(colorNew, bg));
+    }
+
+    /**
+     * Finds a text color with sufficient contrast over bg that has the same hue as the original
+     * color.
+     *
+     * This was copied from com.android.internal.util.NotificationColorUtil.
+     */
+    private static int ensureTextContrast(int color, int bg) {
+        return findContrastColor(color, bg, true, 4.5);
+    }
+    /**
+     * Finds a suitable color such that there's enough contrast.
+     *
+     * @param color the color to start searching from.
+     * @param other the color to ensure contrast against. Assumed to be lighter than {@param color}
+     * @param findFg if true, we assume {@param color} is a foreground, otherwise a background.
+     * @param minRatio the minimum contrast ratio required.
+     * @return a color with the same hue as {@param color}, potentially darkened to meet the
+     *          contrast ratio.
+     *
+     * This was copied from com.android.internal.util.NotificationColorUtil.
+     */
+    private static int findContrastColor(int color, int other, boolean findFg, double minRatio) {
+        int fg = findFg ? color : other;
+        int bg = findFg ? other : color;
+        if (ColorUtils.calculateContrast(fg, bg) >= minRatio) {
+            return color;
+        }
+
+        double[] lab = new double[3];
+        ColorUtils.colorToLAB(findFg ? fg : bg, lab);
+
+        double low = 0, high = lab[0];
+        final double a = lab[1], b = lab[2];
+        for (int i = 0; i < 15 && high - low > 0.00001; i++) {
+            final double l = (low + high) / 2;
+            if (findFg) {
+                fg = ColorUtils.LABToColor(l, a, b);
+            } else {
+                bg = ColorUtils.LABToColor(l, a, b);
+            }
+            if (ColorUtils.calculateContrast(fg, bg) > minRatio) {
+                low = l;
+            } else {
+                high = l;
+            }
+        }
+        return ColorUtils.LABToColor(low, a, b);
     }
 
     private static int getMutedColor(int color) {

@@ -41,6 +41,7 @@ public class NotificationMainView extends LinearLayout implements SwipeHelper.Ca
     private NotificationInfo mNotificationInfo;
     private TextView mTitleView;
     private TextView mTextView;
+    private IconPalette mIconPalette;
 
     public NotificationMainView(Context context) {
         this(context, null, 0);
@@ -62,35 +63,38 @@ public class NotificationMainView extends LinearLayout implements SwipeHelper.Ca
         mTextView = (TextView) findViewById(R.id.text);
     }
 
+    public void applyColors(IconPalette iconPalette) {
+        setBackgroundColor(iconPalette.backgroundColor);
+        mIconPalette = iconPalette;
+    }
+
     public void applyNotificationInfo(NotificationInfo mainNotification, View iconView) {
-        applyNotificationInfo(mainNotification, iconView, null);
+        applyNotificationInfo(mainNotification, iconView, false);
     }
 
     /**
-     * @param iconPalette if not null, indicates that the new info should be animated in,
-     *                    and that part of this animation includes animating the background
-     *                    from iconPalette.secondaryColor to iconPalette.backgroundColor.
+     * Sets the content of this view, animating it after a new icon shifts up if necessary.
      */
     public void applyNotificationInfo(NotificationInfo mainNotification, View iconView,
-            @Nullable IconPalette iconPalette) {
-        boolean animate = iconPalette != null;
+           boolean animate) {
         if (animate) {
             mTitleView.setAlpha(0);
             mTextView.setAlpha(0);
-            setBackgroundColor(iconPalette.secondaryColor);
+            setBackgroundColor(mIconPalette.secondaryColor);
         }
         mNotificationInfo = mainNotification;
         mTitleView.setText(mNotificationInfo.title);
         mTextView.setText(mNotificationInfo.text);
-        iconView.setBackground(mNotificationInfo.iconDrawable);
+        iconView.setBackground(mNotificationInfo.getIconForBackground(
+                getContext(), mIconPalette.backgroundColor));
         setOnClickListener(mNotificationInfo);
         setTranslationX(0);
         if (animate) {
             AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
             Animator textFade = new LauncherViewPropertyAnimator(mTextView).alpha(1);
             Animator titleFade = new LauncherViewPropertyAnimator(mTitleView).alpha(1);
-            ValueAnimator colorChange = ValueAnimator.ofArgb(iconPalette.secondaryColor,
-                    iconPalette.backgroundColor);
+            ValueAnimator colorChange = ValueAnimator.ofArgb(mIconPalette.secondaryColor,
+                    mIconPalette.backgroundColor);
             colorChange.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator valueAnimator) {

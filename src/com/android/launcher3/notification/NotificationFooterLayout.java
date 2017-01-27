@@ -61,6 +61,7 @@ public class NotificationFooterLayout extends LinearLayout {
 
     LinearLayout.LayoutParams mIconLayoutParams;
     private LinearLayout mIconRow;
+    private int mBackgroundColor;
     private int mTextColor;
 
     public NotificationFooterLayout(Context context) {
@@ -90,7 +91,8 @@ public class NotificationFooterLayout extends LinearLayout {
     }
 
     public void applyColors(IconPalette iconPalette) {
-        setBackgroundTintList(ColorStateList.valueOf(iconPalette.backgroundColor));
+        mBackgroundColor = iconPalette.backgroundColor;
+        setBackgroundTintList(ColorStateList.valueOf(mBackgroundColor));
         findViewById(R.id.divider).setBackgroundColor(iconPalette.secondaryColor);
         mTextColor = iconPalette.textColor;
     }
@@ -130,7 +132,7 @@ public class NotificationFooterLayout extends LinearLayout {
 
     private void addNotificationIconForInfo(NotificationInfo info, boolean fromOverflow) {
         View icon = new View(getContext());
-        icon.setBackground(info.iconDrawable);
+        icon.setBackground(info.getIconForBackground(getContext(), mBackgroundColor));
         icon.setOnClickListener(info);
         int addIndex = mIconRow.getChildCount();
         if (fromOverflow) {
