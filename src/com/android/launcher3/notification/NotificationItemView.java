@@ -35,7 +35,9 @@ import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.popup.PopupItemView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.android.launcher3.LauncherAnimUtils.animateViewHeight;
 
@@ -117,7 +119,7 @@ public class NotificationItemView extends PopupItemView {
         mHeader.setBackgroundTintList(ColorStateList.valueOf(iconPalette.backgroundColor));
         mHeader.setTextColor(ColorStateList.valueOf(iconPalette.textColor));
         mDivider.setBackgroundColor(iconPalette.secondaryColor);
-        mMainView.setBackgroundColor(iconPalette.backgroundColor);
+        mMainView.applyColors(iconPalette);
         mFooter.applyColors(iconPalette);
     }
 
@@ -135,7 +137,7 @@ public class NotificationItemView extends PopupItemView {
                 @Override
                 public void onIconAnimationEnd(NotificationInfo newMainNotification) {
                     if (newMainNotification != null) {
-                        mMainView.applyNotificationInfo(newMainNotification, mIconView, mIconPalette);
+                        mMainView.applyNotificationInfo(newMainNotification, mIconView, true);
                         // Remove the animated notification from the footer by calling trim
                         // TODO: Remove the notification in NotificationFooterLayout directly
                         // instead of relying on this hack.

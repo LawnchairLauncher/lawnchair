@@ -25,6 +25,7 @@ import android.service.notification.StatusBarNotification;
 import android.view.View;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.util.PackageUserKey;
 
@@ -41,10 +42,13 @@ public class NotificationInfo implements View.OnClickListener {
     public final String notificationKey;
     public final CharSequence title;
     public final CharSequence text;
-    public final Drawable iconDrawable;
     public final PendingIntent intent;
     public final boolean autoCancel;
     public final boolean dismissable;
+
+    private final Drawable mIconDrawable;
+    private boolean mShouldTintIcon;
+    private int mIconColor;
 
     /**
      * Extracts the data that we need from the StatusBarNotification.
@@ -60,10 +64,12 @@ public class NotificationInfo implements View.OnClickListener {
         Icon icon = notification.getLargeIcon();
         if (icon == null) {
             icon = notification.getSmallIcon();
-            iconDrawable = icon.loadDrawable(context);
-            iconDrawable.setTint(statusBarNotification.getNotification().color);
+            mIconDrawable = icon.loadDrawable(context);
+            mIconColor = statusBarNotification.getNotification().color;
+            mShouldTintIcon = true;
         } else {
-            iconDrawable = icon.loadDrawable(context);
+            mIconDrawable = icon.loadDrawable(context);
+            mShouldTintIcon = false;
         }
         intent = notification.contentIntent;
         autoCancel = (notification.flags & Notification.FLAG_AUTO_CANCEL) != 0;
@@ -82,5 +88,19 @@ public class NotificationInfo implements View.OnClickListener {
             launcher.getPopupDataProvider().cancelNotification(notificationKey);
         }
         PopupContainerWithArrow.getOpen(launcher).close(true);
+    }
+
+    public Drawable getIconForBackground(Context context, int background) {
+        if (!mShouldTintIcon) {
+            return mIconDrawable;
+        }
+        mIconColor = IconPalette.resolveContrastColor(context, mIconColor, background);
+        Drawable icon = mIconDrawable.mutate();
+        // DrawableContainer ignores the color filter if it's already set, so clear it first to
+        // get it set and invalidated properly.
+        icon.setTintList(null);
+        icon.setTint(mIconColor);
+        mShouldTintIcon = false;
+        return icon;
     }
 }
