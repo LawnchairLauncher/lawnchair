@@ -36,10 +36,8 @@ import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A {@link LinearLayout} that contains only icons of notifications.
@@ -57,7 +55,6 @@ public class NotificationFooterLayout extends LinearLayout {
 
     private final List<NotificationInfo> mNotifications = new ArrayList<>();
     private final List<NotificationInfo> mOverflowNotifications = new ArrayList<>();
-    private final Map<View, NotificationInfo> mViewsToInfos = new HashMap<>();
 
     LinearLayout.LayoutParams mIconLayoutParams;
     private LinearLayout mIconRow;
@@ -113,7 +110,6 @@ public class NotificationFooterLayout extends LinearLayout {
      */
     public void commitNotificationInfos() {
         mIconRow.removeAllViews();
-        mViewsToInfos.clear();
 
         for (int i = 0; i < mNotifications.size(); i++) {
             NotificationInfo info = mNotifications.get(i);
@@ -139,8 +135,8 @@ public class NotificationFooterLayout extends LinearLayout {
             icon.setAlpha(0);
             icon.animate().alpha(1);
         }
+        icon.setTag(info);
         mIconRow.addView(icon, addIndex, mIconLayoutParams);
-        mViewsToInfos.put(icon, info);
     }
 
     private void updateOverflowText(TextView overflowTextView) {
@@ -163,7 +159,7 @@ public class NotificationFooterLayout extends LinearLayout {
         moveAndScaleIcon.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                callback.onIconAnimationEnd(mViewsToInfos.get(firstNotification));
+                callback.onIconAnimationEnd((NotificationInfo) firstNotification.getTag());
             }
         });
         animation.play(moveAndScaleIcon);
@@ -205,11 +201,10 @@ public class NotificationFooterLayout extends LinearLayout {
             if (child instanceof TextView) {
                 overflowView = (TextView) child;
             } else {
-                NotificationInfo childInfo = mViewsToInfos.get(child);
+                NotificationInfo childInfo = (NotificationInfo) child.getTag();
                 if (!notifications.contains(childInfo.notificationKey)) {
                     mIconRow.removeView(child);
                     mNotifications.remove(childInfo);
-                    mViewsToInfos.remove(child);
                     if (!mOverflowNotifications.isEmpty()) {
                         NotificationInfo notification = mOverflowNotifications.remove(0);
                         mNotifications.add(notification);
