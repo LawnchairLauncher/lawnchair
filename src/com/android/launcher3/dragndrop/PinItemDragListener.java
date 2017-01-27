@@ -40,6 +40,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.PendingAddItemInfo;
+import com.android.launcher3.R;
 import com.android.launcher3.compat.PinItemRequestCompat;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.graphics.LauncherIcons;
@@ -57,7 +58,8 @@ import java.util.UUID;
  * {@link DragSource} for handling drop from from a different window. This object is initialized
  * in the source window and is passed on to the Launcher activity as an Intent extra.
  */
-public class PinItemDragListener implements Parcelable, View.OnDragListener, DragSource {
+public class PinItemDragListener
+        implements Parcelable, View.OnDragListener, DragSource, DragOptions.PreDragCondition {
 
     private static final String TAG = "PinItemDragListener";
 
@@ -136,11 +138,6 @@ public class PinItemDragListener implements Parcelable, View.OnDragListener, Dra
             return false;
         }
 
-        if (mLauncher.isWorkspaceLocked()) {
-            // TODO: implement wait
-            return false;
-        }
-
         final PendingAddItemInfo item;
         final Bitmap preview;
         final View view = new View(mLauncher);
@@ -203,6 +200,7 @@ public class PinItemDragListener implements Parcelable, View.OnDragListener, Dra
         Point downPos = new Point((int) event.getX(), (int) event.getY());
         DragOptions options = new DragOptions();
         options.systemDndStartPoint = downPos;
+        options.preDragCondition = this;
 
         int x = downPos.x + dragShift.x;
         int y = downPos.y + dragShift.y;
@@ -210,6 +208,30 @@ public class PinItemDragListener implements Parcelable, View.OnDragListener, Dra
                 preview, x, y, this, item, null, null, 1f, options);
         mDragStartTime = SystemClock.uptimeMillis();
         return true;
+    }
+
+    @Override
+    public boolean shouldStartDrag(double distanceDragged) {
+        // Stay in pre-drag mode, if workspace is locked.
+        return !mLauncher.isWorkspaceLocked();
+    }
+
+    @Override
+    public void onPreDragStart(DropTarget.DragObject dragObject) {
+        // The predrag starts when the workspace is not yet loaded. In some cases we set
+        // the dragLayer alpha to 0 to have a nice fade-in animation. But that will prevent the
+        // dragView from being visible. Instead just skip the fade-in animation here.
+        mLauncher.getDragLayer().setAlpha(1);
+
+        dragObject.dragView.setColor(
+                mLauncher.getResources().getColor(R.color.delete_target_hover_tint));
+    }
+
+    @Override
+    public void onPreDragEnd(DropTarget.DragObject dragObject, boolean dragStarted) {
+        if (dragStarted) {
+            dragObject.dragView.setColor(0);
+        }
     }
 
     @Override

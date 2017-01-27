@@ -20,6 +20,8 @@ import android.graphics.Point;
 import android.support.annotation.CallSuper;
 import android.view.View;
 
+import com.android.launcher3.DropTarget;
+
 /**
  * Set of options to control the drag and drop behavior.
  */
@@ -52,7 +54,7 @@ public class DragOptions {
          * The pre-drag has started, but onDragStart() is
          * deferred until shouldStartDrag() returns true.
          */
-        void onPreDragStart();
+        void onPreDragStart(DropTarget.DragObject dragObject);
 
         /**
          * The pre-drag has ended. This gets called at the same time as onDragStart()
@@ -60,6 +62,6 @@ public class DragOptions {
          * @param dragStarted Whether the pre-drag ended because the actual drag started.
          *                    This will be true if the condition was met, otherwise false.
          */
-        void onPreDragEnd(boolean dragStarted);
+        void onPreDragEnd(DropTarget.DragObject dragObject, boolean dragStarted);
     }
 }

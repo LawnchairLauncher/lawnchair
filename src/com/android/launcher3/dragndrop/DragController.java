@@ -221,7 +221,7 @@ public class DragController implements DragDriver.EventListener, TouchController
         if (!mIsInPreDrag) {
             callOnDragStart();
         } else if (mOptions.preDragCondition != null) {
-            mOptions.preDragCondition.onPreDragStart();
+            mOptions.preDragCondition.onPreDragStart(mDragObject);
         }
 
         mLastTouch[0] = mMotionDownX;
@@ -236,7 +236,7 @@ public class DragController implements DragDriver.EventListener, TouchController
             listener.onDragStart(mDragObject, mOptions);
         }
         if (mOptions.preDragCondition != null) {
-            mOptions.preDragCondition.onPreDragEnd(true /* dragStarted*/);
+            mOptions.preDragCondition.onPreDragEnd(mDragObject, true /* dragStarted*/);
         }
         mIsInPreDrag = false;
     }
@@ -335,7 +335,7 @@ public class DragController implements DragDriver.EventListener, TouchController
 
     private void callOnDragEnd() {
         if (mIsInPreDrag && mOptions.preDragCondition != null) {
-            mOptions.preDragCondition.onPreDragEnd(false /* dragStarted*/);
+            mOptions.preDragCondition.onPreDragEnd(mDragObject, false /* dragStarted*/);
         }
         mIsInPreDrag = false;
         mOptions = null;

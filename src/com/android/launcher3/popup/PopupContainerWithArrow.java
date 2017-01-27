@@ -498,12 +498,12 @@ public class PopupContainerWithArrow extends AbstractFloatingView
             }
 
             @Override
-            public void onPreDragStart() {
+            public void onPreDragStart(DropTarget.DragObject dragObject) {
                 mOriginalIcon.setVisibility(INVISIBLE);
             }
 
             @Override
-            public void onPreDragEnd(boolean dragStarted) {
+            public void onPreDragEnd(DropTarget.DragObject dragObject, boolean dragStarted) {
                 if (!dragStarted) {
                     mOriginalIcon.setVisibility(VISIBLE);
                     mLauncher.getUserEventDispatcher().logDeepShortcutsOpen(mOriginalIcon);
