@@ -61,6 +61,7 @@ public class NotificationFooterLayout extends LinearLayout {
     private LinearLayout mIconRow;
     private int mBackgroundColor;
     private int mTextColor;
+    private TextView mOverflowView;
 
     public NotificationFooterLayout(Context context) {
         this(context, null, 0);
@@ -120,10 +121,10 @@ public class NotificationFooterLayout extends LinearLayout {
         }
 
         if (!mOverflowNotifications.isEmpty()) {
-            TextView overflowText = new TextView(getContext());
-            overflowText.setTextColor(mTextColor);
-            updateOverflowText(overflowText);
-            mIconRow.addView(overflowText, mIconLayoutParams);
+            mOverflowView = new TextView(getContext());
+            mOverflowView.setTextColor(mTextColor);
+            updateOverflowText();
+            mIconRow.addView(mOverflowView, mIconLayoutParams);
         }
     }
 
@@ -142,8 +143,8 @@ public class NotificationFooterLayout extends LinearLayout {
         mIconRow.addView(icon, addIndex, mIconLayoutParams);
     }
 
-    private void updateOverflowText(TextView overflowTextView) {
-        overflowTextView.setText(getResources().getString(R.string.deep_notifications_overflow,
+    private void updateOverflowText() {
+        mOverflowView.setText(getResources().getString(R.string.deep_notifications_overflow,
                 mOverflowNotifications.size()));
     }
 
@@ -162,6 +163,7 @@ public class NotificationFooterLayout extends LinearLayout {
             @Override
             public void onAnimationEnd(Animator animation) {
                 callback.onIconAnimationEnd((NotificationInfo) firstNotification.getTag());
+                removeViewFromIconRow(firstNotification);
             }
         });
         animation.play(moveAndScaleIcon);
@@ -178,13 +180,44 @@ public class NotificationFooterLayout extends LinearLayout {
                 public void onAnimationEnd(Animator animation) {
                     // We have to set the translation X to 0 when the new main notification
                     // is removed from the footer.
-                    // TODO: remove it here instead of expecting trimNotifications to do so.
                     child.setTranslationX(0);
                 }
             });
             animation.play(shiftChild);
         }
         animation.start();
+    }
+
+    private void removeViewFromIconRow(View child) {
+        mIconRow.removeView(child);
+        mNotifications.remove((NotificationInfo) child.getTag());
+        if (!mOverflowNotifications.isEmpty()) {
+            NotificationInfo notification = mOverflowNotifications.remove(0);
+            mNotifications.add(notification);
+            addNotificationIconForInfo(notification, true /* fromOverflow */);
+        }
+        if (mOverflowView != null) {
+            if (mOverflowNotifications.isEmpty()) {
+                mIconRow.removeView(mOverflowView);
+                mOverflowView = null;
+            } else {
+                updateOverflowText();
+            }
+        }
+        if (mIconRow.getChildCount() == 0) {
+            // There are no more icons in the secondary view, so hide it.
+            PopupContainerWithArrow popup = PopupContainerWithArrow.getOpen(
+                    Launcher.getLauncher(getContext()));
+            int newHeight = getResources().getDimensionPixelSize(
+                    R.dimen.notification_footer_collapsed_height);
+            AnimatorSet collapseSecondary = LauncherAnimUtils.createAnimatorSet();
+            collapseSecondary.play(popup.animateTranslationYBy(getHeight() - newHeight, 0));
+            collapseSecondary.play(LauncherAnimUtils.animateViewHeight(
+                    this, getHeight(), newHeight));
+            collapseSecondary.setDuration(getResources().getInteger(
+                    R.integer.config_removeNotificationViewDuration));
+            collapseSecondary.start();
+        }
     }
 
     public void trimNotifications(List<String> notifications) {
@@ -205,35 +238,9 @@ public class NotificationFooterLayout extends LinearLayout {
             } else {
                 NotificationInfo childInfo = (NotificationInfo) child.getTag();
                 if (!notifications.contains(childInfo.notificationKey)) {
-                    mIconRow.removeView(child);
-                    mNotifications.remove(childInfo);
-                    if (!mOverflowNotifications.isEmpty()) {
-                        NotificationInfo notification = mOverflowNotifications.remove(0);
-                        mNotifications.add(notification);
-                        addNotificationIconForInfo(notification, true /* fromOverflow */);
-                    }
+                    removeViewFromIconRow(child);
                 }
             }
-        }
-        if (overflowView != null) {
-            if (mOverflowNotifications.isEmpty()) {
-                mIconRow.removeView(overflowView);
-            } else {
-                updateOverflowText(overflowView);
-            }
-        }
-        if (mIconRow.getChildCount() == 0) {
-            // There are no more icons in the secondary view, so hide it.
-            PopupContainerWithArrow popup = PopupContainerWithArrow.getOpen(
-                    Launcher.getLauncher(getContext()));
-            int newHeight = getResources().getDimensionPixelSize(
-                    R.dimen.notification_footer_collapsed_height);
-            AnimatorSet collapseSecondary = LauncherAnimUtils.createAnimatorSet();
-            collapseSecondary.play(popup.animateTranslationYBy(getHeight() - newHeight,
-                    getResources().getInteger(R.integer.config_removeNotificationViewDuration)));
-            collapseSecondary.play(LauncherAnimUtils.animateViewHeight(
-                    this, getHeight(), newHeight));
-            collapseSecondary.start();
         }
     }
 }
