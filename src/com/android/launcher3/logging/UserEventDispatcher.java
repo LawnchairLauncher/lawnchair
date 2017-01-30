@@ -32,6 +32,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.LauncherEvent;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.LogConfig;
 
 import java.util.List;
 import java.util.Locale;
@@ -56,7 +57,7 @@ public class UserEventDispatcher {
 
     private static final String TAG = "UserEvent";
     private static final boolean IS_VERBOSE =
-            ProviderConfig.IS_DOGFOOD_BUILD && Utilities.isPropertyEnabled(TAG);
+            ProviderConfig.IS_DOGFOOD_BUILD && Utilities.isPropertyEnabled(LogConfig.USEREVENT);
 
     /**
      * Implemented by containers to provide a container source for a given child.

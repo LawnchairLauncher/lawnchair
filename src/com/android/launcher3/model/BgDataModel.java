@@ -17,6 +17,7 @@ package com.android.launcher3.model;
 
 import android.content.Context;
 import android.os.UserHandle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.MutableInt;
 
@@ -35,6 +36,8 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.MultiHashMap;
 
+import java.io.FileDescriptor;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -97,6 +100,37 @@ public class BgDataModel {
         workspaceScreens.clear();
         pinnedShortcutCounts.clear();
         deepShortcutMap.clear();
+    }
+
+    // TODO: current dump is very cryptic and hard to understand. Make it more legible.
+    public synchronized void dump(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
+        writer.println(prefix + "Data Model:");
+        for (int i = 0; i < workspaceScreens.size(); i++) {
+            writer.println(prefix + "\tIndex of workspaceScreens:" + workspaceScreens.get(i).toString());
+        }
+        for (int i = 0; i < workspaceItems.size(); i++) {
+            writer.println(prefix + '\t' + workspaceItems.get(i).toString());
+        }
+        for (int i = 0; i < appWidgets.size(); i++) {
+            writer.println(prefix + '\t' + appWidgets.get(i).toString());
+        }
+        for (int i = 0; i< folders.size(); i++) {
+            writer.println(prefix + '\t' + folders.valueAt(i).toString());
+        }
+        for (int i = 0; i< itemsIdMap.size(); i++) {
+            writer.println(prefix + '\t' + itemsIdMap.valueAt(i).toString());
+        }
+
+        if (args.length > 0 && TextUtils.equals(args[0], "--all")) {
+            writer.println(prefix + "shortcuts");
+            for (ArrayList<String> map : deepShortcutMap.values()) {
+                writer.print(prefix + "  ");
+                for (String str : map) {
+                    writer.print(str.toString() + ", ");
+                }
+                writer.println();
+            }
+        }
     }
 
     public synchronized void removeItem(Context context, ItemInfo... items) {

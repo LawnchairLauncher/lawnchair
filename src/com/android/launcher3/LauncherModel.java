@@ -81,6 +81,8 @@ import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 
+import java.io.FileDescriptor;
+import java.io.PrintWriter;
 import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -2098,15 +2100,6 @@ public class LauncherModel extends BroadcastReceiver
             }
             bindDeepShortcuts();
         }
-
-        public void dumpState() {
-            synchronized (sBgDataModel) {
-                Log.d(TAG, "mLoaderTask.mContext=" + mContext);
-                Log.d(TAG, "mLoaderTask.mStopped=" + mStopped);
-                Log.d(TAG, "mLoaderTask.mLoadAndBindStepFinished=" + mLoadAndBindStepFinished);
-                Log.d(TAG, "mItems size=" + sBgDataModel.workspaceItems.size());
-            }
-        }
     }
 
     public void bindDeepShortcuts() {
@@ -2267,17 +2260,15 @@ public class LauncherModel extends BroadcastReceiver
                 && (provider.provider.getPackageName() != null);
     }
 
-    public void dumpState() {
-        Log.d(TAG, "mCallbacks=" + mCallbacks);
-        AppInfo.dumpApplicationInfoList(TAG, "mAllAppsList.data", mBgAllAppsList.data);
-        AppInfo.dumpApplicationInfoList(TAG, "mAllAppsList.added", mBgAllAppsList.added);
-        AppInfo.dumpApplicationInfoList(TAG, "mAllAppsList.removed", mBgAllAppsList.removed);
-        AppInfo.dumpApplicationInfoList(TAG, "mAllAppsList.modified", mBgAllAppsList.modified);
-        if (mLoaderTask != null) {
-            mLoaderTask.dumpState();
-        } else {
-            Log.d(TAG, "mLoaderTask=null");
+    public void dumpState(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
+        if (args.length > 0 && TextUtils.equals(args[0], "--all")) {
+            writer.println(prefix + "All apps list: size=" + mBgAllAppsList.data.size());
+            for (AppInfo info : mBgAllAppsList.data) {
+                writer.println(prefix + "   title=\"" + info.title + "\" iconBitmap=" + info.iconBitmap
+                        + " componentName=" + info.componentName.getPackageName());
+            }
         }
+        sBgDataModel.dump(prefix, fd, writer, args);
     }
 
     public Callbacks getCallback() {

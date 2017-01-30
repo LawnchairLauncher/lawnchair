@@ -20,7 +20,7 @@ public abstract class SQLiteCacheHelper {
     private static final String TAG = "SQLiteCacheHelper";
 
     private static final boolean NO_ICON_CACHE = ProviderConfig.IS_DOGFOOD_BUILD &&
-            Utilities.isPropertyEnabled("MEMORY_ONLY_ICON_CACHE");
+            Utilities.isPropertyEnabled(LogConfig.MEMORY_ONLY_ICON_CACHE);
 
     private final String mTableName;
     private final MySQLiteOpenHelper mOpenHelper;

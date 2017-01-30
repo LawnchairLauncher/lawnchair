@@ -117,6 +117,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.util.ActivityResultInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
+import com.android.launcher3.util.LogConfig;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
@@ -171,10 +172,6 @@ public class Launcher extends BaseActivity
      * request codes used internally.
      */
     protected static final int REQUEST_LAST = 100;
-
-    // To turn on these properties, type
-    // adb shell setprop logTap.tag.PROPERTY_NAME [VERBOSE | SUPPRESS]
-    static final String DUMP_STATE_PROPERTY = "launcher_dump_state";
 
     // The Intent extra that defines whether to ignore the launch animation
     static final String INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION =
@@ -2201,25 +2198,7 @@ public class Launcher extends BaseActivity
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            switch (event.getKeyCode()) {
-                case KeyEvent.KEYCODE_HOME:
-                    return true;
-                case KeyEvent.KEYCODE_VOLUME_DOWN:
-                    if (Utilities.isPropertyEnabled(DUMP_STATE_PROPERTY)) {
-                        dumpState();
-                        return true;
-                    }
-                    break;
-            }
-        } else if (event.getAction() == KeyEvent.ACTION_UP) {
-            switch (event.getKeyCode()) {
-                case KeyEvent.KEYCODE_HOME:
-                    return true;
-            }
-        }
-
-        return super.dispatchKeyEvent(event);
+        return (event.getKeyCode() == KeyEvent.KEYCODE_HOME) || super.dispatchKeyEvent(event);
     }
 
     @Override
@@ -3968,50 +3947,48 @@ public class Launcher extends BaseActivity
     }
 
     /**
-     * Prints out out state for debugging.
+     * $ adb shell dumpsys activity com.android.launcher3.Launcher [--all]
      */
-    public void dumpState() {
-        Log.d(TAG, "BEGIN launcher3 dump state for launcher " + this);
-        Log.d(TAG, "mWorkspaceLoading=" + mWorkspaceLoading);
-        Log.d(TAG, "mPendingRequestArgs=" + mPendingRequestArgs);
-        Log.d(TAG, "mPendingActivityResult=" + mPendingActivityResult);
-        mModel.dumpState();
-        // TODO(hyunyoungs): add mWidgetsView.dumpState(); or mWidgetsModel.dumpState();
-
-        Log.d(TAG, "END launcher3 dump state");
-    }
-
     @Override
     public void dump(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
         super.dump(prefix, fd, writer, args);
-        // Dump workspace
-        writer.println(prefix + "Workspace Items");
-        for (int i = mWorkspace.numCustomPages(); i < mWorkspace.getPageCount(); i++) {
-            writer.println(prefix + "  Homescreen " + i);
 
-            ViewGroup layout = ((CellLayout) mWorkspace.getPageAt(i)).getShortcutsAndWidgets();
+        if (args.length > 0 && TextUtils.equals(args[0], "--all")) {
+            writer.println(prefix + "Workspace Items");
+            for (int i = mWorkspace.numCustomPages(); i < mWorkspace.getPageCount(); i++) {
+                writer.println(prefix + "  Homescreen " + i);
+
+                ViewGroup layout = ((CellLayout) mWorkspace.getPageAt(i)).getShortcutsAndWidgets();
+                for (int j = 0; j < layout.getChildCount(); j++) {
+                    Object tag = layout.getChildAt(j).getTag();
+                    if (tag != null) {
+                        writer.println(prefix + "    " + tag.toString());
+                    }
+                }
+            }
+
+            writer.println(prefix + "  Hotseat");
+            ViewGroup layout = mHotseat.getLayout().getShortcutsAndWidgets();
             for (int j = 0; j < layout.getChildCount(); j++) {
                 Object tag = layout.getChildAt(j).getTag();
                 if (tag != null) {
                     writer.println(prefix + "    " + tag.toString());
                 }
             }
-        }
 
-        writer.println(prefix + "  Hotseat");
-        ViewGroup layout = mHotseat.getLayout().getShortcutsAndWidgets();
-        for (int j = 0; j < layout.getChildCount(); j++) {
-            Object tag = layout.getChildAt(j).getTag();
-            if (tag != null) {
-                writer.println(prefix + "    " + tag.toString());
+            try {
+                FileLog.flushAll(writer);
+            } catch (Exception e) {
+                // Ignore
             }
         }
 
-        try {
-            FileLog.flushAll(writer);
-        } catch (Exception e) {
-            // Ignore
-        }
+        writer.println(prefix + "Misc:");
+        writer.print(prefix + "\tmWorkspaceLoading=" + mWorkspaceLoading);
+        writer.print(" mPendingRequestArgs=" + mPendingRequestArgs);
+        writer.println(" mPendingActivityResult=" + mPendingActivityResult);
+
+        mModel.dumpState(prefix, fd, writer, args);
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.dump(prefix, fd, writer, args);
