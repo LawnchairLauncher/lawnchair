@@ -23,6 +23,7 @@ import android.util.Log;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.badge.BadgeInfo;
+import com.android.launcher3.notification.NotificationInfo;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.util.ComponentKey;
@@ -31,8 +32,10 @@ import com.android.launcher3.util.PackageUserKey;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Provides data for the popup menu that appears after long-clicking on apps.
@@ -55,15 +58,17 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
 
     @Override
     public void onNotificationPosted(PackageUserKey postedPackageUserKey, String notificationKey) {
-        BadgeInfo oldBadgeInfo = mPackageUserToBadgeInfos.get(postedPackageUserKey);
-        if (oldBadgeInfo == null) {
+        BadgeInfo badgeInfo = mPackageUserToBadgeInfos.get(postedPackageUserKey);
+        boolean notificationWasAdded; // As opposed to updated.
+        if (badgeInfo == null) {
             BadgeInfo newBadgeInfo = new BadgeInfo(postedPackageUserKey);
             newBadgeInfo.addNotificationKeyIfNotExists(notificationKey);
             mPackageUserToBadgeInfos.put(postedPackageUserKey, newBadgeInfo);
-            mLauncher.updateIconBadges(Collections.singleton(postedPackageUserKey));
-        } else if (oldBadgeInfo.addNotificationKeyIfNotExists(notificationKey)) {
-            mLauncher.updateIconBadges(Collections.singleton(postedPackageUserKey));
+            notificationWasAdded = true;
+        } else {
+            notificationWasAdded = badgeInfo.addNotificationKeyIfNotExists(notificationKey);
         }
+        updateLauncherIconBadges(Collections.singleton(postedPackageUserKey), notificationWasAdded);
     }
 
     @Override
@@ -73,7 +78,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             if (oldBadgeInfo.getNotificationCount() == 0) {
                 mPackageUserToBadgeInfos.remove(removedPackageUserKey);
             }
-            mLauncher.updateIconBadges(Collections.singleton(removedPackageUserKey));
+            updateLauncherIconBadges(Collections.singleton(removedPackageUserKey));
 
             PopupContainerWithArrow openContainer = PopupContainerWithArrow.getOpen(mLauncher);
             if (openContainer != null) {
@@ -112,13 +117,65 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         }
 
         if (!updatedBadges.isEmpty()) {
-            mLauncher.updateIconBadges(updatedBadges.keySet());
+            updateLauncherIconBadges(updatedBadges.keySet());
         }
 
         PopupContainerWithArrow openContainer = PopupContainerWithArrow.getOpen(mLauncher);
         if (openContainer != null) {
             openContainer.trimNotifications(updatedBadges);
         }
+    }
+
+    private void updateLauncherIconBadges(Set<PackageUserKey> updatedBadges) {
+        updateLauncherIconBadges(updatedBadges, true);
+    }
+
+    /**
+     * Updates the icons on launcher (workspace, folders, all apps) to refresh their badges.
+     * @param updatedBadges The packages whose badges should be refreshed (either a notification was
+     *                      added or removed, or the badge should show the notification icon).
+     * @param addedOrRemoved An optional parameter that will allow us to only refresh badges that
+     *                       updated (not added/removed) that have icons. If a badge updated
+     *                       but it doesn't have an icon, then the badge number doesn't change.
+     */
+    private void updateLauncherIconBadges(Set<PackageUserKey> updatedBadges,
+            boolean addedOrRemoved) {
+        Iterator<PackageUserKey> iterator = updatedBadges.iterator();
+        while (iterator.hasNext()) {
+            BadgeInfo badgeInfo = mPackageUserToBadgeInfos.get(iterator.next());
+            if (badgeInfo != null && !updateBadgeIcon(badgeInfo) && !addedOrRemoved) {
+                // The notification icon isn't used, and the badge wasn't added or removed
+                // so there is no update to be made.
+                iterator.remove();
+            }
+        }
+        if (!updatedBadges.isEmpty()) {
+            mLauncher.updateIconBadges(updatedBadges);
+        }
+    }
+
+    /**
+     * Determines whether the badge should show a notification icon rather than a number,
+     * and sets that icon on the BadgeInfo if so.
+     * @param badgeInfo The badge to update with an icon (null if it shouldn't show one).
+     * @return Whether the badge icon potentially changed (true unless it stayed null).
+     */
+    private boolean updateBadgeIcon(BadgeInfo badgeInfo) {
+        boolean hadNotificationToShow = badgeInfo.hasNotificationToShow();
+        NotificationInfo notificationInfo = null;
+        NotificationListener notificationListener = NotificationListener.getInstance();
+        if (notificationListener != null && badgeInfo.getNotificationKeys().size() == 1) {
+            StatusBarNotification[] activeNotifications = notificationListener
+                    .getActiveNotifications(new String[] {badgeInfo.getNotificationKeys().get(0)});
+            if (activeNotifications.length == 1) {
+                notificationInfo = new NotificationInfo(mLauncher, activeNotifications[0]);
+                if (!notificationInfo.shouldShowIconInBadge()) {
+                    notificationInfo = null;
+                }
+            }
+        }
+        badgeInfo.setNotificationToShow(notificationInfo);
+        return hadNotificationToShow || badgeInfo.hasNotificationToShow();
     }
 
     public void setDeepShortcutMap(MultiHashMap<ComponentKey, String> deepShortcutMapCopy) {

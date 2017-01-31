@@ -172,6 +172,8 @@
 <!-- Icon badges (with notification counts) -->
     <dimen name="badge_size">24dp</dimen>
     <dimen name="badge_text_size">12dp</dimen>
+    <dimen name="badge_small_padding">1dp</dimen>
+    <dimen name="badge_large_padding">3dp</dimen>
     <dimen name="notification_icon_size">28dp</dimen>
     <dimen name="notification_footer_icon_size">24dp</dimen>
     <!-- (icon_size - secondary_icon_size) / 2 -->
