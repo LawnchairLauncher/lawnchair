@@ -2042,14 +2042,18 @@ public class Workspace extends PagedView
      */
     public Animator setStateWithAnimation(State toState, boolean animated,
             AnimationLayerSet layerViews) {
-        // Create the animation to the new state
-        AnimatorSet workspaceAnim =  mStateTransitionAnimation.getAnimationToState(mState,
-                toState, animated, layerViews);
+        final State fromState = mState;
 
-        boolean shouldNotifyWidgetChange = !mState.shouldUpdateWidget
-                && toState.shouldUpdateWidget;
         // Update the current state
         mState = toState;
+
+        // Create the animation to the new state
+        AnimatorSet workspaceAnim =  mStateTransitionAnimation.getAnimationToState(fromState,
+                toState, animated, layerViews);
+
+        boolean shouldNotifyWidgetChange = !fromState.shouldUpdateWidget
+                && toState.shouldUpdateWidget;
+
         updateAccessibilityFlags();
 
         if (shouldNotifyWidgetChange) {
