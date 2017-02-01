@@ -148,7 +148,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     }
 
     public String[] getNotificationKeysForItem(ItemInfo info) {
-        BadgeInfo badgeInfo = mPackageUserToBadgeInfos.get(PackageUserKey.fromItemInfo(info));
+        BadgeInfo badgeInfo = getBadgeInfoForItem(info);
         if (badgeInfo == null) { return new String[0]; }
         List<String> notificationKeys = badgeInfo.getNotificationKeys();
         return notificationKeys.toArray(new String[notificationKeys.size()]);
