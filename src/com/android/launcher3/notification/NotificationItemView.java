@@ -29,15 +29,16 @@ import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.graphics.IconPalette;
+import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
 import com.android.launcher3.popup.PopupItemView;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static com.android.launcher3.LauncherAnimUtils.animateViewHeight;
 
@@ -47,7 +48,7 @@ import static com.android.launcher3.LauncherAnimUtils.animateViewHeight;
  * The footer contains: A list of just the icons of all the notifications past the first one.
  * @see NotificationFooterLayout
  */
-public class NotificationItemView extends PopupItemView {
+public class NotificationItemView extends PopupItemView implements LogContainerProvider {
 
     private static final Rect sTempRect = new Rect();
 
@@ -57,7 +58,6 @@ public class NotificationItemView extends PopupItemView {
     private NotificationFooterLayout mFooter;
     private SwipeHelper mSwipeHelper;
     private boolean mAnimatingNextIcon;
-    private IconPalette mIconPalette;
 
     public NotificationItemView(Context context) {
         this(context, null, 0);
@@ -114,7 +114,6 @@ public class NotificationItemView extends PopupItemView {
     }
 
     public void applyColors(IconPalette iconPalette) {
-        mIconPalette = iconPalette;
         setBackgroundTintList(ColorStateList.valueOf(iconPalette.secondaryColor));
         mHeader.setBackgroundTintList(ColorStateList.valueOf(iconPalette.backgroundColor));
         mHeader.setTextColor(ColorStateList.valueOf(iconPalette.textColor));
@@ -173,5 +172,12 @@ public class NotificationItemView extends PopupItemView {
         removeRest.setInterpolator(new LinearInterpolator());
         animation.playSequentially(removeMainView, removeRest);
         return animation;
+    }
+
+    @Override
+    public void fillInLogContainerData(View v, ItemInfo info, LauncherLogProto.Target target,
+            LauncherLogProto.Target targetParent) {
+        target.itemType = LauncherLogProto.ItemType.NOTIFICATION;
+        targetParent.containerType = LauncherLogProto.ContainerType.DEEPSHORTCUTS;
     }
 }

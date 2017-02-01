@@ -582,8 +582,8 @@ public class DragController implements DragDriver.EventListener, TouchController
             }
         }
         final View dropTargetAsView = dropTarget instanceof View ? (View) dropTarget : null;
-        mLauncher.getUserEventDispatcher().logDragNDrop(mDragObject, dropTargetAsView);
         if (!mIsInPreDrag) {
+            mLauncher.getUserEventDispatcher().logDragNDrop(mDragObject, dropTargetAsView);
             mDragObject.dragSource.onDropCompleted(
                     dropTargetAsView, mDragObject, flingAnimation != null, accepted);
         }

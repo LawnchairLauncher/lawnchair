@@ -696,7 +696,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView
     @Override
     public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
         target.itemType = ItemType.DEEPSHORTCUT;
-        // TODO: add target.rank
+        target.rank = info.rank;
         targetParent.containerType = ContainerType.DEEPSHORTCUTS;
     }
 
