@@ -115,6 +115,7 @@ public class LauncherModel extends BroadcastReceiver
     @Thunk LoaderTask mLoaderTask;
     @Thunk boolean mIsLoaderTaskRunning;
     @Thunk boolean mHasLoaderCompletedOnce;
+    @Thunk boolean mIsManagedHeuristicAppsUpdated;
 
     @Thunk static final HandlerThread sWorkerThread = new HandlerThread("launcher-loader");
     static {
@@ -2726,6 +2727,47 @@ public class LauncherModel extends BroadcastReceiver
             runOnMainThread(r);
         }
 
+        private void scheduleManagedHeuristicRunnable(final ManagedProfileHeuristic heuristic,
+                final UserHandleCompat user, final List<LauncherActivityInfoCompat> apps) {
+            if (heuristic != null) {
+                // Assume the app lists now is updated.
+                mIsManagedHeuristicAppsUpdated = false;
+                final Runnable managedHeuristicRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mIsManagedHeuristicAppsUpdated) {
+                            // If app list is updated, we need to reschedule it otherwise old app
+                            // list will override everything in processUserApps().
+                            sWorker.post(new Runnable() {
+                                public void run() {
+                                    final List<LauncherActivityInfoCompat> updatedApps =
+                                            mLauncherApps.getActivityList(null, user);
+                                    scheduleManagedHeuristicRunnable(heuristic, user,
+                                            updatedApps);
+                                }
+                            });
+                        } else {
+                            heuristic.processUserApps(apps);
+                        }
+                    }
+                };
+                runOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Check isLoadingWorkspace on the UI thread, as it is updated on the UI
+                        // thread.
+                        if (mIsLoadingAndBindingWorkspace) {
+                            synchronized (mBindCompleteRunnables) {
+                                mBindCompleteRunnables.add(managedHeuristicRunnable);
+                            }
+                        } else {
+                            runOnWorkerThread(managedHeuristicRunnable);
+                        }
+                    }
+                });
+            }
+        }
+
         private void loadAllApps() {
             final long loadTime = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
 
@@ -2761,31 +2803,9 @@ public class LauncherModel extends BroadcastReceiver
                     // This builds the icon bitmaps.
                     mBgAllAppsList.add(new AppInfo(mContext, app, user, mIconCache, quietMode));
                 }
-
                 final ManagedProfileHeuristic heuristic = ManagedProfileHeuristic.get(mContext, user);
                 if (heuristic != null) {
-                    final Runnable r = new Runnable() {
-
-                        @Override
-                        public void run() {
-                            heuristic.processUserApps(apps);
-                        }
-                    };
-                    runOnMainThread(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            // Check isLoadingWorkspace on the UI thread, as it is updated on
-                            // the UI thread.
-                            if (mIsLoadingAndBindingWorkspace) {
-                                synchronized (mBindCompleteRunnables) {
-                                    mBindCompleteRunnables.add(r);
-                                }
-                            } else {
-                                runOnWorkerThread(r);
-                            }
-                        }
-                    });
+                    scheduleManagedHeuristicRunnable(heuristic, user, apps);
                 }
             }
             // Huh? Shouldn't this be inside the Runnable below?
@@ -3036,6 +3056,7 @@ public class LauncherModel extends BroadcastReceiver
                 // Loader has not yet run.
                 return;
             }
+            mIsManagedHeuristicAppsUpdated = true;
             final Context context = mApp.getContext();
 
             final String[] packages = mPackages;
