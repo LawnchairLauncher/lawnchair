@@ -3993,7 +3993,7 @@ public class Workspace extends PagedView
                 if (info instanceof ShortcutInfo && v instanceof BubbleTextView
                         && packageUserKey.updateFromItemInfo(info)) {
                     if (updatedBadges.contains(packageUserKey)) {
-                        ((BubbleTextView) v).applyBadgeState(info);
+                        ((BubbleTextView) v).applyBadgeState(info, true /* animate */);
                         folderIds.add(info.container);
                     }
                 }

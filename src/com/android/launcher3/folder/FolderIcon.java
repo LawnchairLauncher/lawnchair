@@ -33,6 +33,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Property;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -129,6 +130,21 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     private FolderBadgeInfo mBadgeInfo = new FolderBadgeInfo();
     private BadgeRenderer mBadgeRenderer;
+    private float mBadgeScale;
+
+    private static final Property<FolderIcon, Float> BADGE_SCALE_PROPERTY
+            = new Property<FolderIcon, Float>(Float.TYPE, "badgeScale") {
+        @Override
+        public Float get(FolderIcon folderIcon) {
+            return folderIcon.mBadgeScale;
+        }
+
+        @Override
+        public void set(FolderIcon folderIcon, Float value) {
+            folderIcon.mBadgeScale = value;
+            folderIcon.invalidate();
+        }
+    };
 
     public FolderIcon(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -387,8 +403,25 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     public void setBadgeInfo(FolderBadgeInfo badgeInfo) {
+        updateBadgeScale(mBadgeInfo.getNotificationCount(), badgeInfo.getNotificationCount());
         mBadgeInfo = badgeInfo;
-        invalidate();
+    }
+
+    /**
+     * Sets mBadgeScale to 1 or 0, animating if oldCount or newCount is 0
+     * (the badge is being added or removed).
+     */
+    private void updateBadgeScale(int oldCount, int newCount) {
+        boolean wasBadged = oldCount > 0;
+        boolean isBadged = newCount > 0;
+        float newBadgeScale = isBadged ? 1f : 0f;
+        // Animate when a badge is first added or when it is removed.
+        if ((wasBadged ^ isBadged) && isShown()) {
+            ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, newBadgeScale).start();
+        } else {
+            mBadgeScale = newBadgeScale;
+            invalidate();
+        }
     }
 
     static class PreviewItemDrawingParams {
@@ -547,6 +580,14 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
         int getOffsetY() {
             return basePreviewOffsetY - (getScaledRadius() - getRadius());
+        }
+
+        /**
+         * Returns the progress of the scale animation, where 0 means the scale is at 1f
+         * and 1 means the scale is at ACCEPT_SCALE_FACTOR.
+         */
+        float getScaleProgress() {
+            return (mScale - 1f) / (ACCEPT_SCALE_FACTOR - 1f);
         }
 
         void invalidate() {
@@ -784,8 +825,10 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         int offsetY = mBackground.getOffsetY();
         int previewSize = (int) (mBackground.previewSize * mBackground.mScale);
         Rect bounds = new Rect(offsetX, offsetY, offsetX + previewSize, offsetY + previewSize);
-        if (mBadgeInfo != null && mBadgeInfo.getNotificationCount() > 0) {
-            mBadgeRenderer.draw(canvas, IconPalette.FOLDER_ICON_PALETTE, mBadgeInfo, bounds);
+        if ((mBadgeInfo != null && mBadgeInfo.getNotificationCount() > 0) || mBadgeScale > 0) {
+            // If we are animating to the accepting state, animate the badge out.
+            float badgeScale = Math.max(0, mBadgeScale - mBackground.getScaleProgress());
+            mBadgeRenderer.draw(canvas, IconPalette.FOLDER_ICON_PALETTE, mBadgeInfo, bounds, badgeScale);
         }
     }
 
@@ -938,14 +981,20 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     @Override
     public void onAdd(ShortcutInfo item) {
+        int oldCount = mBadgeInfo.getNotificationCount();
         mBadgeInfo.addBadgeInfo(mLauncher.getPopupDataProvider().getBadgeInfoForItem(item));
+        int newCount = mBadgeInfo.getNotificationCount();
+        updateBadgeScale(oldCount, newCount);
         invalidate();
         requestLayout();
     }
 
     @Override
     public void onRemove(ShortcutInfo item) {
+        int oldCount = mBadgeInfo.getNotificationCount();
         mBadgeInfo.subtractBadgeInfo(mLauncher.getPopupDataProvider().getBadgeInfoForItem(item));
+        int newCount = mBadgeInfo.getNotificationCount();
+        updateBadgeScale(oldCount, newCount);
         invalidate();
         requestLayout();
     }

@@ -167,7 +167,7 @@ public class BubbleTextView extends TextView
             applyPromiseState(promiseStateChanged);
         }
 
-        applyBadgeState(info);
+        applyBadgeState(info, false /* animate */);
     }
 
     public void applyFromApplicationInfo(AppInfo info) {
@@ -179,7 +179,7 @@ public class BubbleTextView extends TextView
         // Verify high res immediately
         verifyHighRes();
 
-        applyBadgeState(info);
+        applyBadgeState(info, false /* animate */);
     }
 
     public void applyFromPackageItemInfo(PackageItemInfo info) {
@@ -501,11 +501,11 @@ public class BubbleTextView extends TextView
         }
     }
 
-    public void applyBadgeState(ItemInfo itemInfo) {
+    public void applyBadgeState(ItemInfo itemInfo, boolean animate) {
         if (mIcon instanceof FastBitmapDrawable) {
             BadgeInfo badgeInfo = mLauncher.getPopupDataProvider().getBadgeInfoForItem(itemInfo);
             BadgeRenderer badgeRenderer = mLauncher.getDeviceProfile().mBadgeRenderer;
-            ((FastBitmapDrawable) mIcon).applyIconBadge(badgeInfo, badgeRenderer);
+            ((FastBitmapDrawable) mIcon).applyIconBadge(badgeInfo, badgeRenderer, animate);
         }
     }
 
