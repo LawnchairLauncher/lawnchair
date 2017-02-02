@@ -61,6 +61,7 @@ import com.android.launcher3.accessibility.OverviewAccessibilityDelegate;
 import com.android.launcher3.accessibility.OverviewScreenAccessibilityDelegate;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.anim.AnimationLayerSet;
+import com.android.launcher3.badge.FolderBadgeInfo;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.ProviderConfig;
@@ -3985,6 +3986,7 @@ public class Workspace extends PagedView
 
     public void updateIconBadges(final Set<PackageUserKey> updatedBadges) {
         final PackageUserKey packageUserKey = new PackageUserKey(null, null);
+        final HashSet<Long> folderIds = new HashSet<>();
         mapOverItems(MAP_RECURSE, new ItemOperator() {
             @Override
             public boolean evaluate(ItemInfo info, View v) {
@@ -3992,7 +3994,26 @@ public class Workspace extends PagedView
                         && packageUserKey.updateFromItemInfo(info)) {
                     if (updatedBadges.contains(packageUserKey)) {
                         ((BubbleTextView) v).applyBadgeState(info);
+                        folderIds.add(info.container);
                     }
+                }
+                // process all the shortcuts
+                return false;
+            }
+        });
+
+        // Update folder icons
+        mapOverItems(MAP_NO_RECURSE, new ItemOperator() {
+            @Override
+            public boolean evaluate(ItemInfo info, View v) {
+                if (info instanceof FolderInfo && folderIds.contains(info.id)
+                        && v instanceof FolderIcon) {
+                    FolderBadgeInfo folderBadgeInfo = new FolderBadgeInfo();
+                    for (ShortcutInfo si : ((FolderInfo) info).contents) {
+                        folderBadgeInfo.addBadgeInfo(mLauncher.getPopupDataProvider()
+                                .getBadgeInfoForItem(si));
+                    }
+                    ((FolderIcon) v).setBadgeInfo(folderBadgeInfo);
                 }
                 // process all the shortcuts
                 return false;
