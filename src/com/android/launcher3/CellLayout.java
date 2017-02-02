@@ -2144,7 +2144,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 info.spanY = lp.cellVSpan;
 
                 if (requiresDbUpdate) {
-                    LauncherModel.modifyItemInDatabase(getContext(), info, container, screenId,
+                    mLauncher.getModelWriter().modifyItemInDatabase(info, container, screenId,
                             info.cellX, info.cellY, info.spanX, info.spanY);
                 }
             }

@@ -168,7 +168,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
                 public void run() {
                     if (item instanceof AppInfo) {
                         ShortcutInfo info = ((AppInfo) item).makeShortcut();
-                        LauncherModel.addItemToDatabase(mLauncher, info,
+                        mLauncher.getModelWriter().addItemToDatabase(info,
                                 LauncherSettings.Favorites.CONTAINER_DESKTOP,
                                 screenId, coordinates[0], coordinates[1]);
 
@@ -194,7 +194,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
 
             final int[] coordinates = new int[2];
             final long screenId = findSpaceOnWorkspace(item, coordinates);
-            LauncherModel.moveItemInDatabase(mLauncher, info,
+            mLauncher.getModelWriter().moveItemInDatabase(info,
                     LauncherSettings.Favorites.CONTAINER_DESKTOP,
                     screenId, coordinates[0], coordinates[1]);
 
@@ -304,7 +304,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         ((LauncherAppWidgetHostView) host).updateAppWidgetSize(null,
                 sizeRange.left, sizeRange.top, sizeRange.right, sizeRange.bottom);
         host.requestLayout();
-        LauncherModel.updateItemInDatabase(mLauncher, info);
+        mLauncher.getModelWriter().updateItemInDatabase(info);
         announceConfirmation(mLauncher.getString(R.string.widget_resized, info.spanX, info.spanY));
     }
 

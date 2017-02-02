@@ -85,6 +85,7 @@ import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DefaultAppSearchController;
 import com.android.launcher3.anim.AnimationLayerSet;
+import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
@@ -256,6 +257,7 @@ public class Launcher extends BaseActivity
     private ViewOnDrawExecutor mPendingExecutor;
 
     private LauncherModel mModel;
+    private ModelWriter mModelWriter;
     private IconCache mIconCache;
     private ExtractedColors mExtractedColors;
     private LauncherAccessibilityDelegate mAccessibilityDelegate;
@@ -373,6 +375,7 @@ public class Launcher extends BaseActivity
         mSharedPrefs = Utilities.getPrefs(this);
         mIsSafeModeEnabled = getPackageManager().isSafeMode();
         mModel = app.setLauncher(this);
+        mModelWriter = mModel.getWriter(mDeviceProfile.isVerticalBarLayout());
         mIconCache = app.getIconCache();
         mAccessibilityDelegate = new LauncherAccessibilityDelegate(this);
 
@@ -1500,7 +1503,7 @@ public class Launcher extends BaseActivity
             return;
         }
 
-        LauncherModel.addItemToDatabase(this, info, container, screenId, cellXY[0], cellXY[1]);
+        getModelWriter().addItemToDatabase(info, container, screenId, cellXY[0], cellXY[1]);
         mWorkspace.addInScreen(view, info);
     }
 
@@ -1528,7 +1531,7 @@ public class Launcher extends BaseActivity
         launcherInfo.minSpanY = itemInfo.minSpanY;
         launcherInfo.user = appWidgetInfo.getUser();
 
-        LauncherModel.addItemToDatabase(this, launcherInfo,
+        getModelWriter().addItemToDatabase(launcherInfo,
                 itemInfo.container, itemInfo.screenId, itemInfo.cellX, itemInfo.cellY);
 
         if (hostView == null) {
@@ -1686,6 +1689,10 @@ public class Launcher extends BaseActivity
 
     public LauncherModel getModel() {
         return mModel;
+    }
+
+    public ModelWriter getModelWriter() {
+        return mModelWriter;
     }
 
     public SharedPreferences getSharedPrefs() {
@@ -2129,8 +2136,7 @@ public class Launcher extends BaseActivity
         folderInfo.title = getText(R.string.folder_name);
 
         // Update the model
-        LauncherModel.addItemToDatabase(Launcher.this, folderInfo, container, screenId,
-                cellX, cellY);
+        getModelWriter().addItemToDatabase(folderInfo, container, screenId, cellX, cellY);
 
         // Create the view
         FolderIcon newFolder = FolderIcon.fromXml(R.layout.folder_icon, this, layout, folderInfo);
@@ -2158,7 +2164,7 @@ public class Launcher extends BaseActivity
                 mWorkspace.removeWorkspaceItem(v);
             }
             if (deleteFromDb) {
-                LauncherModel.deleteItemFromDatabase(this, itemInfo);
+                getModelWriter().deleteItemFromDatabase(itemInfo);
             }
         } else if (itemInfo instanceof FolderInfo) {
             final FolderInfo folderInfo = (FolderInfo) itemInfo;
@@ -2167,7 +2173,7 @@ public class Launcher extends BaseActivity
             }
             mWorkspace.removeWorkspaceItem(v);
             if (deleteFromDb) {
-                LauncherModel.deleteFolderAndContentsFromDatabase(this, folderInfo);
+                getModelWriter().deleteFolderAndContentsFromDatabase(folderInfo);
             }
         } else if (itemInfo instanceof LauncherAppWidgetInfo) {
             final LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) itemInfo;
@@ -2196,7 +2202,7 @@ public class Launcher extends BaseActivity
                 }
             }.executeOnExecutor(Utilities.THREAD_POOL_EXECUTOR);
         }
-        LauncherModel.deleteItemFromDatabase(this, widgetInfo);
+        getModelWriter().deleteItemFromDatabase(widgetInfo);
     }
 
     @Override
@@ -3389,7 +3395,7 @@ public class Launcher extends BaseActivity
                         throw (new RuntimeException(desc));
                     } else {
                         Log.d(TAG, desc);
-                        LauncherModel.deleteItemFromDatabase(this, item);
+                        getModelWriter().deleteItemFromDatabase(item);
                         continue;
                     }
                 }
@@ -3486,7 +3492,7 @@ public class Launcher extends BaseActivity
                             + " belongs to component " + item.providerName
                             + ", as the provider is null");
                 }
-                LauncherModel.deleteItemFromDatabase(this, item);
+                getModelWriter().deleteItemFromDatabase(item);
                 return;
             }
 
@@ -3533,14 +3539,14 @@ public class Launcher extends BaseActivity
                                 : LauncherAppWidgetInfo.FLAG_UI_NOT_READY;
                     }
 
-                    LauncherModel.updateItemInDatabase(this, item);
+                    getModelWriter().updateItemInDatabase(item);
                 }
             } else if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_UI_NOT_READY)
                     && (appWidgetInfo.configure == null)) {
                 // The widget was marked as UI not ready, but there is no configure activity to
                 // update the UI.
                 item.restoreStatus = LauncherAppWidgetInfo.RESTORE_COMPLETED;
-                LauncherModel.updateItemInDatabase(this, item);
+                getModelWriter().updateItemInDatabase(item);
             }
         }
 
@@ -3590,7 +3596,7 @@ public class Launcher extends BaseActivity
         info.restoreStatus = finalRestoreFlag;
 
         mWorkspace.reinflateWidgetsIfNecessary();
-        LauncherModel.updateItemInDatabase(this, info);
+        getModelWriter().updateItemInDatabase(info);
         return info;
     }
 

@@ -203,7 +203,7 @@ public class ManagedProfileHeuristic {
             long workFolderId, int startingRank, ArrayList<ShortcutInfo> workFolderApps) {
         for (ItemInfo info : workFolderApps) {
             info.rank = startingRank++;
-            LauncherModel.addItemToDatabase(mContext, info, workFolderId, 0, 0, 0);
+            mModel.getWriter(false).addItemToDatabase(info, workFolderId, 0, 0, 0);
         }
     }
 

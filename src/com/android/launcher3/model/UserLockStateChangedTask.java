@@ -95,7 +95,7 @@ public class UserLockStateChangedTask extends ExtendedModelTask {
         }
         bindUpdatedShortcuts(updatedShortcutInfos, deletedShortcutInfos, mUser);
         if (!deletedShortcutInfos.isEmpty()) {
-            LauncherModel.deleteItemsFromDatabase(context, deletedShortcutInfos);
+            getModelWriter().deleteItemsFromDatabase(deletedShortcutInfos);
         }
 
         // Remove shortcut id map for that user

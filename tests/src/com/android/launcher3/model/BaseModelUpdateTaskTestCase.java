@@ -37,6 +37,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -54,6 +55,8 @@ public class BaseModelUpdateTaskTestCase extends ProviderTestCase2<TestLauncherP
 
     public InvariantDeviceProfile idp;
     public LauncherAppState appState;
+    public LauncherModel model;
+    public ModelWriter modelWriter;
     public MyIconCache iconCache;
 
     public BgDataModel bgDataModel;
@@ -70,6 +73,11 @@ public class BaseModelUpdateTaskTestCase extends ProviderTestCase2<TestLauncherP
 
         callbacks = mock(Callbacks.class);
         appState = mock(LauncherAppState.class);
+        model = mock(LauncherModel.class);
+        modelWriter = mock(ModelWriter.class);
+        when(appState.getModel()).thenReturn(model);
+        when(model.getWriter(anyBoolean())).thenReturn(modelWriter);
+
         myUser = Process.myUserHandle();
 
         bgDataModel = new BgDataModel();

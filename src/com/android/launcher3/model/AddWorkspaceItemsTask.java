@@ -95,7 +95,9 @@ public class AddWorkspaceItemsTask extends ExtendedModelTask {
                 }
 
                 // Add the shortcut to the db
-                addItemToDatabase(context, itemInfo, screenId, cordinates);
+                getModelWriter().addItemToDatabase(itemInfo,
+                        LauncherSettings.Favorites.CONTAINER_DESKTOP, screenId,
+                        cordinates[0], cordinates[1]);
 
                 // Save the ShortcutInfo for binding in the workspace
                 addedItemsFinal.add(itemInfo);
@@ -127,11 +129,6 @@ public class AddWorkspaceItemsTask extends ExtendedModelTask {
                 }
             });
         }
-    }
-
-    protected void addItemToDatabase(Context context, ItemInfo item, long screenId, int[] pos) {
-        LauncherModel.addItemToDatabase(context, item,
-                LauncherSettings.Favorites.CONTAINER_DESKTOP, screenId, pos[0], pos[1]);
     }
 
     protected void updateScreens(Context context, ArrayList<Long> workspaceScreens) {

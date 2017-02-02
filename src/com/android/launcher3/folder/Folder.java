@@ -354,7 +354,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         // gets saved.
         String newTitle = mFolderName.getText().toString();
         mInfo.setTitle(newTitle);
-        LauncherModel.updateItemInDatabase(mLauncher, mInfo);
+        mLauncher.getModelWriter().updateItemInDatabase(mInfo);
 
         Utilities.sendCustomAccessibilityEvent(
                 this, AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
@@ -444,7 +444,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         // TODO: Remove this, as with multi-page folders, there will never be any overflow
         for (ShortcutInfo item: overflow) {
             mInfo.remove(item, false);
-            LauncherModel.deleteItemFromDatabase(mLauncher, item);
+            mLauncher.getModelWriter().deleteItemFromDatabase(item);
         }
 
         DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
@@ -646,7 +646,8 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
                     mPageIndicator.playEntryAnimation();
 
                     if (updateAnimationFlag) {
-                        mInfo.setOption(FolderInfo.FLAG_MULTI_PAGE_ANIMATION, true, mLauncher);
+                        mInfo.setOption(FolderInfo.FLAG_MULTI_PAGE_ANIMATION, true,
+                                mLauncher.getModelWriter());
                     }
                 }
             });
@@ -972,7 +973,8 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         // been refreshed yet.
         if (getItemCount() <= mContent.itemsPerPage()) {
             // Show the animation, next time something is added to the folder.
-            mInfo.setOption(FolderInfo.FLAG_MULTI_PAGE_ANIMATION, false, mLauncher);
+            mInfo.setOption(FolderInfo.FLAG_MULTI_PAGE_ANIMATION, false,
+                    mLauncher.getModelWriter());
         }
 
         if (!isFlingToDelete) {
@@ -1021,7 +1023,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
             items.add(info);
         }
 
-        LauncherModel.moveItemsInDatabase(mLauncher, items, mInfo.id, 0);
+        mLauncher.getModelWriter().moveItemsInDatabase(items, mInfo.id, 0);
     }
 
     public void notifyDrop() {
@@ -1188,8 +1190,8 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
                                 mInfo.screenId);
                         ShortcutInfo finalItem = mInfo.contents.remove(0);
                         newIcon = mLauncher.createShortcut(cellLayout, finalItem);
-                        LauncherModel.addOrMoveItemInDatabase(mLauncher, finalItem, mInfo.container,
-                                mInfo.screenId, mInfo.cellX, mInfo.cellY);
+                        mLauncher.getModelWriter().addOrMoveItemInDatabase(finalItem,
+                                mInfo.container, mInfo.screenId, mInfo.cellX, mInfo.cellY);
                     }
 
                     // Remove the folder
@@ -1300,8 +1302,8 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
             currentDragView = mContent.createAndAddViewForRank(si, mEmptyCellRank);
             // Actually move the item in the database if it was an external drag. Call this
             // before creating the view, so that ShortcutInfo is updated appropriately.
-            LauncherModel.addOrMoveItemInDatabase(
-                    mLauncher, si, mInfo.id, 0, si.cellX, si.cellY);
+            mLauncher.getModelWriter().addOrMoveItemInDatabase(
+                    si, mInfo.id, 0, si.cellX, si.cellY);
 
             // We only need to update the locations if it doesn't get handled in #onDropCompleted.
             if (d.dragSource != this) {
@@ -1341,7 +1343,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
 
         if (mContent.getPageCount() > 1) {
             // The animation has already been shown while opening the folder.
-            mInfo.setOption(FolderInfo.FLAG_MULTI_PAGE_ANIMATION, true, mLauncher);
+            mInfo.setOption(FolderInfo.FLAG_MULTI_PAGE_ANIMATION, true, mLauncher.getModelWriter());
         }
 
         if (d.stateAnnouncer != null) {
@@ -1365,8 +1367,8 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     public void onAdd(ShortcutInfo item) {
         mContent.createAndAddViewForRank(item, mContent.allocateRankForNewItem());
         mItemsInvalidated = true;
-        LauncherModel.addOrMoveItemInDatabase(
-                mLauncher, item, mInfo.id, 0, item.cellX, item.cellY);
+        mLauncher.getModelWriter().addOrMoveItemInDatabase(
+                item, mInfo.id, 0, item.cellX, item.cellY);
     }
 
     public void onRemove(ShortcutInfo item) {
