@@ -4,6 +4,7 @@ import android.os.UserHandle;
 import android.service.notification.StatusBarNotification;
 
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.shortcuts.DeepShortcutManager;
 
 import java.util.Arrays;
 
@@ -32,9 +33,16 @@ public class PackageUserKey {
         mHashCode = Arrays.hashCode(new Object[] {packageName, user});
     }
 
-    /** This should only be called to avoid new object creations in a loop. */
-    public void updateFromItemInfo(ItemInfo info) {
-        update(info.getTargetComponent().getPackageName(), info.user);
+    /**
+     * This should only be called to avoid new object creations in a loop.
+     * @return Whether this PackageUserKey was successfully updated - it shouldn't be used if not.
+     */
+    public boolean updateFromItemInfo(ItemInfo info) {
+        if (DeepShortcutManager.supportsShortcuts(info)) {
+            update(info.getTargetComponent().getPackageName(), info.user);
+            return true;
+        }
+        return false;
     }
 
     @Override

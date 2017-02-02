@@ -3987,8 +3987,8 @@ public class Workspace extends PagedView
         mapOverItems(MAP_RECURSE, new ItemOperator() {
             @Override
             public boolean evaluate(ItemInfo info, View v) {
-                if (info instanceof ShortcutInfo && v instanceof BubbleTextView) {
-                    packageUserKey.updateFromItemInfo(info);
+                if (info instanceof ShortcutInfo && v instanceof BubbleTextView
+                        && packageUserKey.updateFromItemInfo(info)) {
                     if (updatedBadges.contains(packageUserKey)) {
                         ((BubbleTextView) v).applyBadgeState(info);
                     }
