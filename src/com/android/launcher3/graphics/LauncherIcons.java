@@ -29,13 +29,10 @@ import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
-import android.graphics.drawable.ScaleDrawable;
 import android.os.Process;
 import android.os.UserHandle;
-import android.view.Gravity;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.IconCache;
@@ -52,8 +49,6 @@ import com.android.launcher3.shortcuts.ShortcutInfoCompat;
  * Helper methods for generating various launcher icons
  */
 public class LauncherIcons {
-    // TODO b/33553066 use the constant defined in MaskableIconDrawable
-    private static final float LEGACY_ICON_SCALE = .7f * .6667f;
 
     private static final Rect sOldBounds = new Rect();
     private static final Canvas sCanvas = new Canvas();
@@ -236,17 +231,16 @@ public class LauncherIcons {
         if (!(ProviderConfig.IS_DOGFOOD_BUILD && Utilities.isAtLeastO())) {
             return drawable;
         }
-        int color = context.getResources().getColor(R.color.legacy_icon_background);
-        ColorDrawable colorDrawable = new ColorDrawable(color);
-        ScaleDrawable scaleDrawable = new ScaleDrawable(drawable,
-                Gravity.CENTER, LEGACY_ICON_SCALE, LEGACY_ICON_SCALE);
-        scaleDrawable.setLevel(1);
+
         try {
             Class clazz = Class.forName("android.graphics.drawable.MaskableIconDrawable");
-            if (!clazz.isAssignableFrom(drawable.getClass())){
+            if (!clazz.isAssignableFrom(drawable.getClass())) {
+                Drawable maskWrapper =
+                        context.getDrawable(R.drawable.mask_drawable_wrapper).mutate();
+                ((FixedScaleDrawable) clazz.getMethod("getForeground").invoke(maskWrapper))
+                        .setDrawable(drawable);
 
-                return (Drawable) clazz.getConstructor(Drawable.class, Drawable.class)
-                        .newInstance(colorDrawable, scaleDrawable);
+                return maskWrapper;
             }
         } catch (Exception e) {
             return drawable;

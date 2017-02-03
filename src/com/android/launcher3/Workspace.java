@@ -72,6 +72,7 @@ import com.android.launcher3.dragndrop.SpringLoadedDragController;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.DragPreviewProvider;
+import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;

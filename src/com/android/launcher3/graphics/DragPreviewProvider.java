@@ -27,7 +27,6 @@ import android.widget.TextView;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetHostView;
-import com.android.launcher3.PreloadIconDrawable;
 import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.ProviderConfig;
@@ -184,10 +183,6 @@ public class DragPreviewProvider {
             bounds.set(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
         } else {
             bounds.offsetTo(0, 0);
-        }
-        if (d instanceof PreloadIconDrawable) {
-            int inset = -((PreloadIconDrawable) d).getOutset();
-            bounds.inset(inset, inset);
         }
         return bounds;
     }

@@ -17,7 +17,6 @@
 package com.android.launcher3;
 
 import android.content.Context;
-import android.content.res.Resources.Theme;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -33,16 +32,14 @@ import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.IconCache.ItemInfoUpdateReceiver;
+import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.model.PackageItemInfo;
 
 public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         implements OnClickListener, ItemInfoUpdateReceiver {
     private static final float SETUP_ICON_SIZE_FACTOR = 2f / 5;
     private static final float MIN_SATUNATION = 0.7f;
-
-    private static Theme sPreloaderTheme;
 
     private final Rect mRect = new Rect();
     private View mDefaultView;
@@ -149,13 +146,8 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
 
                 updateSettingColor();
             } else {
-                if (sPreloaderTheme == null) {
-                    sPreloaderTheme = getResources().newTheme();
-                    sPreloaderTheme.applyStyle(R.style.PreloadIcon, true);
-                }
-
-                FastBitmapDrawable drawable = drawableFactory.newIcon(mIcon, mInfo);
-                mCenterDrawable = new PreloadIconDrawable(drawable, sPreloaderTheme);
+                mCenterDrawable = DrawableFactory.get(getContext())
+                        .newPendingIcon(mIcon, getContext());
                 mCenterDrawable.setCallback(this);
                 mSettingIconDrawable = null;
                 applyState();
@@ -226,13 +218,10 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         int availableHeight = getHeight() - paddingTop - paddingBottom - 2 * minPadding;
 
         if (mSettingIconDrawable == null) {
-            int outset = (mCenterDrawable instanceof PreloadIconDrawable) ?
-                    ((PreloadIconDrawable) mCenterDrawable).getOutset() : 0;
-            int maxSize = grid.iconSizePx + 2 * outset;
+            int maxSize = grid.iconSizePx;
             int size = Math.min(maxSize, Math.min(availableWidth, availableHeight));
 
             mRect.set(0, 0, size, size);
-            mRect.inset(outset, outset);
             mRect.offsetTo((getWidth() - mRect.width()) / 2, (getHeight() - mRect.height()) / 2);
             mCenterDrawable.setBounds(mRect);
         } else  {

@@ -32,16 +32,42 @@ public class IconPalette {
     private static final boolean DEBUG = false;
     private static final String TAG = "IconPalette";
 
-    public int backgroundColor;
-    public int textColor;
-    public int secondaryColor;
+    private static final float MIN_PRELOAD_COLOR_SATURATION = 0.2f;
+    private static final float MIN_PRELOAD_COLOR_LIGHTNESS = 0.6f;
+    private static final int DEFAULT_PRELOAD_COLOR = 0xFF009688;
+
+    public final int dominantColor;
+    public final int backgroundColor;
+    public final int textColor;
+    public final int secondaryColor;
+
+    private IconPalette(int color) {
+        dominantColor = color;
+        backgroundColor = getMutedColor(dominantColor);
+        textColor = getTextColorForBackground(backgroundColor);
+        secondaryColor = getLowContrastColor(backgroundColor);
+    }
+
+    /**
+     * Returns a color suitable for the progress bar color of preload icon.
+     */
+    public int getPreloadProgressColor() {
+        int result = dominantColor;
+
+        // Make sure that the dominant color has enough saturation to be visible properly.
+        float[] hsv = new float[3];
+        Color.colorToHSV(result, hsv);
+        if (hsv[1] < MIN_PRELOAD_COLOR_SATURATION) {
+            result = DEFAULT_PRELOAD_COLOR;
+        } else {
+            hsv[2] = Math.max(MIN_PRELOAD_COLOR_LIGHTNESS, hsv[2]);
+            result = Color.HSVToColor(hsv);
+        }
+        return result;
+    }
 
     public static IconPalette fromDominantColor(int dominantColor) {
-        IconPalette palette = new IconPalette();
-        palette.backgroundColor = getMutedColor(dominantColor);
-        palette.textColor = getTextColorForBackground(palette.backgroundColor);
-        palette.secondaryColor = getLowContrastColor(palette.backgroundColor);
-        return palette;
+        return new IconPalette(dominantColor);
     }
 
     /**
