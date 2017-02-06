@@ -1,5 +1,21 @@
+/*
+ * Copyright (C) 2016 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.android.launcher3.logging;
 
+import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.SparseArray;
 import android.view.View;
@@ -27,7 +43,7 @@ public class LoggerUtils {
     private static final ArrayMap<Class, SparseArray<String>> sNameCache = new ArrayMap<>();
     private static final String UNKNOWN = "UNKNOWN";
 
-    private static String getFieldName(int value, Class c) {
+    public static String getFieldName(int value, Class c) {
         SparseArray<String> cache;
         synchronized (sNameCache) {
             cache = sNameCache.get(c);
@@ -68,8 +84,13 @@ public class LoggerUtils {
             case Target.Type.CONTROL:
                 return getFieldName(t.controlType, ControlType.class);
             case Target.Type.CONTAINER:
-                return getFieldName(t.containerType, ContainerType.class)
-                        + " id=" + t.pageIndex;
+                String str = getFieldName(t.containerType, ContainerType.class);
+                if (t.containerType == ContainerType.WORKSPACE) {
+                    str += " id=" + t.pageIndex;
+                } else if (t.containerType == ContainerType.FOLDER) {
+                    str += " grid(" + t.gridX + "," + t.gridY+ ")";
+                }
+                return str;
             default:
                 return "UNKNOWN TARGET TYPE";
         }
@@ -86,10 +107,8 @@ public class LoggerUtils {
         if (t.intentHash != 0) {
             typeStr += ", intentHash=" + t.intentHash;
         }
-        if (t.spanX != 0) {
-            typeStr += ", spanX=" + t.spanX;
-        }
-        return typeStr + ", grid=(" + t.gridX + "," + t.gridY + "), id=" + t.pageIndex;
+        return typeStr + ", grid(" + t.gridX + "," + t.gridY + "), span(" + t.spanX + "," + t.spanY
+                + "), pageIdx=" + t.pageIndex;
     }
 
     public static Target newItemTarget(View v) {

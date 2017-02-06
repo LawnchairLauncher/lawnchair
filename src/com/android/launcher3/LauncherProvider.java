@@ -47,6 +47,7 @@ import android.os.UserHandle;
 import android.os.UserManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.ViewGroup;
 
 import com.android.launcher3.AutoInstallsLayout.LayoutParserCallback;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -64,6 +65,8 @@ import com.android.launcher3.util.NoLocaleSqliteContext;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Thunk;
 
+import java.io.FileDescriptor;
+import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,6 +88,18 @@ public class LauncherProvider extends ContentProvider {
     private Handler mListenerHandler;
 
     protected DatabaseHelper mOpenHelper;
+
+    /**
+     * $ adb shell dumpsys activity provider com.android.launcher3
+     */
+    @Override
+    public void dump(FileDescriptor fd, PrintWriter writer, String[] args) {
+        LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
+        if (appState == null || !appState.getModel().isModelLoaded()) {
+            return;
+        }
+        appState.getModel().dumpState("", fd, writer, args);
+    }
 
     @Override
     public boolean onCreate() {
