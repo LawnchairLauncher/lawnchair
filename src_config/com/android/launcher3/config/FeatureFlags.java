@@ -28,6 +28,7 @@ public final class FeatureFlags {
     public static boolean LAUNCHER3_USE_SYSTEM_DRAG_DRIVER = true;
     public static boolean LAUNCHER3_DISABLE_PINCH_TO_OVERVIEW = false;
     public static boolean LAUNCHER3_ALL_APPS_PULL_UP = true;
+    public static boolean LAUNCHER3_NEW_FOLDER_ANIMATION = false;
 
     // Feature flag to enable moving the QSB on the 0th screen of the workspace.
     public static final boolean QSB_ON_FIRST_SCREEN = true;
