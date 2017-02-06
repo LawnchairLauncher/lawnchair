@@ -99,7 +99,7 @@ public class DragView extends View {
         setScaleY(initialScale);
 
         // Animate the view into the correct position
-        mAnim = LauncherAnimUtils.ofFloat(this, 0f, 1f);
+        mAnim = LauncherAnimUtils.ofFloat(0f, 1f);
         mAnim.setDuration(VIEW_ZOOM_DURATION);
         mAnim.addUpdateListener(new AnimatorUpdateListener() {
             @Override
@@ -237,7 +237,7 @@ public class DragView extends View {
     }
 
     public void crossFade(int duration) {
-        ValueAnimator va = LauncherAnimUtils.ofFloat(this, 0f, 1f);
+        ValueAnimator va = LauncherAnimUtils.ofFloat(0f, 1f);
         va.setDuration(duration);
         va.setInterpolator(new DecelerateInterpolator(1.5f));
         va.addUpdateListener(new AnimatorUpdateListener() {

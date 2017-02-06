@@ -951,7 +951,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 return true;
             }
 
-            ValueAnimator va = LauncherAnimUtils.ofFloat(child, 0f, 1f);
+            ValueAnimator va = LauncherAnimUtils.ofFloat(0f, 1f);
             va.setDuration(duration);
             mReorderAnimators.put(lp, va);
 
@@ -2047,7 +2047,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             if (noMovement) {
                 return;
             }
-            ValueAnimator va = LauncherAnimUtils.ofFloat(child, 0f, 1f);
+            ValueAnimator va = LauncherAnimUtils.ofFloat(0f, 1f);
             a = va;
 
             // Animations are disabled in power save mode, causing the repeated animation to jump
