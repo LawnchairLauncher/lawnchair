@@ -153,6 +153,18 @@ public class LauncherSettings {
             }
         }
 
+        static final String itemTypeToString(int type) {
+            switch(type) {
+                case ITEM_TYPE_APPLICATION: return "APP";
+                case ITEM_TYPE_SHORTCUT: return "SHORTCUT";
+                case ITEM_TYPE_FOLDER: return "FOLDER";
+                case ITEM_TYPE_APPWIDGET: return "WIDGET";
+                case ITEM_TYPE_CUSTOM_APPWIDGET: return "CUSTOMWIDGET";
+                case ITEM_TYPE_DEEP_SHORTCUT: return "DEEPSHORTCUT";
+                default: return String.valueOf(type);
+            }
+        }
+
         /**
          * The screen holding the favorite (if container is CONTAINER_DESKTOP)
          * <P>Type: INTEGER</P>
