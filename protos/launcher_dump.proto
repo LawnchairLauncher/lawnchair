@@ -1,0 +1,75 @@
+/*
+ * Copyright (C) 2017 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+syntax = "proto2";
+
+option java_package = "com.android.launcher3.model";
+option java_outer_classname = "LauncherDumpProto";
+
+package model;
+
+message DumpTarget {
+  enum Type {
+    NONE = 0;
+    ITEM = 1;
+    CONTAINER = 2;
+  }
+
+  optional Type type = 1;
+  optional int32 page_id = 2;
+  optional int32 grid_x = 3;
+  optional int32 grid_y = 4;
+
+  // For container types only
+  optional ContainerType container_type = 5;
+
+  // For item types only
+  optional ItemType item_type = 6;
+
+  optional string package_name = 7; // All ItemTypes except UNKNOWN type
+  optional string component = 8;   // All ItemTypes except UNKNOWN type
+  optional string item_id = 9; // For Pinned Shortcuts and appWidgetId
+
+  optional int32 span_x = 10 [default = 1];// Used for ItemType.WIDGET
+  optional int32 span_y = 11 [default = 1];// Used for ItemType.WIDGET
+  optional UserType user_type = 12;
+}
+
+// Used to define what type of item a Target would represent.
+enum ItemType {
+  UNKNOWN_ITEMTYPE = 0;  // Launcher specific items
+  APP_ICON = 1; // Regular app icons
+  WIDGET = 2;   // Elements from AppWidgetManager
+  SHORTCUT = 3; // ShortcutManager
+}
+
+// Used to define what type of container a Target would represent.
+enum ContainerType {
+  UNKNOWN_CONTAINERTYPE = 0;
+  WORKSPACE = 1;
+  HOTSEAT = 2;
+  FOLDER = 3;
+}
+
+// Used to define what type of control a Target would represent.
+enum UserType {
+  DEFAULT = 0;
+  WORK = 1;
+}
+
+// Main message;
+message LauncherImpression {
+  repeated DumpTarget targets = 1;
+}
