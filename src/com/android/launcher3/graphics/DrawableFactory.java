@@ -21,12 +21,14 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Process;
 import android.os.UserHandle;
 import android.support.annotation.UiThread;
+import android.util.Log;
 
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.ItemInfo;
@@ -41,8 +43,12 @@ import java.util.HashMap;
  */
 public class DrawableFactory {
 
+    private static final String TAG = "DrawableFactory";
+
     private static DrawableFactory sInstance;
     private static final Object LOCK = new Object();
+
+    private Path mPreloadProgressPath;
 
     public static DrawableFactory get(Context context) {
         synchronized (LOCK) {
@@ -61,9 +67,38 @@ public class DrawableFactory {
      * Returns a FastBitmapDrawable with the icon.
      */
     public FastBitmapDrawable newIcon(Bitmap icon, ItemInfo info) {
-        FastBitmapDrawable d = new FastBitmapDrawable(icon);
-        d.setFilterBitmap(true);
-        return d;
+        return new FastBitmapDrawable(icon);
+    }
+
+    /**
+     * Returns a FastBitmapDrawable with the icon.
+     */
+    public PreloadIconDrawable newPendingIcon(Bitmap icon, Context context) {
+        if (mPreloadProgressPath == null) {
+            mPreloadProgressPath = getPreloadProgressPath(context);
+        }
+        return new PreloadIconDrawable(icon, mPreloadProgressPath);
+    }
+
+
+    protected Path getPreloadProgressPath(Context context) {
+        if (Utilities.isAtLeastO()) {
+            try {
+                // Try to load the path from Mask Icon
+                Drawable maskIcon = context.getDrawable(R.drawable.mask_drawable_wrapper);
+                maskIcon.setBounds(0, 0,
+                        PreloadIconDrawable.PATH_SIZE, PreloadIconDrawable.PATH_SIZE);
+                return (Path) maskIcon.getClass().getMethod("getIconMask").invoke(maskIcon);
+            } catch (Exception e) {
+                Log.e(TAG, "Error loading mask icon", e);
+            }
+        }
+
+        // Create a circle static from top center and going clockwise.
+        Path p = new Path();
+        p.moveTo(PreloadIconDrawable.PATH_SIZE / 2, 0);
+        p.addArc(0, 0, PreloadIconDrawable.PATH_SIZE, PreloadIconDrawable.PATH_SIZE, -90, 360);
+        return p;
     }
 
     public AllAppsBackgroundDrawable getAllAppsBackground(Context context) {

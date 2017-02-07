@@ -19,7 +19,6 @@ package com.android.launcher3;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
-import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -27,7 +26,6 @@ import android.graphics.Paint;
 import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -45,6 +43,7 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.graphics.HolographicOutlineHelper;
 import com.android.launcher3.graphics.IconPalette;
+import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.model.PackageItemInfo;
 
 import java.text.NumberFormat;
@@ -56,8 +55,6 @@ import java.text.NumberFormat;
  */
 public class BubbleTextView extends TextView
         implements BaseRecyclerViewFastScrollBar.FastScrollFocusableView, ItemInfoUpdateReceiver {
-
-    private static SparseArray<Theme> sPreloaderThemes = new SparseArray<Theme>(2);
 
     // Dimensions in DP
     private static final float AMBIENT_SHADOW_RADIUS = 2.5f;
@@ -423,10 +420,6 @@ public class BubbleTextView extends TextView
         super.onAttachedToWindow();
 
         if (mBackground != null) mBackground.setCallback(this);
-
-        if (mIcon instanceof PreloadIconDrawable) {
-            ((PreloadIconDrawable) mIcon).applyPreloaderTheme(getPreloaderTheme());
-        }
         mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
     }
 
@@ -495,7 +488,8 @@ public class BubbleTextView extends TextView
                 if (mIcon instanceof PreloadIconDrawable) {
                     preloadDrawable = (PreloadIconDrawable) mIcon;
                 } else {
-                    preloadDrawable = new PreloadIconDrawable(mIcon, getPreloaderTheme());
+                    preloadDrawable = DrawableFactory.get(getContext())
+                            .newPendingIcon(info.iconBitmap, getContext());
                     setIcon(preloadDrawable);
                 }
 
@@ -518,20 +512,6 @@ public class BubbleTextView extends TextView
     public IconPalette getIconPalette() {
         return mIcon instanceof FastBitmapDrawable ? ((FastBitmapDrawable) mIcon).getIconPalette()
                 : null;
-    }
-
-    private Theme getPreloaderTheme() {
-        Object tag = getTag();
-        int style = ((tag != null) && (tag instanceof ShortcutInfo) &&
-                (((ShortcutInfo) tag).container >= 0)) ? R.style.PreloadIcon_Folder
-                        : R.style.PreloadIcon;
-        Theme theme = sPreloaderThemes.get(style);
-        if (theme == null) {
-            theme = getResources().newTheme();
-            theme.applyStyle(style, true);
-            sPreloaderThemes.put(style, theme);
-        }
-        return theme;
     }
 
     /**

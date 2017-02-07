@@ -120,7 +120,7 @@ public class FastBitmapDrawable extends Drawable {
 
     public FastBitmapDrawable(Bitmap b) {
         mBitmap = b;
-        setBounds(0, 0, b.getWidth(), b.getHeight());
+        setFilterBitmap(true);
     }
 
     public void applyIconBadge(BadgeInfo badgeInfo, BadgeRenderer badgeRenderer) {

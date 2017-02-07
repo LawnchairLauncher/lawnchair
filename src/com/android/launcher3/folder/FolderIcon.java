@@ -53,13 +53,11 @@ import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.FolderInfo.FolderListener;
-import com.android.launcher3.IconCache;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.OnAlarmListener;
-import com.android.launcher3.PreloadIconDrawable;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.SimpleOnStylusPressListener;
@@ -245,7 +243,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     };
 
     public Drawable prepareCreate(final View destView) {
-        Drawable animateDrawable = getTopDrawable((TextView) destView);
+        Drawable animateDrawable = ((TextView) destView).getCompoundDrawables()[1];
         computePreviewDrawingParams(animateDrawable.getIntrinsicWidth(),
                 destView.getMeasuredWidth());
         return animateDrawable;
@@ -270,7 +268,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     public void performDestroyAnimation(final View finalView, Runnable onCompleteRunnable) {
-        Drawable animateDrawable = getTopDrawable((TextView) finalView);
+        Drawable animateDrawable = ((TextView) finalView).getCompoundDrawables()[1];
         computePreviewDrawingParams(animateDrawable.getIntrinsicWidth(),
                 finalView.getMeasuredWidth());
 
@@ -771,11 +769,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         }
     }
 
-    private Drawable getTopDrawable(TextView v) {
-        Drawable d = v.getCompoundDrawables()[1];
-        return (d instanceof PreloadIconDrawable) ? ((PreloadIconDrawable) d).mIcon : d;
-    }
-
     class FolderPreviewItemAnim {
         ValueAnimator mValueAnimator;
         float finalScale;
@@ -892,7 +885,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
         for (int i = 0; i < mDrawingParams.size(); i++) {
             PreviewItemDrawingParams p = mDrawingParams.get(i);
-            p.drawable = getTopDrawable((TextView) items.get(i));
+            p.drawable = ((TextView) items.get(i)).getCompoundDrawables()[1];
 
             if (!animate || FeatureFlags.LAUNCHER3_LEGACY_FOLDER_ICON) {
                 computePreviewItemDrawingParams(i, nItemsInPreview, p);
