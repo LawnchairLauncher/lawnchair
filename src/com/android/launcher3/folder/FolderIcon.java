@@ -121,6 +121,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     private float mSlop;
 
+    FolderIconPreviewVerifier mPreviewVerifier;
     private PreviewItemDrawingParams mTmpParams = new PreviewItemDrawingParams(0, 0, 0, 0);
     private ArrayList<PreviewItemDrawingParams> mDrawingParams = new ArrayList<PreviewItemDrawingParams>();
     private Drawable mReferenceDrawable = null;
@@ -222,6 +223,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     private void setFolder(Folder folder) {
         mFolder = folder;
+        mPreviewVerifier = new FolderIconPreviewVerifier(mLauncher.getDeviceProfile().inv);
         updateItemDrawingParams(false);
     }
 
@@ -933,8 +935,26 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         return mFolderName.getVisibility() == VISIBLE;
     }
 
+    private List<View> getItemsToDisplay() {
+        mPreviewVerifier.setFolderInfo(mFolder.getInfo());
+
+        List<View> itemsToDisplay = new ArrayList<>();
+        List<View> allItems = mFolder.getItemsInReadingOrder();
+        int numItems = allItems.size();
+        for (int rank = 0; rank < numItems; ++rank) {
+            if (mPreviewVerifier.isItemInPreview(rank)) {
+                itemsToDisplay.add(allItems.get(rank));
+            }
+
+            if (itemsToDisplay.size() == FolderIcon.NUM_ITEMS_IN_PREVIEW) {
+                break;
+            }
+        }
+        return itemsToDisplay;
+    }
+
     private void updateItemDrawingParams(boolean animate) {
-        List<View> items = mPreviewLayoutRule.getItemsToDisplay(mFolder);
+        List<View> items = getItemsToDisplay();
         int nItemsInPreview = items.size();
 
         int prevNumItems = mDrawingParams.size();
@@ -1120,6 +1140,5 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         float scaleForItem(int index, int totalNumItems);
         int maxNumItems();
         boolean clipToBackground();
-        List<View> getItemsToDisplay(Folder folder);
     }
 }

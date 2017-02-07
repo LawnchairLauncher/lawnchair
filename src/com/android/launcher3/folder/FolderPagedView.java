@@ -42,7 +42,6 @@ import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace.ItemOperator;
-import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.util.Themes;
@@ -68,7 +67,7 @@ public class FolderPagedView extends PagedView {
      */
     private static final float SCROLL_HINT_FRACTION = 0.07f;
 
-    private static final int[] sTempPosArray = new int[2];
+    private static final int[] sTmpArray = new int[2];
 
     public final boolean mIsRtl;
 
@@ -120,39 +119,57 @@ public class FolderPagedView extends PagedView {
     }
 
     /**
-     * Sets up the grid size such that {@param count} items can fit in the grid.
+     * Calculates the grid size such that {@param count} items can fit in the grid.
      * The grid size is calculated such that countY <= countX and countX = ceil(sqrt(count)) while
      * maintaining the restrictions of {@link #mMaxCountX} &amp; {@link #mMaxCountY}.
      */
-    private void setupContentDimensions(int count) {
-        mAllocatedContentSize = count;
+    public static void calculateGridSize(int count, int countX, int countY, int maxCountX,
+            int maxCountY, int maxItemsPerPage, int[] out) {
         boolean done;
-        if (count >= mMaxItemsPerPage) {
-            mGridCountX = mMaxCountX;
-            mGridCountY = mMaxCountY;
+        int gridCountX = countX;
+        int gridCountY = countY;
+
+        if (count >= maxItemsPerPage) {
+            gridCountX = maxCountX;
+            gridCountY = maxCountY;
             done = true;
         } else {
             done = false;
         }
 
         while (!done) {
-            int oldCountX = mGridCountX;
-            int oldCountY = mGridCountY;
-            if (mGridCountX * mGridCountY < count) {
+            int oldCountX = gridCountX;
+            int oldCountY = gridCountY;
+            if (gridCountX * gridCountY < count) {
                 // Current grid is too small, expand it
-                if ((mGridCountX <= mGridCountY || mGridCountY == mMaxCountY) && mGridCountX < mMaxCountX) {
-                    mGridCountX++;
-                } else if (mGridCountY < mMaxCountY) {
-                    mGridCountY++;
+                if ((gridCountX <= gridCountY || gridCountY == maxCountY)
+                        && gridCountX < maxCountX) {
+                    gridCountX++;
+                } else if (gridCountY < maxCountY) {
+                    gridCountY++;
                 }
-                if (mGridCountY == 0) mGridCountY++;
-            } else if ((mGridCountY - 1) * mGridCountX >= count && mGridCountY >= mGridCountX) {
-                mGridCountY = Math.max(0, mGridCountY - 1);
-            } else if ((mGridCountX - 1) * mGridCountY >= count) {
-                mGridCountX = Math.max(0, mGridCountX - 1);
+                if (gridCountY == 0) gridCountY++;
+            } else if ((gridCountY - 1) * gridCountX >= count && gridCountY >= gridCountX) {
+                gridCountY = Math.max(0, gridCountY - 1);
+            } else if ((gridCountX - 1) * gridCountY >= count) {
+                gridCountX = Math.max(0, gridCountX - 1);
             }
-            done = mGridCountX == oldCountX && mGridCountY == oldCountY;
+            done = gridCountX == oldCountX && gridCountY == oldCountY;
         }
+
+        out[0] = gridCountX;
+        out[1] = gridCountY;
+    }
+
+    /**
+     * Sets up the grid size such that {@param count} items can fit in the grid.
+     */
+    public void setupContentDimensions(int count) {
+        mAllocatedContentSize = count;
+        calculateGridSize(count, mGridCountX, mGridCountY, mMaxCountX, mMaxCountY, mMaxItemsPerPage,
+                sTmpArray);
+        mGridCountX = sTmpArray[0];
+        mGridCountY = sTmpArray[1];
 
         // Update grid size
         for (int i = getPageCount() - 1; i >= 0; i--) {
@@ -400,12 +417,12 @@ public class FolderPagedView extends PagedView {
     public int findNearestArea(int pixelX, int pixelY) {
         int pageIndex = getNextPage();
         CellLayout page = getPageAt(pageIndex);
-        page.findNearestArea(pixelX, pixelY, 1, 1, sTempPosArray);
+        page.findNearestArea(pixelX, pixelY, 1, 1, sTmpArray);
         if (mFolder.isLayoutRtl()) {
-            sTempPosArray[0] = page.getCountX() - sTempPosArray[0] - 1;
+            sTmpArray[0] = page.getCountX() - sTmpArray[0] - 1;
         }
         return Math.min(mAllocatedContentSize - 1,
-                pageIndex * mMaxItemsPerPage + sTempPosArray[1] * mGridCountX + sTempPosArray[0]);
+                pageIndex * mMaxItemsPerPage + sTmpArray[1] * mGridCountX + sTmpArray[0]);
     }
 
     public boolean isFull() {

@@ -98,10 +98,4 @@ public class StackFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule {
     public boolean clipToBackground() {
         return false;
     }
-
-    @Override
-    public List<View> getItemsToDisplay(Folder folder) {
-        List<View> items = folder.getItemsInReadingOrder();
-        return items.subList(0, Math.min(items.size(), MAX_NUM_ITEMS_IN_PREVIEW));
-    }
 }

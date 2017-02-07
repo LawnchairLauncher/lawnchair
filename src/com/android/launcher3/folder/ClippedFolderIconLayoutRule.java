@@ -129,24 +129,4 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
     public boolean clipToBackground() {
         return true;
     }
-
-    @Override
-    public List<View> getItemsToDisplay(Folder folder) {
-        List<View> items = new ArrayList<>(folder.getItemsInReadingOrder());
-        int numItems = items.size();
-        if (FeatureFlags.LAUNCHER3_NEW_FOLDER_ANIMATION && numItems > MAX_NUM_ITEMS_IN_PREVIEW) {
-            // We match the icons in the preview with the layout of the opened folder (b/27944225),
-            // but we still need to figure out how we want to handle updating the preview when the
-            // upper left quadrant changes.
-            int appsPerRow = folder.mContent.getPageAt(0).getCountX();
-            int appsToDelete = appsPerRow - MAX_NUM_ITEMS_PER_ROW;
-
-            // We only display the upper left quadrant.
-            while (appsToDelete > 0) {
-                items.remove(MAX_NUM_ITEMS_PER_ROW);
-                appsToDelete--;
-            }
-        }
-        return items.subList(0, Math.min(numItems, MAX_NUM_ITEMS_IN_PREVIEW));
-    }
 }
