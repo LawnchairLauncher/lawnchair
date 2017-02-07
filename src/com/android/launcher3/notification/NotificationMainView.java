@@ -26,11 +26,13 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherViewPropertyAnimator;
 import com.android.launcher3.R;
 import com.android.launcher3.graphics.IconPalette;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 
 /**
  * A {@link LinearLayout} that contains a single notification, e.g. icon + title + text.
@@ -88,6 +90,9 @@ public class NotificationMainView extends LinearLayout implements SwipeHelper.Ca
                 getContext(), mIconPalette.backgroundColor));
         setOnClickListener(mNotificationInfo);
         setTranslationX(0);
+        // Add a dummy ItemInfo so that logging populates the correct container and item types
+        // instead of DEFAULT_CONTAINERTYPE and DEFAULT_ITEMTYPE, respectively.
+        setTag(new ItemInfo());
         if (animate) {
             AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
             Animator textFade = new LauncherViewPropertyAnimator(mTextView).alpha(1);
@@ -134,8 +139,13 @@ public class NotificationMainView extends LinearLayout implements SwipeHelper.Ca
 
     @Override
     public void onChildDismissed(View v) {
-        Launcher.getLauncher(getContext()).getPopupDataProvider().cancelNotification(
+        Launcher launcher = Launcher.getLauncher(getContext());
+        launcher.getPopupDataProvider().cancelNotification(
                 mNotificationInfo.notificationKey);
+        launcher.getUserEventDispatcher().logActionOnItem(
+                LauncherLogProto.Action.Touch.SWIPE,
+                LauncherLogProto.Action.Direction.RIGHT, // Assume all swipes are right for logging.
+                LauncherLogProto.ItemType.NOTIFICATION);
     }
 
     @Override

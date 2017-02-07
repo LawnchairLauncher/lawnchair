@@ -16,6 +16,7 @@
 
 package com.android.launcher3.logging;
 
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.SystemClock;
@@ -112,7 +113,7 @@ public class UserEventDispatcher {
     // intentHash                       required
     // --------------------------------------------------------------
 
-    protected LauncherEvent createLauncherEvent(View v, Intent intent) {
+    protected LauncherEvent createLauncherEvent(View v, int intentHashCode, ComponentName cn) {
         LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.TAP),
                 newItemTarget(v), newTarget(Target.Type.CONTAINER));
 
@@ -120,8 +121,7 @@ public class UserEventDispatcher {
         int idx = 0;
         if (fillInLogContainerData(event, v)) {
             ItemInfo itemInfo = (ItemInfo) v.getTag();
-            event.srcTarget[idx].intentHash = intent.hashCode();
-            ComponentName cn = intent.getComponent();
+            event.srcTarget[idx].intentHash = intentHashCode;
             if (cn != null) {
                 event.srcTarget[idx].packageNameHash = cn.getPackageName().hashCode();
                 event.srcTarget[idx].componentHash = cn.hashCode();
@@ -146,11 +146,20 @@ public class UserEventDispatcher {
     }
 
     public void logAppLaunch(View v, Intent intent) {
-        LauncherEvent ev = createLauncherEvent(v, intent);
+        LauncherEvent ev = createLauncherEvent(v, intent.hashCode(), intent.getComponent());
         if (ev == null) {
             return;
         }
         dispatchUserEvent(ev, intent);
+    }
+
+    public void logNotificationLaunch(View v, PendingIntent intent) {
+        ComponentName dummyComponent = new ComponentName(intent.getCreatorPackage(), "--dummy--");
+        LauncherEvent ev = createLauncherEvent(v, intent.hashCode(), dummyComponent);
+        if (ev == null) {
+            return;
+        }
+        dispatchUserEvent(ev, null);
     }
 
     public void logActionCommand(int command, int containerType) {
@@ -199,9 +208,17 @@ public class UserEventDispatcher {
         dispatchUserEvent(event, null);
     }
 
+    public void logActionOnItem(int action, int dir, int itemType) {
+        Target itemTarget = newTarget(Target.Type.ITEM);
+        itemTarget.itemType = itemType;
+        LauncherEvent event = newLauncherEvent(newTouchAction(action), itemTarget);
+        event.action.dir = dir;
+        dispatchUserEvent(event, null);
+    }
+
     public void logDeepShortcutsOpen(View icon) {
         LogContainerProvider provider = getLaunchProviderRecursive(icon);
-        if (icon == null && !(icon.getTag() instanceof ItemInfo)) {
+        if (icon == null || !(icon.getTag() instanceof ItemInfo)) {
             return;
         }
         ItemInfo info = (ItemInfo) icon.getTag();

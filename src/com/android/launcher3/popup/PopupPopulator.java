@@ -171,6 +171,7 @@ public class PopupPopulator {
                     // Use unbadged icon for the menu.
                     si.iconBitmap = LauncherIcons.createShortcutIcon(
                             shortcut, launcher, false /* badged */);
+                    si.rank = i;
                     uiHandler.post(new UpdateShortcutChild(container, shortcutViews.get(i),
                             si, shortcut));
                 }

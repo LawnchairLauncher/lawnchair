@@ -64,6 +64,7 @@ enum ItemType {
   DEEPSHORTCUT = 5;
   SEARCHBOX = 6;
   EDITTEXT = 7;
+  NOTIFICATION = 8;
 }
 
 // Used to define what type of container a Target would represent.
