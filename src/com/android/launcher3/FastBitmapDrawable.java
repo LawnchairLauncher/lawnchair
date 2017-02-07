@@ -30,7 +30,7 @@ import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
+import android.util.Property;
 import android.util.SparseArray;
 import android.view.animation.DecelerateInterpolator;
 
@@ -107,6 +107,21 @@ public class FastBitmapDrawable extends Drawable {
     private BadgeInfo mBadgeInfo;
     private BadgeRenderer mBadgeRenderer;
     private IconPalette mIconPalette;
+    private float mBadgeScale;
+
+    private static final Property<FastBitmapDrawable, Float> BADGE_SCALE_PROPERTY
+            = new Property<FastBitmapDrawable, Float>(Float.TYPE, "badgeScale") {
+        @Override
+        public Float get(FastBitmapDrawable fastBitmapDrawable) {
+            return fastBitmapDrawable.mBadgeScale;
+        }
+
+        @Override
+        public void set(FastBitmapDrawable fastBitmapDrawable, Float value) {
+            fastBitmapDrawable.mBadgeScale = value;
+            fastBitmapDrawable.invalidateSelf();
+        }
+    };
 
     // The saturation and brightness are values that are mapped to REDUCED_FILTER_VALUE_SPACE and
     // as a result, can be used to compose the key for the cached ColorMatrixColorFilters
@@ -123,14 +138,22 @@ public class FastBitmapDrawable extends Drawable {
         setFilterBitmap(true);
     }
 
-    public void applyIconBadge(BadgeInfo badgeInfo, BadgeRenderer badgeRenderer) {
+    public void applyIconBadge(final BadgeInfo badgeInfo, BadgeRenderer badgeRenderer,
+            boolean animate) {
         boolean wasBadged = mBadgeInfo != null;
         boolean isBadged = badgeInfo != null;
+        float newBadgeScale = isBadged ? 1f : 0;
         mBadgeInfo = badgeInfo;
         mBadgeRenderer = badgeRenderer;
         if (wasBadged || isBadged) {
             mIconPalette = getIconPalette();
-            invalidateSelf();
+            // Animate when a badge is first added or when it is removed.
+            if (animate && (wasBadged ^ isBadged) && isVisible()) {
+                ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, newBadgeScale).start();
+            } else {
+                mBadgeScale = newBadgeScale;
+                invalidateSelf();
+            }
         }
     }
 
@@ -154,7 +177,7 @@ public class FastBitmapDrawable extends Drawable {
 
     protected void drawBadgeIfNecessary(Canvas canvas) {
         if (hasBadge()) {
-            mBadgeRenderer.draw(canvas, mIconPalette, mBadgeInfo, getBounds());
+            mBadgeRenderer.draw(canvas, mIconPalette, mBadgeInfo, getBounds(), mBadgeScale);
         }
     }
 
@@ -167,7 +190,7 @@ public class FastBitmapDrawable extends Drawable {
     }
 
     private boolean hasBadge() {
-        return mBadgeInfo != null && mBadgeInfo.getNotificationCount() != 0;
+        return (mBadgeInfo != null && mBadgeInfo.getNotificationCount() > 0) || mBadgeScale > 0;
     }
 
     @Override
