@@ -73,6 +73,7 @@ import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An icon that can appear on in the workspace representing an {@link Folder}.
@@ -327,7 +328,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             to.offset(center[0] - animateView.getMeasuredWidth() / 2,
                       center[1] - animateView.getMeasuredHeight() / 2);
 
-            float finalAlpha = index < mPreviewLayoutRule.numItems() ? 0.5f : 0f;
+            float finalAlpha = index < mPreviewLayoutRule.maxNumItems() ? 0.5f : 0f;
 
             float finalScale = scale * scaleRelativeToDragLayer;
             dragLayer.animateView(animateView, from, to, finalAlpha,
@@ -425,8 +426,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     private float getLocalCenterForIndex(int index, int curNumItems, int[] center) {
-        mTmpParams = computePreviewItemDrawingParams(Math.min(mPreviewLayoutRule.numItems(), index),
-                curNumItems, mTmpParams);
+        mTmpParams = computePreviewItemDrawingParams(
+                Math.min(mPreviewLayoutRule.maxNumItems(), index), curNumItems, mTmpParams);
 
         mTmpParams.transX += mBackground.basePreviewOffsetX;
         mTmpParams.transY += mBackground.basePreviewOffsetY;
@@ -890,8 +891,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     private void updateItemDrawingParams(boolean animate) {
-        ArrayList<View> items = mFolder.getItemsInReadingOrder();
-        int nItemsInPreview = Math.min(items.size(), mPreviewLayoutRule.numItems());
+        List<View> items = mPreviewLayoutRule.getItemsToDisplay(mFolder);
+        int nItemsInPreview = items.size();
 
         int prevNumItems = mDrawingParams.size();
 
@@ -1062,10 +1063,10 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     public interface PreviewLayoutRule {
         PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
             PreviewItemDrawingParams params);
-
         void init(int availableSpace, int intrinsicIconSize, boolean rtl);
-
-        int numItems();
+        float scaleForItem(int index, int totalNumItems);
+        int maxNumItems();
         boolean clipToBackground();
+        List<View> getItemsToDisplay(Folder folder);
     }
 }
