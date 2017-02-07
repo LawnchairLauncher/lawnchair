@@ -69,10 +69,10 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         mDisabledForSafeMode = disabledForSafeMode;
 
         mPaint = new TextPaint();
-        mPaint.setColor(0xFFFFFFFF);
+        mPaint.setColor(Utilities.getAttrColor(getContext(), android.R.attr.textColorPrimary));
         mPaint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX,
                 mLauncher.getDeviceProfile().iconTextSizePx, getResources().getDisplayMetrics()));
-        setBackgroundResource(R.drawable.quantum_panel_dark);
+        setBackgroundResource(R.drawable.round_rect_primary);
         setWillNotDraw(false);
 
         setElevation(getResources().getDimension(R.dimen.pending_widget_elevation));

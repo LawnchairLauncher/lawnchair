@@ -113,20 +113,27 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
         // Add more views.
         // if there are too many, hide them.
-        int diff = infoList.size() - row.getChildCount();
+        int expectedChildCount = infoList.size() + Math.max(0, infoList.size() - 1);
+        int childCount = row.getChildCount();
 
-        if (diff > 0) {
-            for (int i = 0; i < diff; i++) {
-                WidgetCell widget = (WidgetCell) mLayoutInflater.inflate(
-                        R.layout.widget_cell, row, false);
+        if (expectedChildCount > childCount) {
+            for (int i = childCount ; i < expectedChildCount; i++) {
+                if ((i & 1) == 1) {
+                    // Add a divider for odd index
+                    mLayoutInflater.inflate(R.layout.widget_list_divider, row);
+                } else {
+                    // Add cell for even index
+                    WidgetCell widget = (WidgetCell) mLayoutInflater.inflate(
+                            R.layout.widget_cell, row, false);
 
-                // set up touch.
-                widget.setOnClickListener(mIconClickListener);
-                widget.setOnLongClickListener(mIconLongClickListener);
-                row.addView(widget);
+                    // set up touch.
+                    widget.setOnClickListener(mIconClickListener);
+                    widget.setOnLongClickListener(mIconLongClickListener);
+                    row.addView(widget);
+                }
             }
-        } else if (diff < 0) {
-            for (int i=infoList.size() ; i < row.getChildCount(); i++) {
+        } else if (expectedChildCount < childCount) {
+            for (int i = expectedChildCount ; i < childCount; i++) {
                 row.getChildAt(i).setVisibility(View.GONE);
             }
         }
@@ -136,10 +143,14 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
         // Bind the view in the widget horizontal tray region.
         for (int i=0; i < infoList.size(); i++) {
-            WidgetCell widget = (WidgetCell) row.getChildAt(i);
+            WidgetCell widget = (WidgetCell) row.getChildAt(2*i);
             widget.applyFromCellItem(infoList.get(i), mWidgetPreviewLoader);
             widget.ensurePreview();
             widget.setVisibility(View.VISIBLE);
+
+            if (i > 0) {
+                row.getChildAt(2*i - 1).setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -151,11 +162,10 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
         ViewGroup container = (ViewGroup) mLayoutInflater.inflate(
                 R.layout.widgets_list_row_view, parent, false);
-        LinearLayout cellList = (LinearLayout) container.findViewById(R.id.widgets_cell_list);
 
         // if the end padding is 0, then container view (horizontal scroll view) doesn't respect
         // the end of the linear layout width + the start padding and doesn't allow scrolling.
-        cellList.setPaddingRelative(mIndent, 0, 1, 0);
+        container.findViewById(R.id.widgets_cell_list).setPaddingRelative(mIndent, 0, 1, 0);
 
         return new WidgetsRowViewHolder(container);
     }
@@ -163,7 +173,7 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
     @Override
     public void onViewRecycled(WidgetsRowViewHolder holder) {
         int total = holder.cellContainer.getChildCount();
-        for (int i = 0; i < total; i++) {
+        for (int i = 0; i < total; i+=2) {
             WidgetCell widget = (WidgetCell) holder.cellContainer.getChildAt(i);
             widget.clear();
         }

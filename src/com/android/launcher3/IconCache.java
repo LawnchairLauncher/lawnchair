@@ -45,6 +45,7 @@ import android.os.UserHandle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
@@ -132,9 +133,9 @@ public class IconCache {
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
 
         mActivityBgColor = context.getResources().getColor(R.color.quantum_panel_bg_color);
-        TypedArray ta = context.obtainStyledAttributes(new int[]{R.attr.colorSecondary});
-        mPackageBgColor = ta.getColor(0, 0);
-        ta.recycle();
+        mPackageBgColor = Utilities.getAttrColor(
+                new ContextThemeWrapper(context, R.style.WidgetContainerTheme),
+                android.R.attr.colorPrimary);
         mLowResOptions = new BitmapFactory.Options();
         // Always prefer RGB_565 config for low res. If the bitmap has transparency, it will
         // automatically be loaded as ALPHA_8888.

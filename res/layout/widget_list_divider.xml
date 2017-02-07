@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-     Copyright (C) 2015 The Android Open Source Project
+<!-- Copyright (C) 2017 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,9 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<inset xmlns:android="http://schemas.android.com/apk/res/android"
-       android:drawable="@drawable/quantum_panel_shape_dark"
-       android:insetBottom="@dimen/quantum_panel_outer_padding"
-       android:insetLeft="@dimen/quantum_panel_outer_padding"
-       android:insetRight="@dimen/quantum_panel_outer_padding"
-       android:insetTop="@dimen/quantum_panel_outer_padding" />
+<View xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/widget_row_divider"
+    android:layout_height="match_parent"
+    android:background="?android:attr/colorPrimary" />
