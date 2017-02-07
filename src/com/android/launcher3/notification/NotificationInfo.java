@@ -16,11 +16,13 @@
 
 package com.android.launcher3.notification;
 
+import android.app.ActivityOptions;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
+import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 import android.view.View;
 
@@ -79,8 +81,10 @@ public class NotificationInfo implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         final Launcher launcher = Launcher.getLauncher(view.getContext());
+        Bundle activityOptions = ActivityOptions.makeClipRevealAnimation(
+                view, 0, 0, view.getWidth(), view.getHeight()).toBundle();
         try {
-            intent.send();
+            intent.send(null, 0, null, null, null, null, activityOptions);
         } catch (PendingIntent.CanceledException e) {
             e.printStackTrace();
         }
