@@ -85,6 +85,11 @@
     <dimen name="widget_preview_label_vertical_padding">8dp</dimen>
     <dimen name="widget_preview_label_horizontal_padding">16dp</dimen>
 
+    <dimen name="widget_preview_shadow_blur">0.5dp</dimen>
+    <dimen name="widget_preview_key_shadow_distance">1dp</dimen>
+    <dimen name="widget_preview_corner_radius">2dp</dimen>
+    <dimen name="widget_preview_cell_divider_width">0.5dp</dimen>
+
     <dimen name="widget_section_height">56dp</dimen>
     <dimen name="widget_section_icon_size">40dp</dimen>
     <dimen name="widget_section_vertical_padding">8dp</dimen>

@@ -39,9 +39,9 @@ public class ShadowGenerator {
 
     // Percent of actual icon size
     private static final float KEY_SHADOW_DISTANCE = 1f/48;
-    private static final int KEY_SHADOW_ALPHA = 61;
+    public static final int KEY_SHADOW_ALPHA = 61;
 
-    private static final int AMBIENT_SHADOW_ALPHA = 30;
+    public static final int AMBIENT_SHADOW_ALPHA = 30;
 
     private static final Object LOCK = new Object();
     // Singleton object guarded by {@link #LOCK}

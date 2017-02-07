@@ -86,32 +86,25 @@ public class HolographicOutlineHelper {
      * bitmap.
      */
     public void applyExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas) {
-        applyExpensiveOutlineWithBlur(srcDst, srcDstCanvas, true);
-    }
-
-    public void applyExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas,
-            boolean clipAlpha) {
         if (ProviderConfig.IS_DOGFOOD_BUILD && srcDst.getConfig() != Bitmap.Config.ALPHA_8) {
             throw new RuntimeException("Outline blue is only supported on alpha bitmaps");
         }
 
         // We start by removing most of the alpha channel so as to ignore shadows, and
         // other types of partial transparency when defining the shape of the object
-        if (clipAlpha) {
-            byte[] pixels = new byte[srcDst.getWidth() * srcDst.getHeight()];
-            ByteBuffer buffer = ByteBuffer.wrap(pixels);
-            buffer.rewind();
-            srcDst.copyPixelsToBuffer(buffer);
+        byte[] pixels = new byte[srcDst.getWidth() * srcDst.getHeight()];
+        ByteBuffer buffer = ByteBuffer.wrap(pixels);
+        buffer.rewind();
+        srcDst.copyPixelsToBuffer(buffer);
 
-            for (int i = 0; i < pixels.length; i++) {
-                if ((pixels[i] & 0xFF) < 188) {
-                    pixels[i] = 0;
-                }
+        for (int i = 0; i < pixels.length; i++) {
+            if ((pixels[i] & 0xFF) < 188) {
+                pixels[i] = 0;
             }
-
-            buffer.rewind();
-            srcDst.copyPixelsFromBuffer(buffer);
         }
+
+        buffer.rewind();
+        srcDst.copyPixelsFromBuffer(buffer);
 
         // calculate the outer blur first
         mBlurPaint.setMaskFilter(mMediumOuterBlurMaskFilter);

@@ -178,12 +178,8 @@ public class PendingItemDragHelper extends DragPreviewProvider {
         dst.offset((w - scaledWidth) / 2, (h - scaledHeight) / 2);
 
         canvas.drawBitmap(mPreviewBitmap, src, dst, null);
-
-        // Don't clip alpha values for the drag outline if we're using the default widget preview
-        boolean clipAlpha = !(mAddInfo instanceof PendingAddWidgetInfo &&
-                (((PendingAddWidgetInfo) mAddInfo).previewImage == 0));
         HolographicOutlineHelper.getInstance(mView.getContext())
-                .applyExpensiveOutlineWithBlur(b, canvas, clipAlpha);
+                .applyExpensiveOutlineWithBlur(b, canvas);
         canvas.setBitmap(null);
 
         return b;
