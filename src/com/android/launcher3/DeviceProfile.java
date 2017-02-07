@@ -196,9 +196,7 @@ public class DeviceProfile {
         hotseatBarBottomPaddingPx = 0;
         hotseatLandGutterPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_gutter_width);
 
-        int badgeSize = res.getDimensionPixelSize(R.dimen.badge_size);
-        int badgeTextSize = res.getDimensionPixelSize(R.dimen.badge_text_size);
-        mBadgeRenderer = new BadgeRenderer(badgeSize, badgeTextSize);
+        mBadgeRenderer = new BadgeRenderer(context);
 
         // Determine sizes.
         widthPx = width;
