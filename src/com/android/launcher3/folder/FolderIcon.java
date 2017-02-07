@@ -64,9 +64,12 @@ import com.android.launcher3.SimpleOnStylusPressListener;
 import com.android.launcher3.StylusEventHelper;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.badge.BadgeRenderer;
+import com.android.launcher3.badge.FolderBadgeInfo;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
@@ -124,6 +127,9 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     private Alarm mOpenAlarm = new Alarm();
 
+    private FolderBadgeInfo mBadgeInfo = new FolderBadgeInfo();
+    private BadgeRenderer mBadgeRenderer;
+
     public FolderIcon(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
@@ -172,6 +178,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         icon.setOnClickListener(launcher);
         icon.mInfo = folderInfo;
         icon.mLauncher = launcher;
+        icon.mBadgeRenderer = launcher.getDeviceProfile().mBadgeRenderer;
         icon.setContentDescription(launcher.getString(R.string.folder_name_format, folderInfo.title));
         Folder folder = Folder.fromXml(launcher);
         folder.setDragController(launcher.getDragController());
@@ -377,6 +384,11 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     private void computePreviewDrawingParams(Drawable d) {
         computePreviewDrawingParams(d.getIntrinsicWidth(), getMeasuredWidth());
+    }
+
+    public void setBadgeInfo(FolderBadgeInfo badgeInfo) {
+        mBadgeInfo = badgeInfo;
+        invalidate();
     }
 
     static class PreviewItemDrawingParams {
@@ -767,6 +779,14 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         if (mPreviewLayoutRule.clipToBackground() && !mBackground.drawingDelegated()) {
             mBackground.drawBackgroundStroke(canvas, mBgPaint);
         }
+
+        int offsetX = mBackground.getOffsetX();
+        int offsetY = mBackground.getOffsetY();
+        int previewSize = (int) (mBackground.previewSize * mBackground.mScale);
+        Rect bounds = new Rect(offsetX, offsetY, offsetX + previewSize, offsetY + previewSize);
+        if (mBadgeInfo != null && mBadgeInfo.getNotificationCount() > 0) {
+            mBadgeRenderer.draw(canvas, IconPalette.FOLDER_ICON_PALETTE, mBadgeInfo, bounds);
+        }
     }
 
     class FolderPreviewItemAnim {
@@ -916,16 +936,21 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         requestLayout();
     }
 
+    @Override
     public void onAdd(ShortcutInfo item) {
+        mBadgeInfo.addBadgeInfo(mLauncher.getPopupDataProvider().getBadgeInfoForItem(item));
         invalidate();
         requestLayout();
     }
 
+    @Override
     public void onRemove(ShortcutInfo item) {
+        mBadgeInfo.subtractBadgeInfo(mLauncher.getPopupDataProvider().getBadgeInfoForItem(item));
         invalidate();
         requestLayout();
     }
 
+    @Override
     public void onTitleChanged(CharSequence title) {
         mFolderName.setText(title);
         setContentDescription(getContext().getString(R.string.folder_name_format, title));
