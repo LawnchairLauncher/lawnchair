@@ -111,6 +111,7 @@ import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
@@ -2272,7 +2273,11 @@ public class Launcher extends BaseActivity
 
         if (v instanceof CellLayout) {
             if (mWorkspace.isInOverviewMode()) {
-                mWorkspace.snapToPageFromOverView(mWorkspace.indexOfChild(v));
+                int page = mWorkspace.indexOfChild(v);
+                getUserEventDispatcher().logActionOnContainer(LauncherLogProto.Action.Type.TOUCH,
+                        LauncherLogProto.Action.Direction.NONE,
+                        LauncherLogProto.ContainerType.OVERVIEW, page);
+                mWorkspace.snapToPageFromOverView(page);
                 showWorkspace(true);
             }
             return;

@@ -121,4 +121,6 @@ public abstract class AbstractFloatingView extends LinearLayout {
     public static AbstractFloatingView getTopOpenView(Launcher launcher) {
         return getOpenView(launcher, TYPE_FOLDER | TYPE_POPUP_CONTAINER_WITH_ARROW);
     }
+
+    public abstract int getLogContainerType();
 }

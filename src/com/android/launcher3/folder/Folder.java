@@ -74,6 +74,7 @@ import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.CircleRevealOutlineProvider;
@@ -1531,5 +1532,10 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
      */
     public static Folder getOpen(Launcher launcher) {
         return getOpenView(launcher, TYPE_FOLDER);
+    }
+
+    @Override
+    public int getLogContainerType() {
+        return ContainerType.FOLDER;
     }
 }

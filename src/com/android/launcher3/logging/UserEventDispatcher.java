@@ -28,6 +28,7 @@ import com.android.launcher3.DropTarget;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.LauncherEvent;
@@ -193,6 +194,13 @@ public class UserEventDispatcher {
         LauncherEvent event = newLauncherEvent(
                 newTouchAction(action), newTarget(Target.Type.CONTROL));
         event.srcTarget[0].controlType = controlType;
+        dispatchUserEvent(event, null);
+    }
+
+    public void logActionTapOutside(Target target) {
+        LauncherEvent event = newLauncherEvent(newTouchAction(Action.Type.TOUCH),
+                target);
+        event.action.isOutside = true;
         dispatchUserEvent(event, null);
     }
 

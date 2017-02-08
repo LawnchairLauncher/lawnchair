@@ -825,4 +825,9 @@ public class PopupContainerWithArrow extends AbstractFloatingView
     public static PopupContainerWithArrow getOpen(Launcher launcher) {
         return getOpenView(launcher, TYPE_POPUP_CONTAINER_WITH_ARROW);
     }
+
+    @Override
+    public int getLogContainerType() {
+        return ContainerType.DEEPSHORTCUTS;
+    }
 }
