@@ -80,9 +80,6 @@
         <attr name="hideParentOnDisable" format="boolean" />
     </declare-styleable>
 
-    <!-- Fallback attr for pre-API 25 support -->
-    <attr name="colorSecondary" format="reference|color" />
-
     <declare-styleable name="InvariantDeviceProfile">
         <attr name="name" format="string" />
         <attr name="minWidthDps" format="float" />

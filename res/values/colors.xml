@@ -45,11 +45,5 @@
     <color name="spring_loaded_panel_color">#40FFFFFF</color>
     <color name="spring_loaded_highlighted_panel_border_color">#FFF</color>
 
-    <!-- Widgets view -->
-    <color name="widgets_view_item_text_color">#3B3B3B</color>
-
-    <!-- Used as a fallback since colorSecondary doesn't exist pre-API 25 -->
-    <color name="fallback_secondary_color">#FF37474F</color>
-
     <color name="notification_icon_default_color">#757575</color> <!-- Gray 600 -->
 </resources>

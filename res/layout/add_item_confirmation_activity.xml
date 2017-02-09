@@ -22,10 +22,10 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="20dp"
         android:text="@string/add_item_request_drag_hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
@@ -33,7 +33,7 @@
     <FrameLayout
         android:theme="@style/WidgetContainerTheme"
         android:layout_width="match_parent"
-        android:background="?android:attr/colorPrimary"
+        android:background="?android:attr/colorPrimaryDark"
         android:layout_height="wrap_content">
 
         <include
