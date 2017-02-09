@@ -18,9 +18,8 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
-import android.graphics.Rect;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -31,6 +30,7 @@ import android.util.LongSparseArray;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.graphics.ShadowGenerator;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.Preconditions;
@@ -51,8 +51,6 @@ public class WidgetPreviewLoader {
 
     private static final String TAG = "WidgetPreviewLoader";
     private static final boolean DEBUG = false;
-
-    private static final float WIDGET_PREVIEW_ICON_PADDING_PERCENTAGE = 0.25f;
 
     private final HashMap<String, long[]> mPackageVersions = new HashMap<>();
 
@@ -104,7 +102,7 @@ public class WidgetPreviewLoader {
      * sizes (landscape vs portrait).
      */
     private static class CacheDb extends SQLiteCacheHelper {
-        private static final int DB_VERSION = 5;
+        private static final int DB_VERSION = 6;
 
         private static final String TABLE_NAME = "shortcut_and_widget_previews";
         private static final String COLUMN_COMPONENT = "componentName";
@@ -299,7 +297,7 @@ public class WidgetPreviewLoader {
         Drawable drawable = null;
         if (info.previewImage != 0) {
             try {
-                drawable = info.loadPreviewImage(launcher.getApplicationContext(), 0);
+                drawable = info.loadPreviewImage(mContext, 0);
             } catch (OutOfMemoryError e) {
                 Log.w(TAG, "Error loading widget preview for: " + info.provider, e);
                 // During OutOfMemoryError, the previous heap stack is not affected. Catching
@@ -321,17 +319,14 @@ public class WidgetPreviewLoader {
         int previewWidth;
         int previewHeight;
 
-        Bitmap tileBitmap = null;
-
         if (widgetPreviewExists) {
             previewWidth = drawable.getIntrinsicWidth();
             previewHeight = drawable.getIntrinsicHeight();
         } else {
-            // Generate a preview image if we couldn't load one
-            tileBitmap = ((BitmapDrawable) mContext.getResources().getDrawable(
-                    R.drawable.widget_tile)).getBitmap();
-            previewWidth = tileBitmap.getWidth() * spanX;
-            previewHeight = tileBitmap.getHeight() * spanY;
+            DeviceProfile dp = launcher.getDeviceProfile();
+            int tileSize = Math.min(dp.cellWidthPx, dp.cellHeightPx);
+            previewWidth = tileSize * spanX;
+            previewHeight = tileSize * spanY;
         }
 
         // Scale to fit width only - let the widget preview be clipped in the
@@ -371,45 +366,61 @@ public class WidgetPreviewLoader {
             drawable.setBounds(x, 0, x + previewWidth, previewHeight);
             drawable.draw(c);
         } else {
-            final Paint p = new Paint();
-            p.setFilterBitmap(true);
-            int appIconSize = launcher.getDeviceProfile().iconSizePx;
+            Resources res = mContext.getResources();
+            float shadowBlur = res.getDimension(R.dimen.widget_preview_shadow_blur);
+            float keyShadowDistance = res.getDimension(R.dimen.widget_preview_key_shadow_distance);
+            float corner = res.getDimension(R.dimen.widget_preview_corner_radius);
 
-            // draw the spanX x spanY tiles
-            final Rect src = new Rect(0, 0, tileBitmap.getWidth(), tileBitmap.getHeight());
+            RectF boxRect = new RectF(shadowBlur, shadowBlur,
+                    previewWidth - shadowBlur, previewHeight - shadowBlur - keyShadowDistance);
 
-            float tileW = scale * tileBitmap.getWidth();
-            float tileH = scale * tileBitmap.getHeight();
-            final RectF dst = new RectF(0, 0, tileW, tileH);
+            final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
+            p.setColor(0xFFFFFFFF);
 
-            float tx = x;
-            for (int i = 0; i < spanX; i++, tx += tileW) {
-                float ty = 0;
-                for (int j = 0; j < spanY; j++, ty += tileH) {
-                    dst.offsetTo(tx, ty);
-                    c.drawBitmap(tileBitmap, src, dst, p);
-                }
+            // Key shadow
+            p.setShadowLayer(shadowBlur, 0, keyShadowDistance,
+                    ShadowGenerator.KEY_SHADOW_ALPHA << 24);
+            c.drawRoundRect(boxRect, corner, corner, p);
+
+            // Ambient shadow
+            p.setShadowLayer(shadowBlur, 0, 0, ShadowGenerator.AMBIENT_SHADOW_ALPHA << 24);
+            c.drawRoundRect(boxRect, corner, corner, p);
+
+            // Draw horizontal and vertical lines to represent individual columns.
+            p.clearShadowLayer();
+            p.setStyle(Paint.Style.STROKE);
+            p.setStrokeWidth(res.getDimension(R.dimen.widget_preview_cell_divider_width));
+            p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+
+            float t = boxRect.left;
+            float tileSize = boxRect.width() / spanX;
+            for (int i = 1; i < spanX; i++) {
+                t += tileSize;
+                c.drawLine(t, 0, t, previewHeight, p);
             }
 
-            // Draw the icon in the top left corner
-            // TODO: use top right for RTL
-            int minOffset = (int) (appIconSize * WIDGET_PREVIEW_ICON_PADDING_PERCENTAGE);
-            int smallestSide = Math.min(previewWidth, previewHeight);
-            float iconScale = Math.min((float) smallestSide / (appIconSize + 2 * minOffset), scale);
+            t = boxRect.top;
+            tileSize = boxRect.height() / spanY;
+            for (int i = 1; i < spanY; i++) {
+                t += tileSize;
+                c.drawLine(0, t, previewWidth, t, p);
+            }
 
+            // Draw icon in the center.
             try {
                 Drawable icon = info.getIcon(launcher, mIconCache);
                 if (icon != null) {
+                    int appIconSize = launcher.getDeviceProfile().iconSizePx;
+                    int iconSize = (int) Math.min(appIconSize * scale,
+                            Math.min(boxRect.width(), boxRect.height()));
+
                     icon = mutateOnMainThread(icon);
-                    int hoffset = (int) ((tileW - appIconSize * iconScale) / 2) + x;
-                    int yoffset = (int) ((tileH - appIconSize * iconScale) / 2);
-                    icon.setBounds(hoffset, yoffset,
-                            hoffset + (int) (appIconSize * iconScale),
-                            yoffset + (int) (appIconSize * iconScale));
+                    int hoffset = (previewWidth - iconSize) / 2;
+                    int yoffset = (previewHeight - iconSize) / 2;
+                    icon.setBounds(hoffset, yoffset, hoffset + iconSize, yoffset + iconSize);
                     icon.draw(c);
                 }
-            } catch (Resources.NotFoundException e) {
-            }
+            } catch (Resources.NotFoundException e) { }
             c.setBitmap(null);
         }
         return preview;
