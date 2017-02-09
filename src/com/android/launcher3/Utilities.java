@@ -60,6 +60,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.Executor;
@@ -647,5 +648,15 @@ public final class Utilities {
         } catch (InstantiationException|IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Returns a HashSet with a single element. We use this instead of Collections.singleton()
+     * because HashSet ensures all operations, such as remove, are supported.
+     */
+    public static <T> HashSet<T> singletonHashSet(T elem) {
+        HashSet<T> hashSet = new HashSet<>(1);
+        hashSet.add(elem);
+        return hashSet;
     }
 }

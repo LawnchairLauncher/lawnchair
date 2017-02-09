@@ -22,6 +22,7 @@ import android.util.Log;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.notification.NotificationInfo;
 import com.android.launcher3.notification.NotificationListener;
@@ -68,7 +69,8 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         } else {
             notificationWasAdded = badgeInfo.addNotificationKeyIfNotExists(notificationKey);
         }
-        updateLauncherIconBadges(Collections.singleton(postedPackageUserKey), notificationWasAdded);
+        updateLauncherIconBadges(Utilities.singletonHashSet(postedPackageUserKey),
+                notificationWasAdded);
     }
 
     @Override
@@ -78,7 +80,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             if (oldBadgeInfo.getNotificationCount() == 0) {
                 mPackageUserToBadgeInfos.remove(removedPackageUserKey);
             }
-            updateLauncherIconBadges(Collections.singleton(removedPackageUserKey));
+            updateLauncherIconBadges(Utilities.singletonHashSet(removedPackageUserKey));
 
             PopupContainerWithArrow openContainer = PopupContainerWithArrow.getOpen(mLauncher);
             if (openContainer != null) {
