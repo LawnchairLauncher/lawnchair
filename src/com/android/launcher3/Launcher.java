@@ -1462,8 +1462,8 @@ public class Launcher extends BaseActivity
         if (info == null) {
             info = InstallShortcutReceiver.fromShortcutIntent(this, data);
 
-            if (info == null || !PackageManagerHelper.hasPermissionForActivity(
-                    this, info.intent, args.getPendingIntent().getComponent().getPackageName())) {
+            if (info == null || !new PackageManagerHelper(this).hasPermissionForActivity(
+                    info.intent, args.getPendingIntent().getComponent().getPackageName())) {
                 // The app is trying to add a shortcut without sufficient permissions
                 Log.e(TAG, "Ignoring malicious intent " + info.intent.toUri(0));
                 return;

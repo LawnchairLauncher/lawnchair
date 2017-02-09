@@ -54,7 +54,7 @@ public class SdCardAvailableReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
-        final PackageManager manager = context.getPackageManager();
+        final PackageManagerHelper pmHelper = new PackageManagerHelper(context);
         for (Entry<UserHandle, ArrayList<String>> entry : mPackages.entrySet()) {
             UserHandle user = entry.getKey();
 
@@ -63,7 +63,7 @@ public class SdCardAvailableReceiver extends BroadcastReceiver {
 
             for (String pkg : new HashSet<>(entry.getValue())) {
                 if (!launcherApps.isPackageEnabledForProfile(pkg, user)) {
-                    if (PackageManagerHelper.isAppOnSdcard(manager, pkg)) {
+                    if (pmHelper.isAppOnSdcard(pkg)) {
                         packagesUnavailable.add(pkg);
                     } else {
                         packagesRemoved.add(pkg);

@@ -1097,12 +1097,11 @@ public class LauncherModel extends BroadcastReceiver
             if (LauncherAppState.PROFILE_STARTUP) {
                 Trace.beginSection("Loading Workspace");
             }
-            final long t = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
 
             final Context context = mContext;
             final ContentResolver contentResolver = context.getContentResolver();
-            final PackageManager manager = context.getPackageManager();
-            final boolean isSafeMode = manager.isSafeMode();
+            final PackageManagerHelper pmHelper = new PackageManagerHelper(context);
+            final boolean isSafeMode = pmHelper.isSafeMode();
             final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
             final DeepShortcutManager shortcutManager = DeepShortcutManager.getInstance(context);
             final boolean isSdCardReady = Utilities.isBootCompleted();
@@ -1189,7 +1188,6 @@ public class LauncherModel extends BroadcastReceiver
                     }
 
                     ShortcutInfo info;
-                    String intentDescription;
                     LauncherAppWidgetInfo appWidgetInfo;
                     Intent intent;
                     String targetPkg;
@@ -1251,7 +1249,7 @@ public class LauncherModel extends BroadcastReceiver
                                         if (c.hasRestoreFlag(ShortcutInfo.FLAG_AUTOINTALL_ICON)) {
                                             // We allow auto install apps to have their intent
                                             // updated after an install.
-                                            intent = manager.getLaunchIntentForPackage(targetPkg);
+                                            intent = pmHelper.getAppLaunchIntent(targetPkg, c.user);
                                             if (intent != null) {
                                                 c.restoreFlag = 0;
                                                 c.updater().put(
@@ -1292,8 +1290,7 @@ public class LauncherModel extends BroadcastReceiver
                                             c.markDeleted("Unrestored app removed: " + targetPkg);
                                             continue;
                                         }
-                                    } else if (PackageManagerHelper.isAppOnSdcard(
-                                            manager, targetPkg)) {
+                                    } else if (pmHelper.isAppOnSdcard(targetPkg)) {
                                         // Package is present but not available.
                                         disabledState |= ShortcutInfo.FLAG_DISABLED_NOT_AVAILABLE;
                                         // Add the icon on the workspace anyway.
@@ -1353,7 +1350,7 @@ public class LauncherModel extends BroadcastReceiver
                                     info = c.loadSimpleShortcut();
 
                                     // Shortcuts are only available on the primary profile
-                                    if (PackageManagerHelper.isAppSuspended(manager, targetPkg)) {
+                                    if (pmHelper.isAppSuspended(targetPkg)) {
                                         disabledState |= ShortcutInfo.FLAG_DISABLED_SUSPENDED;
                                     }
 
