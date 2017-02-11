@@ -76,6 +76,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import ch.deletescape.lawnchair.LauncherTab;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
 
@@ -305,6 +306,8 @@ public class Launcher extends Activity
     // simply unregister this runnable.
     private Runnable mExitSpringLoadedModeRunnable;
 
+    private LauncherTab mLauncherTab;
+
     @Thunk
     Runnable mBuildLayersRunnable = new Runnable() {
         public void run() {
@@ -383,6 +386,8 @@ public class Launcher extends Activity
 
         IntentFilter filter = new IntentFilter(ACTION_APPWIDGET_HOST_RESET);
         registerReceiver(mUiBroadcastReceiver, filter);
+
+        mLauncherTab = new LauncherTab(this);
     }
 
     @Override
@@ -775,6 +780,8 @@ public class Launcher extends Activity
             mAllAppsController.showDiscoveryBounce();
         }
         mIsResumeFromActionScreenOff = false;
+
+        mLauncherTab.getClient().onResume();
     }
 
     @Override
@@ -786,6 +793,8 @@ public class Launcher extends Activity
         mPaused = true;
         mDragController.cancelDrag();
         mDragController.resetLastGestureUpTime();
+
+        mLauncherTab.getClient().onPause();
     }
 
     @Override
@@ -1211,6 +1220,8 @@ public class Launcher extends Activity
         FirstFrameAnimatorHelper.initializeDrawListener(getWindow().getDecorView());
         mAttached = true;
         mVisible = true;
+
+        mLauncherTab.getClient().onAttachedToWindow();
     }
 
     @Override
@@ -1223,6 +1234,8 @@ public class Launcher extends Activity
             mAttached = false;
         }
         updateAutoAdvanceState();
+
+        mLauncherTab.getClient().onDetachedFromWindow();
     }
 
     public void onWindowVisibilityChanged(int visibility) {
@@ -1439,6 +1452,8 @@ public class Launcher extends Activity
             if (!alreadyOnHome && mWidgetsView != null) {
                 mWidgetsView.scrollToTop();
             }
+
+            mLauncherTab.getClient().hideOverlay(true);
         }
 
         // Defer moving to the default screen until after we callback to the LauncherCallbacks
@@ -1528,6 +1543,8 @@ public class Launcher extends Activity
         unregisterReceiver(mUiBroadcastReceiver);
 
         LauncherAnimUtils.onDestroyActivity();
+
+        mLauncherTab.getClient().onDestroy();
     }
 
     public LauncherAccessibilityDelegate getAccessibilityDelegate() {
@@ -1578,7 +1595,7 @@ public class Launcher extends Activity
      * Starts the global search activity. This code is a copied from SearchManager
      */
     private void startGlobalSearch(String initialQuery,
-                                  boolean selectInitialQuery, Bundle appSearchData, Rect sourceBounds) {
+                                   boolean selectInitialQuery, Bundle appSearchData, Rect sourceBounds) {
         final SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         ComponentName globalSearchActivity = searchManager.getGlobalSearchActivity();
@@ -3636,5 +3653,53 @@ public class Launcher extends Activity
             return (Launcher) context;
         }
         return ((Launcher) ((ContextWrapper) context).getBaseContext());
+    }
+
+    /**
+     * Call this after onCreate to set or clear overlay.
+     */
+    public void setLauncherOverlay(LauncherOverlay overlay) {
+        if (overlay != null) {
+            overlay.setOverlayCallbacks(new LauncherOverlayCallbacksImpl());
+        }
+        mWorkspace.setLauncherOverlay(overlay);
+    }
+
+    public interface LauncherOverlay {
+
+        /**
+         * Touch interaction leading to overscroll has begun
+         */
+        public void onScrollInteractionBegin();
+
+        /**
+         * Touch interaction related to overscroll has ended
+         */
+        public void onScrollInteractionEnd();
+
+        /**
+         * Scroll progress, between 0 and 100, when the user scrolls beyond the leftmost
+         * screen (or in the case of RTL, the rightmost screen).
+         */
+        public void onScrollChange(float progress, boolean rtl);
+
+        /**
+         * Called when the launcher is ready to use the overlay
+         * @param callbacks A set of callbacks provided by Launcher in relation to the overlay
+         */
+        public void setOverlayCallbacks(LauncherOverlayCallbacks callbacks);
+    }
+
+    public interface LauncherOverlayCallbacks {
+        public void onScrollChanged(float progress);
+    }
+
+    class LauncherOverlayCallbacksImpl implements LauncherOverlayCallbacks {
+
+        public void onScrollChanged(float progress) {
+            if (mWorkspace != null) {
+                mWorkspace.onOverlayScrollChanged(progress);
+            }
+        }
     }
 }
