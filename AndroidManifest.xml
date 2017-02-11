@@ -56,6 +56,7 @@
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher_home"
         android:label="@string/derived_app_name"
+        android:theme="@style/LauncherTheme"
         android:largeHeap="@bool/config_largeHeap"
         android:restoreAnyVersion="true"
         android:supportsRtl="true" >
@@ -69,7 +70,6 @@
             android:launchMode="singleTask"
             android:clearTaskOnLaunch="true"
             android:stateNotNeeded="true"
-            android:theme="@style/LauncherTheme"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="nosensor"
             android:configChanges="keyboard|keyboardHidden|navigation"
@@ -90,6 +90,7 @@
         <activity
             android:name="com.android.launcher3.SettingsActivity"
             android:label="@string/settings_button_text"
+            android:theme="@android:style/Theme.DeviceDefault.Settings"
             android:autoRemoveFromRecents="true">
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />

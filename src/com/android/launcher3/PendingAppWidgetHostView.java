@@ -35,6 +35,7 @@ import android.view.View.OnClickListener;
 import com.android.launcher3.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.model.PackageItemInfo;
+import com.android.launcher3.util.Themes;
 
 public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         implements OnClickListener, ItemInfoUpdateReceiver {
@@ -69,7 +70,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         mDisabledForSafeMode = disabledForSafeMode;
 
         mPaint = new TextPaint();
-        mPaint.setColor(Utilities.getAttrColor(getContext(), android.R.attr.textColorPrimary));
+        mPaint.setColor(Themes.getAttrColor(getContext(), android.R.attr.textColorPrimary));
         mPaint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX,
                 mLauncher.getDeviceProfile().iconTextSizePx, getResources().getDisplayMetrics()));
         setBackgroundResource(R.drawable.round_rect_primary);

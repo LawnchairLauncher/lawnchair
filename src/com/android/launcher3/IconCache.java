@@ -27,7 +27,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -45,7 +44,6 @@ import android.os.UserHandle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
@@ -56,6 +54,7 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.SQLiteCacheHelper;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 
 import java.util.Collections;
@@ -132,10 +131,9 @@ public class IconCache {
                 IconProvider.class, context, R.string.icon_provider_class);
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
 
-        mActivityBgColor = context.getResources().getColor(R.color.quantum_panel_bg_color);
-        mPackageBgColor = Utilities.getAttrColor(
-                new ContextThemeWrapper(context, R.style.WidgetContainerTheme),
-                android.R.attr.colorPrimary);
+        mActivityBgColor = Themes.getColorPrimary(context, R.style.LauncherTheme);
+        mPackageBgColor = Themes.getColorPrimary(context, R.style.WidgetContainerTheme);
+
         mLowResOptions = new BitmapFactory.Options();
         // Always prefer RGB_565 config for low res. If the bitmap has transparency, it will
         // automatically be loaded as ALPHA_8888.

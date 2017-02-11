@@ -120,9 +120,6 @@
 
     <dimen name="spring_loaded_panel_border">1dp</dimen>
 
-<!-- Theme -->
-    <dimen name="quantum_panel_outer_padding">4dp</dimen>
-
 <!-- Folders -->
     <!-- The size of the padding on the preview background drawable -->
     <dimen name="folder_preview_padding">6dp</dimen>

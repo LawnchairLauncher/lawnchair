@@ -29,6 +29,7 @@ import android.view.ViewConfiguration;
 import android.widget.TextView;
 
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.util.Themes;
 
 /**
  * The track and scrollbar that shows when you scroll the list.
@@ -102,7 +103,7 @@ public class BaseRecyclerViewFastScrollBar {
 
         mThumbPaint = new Paint();
         mThumbPaint.setAntiAlias(true);
-        mThumbPaint.setColor(Utilities.getColorAccent(rv.getContext()));
+        mThumbPaint.setColor(Themes.getColorAccent(rv.getContext()));
         mThumbPaint.setStyle(Paint.Style.FILL);
 
         mWidth = mMinWidth = res.getDimensionPixelSize(R.dimen.container_fastscroll_thumb_min_width);
