@@ -40,7 +40,7 @@ import java.util.Set;
  * A {@link NotificationListenerService} that sends updates to its
  * {@link NotificationsChangedListener} when notifications are posted or canceled,
  * as well and when this service first connects. An instance of NotificationListener,
- * and its methods for getting notifications, can be obtained via {@link #getInstance()}.
+ * and its methods for getting notifications, can be obtained via {@link #getInstanceIfConnected()}.
  */
 public class NotificationListener extends NotificationListenerService {
 
@@ -50,6 +50,7 @@ public class NotificationListener extends NotificationListenerService {
 
     private static NotificationListener sNotificationListenerInstance = null;
     private static NotificationsChangedListener sNotificationsChangedListener;
+    private static boolean sIsConnected;
 
     private final Handler mWorkerHandler;
     private final Handler mUiHandler;
@@ -65,8 +66,9 @@ public class NotificationListener extends NotificationListenerService {
                     mUiHandler.obtainMessage(message.what, message.obj).sendToTarget();
                     break;
                 case MSG_NOTIFICATION_FULL_REFRESH:
-                    final List<StatusBarNotification> activeNotifications
-                            = filterNotifications(getActiveNotifications());
+                    final List<StatusBarNotification> activeNotifications = sIsConnected
+                            ? filterNotifications(getActiveNotifications())
+                            : new ArrayList<StatusBarNotification>();
                     mUiHandler.obtainMessage(message.what, activeNotifications).sendToTarget();
                     break;
             }
@@ -107,10 +109,11 @@ public class NotificationListener extends NotificationListenerService {
         super();
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper(), mWorkerCallback);
         mUiHandler = new Handler(Looper.getMainLooper(), mUiCallback);
+        sNotificationListenerInstance = this;
     }
 
-    public static @Nullable NotificationListener getInstance() {
-        return sNotificationListenerInstance;
+    public static @Nullable NotificationListener getInstanceIfConnected() {
+        return sIsConnected ? sNotificationListenerInstance : null;
     }
 
     public static void setNotificationsChangedListener(NotificationsChangedListener listener) {
@@ -119,9 +122,8 @@ public class NotificationListener extends NotificationListenerService {
         }
         sNotificationsChangedListener = listener;
 
-        NotificationListener notificationListener = getInstance();
-        if (notificationListener != null) {
-            notificationListener.onNotificationFullRefresh();
+        if (sNotificationListenerInstance != null) {
+            sNotificationListenerInstance.onNotificationFullRefresh();
         }
     }
 
@@ -132,7 +134,7 @@ public class NotificationListener extends NotificationListenerService {
     @Override
     public void onListenerConnected() {
         super.onListenerConnected();
-        sNotificationListenerInstance = this;
+        sIsConnected = true;
         onNotificationFullRefresh();
     }
 
@@ -143,7 +145,7 @@ public class NotificationListener extends NotificationListenerService {
     @Override
     public void onListenerDisconnected() {
         super.onListenerDisconnected();
-        sNotificationListenerInstance = null;
+        sIsConnected = false;
     }
 
     @Override
