@@ -50,6 +50,7 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
 import com.android.launcher3.accessibility.FolderAccessibilityHelper;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
+import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.DragPreviewProvider;
@@ -2097,12 +2098,13 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             }
 
             setInitialAnimationValues(true);
-            a = new LauncherViewPropertyAnimator(child)
-                .scaleX(initScale)
-                .scaleY(initScale)
-                .translationX(initDeltaX)
-                .translationY(initDeltaY)
-                .setDuration(REORDER_ANIMATION_DURATION);
+            a = LauncherAnimUtils.ofPropertyValuesHolder(child,
+                    new PropertyListBuilder()
+                            .scale(initScale)
+                            .translationX(initDeltaX)
+                            .translationY(initDeltaY)
+                            .build())
+                    .setDuration(REORDER_ANIMATION_DURATION);
             a.setInterpolator(new android.view.animation.DecelerateInterpolator(1.5f));
             a.start();
         }

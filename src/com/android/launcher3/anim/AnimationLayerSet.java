@@ -29,7 +29,16 @@ import java.util.Map;
  */
 public class AnimationLayerSet extends AnimatorListenerAdapter {
 
-    private final HashMap<View, Integer> mViewsToLayerTypeMap = new HashMap<>();
+    private final HashMap<View, Integer> mViewsToLayerTypeMap;
+
+    public AnimationLayerSet() {
+        mViewsToLayerTypeMap = new HashMap<>();
+    }
+
+    public AnimationLayerSet(View v) {
+        mViewsToLayerTypeMap = new HashMap<>(1);
+        addView(v);
+    }
 
     public void addView(View v) {
         mViewsToLayerTypeMap.put(v, v.getLayerType());

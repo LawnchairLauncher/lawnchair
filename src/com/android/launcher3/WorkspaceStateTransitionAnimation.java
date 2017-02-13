@@ -31,6 +31,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.DecelerateInterpolator;
 
 import com.android.launcher3.anim.AnimationLayerSet;
+import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.Thunk;
@@ -337,10 +338,9 @@ public class WorkspaceStateTransitionAnimation {
             if (animated) {
                 float oldBackgroundAlpha = cl.getBackgroundAlpha();
                 if (initialAlpha != finalAlpha) {
-                    LauncherViewPropertyAnimator alphaAnim =
-                            new LauncherViewPropertyAnimator(cl.getShortcutsAndWidgets());
-                    alphaAnim.alpha(finalAlpha)
-                            .setDuration(duration)
+                    Animator alphaAnim = ObjectAnimator.ofFloat(
+                            cl.getShortcutsAndWidgets(), View.ALPHA, finalAlpha);
+                    alphaAnim.setDuration(duration)
                             .setInterpolator(mZoomInInterpolator);
                     mStateAnimator.play(alphaAnim);
                 }
@@ -377,17 +377,16 @@ public class WorkspaceStateTransitionAnimation {
                 .animateAlphaAtIndex(finalQsbAlpha, Workspace.QSB_ALPHA_INDEX_STATE_CHANGE);
 
         if (animated) {
-            LauncherViewPropertyAnimator scale = new LauncherViewPropertyAnimator(mWorkspace);
-            scale.scaleX(mNewScale)
-                    .scaleY(mNewScale)
-                    .translationY(finalWorkspaceTranslationY)
-                    .setDuration(duration)
-                    .setInterpolator(mZoomInInterpolator);
+            Animator scale = LauncherAnimUtils.ofPropertyValuesHolder(mWorkspace,
+                    new PropertyListBuilder().scale(mNewScale)
+                            .translationY(finalWorkspaceTranslationY).build())
+                    .setDuration(duration);
+            scale.setInterpolator(mZoomInInterpolator);
             mStateAnimator.play(scale);
             Animator hotseatAlpha = mWorkspace.createHotseatAlphaAnimator(finalHotseatAlpha);
 
-            LauncherViewPropertyAnimator overviewPanelAlpha =
-                    new LauncherViewPropertyAnimator(overviewPanel).alpha(finalOverviewPanelAlpha);
+            Animator overviewPanelAlpha = ObjectAnimator.ofFloat(
+                    overviewPanel, View.ALPHA, finalOverviewPanelAlpha);
             overviewPanelAlpha.addListener(new AlphaUpdateListener(overviewPanel,
                     accessibilityEnabled));
 

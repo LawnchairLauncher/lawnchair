@@ -24,6 +24,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 
+import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
@@ -211,7 +212,8 @@ public class PinchAnimationManager {
     }
 
     private void animateShowHideView(int index, final View view, boolean show) {
-        Animator animator = new LauncherViewPropertyAnimator(view).alpha(show ? 1 : 0).withLayer();
+        Animator animator = ObjectAnimator.ofFloat(view, View.ALPHA, show ? 1 : 0);
+        animator.addListener(new AnimationLayerSet(view));
         if (show) {
             view.setVisibility(View.VISIBLE);
         } else {

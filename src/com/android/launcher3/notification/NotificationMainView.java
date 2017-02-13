@@ -32,7 +32,6 @@ import android.widget.TextView;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
-import com.android.launcher3.LauncherViewPropertyAnimator;
 import com.android.launcher3.R;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -102,8 +101,8 @@ public class NotificationMainView extends LinearLayout implements SwipeHelper.Ca
         setTag(new ItemInfo());
         if (animate) {
             AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
-            Animator textFade = new LauncherViewPropertyAnimator(mTextView).alpha(1);
-            Animator titleFade = new LauncherViewPropertyAnimator(mTitleView).alpha(1);
+            Animator textFade = ObjectAnimator.ofFloat(mTextView, View.ALPHA, 1);
+            Animator titleFade = ObjectAnimator.ofFloat(mTitleView, View.ALPHA, 1);
             ValueAnimator colorChange = ObjectAnimator.ofObject(mColorBackground, "color",
                     mArgbEvaluator, mIconPalette.secondaryColor, mIconPalette.backgroundColor);
             animation.playTogether(textFade, titleFade, colorChange);

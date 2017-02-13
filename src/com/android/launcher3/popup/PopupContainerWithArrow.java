@@ -19,6 +19,7 @@ package com.android.launcher3.popup;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
@@ -53,12 +54,12 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.LauncherViewPropertyAnimator;
 import com.android.launcher3.LogAccelerateInterpolator;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.accessibility.ShortcutMenuAccessibilityDelegate;
+import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -298,7 +299,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView
             anim.setInterpolator(interpolator);
             shortcutAnims.play(anim);
 
-            Animator fadeAnim = new LauncherViewPropertyAnimator(popupItemView).alpha(1);
+            Animator fadeAnim = ObjectAnimator.ofFloat(popupItemView, View.ALPHA, 1);
             fadeAnim.setInterpolator(fadeInterpolator);
             // We want the shortcut to be fully opaque before the arrow starts animating.
             fadeAnim.setDuration(arrowScaleDelay);
@@ -318,9 +319,8 @@ public class PopupContainerWithArrow extends AbstractFloatingView
         // Animate the arrow
         mArrow.setScaleX(0);
         mArrow.setScaleY(0);
-        Animator arrowScale = new LauncherViewPropertyAnimator(mArrow).scaleX(1).scaleY(1);
+        Animator arrowScale = createArrowScaleAnim(1).setDuration(arrowScaleDuration);
         arrowScale.setStartDelay(arrowScaleDelay);
-        arrowScale.setDuration(arrowScaleDuration);
         shortcutAnims.play(arrowScale);
 
         mOpenCloseAnimator = shortcutAnims;
@@ -603,7 +603,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView
                 removeNotification.play(removeMargin);
             }
             removeNotification.play(reduceHeight);
-            Animator fade = new LauncherViewPropertyAnimator(notificationView).alpha(0)
+            Animator fade = ObjectAnimator.ofFloat(notificationView, ALPHA, 0)
                     .setDuration(duration);
             fade.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -620,11 +620,9 @@ public class PopupContainerWithArrow extends AbstractFloatingView
             removeNotification.play(fade);
             final long arrowScaleDuration = getResources().getInteger(
                     R.integer.config_deepShortcutArrowOpenDuration);
-            Animator hideArrow = new LauncherViewPropertyAnimator(mArrow)
-                    .scaleX(0).scaleY(0).setDuration(arrowScaleDuration);
+            Animator hideArrow = createArrowScaleAnim(0).setDuration(arrowScaleDuration);
             hideArrow.setStartDelay(0);
-            Animator showArrow = new LauncherViewPropertyAnimator(mArrow)
-                    .scaleX(1).scaleY(1).setDuration(arrowScaleDuration);
+            Animator showArrow = createArrowScaleAnim(1).setDuration(arrowScaleDuration);
             showArrow.setStartDelay((long) (duration - arrowScaleDuration * 1.5));
             removeNotification.playSequentially(hideArrow, showArrow);
             removeNotification.start();
@@ -633,6 +631,10 @@ public class PopupContainerWithArrow extends AbstractFloatingView
         notificationView.trimNotifications(badgeInfo.getNotificationKeys());
     }
 
+    private ObjectAnimator createArrowScaleAnim(float scale) {
+        return LauncherAnimUtils.ofPropertyValuesHolder(
+                mArrow, new PropertyListBuilder().scale(scale).build());
+    }
     /**
      * Animates the translationY of this container if it is open above the icon.
      * If it is below the icon, the container already shifts up when the height
@@ -640,8 +642,8 @@ public class PopupContainerWithArrow extends AbstractFloatingView
      */
     public @Nullable Animator animateTranslationYBy(int translationY, int duration) {
         if (mIsAboveIcon) {
-            return new LauncherViewPropertyAnimator(this)
-                    .translationY(getTranslationY() + translationY).setDuration(duration);
+            return ObjectAnimator.ofFloat(this, TRANSLATION_Y, getTranslationY() + translationY)
+                    .setDuration(duration);
         }
         return null;
     }
@@ -744,7 +746,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView
                         : numOpenShortcuts - i - 1;
                 anim.setStartDelay(stagger * animationIndex);
 
-                Animator fadeAnim = new LauncherViewPropertyAnimator(view).alpha(0);
+                Animator fadeAnim = ObjectAnimator.ofFloat(view, View.ALPHA, 0);
                 // Don't start fading until the arrow is gone.
                 fadeAnim.setStartDelay(stagger * animationIndex + arrowScaleDuration);
                 fadeAnim.setDuration(duration - arrowScaleDuration);
@@ -761,12 +763,13 @@ public class PopupContainerWithArrow extends AbstractFloatingView
                 view.setPivotY(iconCenter.y);
 
                 float scale = ((float) mLauncher.getDeviceProfile().iconSizePx) / view.getHeight();
-                LauncherViewPropertyAnimator anim2 = new LauncherViewPropertyAnimator(view)
-                        .scaleX(scale)
-                        .scaleY(scale)
-                        .translationX(mIconShift.x)
-                        .translationY(mIconShift.y);
-                anim2.setDuration(DragView.VIEW_ZOOM_DURATION);
+                Animator anim2 = LauncherAnimUtils.ofPropertyValuesHolder(view,
+                        new PropertyListBuilder()
+                                .scale(scale)
+                                .translationX(mIconShift.x)
+                                .translationY(mIconShift.y)
+                                .build())
+                        .setDuration(DragView.VIEW_ZOOM_DURATION);
                 shortcutAnims.play(anim2);
             }
             anim.addListener(new AnimatorListenerAdapter() {
@@ -777,8 +780,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView
             });
             shortcutAnims.play(anim);
         }
-        Animator arrowAnim = new LauncherViewPropertyAnimator(mArrow)
-                .scaleX(0).scaleY(0).setDuration(arrowScaleDuration);
+        Animator arrowAnim = createArrowScaleAnim(0).setDuration(arrowScaleDuration);
         arrowAnim.setStartDelay(0);
         shortcutAnims.play(arrowAnim);
 

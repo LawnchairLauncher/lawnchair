@@ -19,6 +19,7 @@ package com.android.launcher3.notification;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Rect;
@@ -30,8 +31,8 @@ import android.widget.TextView;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
-import com.android.launcher3.LauncherViewPropertyAnimator;
 import com.android.launcher3.R;
+import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 
@@ -154,10 +155,9 @@ public class NotificationFooterLayout extends LinearLayout {
         Rect fromBounds = sTempRect;
         firstNotification.getGlobalVisibleRect(fromBounds);
         float scale = (float) toBounds.height() / fromBounds.height();
-        Animator moveAndScaleIcon = new LauncherViewPropertyAnimator(firstNotification)
-                .translationY(toBounds.top - fromBounds.top
-                        + (fromBounds.height() * scale - fromBounds.height()) / 2)
-                .scaleX(scale).scaleY(scale);
+        Animator moveAndScaleIcon = LauncherAnimUtils.ofPropertyValuesHolder(firstNotification,
+                new PropertyListBuilder().scale(scale).translationY(toBounds.top - fromBounds.top
+                        + (fromBounds.height() * scale - fromBounds.height()) / 2).build());
         moveAndScaleIcon.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -172,7 +172,7 @@ public class NotificationFooterLayout extends LinearLayout {
                 - (mOverflowNotifications.isEmpty() ? 0 : 1);
         for (int i = 1; i < numIcons; i++) {
             final View child = mIconRow.getChildAt(i);
-            Animator shiftChild = new LauncherViewPropertyAnimator(child).translationX(-gapWidth);
+            Animator shiftChild = ObjectAnimator.ofFloat(child, TRANSLATION_X, -gapWidth);
             shiftChild.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {

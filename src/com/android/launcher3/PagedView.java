@@ -47,6 +47,7 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.Interpolator;
 
+import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.util.LauncherEdgeEffect;
 import com.android.launcher3.util.Thunk;
@@ -1998,11 +1999,12 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     // Animate the drag view back to the original position
     private void animateDragViewToOriginalPosition() {
         if (mDragView != null) {
-            Animator anim = new LauncherViewPropertyAnimator(mDragView)
-                    .translationX(0)
-                    .translationY(0)
-                    .scaleX(1)
-                    .scaleY(1)
+            Animator anim = LauncherAnimUtils.ofPropertyValuesHolder(mDragView,
+                    new PropertyListBuilder()
+                            .scale(1)
+                            .translationX(0)
+                            .translationY(0)
+                            .build())
                     .setDuration(REORDERING_DROP_REPOSITION_DURATION);
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
