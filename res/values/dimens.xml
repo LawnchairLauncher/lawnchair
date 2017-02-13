@@ -89,6 +89,7 @@
     <dimen name="widget_preview_key_shadow_distance">1dp</dimen>
     <dimen name="widget_preview_corner_radius">2dp</dimen>
     <dimen name="widget_preview_cell_divider_width">0.5dp</dimen>
+    <dimen name="widget_preview_shortcut_padding">8dp</dimen>
 
     <dimen name="widget_section_height">56dp</dimen>
     <dimen name="widget_section_icon_size">40dp</dimen>

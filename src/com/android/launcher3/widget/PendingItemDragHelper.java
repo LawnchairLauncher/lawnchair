@@ -29,6 +29,7 @@ import com.android.launcher3.DragSource;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.PendingAddItemInfo;
+import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.graphics.DragPreviewProvider;
@@ -111,6 +112,11 @@ public class PendingItemDragHelper extends DragPreviewProvider {
             int[] size = launcher.getWorkspace().estimateItemSize(mAddInfo, false, true);
             DeviceProfile dp = launcher.getDeviceProfile();
             int iconSize = dp.iconSizePx;
+
+            int padding = launcher.getResources()
+                    .getDimensionPixelSize(R.dimen.widget_preview_shortcut_padding);
+            previewBounds.left += padding;
+            previewBounds.top += padding;
 
             dragRegion = new Rect();
             dragRegion.left = (size[0] - iconSize) / 2;

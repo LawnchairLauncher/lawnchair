@@ -89,16 +89,25 @@ public class WidgetImageView extends View {
     }
 
     private void updateDstRectF() {
-        if (mBitmap.getWidth() > getWidth()) {
-            float scale = ((float) getWidth()) / mBitmap.getWidth();
-            mDstRectF.set(0, 0, getWidth(), scale * mBitmap.getHeight());
+        float myWidth = getWidth();
+        float myHeight = getHeight();
+        float bitmapWidth = mBitmap.getWidth();
+
+        final float scale = bitmapWidth > myWidth ? myWidth / bitmapWidth : 1;
+        float scaledWidth = bitmapWidth * scale;
+        float scaledHeight = mBitmap.getHeight() * scale;
+
+        mDstRectF.left = (myWidth - scaledWidth) / 2;
+        mDstRectF.right = (myWidth + scaledWidth) / 2;
+
+        if (scaledHeight > myHeight) {
+            mDstRectF.top = 0;
+            mDstRectF.bottom = scaledHeight;
         } else {
-            mDstRectF.set(
-                    (getWidth() - mBitmap.getWidth()) * 0.5f,
-                    0,
-                    (getWidth() + mBitmap.getWidth()) * 0.5f,
-                    mBitmap.getHeight());
+            mDstRectF.top = (myHeight - scaledHeight) / 2;
+            mDstRectF.bottom = (myHeight + scaledHeight) / 2;
         }
+
         if (mBadge != null) {
             Rect bounds = mBadge.getBounds();
             int left = Utilities.boundToRange(
