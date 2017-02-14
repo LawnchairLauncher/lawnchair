@@ -228,7 +228,7 @@ public class LauncherIcons {
      * create MaskableIconDrawable.
      */
     static Drawable wrapToMaskableIconDrawable(Context context, Drawable drawable) {
-        if (!(ProviderConfig.IS_DOGFOOD_BUILD && Utilities.isAtLeastO())) {
+        if (!(FeatureFlags.LEGACY_ICON_TREATMENT && Utilities.isAtLeastO())) {
             return drawable;
         }
 
