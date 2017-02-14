@@ -55,6 +55,7 @@ import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.dynamicui.ExtractionUtils;
+import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.util.ManagedProfileHeuristic;
@@ -91,7 +92,10 @@ public class LauncherProvider extends ContentProvider {
         }
         mListenerHandler = new Handler(mListenerWrapper);
 
-        LauncherAppState.setLauncherProvider(this);
+        // The content provider exists for the entire duration of the launcher main process and
+        // is the first component to get created. Initializing FileLog here ensures that it's
+        // always available in the main process.
+        FileLog.setDir(getContext().getApplicationContext().getFilesDir());
         return true;
     }
 
