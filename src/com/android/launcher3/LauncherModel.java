@@ -72,6 +72,7 @@ import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.LooperIdleLock;
 import com.android.launcher3.util.ManagedProfileHeuristic;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -110,9 +111,9 @@ public class LauncherModel extends BroadcastReceiver
     private static final int ITEMS_CHUNK = 6; // batch size for the workspace icons
     private static final long INVALID_SCREEN_ID = -1L;
 
+    private final MainThreadExecutor mUiExecutor = new MainThreadExecutor();
     @Thunk final LauncherAppState mApp;
     @Thunk final Object mLock = new Object();
-    @Thunk DeferredHandler mHandler = new DeferredHandler();
     @Thunk LoaderTask mLoaderTask;
     @Thunk boolean mIsLoaderTaskRunning;
     @Thunk boolean mHasLoaderCompletedOnce;
@@ -216,17 +217,6 @@ public class LauncherModel extends BroadcastReceiver
 
         mLauncherApps = LauncherAppsCompat.getInstance(context);
         mUserManager = UserManagerCompat.getInstance(context);
-    }
-
-    /** Runs the specified runnable immediately if called from the main thread, otherwise it is
-     * posted on the main thread handler. */
-    private void runOnMainThread(Runnable r) {
-        if (sWorkerThread.getThreadId() == Process.myTid()) {
-            // If we are on the worker thread, post onto the main handler
-            mHandler.post(r);
-        } else {
-            r.run();
-        }
     }
 
     /** Runs the specified runnable immediately if called from the worker thread, otherwise it is
@@ -378,8 +368,6 @@ public class LauncherModel extends BroadcastReceiver
     public void initialize(Callbacks callbacks) {
         synchronized (mLock) {
             Preconditions.assertUIThread();
-            // Remove any queued UI runnables
-            mHandler.cancelAll();
             mCallbacks = new WeakReference<>(callbacks);
         }
     }
@@ -543,11 +531,11 @@ public class LauncherModel extends BroadcastReceiver
             if (mCallbacks != null && mCallbacks.get() != null) {
                 final Callbacks oldCallbacks = mCallbacks.get();
                 // Clear any pending bind-runnables from the synchronized load process.
-                runOnMainThread(new Runnable() {
-                    public void run() {
-                        oldCallbacks.clearPendingBinds();
-                    }
-                });
+                mUiExecutor.execute(new Runnable() {
+                            public void run() {
+                                oldCallbacks.clearPendingBinds();
+                            }
+                        });
 
                 // If there is already one running, tell it to stop.
                 stopLoaderLocked();
@@ -598,7 +586,6 @@ public class LauncherModel extends BroadcastReceiver
 
         @Thunk boolean mIsLoadingAndBindingWorkspace;
         private boolean mStopped;
-        @Thunk boolean mLoadAndBindStepFinished;
 
         LoaderTask(Context context, int pageToBindFirst) {
             mContext = context;
@@ -610,34 +597,10 @@ public class LauncherModel extends BroadcastReceiver
             // This way we don't start loading all apps until the workspace has settled
             // down.
             synchronized (LoaderTask.this) {
-                final long workspaceWaitTime = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
-
-                mHandler.postIdle(new Runnable() {
-                        public void run() {
-                            synchronized (LoaderTask.this) {
-                                mLoadAndBindStepFinished = true;
-                                if (DEBUG_LOADERS) {
-                                    Log.d(TAG, "done with previous binding step");
-                                }
-                                LoaderTask.this.notify();
-                            }
-                        }
-                    });
-
-                while (!mStopped && !mLoadAndBindStepFinished) {
-                    try {
-                        // Just in case mFlushingWorkerThread changes but we aren't woken up,
-                        // wait no longer than 1sec at a time
-                        this.wait(1000);
-                    } catch (InterruptedException ex) {
-                        // Ignore
-                    }
-                }
-                if (DEBUG_LOADERS) {
-                    Log.d(TAG, "waited "
-                            + (SystemClock.uptimeMillis()-workspaceWaitTime)
-                            + "ms for previous step to finish binding");
-                }
+                LooperIdleLock idleLock = new LooperIdleLock(this, Looper.getMainLooper());
+                // Just in case mFlushingWorkerThread changes but we aren't woken up,
+                // wait no longer than 1sec at a time
+                while (!mStopped && idleLock.awaitLocked(1000));
             }
         }
 
@@ -659,15 +622,6 @@ public class LauncherModel extends BroadcastReceiver
                     throw new RuntimeException("Error! Background loading is already running");
                 }
             }
-
-            // XXX: Throw an exception if we are already loading (since we touch the worker thread
-            //      data structures, we can't allow any other thread to touch that data, but because
-            //      this call is synchronous, we can get away with not locking).
-
-            // The LauncherModel is static in the LauncherAppState and mHandler may have queued
-            // operations from the previous activity.  We need to ensure that all queued operations
-            // are executed before any synchronous binding work is done.
-            mHandler.flush();
 
             // Divide the set of loaded items into those that we are binding synchronously, and
             // everything else that is to be bound normally (asynchronously).
@@ -696,6 +650,7 @@ public class LauncherModel extends BroadcastReceiver
             }
 
             try {
+                long now = 0;
                 if (DEBUG_LOADERS) Log.d(TAG, "step 1.1: loading workspace");
                 // Set to false in bindWorkspace()
                 mIsLoadingAndBindingWorkspace = true;
@@ -706,8 +661,12 @@ public class LauncherModel extends BroadcastReceiver
                 bindWorkspace(mPageToBindFirst);
 
                 // Take a break
-                if (DEBUG_LOADERS) Log.d(TAG, "step 1 completed, wait for idle");
+                if (DEBUG_LOADERS) {
+                    Log.d(TAG, "step 1 completed, wait for idle");
+                    now = SystemClock.uptimeMillis();
+                }
                 waitForIdle();
+                if (DEBUG_LOADERS) Log.d(TAG, "Waited " + (SystemClock.uptimeMillis() - now) + "ms");
                 verifyNotStopped();
 
                 // second step
@@ -719,8 +678,12 @@ public class LauncherModel extends BroadcastReceiver
                 updateIconCache();
 
                 // Take a break
-                if (DEBUG_LOADERS) Log.d(TAG, "step 2 completed, wait for idle");
+                if (DEBUG_LOADERS) {
+                    Log.d(TAG, "step 2 completed, wait for idle");
+                    now = SystemClock.uptimeMillis();
+                }
                 waitForIdle();
+                if (DEBUG_LOADERS) Log.d(TAG, "Waited " + (SystemClock.uptimeMillis() - now) + "ms");
                 verifyNotStopped();
 
                 // third step
@@ -1433,7 +1396,7 @@ public class LauncherModel extends BroadcastReceiver
                     }
                 }
             };
-            runOnMainThread(r);
+            mUiExecutor.execute(r);
         }
 
         private void bindWorkspaceItems(final Callbacks oldCallbacks,
@@ -1539,11 +1502,11 @@ public class LauncherModel extends BroadcastReceiver
                     }
                 }
             };
-            runOnMainThread(r);
+            mUiExecutor.execute(r);
 
             bindWorkspaceScreens(oldCallbacks, orderedScreenIds);
 
-            Executor mainExecutor = new DeferredMainThreadExecutor();
+            Executor mainExecutor = mUiExecutor;
             // Load items on the current page.
             bindWorkspaceItems(oldCallbacks, currentWorkspaceItems, currentAppWidgets, mainExecutor);
 
@@ -1553,7 +1516,7 @@ public class LauncherModel extends BroadcastReceiver
             // This ensures that the first screen is immediately visible (eg. during rotation)
             // In case of !validFirstPage, bind all pages one after other.
             final Executor deferredExecutor =
-                    validFirstPage ? new ViewOnDrawExecutor(mHandler) : mainExecutor;
+                    validFirstPage ? new ViewOnDrawExecutor(mUiExecutor) : mainExecutor;
 
             mainExecutor.execute(new Runnable() {
                 @Override
@@ -1613,7 +1576,7 @@ public class LauncherModel extends BroadcastReceiver
                         }
                     }
                 };
-                runOnMainThread(r);
+                mUiExecutor.execute(r);
             }
         }
 
@@ -1663,7 +1626,7 @@ public class LauncherModel extends BroadcastReceiver
                     }
                 }
             };
-            runOnMainThread(r);
+            mUiExecutor.execute(r);
         }
 
         private void loadAllApps() {
@@ -1711,21 +1674,21 @@ public class LauncherModel extends BroadcastReceiver
                             heuristic.processUserApps(apps);
                         }
                     };
-                    runOnMainThread(new Runnable() {
+                    mUiExecutor.execute(new Runnable() {
 
-                        @Override
-                        public void run() {
-                            // Check isLoadingWorkspace on the UI thread, as it is updated on
-                            // the UI thread.
-                            if (mIsLoadingAndBindingWorkspace) {
-                                synchronized (mBindCompleteRunnables) {
-                                    mBindCompleteRunnables.add(r);
-                                }
-                            } else {
-                                runOnWorkerThread(r);
-                            }
-                        }
-                    });
+                                    @Override
+                                    public void run() {
+                                        // Check isLoadingWorkspace on the UI thread, as it is updated on
+                                        // the UI thread.
+                                        if (mIsLoadingAndBindingWorkspace) {
+                                            synchronized (mBindCompleteRunnables) {
+                                                mBindCompleteRunnables.add(r);
+                                            }
+                                        } else {
+                                            runOnWorkerThread(r);
+                                        }
+                                    }
+                                });
                 }
             }
             // Huh? Shouldn't this be inside the Runnable below?
@@ -1733,7 +1696,7 @@ public class LauncherModel extends BroadcastReceiver
             mBgAllAppsList.added = new ArrayList<AppInfo>();
 
             // Post callback on main thread
-            mHandler.post(new Runnable() {
+            mUiExecutor.execute(new Runnable() {
                 public void run() {
 
                     final long bindTime = SystemClock.uptimeMillis();
@@ -1787,7 +1750,7 @@ public class LauncherModel extends BroadcastReceiver
                 }
             }
         };
-        runOnMainThread(r);
+        mUiExecutor.execute(r);
     }
 
     /**
@@ -1838,12 +1801,12 @@ public class LauncherModel extends BroadcastReceiver
     public static abstract class BaseModelUpdateTask implements Runnable {
 
         private LauncherModel mModel;
-        private DeferredHandler mUiHandler;
+        private Executor mUiExecutor;
 
         /* package private */
         void init(LauncherModel model) {
             mModel = model;
-            mUiHandler = mModel.mHandler;
+            mUiExecutor = mModel.mUiExecutor;
         }
 
         @Override
@@ -1866,7 +1829,7 @@ public class LauncherModel extends BroadcastReceiver
          */
         public final void scheduleCallbackTask(final CallbackTask task) {
             final Callbacks callbacks = mModel.getCallback();
-            mUiHandler.post(new Runnable() {
+            mUiExecutor.execute(new Runnable() {
                 public void run() {
                     Callbacks cb = mModel.getCallback();
                     if (callbacks == cb && cb != null) {
@@ -1911,7 +1874,7 @@ public class LauncherModel extends BroadcastReceiver
     private void bindWidgetsModel(final Callbacks callbacks) {
         final MultiHashMap<PackageItemInfo, WidgetItem> widgets
                 = mBgWidgetsModel.getWidgetsMap().clone();
-        mHandler.post(new Runnable() {
+        mUiExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 Callbacks cb = getCallback();
@@ -1965,14 +1928,6 @@ public class LauncherModel extends BroadcastReceiver
     public FolderInfo findFolderById(Long folderId) {
         synchronized (sBgDataModel) {
             return sBgDataModel.folders.get(folderId);
-        }
-    }
-
-    @Thunk class DeferredMainThreadExecutor implements Executor {
-
-        @Override
-        public void execute(Runnable command) {
-            runOnMainThread(command);
         }
     }
 

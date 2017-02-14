@@ -34,7 +34,7 @@ import com.android.launcher3.LauncherSettings.Settings;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.ItemInfoMatcher;
-import com.android.launcher3.util.LooperExecuter;
+import com.android.launcher3.util.LooperExecutor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,7 +55,7 @@ public class ModelWriter {
     public ModelWriter(Context context, BgDataModel dataModel, boolean hasVerticalHotseat) {
         mContext = context;
         mBgDataModel = dataModel;
-        mWorkerExecutor = new LooperExecuter(LauncherModel.getWorkerLooper());
+        mWorkerExecutor = new LooperExecutor(LauncherModel.getWorkerLooper());
         mHasVerticalHotseat = hasVerticalHotseat;
     }
 

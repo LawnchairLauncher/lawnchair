@@ -25,11 +25,11 @@ import java.util.concurrent.TimeUnit;
 /**
  * Extension of {@link AbstractExecutorService} which executed on a provided looper.
  */
-public class LooperExecuter extends AbstractExecutorService {
+public class LooperExecutor extends AbstractExecutorService {
 
     private final Handler mHandler;
 
-    public LooperExecuter(Looper looper) {
+    public LooperExecutor(Looper looper) {
         mHandler = new Handler(looper);
     }
 

@@ -16,7 +16,6 @@ import android.test.ProviderTestCase2;
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppFilter;
 import com.android.launcher3.AppInfo;
-import com.android.launcher3.DeferredHandler;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
@@ -36,6 +35,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.atLeast;
@@ -102,14 +102,14 @@ public class BaseModelUpdateTaskTestCase extends ProviderTestCase2<TestLauncherP
         f.setAccessible(true);
         f.set(task, mockModel);
 
-        DeferredHandler mockHandler = mock(DeferredHandler.class);
-        f = BaseModelUpdateTask.class.getDeclaredField("mUiHandler");
+        Executor mockExecutor = mock(Executor.class);
+        f = BaseModelUpdateTask.class.getDeclaredField("mUiExecutor");
         f.setAccessible(true);
-        f.set(task, mockHandler);
+        f.set(task, mockExecutor);
 
         task.execute(appState, bgDataModel, allAppsList);
         ArgumentCaptor<Runnable> captor = ArgumentCaptor.forClass(Runnable.class);
-        verify(mockHandler, atLeast(0)).post(captor.capture());
+        verify(mockExecutor, atLeast(0)).execute(captor.capture());
 
         return captor.getAllValues();
     }
