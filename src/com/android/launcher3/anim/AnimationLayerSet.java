@@ -20,23 +20,29 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.view.View;
 
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Helper class to automatically build view hardware layers for the duration of an animation.
  */
 public class AnimationLayerSet extends AnimatorListenerAdapter {
 
-    private final HashSet<View> mViews = new HashSet<>();
+    private final HashMap<View, Integer> mViewsToLayerTypeMap = new HashMap<>();
 
     public void addView(View v) {
-        mViews.add(v);
+        mViewsToLayerTypeMap.put(v, v.getLayerType());
     }
 
     @Override
     public void onAnimationStart(Animator animation) {
         // Enable all necessary layers
-        for (View v : mViews) {
+        Iterator<Map.Entry<View, Integer>> itr = mViewsToLayerTypeMap.entrySet().iterator();
+        while (itr.hasNext()) {
+            Map.Entry<View, Integer> entry = itr.next();
+            View v = entry.getKey();
+            entry.setValue(v.getLayerType());
             v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
             if (v.isAttachedToWindow() && v.getVisibility() == View.VISIBLE) {
                 v.buildLayer();
@@ -46,8 +52,10 @@ public class AnimationLayerSet extends AnimatorListenerAdapter {
 
     @Override
     public void onAnimationEnd(Animator animation) {
-        for (View v : mViews) {
-            v.setLayerType(View.LAYER_TYPE_NONE, null);
+        Iterator<Map.Entry<View, Integer>> itr = mViewsToLayerTypeMap.entrySet().iterator();
+        while (itr.hasNext()) {
+            Map.Entry<View, Integer> entry = itr.next();
+            entry.getKey().setLayerType(entry.getValue(), null);
         }
     }
 }
