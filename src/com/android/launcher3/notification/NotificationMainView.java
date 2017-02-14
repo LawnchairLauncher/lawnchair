@@ -18,8 +18,11 @@ package com.android.launcher3.notification;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -39,10 +42,13 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
  */
 public class NotificationMainView extends LinearLayout implements SwipeHelper.Callback {
 
+    private final ArgbEvaluator mArgbEvaluator = new ArgbEvaluator();
+
     private NotificationInfo mNotificationInfo;
     private TextView mTitleView;
     private TextView mTextView;
     private IconPalette mIconPalette;
+    private ColorDrawable mColorBackground;
 
     public NotificationMainView(Context context) {
         this(context, null, 0);
@@ -65,7 +71,8 @@ public class NotificationMainView extends LinearLayout implements SwipeHelper.Ca
     }
 
     public void applyColors(IconPalette iconPalette) {
-        setBackgroundColor(iconPalette.backgroundColor);
+        mColorBackground = new ColorDrawable(iconPalette.backgroundColor);
+        setBackground(mColorBackground);
         mIconPalette = iconPalette;
     }
 
@@ -81,7 +88,7 @@ public class NotificationMainView extends LinearLayout implements SwipeHelper.Ca
         if (animate) {
             mTitleView.setAlpha(0);
             mTextView.setAlpha(0);
-            setBackgroundColor(mIconPalette.secondaryColor);
+            mColorBackground.setColor(mIconPalette.secondaryColor);
         }
         mNotificationInfo = mainNotification;
         mTitleView.setText(mNotificationInfo.title);
@@ -97,14 +104,8 @@ public class NotificationMainView extends LinearLayout implements SwipeHelper.Ca
             AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
             Animator textFade = new LauncherViewPropertyAnimator(mTextView).alpha(1);
             Animator titleFade = new LauncherViewPropertyAnimator(mTitleView).alpha(1);
-            ValueAnimator colorChange = ValueAnimator.ofArgb(mIconPalette.secondaryColor,
-                    mIconPalette.backgroundColor);
-            colorChange.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    setBackgroundColor((Integer) valueAnimator.getAnimatedValue());
-                }
-            });
+            ValueAnimator colorChange = ObjectAnimator.ofObject(mColorBackground, "color",
+                    mArgbEvaluator, mIconPalette.secondaryColor, mIconPalette.backgroundColor);
             animation.playTogether(textFade, titleFade, colorChange);
             animation.setDuration(150);
             animation.start();
