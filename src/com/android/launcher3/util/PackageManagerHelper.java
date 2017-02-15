@@ -71,6 +71,10 @@ public class PackageManagerHelper {
         }
     }
 
+  /**
+   * Returns whether a package is suspended for the current user as per
+   * {@link android.app.admin.DevicePolicyManager#isPackageSuspended}.
+   */
     public boolean isAppSuspended(String packageName) {
         try {
             ApplicationInfo info = mPm.getApplicationInfo(packageName, 0);
@@ -78,6 +82,16 @@ public class PackageManagerHelper {
         } catch (PackageManager.NameNotFoundException e) {
             return false;
         }
+    }
+
+  /**
+   * Returns whether the target app is suspended for a given user as per
+   * {@link android.app.admin.DevicePolicyManager#isPackageSuspended}.
+   */
+    public boolean isAppSuspended(String packageName, UserHandle user) {
+        ApplicationInfo info =
+                LauncherAppsCompat.getInstance(mContext).getApplicationInfo(packageName, user);
+        return info != null && isAppSuspended(info);
     }
 
     public boolean isSafeMode() {
@@ -91,6 +105,10 @@ public class PackageManagerHelper {
                 AppInfo.makeLaunchIntent(mContext, activities.get(0), user);
     }
 
+  /**
+   * Returns whether an application is suspended as per
+   * {@link android.app.admin.DevicePolicyManager#isPackageSuspended}.
+   */
     public static boolean isAppSuspended(ApplicationInfo info) {
         // The value of FLAG_SUSPENDED was reused by a hidden constant
         // ApplicationInfo.FLAG_PRIVILEGED prior to N, so only check for suspended flag on N

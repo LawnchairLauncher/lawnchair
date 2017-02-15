@@ -17,6 +17,7 @@
 package com.android.launcher3.compat;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.os.UserHandle;
@@ -31,6 +32,11 @@ public class LauncherAppsCompatVO extends LauncherAppsCompatVL {
 
     LauncherAppsCompatVO(Context context) {
         super(context);
+    }
+
+    @Override
+    public ApplicationInfo getApplicationInfo(String packageName, UserHandle user) {
+        return mLauncherApps.getApplicationInfo(packageName, 0, user);
     }
 
     @Override

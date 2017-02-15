@@ -26,7 +26,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.LauncherActivityInfo;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -84,7 +83,6 @@ import com.android.launcher3.util.ViewOnDrawExecutor;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.lang.ref.WeakReference;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -1340,6 +1338,11 @@ public class LauncherModel extends BroadcastReceiver
                                         info = new ShortcutInfo(pinnedShortcut, context);
                                         info.iconBitmap = LauncherIcons
                                                 .createShortcutIcon(pinnedShortcut, context);
+                                        if (pmHelper.isAppSuspended(
+                                                info.getTargetComponent().getPackageName(),
+                                                info.user)) {
+                                            info.isDisabled |= ShortcutInfo.FLAG_DISABLED_SUSPENDED;
+                                        }
                                         intent = info.intent;
                                     } else {
                                         // Create a shortcut info in disabled mode for now.
