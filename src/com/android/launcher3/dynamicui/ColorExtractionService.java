@@ -98,7 +98,7 @@ public class ColorExtractionService extends IntentService {
                 if (bitmap != null) {
                     return Palette.from(bitmap).clearFilters().generate();
                 }
-            } catch (IOException e) {
+            } catch (IOException | NullPointerException e) {
                 Log.e(TAG, "Fetching partial bitmap failed, trying old method", e);
             }
         }
@@ -129,7 +129,7 @@ public class ColorExtractionService extends IntentService {
                 if (bitmap != null) {
                     return Palette.from(bitmap).clearFilters().generate();
                 }
-            } catch (IOException e) {
+            } catch (IOException | NullPointerException e) {
                 Log.e(TAG, "Fetching partial bitmap failed, trying old method", e);
             }
         }
