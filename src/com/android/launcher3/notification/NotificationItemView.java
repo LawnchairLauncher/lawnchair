@@ -83,12 +83,20 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (mMainView.getNotificationInfo() == null) {
+            // The notification hasn't been populated yet.
+            return false;
+        }
         getParent().requestDisallowInterceptTouchEvent(true);
         return mSwipeHelper.onInterceptTouchEvent(ev);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        if (mMainView.getNotificationInfo() == null) {
+            // The notification hasn't been populated yet.
+            return false;
+        }
         return mSwipeHelper.onTouchEvent(ev) || super.onTouchEvent(ev);
     }
 
