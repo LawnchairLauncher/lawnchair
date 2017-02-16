@@ -28,6 +28,7 @@ import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.dynamicui.ExtractionUtils;
+import com.android.launcher3.model.GridSizeMigrationTask;
 import com.android.launcher3.util.ConfigMonitor;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.TestingUtils;
@@ -53,6 +54,8 @@ public class LauncherAppState {
         if (INSTANCE == null) {
             if (Looper.myLooper() == Looper.getMainLooper()) {
                 INSTANCE = new LauncherAppState(context.getApplicationContext());
+                GridSizeMigrationTask.logDeviceProfileIfChanged(
+                        INSTANCE.getInvariantDeviceProfile(), context);
             } else {
                 try {
                     return new MainThreadExecutor().submit(new Callable<LauncherAppState>() {

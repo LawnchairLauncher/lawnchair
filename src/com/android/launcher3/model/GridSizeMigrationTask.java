@@ -27,6 +27,7 @@ import com.android.launcher3.Workspace;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.LongArrayMap;
 
@@ -887,6 +888,23 @@ public class GridSizeMigrationTask {
                 .putString(KEY_MIGRATION_SRC_WORKSPACE_SIZE, getPointString(gridX, gridY))
                 .putInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, hotseatSize)
                 .apply();
+    }
+
+    public static void logDeviceProfileIfChanged(InvariantDeviceProfile idp, Context context) {
+        SharedPreferences prefs = Utilities.getPrefs(context);
+        String gridSizeString = getPointString(idp.numColumns, idp.numRows);
+
+        int oldHotseatCount = prefs.getInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, idp.numHotseatIcons);
+        String oldSize = prefs.getString(KEY_MIGRATION_SRC_WORKSPACE_SIZE, gridSizeString);
+        if (gridSizeString.equals(oldSize) && idp.numHotseatIcons == oldHotseatCount) {
+            // Skip if workspace and hotseat sizes have not changed.
+            return;
+        }
+
+        FileLog.e(TAG, "Grid size changed" + gridSizeString);
+        FileLog.e(TAG, "   oldSize: " + oldSize + "  , hotseat: " + oldHotseatCount);
+        FileLog.e(TAG, "   newSize: " + gridSizeString + "  , hotseat: " + idp.numHotseatIcons);
+        idp.dumpDisplayInfo(context);
     }
 
     /**
