@@ -336,7 +336,7 @@ public class FolderPagedView extends PagedView {
                     info.cellY = newY;
                     info.rank = rank;
                     if (saveChanges) {
-                        LauncherModel.addOrMoveItemInDatabase(getContext(), info,
+                        mFolder.mLauncher.getModelWriter().addOrMoveItemInDatabase(info,
                                 mFolder.mInfo.id, 0, info.cellX, info.cellY);
                     }
                 }

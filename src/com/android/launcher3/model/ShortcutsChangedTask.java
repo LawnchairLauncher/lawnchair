@@ -104,7 +104,7 @@ public class ShortcutsChangedTask extends ExtendedModelTask {
 
         bindUpdatedShortcuts(updatedShortcutInfos, removedShortcutInfos, mUser);
         if (!removedShortcutInfos.isEmpty()) {
-            LauncherModel.deleteItemsFromDatabase(context, removedShortcutInfos);
+            getModelWriter().deleteItemsFromDatabase(removedShortcutInfos);
         }
 
         if (mUpdateIdMap) {

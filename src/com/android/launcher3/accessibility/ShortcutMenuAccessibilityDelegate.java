@@ -59,7 +59,7 @@ public class ShortcutMenuAccessibilityDelegate extends LauncherAccessibilityDele
             Runnable onComplete = new Runnable() {
                 @Override
                 public void run() {
-                    LauncherModel.addItemToDatabase(mLauncher, info,
+                    mLauncher.getModelWriter().addItemToDatabase(info,
                             LauncherSettings.Favorites.CONTAINER_DESKTOP,
                             screenId, coordinates[0], coordinates[1]);
                     ArrayList<ItemInfo> itemList = new ArrayList<>();

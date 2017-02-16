@@ -16,9 +16,9 @@
 
 package com.android.launcher3;
 
-import android.content.Context;
 import android.os.Process;
 
+import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.util.ContentWriter;
 
 import java.util.ArrayList;
@@ -128,17 +128,17 @@ public class FolderInfo extends ItemInfo {
     /**
      * @param option flag to set or clear
      * @param isEnabled whether to set or clear the flag
-     * @param context if not null, save changes to the db.
+     * @param writer if not null, save changes to the db.
      */
-    public void setOption(int option, boolean isEnabled, Context context) {
+    public void setOption(int option, boolean isEnabled, ModelWriter writer) {
         int oldOptions = options;
         if (isEnabled) {
             options |= option;
         } else {
             options &= ~option;
         }
-        if (context != null && oldOptions != options) {
-            LauncherModel.updateItemInDatabase(context, this);
+        if (writer != null && oldOptions != options) {
+            writer.updateItemInDatabase(this);
         }
     }
 }

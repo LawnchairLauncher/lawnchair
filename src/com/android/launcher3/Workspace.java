@@ -2654,8 +2654,8 @@ public class Workspace extends PagedView
                         }
                     }
 
-                    LauncherModel.modifyItemInDatabase(mLauncher, info, container, screenId, lp.cellX,
-                            lp.cellY, item.spanX, item.spanY);
+                    mLauncher.getModelWriter().modifyItemInDatabase(info, container, screenId,
+                            lp.cellX, lp.cellY, item.spanX, item.spanY);
                 } else {
                     if (!returnToOriginalCellToPreventShuffling) {
                         onNoCellFound(dropTargetLayout);
@@ -3387,7 +3387,7 @@ public class Workspace extends PagedView
             }
             // Add the item to DB before adding to screen ensures that the container and other
             // values of the info is properly updated.
-            LauncherModel.addOrMoveItemInDatabase(mLauncher, info, container, screenId,
+            mLauncher.getModelWriter().addOrMoveItemInDatabase(info, container, screenId,
                     mTargetCell[0], mTargetCell[1]);
 
             addInScreen(view, container, screenId, mTargetCell[0], mTargetCell[1],
@@ -4025,7 +4025,7 @@ public class Workspace extends PagedView
         HashSet<String> packages = new HashSet<>(1);
         packages.add(packageName);
         ItemInfoMatcher matcher = ItemInfoMatcher.ofPackages(packages, user);
-        LauncherModel.deleteItemsFromDatabase(mLauncher, matcher);
+        mLauncher.getModelWriter().deleteItemsFromDatabase(matcher);
         removeItemsByMatcher(matcher);
     }
 

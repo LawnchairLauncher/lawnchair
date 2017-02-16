@@ -270,7 +270,7 @@ public class PackageUpdatedTask extends ExtendedModelTask {
                             updatedShortcuts.add(si);
                         }
                         if (infoUpdated) {
-                            LauncherModel.updateItemInDatabase(context, si);
+                            getModelWriter().updateItemInDatabase(si);
                         }
                     } else if (info instanceof LauncherAppWidgetInfo && mOp == OP_ADD) {
                         LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) info;
@@ -287,7 +287,7 @@ public class PackageUpdatedTask extends ExtendedModelTask {
                             widgetInfo.restoreStatus |= LauncherAppWidgetInfo.FLAG_UI_NOT_READY;
 
                             widgets.add(widgetInfo);
-                            LauncherModel.updateItemInDatabase(context, widgetInfo);
+                            getModelWriter().updateItemInDatabase(widgetInfo);
                         }
                     }
                 }
@@ -295,7 +295,7 @@ public class PackageUpdatedTask extends ExtendedModelTask {
 
             bindUpdatedShortcuts(updatedShortcuts, removedShortcuts, mUser);
             if (!removedShortcuts.isEmpty()) {
-                LauncherModel.deleteItemsFromDatabase(context, removedShortcuts);
+                getModelWriter().deleteItemsFromDatabase(removedShortcuts);
             }
 
             if (!widgets.isEmpty()) {
@@ -332,10 +332,10 @@ public class PackageUpdatedTask extends ExtendedModelTask {
         }
 
         if (!removedPackages.isEmpty() || !removedComponents.isEmpty()) {
-            LauncherModel.deleteItemsFromDatabase(
-                    context, ItemInfoMatcher.ofPackages(removedPackages, mUser));
-            LauncherModel.deleteItemsFromDatabase(
-                    context, ItemInfoMatcher.ofComponents(removedComponents, mUser));
+            getModelWriter().deleteItemsFromDatabase(
+                    ItemInfoMatcher.ofPackages(removedPackages, mUser));
+            getModelWriter().deleteItemsFromDatabase(
+                    ItemInfoMatcher.ofComponents(removedComponents, mUser));
 
             // Remove any queued items from the install queue
             InstallShortcutReceiver.removeFromInstallQueue(context, removedPackages, mUser);

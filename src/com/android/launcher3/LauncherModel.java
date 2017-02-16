@@ -57,6 +57,7 @@ import com.android.launcher3.model.CacheDataUpdatedTask;
 import com.android.launcher3.model.ExtendedModelTask;
 import com.android.launcher3.model.GridSizeMigrationTask;
 import com.android.launcher3.model.LoaderCursor;
+import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.model.PackageInstallStateChangedTask;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.model.PackageUpdatedTask;
@@ -266,19 +267,8 @@ public class LauncherModel extends BroadcastReceiver
         enqueueModelUpdateTask(new AddWorkspaceItemsTask(appsProvider));
     }
 
-    /**
-     * Adds an item to the DB if it was not created previously, or move it to a new
-     * <container, screen, cellX, cellY>
-     */
-    public static void addOrMoveItemInDatabase(Context context, ItemInfo item, long container,
-            long screenId, int cellX, int cellY) {
-        if (item.container == ItemInfo.NO_ID) {
-            // From all apps
-            addItemToDatabase(context, item, container, screenId, cellX, cellY);
-        } else {
-            // From somewhere else
-            moveItemInDatabase(context, item, container, screenId, cellX, cellY);
-        }
+    public ModelWriter getWriter(boolean hasVerticalHotseat) {
+        return new ModelWriter(mApp.getContext(), sBgDataModel, hasVerticalHotseat);
     }
 
     static void checkItemInfoLocked(
@@ -332,281 +322,6 @@ public class LauncherModel extends BroadcastReceiver
         runOnWorkerThread(r);
     }
 
-    static void updateItemInDatabaseHelper(Context context, final ContentWriter writer,
-            final ItemInfo item, final String callingFunction) {
-        final long itemId = item.id;
-        final Uri uri = LauncherSettings.Favorites.getContentUri(itemId);
-        final ContentResolver cr = context.getContentResolver();
-
-        final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
-        final Context appContext = context.getApplicationContext();
-        Runnable r = new Runnable() {
-            public void run() {
-                cr.update(uri, writer.getValues(appContext), null, null);
-                updateItemArrays(item, itemId, stackTrace);
-            }
-        };
-        runOnWorkerThread(r);
-    }
-
-    static void updateItemsInDatabaseHelper(Context context, final ArrayList<ContentValues> valuesList,
-            final ArrayList<ItemInfo> items, final String callingFunction) {
-        final ContentResolver cr = context.getContentResolver();
-
-        final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
-        Runnable r = new Runnable() {
-            public void run() {
-                ArrayList<ContentProviderOperation> ops =
-                        new ArrayList<ContentProviderOperation>();
-                int count = items.size();
-                for (int i = 0; i < count; i++) {
-                    ItemInfo item = items.get(i);
-                    final long itemId = item.id;
-                    final Uri uri = LauncherSettings.Favorites.getContentUri(itemId);
-                    ContentValues values = valuesList.get(i);
-
-                    ops.add(ContentProviderOperation.newUpdate(uri).withValues(values).build());
-                    updateItemArrays(item, itemId, stackTrace);
-
-                }
-                try {
-                    cr.applyBatch(LauncherProvider.AUTHORITY, ops);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        runOnWorkerThread(r);
-    }
-
-    static void updateItemArrays(ItemInfo item, long itemId, StackTraceElement[] stackTrace) {
-        // Lock on mBgLock *after* the db operation
-        synchronized (sBgDataModel) {
-            checkItemInfoLocked(itemId, item, stackTrace);
-
-            if (item.container != LauncherSettings.Favorites.CONTAINER_DESKTOP &&
-                    item.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                // Item is in a folder, make sure this folder exists
-                if (!sBgDataModel.folders.containsKey(item.container)) {
-                    // An items container is being set to a that of an item which is not in
-                    // the list of Folders.
-                    String msg = "item: " + item + " container being set to: " +
-                            item.container + ", not in the list of folders";
-                    Log.e(TAG, msg);
-                }
-            }
-
-            // Items are added/removed from the corresponding FolderInfo elsewhere, such
-            // as in Workspace.onDrop. Here, we just add/remove them from the list of items
-            // that are on the desktop, as appropriate
-            ItemInfo modelItem = sBgDataModel.itemsIdMap.get(itemId);
-            if (modelItem != null &&
-                    (modelItem.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
-                     modelItem.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT)) {
-                switch (modelItem.itemType) {
-                    case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
-                    case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                    case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
-                    case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
-                        if (!sBgDataModel.workspaceItems.contains(modelItem)) {
-                            sBgDataModel.workspaceItems.add(modelItem);
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            } else {
-                sBgDataModel.workspaceItems.remove(modelItem);
-            }
-        }
-    }
-
-    /**
-     * Move an item in the DB to a new <container, screen, cellX, cellY>
-     */
-    public static void moveItemInDatabase(Context context, final ItemInfo item, final long container,
-            final long screenId, final int cellX, final int cellY) {
-        item.container = container;
-        item.cellX = cellX;
-        item.cellY = cellY;
-
-        // We store hotseat items in canonical form which is this orientation invariant position
-        // in the hotseat
-        if (context instanceof Launcher && screenId < 0 &&
-                container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-            item.screenId = Launcher.getLauncher(context).getHotseat()
-                    .getOrderInHotseat(cellX, cellY);
-        } else {
-            item.screenId = screenId;
-        }
-
-        final ContentWriter writer = new ContentWriter(context)
-                .put(LauncherSettings.Favorites.CONTAINER, item.container)
-                .put(LauncherSettings.Favorites.CELLX, item.cellX)
-                .put(LauncherSettings.Favorites.CELLY, item.cellY)
-                .put(LauncherSettings.Favorites.RANK, item.rank)
-                .put(LauncherSettings.Favorites.SCREEN, item.screenId);
-
-        updateItemInDatabaseHelper(context, writer, item, "moveItemInDatabase");
-    }
-
-    /**
-     * Move items in the DB to a new <container, screen, cellX, cellY>. We assume that the
-     * cellX, cellY have already been updated on the ItemInfos.
-     */
-    public static void moveItemsInDatabase(Context context, final ArrayList<ItemInfo> items,
-            final long container, final int screen) {
-
-        ArrayList<ContentValues> contentValues = new ArrayList<ContentValues>();
-        int count = items.size();
-
-        for (int i = 0; i < count; i++) {
-            ItemInfo item = items.get(i);
-            item.container = container;
-
-            // We store hotseat items in canonical form which is this orientation invariant position
-            // in the hotseat
-            if (context instanceof Launcher && screen < 0 &&
-                    container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                item.screenId = Launcher.getLauncher(context).getHotseat().getOrderInHotseat(item.cellX,
-                        item.cellY);
-            } else {
-                item.screenId = screen;
-            }
-
-            final ContentValues values = new ContentValues();
-            values.put(LauncherSettings.Favorites.CONTAINER, item.container);
-            values.put(LauncherSettings.Favorites.CELLX, item.cellX);
-            values.put(LauncherSettings.Favorites.CELLY, item.cellY);
-            values.put(LauncherSettings.Favorites.RANK, item.rank);
-            values.put(LauncherSettings.Favorites.SCREEN, item.screenId);
-
-            contentValues.add(values);
-        }
-        updateItemsInDatabaseHelper(context, contentValues, items, "moveItemInDatabase");
-    }
-
-    /**
-     * Move and/or resize item in the DB to a new <container, screen, cellX, cellY, spanX, spanY>
-     */
-    static void modifyItemInDatabase(Context context, final ItemInfo item, final long container,
-            final long screenId, final int cellX, final int cellY, final int spanX, final int spanY) {
-        item.container = container;
-        item.cellX = cellX;
-        item.cellY = cellY;
-        item.spanX = spanX;
-        item.spanY = spanY;
-
-        // We store hotseat items in canonical form which is this orientation invariant position
-        // in the hotseat
-        if (context instanceof Launcher && screenId < 0 &&
-                container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-            item.screenId = Launcher.getLauncher(context).getHotseat()
-                    .getOrderInHotseat(cellX, cellY);
-        } else {
-            item.screenId = screenId;
-        }
-
-        final ContentWriter writer = new ContentWriter(context)
-                .put(LauncherSettings.Favorites.CONTAINER, item.container)
-                .put(LauncherSettings.Favorites.CELLX, item.cellX)
-                .put(LauncherSettings.Favorites.CELLY, item.cellY)
-                .put(LauncherSettings.Favorites.RANK, item.rank)
-                .put(LauncherSettings.Favorites.SPANX, item.spanX)
-                .put(LauncherSettings.Favorites.SPANY, item.spanY)
-                .put(LauncherSettings.Favorites.SCREEN, item.screenId);
-
-        updateItemInDatabaseHelper(context, writer, item, "modifyItemInDatabase");
-    }
-
-    /**
-     * Update an item to the database in a specified container.
-     */
-    public static void updateItemInDatabase(Context context, final ItemInfo item) {
-        ContentWriter writer = new ContentWriter(context);
-        item.onAddToDatabase(writer);
-        updateItemInDatabaseHelper(context, writer, item, "updateItemInDatabase");
-    }
-
-    /**
-     * Add an item to the database in a specified container. Sets the container, screen, cellX and
-     * cellY fields of the item. Also assigns an ID to the item.
-     */
-    public static void addItemToDatabase(Context context, final ItemInfo item, final long container,
-            final long screenId, final int cellX, final int cellY) {
-        item.container = container;
-        item.cellX = cellX;
-        item.cellY = cellY;
-        // We store hotseat items in canonical form which is this orientation invariant position
-        // in the hotseat
-        if (context instanceof Launcher && screenId < 0 &&
-                container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-            item.screenId = Launcher.getLauncher(context).getHotseat()
-                    .getOrderInHotseat(cellX, cellY);
-        } else {
-            item.screenId = screenId;
-        }
-
-        final ContentWriter writer = new ContentWriter(context);
-        final ContentResolver cr = context.getContentResolver();
-        item.onAddToDatabase(writer);
-
-        item.id = LauncherSettings.Settings.call(cr, LauncherSettings.Settings.METHOD_NEW_ITEM_ID)
-                .getLong(LauncherSettings.Settings.EXTRA_VALUE);
-
-        writer.put(LauncherSettings.Favorites._ID, item.id);
-
-        final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
-        final Context appContext = context.getApplicationContext();
-        Runnable r = new Runnable() {
-            public void run() {
-                cr.insert(LauncherSettings.Favorites.CONTENT_URI, writer.getValues(appContext));
-
-                synchronized (sBgDataModel) {
-                    checkItemInfoLocked(item.id, item, stackTrace);
-                    sBgDataModel.addItem(appContext, item, true);
-                }
-            }
-        };
-        runOnWorkerThread(r);
-    }
-
-    /**
-     * Removes the specified item from the database
-     */
-    public static void deleteItemFromDatabase(Context context, final ItemInfo item) {
-        ArrayList<ItemInfo> items = new ArrayList<>();
-        items.add(item);
-        deleteItemsFromDatabase(context, items);
-    }
-
-    /**
-     * Removes all the items from the database matching {@param matcher}.
-     */
-    public static void deleteItemsFromDatabase(Context context, ItemInfoMatcher matcher) {
-        deleteItemsFromDatabase(context, matcher.filterItemInfos(sBgDataModel.itemsIdMap));
-    }
-
-    /**
-     * Removes the specified items from the database
-     */
-    public static void deleteItemsFromDatabase(Context context,
-            final Iterable<? extends ItemInfo> items) {
-        final ContentResolver cr = context.getContentResolver();
-        final Context appContext = context.getApplicationContext();
-        Runnable r = new Runnable() {
-            public void run() {
-                for (ItemInfo item : items) {
-                    final Uri uri = LauncherSettings.Favorites.getContentUri(item.id);
-                    cr.delete(uri, null, null);
-
-                    sBgDataModel.removeItem(appContext, item);
-                }
-            }
-        };
-        runOnWorkerThread(r);
-    }
-
     /**
      * Update the order of the workspace screens in the database. The array list contains
      * a list of screen ids in the order that they should appear.
@@ -650,27 +365,6 @@ public class LauncherModel extends BroadcastReceiver
                     sBgDataModel.workspaceScreens.clear();
                     sBgDataModel.workspaceScreens.addAll(screensCopy);
                 }
-            }
-        };
-        runOnWorkerThread(r);
-    }
-
-    /**
-     * Remove the specified folder and all its contents from the database.
-     */
-    public static void deleteFolderAndContentsFromDatabase(Context context, final FolderInfo info) {
-        final ContentResolver cr = context.getContentResolver();
-        final Context appContext = context.getApplicationContext();
-
-        Runnable r = new Runnable() {
-            public void run() {
-                cr.delete(LauncherSettings.Favorites.CONTENT_URI,
-                        LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
-                sBgDataModel.removeItem(appContext, info.contents);
-                info.contents.clear();
-
-                cr.delete(LauncherSettings.Favorites.getContentUri(info.id), null, null);
-                sBgDataModel.removeItem(appContext, info);
             }
         };
         runOnWorkerThread(r);
@@ -2192,6 +1886,11 @@ public class LauncherModel extends BroadcastReceiver
                     }
                 }
             });
+        }
+
+        public ModelWriter getModelWriter() {
+            // Updates from model task, do not deal with icon position in hotseat.
+            return mModel.getWriter(false /* hasVerticalHotseat */);
         }
     }
 

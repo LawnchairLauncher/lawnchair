@@ -53,14 +53,6 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
         return new AddWorkspaceItemsTask(Provider.of(Arrays.asList(items))) {
 
             @Override
-            protected void addItemToDatabase(Context context, ItemInfo item,
-                    long screenId, int[] pos) {
-                item.screenId = screenId;
-                item.cellX = pos[0];
-                item.cellY = pos[1];
-            }
-
-            @Override
             protected void updateScreens(Context context, ArrayList<Long> workspaceScreens) { }
         };
     }
