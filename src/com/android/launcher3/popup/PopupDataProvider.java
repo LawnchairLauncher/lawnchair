@@ -58,19 +58,26 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     }
 
     @Override
-    public void onNotificationPosted(PackageUserKey postedPackageUserKey, String notificationKey) {
+    public void onNotificationPosted(PackageUserKey postedPackageUserKey, String notificationKey,
+            boolean shouldBeFilteredOut) {
         BadgeInfo badgeInfo = mPackageUserToBadgeInfos.get(postedPackageUserKey);
-        boolean notificationWasAdded; // As opposed to updated.
+        boolean notificationWasAddedOrRemoved; // As opposed to updated.
         if (badgeInfo == null) {
-            BadgeInfo newBadgeInfo = new BadgeInfo(postedPackageUserKey);
-            newBadgeInfo.addNotificationKeyIfNotExists(notificationKey);
-            mPackageUserToBadgeInfos.put(postedPackageUserKey, newBadgeInfo);
-            notificationWasAdded = true;
+            if (!shouldBeFilteredOut) {
+                BadgeInfo newBadgeInfo = new BadgeInfo(postedPackageUserKey);
+                newBadgeInfo.addNotificationKeyIfNotExists(notificationKey);
+                mPackageUserToBadgeInfos.put(postedPackageUserKey, newBadgeInfo);
+                notificationWasAddedOrRemoved = true;
+            } else {
+                notificationWasAddedOrRemoved = false;
+            }
         } else {
-            notificationWasAdded = badgeInfo.addNotificationKeyIfNotExists(notificationKey);
+            notificationWasAddedOrRemoved = shouldBeFilteredOut
+                    ? badgeInfo.removeNotificationKey(notificationKey)
+                    : badgeInfo.addNotificationKeyIfNotExists(notificationKey);
         }
         updateLauncherIconBadges(Utilities.singletonHashSet(postedPackageUserKey),
-                notificationWasAdded);
+                notificationWasAddedOrRemoved);
     }
 
     @Override
