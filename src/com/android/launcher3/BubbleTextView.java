@@ -53,8 +53,7 @@ import java.text.NumberFormat;
  * because we want to make the bubble taller than the text and TextView's clip is
  * too aggressive.
  */
-public class BubbleTextView extends TextView
-        implements BaseRecyclerViewFastScrollBar.FastScrollFocusableView, ItemInfoUpdateReceiver {
+public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
 
     // Dimensions in DP
     private static final float AMBIENT_SHADOW_RADIUS = 2.5f;
@@ -66,6 +65,8 @@ public class BubbleTextView extends TextView
     private static final int DISPLAY_WORKSPACE = 0;
     private static final int DISPLAY_ALL_APPS = 1;
     private static final int DISPLAY_FOLDER = 2;
+
+    private static final int[] STATE_PRESSED = new int[] {android.R.attr.state_pressed};
 
     private final Launcher mLauncher;
     private Drawable mIcon;
@@ -232,12 +233,19 @@ public class BubbleTextView extends TextView
     }
 
     @Override
-    public void setPressed(boolean pressed) {
-        super.setPressed(pressed);
-
+    public void refreshDrawableState() {
         if (!mIgnorePressedStateChange) {
-            updateIconState();
+            super.refreshDrawableState();
         }
+    }
+
+    @Override
+    protected int[] onCreateDrawableState(int extraSpace) {
+        final int[] drawableState = super.onCreateDrawableState(extraSpace + 1);
+        if (mStayPressed) {
+            mergeDrawableStates(drawableState, STATE_PRESSED);
+        }
+        return drawableState;
     }
 
     /** Returns the icon for this view. */
@@ -248,17 +256,6 @@ public class BubbleTextView extends TextView
     /** Returns whether the layout is horizontal. */
     public boolean isLayoutHorizontal() {
         return mLayoutHorizontal;
-    }
-
-    private void updateIconState() {
-        if (mIcon instanceof FastBitmapDrawable) {
-            FastBitmapDrawable d = (FastBitmapDrawable) mIcon;
-            if (isPressed() || mStayPressed) {
-                d.animateState(FastBitmapDrawable.State.PRESSED);
-            } else {
-                d.animateState(FastBitmapDrawable.State.NORMAL);
-            }
-        }
     }
 
     @Override
@@ -334,7 +331,7 @@ public class BubbleTextView extends TextView
                     this, mPressedBackground);
         }
 
-        updateIconState();
+        refreshDrawableState();
     }
 
     void clearPressedBackground() {
@@ -364,7 +361,7 @@ public class BubbleTextView extends TextView
 
         mPressedBackground = null;
         mIgnorePressedStateChange = false;
-        updateIconState();
+        refreshDrawableState();
         return result;
     }
 
@@ -544,10 +541,6 @@ public class BubbleTextView extends TextView
     @Override
     public void reapplyItemInfo(ItemInfoWithIcon info) {
         if (getTag() == info) {
-            FastBitmapDrawable.State prevState = FastBitmapDrawable.State.NORMAL;
-            if (mIcon instanceof FastBitmapDrawable) {
-                prevState = ((FastBitmapDrawable) mIcon).getCurrentState();
-            }
             mIconLoadRequest = null;
             mDisableRelayout = true;
 
@@ -564,12 +557,6 @@ public class BubbleTextView extends TextView
                 }
             } else if (info instanceof PackageItemInfo) {
                 applyFromPackageItemInfo((PackageItemInfo) info);
-            }
-
-            // If we are reapplying over an old icon, then we should update the new icon to the same
-            // state as the old icon
-            if (mIcon instanceof FastBitmapDrawable) {
-                ((FastBitmapDrawable) mIcon).setState(prevState);
             }
 
             mDisableRelayout = false;
@@ -593,55 +580,12 @@ public class BubbleTextView extends TextView
         }
     }
 
-    @Override
-    public void setFastScrollFocusState(final FastBitmapDrawable.State focusState, boolean animated) {
-        // We can only set the fast scroll focus state on a FastBitmapDrawable
-        if (!(mIcon instanceof FastBitmapDrawable)) {
-            return;
-        }
-
-        FastBitmapDrawable d = (FastBitmapDrawable) mIcon;
-        if (animated) {
-            FastBitmapDrawable.State prevState = d.getCurrentState();
-            if (d.animateState(focusState)) {
-                // If the state was updated, then update the view accordingly
-                animate().scaleX(focusState.viewScale)
-                        .scaleY(focusState.viewScale)
-                        .setStartDelay(getStartDelayForStateChange(prevState, focusState))
-                        .setDuration(d.getDurationForStateChange(prevState, focusState))
-                        .start();
-            }
-        } else {
-            if (d.setState(focusState)) {
-                // If the state was updated, then update the view accordingly
-                animate().cancel();
-                setScaleX(focusState.viewScale);
-                setScaleY(focusState.viewScale);
-            }
-        }
-    }
-
     /**
      * Returns true if the view can show custom shortcuts.
      */
     public boolean hasDeepShortcuts() {
         return !mLauncher.getPopupDataProvider().getShortcutIdsForItem((ItemInfo) getTag())
                 .isEmpty();
-    }
-
-    /**
-     * Returns the start delay when animating between certain {@link FastBitmapDrawable} states.
-     */
-    private static int getStartDelayForStateChange(final FastBitmapDrawable.State fromState,
-            final FastBitmapDrawable.State toState) {
-        switch (toState) {
-            case NORMAL:
-                switch (fromState) {
-                    case FAST_SCROLL_HIGHLIGHTED:
-                        return FastBitmapDrawable.FAST_SCROLL_INACTIVE_DURATION / 4;
-                }
-        }
-        return 0;
     }
 
     /**
