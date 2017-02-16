@@ -14,22 +14,24 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.UserHandle;
+import android.support.v4.graphics.ColorUtils;
 import android.util.Log;
 import android.util.LongSparseArray;
 
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.graphics.ShadowGenerator;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.util.ComponentKey;
@@ -366,30 +368,13 @@ public class WidgetPreviewLoader {
             drawable.setBounds(x, 0, x + previewWidth, previewHeight);
             drawable.draw(c);
         } else {
-            Resources res = mContext.getResources();
-            float shadowBlur = res.getDimension(R.dimen.widget_preview_shadow_blur);
-            float keyShadowDistance = res.getDimension(R.dimen.widget_preview_key_shadow_distance);
-            float corner = res.getDimension(R.dimen.widget_preview_corner_radius);
-
-            RectF boxRect = new RectF(shadowBlur, shadowBlur,
-                    previewWidth - shadowBlur, previewHeight - shadowBlur - keyShadowDistance);
-
             final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
-            p.setColor(0xFFFFFFFF);
-
-            // Key shadow
-            p.setShadowLayer(shadowBlur, 0, keyShadowDistance,
-                    ShadowGenerator.KEY_SHADOW_ALPHA << 24);
-            c.drawRoundRect(boxRect, corner, corner, p);
-
-            // Ambient shadow
-            p.setShadowLayer(shadowBlur, 0, 0, ShadowGenerator.AMBIENT_SHADOW_ALPHA << 24);
-            c.drawRoundRect(boxRect, corner, corner, p);
+            RectF boxRect = drawBoxWithShadow(c, p, previewWidth, previewHeight);
 
             // Draw horizontal and vertical lines to represent individual columns.
-            p.clearShadowLayer();
             p.setStyle(Paint.Style.STROKE);
-            p.setStrokeWidth(res.getDimension(R.dimen.widget_preview_cell_divider_width));
+            p.setStrokeWidth(mContext.getResources()
+                    .getDimension(R.dimen.widget_preview_cell_divider_width));
             p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
 
             float t = boxRect.left;
@@ -426,47 +411,63 @@ public class WidgetPreviewLoader {
         return preview;
     }
 
+    private RectF drawBoxWithShadow(Canvas c, Paint p, int width, int height) {
+        Resources res = mContext.getResources();
+        float shadowBlur = res.getDimension(R.dimen.widget_preview_shadow_blur);
+        float keyShadowDistance = res.getDimension(R.dimen.widget_preview_key_shadow_distance);
+        float corner = res.getDimension(R.dimen.widget_preview_corner_radius);
+
+        RectF bounds = new RectF(shadowBlur, shadowBlur,
+                width - shadowBlur, height - shadowBlur - keyShadowDistance);
+        p.setColor(Color.WHITE);
+
+        // Key shadow
+        p.setShadowLayer(shadowBlur, 0, keyShadowDistance,
+                ShadowGenerator.KEY_SHADOW_ALPHA << 24);
+        c.drawRoundRect(bounds, corner, corner, p);
+
+        // Ambient shadow
+        p.setShadowLayer(shadowBlur, 0, 0,
+                ColorUtils.setAlphaComponent(Color.BLACK, ShadowGenerator.AMBIENT_SHADOW_ALPHA));
+        c.drawRoundRect(bounds, corner, corner, p);
+
+        p.clearShadowLayer();
+        return bounds;
+    }
+
     private Bitmap generateShortcutPreview(BaseActivity launcher, ShortcutConfigActivityInfo info,
             int maxWidth, int maxHeight, Bitmap preview) {
+        int iconSize = launcher.getDeviceProfile().iconSizePx;
+        int padding = launcher.getResources()
+                .getDimensionPixelSize(R.dimen.widget_preview_shortcut_padding);
+
+        int size = iconSize + 2 * padding;
+        if (maxHeight < size || maxWidth < size) {
+            throw new RuntimeException("Max size is too small for preview");
+        }
         final Canvas c = new Canvas();
-        if (preview == null) {
-            preview = Bitmap.createBitmap(maxWidth, maxHeight, Config.ARGB_8888);
+        if (preview == null || preview.getWidth() < size || preview.getHeight() < size) {
+            preview = Bitmap.createBitmap(size, size, Config.ARGB_8888);
             c.setBitmap(preview);
-        } else if (preview.getWidth() != maxWidth || preview.getHeight() != maxHeight) {
-            throw new RuntimeException("Improperly sized bitmap passed as argument");
         } else {
+            if (preview.getWidth() > size || preview.getHeight() > size) {
+                preview.reconfigure(size, size, preview.getConfig());
+            }
+
             // Reusing bitmap. Clear it.
             c.setBitmap(preview);
             c.drawColor(0, PorterDuff.Mode.CLEAR);
         }
+        Paint p = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+        RectF boxRect = drawBoxWithShadow(c, p, size, size);
 
-        Drawable icon = mutateOnMainThread(info.getFullResIcon(mIconCache));
-        icon.setFilterBitmap(true);
+        Bitmap icon = LauncherIcons.createScaledBitmapWithoutShadow(
+                mutateOnMainThread(info.getFullResIcon(mIconCache)), mContext);
+        Rect src = new Rect(0, 0, icon.getWidth(), icon.getHeight());
 
-        // Draw a desaturated/scaled version of the icon in the background as a watermark
-        ColorMatrix colorMatrix = new ColorMatrix();
-        colorMatrix.setSaturation(0);
-        icon.setColorFilter(new ColorMatrixColorFilter(colorMatrix));
-        icon.setAlpha((int) (255 * 0.06f));
-
-        Resources res = mContext.getResources();
-        int paddingTop = res.getDimensionPixelOffset(R.dimen.shortcut_preview_padding_top);
-        int paddingLeft = res.getDimensionPixelOffset(R.dimen.shortcut_preview_padding_left);
-        int paddingRight = res.getDimensionPixelOffset(R.dimen.shortcut_preview_padding_right);
-        int scaledIconWidth = (maxWidth - paddingLeft - paddingRight);
-        icon.setBounds(paddingLeft, paddingTop,
-                paddingLeft + scaledIconWidth, paddingTop + scaledIconWidth);
-        icon.draw(c);
-
-        // Draw the final icon at top left corner.
-        // TODO: use top right for RTL
-        int appIconSize = launcher.getDeviceProfile().iconSizePx;
-
-        icon.setAlpha(255);
-        icon.setColorFilter(null);
-        icon.setBounds(0, 0, appIconSize, appIconSize);
-        icon.draw(c);
-
+        boxRect.set(0, 0, iconSize, iconSize);
+        boxRect.offset(padding, padding);
+        c.drawBitmap(icon, src, boxRect, p);
         c.setBitmap(null);
         return preview;
     }
@@ -664,7 +665,6 @@ public class WidgetPreviewLoader {
 
     private static final class WidgetCacheKey extends ComponentKey {
 
-        // TODO: remove dependency on size
         @Thunk final String size;
 
         public WidgetCacheKey(ComponentName componentName, UserHandle user, String size) {
