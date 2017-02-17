@@ -20,6 +20,8 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.InsetDrawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.text.Selection;
 import android.text.Spannable;
@@ -46,6 +48,8 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.discovery.AppDiscoveryItem;
+import com.android.launcher3.discovery.AppDiscoveryUpdateState;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
@@ -211,7 +215,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         // IF scroller is at the very top OR there is no scroll bar because there is probably not
         // enough items to scroll, THEN it's okay for the container to be pulled down.
-        if (mAppsRecyclerView.getScrollBar().getThumbOffsetY() <= 0) {
+        if (mAppsRecyclerView.getCurrentScrollY() == 0) {
             return true;
         }
         return false;
@@ -425,10 +429,18 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     @Override
     public void onSearchResult(String query, ArrayList<ComponentKey> apps) {
         if (apps != null) {
-            if (mApps.setOrderedFilter(apps)) {
-                mAppsRecyclerView.onSearchResultsChanged();
-            }
+            mApps.setOrderedFilter(apps);
+            mAppsRecyclerView.onSearchResultsChanged();
             mAdapter.setLastSearchQuery(query);
+        }
+    }
+
+    @Override
+    public void onAppDiscoverySearchUpdate(@Nullable AppDiscoveryItem app,
+            @NonNull AppDiscoveryUpdateState state) {
+        if (!mLauncher.isDestroyed()) {
+            mApps.onAppDiscoverySearchUpdate(app, state);
+            mAppsRecyclerView.onSearchResultsChanged();
         }
     }
 
