@@ -98,7 +98,7 @@
     <string name="action_move_screen_left" msgid="8854216831569401665">"স্ক্রীন বাঁ দিকে সরান"</string>
     <string name="action_move_screen_right" msgid="329334910274311123">"স্ক্রীন ডান দিকে সরান"</string>
     <string name="screen_moved" msgid="266230079505650577">"স্ক্রীন সরানো হয়েছে"</string>
-    <string name="action_resize" msgid="1802976324781771067">"পুনরায় আকার দিন"</string>
+    <string name="action_resize" msgid="1802976324781771067">"আবার আকার দিন"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"প্রস্থ বাড়ান"</string>
     <string name="action_increase_height" msgid="459390020612501122">"উচ্চতা বাড়ান"</string>
     <string name="action_decrease_width" msgid="1374549771083094654">"প্রস্থ কমান"</string>
