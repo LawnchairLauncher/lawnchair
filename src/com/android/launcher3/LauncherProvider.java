@@ -174,7 +174,7 @@ public class LauncherProvider extends ContentProvider {
         if (Utilities.ATLEAST_MARSHMALLOW && Binder.getCallingPid() != Process.myPid()) {
             LauncherAppState app = LauncherAppState.getInstanceNoCreate();
             if (app != null) {
-                app.reloadWorkspace();
+                app.getModel().forceReload();
             }
         }
     }
@@ -205,7 +205,7 @@ public class LauncherProvider extends ContentProvider {
             // Deprecated behavior to support legacy devices which rely on provider callbacks.
             LauncherAppState app = LauncherAppState.getInstanceNoCreate();
             if (app != null && "true".equals(uri.getQueryParameter("isExternalAdd"))) {
-                app.reloadWorkspace();
+                app.getModel().forceReload();
             }
 
             String notify = uri.getQueryParameter("notify");
