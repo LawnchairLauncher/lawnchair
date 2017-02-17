@@ -20,6 +20,7 @@ package com.android.launcher3.graphics;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -75,6 +76,8 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
     private final Matrix mTmpMatrix = new Matrix();
     private final PathMeasure mPathMeasure = new PathMeasure();
 
+    private final Context mContext;
+
     // Path in [0, 100] bounds.
     private final Path mProgressPath;
 
@@ -100,8 +103,9 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
     /**
      * @param progressPath fixed path in the bounds [0, 0, 100, 100] representing a progress bar.
      */
-    public PreloadIconDrawable(Bitmap b, Path progressPath) {
+    public PreloadIconDrawable(Bitmap b, Path progressPath, Context context) {
         super(b);
+        mContext = context;
         mProgressPath = progressPath;
         mScaledTrackPath = new Path();
         mScaledProgressPath = new Path();
@@ -262,7 +266,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
             setIsDisabled(true);
         } else if (mIndicatorColor == 0) {
             // Update the indicator color
-            mIndicatorColor = getIconPalette().getPreloadProgressColor();
+            mIndicatorColor = getIconPalette().getPreloadProgressColor(mContext);
         }
 
         if (progress < 1 && progress > 0) {

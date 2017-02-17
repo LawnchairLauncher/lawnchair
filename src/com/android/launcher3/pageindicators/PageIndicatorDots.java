@@ -37,6 +37,7 @@ import android.view.animation.OvershootInterpolator;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.Themes;
 
 /**
  * {@link PageIndicator} which shows dots per page. The active page is shown with the current
@@ -111,8 +112,8 @@ public class PageIndicatorDots extends PageIndicator {
         mDotRadius = getResources().getDimension(R.dimen.page_indicator_dot_size) / 2;
         setOutlineProvider(new MyOutlineProver());
 
-        mActiveColor = Utilities.getColorAccent(context);
-        mInActiveColor = getResources().getColor(R.color.page_indicator_dot_color);
+        mActiveColor = Themes.getColorAccent(context);
+        mInActiveColor = Themes.getAttrColor(context, android.R.attr.colorControlHighlight);
 
         mIsRtl = Utilities.isRtl(getResources());
     }

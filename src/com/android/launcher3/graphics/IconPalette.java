@@ -23,6 +23,8 @@ import android.support.v4.graphics.ColorUtils;
 import android.util.Log;
 
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
+import com.android.launcher3.util.Themes;
 
 /**
  * Contains colors based on the dominant color of an icon.
@@ -36,7 +38,6 @@ public class IconPalette {
 
     private static final float MIN_PRELOAD_COLOR_SATURATION = 0.2f;
     private static final float MIN_PRELOAD_COLOR_LIGHTNESS = 0.6f;
-    private static final int DEFAULT_PRELOAD_COLOR = 0xFF009688;
 
     public final int dominantColor;
     public final int backgroundColor;
@@ -53,14 +54,14 @@ public class IconPalette {
     /**
      * Returns a color suitable for the progress bar color of preload icon.
      */
-    public int getPreloadProgressColor() {
+    public int getPreloadProgressColor(Context context) {
         int result = dominantColor;
 
         // Make sure that the dominant color has enough saturation to be visible properly.
         float[] hsv = new float[3];
         Color.colorToHSV(result, hsv);
         if (hsv[1] < MIN_PRELOAD_COLOR_SATURATION) {
-            result = DEFAULT_PRELOAD_COLOR;
+            result = Themes.getColorAccent(context);
         } else {
             hsv[2] = Math.max(MIN_PRELOAD_COLOR_LIGHTNESS, hsv[2]);
             result = Color.HSVToColor(hsv);

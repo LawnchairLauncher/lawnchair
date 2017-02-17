@@ -77,7 +77,7 @@ public class DrawableFactory {
         if (mPreloadProgressPath == null) {
             mPreloadProgressPath = getPreloadProgressPath(context);
         }
-        return new PreloadIconDrawable(icon, mPreloadProgressPath);
+        return new PreloadIconDrawable(icon, mPreloadProgressPath, context);
     }
 
 

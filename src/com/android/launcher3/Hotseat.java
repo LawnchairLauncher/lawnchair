@@ -25,7 +25,6 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -40,6 +39,7 @@ import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+import com.android.launcher3.util.Themes;
 
 public class Hotseat extends FrameLayout
         implements UserEventDispatcher.LogContainerProvider {
@@ -70,7 +70,7 @@ public class Hotseat extends FrameLayout
         mLauncher = Launcher.getLauncher(context);
         mHasVerticalHotseat = mLauncher.getDeviceProfile().isVerticalBarLayout();
         mBackgroundColor = ColorUtils.setAlphaComponent(
-                ContextCompat.getColor(context, R.color.all_apps_container_color), 0);
+                Themes.getAttrColor(context, android.R.attr.colorPrimary), 0);
         mBackground = new ColorDrawable(mBackgroundColor);
         setBackground(mBackground);
     }

@@ -21,7 +21,6 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:focusable="true"
-    android:background="@drawable/bg_pill_focused"
     android:elevation="@dimen/notification_elevation" >
 
     <View
@@ -39,13 +38,20 @@
         android:gravity="center_vertical">
         <TextView
             android:id="@+id/title"
-            style="@style/Icon.DeepNotification"
+            android:textAlignment="viewStart"
+            android:fontFamily="sans-serif"
+            android:textSize="14sp"
+            android:textColor="?android:attr/textColorSecondary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/text"
-            style="@style/Icon.DeepNotification.SubText"
+            android:paddingEnd="4dp"
+            android:textSize="12sp"
+            android:textAlignment="viewStart"
+            android:fontFamily="sans-serif"
+            android:textColor="?android:attr/textColorTertiary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>

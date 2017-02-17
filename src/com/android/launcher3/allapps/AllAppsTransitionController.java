@@ -7,7 +7,6 @@ import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.graphics.Color;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.Log;
@@ -26,6 +25,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TouchController;
 
 /**
@@ -102,7 +102,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mProgress = 1f;
 
         mEvaluator = new ArgbEvaluator();
-        mAllAppsBackgroundColor = ContextCompat.getColor(l, R.color.all_apps_container_color);
+        mAllAppsBackgroundColor = Themes.getAttrColor(l, android.R.attr.colorPrimary);
     }
 
     @Override

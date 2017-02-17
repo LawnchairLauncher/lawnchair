@@ -27,7 +27,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -606,17 +605,6 @@ public final class Utilities {
     /** Returns whether the collection is null or empty. */
     public static boolean isEmpty(Collection c) {
         return c == null || c.isEmpty();
-    }
-
-    public static int getColorAccent(Context context) {
-        return getAttrColor(context, android.R.attr.colorAccent);
-    }
-
-    public static int getAttrColor(Context context, int attr) {
-        TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
-        int colorAccent = ta.getColor(0, 0);
-        ta.recycle();
-        return colorAccent;
     }
 
     public static void sendCustomAccessibilityEvent(View target, int type, String text) {

@@ -113,7 +113,7 @@ public class BubbleTextView extends TextView
 
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.BubbleTextView, defStyle, 0);
-        mCustomShadowsEnabled = a.getBoolean(R.styleable.BubbleTextView_customShadows, true);
+        mCustomShadowsEnabled = a.getBoolean(R.styleable.BubbleTextView_customShadows, false);
         mLayoutHorizontal = a.getBoolean(R.styleable.BubbleTextView_layoutHorizontal, false);
         mDeferShadowGenerationOnTouch =
                 a.getBoolean(R.styleable.BubbleTextView_deferShadowGeneration, false);
@@ -395,7 +395,7 @@ public class BubbleTextView extends TextView
         }
 
         // If text is transparent, don't draw any shadow
-        if (getCurrentTextColor() == getResources().getColor(android.R.color.transparent)) {
+        if ((getCurrentTextColor() >> 24) == 0) {
             getPaint().clearShadowLayer();
             super.draw(canvas);
             return;

@@ -25,6 +25,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.util.Themes;
 
 public class InfoDropTarget extends UninstallDropTarget {
 
@@ -42,7 +43,7 @@ public class InfoDropTarget extends UninstallDropTarget {
     protected void onFinishInflate() {
         super.onFinishInflate();
         // Get the hover color
-        mHoverColor = Utilities.getColorAccent(getContext());
+        mHoverColor = Themes.getColorAccent(getContext());
 
         setDrawable(R.drawable.ic_info_launcher);
     }
