@@ -177,7 +177,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         }
 
         DeviceProfile grid = launcher.getDeviceProfile();
-        FolderIcon icon = (FolderIcon) LayoutInflater.from(launcher).inflate(resId, group, false);
+        FolderIcon icon = (FolderIcon) LayoutInflater.from(group.getContext())
+                .inflate(resId, group, false);
 
         // For performance and compatibility reasons we render the preview using a software layer.
         // In particular, hardware path clipping has spotty ecosystem support and bad performance.

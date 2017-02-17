@@ -29,6 +29,17 @@
 
     <style name="LauncherTheme" parent="@style/BaseLauncherTheme"></style>
 
+    <!--
+    Theme overrides to element on homescreen, i.e., which are drawn on top on wallpaper.
+    Various foreground colors are overridden to be white so that they are properly visible on
+    various wallpapers
+    -->
+    <style name="HomeScreenElementTheme" parent="@style/LauncherTheme">
+        <item name="android:colorEdgeEffect">@android:color/white</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColorSecondary">@android:color/white</item>
+    </style>
+
     <!-- Theme for the widget container. Overridden on API 26. -->
     <style name="WidgetContainerTheme" parent="@android:style/Theme.DeviceDefault.Settings">
         <item name="android:colorEdgeEffect">?android:attr/textColorSecondaryInverse</item>
@@ -76,7 +87,6 @@
     <!-- Icon displayed on the worksapce -->
     <style name="BaseIcon.Workspace">
         <item name="customShadows">true</item>
-        <item name="android:textColor">@color/workspace_icon_text_color</item>
         <item name="android:shadowRadius">2.0</item>
         <item name="android:shadowColor">#B0000000</item>
     </style>
@@ -86,7 +96,7 @@
         <item name="android:drawablePadding">7.5dp</item>
         <item name="android:paddingLeft">16dp</item>
         <item name="android:paddingRight">16dp</item>
-        <item name="android:textColor">@color/workspace_icon_text_color</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:textSize">@dimen/drop_target_text_size</item>
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>

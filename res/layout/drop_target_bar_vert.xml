@@ -15,6 +15,7 @@
      limitations under the License.
 -->
 <com.android.launcher3.DropTargetBar
+    android:theme="@style/HomeScreenElementTheme"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/dynamic_grid_drop_target_size"
     android:orientation="vertical"
