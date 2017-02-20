@@ -105,7 +105,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     private ArrayList<FolderIcon.PreviewBackground> mFolderBackgrounds = new ArrayList<FolderIcon.PreviewBackground>();
     FolderIcon.PreviewBackground mFolderLeaveBehind = new FolderIcon.PreviewBackground();
-    Paint mFolderBgPaint = new Paint();
 
     private float mBackgroundAlpha;
 
@@ -501,9 +500,9 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             cellToPoint(bg.delegateCellX, bg.delegateCellY, mTempLocation);
             canvas.save();
             canvas.translate(mTempLocation[0], mTempLocation[1]);
-            bg.drawBackground(canvas, mFolderBgPaint);
+            bg.drawBackground(canvas);
             if (!bg.isClipping) {
-                bg.drawBackgroundStroke(canvas, mFolderBgPaint);
+                bg.drawBackgroundStroke(canvas);
             }
             canvas.restore();
         }
@@ -513,7 +512,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                     mFolderLeaveBehind.delegateCellY, mTempLocation);
             canvas.save();
             canvas.translate(mTempLocation[0], mTempLocation[1]);
-            mFolderLeaveBehind.drawLeaveBehind(canvas, mFolderBgPaint);
+            mFolderLeaveBehind.drawLeaveBehind(canvas);
             canvas.restore();
         }
     }
@@ -528,7 +527,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 cellToPoint(bg.delegateCellX, bg.delegateCellY, mTempLocation);
                 canvas.save();
                 canvas.translate(mTempLocation[0], mTempLocation[1]);
-                bg.drawBackgroundStroke(canvas, mFolderBgPaint);
+                bg.drawBackgroundStroke(canvas);
                 canvas.restore();
             }
         }
