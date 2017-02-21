@@ -172,7 +172,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     private boolean updateBadgeIcon(BadgeInfo badgeInfo) {
         boolean hadNotificationToShow = badgeInfo.hasNotificationToShow();
         NotificationInfo notificationInfo = null;
-        NotificationListener notificationListener = NotificationListener.getInstance();
+        NotificationListener notificationListener = NotificationListener.getInstanceIfConnected();
         if (notificationListener != null && badgeInfo.getNotificationKeys().size() == 1) {
             StatusBarNotification[] activeNotifications = notificationListener
                     .getActiveNotifications(new String[] {badgeInfo.getNotificationKeys().get(0)});
@@ -222,13 +222,13 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
 
     /** This makes a potentially expensive binder call and should be run on a background thread. */
     public List<StatusBarNotification> getStatusBarNotificationsForKeys(String[] notificationKeys) {
-        NotificationListener notificationListener = NotificationListener.getInstance();
+        NotificationListener notificationListener = NotificationListener.getInstanceIfConnected();
         return notificationListener == null ? Collections.EMPTY_LIST
                 : notificationListener.getNotificationsForKeys(notificationKeys);
     }
 
     public void cancelNotification(String notificationKey) {
-        NotificationListener notificationListener = NotificationListener.getInstance();
+        NotificationListener notificationListener = NotificationListener.getInstanceIfConnected();
         if (notificationListener == null) {
             return;
         }
