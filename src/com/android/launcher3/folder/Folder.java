@@ -535,7 +535,6 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         }
 
         mIsOpen = true;
-        mFolderIcon.growAndFadeOut();
 
         mContent.completePendingPageChanges();
         if (!mDragInProgress) {
@@ -551,6 +550,8 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         final Runnable onCompleteRunnable;
         prepareReveal();
         centerAboutIcon();
+
+        mFolderIcon.growAndFadeOut();
 
         AnimatorSet anim = LauncherAnimUtils.createAnimatorSet();
         int width = getPaddingLeft() + getPaddingRight() + mContent.getDesiredWidth();
@@ -1088,6 +1089,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         int folderPivotY = height / 2 + (centeredTop - top);
         setPivotX(folderPivotX);
         setPivotY(folderPivotY);
+
         mFolderIconPivotX = (int) (mFolderIcon.getMeasuredWidth() *
                 (1.0f * folderPivotX / width));
         mFolderIconPivotY = (int) (mFolderIcon.getMeasuredHeight() *
