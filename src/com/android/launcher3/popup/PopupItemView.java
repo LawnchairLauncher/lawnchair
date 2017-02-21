@@ -42,7 +42,7 @@ public abstract class PopupItemView extends FrameLayout
 
     protected static final Point sTempPoint = new Point();
 
-    private final Rect mPillRect;
+    protected final Rect mPillRect;
     private float mOpenAnimationProgress;
 
     protected View mIconView;
@@ -147,6 +147,10 @@ public abstract class PopupItemView extends FrameLayout
         return sTempPoint;
     }
 
+    protected float getBackgroundRadius() {
+        return getResources().getDimensionPixelSize(R.dimen.bg_pill_radius);
+    }
+
     /**
      * Extension of {@link PillRevealOutlineProvider} which scales the icon based on the height.
      */
@@ -161,10 +165,9 @@ public abstract class PopupItemView extends FrameLayout
         private final boolean mPivotLeft;
         private final float mTranslateX;
 
-        public ZoomRevealOutlineProvider(int x, int y, Rect pillRect,
-                View translateView, View zoomView, boolean isContainerAboveIcon, boolean pivotLeft) {
-            super(x, y, pillRect, zoomView.getResources().getDimensionPixelSize(
-                    R.dimen.bg_pill_radius));
+        public ZoomRevealOutlineProvider(int x, int y, Rect pillRect, PopupItemView translateView,
+                View zoomView, boolean isContainerAboveIcon, boolean pivotLeft) {
+            super(x, y, pillRect, translateView.getBackgroundRadius());
             mTranslateView = translateView;
             mZoomView = zoomView;
             mFullHeight = pillRect.height();

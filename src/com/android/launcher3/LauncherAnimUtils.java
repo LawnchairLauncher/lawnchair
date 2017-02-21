@@ -130,17 +130,4 @@ public class LauncherAnimUtils {
         return anim;
     }
 
-    public static ValueAnimator animateViewHeight(final View v, int fromHeight, int toHeight) {
-        ValueAnimator anim = ValueAnimator.ofInt(fromHeight, toHeight);
-        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                int val = (Integer) valueAnimator.getAnimatedValue();
-                ViewGroup.LayoutParams layoutParams = v.getLayoutParams();
-                layoutParams.height = val;
-                v.setLayoutParams(layoutParams);
-            }
-        });
-        return anim;
-    }
 }
