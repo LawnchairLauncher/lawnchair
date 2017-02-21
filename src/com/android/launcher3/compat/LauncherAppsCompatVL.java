@@ -19,6 +19,7 @@ package com.android.launcher3.compat;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
@@ -62,6 +63,12 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
     public void startActivityForProfile(ComponentName component, UserHandle user,
             Rect sourceBounds, Bundle opts) {
         mLauncherApps.startMainActivity(component, user, sourceBounds, opts);
+    }
+
+    @Override
+    public ApplicationInfo getApplicationInfo(String packageName, UserHandle user) {
+        List<LauncherActivityInfo> activityList = mLauncherApps.getActivityList(packageName, user);
+        return activityList.size() > 0 ? activityList.get(0).getApplicationInfo() : null;
     }
 
     @Override

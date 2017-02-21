@@ -19,6 +19,7 @@ package com.android.launcher3.compat;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -72,6 +73,7 @@ public abstract class LauncherAppsCompat {
             UserHandle user);
     public abstract void startActivityForProfile(ComponentName component, UserHandle user,
             Rect sourceBounds, Bundle opts);
+    public abstract ApplicationInfo getApplicationInfo(String packageName, UserHandle user);
     public abstract void showAppDetailsForProfile(ComponentName component, UserHandle user);
     public abstract void addOnAppsChangedCallback(OnAppsChangedCallbackCompat listener);
     public abstract void removeOnAppsChangedCallback(OnAppsChangedCallbackCompat listener);

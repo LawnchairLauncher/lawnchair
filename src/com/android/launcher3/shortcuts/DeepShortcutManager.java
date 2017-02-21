@@ -65,7 +65,8 @@ public class DeepShortcutManager {
     }
 
     public static boolean supportsShortcuts(ItemInfo info) {
-        return info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
+        return info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
+                && !info.isDisabled();
     }
 
     public boolean wasLastCallSuccess() {
