@@ -3209,6 +3209,9 @@ public class Launcher extends BaseActivity
         if (LauncherAppState.PROFILE_STARTUP) {
             Trace.beginSection("Starting page bind");
         }
+
+        AbstractFloatingView.closeAllOpenViews(this);
+
         setWorkspaceLoading(true);
 
         // Clear the workspace because it's going to be rebound
