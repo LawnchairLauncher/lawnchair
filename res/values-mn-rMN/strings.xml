@@ -33,6 +33,10 @@
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Жижиг хэрэгсэл авах болон тохируулсан үйлдлийг ашиглахын тулд 2 удаа товшоод барина уу."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d өргөн %2$d өндөр"</string>
+    <!-- no translation found for add_item_request_drag_hint (8662194377800507270) -->
+    <skip />
+    <!-- no translation found for place_automatically (1502491650329146581) -->
+    <skip />
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Апп хайх"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Аппликейшныг ачаалж байна..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"-д нийцэх апп олдсонгүй"</string>
