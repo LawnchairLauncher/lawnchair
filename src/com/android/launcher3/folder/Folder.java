@@ -554,7 +554,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         mFolderIcon.growAndFadeOut();
 
         AnimatorSet anim = LauncherAnimUtils.createAnimatorSet();
-        int width = getPaddingLeft() + getPaddingRight() + mContent.getDesiredWidth();
+        int width = getFolderWidth();
         int height = getFolderHeight();
 
         float transX = - 0.075f * (width / 2 - getPivotX());
@@ -1047,7 +1047,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
 
         DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
         DragLayer parent = (DragLayer) mLauncher.findViewById(R.id.drag_layer);
-        int width = getPaddingLeft() + getPaddingRight() + mContent.getDesiredWidth();
+        int width = getFolderWidth();
         int height = getFolderHeight();
 
         float scale = parent.getDescendantRectRelativeToSelf(mFolderIcon, sTempRect);
@@ -1119,6 +1119,10 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
 
     private int getContentAreaWidth() {
         return Math.max(mContent.getDesiredWidth(), MIN_CONTENT_DIMEN);
+    }
+
+    private int getFolderWidth() {
+        return getPaddingLeft() + getPaddingRight() + mContent.getDesiredWidth();
     }
 
     private int getFolderHeight() {
@@ -1405,6 +1409,11 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     @Override
     public void onItemsChanged(boolean animate) {
         updateTextViewFocus();
+    }
+
+    @Override
+    public void prepareAutoAdd() {
+        close(false);
     }
 
     public void onTitleChanged(CharSequence title) {
