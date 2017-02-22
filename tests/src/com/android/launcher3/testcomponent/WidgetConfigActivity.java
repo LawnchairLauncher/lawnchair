@@ -15,50 +15,30 @@
  */
 package com.android.launcher3.testcomponent;
 
-import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 
 /**
  * Simple activity for widget configuration
  */
-public class WidgetConfigActivity extends Activity {
+public class WidgetConfigActivity extends BaseTestingActivity {
 
     public static final String SUFFIX_FINISH = "-finish";
     public static final String EXTRA_CODE = "code";
-    public static final String EXTRA_INTENT = "intent";
-
-    private final BroadcastReceiver mFinishReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            WidgetConfigActivity.this.setResult(
-                    intent.getIntExtra(EXTRA_CODE, RESULT_CANCELED),
-                    (Intent) intent.getParcelableExtra(EXTRA_INTENT));
-            WidgetConfigActivity.this.finish();
-        }
-    };
-
-    private final String mAction = this.getClass().getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        registerReceiver(mFinishReceiver, new IntentFilter(mAction + SUFFIX_FINISH));
+        addButton("Cancel", "clickCancel");
+        addButton("OK", "clickOK");
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        sendBroadcast(new Intent(mAction).putExtra(Intent.EXTRA_INTENT, getIntent()));
+    public void clickCancel() {
+        setResult(RESULT_CANCELED);
+        finish();
     }
 
-    @Override
-    protected void onDestroy() {
-        unregisterReceiver(mFinishReceiver);
-        super.onDestroy();
+    public void clickOK() {
+        setResult(RESULT_OK);
+        finish();
     }
 }
