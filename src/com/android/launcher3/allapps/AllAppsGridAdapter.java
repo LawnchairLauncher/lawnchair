@@ -19,8 +19,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
+import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.support.v4.view.accessibility.AccessibilityRecordCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -38,6 +38,9 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.allapps.AlphabeticalAppsList.AdapterItem;
+
+import java.util.List;
 
 /**
  * The grid view adapter of all the apps.
@@ -105,17 +108,53 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             final AccessibilityRecordCompat record = AccessibilityEventCompat
                     .asRecord(event);
             record.setItemCount(mApps.getNumFilteredApps());
+            record.setFromIndex(Math.max(0,
+                    record.getFromIndex() - getRowsNotForAccessibility(record.getFromIndex())));
+            record.setToIndex(Math.max(0,
+                    record.getToIndex() - getRowsNotForAccessibility(record.getToIndex())));
         }
 
         @Override
         public int getRowCountForAccessibility(RecyclerView.Recycler recycler,
                 RecyclerView.State state) {
-            if (mApps.hasNoFilteredResults()) {
-                // Disregard the no-search-results text as a list item for accessibility
-                return 0;
-            } else {
-                return super.getRowCountForAccessibility(recycler, state);
+            return super.getRowCountForAccessibility(recycler, state) -
+                    getRowsNotForAccessibility(mApps.getAdapterItems().size() - 1);
+        }
+
+        @Override
+        public void onInitializeAccessibilityNodeInfoForItem(RecyclerView.Recycler recycler,
+                RecyclerView.State state, View host, AccessibilityNodeInfoCompat info) {
+            super.onInitializeAccessibilityNodeInfoForItem(recycler, state, host, info);
+
+            ViewGroup.LayoutParams lp = host.getLayoutParams();
+            AccessibilityNodeInfoCompat.CollectionItemInfoCompat cic = info.getCollectionItemInfo();
+            if (!(lp instanceof LayoutParams) || (cic == null)) {
+                return;
             }
+            LayoutParams glp = (LayoutParams) lp;
+            info.setCollectionItemInfo(AccessibilityNodeInfoCompat.CollectionItemInfoCompat.obtain(
+                    cic.getRowIndex() - getRowsNotForAccessibility(glp.getViewAdapterPosition()),
+                    cic.getRowSpan(),
+                    cic.getColumnIndex(),
+                    cic.getColumnSpan(),
+                    cic.isHeading(),
+                    cic.isSelected()));
+        }
+
+        /**
+         * Returns the number of rows before {@param adapterPosition}, including this position
+         * which should not be counted towards the collection info.
+         */
+        private int getRowsNotForAccessibility(int adapterPosition) {
+            List<AdapterItem> items = mApps.getAdapterItems();
+            adapterPosition = Math.max(adapterPosition, mApps.getAdapterItems().size() - 1);
+            int extraRows = 0;
+            for (int i = 0; i <= adapterPosition; i++) {
+                if ((items.get(i).viewType & VIEW_TYPE_MASK_ICON) == 0) {
+                    extraRows++;
+                }
+            }
+            return extraRows;
         }
 
         @Override
