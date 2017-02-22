@@ -981,6 +981,10 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     @Override
+    public void prepareAutoAdd() {
+    }
+
+    @Override
     public void onAdd(ShortcutInfo item) {
         int oldCount = mBadgeInfo.getNotificationCount();
         mBadgeInfo.addBadgeInfo(mLauncher.getPopupDataProvider().getBadgeInfoForItem(item));
