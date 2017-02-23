@@ -236,8 +236,7 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
                 @Override
                 public void run() {
                     ManagedProfileHeuristic.markExistingUsersForNoFolderCreation(mTargetContext);
-                    LauncherAppState.getInstance(mTargetContext).getModel()
-                            .resetLoadedState(true, true);
+                    LauncherAppState.getInstance(mTargetContext).getModel().forceReload();
                 }
             });
         } catch (Throwable t) {

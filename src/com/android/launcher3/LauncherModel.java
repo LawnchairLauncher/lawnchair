@@ -71,8 +71,6 @@ import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
-import com.android.launcher3.util.ContentWriter;
-import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.ManagedProfileHeuristic;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -93,6 +91,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.Executor;
 
 /**
@@ -123,12 +122,11 @@ public class LauncherModel extends BroadcastReceiver
     }
     @Thunk static final Handler sWorker = new Handler(sWorkerThread.getLooper());
 
-    // We start off with everything not loaded.  After that, we assume that
+    // Indicates whether the current model data is valid or not.
+    // We start off with everything not loaded. After that, we assume that
     // our monitoring of the package manager provides all updates and we never
-    // need to do a requery.  These are only ever touched from the loader thread.
-    private boolean mWorkspaceLoaded;
-    private boolean mAllAppsLoaded;
-    private boolean mDeepShortcutsLoaded;
+    // need to do a requery. This is only ever touched from the loader thread.
+    private boolean mModelLoaded;
 
     /**
      * Set of runnables to be called on the background thread after the workspace binding
@@ -148,11 +146,11 @@ public class LauncherModel extends BroadcastReceiver
     private final Runnable mShortcutPermissionCheckRunnable = new Runnable() {
         @Override
         public void run() {
-            if (mDeepShortcutsLoaded) {
+            if (mModelLoaded) {
                 boolean hasShortcutHostPermission =
                         DeepShortcutManager.getInstance(mApp.getContext()).hasHostPermission();
                 if (hasShortcutHostPermission != mHasShortcutHostPermission) {
-                    mApp.reloadWorkspace();
+                    forceReload();
                 }
             }
         }
@@ -480,26 +478,21 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
-    void forceReload() {
-        resetLoadedState(true, true);
+    /**
+     * Reloads the workspace items from the DB and re-binds the workspace. This should generally
+     * not be called as DB updates are automatically followed by UI update
+     */
+    public void forceReload() {
+        synchronized (mLock) {
+            // Stop any existing loaders first, so they don't set mModelLoaded to true later
+            stopLoaderLocked();
+            mModelLoaded = false;
+        }
 
         // Do this here because if the launcher activity is running it will be restarted.
         // If it's not running startLoaderFromBackground will merely tell it that it needs
         // to reload.
         startLoaderFromBackground();
-    }
-
-    public void resetLoadedState(boolean resetAllAppsLoaded, boolean resetWorkspaceLoaded) {
-        synchronized (mLock) {
-            // Stop any existing loaders first, so they don't set mAllAppsLoaded or
-            // mWorkspaceLoaded to true later
-            stopLoaderLocked();
-            if (resetAllAppsLoaded) mAllAppsLoaded = false;
-            if (resetWorkspaceLoaded) mWorkspaceLoaded = false;
-            // Always reset deep shortcuts loaded.
-            // TODO: why?
-            mDeepShortcutsLoaded = false;
-        }
     }
 
     /**
@@ -553,9 +546,8 @@ public class LauncherModel extends BroadcastReceiver
                 // If there is already one running, tell it to stop.
                 stopLoaderLocked();
                 mLoaderTask = new LoaderTask(mApp.getContext(), synchronousBindPage);
-                // TODO: mDeepShortcutsLoaded does not need to be true for synchronous bind.
-                if (synchronousBindPage != PagedView.INVALID_RESTORE_PAGE && mAllAppsLoaded
-                        && mWorkspaceLoaded && mDeepShortcutsLoaded && !mIsLoaderTaskRunning) {
+                if (synchronousBindPage != PagedView.INVALID_RESTORE_PAGE
+                        && mModelLoaded && !mIsLoaderTaskRunning) {
                     mLoaderTask.runBindSynchronousPage(synchronousBindPage);
                     return true;
                 } else {
@@ -607,28 +599,6 @@ public class LauncherModel extends BroadcastReceiver
             mPageToBindFirst = pageToBindFirst;
         }
 
-        private void loadAndBindWorkspace() {
-            mIsLoadingAndBindingWorkspace = true;
-
-            // Load the workspace
-            if (DEBUG_LOADERS) {
-                Log.d(TAG, "loadAndBindWorkspace mWorkspaceLoaded=" + mWorkspaceLoaded);
-            }
-
-            if (!mWorkspaceLoaded) {
-                loadWorkspace();
-                synchronized (LoaderTask.this) {
-                    if (mStopped) {
-                        return;
-                    }
-                    mWorkspaceLoaded = true;
-                }
-            }
-
-            // Bind the workspace
-            bindWorkspace(mPageToBindFirst);
-        }
-
         private void waitForIdle() {
             // Wait until the either we're stopped or the other threads are done.
             // This way we don't start loading all apps until the workspace has settled
@@ -671,7 +641,7 @@ public class LauncherModel extends BroadcastReceiver
                 throw new RuntimeException("Should not call runBindSynchronousPage() without " +
                         "valid page index");
             }
-            if (!mAllAppsLoaded || !mWorkspaceLoaded) {
+            if (!mModelLoaded) {
                 // Ensure that we don't try and bind a specified page when the pages have not been
                 // loaded already (we should load everything asynchronously in that case)
                 throw new RuntimeException("Expecting AllApps and Workspace to be loaded");
@@ -703,6 +673,14 @@ public class LauncherModel extends BroadcastReceiver
             bindDeepShortcuts();
         }
 
+        private void verifyNotStopped() throws CancellationException {
+            synchronized (LoaderTask.this) {
+                if (mStopped) {
+                    throw new CancellationException("Loader stopped");
+                }
+            }
+        }
+
         public void run() {
             synchronized (mLock) {
                 if (mStopped) {
@@ -710,41 +688,62 @@ public class LauncherModel extends BroadcastReceiver
                 }
                 mIsLoaderTaskRunning = true;
             }
-            // Optimize for end-user experience: if the Launcher is up and // running with the
-            // All Apps interface in the foreground, load All Apps first. Otherwise, load the
-            // workspace first (default).
-            keep_running: {
-                if (DEBUG_LOADERS) Log.d(TAG, "step 1: loading workspace");
-                loadAndBindWorkspace();
 
-                if (mStopped) {
-                    break keep_running;
-                }
+            try {
+                if (DEBUG_LOADERS) Log.d(TAG, "step 1.1: loading workspace");
+                // Set to false in bindWorkspace()
+                mIsLoadingAndBindingWorkspace = true;
+                loadWorkspace();
 
+                verifyNotStopped();
+                if (DEBUG_LOADERS) Log.d(TAG, "step 1.2: bind workspace workspace");
+                bindWorkspace(mPageToBindFirst);
+
+                // Take a break
+                if (DEBUG_LOADERS) Log.d(TAG, "step 1 completed, wait for idle");
                 waitForIdle();
+                verifyNotStopped();
 
                 // second step
-                if (DEBUG_LOADERS) Log.d(TAG, "step 2: loading all apps");
-                loadAndBindAllApps();
+                if (DEBUG_LOADERS) Log.d(TAG, "step 2.1: loading all apps");
+                loadAllApps();
 
+                verifyNotStopped();
+                if (DEBUG_LOADERS) Log.d(TAG, "step 2.2: Update icon cache");
+                updateIconCache();
+
+                // Take a break
+                if (DEBUG_LOADERS) Log.d(TAG, "step 2 completed, wait for idle");
                 waitForIdle();
+                verifyNotStopped();
 
                 // third step
-                if (DEBUG_LOADERS) Log.d(TAG, "step 3: loading deep shortcuts");
-                loadAndBindDeepShortcuts();
-            }
+                if (DEBUG_LOADERS) Log.d(TAG, "step 3.1: loading deep shortcuts");
+                loadDeepShortcuts();
 
-            // Clear out this reference, otherwise we end up holding it until all of the
-            // callback runnables are done.
-            mContext = null;
+                verifyNotStopped();
+                if (DEBUG_LOADERS) Log.d(TAG, "step 3.2: bind deep shortcuts");
+                bindDeepShortcuts();
 
-            synchronized (mLock) {
-                // If we are still the last one to be scheduled, remove ourselves.
-                if (mLoaderTask == this) {
-                    mLoaderTask = null;
+                synchronized (mLock) {
+                    // Everything loaded bind the data.
+                    mModelLoaded = true;
+                    mHasLoaderCompletedOnce = true;
                 }
-                mIsLoaderTaskRunning = false;
-                mHasLoaderCompletedOnce = true;
+            } catch (CancellationException e) {
+              // Loader stopped, ignore
+            } finally {
+                // Clear out this reference, otherwise we end up holding it until all of the
+                // callback runnables are done.
+                mContext = null;
+
+                synchronized (mLock) {
+                    // If we are still the last one to be scheduled, remove ourselves.
+                    if (mLoaderTask == this) {
+                        mLoaderTask = null;
+                    }
+                    mIsLoaderTaskRunning = false;
+                }
             }
         }
 
@@ -1605,29 +1604,6 @@ public class LauncherModel extends BroadcastReceiver
             }
         }
 
-        private void loadAndBindAllApps() {
-            if (DEBUG_LOADERS) {
-                Log.d(TAG, "loadAndBindAllApps mAllAppsLoaded=" + mAllAppsLoaded);
-            }
-            if (!mAllAppsLoaded) {
-                loadAllApps();
-                synchronized (LoaderTask.this) {
-                    if (mStopped) {
-                        return;
-                    }
-                }
-                updateIconCache();
-                synchronized (LoaderTask.this) {
-                    if (mStopped) {
-                        return;
-                    }
-                    mAllAppsLoaded = true;
-                }
-            } else {
-                onlyBindAllApps();
-            }
-        }
-
         private void updateIconCache() {
             // Ignore packages which have a promise icon.
             HashSet<String> packagesToIgnore = new HashSet<>();
@@ -1768,11 +1744,8 @@ public class LauncherModel extends BroadcastReceiver
             }
         }
 
-        private void loadAndBindDeepShortcuts() {
-            if (DEBUG_LOADERS) {
-                Log.d(TAG, "loadAndBindDeepShortcuts mDeepShortcutsLoaded=" + mDeepShortcutsLoaded);
-            }
-            if (!mDeepShortcutsLoaded) {
+        private void loadDeepShortcuts() {
+            if (!mModelLoaded) {
                 sBgDataModel.deepShortcutMap.clear();
                 DeepShortcutManager shortcutManager = DeepShortcutManager.getInstance(mContext);
                 mHasShortcutHostPermission = shortcutManager.hasHostPermission();
@@ -1785,14 +1758,7 @@ public class LauncherModel extends BroadcastReceiver
                         }
                     }
                 }
-                synchronized (LoaderTask.this) {
-                    if (mStopped) {
-                        return;
-                    }
-                    mDeepShortcutsLoaded = true;
-                }
             }
-            bindDeepShortcuts();
         }
     }
 

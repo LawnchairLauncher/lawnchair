@@ -83,7 +83,7 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
 
         LauncherAppState app = LauncherAppState.getInstanceNoCreate();
         if (app != null) {
-            app.reloadWorkspace();
+            app.getModel().forceReload();
         }
         asyncResult.finish();
     }
