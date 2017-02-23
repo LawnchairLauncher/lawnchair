@@ -1800,6 +1800,12 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     void enqueueModelUpdateTask(BaseModelUpdateTask task) {
+        if (!mModelLoaded && mLoaderTask == null) {
+            if (DEBUG_LOADERS) {
+                Log.d(TAG, "enqueueModelUpdateTask Ignoring task since loader is pending=" + task);
+            }
+            return;
+        }
         task.init(this);
         runOnWorkerThread(task);
     }
