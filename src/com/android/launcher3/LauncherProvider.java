@@ -406,16 +406,11 @@ public class LauncherProvider extends ContentProvider {
                 return result;
             }
             case LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB: {
-                createEmptyDB();
+                mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
                 return null;
             }
             case LauncherSettings.Settings.METHOD_LOAD_DEFAULT_FAVORITES: {
                 loadDefaultFavoritesIfNecessary();
-                return null;
-            }
-            case LauncherSettings.Settings.METHOD_DELETE_DB: {
-                // Are you sure? (y/n)
-                mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
                 return null;
             }
         }
@@ -469,13 +464,6 @@ public class LauncherProvider extends ContentProvider {
         values.put(LauncherSettings.ChangeLogColumns.MODIFIED, System.currentTimeMillis());
     }
 
-    /**
-     * Clears all the data for a fresh start.
-     */
-    synchronized private void createEmptyDB() {
-        mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
-    }
-
     private void clearFlagEmptyDbCreated() {
         Utilities.getPrefs(getContext()).edit().remove(EMPTY_DATABASE_CREATED).commit();
     }
@@ -518,12 +506,12 @@ public class LauncherProvider extends ContentProvider {
 
             // There might be some partially restored DB items, due to buggy restore logic in
             // previous versions of launcher.
-            createEmptyDB();
+            mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
             // Populate favorites table with initial favorites
             if ((mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(), loader) <= 0)
                     && usingExternallyProvidedLayout) {
                 // Unable to load external layout. Cleanup and load the internal layout.
-                createEmptyDB();
+                mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
                 mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(),
                         getDefaultLayoutParser(widgetHost));
             }
@@ -825,9 +813,15 @@ public class LauncherProvider extends ContentProvider {
          * Clears all the data for a fresh start.
          */
         public void createEmptyDB(SQLiteDatabase db) {
-            db.execSQL("DROP TABLE IF EXISTS " + Favorites.TABLE_NAME);
-            db.execSQL("DROP TABLE IF EXISTS " + WorkspaceScreens.TABLE_NAME);
-            onCreate(db);
+            db.beginTransaction();
+            try {
+                db.execSQL("DROP TABLE IF EXISTS " + Favorites.TABLE_NAME);
+                db.execSQL("DROP TABLE IF EXISTS " + WorkspaceScreens.TABLE_NAME);
+                onCreate(db);
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
+            }
         }
 
         /**

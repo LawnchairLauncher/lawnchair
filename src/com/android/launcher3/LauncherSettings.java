@@ -291,7 +291,6 @@ public class LauncherSettings {
         public static final String METHOD_NEW_SCREEN_ID = "generate_new_screen_id";
 
         public static final String METHOD_CREATE_EMPTY_DB = "create_empty_db";
-        public static final String METHOD_DELETE_DB = "delete_db";
 
         public static final String METHOD_LOAD_DEFAULT_FAVORITES = "load_default_favorites";
 
