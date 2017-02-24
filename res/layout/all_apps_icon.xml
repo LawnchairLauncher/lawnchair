@@ -20,6 +20,7 @@
     android:id="@+id/icon"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:stateListAnimator="@animator/all_apps_fastscroll_icon_anim"
     launcher:iconDisplay="all_apps"
     launcher:centerVertically="true"
     android:paddingLeft="4dp"

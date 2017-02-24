@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.graphics.Bitmap;
@@ -32,41 +31,18 @@ import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.util.Property;
 import android.util.SparseArray;
-import android.view.animation.DecelerateInterpolator;
 
 import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.badge.BadgeRenderer;
 import com.android.launcher3.graphics.IconPalette;
 
 public class FastBitmapDrawable extends Drawable {
+
+    private static final int[] STATE_PRESSED = new int[] {android.R.attr.state_pressed};
+
+    private static final float PRESSED_BRIGHTNESS = 100f / 255f;
     private static final float DISABLED_DESATURATION = 1f;
     private static final float DISABLED_BRIGHTNESS = 0.5f;
-
-    /**
-     * The possible states that a FastBitmapDrawable can be in.
-     */
-    public enum State {
-
-        NORMAL                      (0f, 0f, 1f, new DecelerateInterpolator()),
-        PRESSED                     (0f, 100f / 255f, 1f, CLICK_FEEDBACK_INTERPOLATOR),
-        FAST_SCROLL_HIGHLIGHTED     (0f, 0f, 1.15f, new DecelerateInterpolator()),
-        FAST_SCROLL_UNHIGHLIGHTED   (0f, 0f, 1f, new DecelerateInterpolator());
-
-        public final float desaturation;
-        public final float brightness;
-        /**
-         * Used specifically by the view drawing this FastBitmapDrawable.
-         */
-        public final float viewScale;
-        public final TimeInterpolator interpolator;
-
-        State(float desaturation, float brightness, float viewScale, TimeInterpolator interpolator) {
-            this.desaturation = desaturation;
-            this.brightness = brightness;
-            this.viewScale = viewScale;
-            this.interpolator = interpolator;
-        }
-    }
 
     public static final TimeInterpolator CLICK_FEEDBACK_INTERPOLATOR = new TimeInterpolator() {
 
@@ -82,10 +58,6 @@ public class FastBitmapDrawable extends Drawable {
         }
     };
     public static final int CLICK_FEEDBACK_DURATION = 2000;
-    public static final int FAST_SCROLL_HIGHLIGHT_DURATION = 225;
-    public static final int FAST_SCROLL_UNHIGHLIGHT_DURATION = 150;
-    public static final int FAST_SCROLL_UNHIGHLIGHT_FROM_NORMAL_DURATION = 225;
-    public static final int FAST_SCROLL_INACTIVE_DURATION = 275;
 
     // Since we don't need 256^2 values for combinations of both the brightness and saturation, we
     // reduce the value space to a smaller value V, which reduces the number of cached
@@ -101,7 +73,8 @@ public class FastBitmapDrawable extends Drawable {
 
     protected final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
     private final Bitmap mBitmap;
-    private State mState = State.NORMAL;
+
+    private boolean mIsPressed;
     private boolean mIsDisabled;
 
     private BadgeInfo mBadgeInfo;
@@ -123,6 +96,19 @@ public class FastBitmapDrawable extends Drawable {
         }
     };
 
+    private static final Property<FastBitmapDrawable, Float> BRIGHTNESS
+            = new Property<FastBitmapDrawable, Float>(Float.TYPE, "brightness") {
+        @Override
+        public Float get(FastBitmapDrawable fastBitmapDrawable) {
+            return fastBitmapDrawable.getBrightness();
+        }
+
+        @Override
+        public void set(FastBitmapDrawable fastBitmapDrawable, Float value) {
+            fastBitmapDrawable.setBrightness(value);
+        }
+    };
+
     // The saturation and brightness are values that are mapped to REDUCED_FILTER_VALUE_SPACE and
     // as a result, can be used to compose the key for the cached ColorMatrixColorFilters
     private int mDesaturation = 0;
@@ -130,8 +116,8 @@ public class FastBitmapDrawable extends Drawable {
     private int mAlpha = 255;
     private int mPrevUpdateKey = Integer.MAX_VALUE;
 
-    // Animators for the fast bitmap drawable's properties
-    private AnimatorSet mPropertyAnimator;
+    // Animators for the fast bitmap drawable's brightness
+    private ObjectAnimator mBrightnessAnimator;
 
     public FastBitmapDrawable(Bitmap b) {
         mBitmap = b;
@@ -243,60 +229,50 @@ public class FastBitmapDrawable extends Drawable {
         return mBitmap;
     }
 
-    /**
-     * Animates this drawable to a new state.
-     *
-     * @return whether the state has changed.
-     */
-    public boolean animateState(State newState) {
-        State prevState = mState;
-        if (mState != newState) {
-            mState = newState;
-
-            float desaturation = mIsDisabled ? DISABLED_DESATURATION : newState.desaturation;
-            float brightness = mIsDisabled ? DISABLED_BRIGHTNESS: newState.brightness;
-
-            mPropertyAnimator = cancelAnimator(mPropertyAnimator);
-            mPropertyAnimator = new AnimatorSet();
-            mPropertyAnimator.playTogether(
-                    ObjectAnimator.ofFloat(this, "desaturation", desaturation),
-                    ObjectAnimator.ofFloat(this, "brightness", brightness));
-            mPropertyAnimator.setInterpolator(newState.interpolator);
-            mPropertyAnimator.setDuration(getDurationForStateChange(prevState, newState));
-            mPropertyAnimator.setStartDelay(getStartDelayForStateChange(prevState, newState));
-            mPropertyAnimator.start();
-            return true;
-        }
-        return false;
+    @Override
+    public boolean isStateful() {
+        return true;
     }
 
-    /**
-     * Immediately sets this drawable to a new state.
-     *
-     * @return whether the state has changed.
-     */
-    public boolean setState(State newState) {
-        if (mState != newState) {
-            mState = newState;
+    @Override
+    protected boolean onStateChange(int[] state) {
+        boolean isPressed = false;
+        for (int s : state) {
+            if (s == android.R.attr.state_pressed) {
+                isPressed = true;
+                break;
+            }
+        }
+        if (mIsPressed != isPressed) {
+            mIsPressed = isPressed;
 
-            mPropertyAnimator = cancelAnimator(mPropertyAnimator);
+            if (mBrightnessAnimator != null) {
+                mBrightnessAnimator.cancel();
+            }
 
-            invalidateDesaturationAndBrightness();
+            if (mIsPressed) {
+                // Animate when going to pressed state
+                mBrightnessAnimator = ObjectAnimator.ofFloat(
+                        this, BRIGHTNESS, getExpectedBrightness());
+                mBrightnessAnimator.setDuration(CLICK_FEEDBACK_DURATION);
+                mBrightnessAnimator.setInterpolator(CLICK_FEEDBACK_INTERPOLATOR);
+                mBrightnessAnimator.start();
+            } else {
+                setBrightness(getExpectedBrightness());
+            }
             return true;
         }
         return false;
     }
 
     private void invalidateDesaturationAndBrightness() {
-        setDesaturation(mIsDisabled ? DISABLED_DESATURATION : mState.desaturation);
-        setBrightness(mIsDisabled ? DISABLED_BRIGHTNESS: mState.brightness);
+        setDesaturation(mIsDisabled ? DISABLED_DESATURATION : 0);
+        setBrightness(getExpectedBrightness());
     }
 
-    /**
-     * Returns the current state.
-     */
-    public State getCurrentState() {
-        return mState;
+    private float getExpectedBrightness() {
+        return mIsDisabled ? DISABLED_BRIGHTNESS :
+                (mIsPressed ? PRESSED_BRIGHTNESS : 0);
     }
 
     public void setIsDisabled(boolean isDisabled) {
@@ -304,49 +280,6 @@ public class FastBitmapDrawable extends Drawable {
             mIsDisabled = isDisabled;
             invalidateDesaturationAndBrightness();
         }
-    }
-
-    /**
-     * Returns the duration for the state change animation.
-     */
-    public static int getDurationForStateChange(State fromState, State toState) {
-        switch (toState) {
-            case NORMAL:
-                switch (fromState) {
-                    case PRESSED:
-                        return 0;
-                    case FAST_SCROLL_HIGHLIGHTED:
-                    case FAST_SCROLL_UNHIGHLIGHTED:
-                        return FAST_SCROLL_INACTIVE_DURATION;
-                }
-            case PRESSED:
-                return CLICK_FEEDBACK_DURATION;
-            case FAST_SCROLL_HIGHLIGHTED:
-                return FAST_SCROLL_HIGHLIGHT_DURATION;
-            case FAST_SCROLL_UNHIGHLIGHTED:
-                switch (fromState) {
-                    case NORMAL:
-                        // When animating from normal state, take a little longer
-                        return FAST_SCROLL_UNHIGHLIGHT_FROM_NORMAL_DURATION;
-                    default:
-                        return FAST_SCROLL_UNHIGHLIGHT_DURATION;
-                }
-        }
-        return 0;
-    }
-
-    /**
-     * Returns the start delay when animating between certain fast scroll states.
-     */
-    public static int getStartDelayForStateChange(State fromState, State toState) {
-        switch (toState) {
-            case FAST_SCROLL_UNHIGHLIGHTED:
-                switch (fromState) {
-                    case NORMAL:
-                        return FAST_SCROLL_UNHIGHLIGHT_DURATION / 4;
-                }
-        }
-        return 0;
     }
 
     /**
@@ -434,12 +367,5 @@ public class FastBitmapDrawable extends Drawable {
             mPaint.setColorFilter(null);
         }
         invalidateSelf();
-    }
-
-    private AnimatorSet cancelAnimator(AnimatorSet animator) {
-        if (animator != null) {
-            animator.cancel();
-        }
-        return null;
     }
 }

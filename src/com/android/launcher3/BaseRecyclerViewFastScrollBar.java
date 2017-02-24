@@ -36,10 +36,6 @@ import com.android.launcher3.util.Themes;
  */
 public class BaseRecyclerViewFastScrollBar {
 
-    public interface FastScrollFocusableView {
-        void setFastScrollFocusState(final FastBitmapDrawable.State focusState, boolean animated);
-    }
-
     private static final Property<BaseRecyclerViewFastScrollBar, Integer> TRACK_WIDTH =
             new Property<BaseRecyclerViewFastScrollBar, Integer>(Integer.class, "width") {
 
