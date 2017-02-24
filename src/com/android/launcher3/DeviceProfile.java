@@ -197,8 +197,6 @@ public class DeviceProfile {
         hotseatBarBottomPaddingPx = 0;
         hotseatLandGutterPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_gutter_width);
 
-        mBadgeRenderer = new BadgeRenderer(context);
-
         // Determine sizes.
         widthPx = width;
         heightPx = height;
@@ -213,6 +211,9 @@ public class DeviceProfile {
         // Calculate the remaining vars
         updateAvailableDimensions(dm, res);
         computeAllAppsButtonSize(context);
+
+        // This is done last, after iconSizePx is calculated above.
+        mBadgeRenderer = new BadgeRenderer(context, iconSizePx);
     }
 
     DeviceProfile getMultiWindowProfile(Context context, Point mwSize) {

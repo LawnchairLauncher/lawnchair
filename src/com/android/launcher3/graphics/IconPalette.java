@@ -173,12 +173,12 @@ public class IconPalette {
     }
 
     private static int getMutedColor(int color) {
-        int alpha = (int) (255 * 0.15f);
-        return ColorUtils.compositeColors(ColorUtils.setAlphaComponent(color, alpha), Color.WHITE);
+        int whiteScrim = ColorUtils.setAlphaComponent(Color.WHITE, (int) (255 * 0.87f));
+        return ColorUtils.compositeColors(whiteScrim, color);
     }
 
     private static int getTextColorForBackground(int backgroundColor) {
-        return getLighterOrDarkerVersionOfColor(backgroundColor, 3f);
+        return getLighterOrDarkerVersionOfColor(backgroundColor, 4.5f);
     }
 
     private static int getLowContrastColor(int color) {
