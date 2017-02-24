@@ -37,7 +37,6 @@ import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
 import com.android.launcher3.popup.PopupItemView;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.android.launcher3.LauncherAnimUtils.animateViewHeight;
@@ -145,12 +144,6 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
                 public void onIconAnimationEnd(NotificationInfo newMainNotification) {
                     if (newMainNotification != null) {
                         mMainView.applyNotificationInfo(newMainNotification, mIconView, true);
-                        // Remove the animated notification from the footer by calling trim
-                        // TODO: Remove the notification in NotificationFooterLayout directly
-                        // instead of relying on this hack.
-                        List<String> footerNotificationKeys = new ArrayList<>(notificationKeys);
-                        footerNotificationKeys.remove(newMainNotification.notificationKey);
-                        mFooter.trimNotifications(footerNotificationKeys);
                         mMainView.setVisibility(VISIBLE);
                     }
                     mAnimatingNextIcon = false;
