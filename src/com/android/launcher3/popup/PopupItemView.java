@@ -20,7 +20,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
@@ -107,10 +106,6 @@ public abstract class PopupItemView extends FrameLayout
         super.dispatchDraw(canvas);
         canvas.drawPaint(mBackgroundClipPaint);
         canvas.restoreToCount(saveCount);
-    }
-
-    protected ColorStateList getAttachedArrowColor() {
-        return getBackgroundTintList();
     }
 
     /**

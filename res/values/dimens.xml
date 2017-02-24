@@ -178,17 +178,26 @@
     <dimen name="badge_text_size">12dp</dimen>
     <dimen name="badge_small_padding">0dp</dimen>
     <dimen name="badge_large_padding">3dp</dimen>
-    <dimen name="notification_icon_size">28dp</dimen>
-    <dimen name="notification_footer_icon_size">24dp</dimen>
+    <dimen name="notification_icon_size">24dp</dimen>
+    <dimen name="notification_footer_icon_size">18dp</dimen>
 
 <!-- Notifications -->
     <dimen name="bg_round_rect_radius">12dp</dimen>
     <dimen name="notification_padding">12dp</dimen>
-    <!-- (icon_size - footer_icon_size) / 2 -->
-    <dimen name="notification_footer_icon_row_padding">2dp</dimen>
+    <!-- notification_padding + (icon_size - footer_icon_size) / 2 -->
+    <dimen name="notification_footer_icon_row_padding">15dp</dimen>
+    <dimen name="notification_header_padding_after_count">8dp</dimen>
+    <dimen name="notification_header_height">32dp</dimen>
     <dimen name="notification_main_height">60dp</dimen>
     <dimen name="notification_footer_height">@dimen/bg_popup_item_height</dimen>
+    <dimen name="notification_header_text_size">12dp</dimen>
+    <dimen name="notification_main_text_size">14dp</dimen>
+    <!-- notification_icon_size + notification+padding + padding we want between icon and text -->
+    <dimen name="notification_main_text_padding_end">40dp</dimen>
     <dimen name="notification_elevation">2dp</dimen>
+    <dimen name="horizontal_ellipsis_size">18dp</dimen>
+    <!-- arrow_horizontal_offset - (ellipsis_size - arrow_width) / 2 -->
+    <dimen name="horizontal_ellipsis_offset">15dp</dimen>
     <dimen name="popup_item_divider_height">0.5dp</dimen>
     <dimen name="swipe_helper_falsing_threshold">70dp</dimen>
 

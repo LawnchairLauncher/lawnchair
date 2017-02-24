@@ -72,7 +72,10 @@
          The text must fit in the size of a small icon [CHAR_LIMIT=3] -->
     <string name="deep_notifications_overflow" translatable="false">+%1$d</string>
     <!-- Text to display as the header above notifications. [CHAR_LIMIT=30] -->
-    <string name="notifications_header" translatable="false">Notifications</string>
+    <plurals name="notifications_header" translatable="false">
+        <item quantity="one">Notification</item>
+        <item quantity="other">Notifications</item>
+    </plurals>
 
     <!-- Drag and drop -->
     <skip />

@@ -63,14 +63,12 @@ import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
-import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.TriangleShape;
 import com.android.launcher3.notification.NotificationItemView;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.shortcuts.ShortcutsItemView;
 import com.android.launcher3.util.PackageUserKey;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -184,20 +182,20 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             orientAboutIcon(originalIcon, arrowHeight + arrowVerticalOffset);
         }
 
+        ItemInfo originalItemInfo = (ItemInfo) originalIcon.getTag();
         List<DeepShortcutView> shortcutViews = mShortcutsItemView == null
                 ? Collections.EMPTY_LIST
                 : mShortcutsItemView.getDeepShortcutViews(reverseOrder);
         if (mNotificationItemView != null) {
-            IconPalette iconPalette = originalIcon.getIconPalette();
-            mNotificationItemView.applyColors(iconPalette);
+            BadgeInfo badgeInfo = mLauncher.getPopupDataProvider()
+                    .getBadgeInfoForItem(originalItemInfo);
+            updateNotificationHeader(badgeInfo);
         }
 
         // Add the arrow.
         mArrow = addArrowView(arrowHorizontalOffset, arrowVerticalOffset, arrowWidth, arrowHeight);
         mArrow.setPivotX(arrowWidth / 2);
         mArrow.setPivotY(mIsAboveIcon ? 0 : arrowHeight);
-        PopupItemView firstItem = getItemViewAt(mIsAboveIcon ? getItemCount() - 1 : 0);
-        mArrow.setBackgroundTintList(firstItem.getAttachedArrowColor());
 
         animateOpen();
 
@@ -208,7 +206,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         // Load the shortcuts on a background thread and update the container as it animates.
         final Looper workerLooper = LauncherModel.getWorkerLooper();
         new Handler(workerLooper).postAtFrontOfQueue(PopupPopulator.createUpdateRunnable(
-                mLauncher, (ItemInfo) originalIcon.getTag(), new Handler(Looper.getMainLooper()),
+                mLauncher, originalItemInfo, new Handler(Looper.getMainLooper()),
                 this, shortcutIds, shortcutViews, notificationKeys, mNotificationItemView));
     }
 
@@ -540,6 +538,24 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         return true;
     }
 
+    /**
+     * Updates the notification header to reflect the badge info. Since this can be called
+     * for any badge info (not necessarily the one associated with this app), we first
+     * check that the ItemInfo matches the one of this popup.
+     */
+    public void updateNotificationHeader(BadgeInfo badgeInfo, ItemInfo originalItemInfo) {
+        if (originalItemInfo != mOriginalIcon.getTag()) {
+            return;
+        }
+        updateNotificationHeader(badgeInfo);
+    }
+
+    private void updateNotificationHeader(BadgeInfo badgeInfo) {
+        if (mNotificationItemView != null && badgeInfo != null) {
+            mNotificationItemView.updateHeader(badgeInfo.getNotificationCount());
+        }
+    }
+
     public void trimNotifications(Map<PackageUserKey, BadgeInfo> updatedBadges) {
         if (mNotificationItemView == null) {
             return;
@@ -576,8 +592,6 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                         close(false);
                         return;
                     }
-                    View firstItem = getItemViewAt(mIsAboveIcon ? getItemCount() - 1 : 0);
-                    mArrow.setBackgroundTintList(firstItem.getBackgroundTintList());
                 }
             });
             removeNotification.play(fade);

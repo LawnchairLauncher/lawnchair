@@ -18,25 +18,29 @@
 <com.android.launcher3.notification.NotificationFooterLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:elevation="@dimen/notification_elevation"
-    android:clipChildren="false" >
-
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/popup_item_divider_height"/>
+    android:clipChildren="false"
+    android:layout_gravity="center_vertical"
+    android:background="@color/notification_background_color">
 
     <LinearLayout
         android:id="@+id/icon_row"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:gravity="end"
+        android:gravity="end|center_vertical"
         android:padding="@dimen/notification_footer_icon_row_padding"
         android:clipToPadding="false"
         android:clipChildren="false"/>
+
+    <View
+        android:id="@+id/overflow"
+        android:layout_width="@dimen/horizontal_ellipsis_size"
+        android:layout_height="@dimen/horizontal_ellipsis_size"
+        android:background="@drawable/horizontal_ellipsis"
+        android:layout_marginStart="@dimen/horizontal_ellipsis_offset"
+        android:layout_gravity="start|center_vertical" />
 
 </com.android.launcher3.notification.NotificationFooterLayout>
 

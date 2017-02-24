@@ -36,4 +36,8 @@
     <color name="spring_loaded_highlighted_panel_border_color">#FFF</color>
 
     <color name="notification_icon_default_color">#757575</color> <!-- Gray 600 -->
+    <color name="notification_header_background_color">#F5F5F5</color> <!-- Gray 100 -->
+    <color name="notification_background_color">#FFF</color>
+    <color name="notification_color_beneath">#E0E0E0</color> <!-- Gray 300 -->
+    <color name="divider_color">@color/notification_color_beneath</color>
 </resources>
