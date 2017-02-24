@@ -29,6 +29,7 @@ import android.widget.EditText;
 public class ExtendedEditText extends EditText {
 
     private boolean mShowImeAfterFirstLayout;
+    private boolean mForceDisableSuggestions = false;
 
     /**
      * Implemented by listeners of the back key.
@@ -106,5 +107,18 @@ public class ExtendedEditText extends EditText {
         if (mBackKeyListener != null) {
             mBackKeyListener.onBackKey();
         }
+    }
+
+    /**
+     * Set to true when you want isSuggestionsEnabled to return false.
+     * Use this to disable the red underlines that appear under typos when suggestions is enabled.
+     */
+    public void forceDisableSuggestions(boolean forceDisableSuggestions) {
+        mForceDisableSuggestions = forceDisableSuggestions;
+    }
+
+    @Override
+    public boolean isSuggestionsEnabled() {
+        return !mForceDisableSuggestions && super.isSuggestionsEnabled();
     }
 }
