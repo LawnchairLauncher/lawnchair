@@ -51,6 +51,7 @@ public class BadgeRenderer {
         mSmallIconDrawer = new IconDrawer(res.getDimensionPixelSize(R.dimen.badge_large_padding));
         mTextPaint.setTextAlign(Paint.Align.CENTER);
         mTextPaint.setTextSize(res.getDimensionPixelSize(R.dimen.badge_text_size));
+        mTextPaint.setFakeBoldText(true);
         // Measure the text height.
         Rect tempTextHeight = new Rect();
         mTextPaint.getTextBounds("0", 0, 1, tempTextHeight);

@@ -20,7 +20,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@drawable/bg_white_pill_bottom"
     android:elevation="@dimen/notification_elevation"
     android:clipChildren="false" >
 
@@ -34,6 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
+        android:gravity="end"
         android:padding="@dimen/notification_footer_icon_row_padding"
         android:clipToPadding="false"
         android:clipChildren="false"/>

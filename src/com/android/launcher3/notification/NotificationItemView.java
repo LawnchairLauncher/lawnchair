@@ -18,28 +18,31 @@ package com.android.launcher3.notification;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.LinearInterpolator;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
 import com.android.launcher3.popup.PopupItemView;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.anim.PillHeightRevealOutlineProvider;
 
 import java.util.List;
-
-import static com.android.launcher3.LauncherAnimUtils.animateViewHeight;
 
 /**
  * A {@link FrameLayout} that contains a header, main view and a footer.
@@ -51,7 +54,9 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
 
     private static final Rect sTempRect = new Rect();
 
-    private TextView mHeader;
+    private final Paint mBackgroundClipPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG |
+            Paint.FILTER_BITMAP_FLAG);
+
     private View mDivider;
     private NotificationMainView mMainView;
     private NotificationFooterLayout mFooter;
@@ -73,11 +78,65 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mHeader = (TextView) findViewById(R.id.header);
         mDivider = findViewById(R.id.divider);
         mMainView = (NotificationMainView) findViewById(R.id.main_view);
         mFooter = (NotificationFooterLayout) findViewById(R.id.footer);
         mSwipeHelper = new SwipeHelper(SwipeHelper.X, mMainView, getContext());
+        mSwipeHelper.setDisableHardwareLayers(true);
+    }
+
+    private void initializeBackgroundClipping(boolean force) {
+        if (force || mBackgroundClipPaint.getShader() == null) {
+            mBackgroundClipPaint.setXfermode(null);
+            mBackgroundClipPaint.setShader(null);
+            Bitmap backgroundBitmap = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(),
+                    Bitmap.Config.ALPHA_8);
+            Canvas canvas = new Canvas();
+            canvas.setBitmap(backgroundBitmap);
+            float roundRectRadius = getResources().getDimensionPixelSize(
+                    R.dimen.bg_round_rect_radius);
+            canvas.drawRoundRect(0, 0, getMeasuredWidth(), getMeasuredHeight(),
+                    roundRectRadius, roundRectRadius, mBackgroundClipPaint);
+            Shader backgroundClipShader = new BitmapShader(backgroundBitmap,
+                    Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+            mBackgroundClipPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+            mBackgroundClipPaint.setShader(backgroundClipShader);
+        }
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        initializeBackgroundClipping(false /* force */);
+        int saveCount = canvas.saveLayer(0, 0, getWidth(), getHeight(), null,
+                Canvas.HAS_ALPHA_LAYER_SAVE_FLAG | Canvas.CLIP_TO_LAYER_SAVE_FLAG);
+        super.dispatchDraw(canvas);
+        canvas.drawPaint(mBackgroundClipPaint);
+        canvas.restoreToCount(saveCount);
+    }
+
+    public Animator animateHeightRemoval(int heightToRemove) {
+        final int newHeight = getHeight() - heightToRemove;
+        Animator heightAnimator = new PillHeightRevealOutlineProvider(mPillRect,
+                getBackgroundRadius(), newHeight).createRevealAnimator(this, true /* isReversed */);
+        heightAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (newHeight > 0) {
+                    measure(MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.EXACTLY),
+                            MeasureSpec.makeMeasureSpec(newHeight, MeasureSpec.EXACTLY));
+                    initializeBackgroundClipping(true /* force */);
+                    invalidate();
+                } else {
+                    ((ViewGroup) getParent()).removeView(NotificationItemView.this);
+                }
+            }
+        });
+        return heightAnimator;
+    }
+
+    @Override
+    protected float getBackgroundRadius() {
+        return getResources().getDimensionPixelSize(R.dimen.bg_round_rect_radius);
     }
 
     @Override
@@ -103,7 +162,7 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
     protected ColorStateList getAttachedArrowColor() {
         // This NotificationView itself has a different color that is only
         // revealed when dismissing notifications.
-        return mFooter.getBackgroundTintList();
+        return ColorStateList.valueOf(mFooter.getBackgroundColor());
     }
 
     public void applyNotificationInfos(final List<NotificationInfo> notificationInfos) {
@@ -122,8 +181,6 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
 
     public void applyColors(IconPalette iconPalette) {
         setBackgroundTintList(ColorStateList.valueOf(iconPalette.secondaryColor));
-        mHeader.setBackgroundTintList(ColorStateList.valueOf(iconPalette.backgroundColor));
-        mHeader.setTextColor(ColorStateList.valueOf(iconPalette.textColor));
         mDivider.setBackgroundColor(iconPalette.secondaryColor);
         mMainView.applyColors(iconPalette);
         mFooter.applyColors(iconPalette);
@@ -152,27 +209,6 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
         } else {
             mFooter.trimNotifications(notificationKeys);
         }
-    }
-
-    public Animator createRemovalAnimation(int fullDuration) {
-        AnimatorSet animation = new AnimatorSet();
-        int mainHeight = mMainView.getMeasuredHeight();
-        Animator removeMainView = animateViewHeight(mMainView, mainHeight, 0);
-        removeMainView.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                // Remove the remaining views but take on their color instead of the darker one.
-                setBackgroundTintList(mHeader.getBackgroundTintList());
-                removeAllViews();
-            }
-        });
-        Animator removeRest = LauncherAnimUtils.animateViewHeight(this, getHeight() - mainHeight, 0);
-        removeMainView.setDuration(fullDuration / 2);
-        removeRest.setDuration(fullDuration / 2);
-        removeMainView.setInterpolator(new LinearInterpolator());
-        removeRest.setInterpolator(new LinearInterpolator());
-        animation.playSequentially(removeMainView, removeRest);
-        return animation;
     }
 
     @Override

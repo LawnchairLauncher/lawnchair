@@ -34,7 +34,6 @@ import android.graphics.drawable.ShapeDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -60,6 +59,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.accessibility.ShortcutMenuAccessibilityDelegate;
 import com.android.launcher3.anim.PropertyListBuilder;
+import com.android.launcher3.anim.PropertyResetListener;
 import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -225,7 +225,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView
     }
 
     private void addDummyViews(BubbleTextView originalIcon,
-            PopupPopulator.Item[] itemsToPopulate, boolean secondaryNotificationViewHasIcons) {
+            PopupPopulator.Item[] itemsToPopulate, boolean notificationFooterHasIcons) {
         final Resources res = getResources();
         final int spacing = res.getDimensionPixelSize(R.dimen.deep_shortcuts_spacing);
         final LayoutInflater inflater = mLauncher.getLayoutInflater();
@@ -234,10 +234,9 @@ public class PopupContainerWithArrow extends AbstractFloatingView
             final PopupItemView item = (PopupItemView) inflater.inflate(
                     itemsToPopulate[i].layoutId, this, false);
             if (itemsToPopulate[i] == PopupPopulator.Item.NOTIFICATION) {
-                int secondaryHeight = secondaryNotificationViewHasIcons ?
-                        res.getDimensionPixelSize(R.dimen.notification_footer_height) :
-                        res.getDimensionPixelSize(R.dimen.notification_footer_collapsed_height);
-                item.findViewById(R.id.footer).getLayoutParams().height = secondaryHeight;
+                int footerHeight = notificationFooterHasIcons ?
+                        res.getDimensionPixelSize(R.dimen.notification_footer_height) : 0;
+                item.findViewById(R.id.footer).getLayoutParams().height = footerHeight;
             }
             if (i < numItems - 1) {
                 ((LayoutParams) item.getLayoutParams()).bottomMargin = spacing;
@@ -575,7 +574,8 @@ public class PopupContainerWithArrow extends AbstractFloatingView
     }
 
     public void trimNotifications(Map<PackageUserKey, BadgeInfo> updatedBadges) {
-        final NotificationItemView notificationView = (NotificationItemView) findViewById(R.id.notification_view);
+        final NotificationItemView notificationView =
+                (NotificationItemView) findViewById(R.id.notification_view);
         if (notificationView == null) {
             return;
         }
@@ -586,9 +586,8 @@ public class PopupContainerWithArrow extends AbstractFloatingView
             final int duration = getResources().getInteger(
                     R.integer.config_removeNotificationViewDuration);
             final int spacing = getResources().getDimensionPixelSize(R.dimen.deep_shortcuts_spacing);
-            removeNotification.play(animateTranslationYBy(notificationView.getHeight() + spacing,
-                    duration));
-            Animator reduceHeight = notificationView.createRemovalAnimation(duration);
+            removeNotification.play(reduceNotificationViewHeight(
+                    notificationView.getHeight() + spacing, duration, notificationView));
             final View removeMarginView = mIsAboveIcon ? getItemViewAt(getItemCount() - 2)
                     : notificationView;
             if (removeMarginView != null) {
@@ -602,7 +601,6 @@ public class PopupContainerWithArrow extends AbstractFloatingView
                 });
                 removeNotification.play(removeMargin);
             }
-            removeNotification.play(reduceHeight);
             Animator fade = ObjectAnimator.ofFloat(notificationView, ALPHA, 0)
                     .setDuration(duration);
             fade.addListener(new AnimatorListenerAdapter() {
@@ -636,16 +634,43 @@ public class PopupContainerWithArrow extends AbstractFloatingView
                 mArrow, new PropertyListBuilder().scale(scale).build());
     }
     /**
-     * Animates the translationY of this container if it is open above the icon.
-     * If it is below the icon, the container already shifts up when the height
-     * of a child (e.g. NotificationView) changes, so the translation isn't necessary.
+     * Animates the height of the notification item and the translationY of other items accordingly.
      */
-    public @Nullable Animator animateTranslationYBy(int translationY, int duration) {
-        if (mIsAboveIcon) {
-            return ObjectAnimator.ofFloat(this, TRANSLATION_Y, getTranslationY() + translationY)
-                    .setDuration(duration);
+    public Animator reduceNotificationViewHeight(int heightToRemove, int duration,
+            NotificationItemView notificationItem) {
+        final int translateYBy = mIsAboveIcon ? heightToRemove : -heightToRemove;
+        AnimatorSet animatorSet = LauncherAnimUtils.createAnimatorSet();
+        animatorSet.play(notificationItem.animateHeightRemoval(heightToRemove));
+        PropertyResetListener<View, Float> resetTranslationYListener
+                = new PropertyResetListener<>(TRANSLATION_Y, 0f);
+        for (int i = 0; i < getItemCount(); i++) {
+            final PopupItemView itemView = getItemViewAt(i);
+            if (!mIsAboveIcon && itemView == notificationItem) {
+                // The notification view is already in the right place when container is below icon.
+                continue;
+            }
+            ValueAnimator translateItem = ObjectAnimator.ofFloat(itemView, TRANSLATION_Y,
+                    itemView.getTranslationY() + translateYBy).setDuration(duration);
+            translateItem.addListener(resetTranslationYListener);
+            animatorSet.play(translateItem);
         }
-        return null;
+        if (mIsAboveIcon) {
+            // All the items, including the notification item, translated down, but the
+            // container itself did not. This means the items would jump back to their
+            // original translation unless we update the container's translationY here.
+            animatorSet.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    setTranslationY(getTranslationY() + translateYBy);
+                }
+            });
+        }
+        return animatorSet;
+    }
+
+    public Animator reduceNotificationViewHeight(int heightToRemove, int duration) {
+        return reduceNotificationViewHeight(heightToRemove, duration,
+                (NotificationItemView) findViewById(R.id.notification_view));
     }
 
     @Override

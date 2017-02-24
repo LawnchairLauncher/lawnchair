@@ -21,18 +21,21 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PropertyListBuilder;
+import com.android.launcher3.anim.PropertyResetListener;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 
@@ -50,16 +53,17 @@ public class NotificationFooterLayout extends LinearLayout {
         void onIconAnimationEnd(NotificationInfo animatedNotification);
     }
 
-    private static final int MAX_FOOTER_NOTIFICATIONS = 5;
+    private static final int MAX_FOOTER_NOTIFICATIONS = 4;
 
     private static final Rect sTempRect = new Rect();
 
     private final List<NotificationInfo> mNotifications = new ArrayList<>();
     private final List<NotificationInfo> mOverflowNotifications = new ArrayList<>();
+    private final boolean mRtl;
 
     LinearLayout.LayoutParams mIconLayoutParams;
     private LinearLayout mIconRow;
-    private int mBackgroundColor;
+    private final ColorDrawable mBackgroundColor;
     private int mTextColor;
     private TextView mOverflowView;
 
@@ -74,13 +78,17 @@ public class NotificationFooterLayout extends LinearLayout {
     public NotificationFooterLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
+        mRtl = Utilities.isRtl(getResources());
+
         int size = getResources().getDimensionPixelSize(
                 R.dimen.notification_footer_icon_size);
-        int padding = getResources().getDimensionPixelSize(
-                R.dimen.deep_shortcut_drawable_padding);
+        int padding = getResources().getDimensionPixelSize(R.dimen.notification_padding);
         mIconLayoutParams = new LayoutParams(size, size);
-        mIconLayoutParams.setMarginStart(padding);
+        mIconLayoutParams.setMarginEnd(padding);
         mIconLayoutParams.gravity = Gravity.CENTER_VERTICAL;
+
+        mBackgroundColor = new ColorDrawable();
+        setBackground(mBackgroundColor);
     }
 
     @Override
@@ -90,10 +98,13 @@ public class NotificationFooterLayout extends LinearLayout {
     }
 
     public void applyColors(IconPalette iconPalette) {
-        mBackgroundColor = iconPalette.backgroundColor;
-        setBackgroundTintList(ColorStateList.valueOf(mBackgroundColor));
+        mBackgroundColor.setColor(iconPalette.backgroundColor);
         findViewById(R.id.divider).setBackgroundColor(iconPalette.secondaryColor);
         mTextColor = iconPalette.textColor;
+    }
+
+    public int getBackgroundColor() {
+        return mBackgroundColor.getColor();
     }
 
     /**
@@ -124,18 +135,18 @@ public class NotificationFooterLayout extends LinearLayout {
             mOverflowView = new TextView(getContext());
             mOverflowView.setTextColor(mTextColor);
             updateOverflowText();
-            mIconRow.addView(mOverflowView, mIconLayoutParams);
+            mIconRow.addView(mOverflowView, 0, mIconLayoutParams);
         }
     }
 
     private void addNotificationIconForInfo(NotificationInfo info, boolean fromOverflow) {
         View icon = new View(getContext());
-        icon.setBackground(info.getIconForBackground(getContext(), mBackgroundColor));
+        icon.setBackground(info.getIconForBackground(getContext(), getBackgroundColor()));
         icon.setOnClickListener(info);
-        int addIndex = mIconRow.getChildCount();
+        int addIndex = 0;
         if (fromOverflow) {
             // Add the notification before the overflow view.
-            addIndex--;
+            addIndex = 1;
             icon.setAlpha(0);
             icon.animate().alpha(1);
         }
@@ -151,7 +162,7 @@ public class NotificationFooterLayout extends LinearLayout {
     public void animateFirstNotificationTo(Rect toBounds,
             final IconAnimationEndListener callback) {
         AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
-        final View firstNotification = mIconRow.getChildAt(0);
+        final View firstNotification = mIconRow.getChildAt(mIconRow.getChildCount() - 1);
 
         Rect fromBounds = sTempRect;
         firstNotification.getGlobalVisibleRect(fromBounds);
@@ -169,20 +180,19 @@ public class NotificationFooterLayout extends LinearLayout {
         animation.play(moveAndScaleIcon);
 
         // Shift all notifications (not the overflow) over to fill the gap.
-        int gapWidth = mIconLayoutParams.width + mIconLayoutParams.getMarginStart();
-        int numIcons = mIconRow.getChildCount()
-                - (mOverflowNotifications.isEmpty() ? 0 : 1);
-        for (int i = 1; i < numIcons; i++) {
+        int gapWidth = mIconLayoutParams.width + mIconLayoutParams.getMarginEnd();
+        if (mRtl) {
+            gapWidth = -gapWidth;
+        }
+        int numIcons = mIconRow.getChildCount() - 1;
+        // We have to set the translation X to 0 when the new main notification
+        // is removed from the footer.
+        PropertyResetListener<View, Float> propertyResetListener
+                = new PropertyResetListener<>(TRANSLATION_X, 0f);
+        for (int i = mOverflowNotifications.isEmpty() ? 0 : 1; i < numIcons; i++) {
             final View child = mIconRow.getChildAt(i);
-            Animator shiftChild = ObjectAnimator.ofFloat(child, TRANSLATION_X, -gapWidth);
-            shiftChild.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    // We have to set the translation X to 0 when the new main notification
-                    // is removed from the footer.
-                    child.setTranslationX(0);
-                }
-            });
+            Animator shiftChild = ObjectAnimator.ofFloat(child, TRANSLATION_X, gapWidth);
+            shiftChild.addListener(propertyResetListener);
             animation.play(shiftChild);
         }
         animation.start();
@@ -205,18 +215,18 @@ public class NotificationFooterLayout extends LinearLayout {
             }
         }
         if (mIconRow.getChildCount() == 0) {
-            // There are no more icons in the secondary view, so hide it.
+            // There are no more icons in the footer, so hide it.
             PopupContainerWithArrow popup = PopupContainerWithArrow.getOpen(
                     Launcher.getLauncher(getContext()));
-            int newHeight = getResources().getDimensionPixelSize(
-                    R.dimen.notification_footer_collapsed_height);
-            AnimatorSet collapseSecondary = LauncherAnimUtils.createAnimatorSet();
-            collapseSecondary.play(popup.animateTranslationYBy(getHeight() - newHeight, 0));
-            collapseSecondary.play(LauncherAnimUtils.animateViewHeight(
-                    this, getHeight(), newHeight));
-            collapseSecondary.setDuration(getResources().getInteger(
-                    R.integer.config_removeNotificationViewDuration));
-            collapseSecondary.start();
+            Animator collapseFooter = popup.reduceNotificationViewHeight(getHeight(),
+                    getResources().getInteger(R.integer.config_removeNotificationViewDuration));
+            collapseFooter.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    ((ViewGroup) getParent()).removeView(NotificationFooterLayout.this);
+                }
+            });
+            collapseFooter.start();
         }
     }
 

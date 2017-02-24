@@ -20,7 +20,7 @@
     android:layout_width="@dimen/bg_pill_width"
     android:layout_height="wrap_content"
     android:elevation="@dimen/deep_shortcuts_elevation"
-    android:background="@drawable/bg_white_pill">
+    android:background="@drawable/bg_white_round_rect">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -28,27 +28,10 @@
         android:orientation="vertical"
         android:clipChildren="false">
 
-        <TextView
-            android:id="@+id/header"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/notification_footer_collapsed_height"
-            android:gravity="center_vertical"
-            android:textAlignment="center"
-            android:text="@string/notifications_header"
-            android:elevation="@dimen/notification_elevation"
-            android:background="@drawable/bg_white_pill_top" />
-
-        <View
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/notification_divider_height"
-            android:layout_below="@id/header" />
-
         <include layout="@layout/notification_main"
             android:id="@+id/main_view"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/bg_pill_height"
-            android:layout_below="@id/divider" />
+            android:layout_height="@dimen/notification_main_height" />
 
         <include layout="@layout/notification_footer"
             android:id="@+id/footer"
