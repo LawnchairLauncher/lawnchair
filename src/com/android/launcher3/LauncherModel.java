@@ -815,7 +815,7 @@ public class LauncherModel extends BroadcastReceiver
             if (clearDb) {
                 Log.d(TAG, "loadWorkspace: resetting launcher database");
                 LauncherSettings.Settings.call(contentResolver,
-                        LauncherSettings.Settings.METHOD_DELETE_DB);
+                        LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
             }
 
             Log.d(TAG, "loadWorkspace: loading default favorites");
