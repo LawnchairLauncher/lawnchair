@@ -56,7 +56,6 @@ import com.android.launcher3.FolderInfo.FolderListener;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LogDecelerateInterpolator;
 import com.android.launcher3.OnAlarmListener;
@@ -74,7 +73,6 @@ import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.CircleRevealOutlineProvider;
@@ -249,8 +247,11 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         }
         mFolderName.setOnEditorActionListener(this);
         mFolderName.setSelectAllOnFocus(true);
-        mFolderName.setInputType(mFolderName.getInputType() |
-                InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+        mFolderName.setInputType(mFolderName.getInputType()
+                & ~InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
+                & ~InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+                | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+        mFolderName.forceDisableSuggestions(true);
 
         mFooter = findViewById(R.id.folder_footer);
 
