@@ -42,6 +42,7 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 
 /**
@@ -142,8 +143,8 @@ public abstract class ButtonDropTarget extends TextView
             mCurrentFilter = new ColorMatrix();
         }
 
-        DragView.setColorScale(getTextColor(), mSrcFilter);
-        DragView.setColorScale(targetColor, mDstFilter);
+        Themes.setColorScaleOnMatrix(getTextColor(), mSrcFilter);
+        Themes.setColorScaleOnMatrix(targetColor, mDstFilter);
         ValueAnimator anim1 = ValueAnimator.ofObject(
                 new FloatArrayEvaluator(mCurrentFilter.getArray()),
                 mSrcFilter.getArray(), mDstFilter.getArray());

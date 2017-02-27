@@ -24,7 +24,6 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
@@ -36,6 +35,7 @@ import android.view.animation.DecelerateInterpolator;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 
 import java.util.Arrays;
@@ -259,7 +259,7 @@ public class DragView extends View {
             m1.setSaturation(0);
 
             ColorMatrix m2 = new ColorMatrix();
-            setColorScale(color, m2);
+            Themes.setColorScaleOnMatrix(color, m2);
             m1.postConcat(m2);
 
             animateFilterTo(m1.getArray());
@@ -382,11 +382,6 @@ public class DragView extends View {
         if (getParent() != null) {
             mDragLayer.removeView(DragView.this);
         }
-    }
-
-    public static void setColorScale(int color, ColorMatrix target) {
-        target.setScale(Color.red(color) / 255f, Color.green(color) / 255f,
-                Color.blue(color) / 255f, Color.alpha(color) / 255f);
     }
 
     public int getBlurSizeOutline() {
