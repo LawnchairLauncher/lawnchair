@@ -92,7 +92,6 @@ public interface LauncherCallbacks {
     /*
      * Extensions points for adding / replacing some other aspects of the Launcher experience.
      */
-    public UserEventDispatcher getUserEventDispatcher();
     public boolean shouldMoveToDefaultScreenOnHomeIntent();
     public boolean hasSettings();
     public AllAppsSearchBarController getAllAppsSearchBarController();
