@@ -217,6 +217,9 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
         if (Float.compare(finalProgress, mInternalStateProgress) == 0) {
             return;
         }
+        if (finalProgress < mInternalStateProgress) {
+            shouldAnimate = false;
+        }
         if (!shouldAnimate || mRanFinishAnimation) {
             setInternalProgress(finalProgress);
         } else {
