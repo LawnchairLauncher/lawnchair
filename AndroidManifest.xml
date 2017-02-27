@@ -70,9 +70,10 @@
             android:launchMode="singleTask"
             android:clearTaskOnLaunch="true"
             android:stateNotNeeded="true"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="adjustPan|stateUnchanged"
             android:screenOrientation="nosensor"
             android:configChanges="keyboard|keyboardHidden|navigation"
+            android:resizeableActivity="true"
             android:resumeWhilePausing="true"
             android:taskAffinity=""
             android:enabled="true">
