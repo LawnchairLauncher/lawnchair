@@ -3885,7 +3885,9 @@ public class Workspace extends PagedView
                     // The item may belong to a folder.
                     View parent = idToViewMap.get(itemToRemove.container);
                     if (parent != null) {
-                        ((FolderInfo) parent.getTag()).remove((ShortcutInfo) itemToRemove, false);
+                        FolderInfo folderInfo = (FolderInfo) parent.getTag();
+                        folderInfo.prepareAutoUpdate();
+                        folderInfo.remove((ShortcutInfo) itemToRemove, false);
                     }
                 }
             }
