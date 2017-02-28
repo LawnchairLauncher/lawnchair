@@ -163,7 +163,7 @@ public class ManagedProfileHeuristic {
 
                     @Override
                     public void run() {
-                        workFolder.prepareAutoAdd();
+                        workFolder.prepareAutoUpdate();
                         for (ShortcutInfo info : workFolderApps) {
                             workFolder.add(info, false);
                         }

@@ -1413,7 +1413,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     }
 
     @Override
-    public void prepareAutoAdd() {
+    public void prepareAutoUpdate() {
         close(false);
     }
 

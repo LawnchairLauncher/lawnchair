@@ -981,7 +981,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     @Override
-    public void prepareAutoAdd() {
+    public void prepareAutoUpdate() {
     }
 
     @Override

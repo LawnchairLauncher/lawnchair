@@ -114,9 +114,9 @@ public class FolderInfo extends ItemInfo {
         }
     }
 
-    public void prepareAutoAdd() {
+    public void prepareAutoUpdate() {
         for (int i = 0; i < listeners.size(); i++) {
-            listeners.get(i).prepareAutoAdd();
+            listeners.get(i).prepareAutoUpdate();
         }
     }
 
@@ -125,7 +125,7 @@ public class FolderInfo extends ItemInfo {
         public void onRemove(ShortcutInfo item);
         public void onTitleChanged(CharSequence title);
         public void onItemsChanged(boolean animate);
-        public void prepareAutoAdd();
+        public void prepareAutoUpdate();
     }
 
     public boolean hasOption(int optionFlag) {
