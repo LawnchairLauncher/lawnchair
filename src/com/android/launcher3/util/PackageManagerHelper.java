@@ -40,81 +40,55 @@ import java.util.List;
  */
 public class PackageManagerHelper {
 
-    private static final int FLAG_SUSPENDED = 1<<30;
-
     private final Context mContext;
     private final PackageManager mPm;
+    private final LauncherAppsCompat mLauncherApps;
 
     public PackageManagerHelper(Context context) {
         mContext = context;
         mPm = context.getPackageManager();
+        mLauncherApps = LauncherAppsCompat.getInstance(context);
     }
 
     /**
      * Returns true if the app can possibly be on the SDCard. This is just a workaround and doesn't
      * guarantee that the app is on SD card.
      */
-    public boolean isAppOnSdcard(String packageName) {
-        return isAppEnabled(packageName, PackageManager.GET_UNINSTALLED_PACKAGES);
+    public boolean isAppOnSdcard(String packageName, UserHandle user) {
+        ApplicationInfo info = mLauncherApps.getApplicationInfo(
+                packageName, PackageManager.MATCH_UNINSTALLED_PACKAGES, user);
+        return info != null && (info.flags & ApplicationInfo.FLAG_EXTERNAL_STORAGE) != 0;
     }
 
-    public boolean isAppEnabled(String packageName) {
-        return isAppEnabled(packageName, 0);
-    }
-
-    public boolean isAppEnabled(String packageName, int flags) {
-        try {
-            ApplicationInfo info = mPm.getApplicationInfo(packageName, flags);
-            return info != null && info.enabled;
-        } catch (PackageManager.NameNotFoundException e) {
-            return false;
-        }
-    }
-
-  /**
-   * Returns whether a package is suspended for the current user as per
-   * {@link android.app.admin.DevicePolicyManager#isPackageSuspended}.
-   */
-    public boolean isAppSuspended(String packageName) {
-        try {
-            ApplicationInfo info = mPm.getApplicationInfo(packageName, 0);
-            return info != null && isAppSuspended(info);
-        } catch (PackageManager.NameNotFoundException e) {
-            return false;
-        }
-    }
-
-  /**
-   * Returns whether the target app is suspended for a given user as per
-   * {@link android.app.admin.DevicePolicyManager#isPackageSuspended}.
-   */
+    /**
+     * Returns whether the target app is suspended for a given user as per
+     * {@link android.app.admin.DevicePolicyManager#isPackageSuspended}.
+     */
     public boolean isAppSuspended(String packageName, UserHandle user) {
-        ApplicationInfo info =
-                LauncherAppsCompat.getInstance(mContext).getApplicationInfo(packageName, user);
+        ApplicationInfo info = mLauncherApps.getApplicationInfo(packageName, 0, user);
         return info != null && isAppSuspended(info);
     }
 
     public boolean isSafeMode() {
-        return mPm.isSafeMode();
+        return mContext.getPackageManager().isSafeMode();
     }
 
     public Intent getAppLaunchIntent(String pkg, UserHandle user) {
-        List<LauncherActivityInfo> activities = LauncherAppsCompat.getInstance(mContext)
-                .getActivityList(pkg, user);
+        List<LauncherActivityInfo> activities = mLauncherApps.getActivityList(pkg, user);
         return activities.isEmpty() ? null :
                 AppInfo.makeLaunchIntent(mContext, activities.get(0), user);
     }
 
-  /**
-   * Returns whether an application is suspended as per
-   * {@link android.app.admin.DevicePolicyManager#isPackageSuspended}.
-   */
+    /**
+     * Returns whether an application is suspended as per
+     * {@link android.app.admin.DevicePolicyManager#isPackageSuspended}.
+     */
     public static boolean isAppSuspended(ApplicationInfo info) {
         // The value of FLAG_SUSPENDED was reused by a hidden constant
         // ApplicationInfo.FLAG_PRIVILEGED prior to N, so only check for suspended flag on N
         // or later.
         if (Utilities.ATLEAST_NOUGAT) {
-            return (info.flags & FLAG_SUSPENDED) != 0;
+            return (info.flags & ApplicationInfo.FLAG_SUSPENDED) != 0;
         } else {
             return false;
         }
