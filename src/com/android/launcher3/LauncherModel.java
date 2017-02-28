@@ -48,6 +48,7 @@ import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.dynamicui.ExtractionUtils;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.folder.FolderIconPreviewVerifier;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.AddWorkspaceItemsTask;
@@ -1260,17 +1261,23 @@ public class LauncherModel extends BroadcastReceiver
                     }
                 }
 
-                // Sort all the folder items and make sure the first 3 items are high resolution.
+                FolderIconPreviewVerifier verifier =
+                        new FolderIconPreviewVerifier(mApp.getInvariantDeviceProfile());
+                // Sort the folder items and make sure all items in the preview are high resolution.
                 for (FolderInfo folder : sBgDataModel.folders) {
                     Collections.sort(folder.contents, Folder.ITEM_POS_COMPARATOR);
-                    int pos = 0;
+                    verifier.setFolderInfo(folder);
+
+                    int numItemsInPreview = 0;
                     for (ShortcutInfo info : folder.contents) {
-                        if (info.usingLowResIcon &&
-                                info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+                        if (info.usingLowResIcon
+                                && info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
+                                && verifier.isItemInPreview(info.rank)) {
                             mIconCache.getTitleAndIcon(info, false);
+                            numItemsInPreview++;
                         }
-                        pos ++;
-                        if (pos >= FolderIcon.NUM_ITEMS_IN_PREVIEW) {
+
+                        if (numItemsInPreview >= FolderIcon.NUM_ITEMS_IN_PREVIEW) {
                             break;
                         }
                     }
