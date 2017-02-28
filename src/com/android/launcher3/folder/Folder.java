@@ -66,6 +66,7 @@ import com.android.launcher3.UninstallDropTarget.DropTargetSource;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
+import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.dragndrop.DragController;
@@ -510,6 +511,58 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         mState = STATE_SMALL;
     }
 
+    private AnimatorSet getOpeningAnimatorSet() {
+        AnimatorSet anim = LauncherAnimUtils.createAnimatorSet();
+
+        int width = getFolderWidth();
+        int height = getFolderHeight();
+
+        float transX = - 0.075f * (width / 2 - getPivotX());
+        float transY = - 0.075f * (height / 2 - getPivotY());
+        setTranslationX(transX);
+        setTranslationY(transY);
+        PropertyValuesHolder tx = PropertyValuesHolder.ofFloat(TRANSLATION_X, transX, 0);
+        PropertyValuesHolder ty = PropertyValuesHolder.ofFloat(TRANSLATION_Y, transY, 0);
+
+        Animator drift = ObjectAnimator.ofPropertyValuesHolder(this, tx, ty);
+        drift.setDuration(mMaterialExpandDuration);
+        drift.setStartDelay(mMaterialExpandStagger);
+        drift.setInterpolator(new LogDecelerateInterpolator(100, 0));
+
+        int rx = (int) Math.max(Math.max(width - getPivotX(), 0), getPivotX());
+        int ry = (int) Math.max(Math.max(height - getPivotY(), 0), getPivotY());
+        float radius = (float) Math.hypot(rx, ry);
+
+        Animator reveal = new CircleRevealOutlineProvider((int) getPivotX(),
+                (int) getPivotY(), 0, radius).createRevealAnimator(this);
+        reveal.setDuration(mMaterialExpandDuration);
+        reveal.setInterpolator(new LogDecelerateInterpolator(100, 0));
+
+        mContent.setAlpha(0f);
+        Animator iconsAlpha = ObjectAnimator.ofFloat(mContent, "alpha", 0f, 1f);
+        iconsAlpha.setDuration(mMaterialExpandDuration);
+        iconsAlpha.setStartDelay(mMaterialExpandStagger);
+        iconsAlpha.setInterpolator(new AccelerateInterpolator(1.5f));
+
+        mFooter.setAlpha(0f);
+        Animator textAlpha = ObjectAnimator.ofFloat(mFooter, "alpha", 0f, 1f);
+        textAlpha.setDuration(mMaterialExpandDuration);
+        textAlpha.setStartDelay(mMaterialExpandStagger);
+        textAlpha.setInterpolator(new AccelerateInterpolator(1.5f));
+
+        anim.play(drift);
+        anim.play(iconsAlpha);
+        anim.play(textAlpha);
+        anim.play(reveal);
+
+        AnimationLayerSet layerSet = new AnimationLayerSet();
+        layerSet.addView(mContent);
+        layerSet.addView(mFooter);
+        anim.addListener(layerSet);
+
+        return anim;
+    }
+
     /**
      * Opens the user folder described by the specified tag. The opening of the folder
      * is animated relative to the specified View. If the View is null, no animation
@@ -554,55 +607,10 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
 
         mFolderIcon.growAndFadeOut();
 
-        AnimatorSet anim = LauncherAnimUtils.createAnimatorSet();
-        int width = getFolderWidth();
-        int height = getFolderHeight();
-
-        float transX = - 0.075f * (width / 2 - getPivotX());
-        float transY = - 0.075f * (height / 2 - getPivotY());
-        setTranslationX(transX);
-        setTranslationY(transY);
-        PropertyValuesHolder tx = PropertyValuesHolder.ofFloat(TRANSLATION_X, transX, 0);
-        PropertyValuesHolder ty = PropertyValuesHolder.ofFloat(TRANSLATION_Y, transY, 0);
-
-        Animator drift = ObjectAnimator.ofPropertyValuesHolder(this, tx, ty);
-        drift.setDuration(mMaterialExpandDuration);
-        drift.setStartDelay(mMaterialExpandStagger);
-        drift.setInterpolator(new LogDecelerateInterpolator(100, 0));
-
-        int rx = (int) Math.max(Math.max(width - getPivotX(), 0), getPivotX());
-        int ry = (int) Math.max(Math.max(height - getPivotY(), 0), getPivotY());
-        float radius = (float) Math.hypot(rx, ry);
-
-        Animator reveal = new CircleRevealOutlineProvider((int) getPivotX(),
-                (int) getPivotY(), 0, radius).createRevealAnimator(this);
-        reveal.setDuration(mMaterialExpandDuration);
-        reveal.setInterpolator(new LogDecelerateInterpolator(100, 0));
-
-        mContent.setAlpha(0f);
-        Animator iconsAlpha = ObjectAnimator.ofFloat(mContent, "alpha", 0f, 1f);
-        iconsAlpha.setDuration(mMaterialExpandDuration);
-        iconsAlpha.setStartDelay(mMaterialExpandStagger);
-        iconsAlpha.setInterpolator(new AccelerateInterpolator(1.5f));
-
-        mFooter.setAlpha(0f);
-        Animator textAlpha = ObjectAnimator.ofFloat(mFooter, "alpha", 0f, 1f);
-        textAlpha.setDuration(mMaterialExpandDuration);
-        textAlpha.setStartDelay(mMaterialExpandStagger);
-        textAlpha.setInterpolator(new AccelerateInterpolator(1.5f));
-
-        anim.play(drift);
-        anim.play(iconsAlpha);
-        anim.play(textAlpha);
-        anim.play(reveal);
-
-        mContent.setLayerType(LAYER_TYPE_HARDWARE, null);
-        mFooter.setLayerType(LAYER_TYPE_HARDWARE, null);
+        AnimatorSet anim = getOpeningAnimatorSet();
         onCompleteRunnable = new Runnable() {
             @Override
             public void run() {
-                mContent.setLayerType(LAYER_TYPE_NONE, null);
-                mFooter.setLayerType(LAYER_TYPE_NONE, null);
                 mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
             }
         };
@@ -715,12 +723,22 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         parent.sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
     }
 
+    private AnimatorSet getClosingAnimatorSet() {
+        AnimatorSet animatorSet = LauncherAnimUtils.createAnimatorSet();
+        animatorSet.play(LauncherAnimUtils.ofViewAlphaAndScale(this, 0, 0.9f, 0.9f));
+
+        AnimationLayerSet layerSet = new AnimationLayerSet();
+        layerSet.addView(this);
+        animatorSet.addListener(layerSet);
+
+        return animatorSet;
+    }
+
     private void animateClosed() {
-        final ObjectAnimator oa = LauncherAnimUtils.ofViewAlphaAndScale(this, 0, 0.9f, 0.9f);
-        oa.addListener(new AnimatorListenerAdapter() {
+        AnimatorSet a = getClosingAnimatorSet();
+        a.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                setLayerType(LAYER_TYPE_NONE, null);
                 closeComplete(true);
             }
             @Override
@@ -732,9 +750,8 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
                 mState = STATE_ANIMATING;
             }
         });
-        oa.setDuration(mExpandDuration);
-        setLayerType(LAYER_TYPE_HARDWARE, null);
-        oa.start();
+        a.setDuration(mExpandDuration);
+        a.start();
     }
 
     private void closeComplete(boolean wasAnimated) {
