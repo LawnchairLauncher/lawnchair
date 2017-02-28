@@ -331,6 +331,8 @@ public class FolderPagedView extends PagedView {
         int position = 0;
         int newX, newY, rank;
 
+        FolderIconPreviewVerifier verifier = new FolderIconPreviewVerifier(
+                Launcher.getLauncher(getContext()).getDeviceProfile().inv);
         rank = 0;
         for (int i = 0; i < itemCount; i++) {
             View v = list.size() > i ? list.get(i) : null;
@@ -363,7 +365,7 @@ public class FolderPagedView extends PagedView {
                 currentPage.addViewToCellLayout(
                         v, -1, mFolder.mLauncher.getViewIdForItem(info), lp, true);
 
-                if (rank < FolderIcon.NUM_ITEMS_IN_PREVIEW && v instanceof BubbleTextView) {
+                if (verifier.isItemInPreview(rank) && v instanceof BubbleTextView) {
                     ((BubbleTextView) v).verifyHighRes();
                 }
             }

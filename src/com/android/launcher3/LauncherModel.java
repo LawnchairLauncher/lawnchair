@@ -884,6 +884,8 @@ public class LauncherModel extends BroadcastReceiver
                     Intent intent;
                     String targetPkg;
 
+                    FolderIconPreviewVerifier verifier =
+                            new FolderIconPreviewVerifier(mApp.getInvariantDeviceProfile());
                     while (!mStopped && c.moveToNext()) {
                         try {
                             if (c.user == null) {
@@ -1008,7 +1010,7 @@ public class LauncherModel extends BroadcastReceiver
                                 }
 
                                 boolean useLowResIcon = !c.isOnWorkspaceOrHotseat() &&
-                                        c.getInt(rankIndex) >= FolderIcon.NUM_ITEMS_IN_PREVIEW;
+                                        !verifier.isItemInPreview(c.getInt(rankIndex));
 
                                 if (c.restoreFlag != 0) {
                                     // Already verified above that user is same as default user

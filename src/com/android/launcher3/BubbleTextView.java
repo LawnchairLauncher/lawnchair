@@ -40,6 +40,7 @@ import com.android.launcher3.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.badge.BadgeRenderer;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.folder.FolderIconPreviewVerifier;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.graphics.HolographicOutlineHelper;
 import com.android.launcher3.graphics.IconPalette;
@@ -548,7 +549,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
                 applyFromApplicationInfo((AppInfo) info);
             } else if (info instanceof ShortcutInfo) {
                 applyFromShortcutInfo((ShortcutInfo) info);
-                if ((info.rank < FolderIcon.NUM_ITEMS_IN_PREVIEW) && (info.container >= 0)) {
+                FolderIconPreviewVerifier verifier =
+                        new FolderIconPreviewVerifier(mLauncher.getDeviceProfile().inv);
+                if (verifier.isItemInPreview(info.rank) && (info.container >= 0)) {
                     View folderIcon =
                             mLauncher.getWorkspace().getHomescreenIconByItemId(info.container);
                     if (folderIcon != null) {
