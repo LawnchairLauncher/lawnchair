@@ -196,7 +196,8 @@ public class PopupPopulator {
 
         @Override
         public void run() {
-            mShortcutChild.applyShortcutInfo(mShortcutChildInfo, mDetail, mContainer);
+            mShortcutChild.applyShortcutInfo(mShortcutChildInfo, mDetail,
+                    mContainer.mShortcutsItemView);
         }
     }
 

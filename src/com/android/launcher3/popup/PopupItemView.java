@@ -21,8 +21,15 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -31,7 +38,6 @@ import com.android.launcher3.LogAccelerateInterpolator;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.PillRevealOutlineProvider;
-import com.android.launcher3.util.PillWidthRevealOutlineProvider;
 
 /**
  * An abstract {@link FrameLayout} that supports animating an item's content
@@ -46,6 +52,9 @@ public abstract class PopupItemView extends FrameLayout
     private float mOpenAnimationProgress;
 
     protected View mIconView;
+
+    private final Paint mBackgroundClipPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG |
+            Paint.FILTER_BITMAP_FLAG);
 
     public PopupItemView(Context context) {
         this(context, null, 0);
@@ -73,12 +82,35 @@ public abstract class PopupItemView extends FrameLayout
         mPillRect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
     }
 
-    protected ColorStateList getAttachedArrowColor() {
-        return getBackgroundTintList();
+    protected void initializeBackgroundClipping(boolean force) {
+        if (force || mBackgroundClipPaint.getShader() == null) {
+            mBackgroundClipPaint.setXfermode(null);
+            mBackgroundClipPaint.setShader(null);
+            Bitmap backgroundBitmap = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(),
+                    Bitmap.Config.ALPHA_8);
+            Canvas canvas = new Canvas();
+            canvas.setBitmap(backgroundBitmap);
+            canvas.drawRoundRect(0, 0, getMeasuredWidth(), getMeasuredHeight(),
+                    getBackgroundRadius(), getBackgroundRadius(), mBackgroundClipPaint);
+            Shader backgroundClipShader = new BitmapShader(backgroundBitmap,
+                    Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+            mBackgroundClipPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+            mBackgroundClipPaint.setShader(backgroundClipShader);
+        }
     }
 
-    public boolean willDrawIcon() {
-        return true;
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        initializeBackgroundClipping(false /* force */);
+        int saveCount = canvas.saveLayer(0, 0, getWidth(), getHeight(), null,
+                Canvas.HAS_ALPHA_LAYER_SAVE_FLAG | Canvas.CLIP_TO_LAYER_SAVE_FLAG);
+        super.dispatchDraw(canvas);
+        canvas.drawPaint(mBackgroundClipPaint);
+        canvas.restoreToCount(saveCount);
+    }
+
+    protected ColorStateList getAttachedArrowColor() {
+        return getBackgroundTintList();
     }
 
     /**
@@ -126,17 +158,6 @@ public abstract class PopupItemView extends FrameLayout
     }
 
     /**
-     * Creates an animator which clips the container to form a circle around the icon.
-     */
-    public Animator collapseToIcon() {
-        int halfHeight = getMeasuredHeight() / 2;
-        int iconCenterX = getIconCenter().x;
-        return new PillWidthRevealOutlineProvider(mPillRect,
-                iconCenterX - halfHeight, iconCenterX + halfHeight)
-                        .createRevealAnimator(this, true);
-    }
-
-    /**
      * Returns the position of the center of the icon relative to the container.
      */
     public Point getIconCenter() {
@@ -148,7 +169,7 @@ public abstract class PopupItemView extends FrameLayout
     }
 
     protected float getBackgroundRadius() {
-        return getResources().getDimensionPixelSize(R.dimen.bg_pill_radius);
+        return getResources().getDimensionPixelSize(R.dimen.bg_round_rect_radius);
     }
 
     /**
@@ -182,8 +203,10 @@ public abstract class PopupItemView extends FrameLayout
         public void setProgress(float progress) {
             super.setProgress(progress);
 
-            mZoomView.setScaleX(progress);
-            mZoomView.setScaleY(progress);
+            if (mZoomView != null) {
+                mZoomView.setScaleX(progress);
+                mZoomView.setScaleY(progress);
+            }
 
             float height = mOutline.height();
             mTranslateView.setTranslationY(mTranslateYMultiplier * (mFullHeight - height));

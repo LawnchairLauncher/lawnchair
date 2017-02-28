@@ -17,18 +17,16 @@
 <com.android.launcher3.shortcuts.DeepShortcutView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
-    android:layout_width="@dimen/bg_pill_width"
-    android:layout_height="@dimen/bg_pill_height"
-    android:elevation="@dimen/deep_shortcuts_elevation"
-    android:background="@drawable/bg_white_pill" >
+    android:layout_width="@dimen/bg_popup_item_width"
+    android:layout_height="@dimen/bg_popup_item_height" >
 
     <com.android.launcher3.shortcuts.DeepShortcutTextView
         style="@style/BaseIcon"
         android:id="@+id/deep_shortcut"
-        android:background="@drawable/bg_pill_focused"
+        android:background="?android:attr/selectableItemBackground"
         android:gravity="start|center_vertical"
         android:textAlignment="viewStart"
-        android:paddingStart="@dimen/bg_pill_height"
+        android:paddingStart="@dimen/bg_popup_item_height"
         android:paddingEnd="@dimen/deep_shortcut_padding_end"
         android:drawableEnd="@drawable/deep_shortcuts_drag_handle"
         android:drawablePadding="@dimen/deep_shortcut_drawable_padding"
@@ -40,10 +38,18 @@
         android:elevation="@dimen/deep_shortcuts_elevation" />
 
     <View
-        android:id="@+id/popup_item_icon"
+        android:id="@+id/icon"
         android:layout_width="@dimen/deep_shortcut_icon_size"
         android:layout_height="@dimen/deep_shortcut_icon_size"
         android:layout_margin="@dimen/deep_shortcut_padding_start"
         android:layout_gravity="start" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="@dimen/deep_shortcuts_divider_width"
+        android:layout_height="@dimen/popup_item_divider_height"
+        android:layout_gravity="end|bottom"
+        android:visibility="gone"
+        android:background="?android:attr/listDivider" />
 
 </com.android.launcher3.shortcuts.DeepShortcutView>
