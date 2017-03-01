@@ -55,6 +55,8 @@ public class NotificationListener extends NotificationListenerService {
     private final Handler mWorkerHandler;
     private final Handler mUiHandler;
 
+    private Ranking mTempRanking = new Ranking();
+
     private Handler.Callback mWorkerCallback = new Handler.Callback() {
         @Override
         public boolean handleMessage(Message message) {
@@ -166,7 +168,7 @@ public class NotificationListener extends NotificationListenerService {
         NotificationPostedMsg(StatusBarNotification sbn) {
             packageUserKey = PackageUserKey.fromNotification(sbn);
             notificationKey = sbn.getKey();
-            shouldBeFilteredOut = shouldBeFilteredOut(sbn.getNotification());
+            shouldBeFilteredOut = shouldBeFilteredOut(sbn);
         }
     }
 
@@ -190,14 +192,14 @@ public class NotificationListener extends NotificationListenerService {
      * Filter out notifications that don't have an intent
      * or are headers for grouped notifications.
      *
-     * TODO: use the system concept of a badged notification instead
+     * @see #shouldBeFilteredOut(StatusBarNotification)
      */
     private List<StatusBarNotification> filterNotifications(
             StatusBarNotification[] notifications) {
         if (notifications == null) return null;
         Set<Integer> removedNotifications = new HashSet<>();
         for (int i = 0; i < notifications.length; i++) {
-            if (shouldBeFilteredOut(notifications[i].getNotification())) {
+            if (shouldBeFilteredOut(notifications[i])) {
                 removedNotifications.add(i);
             }
         }
@@ -211,7 +213,12 @@ public class NotificationListener extends NotificationListenerService {
         return filteredNotifications;
     }
 
-    private boolean shouldBeFilteredOut(Notification notification) {
+    private boolean shouldBeFilteredOut(StatusBarNotification sbn) {
+        getCurrentRanking().getRanking(sbn.getKey(), mTempRanking);
+        if (!mTempRanking.canShowBadge()) {
+            return true;
+        }
+        Notification notification = sbn.getNotification();
         boolean isGroupHeader = (notification.flags & Notification.FLAG_GROUP_SUMMARY) != 0;
         return (notification.contentIntent == null || isGroupHeader);
     }
