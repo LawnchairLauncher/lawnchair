@@ -26,6 +26,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 
 import com.android.launcher3.LauncherModel;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.PackageUserKey;
 
@@ -214,9 +215,11 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private boolean shouldBeFilteredOut(StatusBarNotification sbn) {
-        getCurrentRanking().getRanking(sbn.getKey(), mTempRanking);
-        if (!mTempRanking.canShowBadge()) {
-            return true;
+        if (Utilities.isAtLeastO()) {
+            getCurrentRanking().getRanking(sbn.getKey(), mTempRanking);
+            if (!mTempRanking.canShowBadge()) {
+                return true;
+            }
         }
         Notification notification = sbn.getNotification();
         boolean isGroupHeader = (notification.flags & Notification.FLAG_GROUP_SUMMARY) != 0;
