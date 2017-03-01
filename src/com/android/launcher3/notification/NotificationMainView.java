@@ -22,7 +22,9 @@ import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.RippleDrawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -71,7 +73,9 @@ public class NotificationMainView extends LinearLayout implements SwipeHelper.Ca
 
     public void applyColors(IconPalette iconPalette) {
         mColorBackground = new ColorDrawable(iconPalette.backgroundColor);
-        setBackground(mColorBackground);
+        RippleDrawable rippleDrawable = new RippleDrawable(ColorStateList.valueOf(
+                iconPalette.secondaryColor), mColorBackground, null);
+        setBackground(rippleDrawable);
         mIconPalette = iconPalette;
     }
 

@@ -17,26 +17,30 @@
 package com.android.launcher3.shortcuts;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
-import com.android.launcher3.popup.PopupContainerWithArrow;
-import com.android.launcher3.popup.PopupItemView;
+import com.android.launcher3.Utilities;
 
 /**
  * A {@link android.widget.FrameLayout} that contains a {@link DeepShortcutView}.
  * This lets us animate the DeepShortcutView (icon and text) separately from the background.
  */
-public class DeepShortcutView extends PopupItemView {
+public class DeepShortcutView extends FrameLayout {
+
+    private static final Point sTempPoint = new Point();
 
     private final Rect mPillRect;
 
     private DeepShortcutTextView mBubbleText;
+    private View mIconView;
 
     private ShortcutInfo mInfo;
     private ShortcutInfoCompat mDetail;
@@ -59,6 +63,7 @@ public class DeepShortcutView extends PopupItemView {
     protected void onFinishInflate() {
         super.onFinishInflate();
         mBubbleText = (DeepShortcutTextView) findViewById(R.id.deep_shortcut);
+        mIconView = findViewById(R.id.icon);
     }
 
     public DeepShortcutTextView getBubbleText() {
@@ -73,6 +78,17 @@ public class DeepShortcutView extends PopupItemView {
         return mIconView.getVisibility() == View.VISIBLE;
     }
 
+    /**
+     * Returns the position of the center of the icon relative to the container.
+     */
+    public Point getIconCenter() {
+        sTempPoint.y = sTempPoint.x = getMeasuredHeight() / 2;
+        if (Utilities.isRtl(getResources())) {
+            sTempPoint.x = getMeasuredWidth() - sTempPoint.x;
+        }
+        return sTempPoint;
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -81,7 +97,7 @@ public class DeepShortcutView extends PopupItemView {
 
     /** package private **/
     public void applyShortcutInfo(ShortcutInfo info, ShortcutInfoCompat detail,
-            PopupContainerWithArrow container) {
+            ShortcutsItemView container) {
         mInfo = info;
         mDetail = detail;
         mBubbleText.applyFromShortcutInfo(info);
