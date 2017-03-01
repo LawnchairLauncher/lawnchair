@@ -95,7 +95,7 @@ public abstract class AbstractFloatingView extends LinearLayout {
         return null;
     }
 
-    protected static void closeOpenContainer(Launcher launcher, @FloatingViewType int type) {
+    public static void closeOpenContainer(Launcher launcher, @FloatingViewType int type) {
         AbstractFloatingView view = getOpenView(launcher, type);
         if (view != null) {
             view.close(true);

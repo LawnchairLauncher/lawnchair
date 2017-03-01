@@ -150,10 +150,9 @@
 
 <!-- Deep shortcuts -->
     <dimen name="deep_shortcuts_elevation">9dp</dimen>
-    <dimen name="bg_pill_width">208dp</dimen>
-    <dimen name="bg_pill_height">48dp</dimen>
-    <dimen name="bg_pill_radius">24dp</dimen>
-    <dimen name="deep_shortcuts_spacing">4dp</dimen>
+    <dimen name="bg_popup_item_width">208dp</dimen>
+    <dimen name="bg_popup_item_height">48dp</dimen>
+    <dimen name="popup_items_spacing">4dp</dimen>
     <dimen name="pre_drag_view_scale">6dp</dimen>
     <!-- an icon with shortcuts must be dragged this far before the container is removed. -->
     <dimen name="deep_shortcuts_start_drag_threshold">16dp</dimen>
@@ -171,6 +170,8 @@
          deep_shortcut_padding_end + deep_shortcut_drag_handle_size / 2 - deep_shortcuts_arrow_width / 2
          also happens to equal 19dp-->
     <dimen name="deep_shortcuts_arrow_horizontal_offset">19dp</dimen>
+    <!-- popup_item_width - icon_size - padding_start - drawable_padding -->
+    <dimen name="deep_shortcuts_divider_width">158dp</dimen>
 
 <!-- Icon badges (with notification counts) -->
     <dimen name="badge_size">24dp</dimen>
@@ -186,9 +187,9 @@
     <!-- (icon_size - footer_icon_size) / 2 -->
     <dimen name="notification_footer_icon_row_padding">2dp</dimen>
     <dimen name="notification_main_height">60dp</dimen>
-    <dimen name="notification_footer_height">@dimen/bg_pill_height</dimen>
+    <dimen name="notification_footer_height">@dimen/bg_popup_item_height</dimen>
     <dimen name="notification_elevation">2dp</dimen>
-    <dimen name="notification_divider_height">0.5dp</dimen>
+    <dimen name="popup_item_divider_height">0.5dp</dimen>
     <dimen name="swipe_helper_falsing_threshold">70dp</dimen>
 
 <!-- Other -->

@@ -1,0 +1,180 @@
+/*
+ * Copyright (C) 2017 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.android.launcher3.shortcuts;
+
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.content.Context;
+import android.graphics.Point;
+import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.LinearLayout;
+
+import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.ItemInfo;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAnimUtils;
+import com.android.launcher3.R;
+import com.android.launcher3.anim.PropertyListBuilder;
+import com.android.launcher3.dragndrop.DragOptions;
+import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
+import com.android.launcher3.popup.PopupContainerWithArrow;
+import com.android.launcher3.popup.PopupItemView;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * A {@link PopupItemView} that contains all of the {@link DeepShortcutView}s for an app.
+ */
+public class ShortcutsItemView extends PopupItemView implements View.OnLongClickListener,
+        View.OnTouchListener, LogContainerProvider {
+
+    private Launcher mLauncher;
+    private LinearLayout mDeepShortcutsLayout;
+    private final Point mIconShift = new Point();
+    private final Point mIconLastTouchPos = new Point();
+
+    public ShortcutsItemView(Context context) {
+        this(context, null, 0);
+    }
+
+    public ShortcutsItemView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public ShortcutsItemView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+
+        mLauncher = Launcher.getLauncher(context);
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        mDeepShortcutsLayout = (LinearLayout) findViewById(R.id.deep_shortcuts);
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent ev) {
+        // Touched a shortcut, update where it was touched so we can drag from there on long click.
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_MOVE:
+                mIconLastTouchPos.set((int) ev.getX(), (int) ev.getY());
+                break;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        // Return early if this is not initiated from a touch or not the correct view
+        if (!v.isInTouchMode() || !(v.getParent() instanceof DeepShortcutView)) return false;
+        // Return early if global dragging is not enabled
+        if (!mLauncher.isDraggingEnabled()) return false;
+        // Return early if an item is already being dragged (e.g. when long-pressing two shortcuts)
+        if (mLauncher.getDragController().isDragging()) return false;
+
+        // Long clicked on a shortcut.
+        DeepShortcutView sv = (DeepShortcutView) v.getParent();
+        sv.setWillDrawIcon(false);
+
+        // Move the icon to align with the center-top of the touch point
+        mIconShift.x = mIconLastTouchPos.x - sv.getIconCenter().x;
+        mIconShift.y = mIconLastTouchPos.y - mLauncher.getDeviceProfile().iconSizePx;
+
+        DragView dv = mLauncher.getWorkspace().beginDragShared(sv.getBubbleText(),
+                (PopupContainerWithArrow) getParent(), sv.getFinalInfo(),
+                new ShortcutDragPreviewProvider(sv.getIconView(), mIconShift), new DragOptions());
+        dv.animateShift(-mIconShift.x, -mIconShift.y);
+
+        // TODO: support dragging from within folder without having to close it
+        AbstractFloatingView.closeOpenContainer(mLauncher, AbstractFloatingView.TYPE_FOLDER);
+        return false;
+    }
+
+    public void addDeepShortcutView(DeepShortcutView deepShortcutView) {
+        if (getNumDeepShortcuts() > 0) {
+            getDeepShortcutAt(getNumDeepShortcuts() - 1).findViewById(R.id.divider)
+                    .setVisibility(VISIBLE);
+        }
+        mDeepShortcutsLayout.addView(deepShortcutView);
+    }
+
+    private DeepShortcutView getDeepShortcutAt(int index) {
+        return (DeepShortcutView) mDeepShortcutsLayout.getChildAt(index);
+    }
+
+    private int getNumDeepShortcuts() {
+        return mDeepShortcutsLayout.getChildCount();
+    }
+
+    public List<DeepShortcutView> getDeepShortcutViews(boolean reverseOrder) {
+        int numDeepShortcuts = getNumDeepShortcuts();
+        List<DeepShortcutView> deepShortcutViews = new ArrayList<>(numDeepShortcuts);
+        for (int i = 0; i < numDeepShortcuts; i++) {
+            DeepShortcutView deepShortcut = getDeepShortcutAt(i);
+            if (reverseOrder) {
+                deepShortcutViews.add(0, deepShortcut);
+            } else {
+                deepShortcutViews.add(deepShortcut);
+            }
+        }
+        return deepShortcutViews;
+    }
+
+    @Override
+    public Animator createOpenAnimation(boolean isContainerAboveIcon, boolean pivotLeft) {
+        AnimatorSet openAnimation = LauncherAnimUtils.createAnimatorSet();
+        openAnimation.play(super.createOpenAnimation(isContainerAboveIcon, pivotLeft));
+        for (int i = 0; i < getNumDeepShortcuts(); i++) {
+            View deepShortcutIcon = getDeepShortcutAt(i).getIconView();
+            deepShortcutIcon.setScaleX(0);
+            deepShortcutIcon.setScaleY(0);
+            openAnimation.play(LauncherAnimUtils.ofPropertyValuesHolder(
+                    deepShortcutIcon, new PropertyListBuilder().scale(1).build()));
+        }
+        return openAnimation;
+    }
+
+    @Override
+    public Animator createCloseAnimation(boolean isContainerAboveIcon, boolean pivotLeft,
+            long duration) {
+        AnimatorSet closeAnimation = LauncherAnimUtils.createAnimatorSet();
+        closeAnimation.play(super.createCloseAnimation(isContainerAboveIcon, pivotLeft, duration));
+        for (int i = 0; i < getNumDeepShortcuts(); i++) {
+            View deepShortcutIcon = getDeepShortcutAt(i).getIconView();
+            deepShortcutIcon.setScaleX(1);
+            deepShortcutIcon.setScaleY(1);
+            closeAnimation.play(LauncherAnimUtils.ofPropertyValuesHolder(
+                    deepShortcutIcon, new PropertyListBuilder().scale(0).build()));
+        }
+        return closeAnimation;
+    }
+
+    @Override
+    public void fillInLogContainerData(View v, ItemInfo info, LauncherLogProto.Target target,
+            LauncherLogProto.Target targetParent) {
+        target.itemType = LauncherLogProto.ItemType.DEEPSHORTCUT;
+        target.rank = info.rank;
+        targetParent.containerType = LauncherLogProto.ContainerType.DEEPSHORTCUTS;
+    }
+}
