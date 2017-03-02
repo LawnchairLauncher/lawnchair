@@ -81,7 +81,8 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
                     mContext.getPackageManager().getApplicationInfo(packageName, flags);
             // There is no way to check if the app is installed for managed profile. But for
             // primary profile, we can still have this check.
-            if (isPrimaryUser && ((info.flags & ApplicationInfo.FLAG_INSTALLED) == 0)) {
+            if (isPrimaryUser && ((info.flags & ApplicationInfo.FLAG_INSTALLED) == 0)
+                    || !info.enabled) {
                 return null;
             }
             return info;

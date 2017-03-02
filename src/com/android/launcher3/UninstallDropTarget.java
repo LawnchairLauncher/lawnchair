@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.UserHandle;
@@ -139,9 +140,10 @@ public class UninstallDropTarget extends ButtonDropTarget {
             final Runnable checkIfUninstallWasSuccess = new Runnable() {
                 @Override
                 public void run() {
-                    String packageName = cn.getPackageName();
-                    boolean uninstallSuccessful = !AllAppsList.packageHasActivities(
-                            launcher, packageName, user);
+                    // We use MATCH_UNINSTALLED_PACKAGES as the app can be on SD card as well.
+                    boolean uninstallSuccessful = LauncherAppsCompat.getInstance(launcher)
+                            .getApplicationInfo(cn.getPackageName(),
+                                    PackageManager.MATCH_UNINSTALLED_PACKAGES, user) == null;
                     callback.onDragObjectRemoved(uninstallSuccessful);
                 }
             };
