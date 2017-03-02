@@ -19,11 +19,12 @@ package com.android.launcher3.graphics;
 import android.app.Notification;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.support.v4.graphics.ColorUtils;
 import android.util.Log;
 
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Themes;
 
 /**
@@ -41,12 +42,16 @@ public class IconPalette {
 
     public final int dominantColor;
     public final int backgroundColor;
+    public final ColorMatrixColorFilter backgroundColorMatrixFilter;
     public final int textColor;
     public final int secondaryColor;
 
     private IconPalette(int color) {
         dominantColor = color;
         backgroundColor = getMutedColor(dominantColor);
+        ColorMatrix backgroundColorMatrix = new ColorMatrix();
+        Themes.setColorScaleOnMatrix(backgroundColor, backgroundColorMatrix);
+        backgroundColorMatrixFilter = new ColorMatrixColorFilter(backgroundColorMatrix);
         textColor = getTextColorForBackground(backgroundColor);
         secondaryColor = getLowContrastColor(backgroundColor);
     }

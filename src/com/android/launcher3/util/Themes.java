@@ -18,6 +18,8 @@ package com.android.launcher3.util;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.graphics.ColorMatrix;
 import android.view.ContextThemeWrapper;
 
 /**
@@ -48,5 +50,22 @@ public class Themes {
         float alpha = ta.getFloat(0, 0);
         ta.recycle();
         return (int) (255 * alpha + 0.5f);
+    }
+
+    /**
+     * Scales a color matrix such that, when applied to color R G B A, it produces R' G' B' A' where
+     * R' = r * R
+     * G' = g * G
+     * B' = b * B
+     * A' = a * A
+     *
+     * The matrix will, for instance, turn white into r g b a, and black will remain black.
+     *
+     * @param color The color r g b a
+     * @param target The ColorMatrix to scale
+     */
+    public static void setColorScaleOnMatrix(int color, ColorMatrix target) {
+        target.setScale(Color.red(color) / 255f, Color.green(color) / 255f,
+                Color.blue(color) / 255f, Color.alpha(color) / 255f);
     }
 }
