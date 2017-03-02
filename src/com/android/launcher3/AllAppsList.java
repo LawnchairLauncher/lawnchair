@@ -208,16 +208,6 @@ public class AllAppsList {
     }
 
     /**
-     * Query the launcher apps service for whether the supplied package has
-     * MAIN/LAUNCHER activities in the supplied package.
-     */
-    static boolean packageHasActivities(Context context, String packageName,
-            UserHandle user) {
-        final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
-        return launcherApps.getActivityList(packageName, user).size() > 0;
-    }
-
-    /**
      * Returns whether <em>apps</em> contains <em>component</em>.
      */
     private static boolean findActivity(ArrayList<AppInfo> apps, ComponentName component,

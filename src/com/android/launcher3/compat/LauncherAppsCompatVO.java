@@ -37,7 +37,8 @@ public class LauncherAppsCompatVO extends LauncherAppsCompatVL {
     @Override
     public ApplicationInfo getApplicationInfo(String packageName, int flags, UserHandle user) {
         ApplicationInfo info = mLauncherApps.getApplicationInfo(packageName, flags, user);
-        return info == null || (info.flags & ApplicationInfo.FLAG_INSTALLED) == 0 ? null : info;
+        return info == null || (info.flags & ApplicationInfo.FLAG_INSTALLED) == 0 || !info.enabled
+                ? null : info;
     }
 
     @Override
