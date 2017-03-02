@@ -201,7 +201,7 @@ public class LauncherIcons {
             int textureWidth = iconBitmapSize;
             int textureHeight = iconBitmapSize;
 
-            final Bitmap bitmap = Bitmap.createBitmap(textureWidth, textureHeight,
+            Bitmap bitmap = Bitmap.createBitmap(textureWidth, textureHeight,
                     Bitmap.Config.ARGB_8888);
             final Canvas canvas = sCanvas;
             canvas.setBitmap(bitmap);
@@ -218,6 +218,16 @@ public class LauncherIcons {
             icon.setBounds(sOldBounds);
             canvas.setBitmap(null);
 
+            if (FeatureFlags.ADAPTIVE_ICON_SHADOW && Utilities.isAtLeastO()) {
+                try {
+                    Class clazz = Class.forName("android.graphics.drawable.AdaptiveIconDrawable");
+                    if (clazz.isAssignableFrom(icon.getClass())) {
+                        bitmap = ShadowGenerator.getInstance(context).recreateIcon(bitmap);
+                    }
+                } catch (Exception e) {
+                    // do nothing
+                }
+            }
             return bitmap;
         }
     }
@@ -233,7 +243,7 @@ public class LauncherIcons {
         }
 
         try {
-            Class clazz = Class.forName("android.graphics.drawable.MaskableIconDrawable");
+            Class clazz = Class.forName("android.graphics.drawable.AdaptiveIconDrawable");
             if (!clazz.isAssignableFrom(drawable.getClass())) {
                 Drawable maskWrapper =
                         context.getDrawable(R.drawable.mask_drawable_wrapper).mutate();

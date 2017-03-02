@@ -44,4 +44,6 @@ public final class FeatureFlags {
     public static final boolean BADGE_ICONS = true;
     // When enabled, icons not supporting {@link MaskableIconDrawable} will be wrapped in this class.
     public static final boolean LEGACY_ICON_TREATMENT = false;
+    // When enabled, adaptive icons would have shadows baked when being stored to icon cache.
+    public static final boolean ADAPTIVE_ICON_SHADOW = true;
 }
