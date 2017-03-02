@@ -121,6 +121,11 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
     }
 
     @Override
+    public float getIconSize() {
+        return mIconSize;
+    }
+
+    @Override
     public int maxNumItems() {
         return MAX_NUM_ITEMS_IN_PREVIEW;
     }

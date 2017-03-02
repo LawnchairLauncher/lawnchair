@@ -87,6 +87,11 @@ public class StackFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule {
     }
 
     @Override
+    public float getIconSize() {
+        return mBaselineIconSize;
+    }
+
+    @Override
     public float scaleForItem(int index, int numItems) {
         // Scale is determined by the position of the icon in the preview.
         index = MAX_NUM_ITEMS_IN_PREVIEW - index - 1;

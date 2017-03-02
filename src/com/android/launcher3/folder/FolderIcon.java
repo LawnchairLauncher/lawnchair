@@ -1138,6 +1138,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             PreviewItemDrawingParams params);
         void init(int availableSpace, int intrinsicIconSize, boolean rtl);
         float scaleForItem(int index, int totalNumItems);
+        float getIconSize();
         int maxNumItems();
         boolean clipToBackground();
     }
