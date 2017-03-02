@@ -19,7 +19,6 @@ package com.android.launcher3.notification;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -30,7 +29,6 @@ import android.widget.FrameLayout;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.PillHeightRevealOutlineProvider;
-import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
 import com.android.launcher3.popup.PopupItemView;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -47,7 +45,7 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
 
     private static final Rect sTempRect = new Rect();
 
-    private View mDivider;
+    private NotificationHeaderView mHeader;
     private NotificationMainView mMainView;
     private NotificationFooterLayout mFooter;
     private SwipeHelper mSwipeHelper;
@@ -68,7 +66,7 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mDivider = findViewById(R.id.divider);
+        mHeader = (NotificationHeaderView) findViewById(R.id.header);
         mMainView = (NotificationMainView) findViewById(R.id.main_view);
         mFooter = (NotificationFooterLayout) findViewById(R.id.footer);
         mSwipeHelper = new SwipeHelper(SwipeHelper.X, mMainView, getContext());
@@ -95,6 +93,10 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
         return heightAnimator;
     }
 
+    public void updateHeader(int notificationCount) {
+        mHeader.update(notificationCount);
+    }
+
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (mMainView.getNotificationInfo() == null) {
@@ -114,13 +116,6 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
         return mSwipeHelper.onTouchEvent(ev) || super.onTouchEvent(ev);
     }
 
-    @Override
-    protected ColorStateList getAttachedArrowColor() {
-        // This NotificationView itself has a different color that is only
-        // revealed when dismissing notifications.
-        return ColorStateList.valueOf(mFooter.getBackgroundColor());
-    }
-
     public void applyNotificationInfos(final List<NotificationInfo> notificationInfos) {
         if (notificationInfos.isEmpty()) {
             return;
@@ -133,13 +128,6 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
             mFooter.addNotificationInfo(notificationInfos.get(i));
         }
         mFooter.commitNotificationInfos();
-    }
-
-    public void applyColors(IconPalette iconPalette) {
-        setBackgroundTintList(ColorStateList.valueOf(iconPalette.secondaryColor));
-        mDivider.setBackgroundColor(iconPalette.secondaryColor);
-        mMainView.applyColors(iconPalette);
-        mFooter.applyColors(iconPalette);
     }
 
     public void trimNotifications(final List<String> notificationKeys) {

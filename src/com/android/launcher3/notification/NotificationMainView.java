@@ -16,11 +16,7 @@
 
 package com.android.launcher3.notification;
 
-import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.ColorDrawable;
@@ -28,28 +24,27 @@ import android.graphics.drawable.RippleDrawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
-import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.util.Themes;
 
 /**
- * A {@link LinearLayout} that contains a single notification, e.g. icon + title + text.
+ * A {@link android.widget.FrameLayout} that contains a single notification,
+ * e.g. icon + title + text.
  */
-public class NotificationMainView extends LinearLayout implements SwipeHelper.Callback {
-
-    private final ArgbEvaluator mArgbEvaluator = new ArgbEvaluator();
+public class NotificationMainView extends FrameLayout implements SwipeHelper.Callback {
 
     private NotificationInfo mNotificationInfo;
+    private ViewGroup mTextAndBackground;
+    private int mBackgroundColor;
     private TextView mTitleView;
     private TextView mTextView;
-    private IconPalette mIconPalette;
-    private ColorDrawable mColorBackground;
 
     public NotificationMainView(Context context) {
         this(context, null, 0);
@@ -67,16 +62,15 @@ public class NotificationMainView extends LinearLayout implements SwipeHelper.Ca
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mTitleView = (TextView) findViewById(R.id.title);
-        mTextView = (TextView) findViewById(R.id.text);
-    }
-
-    public void applyColors(IconPalette iconPalette) {
-        mColorBackground = new ColorDrawable(iconPalette.backgroundColor);
-        RippleDrawable rippleDrawable = new RippleDrawable(ColorStateList.valueOf(
-                iconPalette.secondaryColor), mColorBackground, null);
-        setBackground(rippleDrawable);
-        mIconPalette = iconPalette;
+        mTextAndBackground = (ViewGroup) findViewById(R.id.text_and_background);
+        ColorDrawable colorBackground = (ColorDrawable) mTextAndBackground.getBackground();
+        mBackgroundColor = colorBackground.getColor();
+        RippleDrawable rippleBackground = new RippleDrawable(ColorStateList.valueOf(
+                Themes.getAttrColor(getContext(), android.R.attr.colorControlHighlight)),
+                colorBackground, null);
+        mTextAndBackground.setBackground(rippleBackground);
+        mTitleView = (TextView) mTextAndBackground.findViewById(R.id.title);
+        mTextView = (TextView) mTextAndBackground.findViewById(R.id.text);
     }
 
     public void applyNotificationInfo(NotificationInfo mainNotification, View iconView) {
@@ -88,30 +82,18 @@ public class NotificationMainView extends LinearLayout implements SwipeHelper.Ca
      */
     public void applyNotificationInfo(NotificationInfo mainNotification, View iconView,
            boolean animate) {
-        if (animate) {
-            mTitleView.setAlpha(0);
-            mTextView.setAlpha(0);
-            mColorBackground.setColor(mIconPalette.secondaryColor);
-        }
         mNotificationInfo = mainNotification;
         mTitleView.setText(mNotificationInfo.title);
         mTextView.setText(mNotificationInfo.text);
-        iconView.setBackground(mNotificationInfo.getIconForBackground(
-                getContext(), mIconPalette.backgroundColor));
+        iconView.setBackground(mNotificationInfo.getIconForBackground(getContext(),
+                mBackgroundColor));
         setOnClickListener(mNotificationInfo);
         setTranslationX(0);
         // Add a dummy ItemInfo so that logging populates the correct container and item types
         // instead of DEFAULT_CONTAINERTYPE and DEFAULT_ITEMTYPE, respectively.
         setTag(new ItemInfo());
         if (animate) {
-            AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
-            Animator textFade = ObjectAnimator.ofFloat(mTextView, View.ALPHA, 1);
-            Animator titleFade = ObjectAnimator.ofFloat(mTitleView, View.ALPHA, 1);
-            ValueAnimator colorChange = ObjectAnimator.ofObject(mColorBackground, "color",
-                    mArgbEvaluator, mIconPalette.secondaryColor, mIconPalette.backgroundColor);
-            animation.playTogether(textFade, titleFade, colorChange);
-            animation.setDuration(150);
-            animation.start();
+            ObjectAnimator.ofFloat(mTextAndBackground, ALPHA, 0, 1).setDuration(150).start();
         }
     }
 

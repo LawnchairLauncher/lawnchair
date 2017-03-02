@@ -43,9 +43,9 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.FolderIconPreviewVerifier;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.graphics.HolographicOutlineHelper;
-import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.model.PackageItemInfo;
+import com.android.launcher3.popup.PopupContainerWithArrow;
 
 import java.text.NumberFormat;
 
@@ -503,13 +503,12 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
         if (mIcon instanceof FastBitmapDrawable) {
             BadgeInfo badgeInfo = mLauncher.getPopupDataProvider().getBadgeInfoForItem(itemInfo);
             BadgeRenderer badgeRenderer = mLauncher.getDeviceProfile().mBadgeRenderer;
+            PopupContainerWithArrow popup = PopupContainerWithArrow.getOpen(mLauncher);
+            if (popup != null) {
+                popup.updateNotificationHeader(badgeInfo, itemInfo);
+            }
             ((FastBitmapDrawable) mIcon).applyIconBadge(badgeInfo, badgeRenderer, animate);
         }
-    }
-
-    public IconPalette getIconPalette() {
-        return mIcon instanceof FastBitmapDrawable ? ((FastBitmapDrawable) mIcon).getIconPalette()
-                : null;
     }
 
     /**
