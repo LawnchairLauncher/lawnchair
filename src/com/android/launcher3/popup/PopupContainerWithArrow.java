@@ -70,6 +70,8 @@ import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.shortcuts.ShortcutsItemView;
 import com.android.launcher3.util.PackageUserKey;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -182,14 +184,12 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             orientAboutIcon(originalIcon, arrowHeight + arrowVerticalOffset);
         }
 
-        List<DeepShortcutView> shortcutViews = mShortcutsItemView.getDeepShortcutViews(reverseOrder);
-        for (int i = 0; i < itemsToPopulate.length; i++) {
-            switch (itemsToPopulate[i]) {
-                case NOTIFICATION:
-                    IconPalette iconPalette = originalIcon.getIconPalette();
-                    mNotificationItemView.applyColors(iconPalette);
-                    break;
-            }
+        List<DeepShortcutView> shortcutViews = mShortcutsItemView == null
+                ? Collections.EMPTY_LIST
+                : mShortcutsItemView.getDeepShortcutViews(reverseOrder);
+        if (mNotificationItemView != null) {
+            IconPalette iconPalette = originalIcon.getIconPalette();
+            mNotificationItemView.applyColors(iconPalette);
         }
 
         // Add the arrow.
