@@ -27,6 +27,7 @@ import android.content.pm.ResolveInfo;
 import android.content.pm.ShortcutInfo;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Process;
 import android.os.UserHandle;
 
 import com.android.launcher3.compat.ShortcutConfigActivityInfo.ShortcutConfigActivityInfoVL;
@@ -66,9 +67,28 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
     }
 
     @Override
-    public ApplicationInfo getApplicationInfo(String packageName, UserHandle user) {
-        List<LauncherActivityInfo> activityList = mLauncherApps.getActivityList(packageName, user);
-        return activityList.size() > 0 ? activityList.get(0).getApplicationInfo() : null;
+    public ApplicationInfo getApplicationInfo(String packageName, int flags, UserHandle user) {
+        final boolean isPrimaryUser = Process.myUserHandle().equals(user);
+        if (!isPrimaryUser && (flags == 0)) {
+            // We are looking for an installed app on a secondary profile. Prior to O, the only
+            // entry point for work profiles is through the LauncherActivity.
+            List<LauncherActivityInfo> activityList =
+                    mLauncherApps.getActivityList(packageName, user);
+            return activityList.size() > 0 ? activityList.get(0).getApplicationInfo() : null;
+        }
+        try {
+            ApplicationInfo info =
+                    mContext.getPackageManager().getApplicationInfo(packageName, flags);
+            // There is no way to check if the app is installed for managed profile. But for
+            // primary profile, we can still have this check.
+            if (isPrimaryUser && ((info.flags & ApplicationInfo.FLAG_INSTALLED) == 0)) {
+                return null;
+            }
+            return info;
+        } catch (PackageManager.NameNotFoundException e) {
+            // Package not found
+            return null;
+        }
     }
 
     @Override

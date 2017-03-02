@@ -981,7 +981,7 @@ public class LauncherModel extends BroadcastReceiver
                                             c.markDeleted("Unrestored app removed: " + targetPkg);
                                             continue;
                                         }
-                                    } else if (pmHelper.isAppOnSdcard(targetPkg)) {
+                                    } else if (pmHelper.isAppOnSdcard(targetPkg, c.user)) {
                                         // Package is present but not available.
                                         disabledState |= ShortcutInfo.FLAG_DISABLED_NOT_AVAILABLE;
                                         // Add the icon on the workspace anyway.
@@ -1032,8 +1032,7 @@ public class LauncherModel extends BroadcastReceiver
                                         info.iconBitmap = LauncherIcons
                                                 .createShortcutIcon(pinnedShortcut, context);
                                         if (pmHelper.isAppSuspended(
-                                                info.getTargetComponent().getPackageName(),
-                                                info.user)) {
+                                                pinnedShortcut.getPackage(), info.user)) {
                                             info.isDisabled |= ShortcutInfo.FLAG_DISABLED_SUSPENDED;
                                         }
                                         intent = info.intent;
@@ -1046,7 +1045,7 @@ public class LauncherModel extends BroadcastReceiver
                                     info = c.loadSimpleShortcut();
 
                                     // Shortcuts are only available on the primary profile
-                                    if (pmHelper.isAppSuspended(targetPkg)) {
+                                    if (pmHelper.isAppSuspended(targetPkg, c.user)) {
                                         disabledState |= ShortcutInfo.FLAG_DISABLED_SUSPENDED;
                                     }
 
