@@ -73,7 +73,8 @@ public abstract class LauncherAppsCompat {
             UserHandle user);
     public abstract void startActivityForProfile(ComponentName component, UserHandle user,
             Rect sourceBounds, Bundle opts);
-    public abstract ApplicationInfo getApplicationInfo(String packageName, UserHandle user);
+    public abstract ApplicationInfo getApplicationInfo(
+            String packageName, int flags, UserHandle user);
     public abstract void showAppDetailsForProfile(ComponentName component, UserHandle user);
     public abstract void addOnAppsChangedCallback(OnAppsChangedCallbackCompat listener);
     public abstract void removeOnAppsChangedCallback(OnAppsChangedCallbackCompat listener);

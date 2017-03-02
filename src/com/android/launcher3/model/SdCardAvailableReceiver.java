@@ -63,7 +63,7 @@ public class SdCardAvailableReceiver extends BroadcastReceiver {
 
             for (String pkg : new HashSet<>(entry.getValue())) {
                 if (!launcherApps.isPackageEnabledForProfile(pkg, user)) {
-                    if (pmHelper.isAppOnSdcard(pkg)) {
+                    if (pmHelper.isAppOnSdcard(pkg, user)) {
                         packagesUnavailable.add(pkg);
                     } else {
                         packagesRemoved.add(pkg);
