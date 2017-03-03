@@ -180,9 +180,6 @@ public class LauncherExtension extends Launcher {
         }
 
         @Override
-        public UserEventDispatcher getUserEventDispatcher() { return null; }
-
-        @Override
         public View getQsbBar() {
             return null;
         }

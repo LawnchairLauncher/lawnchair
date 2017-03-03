@@ -18,6 +18,7 @@ package com.android.launcher3.logging;
 
 import android.app.PendingIntent;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.os.SystemClock;
 import android.util.Log;
@@ -26,6 +27,7 @@ import android.view.ViewParent;
 
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -60,6 +62,19 @@ public class UserEventDispatcher {
     private static final String TAG = "UserEvent";
     private static final boolean IS_VERBOSE =
             ProviderConfig.IS_DOGFOOD_BUILD && Utilities.isPropertyEnabled(LogConfig.USEREVENT);
+
+    private static UserEventDispatcher sInstance;
+    private static final Object LOCK = new Object();
+
+    public static UserEventDispatcher get(Context context) {
+        synchronized (LOCK) {
+            if (sInstance == null) {
+                sInstance = Utilities.getOverrideObject(UserEventDispatcher.class,
+                        context.getApplicationContext(), R.string.user_event_dispatcher_class);
+            }
+            return sInstance;
+        }
+    }
 
     /**
      * Implemented by containers to provide a container source for a given child.

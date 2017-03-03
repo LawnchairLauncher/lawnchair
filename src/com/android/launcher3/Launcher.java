@@ -85,9 +85,6 @@ import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DefaultAppSearchController;
 import com.android.launcher3.anim.AnimationLayerSet;
-import com.android.launcher3.model.ModelWriter;
-import com.android.launcher3.notification.NotificationListener;
-import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PinItemRequestCompat;
@@ -106,10 +103,13 @@ import com.android.launcher3.keyboard.CustomActionsPopup;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.popup.PopupContainerWithArrow;
+import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -119,7 +119,6 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.util.ActivityResultInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
-import com.android.launcher3.util.LogConfig;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
@@ -314,8 +313,6 @@ public class Launcher extends BaseActivity
      * {@link #startActivityForResult(Intent, int)} or {@link #requestPermissions(String[], int)}
      */
     private PendingRequestArgs mPendingRequestArgs;
-
-    private UserEventDispatcher mUserEventDispatcher;
 
     private float mLastDispatchTouchEventX = 0.0f;
 
@@ -625,23 +622,6 @@ public class Launcher extends BaseActivity
         } else if (mWorkspace.hasCustomContent() && !hasCustomContentToLeft()) {
             mWorkspace.removeCustomContentPage();
         }
-    }
-
-    public UserEventDispatcher getUserEventDispatcher() {
-        if (mLauncherCallbacks != null) {
-            UserEventDispatcher dispatcher = mLauncherCallbacks.getUserEventDispatcher();
-            if (dispatcher != null) {
-                return dispatcher;
-            }
-        }
-
-        // Logger object is a singleton and does not have to be coupled with the foreground
-        // activity. Since most user event logging is done on the UI, the object is retrieved
-        // from the callback for convenience.
-        if (mUserEventDispatcher == null) {
-            mUserEventDispatcher = new UserEventDispatcher();
-        }
-        return mUserEventDispatcher;
     }
 
     public boolean isDraggingEnabled() {
