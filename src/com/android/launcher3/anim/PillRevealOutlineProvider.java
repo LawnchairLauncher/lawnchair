@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.util;
+package com.android.launcher3.anim;
 
 import android.graphics.Rect;
 import android.view.ViewOutlineProvider;

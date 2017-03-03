@@ -18,8 +18,6 @@ package com.android.launcher3.anim;
 
 import android.graphics.Rect;
 
-import com.android.launcher3.util.PillRevealOutlineProvider;
-
 /**
  * Extension of {@link PillRevealOutlineProvider} which only changes the height of the pill.
  * For now, we assume the height is added/removed from the bottom.

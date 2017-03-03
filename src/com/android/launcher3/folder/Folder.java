@@ -76,7 +76,7 @@ import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
-import com.android.launcher3.util.CircleRevealOutlineProvider;
+import com.android.launcher3.anim.CircleRevealOutlineProvider;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;

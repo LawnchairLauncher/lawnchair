@@ -36,7 +36,7 @@ import android.widget.FrameLayout;
 import com.android.launcher3.LogAccelerateInterpolator;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.util.PillRevealOutlineProvider;
+import com.android.launcher3.anim.PillRevealOutlineProvider;
 
 /**
  * An abstract {@link FrameLayout} that supports animating an item's content

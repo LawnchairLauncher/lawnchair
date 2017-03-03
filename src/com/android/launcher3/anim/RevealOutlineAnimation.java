@@ -1,4 +1,4 @@
-package com.android.launcher3.util;
+package com.android.launcher3.anim;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

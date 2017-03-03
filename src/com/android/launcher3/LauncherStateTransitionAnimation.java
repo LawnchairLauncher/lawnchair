@@ -32,7 +32,7 @@ import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.util.CircleRevealOutlineProvider;
+import com.android.launcher3.anim.CircleRevealOutlineProvider;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.WidgetsContainerView;
 
