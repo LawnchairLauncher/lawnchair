@@ -40,7 +40,6 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
@@ -166,7 +165,7 @@ public class LauncherIcons {
      * @param scale the scale to apply before drawing {@param icon} on the canvas
      */
     public static Bitmap createIconBitmap(Drawable icon, Context context, float scale) {
-        icon = wrapToMaskableIconDrawable(context, icon);
+        icon = wrapToAdaptiveIconDrawable(context, icon);
         synchronized (sCanvas) {
             final int iconBitmapSize = LauncherAppState.getIDP(context).iconBitmapSize;
 
@@ -223,24 +222,24 @@ public class LauncherIcons {
     }
 
     /**
-     * If the platform is running O but the app is not providing MaskableIconDrawable, then
+     * If the platform is running O but the app is not providing AdaptiveIconDrawable, then
      * shrink the legacy icon and set it as foreground. Use color drawable as background to
-     * create MaskableIconDrawable.
+     * create AdaptiveIconDrawable.
      */
-    static Drawable wrapToMaskableIconDrawable(Context context, Drawable drawable) {
+    static Drawable wrapToAdaptiveIconDrawable(Context context, Drawable drawable) {
         if (!(FeatureFlags.LEGACY_ICON_TREATMENT && Utilities.isAtLeastO())) {
             return drawable;
         }
 
         try {
-            Class clazz = Class.forName("android.graphics.drawable.MaskableIconDrawable");
+            Class clazz = Class.forName("android.graphics.drawable.AdaptiveIconDrawable");
             if (!clazz.isAssignableFrom(drawable.getClass())) {
-                Drawable maskWrapper =
-                        context.getDrawable(R.drawable.mask_drawable_wrapper).mutate();
-                ((FixedScaleDrawable) clazz.getMethod("getForeground").invoke(maskWrapper))
+                Drawable iconWrapper =
+                        context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper).mutate();
+                ((FixedScaleDrawable) clazz.getMethod("getForeground").invoke(iconWrapper))
                         .setDrawable(drawable);
 
-                return maskWrapper;
+                return iconWrapper;
             }
         } catch (Exception e) {
             return drawable;
