@@ -83,4 +83,8 @@ public abstract class RevealOutlineAnimation extends ViewOutlineProvider {
     public void getOutline(View v, Outline outline) {
         outline.setRoundRect(mOutline, mOutlineRadius);
     }
+
+    public float getRadius() {
+        return mOutlineRadius;
+    }
 }

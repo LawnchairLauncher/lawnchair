@@ -407,6 +407,10 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         mBadgeInfo = badgeInfo;
     }
 
+    public PreviewLayoutRule getLayoutRule() {
+        return mPreviewLayoutRule;
+    }
+
     /**
      * Sets mBadgeScale to 1 or 0, animating if oldCount or newCount is 0
      * (the badge is being added or removed).
@@ -824,6 +828,14 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             };
             animateScale(1f, 1f, onStart, onEnd);
         }
+
+        public int getBackgroundAlpha() {
+            return (int) Math.min(MAX_BG_OPACITY, BG_OPACITY * mColorMultiplier);
+        }
+
+        public float getStrokeWidth() {
+            return mStrokeWidth;
+        }
     }
 
     public void setFolderBackground(PreviewBackground bg) {
@@ -991,15 +1003,15 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         return mFolderName.getVisibility() == VISIBLE;
     }
 
-    private List<View> getItemsToDisplay() {
+    public List<BubbleTextView> getItemsToDisplay() {
         mPreviewVerifier.setFolderInfo(mFolder.getInfo());
 
-        List<View> itemsToDisplay = new ArrayList<>();
+        List<BubbleTextView> itemsToDisplay = new ArrayList<>();
         List<View> allItems = mFolder.getItemsInReadingOrder();
         int numItems = allItems.size();
         for (int rank = 0; rank < numItems; ++rank) {
             if (mPreviewVerifier.isItemInPreview(rank)) {
-                itemsToDisplay.add(allItems.get(rank));
+                itemsToDisplay.add((BubbleTextView) allItems.get(rank));
             }
 
             if (itemsToDisplay.size() == FolderIcon.NUM_ITEMS_IN_PREVIEW) {
@@ -1010,7 +1022,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     private void updateItemDrawingParams(boolean animate) {
-        List<View> items = getItemsToDisplay();
+        List<BubbleTextView> items = getItemsToDisplay();
         int nItemsInPreview = items.size();
 
         int prevNumItems = mDrawingParams.size();
@@ -1025,7 +1037,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
         for (int i = 0; i < mDrawingParams.size(); i++) {
             PreviewItemDrawingParams p = mDrawingParams.get(i);
-            p.drawable = ((TextView) items.get(i)).getCompoundDrawables()[1];
+            p.drawable = items.get(i).getCompoundDrawables()[1];
 
             if (!animate || FeatureFlags.LAUNCHER3_LEGACY_FOLDER_ICON) {
                 computePreviewItemDrawingParams(i, nItemsInPreview, p);

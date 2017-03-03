@@ -590,6 +590,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
                 .isEmpty();
     }
 
+    public int getIconSize() {
+        return mIconSize;
+    }
+
     /**
      * Interface to be implemented by the grand parent to allow click shadow effect.
      */
