@@ -54,7 +54,7 @@
         android:fullBackupOnly="true"
         android:fullBackupContent="@xml/backupscheme"
         android:hardwareAccelerated="true"
-        android:icon="@mipmap/ic_launcher_home"
+        android:icon="@drawable/ic_launcher_home"
         android:label="@string/derived_app_name"
         android:theme="@style/LauncherTheme"
         android:largeHeap="@bool/config_largeHeap"
@@ -135,7 +135,7 @@
             android:theme="@android:style/Theme.NoDisplay"
             android:label="* HPROF"
             android:excludeFromRecents="true"
-            android:icon="@mipmap/ic_launcher_home"
+            android:icon="@drawable/ic_launcher_home"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -147,7 +147,7 @@
         <activity
             android:name="com.android.launcher3.testing.ToggleWeightWatcher"
             android:label="Show Mem"
-            android:icon="@mipmap/ic_launcher_home">
+            android:icon="@drawable/ic_launcher_home">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />

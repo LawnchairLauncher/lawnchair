@@ -85,10 +85,10 @@ public class DrawableFactory {
         if (Utilities.isAtLeastO()) {
             try {
                 // Try to load the path from Mask Icon
-                Drawable maskIcon = context.getDrawable(R.drawable.mask_drawable_wrapper);
-                maskIcon.setBounds(0, 0,
+                Drawable icon = context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper);
+                icon.setBounds(0, 0,
                         PreloadIconDrawable.PATH_SIZE, PreloadIconDrawable.PATH_SIZE);
-                return (Path) maskIcon.getClass().getMethod("getIconMask").invoke(maskIcon);
+                return (Path) icon.getClass().getMethod("getIconMask").invoke(icon);
             } catch (Exception e) {
                 Log.e(TAG, "Error loading mask icon", e);
             }
