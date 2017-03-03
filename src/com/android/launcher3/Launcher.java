@@ -71,6 +71,7 @@ import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.OvershootInterpolator;
@@ -174,6 +175,13 @@ public class Launcher extends BaseActivity
      * request codes used internally.
      */
     protected static final int REQUEST_LAST = 100;
+
+    private static final int SOFT_INPUT_MODE_DEFAULT =
+            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN
+                | WindowManager.LayoutParams.SOFT_INPUT_STATE_UNCHANGED;
+    private static final int SOFT_INPUT_MODE_ALL_APPS =
+            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+                | WindowManager.LayoutParams.SOFT_INPUT_STATE_UNCHANGED;
 
     // The Intent extra that defines whether to ignore the launch animation
     static final String INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION =
@@ -2895,7 +2903,7 @@ public class Launcher extends BaseActivity
         }
 
         // Change the state *after* we've called all the transition code
-        mState = State.WORKSPACE;
+        setState(State.WORKSPACE);
 
         if (changed) {
             // Send an accessibility event to announce the context change
@@ -2932,10 +2940,28 @@ public class Launcher extends BaseActivity
         mWorkspace.setVisibility(View.VISIBLE);
         mStateTransitionAnimation.startAnimationToWorkspace(mState, mWorkspace.getState(),
                 Workspace.State.OVERVIEW, animated, postAnimRunnable);
-        mState = State.WORKSPACE;
+        setState(State.WORKSPACE);
+
         // If animated from long press, then don't allow any of the controller in the drag
         // layer to intercept any remaining touch.
         mWorkspace.requestDisallowInterceptTouchEvent(animated);
+    }
+
+    private void setState(State state) {
+        this.mState = state;
+        updateSoftInputMode();
+    }
+
+    private void updateSoftInputMode() {
+        if (FeatureFlags.LAUNCHER3_UPDATE_SOFT_INPUT_MODE) {
+            final int mode;
+            if (isAppsViewVisible()) {
+                mode = SOFT_INPUT_MODE_ALL_APPS;
+            } else {
+                mode = SOFT_INPUT_MODE_DEFAULT;
+            }
+            getWindow().setSoftInputMode(mode);
+        }
     }
 
     /**
@@ -2999,7 +3025,7 @@ public class Launcher extends BaseActivity
         }
 
         // Change the state *after* we've called all the transition code
-        mState = toState;
+        setState(toState);
         AbstractFloatingView.closeAllOpenViews(this);
 
         // Send an accessibility event to announce the context change
@@ -3029,7 +3055,7 @@ public class Launcher extends BaseActivity
         mStateTransitionAnimation.startAnimationToWorkspace(mState, mWorkspace.getState(),
                 Workspace.State.SPRING_LOADED, true /* animated */,
                 null /* onCompleteRunnable */);
-        mState = State.WORKSPACE_SPRING_LOADED;
+        setState(State.WORKSPACE_SPRING_LOADED);
     }
 
     public void exitSpringLoadedDragModeDelayed(final boolean successfulDrop, int delay,
