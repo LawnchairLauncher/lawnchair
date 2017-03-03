@@ -1,8 +1,6 @@
 # Lawnchair
 
-## _Wot in launcher creation?!_ Yet another launcher?
-
-<!-- Insert custom "what in tarnation" meme -->
+![What in launcher creation?](meme.jpg)
 
 Yes, I know, there are already waaaay to many launchers out there.
 Yes I know this won't be successful. But I am only doing this for fun (and for the pun :innocent:) anyways.
