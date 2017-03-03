@@ -29,6 +29,11 @@ public final class FeatureFlags {
     public static boolean LAUNCHER3_DISABLE_PINCH_TO_OVERVIEW = false;
     public static boolean LAUNCHER3_ALL_APPS_PULL_UP = true;
     public static boolean LAUNCHER3_NEW_FOLDER_ANIMATION = false;
+    // When enabled allows to use any point on the fast scrollbar to start dragging.
+    public static boolean LAUNCHER3_DIRECT_SCROLL = true;
+    // When enabled while all-apps open, the soft input will be set to adjust resize .
+    public static boolean LAUNCHER3_UPDATE_SOFT_INPUT_MODE = false;
+
 
     // Feature flag to enable moving the QSB on the 0th screen of the workspace.
     public static final boolean QSB_ON_FIRST_SCREEN = true;
@@ -38,8 +43,6 @@ public final class FeatureFlags {
     public static final boolean PULLDOWN_SEARCH = false;
     // When enabled the status bar may show dark icons based on the top of the wallpaper.
     public static final boolean LIGHT_STATUS_BAR = false;
-    // When enabled allows to use any point on the fast scrollbar to start dragging.
-    public static final boolean LAUNCHER3_DIRECT_SCROLL = true;
     // When enabled icons are badged with the number of notifications associated with that app.
     public static final boolean BADGE_ICONS = true;
     // When enabled, icons not supporting {@link MaskableIconDrawable} will be wrapped in this class.
