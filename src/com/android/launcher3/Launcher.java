@@ -1059,6 +1059,7 @@ public class Launcher extends BaseActivity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onResume();
         }
+
     }
 
     @Override
@@ -2459,7 +2460,7 @@ public class Launcher extends BaseActivity
             throw new IllegalArgumentException("Input must have a valid intent");
         }
         boolean success = startActivitySafely(v, intent, item);
-        getUserEventDispatcher().logAppLaunch(v, intent);
+        getUserEventDispatcher().logAppLaunch(v, intent); // TODO for discovered apps b/35802115
 
         if (success && v instanceof BubbleTextView) {
             mWaitingForResume = (BubbleTextView) v;
@@ -2708,9 +2709,10 @@ public class Launcher extends BaseActivity
             intent.setSourceBounds(getViewBounds(v));
         }
         try {
-            if (Utilities.ATLEAST_MARSHMALLOW && item != null
+            if (Utilities.ATLEAST_MARSHMALLOW
+                    && (item instanceof ShortcutInfo)
                     && (item.itemType == Favorites.ITEM_TYPE_SHORTCUT
-                    || item.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT)
+                     || item.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT)
                     && !((ShortcutInfo) item).isPromise()) {
                 // Shortcuts need some special checks due to legacy reasons.
                 startShortcutIntentSafely(intent, optsBundle, item);

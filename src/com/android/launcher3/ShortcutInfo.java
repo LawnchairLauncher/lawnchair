@@ -134,7 +134,6 @@ public class ShortcutInfo extends ItemInfoWithIcon {
         title = info.title;
         intent = new Intent(info.intent);
         iconResource = info.iconResource;
-        iconBitmap = info.iconBitmap;
         status = info.status;
         mInstallProgress = info.mInstallProgress;
         isDisabled = info.isDisabled;
@@ -146,8 +145,6 @@ public class ShortcutInfo extends ItemInfoWithIcon {
         title = Utilities.trim(info.title);
         intent = new Intent(info.intent);
         isDisabled = info.isDisabled;
-        iconBitmap = info.iconBitmap;
-        usingLowResIcon = info.usingLowResIcon;
     }
 
     /**

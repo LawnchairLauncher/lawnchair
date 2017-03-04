@@ -30,6 +30,7 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
@@ -110,44 +111,40 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
      * all the different view types.
      */
     public void preMeasureViews(AllAppsGridAdapter adapter) {
+        View icon = adapter.onCreateViewHolder(this, AllAppsGridAdapter.VIEW_TYPE_ICON).itemView;
+        final int iconHeight = icon.getLayoutParams().height;
+        mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_ICON, iconHeight);
+        mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON, iconHeight);
+
         final int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(
                 getResources().getDisplayMetrics().widthPixels, View.MeasureSpec.AT_MOST);
         final int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(
                 getResources().getDisplayMetrics().heightPixels, View.MeasureSpec.AT_MOST);
 
-        // Icons
-        BubbleTextView icon = (BubbleTextView) adapter.onCreateViewHolder(this,
-                AllAppsGridAdapter.VIEW_TYPE_ICON).itemView;
-        int iconHeight = icon.getLayoutParams().height;
-        mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_ICON, iconHeight);
-        mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON, iconHeight);
+        putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
+                AllAppsGridAdapter.VIEW_TYPE_PREDICTION_DIVIDER,
+                AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET_DIVIDER);
+        putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
+                AllAppsGridAdapter.VIEW_TYPE_SEARCH_DIVIDER);
+        putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
+                AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET);
+        putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
+                AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH);
 
-        // Search divider
-        View searchDivider = adapter.onCreateViewHolder(this,
-                AllAppsGridAdapter.VIEW_TYPE_SEARCH_DIVIDER).itemView;
-        searchDivider.measure(widthMeasureSpec, heightMeasureSpec);
-        int searchDividerHeight = searchDivider.getMeasuredHeight();
-        mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_SEARCH_DIVIDER, searchDividerHeight);
+        if (FeatureFlags.DISCOVERY_ENABLED) {
+            putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
+                    AllAppsGridAdapter.VIEW_TYPE_APPS_LOADING_DIVIDER);
+            putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
+                    AllAppsGridAdapter.VIEW_TYPE_DISCOVERY_ITEM);
+        }
+    }
 
-        // Generic dividers
-        View divider = adapter.onCreateViewHolder(this,
-                AllAppsGridAdapter.VIEW_TYPE_PREDICTION_DIVIDER).itemView;
-        divider.measure(widthMeasureSpec, heightMeasureSpec);
-        int dividerHeight = divider.getMeasuredHeight();
-        mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_PREDICTION_DIVIDER, dividerHeight);
-        mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET_DIVIDER, dividerHeight);
-
-        // Search views
-        View emptySearch = adapter.onCreateViewHolder(this,
-                AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH).itemView;
-        emptySearch.measure(widthMeasureSpec, heightMeasureSpec);
-        mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH,
-                emptySearch.getMeasuredHeight());
-        View searchMarket = adapter.onCreateViewHolder(this,
-                AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET).itemView;
-        searchMarket.measure(widthMeasureSpec, heightMeasureSpec);
-        mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET,
-                searchMarket.getMeasuredHeight());
+    private void putSameHeightFor(AllAppsGridAdapter adapter, int w, int h, int... viewTypes) {
+        View view = adapter.onCreateViewHolder(this, viewTypes[0]).itemView;
+        view.measure(w, h);
+        for (int viewType : viewTypes) {
+            mViewHeights.put(viewType, view.getMeasuredHeight());
+        }
     }
 
     /**
@@ -207,7 +204,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         // Always scroll the view to the top so the user can see the changed results
         scrollToTop();
 
-        if (mApps.hasNoFilteredResults()) {
+        if (mApps.shouldShowEmptySearch()) {
             if (mEmptySearchBackground == null) {
                 mEmptySearchBackground = DrawableFactory.get(getContext())
                         .getAllAppsBackground(getContext());
@@ -438,4 +435,5 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
                 x + mEmptySearchBackground.getIntrinsicWidth(),
                 y + mEmptySearchBackground.getIntrinsicHeight());
     }
+
 }

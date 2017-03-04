@@ -33,12 +33,13 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.TextView;
 
+import com.android.launcher3.discovery.AppDiscoveryAppInfo;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AlphabeticalAppsList.AdapterItem;
+import com.android.launcher3.discovery.AppDiscoveryItemView;
 
 import java.util.List;
 
@@ -67,6 +68,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     public static final int VIEW_TYPE_SEARCH_DIVIDER = 1 << 6;
     // The divider that separates prediction icons from the app list
     public static final int VIEW_TYPE_PREDICTION_DIVIDER = 1 << 7;
+    public static final int VIEW_TYPE_APPS_LOADING_DIVIDER = 1 << 8;
+    public static final int VIEW_TYPE_DISCOVERY_ITEM = 1 << 9;
 
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_SEARCH_DIVIDER
@@ -74,6 +77,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             | VIEW_TYPE_PREDICTION_DIVIDER;
     public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON
             | VIEW_TYPE_PREDICTION_ICON;
+    public static final int VIEW_TYPE_MASK_CONTENT = VIEW_TYPE_MASK_ICON
+            | VIEW_TYPE_DISCOVERY_ITEM;
 
 
     public interface BindViewCallback {
@@ -84,7 +89,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
      * ViewHolder for each icon.
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
-
         public ViewHolder(View v) {
             super(v);
         }
@@ -150,7 +154,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             adapterPosition = Math.max(adapterPosition, mApps.getAdapterItems().size() - 1);
             int extraRows = 0;
             for (int i = 0; i <= adapterPosition; i++) {
-                if ((items.get(i).viewType & VIEW_TYPE_MASK_ICON) == 0) {
+                if (!isViewType(items.get(i).viewType, VIEW_TYPE_MASK_CONTENT)) {
                     extraRows++;
                 }
             }
@@ -273,8 +277,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case VIEW_TYPE_ICON:
-                /* falls through */
-            case VIEW_TYPE_PREDICTION_ICON: {
+            case VIEW_TYPE_PREDICTION_ICON:
                 BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
                         R.layout.all_apps_icon, parent, false);
                 icon.setOnClickListener(mIconClickListener);
@@ -284,14 +287,14 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 icon.setOnFocusChangeListener(mIconFocusListener);
 
                 // Ensure the all apps icon height matches the workspace icons
-                DeviceProfile profile = mLauncher.getDeviceProfile();
-                Point cellSize = profile.getCellSize();
-                GridLayoutManager.LayoutParams lp =
-                        (GridLayoutManager.LayoutParams) icon.getLayoutParams();
-                lp.height = cellSize.y;
-                icon.setLayoutParams(lp);
+                icon.getLayoutParams().height = getCellSize().y;
                 return new ViewHolder(icon);
-            }
+            case VIEW_TYPE_DISCOVERY_ITEM:
+                AppDiscoveryItemView appDiscoveryItemView = (AppDiscoveryItemView) mLayoutInflater
+                        .inflate(R.layout.all_apps_discovery_item, parent, false);
+                appDiscoveryItemView.init(mIconClickListener, mLauncher.getAccessibilityDelegate(),
+                        mIconLongClickListener);
+                return new ViewHolder(appDiscoveryItemView);
             case VIEW_TYPE_EMPTY_SEARCH:
                 return new ViewHolder(mLayoutInflater.inflate(R.layout.all_apps_empty_search,
                         parent, false));
@@ -308,8 +311,11 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_SEARCH_DIVIDER:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.all_apps_search_divider, parent, false));
+            case VIEW_TYPE_APPS_LOADING_DIVIDER:
+                View loadingDividerView = mLayoutInflater.inflate(
+                        R.layout.all_apps_discovery_loading_divider, parent, false);
+                return new ViewHolder(loadingDividerView);
             case VIEW_TYPE_PREDICTION_DIVIDER:
-                /* falls through */
             case VIEW_TYPE_SEARCH_MARKET_DIVIDER:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.all_apps_divider, parent, false));
@@ -318,23 +324,26 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         }
     }
 
+    private Point getCellSize() {
+        return mLauncher.getDeviceProfile().getCellSize();
+    }
+
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         switch (holder.getItemViewType()) {
-            case VIEW_TYPE_ICON: {
+            case VIEW_TYPE_ICON:
+            case VIEW_TYPE_PREDICTION_ICON:
                 AppInfo info = mApps.getAdapterItems().get(position).appInfo;
                 BubbleTextView icon = (BubbleTextView) holder.itemView;
                 icon.applyFromApplicationInfo(info);
                 icon.setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
                 break;
-            }
-            case VIEW_TYPE_PREDICTION_ICON: {
-                AppInfo info = mApps.getAdapterItems().get(position).appInfo;
-                BubbleTextView icon = (BubbleTextView) holder.itemView;
-                icon.applyFromApplicationInfo(info);
-                icon.setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
+            case VIEW_TYPE_DISCOVERY_ITEM:
+                AppDiscoveryAppInfo appDiscoveryAppInfo = (AppDiscoveryAppInfo)
+                        mApps.getAdapterItems().get(position).appInfo;
+                AppDiscoveryItemView view = (AppDiscoveryItemView) holder.itemView;
+                view.apply(appDiscoveryAppInfo);
                 break;
-            }
             case VIEW_TYPE_EMPTY_SEARCH:
                 TextView emptyViewText = (TextView) holder.itemView;
                 emptyViewText.setText(mEmptySearchMessage);
@@ -348,6 +357,15 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 } else {
                     searchView.setVisibility(View.GONE);
                 }
+                break;
+            case VIEW_TYPE_APPS_LOADING_DIVIDER:
+                int visLoading = mApps.isAppDiscoveryRunning() ? View.VISIBLE : View.GONE;
+                int visLoaded = !mApps.isAppDiscoveryRunning() ? View.VISIBLE : View.GONE;
+                holder.itemView.findViewById(R.id.loadingProgressBar).setVisibility(visLoading);
+                holder.itemView.findViewById(R.id.loadedDivider).setVisibility(visLoaded);
+                break;
+            case VIEW_TYPE_SEARCH_MARKET_DIVIDER:
+                // nothing to do
                 break;
         }
         if (mBindViewCallback != null) {
