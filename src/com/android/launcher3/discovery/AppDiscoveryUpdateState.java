@@ -14,30 +14,8 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.discovery;
 
-import android.graphics.Bitmap;
-
-/**
- * Represents an ItemInfo which also holds an icon.
- */
-public abstract class ItemInfoWithIcon extends ItemInfo {
-
-    /**
-     * A bitmap version of the application icon.
-     */
-    public Bitmap iconBitmap;
-
-    /**
-     * Indicates whether we're using a low res icon
-     */
-    public boolean usingLowResIcon;
-
-    protected ItemInfoWithIcon() { }
-
-    protected ItemInfoWithIcon(ItemInfoWithIcon info) {
-        super(info);
-        iconBitmap = info.iconBitmap;
-        usingLowResIcon = info.usingLowResIcon;
-    }
+public enum AppDiscoveryUpdateState {
+    START, UPDATE, END
 }

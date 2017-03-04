@@ -21,13 +21,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherActivityInfo;
 import android.os.UserHandle;
-import android.util.Log;
 
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageManagerHelper;
-
-import java.util.ArrayList;
 
 /**
  * Represents an app in AllAppsView.
@@ -44,7 +41,7 @@ public class AppInfo extends ItemInfoWithIcon {
     /**
      * {@see ShortcutInfo#isDisabled}
      */
-    int isDisabled = ShortcutInfo.DEFAULT;
+    public int isDisabled = ShortcutInfo.DEFAULT;
 
     public AppInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
@@ -83,7 +80,6 @@ public class AppInfo extends ItemInfoWithIcon {
         title = Utilities.trim(info.title);
         intent = new Intent(info.intent);
         isDisabled = info.isDisabled;
-        iconBitmap = info.iconBitmap;
     }
 
     @Override
