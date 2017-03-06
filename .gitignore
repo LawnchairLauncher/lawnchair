@@ -11,6 +11,5 @@ bin/
 .idea/
 .gradle/
 local.properties
-gradle/
 build/
-gradlew*
+.DS_Store
