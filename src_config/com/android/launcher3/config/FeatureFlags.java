@@ -16,6 +16,9 @@
 
 package com.android.launcher3.config;
 
+import android.content.Context;
+import com.android.launcher3.Utilities;
+
 /**
  * Defines a set of flags used to control various launcher behaviors
  */
@@ -31,10 +34,13 @@ public final class FeatureFlags {
     public static boolean LAUNCHER3_DISABLE_PINCH_TO_OVERVIEW = false;
     public static boolean LAUNCHER3_ALL_APPS_PULL_UP = true;
 
-    // Feature flag to enable moving the QSB on the 0th screen of the workspace.
-    public static final boolean QSB_ON_FIRST_SCREEN = true;
     // When enabled fling down gesture on the first workspace triggers search.
     public static final boolean PULLDOWN_SEARCH = false;
     // When enabled the status bar may show dark icons based on the top of the wallpaper.
     public static final boolean LIGHT_STATUS_BAR = false;
+
+    // Feature flag to enable moving the QSB on the 0th screen of the workspace.
+    public static boolean qsbOnFirstSceen(Context context){
+        return Utilities.getPrefs(context).getBoolean("pref_qsbOnFirstScreen", true);
+    }
 }

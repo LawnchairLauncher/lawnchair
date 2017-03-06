@@ -585,7 +585,7 @@ public class Workspace extends PagedView
      * @param qsb an exisitng qsb to recycle or null.
      */
     public void bindAndInitFirstWorkspaceScreen(View qsb) {
-        if (!FeatureFlags.QSB_ON_FIRST_SCREEN) {
+        if (!FeatureFlags.qsbOnFirstSceen(getContext().getApplicationContext())) {
             return;
         }
         // Add the first page
@@ -1024,7 +1024,7 @@ public class Workspace extends PagedView
             long id = mWorkspaceScreens.keyAt(i);
             CellLayout cl = mWorkspaceScreens.valueAt(i);
             // FIRST_SCREEN_ID can never be removed.
-            if ((!FeatureFlags.QSB_ON_FIRST_SCREEN || id > FIRST_SCREEN_ID)
+            if ((!FeatureFlags.qsbOnFirstSceen(getContext().getApplicationContext()) || id > FIRST_SCREEN_ID)
                     && cl.getShortcutsAndWidgets().getChildCount() == 0) {
                 removeScreens.add(id);
             }
@@ -2153,7 +2153,7 @@ public class Workspace extends PagedView
             page.setContentDescription(getPageDescription(pageNo));
 
             // No custom action for the first page.
-            if (!FeatureFlags.QSB_ON_FIRST_SCREEN || pageNo > 0) {
+            if (!FeatureFlags.qsbOnFirstSceen(getContext().getApplicationContext()) || pageNo > 0) {
                 if (mPagesAccessibilityDelegate == null) {
                     mPagesAccessibilityDelegate = new OverviewScreenAccessibilityDelegate(this);
                 }
