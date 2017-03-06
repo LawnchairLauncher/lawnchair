@@ -469,6 +469,7 @@ public class Launcher extends Activity
         // we want the screen to auto-rotate based on the current orientation
         setOrientation();
 
+
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onCreate(savedInstanceState);
         }
@@ -1361,7 +1362,7 @@ public class Launcher extends Activity
         mDragController.addDropTarget(mWorkspace);
         mDropTargetBar.setup(mDragController);
 
-        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
+        if (Utilities.getPrefs(getApplicationContext()).getBoolean("pref_show_caret", true)) {
             mAllAppsController.setupViews(mAppsView, mHotseat, mWorkspace);
         }
 
