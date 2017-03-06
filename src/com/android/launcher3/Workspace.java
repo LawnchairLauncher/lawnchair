@@ -2426,14 +2426,6 @@ public class Workspace extends PagedView
                 // Don't show the message if we are dropping on the AllApps button and the hotseat
                 // is full
                 boolean isHotseat = mLauncher.isHotseatLayout(dropTargetLayout);
-                if (mTargetCell != null && isHotseat && !FeatureFlags.NO_ALL_APPS_ICON) {
-                    Hotseat hotseat = mLauncher.getHotseat();
-                    if (mLauncher.getDeviceProfile().inv.isAllAppsButtonRank(
-                            hotseat.getOrderInHotseat(mTargetCell[0], mTargetCell[1]))) {
-                        return false;
-                    }
-                }
-
                 mLauncher.showOutOfSpaceMessage(isHotseat);
                 return false;
             }

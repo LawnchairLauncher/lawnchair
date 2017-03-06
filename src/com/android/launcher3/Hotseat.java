@@ -125,42 +125,6 @@ public class Hotseat extends FrameLayout
 
     void resetLayout() {
         mContent.removeAllViewsInLayout();
-
-        if (!FeatureFlags.NO_ALL_APPS_ICON) {
-            // Add the Apps button
-            Context context = getContext();
-            int allAppsButtonRank = mLauncher.getDeviceProfile().inv.getAllAppsButtonRank();
-
-            LayoutInflater inflater = LayoutInflater.from(context);
-            TextView allAppsButton = (TextView)
-                    inflater.inflate(R.layout.all_apps_button, mContent, false);
-            Drawable d = context.getResources().getDrawable(R.drawable.all_apps_button_icon);
-
-            mLauncher.resizeIconDrawable(d);
-            int scaleDownPx = getResources().getDimensionPixelSize(R.dimen.all_apps_button_scale_down);
-            Rect bounds = d.getBounds();
-            d.setBounds(bounds.left, bounds.top + scaleDownPx / 2, bounds.right - scaleDownPx,
-                    bounds.bottom - scaleDownPx / 2);
-            allAppsButton.setCompoundDrawables(null, d, null, null);
-
-            allAppsButton.setContentDescription(context.getString(R.string.all_apps_button_label));
-            allAppsButton.setOnKeyListener(new HotseatIconKeyEventListener());
-            if (mLauncher != null) {
-                mLauncher.setAllAppsButton(allAppsButton);
-                allAppsButton.setOnTouchListener(mLauncher.getHapticFeedbackTouchListener());
-                allAppsButton.setOnClickListener(mLauncher);
-                allAppsButton.setOnLongClickListener(mLauncher);
-                allAppsButton.setOnFocusChangeListener(mLauncher.mFocusHandler);
-            }
-
-            // Note: We do this to ensure that the hotseat is always laid out in the orientation of
-            // the hotseat in order regardless of which orientation they were added
-            int x = getCellXFromOrder(allAppsButtonRank);
-            int y = getCellYFromOrder(allAppsButtonRank);
-            CellLayout.LayoutParams lp = new CellLayout.LayoutParams(x, y, 1, 1);
-            lp.canReorder = false;
-            mContent.addViewToCellLayout(allAppsButton, -1, allAppsButton.getId(), lp, true);
-        }
     }
 
     @Override

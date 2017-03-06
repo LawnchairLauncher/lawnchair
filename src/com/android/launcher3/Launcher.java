@@ -1437,7 +1437,7 @@ public class Launcher extends Activity
     }
 
     public View getStartViewForAllAppsRevealAnimation() {
-        return FeatureFlags.NO_ALL_APPS_ICON ? mWorkspace.getPageIndicator() : mAllAppsButton;
+        return mWorkspace.getPageIndicator();
     }
 
     public View getWidgetsButton() {
@@ -3126,11 +3126,7 @@ public class Launcher extends Activity
                     showOverviewMode(true);
                 }
             } else {
-                final boolean isAllAppsButton =
-                        !FeatureFlags.NO_ALL_APPS_ICON && isHotseatLayout(v) &&
-                                mDeviceProfile.inv.isAllAppsButtonRank(mHotseat.getOrderInHotseat(
-                                        longClickCellInfo.cellX, longClickCellInfo.cellY));
-                if (!(itemUnderLongClick instanceof Folder || isAllAppsButton)) {
+                if (!(itemUnderLongClick instanceof Folder)) {
                     // User long pressed on an item
                     DragOptions dragOptions = new DragOptions();
                     if (itemUnderLongClick instanceof BubbleTextView) {

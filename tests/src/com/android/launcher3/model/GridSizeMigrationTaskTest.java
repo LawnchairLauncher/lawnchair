@@ -64,13 +64,8 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
         mIdp.numHotseatIcons = 3;
         new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages, 5, 3)
                 .migrateHotseat();
-        if (FeatureFlags.NO_ALL_APPS_ICON) {
-            // First item is dropped as it has the least weight.
-            verifyHotseat(hotseatItems[1], hotseatItems[3], hotseatItems[4]);
-        } else {
-            // First & last items are dropped as they have the least weight.
-            verifyHotseat(hotseatItems[1], -1, hotseatItems[3]);
-        }
+        // First item is dropped as it has the least weight.
+        verifyHotseat(hotseatItems[1], hotseatItems[3], hotseatItems[4]);
     }
 
     public void testHotseatMigration_shortcuts_dropped() throws Exception {
@@ -85,13 +80,8 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
         mIdp.numHotseatIcons = 3;
         new GridSizeMigrationTask(getMockContext(), mIdp, mValidPackages, 5, 3)
                 .migrateHotseat();
-        if (FeatureFlags.NO_ALL_APPS_ICON) {
-            // First item is dropped as it has the least weight.
-            verifyHotseat(hotseatItems[1], hotseatItems[3], hotseatItems[4]);
-        } else {
-            // First & third items are dropped as they have the least weight.
-            verifyHotseat(hotseatItems[1], -1, hotseatItems[4]);
-        }
+        // First item is dropped as it has the least weight.
+        verifyHotseat(hotseatItems[1], hotseatItems[3], hotseatItems[4]);
     }
 
     private void verifyHotseat(long... sortedIds) {
