@@ -143,9 +143,7 @@ public class DragView extends View {
         measure(ms, ms);
         mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
 
-        if (Utilities.ATLEAST_LOLLIPOP) {
-            setElevation(getResources().getDimension(R.dimen.drag_elevation));
-        }
+        setElevation(getResources().getDimension(R.dimen.drag_elevation));
     }
 
     /** Sets the scale of the view over the normal workspace icon size. */
@@ -264,14 +262,9 @@ public class DragView extends View {
             setColorScale(color, m2);
             m1.postConcat(m2);
 
-            if (Utilities.ATLEAST_LOLLIPOP) {
-                animateFilterTo(m1.getArray());
-            } else {
-                mPaint.setColorFilter(new ColorMatrixColorFilter(m1));
-                invalidate();
-            }
+            animateFilterTo(m1.getArray());
         } else {
-            if (!Utilities.ATLEAST_LOLLIPOP || mCurrentFilter == null) {
+            if (mCurrentFilter == null) {
                 mPaint.setColorFilter(null);
                 invalidate();
             } else {

@@ -58,6 +58,6 @@ public class ConfigMonitor extends BroadcastReceiver {
     }
 
     private static int getDensity(Configuration config) {
-        return Utilities.ATLEAST_JB_MR1 ? config.densityDpi : 0;
+        return config.densityDpi;
     }
 }

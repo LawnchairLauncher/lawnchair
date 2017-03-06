@@ -343,9 +343,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mSearchContainerOffsetTop = getResources().getDimensionPixelSize(
                 R.dimen.all_apps_search_bar_margin_top);
 
-        mElevationController = Utilities.ATLEAST_LOLLIPOP
-                ? new HeaderElevationController.ControllerVL(mSearchContainer)
-                : new HeaderElevationController.ControllerV16(mSearchContainer);
+        mElevationController = new HeaderElevationController.ControllerVL(mSearchContainer);
 
         // Load the all apps recycler view
         mAppsRecyclerView = (AllAppsRecyclerView) findViewById(R.id.apps_list_view);

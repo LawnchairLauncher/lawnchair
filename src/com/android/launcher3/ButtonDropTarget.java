@@ -106,12 +106,7 @@ public abstract class ButtonDropTarget extends TextView
         // We do not set the drawable in the xml as that inflates two drawables corresponding to
         // drawableLeft and drawableStart.
         mDrawable = getResources().getDrawable(resId);
-
-        if (Utilities.ATLEAST_JB_MR1) {
-            setCompoundDrawablesRelativeWithIntrinsicBounds(mDrawable, null, null, null);
-        } else {
-            setCompoundDrawablesWithIntrinsicBounds(mDrawable, null, null, null);
-        }
+        setCompoundDrawablesRelativeWithIntrinsicBounds(mDrawable, null, null, null);
     }
 
     public void setDropTargetBar(DropTargetBar dropTargetBar) {
@@ -124,16 +119,7 @@ public abstract class ButtonDropTarget extends TextView
     @Override
     public final void onDragEnter(DragObject d) {
         d.dragView.setColor(mHoverColor);
-        if (Utilities.ATLEAST_LOLLIPOP) {
-            animateTextColor(mHoverColor);
-        } else {
-            if (mCurrentFilter == null) {
-                mCurrentFilter = new ColorMatrix();
-            }
-            DragView.setColorScale(mHoverColor, mCurrentFilter);
-            mDrawable.setColorFilter(new ColorMatrixColorFilter(mCurrentFilter));
-            setTextColor(mHoverColor);
-        }
+        animateTextColor(mHoverColor);
         if (d.stateAnnouncer != null) {
             d.stateAnnouncer.cancel();
         }
@@ -146,12 +132,7 @@ public abstract class ButtonDropTarget extends TextView
     }
 
     protected void resetHoverColor() {
-        if (Utilities.ATLEAST_LOLLIPOP) {
-            animateTextColor(mOriginalTextColor.getDefaultColor());
-        } else {
-            mDrawable.setColorFilter(null);
-            setTextColor(mOriginalTextColor);
-        }
+        animateTextColor(mOriginalTextColor.getDefaultColor());
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)

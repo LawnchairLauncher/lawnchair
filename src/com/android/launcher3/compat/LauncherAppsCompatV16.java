@@ -195,8 +195,7 @@ public class LauncherAppsCompatV16 extends LauncherAppsCompat {
                 // EXTRA_REPLACING is available Kitkat onwards. For lower devices, it is broadcasted
                 // when moving a package or mounting/un-mounting external storage. Assume that
                 // it is a replacing operation.
-                final boolean replacing = intent.getBooleanExtra(Intent.EXTRA_REPLACING,
-                        !Utilities.ATLEAST_KITKAT);
+                final boolean replacing = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
                 String[] packages = intent.getStringArrayExtra(Intent.EXTRA_CHANGED_PACKAGE_LIST);
                 for (OnAppsChangedCallbackCompat callback : getCallbacks()) {
                     callback.onPackagesAvailable(packages, user, replacing);

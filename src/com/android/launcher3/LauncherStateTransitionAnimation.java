@@ -235,7 +235,6 @@ public class LauncherStateTransitionAnimation {
             final boolean animated, int animType, final PrivateTransitionCallbacks pCb) {
         final AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
         final Resources res = mLauncher.getResources();
-        final boolean material = Utilities.ATLEAST_LOLLIPOP;
         final int revealDuration = res.getInteger(R.integer.config_overlayRevealTime);
         final int revealDurationSlide = res.getInteger(R.integer.config_overlaySlideRevealTime);
 
@@ -294,17 +293,11 @@ public class LauncherStateTransitionAnimation {
             final float revealViewToAlpha;
             final float revealViewToXDrift;
             final float revealViewToYDrift;
-            if (material) {
-                int[] buttonViewToPanelDelta = Utilities.getCenterDeltaInScreenSpace(
-                        revealView, buttonView, null);
-                revealViewToAlpha = pCb.materialRevealViewFinalAlpha;
-                revealViewToYDrift = buttonViewToPanelDelta[1];
-                revealViewToXDrift = buttonViewToPanelDelta[0];
-            } else {
-                revealViewToAlpha = 0f;
-                revealViewToYDrift = 2 * height / 3;
-                revealViewToXDrift = 0;
-            }
+            int[] buttonViewToPanelDelta = Utilities.getCenterDeltaInScreenSpace(
+                    revealView, buttonView, null);
+            revealViewToAlpha = pCb.materialRevealViewFinalAlpha;
+            revealViewToYDrift = buttonViewToPanelDelta[1];
+            revealViewToXDrift = buttonViewToPanelDelta[0];
 
             // Create the animators
             PropertyValuesHolder panelAlpha =
@@ -342,19 +335,17 @@ public class LauncherStateTransitionAnimation {
             itemsAlpha.setStartDelay(itemsAlphaStagger);
             animation.play(itemsAlpha);
 
-            if (material) {
-                float startRadius = pCb.getMaterialRevealViewStartFinalRadius();
-                AnimatorListenerAdapter listener = pCb.getMaterialRevealViewAnimatorListener(
-                        revealView, buttonView);
-                Animator reveal = new CircleRevealOutlineProvider(width / 2, height / 2,
-                        startRadius, revealRadius).createRevealAnimator(revealView);
-                reveal.setDuration(revealDuration);
-                reveal.setInterpolator(new LogDecelerateInterpolator(100, 0));
-                if (listener != null) {
-                    reveal.addListener(listener);
-                }
-                animation.play(reveal);
+            float startRadius = pCb.getMaterialRevealViewStartFinalRadius();
+            AnimatorListenerAdapter listener = pCb.getMaterialRevealViewAnimatorListener(
+                    revealView, buttonView);
+            Animator reveal = new CircleRevealOutlineProvider(width / 2, height / 2,
+                    startRadius, revealRadius).createRevealAnimator(revealView);
+            reveal.setDuration(revealDuration);
+            reveal.setInterpolator(new LogDecelerateInterpolator(100, 0));
+            if (listener != null) {
+                reveal.addListener(listener);
             }
+            animation.play(reveal);
 
             animation.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -398,7 +389,7 @@ public class LauncherStateTransitionAnimation {
                         if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
                             v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
                         }
-                        if (Utilities.ATLEAST_LOLLIPOP && v.isAttachedToWindow()) {
+                        if (v.isAttachedToWindow()) {
                             v.buildLayer();
                         }
                     }
@@ -455,7 +446,7 @@ public class LauncherStateTransitionAnimation {
                         if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
                             v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
                         }
-                        if (Utilities.ATLEAST_LOLLIPOP && v.isAttachedToWindow()) {
+                        if (v.isAttachedToWindow()) {
                             v.buildLayer();
                         }
                     }
@@ -626,7 +617,7 @@ public class LauncherStateTransitionAnimation {
                         if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
                             v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
                         }
-                        if (Utilities.ATLEAST_LOLLIPOP && v.isAttachedToWindow()) {
+                        if (v.isAttachedToWindow()) {
                             v.buildLayer();
                         }
                     }
@@ -680,7 +671,6 @@ public class LauncherStateTransitionAnimation {
             final PrivateTransitionCallbacks pCb) {
         final AnimatorSet animation = LauncherAnimUtils.createAnimatorSet();
         final Resources res = mLauncher.getResources();
-        final boolean material = Utilities.ATLEAST_LOLLIPOP;
         final int revealDuration = res.getInteger(R.integer.config_overlayRevealTime);
         final int revealDurationSlide = res.getInteger(R.integer.config_overlaySlideRevealTime);
         final int itemsAlphaStagger =
@@ -738,22 +728,15 @@ public class LauncherStateTransitionAnimation {
                 // Calculate the final animation values
                 final float revealViewToXDrift;
                 final float revealViewToYDrift;
-                if (material) {
-                    int[] buttonViewToPanelDelta = Utilities.getCenterDeltaInScreenSpace(revealView,
-                            buttonView, null);
-                    revealViewToYDrift = buttonViewToPanelDelta[1];
-                    revealViewToXDrift = buttonViewToPanelDelta[0];
-                } else {
-                    revealViewToYDrift = 2 * height / 3;
-                    revealViewToXDrift = 0;
-                }
+                int[] buttonViewToPanelDelta = Utilities.getCenterDeltaInScreenSpace(revealView,
+                        buttonView, null);
+                revealViewToYDrift = buttonViewToPanelDelta[1];
+                revealViewToXDrift = buttonViewToPanelDelta[0];
 
                 // The vertical motion of the apps panel should be delayed by one frame
                 // from the conceal animation in order to give the right feel. We correspondingly
                 // shorten the duration so that the slide and conceal end at the same time.
-                TimeInterpolator decelerateInterpolator = material ?
-                        new LogDecelerateInterpolator(100, 0) :
-                        new DecelerateInterpolator(1f);
+                TimeInterpolator decelerateInterpolator = new LogDecelerateInterpolator(100, 0);
                 ObjectAnimator panelDriftY = ObjectAnimator.ofFloat(revealView, "translationY",
                         0, revealViewToYDrift);
                 panelDriftY.setDuration(revealDuration - SINGLE_FRAME_DELAY);
@@ -769,13 +752,12 @@ public class LauncherStateTransitionAnimation {
                 animation.play(panelDriftX);
 
                 // Setup animation for the reveal panel alpha
-                final float revealViewToAlpha = !material ? 0f :
-                        pCb.materialRevealViewFinalAlpha;
+                final float revealViewToAlpha = pCb.materialRevealViewFinalAlpha;
                 if (revealViewToAlpha != 1f) {
                     ObjectAnimator panelAlpha = ObjectAnimator.ofFloat(revealView, "alpha",
                             1f, revealViewToAlpha);
-                    panelAlpha.setDuration(material ? revealDuration : 150);
-                    panelAlpha.setStartDelay(material ? 0 : itemsAlphaStagger + SINGLE_FRAME_DELAY);
+                    panelAlpha.setDuration(revealDuration);
+                    panelAlpha.setStartDelay(0);
                     panelAlpha.setInterpolator(decelerateInterpolator);
                     animation.play(panelAlpha);
                 }
@@ -809,21 +791,19 @@ public class LauncherStateTransitionAnimation {
                 });
                 animation.play(invalidateScrim);
 
-                if (material) {
-                    // Animate the all apps button
-                    float finalRadius = pCb.getMaterialRevealViewStartFinalRadius();
-                    AnimatorListenerAdapter listener =
-                            pCb.getMaterialRevealViewAnimatorListener(revealView, buttonView);
-                    Animator reveal = new CircleRevealOutlineProvider(width / 2, height / 2,
-                            revealRadius, finalRadius).createRevealAnimator(revealView);
-                    reveal.setInterpolator(new LogDecelerateInterpolator(100, 0));
-                    reveal.setDuration(revealDuration);
-                    reveal.setStartDelay(itemsAlphaStagger);
-                    if (listener != null) {
-                        reveal.addListener(listener);
-                    }
-                    animation.play(reveal);
+                // Animate the all apps button
+                float finalRadius = pCb.getMaterialRevealViewStartFinalRadius();
+                AnimatorListenerAdapter listener =
+                        pCb.getMaterialRevealViewAnimatorListener(revealView, buttonView);
+                Animator reveal = new CircleRevealOutlineProvider(width / 2, height / 2,
+                        revealRadius, finalRadius).createRevealAnimator(revealView);
+                reveal.setInterpolator(new LogDecelerateInterpolator(100, 0));
+                reveal.setDuration(revealDuration);
+                reveal.setStartDelay(itemsAlphaStagger);
+                if (listener != null) {
+                    reveal.addListener(listener);
                 }
+                animation.play(reveal);
             }
 
             dispatchOnLauncherTransitionPrepare(fromView, animated, multiplePagesVisible);
@@ -878,7 +858,7 @@ public class LauncherStateTransitionAnimation {
                         if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
                             v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
                         }
-                        if (Utilities.ATLEAST_LOLLIPOP && v.isAttachedToWindow()) {
+                        if (v.isAttachedToWindow()) {
                             v.buildLayer();
                         }
                     }
@@ -942,7 +922,7 @@ public class LauncherStateTransitionAnimation {
                         if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
                             v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
                         }
-                        if (Utilities.ATLEAST_LOLLIPOP && v.isAttachedToWindow()) {
+                        if (v.isAttachedToWindow()) {
                             v.buildLayer();
                         }
                     }

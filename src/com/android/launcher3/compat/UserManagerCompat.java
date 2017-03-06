@@ -38,12 +38,8 @@ public abstract class UserManagerCompat {
                     sInstance = new UserManagerCompatVN(context.getApplicationContext());
                 } else if (Utilities.ATLEAST_MARSHMALLOW) {
                     sInstance = new UserManagerCompatVM(context.getApplicationContext());
-                } else if (Utilities.ATLEAST_LOLLIPOP) {
-                    sInstance = new UserManagerCompatVL(context.getApplicationContext());
-                } else if (Utilities.ATLEAST_JB_MR1) {
-                    sInstance = new UserManagerCompatV17(context.getApplicationContext());
                 } else {
-                    sInstance = new UserManagerCompatV16();
+                    sInstance = new UserManagerCompatVL(context.getApplicationContext());
                 }
             }
             return sInstance;

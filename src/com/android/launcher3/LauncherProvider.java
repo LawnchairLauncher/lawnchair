@@ -536,10 +536,6 @@ public class LauncherProvider extends ContentProvider {
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     private AutoInstallsLayout createWorkspaceLoaderFromAppRestriction(AppWidgetHost widgetHost) {
-        // UserManager.getApplicationRestrictions() requires minSdkVersion >= 18
-        if (!Utilities.ATLEAST_JB_MR2) {
-            return null;
-        }
 
         Context ctx = getContext();
         UserManager um = (UserManager) ctx.getSystemService(Context.USER_SERVICE);

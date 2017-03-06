@@ -122,15 +122,6 @@ public class LauncherAppState {
 
         sContext.registerReceiver(mModel, filter);
         UserManagerCompat.getInstance(sContext).enableAndResetCache();
-        if (!Utilities.ATLEAST_KITKAT) {
-            sContext.registerReceiver(new BroadcastReceiver() {
-
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    mWallpaperChangedSinceLastCheck = true;
-                }
-            }, new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED));
-        }
         new ConfigMonitor(sContext).register();
 
         ExtractionUtils.startColorExtractionServiceIfNecessary(sContext);

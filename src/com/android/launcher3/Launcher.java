@@ -2921,9 +2921,7 @@ public class Launcher extends Activity
 
         ObjectAnimator oa = LauncherAnimUtils.ofViewAlphaAndScale(
                 mFolderIconImageView, 0, 1.5f, 1.5f);
-        if (Utilities.ATLEAST_LOLLIPOP) {
-            oa.setInterpolator(new LogDecelerateInterpolator(100, 0));
-        }
+        oa.setInterpolator(new LogDecelerateInterpolator(100, 0));
         oa.setDuration(getResources().getInteger(R.integer.config_folderExpandDuration));
         oa.start();
     }
@@ -4296,12 +4294,7 @@ public class Launcher extends Activity
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public void lockScreenOrientation() {
         if (mRotationEnabled) {
-            if (Utilities.ATLEAST_JB_MR2) {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
-            } else {
-                setRequestedOrientation(mapConfigurationOriActivityInfoOri(getResources()
-                        .getConfiguration().orientation));
-            }
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         }
     }
 
@@ -4347,11 +4340,9 @@ public class Launcher extends Activity
     public ItemInfo createAppDragInfo(Intent appLaunchIntent) {
         // Called from search suggestion
         UserHandleCompat user = null;
-        if (Utilities.ATLEAST_LOLLIPOP) {
-            UserHandle userHandle = appLaunchIntent.getParcelableExtra(Intent.EXTRA_USER);
-            if (userHandle != null) {
-                user = UserHandleCompat.fromUser(userHandle);
-            }
+        UserHandle userHandle = appLaunchIntent.getParcelableExtra(Intent.EXTRA_USER);
+        if (userHandle != null) {
+            user = UserHandleCompat.fromUser(userHandle);
         }
         return createAppDragInfo(appLaunchIntent, user);
     }

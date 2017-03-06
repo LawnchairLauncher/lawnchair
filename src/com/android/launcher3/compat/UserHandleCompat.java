@@ -34,11 +34,7 @@ public class UserHandleCompat {
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static UserHandleCompat myUserHandle() {
-        if (Utilities.ATLEAST_JB_MR1) {
-            return new UserHandleCompat(android.os.Process.myUserHandle());
-        } else {
-            return new UserHandleCompat();
-        }
+        return new UserHandleCompat(android.os.Process.myUserHandle());
     }
 
     public static UserHandleCompat fromUser(UserHandle user) {
@@ -55,11 +51,7 @@ public class UserHandleCompat {
 
     @Override
     public String toString() {
-        if (Utilities.ATLEAST_JB_MR1) {
-            return mUser.toString();
-        } else {
-            return "";
-        }
+        return mUser.toString();
     }
 
     @Override
@@ -67,20 +59,12 @@ public class UserHandleCompat {
         if (!(other instanceof UserHandleCompat)) {
             return false;
         }
-        if (Utilities.ATLEAST_JB_MR1) {
-            return mUser.equals(((UserHandleCompat) other).mUser);
-        } else {
-            return true;
-        }
+        return mUser.equals(((UserHandleCompat) other).mUser);
     }
 
     @Override
     public int hashCode() {
-        if (Utilities.ATLEAST_JB_MR1) {
-            return mUser.hashCode();
-        } else {
-            return 0;
-        }
+        return mUser.hashCode();
     }
 
     /**
@@ -89,17 +73,15 @@ public class UserHandleCompat {
      * profiles so this is a no-op.
      */
     public void addToIntent(Intent intent, String name) {
-        if (Utilities.ATLEAST_LOLLIPOP && mUser != null) {
+        if (mUser != null) {
             intent.putExtra(name, mUser);
         }
     }
 
     public static UserHandleCompat fromIntent(Intent intent) {
-        if (Utilities.ATLEAST_LOLLIPOP) {
-            UserHandle user = intent.getParcelableExtra(Intent.EXTRA_USER);
-            if (user != null) {
-                return UserHandleCompat.fromUser(user);
-            }
+        UserHandle user = intent.getParcelableExtra(Intent.EXTRA_USER);
+        if (user != null) {
+            return UserHandleCompat.fromUser(user);
         }
         return null;
     }
