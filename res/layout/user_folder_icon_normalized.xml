@@ -54,8 +54,8 @@
             android:imeOptions="flagNoExtractUi"
             android:paddingBottom="@dimen/folder_label_padding_bottom"
             android:paddingTop="@dimen/folder_label_padding_top"
-            android:singleLine="true"
             android:textColor="#EE777777"
+            android:maxLines="1"
             android:textColorHighlight="#ffCCCCCC"
             android:textColorHint="#ff808080"
             android:textSize="@dimen/folder_label_text_size" />

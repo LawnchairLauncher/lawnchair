@@ -40,7 +40,7 @@
         android:paddingLeft="@dimen/widget_section_horizontal_padding"
         android:paddingRight="@dimen/widget_section_horizontal_padding"
         android:paddingTop="@dimen/widget_section_vertical_padding"
-        android:singleLine="true"
+        android:maxLines="1"
         android:textColor="@color/widgets_view_section_text_color"
         android:textSize="16sp"
         launcher:customShadows="false"

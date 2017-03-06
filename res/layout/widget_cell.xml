@@ -45,7 +45,7 @@
             android:gravity="start"
             android:shadowColor="#B0000000"
             android:shadowRadius="2.0"
-            android:singleLine="true"
+            android:maxLines="1"
             android:textColor="@color/widgets_view_item_text_color"
             android:textSize="14sp" />
 
