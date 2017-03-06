@@ -24,6 +24,7 @@
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowShowWallpaper">true</item>
         <item name="android:windowNoTitle">true</item>
+        <item name="android:colorAccent">@color/accent_material_light</item>
     </style>
 
     <style name="LauncherTheme" parent="@style/BaseLauncherTheme"></style>
