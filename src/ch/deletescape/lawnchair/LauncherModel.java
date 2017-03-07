@@ -2096,7 +2096,6 @@ public class LauncherModel extends BroadcastReceiver
                                 final boolean isProviderReady = isValidProvider(provider);
                                 if (!isSafeMode && !customWidget &&
                                         wasProviderReady && !isProviderReady) {
-                                            + provider);
                                     itemsToRemove.add(id);
                                 } else {
                                     if (isProviderReady) {
