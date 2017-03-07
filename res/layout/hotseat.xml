@@ -13,7 +13,9 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<ch.deletescape.lawnchair.Hotseat xmlns:android="http://schemas.android.com/apk/res/android">
+<ch.deletescape.lawnchair.Hotseat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent">
     <ch.deletescape.lawnchair.CellLayout
         android:id="@+id/layout"
         android:layout_width="wrap_content"
