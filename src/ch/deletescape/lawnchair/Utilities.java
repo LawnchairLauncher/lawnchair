@@ -826,10 +826,7 @@ public final class Utilities {
         if (c != null) {
             try {
                 c.close();
-            } catch (IOException e) {
-                if (ProviderConfig.IS_DOGFOOD_BUILD) {
-                    Log.d(TAG, "Error closing", e);
-                }
+            } catch (IOException ignored) {
             }
         }
     }

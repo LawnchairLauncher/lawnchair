@@ -564,9 +564,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         try {
             dispatchRestoreInstanceState(states);
         } catch (IllegalArgumentException ex) {
-            if (ProviderConfig.IS_DOGFOOD_BUILD) {
-                throw ex;
-            }
             // Mismatched viewId / viewType preventing restore. Skip restore on production builds.
             Log.e(TAG, "Ignoring an error while restoring a view instance state", ex);
         }

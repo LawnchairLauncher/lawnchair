@@ -37,7 +37,6 @@ import android.os.Looper;
 import android.os.Parcelable;
 import android.os.Process;
 import android.os.SystemClock;
-import android.os.Trace;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
 import android.util.Log;
@@ -53,11 +52,9 @@ import ch.deletescape.lawnchair.compat.PackageInstallerCompat.PackageInstallInfo
 import ch.deletescape.lawnchair.compat.UserHandleCompat;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 import ch.deletescape.lawnchair.config.FeatureFlags;
-import ch.deletescape.lawnchair.config.ProviderConfig;
 import ch.deletescape.lawnchair.dynamicui.ExtractionUtils;
 import ch.deletescape.lawnchair.folder.Folder;
 import ch.deletescape.lawnchair.folder.FolderIcon;
-import ch.deletescape.lawnchair.logging.FileLog;
 import ch.deletescape.lawnchair.model.GridSizeMigrationTask;
 import ch.deletescape.lawnchair.model.WidgetsModel;
 import ch.deletescape.lawnchair.provider.ImportDataTask;
@@ -73,7 +70,6 @@ import ch.deletescape.lawnchair.util.LongArrayMap;
 import ch.deletescape.lawnchair.util.ManagedProfileHeuristic;
 import ch.deletescape.lawnchair.util.MultiHashMap;
 import ch.deletescape.lawnchair.util.PackageManagerHelper;
-import ch.deletescape.lawnchair.util.Preconditions;
 import ch.deletescape.lawnchair.util.StringFilter;
 import ch.deletescape.lawnchair.util.Thunk;
 import ch.deletescape.lawnchair.util.ViewOnDrawExecutor;
@@ -417,7 +413,6 @@ public class LauncherModel extends BroadcastReceiver
         LongSparseArray<ArrayList<ItemInfo>> screenItems = new LongSparseArray<>();
 
         // Use sBgItemsIdMap as all the items are already loaded.
-        assertWorkspaceLoaded();
         synchronized (sBgLock) {
             for (ItemInfo info : sBgItemsIdMap) {
                 if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
@@ -822,23 +817,11 @@ public class LauncherModel extends BroadcastReceiver
         updateItemInDatabaseHelper(context, values, item, "updateItemInDatabase");
     }
 
-    private void assertWorkspaceLoaded() {
-        if (ProviderConfig.IS_DOGFOOD_BUILD) {
-            synchronized (mLock) {
-                if (!mHasLoaderCompletedOnce ||
-                        (mLoaderTask != null && mLoaderTask.mIsLoadingAndBindingWorkspace)) {
-                    throw new RuntimeException("Trying to add shortcut while loader is running");
-                }
-            }
-        }
-    }
-
     /**
      * Returns true if the shortcuts already exists on the workspace. This must be called after
      * the workspace has been loaded. We identify a shortcut by its intent.
      */
     @Thunk boolean shortcutExists(Context context, Intent intent, UserHandleCompat user) {
-        assertWorkspaceLoaded();
         final String intentWithPkg, intentWithoutPkg;
         if (intent.getComponent() != null) {
             // If component is not null, an intent with null package will produce
@@ -1137,7 +1120,6 @@ public class LauncherModel extends BroadcastReceiver
      */
     public void initialize(Callbacks callbacks) {
         synchronized (mLock) {
-            Preconditions.assertUIThread();
             // Remove any queued UI runnables
             mHandler.cancelAll();
             mCallbacks = new WeakReference<>(callbacks);
@@ -1647,9 +1629,6 @@ public class LauncherModel extends BroadcastReceiver
         }
 
         private void loadWorkspace() {
-            if (LauncherAppState.PROFILE_STARTUP) {
-                Trace.beginSection("Loading Workspace");
-            }
             final long t = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
 
             final Context context = mContext;
@@ -1841,7 +1820,6 @@ public class LauncherModel extends BroadcastReceiver
                                             if (intent == null) {
                                                 // The app is installed but the component is no
                                                 // longer available.
-                                                FileLog.d(TAG, "Invalid component removed: " + cn);
                                                 itemsToRemove.add(id);
                                                 continue;
                                             } else {
@@ -1852,7 +1830,6 @@ public class LauncherModel extends BroadcastReceiver
                                         } else if (restored) {
                                             // Package is not yet available but might be
                                             // installed later.
-                                            FileLog.d(TAG, "package not yet restored: " + cn);
 
                                             if ((promiseType & ShortcutInfo.FLAG_RESTORE_STARTED) != 0) {
                                                 // Restore has started once.
@@ -1878,12 +1855,10 @@ public class LauncherModel extends BroadcastReceiver
                                                     itemReplaced = true;
 
                                                 } else {
-                                                    FileLog.d(TAG, "Unrestored package removed: " + cn);
                                                     itemsToRemove.add(id);
                                                     continue;
                                                 }
                                             } else {
-                                                FileLog.d(TAG, "Unrestored package removed: " + cn);
                                                 itemsToRemove.add(id);
                                                 continue;
                                             }
@@ -1908,7 +1883,6 @@ public class LauncherModel extends BroadcastReceiver
                                         } else {
                                             // Do not wait for external media load anymore.
                                             // Log the invalid package, and remove it
-                                            FileLog.d(TAG, "Invalid package removed: " + cn);
                                             itemsToRemove.add(id);
                                             continue;
                                         }
@@ -1918,7 +1892,6 @@ public class LauncherModel extends BroadcastReceiver
                                         restored = false;
                                     }
                                 } catch (URISyntaxException e) {
-                                    FileLog.d(TAG, "Invalid uri: " + intentDescription);
                                     itemsToRemove.add(id);
                                     continue;
                                 }
@@ -2123,7 +2096,6 @@ public class LauncherModel extends BroadcastReceiver
                                 final boolean isProviderReady = isValidProvider(provider);
                                 if (!isSafeMode && !customWidget &&
                                         wasProviderReady && !isProviderReady) {
-                                    FileLog.d(TAG, "Deleting widget that isn't installed anymore: "
                                             + provider);
                                     itemsToRemove.add(id);
                                 } else {
@@ -2165,7 +2137,6 @@ public class LauncherModel extends BroadcastReceiver
                                             appWidgetInfo.restoreStatus |=
                                                     LauncherAppWidgetInfo.FLAG_RESTORE_STARTED;
                                         } else if (!isSafeMode) {
-                                            FileLog.d(TAG, "Unrestored widget removed: " + component);
                                             itemsToRemove.add(id);
                                             continue;
                                         }
@@ -2332,9 +2303,6 @@ public class LauncherModel extends BroadcastReceiver
                     }
                 }
             }
-            if (LauncherAppState.PROFILE_STARTUP) {
-                Trace.endSection();
-            }
         }
 
         /**
@@ -2437,10 +2405,6 @@ public class LauncherModel extends BroadcastReceiver
                                 return Utilities.longCompare(lhs.screenId, rhs.screenId);
                             }
                             default:
-                                if (ProviderConfig.IS_DOGFOOD_BUILD) {
-                                    throw new RuntimeException("Unexpected container type when " +
-                                            "sorting workspace items.");
-                                }
                                 return 0;
                         }
                     } else {

@@ -32,8 +32,6 @@ public class ComponentKey {
     private final int mHashCode;
 
     public ComponentKey(ComponentName componentName, UserHandleCompat user) {
-        Preconditions.assertNotNull(componentName);
-        Preconditions.assertNotNull(user);
         this.componentName = componentName;
         this.user = user;
         mHashCode = Arrays.hashCode(new Object[] {componentName, user});
@@ -58,8 +56,6 @@ public class ComponentKey {
             componentName = ComponentName.unflattenFromString(componentKeyStr);
             user = UserHandleCompat.myUserHandle();
         }
-        Preconditions.assertNotNull(componentName);
-        Preconditions.assertNotNull(user);
         mHashCode = Arrays.hashCode(new Object[] {componentName, user});
     }
 

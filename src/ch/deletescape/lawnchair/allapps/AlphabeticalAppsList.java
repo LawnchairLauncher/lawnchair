@@ -438,10 +438,6 @@ public class AlphabeticalAppsList {
                 AppInfo info = mComponentToAppMap.get(ck);
                 if (info != null) {
                     mPredictedApps.add(info);
-                } else {
-                    if (ProviderConfig.IS_DOGFOOD_BUILD) {
-                        Log.e(TAG, "Predicted app not found: " + ck);
-                    }
                 }
                 // Stop at the number of predicted apps
                 if (mPredictedApps.size() == mNumPredictedAppsPerRow) {

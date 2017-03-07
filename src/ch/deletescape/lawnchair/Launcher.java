@@ -58,8 +58,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
-import android.os.SystemClock;
-import android.os.Trace;
 import android.os.UserHandle;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
@@ -98,7 +96,6 @@ import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
 import ch.deletescape.lawnchair.compat.UserHandleCompat;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 import ch.deletescape.lawnchair.config.FeatureFlags;
-import ch.deletescape.lawnchair.config.ProviderConfig;
 import ch.deletescape.lawnchair.dragndrop.DragController;
 import ch.deletescape.lawnchair.dragndrop.DragLayer;
 import ch.deletescape.lawnchair.dragndrop.DragOptions;
@@ -107,7 +104,6 @@ import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.folder.Folder;
 import ch.deletescape.lawnchair.folder.FolderIcon;
 import ch.deletescape.lawnchair.keyboard.ViewGroupFocusHelper;
-import ch.deletescape.lawnchair.logging.FileLog;
 import ch.deletescape.lawnchair.logging.UserEventDispatcher;
 import ch.deletescape.lawnchair.model.WidgetsModel;
 import ch.deletescape.lawnchair.pageindicators.PageIndicator;
@@ -355,10 +351,6 @@ public class Launcher extends Activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (LauncherAppState.PROFILE_STARTUP) {
-            Trace.beginSection("Launcher-onCreate");
-        }
-
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.preOnCreate();
         }
@@ -407,10 +399,6 @@ public class Launcher extends Activity
 
         mSavedState = savedInstanceState;
         restoreState(mSavedState);
-
-        if (LauncherAppState.PROFILE_STARTUP) {
-            Trace.endSection();
-        }
 
         // We only load the page synchronously if the user rotates (or triggers a
         // configuration change) while launcher is in the foreground
@@ -3485,9 +3473,6 @@ public class Launcher extends Activity
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void startBinding() {
-        if (LauncherAppState.PROFILE_STARTUP) {
-            Trace.beginSection("Starting page bind");
-        }
         setWorkspaceLoading(true);
 
         // Clear the workspace because it's going to be rebound
@@ -3497,9 +3482,6 @@ public class Launcher extends Activity
         mWidgetsToAdvance.clear();
         if (mHotseat != null) {
             mHotseat.resetLayout();
-        }
-        if (LauncherAppState.PROFILE_STARTUP) {
-            Trace.endSection();
         }
     }
 
@@ -3637,13 +3619,8 @@ public class Launcher extends Activity
                     Object tag = v.getTag();
                     String desc = "Collision while binding workspace item: " + item
                             + ". Collides with " + tag;
-                    if (ProviderConfig.IS_DOGFOOD_BUILD) {
-                        throw (new RuntimeException(desc));
-                    } else {
-                        Log.d(TAG, desc);
-                        LauncherModel.deleteItemFromDatabase(this, item);
-                        continue;
-                    }
+                    Log.d(TAG, desc);
+                    LauncherModel.deleteItemFromDatabase(this, item);
                 }
             }
             workspace.addInScreenFromBind(view, item.container, item.screenId, item.cellX,
@@ -3796,7 +3773,6 @@ public class Launcher extends Activity
 
             // Verify that we own the widget
             if (appWidgetInfo == null) {
-                FileLog.e(TAG, "Removing invalid widget: id=" + item.appWidgetId);
                 deleteWidgetInfo(item);
                 return;
             }
@@ -3895,9 +3871,6 @@ public class Launcher extends Activity
         if (waitUntilResume(r)) {
             return;
         }
-        if (LauncherAppState.PROFILE_STARTUP) {
-            Trace.beginSection("Page bind completed");
-        }
         if (mSavedState != null) {
             if (!mWorkspace.hasFocus()) {
                 mWorkspace.getChildAt(mWorkspace.getCurrentPage()).requestFocus();
@@ -3920,9 +3893,6 @@ public class Launcher extends Activity
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.finishBindingItems(false);
-        }
-        if (LauncherAppState.PROFILE_STARTUP) {
-            Trace.endSection();
         }
     }
 
@@ -4354,12 +4324,6 @@ public class Launcher extends Activity
             if (tag != null) {
                 writer.println(prefix + "    " + tag.toString());
             }
-        }
-
-        try {
-            FileLog.flushAll(writer);
-        } catch (Exception e) {
-            // Ignore
         }
 
         if (mLauncherCallbacks != null) {

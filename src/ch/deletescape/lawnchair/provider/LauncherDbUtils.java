@@ -24,7 +24,6 @@ import android.util.Log;
 import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.LauncherSettings.Favorites;
 import ch.deletescape.lawnchair.LauncherSettings.WorkspaceScreens;
-import ch.deletescape.lawnchair.logging.FileLog;
 
 import java.util.ArrayList;
 
@@ -110,8 +109,7 @@ public class LauncherDbUtils {
             while (sc.moveToNext()) {
                 try {
                     screenIds.add(sc.getLong(idIndex));
-                } catch (Exception e) {
-                    FileLog.d(TAG, "Invalid screen id", e);
+                } catch (Exception ignored) {
                 }
             }
         } finally {

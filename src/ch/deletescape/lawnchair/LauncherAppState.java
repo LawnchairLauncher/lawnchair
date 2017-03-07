@@ -24,9 +24,7 @@ import android.util.Log;
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
 import ch.deletescape.lawnchair.compat.PackageInstallerCompat;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
-import ch.deletescape.lawnchair.config.ProviderConfig;
 import ch.deletescape.lawnchair.dynamicui.ExtractionUtils;
-import ch.deletescape.lawnchair.logging.FileLog;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
 import ch.deletescape.lawnchair.shortcuts.ShortcutCache;
 import ch.deletescape.lawnchair.util.ConfigMonitor;
@@ -35,8 +33,6 @@ import ch.deletescape.lawnchair.util.Thunk;
 import java.lang.ref.WeakReference;
 
 public class LauncherAppState {
-
-    public static final boolean PROFILE_STARTUP = ProviderConfig.IS_DOGFOOD_BUILD;
 
     private final AppFilter mAppFilter;
     @Thunk final LauncherModel mModel;
@@ -79,7 +75,6 @@ public class LauncherAppState {
         // is the first component to get created. Initializing application context here ensures
         // that LauncherAppState always exists in the main process.
         sContext = provider.getContext().getApplicationContext();
-        FileLog.setDir(sContext.getFilesDir());
     }
 
     private LauncherAppState() {

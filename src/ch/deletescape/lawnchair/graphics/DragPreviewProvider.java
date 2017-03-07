@@ -121,10 +121,6 @@ public class DragPreviewProvider {
     }
 
     public final void generateDragOutline(Canvas canvas) {
-        if (ProviderConfig.IS_DOGFOOD_BUILD && gerenatedDragOutline != null) {
-            throw new RuntimeException("Drag outline generated twice");
-        }
-
         gerenatedDragOutline = createDragOutline(canvas);
     }
 

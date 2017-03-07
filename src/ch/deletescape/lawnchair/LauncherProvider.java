@@ -44,7 +44,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
-import android.os.Trace;
 import android.os.UserManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -54,14 +53,11 @@ import ch.deletescape.lawnchair.LauncherSettings.Favorites;
 import ch.deletescape.lawnchair.LauncherSettings.WorkspaceScreens;
 import ch.deletescape.lawnchair.compat.UserHandleCompat;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
-import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.config.ProviderConfig;
 import ch.deletescape.lawnchair.dynamicui.ExtractionUtils;
-import ch.deletescape.lawnchair.provider.LauncherDbUtils;
 import ch.deletescape.lawnchair.provider.RestoreDbTask;
 import ch.deletescape.lawnchair.util.ManagedProfileHeuristic;
 import ch.deletescape.lawnchair.util.NoLocaleSqliteContext;
-import ch.deletescape.lawnchair.util.Preconditions;
 import ch.deletescape.lawnchair.util.Thunk;
 
 import java.net.URISyntaxException;
@@ -89,9 +85,6 @@ public class LauncherProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        if (ProviderConfig.IS_DOGFOOD_BUILD) {
-            Log.d(TAG, "Launcher process started");
-        }
         mListenerHandler = new Handler(mListenerWrapper);
 
         LauncherAppState.setLauncherProvider(this);
@@ -102,7 +95,6 @@ public class LauncherProvider extends ContentProvider {
      * Sets a provider listener.
      */
     public void setLauncherProviderChangeListener(LauncherProviderChangeListener listener) {
-        Preconditions.assertUIThread();
         mListenerWrapper.mListener = listener;
     }
 
@@ -121,9 +113,6 @@ public class LauncherProvider extends ContentProvider {
      */
     protected synchronized void createDbIfNotExists() {
         if (mOpenHelper == null) {
-            if (LauncherAppState.PROFILE_STARTUP) {
-                Trace.beginSection("Opening workspace DB");
-            }
             mOpenHelper = new DatabaseHelper(getContext(), mListenerHandler);
 
             if (RestoreDbTask.isPending(getContext())) {
@@ -133,10 +122,6 @@ public class LauncherProvider extends ContentProvider {
                 // Set is pending to false irrespective of the result, so that it doesn't get
                 // executed again.
                 RestoreDbTask.setPending(getContext(), false);
-            }
-
-            if (LauncherAppState.PROFILE_STARTUP) {
-                Trace.endSection();
             }
         }
     }

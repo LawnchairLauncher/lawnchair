@@ -91,9 +91,6 @@ public class HolographicOutlineHelper {
 
     public void applyExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas,
             boolean clipAlpha) {
-        if (ProviderConfig.IS_DOGFOOD_BUILD && srcDst.getConfig() != Bitmap.Config.ALPHA_8) {
-            throw new RuntimeException("Outline blue is only supported on alpha bitmaps");
-        }
 
         // We start by removing most of the alpha channel so as to ignore shadows, and
         // other types of partial transparency when defining the shape of the object

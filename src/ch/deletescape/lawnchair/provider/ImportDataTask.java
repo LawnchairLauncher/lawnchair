@@ -48,7 +48,6 @@ import ch.deletescape.lawnchair.compat.UserHandleCompat;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.config.ProviderConfig;
-import ch.deletescape.lawnchair.logging.FileLog;
 import ch.deletescape.lawnchair.model.GridSizeMigrationTask;
 import ch.deletescape.lawnchair.util.LongArrayMap;
 
@@ -199,7 +198,6 @@ public class ImportDataTask {
                     case Favorites.CONTAINER_DESKTOP: {
                         Long newScreenId = screenIdMap.get(screen);
                         if (newScreenId == null) {
-                            FileLog.d(TAG, String.format("Skipping item %d, type %d not on a valid screen %d", id, type, screen));
                             continue;
                         }
                         // Reset the screen to 0-index value
@@ -219,7 +217,6 @@ public class ImportDataTask {
                     }
                     default:
                         if (!mValidFolders.get(container)) {
-                            FileLog.d(TAG, String.format("Skipping item %d, type %d not in a valid folder %d", id, type, container));
                             continue;
                         }
                 }
@@ -257,13 +254,11 @@ public class ImportDataTask {
                         break;
                     }
                     default:
-                        FileLog.d(TAG, String.format("Skipping item %d, not a valid type %d", id, type));
                         continue;
                 }
 
                 if (container == Favorites.CONTAINER_HOTSEAT) {
                     if (intent == null) {
-                        FileLog.d(TAG, String.format("Skipping item %d, null intent on hotseat", id));
                         continue;
                     }
                     if (intent.getComponent() != null) {

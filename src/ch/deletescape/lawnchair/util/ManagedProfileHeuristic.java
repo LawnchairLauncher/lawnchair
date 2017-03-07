@@ -72,7 +72,6 @@ public class ManagedProfileHeuristic {
     }
 
     public void processPackageRemoved(String[] packages) {
-        Preconditions.assertWorkerThread();
         ManagedProfilePackageHandler handler = new ManagedProfilePackageHandler();
         for (String pkg : packages) {
             handler.onPackageRemoved(pkg, mUser);
@@ -80,7 +79,6 @@ public class ManagedProfileHeuristic {
     }
 
     public void processPackageAdd(String[] packages) {
-        Preconditions.assertWorkerThread();
         ManagedProfilePackageHandler handler = new ManagedProfilePackageHandler();
         for (String pkg : packages) {
             handler.onPackageAdded(pkg, mUser);
@@ -88,7 +86,6 @@ public class ManagedProfileHeuristic {
     }
 
     public void processUserApps(List<LauncherActivityInfoCompat> apps) {
-        Preconditions.assertWorkerThread();
         new ManagedProfilePackageHandler().processUserApps(apps, mUser);
     }
 

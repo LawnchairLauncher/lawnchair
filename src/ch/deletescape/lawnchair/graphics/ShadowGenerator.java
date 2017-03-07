@@ -25,7 +25,6 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 
 import ch.deletescape.lawnchair.LauncherAppState;
-import ch.deletescape.lawnchair.util.Preconditions;
 
 /**
  * Utility class to add shadows to bitmaps.
@@ -83,7 +82,6 @@ public class ShadowGenerator {
     }
 
     public static ShadowGenerator getInstance() {
-        Preconditions.assertNonUiThread();
         synchronized (LOCK) {
             if (sShadowGenerator == null) {
                 sShadowGenerator = new ShadowGenerator();

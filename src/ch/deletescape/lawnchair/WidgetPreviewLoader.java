@@ -33,7 +33,6 @@ import ch.deletescape.lawnchair.compat.UserHandleCompat;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 import ch.deletescape.lawnchair.model.WidgetItem;
 import ch.deletescape.lawnchair.util.ComponentKey;
-import ch.deletescape.lawnchair.util.Preconditions;
 import ch.deletescape.lawnchair.util.SQLiteCacheHelper;
 import ch.deletescape.lawnchair.util.Thunk;
 import ch.deletescape.lawnchair.widget.WidgetCell;
@@ -46,8 +45,6 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-
-import ch.deletescape.lawnchair.R;
 
 public class WidgetPreviewLoader {
 
@@ -172,8 +169,6 @@ public class WidgetPreviewLoader {
      * This ensures that we remove entries for packages which changed while the launcher was dead.
      */
     public void removeObsoletePreviews(ArrayList<? extends ComponentKey> list) {
-        Preconditions.assertWorkerThread();
-
         LongSparseArray<HashSet<String>> validPackages = new LongSparseArray<>();
 
         for (ComponentKey key : list) {

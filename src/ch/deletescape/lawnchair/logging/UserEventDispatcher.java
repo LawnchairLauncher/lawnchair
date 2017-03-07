@@ -101,11 +101,7 @@ public class UserEventDispatcher {
     private List<ComponentKey> mPredictedApps;
 
     public UserEventDispatcher() {
-        if (ProviderConfig.IS_DOGFOOD_BUILD) {
-            mIsVerbose = Utilities.isPropertyEnabled(TAG);
-        } else {
-            mIsVerbose = false;
-        }
+        mIsVerbose = false;
     }
 
     //                      APP_ICON    SHORTCUT    WIDGET

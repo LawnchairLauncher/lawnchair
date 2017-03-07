@@ -26,7 +26,6 @@ import ch.deletescape.lawnchair.LauncherProvider.DatabaseHelper;
 import ch.deletescape.lawnchair.LauncherSettings.Favorites;
 import ch.deletescape.lawnchair.ShortcutInfo;
 import ch.deletescape.lawnchair.Utilities;
-import ch.deletescape.lawnchair.logging.FileLog;
 
 import java.io.InvalidObjectException;
 
@@ -59,7 +58,6 @@ public class RestoreDbTask {
             db.setTransactionSuccessful();
             return true;
         } catch (Exception e) {
-            FileLog.e(TAG, "Failed to verify db", e);
             return false;
         } finally {
             db.endTransaction();
@@ -78,11 +76,7 @@ public class RestoreDbTask {
     private void sanitizeDB(DatabaseHelper helper, SQLiteDatabase db) throws Exception {
         long oldProfileId = getDefaultProfileId(db);
         // Delete all entries which do not belong to the main user
-        int itemsDeleted = db.delete(
-                Favorites.TABLE_NAME, "profileId != ?", new String[]{Long.toString(oldProfileId)});
-        if (itemsDeleted > 0) {
-            FileLog.d(TAG, itemsDeleted + " items belonging to a managed profile, were deleted");
-        }
+        db.delete(Favorites.TABLE_NAME, "profileId != ?", new String[]{Long.toString(oldProfileId)});
 
         // Mark all items as restored.
         boolean keepAllIcons = Utilities.isPropertyEnabled(KEEP_ALL_ICONS);
@@ -101,7 +95,6 @@ public class RestoreDbTask {
 
         long myProfileId = helper.getDefaultUserSerial();
         if (Utilities.longCompare(oldProfileId, myProfileId) != 0) {
-            FileLog.d(TAG, "Changing primary user id from " + oldProfileId + " to " + myProfileId);
             migrateProfileId(db, myProfileId);
         }
     }

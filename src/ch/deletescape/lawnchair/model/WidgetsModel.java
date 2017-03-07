@@ -18,8 +18,6 @@ import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.LauncherAppWidgetProviderInfo;
 import ch.deletescape.lawnchair.compat.AlphabeticIndexCompat;
 import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
-import ch.deletescape.lawnchair.config.ProviderConfig;
-import ch.deletescape.lawnchair.util.Preconditions;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -101,8 +99,6 @@ public class WidgetsModel {
     }
 
     public WidgetsModel updateAndClone(Context context) {
-        Preconditions.assertWorkerThread();
-
         try {
             final ArrayList<WidgetItem> widgetsAndShortcuts = new ArrayList<>();
             // Widgets
@@ -121,8 +117,7 @@ public class WidgetsModel {
             }
             setWidgetsAndShortcuts(widgetsAndShortcuts);
         } catch (Exception e) {
-            if (!ProviderConfig.IS_DOGFOOD_BUILD &&
-                    (e.getCause() instanceof TransactionTooLargeException ||
+            if ((e.getCause() instanceof TransactionTooLargeException ||
                             e.getCause() instanceof DeadObjectException)) {
                 // the returned value may be incomplete and will not be refreshed until the next
                 // time Launcher starts.
