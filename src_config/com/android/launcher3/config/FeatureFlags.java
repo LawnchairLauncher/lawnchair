@@ -28,7 +28,7 @@ public final class FeatureFlags {
     public static boolean LAUNCHER3_USE_SYSTEM_DRAG_DRIVER = true;
     public static boolean LAUNCHER3_DISABLE_PINCH_TO_OVERVIEW = false;
     public static boolean LAUNCHER3_ALL_APPS_PULL_UP = true;
-    public static boolean LAUNCHER3_NEW_FOLDER_ANIMATION = false;
+    public static boolean LAUNCHER3_NEW_FOLDER_ANIMATION = true;
     // When enabled allows to use any point on the fast scrollbar to start dragging.
     public static boolean LAUNCHER3_DIRECT_SCROLL = true;
     // When enabled while all-apps open, the soft input will be set to adjust resize .
