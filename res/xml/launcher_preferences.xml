@@ -60,6 +60,12 @@
         android:entries="@array/numRowsTexts"/>
 
     <ListPreference
+        android:key="pref_numRows"
+        android:title="Number of icons in hotseat"
+        android:entryValues="@array/numHotseatIconsValues"
+        android:entries="@array/numHotseatIconsTexts"/>
+
+    <ListPreference
         android:key="pref_iconSize"
         android:title="Icon size"
         android:entryValues="@array/iconSizeValues"
