@@ -203,7 +203,7 @@ public class InvariantDeviceProfile {
         }
         if(!prefs.getString("pref_iconSize", valueDefault).equals(valueDefault)){
             iconSize = Float.valueOf(prefs.getString("pref_iconSize",  ""));
-            Utilities.pxFromDp(iconSize, dm);
+            hotseatIconSize = iconSize; // We probably shouldn't assume this
         }
         if(!prefs.getString("pref_iconTextSize", valueDefault).equals(valueDefault)){
             iconTextSize = Float.valueOf(prefs.getString("pref_iconTextSize",  ""));
