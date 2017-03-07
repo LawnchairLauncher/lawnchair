@@ -26,7 +26,6 @@ public final class FeatureFlags {
     private FeatureFlags() {}
 
     // Custom flags go below this
-    public static boolean LAUNCHER3_DISABLE_PINCH_TO_OVERVIEW = false;
     public static boolean LAUNCHER3_ALL_APPS_PULL_UP = true;
 
     // When enabled fling down gesture on the first workspace triggers search.
@@ -37,5 +36,8 @@ public final class FeatureFlags {
     // Feature flag to enable moving the QSB on the 0th screen of the workspace.
     public static boolean qsbOnFirstSceen(Context context){
         return Utilities.getPrefs(context).getBoolean("pref_qsbOnFirstScreen", true);
+    }
+    public static boolean pinchToOverview(Context context){
+        return Utilities.getPrefs(context).getBoolean("pref_pinchToOverview", true);
     }
 }

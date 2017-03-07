@@ -178,7 +178,7 @@ public class DragLayer extends InsettableFrameLayout {
     }
 
     public void onAccessibilityStateChanged(boolean isAccessibilityEnabled) {
-        mPinchListener = FeatureFlags.LAUNCHER3_DISABLE_PINCH_TO_OVERVIEW || isAccessibilityEnabled
+        mPinchListener = !FeatureFlags.pinchToOverview(getContext().getApplicationContext()) || isAccessibilityEnabled
                 ? null : new PinchToOverviewListener(mLauncher);
     }
 

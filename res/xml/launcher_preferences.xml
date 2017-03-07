@@ -19,22 +19,33 @@
         android:title="UI"/>
 
     <SwitchPreference
+        android:key="pref_allowRotation"
+        android:title="@string/allow_rotation_title"
+        android:defaultValue="@bool/allow_rotation"
+        android:persistent="true"/>
+
+    <SwitchPreference
         android:key="pref_show_caret"
         android:title="Show All Apps Handle"
         android:summary="App restart required"
         android:defaultValue="true"
-        android:persistent="true" />
-
-    <SwitchPreference
-            android:key="pref_allowRotation"
-            android:title="@string/allow_rotation_title"
-            android:defaultValue="@bool/allow_rotation"
-            android:persistent="true"/>
+        android:persistent="true"
+        android:enabled="false"/>
 
     <SwitchPreference
         android:key="pref_qsbOnFirstScreen"
-        android:title="Show Quick Searchbar on the first screen"
+        android:title="[BROKEN] Show Quick Searchbar on the first screen"
         android:summary="App restart required"
+        android:defaultValue="true"
+        android:persistent="true" />
+
+    <PreferenceCategory
+        android:title="Behavior"/>
+
+    <SwitchPreference
+        android:key="pref_pinchToOverview"
+        android:title="Pinch to Overview"
+        android:summary="Pinch on the Homescreen to open the overview"
         android:defaultValue="true"
         android:persistent="true" />
 
