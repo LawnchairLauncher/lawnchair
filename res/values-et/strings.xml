@@ -19,10 +19,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name" msgid="8424725141379931883">"Käivitaja"</string>
     <string name="folder_name" msgid="8551881338202938211"></string>
-    <string name="wallpaper_instructions" msgid="4215640646180727542">"Määra taustapilt"</string>
-    <string name="pick_wallpaper" msgid="5630222540525626723">"Taustapildid"</string>
     <string name="activity_not_found" msgid="217823393239365967">"Rakendus pole installitud."</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Vidina valimiseks puudutage seda pikalt."</string>
     <string name="widget_dims_format" msgid="1386418557719032947">"%1$d × %2$d"</string>
@@ -30,9 +27,6 @@
     <string name="hotseat_out_of_space" msgid="6304886797358479361">"Kohandataval dokialal pole rohkem ruumi."</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Rakendused"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Kodu"</string>
-    <string name="delete_target_label" msgid="665300185123139530">"Eemalda"</string>
-    <string name="delete_target_uninstall_label" msgid="748894921183769150">"Desinstalli"</string>
-    <string name="info_target_label" msgid="4019495079517426980">"Rakenduse teave"</string>
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"otseteede installimine"</string>
     <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Võimaldab rakendusel lisada otseteid kasutaja sekkumiseta."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"avalehe seadete ja otseteede lugemine"</string>

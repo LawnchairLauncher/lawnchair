@@ -16,5 +16,4 @@
 
 <resources>
 <!-- Container -->
-     <item name="container_margin" format="fraction" type="fraction">12%</item>
 </resources>

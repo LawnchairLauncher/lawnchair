@@ -39,9 +39,8 @@
     <integer name="config_allAppsButtonPaddingPercent">17</integer>
 
     <!-- The duration of the animation from search hint to text entry -->
-    <integer name="config_searchHintAnimationDuration">50</integer>
 
-<!-- Workspace -->
+    <!-- Workspace -->
     <!-- The duration (in ms) of the fade animation on the object outlines, used when
          we are dragging objects around on the home screen. -->
     <integer name="config_dragOutlineFadeTime">900</integer>
@@ -74,7 +73,6 @@
 
     <!-- List of package names that ch.deletescape.lawnchair.action.LAUNCH
      should be targeting. Can be empty. -->
-    <array name="launch_broadcast_targets" translatable="false"></array>
 
     <!-- Name of an icon provider class. -->
     <string name="icon_provider_class" translatable="false"></string>

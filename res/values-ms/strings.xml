@@ -19,10 +19,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name" msgid="8424725141379931883">"Pelancar"</string>
     <string name="folder_name" msgid="8551881338202938211"></string>
-    <string name="wallpaper_instructions" msgid="4215640646180727542">"Tetapkan kertas dinding"</string>
-    <string name="pick_wallpaper" msgid="5630222540525626723">"Kertas dinding"</string>
     <string name="activity_not_found" msgid="217823393239365967">"Aplikasi tidak dipasang."</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Sentuh &amp; tahan untuk mengambil widget."</string>
     <string name="widget_dims_format" msgid="1386418557719032947">"%1$d × %2$d"</string>
@@ -30,9 +27,6 @@
     <string name="hotseat_out_of_space" msgid="6304886797358479361">"Tiada lagi ruang pada kerusi panas."</string>
     <string name="all_apps_button_label" msgid="2578400570124163469">"Apl"</string>
     <string name="all_apps_home_button_label" msgid="1022222300329398558">"Laman Utama"</string>
-    <string name="delete_target_label" msgid="665300185123139530">"Alih keluar"</string>
-    <string name="delete_target_uninstall_label" msgid="748894921183769150">"Nyahpasang"</string>
-    <string name="info_target_label" msgid="4019495079517426980">"Maklumat apl"</string>
     <string name="permlab_install_shortcut" msgid="1201690825493376489">"pasang pintasan"</string>
     <string name="permdesc_install_shortcut" msgid="8634424803272077038">"Membenarkan aplikasi menambah pintasan tanpa campur tangan pengguna."</string>
     <string name="permlab_read_settings" msgid="3452408290738106747">"membaca tetapan dan pintasan Laman Utama"</string>
