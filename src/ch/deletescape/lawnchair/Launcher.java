@@ -146,10 +146,6 @@ public class Launcher extends Activity
     public static final String TAG = "Launcher";
     static final boolean LOGD = false;
 
-    static final boolean DEBUG_WIDGETS = false;
-    static final boolean DEBUG_STRICT_MODE = false;
-    static final boolean DEBUG_RESUME_TIME = false;
-
     private static final int REQUEST_CREATE_SHORTCUT = 1;
     private static final int REQUEST_CREATE_APPWIDGET = 5;
     private static final int REQUEST_PICK_APPWIDGET = 9;
@@ -227,9 +223,7 @@ public class Launcher extends Activity
     @Thunk DragLayer mDragLayer;
     private DragController mDragController;
     private View mQsbContainer;
-
-    public View mWeightWatcher;
-
+    
     private AppWidgetManagerCompat mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
 
@@ -361,20 +355,6 @@ public class Launcher extends Activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (DEBUG_STRICT_MODE) {
-            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-                    .detectDiskReads()
-                    .detectDiskWrites()
-                    .detectNetwork()   // or .detectAll() for all detectable problems
-                    .penaltyLog()
-                    .build());
-            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                    .detectLeakedSqlLiteObjects()
-                    .detectLeakedClosableObjects()
-                    .penaltyLog()
-                    .penaltyDeath()
-                    .build());
-        }
         if (LauncherAppState.PROFILE_STARTUP) {
             Trace.beginSection("Launcher-onCreate");
         }
@@ -943,12 +923,6 @@ public class Launcher extends Activity
 
     @Override
     protected void onResume() {
-        long startTime = 0;
-        if (DEBUG_RESUME_TIME) {
-            startTime = System.currentTimeMillis();
-            Log.v(TAG, "Launcher.onResume()");
-        }
-
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.preOnResume();
         }
@@ -980,19 +954,11 @@ public class Launcher extends Activity
         if (mBindOnResumeCallbacks.size() > 0) {
             // We might have postponed some bind calls until onResume (see waitUntilResume) --
             // execute them here
-            long startTimeCallbacks = 0;
-            if (DEBUG_RESUME_TIME) {
-                startTimeCallbacks = System.currentTimeMillis();
-            }
 
             for (int i = 0; i < mBindOnResumeCallbacks.size(); i++) {
                 mBindOnResumeCallbacks.get(i).run();
             }
             mBindOnResumeCallbacks.clear();
-            if (DEBUG_RESUME_TIME) {
-                Log.d(TAG, "Time spent processing callbacks in onResume: " +
-                    (System.currentTimeMillis() - startTimeCallbacks));
-            }
         }
         if (mOnResumeCallbacks.size() > 0) {
             for (int i = 0; i < mOnResumeCallbacks.size(); i++) {
@@ -1014,10 +980,6 @@ public class Launcher extends Activity
         // orientation.
         if (!isWorkspaceLoading()) {
             getWorkspace().reinflateWidgetsIfNecessary();
-        }
-
-        if (DEBUG_RESUME_TIME) {
-            Log.d(TAG, "Time spent in onResume: " + (System.currentTimeMillis() - startTime));
         }
 
         // We want to suppress callbacks about CustomContent being shown if we have just received
@@ -1797,10 +1759,6 @@ public class Launcher extends Activity
 
     @Override
     protected void onNewIntent(Intent intent) {
-        long startTime = 0;
-        if (DEBUG_RESUME_TIME) {
-            startTime = System.currentTimeMillis();
-        }
         super.onNewIntent(intent);
 
         boolean alreadyOnHome = mHasFocus && ((intent.getFlags() &
@@ -1882,10 +1840,6 @@ public class Launcher extends Activity
                     }
                 });
             }
-        }
-
-        if (DEBUG_RESUME_TIME) {
-            Log.d(TAG, "Time spent in onNewIntent: " + (System.currentTimeMillis() - startTime));
         }
     }
 
@@ -3764,11 +3718,6 @@ public class Launcher extends Activity
             return;
         }
 
-        final long start = DEBUG_WIDGETS ? SystemClock.uptimeMillis() : 0;
-        if (DEBUG_WIDGETS) {
-            Log.d(TAG, "bindAppWidget: " + item);
-        }
-
         final LauncherAppWidgetProviderInfo appWidgetInfo;
 
         if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)) {
@@ -3785,11 +3734,6 @@ public class Launcher extends Activity
         if (!item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY) &&
                 (item.restoreStatus != LauncherAppWidgetInfo.RESTORE_COMPLETED)) {
             if (appWidgetInfo == null) {
-                if (DEBUG_WIDGETS) {
-                    Log.d(TAG, "Removing restored widget: id=" + item.appWidgetId
-                            + " belongs to component " + item.providerName
-                            + ", as the povider is null");
-                }
                 LauncherModel.deleteItemFromDatabase(this, item);
                 return;
             }
@@ -3849,10 +3793,6 @@ public class Launcher extends Activity
         }
 
         if (item.restoreStatus == LauncherAppWidgetInfo.RESTORE_COMPLETED) {
-            if (DEBUG_WIDGETS) {
-                Log.d(TAG, "bindAppWidget: id=" + item.appWidgetId + " belongs to component "
-                        + appWidgetInfo.provider);
-            }
 
             // Verify that we own the widget
             if (appWidgetInfo == null) {
@@ -3874,11 +3814,6 @@ public class Launcher extends Activity
             addAppWidgetToWorkspace(view, item, null, false);
         }
         mWorkspace.requestLayout();
-
-        if (DEBUG_WIDGETS) {
-            Log.d(TAG, "bound widget id="+item.appWidgetId+" in "
-                    + (SystemClock.uptimeMillis()-start) + "ms");
-        }
     }
 
     /**
