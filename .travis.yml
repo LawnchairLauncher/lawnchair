@@ -6,3 +6,4 @@ android:
     - build-tools-25.2.0
     - android-25
     - extra-android-m2repository
+script: ./gradlew build check
