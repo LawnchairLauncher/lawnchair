@@ -47,14 +47,12 @@ import android.os.UserHandle;
 import android.os.UserManager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.ViewGroup;
 
 import com.android.launcher3.AutoInstallsLayout.LayoutParserCallback;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.WorkspaceScreens;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.dynamicui.ExtractionUtils;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.provider.LauncherDbUtils;
@@ -77,7 +75,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static final int DATABASE_VERSION = 27;
 
-    public static final String AUTHORITY = ProviderConfig.AUTHORITY;
+    public static final String AUTHORITY = (BuildConfig.APPLICATION_ID + ".settings").intern();
 
     static final String EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED";
 
@@ -102,7 +100,7 @@ public class LauncherProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        if (ProviderConfig.IS_DOGFOOD_BUILD) {
+        if (FeatureFlags.IS_DOGFOOD_BUILD) {
             Log.d(TAG, "Launcher process started");
         }
         mListenerHandler = new Handler(mListenerWrapper);

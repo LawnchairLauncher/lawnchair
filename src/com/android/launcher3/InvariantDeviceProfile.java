@@ -28,7 +28,6 @@ import android.view.Display;
 import android.view.WindowManager;
 
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.util.Thunk;
 
@@ -335,7 +334,7 @@ public class InvariantDeviceProfile {
     }
 
     public int getAllAppsButtonRank() {
-        if (ProviderConfig.IS_DOGFOOD_BUILD && FeatureFlags.NO_ALL_APPS_ICON) {
+        if (FeatureFlags.IS_DOGFOOD_BUILD && FeatureFlags.NO_ALL_APPS_ICON) {
             throw new IllegalAccessError("Accessing all apps rank when all-apps is disabled");
         }
         return numHotseatIcons / 2;

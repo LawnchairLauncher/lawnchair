@@ -91,7 +91,6 @@ import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PinItemRequestCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -3386,7 +3385,7 @@ public class Launcher extends BaseActivity
                     Object tag = v.getTag();
                     String desc = "Collision while binding workspace item: " + item
                             + ". Collides with " + tag;
-                    if (ProviderConfig.IS_DOGFOOD_BUILD) {
+                    if (FeatureFlags.IS_DOGFOOD_BUILD) {
                         throw (new RuntimeException(desc));
                     } else {
                         Log.d(TAG, desc);

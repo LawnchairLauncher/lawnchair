@@ -24,7 +24,7 @@ import android.util.Log;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
-import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.discovery.AppDiscoveryAppInfo;
 import com.android.launcher3.discovery.AppDiscoveryItem;
 import com.android.launcher3.discovery.AppDiscoveryUpdateState;
@@ -440,7 +440,7 @@ public class AlphabeticalAppsList {
                 if (info != null) {
                     mPredictedApps.add(info);
                 } else {
-                    if (ProviderConfig.IS_DOGFOOD_BUILD) {
+                    if (FeatureFlags.IS_DOGFOOD_BUILD) {
                         Log.e(TAG, "Predicted app not found: " + ck);
                     }
                 }

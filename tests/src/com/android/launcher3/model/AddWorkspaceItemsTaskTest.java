@@ -10,9 +10,9 @@ import android.net.Uri;
 import android.util.Pair;
 
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
-import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.Provider;
@@ -178,6 +178,6 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
             v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
             ops.add(ContentProviderOperation.newInsert(uri).withValues(v).build());
         }
-        getMockContentResolver().applyBatch(ProviderConfig.AUTHORITY, ops);
+        getMockContentResolver().applyBatch(LauncherProvider.AUTHORITY, ops);
     }
 }

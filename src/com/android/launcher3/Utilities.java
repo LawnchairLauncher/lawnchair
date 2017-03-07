@@ -51,7 +51,7 @@ import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 
-import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.config.FeatureFlags;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -575,7 +575,7 @@ public final class Utilities {
             try {
                 c.close();
             } catch (IOException e) {
-                if (ProviderConfig.IS_DOGFOOD_BUILD) {
+                if (FeatureFlags.IS_DOGFOOD_BUILD) {
                     Log.d(TAG, "Error closing", e);
                 }
             }

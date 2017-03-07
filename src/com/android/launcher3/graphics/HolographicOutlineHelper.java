@@ -31,7 +31,7 @@ import android.util.SparseArray;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
-import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.config.FeatureFlags;
 
 import java.nio.ByteBuffer;
 
@@ -86,7 +86,7 @@ public class HolographicOutlineHelper {
      * bitmap.
      */
     public void applyExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas) {
-        if (ProviderConfig.IS_DOGFOOD_BUILD && srcDst.getConfig() != Bitmap.Config.ALPHA_8) {
+        if (FeatureFlags.IS_DOGFOOD_BUILD && srcDst.getConfig() != Bitmap.Config.ALPHA_8) {
             throw new RuntimeException("Outline blue is only supported on alpha bitmaps");
         }
 
