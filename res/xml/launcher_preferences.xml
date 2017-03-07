@@ -37,7 +37,8 @@
         android:title="[BROKEN] Show Quick Searchbar on the first screen"
         android:summary="App restart required"
         android:defaultValue="true"
-        android:persistent="true" />
+        android:persistent="true"
+        android:enabled="false"/>
 
     <SwitchPreference
         android:key="pref_lightStatusBar"
