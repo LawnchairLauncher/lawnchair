@@ -104,14 +104,14 @@ public class AppWidgetResizeFrame extends FrameLayout implements View.OnKeyListe
         mLeftHandle = new ImageView(context);
         mLeftHandle.setImageResource(R.drawable.ic_widget_resize_handle);
         lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
-                Gravity.LEFT | Gravity.CENTER_VERTICAL);
+                Gravity.START | Gravity.CENTER_VERTICAL);
         lp.leftMargin = handleMargin;
         addView(mLeftHandle, lp);
 
         mRightHandle = new ImageView(context);
         mRightHandle.setImageResource(R.drawable.ic_widget_resize_handle);
         lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
-                Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+                Gravity.END | Gravity.CENTER_VERTICAL);
         lp.rightMargin = handleMargin;
         addView(mRightHandle, lp);
 

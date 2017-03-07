@@ -24,21 +24,21 @@
     <objectAnimator
         android:propertyName="progress"
         android:duration="250"
-        android:interpolator="@interpolator/disco_bounce_section1"
+        android:interpolator="@anim/disco_bounce_section1"
         android:valueFrom="1f"
         android:valueTo=".94f"
         android:valueType="floatType"/>
     <objectAnimator
         android:propertyName="progress"
         android:duration="216"
-        android:interpolator="@interpolator/disco_bounce_section2"
+        android:interpolator="@anim/disco_bounce_section2"
         android:valueFrom=".94f"
         android:valueTo="1.012f"
         android:valueType="floatType"/>
     <objectAnimator
         android:propertyName="progress"
         android:duration="234"
-        android:interpolator="@interpolator/disco_bounce_section3"
+        android:interpolator="@anim/disco_bounce_section3"
         android:valueFrom="1.012f"
         android:valueTo="1f"
         android:valueType="floatType"/>

@@ -146,7 +146,7 @@ public class PackageManagerHelper {
 
         try {
             return pm.getApplicationInfo(srcPackage, 0).targetSdkVersion >= Build.VERSION_CODES.M;
-        } catch (NameNotFoundException e) { }
+        } catch (NameNotFoundException ignored) { }
 
         return false;
     }

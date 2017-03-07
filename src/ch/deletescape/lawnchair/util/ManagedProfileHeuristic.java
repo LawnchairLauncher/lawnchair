@@ -169,7 +169,7 @@ public class ManagedProfileHeuristic {
                 }
 
                 // Add the item to home screen and DB. This also generates an item id synchronously.
-                ArrayList<ItemInfo> itemList = new ArrayList<ItemInfo>(1);
+                ArrayList<ItemInfo> itemList = new ArrayList<>(1);
                 itemList.add(workFolder);
                 mModel.addAndBindAddedWorkspaceItems(mContext, itemList);
                 mPrefs.edit().putLong(folderIdKey, workFolder.id).apply();
@@ -202,7 +202,7 @@ public class ManagedProfileHeuristic {
      */
     public static void processAllUsers(List<UserHandleCompat> users, Context context) {
         UserManagerCompat userManager = UserManagerCompat.getInstance(context);
-        HashSet<String> validKeys = new HashSet<String>();
+        HashSet<String> validKeys = new HashSet<>();
         for (UserHandleCompat user : users) {
             addAllUserKeys(userManager.getSerialNumberForUser(user), validKeys);
         }

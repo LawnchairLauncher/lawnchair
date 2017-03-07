@@ -22,7 +22,6 @@ import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewGroup;
 
-import ch.deletescape.lawnchair.config.ProviderConfig;
 import ch.deletescape.lawnchair.folder.Folder;
 import ch.deletescape.lawnchair.folder.FolderPagedView;
 import ch.deletescape.lawnchair.util.FocusLogic;

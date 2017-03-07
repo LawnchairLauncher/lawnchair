@@ -388,7 +388,7 @@ public class ImportDataTask {
         @Override
         protected HashMap<String, TagParser> getLayoutElementsMap() {
             // Only allow shortcut parsers
-            HashMap<String, TagParser> parsers = new HashMap<String, TagParser>();
+            HashMap<String, TagParser> parsers = new HashMap<>();
             parsers.put(TAG_FAVORITE, new AppShortcutWithUriParser());
             parsers.put(TAG_SHORTCUT, new UriShortcutParser(mSourceRes));
             parsers.put(TAG_RESOLVE, new ResolveParser());

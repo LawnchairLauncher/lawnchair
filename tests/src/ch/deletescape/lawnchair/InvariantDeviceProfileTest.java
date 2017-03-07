@@ -87,7 +87,7 @@ public class InvariantDeviceProfileTest extends AndroidTestCase {
     }
 
     private ArrayList<PointF> createInterpolatedPoints(PointF a, PointF b, float numPts) {
-        ArrayList<PointF> result = new ArrayList<PointF>();
+        ArrayList<PointF> result = new ArrayList<>();
         result.add(a);
         for (float i = 1; i < numPts; i = i + 1.0f) {
             result.add(new PointF((b.x * i +  a.x * (numPts - i)) / numPts,

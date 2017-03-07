@@ -42,7 +42,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompatV16 {
     protected LauncherApps mLauncherApps;
 
     private Map<OnAppsChangedCallbackCompat, WrappedCallback> mCallbacks
-            = new HashMap<OnAppsChangedCallbackCompat, WrappedCallback>();
+            = new HashMap<>();
 
     LauncherAppsCompatVL(Context context) {
         super(context);
@@ -57,7 +57,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompatV16 {
             return Collections.emptyList();
         }
         ArrayList<LauncherActivityInfoCompat> compatList =
-                new ArrayList<LauncherActivityInfoCompat>(list.size());
+                new ArrayList<>(list.size());
         for (LauncherActivityInfo info : list) {
             compatList.add(new LauncherActivityInfoCompatVL(info));
         }

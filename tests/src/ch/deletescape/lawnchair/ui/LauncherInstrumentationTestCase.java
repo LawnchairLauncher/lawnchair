@@ -210,10 +210,10 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
                 public void run() {
                     try {
                         result.set(callback.call());
-                    } catch (Exception e) { }
+                    } catch (Exception ignored) { }
                 }
             });
-        } catch (Throwable t) { }
+        } catch (Throwable ignored) { }
         return result.get();
     }
 

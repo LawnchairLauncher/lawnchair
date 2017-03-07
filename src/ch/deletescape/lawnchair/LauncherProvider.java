@@ -209,7 +209,7 @@ public class LauncherProvider extends ContentProvider {
         // attempt allocate and bind the widget.
         Integer itemType = values.getAsInteger(LauncherSettings.Favorites.ITEM_TYPE);
         if (itemType != null &&
-                itemType.intValue() == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET &&
+                itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET &&
                 !values.containsKey(LauncherSettings.Favorites.APPWIDGET_ID)) {
 
             final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getContext());
@@ -598,14 +598,11 @@ public class LauncherProvider extends ContentProvider {
         }
 
         private boolean tableExists(String tableName) {
-            Cursor c = getReadableDatabase().query(
-                    true, "sqlite_master", new String[] {"tbl_name"},
-                    "tbl_name = ?", new String[] {tableName},
-                    null, null, null, null, null);
-            try {
+            try (Cursor c = getReadableDatabase().query(
+                    true, "sqlite_master", new String[]{"tbl_name"},
+                    "tbl_name = ?", new String[]{tableName},
+                    null, null, null, null, null)) {
                 return c.getCount() > 0;
-            } finally {
-                c.close();
             }
         }
 
@@ -789,13 +786,12 @@ public class LauncherProvider extends ContentProvider {
         public boolean recreateWorkspaceTable(SQLiteDatabase db) {
             db.beginTransaction();
             try {
-                Cursor c = db.query(WorkspaceScreens.TABLE_NAME,
-                        new String[] {LauncherSettings.WorkspaceScreens._ID},
-                        null, null, null, null,
-                        LauncherSettings.WorkspaceScreens.SCREEN_RANK);
-                ArrayList<Long> sortedIDs = new ArrayList<Long>();
+                ArrayList<Long> sortedIDs = new ArrayList<>();
                 long maxId = 0;
-                try {
+                try (Cursor c = db.query(WorkspaceScreens.TABLE_NAME,
+                        new String[]{WorkspaceScreens._ID},
+                        null, null, null, null,
+                        WorkspaceScreens.SCREEN_RANK)) {
                     while (c.moveToNext()) {
                         Long id = c.getLong(0);
                         if (!sortedIDs.contains(id)) {
@@ -803,8 +799,6 @@ public class LauncherProvider extends ContentProvider {
                             maxId = Math.max(maxId, id);
                         }
                     }
-                } finally {
-                    c.close();
                 }
 
                 db.execSQL("DROP TABLE IF EXISTS " + WorkspaceScreens.TABLE_NAME);
@@ -932,7 +926,7 @@ public class LauncherProvider extends ContentProvider {
         }
 
         @Thunk int loadFavorites(SQLiteDatabase db, AutoInstallsLayout loader) {
-            ArrayList<Long> screenIds = new ArrayList<Long>();
+            ArrayList<Long> screenIds = new ArrayList<>();
             // TODO: Use multiple loaders with fall-back and transaction.
             int count = loader.loadLayout(db, screenIds);
 

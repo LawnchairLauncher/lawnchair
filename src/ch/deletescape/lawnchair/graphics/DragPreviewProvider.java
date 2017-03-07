@@ -28,7 +28,6 @@ import ch.deletescape.lawnchair.HolographicOutlineHelper;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.PreloadIconDrawable;
 import ch.deletescape.lawnchair.Workspace;
-import ch.deletescape.lawnchair.config.ProviderConfig;
 import ch.deletescape.lawnchair.folder.FolderIcon;
 
 /**

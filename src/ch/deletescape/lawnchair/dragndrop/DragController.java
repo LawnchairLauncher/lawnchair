@@ -100,8 +100,8 @@ public class DragController implements DragDriver.EventListener, TouchController
     private DropTarget.DragObject mDragObject;
 
     /** Who can receive drop events */
-    private ArrayList<DropTarget> mDropTargets = new ArrayList<DropTarget>();
-    private ArrayList<DragListener> mListeners = new ArrayList<DragListener>();
+    private ArrayList<DropTarget> mDropTargets = new ArrayList<>();
+    private ArrayList<DragListener> mListeners = new ArrayList<>();
     private DropTarget mFlingToDeleteDropTarget;
 
     /** The window token used as the parent for the DragView. */

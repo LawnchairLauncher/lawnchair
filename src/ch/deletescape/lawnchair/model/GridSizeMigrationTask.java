@@ -862,7 +862,7 @@ public class GridSizeMigrationTask {
     }
 
     private static ArrayList<DbEntry> deepCopy(ArrayList<DbEntry> src) {
-        ArrayList<DbEntry> dup = new ArrayList<DbEntry>(src.size());
+        ArrayList<DbEntry> dup = new ArrayList<>(src.size());
         for (DbEntry e : src) {
             dup.add(e.copy());
         }

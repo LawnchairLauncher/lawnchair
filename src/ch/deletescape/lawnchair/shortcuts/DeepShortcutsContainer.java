@@ -353,10 +353,10 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
     private View addArrowView(int horizontalOffset, int verticalOffset, int width, int height) {
         LinearLayout.LayoutParams layoutParams = new LayoutParams(width, height);
         if (mIsLeftAligned) {
-            layoutParams.gravity = Gravity.LEFT;
+            layoutParams.gravity = Gravity.START;
             layoutParams.leftMargin = horizontalOffset;
         } else {
-            layoutParams.gravity = Gravity.RIGHT;
+            layoutParams.gravity = Gravity.END;
             layoutParams.rightMargin = horizontalOffset;
         }
         if (mIsAboveIcon) {

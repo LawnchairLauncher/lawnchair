@@ -64,7 +64,6 @@ import ch.deletescape.lawnchair.accessibility.WorkspaceAccessibilityHelper;
 import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
 import ch.deletescape.lawnchair.compat.UserHandleCompat;
 import ch.deletescape.lawnchair.config.FeatureFlags;
-import ch.deletescape.lawnchair.config.ProviderConfig;
 import ch.deletescape.lawnchair.dragndrop.DragController;
 import ch.deletescape.lawnchair.dragndrop.DragLayer;
 import ch.deletescape.lawnchair.dragndrop.DragOptions;
@@ -129,7 +128,7 @@ public class Workspace extends PagedView
     private ShortcutAndWidgetContainer mDragSourceInternal;
 
     @Thunk LongArrayMap<CellLayout> mWorkspaceScreens = new LongArrayMap<>();
-    @Thunk ArrayList<Long> mScreenOrder = new ArrayList<Long>();
+    @Thunk ArrayList<Long> mScreenOrder = new ArrayList<>();
 
     @Thunk Runnable mRemoveEmptyScreenRunnable;
     @Thunk boolean mDeferRemoveExtraEmptyScreen = false;
@@ -292,7 +291,7 @@ public class Workspace extends PagedView
     @Thunk int mLastReorderY = -1;
 
     private SparseArray<Parcelable> mSavedStates;
-    private final ArrayList<Integer> mRestoredPages = new ArrayList<Integer>();
+    private final ArrayList<Integer> mRestoredPages = new ArrayList<>();
 
     private float mCurrentScale;
     private float mTransitionProgress;
@@ -1017,7 +1016,7 @@ public class Workspace extends PagedView
         }
 
         int currentPage = getNextPage();
-        ArrayList<Long> removeScreens = new ArrayList<Long>();
+        ArrayList<Long> removeScreens = new ArrayList<>();
         int total = mWorkspaceScreens.size();
         for (int i = 0; i < total; i++) {
             long id = mWorkspaceScreens.keyAt(i);
@@ -3872,7 +3871,7 @@ public class Workspace extends PagedView
      * Returns a list of all the CellLayouts in the workspace.
      */
     ArrayList<CellLayout> getWorkspaceAndHotseatCellLayouts() {
-        ArrayList<CellLayout> layouts = new ArrayList<CellLayout>();
+        ArrayList<CellLayout> layouts = new ArrayList<>();
         int screenCount = getChildCount();
         for (int screen = 0; screen < screenCount; screen++) {
             layouts.add(((CellLayout) getChildAt(screen)));
@@ -3988,7 +3987,7 @@ public class Workspace extends PagedView
                             if (folderAppsToRemove.containsKey(folder)) {
                                 appsToRemove = folderAppsToRemove.get(folder);
                             } else {
-                                appsToRemove = new ArrayList<ShortcutInfo>();
+                                appsToRemove = new ArrayList<>();
                                 folderAppsToRemove.put(folder, appsToRemove);
                             }
                             appsToRemove.add((ShortcutInfo) info);
@@ -4083,7 +4082,7 @@ public class Workspace extends PagedView
 
     void updateShortcuts(ArrayList<ShortcutInfo> shortcuts) {
         int total  = shortcuts.size();
-        final HashSet<ShortcutInfo> updates = new HashSet<ShortcutInfo>(total);
+        final HashSet<ShortcutInfo> updates = new HashSet<>(total);
         final HashSet<Long> folderIds = new HashSet<>();
 
         for (int i = 0; i < total; i++) {

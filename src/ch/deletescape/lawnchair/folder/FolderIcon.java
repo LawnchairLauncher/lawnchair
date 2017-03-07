@@ -115,7 +115,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private float mSlop;
 
     private PreviewItemDrawingParams mTmpParams = new PreviewItemDrawingParams(0, 0, 0, 0);
-    private ArrayList<PreviewItemDrawingParams> mDrawingParams = new ArrayList<PreviewItemDrawingParams>();
+    private ArrayList<PreviewItemDrawingParams> mDrawingParams = new ArrayList<>();
     private Drawable mReferenceDrawable = null;
 
     Paint mBgPaint = new Paint();

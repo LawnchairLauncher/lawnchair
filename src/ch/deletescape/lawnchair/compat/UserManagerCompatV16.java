@@ -25,7 +25,7 @@ public class UserManagerCompatV16 extends UserManagerCompat {
     }
 
     public List<UserHandleCompat> getUserProfiles() {
-        List<UserHandleCompat> profiles = new ArrayList<UserHandleCompat>(1);
+        List<UserHandleCompat> profiles = new ArrayList<>(1);
         profiles.add(UserHandleCompat.myUserHandle());
         return profiles;
     }

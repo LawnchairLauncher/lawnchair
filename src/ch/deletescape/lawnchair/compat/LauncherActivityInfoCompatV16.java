@@ -63,7 +63,7 @@ public class LauncherActivityInfoCompatV16 extends LauncherActivityInfoCompat {
             try {
                 resources = mPm.getResourcesForApplication(mActivityInfo.applicationInfo);
                 icon = resources.getDrawableForDensity(iconRes, density);
-            } catch (NameNotFoundException | Resources.NotFoundException exc) {
+            } catch (NameNotFoundException | Resources.NotFoundException ignored) {
             }
         }
         // Get the default density icon

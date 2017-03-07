@@ -254,8 +254,8 @@ public class Launcher extends Activity
     private boolean mPaused = true;
     private boolean mOnResumeNeedsLoad;
 
-    private ArrayList<Runnable> mBindOnResumeCallbacks = new ArrayList<Runnable>();
-    private ArrayList<Runnable> mOnResumeCallbacks = new ArrayList<Runnable>();
+    private ArrayList<Runnable> mBindOnResumeCallbacks = new ArrayList<>();
+    private ArrayList<Runnable> mOnResumeCallbacks = new ArrayList<>();
     private ViewOnDrawExecutor mPendingExecutor;
 
     private LauncherModel mModel;
@@ -287,7 +287,7 @@ public class Launcher extends Activity
     // match the sensor state.
     private static final int RESTORE_SCREEN_ORIENTATION_DELAY = 500;
 
-    private final ArrayList<Integer> mSynchronouslyBoundPages = new ArrayList<Integer>();
+    private final ArrayList<Integer> mSynchronouslyBoundPages = new ArrayList<>();
 
     // We only want to get the SharedPreferences once since it does an FS stat each time we get
     // it from the context.
@@ -310,7 +310,7 @@ public class Launcher extends Activity
     private BubbleTextView mWaitingForResume;
 
     protected static HashMap<String, CustomAppWidget> sCustomAppWidgets =
-            new HashMap<String, CustomAppWidget>();
+            new HashMap<>();
 
     // Exiting spring loaded mode happens with a delay. This runnable object triggers the
     // state transition. If another state transition happened during this delay,
@@ -3579,7 +3579,7 @@ public class Launcher extends Activity
 
         // Get the list of added shortcuts and intersect them with the set of shortcuts here
         final AnimatorSet anim = LauncherAnimUtils.createAnimatorSet();
-        final Collection<Animator> bounceAnims = new ArrayList<Animator>();
+        final Collection<Animator> bounceAnims = new ArrayList<>();
         final boolean animateIcons = forceAnimateIcons && canRunNewAppsAnimation();
         Workspace workspace = mWorkspace;
         long newShortcutsScreenId = -1;
@@ -4213,7 +4213,7 @@ public class Launcher extends Activity
     }
 
     private boolean shouldShowDiscoveryBounce() {
-        if (mState != mState.WORKSPACE) {
+        if (mState != State.WORKSPACE) {
             return false;
         }
         if (mLauncherCallbacks != null && mLauncherCallbacks.shouldShowDiscoveryBounce()) {

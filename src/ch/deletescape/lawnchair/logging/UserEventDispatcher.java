@@ -25,8 +25,6 @@ import android.view.ViewParent;
 
 import ch.deletescape.lawnchair.DropTarget;
 import ch.deletescape.lawnchair.ItemInfo;
-import ch.deletescape.lawnchair.Utilities;
-import ch.deletescape.lawnchair.config.ProviderConfig;
 import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto.Action;
 import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto.LauncherEvent;
 import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto.Target;

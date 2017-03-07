@@ -29,8 +29,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.SparseArray;
 
-import ch.deletescape.lawnchair.config.ProviderConfig;
-
 import java.nio.ByteBuffer;
 
 import ch.deletescape.lawnchair.R;

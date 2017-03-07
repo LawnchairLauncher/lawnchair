@@ -497,7 +497,7 @@ public class DeviceProfile {
         if (hasVerticalBarLayout) {
             // Vertical hotseat -- The hotseat is fixed in the layout to be on the right of the
             //                     screen regardless of RTL
-            lp.gravity = Gravity.RIGHT;
+            lp.gravity = Gravity.END;
             lp.width = hotseatBarHeightPx + mInsets.left + mInsets.right;
             lp.height = LayoutParams.MATCH_PARENT;
             hotseat.getLayout().setPadding(mInsets.left, mInsets.top, mInsets.right,
@@ -548,7 +548,7 @@ public class DeviceProfile {
         ViewGroup overviewMode = launcher.getOverviewPanel();
         if (overviewMode != null) {
             lp = (FrameLayout.LayoutParams) overviewMode.getLayoutParams();
-            lp.gravity = Gravity.LEFT | Gravity.BOTTOM;
+            lp.gravity = Gravity.START | Gravity.BOTTOM;
 
             int visibleChildCount = getVisibleChildCount(overviewMode);
             int totalItemWidth = visibleChildCount * overviewModeBarItemWidthPx;

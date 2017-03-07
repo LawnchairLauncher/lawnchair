@@ -103,7 +103,7 @@ public class LauncherDbUtils {
      * Parses the cursor containing workspace screens table and returns the list of screen IDs
      */
     public static ArrayList<Long> getScreenIdsFromCursor(Cursor sc) {
-        ArrayList<Long> screenIds = new ArrayList<Long>();
+        ArrayList<Long> screenIds = new ArrayList<>();
         try {
             final int idIndex = sc.getColumnIndexOrThrow(WorkspaceScreens._ID);
             while (sc.moveToNext()) {

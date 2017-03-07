@@ -302,7 +302,7 @@ public class AutoInstallsLayout {
     }
 
     protected HashMap<String, TagParser> getFolderElementsMap() {
-        HashMap<String, TagParser> parsers = new HashMap<String, TagParser>();
+        HashMap<String, TagParser> parsers = new HashMap<>();
         parsers.put(TAG_APP_ICON, new AppShortcutParser());
         parsers.put(TAG_AUTO_INSTALL, new AutoInstallParser());
         parsers.put(TAG_SHORTCUT, new ShortcutParser(mSourceRes));
@@ -310,7 +310,7 @@ public class AutoInstallsLayout {
     }
 
     protected HashMap<String, TagParser> getLayoutElementsMap() {
-        HashMap<String, TagParser> parsers = new HashMap<String, TagParser>();
+        HashMap<String, TagParser> parsers = new HashMap<>();
         parsers.put(TAG_APP_ICON, new AppShortcutParser());
         parsers.put(TAG_AUTO_INSTALL, new AutoInstallParser());
         parsers.put(TAG_FOLDER, new FolderParser());
@@ -558,7 +558,7 @@ public class AutoInstallsLayout {
             }
 
             final ContentValues myValues = new ContentValues(mValues);
-            ArrayList<Long> folderItems = new ArrayList<Long>();
+            ArrayList<Long> folderItems = new ArrayList<>();
 
             int type;
             int folderDepth = parser.getDepth();

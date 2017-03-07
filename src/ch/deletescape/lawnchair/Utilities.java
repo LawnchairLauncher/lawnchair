@@ -63,7 +63,6 @@ import android.view.accessibility.AccessibilityManager;
 import android.widget.Toast;
 
 import ch.deletescape.lawnchair.compat.UserHandleCompat;
-import ch.deletescape.lawnchair.config.ProviderConfig;
 import ch.deletescape.lawnchair.graphics.ShadowGenerator;
 import ch.deletescape.lawnchair.util.IconNormalizer;
 
@@ -392,7 +391,7 @@ public final class Utilities {
      */
     public static float mapCoordInSelfToDescendent(View descendant, View root,
                                                    int[] coord) {
-        ArrayList<View> ancestorChain = new ArrayList<View>();
+        ArrayList<View> ancestorChain = new ArrayList<>();
 
         float[] pt = {coord[0], coord[1]};
 
@@ -583,7 +582,7 @@ public final class Utilities {
             }
         }
 
-        SparseArray<Float> rgbScores = new SparseArray<Float>();
+        SparseArray<Float> rgbScores = new SparseArray<>();
         int bestColor = 0xff000000;
         highScore = -1;
         // Go back over the RGB colors that match the winning hue,
@@ -817,7 +816,7 @@ public final class Utilities {
                 WallpaperManager wm = context.getSystemService(WallpaperManager.class);
                 return (Boolean) wm.getClass().getDeclaredMethod("isSetWallpaperAllowed")
                         .invoke(wm);
-            } catch (Exception e) { }
+            } catch (Exception ignored) { }
         }
         return true;
     }

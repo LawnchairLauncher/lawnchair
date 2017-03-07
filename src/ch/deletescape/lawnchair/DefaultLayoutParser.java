@@ -65,7 +65,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     }
 
     @Thunk HashMap<String, TagParser> getFolderElementsMap(Resources res) {
-        HashMap<String, TagParser> parsers = new HashMap<String, TagParser>();
+        HashMap<String, TagParser> parsers = new HashMap<>();
         parsers.put(TAG_FAVORITE, new AppShortcutWithUriParser());
         parsers.put(TAG_SHORTCUT, new UriShortcutParser(res));
         return parsers;
@@ -73,7 +73,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
 
     @Override
     protected HashMap<String, TagParser> getLayoutElementsMap() {
-        HashMap<String, TagParser> parsers = new HashMap<String, TagParser>();
+        HashMap<String, TagParser> parsers = new HashMap<>();
         parsers.put(TAG_FAVORITE, new AppShortcutWithUriParser());
         parsers.put(TAG_APPWIDGET, new AppWidgetParser());
         parsers.put(TAG_SHORTCUT, new UriShortcutParser(mSourceRes));

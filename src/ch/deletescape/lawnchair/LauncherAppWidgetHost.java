@@ -34,7 +34,7 @@ import java.util.ArrayList;
  */
 public class LauncherAppWidgetHost extends AppWidgetHost {
 
-    private final ArrayList<Runnable> mProviderChangeListeners = new ArrayList<Runnable>();
+    private final ArrayList<Runnable> mProviderChangeListeners = new ArrayList<>();
 
     private Launcher mLauncher;
 

@@ -56,7 +56,7 @@ import ch.deletescape.lawnchair.R;
 public class BubbleTextView extends TextView
         implements BaseRecyclerViewFastScrollBar.FastScrollFocusableView {
 
-    private static SparseArray<Theme> sPreloaderThemes = new SparseArray<Theme>(2);
+    private static SparseArray<Theme> sPreloaderThemes = new SparseArray<>(2);
 
     // Dimensions in DP
     private static final float AMBIENT_SHADOW_RADIUS = 2.5f;
@@ -638,7 +638,7 @@ public class BubbleTextView extends TextView
                 animate().scaleX(focusState.viewScale)
                         .scaleY(focusState.viewScale)
                         .setStartDelay(getStartDelayForStateChange(prevState, focusState))
-                        .setDuration(d.getDurationForStateChange(prevState, focusState))
+                        .setDuration(FastBitmapDrawable.getDurationForStateChange(prevState, focusState))
                         .start();
             }
         } else {

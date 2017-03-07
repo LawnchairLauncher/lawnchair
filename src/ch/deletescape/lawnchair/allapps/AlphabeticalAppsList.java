@@ -22,7 +22,6 @@ import ch.deletescape.lawnchair.AppInfo;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.compat.AlphabeticIndexCompat;
 import ch.deletescape.lawnchair.compat.UserHandleCompat;
-import ch.deletescape.lawnchair.config.ProviderConfig;
 import ch.deletescape.lawnchair.model.AppNameComparator;
 import ch.deletescape.lawnchair.util.ComponentKey;
 

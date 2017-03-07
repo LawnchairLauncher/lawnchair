@@ -31,7 +31,7 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d×%2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"ширина од %1$d и висина од %2$d"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Претражите апликације"</string>
-    <string name="all_apps_loading_message" msgid="7557140873644765180">"Апликације се учитавају..."</string>
+    <string name="all_apps_loading_message" msgid="7557140873644765180">"Апликације се учитавају…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Није пронађена ниједна апликација за „<xliff:g id="QUERY">%1$s</xliff:g>“"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Претражи још апликација"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Нема више простора на овом почетном екрану."</string>

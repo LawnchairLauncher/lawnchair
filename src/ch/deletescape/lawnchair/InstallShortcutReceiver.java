@@ -78,9 +78,9 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             if (encoded != null) {
                 Set<String> strings = sharedPrefs.getStringSet(APPS_PENDING_INSTALL, null);
                 if (strings == null) {
-                    strings = new HashSet<String>(1);
+                    strings = new HashSet<>(1);
                 } else {
-                    strings = new HashSet<String>(strings);
+                    strings = new HashSet<>(strings);
                 }
                 strings.add(encoded);
                 sharedPrefs.edit().putStringSet(APPS_PENDING_INSTALL, strings).apply();
@@ -101,7 +101,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                         + ", removing packages: " + packageNames);
             }
             if (strings != null) {
-                Set<String> newStrings = new HashSet<String>(strings);
+                Set<String> newStrings = new HashSet<>(strings);
                 Iterator<String> newStringsIter = newStrings.iterator();
                 while (newStringsIter.hasNext()) {
                     String encoded = newStringsIter.next();
@@ -122,10 +122,10 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             Set<String> strings = sharedPrefs.getStringSet(APPS_PENDING_INSTALL, null);
             if (DBG) Log.d(TAG, "Getting and clearing APPS_PENDING_INSTALL: " + strings);
             if (strings == null) {
-                return new ArrayList<PendingInstallShortcutInfo>();
+                return new ArrayList<>();
             }
             ArrayList<PendingInstallShortcutInfo> infos =
-                new ArrayList<PendingInstallShortcutInfo>();
+                    new ArrayList<>();
             for (String encoded : strings) {
                 PendingInstallShortcutInfo info = decode(encoded, context);
                 if (info != null) {
@@ -218,7 +218,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         ArrayList<PendingInstallShortcutInfo> installQueue = getAndClearInstallQueue(sp, context);
         if (!installQueue.isEmpty()) {
             Iterator<PendingInstallShortcutInfo> iter = installQueue.iterator();
-            ArrayList<ItemInfo> addShortcuts = new ArrayList<ItemInfo>();
+            ArrayList<ItemInfo> addShortcuts = new ArrayList<>();
             while (iter.hasNext()) {
                 final PendingInstallShortcutInfo pendingInfo = iter.next();
 

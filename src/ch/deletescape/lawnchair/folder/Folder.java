@@ -30,7 +30,6 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.text.InputType;
 import android.text.Selection;
-import android.text.Spannable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ActionMode;
@@ -130,7 +129,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private final Alarm mOnScrollHintAlarm = new Alarm();
     @Thunk final Alarm mScrollPauseAlarm = new Alarm();
 
-    @Thunk final ArrayList<View> mItemsInReadingOrder = new ArrayList<View>();
+    @Thunk final ArrayList<View> mItemsInReadingOrder = new ArrayList<>();
 
     private final int mExpandDuration;
     private final int mMaterialExpandDuration;
@@ -989,7 +988,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     private void updateItemLocationsInDatabaseBatch() {
         ArrayList<View> list = getItemsInReadingOrder();
-        ArrayList<ItemInfo> items = new ArrayList<ItemInfo>();
+        ArrayList<ItemInfo> items = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             View v = list.get(i);
             ItemInfo info = (ItemInfo) v.getTag();

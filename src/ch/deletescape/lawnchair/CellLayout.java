@@ -26,11 +26,9 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
@@ -51,7 +49,6 @@ import ch.deletescape.lawnchair.LauncherSettings.Favorites;
 import ch.deletescape.lawnchair.accessibility.DragAndDropAccessibilityDelegate;
 import ch.deletescape.lawnchair.accessibility.FolderAccessibilityHelper;
 import ch.deletescape.lawnchair.accessibility.WorkspaceAccessibilityHelper;
-import ch.deletescape.lawnchair.config.ProviderConfig;
 import ch.deletescape.lawnchair.folder.FolderIcon;
 import ch.deletescape.lawnchair.graphics.DragPreviewProvider;
 import ch.deletescape.lawnchair.util.CellAndSpan;
@@ -110,7 +107,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     private OnTouchListener mInterceptTouchListener;
     private StylusEventHelper mStylusEventHelper;
 
-    private ArrayList<FolderIcon.PreviewBackground> mFolderBackgrounds = new ArrayList<FolderIcon.PreviewBackground>();
+    private ArrayList<FolderIcon.PreviewBackground> mFolderBackgrounds = new ArrayList<>();
     FolderIcon.PreviewBackground mFolderLeaveBehind = new FolderIcon.PreviewBackground();
     Paint mFolderBgPaint = new Paint();
 
@@ -166,7 +163,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     private static final int REORDER_ANIMATION_DURATION = 150;
     @Thunk float mReorderPreviewAnimationMagnitude;
 
-    private ArrayList<View> mIntersectingViews = new ArrayList<View>();
+    private ArrayList<View> mIntersectingViews = new ArrayList<>();
     private Rect mOccupiedRect = new Rect();
     private int[] mDirectionVector = new int[2];
     int[] mPreviousReorderDirection = new int[2];
@@ -995,7 +992,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             va.addUpdateListener(new AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    float r = ((Float) animation.getAnimatedValue()).floatValue();
+                    float r = (Float) animation.getAnimatedValue();
                     lp.x = (int) ((1 - r) * oldX + r * newX);
                     lp.y = (int) ((1 - r) * oldY + r * newY);
                     child.requestLayout();
@@ -1137,7 +1134,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 result, resultSpan);
     }
 
-    private final Stack<Rect> mTempRectStack = new Stack<Rect>();
+    private final Stack<Rect> mTempRectStack = new Stack<>();
     private void lazyInitTempRectStack() {
         if (mTempRectStack.isEmpty()) {
             for (int i = 0; i < mCountX * mCountY; i++) {
@@ -1182,7 +1179,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         final int[] bestXY = result != null ? result : new int[2];
         double bestDistance = Double.MAX_VALUE;
         final Rect bestRect = new Rect(-1, -1, -1, -1);
-        final Stack<Rect> validRegions = new Stack<Rect>();
+        final Stack<Rect> validRegions = new Stack<>();
 
         final int countX = mCountX;
         final int countY = mCountY;
@@ -1831,7 +1828,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             }
         }
 
-        solution.intersectingViews = new ArrayList<View>(mIntersectingViews);
+        solution.intersectingViews = new ArrayList<>(mIntersectingViews);
 
         // First we try to find a solution which respects the push mechanic. That is,
         // we try to find a solution such that no displaced item travels through another item
@@ -2076,7 +2073,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             va.addUpdateListener(new AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    float r = ((Float) animation.getAnimatedValue()).floatValue();
+                    float r = (Float) animation.getAnimatedValue();
                     float r1 = (mode == MODE_HINT && repeating) ? 1.0f : r;
                     float x = r1 * finalDeltaX + (1 - r1) * initDeltaX;
                     float y = r1 * finalDeltaY + (1 - r1) * initDeltaY;
@@ -2434,9 +2431,9 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     }
 
     private static class ItemConfiguration extends CellAndSpan {
-        HashMap<View, CellAndSpan> map = new HashMap<View, CellAndSpan>();
-        private HashMap<View, CellAndSpan> savedMap = new HashMap<View, CellAndSpan>();
-        ArrayList<View> sortedViews = new ArrayList<View>();
+        HashMap<View, CellAndSpan> map = new HashMap<>();
+        private HashMap<View, CellAndSpan> savedMap = new HashMap<>();
+        ArrayList<View> sortedViews = new ArrayList<>();
         ArrayList<View> intersectingViews;
         boolean isSolution = false;
 

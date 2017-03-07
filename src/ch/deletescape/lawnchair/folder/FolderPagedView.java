@@ -175,8 +175,8 @@ public class FolderPagedView extends PagedView {
      * @return list of items that could not be bound, probably because we hit the max size limit.
      */
     public ArrayList<ShortcutInfo> bindItems(ArrayList<ShortcutInfo> items) {
-        ArrayList<View> icons = new ArrayList<View>();
-        ArrayList<ShortcutInfo> extra = new ArrayList<ShortcutInfo>();
+        ArrayList<View> icons = new ArrayList<>();
+        ArrayList<ShortcutInfo> extra = new ArrayList<>();
 
         for (ShortcutInfo item : items) {
             if (!ALLOW_FOLDER_SCROLL && icons.size() >= mMaxItemsPerPage) {
@@ -305,7 +305,7 @@ public class FolderPagedView extends PagedView {
 
     @SuppressLint("RtlHardcoded")
     private void arrangeChildren(ArrayList<View> list, int itemCount, boolean saveChanges) {
-        ArrayList<CellLayout> pages = new ArrayList<CellLayout>();
+        ArrayList<CellLayout> pages = new ArrayList<>();
         for (int i = 0; i < getChildCount(); i++) {
             CellLayout page = (CellLayout) getChildAt(i);
             page.removeAllViews();

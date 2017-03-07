@@ -31,7 +31,7 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d plotis ir %2$d aukštis"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Ieškoti programų"</string>
-    <string name="all_apps_loading_message" msgid="7557140873644765180">"Įkeliamos programos..."</string>
+    <string name="all_apps_loading_message" msgid="7557140873644765180">"Įkeliamos programos…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Nerasta jokių užklausą „<xliff:g id="QUERY">%1$s</xliff:g>“ atitinkančių programų"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Ieškoti daugiau programų"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Šiame pagrindiniame ekrane vietos nebėra."</string>

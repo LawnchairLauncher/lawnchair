@@ -17,7 +17,6 @@
 package ch.deletescape.lawnchair;
 
 import android.animation.TimeInterpolator;
-import android.content.Context;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 

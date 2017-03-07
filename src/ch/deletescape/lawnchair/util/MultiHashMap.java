@@ -45,7 +45,7 @@ public class MultiHashMap<K, V> extends HashMap<K, ArrayList<V>> {
     public MultiHashMap<K, V> clone() {
         MultiHashMap<K, V> map = new MultiHashMap<>(size());
         for (Entry<K, ArrayList<V>> entry : entrySet()) {
-            map.put(entry.getKey(), new ArrayList<V>(entry.getValue()));
+            map.put(entry.getKey(), new ArrayList<>(entry.getValue()));
         }
         return map;
     }

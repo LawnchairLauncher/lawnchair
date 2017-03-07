@@ -55,9 +55,9 @@ public class FolderInfo extends ItemInfo {
     /**
      * The apps and shortcuts
      */
-    public ArrayList<ShortcutInfo> contents = new ArrayList<ShortcutInfo>();
+    public ArrayList<ShortcutInfo> contents = new ArrayList<>();
 
-    ArrayList<FolderListener> listeners = new ArrayList<FolderListener>();
+    ArrayList<FolderListener> listeners = new ArrayList<>();
 
     public FolderInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_FOLDER;

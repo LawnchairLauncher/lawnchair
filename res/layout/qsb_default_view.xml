@@ -30,6 +30,7 @@
         android:layout_weight="1"
         android:gravity="center_vertical"
         android:paddingStart="16dp"
+        android:paddingEnd="0dp"
         android:text="@string/abandoned_search"
         android:textColor="@color/quantum_panel_text_color"
         android:textAppearance="?android:textAppearanceMedium"

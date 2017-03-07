@@ -59,16 +59,13 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
             int result = cr.update(Favorites.CONTENT_URI, values,
                     "appWidgetId=? and (restored & 1) = 1", widgetIdParams);
             if (result == 0) {
-                Cursor cursor = cr.query(Favorites.CONTENT_URI,
-                        new String[] {Favorites.APPWIDGET_ID},
-                        "appWidgetId=?", widgetIdParams, null);
-                try {
+                try (Cursor cursor = cr.query(Favorites.CONTENT_URI,
+                        new String[]{Favorites.APPWIDGET_ID},
+                        "appWidgetId=?", widgetIdParams, null)) {
                     if (!cursor.moveToFirst()) {
                         // The widget no long exists.
                         appWidgetHost.deleteAppWidgetId(newWidgetIds[i]);
                     }
-                } finally {
-                    cursor.close();
                 }
             }
         }

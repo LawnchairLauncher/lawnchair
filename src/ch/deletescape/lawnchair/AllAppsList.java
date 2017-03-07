@@ -38,14 +38,14 @@ class AllAppsList {
 
     /** The list off all apps. */
     public ArrayList<AppInfo> data =
-            new ArrayList<AppInfo>(DEFAULT_APPLICATIONS_NUMBER);
+            new ArrayList<>(DEFAULT_APPLICATIONS_NUMBER);
     /** The list of apps that have been added since the last notify() call. */
     public ArrayList<AppInfo> added =
-            new ArrayList<AppInfo>(DEFAULT_APPLICATIONS_NUMBER);
+            new ArrayList<>(DEFAULT_APPLICATIONS_NUMBER);
     /** The list of apps that have been removed since the last notify() call. */
-    public ArrayList<AppInfo> removed = new ArrayList<AppInfo>();
+    public ArrayList<AppInfo> removed = new ArrayList<>();
     /** The list of apps that have been modified since the last notify() call. */
-    public ArrayList<AppInfo> modified = new ArrayList<AppInfo>();
+    public ArrayList<AppInfo> modified = new ArrayList<>();
 
     private IconCache mIconCache;
 

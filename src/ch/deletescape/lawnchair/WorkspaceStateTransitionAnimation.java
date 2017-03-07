@@ -479,7 +479,7 @@ public class WorkspaceStateTransitionAnimation {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
                         dragLayer.setBackgroundAlpha(
-                                ((Float)animation.getAnimatedValue()).floatValue());
+                                (Float) animation.getAnimatedValue());
                     }
                 });
                 bgFadeOutAnimation.setInterpolator(new DecelerateInterpolator(1.5f));

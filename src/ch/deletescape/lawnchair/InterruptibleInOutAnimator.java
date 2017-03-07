@@ -65,7 +65,7 @@ public class InterruptibleInOutAnimator {
         final long currentPlayTime = mAnimator.getCurrentPlayTime();
         final float toValue = (direction == IN) ? mOriginalToValue : mOriginalFromValue;
         final float startValue = mFirstRun ? mOriginalFromValue :
-                ((Float) mAnimator.getAnimatedValue()).floatValue();
+                (Float) mAnimator.getAnimatedValue();
 
         // Make sure it's stopped before we modify any values
         cancel();

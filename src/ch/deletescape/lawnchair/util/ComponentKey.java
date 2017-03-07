@@ -50,7 +50,7 @@ public class ComponentKey {
             Long componentUser = Long.valueOf(componentKeyStr.substring(userDelimiterIndex + 1));
             componentName = ComponentName.unflattenFromString(componentStr);
             user = UserManagerCompat.getInstance(context)
-                    .getUserForSerialNumber(componentUser.longValue());
+                    .getUserForSerialNumber(componentUser);
         } else {
             // No user provided, default to the current user
             componentName = ComponentName.unflattenFromString(componentKeyStr);

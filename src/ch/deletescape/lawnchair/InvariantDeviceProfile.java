@@ -26,7 +26,6 @@ import android.util.Xml;
 import android.view.Display;
 import android.view.WindowManager;
 
-import ch.deletescape.lawnchair.config.ProviderConfig;
 import ch.deletescape.lawnchair.util.Thunk;
 
 import org.xmlpull.v1.XmlPullParser;

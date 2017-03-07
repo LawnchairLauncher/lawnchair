@@ -29,7 +29,7 @@ import java.util.HashSet;
 import java.util.WeakHashMap;
 
 public class LauncherAnimUtils {
-    static WeakHashMap<Animator, Object> sAnimators = new WeakHashMap<Animator, Object>();
+    static WeakHashMap<Animator, Object> sAnimators = new WeakHashMap<>();
     static Animator.AnimatorListener sEndAnimListener = new Animator.AnimatorListener() {
         public void onAnimationStart(Animator animation) {
             sAnimators.put(animation, null);
@@ -77,7 +77,7 @@ public class LauncherAnimUtils {
     }
 
     public static void onDestroyActivity() {
-        HashSet<Animator> animators = new HashSet<Animator>(sAnimators.keySet());
+        HashSet<Animator> animators = new HashSet<>(sAnimators.keySet());
         for (Animator a : animators) {
             if (a.isRunning()) {
                 a.cancel();

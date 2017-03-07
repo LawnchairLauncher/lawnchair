@@ -129,7 +129,7 @@ public class LauncherModel extends BroadcastReceiver
      * Set of runnables to be called on the background thread after the workspace binding
      * is complete.
      */
-    static final ArrayList<Runnable> mBindCompleteRunnables = new ArrayList<Runnable>();
+    static final ArrayList<Runnable> mBindCompleteRunnables = new ArrayList<>();
 
     @Thunk WeakReference<Callbacks> mCallbacks;
 
@@ -168,17 +168,17 @@ public class LauncherModel extends BroadcastReceiver
     // sBgWorkspaceItems is passed to bindItems, which expects a list of all folders and shortcuts
     //       created by LauncherModel that are directly on the home screen (however, no widgets or
     //       shortcuts within folders).
-    static final ArrayList<ItemInfo> sBgWorkspaceItems = new ArrayList<ItemInfo>();
+    static final ArrayList<ItemInfo> sBgWorkspaceItems = new ArrayList<>();
 
     // sBgAppWidgets is all LauncherAppWidgetInfo created by LauncherModel. Passed to bindAppWidget()
     static final ArrayList<LauncherAppWidgetInfo> sBgAppWidgets =
-        new ArrayList<LauncherAppWidgetInfo>();
+            new ArrayList<>();
 
     // sBgFolders is all FolderInfos created by LauncherModel. Passed to bindFolders()
     static final LongArrayMap<FolderInfo> sBgFolders = new LongArrayMap<>();
 
     // sBgWorkspaceScreens is the ordered set of workspace screens.
-    static final ArrayList<Long> sBgWorkspaceScreens = new ArrayList<Long>();
+    static final ArrayList<Long> sBgWorkspaceScreens = new ArrayList<>();
 
     // sBgPinnedShortcutCounts is the ComponentKey representing a pinned shortcut to the number of
     // times it is pinned.
@@ -186,7 +186,7 @@ public class LauncherModel extends BroadcastReceiver
 
     // sPendingPackages is a set of packages which could be on sdcard and are not available yet
     static final HashMap<UserHandleCompat, HashSet<String>> sPendingPackages =
-            new HashMap<UserHandleCompat, HashSet<String>>();
+            new HashMap<>();
 
     // </ only access in worker thread >
 
@@ -484,8 +484,8 @@ public class LauncherModel extends BroadcastReceiver
         // Process the newly added applications and add them to the database first
         Runnable r = new Runnable() {
             public void run() {
-                final ArrayList<ItemInfo> addedShortcutsFinal = new ArrayList<ItemInfo>();
-                final ArrayList<Long> addedWorkspaceScreensFinal = new ArrayList<Long>();
+                final ArrayList<ItemInfo> addedShortcutsFinal = new ArrayList<>();
+                final ArrayList<Long> addedWorkspaceScreensFinal = new ArrayList<>();
 
                 // Get the list of workspace screens.  We need to append to this list and
                 // can not use sBgWorkspaceScreens because loadWorkspace() may not have been
@@ -532,8 +532,8 @@ public class LauncherModel extends BroadcastReceiver
                         public void run() {
                             Callbacks cb = getCallback();
                             if (callbacks == cb && cb != null) {
-                                final ArrayList<ItemInfo> addAnimated = new ArrayList<ItemInfo>();
-                                final ArrayList<ItemInfo> addNotAnimated = new ArrayList<ItemInfo>();
+                                final ArrayList<ItemInfo> addAnimated = new ArrayList<>();
+                                final ArrayList<ItemInfo> addNotAnimated = new ArrayList<>();
                                 if (!addedShortcutsFinal.isEmpty()) {
                                     ItemInfo info = addedShortcutsFinal.get(addedShortcutsFinal.size() - 1);
                                     long lastScreenId = info.screenId;
@@ -646,7 +646,7 @@ public class LauncherModel extends BroadcastReceiver
         Runnable r = new Runnable() {
             public void run() {
                 ArrayList<ContentProviderOperation> ops =
-                        new ArrayList<ContentProviderOperation>();
+                        new ArrayList<>();
                 int count = items.size();
                 for (int i = 0; i < count; i++) {
                     ItemInfo item = items.get(i);
@@ -746,7 +746,7 @@ public class LauncherModel extends BroadcastReceiver
     public static void moveItemsInDatabase(Context context, final ArrayList<ItemInfo> items,
             final long container, final int screen) {
 
-        ArrayList<ContentValues> contentValues = new ArrayList<ContentValues>();
+        ArrayList<ContentValues> contentValues = new ArrayList<>();
         int count = items.size();
 
         for (int i = 0; i < count; i++) {
@@ -953,7 +953,7 @@ public class LauncherModel extends BroadcastReceiver
      * Removes the specified item from the database
      */
     public static void deleteItemFromDatabase(Context context, final ItemInfo item) {
-        ArrayList<ItemInfo> items = new ArrayList<ItemInfo>();
+        ArrayList<ItemInfo> items = new ArrayList<>();
         items.add(item);
         deleteItemsFromDatabase(context, items);
     }
@@ -1043,7 +1043,7 @@ public class LauncherModel extends BroadcastReceiver
      * a list of screen ids in the order that they should appear.
      */
     public void updateWorkspaceScreenOrder(Context context, final ArrayList<Long> screens) {
-        final ArrayList<Long> screensCopy = new ArrayList<Long>(screens);
+        final ArrayList<Long> screensCopy = new ArrayList<>(screens);
         final ContentResolver cr = context.getContentResolver();
         final Uri uri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
 
@@ -1059,7 +1059,7 @@ public class LauncherModel extends BroadcastReceiver
         Runnable r = new Runnable() {
             @Override
             public void run() {
-                ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+                ArrayList<ContentProviderOperation> ops = new ArrayList<>();
                 // Clear the table
                 ops.add(ContentProviderOperation.newDelete(uri).build());
                 int count = screensCopy.size();
@@ -1873,7 +1873,7 @@ public class LauncherModel extends BroadcastReceiver
                                             Log.d(TAG, "Invalid package: " + cn + " (check again later)");
                                             HashSet<String> pkgs = sPendingPackages.get(user);
                                             if (pkgs == null) {
-                                                pkgs = new HashSet<String>();
+                                                pkgs = new HashSet<>();
                                                 sPendingPackages.put(user, pkgs);
                                             }
                                             pkgs.add(cn.getPackageName());
@@ -2270,7 +2270,7 @@ public class LauncherModel extends BroadcastReceiver
                 }
 
                 // Remove any empty screens
-                ArrayList<Long> unusedScreens = new ArrayList<Long>(sBgWorkspaceScreens);
+                ArrayList<Long> unusedScreens = new ArrayList<>(sBgWorkspaceScreens);
                 for (ItemInfo item: sBgItemsIdMap) {
                     long screenId = item.screenId;
                     if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
@@ -2333,7 +2333,7 @@ public class LauncherModel extends BroadcastReceiver
             // Order the set of items by their containers first, this allows use to walk through the
             // list sequentially, build up a list of containers that are in the specified screen,
             // as well as all items in those containers.
-            Set<Long> itemsOnScreen = new HashSet<Long>();
+            Set<Long> itemsOnScreen = new HashSet<>();
             Collections.sort(allWorkspaceItems, new Comparator<ItemInfo>() {
                 @Override
                 public int compare(ItemInfo lhs, ItemInfo rhs) {
@@ -2745,7 +2745,7 @@ public class LauncherModel extends BroadcastReceiver
             }
             // Huh? Shouldn't this be inside the Runnable below?
             final ArrayList<AppInfo> added = mBgAllAppsList.added;
-            mBgAllAppsList.added = new ArrayList<AppInfo>();
+            mBgAllAppsList.added = new ArrayList<>();
 
             // Post callback on main thread
             mHandler.post(new Runnable() {
@@ -2937,8 +2937,8 @@ public class LauncherModel extends BroadcastReceiver
                 final LauncherAppsCompat launcherApps = LauncherAppsCompat
                         .getInstance(mApp.getContext());
                 final PackageManager manager = context.getPackageManager();
-                final ArrayList<String> packagesRemoved = new ArrayList<String>();
-                final ArrayList<String> packagesUnavailable = new ArrayList<String>();
+                final ArrayList<String> packagesRemoved = new ArrayList<>();
+                final ArrayList<String> packagesUnavailable = new ArrayList<>();
                 for (Entry<UserHandleCompat, HashSet<String>> entry : sPendingPackages.entrySet()) {
                     UserHandleCompat user = entry.getKey();
                     packagesRemoved.clear();
@@ -3060,7 +3060,7 @@ public class LauncherModel extends BroadcastReceiver
 
             ArrayList<AppInfo> added = null;
             ArrayList<AppInfo> modified = null;
-            final ArrayList<AppInfo> removedApps = new ArrayList<AppInfo>();
+            final ArrayList<AppInfo> removedApps = new ArrayList<>();
 
             if (mBgAllAppsList.added.size() > 0) {
                 added = new ArrayList<>(mBgAllAppsList.added);
@@ -3103,9 +3103,9 @@ public class LauncherModel extends BroadcastReceiver
 
             // Update shortcut infos
             if (mOp == OP_ADD || flagOp != FlagOp.NO_OP) {
-                final ArrayList<ShortcutInfo> updatedShortcuts = new ArrayList<ShortcutInfo>();
-                final ArrayList<ShortcutInfo> removedShortcuts = new ArrayList<ShortcutInfo>();
-                final ArrayList<LauncherAppWidgetInfo> widgets = new ArrayList<LauncherAppWidgetInfo>();
+                final ArrayList<ShortcutInfo> updatedShortcuts = new ArrayList<>();
+                final ArrayList<ShortcutInfo> removedShortcuts = new ArrayList<>();
+                final ArrayList<LauncherAppWidgetInfo> widgets = new ArrayList<>();
 
                 synchronized (sBgLock) {
                     for (ItemInfo info : sBgItemsIdMap) {
@@ -3313,7 +3313,7 @@ public class LauncherModel extends BroadcastReceiver
             public void run() {
                 info.updateFromDeepShortcutInfo(
                         fullDetail, LauncherAppState.getInstance().getContext());
-                ArrayList<ShortcutInfo> update = new ArrayList<ShortcutInfo>();
+                ArrayList<ShortcutInfo> update = new ArrayList<>();
                 update.add(info);
                 bindUpdatedShortcuts(update, fullDetail.getUserHandle());
             }
@@ -3643,7 +3643,7 @@ public class LauncherModel extends BroadcastReceiver
 
     static ArrayList<ItemInfo> filterItemInfos(Iterable<ItemInfo> infos,
             ItemInfoFilter f) {
-        HashSet<ItemInfo> filtered = new HashSet<ItemInfo>();
+        HashSet<ItemInfo> filtered = new HashSet<>();
         for (ItemInfo i : infos) {
             if (i instanceof ShortcutInfo) {
                 ShortcutInfo info = (ShortcutInfo) i;
@@ -3667,7 +3667,7 @@ public class LauncherModel extends BroadcastReceiver
                 }
             }
         }
-        return new ArrayList<ItemInfo>(filtered);
+        return new ArrayList<>(filtered);
     }
 
     @Thunk ArrayList<ItemInfo> getItemInfoForComponentName(final ComponentName cname,
