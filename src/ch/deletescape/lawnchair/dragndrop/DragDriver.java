@@ -221,4 +221,4 @@ class InternalDragDriver extends DragDriver {
 
     @Override
     public boolean onDragEvent (DragEvent event) { return false; }
-};
+}

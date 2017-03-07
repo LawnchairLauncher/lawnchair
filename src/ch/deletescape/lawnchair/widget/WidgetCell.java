@@ -31,7 +31,6 @@ import android.widget.TextView;
 import ch.deletescape.lawnchair.DeviceProfile;
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Launcher;
-import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.SimpleOnStylusPressListener;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.StylusEventHelper;

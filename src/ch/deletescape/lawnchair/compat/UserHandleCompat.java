@@ -20,7 +20,6 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.UserHandle;
-import ch.deletescape.lawnchair.Utilities;
 
 public class UserHandleCompat {
     private UserHandle mUser;

@@ -28,7 +28,6 @@ import android.os.Bundle;
 
 import ch.deletescape.lawnchair.IconCache;
 import ch.deletescape.lawnchair.LauncherAppWidgetProviderInfo;
-import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.util.ComponentKey;
 
 import java.util.HashMap;

@@ -56,7 +56,6 @@ import ch.deletescape.lawnchair.IconCache;
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAnimUtils;
-import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.LauncherSettings;
 import ch.deletescape.lawnchair.OnAlarmListener;
 import ch.deletescape.lawnchair.PreloadIconDrawable;
@@ -66,7 +65,6 @@ import ch.deletescape.lawnchair.SimpleOnStylusPressListener;
 import ch.deletescape.lawnchair.StylusEventHelper;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace;
-import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dragndrop.DragLayer;
 import ch.deletescape.lawnchair.dragndrop.DragView;
 import ch.deletescape.lawnchair.util.Thunk;
@@ -315,8 +313,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
             int[] center = new int[2];
             float scale = getLocalCenterForIndex(index, index + 1, center);
-            center[0] = (int) Math.round(scaleRelativeToDragLayer * center[0]);
-            center[1] = (int) Math.round(scaleRelativeToDragLayer * center[1]);
+            center[0] = Math.round(scaleRelativeToDragLayer * center[0]);
+            center[1] = Math.round(scaleRelativeToDragLayer * center[1]);
 
             to.offset(center[0] - animateView.getMeasuredWidth() / 2,
                       center[1] - animateView.getMeasuredHeight() / 2);
@@ -422,8 +420,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         float offsetX = mTmpParams.transX + (mTmpParams.scale * mIntrinsicIconSize) / 2;
         float offsetY = mTmpParams.transY + (mTmpParams.scale * mIntrinsicIconSize) / 2;
 
-        center[0] = (int) Math.round(offsetX);
-        center[1] = (int) Math.round(offsetY);
+        center[0] = Math.round(offsetX);
+        center[1] = Math.round(offsetY);
         return mTmpParams.scale;
     }
 
@@ -987,12 +985,12 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     public interface PreviewLayoutRule {
-        public PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
-            PreviewItemDrawingParams params);
+        PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
+                                                                 PreviewItemDrawingParams params);
 
-        public void init(int availableSpace, int intrinsicIconSize, boolean rtl);
+        void init(int availableSpace, int intrinsicIconSize, boolean rtl);
 
-        public int numItems();
-        public boolean clipToBackground();
+        int numItems();
+        boolean clipToBackground();
     }
 }

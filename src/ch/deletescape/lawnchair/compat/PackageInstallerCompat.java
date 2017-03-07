@@ -18,8 +18,6 @@ package ch.deletescape.lawnchair.compat;
 
 import android.content.Context;
 
-import ch.deletescape.lawnchair.Utilities;
-
 import java.util.HashMap;
 
 public abstract class PackageInstallerCompat {

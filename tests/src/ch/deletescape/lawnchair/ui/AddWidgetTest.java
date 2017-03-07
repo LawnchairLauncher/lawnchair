@@ -5,7 +5,6 @@ import android.support.test.uiautomator.UiObject2;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.view.View;
 
-import ch.deletescape.lawnchair.CellLayout;
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAppWidgetInfo;

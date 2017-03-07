@@ -68,6 +68,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
+import java.util.Objects;
 
 public class LauncherProvider extends ContentProvider {
     private static final String TAG = "LauncherProvider";
@@ -1015,7 +1016,7 @@ public class LauncherProvider extends ContentProvider {
 
         public void checkId(String table, ContentValues values) {
             long id = values.getAsLong(LauncherSettings.BaseLauncherColumns._ID);
-            if (table == WorkspaceScreens.TABLE_NAME) {
+            if (Objects.equals(table, WorkspaceScreens.TABLE_NAME)) {
                 mMaxScreenId = Math.max(id, mMaxScreenId);
             }  else {
                 mMaxItemId = Math.max(id, mMaxItemId);

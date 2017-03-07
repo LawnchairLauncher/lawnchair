@@ -20,7 +20,7 @@ public class StylusEventHelper {
          * @param event The MotionEvent that the button press occurred for.
          * @return Whether the event was handled.
          */
-        public boolean onPressed(MotionEvent event);
+        boolean onPressed(MotionEvent event);
 
         /**
          * Called when the stylus button is released after a button press. This is also called if
@@ -29,7 +29,7 @@ public class StylusEventHelper {
          * @param event The MotionEvent the button release occurred for.
          * @return Whether the event was handled.
          */
-        public boolean onReleased(MotionEvent event);
+        boolean onReleased(MotionEvent event);
     }
 
     private boolean mIsButtonPressed;

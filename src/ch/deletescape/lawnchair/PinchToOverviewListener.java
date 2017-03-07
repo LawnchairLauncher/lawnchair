@@ -58,7 +58,7 @@ public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleG
 
     public PinchToOverviewListener(Launcher launcher) {
         mLauncher = launcher;
-        mPinchDetector = new ScaleGestureDetector((Context) mLauncher, this);
+        mPinchDetector = new ScaleGestureDetector(mLauncher, this);
     }
 
     public boolean onInterceptTouchEvent(MotionEvent ev) {

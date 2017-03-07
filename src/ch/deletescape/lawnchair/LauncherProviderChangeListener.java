@@ -7,7 +7,7 @@ package ch.deletescape.lawnchair;
  */
 public interface LauncherProviderChangeListener {
 
-    public void onLauncherProviderChange();
+    void onLauncherProviderChange();
 
-    public void onExtractedColorsChanged();
+    void onExtractedColorsChanged();
 }

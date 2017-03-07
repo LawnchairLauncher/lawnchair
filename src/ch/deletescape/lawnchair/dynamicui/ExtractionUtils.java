@@ -37,7 +37,7 @@ public class ExtractionUtils {
     public static final String EXTRACTED_COLORS_PREFERENCE_KEY = "pref_extractedColors";
     public static final String WALLPAPER_ID_PREFERENCE_KEY = "pref_wallpaperId";
 
-    private static final int FLAG_SET_SYSTEM = 1 << 0; // TODO: use WallpaperManager.FLAG_SET_SYSTEM
+    private static final int FLAG_SET_SYSTEM = 1; // TODO: use WallpaperManager.FLAG_SET_SYSTEM
     private static final float MIN_CONTRAST_RATIO = 2f;
 
     /**

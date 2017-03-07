@@ -1,7 +1,6 @@
 package ch.deletescape.lawnchair.model;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Point;
@@ -11,7 +10,6 @@ import android.test.suitebuilder.annotation.MediumTest;
 import ch.deletescape.lawnchair.InvariantDeviceProfile;
 import ch.deletescape.lawnchair.LauncherModel;
 import ch.deletescape.lawnchair.LauncherSettings;
-import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.config.ProviderConfig;
 import ch.deletescape.lawnchair.model.GridSizeMigrationTask.MultiStepMigrationTask;
 import ch.deletescape.lawnchair.util.TestLauncherProvider;

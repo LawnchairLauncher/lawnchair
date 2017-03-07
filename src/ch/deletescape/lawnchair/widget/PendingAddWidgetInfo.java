@@ -18,9 +18,7 @@ package ch.deletescape.lawnchair.widget;
 import android.appwidget.AppWidgetHostView;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Parcelable;
 
-import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAppWidgetProviderInfo;
 import ch.deletescape.lawnchair.LauncherSettings;
 import ch.deletescape.lawnchair.PendingAddItemInfo;

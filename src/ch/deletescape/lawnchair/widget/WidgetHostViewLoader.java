@@ -10,12 +10,9 @@ import android.util.Log;
 import android.view.View;
 
 import ch.deletescape.lawnchair.AppWidgetResizeFrame;
-import ch.deletescape.lawnchair.DragSource;
 import ch.deletescape.lawnchair.DropTarget;
-import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAppWidgetProviderInfo;
-import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
 import ch.deletescape.lawnchair.dragndrop.DragController;
 import ch.deletescape.lawnchair.dragndrop.DragLayer;
@@ -123,7 +120,7 @@ public class WidgetHostViewLoader implements DragController.DragListener {
                     return;
                 }
                 AppWidgetHostView hostView = mLauncher.getAppWidgetHost().createView(
-                        (Context) mLauncher, mWidgetLoadingId, pInfo);
+                        mLauncher, mWidgetLoadingId, pInfo);
                 mInfo.boundWidget = hostView;
 
                 // We used up the widget Id in binding the above view.

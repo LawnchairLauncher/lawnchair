@@ -19,7 +19,7 @@ public class VerticalPullDetector {
     private float mTouchSlop;
 
     private int mScrollConditions;
-    public static final int DIRECTION_UP = 1 << 0;
+    public static final int DIRECTION_UP = 1;
     public static final int DIRECTION_DOWN = 1 << 1;
     public static final int DIRECTION_BOTH = DIRECTION_DOWN | DIRECTION_UP;
 
@@ -42,8 +42,6 @@ public class VerticalPullDetector {
         DRAGGING,      // onDragStart, onDrag
         SETTLING       // onDragEnd
     }
-
-    ;
 
     //------------------- ScrollState transition diagram -----------------------------------
     //

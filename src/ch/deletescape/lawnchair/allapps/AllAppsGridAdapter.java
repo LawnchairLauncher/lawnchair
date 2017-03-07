@@ -55,7 +55,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     private static final boolean DEBUG = false;
 
     // A section break in the grid
-    public static final int VIEW_TYPE_SECTION_BREAK = 1 << 0;
+    public static final int VIEW_TYPE_SECTION_BREAK = 1;
     // A normal icon
     public static final int VIEW_TYPE_ICON = 1 << 1;
     // A prediction icon
@@ -85,7 +85,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
 
     public interface BindViewCallback {
-        public void onBindView(ViewHolder holder);
+        void onBindView(ViewHolder holder);
     }
 
     /**

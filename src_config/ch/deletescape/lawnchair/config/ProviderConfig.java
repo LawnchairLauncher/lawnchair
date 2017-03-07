@@ -18,7 +18,7 @@ package ch.deletescape.lawnchair.config;
 
 public class ProviderConfig {
 
-    public static final String AUTHORITY = "ch.deletescape.lawnchair.settings".intern();
+    public static final String AUTHORITY = "ch.deletescape.lawnchair.settings";
 
     public static boolean IS_DOGFOOD_BUILD = true;
 }

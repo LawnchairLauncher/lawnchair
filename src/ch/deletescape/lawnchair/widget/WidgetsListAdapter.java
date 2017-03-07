@@ -27,12 +27,9 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 
-import ch.deletescape.lawnchair.BubbleTextView;
 import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.R;
-import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.WidgetPreviewLoader;
-import ch.deletescape.lawnchair.model.PackageItemInfo;
 import ch.deletescape.lawnchair.model.WidgetItem;
 import ch.deletescape.lawnchair.model.WidgetsModel;
 

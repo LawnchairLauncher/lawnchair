@@ -24,7 +24,7 @@
     <!-- Application name -->
     <string name="app_name">Lawnchair</string>
     <!-- Default folder name -->
-    <string name="folder_name"></string>
+    <string name="folder_name" />
     <!-- Work folder name -->
     <string name="work_folder_name">Work</string>
     <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->

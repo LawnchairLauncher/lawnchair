@@ -27,7 +27,6 @@ import ch.deletescape.lawnchair.LauncherModel;
 import ch.deletescape.lawnchair.MainThreadExecutor;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.ShortcutInfo;
-import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
 import ch.deletescape.lawnchair.compat.UserHandleCompat;

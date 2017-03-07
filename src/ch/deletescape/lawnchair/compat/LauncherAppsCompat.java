@@ -19,12 +19,9 @@ package ch.deletescape.lawnchair.compat;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.LauncherApps;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
-import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
 
 import java.util.List;

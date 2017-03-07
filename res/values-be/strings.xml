@@ -17,15 +17,14 @@
 */
  -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources>
     <!-- no translation found for application_name (5181331383435256801) -->
     <skip />
     <!-- no translation found for home (7658288663002113681) -->
     <skip />
     <!-- no translation found for uid_name (7820867637514617527) -->
     <skip />
-    <string name="folder_name" msgid="7371454440695724752"></string>
+    <string name="folder_name" msgid="7371454440695724752" />
     <!-- no translation found for wallpaper_instructions (563973358787555519) -->
     <skip />
     <!-- no translation found for image_load_fail (2821429163328561136) -->

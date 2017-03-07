@@ -21,7 +21,6 @@ import ch.deletescape.lawnchair.AppWidgetResizeFrame;
 import ch.deletescape.lawnchair.BubbleTextView;
 import ch.deletescape.lawnchair.CellLayout;
 import ch.deletescape.lawnchair.DeleteDropTarget;
-import ch.deletescape.lawnchair.DragSource;
 import ch.deletescape.lawnchair.DropTarget.DragObject;
 import ch.deletescape.lawnchair.dragndrop.DragOptions;
 import ch.deletescape.lawnchair.folder.Folder;
@@ -39,7 +38,6 @@ import ch.deletescape.lawnchair.ShortcutInfo;
 import ch.deletescape.lawnchair.UninstallDropTarget;
 import ch.deletescape.lawnchair.Workspace;
 import ch.deletescape.lawnchair.dragndrop.DragController.DragListener;
-import ch.deletescape.lawnchair.shortcuts.DeepShortcutTextView;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutsContainer;
 import ch.deletescape.lawnchair.util.Thunk;
 

@@ -6,7 +6,6 @@ import android.os.Message;
 import android.util.Log;
 import android.util.Pair;
 
-import ch.deletescape.lawnchair.LauncherModel;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.config.ProviderConfig;
 

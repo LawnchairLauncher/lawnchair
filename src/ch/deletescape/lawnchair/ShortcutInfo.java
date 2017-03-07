@@ -100,7 +100,7 @@ public class ShortcutInfo extends ItemInfo {
     /**
      * Indicates that the icon is disabled due to safe mode restrictions.
      */
-    public static final int FLAG_DISABLED_SAFEMODE = 1 << 0;
+    public static final int FLAG_DISABLED_SAFEMODE = 1;
 
     /**
      * Indicates that the icon is disabled as the app is not available.

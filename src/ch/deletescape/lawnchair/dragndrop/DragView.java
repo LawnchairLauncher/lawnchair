@@ -23,7 +23,6 @@ import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -38,8 +37,6 @@ import android.view.animation.DecelerateInterpolator;
 
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAnimUtils;
-import ch.deletescape.lawnchair.Utilities;
-import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.util.Thunk;
 
 import ch.deletescape.lawnchair.R;
@@ -208,8 +205,8 @@ public class DragView extends View {
         final float xGrowth = mBitmap.getWidth() * (getScaleX() - 1);
         final float yGrowth = mBitmap.getHeight() * (getScaleY() - 1);
         touch.set(
-                mRegistrationX + (int)Math.round(xGrowth / 2),
-                mRegistrationY + (int)Math.round(yGrowth / 2));
+                mRegistrationX + Math.round(xGrowth / 2),
+                mRegistrationY + Math.round(yGrowth / 2));
     }
 
     @Override

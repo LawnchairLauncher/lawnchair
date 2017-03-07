@@ -17,9 +17,8 @@
 */
  -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="folder_name" msgid="8551881338202938211"></string>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="folder_name" msgid="8551881338202938211" />
     <string name="activity_not_found" msgid="217823393239365967">"Rakendus pole installitud."</string>
     <string name="long_press_widget_to_add" msgid="7395697462851217506">"Vidina valimiseks puudutage seda pikalt."</string>
     <string name="widget_dims_format" msgid="1386418557719032947">"%1$d × %2$d"</string>

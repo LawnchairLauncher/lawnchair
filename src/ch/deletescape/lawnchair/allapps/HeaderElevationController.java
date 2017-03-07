@@ -61,7 +61,7 @@ public abstract class HeaderElevationController extends RecyclerView.OnScrollLis
 
         @Override
         public void onScroll(int scrollY) {
-            float elevationPct = (float) Math.min(scrollY, mScrollToElevation) /
+            float elevationPct = Math.min(scrollY, mScrollToElevation) /
                     mScrollToElevation;
             mShadow.setAlpha(elevationPct);
         }

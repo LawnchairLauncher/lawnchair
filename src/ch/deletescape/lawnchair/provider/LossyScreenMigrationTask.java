@@ -21,7 +21,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
-import android.util.Log;
 
 import ch.deletescape.lawnchair.InvariantDeviceProfile;
 import ch.deletescape.lawnchair.LauncherSettings.Favorites;
@@ -31,7 +30,6 @@ import ch.deletescape.lawnchair.model.GridSizeMigrationTask;
 import ch.deletescape.lawnchair.util.LongArrayMap;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * An extension of {@link GridSizeMigrationTask} which migrates only one screen and

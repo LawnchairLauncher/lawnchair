@@ -52,6 +52,7 @@ public class RestoreDbTaskTest extends AndroidTestCase {
             return c.getCount();
         } finally {
             c.getCount();
+            c.close();
         }
     }
 

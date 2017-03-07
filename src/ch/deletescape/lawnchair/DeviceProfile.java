@@ -29,8 +29,6 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
 
-import ch.deletescape.lawnchair.config.FeatureFlags;
-
 import java.util.ArrayList;
 
 import ch.deletescape.lawnchair.R;
@@ -377,7 +375,7 @@ public class DeviceProfile {
                 availablePaddingX = (int) Math.min(availablePaddingX,
                             width * MAX_HORIZONTAL_PADDING_PERCENT);
                 int availablePaddingY = Math.max(0, height - topWorkspacePadding - paddingBottom
-                        - (int) (2 * inv.numRows * cellHeightPx));
+                        - 2 * inv.numRows * cellHeightPx);
                 padding.set(availablePaddingX / 2, topWorkspacePadding + availablePaddingY / 2,
                         availablePaddingX / 2, paddingBottom + availablePaddingY / 2);
             } else {

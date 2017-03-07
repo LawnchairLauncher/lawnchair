@@ -36,7 +36,6 @@ import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -53,7 +52,6 @@ import ch.deletescape.lawnchair.AppWidgetResizeFrame;
 import ch.deletescape.lawnchair.CellLayout;
 import ch.deletescape.lawnchair.DropTargetBar;
 import ch.deletescape.lawnchair.InsettableFrameLayout;
-import ch.deletescape.lawnchair.InstallShortcutReceiver;
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAppWidgetHostView;
@@ -72,7 +70,6 @@ import ch.deletescape.lawnchair.shortcuts.DeepShortcutsContainer;
 import ch.deletescape.lawnchair.util.Thunk;
 import ch.deletescape.lawnchair.util.TouchController;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 /**
@@ -1100,6 +1097,6 @@ public class DragLayer extends InsettableFrameLayout {
     }
 
     public interface TouchCompleteListener {
-        public void onTouchComplete();
+        void onTouchComplete();
     }
 }

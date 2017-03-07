@@ -27,9 +27,9 @@
         <item name="android:colorAccent">@color/accent_material_light</item>
     </style>
 
-    <style name="LauncherTheme" parent="@style/BaseLauncherTheme"></style>
+    <style name="LauncherTheme" parent="@style/BaseLauncherTheme" />
 
-    <style name="Theme" parent="@style/LauncherTheme"></style>
+    <style name="Theme" parent="@style/LauncherTheme" />
 
     <!-- Theme for the widget container. Overridden on API 25. -->
     <style name="WidgetContainerTheme" parent="@android:style/Theme.DeviceDefault.Settings">

@@ -23,9 +23,7 @@ import android.view.ViewGroup;
 
 import ch.deletescape.lawnchair.CellLayout;
 import ch.deletescape.lawnchair.DeviceProfile;
-import ch.deletescape.lawnchair.InvariantDeviceProfile;
 import ch.deletescape.lawnchair.ShortcutAndWidgetContainer;
-import ch.deletescape.lawnchair.config.FeatureFlags;
 
 import java.util.Arrays;
 

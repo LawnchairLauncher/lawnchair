@@ -201,39 +201,39 @@ public class LauncherModel extends BroadcastReceiver
     private final UserManagerCompat mUserManager;
 
     public interface Callbacks {
-        public boolean setLoadOnResume();
-        public int getCurrentWorkspaceScreen();
-        public void clearPendingBinds();
-        public void startBinding();
-        public void bindItems(ArrayList<ItemInfo> shortcuts, int start, int end,
-                              boolean forceAnimateIcons);
-        public void bindScreens(ArrayList<Long> orderedScreenIds);
-        public void finishFirstPageBind(ViewOnDrawExecutor executor);
-        public void finishBindingItems();
-        public void bindAppWidget(LauncherAppWidgetInfo info);
-        public void bindAllApplications(ArrayList<AppInfo> apps);
-        public void bindAppsAdded(ArrayList<Long> newScreens,
-                                  ArrayList<ItemInfo> addNotAnimated,
-                                  ArrayList<ItemInfo> addAnimated,
-                                  ArrayList<AppInfo> addedApps);
-        public void bindAppsUpdated(ArrayList<AppInfo> apps);
-        public void bindShortcutsChanged(ArrayList<ShortcutInfo> updated,
-                ArrayList<ShortcutInfo> removed, UserHandleCompat user);
-        public void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
-        public void bindRestoreItemsChange(HashSet<ItemInfo> updates);
-        public void bindWorkspaceComponentsRemoved(
+        boolean setLoadOnResume();
+        int getCurrentWorkspaceScreen();
+        void clearPendingBinds();
+        void startBinding();
+        void bindItems(ArrayList<ItemInfo> shortcuts, int start, int end,
+                       boolean forceAnimateIcons);
+        void bindScreens(ArrayList<Long> orderedScreenIds);
+        void finishFirstPageBind(ViewOnDrawExecutor executor);
+        void finishBindingItems();
+        void bindAppWidget(LauncherAppWidgetInfo info);
+        void bindAllApplications(ArrayList<AppInfo> apps);
+        void bindAppsAdded(ArrayList<Long> newScreens,
+                           ArrayList<ItemInfo> addNotAnimated,
+                           ArrayList<ItemInfo> addAnimated,
+                           ArrayList<AppInfo> addedApps);
+        void bindAppsUpdated(ArrayList<AppInfo> apps);
+        void bindShortcutsChanged(ArrayList<ShortcutInfo> updated,
+                                  ArrayList<ShortcutInfo> removed, UserHandleCompat user);
+        void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
+        void bindRestoreItemsChange(HashSet<ItemInfo> updates);
+        void bindWorkspaceComponentsRemoved(
                 HashSet<String> packageNames, HashSet<ComponentName> components,
                 UserHandleCompat user);
-        public void bindAppInfosRemoved(ArrayList<AppInfo> appInfos);
-        public void notifyWidgetProvidersChanged();
-        public void bindWidgetsModel(WidgetsModel model);
-        public void onPageBoundSynchronously(int page);
-        public void executeOnNextDraw(ViewOnDrawExecutor executor);
-        public void bindDeepShortcutMap(MultiHashMap<ComponentKey, String> deepShortcutMap);
+        void bindAppInfosRemoved(ArrayList<AppInfo> appInfos);
+        void notifyWidgetProvidersChanged();
+        void bindWidgetsModel(WidgetsModel model);
+        void onPageBoundSynchronously(int page);
+        void executeOnNextDraw(ViewOnDrawExecutor executor);
+        void bindDeepShortcutMap(MultiHashMap<ComponentKey, String> deepShortcutMap);
     }
 
     public interface ItemInfoFilter {
-        public boolean filterItem(ItemInfo parent, ItemInfo info, ComponentName cn);
+        boolean filterItem(ItemInfo parent, ItemInfo info, ComponentName cn);
     }
 
     LauncherModel(LauncherAppState app, IconCache iconCache, AppFilter appFilter,
@@ -1011,7 +1011,7 @@ public class LauncherModel extends BroadcastReceiver
                                 sBgWorkspaceItems.remove(item);
                                 break;
                             case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
-                                sBgAppWidgets.remove((LauncherAppWidgetInfo) item);
+                                sBgAppWidgets.remove(item);
                                 break;
                         }
                         sBgItemsIdMap.remove(item.id);
@@ -1589,7 +1589,7 @@ public class LauncherModel extends BroadcastReceiver
                     return true;
                 }
             } else if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                if (!workspaceScreens.contains((Long) item.screenId)) {
+                if (!workspaceScreens.contains(item.screenId)) {
                     // The item has an invalid screen id.
                     return false;
                 }

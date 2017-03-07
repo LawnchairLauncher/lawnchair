@@ -9,9 +9,6 @@ import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import ch.deletescape.lawnchair.allapps.AllAppsContainerView;
-import ch.deletescape.lawnchair.config.FeatureFlags;
-
 import ch.deletescape.lawnchair.R;
 
 public class InsettableFrameLayout extends FrameLayout implements

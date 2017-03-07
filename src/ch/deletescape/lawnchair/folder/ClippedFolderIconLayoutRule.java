@@ -1,12 +1,5 @@
 package ch.deletescape.lawnchair.folder;
 
-import android.graphics.Path;
-import android.graphics.Point;
-
-import ch.deletescape.lawnchair.DeviceProfile;
-import ch.deletescape.lawnchair.LauncherAppState;
-import ch.deletescape.lawnchair.Utilities;
-
 public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule {
 
     static final int MAX_NUM_ITEMS_IN_PREVIEW = 4;

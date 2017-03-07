@@ -35,7 +35,7 @@ public class AnotherWindowDropTarget implements DropTarget {
     @Override
     public void onDrop(DragObject dragObject) {
         dragObject.deferDragViewCleanupPostAnimation = false;
-        LauncherModel.deleteItemFromDatabase(mLauncher, (ShortcutInfo) dragObject.dragInfo);
+        LauncherModel.deleteItemFromDatabase(mLauncher, dragObject.dragInfo);
     }
 
     @Override

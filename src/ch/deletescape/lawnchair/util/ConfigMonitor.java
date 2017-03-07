@@ -23,8 +23,6 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.util.Log;
 
-import ch.deletescape.lawnchair.Utilities;
-
 /**
  * {@link BroadcastReceiver} which watches configuration changes and
  * restarts the process in case changes which affect the device profile occur.

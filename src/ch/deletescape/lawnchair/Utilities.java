@@ -63,7 +63,6 @@ import android.view.accessibility.AccessibilityManager;
 import android.widget.Toast;
 
 import ch.deletescape.lawnchair.compat.UserHandleCompat;
-import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.config.ProviderConfig;
 import ch.deletescape.lawnchair.graphics.ShadowGenerator;
 import ch.deletescape.lawnchair.util.IconNormalizer;
@@ -423,8 +422,8 @@ public final class Utilities {
             }
         }
 
-        coord[0] = (int) Math.round(pt[0]);
-        coord[1] = (int) Math.round(pt[1]);
+        coord[0] = Math.round(pt[0]);
+        coord[1] = Math.round(pt[1]);
         return scale;
     }
 
@@ -726,7 +725,7 @@ public final class Utilities {
                 Set<String> keys = extras.keySet();
                 return keys.size() == 1 && keys.contains(ItemInfo.EXTRA_PROFILE);
             }
-        };
+        }
         return false;
     }
 
@@ -735,11 +734,11 @@ public final class Utilities {
         return (size / densityRatio);
     }
     public static int pxFromDp(float size, DisplayMetrics metrics) {
-        return (int) Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 size, metrics));
     }
     public static int pxFromSp(float size, DisplayMetrics metrics) {
-        return (int) Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
+        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
                 size, metrics));
     }
 

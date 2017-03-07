@@ -19,7 +19,6 @@ package ch.deletescape.lawnchair.util;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 import android.view.KeyEvent;
-import android.view.View;
 
 import ch.deletescape.lawnchair.util.FocusLogic;
 

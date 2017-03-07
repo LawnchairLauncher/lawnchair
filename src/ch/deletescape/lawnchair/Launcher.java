@@ -1079,13 +1079,13 @@ public class Launcher extends Activity
     public interface CustomContentCallbacks {
         // Custom content is completely shown. {@code fromResume} indicates whether this was caused
         // by a onResume or by scrolling otherwise.
-        public void onShow(boolean fromResume);
+        void onShow(boolean fromResume);
 
         // Custom content is completely hidden
-        public void onHide();
+        void onHide();
 
         // Custom content scroll progress changed. From 0 (not showing) to 1 (fully showing).
-        public void onScrollProgressChanged(float progress);
+        void onScrollProgressChanged(float progress);
 
         // Indicates whether the user is allowed to scroll away from the custom content.
         boolean isScrollingAllowed();
@@ -1096,40 +1096,40 @@ public class Launcher extends Activity
         /**
          * Touch interaction leading to overscroll has begun
          */
-        public void onScrollInteractionBegin();
+        void onScrollInteractionBegin();
 
         /**
          * Touch interaction related to overscroll has ended
          */
-        public void onScrollInteractionEnd();
+        void onScrollInteractionEnd();
 
         /**
          * Scroll progress, between 0 and 100, when the user scrolls beyond the leftmost
          * screen (or in the case of RTL, the rightmost screen).
          */
-        public void onScrollChange(float progress, boolean rtl);
+        void onScrollChange(float progress, boolean rtl);
 
         /**
          * Called when the launcher is ready to use the overlay
          * @param callbacks A set of callbacks provided by Launcher in relation to the overlay
          */
-        public void setOverlayCallbacks(LauncherOverlayCallbacks callbacks);
+        void setOverlayCallbacks(LauncherOverlayCallbacks callbacks);
     }
 
     public interface LauncherSearchCallbacks {
         /**
          * Called when the search overlay is shown.
          */
-        public void onSearchOverlayOpened();
+        void onSearchOverlayOpened();
 
         /**
          * Called when the search overlay is dismissed.
          */
-        public void onSearchOverlayClosed();
+        void onSearchOverlayClosed();
     }
 
     public interface LauncherOverlayCallbacks {
-        public void onScrollChanged(float progress);
+        void onScrollChanged(float progress);
     }
 
     class LauncherOverlayCallbacksImpl implements LauncherOverlayCallbacks {

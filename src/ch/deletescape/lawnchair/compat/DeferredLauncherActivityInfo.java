@@ -21,7 +21,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 
 /**
  * {@link LauncherActivityInfoCompat} which loads its data only when needed.

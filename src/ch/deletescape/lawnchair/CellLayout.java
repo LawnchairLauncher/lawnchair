@@ -51,7 +51,6 @@ import ch.deletescape.lawnchair.LauncherSettings.Favorites;
 import ch.deletescape.lawnchair.accessibility.DragAndDropAccessibilityDelegate;
 import ch.deletescape.lawnchair.accessibility.FolderAccessibilityHelper;
 import ch.deletescape.lawnchair.accessibility.WorkspaceAccessibilityHelper;
-import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.config.ProviderConfig;
 import ch.deletescape.lawnchair.folder.FolderIcon;
 import ch.deletescape.lawnchair.graphics.DragPreviewProvider;
@@ -162,7 +161,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     public static final int MODE_ON_DROP_EXTERNAL = 3;
     public static final int MODE_ACCEPT_DROP = 4;
     private static final boolean DESTRUCTIVE_REORDER = false;
-    private static final boolean DEBUG_VISUALIZE_OCCUPIED = false;
 
     private static final float REORDER_PREVIEW_MAGNITUDE = 0.12f;
     private static final int REORDER_ANIMATION_DURATION = 150;
@@ -490,23 +488,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 final Bitmap b = (Bitmap) mDragOutlineAnims[i].getTag();
                 paint.setAlpha((int)(alpha + .5f));
                 canvas.drawBitmap(b, null, mDragOutlines[i], paint);
-            }
-        }
-
-        if (DEBUG_VISUALIZE_OCCUPIED) {
-            int[] pt = new int[2];
-            ColorDrawable cd = new ColorDrawable(Color.RED);
-            cd.setBounds(0, 0,  mCellWidth, mCellHeight);
-            for (int i = 0; i < mCountX; i++) {
-                for (int j = 0; j < mCountY; j++) {
-                    if (mOccupied.cells[i][j]) {
-                        cellToPoint(i, j, pt);
-                        canvas.save();
-                        canvas.translate(pt[0], pt[1]);
-                        cd.draw(canvas);
-                        canvas.restore();
-                    }
-                }
             }
         }
 
@@ -1401,7 +1382,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
      * precise version of a bounding box.
      */
     private class ViewCluster {
-        final static int LEFT = 1 << 0;
+        final static int LEFT = 1;
         final static int TOP = 1 << 1;
         final static int RIGHT = 1 << 2;
         final static int BOTTOM = 1 << 3;
@@ -1883,7 +1864,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
      * the provided point and the provided cell
      */
     private void computeDirectionVector(float deltaX, float deltaY, int[] result) {
-        double angle = Math.atan(((float) deltaY) / deltaX);
+        double angle = Math.atan(deltaY / deltaX);
 
         result[0] = 0;
         result[1] = 0;
@@ -2767,8 +2748,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                         leftMargin - rightMargin;
                 height = myCellVSpan * cellHeight + ((myCellVSpan - 1) * heightGap) -
                         topMargin - bottomMargin;
-                x = (int) (myCellX * (cellWidth + widthGap) + leftMargin);
-                y = (int) (myCellY * (cellHeight + heightGap) + topMargin);
+                x = myCellX * (cellWidth + widthGap) + leftMargin;
+                y = myCellY * (cellHeight + heightGap) + topMargin;
             }
         }
 

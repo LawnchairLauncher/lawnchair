@@ -16,8 +16,6 @@
 
 package ch.deletescape.lawnchair.folder;
 
-import android.graphics.Path;
-
 import ch.deletescape.lawnchair.folder.FolderIcon.PreviewItemDrawingParams;
 
 public class StackFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule {

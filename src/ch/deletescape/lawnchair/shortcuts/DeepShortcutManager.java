@@ -43,7 +43,7 @@ public class DeepShortcutManager {
     private static final String TAG = "DeepShortcutManager";
 
     // TODO: Replace this with platform constants when the new sdk is available.
-    public static final int FLAG_MATCH_DYNAMIC = 1 << 0;
+    public static final int FLAG_MATCH_DYNAMIC = 1;
     public static final int FLAG_MATCH_MANIFEST = 1 << 3;
     public static final int FLAG_MATCH_PINNED = 1 << 1;
 

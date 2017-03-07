@@ -17,7 +17,6 @@
 package ch.deletescape.lawnchair;
 
 import android.appwidget.AppWidgetHost;
-import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
@@ -37,7 +36,6 @@ import android.util.Patterns;
 
 import ch.deletescape.lawnchair.LauncherProvider.SqlArguments;
 import ch.deletescape.lawnchair.LauncherSettings.Favorites;
-import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.util.Thunk;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -85,7 +83,7 @@ public class AutoInstallsLayout {
 
         // Try with grid size and hotseat count
         String layoutName = String.format(Locale.ENGLISH, FORMATTED_LAYOUT_RES_WITH_HOSTEAT,
-                (int) grid.numColumns, (int) grid.numRows, (int) grid.numHotseatIcons);
+                grid.numColumns, grid.numRows, grid.numHotseatIcons);
         int layoutId = targetRes.getIdentifier(layoutName, "xml", pkg);
 
         // Try with only grid size
@@ -93,7 +91,7 @@ public class AutoInstallsLayout {
             Log.d(TAG, "Formatted layout: " + layoutName
                     + " not found. Trying layout without hosteat");
             layoutName = String.format(Locale.ENGLISH, FORMATTED_LAYOUT_RES,
-                    (int) grid.numColumns, (int) grid.numRows);
+                    grid.numColumns, grid.numRows);
             layoutId = targetRes.getIdentifier(layoutName, "xml", pkg);
         }
 
@@ -670,7 +668,7 @@ public class AutoInstallsLayout {
         return value;
     }
 
-    public static interface LayoutParserCallback {
+    public interface LayoutParserCallback {
         long generateNewItemId();
 
         long insertAndCheck(SQLiteDatabase db, ContentValues values);

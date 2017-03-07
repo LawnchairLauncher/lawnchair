@@ -17,7 +17,6 @@
 package ch.deletescape.lawnchair.config;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import ch.deletescape.lawnchair.Utilities;
 

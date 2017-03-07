@@ -23,7 +23,6 @@ import android.content.Context;
 import android.os.DeadObjectException;
 import android.os.TransactionTooLargeException;
 import android.view.LayoutInflater;
-import android.view.View;
 
 import java.util.ArrayList;
 

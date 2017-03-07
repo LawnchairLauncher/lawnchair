@@ -72,7 +72,6 @@ import ch.deletescape.lawnchair.UninstallDropTarget.DropTargetSource;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace.ItemOperator;
 import ch.deletescape.lawnchair.accessibility.AccessibileDragListenerAdapter;
-import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dragndrop.DragController;
 import ch.deletescape.lawnchair.dragndrop.DragController.DragListener;
 import ch.deletescape.lawnchair.dragndrop.DragLayer;
@@ -390,7 +389,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         // the text and brings up the soft keyboard if necessary.
         mFolderName.clearFocus();
 
-        Selection.setSelection((Spannable) mFolderName.getText(), 0, 0);
+        Selection.setSelection(mFolderName.getText(), 0, 0);
         mIsEditingName = false;
     }
 
