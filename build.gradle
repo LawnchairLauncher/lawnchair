@@ -63,6 +63,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.2.0'
     compile 'com.android.support:palette-v7:25.2.0'
     compile 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-2'
+    compile 'com.jakewharton:process-phoenix:1.1.1'
 
     testCompile 'junit:junit:4.12'
     androidTestCompile 'com.android.support.test:runner:0.5'

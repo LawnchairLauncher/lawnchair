@@ -25,6 +25,11 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.provider.Settings;
 import android.provider.Settings.System;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+
+import com.jakewharton.processphoenix.ProcessPhoenix;
 
 import ch.deletescape.lawnchair.R;
 
@@ -82,6 +87,7 @@ public class SettingsActivity extends Activity {
                 getActivity().getContentResolver().unregisterContentObserver(mRotationLockObserver);
                 mRotationLockObserver = null;
             }
+            ProcessPhoenix.triggerRebirth(getActivity().getApplicationContext());
             super.onDestroy();
         }
     }
