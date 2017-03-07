@@ -84,6 +84,6 @@ public class RequestPinItemActivity extends BaseTestingActivity {
     }
 
     private void requestWidget(ComponentName cn) {
-        AppWidgetManager.getInstance(this).requestPinAppWidget(cn, mCallback);
+        AppWidgetManager.getInstance(this).requestPinAppWidget(cn, null, mCallback);
     }
 }
