@@ -771,9 +771,13 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         }
         mDragController.removeDropTarget(this);
         clearFocus();
-        if (wasAnimated) {
-            mFolderIcon.requestFocus();
+        if (mFolderIcon != null) {
+            mFolderIcon.setVisibility(View.VISIBLE);
+            if (wasAnimated) {
+                mFolderIcon.requestFocus();
+            }
         }
+
 
         if (mRearrangeOnClose) {
             rearrangeChildren();

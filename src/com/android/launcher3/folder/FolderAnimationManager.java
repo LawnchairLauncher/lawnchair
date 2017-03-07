@@ -135,12 +135,6 @@ public class FolderAnimationManager {
     public AnimatorSet getClosingAnimator() {
         AnimatorSet a = getAnimatorSet(false /* isOpening */);
         a.setInterpolator(mClosingInterpolator);
-        a.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mFolderIcon.setVisibility(View.VISIBLE);
-            }
-        });
         return a;
     }
 
