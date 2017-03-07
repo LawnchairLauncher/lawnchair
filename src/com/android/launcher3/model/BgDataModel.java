@@ -27,8 +27,7 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
-import com.android.launcher3.config.ProviderConfig;
-import com.android.launcher3.logging.LoggerUtils;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.DumpTargetWrapper;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
@@ -36,7 +35,6 @@ import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.model.nano.LauncherDumpProto;
 import com.android.launcher3.model.nano.LauncherDumpProto.ContainerType;
 import com.android.launcher3.model.nano.LauncherDumpProto.DumpTarget;
-import com.android.launcher3.model.nano.LauncherDumpProto.ItemType;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.MultiHashMap;
@@ -242,7 +240,7 @@ public class BgDataModel {
             switch (item.itemType) {
                 case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                     folders.remove(item.id);
-                    if (ProviderConfig.IS_DOGFOOD_BUILD) {
+                    if (FeatureFlags.IS_DOGFOOD_BUILD) {
                         for (ItemInfo info : itemsIdMap) {
                             if (info.container == item.id) {
                                 // We are deleting a folder which still contains items that

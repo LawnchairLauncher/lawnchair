@@ -20,6 +20,9 @@ package com.android.launcher3.config;
  * Defines a set of flags used to control various launcher behaviors
  */
 public final class FeatureFlags {
+
+    public static final boolean IS_DOGFOOD_BUILD = true;
+
     private FeatureFlags() {}
 
     // Custom flags go below this

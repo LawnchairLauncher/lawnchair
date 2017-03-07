@@ -69,7 +69,6 @@ import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -591,7 +590,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
             dragLayer.addView(this);
             mDragController.addDropTarget(this);
         } else {
-            if (ProviderConfig.IS_DOGFOOD_BUILD) {
+            if (FeatureFlags.IS_DOGFOOD_BUILD) {
                 Log.e(TAG, "Opening folder (" + this + ") which already has a parent:"
                         + getParent());
             }

@@ -29,7 +29,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetHostView;
 import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
 
 /**
@@ -138,7 +138,7 @@ public class DragPreviewProvider {
     }
 
     public final void generateDragOutline(Canvas canvas) {
-        if (ProviderConfig.IS_DOGFOOD_BUILD && generatedDragOutline != null) {
+        if (FeatureFlags.IS_DOGFOOD_BUILD && generatedDragOutline != null) {
             throw new RuntimeException("Drag outline generated twice");
         }
 

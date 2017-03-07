@@ -44,7 +44,7 @@ import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dynamicui.ExtractionUtils;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
@@ -1371,7 +1371,7 @@ public class LauncherModel extends BroadcastReceiver
                                 return Utilities.longCompare(lhs.screenId, rhs.screenId);
                             }
                             default:
-                                if (ProviderConfig.IS_DOGFOOD_BUILD) {
+                                if (FeatureFlags.IS_DOGFOOD_BUILD) {
                                     throw new RuntimeException("Unexpected container type when " +
                                             "sorting workspace items.");
                                 }

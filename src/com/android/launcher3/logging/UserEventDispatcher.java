@@ -29,8 +29,7 @@ import com.android.launcher3.DropTarget;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.ProviderConfig;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.LauncherEvent;
@@ -61,7 +60,7 @@ public class UserEventDispatcher {
 
     private static final String TAG = "UserEvent";
     private static final boolean IS_VERBOSE =
-            ProviderConfig.IS_DOGFOOD_BUILD && Utilities.isPropertyEnabled(LogConfig.USEREVENT);
+            FeatureFlags.IS_DOGFOOD_BUILD && Utilities.isPropertyEnabled(LogConfig.USEREVENT);
 
     private static UserEventDispatcher sInstance;
     private static final Object LOCK = new Object();

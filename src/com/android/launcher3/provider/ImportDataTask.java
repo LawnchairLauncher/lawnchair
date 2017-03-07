@@ -37,6 +37,7 @@ import com.android.launcher3.DefaultLayoutParser;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherFiles;
+import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.Settings;
@@ -46,7 +47,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.GridSizeMigrationTask;
 import com.android.launcher3.util.LongArrayMap;
@@ -112,7 +112,7 @@ public class ImportDataTask {
             screenOps.add(ContentProviderOperation.newInsert(
                     LauncherSettings.WorkspaceScreens.CONTENT_URI).withValues(v).build());
         }
-        mContext.getContentResolver().applyBatch(ProviderConfig.AUTHORITY, screenOps);
+        mContext.getContentResolver().applyBatch(LauncherProvider.AUTHORITY, screenOps);
         importWorkspaceItems(allScreens.get(0), screenIdMap);
 
         GridSizeMigrationTask.markForMigration(mContext, mMaxGridSizeX, mMaxGridSizeY, mHotseatSize);
@@ -289,7 +289,7 @@ public class ImportDataTask {
                 }
 
                 if (insertOperations.size() >= BATCH_INSERT_SIZE) {
-                    mContext.getContentResolver().applyBatch(ProviderConfig.AUTHORITY,
+                    mContext.getContentResolver().applyBatch(LauncherProvider.AUTHORITY,
                             insertOperations);
                     insertOperations.clear();
                 }
@@ -300,7 +300,7 @@ public class ImportDataTask {
             throw new Exception("Insufficient data");
         }
         if (!insertOperations.isEmpty()) {
-            mContext.getContentResolver().applyBatch(ProviderConfig.AUTHORITY,
+            mContext.getContentResolver().applyBatch(LauncherProvider.AUTHORITY,
                     insertOperations);
             insertOperations.clear();
         }
@@ -319,7 +319,7 @@ public class ImportDataTask {
             mHotseatSize = (int) hotseatItems.keyAt(hotseatItems.size() - 1) + 1;
 
             if (!insertOperations.isEmpty()) {
-                mContext.getContentResolver().applyBatch(ProviderConfig.AUTHORITY,
+                mContext.getContentResolver().applyBatch(LauncherProvider.AUTHORITY,
                         insertOperations);
             }
         }

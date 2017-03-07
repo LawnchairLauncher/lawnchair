@@ -23,7 +23,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherModel.BaseModelUpdateTask;
 import com.android.launcher3.LauncherModel.Callbacks;
-import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.TestLauncherProvider;
@@ -64,7 +64,7 @@ public class BaseModelUpdateTaskTestCase extends ProviderTestCase2<TestLauncherP
     public Callbacks callbacks;
 
     public BaseModelUpdateTaskTestCase() {
-        super(TestLauncherProvider.class, ProviderConfig.AUTHORITY);
+        super(TestLauncherProvider.class, LauncherProvider.AUTHORITY);
     }
 
     @Override

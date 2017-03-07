@@ -51,7 +51,7 @@ import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
 import com.android.launcher3.accessibility.FolderAccessibilityHelper;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.anim.PropertyListBuilder;
-import com.android.launcher3.config.ProviderConfig;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.util.CellAndSpan;
@@ -568,7 +568,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         try {
             dispatchRestoreInstanceState(states);
         } catch (IllegalArgumentException ex) {
-            if (ProviderConfig.IS_DOGFOOD_BUILD) {
+            if (FeatureFlags.IS_DOGFOOD_BUILD) {
                 throw ex;
             }
             // Mismatched viewId / viewType preventing restore. Skip restore on production builds.

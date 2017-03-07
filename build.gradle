@@ -38,7 +38,7 @@ android {
     sourceSets {
         main {
             res.srcDirs = ['res']
-            java.srcDirs = ['src', 'src_config']
+            java.srcDirs = ['src', 'src_flags']
             manifest.srcFile 'AndroidManifest-common.xml'
             proto.srcDirs 'protos/'
         }
