@@ -32,6 +32,7 @@
         android:gravity="center_horizontal"
         android:stateListAnimator="@animator/overview_button_anim"
         android:text="@string/wallpaper_button_text"
+        android:visibility="gone"
         android:textAllCaps="true"
         android:textColor="@android:color/white"
         android:textSize="12sp" />
