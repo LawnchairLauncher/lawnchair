@@ -814,8 +814,7 @@ public class IconCache {
     private static final class IconDB extends SQLiteCacheHelper {
         private final static int DB_VERSION = 10;
 
-        private final static int RELEASE_VERSION = DB_VERSION +
-                (FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION ? 0 : 1);
+        private final static int RELEASE_VERSION = DB_VERSION + 1;
 
         private final static String TABLE_NAME = "icons";
         private final static String COLUMN_ROWID = "rowid";

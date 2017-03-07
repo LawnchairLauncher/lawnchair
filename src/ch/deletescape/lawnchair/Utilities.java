@@ -213,8 +213,7 @@ public final class Utilities {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static Bitmap createBadgedIconBitmap(
             Drawable icon, UserHandleCompat user, Context context) {
-        float scale = FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION ?
-                1 : IconNormalizer.getInstance().getScale(icon, null);
+        float scale = IconNormalizer.getInstance().getScale(icon, null);
         Bitmap bitmap = createIconBitmap(icon, context, scale);
         return badgeIconForUser(bitmap, user, context);
     }
@@ -243,8 +242,7 @@ public final class Utilities {
      */
     public static Bitmap createScaledBitmapWithoutShadow(Drawable icon, Context context) {
         RectF iconBounds = new RectF();
-        float scale = FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION ?
-                1 : IconNormalizer.getInstance().getScale(icon, iconBounds);
+        float scale = IconNormalizer.getInstance().getScale(icon, iconBounds);
         scale = Math.min(scale, ShadowGenerator.getScaleForBounds(iconBounds));
         return createIconBitmap(icon, context, scale);
     }
