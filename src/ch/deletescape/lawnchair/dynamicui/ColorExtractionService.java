@@ -63,7 +63,7 @@ public class ColorExtractionService extends IntentService {
                     .generate();
             extractedColors.updateHotseatPalette(hotseatPalette);
 
-            if (FeatureFlags.LIGHT_STATUS_BAR) {
+            if (FeatureFlags.lightStatusBar(getApplicationContext())) {
                 int statusBarHeight = getResources()
                         .getDimensionPixelSize(R.dimen.status_bar_height);
                 Palette statusBarPalette = Palette.from(wallpaper)

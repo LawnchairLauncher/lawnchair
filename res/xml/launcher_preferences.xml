@@ -39,6 +39,13 @@
         android:defaultValue="true"
         android:persistent="true" />
 
+    <SwitchPreference
+        android:key="pref_lightStatusBar"
+        android:title="Light StatusBar"
+        android:summary="When enabled the status bar may show dark icons based on the top of the wallpaper."
+        android:defaultValue="false"
+        android:persistent="true" />
+
     <PreferenceCategory
         android:title="Behavior"/>
 
