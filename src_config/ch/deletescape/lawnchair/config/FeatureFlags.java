@@ -17,12 +17,18 @@
 package ch.deletescape.lawnchair.config;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+
 import ch.deletescape.lawnchair.Utilities;
 
 /**
  * Defines a set of flags used to control various launcher behaviors
  */
 public final class FeatureFlags {
+
+    private static final String KEY_PREF_LIGHT_STATUS_BAR = "pref_lightStatusBar";
+    public static final String KEY_PREF_PINCH_TO_OVERVIEW = "pref_pinchToOverview";
+
     private FeatureFlags() {}
 
     // Custom flags go below this
@@ -36,10 +42,10 @@ public final class FeatureFlags {
         return Utilities.getPrefs(context).getBoolean("pref_qsbOnFirstScreen", true);
     }
     public static boolean pinchToOverview(Context context){
-        return Utilities.getPrefs(context).getBoolean("pref_pinchToOverview", true);
+        return Utilities.getPrefs(context).getBoolean(KEY_PREF_PINCH_TO_OVERVIEW, true);
     }
     // When enabled the status bar may show dark icons based on the top of the wallpaper.
     public static boolean lightStatusBar(Context context){
-        return Utilities.getPrefs(context).getBoolean("pref_lightStatusBar", false);
+        return Utilities.getPrefs(context).getBoolean(KEY_PREF_LIGHT_STATUS_BAR, false);
     }
 }
