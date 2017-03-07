@@ -69,7 +69,7 @@ public class FolderAnimationManager {
     private final FolderIcon.PreviewItemDrawingParams mTmpParams =
             new FolderIcon.PreviewItemDrawingParams(0, 0, 0, 0);
 
-    private final Property<View, Float> SCALE_PROPERTY =
+    private static final Property<View, Float> SCALE_PROPERTY =
             new Property<View, Float>(Float.class, "scale") {
                 @Override
                 public Float get(View view) {
@@ -83,7 +83,7 @@ public class FolderAnimationManager {
                 }
             };
 
-    private final Property<List<BubbleTextView>, Integer> ITEMS_TEXT_COLOR_PROPERTY =
+    private static final Property<List<BubbleTextView>, Integer> ITEMS_TEXT_COLOR_PROPERTY =
             new Property<List<BubbleTextView>, Integer>(Integer.class, "textColor") {
                 @Override
                 public Integer get(List<BubbleTextView> items) {
@@ -92,7 +92,11 @@ public class FolderAnimationManager {
 
                 @Override
                 public void set(List<BubbleTextView> items, Integer color) {
-                    setItemsTextColor(items, color);
+                    int size = items.size();
+
+                    for (int i = 0; i < size; ++i) {
+                        items.get(i).setTextColor(color);
+                    }
                 }
             };
 
@@ -192,7 +196,8 @@ public class FolderAnimationManager {
         // Initialize the Folder items' text.
         final List<BubbleTextView> itemsOnCurrentPage = mFolder.getItemsOnCurrentPage();
         final int finalTextColor = Themes.getAttrColor(mContext, android.R.attr.textColorSecondary);
-        setItemsTextColor(itemsOnCurrentPage, isOpening ? Color.TRANSPARENT : finalTextColor);
+        ITEMS_TEXT_COLOR_PROPERTY.set(itemsOnCurrentPage, isOpening ? Color.TRANSPARENT
+                : finalTextColor);
 
         // Create the animators.
         AnimatorSet a = LauncherAnimUtils.createAnimatorSet();
@@ -234,6 +239,14 @@ public class FolderAnimationManager {
                 totalOffsetX + initialSize, initialSize);
         Rect endRect = new Rect(0, 0, lp.width, lp.height);
         a.play(getRevealAnimator(isOpening, initialSize / 2f, startRect, endRect));
+
+        a.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                ITEMS_TEXT_COLOR_PROPERTY.set(itemsOnCurrentPage, finalTextColor);
+            }
+        });
 
         addPreviewItemAnimatorsToSet(a, isOpening, folderScale, nudgeOffsetX);
         return a;
@@ -320,14 +333,6 @@ public class FolderAnimationManager {
                     btv.setScaleY(1f);
                 }
             });
-        }
-    }
-
-    private void setItemsTextColor(List<BubbleTextView> items, int color) {
-        int size = items.size();
-
-        for (int i = 0; i < size; ++i) {
-            items.get(i).setTextColor(color);
         }
     }
 }
