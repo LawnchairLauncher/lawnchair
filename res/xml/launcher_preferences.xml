@@ -30,7 +30,8 @@
         android:summary="App restart required"
         android:defaultValue="true"
         android:persistent="true"
-        android:enabled="false"/>
+        android:enabled="false"
+        android:visibility="gone"/>
 
     <SwitchPreference
         android:key="pref_qsbOnFirstScreen"
@@ -38,7 +39,8 @@
         android:summary="App restart required"
         android:defaultValue="true"
         android:persistent="true"
-        android:enabled="false"/>
+        android:enabled="false"
+        android:visibility="gone"/>
 
     <SwitchPreference
         android:key="pref_lightStatusBar"
