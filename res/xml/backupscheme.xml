@@ -2,6 +2,6 @@
 <full-backup-content xmlns:android="http://schemas.android.com/apk/res/android">
 
     <include domain="database" path="launcher.db" />
-    <include domain="sharedpref" path="com.android.launcher3.prefs.xml" />
+    <include domain="sharedpref" path="ch.deletescape.lawnchair.prefs.xml" />
 
 </full-backup-content>

@@ -16,7 +16,7 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.android.launcher3.tests">
+    package="ch.deletescape.lawnchair.tests">
 
     <uses-sdk tools:overrideLibrary="android.support.test.uiautomator.v18"/>
 
@@ -28,6 +28,6 @@
         android:functionalTest="false"
         android:handleProfiling="false"
         android:name="android.support.test.runner.AndroidJUnitRunner"
-        android:targetPackage="com.android.launcher3" >
+        android:targetPackage="ch.deletescape.lawnchair" >
     </instrumentation>
 </manifest>

@@ -15,7 +15,7 @@
 -->
 
 <!-- Full screen view projects under the status bar and contains the background -->
-<com.android.launcher3.LauncherRootView
+<ch.deletescape.lawnchair.LauncherRootView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
 
@@ -24,7 +24,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <com.android.launcher3.dragndrop.DragLayer
+    <ch.deletescape.lawnchair.dragndrop.DragLayer
         android:id="@+id/drag_layer"
         android:clipChildren="false"
         android:importantForAccessibility="no"
@@ -35,13 +35,13 @@
 
         <!-- The workspace contains 5 screens of cells -->
         <!-- DO NOT CHANGE THE ID -->
-        <com.android.launcher3.Workspace
+        <ch.deletescape.lawnchair.Workspace
             android:id="@+id/workspace"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             launcher:pageIndicator="@+id/page_indicator">
-        </com.android.launcher3.Workspace>
+        </ch.deletescape.lawnchair.Workspace>
 
         <!-- DO NOT CHANGE THE ID -->
         <include layout="@layout/hotseat"
@@ -79,6 +79,6 @@
             android:layout_height="match_parent"
             android:visibility="invisible"
             launcher:layout_ignoreInsets="true" />
-    </com.android.launcher3.dragndrop.DragLayer>
+    </ch.deletescape.lawnchair.dragndrop.DragLayer>
 
-</com.android.launcher3.LauncherRootView>
+</ch.deletescape.lawnchair.LauncherRootView>

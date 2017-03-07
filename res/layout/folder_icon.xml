@@ -14,16 +14,16 @@
      limitations under the License.
 -->
 
-<com.android.launcher3.folder.FolderIcon
+<ch.deletescape.lawnchair.folder.FolderIcon
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:focusable="true" >
-    <com.android.launcher3.BubbleTextView
+    <ch.deletescape.lawnchair.BubbleTextView
         style="@style/Icon"
         android:id="@+id/folder_icon_name"
         android:layout_gravity="top"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-</com.android.launcher3.folder.FolderIcon>
+</ch.deletescape.lawnchair.folder.FolderIcon>

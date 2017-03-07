@@ -16,7 +16,7 @@
 <!-- The top and bottom paddings are defined in this container, but since we want
      the list view to span the full width (for touch interception purposes), we
      will bake the left/right padding into that view's background itself. -->
-<com.android.launcher3.allapps.AllAppsContainerView xmlns:android="http://schemas.android.com/apk/res/android"
+<ch.deletescape.lawnchair.allapps.AllAppsContainerView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:id="@+id/apps_view"
     android:layout_width="match_parent"
@@ -33,7 +33,7 @@
         android:visibility="invisible" />
 
 
-    <com.android.launcher3.allapps.AllAppsRecyclerViewContainerView
+    <ch.deletescape.lawnchair.allapps.AllAppsRecyclerViewContainerView
         android:id="@+id/main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -44,7 +44,7 @@
         android:visibility="gone">
 
         <!-- DO NOT CHANGE THE ID -->
-        <com.android.launcher3.allapps.AllAppsRecyclerView
+        <ch.deletescape.lawnchair.allapps.AllAppsRecyclerView
             android:id="@+id/apps_list_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -65,7 +65,7 @@
             android:orientation="horizontal"
             android:saveEnabled="false">
 
-            <com.android.launcher3.ExtendedEditText
+            <ch.deletescape.lawnchair.ExtendedEditText
                 android:id="@+id/search_box_input"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -82,7 +82,7 @@
                 android:textSize="16sp" />
         </FrameLayout>
 
-    </com.android.launcher3.allapps.AllAppsRecyclerViewContainerView>
+    </ch.deletescape.lawnchair.allapps.AllAppsRecyclerViewContainerView>
     <View
         android:id="@+id/nav_bar_bg"
         android:layout_width="match_parent"
@@ -91,4 +91,4 @@
         android:background="@color/all_apps_navbar_color"
         android:focusable="false"
         android:visibility="invisible" />
-</com.android.launcher3.allapps.AllAppsContainerView>
+</ch.deletescape.lawnchair.allapps.AllAppsContainerView>

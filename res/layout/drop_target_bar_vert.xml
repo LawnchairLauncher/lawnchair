@@ -14,7 +14,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.DropTargetBar
+<ch.deletescape.lawnchair.DropTargetBar
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/dynamic_grid_drop_target_size"
     android:orientation="vertical"
@@ -24,7 +24,7 @@
     android:paddingTop="@dimen/vert_drop_target_vertical_gap" >
 
     <!-- Delete target -->
-    <com.android.launcher3.DeleteDropTarget
+    <ch.deletescape.lawnchair.DeleteDropTarget
         android:layout_width="match_parent"
         android:layout_height="@dimen/dynamic_grid_drop_target_size"
         android:gravity="center"
@@ -34,7 +34,7 @@
         android:textColor="@android:color/white" />
 
     <!-- Uninstall target -->
-    <com.android.launcher3.UninstallDropTarget
+    <ch.deletescape.lawnchair.UninstallDropTarget
         android:layout_width="match_parent"
         android:layout_height="@dimen/dynamic_grid_drop_target_size"
         android:gravity="center"
@@ -50,7 +50,7 @@
         android:layout_weight="1" />
 
     <!-- App Info -->
-    <com.android.launcher3.InfoDropTarget
+    <ch.deletescape.lawnchair.InfoDropTarget
         android:layout_width="match_parent"
         android:layout_height="@dimen/dynamic_grid_drop_target_size"
         android:gravity="center"
@@ -60,4 +60,4 @@
         android:textColor="@android:color/white"
         android:layout_marginBottom="64dp"/>
 
-</com.android.launcher3.DropTargetBar>
+</ch.deletescape.lawnchair.DropTargetBar>

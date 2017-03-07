@@ -15,7 +15,7 @@
      limitations under the License.
 -->
 
-<resolve xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3" >
+<resolve xmlns:launcher="http://schemas.android.com/apk/res-auto/ch.deletescape.lawnchair" >
 
     <favorite launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_BROWSER;end" />
     <favorite launcher:uri="http://www.example.com/" />

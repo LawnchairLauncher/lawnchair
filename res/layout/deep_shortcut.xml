@@ -14,14 +14,14 @@
      limitations under the License.
 -->
 
-<com.android.launcher3.shortcuts.DeepShortcutView
+<ch.deletescape.lawnchair.shortcuts.DeepShortcutView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/bg_pill_width"
     android:layout_height="@dimen/bg_pill_height"
     android:elevation="@dimen/deep_shortcuts_elevation"
     android:background="@drawable/bg_white_pill">
 
-<com.android.launcher3.shortcuts.DeepShortcutTextView
+<ch.deletescape.lawnchair.shortcuts.DeepShortcutTextView
         android:id="@+id/deep_shortcut"
         style="@style/Icon.DeepShortcut"
         android:layout_width="match_parent"
@@ -36,4 +36,4 @@
         android:layout_margin="@dimen/deep_shortcut_padding_start"
         android:layout_gravity="start" />
 
-</com.android.launcher3.shortcuts.DeepShortcutView>
+</ch.deletescape.lawnchair.shortcuts.DeepShortcutView>

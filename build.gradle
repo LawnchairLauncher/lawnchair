@@ -31,8 +31,8 @@ android {
 
     productFlavors {
         aosp {
-            applicationId 'com.android.launcher3'
-            testApplicationId 'com.android.launcher3.tests'
+            applicationId 'ch.deletescape.lawnchair'
+            testApplicationId 'ch.deletescape.lawnchair.tests'
         }
     }
     sourceSets {

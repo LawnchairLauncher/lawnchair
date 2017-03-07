@@ -14,7 +14,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.DropTargetBar
+<ch.deletescape.lawnchair.DropTargetBar
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -29,7 +29,7 @@
 
         <!-- Delete target -->
 
-        <com.android.launcher3.DeleteDropTarget
+        <ch.deletescape.lawnchair.DeleteDropTarget
             launcher:hideParentOnDisable="true"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -47,7 +47,7 @@
 
         <!-- App Info -->
 
-        <com.android.launcher3.InfoDropTarget
+        <ch.deletescape.lawnchair.InfoDropTarget
             launcher:hideParentOnDisable="true"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -65,7 +65,7 @@
 
         <!-- Uninstall target -->
 
-        <com.android.launcher3.UninstallDropTarget
+        <ch.deletescape.lawnchair.UninstallDropTarget
             launcher:hideParentOnDisable="true"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -76,4 +76,4 @@
             android:text="@string/uninstall_drop_target_label" />
     </FrameLayout>
 
-</com.android.launcher3.DropTargetBar>
+</ch.deletescape.lawnchair.DropTargetBar>

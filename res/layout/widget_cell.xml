@@ -13,7 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.widget.WidgetCell
+<ch.deletescape.lawnchair.widget.WidgetCell
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
@@ -66,9 +66,9 @@
 
     <!-- The image of the widget. This view does not support padding. Any placement adjustment
          should be done using margins. -->
-    <com.android.launcher3.widget.WidgetImageView
+    <ch.deletescape.lawnchair.widget.WidgetImageView
         android:id="@+id/widget_preview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
-</com.android.launcher3.widget.WidgetCell>
+</ch.deletescape.lawnchair.widget.WidgetCell>

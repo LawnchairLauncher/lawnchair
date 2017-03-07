@@ -1,34 +1,34 @@
--keep,allowshrinking,allowoptimization class com.android.launcher3.** {
+-keep,allowshrinking,allowoptimization class ch.deletescape.lawnchair.** {
   *;
 }
 
--keep class com.android.launcher3.allapps.AllAppsBackgroundDrawable {
+-keep class ch.deletescape.lawnchair.allapps.AllAppsBackgroundDrawable {
   public void setAlpha(int);
   public int getAlpha();
 }
 
--keep class com.android.launcher3.BaseRecyclerViewFastScrollBar {
+-keep class ch.deletescape.lawnchair.BaseRecyclerViewFastScrollBar {
   public void setThumbWidth(int);
   public int getThumbWidth();
   public void setTrackWidth(int);
   public int getTrackWidth();
 }
 
--keep class com.android.launcher3.BaseRecyclerViewFastScrollPopup {
+-keep class ch.deletescape.lawnchair.BaseRecyclerViewFastScrollPopup {
   public void setAlpha(float);
   public float getAlpha();
 }
 
--keep class com.android.launcher3.ButtonDropTarget {
+-keep class ch.deletescape.lawnchair.ButtonDropTarget {
   public int getTextColor();
 }
 
--keep class com.android.launcher3.CellLayout {
+-keep class ch.deletescape.lawnchair.CellLayout {
   public float getBackgroundAlpha();
   public void setBackgroundAlpha(float);
 }
 
--keep class com.android.launcher3.CellLayout$LayoutParams {
+-keep class ch.deletescape.lawnchair.CellLayout$LayoutParams {
   public void setWidth(int);
   public int getWidth();
   public void setHeight(int);
@@ -39,7 +39,7 @@
   public int getY();
 }
 
--keep class com.android.launcher3.dragndrop.DragLayer$LayoutParams {
+-keep class ch.deletescape.lawnchair.dragndrop.DragLayer$LayoutParams {
   public void setWidth(int);
   public int getWidth();
   public void setHeight(int);
@@ -50,35 +50,35 @@
   public int getY();
 }
 
--keep class com.android.launcher3.FastBitmapDrawable {
+-keep class ch.deletescape.lawnchair.FastBitmapDrawable {
   public void setDesaturation(float);
   public float getDesaturation();
   public void setBrightness(float);
   public float getBrightness();
 }
 
--keep class com.android.launcher3.MemoryDumpActivity {
+-keep class ch.deletescape.lawnchair.MemoryDumpActivity {
   *;
 }
 
--keep class com.android.launcher3.PreloadIconDrawable {
+-keep class ch.deletescape.lawnchair.PreloadIconDrawable {
   public float getAnimationProgress();
   public void setAnimationProgress(float);
 }
 
--keep class com.android.launcher3.pageindicators.CaretDrawable {
+-keep class ch.deletescape.lawnchair.pageindicators.CaretDrawable {
   public float getCaretProgress();
   public void setCaretProgress(float);
 }
 
--keep class com.android.launcher3.Workspace {
+-keep class ch.deletescape.lawnchair.Workspace {
   public float getBackgroundAlpha();
   public void setBackgroundAlpha(float);
 }
 
 # Proguard will strip new callbacks in LauncherApps.Callback from
 # WrappedCallback if compiled against an older SDK. Don't let this happen.
--keep class com.android.launcher3.compat.** {
+-keep class ch.deletescape.lawnchair.compat.** {
   *;
 }
 

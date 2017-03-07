@@ -16,7 +16,7 @@
 <!-- The top and bottom paddings are defined in this container, but since we want
      the list view to span the full width (for touch interception purposes), we
      will bake the left/right padding into that view's background itself. -->
-<com.android.launcher3.widget.WidgetsContainerView
+<ch.deletescape.lawnchair.widget.WidgetsContainerView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:id="@+id/widgets_view"
@@ -43,7 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.android.launcher3.widget.WidgetsRecyclerView
+        <ch.deletescape.lawnchair.widget.WidgetsRecyclerView
             android:id="@+id/widgets_list_view"
             android:theme="@style/CustomOverscroll.Dark"
             android:layout_width="match_parent"
@@ -57,4 +57,4 @@
     </FrameLayout>
 
 
-</com.android.launcher3.widget.WidgetsContainerView>
+</ch.deletescape.lawnchair.widget.WidgetsContainerView>

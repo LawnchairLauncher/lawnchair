@@ -43,7 +43,7 @@ def adb_root_remount():
 def pull_file(fn):
   print "pull_file: " + fn
   rv = os.system("adb pull"
-    + " /data/data/com.android.launcher3/databases/launcher.db"
+    + " /data/data/ch.deletescape.lawnchair/databases/launcher.db"
     + " " + fn);
   if rv != 0:
     print "adb pull failed"
