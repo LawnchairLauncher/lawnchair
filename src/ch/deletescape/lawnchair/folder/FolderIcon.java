@@ -82,9 +82,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private FolderInfo mInfo;
     @Thunk static boolean sStaticValuesDirty = true;
 
-    public static final int NUM_ITEMS_IN_PREVIEW = FeatureFlags.LAUNCHER3_LEGACY_FOLDER_ICON ?
-            StackFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW :
-            ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
+    public static final int NUM_ITEMS_IN_PREVIEW = ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 
     private CheckLongPressHelper mLongPressHelper;
     private StylusEventHelper mStylusEventHelper;
@@ -139,9 +137,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private void init() {
         mLongPressHelper = new CheckLongPressHelper(this);
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
-        mPreviewLayoutRule = FeatureFlags.LAUNCHER3_LEGACY_FOLDER_ICON ?
-                new StackFolderIconLayoutRule() :
-                new ClippedFolderIconLayoutRule();
+        mPreviewLayoutRule = new ClippedFolderIconLayoutRule();
     }
 
     public static FolderIcon fromXml(int resId, Launcher launcher, ViewGroup group,
@@ -900,7 +896,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             PreviewItemDrawingParams p = mDrawingParams.get(i);
             p.drawable = getTopDrawable((TextView) items.get(i));
 
-            if (!animate || FeatureFlags.LAUNCHER3_LEGACY_FOLDER_ICON) {
+            if (!animate) {
                 computePreviewItemDrawingParams(i, nItemsInPreview, p);
                 if (mReferenceDrawable == null) {
                     mReferenceDrawable = p.drawable;
