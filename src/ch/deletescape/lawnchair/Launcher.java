@@ -121,7 +121,6 @@ import ch.deletescape.lawnchair.util.ItemInfoMatcher;
 import ch.deletescape.lawnchair.util.MultiHashMap;
 import ch.deletescape.lawnchair.util.PackageManagerHelper;
 import ch.deletescape.lawnchair.util.PendingRequestArgs;
-import ch.deletescape.lawnchair.util.TestingUtils;
 import ch.deletescape.lawnchair.util.Thunk;
 import ch.deletescape.lawnchair.util.ViewOnDrawExecutor;
 import ch.deletescape.lawnchair.widget.PendingAddWidgetInfo;
@@ -136,8 +135,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-
-import ch.deletescape.lawnchair.R;
 
 /**
  * Default launcher application.
@@ -324,12 +321,6 @@ public class Launcher extends Activity
 
     protected static HashMap<String, CustomAppWidget> sCustomAppWidgets =
             new HashMap<String, CustomAppWidget>();
-
-    static {
-        if (TestingUtils.ENABLE_CUSTOM_WIDGET_TEST) {
-            TestingUtils.addDummyWidget(sCustomAppWidgets);
-        }
-    }
 
     // Exiting spring loaded mode happens with a delay. This runnable object triggers the
     // state transition. If another state transition happened during this delay,
@@ -1366,10 +1357,6 @@ public class Launcher extends Activity
 
         if (Utilities.getPrefs(getApplicationContext()).getBoolean("pref_show_caret", true)) {
             mAllAppsController.setupViews(mAppsView, mHotseat, mWorkspace);
-        }
-
-        if (TestingUtils.MEMORY_DUMP_ENABLED) {
-            TestingUtils.addWeightWatcher(this);
         }
     }
 

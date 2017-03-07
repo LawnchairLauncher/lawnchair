@@ -16,7 +16,6 @@
 
 package ch.deletescape.lawnchair;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -31,12 +30,9 @@ import ch.deletescape.lawnchair.logging.FileLog;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
 import ch.deletescape.lawnchair.shortcuts.ShortcutCache;
 import ch.deletescape.lawnchair.util.ConfigMonitor;
-import ch.deletescape.lawnchair.util.TestingUtils;
 import ch.deletescape.lawnchair.util.Thunk;
 
 import java.lang.ref.WeakReference;
-
-import ch.deletescape.lawnchair.R;
 
 public class LauncherAppState {
 
@@ -92,10 +88,6 @@ public class LauncherAppState {
         }
 
         Log.v(Launcher.TAG, "LauncherAppState inited");
-
-        if (TestingUtils.MEMORY_DUMP_ENABLED) {
-            TestingUtils.startTrackingMemory(sContext);
-        }
 
         mInvariantDeviceProfile = new InvariantDeviceProfile(sContext);
         mIconCache = new IconCache(sContext, mInvariantDeviceProfile);
