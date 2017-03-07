@@ -233,9 +233,7 @@ public class DragController implements DragDriver.EventListener, TouchController
         mIsDragDeferred = !mOptions.deferDragCondition.shouldStartDeferredDrag(0);
 
         final Resources res = mLauncher.getResources();
-        final float scaleDps = FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND
-                ? res.getDimensionPixelSize(R.dimen.dragViewScale)
-                : mIsDragDeferred
+        final float scaleDps = mIsDragDeferred
                     ? res.getDimensionPixelSize(R.dimen.deferred_drag_view_scale)
                     : 0f;
         final DragView dragView = mDragObject.dragView = new DragView(mLauncher, b, registrationX,

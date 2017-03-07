@@ -259,9 +259,7 @@ public class DeviceProfile {
         cellWidthPx = iconSizePx;
         cellHeightPx = iconSizePx + iconDrawablePaddingPx
                 + Utilities.calculateTextHeight(iconTextSizePx);
-        final float scaleDps = !FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND ? 0f
-                : res.getDimensionPixelSize(R.dimen.dragViewScale);
-        dragViewScale = (iconSizePx + scaleDps) / iconSizePx;
+        dragViewScale = iconSizePx;
 
         // Hotseat
         hotseatCellWidthPx = iconSizePx;

@@ -563,12 +563,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             }
         }
         mLauncher.getWorkspace().beginDragShared(v, this, dragOptions);
-        if (FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND) {
-            // Enter spring loaded mode (the new workspace does this in
-            // onDragStart(), so we don't want to do it here)
-            mLauncher.enterSpringLoadedDragMode();
-        }
-
         return false;
     }
 

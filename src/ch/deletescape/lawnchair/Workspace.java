@@ -452,11 +452,8 @@ public class Workspace extends PagedView
                 }
             }
         }
-
-        if (!FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND) {
-            // Always enter the spring loaded mode
-            mLauncher.enterSpringLoadedDragMode();
-        }
+        // Always enter the spring loaded mode
+        mLauncher.enterSpringLoadedDragMode();
     }
 
     public void deferRemoveExtraEmptyScreen() {
@@ -2785,10 +2782,6 @@ public class Workspace extends PagedView
 
         mDropToLayout = null;
         setDropLayoutForDragObject(d);
-
-        if (!workspaceInModalState() && FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND) {
-            mLauncher.getDragLayer().showPageHints();
-        }
     }
 
     @Override
@@ -3744,7 +3737,7 @@ public class Workspace extends PagedView
 
     @Override
     public boolean supportsAppInfoDropTarget() {
-        return !FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND;
+        return true;
     }
 
     @Override

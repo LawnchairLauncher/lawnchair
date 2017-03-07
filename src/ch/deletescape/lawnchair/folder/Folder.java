@@ -970,7 +970,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     @Override
     public boolean supportsAppInfoDropTarget() {
-        return !FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND;
+        return true;
     }
 
     @Override

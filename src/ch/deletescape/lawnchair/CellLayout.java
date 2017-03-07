@@ -117,8 +117,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     private float mBackgroundAlpha;
 
-    private static final int BACKGROUND_ACTIVATE_DURATION =
-            FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND ? 120 : 0;
+    private static final int BACKGROUND_ACTIVATE_DURATION = 0;
     private final TransitionDrawable mBackground;
 
     // These values allow a fixed measurement to be set on the CellLayout.
@@ -223,9 +222,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         final Resources res = getResources();
         mHotseatScale = (float) grid.hotseatIconSizePx / grid.iconSizePx;
 
-        mBackground = (TransitionDrawable) res.getDrawable(
-                FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND ? R.drawable.bg_screenpanel
-                        : R.drawable.bg_celllayout);
+        mBackground = (TransitionDrawable) res.getDrawable(R.drawable.bg_celllayout);
         mBackground.setCallback(this);
         mBackground.setAlpha((int) (mBackgroundAlpha * 255));
 

@@ -3365,10 +3365,8 @@ public class Launcher extends Activity
             mState = State.APPS_SPRING_LOADED;
         } else if (isWidgetsViewVisible()) {
             mState = State.WIDGETS_SPRING_LOADED;
-        } else if (!FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND) {
-            mState = State.WORKSPACE_SPRING_LOADED;
         } else {
-            mState = State.WORKSPACE;
+            mState = State.WORKSPACE_SPRING_LOADED;
         }
     }
 
