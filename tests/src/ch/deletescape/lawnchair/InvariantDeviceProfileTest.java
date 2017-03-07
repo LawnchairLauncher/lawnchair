@@ -77,7 +77,7 @@ public class InvariantDeviceProfileTest extends AndroidTestCase {
                     mInvariantProfile.findClosestDeviceProfiles(
                             pts.get(i).x, pts.get(i).y, mPredefinedDeviceProfiles);
             InvariantDeviceProfile result =
-                    mInvariantProfile.invDistWeightedInterpolate(
+                    mInvariantProfile.invDistWeightedInterpolate( getContext(),
                             pts.get(i).x, pts.get(i).y, closestProfiles);
             if (DEBUG) {
                 Log.d(TAG, String.format("width x height = (%f, %f)] iconSize = %f",

@@ -47,6 +47,18 @@
         android:defaultValue="false"
         android:persistent="true" />
 
+    <ListPreference
+        android:key="pref_numCols"
+        android:title="Number of columns"
+        android:entries="@array/numColsTexts"
+        android:entryValues="@array/numColsValues"/>
+
+    <ListPreference
+        android:key="pref_numRows"
+        android:title="Number of rows"
+        android:entryValues="@array/numRowsValues"
+        android:entries="@array/numRowsTexts"/>
+
     <PreferenceCategory
         android:title="Behavior"/>
 

@@ -18,6 +18,7 @@ package ch.deletescape.lawnchair;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.Point;
@@ -95,14 +96,14 @@ public class InvariantDeviceProfile {
     public InvariantDeviceProfile() {
     }
 
-    public InvariantDeviceProfile(InvariantDeviceProfile p) {
-        this(p.name, p.minWidthDps, p.minHeightDps, p.numRows, p.numColumns,
+    public InvariantDeviceProfile(Context context, InvariantDeviceProfile p) {
+        this(context, p.name, p.minWidthDps, p.minHeightDps, p.numRows, p.numColumns,
                 p.numFolderRows, p.numFolderColumns, p.minAllAppsPredictionColumns,
                 p.iconSize, p.iconTextSize, p.numHotseatIcons, p.hotseatIconSize,
                 p.defaultLayoutId);
     }
 
-    InvariantDeviceProfile(String n, float w, float h, int r, int c, int fr, int fc, int maapc,
+    InvariantDeviceProfile(Context context, String n, float w, float h, int r, int c, int fr, int fc, int maapc,
             float is, float its, int hs, float his, int dlId) {
         name = n;
         minWidthDps = w;
@@ -117,6 +118,11 @@ public class InvariantDeviceProfile {
         numHotseatIcons = hs;
         hotseatIconSize = his;
         defaultLayoutId = dlId;
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        DisplayMetrics dm = new DisplayMetrics();
+        display.getMetrics(dm);
+        customizationHook(context, dm);
     }
 
     @TargetApi(23)
@@ -137,7 +143,7 @@ public class InvariantDeviceProfile {
         ArrayList<InvariantDeviceProfile> closestProfiles = findClosestDeviceProfiles(
                 minWidthDps, minHeightDps, getPredefinedDeviceProfiles(context));
         InvariantDeviceProfile interpolatedDeviceProfileOut =
-                invDistWeightedInterpolate(minWidthDps,  minHeightDps, closestProfiles);
+                invDistWeightedInterpolate(context, minWidthDps,  minHeightDps, closestProfiles);
 
         InvariantDeviceProfile closestProfile = closestProfiles.get(0);
         numRows = closestProfile.numRows;
@@ -157,6 +163,8 @@ public class InvariantDeviceProfile {
         // If the partner customization apk contains any grid overrides, apply them
         // Supported overrides: numRows, numColumns, iconSize
         applyPartnerDeviceProfileOverrides(context, dm);
+
+        customizationHook(context,dm);
 
         Point realSize = new Point();
         display.getRealSize(realSize);
@@ -181,6 +189,27 @@ public class InvariantDeviceProfile {
         }
     }
 
+    private void customizationHook(Context context, DisplayMetrics dm) {
+        SharedPreferences prefs = Utilities.getPrefs(context.getApplicationContext());
+        String valueDefault = "default";
+        if(!prefs.getString("pref_numRows", valueDefault).equals(valueDefault)){
+            numRows = Integer.valueOf(prefs.getString("pref_numRows", ""));
+        }
+        if(!prefs.getString("pref_numCols", valueDefault).equals(valueDefault)){
+            numColumns = Integer.valueOf(prefs.getString("pref_numCols", ""));
+        }
+        if(!prefs.getString("pref_numHotseatIcons", valueDefault).equals(valueDefault)){
+            numHotseatIcons = Integer.valueOf(prefs.getString("pref_numHotseatIcons", ""));
+        }
+        if(!prefs.getString("pref_iconSize", valueDefault).equals(valueDefault)){
+            iconSize = Float.valueOf(prefs.getString("pref_iconSize",  ""));
+            Utilities.pxFromDp(iconSize, dm);
+        }
+        if(!prefs.getString("pref_iconTextSize", valueDefault).equals(valueDefault)){
+            iconTextSize = Float.valueOf(prefs.getString("pref_iconTextSize",  ""));
+        }
+    }
+
     ArrayList<InvariantDeviceProfile> getPredefinedDeviceProfiles(Context context) {
         ArrayList<InvariantDeviceProfile> profiles = new ArrayList<>();
         try (XmlResourceParser parser = context.getResources().getXml(R.xml.device_profiles)) {
@@ -195,7 +224,7 @@ public class InvariantDeviceProfile {
                     int numRows = a.getInt(R.styleable.InvariantDeviceProfile_numRows, 0);
                     int numColumns = a.getInt(R.styleable.InvariantDeviceProfile_numColumns, 0);
                     float iconSize = a.getFloat(R.styleable.InvariantDeviceProfile_iconSize, 0);
-                    profiles.add(new InvariantDeviceProfile(
+                    profiles.add(new InvariantDeviceProfile(context,
                             a.getString(R.styleable.InvariantDeviceProfile_name),
                             a.getFloat(R.styleable.InvariantDeviceProfile_minWidthDps, 0),
                             a.getFloat(R.styleable.InvariantDeviceProfile_minHeightDps, 0),
@@ -278,7 +307,7 @@ public class InvariantDeviceProfile {
     }
 
     // Package private visibility for testing.
-    InvariantDeviceProfile invDistWeightedInterpolate(float width, float height,
+    InvariantDeviceProfile invDistWeightedInterpolate(Context context, float width, float height,
                 ArrayList<InvariantDeviceProfile> points) {
         float weights = 0;
 
@@ -289,7 +318,7 @@ public class InvariantDeviceProfile {
 
         InvariantDeviceProfile out = new InvariantDeviceProfile();
         for (int i = 0; i < points.size() && i < KNEARESTNEIGHBOR; ++i) {
-            p = new InvariantDeviceProfile(points.get(i));
+            p = new InvariantDeviceProfile(context, points.get(i));
             float w = weight(width, height, p.minWidthDps, p.minHeightDps, WEIGHT_POWER);
             weights += w;
             out.add(p.multiply(w));
