@@ -14,41 +14,36 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:layout_margin="16dp"
+    android:layout_gravity="center_vertical"
+    android:background="@drawable/quantum_panel_shape"
+    android:elevation="2dp"
+    android:orientation="horizontal">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_margin="16dp"
-        android:layout_gravity="center_vertical"
-        android:background="@drawable/quantum_panel_shape"
-        android:elevation="2dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:id="@+id/btn_qsb_search"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:paddingStart="16dp"
-            android:text="@string/abandoned_search"
-            android:textColor="@color/quantum_panel_text_color"
-            android:textAppearance="?android:textAppearanceMedium"
-            android:clickable="true"
-            android:background="?android:attr/selectableItemBackground" />
-        <ImageView
-            android:layout_width="48dp"
-            android:id="@+id/btn_qsb_setup"
-            android:clickable="true"
-            android:visibility="gone"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_setting"
-            android:tint="@color/quantum_panel_text_color"
-            android:contentDescription="@string/gadget_setup_text"
-            android:padding="8dp"
-            android:background="?android:attr/selectableItemBackground" />
-    </LinearLayout>
-</FrameLayout>
+    <TextView
+        android:layout_width="0dp"
+        android:id="@+id/btn_qsb_search"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:text="@string/abandoned_search"
+        android:textColor="@color/quantum_panel_text_color"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:clickable="true"
+        android:background="?android:attr/selectableItemBackground" />
+    <ImageView
+        android:layout_width="48dp"
+        android:id="@+id/btn_qsb_setup"
+        android:clickable="true"
+        android:visibility="gone"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_setting"
+        android:tint="@color/quantum_panel_text_color"
+        android:contentDescription="@string/gadget_setup_text"
+        android:padding="8dp"
+        android:background="?android:attr/selectableItemBackground" />
+</LinearLayout>
