@@ -323,19 +323,12 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     @Override
     public boolean dispatchHoverEvent(MotionEvent event) {
         // Always attempt to dispatch hover events to accessibility first.
-        if (mUseTouchHelper && mTouchHelper.dispatchHoverEvent(event)) {
-            return true;
-        }
-        return super.dispatchHoverEvent(event);
+        return mUseTouchHelper && mTouchHelper.dispatchHoverEvent(event) || super.dispatchHoverEvent(event);
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (mUseTouchHelper ||
-                (mInterceptTouchListener != null && mInterceptTouchListener.onTouch(this, ev))) {
-            return true;
-        }
-        return false;
+        return mUseTouchHelper || (mInterceptTouchListener != null && mInterceptTouchListener.onTouch(this, ev));
     }
 
     @Override
@@ -345,11 +338,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         // the home screen mode, however, once in overview mode stylus button press should be
         // enabled to allow rearranging the different home screens. So check what mode
         // the workspace is in, and only perform stylus button presses while in overview mode.
-        if (mLauncher.mWorkspace.isInOverviewMode()
-                && mStylusEventHelper.onMotionEvent(ev)) {
-            return true;
-        }
-        return handled;
+        return  mLauncher.mWorkspace.isInOverviewMode() && mStylusEventHelper.onMotionEvent(ev) || handled;
     }
 
     public void enableHardwareLayer(boolean hasLayer) {
@@ -2483,8 +2472,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
      * @param pixelY The Y location at which you want to search for a vacant area.
      * @param spanX Horizontal span of the object.
      * @param spanY Vertical span of the object.
-     * @param ignoreView Considers space occupied by this view as unoccupied
-     * @param result Previously returned value to possibly recycle.
      * @return The X, Y cell of a vacant area that can contain this object,
      *         nearest the requested location.
      */

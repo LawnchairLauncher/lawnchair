@@ -55,10 +55,7 @@ public class UserHandleCompat {
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof UserHandleCompat)) {
-            return false;
-        }
-        return mUser.equals(((UserHandleCompat) other).mUser);
+        return other instanceof UserHandleCompat && mUser.equals(((UserHandleCompat) other).mUser);
     }
 
     @Override

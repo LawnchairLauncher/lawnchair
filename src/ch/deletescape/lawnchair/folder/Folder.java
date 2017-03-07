@@ -1224,10 +1224,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 public boolean onKey(View v, int keyCode, KeyEvent event) {
                     boolean isShiftPlusTab = keyCode == KeyEvent.KEYCODE_TAB &&
                             event.hasModifiers(KeyEvent.META_SHIFT_ON);
-                    if (isShiftPlusTab && Folder.this.isFocused()) {
-                        return lastChild.requestFocus();
-                    }
-                    return false;
+                    return isShiftPlusTab && Folder.this.isFocused() && lastChild.requestFocus();
                 }
             });
         }

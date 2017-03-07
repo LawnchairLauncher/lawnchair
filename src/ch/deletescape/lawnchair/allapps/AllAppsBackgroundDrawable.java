@@ -147,8 +147,8 @@ public class AllAppsBackgroundDrawable extends Drawable {
     @Override
     public void draw(Canvas canvas) {
         mHand.draw(canvas);
-        for (int i = 0; i < mIcons.length; i++) {
-            mIcons[i].draw(canvas);
+        for (TransformedImageDrawable mIcon : mIcons) {
+            mIcon.draw(canvas);
         }
     }
 
@@ -156,8 +156,8 @@ public class AllAppsBackgroundDrawable extends Drawable {
     protected void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
         mHand.updateBounds(bounds);
-        for (int i = 0; i < mIcons.length; i++) {
-            mIcons[i].updateBounds(bounds);
+        for (TransformedImageDrawable mIcon : mIcons) {
+            mIcon.updateBounds(bounds);
         }
         invalidateSelf();
     }
@@ -165,8 +165,8 @@ public class AllAppsBackgroundDrawable extends Drawable {
     @Override
     public void setAlpha(int alpha) {
         mHand.setAlpha(alpha);
-        for (int i = 0; i < mIcons.length; i++) {
-            mIcons[i].setAlpha(alpha);
+        for (TransformedImageDrawable mIcon : mIcons) {
+            mIcon.setAlpha(alpha);
         }
         invalidateSelf();
     }

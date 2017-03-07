@@ -2243,9 +2243,9 @@ public class Workspace extends PagedView
      */
     public static Drawable getTextViewIcon(TextView tv) {
         final Drawable[] drawables = tv.getCompoundDrawables();
-        for (int i = 0; i < drawables.length; i++) {
-            if (drawables[i] != null) {
-                return drawables[i];
+        for (Drawable drawable : drawables) {
+            if (drawable != null) {
+                return drawable;
             }
         }
         return null;

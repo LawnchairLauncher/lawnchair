@@ -192,10 +192,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         boolean handled = super.onTouchEvent(ev);
-        if (mStylusEventHelper.onMotionEvent(ev)) {
-            return true;
-        }
-        return handled;
+        return mStylusEventHelper.onMotionEvent(ev) || handled;
     }
 
     /**

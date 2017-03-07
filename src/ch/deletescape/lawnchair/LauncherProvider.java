@@ -262,9 +262,9 @@ public class LauncherProvider extends ContentProvider {
         db.beginTransaction();
         try {
             int numValues = values.length;
-            for (int i = 0; i < numValues; i++) {
-                addModifiedTime(values[i]);
-                if (dbInsertAndCheck(mOpenHelper, db, args.table, null, values[i]) < 0) {
+            for (ContentValues value : values) {
+                addModifiedTime(value);
+                if (dbInsertAndCheck(mOpenHelper, db, args.table, null, value) < 0) {
                     return 0;
                 }
             }

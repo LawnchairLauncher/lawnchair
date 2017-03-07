@@ -432,11 +432,7 @@ public class DragLayer extends InsettableFrameLayout {
                     mCurrentResizeFrame = null;
             }
         }
-        if (handled) return true;
-        if (mActiveController != null) {
-            return mActiveController.onTouchEvent(ev);
-        }
-        return false;
+        return handled || mActiveController != null && mActiveController.onTouchEvent(ev);
     }
 
     @TargetApi(Build.VERSION_CODES.N)

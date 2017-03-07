@@ -119,10 +119,7 @@ public abstract class AllAppsSearchBarController
         }
         // Skip if the query is empty
         String query = v.getText().toString();
-        if (query.isEmpty()) {
-            return false;
-        }
-        return mLauncher.startActivitySafely(v, createMarketSearchIntent(query), null);
+        return !query.isEmpty() && mLauncher.startActivitySafely(v, createMarketSearchIntent(query), null);
     }
 
     @Override

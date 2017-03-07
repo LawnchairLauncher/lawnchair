@@ -552,10 +552,7 @@ public class Launcher extends Activity
 
     /** To be overridden by subclasses to hint to Launcher that we have custom content */
     protected boolean hasCustomContentToLeft() {
-        if (mLauncherCallbacks != null) {
-            return mLauncherCallbacks.hasCustomContentToLeft();
-        }
-        return false;
+        return mLauncherCallbacks != null && mLauncherCallbacks.hasCustomContentToLeft();
     }
 
     /**
@@ -570,7 +567,7 @@ public class Launcher extends Activity
     }
 
     /**
-     * Invoked by subclasses to signal a change to the {@link #addCustomContentToLeft} value to
+     * Invoked by subclasses to signal a change to the  value to
      * ensure the custom content page is added or removed if necessary.
      */
     protected void invalidateHasCustomContentToLeft() {
@@ -1159,11 +1156,8 @@ public class Launcher extends Activity
         }
 
         // Eat the long press event so the keyboard doesn't come up.
-        if (keyCode == KeyEvent.KEYCODE_MENU && event.isLongPress()) {
-            return true;
-        }
+        return keyCode == KeyEvent.KEYCODE_MENU && event.isLongPress() || handled;
 
-        return handled;
     }
 
     @Override
@@ -1210,9 +1204,9 @@ public class Launcher extends Activity
     private static State intToState(int stateOrdinal) {
         State state = State.WORKSPACE;
         final State[] stateValues = State.values();
-        for (int i = 0; i < stateValues.length; i++) {
-            if (stateValues[i].ordinal() == stateOrdinal) {
-                state = stateValues[i];
+        for (State stateValue : stateValues) {
+            if (stateValue.ordinal() == stateOrdinal) {
+                state = stateValue;
                 break;
             }
         }
@@ -2010,10 +2004,7 @@ public class Launcher extends Activity
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        if (mLauncherCallbacks != null) {
-            return mLauncherCallbacks.onPrepareOptionsMenu(menu);
-        }
-        return false;
+        return mLauncherCallbacks != null && mLauncherCallbacks.onPrepareOptionsMenu(menu);
     }
 
     @Override

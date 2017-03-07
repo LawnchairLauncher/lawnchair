@@ -61,10 +61,7 @@ public class ExtendedEditText extends EditText {
     public boolean onKeyPreIme(int keyCode, KeyEvent event) {
         // If this is a back key, propagate the key back to the listener
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
-            if (mBackKeyListener != null) {
-                return mBackKeyListener.onBackKey();
-            }
-            return false;
+            return mBackKeyListener != null && mBackKeyListener.onBackKey();
         }
         return super.onKeyPreIme(keyCode, event);
     }

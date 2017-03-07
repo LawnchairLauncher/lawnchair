@@ -22,10 +22,10 @@ import android.os.Build;
 import android.view.ViewOutlineProvider;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-/**
- * A {@link ViewOutlineProvider} that animates a reveal in a "pill" shape.
- * A pill is simply a round rect, but we assume the width is greater than
- * the height and that the radius is equal to half the height.
+/*
+  A {@link ViewOutlineProvider} that animates a reveal in a "pill" shape.
+  A pill is simply a round rect, but we assume the width is greater than
+  the height and that the radius is equal to half the height.
  */
 public class PillRevealOutlineProvider extends RevealOutlineAnimation {
 

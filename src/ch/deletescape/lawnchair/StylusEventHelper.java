@@ -39,7 +39,7 @@ public class StylusEventHelper {
 
     /**
      * Constructs a helper for listening to stylus button presses and releases. Ensure that {
-     * {@link #onMotionEvent(MotionEvent)} and {@link #onGenericMotionEvent(MotionEvent)} are called on
+     * {@link #onMotionEvent(MotionEvent)} and  are called on
      * the helper to correctly identify stylus events.
      *
      * @param listener The listener to call for stylus events.

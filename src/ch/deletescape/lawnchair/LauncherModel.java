@@ -2999,10 +2999,10 @@ public class LauncherModel extends BroadcastReceiver
             StringFilter pkgFilter = StringFilter.of(new HashSet<>(Arrays.asList(packages)));
             switch (mOp) {
                 case OP_ADD: {
-                    for (int i=0; i<N; i++) {
-                        if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.addPackage " + packages[i]);
-                        mIconCache.updateIconsForPkg(packages[i], mUser);
-                        mBgAllAppsList.addPackage(context, packages[i], mUser);
+                    for (String aPackage : packages) {
+                        if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.addPackage " + aPackage);
+                        mIconCache.updateIconsForPkg(aPackage, mUser);
+                        mBgAllAppsList.addPackage(context, aPackage, mUser);
                     }
 
                     ManagedProfileHeuristic heuristic = ManagedProfileHeuristic.get(context, mUser);
@@ -3012,11 +3012,11 @@ public class LauncherModel extends BroadcastReceiver
                     break;
                 }
                 case OP_UPDATE:
-                    for (int i=0; i<N; i++) {
-                        if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.updatePackage " + packages[i]);
-                        mIconCache.updateIconsForPkg(packages[i], mUser);
-                        mBgAllAppsList.updatePackage(context, packages[i], mUser);
-                        mApp.getWidgetCache().removePackage(packages[i], mUser);
+                    for (String aPackage1 : packages) {
+                        if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.updatePackage " + aPackage1);
+                        mIconCache.updateIconsForPkg(aPackage1, mUser);
+                        mBgAllAppsList.updatePackage(context, aPackage1, mUser);
+                        mApp.getWidgetCache().removePackage(aPackage1, mUser);
                     }
                     // Since package was just updated, the target must be available now.
                     flagOp = FlagOp.removeFlag(ShortcutInfo.FLAG_DISABLED_NOT_AVAILABLE);
@@ -3026,17 +3026,17 @@ public class LauncherModel extends BroadcastReceiver
                     if (heuristic != null) {
                         heuristic.processPackageRemoved(mPackages);
                     }
-                    for (int i=0; i<N; i++) {
-                        if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.removePackage " + packages[i]);
-                        mIconCache.removeIconsForPkg(packages[i], mUser);
+                    for (String aPackage : packages) {
+                        if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.removePackage " + aPackage);
+                        mIconCache.removeIconsForPkg(aPackage, mUser);
                     }
                     // Fall through
                 }
                 case OP_UNAVAILABLE:
-                    for (int i=0; i<N; i++) {
-                        if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.removePackage " + packages[i]);
-                        mBgAllAppsList.removePackage(packages[i], mUser);
-                        mApp.getWidgetCache().removePackage(packages[i], mUser);
+                    for (String aPackage : packages) {
+                        if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.removePackage " + aPackage);
+                        mBgAllAppsList.removePackage(aPackage, mUser);
+                        mApp.getWidgetCache().removePackage(aPackage, mUser);
                     }
                     flagOp = FlagOp.addFlag(ShortcutInfo.FLAG_DISABLED_NOT_AVAILABLE);
                     break;
@@ -3238,9 +3238,9 @@ public class LauncherModel extends BroadcastReceiver
                 // removedPackages is a super-set of removedComponents
             } else if (mOp == OP_UPDATE) {
                 // Mark disabled packages in the broadcast to be removed
-                for (int i=0; i<N; i++) {
-                    if (isPackageDisabled(context, packages[i], mUser)) {
-                        removedPackages.add(packages[i]);
+                for (String aPackage : packages) {
+                    if (isPackageDisabled(context, aPackage, mUser)) {
+                        removedPackages.add(aPackage);
                     }
                 }
 

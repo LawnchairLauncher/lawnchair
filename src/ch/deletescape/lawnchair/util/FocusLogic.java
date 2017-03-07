@@ -518,8 +518,8 @@ public class FocusLogic {
 
         for (int j=0; j < n; j++) {
             String colY = "\t\t";
-            for (int i=0; i < m; i++) {
-                colY +=  String.format("%3d",matrix[i][j]);
+            for (int[] aMatrix : matrix) {
+                colY += String.format("%3d", aMatrix[j]);
             }
             Log.v(TAG, colY);
         }
