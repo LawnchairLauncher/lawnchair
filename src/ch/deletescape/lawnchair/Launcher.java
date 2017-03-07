@@ -223,7 +223,7 @@ public class Launcher extends Activity
     @Thunk DragLayer mDragLayer;
     private DragController mDragController;
     private View mQsbContainer;
-    
+
     private AppWidgetManagerCompat mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
 

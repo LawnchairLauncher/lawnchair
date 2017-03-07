@@ -23,7 +23,6 @@ import ch.deletescape.lawnchair.InvariantDeviceProfile;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.LauncherAppWidgetProviderInfo;
-import ch.deletescape.lawnchair.LauncherClings;
 import ch.deletescape.lawnchair.LauncherSettings;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
@@ -189,7 +188,6 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
                 LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
         LauncherSettings.Settings.call(mTargetContext.getContentResolver(),
                 LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG);
-        LauncherClings.markFirstRunClingDismissed(mTargetContext);
         ManagedProfileHeuristic.markExistingUsersForNoFolderCreation(mTargetContext);
 
         runTestOnUiThread(new Runnable() {
