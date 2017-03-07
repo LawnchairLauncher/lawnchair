@@ -40,4 +40,32 @@
         <item>8</item>
         <item>9</item>
     </string-array>
+
+    <string-array name="iconTextSizeValues">
+        <item>default</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+    </string-array>
+
+    <string-array name="iconTextSizeTexts">
+        <item>default</item>
+        <item>9sp</item>
+        <item>10sp</item>
+        <item>11sp</item>
+        <item>12sp</item>
+        <item>13sp</item>
+        <item>14sp</item>
+        <item>15sp</item>
+        <item>16sp</item>
+        <item>17sp</item>
+        <item>18sp</item>
+    </string-array>
 </resources>

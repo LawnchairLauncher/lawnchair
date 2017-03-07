@@ -59,6 +59,13 @@
         android:entryValues="@array/numRowsValues"
         android:entries="@array/numRowsTexts"/>
 
+
+    <ListPreference
+        android:key="pref_iconTextSize"
+        android:title="Icon text size"
+        android:entryValues="@array/iconTextSizeValues"
+        android:entries="@array/iconTextSizeTexts"/>
+
     <PreferenceCategory
         android:title="Behavior"/>
 
