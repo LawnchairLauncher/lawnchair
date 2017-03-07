@@ -1,4 +1,4 @@
-# Lawnchair
+# Lawnchair - [![Build Status](https://travis-ci.org/Deletescape-Media/Lawnchair.svg?branch=master)](https://travis-ci.org/Deletescape-Media/Lawnchair)
 
 ![What in launcher creation?](meme.jpg)
 
