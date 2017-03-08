@@ -65,6 +65,8 @@ public class FolderAnimationManager {
     private Animator mRevealAnimator;
     private final TimeInterpolator mOpeningInterpolator;
     private final TimeInterpolator mClosingInterpolator;
+    private final TimeInterpolator mPreviewItemOpeningInterpolator;
+    private final TimeInterpolator mPreviewItemClosingInterpolator;
 
     private final FolderIcon.PreviewItemDrawingParams mTmpParams =
             new FolderIcon.PreviewItemDrawingParams(0, 0, 0, 0);
@@ -115,6 +117,10 @@ public class FolderAnimationManager {
                 R.interpolator.folder_opening_interpolator);
         mClosingInterpolator = AnimationUtils.loadInterpolator(mContext,
                 R.interpolator.folder_closing_interpolator);
+        mPreviewItemOpeningInterpolator = AnimationUtils.loadInterpolator(mContext,
+                R.interpolator.folder_preview_item_opening_interpolator);
+        mPreviewItemClosingInterpolator = AnimationUtils.loadInterpolator(mContext,
+                R.interpolator.folder_preview_item_closing_interpolator);
     }
 
     public AnimatorSet getOpeningAnimator() {
@@ -122,7 +128,6 @@ public class FolderAnimationManager {
         mFolder.setPivotY(0);
 
         AnimatorSet a = getAnimatorSet(true /* isOpening */);
-        a.setInterpolator(mOpeningInterpolator);
         a.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -134,7 +139,6 @@ public class FolderAnimationManager {
 
     public AnimatorSet getClosingAnimator() {
         AnimatorSet a = getAnimatorSet(false /* isOpening */);
-        a.setInterpolator(mClosingInterpolator);
         return a;
     }
 
@@ -242,6 +246,12 @@ public class FolderAnimationManager {
             }
         });
 
+        // We set the interpolator on all current child animators here, because the preview item
+        // animators may use a different interpolator.
+        for (Animator animator : a.getChildAnimations()) {
+            animator.setInterpolator(isOpening ? mOpeningInterpolator : mClosingInterpolator);
+        }
+
         addPreviewItemAnimatorsToSet(a, isOpening, folderScale, nudgeOffsetX);
         return a;
     }
@@ -268,6 +278,8 @@ public class FolderAnimationManager {
         FolderIcon.PreviewLayoutRule rule = mFolderIcon.getLayoutRule();
         final List<BubbleTextView> itemsInPreview = mFolderIcon.getItemsToDisplay();
         final int numItemsInPreview = itemsInPreview.size();
+
+        TimeInterpolator previewItemInterpolator = getPreviewItemInterpolator(isOpening);
 
         ShortcutAndWidgetContainer cwc = mContent.getPageAt(0).getShortcutsAndWidgets();
         for (int i = 0; i < numItemsInPreview; ++i) {
@@ -305,16 +317,19 @@ public class FolderAnimationManager {
             ObjectAnimator translationX = isOpening
                     ? ObjectAnimator.ofFloat(btv, View.TRANSLATION_X, xDistance, 0)
                     : ObjectAnimator.ofFloat(btv, View.TRANSLATION_X, 0, xDistance);
+            translationX.setInterpolator(previewItemInterpolator);
             animatorSet.play(translationX);
 
             ObjectAnimator translationY = isOpening
                     ? ObjectAnimator.ofFloat(btv, View.TRANSLATION_Y, yDistance, 0)
                     : ObjectAnimator.ofFloat(btv, View.TRANSLATION_Y, 0, yDistance);
+            translationY.setInterpolator(previewItemInterpolator);
             animatorSet.play(translationY);
 
             ObjectAnimator scaleAnimator = isOpening
                     ? ObjectAnimator.ofFloat(btv, SCALE_PROPERTY, initialScale, finalScale)
                     : ObjectAnimator.ofFloat(btv, SCALE_PROPERTY, finalScale, initialScale);
+            scaleAnimator.setInterpolator(previewItemInterpolator);
             animatorSet.play(scaleAnimator);
 
             animatorSet.addListener(new AnimatorListenerAdapter() {
@@ -328,5 +343,15 @@ public class FolderAnimationManager {
                 }
             });
         }
+    }
+
+    private TimeInterpolator getPreviewItemInterpolator(boolean isOpening) {
+        if (mFolder.getItemCount() > FolderIcon.NUM_ITEMS_IN_PREVIEW) {
+            // With larger folders, we want the preview items to reach their final positions faster
+            // (when opening) and later (when closing) so that they appear aligned with the rest of
+            // the folder items when they are both visible.
+            return isOpening ? mPreviewItemOpeningInterpolator : mPreviewItemClosingInterpolator;
+        }
+        return isOpening ? mOpeningInterpolator : mClosingInterpolator;
     }
 }
