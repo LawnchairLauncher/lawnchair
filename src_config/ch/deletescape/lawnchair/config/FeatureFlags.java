@@ -36,10 +36,6 @@ public final class FeatureFlags {
     // When enabled fling down gesture on the first workspace triggers search.
     public static final boolean PULLDOWN_SEARCH = false;
 
-    // Feature flag to enable moving the QSB on the 0th screen of the workspace.
-    public static boolean qsbOnFirstSceen(Context context){
-        return Utilities.getPrefs(context).getBoolean("pref_qsbOnFirstScreen", true);
-    }
     public static boolean pinchToOverview(Context context){
         return Utilities.getPrefs(context).getBoolean(KEY_PREF_PINCH_TO_OVERVIEW, true);
     }

@@ -85,7 +85,6 @@ public interface LauncherCallbacks {
             String initialQuery, boolean selectInitialQuery, Bundle appSearchData);
     boolean hasCustomContentToLeft();
     void populateCustomContentContainer();
-    View getQsbBar();
     Bundle getAdditionalSearchWidgetOptions();
 
     /*

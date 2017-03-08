@@ -218,7 +218,6 @@ public class Launcher extends Activity
     private View mLauncherView;
     @Thunk DragLayer mDragLayer;
     private DragController mDragController;
-    private View mQsbContainer;
 
     private AppWidgetManagerCompat mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
@@ -1250,8 +1249,6 @@ public class Launcher extends Activity
         mDragLayer = (DragLayer) findViewById(R.id.drag_layer);
         mFocusHandler = mDragLayer.getFocusIndicatorHelper();
         mWorkspace = (Workspace) mDragLayer.findViewById(R.id.workspace);
-        mQsbContainer = mDragLayer.findViewById(mDeviceProfile.isVerticalBarLayout()
-                ? R.id.workspace_blocked_row : R.id.qsb_container);
         mWorkspace.initParentViews(mDragLayer);
 
         mLauncherView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -1277,7 +1274,7 @@ public class Launcher extends Activity
         // Until the workspace is bound, ensure that we keep the wallpaper offset locked to the
         // default state, otherwise we will update to the wrong offsets in RTL
         mWorkspace.lockWallpaperToDefaultPage();
-        mWorkspace.bindAndInitFirstWorkspaceScreen(null /* recycled qsb */);
+        mWorkspace.bindAndInitFirstWorkspaceScreen();
         mDragController.addDragListener(mWorkspace);
 
         // Get the search/delete/uninstall bar
@@ -1696,10 +1693,6 @@ public class Launcher extends Activity
 
     public Workspace getWorkspace() {
         return mWorkspace;
-    }
-
-    public View getQsbContainer() {
-        return mQsbContainer;
     }
 
     public Hotseat getHotseat() {
@@ -3474,12 +3467,11 @@ public class Launcher extends Activity
     @Override
     public void bindScreens(ArrayList<Long> orderedScreenIds) {
         // Make sure the first screen is always at the start.
-        if (FeatureFlags.qsbOnFirstSceen(getApplicationContext()) &&
-                orderedScreenIds.indexOf(Workspace.FIRST_SCREEN_ID) != 0) {
+        if (orderedScreenIds.indexOf(Workspace.FIRST_SCREEN_ID) != 0) {
             orderedScreenIds.remove(Workspace.FIRST_SCREEN_ID);
             orderedScreenIds.add(0, Workspace.FIRST_SCREEN_ID);
             mModel.updateWorkspaceScreenOrder(this, orderedScreenIds);
-        } else if (!FeatureFlags.qsbOnFirstSceen(getApplicationContext()) && orderedScreenIds.isEmpty()) {
+        } else if (orderedScreenIds.isEmpty()) {
             // If there are no screens, we need to have an empty screen
             mWorkspace.addExtraEmptyScreen();
         }
@@ -3502,7 +3494,7 @@ public class Launcher extends Activity
         int count = orderedScreenIds.size();
         for (int i = 0; i < count; i++) {
             long screenId = orderedScreenIds.get(i);
-            if (!FeatureFlags.qsbOnFirstSceen(getApplicationContext()) || screenId != Workspace.FIRST_SCREEN_ID) {
+            if (screenId != Workspace.FIRST_SCREEN_ID) {
                 // No need to bind the first screen, as its always bound.
                 mWorkspace.insertNewWorkspaceScreenBeforeEmptyScreen(screenId);
             }

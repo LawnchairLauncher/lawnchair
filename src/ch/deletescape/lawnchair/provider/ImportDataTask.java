@@ -131,18 +131,6 @@ public class ImportDataTask {
         String profileId = Long.toString(UserManagerCompat.getInstance(mContext)
                 .getSerialNumberForUser(UserHandleCompat.myUserHandle()));
 
-        boolean createEmptyRowOnFirstScreen = false;
-        if (FeatureFlags.qsbOnFirstSceen(mContext.getApplicationContext())) {
-            try (Cursor c = mContext.getContentResolver().query(mOtherFavoritesUri, null,
-                    // get items on the first row of the first screen
-                    "profileId = ? AND container = -100 AND screen = ? AND cellY = 0",
-                    new String[]{profileId, Long.toString(firsetScreenId)},
-                    null)) {
-                // First row of first screen is not empty
-                createEmptyRowOnFirstScreen = c.moveToNext();
-            }
-        }
-
         ArrayList<ContentProviderOperation> insertOperations = new ArrayList<>(BATCH_INSERT_SIZE);
 
         // Set of package names present in hotseat
@@ -202,10 +190,6 @@ public class ImportDataTask {
                         }
                         // Reset the screen to 0-index value
                         screen = newScreenId;
-                        if (createEmptyRowOnFirstScreen && screen == Workspace.FIRST_SCREEN_ID) {
-                            // Shift items by 1.
-                            cellY++;
-                        }
 
                         mMaxGridSizeX = Math.max(mMaxGridSizeX, cellX + spanX);
                         mMaxGridSizeY = Math.max(mMaxGridSizeY, cellY + spanY);

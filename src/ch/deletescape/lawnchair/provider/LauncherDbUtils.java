@@ -34,59 +34,6 @@ public class LauncherDbUtils {
 
     private static final String TAG = "LauncherDbUtils";
 
-    /**
-     * Makes the first screen as screen 0 (if screen 0 already exists,
-     * renames it to some other number).
-     * If the first row of screen 0 is non empty, runs a 'lossy' GridMigrationTask to clear
-     * the first row. The items in the first screen are moved and resized but the carry-forward
-     * items are simply deleted.
-     */
-    public static boolean prepareScreenZeroToHostQsb(SQLiteDatabase db) {
-        db.beginTransaction();
-        try {
-            // Get the existing screens
-            ArrayList<Long> screenIds = getScreenIdsFromCursor(db.query(WorkspaceScreens.TABLE_NAME,
-                    null, null, null, null, null, WorkspaceScreens.SCREEN_RANK));
-
-            if (screenIds.isEmpty()) {
-                // No update needed
-                return true;
-            }
-            if (screenIds.get(0) != 0) {
-                // First screen is not 0, we need to rename screens
-                if (screenIds.indexOf(0L) > -1) {
-                    // There is already a screen 0. First rename it to a differen screen.
-                    long newScreenId = 1;
-                    while (screenIds.indexOf(newScreenId) > -1) newScreenId++;
-                    renameScreen(db, 0, newScreenId);
-                }
-
-                // Rename the first screen to 0.
-                renameScreen(db, screenIds.get(0), 0);
-            }
-
-            // Check if the first row is empty
-            try (Cursor c = db.query(Favorites.TABLE_NAME, null,
-                    "container = -100 and screen = 0 and cellY = 0", null, null, null, null)) {
-                if (c.getCount() == 0) {
-                    // First row is empty, no need to migrate.
-                    return true;
-                }
-            }
-
-            LauncherAppState app = LauncherAppState.getInstance();
-            new LossyScreenMigrationTask(app.getContext(), app.getInvariantDeviceProfile(), db)
-                    .migrateScreen0();
-            db.setTransactionSuccessful();
-            return true;
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to update workspace size", e);
-            return false;
-        } finally {
-            db.endTransaction();
-        }
-    }
-
     private static void renameScreen(SQLiteDatabase db, long oldScreen, long newScreen) {
         String[] whereParams = new String[] { Long.toString(oldScreen) };
 

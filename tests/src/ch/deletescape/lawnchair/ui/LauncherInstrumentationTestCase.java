@@ -228,19 +228,9 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
                 InvariantDeviceProfile idv =
                         LauncherAppState.getInstance().getInvariantDeviceProfile();
 
-                ComponentName searchComponent = ((SearchManager) mTargetContext
-                        .getSystemService(Context.SEARCH_SERVICE)).getGlobalSearchActivity();
-                String searchPackage = searchComponent == null
-                        ? null : searchComponent.getPackageName();
-
                 for (AppWidgetProviderInfo info :
                         AppWidgetManagerCompat.getInstance(mTargetContext).getAllProviders()) {
                     if ((info.configure != null) ^ hasConfigureScreen) {
-                        continue;
-                    }
-                    // Exclude the widgets in search package, as Launcher already binds them in
-                    // QSB, so they can cause conflicts.
-                    if (info.provider.getPackageName().equals(searchPackage)) {
                         continue;
                     }
                     LauncherAppWidgetProviderInfo widgetInfo = LauncherAppWidgetProviderInfo

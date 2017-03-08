@@ -52,7 +52,6 @@ public class PinchAnimationManager {
     private static final LinearInterpolator INTERPOLATOR = new LinearInterpolator();
 
     private static final int INDEX_HOTSEAT = 0;
-    private static final int INDEX_QSB = 1;
     private static final int INDEX_OVERVIEW_PANEL_BUTTONS = 2;
     private static final int INDEX_SCRIM = 3;
 
@@ -149,11 +148,11 @@ public class PinchAnimationManager {
             if (startState == OVERVIEW) {
                 animateOverviewPanelButtons(goingTowards == OVERVIEW);
             } else if (startState == NORMAL) {
-                animateHotseatAndQsb(goingTowards == NORMAL);
+                animateHotseat(goingTowards == NORMAL);
             }
         } else if (threshold == PinchThresholdManager.THRESHOLD_TWO) {
             if (startState == OVERVIEW) {
-                animateHotseatAndQsb(goingTowards == NORMAL);
+                animateHotseat(goingTowards == NORMAL);
                 animateScrim(goingTowards == OVERVIEW);
             } else if (startState == NORMAL) {
                 animateOverviewPanelButtons(goingTowards == OVERVIEW);
@@ -188,11 +187,9 @@ public class PinchAnimationManager {
         }
     }
 
-    private void animateHotseatAndQsb(boolean show) {
+    private void animateHotseat(boolean show) {
         startAnimator(INDEX_HOTSEAT,
                 mWorkspace.createHotseatAlphaAnimator(show ? 1 : 0), THRESHOLD_ANIM_DURATION);
-        startAnimator(INDEX_QSB, mWorkspace.mQsbAlphaController.animateAlphaAtIndex(
-                show ? 1 : 0, Workspace.QSB_ALPHA_INDEX_STATE_CHANGE), THRESHOLD_ANIM_DURATION);
     }
 
     private void animateOverviewPanelButtons(boolean show) {
