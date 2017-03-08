@@ -21,6 +21,7 @@ import android.content.SharedPreferences;
 import android.content.pm.LauncherActivityInfo;
 import android.os.Process;
 import android.os.UserHandle;
+import android.support.v4.os.BuildCompat;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FolderInfo;
@@ -31,6 +32,7 @@ import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
+import com.android.launcher3.SessionCommitReceiver;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
@@ -68,12 +70,15 @@ public class ManagedProfileHeuristic {
     private final LauncherModel mModel;
     private final UserHandle mUser;
     private final IconCache mIconCache;
+    private final boolean mAddIconsToHomescreen;
 
     private ManagedProfileHeuristic(Context context, UserHandle user) {
         mContext = context;
         mUser = user;
         mModel = LauncherAppState.getInstance(context).getModel();
         mIconCache = LauncherAppState.getInstance(context).getIconCache();
+        mAddIconsToHomescreen =
+                !BuildCompat.isAtLeastO() || SessionCommitReceiver.isEnabled(context);
     }
 
     public void processPackageRemoved(String[] packages) {
@@ -127,7 +132,7 @@ public class ManagedProfileHeuristic {
             // Do not add shortcuts on the homescreen for the first time. This prevents the launcher
             // getting filled with the managed user apps, when it start with a fresh DB (or after
             // a very long time).
-            if (userAppsExisted && !homescreenApps.isEmpty()) {
+            if (userAppsExisted && !homescreenApps.isEmpty() && mAddIconsToHomescreen) {
                 mModel.addAndBindAddedWorkspaceItems(new ArrayList<ItemInfo>(homescreenApps));
             }
         }
@@ -147,6 +152,13 @@ public class ManagedProfileHeuristic {
             }
             // Try to get a work folder.
             String folderIdKey = USER_FOLDER_ID_PREFIX + mUserManager.getSerialNumberForUser(user);
+            if (!mAddIconsToHomescreen) {
+                if (!mPrefs.contains(folderIdKey)) {
+                    // Just mark the folder id preference to avoid new folder creation later.
+                    mPrefs.edit().putLong(folderIdKey, -1).apply();
+                }
+                return;
+            }
             if (mPrefs.contains(folderIdKey)) {
                 long folderId = mPrefs.getLong(folderIdKey, 0);
                 final FolderInfo workFolder = mModel.findFolderById(folderId);

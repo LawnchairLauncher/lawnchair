@@ -218,6 +218,10 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         queuePendingShortcutInfo(new PendingInstallShortcutInfo(info, widgetId, context), context);
     }
 
+    public static void queueActivityInfo(LauncherActivityInfo activity, Context context) {
+        queuePendingShortcutInfo(new PendingInstallShortcutInfo(activity, context), context);
+    }
+
     public static HashSet<ShortcutKey> getPendingShortcuts(Context context) {
         HashSet<ShortcutKey> result = new HashSet<>();
 

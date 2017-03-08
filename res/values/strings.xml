@@ -179,6 +179,11 @@
     <!-- Text explaining that rotation is disabled in Display settings. 'Display' refers to the Display section in system settings [CHAR LIMIT=100] -->
     <string name="allow_rotation_blocked_desc">Current Display setting doesn\'t permit rotation</string>
 
+    <!-- Label for the setting that allows the automatic placement of launcher shortcuts for applications and games installed on the device [CHAR LIMIT=40] -->
+    <string name="auto_add_shortcuts_label">Add icon to Home screen</string>
+    <!-- Text description of the setting that allows the automatic placement of launcher shortcuts for applications and games installed on the device [CHAR LIMIT=NONE] -->
+    <string name="auto_add_shortcuts_description">For new apps</string>
+
     <!-- Label on an icon that references an uninstalled package, for which we have no information about when it might be installed. [CHAR_LIMIT=15] -->
     <string name="package_state_unknown">Unknown</string>
 

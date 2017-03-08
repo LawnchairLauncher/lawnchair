@@ -25,6 +25,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.provider.Settings;
 import android.provider.Settings.System;
+import android.support.v4.os.BuildCompat;
 
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
@@ -71,6 +72,11 @@ public class SettingsActivity extends Activity {
                 // Initialize the UI once
                 mRotationLockObserver.onChange(true);
                 rotationPref.setDefaultValue(Utilities.getAllowRotationDefaultValue(getActivity()));
+            }
+
+            if (!BuildCompat.isAtLeastO()) {
+                getPreferenceScreen().removePreference(
+                        findPreference(SessionCommitReceiver.ADD_ICON_PREFERENCE_KEY));
             }
         }
 

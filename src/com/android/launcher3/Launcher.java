@@ -1152,9 +1152,10 @@ public class Launcher extends BaseActivity
         if (mLauncherCallbacks != null) {
             return mLauncherCallbacks.hasSettings();
         } else {
-            // On devices with a locked orientation, we will at least have the allow rotation
-            // setting.
-            return !getResources().getBoolean(R.bool.allow_rotation);
+            // On O and above we there is always some setting present settings (add icon to
+            // home screen or icon badging). On earlier APIs we will have the allow rotation
+            // setting, on devices with a locked orientation,
+            return Utilities.isAtLeastO() || !getResources().getBoolean(R.bool.allow_rotation);
         }
     }
 
