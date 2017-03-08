@@ -89,6 +89,7 @@
         <activity
             android:name="ch.deletescape.lawnchair.SettingsActivity"
             android:label="@string/settings_button_text"
+            android:theme="@style/SettingsTheme"
             android:autoRemoveFromRecents="true">
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
