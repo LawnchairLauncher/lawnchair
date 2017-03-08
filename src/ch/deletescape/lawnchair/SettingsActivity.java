@@ -27,10 +27,6 @@ import android.preference.PreferenceFragment;
 import android.provider.Settings;
 import android.provider.Settings.System;
 
-import com.jakewharton.processphoenix.ProcessPhoenix;
-
-import ch.deletescape.lawnchair.R;
-
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
  */
