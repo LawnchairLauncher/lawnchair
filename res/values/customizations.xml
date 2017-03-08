@@ -63,89 +63,79 @@
         <item>9</item>
     </string-array>
 
-    <string-array name="iconTextSizeValues">
-        <item>default</item>
-        <item>9</item>
-        <item>10</item>
-        <item>11</item>
-        <item>12</item>
-        <item>13</item>
-        <item>14</item>
-        <item>15</item>
-        <item>16</item>
-        <item>17</item>
-        <item>18</item>
+    <string name="defaultIconScale">1.0</string>
+
+    <string-array name="iconScaleValues">
+        <item>2.0</item>
+        <item>1.95</item>
+        <item>1.9</item>
+        <item>1.85</item>
+        <item>1.8</item>
+        <item>1.75</item>
+        <item>1.7</item>
+        <item>1.65</item>
+        <item>1.6</item>
+        <item>1.55</item>
+        <item>1.5</item>
+        <item>1.45</item>
+        <item>1.4</item>
+        <item>1.35</item>
+        <item>1.3</item>
+        <item>1.25</item>
+        <item>1.2</item>
+        <item>1.15</item>
+        <item>1.1</item>
+        <item>1.0</item>
+        <item>0.95</item>
+        <item>0.9</item>
+        <item>0.85</item>
+        <item>0.8</item>
+        <item>0.75</item>
+        <item>0.7</item>
+        <item>0.65</item>
+        <item>0.6</item>
+        <item>0.55</item>
+        <item>0.5</item>
+        <item>0.45</item>
+        <item>0.4</item>
+        <item>0.35</item>
+        <item>0.3</item>
     </string-array>
 
-    <string-array name="iconTextSizeTexts">
-        <item>default</item>
-        <item>9sp</item>
-        <item>10sp</item>
-        <item>11sp</item>
-        <item>12sp</item>
-        <item>13sp</item>
-        <item>14sp</item>
-        <item>15sp</item>
-        <item>16sp</item>
-        <item>17sp</item>
-        <item>18sp</item>
-    </string-array>
-
-    <string-array name="iconSizeValues">
-        <item>default</item>
-        <item>16</item>
-        <item>18</item>
-        <item>20</item>
-        <item>22</item>
-        <item>24</item>
-        <item>26</item>
-        <item>28</item>
-        <item>30</item>
-        <item>32</item>
-        <item>34</item>
-        <item>36</item>
-        <item>38</item>
-        <item>40</item>
-        <item>42</item>
-        <item>44</item>
-        <item>48</item>
-        <item>50</item>
-        <item>52</item>
-        <item>54</item>
-        <item>58</item>
-        <item>60</item>
-        <item>62</item>
-        <item>64</item>
-        <item>68</item>
-        <item>70</item>
-    </string-array>
-
-    <string-array name="iconSizeTexts">
-        <item>default</item>
-        <item>16dp</item>
-        <item>18dp</item>
-        <item>20dp</item>
-        <item>22dp</item>
-        <item>24dp</item>
-        <item>26dp</item>
-        <item>28dp</item>
-        <item>30dp</item>
-        <item>32dp</item>
-        <item>34dp</item>
-        <item>36dp</item>
-        <item>38dp</item>
-        <item>40dp</item>
-        <item>42dp</item>
-        <item>44dp</item>
-        <item>48dp</item>
-        <item>50dp</item>
-        <item>52dp</item>
-        <item>54dp</item>
-        <item>58dp</item>
-        <item>60dp</item>
-        <item>62dp</item>
-        <item>64dp</item>
-        <item>68dp</item>
-        <item>70dp</item>
+    <string-array name="iconScaleTexts">
+        <item>200%</item>
+        <item>195%</item>
+        <item>190%</item>
+        <item>185%</item>
+        <item>180%</item>
+        <item>175%</item>
+        <item>170%</item>
+        <item>165%</item>
+        <item>160%</item>
+        <item>155%</item>
+        <item>150%</item>
+        <item>145%</item>
+        <item>140%</item>
+        <item>135%</item>
+        <item>130%</item>
+        <item>125%</item>
+        <item>120%</item>
+        <item>115%</item>
+        <item>110%</item>
+        <item>Default</item>
+        <item>95%</item>
+        <item>90%</item>
+        <item>85%</item>
+        <item>80%</item>
+        <item>75%</item>
+        <item>70%</item>
+        <item>65%</item>
+        <item>60%</item>
+        <item>55%</item>
+        <item>50%</item>
+        <item>45%</item>
+        <item>40%</item>
+        <item>35%</item>
+        <item>30%</item>
     </string-array>
 </resources>

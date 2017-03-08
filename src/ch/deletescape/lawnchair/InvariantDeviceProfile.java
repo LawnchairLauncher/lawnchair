@@ -201,12 +201,13 @@ public class InvariantDeviceProfile {
         if(!prefs.getString("pref_numHotseatIcons", valueDefault).equals(valueDefault)){
             numHotseatIcons = Integer.valueOf(prefs.getString("pref_numHotseatIcons", ""));
         }
-        if(!prefs.getString("pref_iconSize", valueDefault).equals(valueDefault)){
-            iconSize = Float.valueOf(prefs.getString("pref_iconSize",  ""));
-            hotseatIconSize = iconSize; // We probably shouldn't assume this
+        if(!prefs.getString("pref_iconScale", valueDefault).equals(valueDefault)){
+            float iconScale = Float.valueOf(prefs.getString("pref_iconScale",  ""));
+            iconSize *= iconScale;
+            hotseatIconSize *= iconScale;
         }
-        if(!prefs.getString("pref_iconTextSize", valueDefault).equals(valueDefault)){
-            iconTextSize = Float.valueOf(prefs.getString("pref_iconTextSize",  ""));
+        if(!prefs.getString("pref_iconTextScale", valueDefault).equals(valueDefault)){
+            iconTextSize *= Float.valueOf(prefs.getString("pref_iconTextScale",  ""));
         }
     }
 

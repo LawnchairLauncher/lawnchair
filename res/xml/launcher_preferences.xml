@@ -68,16 +68,18 @@
         android:entries="@array/numHotseatIconsTexts"/>
 
     <ListPreference
-        android:key="pref_iconSize"
-        android:title="Icon size"
-        android:entryValues="@array/iconSizeValues"
-        android:entries="@array/iconSizeTexts"/>
+        android:key="pref_iconScale"
+        android:title="Icon scale"
+        android:entryValues="@array/iconScaleValues"
+        android:entries="@array/iconScaleTexts"
+        android:defaultValue="@string/defaultIconScale"/>
 
     <ListPreference
-        android:key="pref_iconTextSize"
-        android:title="Icon text size"
-        android:entryValues="@array/iconTextSizeValues"
-        android:entries="@array/iconTextSizeTexts"/>
+        android:key="pref_iconTextScale"
+        android:title="Icon text scale"
+        android:entryValues="@array/iconScaleValues"
+        android:entries="@array/iconScaleTexts"
+        android:defaultValue="@string/defaultIconScale"/>
 
     <PreferenceCategory
         android:title="Behavior"/>
