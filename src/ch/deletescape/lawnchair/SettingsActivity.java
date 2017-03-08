@@ -18,6 +18,7 @@ package ch.deletescape.lawnchair;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.SharedPreferences;
 import android.database.ContentObserver;
 import android.os.Bundle;
 import android.os.Handler;
@@ -84,8 +85,9 @@ public class SettingsActivity extends Activity {
                 getActivity().getContentResolver().unregisterContentObserver(mRotationLockObserver);
                 mRotationLockObserver = null;
             }
-            ProcessPhoenix.triggerRebirth(getActivity().getApplicationContext());
             super.onDestroy();
+            SharedPreferences prefs = Utilities.getPrefs(getActivity().getApplicationContext());
+            prefs.edit().putBoolean("resume_from_settings",true).apply();
         }
     }
 
