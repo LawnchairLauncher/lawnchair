@@ -66,16 +66,6 @@
     <string name="defaultIconScale">1.0</string>
 
     <string-array name="iconScaleValues">
-        <item>2.0</item>
-        <item>1.95</item>
-        <item>1.9</item>
-        <item>1.85</item>
-        <item>1.8</item>
-        <item>1.75</item>
-        <item>1.7</item>
-        <item>1.65</item>
-        <item>1.6</item>
-        <item>1.55</item>
         <item>1.5</item>
         <item>1.45</item>
         <item>1.4</item>
@@ -103,16 +93,6 @@
     </string-array>
 
     <string-array name="iconScaleTexts">
-        <item>200%</item>
-        <item>195%</item>
-        <item>190%</item>
-        <item>185%</item>
-        <item>180%</item>
-        <item>175%</item>
-        <item>170%</item>
-        <item>165%</item>
-        <item>160%</item>
-        <item>155%</item>
         <item>150%</item>
         <item>145%</item>
         <item>140%</item>
