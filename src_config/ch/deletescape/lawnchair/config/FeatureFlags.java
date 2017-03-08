@@ -26,7 +26,8 @@ import ch.deletescape.lawnchair.Utilities;
 public final class FeatureFlags {
 
     private static final String KEY_PREF_LIGHT_STATUS_BAR = "pref_lightStatusBar";
-    public static final String KEY_PREF_PINCH_TO_OVERVIEW = "pref_pinchToOverview";
+    private static final String KEY_PREF_PINCH_TO_OVERVIEW = "pref_pinchToOverview";
+    private static final String KEY_PREF_PULLDOWN_SEARCH = "pref_pulldownSearch";
 
     private FeatureFlags() {}
 
@@ -34,7 +35,9 @@ public final class FeatureFlags {
     public static boolean LAUNCHER3_ALL_APPS_PULL_UP = true;
 
     // When enabled fling down gesture on the first workspace triggers search.
-    public static final boolean PULLDOWN_SEARCH = false;
+    public static boolean pulldownSearch(Context context){
+        return Utilities.getPrefs(context).getBoolean(KEY_PREF_PULLDOWN_SEARCH, true);
+    }
 
     public static boolean pinchToOverview(Context context){
         return Utilities.getPrefs(context).getBoolean(KEY_PREF_PINCH_TO_OVERVIEW, true);

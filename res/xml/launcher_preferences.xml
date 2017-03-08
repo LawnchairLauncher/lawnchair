@@ -35,33 +35,38 @@
         android:key="pref_numCols"
         android:title="Number of columns"
         android:entries="@array/numColsTexts"
-        android:entryValues="@array/numColsValues"/>
+        android:entryValues="@array/numColsValues"
+        android:persistent="true"/>
 
     <ListPreference
         android:key="pref_numRows"
         android:title="Number of rows"
         android:entryValues="@array/numRowsValues"
-        android:entries="@array/numRowsTexts"/>
+        android:entries="@array/numRowsTexts"
+        android:persistent="true"/>
 
     <ListPreference
         android:key="pref_numRows"
         android:title="Number of icons in hotseat"
         android:entryValues="@array/numHotseatIconsValues"
-        android:entries="@array/numHotseatIconsTexts"/>
+        android:entries="@array/numHotseatIconsTexts"
+        android:persistent="true"/>
 
     <ListPreference
         android:key="pref_iconScale"
         android:title="Icon scale"
         android:entryValues="@array/iconScaleValues"
         android:entries="@array/iconScaleTexts"
-        android:defaultValue="@string/defaultIconScale"/>
+        android:defaultValue="@string/defaultIconScale"
+        android:persistent="true"/>
 
     <ListPreference
         android:key="pref_iconTextScale"
         android:title="Icon text scale"
         android:entryValues="@array/iconScaleValues"
         android:entries="@array/iconScaleTexts"
-        android:defaultValue="@string/defaultIconScale"/>
+        android:defaultValue="@string/defaultIconScale"
+        android:persistent="true"/>
 
     <PreferenceCategory
         android:title="Behavior"/>
@@ -70,6 +75,13 @@
         android:key="pref_pinchToOverview"
         android:title="Pinch to Overview"
         android:summary="Pinch on the Homescreen to open the overview"
+        android:defaultValue="true"
+        android:persistent="true" />
+
+    <SwitchPreference
+        android:key="pref_pulldownSearch"
+        android:title="Pulldown to Search"
+        android:summary="When enabled fling down gesture on the first workspace triggers search."
         android:defaultValue="true"
         android:persistent="true" />
 

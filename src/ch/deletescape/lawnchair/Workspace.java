@@ -569,7 +569,7 @@ public class Workspace extends PagedView
     public void bindAndInitFirstWorkspaceScreen() {
         // Add the first page
         CellLayout firstPage = insertNewWorkspaceScreen(Workspace.FIRST_SCREEN_ID, 0);
-        if (FeatureFlags.PULLDOWN_SEARCH) {
+        if (FeatureFlags.pulldownSearch(getContext().getApplicationContext())) {
             firstPage.setOnTouchListener(new VerticalFlingDetector(mLauncher) {
                 // detect fling when touch started from empty space
                 @Override
