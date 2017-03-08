@@ -36,12 +36,20 @@
         android:background="?android:attr/colorPrimaryDark"
         android:layout_height="wrap_content">
 
-        <include
-            layout="@layout/widget_cell"
-            android:layout_gravity="center_horizontal"
+        <com.android.launcher3.dragndrop.LivePreviewWidgetCell
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/widget_cell" />
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:focusable="true"
+            android:background="?android:attr/colorPrimaryDark"
+            android:gravity="center_horizontal"
+            android:id="@+id/widget_cell"
+            android:layout_gravity="center_horizontal" >
+
+            <include layout="@layout/widget_cell_content"  />
+
+        </com.android.launcher3.dragndrop.LivePreviewWidgetCell>
     </FrameLayout>
 
     <LinearLayout

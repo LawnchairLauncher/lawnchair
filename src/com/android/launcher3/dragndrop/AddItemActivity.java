@@ -27,10 +27,8 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.*;
@@ -47,7 +45,6 @@ import com.android.launcher3.compat.PinItemRequestCompat;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
-import com.android.launcher3.widget.WidgetCell;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetImageView;
 
@@ -65,7 +62,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     private LauncherAppState mApp;
     private InvariantDeviceProfile mIdp;
 
-    private WidgetCell mWidgetCell;
+    private LivePreviewWidgetCell mWidgetCell;
 
     // Widget request specific options.
     private AppWidgetHost mAppWidgetHost;
@@ -92,7 +89,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
         mDeviceProfile = mIdp.getDeviceProfile(getApplicationContext());
 
         setContentView(R.layout.add_item_confirmation_activity);
-        mWidgetCell = (WidgetCell) findViewById(R.id.widget_cell);
+        mWidgetCell = (LivePreviewWidgetCell) findViewById(R.id.widget_cell);
 
         if (mRequest.getRequestType() == PinItemRequestCompat.REQUEST_TYPE_SHORTCUT) {
             setupShortcut();
@@ -169,6 +166,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
             // Cannot add widget
             return false;
         }
+        mWidgetCell.setPreview(PinItemDragListener.getPreview(mRequest));
 
         mAppWidgetManager = AppWidgetManagerCompat.getInstance(this);
         mAppWidgetHost = new AppWidgetHost(this, Launcher.APPWIDGET_HOST_ID);

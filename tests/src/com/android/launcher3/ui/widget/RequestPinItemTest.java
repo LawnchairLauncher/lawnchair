@@ -20,6 +20,7 @@ import android.app.Application;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.test.uiautomator.By;
 import android.support.test.uiautomator.UiObject2;
 import android.support.test.uiautomator.Until;
@@ -95,6 +96,23 @@ public class RequestPinItemTest  extends LauncherInstrumentationTestCase {
         });
     }
 
+    public void testPinWidgetNoConfig_customPreview() throws Throwable {
+        // Command to set custom preview
+        Intent command =  RequestPinItemActivity.getCommandIntent(
+                RequestPinItemActivity.class, "setRemoteViewColor").putExtra(
+                RequestPinItemActivity.EXTRA_PARAM + "0", Color.RED);
+
+        runTest("pinWidgetNoConfig", true, new ItemOperator() {
+            @Override
+            public boolean evaluate(ItemInfo info, View view) {
+                return info instanceof LauncherAppWidgetInfo &&
+                        ((LauncherAppWidgetInfo) info).appWidgetId == mAppWidgetId &&
+                        ((LauncherAppWidgetInfo) info).providerName.getClassName()
+                                .equals(AppWidgetNoConfig.class.getName());
+            }
+        }, command);
+    }
+
     public void testPinWidgetWithConfig() throws Throwable {
         runTest("pinWidgetWithConfig", true, new ItemOperator() {
             @Override
@@ -107,8 +125,12 @@ public class RequestPinItemTest  extends LauncherInstrumentationTestCase {
         });
     }
 
+    public void testPinShortcut() throws Throwable {
+        // Command to set the shortcut id
+        Intent command = RequestPinItemActivity.getCommandIntent(
+                RequestPinItemActivity.class, "setShortcutId").putExtra(
+                RequestPinItemActivity.EXTRA_PARAM + "0", mShortcutId);
 
-    public void testPinWidgetShortcut() throws Throwable {
         runTest("pinShortcut", false, new ItemOperator() {
             @Override
             public boolean evaluate(ItemInfo info, View view) {
@@ -116,11 +138,11 @@ public class RequestPinItemTest  extends LauncherInstrumentationTestCase {
                         info.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT &&
                         ShortcutKey.fromItemInfo(info).getId().equals(mShortcutId);
             }
-        });
+        }, command);
     }
 
-    private void runTest(String activityMethod, boolean isWidget, ItemOperator itemMatcher)
-            throws Throwable {
+    private void runTest(String activityMethod, boolean isWidget, ItemOperator itemMatcher,
+            Intent... commandIntents) throws Throwable {
         if (!Utilities.isAtLeastO()) {
             return;
         }
@@ -146,11 +168,8 @@ public class RequestPinItemTest  extends LauncherInstrumentationTestCase {
                 RequestPinItemActivity.class, "setCallback").putExtra(
                 RequestPinItemActivity.EXTRA_PARAM + "0", callback));
 
-        if (!isWidget) {
-            // Set shortcut id
-            mTargetContext.sendBroadcast(RequestPinItemActivity.getCommandIntent(
-                    RequestPinItemActivity.class, "setShortcutId").putExtra(
-                    RequestPinItemActivity.EXTRA_PARAM + "0", mShortcutId));
+        for (Intent command : commandIntents) {
+            mTargetContext.sendBroadcast(command);
         }
 
         // call the requested method to start the flow
