@@ -2564,10 +2564,7 @@ public class Launcher extends Activity
             return;
         }
 
-        String pickerPackage = getString(R.string.wallpaper_picker_package);
-        if (TextUtils.isEmpty(pickerPackage)) {
-            pickerPackage =  PackageManagerHelper.getWallpaperPickerPackage(getPackageManager());
-        }
+        String pickerPackage = PackageManagerHelper.getWallpaperPickerPackage(getPackageManager());
 
         int pageScroll = mWorkspace.getScrollForPage(mWorkspace.getPageNearestToCenterOfScreen());
         float offset = mWorkspace.mWallpaperOffset.wallpaperOffsetForScroll(pageScroll);
