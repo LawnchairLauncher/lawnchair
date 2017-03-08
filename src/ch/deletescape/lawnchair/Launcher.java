@@ -1299,9 +1299,7 @@ public class Launcher extends Activity
         mDragController.addDropTarget(mWorkspace);
         mDropTargetBar.setup(mDragController);
 
-        if (Utilities.getPrefs(getApplicationContext()).getBoolean("pref_show_caret", true)) {
-            mAllAppsController.setupViews(mAppsView, mHotseat, mWorkspace);
-        }
+        mAllAppsController.setupViews(mAppsView, mHotseat, mWorkspace);
     }
 
     private void setupOverviewPanel() {
