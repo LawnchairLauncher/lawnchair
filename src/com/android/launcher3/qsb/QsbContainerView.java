@@ -40,6 +40,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
+import com.android.launcher3.config.FeatureFlags;
 
 /**
  * A frame layout which contains a QSB. This internally uses fragment to bind the view, which
@@ -89,7 +90,11 @@ public class QsbContainerView extends FrameLayout {
                 LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
             mWrapper = new FrameLayout(getActivity());
-            mWrapper.addView(createQsb(mWrapper));
+
+            // Only add the view when enabled
+            if (FeatureFlags.QSB_ON_FIRST_SCREEN) {
+                mWrapper.addView(createQsb(mWrapper));
+            }
             return mWrapper;
         }
 
@@ -197,6 +202,11 @@ public class QsbContainerView extends FrameLayout {
         }
 
         private void rebindFragment() {
+            // Exit if the embedded qsb is disabled
+            if (!FeatureFlags.QSB_ON_FIRST_SCREEN) {
+                return;
+            }
+
             if (mWrapper != null && getActivity() != null) {
                 mWrapper.removeAllViews();
                 mWrapper.addView(createQsb(mWrapper));

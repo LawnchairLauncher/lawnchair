@@ -642,7 +642,8 @@ public class Workspace extends PagedView
         // of workspace despite that it's not a true child.
         // Note that it relies on the strict ordering of measuring the workspace before the QSB
         // at the dragLayer level.
-        if (getChildCount() > 0) {
+        // Only measure the QSB when the view is enabled
+        if (FeatureFlags.QSB_ON_FIRST_SCREEN && getChildCount() > 0) {
             CellLayout firstPage = (CellLayout) getChildAt(0);
             int cellHeight = firstPage.getCellHeight();
 
