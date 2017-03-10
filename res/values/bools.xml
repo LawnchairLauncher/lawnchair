@@ -18,4 +18,6 @@
 
 <resources>
     <bool name="notification_badging_enabled">false</bool>
+
+    <bool name="enable_install_shortcut_api">true</bool>
 </resources>

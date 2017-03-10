@@ -58,9 +58,18 @@
         <!-- Intent received used to install shortcuts from other applications -->
         <receiver
             android:name="com.android.launcher3.InstallShortcutReceiver"
-            android:permission="com.android.launcher.permission.INSTALL_SHORTCUT">
+            android:permission="com.android.launcher.permission.INSTALL_SHORTCUT"
+            android:enabled="@bool/enable_install_shortcut_api" >
             <intent-filter>
                 <action android:name="com.android.launcher.action.INSTALL_SHORTCUT" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Intent received when a session is committed -->
+        <receiver
+            android:name="com.android.launcher3.SessionCommitReceiver" >
+            <intent-filter>
+                <action android:name="android.content.pm.action.SESSION_COMMITTED" />
             </intent-filter>
         </receiver>
 
