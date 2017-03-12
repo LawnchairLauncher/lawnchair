@@ -75,6 +75,10 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"ပင်မစာမျက်နှာလှည့်ခြင်းကို ခွင့်ပြုပါ"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"ဖုန်းကိုလှည့်ထားစဉ်"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"လက်ရှိ မြင်ကွင်းဆက်တင်တွင် မြင်ကွင်းကို လှည့်ခွင့်မပေးပါ"</string>
+    <!-- no translation found for auto_add_shortcuts_label (8222286205987725611) -->
+    <skip />
+    <!-- no translation found for auto_add_shortcuts_description (7117251166066978730) -->
+    <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"မသိရ"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ဖယ်ရှားရန်"</string>
     <string name="abandoned_search" msgid="891119232568284442">"ရှာဖွေရန်"</string>

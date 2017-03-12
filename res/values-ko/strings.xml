@@ -75,6 +75,10 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"홈 화면 회전 허용"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"휴대전화 회전 시"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"현재 표시 설정에는 회전 기능이 허용되지 않습니다."</string>
+    <!-- no translation found for auto_add_shortcuts_label (8222286205987725611) -->
+    <skip />
+    <!-- no translation found for auto_add_shortcuts_description (7117251166066978730) -->
+    <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"알 수 없음"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"삭제"</string>
     <string name="abandoned_search" msgid="891119232568284442">"검색"</string>

@@ -75,6 +75,10 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"Permitir rotação do ecrã principal"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Quando o telemóvel é rodado"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"A definição de visualização atual não permite a rotação"</string>
+    <!-- no translation found for auto_add_shortcuts_label (8222286205987725611) -->
+    <skip />
+    <!-- no translation found for auto_add_shortcuts_description (7117251166066978730) -->
+    <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"Desconhecido"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Remover"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Pesquisar"</string>
