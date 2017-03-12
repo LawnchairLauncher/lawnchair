@@ -75,6 +75,10 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"මුල් පිටු තිරය කරකැවීමට ඉඩ දෙන්න"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"දුරකථනය කරකවන විට"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"වත්මන් සංදර්ශක සැකසීම් කරකැවීමට සහාය නොදක්වයි"</string>
+    <!-- no translation found for auto_add_shortcuts_label (8222286205987725611) -->
+    <skip />
+    <!-- no translation found for auto_add_shortcuts_description (7117251166066978730) -->
+    <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"නොදනී"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ඉවත් කරන්න"</string>
     <string name="abandoned_search" msgid="891119232568284442">"සොයන්න"</string>
