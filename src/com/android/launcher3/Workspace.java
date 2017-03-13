@@ -43,6 +43,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Property;
 import android.util.SparseArray;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
@@ -527,8 +528,6 @@ public class Workspace extends PagedView
 
         // Set the wallpaper dimensions when Launcher starts up
         setWallpaperDimension();
-
-        setEdgeGlowColor(getResources().getColor(R.color.workspace_edge_effect_color));
     }
 
     @Override
@@ -621,7 +620,7 @@ public class Workspace extends PagedView
         if (qsb == null) {
             // In transposed layout, we add the QSB in the Grid. As workspace does not touch the
             // edges, we do not need a full width QSB.
-            qsb = mLauncher.getLayoutInflater().inflate(
+            qsb = LayoutInflater.from(getContext()).inflate(
                     mLauncher.getDeviceProfile().isVerticalBarLayout()
                             ? R.layout.qsb_container : R.layout.qsb_blocker_view,
                     firstPage, false);
@@ -707,7 +706,7 @@ public class Workspace extends PagedView
 
         // Inflate the cell layout, but do not add it automatically so that we can get the newly
         // created CellLayout.
-        CellLayout newScreen = (CellLayout) mLauncher.getLayoutInflater().inflate(
+        CellLayout newScreen = (CellLayout) LayoutInflater.from(getContext()).inflate(
                         R.layout.workspace_screen, this, false /* attachToRoot */);
         newScreen.setOnLongClickListener(mLongClickListener);
         newScreen.setOnClickListener(mLauncher);
@@ -725,7 +724,7 @@ public class Workspace extends PagedView
 
     public void createCustomContentContainer() {
         CellLayout customScreen = (CellLayout)
-                mLauncher.getLayoutInflater().inflate(R.layout.workspace_screen, this, false);
+                LayoutInflater.from(getContext()).inflate(R.layout.workspace_screen, this, false);
         customScreen.disableDragTarget();
         customScreen.disableJailContent();
 

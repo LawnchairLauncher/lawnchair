@@ -57,6 +57,7 @@ import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.util.CellAndSpan;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.ParcelableSparseArray;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 
 import java.lang.annotation.Retention;
@@ -235,7 +236,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         for (int i = 0; i < mDragOutlines.length; i++) {
             mDragOutlines[i] = new Rect(-1, -1, -1, -1);
         }
-        mDragOutlinePaint.setColor(getResources().getColor(R.color.outline_color));
+        mDragOutlinePaint.setColor(Themes.getAttrColor(context, android.R.attr.textColorPrimary));
 
         // When dragging things around the home screens, we show a green outline of
         // where the item will land. The outlines gradually fade out, leaving a trail

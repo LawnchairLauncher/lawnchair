@@ -14,8 +14,10 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+      xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:launcher="http://schemas.android.com/apk/res-auto"
+      android:theme="@style/HomeScreenElementTheme"
       launcher:layout_ignoreInsets="true"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

@@ -25,12 +25,7 @@
 
     <color name="focused_background">#80c6c5c5</color>
 
-    <color name="workspace_icon_text_color">#FFF</color>
-    <color name="workspace_edge_effect_color">#FFFFFFFF</color>
-
     <color name="default_shadow_color_no_alpha">#FF000000</color>
-
-    <color name="outline_color">#FFFFFFFF</color>
 
     <color name="spring_loaded_panel_color">#40FFFFFF</color>
     <color name="spring_loaded_highlighted_panel_border_color">#FFF</color>

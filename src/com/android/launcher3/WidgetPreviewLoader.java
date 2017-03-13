@@ -416,19 +416,20 @@ public class WidgetPreviewLoader {
         float shadowBlur = res.getDimension(R.dimen.widget_preview_shadow_blur);
         float keyShadowDistance = res.getDimension(R.dimen.widget_preview_key_shadow_distance);
         float corner = res.getDimension(R.dimen.widget_preview_corner_radius);
+        int shadowColor = ColorUtils.setAlphaComponent(
+                res.getColor(R.color.default_shadow_color_no_alpha),
+                ShadowGenerator.AMBIENT_SHADOW_ALPHA);
 
         RectF bounds = new RectF(shadowBlur, shadowBlur,
                 width - shadowBlur, height - shadowBlur - keyShadowDistance);
         p.setColor(Color.WHITE);
 
         // Key shadow
-        p.setShadowLayer(shadowBlur, 0, keyShadowDistance,
-                ShadowGenerator.KEY_SHADOW_ALPHA << 24);
+        p.setShadowLayer(shadowBlur, 0, keyShadowDistance, shadowColor);
         c.drawRoundRect(bounds, corner, corner, p);
 
         // Ambient shadow
-        p.setShadowLayer(shadowBlur, 0, 0,
-                ColorUtils.setAlphaComponent(Color.BLACK, ShadowGenerator.AMBIENT_SHADOW_ALPHA));
+        p.setShadowLayer(shadowBlur, 0, 0, shadowColor);
         c.drawRoundRect(bounds, corner, corner, p);
 
         p.clearShadowLayer();

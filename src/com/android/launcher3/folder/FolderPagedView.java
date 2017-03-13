@@ -35,7 +35,6 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
@@ -44,7 +43,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.pageindicators.PageIndicator;
-import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
@@ -107,7 +105,6 @@ public class FolderPagedView extends PagedView {
         mIsRtl = Utilities.isRtl(getResources());
         setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
 
-        setEdgeGlowColor(Themes.getAttrColor(context, android.R.attr.colorEdgeEffect));
         mFocusIndicatorHelper = new ViewGroupFocusHelper(this);
     }
 

@@ -50,6 +50,7 @@ import android.view.animation.Interpolator;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.util.LauncherEdgeEffect;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
@@ -226,11 +227,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         mMinSnapVelocity = (int) (MIN_SNAP_VELOCITY * density);
         setOnHierarchyChangeListener(this);
         setWillNotDraw(false);
-    }
 
-    protected void setEdgeGlowColor(int color) {
-        mEdgeGlowLeft.setColor(color);
-        mEdgeGlowRight.setColor(color);
+        int edgeEffectColor = Themes.getAttrColor(getContext(), android.R.attr.colorEdgeEffect);
+        mEdgeGlowLeft.setColor(edgeEffectColor);
+        mEdgeGlowRight.setColor(edgeEffectColor);
     }
 
     protected void setDefaultInterpolator(Interpolator interpolator) {

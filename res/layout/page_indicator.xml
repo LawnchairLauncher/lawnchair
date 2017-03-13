@@ -16,6 +16,7 @@
 
 <com.android.launcher3.pageindicators.PageIndicatorLineCaret
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:theme="@style/HomeScreenElementTheme"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dynamic_grid_page_indicator_height">
         <ImageView

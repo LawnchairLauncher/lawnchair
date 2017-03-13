@@ -65,6 +65,7 @@ import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.KeyboardShortcutGroup;
 import android.view.KeyboardShortcutInfo;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
@@ -1421,8 +1422,8 @@ public class Launcher extends BaseActivity
      * @return A View inflated from layoutResId.
      */
     public View createShortcut(ViewGroup parent, ShortcutInfo info) {
-        BubbleTextView favorite = (BubbleTextView) getLayoutInflater().inflate(R.layout.app_icon,
-                parent, false);
+        BubbleTextView favorite = (BubbleTextView) LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.app_icon, parent, false);
         favorite.applyFromShortcutInfo(info);
         favorite.setCompoundDrawablePadding(mDeviceProfile.iconDrawablePaddingPx);
         favorite.setOnClickListener(this);
