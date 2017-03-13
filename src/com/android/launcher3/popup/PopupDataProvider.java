@@ -75,6 +75,9 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             notificationWasAddedOrRemoved = shouldBeFilteredOut
                     ? badgeInfo.removeNotificationKey(notificationKey)
                     : badgeInfo.addNotificationKeyIfNotExists(notificationKey);
+            if (badgeInfo.getNotificationCount() == 0) {
+                mPackageUserToBadgeInfos.remove(postedPackageUserKey);
+            }
         }
         updateLauncherIconBadges(Utilities.singletonHashSet(postedPackageUserKey),
                 notificationWasAddedOrRemoved);
