@@ -62,7 +62,8 @@ public class FolderAnimationManager {
     private Context mContext;
     private Launcher mLauncher;
 
-    private Animator mRevealAnimator;
+    private final boolean mIsOpening;
+
     private final TimeInterpolator mOpeningInterpolator;
     private final TimeInterpolator mClosingInterpolator;
     private final TimeInterpolator mPreviewItemOpeningInterpolator;
@@ -102,7 +103,7 @@ public class FolderAnimationManager {
                 }
             };
 
-    public FolderAnimationManager(Folder folder) {
+    public FolderAnimationManager(Folder folder, boolean isOpening) {
         mFolder = folder;
         mContent = folder.mContent;
         mFolderBackground = (GradientDrawable) mFolder.getBackground();
@@ -112,6 +113,8 @@ public class FolderAnimationManager {
 
         mContext = folder.getContext();
         mLauncher = folder.mLauncher;
+
+        mIsOpening = isOpening;
 
         mOpeningInterpolator = AnimationUtils.loadInterpolator(mContext,
                 R.interpolator.folder_opening_interpolator);
@@ -123,31 +126,11 @@ public class FolderAnimationManager {
                 R.interpolator.folder_preview_item_closing_interpolator);
     }
 
-    public AnimatorSet getOpeningAnimator() {
-        mFolder.setPivotX(0);
-        mFolder.setPivotY(0);
-
-        AnimatorSet a = getAnimatorSet(true /* isOpening */);
-        a.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                mFolderIcon.setVisibility(View.INVISIBLE);
-            }
-        });
-        return a;
-    }
-
-    public AnimatorSet getClosingAnimator() {
-        AnimatorSet a = getAnimatorSet(false /* isOpening */);
-        return a;
-    }
 
     /**
      * Prepares the Folder for animating between open / closed states.
-     *
-     * @param isOpening If true, return the animator set for the opening animation.
      */
-    private AnimatorSet getAnimatorSet(final boolean isOpening) {
+    public AnimatorSet getAnimator() {
         final DragLayer.LayoutParams lp = (DragLayer.LayoutParams) mFolder.getLayoutParams();
         FolderIcon.PreviewLayoutRule rule = mFolderIcon.getLayoutRule();
         final List<BubbleTextView> itemsInPreview = mFolderIcon.getItemsToDisplay();
@@ -159,9 +142,11 @@ public class FolderAnimationManager {
 
         final float initialScale = folderScale;
         final float finalScale = 1f;
-        float scale = isOpening ? initialScale : finalScale;
+        float scale = mIsOpening ? initialScale : finalScale;
         mFolder.setScaleX(scale);
         mFolder.setScaleY(scale);
+        mFolder.setPivotX(0);
+        mFolder.setPivotY(0);
 
         // Match position of the FolderIcon
         final Rect folderIconPos = new Rect();
@@ -189,44 +174,13 @@ public class FolderAnimationManager {
         final int finalColor = Themes.getAttrColor(mContext, android.R.attr.colorPrimary);
         final int initialColor =
                 ColorUtils.setAlphaComponent(finalColor, mPreviewBackground.getBackgroundAlpha());
-        mFolderBackground.setColor(isOpening ? initialColor : finalColor);
+        mFolderBackground.setColor(mIsOpening ? initialColor : finalColor);
 
         // Initialize the Folder items' text.
-        final List<BubbleTextView> itemsOnCurrentPage = mFolder.getItemsOnCurrentPage();
+        final List<BubbleTextView> items = mFolder.getItemsOnCurrentPage();
         final int finalTextColor = Themes.getAttrColor(mContext, android.R.attr.textColorSecondary);
-        ITEMS_TEXT_COLOR_PROPERTY.set(itemsOnCurrentPage, isOpening ? Color.TRANSPARENT
+        ITEMS_TEXT_COLOR_PROPERTY.set(items, mIsOpening ? Color.TRANSPARENT
                 : finalTextColor);
-
-        // Create the animators.
-        AnimatorSet a = LauncherAnimUtils.createAnimatorSet();
-        a.setDuration(mFolder.mMaterialExpandDuration);
-
-        ObjectAnimator translationX = isOpening
-                ? ObjectAnimator.ofFloat(mFolder, View.TRANSLATION_X, xDistance, 0)
-                : ObjectAnimator.ofFloat(mFolder, View.TRANSLATION_X, 0, xDistance);
-        a.play(translationX);
-
-        ObjectAnimator translationY = isOpening
-                ? ObjectAnimator.ofFloat(mFolder, View.TRANSLATION_Y, yDistance, 0)
-                : ObjectAnimator.ofFloat(mFolder, View.TRANSLATION_Y, 0, yDistance);
-        a.play(translationY);
-
-        ObjectAnimator scaleAnimator = isOpening
-                ? ObjectAnimator.ofFloat(mFolder, SCALE_PROPERTY, initialScale, finalScale)
-                : ObjectAnimator.ofFloat(mFolder, SCALE_PROPERTY, finalScale, initialScale);
-        a.play(scaleAnimator);
-
-        ObjectAnimator itemsTextColor = isOpening
-                ? ObjectAnimator.ofArgb(itemsOnCurrentPage, ITEMS_TEXT_COLOR_PROPERTY,
-                        Color.TRANSPARENT, finalTextColor)
-                : ObjectAnimator.ofArgb(itemsOnCurrentPage, ITEMS_TEXT_COLOR_PROPERTY,
-                        finalTextColor, Color.TRANSPARENT);
-        a.play(itemsTextColor);
-
-        ObjectAnimator backgroundColor = isOpening
-                ? ObjectAnimator.ofArgb(mFolderBackground, "color", initialColor, finalColor)
-                : ObjectAnimator.ofArgb(mFolderBackground, "color", finalColor, initialColor);
-        a.play(backgroundColor);
 
         // Set up the reveal animation that clips the Folder.
         float stroke = mPreviewBackground.getStrokeWidth();
@@ -236,50 +190,52 @@ public class FolderAnimationManager {
         Rect startRect = new Rect(totalOffsetX + unscaledStroke, unscaledStroke,
                 totalOffsetX + initialSize, initialSize);
         Rect endRect = new Rect(0, 0, lp.width, lp.height);
-        a.play(getRevealAnimator(isOpening, initialSize / 2f, startRect, endRect));
+        float finalRadius = Utilities.pxFromDp(2, mContext.getResources().getDisplayMetrics());
+
+        // Create the animators.
+        AnimatorSet a = LauncherAnimUtils.createAnimatorSet();
+        a.setDuration(mFolder.mMaterialExpandDuration);
+
+        a.play(getAnimator(mFolder, View.TRANSLATION_X, xDistance, 0f));
+        a.play(getAnimator(mFolder, View.TRANSLATION_Y, yDistance, 0f));
+        a.play(getAnimator(mFolder, SCALE_PROPERTY, initialScale, finalScale));
+        a.play(getAnimator(items, ITEMS_TEXT_COLOR_PROPERTY, Color.TRANSPARENT, finalTextColor));
+        a.play(getAnimator(mFolderBackground, "color", initialColor, finalColor));
+        a.play(new RoundedRectRevealOutlineProvider(initialSize / 2f, finalRadius, startRect,
+                endRect).createRevealAnimator(mFolder, !mIsOpening));
 
         a.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                ITEMS_TEXT_COLOR_PROPERTY.set(itemsOnCurrentPage, finalTextColor);
+                ITEMS_TEXT_COLOR_PROPERTY.set(items, finalTextColor);
+                mFolder.setTranslationX(0.0f);
+                mFolder.setTranslationY(0.0f);
+                mFolder.setScaleX(1f);
+                mFolder.setScaleY(1f);
             }
         });
 
         // We set the interpolator on all current child animators here, because the preview item
         // animators may use a different interpolator.
         for (Animator animator : a.getChildAnimations()) {
-            animator.setInterpolator(isOpening ? mOpeningInterpolator : mClosingInterpolator);
+            animator.setInterpolator(mIsOpening ? mOpeningInterpolator : mClosingInterpolator);
         }
 
-        addPreviewItemAnimatorsToSet(a, isOpening, folderScale, nudgeOffsetX);
+        addPreviewItemAnimatorsToSet(a, folderScale, nudgeOffsetX);
         return a;
-    }
-
-    private Animator getRevealAnimator(boolean isOpening, float circleRadius, Rect start,
-            Rect end) {
-        boolean revealIsRunning = mRevealAnimator != null && mRevealAnimator.isRunning();
-        final float finalRadius = revealIsRunning
-                ? ((RoundedRectRevealOutlineProvider) mFolder.getOutlineProvider()).getRadius()
-                : Utilities.pxFromDp(2, mContext.getResources().getDisplayMetrics());
-        if (revealIsRunning) {
-            mRevealAnimator.cancel();
-        }
-        mRevealAnimator = new RoundedRectRevealOutlineProvider(circleRadius, finalRadius,
-                start, end).createRevealAnimator(mFolder, !isOpening);
-        return mRevealAnimator;
     }
 
     /**
      * Animate the items that are displayed in the preview.
      */
-    private void addPreviewItemAnimatorsToSet(AnimatorSet animatorSet, boolean isOpening,
-            final float folderScale, int nudgeOffsetX) {
+    private void addPreviewItemAnimatorsToSet(AnimatorSet animatorSet, final float folderScale,
+            int nudgeOffsetX) {
         FolderIcon.PreviewLayoutRule rule = mFolderIcon.getLayoutRule();
         final List<BubbleTextView> itemsInPreview = mFolderIcon.getItemsToDisplay();
         final int numItemsInPreview = itemsInPreview.size();
 
-        TimeInterpolator previewItemInterpolator = getPreviewItemInterpolator(isOpening);
+        TimeInterpolator previewItemInterpolator = getPreviewItemInterpolator();
 
         ShortcutAndWidgetContainer cwc = mContent.getPageAt(0).getShortcutsAndWidgets();
         for (int i = 0; i < numItemsInPreview; ++i) {
@@ -297,7 +253,7 @@ public class FolderAnimationManager {
 
             final float initialScale = iconScale / folderScale;
             final float finalScale = 1f;
-            float scale = isOpening ? initialScale : finalScale;
+            float scale = mIsOpening ? initialScale : finalScale;
             btv.setScaleX(scale);
             btv.setScaleY(scale);
 
@@ -314,21 +270,15 @@ public class FolderAnimationManager {
             final float xDistance = previewPosX - btvLp.x;
             final float yDistance = previewPosY - btvLp.y;
 
-            ObjectAnimator translationX = isOpening
-                    ? ObjectAnimator.ofFloat(btv, View.TRANSLATION_X, xDistance, 0)
-                    : ObjectAnimator.ofFloat(btv, View.TRANSLATION_X, 0, xDistance);
+            Animator translationX = getAnimator(btv, View.TRANSLATION_X, xDistance, 0f);
             translationX.setInterpolator(previewItemInterpolator);
             animatorSet.play(translationX);
 
-            ObjectAnimator translationY = isOpening
-                    ? ObjectAnimator.ofFloat(btv, View.TRANSLATION_Y, yDistance, 0)
-                    : ObjectAnimator.ofFloat(btv, View.TRANSLATION_Y, 0, yDistance);
+            Animator translationY = getAnimator(btv, View.TRANSLATION_Y, yDistance, 0f);
             translationY.setInterpolator(previewItemInterpolator);
             animatorSet.play(translationY);
 
-            ObjectAnimator scaleAnimator = isOpening
-                    ? ObjectAnimator.ofFloat(btv, SCALE_PROPERTY, initialScale, finalScale)
-                    : ObjectAnimator.ofFloat(btv, SCALE_PROPERTY, finalScale, initialScale);
+            Animator scaleAnimator = getAnimator(btv, SCALE_PROPERTY, initialScale, finalScale);
             scaleAnimator.setInterpolator(previewItemInterpolator);
             animatorSet.play(scaleAnimator);
 
@@ -345,13 +295,31 @@ public class FolderAnimationManager {
         }
     }
 
-    private TimeInterpolator getPreviewItemInterpolator(boolean isOpening) {
+    private TimeInterpolator getPreviewItemInterpolator() {
         if (mFolder.getItemCount() > FolderIcon.NUM_ITEMS_IN_PREVIEW) {
             // With larger folders, we want the preview items to reach their final positions faster
             // (when opening) and later (when closing) so that they appear aligned with the rest of
             // the folder items when they are both visible.
-            return isOpening ? mPreviewItemOpeningInterpolator : mPreviewItemClosingInterpolator;
+            return mIsOpening ? mPreviewItemOpeningInterpolator : mPreviewItemClosingInterpolator;
         }
-        return isOpening ? mOpeningInterpolator : mClosingInterpolator;
+        return mIsOpening ? mOpeningInterpolator : mClosingInterpolator;
+    }
+
+    private Animator getAnimator(View view, Property property, float v1, float v2) {
+        return mIsOpening
+                ? ObjectAnimator.ofFloat(view, property, v1, v2)
+                : ObjectAnimator.ofFloat(view, property, v2, v1);
+    }
+
+    private Animator getAnimator(List<BubbleTextView> items, Property property, int v1, int v2) {
+        return mIsOpening
+                ? ObjectAnimator.ofArgb(items, property, v1, v2)
+                : ObjectAnimator.ofArgb(items, property, v2, v1);
+    }
+
+    private Animator getAnimator(GradientDrawable drawable, String property, int v1, int v2) {
+        return mIsOpening
+                ? ObjectAnimator.ofArgb(drawable, property, v1, v2)
+                : ObjectAnimator.ofArgb(drawable, property, v2, v1);
     }
 }

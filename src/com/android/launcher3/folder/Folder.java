@@ -135,7 +135,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
 
     @Thunk final ArrayList<View> mItemsInReadingOrder = new ArrayList<View>();
 
-    private FolderAnimationManager mFolderAnimationManager;
+    private AnimatorSet mCurrentAnimator;
 
     private final int mExpandDuration;
     public final int mMaterialExpandDuration;
@@ -479,8 +479,6 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
                 }
             }
         });
-
-        mFolderAnimationManager = new FolderAnimationManager(this);
     }
 
     /**
@@ -516,7 +514,30 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         mState = STATE_SMALL;
     }
 
-    private AnimatorSet getOpeningAnimatorSet() {
+    private void startAnimation(final AnimatorSet a) {
+        long startTime = 0;
+        if (mCurrentAnimator != null && mCurrentAnimator.isRunning()) {
+            // This allows a nice transition when closing a Folder while it is still animating open.
+            startTime = mCurrentAnimator.getDuration() - mCurrentAnimator.getCurrentPlayTime();
+            mCurrentAnimator.cancel();
+        }
+        a.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                mState = STATE_ANIMATING;
+                mCurrentAnimator = a;
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mCurrentAnimator = null;
+            }
+        });
+        a.setCurrentPlayTime(startTime);
+        a.start();
+    }
+
+    private AnimatorSet getOpeningAnimator() {
         prepareReveal();
         mFolderIcon.growAndFadeOut();
 
@@ -613,8 +634,8 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         centerAboutIcon();
 
         AnimatorSet anim = FeatureFlags.LAUNCHER3_NEW_FOLDER_ANIMATION
-                ? mFolderAnimationManager.getOpeningAnimator()
-                : getOpeningAnimatorSet();
+                ? new FolderAnimationManager(this, true /* isOpening */).getAnimator()
+                : getOpeningAnimator();
         onCompleteRunnable = new Runnable() {
             @Override
             public void run() {
@@ -624,11 +645,14 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
+                if (FeatureFlags.LAUNCHER3_NEW_FOLDER_ANIMATION) {
+                    mFolderIcon.setVisibility(INVISIBLE);
+                }
+
                 Utilities.sendCustomAccessibilityEvent(
                         Folder.this,
                         AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
                         mContent.getAccessibilityDescription());
-                mState = STATE_ANIMATING;
             }
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -680,7 +704,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         }
 
         mPageIndicator.stopAllAnimations();
-        anim.start();
+        startAnimation(anim);
 
         // Make sure the folder picks up the last drag move even if the finger doesn't move.
         if (mDragController.isDragging()) {
@@ -736,7 +760,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         parent.sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
     }
 
-    private AnimatorSet getClosingAnimatorSet() {
+    private AnimatorSet getClosingAnimator() {
         AnimatorSet animatorSet = LauncherAnimUtils.createAnimatorSet();
         animatorSet.play(LauncherAnimUtils.ofViewAlphaAndScale(this, 0, 0.9f, 0.9f));
 
@@ -749,8 +773,8 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
 
     private void animateClosed() {
         AnimatorSet a = FeatureFlags.LAUNCHER3_NEW_FOLDER_ANIMATION
-                ? mFolderAnimationManager.getClosingAnimator()
-                : getClosingAnimatorSet();
+                ? new FolderAnimationManager(this, false /* isOpening */).getAnimator()
+                : getClosingAnimator();
         a.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -762,10 +786,9 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
                         Folder.this,
                         AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
                         getContext().getString(R.string.folder_closed));
-                mState = STATE_ANIMATING;
             }
         });
-        a.start();
+        startAnimation(a);
     }
 
     private void closeComplete(boolean wasAnimated) {
