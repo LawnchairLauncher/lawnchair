@@ -18,15 +18,18 @@ package com.android.launcher3.model;
 import android.content.ComponentName;
 
 import com.android.launcher3.AllAppsList;
+import com.android.launcher3.AppInfo;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherModel.Callbacks;
+import com.android.launcher3.PromiseAppInfo;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
@@ -47,6 +50,46 @@ public class PackageInstallStateChangedTask extends ExtendedModelTask {
             return;
         }
 
+        synchronized (apps) {
+            final ArrayList<AppInfo> updated = new ArrayList<>();
+            final ArrayList<AppInfo> removed = new ArrayList<>();
+            for (int i=0; i < apps.size(); i++) {
+                final AppInfo appInfo = apps.get(i);
+                final ComponentName tgtComp = appInfo.getTargetComponent();
+                if (tgtComp != null && tgtComp.getPackageName().equals(mInstallInfo.packageName)) {
+                    if (appInfo instanceof PromiseAppInfo) {
+                        final PromiseAppInfo promiseAppInfo = (PromiseAppInfo) appInfo;
+                        if (mInstallInfo.state == PackageInstallerCompat.STATUS_INSTALLING) {
+                            promiseAppInfo.level = mInstallInfo.progress;
+                            updated.add(appInfo);
+                        } else if (mInstallInfo.state == PackageInstallerCompat.STATUS_FAILED
+                                || mInstallInfo.state == PackageInstallerCompat.STATUS_INSTALLED) {
+                            apps.removePromiseApp(appInfo);
+                            removed.add(appInfo);
+                        }
+                    }
+                }
+            }
+            if (!updated.isEmpty()) {
+                scheduleCallbackTask(new CallbackTask() {
+                    @Override
+                    public void execute(Callbacks callbacks) {
+                        // TODO: this currently causes unnecessary relayouts
+                        // we need to introduce a new bindPromiseAppsChanged
+                        callbacks.bindAppsUpdated(updated);
+                    }
+                });
+            }
+            if (!removed.isEmpty()) {
+                scheduleCallbackTask(new CallbackTask() {
+                    @Override
+                    public void execute(Callbacks callbacks) {
+                        callbacks.bindAppInfosRemoved(removed);
+                    }
+                });
+            }
+        }
+
         synchronized (dataModel) {
             final HashSet<ItemInfo> updates = new HashSet<>();
             for (ItemInfo info : dataModel.itemsIdMap) {
@@ -56,7 +99,6 @@ public class PackageInstallStateChangedTask extends ExtendedModelTask {
                     if (si.isPromise() && (cn != null)
                             && mInstallInfo.packageName.equals(cn.getPackageName())) {
                         si.setInstallProgress(mInstallInfo.progress);
-
                         if (mInstallInfo.state == PackageInstallerCompat.STATUS_FAILED) {
                             // Mark this info as broken.
                             si.status &= ~ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE;

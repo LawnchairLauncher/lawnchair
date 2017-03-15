@@ -25,7 +25,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
+import android.content.pm.PackageInstaller;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -571,6 +573,25 @@ public class LauncherModel extends BroadcastReceiver
         // Get screens ordered by rank.
         return LauncherDbUtils.getScreenIdsFromCursor(contentResolver.query(
                 screensUri, null, null, null, LauncherSettings.WorkspaceScreens.SCREEN_RANK));
+    }
+
+    public void onInstallSessionCreated(final PackageInstallInfo sessionInfo) {
+        enqueueModelUpdateTask(new ExtendedModelTask() {
+            @Override
+            public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
+                apps.addPromiseApp(app.getContext(), sessionInfo);
+                if (!apps.added.isEmpty()) {
+                    final ArrayList<AppInfo> arrayList = new ArrayList<>(apps.added);
+                    apps.added.clear();
+                    scheduleCallbackTask(new CallbackTask() {
+                        @Override
+                        public void execute(Callbacks callbacks) {
+                            callbacks.bindAppsAdded(null, null, null, arrayList);
+                        }
+                    });
+                }
+            }
+        });
     }
 
     /**
@@ -1691,9 +1712,20 @@ public class LauncherModel extends BroadcastReceiver
                                 });
                 }
             }
+
+            if (FeatureFlags.LAUNCHER3_PROMISE_APPS_IN_ALL_APPS) {
+                // get all active sessions and add them to the all apps list
+                PackageInstallerCompat installer = PackageInstallerCompat.getInstance(mContext);
+                for (PackageInstaller.SessionInfo info : installer.getAllVerifiedSessions()) {
+                    mBgAllAppsList.addPromiseApp(mContext,
+                            PackageInstallInfo.fromInstallingState(info));
+                }
+            }
+
             // Huh? Shouldn't this be inside the Runnable below?
             final ArrayList<AppInfo> added = mBgAllAppsList.added;
             mBgAllAppsList.added = new ArrayList<AppInfo>();
+
 
             // Post callback on main thread
             mUiExecutor.execute(new Runnable() {

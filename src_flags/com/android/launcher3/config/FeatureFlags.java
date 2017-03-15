@@ -36,7 +36,8 @@ public final class FeatureFlags {
     public static boolean LAUNCHER3_DIRECT_SCROLL = true;
     // When enabled while all-apps open, the soft input will be set to adjust resize .
     public static boolean LAUNCHER3_UPDATE_SOFT_INPUT_MODE = false;
-
+    // When enabled the promise icon is visible in all apps while installation an app.
+    public static boolean LAUNCHER3_PROMISE_APPS_IN_ALL_APPS = false;
 
     // Feature flag to enable moving the QSB on the 0th screen of the workspace.
     public static final boolean QSB_ON_FIRST_SCREEN = true;

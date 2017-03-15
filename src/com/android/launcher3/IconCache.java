@@ -437,9 +437,10 @@ public class IconCache {
      * Updates {@param application} only if a valid entry is found.
      */
     public synchronized void updateTitleAndIcon(AppInfo application) {
+        boolean usePackageIcon = application instanceof PromiseAppInfo;
         CacheEntry entry = cacheLocked(application.componentName,
                 Provider.<LauncherActivityInfo>of(null),
-                application.user, false, application.usingLowResIcon);
+                application.user, usePackageIcon, application.usingLowResIcon);
         if (entry.icon != null && !isDefaultIcon(entry.icon, application.user)) {
             applyCacheEntry(entry, application);
         }
