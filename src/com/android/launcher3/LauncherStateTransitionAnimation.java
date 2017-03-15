@@ -334,6 +334,12 @@ public class LauncherStateTransitionAnimation {
                     // This can hold unnecessary references to views.
                     cleanupAnimation();
                     pCb.onTransitionComplete();
+
+                    revealView.setAlpha(1f);
+                    revealView.setTranslationX(0f);
+                    revealView.setTranslationY(0f);
+                    contentView.setAlpha(1f);
+                    contentView.setTranslationY(0f);
                 }
 
             });
