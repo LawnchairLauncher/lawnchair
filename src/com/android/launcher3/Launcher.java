@@ -176,11 +176,9 @@ public class Launcher extends BaseActivity
     protected static final int REQUEST_LAST = 100;
 
     private static final int SOFT_INPUT_MODE_DEFAULT =
-            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN
-                | WindowManager.LayoutParams.SOFT_INPUT_STATE_UNCHANGED;
+            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN;
     private static final int SOFT_INPUT_MODE_ALL_APPS =
-            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
-                | WindowManager.LayoutParams.SOFT_INPUT_STATE_UNCHANGED;
+            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE;
 
     // The Intent extra that defines whether to ignore the launch animation
     static final String INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION =
