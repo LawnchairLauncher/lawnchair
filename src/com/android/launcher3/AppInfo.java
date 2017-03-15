@@ -44,7 +44,7 @@ public class AppInfo extends ItemInfoWithIcon {
     public int isDisabled = ShortcutInfo.DEFAULT;
 
     public AppInfo() {
-        itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
+        itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
     }
 
     @Override
