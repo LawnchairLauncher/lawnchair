@@ -20,6 +20,7 @@ import android.app.ActivityOptions;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import android.service.notification.StatusBarNotification;
 import android.view.View;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.util.PackageUserKey;
@@ -53,8 +55,8 @@ public class NotificationInfo implements View.OnClickListener {
     public final boolean autoCancel;
     public final boolean dismissable;
 
-    private final int mBadgeIcon;
-    private final Drawable mIconDrawable;
+    private int mBadgeIcon;
+    private Drawable mIconDrawable;
     private int mIconColor;
     private boolean mIsIconLarge;
 
@@ -81,6 +83,12 @@ public class NotificationInfo implements View.OnClickListener {
             // Use the large icon.
             mIconDrawable = icon.loadDrawable(context);
             mIsIconLarge = true;
+        }
+        if (mIconDrawable == null) {
+            mIconDrawable = new BitmapDrawable(context.getResources(), LauncherAppState
+                    .getInstance(context).getIconCache()
+                    .getDefaultIcon(statusBarNotification.getUser()));
+            mBadgeIcon = BADGE_ICON_NONE;
         }
         intent = notification.contentIntent;
         autoCancel = (notification.flags & Notification.FLAG_AUTO_CANCEL) != 0;
