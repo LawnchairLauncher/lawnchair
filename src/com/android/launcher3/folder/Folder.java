@@ -621,12 +621,6 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
 
                 onCompleteRunnable.run();
                 mContent.setFocusOnFirstChild();
-
-                // Temporary fix b/36246234
-                setTranslationX(0f);
-                setTranslationY(0f);
-                mContent.setAlpha(1f);
-                mFooter.setAlpha(1f);
             }
         });
 
