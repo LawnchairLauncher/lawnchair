@@ -198,15 +198,17 @@ public class NotificationFooterLayout extends FrameLayout {
             // There are no more icons in the footer, so hide it.
             PopupContainerWithArrow popup = PopupContainerWithArrow.getOpen(
                     Launcher.getLauncher(getContext()));
-            Animator collapseFooter = popup.reduceNotificationViewHeight(getHeight(),
-                    getResources().getInteger(R.integer.config_removeNotificationViewDuration));
-            collapseFooter.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    ((ViewGroup) getParent()).removeView(NotificationFooterLayout.this);
-                }
-            });
-            collapseFooter.start();
+            if (popup != null) {
+                Animator collapseFooter = popup.reduceNotificationViewHeight(getHeight(),
+                        getResources().getInteger(R.integer.config_removeNotificationViewDuration));
+                collapseFooter.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        ((ViewGroup) getParent()).removeView(NotificationFooterLayout.this);
+                    }
+                });
+                collapseFooter.start();
+            }
         }
     }
 
