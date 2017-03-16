@@ -34,7 +34,6 @@
         android:ellipsize="end"
         android:focusable="true"
         android:gravity="start|center_vertical"
-        android:importantForAccessibility="no"
         android:paddingBottom="@dimen/widget_section_vertical_padding"
         android:paddingLeft="@dimen/widget_section_horizontal_padding"
         android:paddingRight="@dimen/widget_section_horizontal_padding"
