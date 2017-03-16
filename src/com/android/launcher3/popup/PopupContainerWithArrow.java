@@ -568,7 +568,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                     R.integer.config_removeNotificationViewDuration);
             final int spacing = getResources().getDimensionPixelSize(R.dimen.popup_items_spacing);
             removeNotification.play(reduceNotificationViewHeight(
-                    mNotificationItemView.getHeight() + spacing, duration, mNotificationItemView));
+                    mNotificationItemView.getHeight() + spacing, duration));
             final View removeMarginView = mIsAboveIcon ? getItemViewAt(getItemCount() - 2)
                     : mNotificationItemView;
             if (removeMarginView != null) {
@@ -588,6 +588,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     removeView(mNotificationItemView);
+                    mNotificationItemView = null;
                     if (getItemCount() == 0) {
                         close(false);
                         return;
@@ -612,19 +613,19 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         return LauncherAnimUtils.ofPropertyValuesHolder(
                 mArrow, new PropertyListBuilder().scale(scale).build());
     }
+
     /**
      * Animates the height of the notification item and the translationY of other items accordingly.
      */
-    public Animator reduceNotificationViewHeight(int heightToRemove, int duration,
-            NotificationItemView notificationItem) {
+    public Animator reduceNotificationViewHeight(int heightToRemove, int duration) {
         final int translateYBy = mIsAboveIcon ? heightToRemove : -heightToRemove;
         AnimatorSet animatorSet = LauncherAnimUtils.createAnimatorSet();
-        animatorSet.play(notificationItem.animateHeightRemoval(heightToRemove));
+        animatorSet.play(mNotificationItemView.animateHeightRemoval(heightToRemove));
         PropertyResetListener<View, Float> resetTranslationYListener
                 = new PropertyResetListener<>(TRANSLATION_Y, 0f);
         for (int i = 0; i < getItemCount(); i++) {
             final PopupItemView itemView = getItemViewAt(i);
-            if (!mIsAboveIcon && itemView == notificationItem) {
+            if (!mIsAboveIcon && itemView == mNotificationItemView) {
                 // The notification view is already in the right place when container is below icon.
                 continue;
             }
@@ -645,10 +646,6 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             });
         }
         return animatorSet;
-    }
-
-    public Animator reduceNotificationViewHeight(int heightToRemove, int duration) {
-        return reduceNotificationViewHeight(heightToRemove, duration, mNotificationItemView);
     }
 
     @Override

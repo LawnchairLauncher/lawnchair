@@ -23,7 +23,6 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.android.launcher3.ItemInfo;
@@ -85,8 +84,6 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
                             MeasureSpec.makeMeasureSpec(newHeight, MeasureSpec.EXACTLY));
                     initializeBackgroundClipping(true /* force */);
                     invalidate();
-                } else {
-                    ((ViewGroup) getParent()).removeView(NotificationItemView.this);
                 }
             }
         });
