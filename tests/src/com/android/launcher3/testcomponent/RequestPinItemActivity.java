@@ -28,6 +28,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Icon;
 import android.os.Bundle;
+import android.widget.RemoteViews;
 
 /**
  * Sample activity to request pinning an item.
@@ -36,7 +37,8 @@ import android.os.Bundle;
 public class RequestPinItemActivity extends BaseTestingActivity {
 
     private PendingIntent mCallback = null;
-    private String mShortcutId;
+    private String mShortcutId = "test-id";
+    private int mRemoteViewColor = Color.TRANSPARENT;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,10 @@ public class RequestPinItemActivity extends BaseTestingActivity {
 
     public void setCallback(PendingIntent callback) {
         mCallback = callback;
+    }
+
+    public void setRemoteViewColor(int color) {
+        mRemoteViewColor = color;
     }
 
     public void setShortcutId(String id) {
@@ -84,6 +90,16 @@ public class RequestPinItemActivity extends BaseTestingActivity {
     }
 
     private void requestWidget(ComponentName cn) {
-        AppWidgetManager.getInstance(this).requestPinAppWidget(cn, null, mCallback);
+        Bundle extras = null;
+        if (mRemoteViewColor != Color.TRANSPARENT) {
+            int layoutId = getResources().getIdentifier(
+                    "test_layout_appwidget_view", "layout", getPackageName());
+            RemoteViews views = new RemoteViews(getPackageName(), layoutId);
+            views.setInt(android.R.id.icon, "setBackgroundColor", mRemoteViewColor);
+            extras = new Bundle();
+            extras.putParcelable(AppWidgetManager.EXTRA_APPWIDGET_PREVIEW, views);
+        }
+
+        AppWidgetManager.getInstance(this).requestPinAppWidget(cn, extras, mCallback);
     }
 }

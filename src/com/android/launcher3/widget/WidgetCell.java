@@ -18,6 +18,7 @@ package com.android.launcher3.widget;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.CancellationSignal;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -34,7 +35,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.SimpleOnStylusPressListener;
 import com.android.launcher3.StylusEventHelper;
 import com.android.launcher3.WidgetPreviewLoader;
-import com.android.launcher3.WidgetPreviewLoader.PreviewLoadRequest;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.model.WidgetItem;
 
@@ -60,20 +60,21 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     /** Widget preview width is calculated by multiplying this factor to the widget cell width. */
     private static final float PREVIEW_SCALE = 0.8f;
 
-    private int mPresetPreviewSize;
+    protected int mPresetPreviewSize;
     private int mCellSize;
 
     private WidgetImageView mWidgetImage;
     private TextView mWidgetName;
     private TextView mWidgetDims;
 
-    private WidgetItem mItem;
+    protected WidgetItem mItem;
 
     private WidgetPreviewLoader mWidgetPreviewLoader;
-    private PreviewLoadRequest mActiveRequest;
     private StylusEventHelper mStylusEventHelper;
 
-    private final BaseActivity mActivity;
+    protected CancellationSignal mActiveRequest;
+
+    protected final BaseActivity mActivity;
 
     public WidgetCell(Context context) {
         this(context, null);
@@ -123,7 +124,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         mWidgetDims.setText(null);
 
         if (mActiveRequest != null) {
-            mActiveRequest.cleanup();
+            mActiveRequest.cancel();
             mActiveRequest = null;
         }
     }

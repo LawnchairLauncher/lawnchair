@@ -16,9 +16,11 @@
 
 package com.android.launcher3.dragndrop;
 
+import android.appwidget.AppWidgetManager;
 import android.content.ClipDescription;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Parcel;
@@ -27,6 +29,7 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
+import android.widget.RemoteViews;
 
 import com.android.launcher3.DeleteDropTarget;
 import com.android.launcher3.DragSource;
@@ -171,7 +174,12 @@ public class PinItemDragListener
         // and the absolute position (position relative to the screen) of drag event is same
         // across windows, using drag position here give a good estimate for relative position
         // to source window.
-        new PendingItemDragHelper(view).startDrag(new Rect(mPreviewRect),
+        PendingItemDragHelper dragHelper = new PendingItemDragHelper(view);
+        if (mRequest.getRequestType() == PinItemRequestCompat.REQUEST_TYPE_APPWIDGET) {
+            dragHelper.setPreview(getPreview(mRequest));
+        }
+
+        dragHelper.startDrag(new Rect(mPreviewRect),
                 mPreviewBitmapWidth, mPreviewViewWidth, downPos,  this, options);
         mDragStartTime = SystemClock.uptimeMillis();
         return true;
@@ -248,6 +256,15 @@ public class PinItemDragListener
         if (mLauncher != null) {
             mLauncher.getDragLayer().setOnDragListener(null);
         }
+    }
+
+    public static RemoteViews getPreview(PinItemRequestCompat request) {
+        Bundle extras = request.getExtras();
+        if (extras != null &&
+                extras.get(AppWidgetManager.EXTRA_APPWIDGET_PREVIEW) instanceof RemoteViews) {
+            return (RemoteViews) extras.get(AppWidgetManager.EXTRA_APPWIDGET_PREVIEW);
+        }
+        return null;
     }
 
     public static final Parcelable.Creator<PinItemDragListener> CREATOR =

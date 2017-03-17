@@ -76,6 +76,14 @@ public class PinItemRequestCompat implements Parcelable {
         }
     }
 
+    public Bundle getExtras() {
+        try {
+            return (Bundle) mObject.getClass().getDeclaredMethod("getExtras").invoke(mObject);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     private Object invokeMethod(String methodName) {
         try {
             return mObject.getClass().getDeclaredMethod(methodName).invoke(mObject);

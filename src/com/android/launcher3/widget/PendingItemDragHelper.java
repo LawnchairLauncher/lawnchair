@@ -23,6 +23,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.view.View;
+import android.widget.RemoteViews;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragSource;
@@ -32,6 +33,7 @@ import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.dragndrop.DragOptions;
+import com.android.launcher3.dragndrop.LivePreviewWidgetCell;
 import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.graphics.HolographicOutlineHelper;
 import com.android.launcher3.graphics.LauncherIcons;
@@ -47,10 +49,15 @@ public class PendingItemDragHelper extends DragPreviewProvider {
     private final PendingAddItemInfo mAddInfo;
 
     private Bitmap mPreviewBitmap;
+    private RemoteViews mPreview;
 
     public PendingItemDragHelper(View view) {
         super(view);
         mAddInfo = (PendingAddItemInfo) view.getTag();
+    }
+
+    public void setPreview(RemoteViews preview) {
+        mPreview = preview;
     }
 
     /**
@@ -67,7 +74,7 @@ public class PendingItemDragHelper extends DragPreviewProvider {
         final Launcher launcher = Launcher.getLauncher(mView.getContext());
         LauncherAppState app = LauncherAppState.getInstance(launcher);
 
-        final Bitmap preview;
+        Bitmap preview = null;
         final float scale;
         final Point dragOffset;
         final Rect dragRegion;
@@ -80,8 +87,15 @@ public class PendingItemDragHelper extends DragPreviewProvider {
             int maxWidth = Math.min((int) (previewBitmapWidth * MAX_WIDGET_SCALE), size[0]);
 
             int[] previewSizeBeforeScale = new int[1];
-            preview = app.getWidgetCache() .generateWidgetPreview(
-                    launcher, createWidgetInfo.info, maxWidth, null, previewSizeBeforeScale);
+
+            if (mPreview != null) {
+                preview = LivePreviewWidgetCell.generateFromRemoteViews(launcher, mPreview,
+                        createWidgetInfo.info, maxWidth, previewSizeBeforeScale);
+            }
+            if (preview == null) {
+                preview = app.getWidgetCache().generateWidgetPreview(
+                        launcher, createWidgetInfo.info, maxWidth, null, previewSizeBeforeScale);
+            }
 
             if (previewSizeBeforeScale[0] < previewBitmapWidth) {
                 // The icon has extra padding around it.

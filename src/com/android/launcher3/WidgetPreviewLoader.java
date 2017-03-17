@@ -22,6 +22,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.CancellationSignal;
 import android.os.Handler;
 import android.os.UserHandle;
 import android.support.v4.graphics.ColorUtils;
@@ -89,14 +90,17 @@ public class WidgetPreviewLoader {
      *
      * @return a request id which can be used to cancel the request.
      */
-    public PreviewLoadRequest getPreview(WidgetItem item, int previewWidth,
+    public CancellationSignal getPreview(WidgetItem item, int previewWidth,
             int previewHeight, WidgetCell caller) {
         String size = previewWidth + "x" + previewHeight;
         WidgetCacheKey key = new WidgetCacheKey(item.componentName, item.user, size);
 
         PreviewLoadTask task = new PreviewLoadTask(key, item, previewWidth, previewHeight, caller);
         task.executeOnExecutor(Utilities.THREAD_POOL_EXECUTOR);
-        return new PreviewLoadRequest(task);
+
+        CancellationSignal signal = new CancellationSignal();
+        signal.setOnCancelListener(task);
+        return signal;
     }
 
     /**
@@ -511,42 +515,8 @@ public class WidgetPreviewLoader {
         }
     }
 
-    /**
-     * A request Id which can be used by the client to cancel any request.
-     */
-    public class PreviewLoadRequest {
-
-        @Thunk final PreviewLoadTask mTask;
-
-        public PreviewLoadRequest(PreviewLoadTask task) {
-            mTask = task;
-        }
-
-        public void cleanup() {
-            if (mTask != null) {
-                mTask.cancel(true);
-            }
-
-            // This only handles the case where the PreviewLoadTask is cancelled after the task has
-            // successfully completed (including having written to disk when necessary).  In the
-            // other cases where it is cancelled while the task is running, it will be cleaned up
-            // in the tasks's onCancelled() call, and if cancelled while the task is writing to
-            // disk, it will be cancelled in the task's onPostExecute() call.
-            if (mTask.mBitmapToRecycle != null) {
-                mWorkerHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        synchronized (mUnusedBitmaps) {
-                            mUnusedBitmaps.add(mTask.mBitmapToRecycle);
-                        }
-                        mTask.mBitmapToRecycle = null;
-                    }
-                });
-            }
-        }
-    }
-
-    public class PreviewLoadTask extends AsyncTask<Void, Void, Bitmap> {
+    public class PreviewLoadTask extends AsyncTask<Void, Void, Bitmap>
+            implements CancellationSignal.OnCancelListener {
         @Thunk final WidgetCacheKey mKey;
         private final WidgetItem mInfo;
         private final int mPreviewHeight;
@@ -658,6 +628,28 @@ public class WidgetPreviewLoader {
                         synchronized (mUnusedBitmaps) {
                             mUnusedBitmaps.add(preview);
                         }
+                    }
+                });
+            }
+        }
+
+        @Override
+        public void onCancel() {
+            cancel(true);
+
+            // This only handles the case where the PreviewLoadTask is cancelled after the task has
+            // successfully completed (including having written to disk when necessary).  In the
+            // other cases where it is cancelled while the task is running, it will be cleaned up
+            // in the tasks's onCancelled() call, and if cancelled while the task is writing to
+            // disk, it will be cancelled in the task's onPostExecute() call.
+            if (mBitmapToRecycle != null) {
+                mWorkerHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        synchronized (mUnusedBitmaps) {
+                            mUnusedBitmaps.add(mBitmapToRecycle);
+                        }
+                        mBitmapToRecycle = null;
                     }
                 });
             }
