@@ -75,10 +75,8 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"मुख्यस्क्रीन फिरविण्‍यास अनुमती द्या"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"फोन फिरविला जातो तेव्हा"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"वर्तमान प्रदर्शन सेटिंग फिरविण्यास परवानगी देत नाही"</string>
-    <!-- no translation found for auto_add_shortcuts_label (8222286205987725611) -->
-    <skip />
-    <!-- no translation found for auto_add_shortcuts_description (7117251166066978730) -->
-    <skip />
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"मुख्य स्क्रीनवर चिन्ह जोडा"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नवीन अॅप्ससाठी"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"अज्ञात"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"काढा"</string>
     <string name="abandoned_search" msgid="891119232568284442">"शोधा"</string>

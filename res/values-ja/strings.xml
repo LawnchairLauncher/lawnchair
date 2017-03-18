@@ -75,10 +75,8 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"ホーム画面の回転を許可"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"スマートフォンが回転したとき"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"現在の [ディスプレイ] 設定では回転を使用できません"</string>
-    <!-- no translation found for auto_add_shortcuts_label (8222286205987725611) -->
-    <skip />
-    <!-- no translation found for auto_add_shortcuts_description (7117251166066978730) -->
-    <skip />
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"ホーム画面にアイコンを追加"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"新しいアプリをダウンロードしたときに"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"不明"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"削除"</string>
     <string name="abandoned_search" msgid="891119232568284442">"検索"</string>
