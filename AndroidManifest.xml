@@ -70,7 +70,7 @@
             android:stateNotNeeded="true"
             android:theme="@style/LauncherTheme"
             android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="nosensor"
+            android:screenOrientation="portrait"
             android:configChanges="keyboard|keyboardHidden|navigation"
             android:resumeWhilePausing="true"
             android:taskAffinity=""

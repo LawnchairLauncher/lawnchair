@@ -335,18 +335,6 @@ public class Launcher extends Activity
     private UserEventDispatcher mUserEventDispatcher;
 
     public ViewGroupFocusHelper mFocusHandler;
-    private boolean mRotationEnabled = false;
-
-    @Thunk void setOrientation() {
-        if (mRotationEnabled) {
-            unlockScreenOrientation(true);
-        } else {
-            setRequestedOrientation(
-                    ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
-        }
-    }
-
-    private RotationPrefChangeHandler mRotationPrefChangeHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -415,20 +403,6 @@ public class Launcher extends Activity
 
         IntentFilter filter = new IntentFilter(ACTION_APPWIDGET_HOST_RESET);
         registerReceiver(mUiBroadcastReceiver, filter);
-
-        mRotationEnabled = getResources().getBoolean(R.bool.allow_rotation);
-        // In case we are on a device with locked rotation, we should look at preferences to check
-        // if the user has specifically allowed rotation.
-        if (!mRotationEnabled) {
-            mRotationEnabled = Utilities.isAllowRotationPrefEnabled(getApplicationContext());
-            mRotationPrefChangeHandler = new RotationPrefChangeHandler();
-            mSharedPrefs.registerOnSharedPreferenceChangeListener(mRotationPrefChangeHandler);
-        }
-
-        // On large interfaces, or on devices that a user has specifically enabled screen rotation,
-        // we want the screen to auto-rotate based on the current orientation
-        setOrientation();
-
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onCreate(savedInstanceState);
@@ -1094,13 +1068,7 @@ public class Launcher extends Activity
     }
 
     protected boolean hasSettings() {
-        if (mLauncherCallbacks != null) {
-            return mLauncherCallbacks.hasSettings();
-        } else {
-            // On devices with a locked orientation, we will at least have the allow rotation
-            // setting.
-            return !getResources().getBoolean(R.bool.allow_rotation);
-        }
+        return mLauncherCallbacks != null&& mLauncherCallbacks.hasSettings();
     }
 
     public void addToCustomContentPage(View customContent,
@@ -1874,10 +1842,6 @@ public class Launcher extends Activity
         if (mModel.isCurrentCallbacks(this)) {
             mModel.stopLoader();
             LauncherAppState.getInstance().setLauncher(null);
-        }
-
-        if (mRotationPrefChangeHandler != null) {
-            mSharedPrefs.unregisterOnSharedPreferenceChangeListener(mRotationPrefChangeHandler);
         }
 
         try {
@@ -4168,27 +4132,6 @@ public class Launcher extends Activity
         return oriMap[(d.getRotation() + indexOffset) % 4];
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-    public void lockScreenOrientation() {
-        if (mRotationEnabled) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
-        }
-    }
-
-    public void unlockScreenOrientation(boolean immediate) {
-        if (mRotationEnabled) {
-            if (immediate) {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-            } else {
-                mHandler.postDelayed(new Runnable() {
-                    public void run() {
-                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-                    }
-                }, RESTORE_SCREEN_ORIENTATION_DELAY);
-            }
-        }
-    }
-
     private void markAppsViewShown() {
         if (mSharedPrefs.getBoolean(APPS_VIEW_SHOWN, false)) {
             return;
@@ -4336,24 +4279,5 @@ public class Launcher extends Activity
             return (Launcher) context;
         }
         return ((Launcher) ((ContextWrapper) context).getBaseContext());
-    }
-
-    private class RotationPrefChangeHandler implements OnSharedPreferenceChangeListener, Runnable {
-
-        @Override
-        public void onSharedPreferenceChanged(
-                SharedPreferences sharedPreferences, String key) {
-            if (Utilities.ALLOW_ROTATION_PREFERENCE_KEY.equals(key)) {
-                mRotationEnabled = Utilities.isAllowRotationPrefEnabled(getApplicationContext());
-                if (!waitUntilResume(this, true)) {
-                    run();
-                }
-            }
-        }
-
-        @Override
-        public void run() {
-            setOrientation();
-        }
     }
 }

@@ -46,70 +46,18 @@ public class SettingsActivity extends Activity {
      */
     public static class LauncherSettingsFragment extends PreferenceFragment {
 
-        private SystemDisplayRotationLockObserver mRotationLockObserver;
-
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
             addPreferencesFromResource(R.xml.launcher_preferences);
-
-            // Setup allow rotation preference
-            Preference rotationPref = findPreference(Utilities.ALLOW_ROTATION_PREFERENCE_KEY);
-            if (getResources().getBoolean(R.bool.allow_rotation)) {
-                // Launcher supports rotation by default. No need to show this setting.
-                getPreferenceScreen().removePreference(rotationPref);
-            } else {
-                ContentResolver resolver = getActivity().getContentResolver();
-                mRotationLockObserver = new SystemDisplayRotationLockObserver(rotationPref, resolver);
-
-                // Register a content observer to listen for system setting changes while
-                // this UI is active.
-                resolver.registerContentObserver(
-                        Settings.System.getUriFor(System.ACCELEROMETER_ROTATION),
-                        false, mRotationLockObserver);
-
-                // Initialize the UI once
-                mRotationLockObserver.onChange(true);
-                rotationPref.setDefaultValue(Utilities.getAllowRotationDefaultValue(getActivity()));
-            }
         }
 
         @Override
         public void onDestroy() {
-            if (mRotationLockObserver != null) {
-                getActivity().getContentResolver().unregisterContentObserver(mRotationLockObserver);
-                mRotationLockObserver = null;
-            }
             super.onDestroy();
             SharedPreferences prefs = Utilities.getPrefs(getActivity().getApplicationContext());
             prefs.edit().putBoolean("resume_from_settings",true).apply();
-        }
-    }
-
-    /**
-     * Content observer which listens for system auto-rotate setting changes, and enables/disables
-     * the launcher rotation setting accordingly.
-     */
-    private static class SystemDisplayRotationLockObserver extends ContentObserver {
-
-        private final Preference mRotationPref;
-        private final ContentResolver mResolver;
-
-        public SystemDisplayRotationLockObserver(
-                Preference rotationPref, ContentResolver resolver) {
-            super(new Handler());
-            mRotationPref = rotationPref;
-            mResolver = resolver;
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            boolean enabled = Settings.System.getInt(mResolver,
-                    Settings.System.ACCELEROMETER_ROTATION, 1) == 1;
-            mRotationPref.setEnabled(enabled);
-            mRotationPref.setSummary(enabled
-                    ? R.string.allow_rotation_desc : R.string.allow_rotation_blocked_desc);
         }
     }
 }

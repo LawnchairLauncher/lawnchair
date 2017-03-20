@@ -19,12 +19,6 @@
         android:title="UI"/>
 
     <SwitchPreference
-        android:key="pref_allowRotation"
-        android:title="@string/allow_rotation_title"
-        android:defaultValue="@bool/allow_rotation"
-        android:persistent="true"/>
-
-    <SwitchPreference
         android:key="pref_lightStatusBar"
         android:title="Light StatusBar"
         android:summary="When enabled the status bar may show dark icons based on the top of the wallpaper."

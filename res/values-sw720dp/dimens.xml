@@ -20,5 +20,8 @@
     <dimen name="all_apps_search_bar_height">54dp</dimen>
     <dimen name="all_apps_empty_search_message_top_offset">64dp</dimen>
     <dimen name="all_apps_empty_search_bg_top_offset">180dp</dimen>
-
+    <!-- Workspace -->
+    <!-- the area at the edge of the screen that makes the workspace go left
+         or right while you're dragging. -->
+    <dimen name="scroll_zone">40dp</dimen>
 </resources>
