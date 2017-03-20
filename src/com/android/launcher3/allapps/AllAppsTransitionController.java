@@ -9,7 +9,6 @@ import android.animation.ObjectAnimator;
 import android.graphics.Color;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -47,11 +46,10 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private final Interpolator mAccelInterpolator = new AccelerateInterpolator(2f);
     private final Interpolator mDecelInterpolator = new DecelerateInterpolator(3f);
     private final Interpolator mFastOutSlowInInterpolator = new FastOutSlowInInterpolator();
-    private final ScrollInterpolator mScrollInterpolator = new ScrollInterpolator();
+    private final VerticalPullDetector.ScrollInterpolator mScrollInterpolator
+            = new VerticalPullDetector.ScrollInterpolator();
 
-    private static final float ANIMATION_DURATION = 1200;
     private static final float PARALLAX_COEFFICIENT = .125f;
-    private static final float FAST_FLING_PX_MS = 10;
     private static final int SINGLE_FRAME_MS = 16;
 
     private AllAppsContainerView mAppsView;
@@ -315,13 +313,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     private void calculateDuration(float velocity, float disp) {
-        // TODO: make these values constants after tuning.
-        float velocityDivisor = Math.max(2f, Math.abs(0.5f * velocity));
-        float travelDistance = Math.max(0.2f, disp / mShiftRange);
-        mAnimationDuration = (long) Math.max(100, ANIMATION_DURATION / velocityDivisor * travelDistance);
-        if (DBG) {
-            Log.d(TAG, String.format("calculateDuration=%d, v=%f, d=%f", mAnimationDuration, velocity, disp));
-        }
+        mAnimationDuration = mDetector.calculateDuration(velocity, disp / mShiftRange);
     }
 
     public boolean animateToAllApps(AnimatorSet animationOut, long duration) {
@@ -511,21 +503,4 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         setProgress(mProgress);
     }
 
-    static class ScrollInterpolator implements Interpolator {
-
-        boolean mSteeper;
-
-        public void setVelocityAtZero(float velocity) {
-            mSteeper = velocity > FAST_FLING_PX_MS;
-        }
-
-        public float getInterpolation(float t) {
-            t -= 1.0f;
-            float output = t * t * t;
-            if (mSteeper) {
-                output *= t * t; // Make interpolation initial slope steeper
-            }
-            return output + 1;
-        }
-    }
 }
