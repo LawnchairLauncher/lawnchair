@@ -1067,10 +1067,6 @@ public class Launcher extends Activity
         }
     }
 
-    protected boolean hasSettings() {
-        return mLauncherCallbacks != null&& mLauncherCallbacks.hasSettings();
-    }
-
     public void addToCustomContentPage(View customContent,
             CustomContentCallbacks callbacks, String description) {
         mWorkspace.addToCustomContentPage(customContent, callbacks, description);
@@ -1312,21 +1308,16 @@ public class Launcher extends Activity
 
         // Bind settings actions
         View settingsButton = findViewById(R.id.settings_button);
-        boolean hasSettings = hasSettings();
-        if (hasSettings) {
-            settingsButton.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (!mWorkspace.isSwitchingState()) {
-                        onClickSettingsButton(view);
-                    }
+        settingsButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!mWorkspace.isSwitchingState()) {
+                    onClickSettingsButton(view);
                 }
-            });
-            settingsButton.setOnLongClickListener(performClickOnLongClick);
-            settingsButton.setOnTouchListener(getHapticFeedbackTouchListener());
-        } else {
-            settingsButton.setVisibility(View.GONE);
-        }
+            }
+        });
+        settingsButton.setOnLongClickListener(performClickOnLongClick);
+        settingsButton.setOnTouchListener(getHapticFeedbackTouchListener());
 
         mOverviewPanel.setAlpha(0f);
     }
