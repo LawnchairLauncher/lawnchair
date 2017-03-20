@@ -17,6 +17,7 @@
 package com.android.launcher3.notification;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -24,6 +25,7 @@ import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
+import android.text.TextUtils;
 
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.Utilities;
@@ -222,8 +224,17 @@ public class NotificationListener extends NotificationListenerService {
             }
         }
         Notification notification = sbn.getNotification();
+        if (mTempRanking.getChannel().getId().equals(NotificationChannel.DEFAULT_CHANNEL_ID)) {
+            // Special filtering for the default, legacy "Miscellaneous" channel.
+            if ((notification.flags & Notification.FLAG_ONGOING_EVENT) != 0) {
+                return true;
+            }
+        }
         boolean isGroupHeader = (notification.flags & Notification.FLAG_GROUP_SUMMARY) != 0;
-        return (notification.contentIntent == null || isGroupHeader);
+        CharSequence title = notification.extras.getCharSequence(Notification.EXTRA_TITLE);
+        CharSequence text = notification.extras.getCharSequence(Notification.EXTRA_TEXT);
+        boolean missingTitleOrText = TextUtils.isEmpty(title) || TextUtils.isEmpty(text);
+        return (notification.contentIntent == null || isGroupHeader || missingTitleOrText);
     }
 
     public interface NotificationsChangedListener {
