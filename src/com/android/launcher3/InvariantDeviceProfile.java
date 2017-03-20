@@ -29,7 +29,6 @@ import android.view.WindowManager;
 
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.ProviderConfig;
-import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.util.Thunk;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -186,23 +185,6 @@ public class InvariantDeviceProfile {
         } else {
             defaultWallpaperSize = new Point(Math.max(smallSide * 2, largeSide), largeSide);
         }
-    }
-
-    public void dumpDisplayInfo(Context context) {
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        DisplayMetrics dm = new DisplayMetrics();
-        display.getMetrics(dm);
-
-        Point smallestSize = new Point();
-        Point largestSize = new Point();
-        display.getCurrentSizeRange(smallestSize, largestSize);
-
-        FileLog.e("DisplayInfo", "Default Density: " + DisplayMetrics.DENSITY_DEFAULT);
-        FileLog.e("DisplayInfo", "Density: " + dm.densityDpi);
-        FileLog.e("DisplayInfo", "Smallest size: " + smallestSize);
-        FileLog.e("DisplayInfo", "Largest size: " + largestSize);
-        FileLog.e("DisplayInfo", "minWidth/Height DPS: " + minWidthDps + ", " + minHeightDps);
     }
 
     ArrayList<InvariantDeviceProfile> getPredefinedDeviceProfiles(Context context) {
