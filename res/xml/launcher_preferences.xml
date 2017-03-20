@@ -85,4 +85,10 @@
         android:defaultValue="true"
         android:persistent="true" />
 
+    <EditTextPreference
+        android:key="pref_packageNameRegex"
+        android:title="Package Name Regex"
+        android:defaultValue="@string/default_app_filter"
+        android:persistent="true"/>
+
 </PreferenceScreen>

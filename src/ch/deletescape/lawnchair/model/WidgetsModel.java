@@ -115,7 +115,7 @@ public class WidgetsModel {
                     pm.queryIntentActivities(new Intent(Intent.ACTION_CREATE_SHORTCUT), 0)) {
                 widgetsAndShortcuts.add(new WidgetItem(info, pm));
             }
-            setWidgetsAndShortcuts(widgetsAndShortcuts);
+            setWidgetsAndShortcuts(widgetsAndShortcuts, context);
         } catch (Exception e) {
             if ((e.getCause() instanceof TransactionTooLargeException ||
                             e.getCause() instanceof DeadObjectException)) {
@@ -130,7 +130,7 @@ public class WidgetsModel {
         return clone();
     }
 
-    private void setWidgetsAndShortcuts(ArrayList<WidgetItem> rawWidgetsShortcuts) {
+    private void setWidgetsAndShortcuts(ArrayList<WidgetItem> rawWidgetsShortcuts, Context context) {
         mRawList = rawWidgetsShortcuts;
         if (DEBUG) {
             Log.d(TAG, "addWidgetsAndShortcuts, widgetsShortcuts#=" + rawWidgetsShortcuts.size());
@@ -162,7 +162,7 @@ public class WidgetsModel {
                 }
             }
 
-            if (mAppFilter != null && !mAppFilter.shouldShowApp(item.componentName)) {
+            if (mAppFilter != null && !mAppFilter.shouldShowApp(item.componentName, context)) {
                 if (DEBUG) {
                     Log.d(TAG, String.format("%s is filtered and not added to the widget tray.",
                             item.componentName));

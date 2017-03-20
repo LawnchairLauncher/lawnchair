@@ -2709,7 +2709,7 @@ public class LauncherModel extends BroadcastReceiver
                 for (int i = 0; i < apps.size(); i++) {
                     LauncherActivityInfoCompat app = apps.get(i);
                     // This builds the icon bitmaps.
-                    mBgAllAppsList.add(new AppInfo(mContext, app, user, mIconCache, quietMode));
+                    mBgAllAppsList.add(new AppInfo(mContext, app, user, mIconCache, quietMode), mContext);
                 }
 
                 final ManagedProfileHeuristic heuristic = ManagedProfileHeuristic.get(mContext, user);

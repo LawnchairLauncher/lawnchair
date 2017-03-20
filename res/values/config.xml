@@ -69,7 +69,8 @@
 
     <!-- Name of a subclass of ch.deletescape.lawnchair.AppFilter used to
          filter the activities shown in the launcher. Can be empty. -->
-    <string name="app_filter_class" translatable="false" />
+    <string name="app_filter_class" translatable="false">ch.deletescape.lawnchair.RegexAppFilter</string>
+    <string name="default_app_filter" translatable="false">.*</string>
 
     <!-- List of package names that ch.deletescape.lawnchair.action.LAUNCH
      should be targeting. Can be empty. -->
