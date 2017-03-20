@@ -29,7 +29,7 @@ public class EditDropTarget extends ButtonDropTarget {
     public EditDropTarget(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         sharedPrefs = Utilities.getPrefs(context.getApplicationContext());
-        sharedPrefs.getStringSet("pref_hiddenApps", null);
+        hiddenApps = sharedPrefs.getStringSet("pref_hiddenApps", null);
         if (hiddenApps == null) {
             hiddenApps = new HashSet<>();
         }
