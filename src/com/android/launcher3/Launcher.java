@@ -1451,9 +1451,14 @@ public class Launcher extends BaseActivity
         }
 
         if (info == null) {
-            info = InstallShortcutReceiver.fromShortcutIntent(this, data);
+            // Legacy shortcuts are only supported for primary profile.
+            info = Process.myUserHandle().equals(args.user)
+                    ? InstallShortcutReceiver.fromShortcutIntent(this, data) : null;
 
-            if (info == null || !new PackageManagerHelper(this).hasPermissionForActivity(
+            if (info == null) {
+                Log.e(TAG, "Unable to parse a valid custom shortcut result");
+                return;
+            } else if (!new PackageManagerHelper(this).hasPermissionForActivity(
                     info.intent, args.getPendingIntent().getComponent().getPackageName())) {
                 // The app is trying to add a shortcut without sufficient permissions
                 Log.e(TAG, "Ignoring malicious intent " + info.intent.toUri(0));
