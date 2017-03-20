@@ -2454,7 +2454,13 @@ public class Launcher extends BaseActivity
 
     private void startAppShortcutOrInfoActivity(View v) {
         ItemInfo item = (ItemInfo) v.getTag();
-        Intent intent = item.getIntent();
+        Intent intent;
+        if (item instanceof PromiseAppInfo) {
+            PromiseAppInfo promiseAppInfo = (PromiseAppInfo) item;
+            intent = promiseAppInfo.getMarketIntent();
+        } else {
+            intent = item.getIntent();
+        }
         if (intent == null) {
             throw new IllegalArgumentException("Input must have a valid intent");
         }
@@ -3759,6 +3765,22 @@ public class Launcher extends BaseActivity
 
         if (mAppsView != null) {
             mAppsView.updateApps(apps);
+        }
+    }
+
+    @Override
+    public void bindPromiseAppProgressUpdated(final PromiseAppInfo app) {
+        Runnable r = new Runnable() {
+            public void run() {
+                bindPromiseAppProgressUpdated(app);
+            }
+        };
+        if (waitUntilResume(r)) {
+            return;
+        }
+
+        if (mAppsView != null) {
+            mAppsView.updatePromiseAppProgress(app);
         }
     }
 

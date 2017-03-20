@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import com.android.launcher3.compat.PackageInstallerCompat;
+import com.android.launcher3.util.PackageManagerHelper;
 
 public class PromiseAppInfo extends AppInfo {
 
@@ -43,5 +44,9 @@ public class PromiseAppInfo extends AppInfo {
         // Since the user is manually placing it on homescreen, it should not be auto-removed later
         shortcut.status |= ShortcutInfo.FLAG_RESTORE_STARTED;
         return shortcut;
+    }
+
+    public Intent getMarketIntent() {
+        return PackageManagerHelper.getMarketIntent(componentName.getPackageName());
     }
 }

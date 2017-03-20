@@ -195,6 +195,7 @@ public class LauncherModel extends BroadcastReceiver
                                   ArrayList<ItemInfo> addAnimated,
                                   ArrayList<AppInfo> addedApps);
         public void bindAppsUpdated(ArrayList<AppInfo> apps);
+        public void bindPromiseAppProgressUpdated(PromiseAppInfo app);
         public void bindShortcutsChanged(ArrayList<ShortcutInfo> updated,
                 ArrayList<ShortcutInfo> removed, UserHandle user);
         public void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
