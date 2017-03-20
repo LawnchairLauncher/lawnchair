@@ -289,7 +289,6 @@ public class WidgetsContainerView extends BaseContainerView
         // We just dismiss the drag when we fling, so cleanup here
         mLauncher.exitSpringLoadedDragModeDelayed(true,
                 Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
-        mLauncher.unlockScreenOrientation(false);
     }
 
     @Override
@@ -305,7 +304,6 @@ public class WidgetsContainerView extends BaseContainerView
             mLauncher.exitSpringLoadedDragModeDelayed(true,
                     Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
         }
-        mLauncher.unlockScreenOrientation(false);
 
         // Display an error message if the drag failed due to there not being enough space on the
         // target layout we were dropping on.
