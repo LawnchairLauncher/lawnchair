@@ -24,6 +24,8 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.android.launcher3.Utilities;
+
 /**
  * A wrapper around platform implementation of PinItemRequestCompat until the
  * updated SDK is available.
@@ -115,6 +117,9 @@ public class PinItemRequestCompat implements Parcelable {
             };
 
     public static PinItemRequestCompat getPinItemRequest(Intent intent) {
+        if (!Utilities.isAtLeastO()) {
+            return null;
+        }
         Parcelable extra = intent.getParcelableExtra(EXTRA_PIN_ITEM_REQUEST);
         return extra == null ? null : new PinItemRequestCompat(extra);
     }

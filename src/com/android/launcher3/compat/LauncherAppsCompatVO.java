@@ -20,6 +20,8 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
+import android.os.Build;
+import android.os.Process;
 import android.os.UserHandle;
 import android.util.Log;
 
@@ -44,15 +46,20 @@ public class LauncherAppsCompatVO extends LauncherAppsCompatVL {
     @Override
     public List<ShortcutConfigActivityInfo> getCustomShortcutActivityList() {
         List<ShortcutConfigActivityInfo> result = new ArrayList<>();
+        UserHandle myUser = Process.myUserHandle();
 
         try {
             Method m = LauncherApps.class.getDeclaredMethod("getShortcutConfigActivityList",
                     String.class, UserHandle.class);
             for (UserHandle user : UserManagerCompat.getInstance(mContext).getUserProfiles()) {
+                boolean ignoreTargetSdk = myUser.equals(user);
                 List<LauncherActivityInfo> activities =
                         (List<LauncherActivityInfo>) m.invoke(mLauncherApps, null, user);
                 for (LauncherActivityInfo activityInfo : activities) {
-                    result.add(new ShortcutConfigActivityInfoVO(activityInfo));
+                    if (ignoreTargetSdk || activityInfo.getApplicationInfo().targetSdkVersion >=
+                            Build.VERSION_CODES.O) {
+                        result.add(new ShortcutConfigActivityInfoVO(activityInfo));
+                    }
                 }
             }
         } catch (Exception e) {
