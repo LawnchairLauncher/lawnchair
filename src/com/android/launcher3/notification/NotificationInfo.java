@@ -42,11 +42,6 @@ import com.android.launcher3.util.PackageUserKey;
  */
 public class NotificationInfo implements View.OnClickListener {
 
-    // TODO: use Notification constants directly.
-    public static final int BADGE_ICON_NONE = 0;
-    public static final int BADGE_ICON_SMALL = 1;
-    public static final int BADGE_ICON_LARGE = 2;
-
     public final PackageUserKey packageUserKey;
     public final String notificationKey;
     public final CharSequence title;
@@ -69,10 +64,10 @@ public class NotificationInfo implements View.OnClickListener {
         Notification notification = statusBarNotification.getNotification();
         title = notification.extras.getCharSequence(Notification.EXTRA_TITLE);
         text = notification.extras.getCharSequence(Notification.EXTRA_TEXT);
-        mBadgeIcon = BADGE_ICON_LARGE; // TODO: get from the Notification
+        mBadgeIcon = notification.getBadgeIcon();
         // Load the icon. Since it is backed by ashmem, we won't copy the entire bitmap
         // into our process as long as we don't touch it and it exists in systemui.
-        Icon icon = mBadgeIcon == BADGE_ICON_SMALL ? null : notification.getLargeIcon();
+        Icon icon = mBadgeIcon == Notification.BADGE_ICON_SMALL ? null : notification.getLargeIcon();
         if (icon == null) {
             // Use the small icon.
             icon = notification.getSmallIcon();
@@ -88,7 +83,7 @@ public class NotificationInfo implements View.OnClickListener {
             mIconDrawable = new BitmapDrawable(context.getResources(), LauncherAppState
                     .getInstance(context).getIconCache()
                     .getDefaultIcon(statusBarNotification.getUser()));
-            mBadgeIcon = BADGE_ICON_NONE;
+            mBadgeIcon = Notification.BADGE_ICON_NONE;
         }
         intent = notification.contentIntent;
         autoCancel = (notification.flags & Notification.FLAG_AUTO_CANCEL) != 0;
@@ -133,7 +128,7 @@ public class NotificationInfo implements View.OnClickListener {
     public boolean shouldShowIconInBadge() {
         // If the icon we're using for this notification matches what the Notification
         // specified should show in the badge, then return true.
-        return mIsIconLarge && mBadgeIcon == BADGE_ICON_LARGE
-                || !mIsIconLarge && mBadgeIcon == BADGE_ICON_SMALL;
+        return mIsIconLarge && mBadgeIcon == Notification.BADGE_ICON_LARGE
+                || !mIsIconLarge && mBadgeIcon == Notification.BADGE_ICON_SMALL;
     }
 }
