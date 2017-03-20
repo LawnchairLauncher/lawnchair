@@ -90,8 +90,8 @@ public class InvariantDeviceProfile {
     public float hotseatScale;
     int defaultLayoutId;
 
-    DeviceProfile landscapeProfile;
-    DeviceProfile portraitProfile;
+    public DeviceProfile landscapeProfile;
+    public DeviceProfile portraitProfile;
 
     public Point defaultWallpaperSize;
 
