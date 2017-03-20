@@ -73,7 +73,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         mPaint.setColor(Themes.getAttrColor(getContext(), android.R.attr.textColorPrimary));
         mPaint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX,
                 mLauncher.getDeviceProfile().iconTextSizePx, getResources().getDisplayMetrics()));
-        setBackgroundResource(R.drawable.round_rect_primary);
+        setBackgroundResource(R.drawable.pending_widget_bg);
         setWillNotDraw(false);
 
         setElevation(getResources().getDimension(R.dimen.pending_widget_elevation));
