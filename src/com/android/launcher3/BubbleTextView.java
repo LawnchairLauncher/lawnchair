@@ -39,7 +39,6 @@ import com.android.launcher3.IconCache.IconLoadRequest;
 import com.android.launcher3.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.badge.BadgeRenderer;
-import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.FolderIconPreviewVerifier;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.graphics.HolographicOutlineHelper;
@@ -181,6 +180,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
         // Verify high res immediately
         verifyHighRes();
 
+        if (info instanceof PromiseAppInfo) {
+            PromiseAppInfo promiseAppInfo = (PromiseAppInfo) info;
+            applyProgressLevel(promiseAppInfo.level);
+        }
         applyBadgeState(info, false /* animate */);
     }
 
@@ -476,27 +479,36 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
                     ((info.hasStatusFlag(ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE) ?
                             info.getInstallProgress() : 0)) : 100;
 
-            setContentDescription(progressLevel > 0 ?
-                    getContext().getString(R.string.app_downloading_title, info.title,
-                            NumberFormat.getPercentInstance().format(progressLevel * 0.01)) :
-                    getContext().getString(R.string.app_waiting_download_title, info.title));
+            PreloadIconDrawable preloadDrawable = applyProgressLevel(progressLevel);
+            if (preloadDrawable != null && promiseStateChanged) {
+                preloadDrawable.maybePerformFinishedAnimation();
+            }
+        }
+    }
+
+    public PreloadIconDrawable applyProgressLevel(int progressLevel) {
+        if (getTag() instanceof ItemInfoWithIcon) {
+            ItemInfoWithIcon info = (ItemInfoWithIcon) getTag();
+            setContentDescription(progressLevel > 0
+                    ? getContext().getString(R.string.app_downloading_title, info.title,
+                    NumberFormat.getPercentInstance().format(progressLevel * 0.01))
+                    : getContext().getString(R.string.app_waiting_download_title, info.title));
 
             if (mIcon != null) {
                 final PreloadIconDrawable preloadDrawable;
                 if (mIcon instanceof PreloadIconDrawable) {
                     preloadDrawable = (PreloadIconDrawable) mIcon;
+                    preloadDrawable.setLevel(progressLevel);
                 } else {
                     preloadDrawable = DrawableFactory.get(getContext())
                             .newPendingIcon(info.iconBitmap, getContext());
+                    preloadDrawable.setLevel(progressLevel);
                     setIcon(preloadDrawable);
                 }
-
-                preloadDrawable.setLevel(progressLevel);
-                if (promiseStateChanged) {
-                    preloadDrawable.maybePerformFinishedAnimation();
-                }
+                return preloadDrawable;
             }
         }
+        return null;
     }
 
     public void applyBadgeState(ItemInfo itemInfo, boolean animate) {

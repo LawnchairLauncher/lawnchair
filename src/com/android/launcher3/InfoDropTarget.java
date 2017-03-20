@@ -60,6 +60,12 @@ public class InfoDropTarget extends UninstallDropTarget {
      */
     public static boolean startDetailsActivityForInfo(
             ItemInfo info, Launcher launcher, DropTargetResultCallback callback) {
+        if (info instanceof PromiseAppInfo) {
+            PromiseAppInfo promiseAppInfo = (PromiseAppInfo) info;
+            launcher.startActivity(promiseAppInfo.getMarketIntent());
+            return true;
+        }
+
         boolean result = false;
         ComponentName componentName = null;
         if (info instanceof AppInfo) {

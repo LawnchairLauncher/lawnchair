@@ -37,6 +37,7 @@ import android.view.ViewGroup;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BaseContainerView;
+import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeleteDropTarget;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragSource;
@@ -45,6 +46,7 @@ import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.PromiseAppInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
@@ -156,6 +158,17 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     public void updateApps(List<AppInfo> apps) {
         mApps.updateApps(apps);
         mSearchBarController.refreshSearchResult();
+    }
+
+    public void updatePromiseAppProgress(PromiseAppInfo app) {
+        int childCount = mAppsRecyclerView.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View child = mAppsRecyclerView.getChildAt(i);
+            if (child instanceof BubbleTextView && child.getTag() == app) {
+                BubbleTextView bubbleTextView = (BubbleTextView) child;
+                bubbleTextView.applyProgressLevel(app.level);
+            }
+        }
     }
 
     /**

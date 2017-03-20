@@ -51,7 +51,7 @@ public class PackageInstallStateChangedTask extends ExtendedModelTask {
         }
 
         synchronized (apps) {
-            final ArrayList<AppInfo> updated = new ArrayList<>();
+            PromiseAppInfo updated = null;
             final ArrayList<AppInfo> removed = new ArrayList<>();
             for (int i=0; i < apps.size(); i++) {
                 final AppInfo appInfo = apps.get(i);
@@ -61,7 +61,7 @@ public class PackageInstallStateChangedTask extends ExtendedModelTask {
                         final PromiseAppInfo promiseAppInfo = (PromiseAppInfo) appInfo;
                         if (mInstallInfo.state == PackageInstallerCompat.STATUS_INSTALLING) {
                             promiseAppInfo.level = mInstallInfo.progress;
-                            updated.add(appInfo);
+                            updated = promiseAppInfo;
                         } else if (mInstallInfo.state == PackageInstallerCompat.STATUS_FAILED
                                 || mInstallInfo.state == PackageInstallerCompat.STATUS_INSTALLED) {
                             apps.removePromiseApp(appInfo);
@@ -70,13 +70,12 @@ public class PackageInstallStateChangedTask extends ExtendedModelTask {
                     }
                 }
             }
-            if (!updated.isEmpty()) {
+            if (updated != null) {
+                final PromiseAppInfo updatedPromiseApp = updated;
                 scheduleCallbackTask(new CallbackTask() {
                     @Override
                     public void execute(Callbacks callbacks) {
-                        // TODO: this currently causes unnecessary relayouts
-                        // we need to introduce a new bindPromiseAppsChanged
-                        callbacks.bindAppsUpdated(updated);
+                        callbacks.bindPromiseAppProgressUpdated(updatedPromiseApp);
                     }
                 });
             }
