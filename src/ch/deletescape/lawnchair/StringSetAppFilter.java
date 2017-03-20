@@ -2,6 +2,7 @@ package ch.deletescape.lawnchair;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import java.util.Set;
 
@@ -9,7 +10,8 @@ import java.util.Set;
 public class StringSetAppFilter extends AppFilter {
     @Override
     public boolean shouldShowApp(ComponentName app, Context context) {
-        Set<String> hiddenApps = Utilities.getPrefs(context).getStringSet("pref_hiddenApps", null);
-        return hiddenApps == null || !hiddenApps.contains(app.flattenToString());
+        SharedPreferences prefs = Utilities.getPrefs(context);
+        Set<String> hiddenApps = prefs.getStringSet("pref_hiddenApps", null);
+        return prefs.getBoolean("pref_showHidden", false) || hiddenApps == null || !hiddenApps.contains(app.flattenToString());
     }
 }

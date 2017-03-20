@@ -79,4 +79,11 @@
         android:defaultValue="true"
         android:persistent="true" />
 
+    <SwitchPreference
+        android:key="pref_showHidden"
+        android:title="Show Hidden Apps"
+        android:summary="When enabled hidden apps will be shown to change visibility settings"
+        android:defaultValue="false"
+        android:persistent="true" />
+
 </PreferenceScreen>
