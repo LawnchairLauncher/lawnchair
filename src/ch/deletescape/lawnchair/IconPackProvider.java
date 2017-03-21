@@ -22,7 +22,10 @@ public class IconPackProvider {
 
     public static IconPack loadAndGetIconPack(Context context){
         SharedPreferences prefs = Utilities.getPrefs(context);
-        String packageName = prefs.getString("pref_iconPackPackage", context.getResources().getString(R.string.default_icon_pack));
+        String packageName = prefs.getString("pref_iconPackPackage", "");
+        if("".equals(packageName)){
+            return null;
+        }
         if(!iconPacks.containsKey(packageName)){
             loadIconPack(context, packageName);
         }
