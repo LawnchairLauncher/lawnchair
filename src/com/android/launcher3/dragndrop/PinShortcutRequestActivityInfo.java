@@ -27,6 +27,7 @@ import android.os.Build;
 
 import com.android.launcher3.IconCache;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PinItemRequestCompat;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
@@ -52,6 +53,11 @@ class PinShortcutRequestActivityInfo extends ShortcutConfigActivityInfo {
         mRequest = request;
         mInfo = request.getShortcutInfo();
         mContext = context;
+    }
+
+    @Override
+    public int getItemType() {
+        return LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
     }
 
     @Override

@@ -79,6 +79,7 @@ enum ContainerType {
   PREDICTION = 7;
   SEARCHRESULT = 8;
   DEEPSHORTCUTS = 9;
+  PINITEM = 10;    // confirmation screen
 }
 
 // Used to define what type of control a Target would represent.
@@ -124,6 +125,10 @@ message Action {
   enum Command {
     HOME_INTENT = 0;
     BACK = 1;
+    ENTRY = 2;    // Indicates entry to one of Launcher container type target
+                  // not using the HOME_INTENT
+    CANCEL = 3;   // Indicates that a confirmation screen was cancelled
+    CONFIRM = 4;  // Indicates thata confirmation screen was accepted
   }
   optional Type type = 1;
   optional Touch touch = 2;

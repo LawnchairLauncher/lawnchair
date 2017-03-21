@@ -42,6 +42,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.compat.PinItemRequestCompat;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.PendingItemDragHelper;
@@ -240,7 +241,7 @@ public class PinItemDragListener
     @Override
     public void fillInLogContainerData(View v, ItemInfo info, LauncherLogProto.Target target,
             LauncherLogProto.Target targetParent) {
-        // TODO: We should probably log something
+        targetParent.containerType = ContainerType.PINITEM;
     }
 
     private void postCleanup() {

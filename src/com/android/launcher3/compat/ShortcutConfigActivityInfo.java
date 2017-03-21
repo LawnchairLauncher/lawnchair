@@ -33,6 +33,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.android.launcher3.IconCache;
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 
@@ -59,6 +60,10 @@ public abstract class ShortcutConfigActivityInfo {
 
     public UserHandle getUser() {
         return mUser;
+    }
+
+    public int getItemType() {
+        return LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
     }
 
     public abstract CharSequence getLabel();
