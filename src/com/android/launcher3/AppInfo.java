@@ -56,11 +56,10 @@ public class AppInfo extends ItemInfoWithIcon {
      * Must not hold the Context.
      */
     public AppInfo(Context context, LauncherActivityInfo info, UserHandle user) {
-        this(context, info, user, UserManagerCompat.getInstance(context).isQuietModeEnabled(user));
+        this(info, user, UserManagerCompat.getInstance(context).isQuietModeEnabled(user));
     }
 
-    public AppInfo(Context context, LauncherActivityInfo info, UserHandle user,
-            boolean quietModeEnabled) {
+    public AppInfo(LauncherActivityInfo info, UserHandle user, boolean quietModeEnabled) {
         this.componentName = info.getComponentName();
         this.container = ItemInfo.NO_ID;
         this.user = user;
@@ -71,7 +70,7 @@ public class AppInfo extends ItemInfoWithIcon {
             isDisabled |= ShortcutInfo.FLAG_DISABLED_QUIET_USER;
         }
 
-        intent = makeLaunchIntent(context, info, user);
+        intent = makeLaunchIntent(info);
     }
 
     public AppInfo(AppInfo info) {
@@ -95,14 +94,11 @@ public class AppInfo extends ItemInfoWithIcon {
         return new ComponentKey(componentName, user);
     }
 
-    public static Intent makeLaunchIntent(Context context, LauncherActivityInfo info,
-            UserHandle user) {
-        long serialNumber = UserManagerCompat.getInstance(context).getSerialNumberForUser(user);
+    public static Intent makeLaunchIntent(LauncherActivityInfo info) {
         return new Intent(Intent.ACTION_MAIN)
             .addCategory(Intent.CATEGORY_LAUNCHER)
             .setComponent(info.getComponentName())
-            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
-            .putExtra(EXTRA_PROFILE, serialNumber);
+            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
     }
 
     @Override

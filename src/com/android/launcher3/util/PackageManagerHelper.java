@@ -76,7 +76,7 @@ public class PackageManagerHelper {
     public Intent getAppLaunchIntent(String pkg, UserHandle user) {
         List<LauncherActivityInfo> activities = mLauncherApps.getActivityList(pkg, user);
         return activities.isEmpty() ? null :
-                AppInfo.makeLaunchIntent(mContext, activities.get(0), user);
+                AppInfo.makeLaunchIntent(activities.get(0));
     }
 
     /**

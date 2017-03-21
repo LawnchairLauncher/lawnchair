@@ -468,13 +468,8 @@ public final class Utilities {
                 && TextUtils.isEmpty(launchIntent.getDataString())) {
             // An app target can either have no extra or have ItemInfo.EXTRA_PROFILE.
             Bundle extras = launchIntent.getExtras();
-            if (extras == null) {
-                return true;
-            } else {
-                Set<String> keys = extras.keySet();
-                return keys.size() == 1 && keys.contains(ItemInfo.EXTRA_PROFILE);
-            }
-        };
+            return extras == null || extras.keySet().isEmpty();
+        }
         return false;
     }
 

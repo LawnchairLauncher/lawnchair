@@ -2712,11 +2712,7 @@ public class Launcher extends BaseActivity
                 !intent.hasExtra(INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION);
         Bundle optsBundle = useLaunchAnimation ? getActivityLaunchOptions(v) : null;
 
-        UserHandle user = null;
-        if (intent.hasExtra(AppInfo.EXTRA_PROFILE)) {
-            long serialNumber = intent.getLongExtra(AppInfo.EXTRA_PROFILE, -1);
-            user = UserManagerCompat.getInstance(this).getUserForSerialNumber(serialNumber);
-        }
+        UserHandle user = item == null ? null : item.user;
 
         // Prepare intent
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

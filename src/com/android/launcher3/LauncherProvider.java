@@ -73,7 +73,7 @@ public class LauncherProvider extends ContentProvider {
     private static final String TAG = "LauncherProvider";
     private static final boolean LOGD = false;
 
-    private static final int DATABASE_VERSION = 27;
+    private static final int DATABASE_VERSION = 28;
 
     public static final String AUTHORITY = (BuildConfig.APPLICATION_ID + ".settings").intern();
 
@@ -804,6 +804,26 @@ public class LauncherProvider extends ContentProvider {
                         break;
                     }
                 case 27: {
+                    // Remove "profile extra"
+                    db.beginTransaction();
+                    try {
+                        UserManagerCompat um = UserManagerCompat.getInstance(mContext);
+                        for (UserHandle user : um.getUserProfiles()) {
+                            long serial = um.getSerialNumberForUser(user);
+                            String sql = "update favorites set intent = replace(intent, "
+                                    + "';l.profile=" + serial + ";', ';') where itemType = 0;";
+                            db.execSQL(sql);
+                        }
+                        db.setTransactionSuccessful();
+                    } catch (SQLException ex) {
+                        Log.e(TAG, ex.getMessage(), ex);
+                        // Old version remains, which means we wipe old data
+                        break;
+                    } finally {
+                        db.endTransaction();
+                    }
+                }
+                case 28: {
                     // DB Upgraded successfully
                     return;
                 }

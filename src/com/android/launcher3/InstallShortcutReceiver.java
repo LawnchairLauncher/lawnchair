@@ -328,7 +328,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             user = info.getUser();
             mContext = context;
 
-            launchIntent = AppInfo.makeLaunchIntent(context, info, user);
+            launchIntent = AppInfo.makeLaunchIntent(info);
             label = info.getLabel().toString();
         }
 
@@ -344,7 +344,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             mContext = context;
             user = info.getUserHandle();
 
-            launchIntent = info.makeIntent(context);
+            launchIntent = info.makeIntent();
             label = info.getShortLabel().toString();
         }
 
