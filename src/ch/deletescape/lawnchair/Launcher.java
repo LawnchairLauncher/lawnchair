@@ -344,6 +344,8 @@ public class Launcher extends Activity
 
         super.onCreate(savedInstanceState);
 
+        IconPackProvider.loadIconPack(getApplicationContext(), "com.shahid.pineapple");
+
         LauncherAppState app = LauncherAppState.getInstance();
 
         // Load configuration-specific DeviceProfile

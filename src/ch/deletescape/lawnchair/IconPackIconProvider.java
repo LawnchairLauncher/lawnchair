@@ -7,18 +7,17 @@ import java.util.Map;
 
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 
+@SuppressWarnings("unused")
 public class IconPackIconProvider extends IconProvider {
-    private Map<String, IconPack> iconPacks = new ArrayMap<>();
     @Override
     public Drawable getIcon(LauncherActivityInfoCompat info, int iconDpi) {
-        IconPack iconPack = getIconPackForPackage("");
+        IconPack iconPack = IconPackProvider.getIconPack("com.shahid.pineapple");
         if(iconPack != null){
-            return iconPack.getIcon(info, iconDpi);
+            Drawable icon = iconPack.getIcon(info, iconDpi);
+            if(icon != null){
+                return icon;
+            }
         }
         return super.getIcon(info, iconDpi);
-    }
-
-    private IconPack getIconPackForPackage(String packageName) {
-        return iconPacks.get(packageName);
     }
 }

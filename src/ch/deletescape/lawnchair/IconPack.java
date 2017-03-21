@@ -16,6 +16,10 @@ class IconPack {
      */
     private Map<String, Drawable> icons = new ArrayMap<>();
 
+    public IconPack(Map<String, Drawable> icons){
+        this.icons = icons;
+    }
+
     public Drawable getIcon(LauncherActivityInfoCompat info, int iconDpi) {
         return icons.get(info.getComponentName().toString());
     }

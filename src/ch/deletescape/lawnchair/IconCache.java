@@ -169,7 +169,7 @@ public class IconCache {
     }
 
     public Drawable getFullResIcon(ActivityInfo info) {
-        Resources resources;
+       Resources resources;
         try {
             resources = mPackageManager.getResourcesForApplication(
                     info.applicationInfo);
@@ -182,7 +182,6 @@ public class IconCache {
                 return getFullResIcon(resources, iconId);
             }
         }
-
         return getFullResDefaultActivityIcon();
     }
 
