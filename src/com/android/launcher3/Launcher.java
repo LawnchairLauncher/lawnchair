@@ -483,7 +483,7 @@ public class Launcher extends BaseActivity
             // It's possible that All Apps is visible when this is run,
             // so always use light status bar in that case. Only change nav bar color to status bar
             // color when All Apps is visible.
-            activateLightStatusBar(lightStatusBar || isAllAppsVisible(), isAllAppsVisible());
+            activateLightSystemBars(lightStatusBar || isAllAppsVisible(), true, isAllAppsVisible());
         }
     }
 
@@ -491,21 +491,26 @@ public class Launcher extends BaseActivity
     private static final int SYSTEM_UI_FLAG_LIGHT_NAV_BAR = 0x10;
 
     /**
-     * Sets the status bar to be light or not. Light status bar means dark icons.
-     * @param lightStatusBar make sure the status bar is light
-     * @param changeNavBar if true, make the nav bar theme in sync with status bar.
+     * Sets the status and/or nav bar to be light or not. Light status bar means dark icons.
+     * @param isLight make sure the system bar is light.
+     * @param statusBar if true, make the status bar theme match the isLight param.
+     * @param navBar if true, make the nav bar theme match the isLight param.
      */
-    public void activateLightStatusBar(boolean lightStatusBar, boolean changeNavBar) {
+    public void activateLightSystemBars(boolean isLight, boolean statusBar, boolean navBar) {
         int oldSystemUiFlags = getWindow().getDecorView().getSystemUiVisibility();
         int newSystemUiFlags = oldSystemUiFlags;
-        if (lightStatusBar) {
-            newSystemUiFlags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR ;
-            if (changeNavBar && Utilities.isAtLeastO()) {
+        if (isLight) {
+            if (statusBar) {
+                newSystemUiFlags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            }
+            if (navBar && Utilities.isAtLeastO()) {
                 newSystemUiFlags |= SYSTEM_UI_FLAG_LIGHT_NAV_BAR;
             }
         } else {
-            newSystemUiFlags &= ~(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            if (changeNavBar && Utilities.isAtLeastO()) {
+            if (statusBar) {
+                newSystemUiFlags &= ~(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            }
+            if (navBar && Utilities.isAtLeastO()) {
                 newSystemUiFlags &= ~(SYSTEM_UI_FLAG_LIGHT_NAV_BAR);
             }
         }
