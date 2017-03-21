@@ -448,7 +448,7 @@ public class IconCache {
         application.title = Utilities.trim(entry.title);
         application.contentDescription = entry.contentDescription;
         IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext);
-        Drawable icon = iconPack.getIcon(application.componentName);
+        Drawable icon = iconPack == null ? null : iconPack.getIcon(application.componentName);
         application.iconBitmap = icon == null ? getNonNullIcon(entry, user) : Utilities.createIconBitmap(icon, mContext);
         application.usingLowResIcon = entry.isLowResIcon;
     }
