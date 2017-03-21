@@ -73,6 +73,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     private StylusEventHelper mStylusEventHelper;
 
     protected CancellationSignal mActiveRequest;
+    private boolean mAnimatePreview = true;
 
     protected final BaseActivity mActivity;
 
@@ -149,13 +150,21 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         return mWidgetImage;
     }
 
+    public void setAnimatePreview(boolean shouldAnimate) {
+        mAnimatePreview = shouldAnimate;
+    }
+
     public void applyPreview(Bitmap bitmap) {
         if (bitmap != null) {
             mWidgetImage.setBitmap(bitmap,
                     DrawableFactory.get(getContext()).getBadgeForUser(mItem.user, getContext()));
-            mWidgetImage.setAlpha(0f);
-            ViewPropertyAnimator anim = mWidgetImage.animate();
-            anim.alpha(1.0f).setDuration(FADE_IN_DURATION_MS);
+            if (mAnimatePreview) {
+                mWidgetImage.setAlpha(0f);
+                ViewPropertyAnimator anim = mWidgetImage.animate();
+                anim.alpha(1.0f).setDuration(FADE_IN_DURATION_MS);
+            } else {
+                mWidgetImage.setAlpha(1f);
+            }
         }
     }
 

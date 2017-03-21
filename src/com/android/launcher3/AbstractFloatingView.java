@@ -16,9 +16,11 @@
 
 package com.android.launcher3;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.IntDef;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -32,11 +34,16 @@ import java.lang.annotation.RetentionPolicy;
  */
 public abstract class AbstractFloatingView extends LinearLayout {
 
-    @IntDef(flag = true, value = {TYPE_FOLDER, TYPE_POPUP_CONTAINER_WITH_ARROW})
+    @IntDef(flag = true, value = {
+            TYPE_FOLDER,
+            TYPE_POPUP_CONTAINER_WITH_ARROW,
+            TYPE_WIDGETS_AND_MORE
+    })
     @Retention(RetentionPolicy.SOURCE)
     public @interface FloatingViewType {}
     public static final int TYPE_FOLDER = 1 << 0;
     public static final int TYPE_POPUP_CONTAINER_WITH_ARROW = 1 << 1;
+    public static final int TYPE_WIDGETS_AND_MORE = 1 << 2;
 
     protected boolean mIsOpen;
 
@@ -46,6 +53,15 @@ public abstract class AbstractFloatingView extends LinearLayout {
 
     public AbstractFloatingView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    /**
+     * We need to handle touch events to prevent them from falling through to the workspace below.
+     */
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        return true;
     }
 
     public final void close(boolean animate) {
@@ -119,7 +135,8 @@ public abstract class AbstractFloatingView extends LinearLayout {
     }
 
     public static AbstractFloatingView getTopOpenView(Launcher launcher) {
-        return getOpenView(launcher, TYPE_FOLDER | TYPE_POPUP_CONTAINER_WITH_ARROW);
+        return getOpenView(launcher, TYPE_FOLDER | TYPE_POPUP_CONTAINER_WITH_ARROW
+                | TYPE_WIDGETS_AND_MORE);
     }
 
     public abstract int getLogContainerType();

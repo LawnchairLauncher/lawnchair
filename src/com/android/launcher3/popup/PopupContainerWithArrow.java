@@ -531,15 +531,6 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     }
 
     /**
-     * We need to handle touch events to prevent them from falling through to the workspace below.
-     */
-    @SuppressLint("ClickableViewAccessibility")
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        return true;
-    }
-
-    /**
      * Updates the notification header to reflect the badge info. Since this can be called
      * for any badge info (not necessarily the one associated with this app), we first
      * check that the ItemInfo matches the one of this popup.

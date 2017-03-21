@@ -203,6 +203,10 @@
     <!-- Title for an app whose download has been started. -->
     <string name="app_waiting_download_title"><xliff:g id="name" example="Messenger">%1$s</xliff:g> waiting to install</string>
 
+    <!-- Strings for widgets & more in the popup container/bottom sheet -->
+    <string name="widgets_and_more" translatable="false">Widgets &amp; more</string>
+    <string name="widgets_bottom_sheet_custom_shortcuts_section_title" translatable="false">Custom shortcuts</string>
+
 <!-- Strings for accessibility actions -->
     <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
     <string name="action_add_to_workspace">Add to Home screen</string>
