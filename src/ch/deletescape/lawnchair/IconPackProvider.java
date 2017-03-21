@@ -48,7 +48,7 @@ public class IconPackProvider {
 
     private static Map<String, String> parseAppFilter(XmlPullParser parser) throws Exception {
         Map<String, String> entries = new ArrayMap<>();
-        while (parser.next() != XmlPullParser.END_TAG) {
+        while (parser.next() != XmlPullParser.END_DOCUMENT) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }

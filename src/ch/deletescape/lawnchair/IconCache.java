@@ -447,7 +447,9 @@ public class IconCache {
                 false, useLowResIcon);
         application.title = Utilities.trim(entry.title);
         application.contentDescription = entry.contentDescription;
-        application.iconBitmap = getNonNullIcon(entry, user);
+        IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext);
+        Drawable icon = iconPack.getIcon(application.componentName);
+        application.iconBitmap = icon == null ? getNonNullIcon(entry, user) : Utilities.createIconBitmap(icon, mContext);
         application.usingLowResIcon = entry.isLowResIcon;
     }
 
@@ -460,7 +462,9 @@ public class IconCache {
         if (entry.icon != null && !isDefaultIcon(entry.icon, application.user)) {
             application.title = Utilities.trim(entry.title);
             application.contentDescription = entry.contentDescription;
-            application.iconBitmap = entry.icon;
+            IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext);
+            Drawable icon = iconPack.getIcon(application.componentName);
+            application.iconBitmap = icon == null ? entry.icon : Utilities.createIconBitmap(icon, mContext);
             application.usingLowResIcon = entry.isLowResIcon;
         }
     }
