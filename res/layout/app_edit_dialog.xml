@@ -14,16 +14,29 @@
 
         <ImageView
             android:id="@+id/icon"
-            android:layout_width="52dp"
-            android:layout_height="52dp" />
+            android:layout_width="match_parent"
+            android:src="@mipmap/ic_launcher_home"
+            android:layout_height="match_parent" />
 
-        <EditText
-            android:id="@+id/title"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:enabled="false"
-            android:text="test" />
+            android:orientation="vertical">
+            <EditText
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:text="test" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+                android:textSize="12sp"
+                android:layout_height="wrap_content"
+                android:id="@+id/package_name"
+                android:text="com.example.test"/>
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout

@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.util.AttributeSet;
 import android.util.Pair;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -56,12 +57,14 @@ public class EditDropTarget extends ButtonDropTarget {
         AppInfo info = (AppInfo) d.dragInfo;
         dialog.setCanceledOnTouchOutside(true);
         dialog.setContentView(R.layout.app_edit_dialog);
-        TextView title = ((TextView) dialog.findViewById(R.id.title));
+        EditText title = ((EditText) dialog.findViewById(R.id.title));
+        TextView packageName = ((TextView) dialog.findViewById(R.id.package_name));
         ImageView icon = ((ImageView) dialog.findViewById(R.id.icon));
         final Switch visibility = ((Switch) dialog.findViewById(R.id.visibility));
         icon.setImageBitmap(info.iconBitmap);
         final String componentName = info.componentName.flattenToString();
         title.setText(info.title);
+        packageName.setText(info.componentName.getPackageName());
         final boolean visible = !hiddenApps.contains(componentName);
         visibility.setChecked(visible);
         DialogInterface.OnDismissListener odl = new DialogInterface.OnDismissListener() {
