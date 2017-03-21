@@ -48,6 +48,12 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     private static final boolean LOGD = false;
     private static final String TAG = "PopupDataProvider";
 
+    /** Note that these are in order of priority. */
+    public static final SystemShortcut[] SYSTEM_SHORTCUTS = new SystemShortcut[] {
+            new SystemShortcut.Widgets(),
+            new SystemShortcut.AppInfo(),
+    };
+
     private final Launcher mLauncher;
 
     /** Maps launcher activity components to their list of shortcut ids. */

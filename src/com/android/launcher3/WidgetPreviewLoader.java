@@ -91,11 +91,12 @@ public class WidgetPreviewLoader {
      * @return a request id which can be used to cancel the request.
      */
     public CancellationSignal getPreview(WidgetItem item, int previewWidth,
-            int previewHeight, WidgetCell caller) {
+            int previewHeight, WidgetCell caller, boolean animate) {
         String size = previewWidth + "x" + previewHeight;
         WidgetCacheKey key = new WidgetCacheKey(item.componentName, item.user, size);
 
-        PreviewLoadTask task = new PreviewLoadTask(key, item, previewWidth, previewHeight, caller);
+        PreviewLoadTask task = new PreviewLoadTask(key, item, previewWidth, previewHeight, caller,
+                animate);
         task.executeOnExecutor(Utilities.THREAD_POOL_EXECUTOR);
 
         CancellationSignal signal = new CancellationSignal();
@@ -521,17 +522,19 @@ public class WidgetPreviewLoader {
         private final int mPreviewHeight;
         private final int mPreviewWidth;
         private final WidgetCell mCaller;
+        private final boolean mAnimatePreviewIn;
         private final BaseActivity mActivity;
         @Thunk long[] mVersions;
         @Thunk Bitmap mBitmapToRecycle;
 
         PreviewLoadTask(WidgetCacheKey key, WidgetItem info, int previewWidth,
-                int previewHeight, WidgetCell caller) {
+                int previewHeight, WidgetCell caller, boolean animate) {
             mKey = key;
             mInfo = info;
             mPreviewHeight = previewHeight;
             mPreviewWidth = previewWidth;
             mCaller = caller;
+            mAnimatePreviewIn = animate;
             mActivity = BaseActivity.fromContext(mCaller.getContext());
             if (DEBUG) {
                 Log.d(TAG, String.format("%s, %s, %d, %d",
@@ -587,7 +590,7 @@ public class WidgetPreviewLoader {
 
         @Override
         protected void onPostExecute(final Bitmap preview) {
-            mCaller.applyPreview(preview);
+            mCaller.applyPreview(preview, mAnimatePreviewIn);
 
             // Write the generated preview to the DB in the worker thread
             if (mVersions != null) {

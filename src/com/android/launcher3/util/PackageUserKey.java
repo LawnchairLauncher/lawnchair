@@ -11,8 +11,8 @@ import java.util.Arrays;
 /** Creates a hash key based on package name and user. */
 public class PackageUserKey {
 
-    private String mPackageName;
-    private UserHandle mUser;
+    public String mPackageName;
+    public UserHandle mUser;
     private int mHashCode;
 
     public static PackageUserKey fromItemInfo(ItemInfo info) {

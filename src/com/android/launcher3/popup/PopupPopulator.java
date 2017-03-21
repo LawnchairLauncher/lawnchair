@@ -17,12 +17,15 @@
 package com.android.launcher3.popup;
 
 import android.content.ComponentName;
+import android.content.res.Resources;
 import android.os.Handler;
 import android.os.UserHandle;
 import android.service.notification.StatusBarNotification;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
@@ -52,13 +55,17 @@ public class PopupPopulator {
     @VisibleForTesting static final int NUM_DYNAMIC = 2;
 
     public enum Item {
-        SHORTCUT(R.layout.deep_shortcut),
-        NOTIFICATION(R.layout.notification);
+        SHORTCUT(R.layout.deep_shortcut, true),
+        NOTIFICATION(R.layout.notification, false),
+        SYSTEM_SHORTCUT(R.layout.system_shortcut, true),
+        SYSTEM_SHORTCUT_ICON(R.layout.system_shortcut_icon_only, true);
 
         public final int layoutId;
+        public final boolean isShortcut;
 
-        Item(int layoutId) {
+        Item(int layoutId, boolean isShortcut) {
             this.layoutId = layoutId;
+            this.isShortcut = isShortcut;
         }
     }
 
@@ -66,7 +73,8 @@ public class PopupPopulator {
             @NonNull List<NotificationKeyData> notificationKeys) {
         boolean hasNotifications = notificationKeys.size() > 0;
         int numNotificationItems = hasNotifications ? 1 : 0;
-        int numItems = Math.min(MAX_ITEMS, shortcutIds.size() + numNotificationItems);
+        int numItems = Math.min(MAX_ITEMS, shortcutIds.size() + numNotificationItems)
+                + PopupDataProvider.SYSTEM_SHORTCUTS.length;
         Item[] items = new Item[numItems];
         for (int i = 0; i < numItems; i++) {
             items[i] = Item.SHORTCUT;
@@ -74,6 +82,11 @@ public class PopupPopulator {
         if (hasNotifications) {
             // The notification layout is always first.
             items[0] = Item.NOTIFICATION;
+        }
+        // The system shortcuts are always last.
+        boolean iconsOnly = !shortcutIds.isEmpty();
+        for (int i = 0; i < PopupDataProvider.SYSTEM_SHORTCUTS.length; i++) {
+            items[numItems - 1 - i] = iconsOnly ? Item.SYSTEM_SHORTCUT_ICON : Item.SYSTEM_SHORTCUT;
         }
         return items;
     }
@@ -159,11 +172,11 @@ public class PopupPopulator {
         return filteredShortcuts;
     }
 
-    public static Runnable createUpdateRunnable(final Launcher launcher, ItemInfo originalInfo,
+    public static Runnable createUpdateRunnable(final Launcher launcher, final ItemInfo originalInfo,
             final Handler uiHandler, final PopupContainerWithArrow container,
             final List<String> shortcutIds, final List<DeepShortcutView> shortcutViews,
             final List<NotificationKeyData> notificationKeys,
-            final NotificationItemView notificationView) {
+            final NotificationItemView notificationView, final List<View> systemShortcutViews) {
         final ComponentName activity = originalInfo.getTargetComponent();
         final UserHandle user = originalInfo.user;
         return new Runnable() {
@@ -195,11 +208,20 @@ public class PopupPopulator {
                     uiHandler.post(new UpdateShortcutChild(container, shortcutViews.get(i),
                             si, shortcut));
                 }
+
+                // This ensures that mLauncher.getWidgetsForPackageUser()
+                // doesn't return null (it puts all the widgets in memory).
+                launcher.notifyWidgetProvidersChanged(true /* force */);
+                for (int i = 0; i < PopupDataProvider.SYSTEM_SHORTCUTS.length; i++) {
+                    final SystemShortcut systemShortcut = PopupDataProvider.SYSTEM_SHORTCUTS[i];
+                    uiHandler.post(new UpdateSystemShortcutChild(container,
+                            systemShortcutViews.get(i), systemShortcut, launcher, originalInfo));
+                }
             }
         };
     }
 
-    /** Updates the child of this container at the given index based on the given shortcut info. */
+    /** Updates the shortcut child of this container based on the given shortcut info. */
     private static class UpdateShortcutChild implements Runnable {
         private final PopupContainerWithArrow mContainer;
         private final DeepShortcutView mShortcutChild;
@@ -221,7 +243,7 @@ public class PopupPopulator {
         }
     }
 
-    /** Updates the child of this container at the given index based on the given shortcut info. */
+    /** Updates the notification child based on the given notification info. */
     private static class UpdateNotificationChild implements Runnable {
         private NotificationItemView mNotificationView;
         private List<NotificationInfo> mNotificationInfos;
@@ -235,6 +257,52 @@ public class PopupPopulator {
         @Override
         public void run() {
             mNotificationView.applyNotificationInfos(mNotificationInfos);
+        }
+    }
+
+    /** Updates the system shortcut child based on the given shortcut info. */
+    private static class UpdateSystemShortcutChild implements Runnable {
+        private static final float DISABLED_ALPHA = 0.38f;
+
+        private final PopupContainerWithArrow mContainer;
+        private final View mSystemShortcutChild;
+        private final SystemShortcut mSystemShortcutInfo;
+        private final Launcher mLauncher;
+        private final ItemInfo mItemInfo;
+
+        public UpdateSystemShortcutChild(PopupContainerWithArrow container, View systemShortcutChild,
+                SystemShortcut systemShortcut, Launcher launcher, ItemInfo originalInfo) {
+            mContainer = container;
+            mSystemShortcutChild = systemShortcutChild;
+            mSystemShortcutInfo = systemShortcut;
+            mLauncher = launcher;
+            mItemInfo = originalInfo;
+        }
+
+        @Override
+        public void run() {
+            final Resources res = mSystemShortcutChild.getResources();
+            if (mSystemShortcutChild instanceof DeepShortcutView) {
+                final DeepShortcutView shortcutView = (DeepShortcutView) mSystemShortcutChild;
+                shortcutView.getIconView().setBackground(mSystemShortcutInfo.getIcon(res));
+                shortcutView.getBubbleText().setText(mSystemShortcutInfo.getLabel(res));
+            } else if (mSystemShortcutChild instanceof ImageView) {
+                final ImageView shortcutIcon = (ImageView) mSystemShortcutChild;
+                shortcutIcon.setImageDrawable(mSystemShortcutInfo.getIcon(res));
+                shortcutIcon.setContentDescription(mSystemShortcutInfo.getLabel(res));
+            }
+            if (!(mSystemShortcutInfo instanceof SystemShortcut.Widgets)) {
+                mSystemShortcutChild.setOnClickListener(mSystemShortcutInfo
+                        .getOnClickListener(mLauncher, mItemInfo));
+            } else {
+                mSystemShortcutChild.setTag(mSystemShortcutInfo);
+                // Widgets might not be enabled right away.
+                if (mContainer.enableWidgets()) {
+                    return;
+                }
+                // Disable Widgets (we might be able to re-enable when widgets are bound).
+                mSystemShortcutChild.setAlpha(DISABLED_ALPHA);
+            }
         }
     }
 }

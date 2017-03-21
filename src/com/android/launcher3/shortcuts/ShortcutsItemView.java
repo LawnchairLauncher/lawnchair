@@ -36,21 +36,28 @@ import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupItemView;
+import com.android.launcher3.popup.PopupPopulator;
+import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
- * A {@link PopupItemView} that contains all of the {@link DeepShortcutView}s for an app.
+ * A {@link PopupItemView} that contains all of the {@link DeepShortcutView}s for an app,
+ * as well as the system shortcuts such as Widgets and App Info.
  */
 public class ShortcutsItemView extends PopupItemView implements View.OnLongClickListener,
         View.OnTouchListener, LogContainerProvider {
 
     private Launcher mLauncher;
-    private LinearLayout mDeepShortcutsLayout;
+    private LinearLayout mShortcutsLayout;
+    private LinearLayout mSystemShortcutIcons;
     private final Point mIconShift = new Point();
     private final Point mIconLastTouchPos = new Point();
+    private final List<DeepShortcutView> mDeepShortcutViews = new ArrayList<>();
+    private final List<View> mSystemShortcutViews = new ArrayList<>();
 
     public ShortcutsItemView(Context context) {
         this(context, null, 0);
@@ -69,7 +76,7 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mDeepShortcutsLayout = (LinearLayout) findViewById(R.id.deep_shortcuts);
+        mShortcutsLayout = findViewById(R.id.deep_shortcuts);
     }
 
     @Override
@@ -111,42 +118,81 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
         return false;
     }
 
-    public void addDeepShortcutView(DeepShortcutView deepShortcutView) {
-        if (getNumDeepShortcuts() > 0) {
-            getDeepShortcutAt(getNumDeepShortcuts() - 1).findViewById(R.id.divider)
-                    .setVisibility(VISIBLE);
+    public void addShortcutView(View shortcutView, PopupPopulator.Item shortcutType,
+            boolean isAboveIcon) {
+        if (shortcutType == PopupPopulator.Item.SHORTCUT) {
+            mDeepShortcutViews.add((DeepShortcutView) shortcutView);
+        } else {
+            mSystemShortcutViews.add(shortcutView);
         }
-        mDeepShortcutsLayout.addView(deepShortcutView);
-    }
-
-    private DeepShortcutView getDeepShortcutAt(int index) {
-        return (DeepShortcutView) mDeepShortcutsLayout.getChildAt(index);
-    }
-
-    private int getNumDeepShortcuts() {
-        return mDeepShortcutsLayout.getChildCount();
+        if (shortcutType == PopupPopulator.Item.SYSTEM_SHORTCUT_ICON) {
+            // System shortcut icons are added to a header that is separate from the full shortcuts.
+            if (mSystemShortcutIcons == null) {
+                mSystemShortcutIcons = (LinearLayout) mLauncher.getLayoutInflater().inflate(
+                        R.layout.system_shortcut_icons, mShortcutsLayout, false);
+                if (isAboveIcon) {
+                    mShortcutsLayout.addView(mSystemShortcutIcons, 0);
+                } else {
+                    mShortcutsLayout.addView(mSystemShortcutIcons);
+                }
+            }
+            mSystemShortcutIcons.addView(shortcutView);
+        } else {
+            if (mShortcutsLayout.getChildCount() > 0) {
+                View prevChild = mShortcutsLayout.getChildAt(mShortcutsLayout.getChildCount() - 1);
+                if (prevChild instanceof DeepShortcutView) {
+                    prevChild.findViewById(R.id.divider).setVisibility(VISIBLE);
+                }
+            }
+            mShortcutsLayout.addView(shortcutView);
+        }
     }
 
     public List<DeepShortcutView> getDeepShortcutViews(boolean reverseOrder) {
-        int numDeepShortcuts = getNumDeepShortcuts();
-        List<DeepShortcutView> deepShortcutViews = new ArrayList<>(numDeepShortcuts);
-        for (int i = 0; i < numDeepShortcuts; i++) {
-            DeepShortcutView deepShortcut = getDeepShortcutAt(i);
-            if (reverseOrder) {
-                deepShortcutViews.add(0, deepShortcut);
-            } else {
-                deepShortcutViews.add(deepShortcut);
+        if (reverseOrder) {
+            Collections.reverse(mDeepShortcutViews);
+        }
+        return mDeepShortcutViews;
+    }
+
+    public List<View> getSystemShortcutViews(boolean reverseOrder) {
+        if (reverseOrder) {
+            Collections.reverse(mSystemShortcutViews);
+        }
+        return mSystemShortcutViews;
+    }
+
+    /**
+     * Sets the onClickListener on widgets system shortcut child, and updates alpha to 1.
+     * @return whether widgets is enabled, i.e. the onClickListener is not null.
+     */
+    public boolean enableWidgets(ItemInfo itemInfo) {
+        for (View systemShortcut : mSystemShortcutViews) {
+            if (systemShortcut.getTag() instanceof SystemShortcut.Widgets) {
+                View.OnClickListener onClickListener =
+                        ((SystemShortcut.Widgets) systemShortcut.getTag()).getOnClickListener(
+                                mLauncher, itemInfo);
+                if (onClickListener != null) {
+                    systemShortcut.setAlpha(1f);
+                    systemShortcut.setOnClickListener(onClickListener);
+                    return true;
+                }
+                return false;
             }
         }
-        return deepShortcutViews;
+        return false;
     }
 
     @Override
     public Animator createOpenAnimation(boolean isContainerAboveIcon, boolean pivotLeft) {
         AnimatorSet openAnimation = LauncherAnimUtils.createAnimatorSet();
         openAnimation.play(super.createOpenAnimation(isContainerAboveIcon, pivotLeft));
-        for (int i = 0; i < getNumDeepShortcuts(); i++) {
-            View deepShortcutIcon = getDeepShortcutAt(i).getIconView();
+        for (int i = 0; i < mShortcutsLayout.getChildCount(); i++) {
+            if (!(mShortcutsLayout.getChildAt(i) instanceof DeepShortcutView)) {
+                continue;
+            }
+            DeepShortcutView shortcutView = ((DeepShortcutView) mShortcutsLayout.getChildAt(i));
+            View deepShortcutIcon = shortcutView.getIconView();
             deepShortcutIcon.setScaleX(0);
             deepShortcutIcon.setScaleY(0);
             openAnimation.play(LauncherAnimUtils.ofPropertyValuesHolder(
@@ -160,8 +206,12 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
             long duration) {
         AnimatorSet closeAnimation = LauncherAnimUtils.createAnimatorSet();
         closeAnimation.play(super.createCloseAnimation(isContainerAboveIcon, pivotLeft, duration));
-        for (int i = 0; i < getNumDeepShortcuts(); i++) {
-            View deepShortcutIcon = getDeepShortcutAt(i).getIconView();
+        for (int i = 0; i < mShortcutsLayout.getChildCount(); i++) {
+            if (!(mShortcutsLayout.getChildAt(i) instanceof DeepShortcutView)) {
+                continue;
+            }
+            DeepShortcutView shortcutView = ((DeepShortcutView) mShortcutsLayout.getChildAt(i));
+            View deepShortcutIcon = shortcutView.getIconView();
             deepShortcutIcon.setScaleX(1);
             deepShortcutIcon.setScaleY(1);
             closeAnimation.play(LauncherAnimUtils.ofPropertyValuesHolder(
