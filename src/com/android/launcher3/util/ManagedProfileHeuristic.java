@@ -121,7 +121,7 @@ public class ManagedProfileHeuristic {
                     .isQuietModeEnabled(user);
             for (int i = 0; i < count; i++) {
                 LauncherActivityInstallInfo info = apps.get(i);
-                AppInfo appInfo = new AppInfo(mContext, info.info, user, quietModeEnabled);
+                AppInfo appInfo = new AppInfo(info.info, user, quietModeEnabled);
                 mIconCache.getTitleAndIcon(appInfo, info.info, false /* useLowResIcon */);
                 ShortcutInfo si = appInfo.makeShortcut();
                 ((info.installTime <= folderCreationTime) ? workFolderApps : homescreenApps).add(si);

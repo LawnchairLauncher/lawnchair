@@ -29,11 +29,6 @@ import com.android.launcher3.util.ContentWriter;
  */
 public class ItemInfo {
 
-    /**
-     * Intent extra to store the profile. Format: UserHandle
-     */
-    public static final String EXTRA_PROFILE = "profile";
-
     public static final int NO_ID = -1;
 
     /**

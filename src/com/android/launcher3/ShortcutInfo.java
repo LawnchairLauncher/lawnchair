@@ -199,7 +199,7 @@ public class ShortcutInfo extends ItemInfoWithIcon {
 
     public void updateFromDeepShortcutInfo(ShortcutInfoCompat shortcutInfo, Context context) {
         // {@link ShortcutInfoCompat#getActivity} can change during an update. Recreate the intent
-        intent = shortcutInfo.makeIntent(context);
+        intent = shortcutInfo.makeIntent();
         title = shortcutInfo.getShortLabel();
 
         CharSequence label = shortcutInfo.getLongLabel();
