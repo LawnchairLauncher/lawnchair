@@ -1069,9 +1069,6 @@ public class LauncherModel extends BroadcastReceiver
                                     info.rank = c.getInt(rankIndex);
                                     info.spanX = 1;
                                     info.spanY = 1;
-                                    // TODO: Remove this extra. Instead we should be using
-                                    // itemInfo#user.
-                                    info.intent.putExtra(ItemInfo.EXTRA_PROFILE, c.serialNumber);
                                     info.isDisabled |= disabledState;
                                     if (isSafeMode && !Utilities.isSystemApp(context, intent)) {
                                         info.isDisabled |= ShortcutInfo.FLAG_DISABLED_SAFEMODE;
@@ -1685,7 +1682,7 @@ public class LauncherModel extends BroadcastReceiver
                 for (int i = 0; i < apps.size(); i++) {
                     LauncherActivityInfo app = apps.get(i);
                     // This builds the icon bitmaps.
-                    mBgAllAppsList.add(new AppInfo(mContext, app, user, quietMode), app);
+                    mBgAllAppsList.add(new AppInfo(app, user, quietMode), app);
                 }
 
                 final ManagedProfileHeuristic heuristic = ManagedProfileHeuristic.get(mContext, user);
