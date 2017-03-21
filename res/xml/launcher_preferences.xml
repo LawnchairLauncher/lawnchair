@@ -18,6 +18,12 @@
     <PreferenceCategory
         android:title="UI"/>
 
+    <EditTextPreference
+        android:key="prefs_iconPackPackage"
+        android:title="Icon Pack"
+        android:defaultValue="@string/default_icon_pack"
+        android:persistent="true"/>
+
     <SwitchPreference
         android:key="pref_lightStatusBar"
         android:title="Light StatusBar"

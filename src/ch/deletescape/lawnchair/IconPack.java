@@ -1,5 +1,7 @@
 package ch.deletescape.lawnchair;
 
+import android.content.ComponentName;
+import android.content.pm.ActivityInfo;
 import android.graphics.drawable.Drawable;
 import android.util.ArrayMap;
 
@@ -20,7 +22,15 @@ class IconPack {
         this.icons = icons;
     }
 
-    public Drawable getIcon(LauncherActivityInfoCompat info, int iconDpi) {
+    public Drawable getIcon(LauncherActivityInfoCompat info) {
         return icons.get(info.getComponentName().toString());
+    }
+
+    public Drawable getIcon(ActivityInfo info) {
+        return icons.get(new ComponentName(info.packageName, info.name).toString());
+    }
+
+    public Drawable getIcon(ComponentName name) {
+        return icons.get(name.toString());
     }
 }

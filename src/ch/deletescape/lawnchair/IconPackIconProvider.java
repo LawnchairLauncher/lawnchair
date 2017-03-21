@@ -13,7 +13,7 @@ public class IconPackIconProvider extends IconProvider {
     public Drawable getIcon(LauncherActivityInfoCompat info, int iconDpi) {
         IconPack iconPack = IconPackProvider.getIconPack("com.shahid.pineapple");
         if(iconPack != null){
-            Drawable icon = iconPack.getIcon(info, iconDpi);
+            Drawable icon = iconPack.getIcon(info);
             if(icon != null){
                 return icon;
             }

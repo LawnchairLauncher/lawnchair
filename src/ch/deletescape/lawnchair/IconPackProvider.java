@@ -1,6 +1,7 @@
 package ch.deletescape.lawnchair;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -17,6 +18,18 @@ public class IconPackProvider {
 
     public static IconPack getIconPack(String packageName){
         return iconPacks.get(packageName);
+    }
+
+    public static IconPack loadAndGetIconPack(Context context){
+        SharedPreferences prefs = Utilities.getPrefs(context);
+        String packageName = prefs.getString("pref_iconPackPackage", null);
+        if(packageName != null){
+            if(!iconPacks.containsKey(packageName)){
+                loadIconPack(context, packageName);
+            }
+            return getIconPack(packageName);
+        }
+        return null;
     }
 
     public static void loadIconPack(Context context, String packageName) {
