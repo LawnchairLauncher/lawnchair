@@ -154,7 +154,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         if (sessionInfo == null || sessionInfo.getInstallerPackageName() == null) {
             return null;
         }
-        String pkg = sessionInfo.getAppPackageName();
+        String pkg = sessionInfo.getInstallerPackageName();
         synchronized (mSessionVerifiedMap) {
             if (!mSessionVerifiedMap.containsKey(pkg)) {
                 LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(mAppContext);

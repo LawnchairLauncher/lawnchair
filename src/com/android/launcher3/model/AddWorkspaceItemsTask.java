@@ -33,6 +33,7 @@ import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.Provider;
 
@@ -140,7 +141,7 @@ public class AddWorkspaceItemsTask extends ExtendedModelTask {
      * the workspace has been loaded. We identify a shortcut by its intent.
      */
     protected boolean shortcutExists(BgDataModel dataModel, Intent intent, UserHandle user) {
-        final String intentWithPkg, intentWithoutPkg;
+        final String compPkgName, intentWithPkg, intentWithoutPkg;
         if (intent == null) {
             // Skip items with null intents
             return true;
@@ -148,19 +149,21 @@ public class AddWorkspaceItemsTask extends ExtendedModelTask {
         if (intent.getComponent() != null) {
             // If component is not null, an intent with null package will produce
             // the same result and should also be a match.
-            String packageName = intent.getComponent().getPackageName();
+            compPkgName = intent.getComponent().getPackageName();
             if (intent.getPackage() != null) {
                 intentWithPkg = intent.toUri(0);
                 intentWithoutPkg = new Intent(intent).setPackage(null).toUri(0);
             } else {
-                intentWithPkg = new Intent(intent).setPackage(packageName).toUri(0);
+                intentWithPkg = new Intent(intent).setPackage(compPkgName).toUri(0);
                 intentWithoutPkg = intent.toUri(0);
             }
         } else {
+            compPkgName = null;
             intentWithPkg = intent.toUri(0);
             intentWithoutPkg = intent.toUri(0);
         }
 
+        boolean isLauncherAppTarget = Utilities.isLauncherAppTarget(intent);
         synchronized (dataModel) {
             for (ItemInfo item : dataModel.itemsIdMap) {
                 if (item instanceof ShortcutInfo) {
@@ -170,6 +173,16 @@ public class AddWorkspaceItemsTask extends ExtendedModelTask {
                         copyIntent.setSourceBounds(intent.getSourceBounds());
                         String s = copyIntent.toUri(0);
                         if (intentWithPkg.equals(s) || intentWithoutPkg.equals(s)) {
+                            return true;
+                        }
+
+                        // checking for existing promise icon with same package name
+                        if (isLauncherAppTarget
+                                && info.isPromise()
+                                && info.hasStatusFlag(ShortcutInfo.FLAG_AUTOINTALL_ICON)
+                                && info.getTargetComponent() != null
+                                && compPkgName != null
+                                && compPkgName.equals(info.getTargetComponent().getPackageName())) {
                             return true;
                         }
                     }

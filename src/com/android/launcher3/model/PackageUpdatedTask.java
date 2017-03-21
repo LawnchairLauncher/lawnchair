@@ -18,9 +18,8 @@ package com.android.launcher3.model;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.os.Process;
 import android.os.UserHandle;
 import android.util.Log;
 
@@ -31,7 +30,6 @@ import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetInfo;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherSettings;
@@ -40,10 +38,12 @@ import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.ManagedProfileHeuristic;
+import com.android.launcher3.util.PackageManagerHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -94,6 +94,9 @@ public class PackageUpdatedTask extends ExtendedModelTask {
                 for (int i = 0; i < N; i++) {
                     if (DEBUG) Log.d(TAG, "mAllAppsList.addPackage " + packages[i]);
                     iconCache.updateIconsForPkg(packages[i], mUser);
+                    if (FeatureFlags.LAUNCHER3_PROMISE_APPS_IN_ALL_APPS) {
+                        appsList.removePackage(packages[i], Process.myUserHandle());
+                    }
                     appsList.addPackage(context, packages[i], mUser);
                 }
 
@@ -224,15 +227,12 @@ public class PackageUpdatedTask extends ExtendedModelTask {
                             if (si.isPromise() && mOp == OP_ADD) {
                                 if (si.hasStatusFlag(ShortcutInfo.FLAG_AUTOINTALL_ICON)) {
                                     // Auto install icon
-                                    PackageManager pm = context.getPackageManager();
-                                    ResolveInfo matched = pm.resolveActivity(
-                                            new Intent(Intent.ACTION_MAIN)
-                                                    .setComponent(cn).addCategory(Intent.CATEGORY_LAUNCHER),
-                                            PackageManager.MATCH_DEFAULT_ONLY);
-                                    if (matched == null) {
+                                    LauncherAppsCompat launcherApps
+                                            = LauncherAppsCompat.getInstance(context);
+                                    if (!launcherApps.isActivityEnabledForProfile(cn, mUser)) {
                                         // Try to find the best match activity.
-                                        Intent intent = pm.getLaunchIntentForPackage(
-                                                cn.getPackageName());
+                                        Intent intent = new PackageManagerHelper(context)
+                                                .getAppLaunchIntent(cn.getPackageName(), mUser);
                                         if (intent != null) {
                                             cn = intent.getComponent();
                                             appInfo = addedOrUpdatedApps.get(cn);
