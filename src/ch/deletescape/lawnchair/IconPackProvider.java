@@ -41,13 +41,7 @@ public class IconPackProvider {
             iconPacks.put(packageName, null);
             return;
         }
-        Map<String, Drawable> icP = new ArrayMap<>();
-        for (Map.Entry<String, String> entry : appFilter.entrySet()) {
-            String comp = entry.getKey();
-            Drawable drawable = getDrawable(context, packageName, entry.getValue());
-            icP.put(comp, drawable);
-        }
-        iconPacks.put(packageName, new IconPack(icP));
+        iconPacks.put(packageName, new IconPack(appFilter, context, packageName));
     }
 
     private static Map<String, String> parseAppFilter(XmlPullParser parser) throws Exception {
@@ -78,20 +72,6 @@ public class IconPackProvider {
             }
         } catch (PackageManager.NameNotFoundException e) {
             Toast.makeText(context, "Failed to get AppFilter", Toast.LENGTH_SHORT).show();
-        }
-        return null;
-    }
-
-    private static Drawable getDrawable(Context context, String packageName, String name) {
-        Resources res;
-        try {
-            res = context.getPackageManager().getResourcesForApplication(packageName);
-            int resourceId = res.getIdentifier(name, "drawable", packageName);
-            if (0 != resourceId) {
-                return context.getPackageManager().getDrawable(packageName, resourceId, null);
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            Toast.makeText(context, "Failed to get drawable", Toast.LENGTH_SHORT).show();
         }
         return null;
     }
