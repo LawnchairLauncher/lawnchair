@@ -76,7 +76,6 @@
 
     <!-- Name of an icon provider class. -->
     <string name="icon_provider_class" translatable="false">ch.deletescape.lawnchair.IconPackIconProvider</string>
-    <string name="default_icon_pack" translatable="false">com.shahid.pineapple</string>
 
     <!-- Package name of the default wallpaper picker. -->
     <string name="wallpaper_picker_package" translatable="false" />
