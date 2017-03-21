@@ -30,11 +30,15 @@ public class IconPackProvider {
     }
 
     public static void loadIconPack(Context context, String packageName) {
+        if("".equals(packageName)){
+            iconPacks.put("", null);
+        }
         Map<String, String> appFilter;
         try {
             appFilter = parseAppFilter(getAppFilter(context, packageName));
         } catch (Exception e) {
             Toast.makeText(context, "Invalid IconPack", Toast.LENGTH_SHORT).show();
+            iconPacks.put(packageName, null);
             return;
         }
         Map<String, Drawable> icP = new ArrayMap<>();
