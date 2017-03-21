@@ -62,8 +62,7 @@ public class PackageInstallStateChangedTask extends ExtendedModelTask {
                         if (mInstallInfo.state == PackageInstallerCompat.STATUS_INSTALLING) {
                             promiseAppInfo.level = mInstallInfo.progress;
                             updated = promiseAppInfo;
-                        } else if (mInstallInfo.state == PackageInstallerCompat.STATUS_FAILED
-                                || mInstallInfo.state == PackageInstallerCompat.STATUS_INSTALLED) {
+                        } else if (mInstallInfo.state == PackageInstallerCompat.STATUS_FAILED) {
                             apps.removePromiseApp(appInfo);
                             removed.add(appInfo);
                         }
