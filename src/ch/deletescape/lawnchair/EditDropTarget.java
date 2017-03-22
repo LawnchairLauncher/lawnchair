@@ -32,7 +32,7 @@ public class EditDropTarget extends ButtonDropTarget {
     protected void onFinishInflate() {
         super.onFinishInflate();
         // Get the hover color
-        mHoverColor = getResources().getColor(R.color.uninstall_target_hover_tint);
+        mHoverColor = Utilities.getColorAccent(getContext());
 
         setDrawable(R.drawable.ic_info_launcher);
     }
