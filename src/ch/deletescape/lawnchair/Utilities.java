@@ -135,27 +135,8 @@ public final class Utilities {
             CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
             TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
-    public static final String ALLOW_ROTATION_PREFERENCE_KEY = "pref_allowRotation";
-
     public static boolean isPropertyEnabled(String propertyName) {
         return Log.isLoggable(propertyName, Log.VERBOSE);
-    }
-
-    public static boolean isAllowRotationPrefEnabled(Context context) {
-        return getPrefs(context).getBoolean(ALLOW_ROTATION_PREFERENCE_KEY,
-                getAllowRotationDefaultValue(context));
-    }
-
-    public static boolean getAllowRotationDefaultValue(Context context) {
-        if (isNycOrAbove()) {
-            // If the device was scaled, used the original dimensions to determine if rotation
-            // is allowed of not.
-            Resources res = context.getResources();
-            int originalSmallestWidth = res.getConfiguration().smallestScreenWidthDp
-                    * res.getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEVICE_STABLE;
-            return originalSmallestWidth >= 600;
-        }
-        return false;
     }
 
     public static Bitmap createIconBitmap(Cursor c, int iconIndex, Context context) {
