@@ -26,6 +26,7 @@ public class EditAppDialog extends Dialog {
     private static SharedPreferences sharedPrefs;
     private static Set<String> hiddenApps;
     private AppInfo info;
+    private EditText title;
     private Switch visibility;
     private boolean visibleState;
     private Launcher launcher;
@@ -49,7 +50,7 @@ public class EditAppDialog extends Dialog {
 
         final ComponentName component = info.componentName;
 
-        EditText title = ((EditText) findViewById(R.id.title));
+        title = ((EditText) findViewById(R.id.title));
         TextView packageName = ((TextView) findViewById(R.id.package_name));
         ImageView icon = ((ImageView) findViewById(R.id.icon));
         visibility = ((Switch) findViewById(R.id.visibility));
@@ -86,6 +87,11 @@ public class EditAppDialog extends Dialog {
                 hiddenApps.add(key);
             }
             sharedPrefs.edit().putStringSet(KEY_PREF_HIDDEN_APPS,hiddenApps).apply();
+        }
+        String titleS = title.getText().toString();
+        if(!titleS.trim().equals(info.title.toString().trim())){
+            info.title = titleS.trim();
+            sharedPrefs.edit().putString("alias_"+key, titleS).apply();
         }
         super.dismiss();
     }

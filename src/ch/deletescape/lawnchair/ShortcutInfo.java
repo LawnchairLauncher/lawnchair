@@ -75,6 +75,8 @@ public class ShortcutInfo extends ItemInfo {
      */
     public Intent intent;
 
+    public CharSequence originalTitle;
+
     /**
      * Indicates whether we're using the default fallback icon instead of something from the
      * app.
@@ -177,6 +179,7 @@ public class ShortcutInfo extends ItemInfo {
         this();
         this.intent = intent;
         this.title = Utilities.trim(title);
+        originalTitle = this.title;
         this.contentDescription = contentDescription;
         mIcon = icon;
         this.user = user;
@@ -185,6 +188,7 @@ public class ShortcutInfo extends ItemInfo {
     public ShortcutInfo(ShortcutInfo info) {
         super(info);
         title = info.title;
+        originalTitle = title;
         intent = new Intent(info.intent);
         iconResource = info.iconResource;
         mIcon = info.mIcon; // TODO: should make a copy here.  maybe we don't need this ctor at all
@@ -199,6 +203,7 @@ public class ShortcutInfo extends ItemInfo {
     public ShortcutInfo(AppInfo info) {
         super(info);
         title = Utilities.trim(info.title);
+        originalTitle = title;
         intent = new Intent(info.intent);
         flags = info.flags;
         isDisabled = info.isDisabled;
@@ -207,6 +212,7 @@ public class ShortcutInfo extends ItemInfo {
     public ShortcutInfo(LauncherActivityInfoCompat info, Context context) {
         user = info.getUser();
         title = Utilities.trim(info.getLabel());
+        originalTitle = title;
         contentDescription = UserManagerCompat.getInstance(context)
                 .getBadgedLabelForUser(info.getLabel(), info.getUser());
         intent = AppInfo.makeLaunchIntent(context, info, info.getUser());
