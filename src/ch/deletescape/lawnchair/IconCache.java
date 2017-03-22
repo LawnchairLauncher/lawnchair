@@ -446,7 +446,8 @@ public class IconCache {
         CacheEntry entry = cacheLocked(application.componentName, info, user,
                 false, useLowResIcon);
         application.originalTitle = Utilities.trim(entry.title);
-        application.title = Utilities.getPrefs(mContext).getString("alias_"+application.componentName.flattenToString(), application.originalTitle.toString());
+        String key = "alias_" + application.componentName.flattenToString();
+        application.title = Utilities.getPrefs(mContext).getString(key, application.originalTitle.toString());
         application.contentDescription = entry.contentDescription;
         IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext);
         Drawable icon = iconPack == null ? null : iconPack.getIcon(application.componentName);
@@ -462,7 +463,8 @@ public class IconCache {
                 false, application.usingLowResIcon);
         if (entry.icon != null && !isDefaultIcon(entry.icon, application.user)) {
             application.originalTitle = Utilities.trim(entry.title);
-            application.title = Utilities.getPrefs(mContext).getString("alias_"+application.componentName.flattenToString(), application.originalTitle.toString());
+            String key = "alias_" + application.componentName.flattenToString();
+            application.title = Utilities.getPrefs(mContext).getString(key, application.originalTitle.toString());
             application.contentDescription = entry.contentDescription;
             IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext);
             Drawable icon = iconPack == null ? null : iconPack.getIcon(application.componentName);
@@ -519,8 +521,9 @@ public class IconCache {
         Drawable icon = iconPack == null ? null : iconPack.getIcon(component);
         Bitmap iBitmap = icon == null ? getNonNullIcon(entry, user) : Utilities.createIconBitmap(icon, mContext);
         shortcutInfo.setIcon(iBitmap);
-        shortcutInfo.originalTitle = Utilities.trim(entry.title);
-        shortcutInfo.title = Utilities.getPrefs(mContext).getString("alias_"+component.flattenToString(), shortcutInfo.originalTitle.toString());
+        String title = Utilities.trim(entry.title);
+        String key = "alias_" + component.flattenToString();
+        shortcutInfo.title = Utilities.getPrefs(mContext).getString(key, title);
         shortcutInfo.contentDescription = entry.contentDescription;
         shortcutInfo.usingFallbackIcon = isDefaultIcon(entry.icon, user);
         shortcutInfo.usingLowResIcon = entry.isLowResIcon;

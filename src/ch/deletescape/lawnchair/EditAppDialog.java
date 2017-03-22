@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -54,6 +55,7 @@ public class EditAppDialog extends Dialog {
         TextView packageName = ((TextView) findViewById(R.id.package_name));
         ImageView icon = ((ImageView) findViewById(R.id.icon));
         visibility = ((Switch) findViewById(R.id.visibility));
+        ImageButton reset = ((ImageButton) findViewById(R.id.reset_title));
 
         icon.setImageBitmap(info.iconBitmap);
         title.setText(info.title);
@@ -75,6 +77,14 @@ public class EditAppDialog extends Dialog {
             }
         };
         icon.setOnLongClickListener(olcl);
+
+        View.OnClickListener resetTitle = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                title.setText(info.originalTitle);
+            }
+        };
+        reset.setOnClickListener(resetTitle);
     }
 
     @Override

@@ -51,6 +51,7 @@ public class AppInfo extends ItemInfo {
     boolean usingLowResIcon;
 
     public ComponentName componentName;
+
     public CharSequence originalTitle;
 
     static final int DOWNLOADED_FLAG = 1;
@@ -119,7 +120,6 @@ public class AppInfo extends ItemInfo {
         super(info);
         componentName = info.componentName;
         title = Utilities.trim(info.title);
-        originalTitle = title;
         intent = new Intent(info.intent);
         flags = info.flags;
         isDisabled = info.isDisabled;

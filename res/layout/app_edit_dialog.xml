@@ -34,7 +34,6 @@
                     android:layout_height="wrap_content"
                     android:text="Test" />
                 <ImageButton
-                    android:visibility="gone"
                     android:id="@+id/reset_title"
                     android:src="@drawable/ic_undo_black_24dp"
                     android:layout_width="wrap_content"
