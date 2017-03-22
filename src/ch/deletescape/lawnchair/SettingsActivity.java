@@ -58,7 +58,7 @@ public class SettingsActivity extends Activity {
             super.onDestroy();
             LauncherAppState app = LauncherAppState.getInstanceNoCreate();
             if (app != null) {
-                app.reloadWorkspace();
+                app.reloadAll();
             }
         }
     }
