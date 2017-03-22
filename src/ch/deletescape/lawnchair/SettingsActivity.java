@@ -56,8 +56,10 @@ public class SettingsActivity extends Activity {
         @Override
         public void onDestroy() {
             super.onDestroy();
-            SharedPreferences prefs = Utilities.getPrefs(getActivity().getApplicationContext());
-            prefs.edit().putBoolean("resume_from_settings",true).apply();
+            LauncherAppState app = LauncherAppState.getInstanceNoCreate();
+            if (app != null) {
+                app.reloadWorkspace();
+            }
         }
     }
 }

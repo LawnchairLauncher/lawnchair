@@ -103,6 +103,10 @@ public class EditAppDialog extends Dialog {
             info.title = titleS.trim();
             sharedPrefs.edit().putString("alias_"+key, titleS).apply();
         }
+        LauncherAppState app = LauncherAppState.getInstanceNoCreate();
+        if (app != null) {
+            app.reloadWorkspace();
+        }
         super.dismiss();
     }
 }

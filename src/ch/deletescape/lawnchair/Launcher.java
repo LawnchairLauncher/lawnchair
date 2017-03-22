@@ -883,12 +883,6 @@ public class Launcher extends Activity
 
     @Override
     protected void onResume() {
-        if(Utilities.getPrefs(getApplicationContext()).getBoolean("resume_from_settings", false)){
-            Utilities.getPrefs(getApplicationContext()).edit().putBoolean("resume_from_settings", false).apply();
-            this.recreate();
-            super.onResume();
-            return;
-        }
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.preOnResume();
         }
