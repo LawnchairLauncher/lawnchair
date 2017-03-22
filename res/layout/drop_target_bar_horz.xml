@@ -63,24 +63,6 @@
         android:layout_height="match_parent"
         android:layout_weight="1" >
 
-        <!-- Uninstall target -->
-
-        <ch.deletescape.lawnchair.UninstallDropTarget
-            launcher:hideParentOnDisable="true"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:id="@+id/uninstall_target_text"
-            style="@style/DropTargetButton"
-            android:text="@string/uninstall_drop_target_label" />
-    </FrameLayout>
-
-    <FrameLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1" >
-
         <!-- Hide target -->
 
         <ch.deletescape.lawnchair.EditDropTarget
@@ -92,6 +74,24 @@
             android:id="@+id/hide_target_text"
             style="@style/DropTargetButton"
             android:text="@string/edit_drop_target_label" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" >
+
+        <!-- Uninstall target -->
+
+        <ch.deletescape.lawnchair.UninstallDropTarget
+            launcher:hideParentOnDisable="true"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:id="@+id/uninstall_target_text"
+            style="@style/DropTargetButton"
+            android:text="@string/uninstall_drop_target_label" />
     </FrameLayout>
 
 </ch.deletescape.lawnchair.DropTargetBar>

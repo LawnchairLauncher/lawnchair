@@ -64,9 +64,7 @@ public class InfoDropTarget extends UninstallDropTarget {
             ItemInfo info, Launcher launcher, DropTargetResultCallback callback) {
         boolean result = false;
         ComponentName componentName = null;
-        if (info instanceof AppInfo) {
-            componentName = ((AppInfo) info).componentName;
-        } else if (info instanceof ShortcutInfo) {
+        if (info instanceof ShortcutInfo) {
             componentName = ((ShortcutInfo) info).intent.getComponent();
         } else if (info instanceof PendingAddItemInfo) {
             componentName = ((PendingAddItemInfo) info).componentName;
@@ -101,8 +99,8 @@ public class InfoDropTarget extends UninstallDropTarget {
         boolean developmentSettingsEnabled = Settings.Global.getInt(resolver,
                 Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) == 1;
         return developmentSettingsEnabled
-                && (info instanceof AppInfo || info instanceof ShortcutInfo
-                || info instanceof PendingAddItemInfo || info instanceof LauncherAppWidgetInfo)
+                && (info instanceof ShortcutInfo || info instanceof PendingAddItemInfo
+                || info instanceof LauncherAppWidgetInfo)
                 && info.itemType != LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
     }
 }

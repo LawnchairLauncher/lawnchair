@@ -1,18 +1,24 @@
 package ch.deletescape.lawnchair;
 
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
 
 
 public class EditAppDialog extends Dialog {
@@ -22,10 +28,12 @@ public class EditAppDialog extends Dialog {
     private AppInfo info;
     private Switch visibility;
     private boolean visibleState;
+    private Launcher launcher;
 
-    public EditAppDialog(@NonNull Context context, AppInfo info) {
+    public EditAppDialog(@NonNull Context context, AppInfo info, Launcher launcher) {
         super(context);
         this.info = info;
+        this.launcher = launcher;
         sharedPrefs = Utilities.getPrefs(context.getApplicationContext());
         hiddenApps = sharedPrefs.getStringSet(KEY_PREF_HIDDEN_APPS, null);
         if (hiddenApps == null) {
@@ -39,7 +47,7 @@ public class EditAppDialog extends Dialog {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.app_edit_dialog);
 
-        ComponentName component = info.componentName;
+        final ComponentName component = info.componentName;
 
         EditText title = ((EditText) findViewById(R.id.title));
         TextView packageName = ((TextView) findViewById(R.id.package_name));
@@ -51,6 +59,21 @@ public class EditAppDialog extends Dialog {
         packageName.setText(component.getPackageName());
         visibleState = !hiddenApps.contains(component.flattenToString());
         visibility.setChecked(visibleState);
+
+        View.OnLongClickListener olcl = new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                try {
+                    LauncherAppsCompat.getInstance(launcher).showAppDetailsForProfile(component, info.user);
+                    return true;
+                } catch (SecurityException | ActivityNotFoundException e) {
+                    Toast.makeText(launcher, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
+                    Log.e("EditAppDialog", "Unable to launch settings", e);
+                }
+                return false;
+            }
+        };
+        icon.setOnLongClickListener(olcl);
     }
 
     @Override

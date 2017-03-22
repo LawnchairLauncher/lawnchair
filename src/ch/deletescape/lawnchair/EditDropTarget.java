@@ -44,7 +44,7 @@ public class EditDropTarget extends ButtonDropTarget {
 
     @Override
     void completeDrop(final DragObject d) {
-        new EditAppDialog(getContext(), ((AppInfo) d.dragInfo)).show();
+        new EditAppDialog(getContext(), ((AppInfo) d.dragInfo), mLauncher).show();
     }
 
 }
