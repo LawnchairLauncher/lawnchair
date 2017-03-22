@@ -210,7 +210,9 @@ public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallb
         for (RecyclerView.ViewHolder viewHolder : mTrackedFastScrollViews) {
             int pos = viewHolder.getAdapterPosition();
             boolean isActive = false;
-            if (mCurrentFastScrollSection != null && pos > -1) {
+            if (mCurrentFastScrollSection != null
+                    && pos > RecyclerView.NO_POSITION
+                    && pos < mApps.getAdapterItems().size()) {
                 AlphabeticalAppsList.AdapterItem item = mApps.getAdapterItems().get(pos);
                 isActive = item != null &&
                         mCurrentFastScrollSection.equals(item.sectionName) &&
