@@ -13,3 +13,4 @@ bin/
 local.properties
 build/
 .DS_Store
+google-services.json
