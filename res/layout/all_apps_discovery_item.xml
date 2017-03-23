@@ -27,18 +27,6 @@
         android:padding="8dp"
         android:scaleType="fitCenter"/>
 
-    <ImageView
-        android:id="@+id/badge"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_instant_app"
-        android:layout_marginRight="6dp"
-        android:layout_marginBottom="6dp"
-        android:layout_alignRight="@+id/image"
-        android:layout_alignBottom="@+id/image"
-        android:clickable="false"/>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
