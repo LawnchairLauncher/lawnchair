@@ -34,7 +34,6 @@ public class AppDiscoveryItemView extends RelativeLayout {
     private static boolean SHOW_REVIEW_COUNT = false;
 
     private ImageView mImage;
-    private ImageView mBadge;
     private TextView mTitle;
     private TextView mRatingText;
     private RatingView mRatingView;
@@ -58,7 +57,6 @@ public class AppDiscoveryItemView extends RelativeLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         this.mImage = (ImageView) findViewById(R.id.image);
-        this.mBadge = (ImageView) findViewById(R.id.badge);
         this.mTitle = (TextView) findViewById(R.id.title);
         this.mRatingText = (TextView) findViewById(R.id.rating);
         this.mRatingView = (RatingView) findViewById(R.id.rating_view);
@@ -80,7 +78,6 @@ public class AppDiscoveryItemView extends RelativeLayout {
         mImage.setTag(info);
         mImage.setImageBitmap(info.iconBitmap);
         mImage.setOnLongClickListener(info.isDragAndDropSupported() ? mOnLongClickListener : null);
-        mBadge.setVisibility(info.isInstantApp ? View.VISIBLE : View.GONE);
         mTitle.setText(info.title);
         mPrice.setText(info.priceFormatted != null ? info.priceFormatted : "");
         mReviewCount.setVisibility(SHOW_REVIEW_COUNT ? View.VISIBLE : View.GONE);

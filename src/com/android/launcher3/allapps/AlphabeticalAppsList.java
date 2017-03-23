@@ -292,7 +292,7 @@ public class AlphabeticalAppsList {
                 mDiscoveredApps.clear();
                 break;
             case UPDATE:
-                mDiscoveredApps.add(new AppDiscoveryAppInfo(app, mLauncher));
+                mDiscoveredApps.add(new AppDiscoveryAppInfo(app));
                 break;
         }
         updateAdapterItems();
@@ -494,10 +494,13 @@ public class AlphabeticalAppsList {
         if (hasFilter()) {
             if (isAppDiscoveryRunning() || mDiscoveredApps.size() > 0) {
                 mAdapterItems.add(AdapterItem.asLoadingDivider(position++));
-
                 // Append all app discovery results
                 for (int i = 0; i < mDiscoveredApps.size(); i++) {
                     AppDiscoveryAppInfo appDiscoveryAppInfo = mDiscoveredApps.get(i);
+                    if (appDiscoveryAppInfo.isRecent) {
+                        // already handled in getFilteredAppInfos()
+                        continue;
+                    }
                     AdapterItem item = AdapterItem.asDiscoveryItem(position++,
                             "", appDiscoveryAppInfo, appIndex++);
                     mAdapterItems.add(item);
@@ -588,6 +591,17 @@ public class AlphabeticalAppsList {
             if (match != null) {
                 result.add(match);
             }
+        }
+
+        // adding recently used instant apps
+        if (mDiscoveredApps.size() > 0) {
+            for (int i = 0; i < mDiscoveredApps.size(); i++) {
+                AppDiscoveryAppInfo discoveryAppInfo = mDiscoveredApps.get(i);
+                if (discoveryAppInfo.isRecent) {
+                    result.add(discoveryAppInfo);
+                }
+            }
+            Collections.sort(result, mAppNameComparator);
         }
         return result;
     }

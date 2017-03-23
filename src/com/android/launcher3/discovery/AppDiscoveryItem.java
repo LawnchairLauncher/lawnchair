@@ -28,6 +28,7 @@ public class AppDiscoveryItem {
 
     public final String packageName;
     public final boolean isInstantApp;
+    public final boolean isRecent;
     public final float starRating;
     public final long reviewCount;
     public final Intent launchIntent;
@@ -39,6 +40,7 @@ public class AppDiscoveryItem {
 
     public AppDiscoveryItem(String packageName,
                             boolean isInstantApp,
+                            boolean isRecent,
                             float starRating,
                             long reviewCount,
                             CharSequence title,
@@ -49,6 +51,7 @@ public class AppDiscoveryItem {
                             Intent installIntent) {
         this.packageName = packageName;
         this.isInstantApp = isInstantApp;
+        this.isRecent = isRecent;
         this.starRating = starRating;
         this.reviewCount = reviewCount;
         this.launchIntent = launchIntent;
