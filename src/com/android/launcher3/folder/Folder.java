@@ -516,12 +516,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     }
 
     private void startAnimation(final AnimatorSet a) {
-        long startTime = 0;
         if (mCurrentAnimator != null && mCurrentAnimator.isRunning()) {
-            // This allows a nice transition when closing a Folder while it is still animating open.
-            if (BuildCompat.isAtLeastO()) {
-                startTime = mCurrentAnimator.getDuration() - mCurrentAnimator.getCurrentPlayTime();
-            }
             mCurrentAnimator.cancel();
         }
         a.addListener(new AnimatorListenerAdapter() {
@@ -536,9 +531,6 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
                 mCurrentAnimator = null;
             }
         });
-        if (BuildCompat.isAtLeastO()) {
-            a.setCurrentPlayTime(startTime);
-        }
         a.start();
     }
 
