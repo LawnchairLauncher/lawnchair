@@ -58,6 +58,7 @@
     <integer name="config_folderExpandDuration">120</integer>
     <integer name="config_materialFolderExpandDuration">200</integer>
     <integer name="config_materialFolderExpandStagger">60</integer>
+    <integer name="config_folderDelay">30</integer>
 
     <!-- The distance at which the animation should take the max duration -->
     <integer name="config_dropAnimMaxDist">800</integer>

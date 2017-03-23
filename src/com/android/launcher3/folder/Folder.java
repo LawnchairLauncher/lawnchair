@@ -25,6 +25,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
+import android.support.v4.os.BuildCompat;
 import android.text.InputType;
 import android.text.Selection;
 import android.util.AttributeSet;
@@ -518,7 +519,9 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         long startTime = 0;
         if (mCurrentAnimator != null && mCurrentAnimator.isRunning()) {
             // This allows a nice transition when closing a Folder while it is still animating open.
-            startTime = mCurrentAnimator.getDuration() - mCurrentAnimator.getCurrentPlayTime();
+            if (BuildCompat.isAtLeastO()) {
+                startTime = mCurrentAnimator.getDuration() - mCurrentAnimator.getCurrentPlayTime();
+            }
             mCurrentAnimator.cancel();
         }
         a.addListener(new AnimatorListenerAdapter() {
@@ -533,7 +536,9 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
                 mCurrentAnimator = null;
             }
         });
-        a.setCurrentPlayTime(startTime);
+        if (BuildCompat.isAtLeastO()) {
+            a.setCurrentPlayTime(startTime);
+        }
         a.start();
     }
 

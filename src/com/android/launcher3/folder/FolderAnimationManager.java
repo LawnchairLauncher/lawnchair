@@ -64,6 +64,9 @@ public class FolderAnimationManager {
 
     private final boolean mIsOpening;
 
+    private final int mDuration;
+    private final int mDelay;
+
     private final TimeInterpolator mOpeningInterpolator;
     private final TimeInterpolator mClosingInterpolator;
     private final TimeInterpolator mPreviewItemOpeningInterpolator;
@@ -115,6 +118,9 @@ public class FolderAnimationManager {
         mLauncher = folder.mLauncher;
 
         mIsOpening = isOpening;
+
+        mDuration = mFolder.mMaterialExpandDuration;
+        mDelay = mContext.getResources().getInteger(R.integer.config_folderDelay);
 
         mOpeningInterpolator = AnimationUtils.loadInterpolator(mContext,
                 R.interpolator.folder_opening_interpolator);
@@ -194,14 +200,13 @@ public class FolderAnimationManager {
 
         // Create the animators.
         AnimatorSet a = LauncherAnimUtils.createAnimatorSet();
-        a.setDuration(mFolder.mMaterialExpandDuration);
 
-        a.play(getAnimator(mFolder, View.TRANSLATION_X, xDistance, 0f));
-        a.play(getAnimator(mFolder, View.TRANSLATION_Y, yDistance, 0f));
-        a.play(getAnimator(mFolder, SCALE_PROPERTY, initialScale, finalScale));
-        a.play(getAnimator(items, ITEMS_TEXT_COLOR_PROPERTY, Color.TRANSPARENT, finalTextColor));
-        a.play(getAnimator(mFolderBackground, "color", initialColor, finalColor));
-        a.play(new RoundedRectRevealOutlineProvider(initialSize / 2f, finalRadius, startRect,
+        play(a, getAnimator(mFolder, View.TRANSLATION_X, xDistance, 0f));
+        play(a, getAnimator(mFolder, View.TRANSLATION_Y, yDistance, 0f));
+        play(a, getAnimator(mFolder, SCALE_PROPERTY, initialScale, finalScale));
+        play(a, getAnimator(items, ITEMS_TEXT_COLOR_PROPERTY, Color.TRANSPARENT, finalTextColor));
+        play(a, getAnimator(mFolderBackground, "color", initialColor, finalColor));
+        play(a, new RoundedRectRevealOutlineProvider(initialSize / 2f, finalRadius, startRect,
                 endRect).createRevealAnimator(mFolder, !mIsOpening));
 
         a.addListener(new AnimatorListenerAdapter() {
@@ -272,17 +277,42 @@ public class FolderAnimationManager {
 
             Animator translationX = getAnimator(btv, View.TRANSLATION_X, xDistance, 0f);
             translationX.setInterpolator(previewItemInterpolator);
-            animatorSet.play(translationX);
+            play(animatorSet, translationX);
 
             Animator translationY = getAnimator(btv, View.TRANSLATION_Y, yDistance, 0f);
             translationY.setInterpolator(previewItemInterpolator);
-            animatorSet.play(translationY);
+            play(animatorSet, translationY);
 
             Animator scaleAnimator = getAnimator(btv, SCALE_PROPERTY, initialScale, finalScale);
             scaleAnimator.setInterpolator(previewItemInterpolator);
-            animatorSet.play(scaleAnimator);
+            play(animatorSet, scaleAnimator);
+
+            if (mFolder.getItemCount() > FolderIcon.NUM_ITEMS_IN_PREVIEW) {
+                // These delays allows the preview items to move as part of the Folder's motion,
+                // and its only necessary for large folders because of differing interpolators.
+                if (mIsOpening) {
+                    translationX.setStartDelay(mDelay);
+                    translationY.setStartDelay(mDelay);
+                    scaleAnimator.setStartDelay(mDelay);
+                }
+                translationX.setDuration(translationX.getDuration() - mDelay);
+                translationY.setDuration(translationY.getDuration() - mDelay);
+                scaleAnimator.setDuration(scaleAnimator.getDuration() - mDelay);
+            }
 
             animatorSet.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    super.onAnimationStart(animation);
+                    // Necessary to initialize values here because of the start delay.
+                    if (mIsOpening) {
+                        btv.setTranslationX(xDistance);
+                        btv.setTranslationY(yDistance);
+                        btv.setScaleX(initialScale);
+                        btv.setScaleY(initialScale);
+                    }
+                }
+
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
@@ -293,6 +323,11 @@ public class FolderAnimationManager {
                 }
             });
         }
+    }
+
+    private void play(AnimatorSet as, Animator a) {
+        a.setDuration(mDuration);
+        as.play(a);
     }
 
     private TimeInterpolator getPreviewItemInterpolator() {
