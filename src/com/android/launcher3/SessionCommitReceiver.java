@@ -19,14 +19,17 @@ package com.android.launcher3;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.os.Process;
 import android.os.UserHandle;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.compat.UserManagerCompat;
 
 import java.util.List;
 
@@ -35,8 +38,12 @@ import java.util.List;
  */
 public class SessionCommitReceiver extends BroadcastReceiver {
 
+    private static final long SESSION_IGNORE_DURATION = 3 * 60 * 60 * 1000; // 3 hours
+
     // Preference key for automatically adding icon to homescreen.
     public static final String ADD_ICON_PREFERENCE_KEY = "pref_add_icon_to_home";
+
+    private static final String KEY_FIRST_TIME = "first_session_broadcast_time";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -54,6 +61,17 @@ public class SessionCommitReceiver extends BroadcastReceiver {
 
         if (!Process.myUserHandle().equals(user)) {
             // Managed profile is handled using ManagedProfileHeuristic
+            return;
+        }
+
+        // STOPSHIP: Remove this workaround when we start getting proper install reason
+        SharedPreferences prefs = context
+                .getSharedPreferences(LauncherFiles.DEVICE_PREFERENCES_KEY, 0);
+        long now = System.currentTimeMillis();
+        long firstTime = prefs.getLong(KEY_FIRST_TIME, now);
+        prefs.edit().putLong(KEY_FIRST_TIME, firstTime).apply();
+        if ((now - firstTime) < SESSION_IGNORE_DURATION) {
+            Log.d("SessionCommitReceiver", "Temporarily ignoring session broadcast");
             return;
         }
 
