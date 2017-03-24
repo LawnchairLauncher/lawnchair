@@ -65,6 +65,7 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.graphics.TriangleShape;
 import com.android.launcher3.notification.NotificationItemView;
+import com.android.launcher3.notification.NotificationKeyData;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.shortcuts.ShortcutsItemView;
 import com.android.launcher3.util.PackageUserKey;
@@ -138,9 +139,9 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         }
         ItemInfo itemInfo = (ItemInfo) icon.getTag();
         List<String> shortcutIds = launcher.getPopupDataProvider().getShortcutIdsForItem(itemInfo);
-        String[] notificationKeys = launcher.getPopupDataProvider()
+        List<NotificationKeyData> notificationKeys = launcher.getPopupDataProvider()
                 .getNotificationKeysForItem(itemInfo);
-        if (shortcutIds.size() > 0 || notificationKeys.length > 0) {
+        if (shortcutIds.size() > 0 || notificationKeys.size() > 0) {
             final PopupContainerWithArrow container =
                     (PopupContainerWithArrow) launcher.getLayoutInflater().inflate(
                             R.layout.popup_container, launcher.getDragLayer(), false);
@@ -153,7 +154,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     }
 
     public void populateAndShow(final BubbleTextView originalIcon, final List<String> shortcutIds,
-            final String[] notificationKeys) {
+            final List<NotificationKeyData> notificationKeys) {
         final Resources resources = getResources();
         final int arrowWidth = resources.getDimensionPixelSize(R.dimen.deep_shortcuts_arrow_width);
         final int arrowHeight = resources.getDimensionPixelSize(R.dimen.deep_shortcuts_arrow_height);
@@ -165,7 +166,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         // Add dummy views first, and populate with real info when ready.
         PopupPopulator.Item[] itemsToPopulate = PopupPopulator
                 .getItemsToPopulate(shortcutIds, notificationKeys);
-        addDummyViews(originalIcon, itemsToPopulate, notificationKeys.length > 1);
+        addDummyViews(originalIcon, itemsToPopulate, notificationKeys.size() > 1);
 
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
         orientAboutIcon(originalIcon, arrowHeight + arrowVerticalOffset);
@@ -176,7 +177,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             mNotificationItemView = null;
             mShortcutsItemView = null;
             itemsToPopulate = PopupPopulator.reverseItems(itemsToPopulate);
-            addDummyViews(originalIcon, itemsToPopulate, notificationKeys.length > 1);
+            addDummyViews(originalIcon, itemsToPopulate, notificationKeys.size() > 1);
 
             measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
             orientAboutIcon(originalIcon, arrowHeight + arrowVerticalOffset);
@@ -606,7 +607,8 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             removeNotification.start();
             return;
         }
-        mNotificationItemView.trimNotifications(badgeInfo.getNotificationKeys());
+        mNotificationItemView.trimNotifications(NotificationKeyData.extractKeysOnly(
+                badgeInfo.getNotificationKeys()));
     }
 
     private ObjectAnimator createArrowScaleAnim(float scale) {
