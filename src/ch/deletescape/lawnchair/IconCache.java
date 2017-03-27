@@ -91,7 +91,6 @@ public class IconCache {
 
     private final Context mContext;
     private final PackageManager mPackageManager;
-    private IconProvider mIconProvider;
     @Thunk final UserManagerCompat mUserManager;
     private final LauncherAppsCompat mLauncherApps;
     private final HashMap<ComponentKey, CacheEntry> mCache =
@@ -122,9 +121,6 @@ public class IconCache {
         mIconDb = new IconDB(context, inv.iconBitmapSize);
         mLowResCanvas = new Canvas();
         mLowResPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
-
-        mIconProvider = IconProvider.loadByName(context.getString(R.string.icon_provider_class),
-                context);
 
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
 
@@ -388,7 +384,7 @@ public class IconCache {
         if (entry == null) {
             entry = new CacheEntry();
             entry.icon = Utilities.createBadgedIconBitmap(
-                    mIconProvider.getIcon(app, mIconDpi), app.getUser(),
+                    app.getIcon(mIconDpi), app.getUser(),
                     mContext);
         }
         entry.title = app.getLabel();
@@ -569,7 +565,7 @@ public class IconCache {
             if (!getEntryFromDB(cacheKey, entry, useLowResIcon) || DEBUG_IGNORE_CACHE) {
                 if (info != null) {
                     entry.icon = Utilities.createBadgedIconBitmap(
-                            mIconProvider.getIcon(info, mIconDpi), info.getUser(),
+                            info.getIcon(mIconDpi), info.getUser(),
                             mContext);
                 } else {
                     if (usePackageIcon) {
