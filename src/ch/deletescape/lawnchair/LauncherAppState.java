@@ -89,7 +89,7 @@ public class LauncherAppState {
         mWidgetCache = new WidgetPreviewLoader(sContext, mIconCache);
         mDeepShortcutManager = new DeepShortcutManager(sContext, new ShortcutCache());
 
-        mAppFilter = AppFilter.loadByName(sContext.getString(R.string.app_filter_class));
+        mAppFilter = new StringSetAppFilter();
         mModel = new LauncherModel(this, mIconCache, mAppFilter, mDeepShortcutManager);
 
         LauncherAppsCompat.getInstance(sContext).addOnAppsChangedCallback(mModel);

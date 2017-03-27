@@ -6,8 +6,7 @@ import android.content.SharedPreferences;
 
 import java.util.Set;
 
-@SuppressWarnings("unused")
-public class StringSetAppFilter extends AppFilter {
+public class StringSetAppFilter implements AppFilter {
     @Override
     public boolean shouldShowApp(ComponentName app, Context context) {
         SharedPreferences prefs = Utilities.getPrefs(context);
