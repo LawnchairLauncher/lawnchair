@@ -18,16 +18,7 @@ public abstract class AppFilter {
         try {
             Class<?> cls = Class.forName(className);
             return (AppFilter) cls.newInstance();
-        } catch (ClassNotFoundException e) {
-            Log.e(TAG, "Bad AppFilter class", e);
-            return null;
-        } catch (InstantiationException e) {
-            Log.e(TAG, "Bad AppFilter class", e);
-            return null;
-        } catch (IllegalAccessException e) {
-            Log.e(TAG, "Bad AppFilter class", e);
-            return null;
-        } catch (ClassCastException e) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | ClassCastException e) {
             Log.e(TAG, "Bad AppFilter class", e);
             return null;
         }
