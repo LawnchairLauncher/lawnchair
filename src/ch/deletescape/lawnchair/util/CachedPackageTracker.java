@@ -182,7 +182,7 @@ public abstract class CachedPackageTracker implements OnAppsChangedCallbackCompa
 
         @Override
         public int compareTo(LauncherActivityInstallInfo another) {
-            return Utilities.longCompare(installTime, another.installTime);
+            return Long.compare(installTime, another.installTime);
         }
     }
 }

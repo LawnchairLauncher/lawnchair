@@ -2332,7 +2332,7 @@ public class LauncherModel extends BroadcastReceiver
             Collections.sort(allWorkspaceItems, new Comparator<ItemInfo>() {
                 @Override
                 public int compare(ItemInfo lhs, ItemInfo rhs) {
-                    return Utilities.longCompare(lhs.container, rhs.container);
+                    return Long.compare(lhs.container, rhs.container);
                 }
             });
             for (ItemInfo info : allWorkspaceItems) {
@@ -2392,18 +2392,18 @@ public class LauncherModel extends BroadcastReceiver
                                         lhs.cellY * screenCols + lhs.cellX);
                                 long rr = (rhs.screenId * screenCellCount +
                                         rhs.cellY * screenCols + rhs.cellX);
-                                return Utilities.longCompare(lr, rr);
+                                return Long.compare(lr, rr);
                             }
                             case LauncherSettings.Favorites.CONTAINER_HOTSEAT: {
                                 // We currently use the screen id as the rank
-                                return Utilities.longCompare(lhs.screenId, rhs.screenId);
+                                return Long.compare(lhs.screenId, rhs.screenId);
                             }
                             default:
                                 return 0;
                         }
                     } else {
                         // Between containers, order by hotseat, desktop
-                        return Utilities.longCompare(lhs.container, rhs.container);
+                        return Long.compare(lhs.container, rhs.container);
                     }
                 }
             });

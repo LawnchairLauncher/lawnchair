@@ -659,25 +659,6 @@ public final class Utilities {
         return (int) Math.ceil(fm.bottom - fm.top);
     }
 
-    /**
-     * Convenience println with multiple args.
-     */
-    public static void println(String key, Object... args) {
-        StringBuilder b = new StringBuilder();
-        b.append(key);
-        b.append(": ");
-        boolean isFirstArgument = true;
-        for (Object arg : args) {
-            if (isFirstArgument) {
-                isFirstArgument = false;
-            } else {
-                b.append(", ");
-            }
-            b.append(arg);
-        }
-        System.out.println(b.toString());
-    }
-
     public static boolean isRtl(Resources res) {
         return res.getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
     }
@@ -773,13 +754,6 @@ public final class Utilities {
         return spanned;
     }
 
-    /**
-     * Replacement for Long.compare() which was added in API level 19.
-     */
-    public static int longCompare(long lhs, long rhs) {
-        return lhs < rhs ? -1 : (lhs == rhs ? 0 : 1);
-    }
-
     public static SharedPreferences getPrefs(Context context) {
         return context.getSharedPreferences(
                 LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
@@ -809,26 +783,6 @@ public final class Utilities {
             } catch (IOException ignored) {
             }
         }
-    }
-
-    /**
-     * Returns true if {@param original} contains all entries defined in {@param updates} and
-     * have the same value.
-     * The comparison uses {@link Object#equals(Object)} to compare the values.
-     */
-    public static boolean containsAll(Bundle original, Bundle updates) {
-        for (String key : updates.keySet()) {
-            Object value1 = updates.get(key);
-            Object value2 = original.get(key);
-            if (value1 == null) {
-                if (value2 != null) {
-                    return false;
-                }
-            } else if (!value1.equals(value2)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     /** Returns whether the collection is null or empty. */
