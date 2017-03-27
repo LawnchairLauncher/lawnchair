@@ -18,6 +18,7 @@ package com.android.launcher3.popup;
 
 import android.content.ComponentName;
 import android.service.notification.StatusBarNotification;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.android.launcher3.ItemInfo;
@@ -25,6 +26,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.notification.NotificationInfo;
+import com.android.launcher3.notification.NotificationKeyData;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.util.ComponentKey;
@@ -58,8 +60,8 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     }
 
     @Override
-    public void onNotificationPosted(PackageUserKey postedPackageUserKey, String notificationKey,
-            boolean shouldBeFilteredOut) {
+    public void onNotificationPosted(PackageUserKey postedPackageUserKey,
+            NotificationKeyData notificationKey, boolean shouldBeFilteredOut) {
         BadgeInfo badgeInfo = mPackageUserToBadgeInfos.get(postedPackageUserKey);
         boolean notificationWasAddedOrRemoved; // As opposed to updated.
         if (badgeInfo == null) {
@@ -84,7 +86,8 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     }
 
     @Override
-    public void onNotificationRemoved(PackageUserKey removedPackageUserKey, String notificationKey) {
+    public void onNotificationRemoved(PackageUserKey removedPackageUserKey,
+            NotificationKeyData notificationKey) {
         BadgeInfo oldBadgeInfo = mPackageUserToBadgeInfos.get(removedPackageUserKey);
         if (oldBadgeInfo != null && oldBadgeInfo.removeNotificationKey(notificationKey)) {
             if (oldBadgeInfo.getNotificationCount() == 0) {
@@ -112,7 +115,8 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
                 badgeInfo = new BadgeInfo(packageUserKey);
                 mPackageUserToBadgeInfos.put(packageUserKey, badgeInfo);
             }
-            badgeInfo.addNotificationKeyIfNotExists(notification.getKey());
+            badgeInfo.addNotificationKeyIfNotExists(NotificationKeyData
+                    .fromNotification(notification));
         }
 
         // Add and remove from updatedBadges so it contains the PackageUserKeys of updated badges.
@@ -177,8 +181,9 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         NotificationInfo notificationInfo = null;
         NotificationListener notificationListener = NotificationListener.getInstanceIfConnected();
         if (notificationListener != null && badgeInfo.getNotificationKeys().size() == 1) {
+            String onlyNotificationKey = badgeInfo.getNotificationKeys().get(0).notificationKey;
             StatusBarNotification[] activeNotifications = notificationListener
-                    .getActiveNotifications(new String[] {badgeInfo.getNotificationKeys().get(0)});
+                    .getActiveNotifications(new String[] {onlyNotificationKey});
             if (activeNotifications.length == 1) {
                 notificationInfo = new NotificationInfo(mLauncher, activeNotifications[0]);
                 if (!notificationInfo.shouldShowIconInBadge()) {
@@ -216,15 +221,14 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         return mPackageUserToBadgeInfos.get(PackageUserKey.fromItemInfo(info));
     }
 
-    public String[] getNotificationKeysForItem(ItemInfo info) {
+    public @NonNull List<NotificationKeyData> getNotificationKeysForItem(ItemInfo info) {
         BadgeInfo badgeInfo = getBadgeInfoForItem(info);
-        if (badgeInfo == null) { return new String[0]; }
-        List<String> notificationKeys = badgeInfo.getNotificationKeys();
-        return notificationKeys.toArray(new String[notificationKeys.size()]);
+        return badgeInfo == null ? Collections.EMPTY_LIST : badgeInfo.getNotificationKeys();
     }
 
     /** This makes a potentially expensive binder call and should be run on a background thread. */
-    public List<StatusBarNotification> getStatusBarNotificationsForKeys(String[] notificationKeys) {
+    public @NonNull List<StatusBarNotification> getStatusBarNotificationsForKeys(
+            List<NotificationKeyData> notificationKeys) {
         NotificationListener notificationListener = NotificationListener.getInstanceIfConnected();
         return notificationListener == null ? Collections.EMPTY_LIST
                 : notificationListener.getNotificationsForKeys(notificationKeys);

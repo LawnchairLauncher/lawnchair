@@ -58,11 +58,34 @@ public class PopupPopulatorTest {
                 MAX_ITEMS - NUM_DYNAMIC, NUM_DYNAMIC);
     }
 
+    @Test
+    public void testDeDupeShortcutId() {
+        // Successfully remove one of the shortcuts
+        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(3, 0), 2, 0, generateId(true, 1));
+        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(0, 3), 0, 2, generateId(false, 1));
+        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(2, 2), 2, 1, generateId(false, 1));
+        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(2, 2), 1, 2, generateId(true, 1));
+        // Successfully keep all shortcuts when id doesn't exist
+        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(3, 0), 3, 0, generateId(false, 1));
+        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(3, 0), 3, 0, generateId(true, 4));
+        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(2, 2), 2, 2, generateId(false, 4));
+        filterShortcutsAndAssertNumStaticAndDynamic(createShortcutsList(2, 2), 2, 2, generateId(true, 4));
+    }
+
+    private String generateId(boolean isStatic, int rank) {
+        return (isStatic ? "static" : "dynamic") + rank;
+    }
+
     private void filterShortcutsAndAssertNumStaticAndDynamic(
             List<ShortcutInfoCompat> shortcuts, int expectedStatic, int expectedDynamic) {
+        filterShortcutsAndAssertNumStaticAndDynamic(shortcuts, expectedStatic, expectedDynamic, null);
+    }
+
+    private void filterShortcutsAndAssertNumStaticAndDynamic(List<ShortcutInfoCompat> shortcuts,
+            int expectedStatic, int expectedDynamic, String shortcutIdToRemove) {
         Collections.shuffle(shortcuts);
         List<ShortcutInfoCompat> filteredShortcuts = PopupPopulator.sortAndFilterShortcuts(
-                shortcuts);
+                shortcuts, shortcutIdToRemove);
         assertIsSorted(filteredShortcuts);
 
         int numStatic = 0;
@@ -113,6 +136,7 @@ public class PopupPopulatorTest {
     private class Shortcut extends ShortcutInfoCompat {
         private boolean mIsStatic;
         private int mRank;
+        private String mId;
 
         public Shortcut(ShortcutInfo shortcutInfo) {
             super(shortcutInfo);
@@ -122,6 +146,7 @@ public class PopupPopulatorTest {
             this(null);
             mIsStatic = isStatic;
             mRank = rank;
+            mId = generateId(isStatic, rank);
         }
 
         @Override
@@ -137,6 +162,11 @@ public class PopupPopulatorTest {
         @Override
         public int getRank() {
             return mRank;
+        }
+
+        @Override
+        public String getId() {
+            return mId;
         }
     }
 }
