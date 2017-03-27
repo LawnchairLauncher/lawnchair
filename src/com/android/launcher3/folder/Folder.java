@@ -1085,6 +1085,9 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     }
 
     public boolean isDropEnabled() {
+        if (FeatureFlags.LAUNCHER3_NEW_FOLDER_ANIMATION) {
+            return mState != STATE_ANIMATING;
+        }
         return true;
     }
 
