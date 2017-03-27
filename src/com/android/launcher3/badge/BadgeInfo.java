@@ -25,6 +25,7 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 
 import com.android.launcher3.notification.NotificationInfo;
+import com.android.launcher3.notification.NotificationKeyData;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class BadgeInfo {
      * The keys of the notifications that this badge represents. These keys can later be
      * used to retrieve {@link NotificationInfo}'s.
      */
-    private List<String> mNotificationKeys;
+    private List<NotificationKeyData> mNotificationKeys;
 
     /** This will only be initialized if the badge should display the notification icon. */
     private NotificationInfo mNotificationInfo;
@@ -61,7 +62,7 @@ public class BadgeInfo {
     /**
      * Returns whether the notification was added (false if it already existed).
      */
-    public boolean addNotificationKeyIfNotExists(String notificationKey) {
+    public boolean addNotificationKeyIfNotExists(NotificationKeyData notificationKey) {
         if (mNotificationKeys.contains(notificationKey)) {
             return false;
         }
@@ -71,11 +72,11 @@ public class BadgeInfo {
     /**
      * Returns whether the notification was removed (false if it didn't exist).
      */
-    public boolean removeNotificationKey(String notificationKey) {
+    public boolean removeNotificationKey(NotificationKeyData notificationKey) {
         return mNotificationKeys.remove(notificationKey);
     }
 
-    public List<String> getNotificationKeys() {
+    public List<NotificationKeyData> getNotificationKeys() {
         return mNotificationKeys;
     }
 

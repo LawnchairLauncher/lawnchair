@@ -38,7 +38,7 @@ import com.android.launcher3.util.PackageUserKey;
  * only be created when we need to show the notification contents on the UI; until then, a
  * {@link com.android.launcher3.badge.BadgeInfo} with only the notification key should
  * be passed around, and then this can be constructed using the StatusBarNotification from
- * {@link NotificationListener#getNotificationsForKeys(String[])}.
+ * {@link NotificationListener#getNotificationsForKeys(java.util.List)}.
  */
 public class NotificationInfo implements View.OnClickListener {
 
