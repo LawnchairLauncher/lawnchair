@@ -63,26 +63,26 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     public void onNotificationPosted(PackageUserKey postedPackageUserKey,
             NotificationKeyData notificationKey, boolean shouldBeFilteredOut) {
         BadgeInfo badgeInfo = mPackageUserToBadgeInfos.get(postedPackageUserKey);
-        boolean notificationWasAddedOrRemoved; // As opposed to updated.
+        boolean badgeShouldBeRefreshed;
         if (badgeInfo == null) {
             if (!shouldBeFilteredOut) {
                 BadgeInfo newBadgeInfo = new BadgeInfo(postedPackageUserKey);
-                newBadgeInfo.addNotificationKeyIfNotExists(notificationKey);
+                newBadgeInfo.addOrUpdateNotificationKey(notificationKey);
                 mPackageUserToBadgeInfos.put(postedPackageUserKey, newBadgeInfo);
-                notificationWasAddedOrRemoved = true;
+                badgeShouldBeRefreshed = true;
             } else {
-                notificationWasAddedOrRemoved = false;
+                badgeShouldBeRefreshed = false;
             }
         } else {
-            notificationWasAddedOrRemoved = shouldBeFilteredOut
+            badgeShouldBeRefreshed = shouldBeFilteredOut
                     ? badgeInfo.removeNotificationKey(notificationKey)
-                    : badgeInfo.addNotificationKeyIfNotExists(notificationKey);
+                    : badgeInfo.addOrUpdateNotificationKey(notificationKey);
             if (badgeInfo.getNotificationCount() == 0) {
                 mPackageUserToBadgeInfos.remove(postedPackageUserKey);
             }
         }
         updateLauncherIconBadges(Utilities.singletonHashSet(postedPackageUserKey),
-                notificationWasAddedOrRemoved);
+                badgeShouldBeRefreshed);
     }
 
     @Override
@@ -115,7 +115,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
                 badgeInfo = new BadgeInfo(packageUserKey);
                 mPackageUserToBadgeInfos.put(packageUserKey, badgeInfo);
             }
-            badgeInfo.addNotificationKeyIfNotExists(NotificationKeyData
+            badgeInfo.addOrUpdateNotificationKey(NotificationKeyData
                     .fromNotification(notification));
         }
 
@@ -150,17 +150,17 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
      * Updates the icons on launcher (workspace, folders, all apps) to refresh their badges.
      * @param updatedBadges The packages whose badges should be refreshed (either a notification was
      *                      added or removed, or the badge should show the notification icon).
-     * @param addedOrRemoved An optional parameter that will allow us to only refresh badges that
-     *                       updated (not added/removed) that have icons. If a badge updated
-     *                       but it doesn't have an icon, then the badge number doesn't change.
+     * @param shouldRefresh An optional parameter that will allow us to only refresh badges that
+     *                      have actually changed. If a notification updated its content but not
+     *                      its count or icon, then the badge doesn't change.
      */
     private void updateLauncherIconBadges(Set<PackageUserKey> updatedBadges,
-            boolean addedOrRemoved) {
+            boolean shouldRefresh) {
         Iterator<PackageUserKey> iterator = updatedBadges.iterator();
         while (iterator.hasNext()) {
             BadgeInfo badgeInfo = mPackageUserToBadgeInfos.get(iterator.next());
-            if (badgeInfo != null && !updateBadgeIcon(badgeInfo) && !addedOrRemoved) {
-                // The notification icon isn't used, and the badge wasn't added or removed
+            if (badgeInfo != null && !updateBadgeIcon(badgeInfo) && !shouldRefresh) {
+                // The notification icon isn't used, and the badge hasn't changed
                 // so there is no update to be made.
                 iterator.remove();
             }

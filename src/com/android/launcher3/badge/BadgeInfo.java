@@ -36,6 +36,8 @@ import java.util.List;
  */
 public class BadgeInfo {
 
+    public static final int MAX_COUNT = 999;
+
     /** Used to link this BadgeInfo to icons on the workspace and all apps */
     private PackageUserKey mPackageUserKey;
 
@@ -44,6 +46,12 @@ public class BadgeInfo {
      * used to retrieve {@link NotificationInfo}'s.
      */
     private List<NotificationKeyData> mNotificationKeys;
+
+    /**
+     * The current sum of the counts in {@link #mNotificationKeys},
+     * updated whenever a key is added or removed.
+     */
+    private int mTotalCount;
 
     /** This will only be initialized if the badge should display the notification icon. */
     private NotificationInfo mNotificationInfo;
@@ -60,20 +68,38 @@ public class BadgeInfo {
     }
 
     /**
-     * Returns whether the notification was added (false if it already existed).
+     * Returns whether the notification was added or its count changed.
      */
-    public boolean addNotificationKeyIfNotExists(NotificationKeyData notificationKey) {
-        if (mNotificationKeys.contains(notificationKey)) {
-            return false;
+    public boolean addOrUpdateNotificationKey(NotificationKeyData notificationKey) {
+        int indexOfPrevKey = mNotificationKeys.indexOf(notificationKey);
+        NotificationKeyData prevKey = indexOfPrevKey == -1 ? null
+                : mNotificationKeys.get(indexOfPrevKey);
+        if (prevKey != null) {
+            if (prevKey.count == notificationKey.count) {
+                return false;
+            }
+            // Notification was updated with a new count.
+            mTotalCount -= prevKey.count;
+            mTotalCount += notificationKey.count;
+            prevKey.count = notificationKey.count;
+            return true;
         }
-        return mNotificationKeys.add(notificationKey);
+        boolean added = mNotificationKeys.add(notificationKey);
+        if (added) {
+            mTotalCount += notificationKey.count;
+        }
+        return added;
     }
 
     /**
      * Returns whether the notification was removed (false if it didn't exist).
      */
     public boolean removeNotificationKey(NotificationKeyData notificationKey) {
-        return mNotificationKeys.remove(notificationKey);
+        boolean removed = mNotificationKeys.remove(notificationKey);
+        if (removed) {
+            mTotalCount -= notificationKey.count;
+        }
+        return removed;
     }
 
     public List<NotificationKeyData> getNotificationKeys() {
@@ -81,7 +107,7 @@ public class BadgeInfo {
     }
 
     public int getNotificationCount() {
-        return mNotificationKeys.size();
+        return Math.min(mTotalCount, MAX_COUNT);
     }
 
     public void setNotificationToShow(@Nullable NotificationInfo notificationInfo) {
