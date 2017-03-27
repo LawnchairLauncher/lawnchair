@@ -195,7 +195,7 @@ public class AutoInstallsLayout {
         try {
             return parseLayout(mLayoutId, screenIds);
         } catch (Exception e) {
-            Log.w(TAG, "Got exception parsing layout.", e);
+            Log.e(TAG, "Error parsing layout: " + e);
             return -1;
         }
     }
@@ -362,7 +362,7 @@ public class AutoInstallsLayout {
                     return addShortcut(info.loadLabel(mPackageManager).toString(),
                             intent, Favorites.ITEM_TYPE_APPLICATION);
                 } catch (PackageManager.NameNotFoundException e) {
-                    Log.e(TAG, "Unable to add favorite: " + packageName + "/" + className, e);
+                    Log.e(TAG, "Favorite not found: " + packageName + "/" + className);
                 }
                 return -1;
             } else {
