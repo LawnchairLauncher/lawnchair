@@ -16,6 +16,7 @@
 
 package com.android.launcher3.notification;
 
+import android.app.Notification;
 import android.service.notification.StatusBarNotification;
 import android.support.annotation.NonNull;
 
@@ -31,14 +32,17 @@ import java.util.List;
 public class NotificationKeyData {
     public final String notificationKey;
     public final String shortcutId;
+    public int count;
 
-    private NotificationKeyData(String notificationKey, String shortcutId) {
+    private NotificationKeyData(String notificationKey, String shortcutId, int count) {
         this.notificationKey = notificationKey;
         this.shortcutId = shortcutId;
+        this.count = Math.max(1, count);
     }
 
     public static NotificationKeyData fromNotification(StatusBarNotification sbn) {
-        return new NotificationKeyData(sbn.getKey(), sbn.getNotification().getShortcutId());
+        Notification notif = sbn.getNotification();
+        return new NotificationKeyData(sbn.getKey(), notif.getShortcutId(), notif.number);
     }
 
     public static List<String> extractKeysOnly(@NonNull List<NotificationKeyData> notificationKeys) {

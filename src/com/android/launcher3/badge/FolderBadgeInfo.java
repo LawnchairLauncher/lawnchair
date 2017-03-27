@@ -18,8 +18,6 @@ package com.android.launcher3.badge;
 
 import com.android.launcher3.Utilities;
 
-import static com.android.launcher3.Utilities.boundToRange;
-
 /**
  * Subclass of BadgeInfo that only contains the badge count,
  * which is the sum of all the Folder's items' counts.
@@ -27,7 +25,6 @@ import static com.android.launcher3.Utilities.boundToRange;
 public class FolderBadgeInfo extends BadgeInfo {
 
     private static final int MIN_COUNT = 0;
-    private static final int MAX_COUNT = 999;
 
     private int mTotalNotificationCount;
 
@@ -41,7 +38,7 @@ public class FolderBadgeInfo extends BadgeInfo {
         }
         mTotalNotificationCount += badgeToAdd.getNotificationCount();
         mTotalNotificationCount = Utilities.boundToRange(
-                mTotalNotificationCount, MIN_COUNT, MAX_COUNT);
+                mTotalNotificationCount, MIN_COUNT, BadgeInfo.MAX_COUNT);
     }
 
     public void subtractBadgeInfo(BadgeInfo badgeToSubtract) {
@@ -50,7 +47,7 @@ public class FolderBadgeInfo extends BadgeInfo {
         }
         mTotalNotificationCount -= badgeToSubtract.getNotificationCount();
         mTotalNotificationCount = Utilities.boundToRange(
-                mTotalNotificationCount, MIN_COUNT, MAX_COUNT);
+                mTotalNotificationCount, MIN_COUNT, BadgeInfo.MAX_COUNT);
     }
 
     @Override
