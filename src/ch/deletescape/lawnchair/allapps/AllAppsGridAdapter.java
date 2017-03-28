@@ -188,7 +188,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 if (showSectionNames && shouldDrawItemSection(holder, i, items)) {
                     // At this point, we only draw sections for each section break;
                     int viewTopOffset = (2 * child.getPaddingTop());
-                    int pos = holder.getPosition();
+                    int pos = holder.getLayoutPosition();
                     AlphabeticalAppsList.AdapterItem item = items.get(pos);
                     AlphabeticalAppsList.SectionInfo sectionInfo = item.sectionInfo;
 
@@ -288,7 +288,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 return false;
             }
             // Ensure we have a holder position
-            int pos = holder.getPosition();
+            int pos = holder.getLayoutPosition();
             if (pos < 0 || pos >= items.size()) {
                 return false;
             }
@@ -300,7 +300,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
          */
         private boolean shouldDrawItemSection(ViewHolder holder, int childIndex,
                 List<AlphabeticalAppsList.AdapterItem> items) {
-            int pos = holder.getPosition();
+            int pos = holder.getLayoutPosition();
             AlphabeticalAppsList.AdapterItem item = items.get(pos);
 
             // Ensure it's an icon

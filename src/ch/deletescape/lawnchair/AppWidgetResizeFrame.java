@@ -96,7 +96,7 @@ public class AppWidgetResizeFrame extends FrameLayout implements View.OnKeyListe
         mStateAnnouncer = DragViewStateAnnouncer.createFor(this);
 
         setBackgroundResource(R.drawable.widget_resize_shadow);
-        setForeground(getResources().getDrawable(R.drawable.widget_resize_frame));
+        setForeground(getResources().getDrawable(R.drawable.widget_resize_frame, context.getTheme()));
         setPadding(0, 0, 0, 0);
 
         final int handleMargin = getResources().getDimensionPixelSize(R.dimen.widget_handle_margin);

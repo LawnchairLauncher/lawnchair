@@ -1,8 +1,8 @@
 package ch.deletescape.lawnchair.ui;
 
+import android.support.test.filters.LargeTest;
 import android.support.test.uiautomator.By;
 import android.support.test.uiautomator.UiObject2;
-import android.test.suitebuilder.annotation.LargeTest;
 import android.view.View;
 
 import ch.deletescape.lawnchair.ItemInfo;

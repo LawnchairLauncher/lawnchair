@@ -209,7 +209,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         } else {
             if (v instanceof BubbleTextView) {
                 BubbleTextView icon = (BubbleTextView) v;
-                int position = getChildPosition(icon);
+                int position = getChildAdapterPosition(icon);
                 if (position != NO_POSITION) {
                     List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
                     AlphabeticalAppsList.AdapterItem item = items.get(position);
@@ -377,7 +377,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
 
         // Calculate the y and offset for the item
         View child = getChildAt(0);
-        int position = getChildPosition(child);
+        int position = getChildAdapterPosition(child);
         if (position == NO_POSITION) {
             return -1;
         }
