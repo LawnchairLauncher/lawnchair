@@ -55,6 +55,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.Stack;
 
@@ -238,8 +239,7 @@ public class IconCache {
     public void updateDbIcons(Set<String> ignorePackagesForMainUser) {
         // Remove all active icon update tasks.
         mWorkerHandler.removeCallbacksAndMessages(ICON_UPDATE_TOKEN);
-
-        mIconProvider.updateSystemStateString();
+        
         for (UserHandleCompat user : mUserManager.getUserProfiles()) {
             // Query for the set of apps
             final List<LauncherActivityInfoCompat> apps = mLauncherApps.getActivityList(null, user);
@@ -313,8 +313,7 @@ public class IconCache {
                 int version = c.getInt(indexVersion);
                 LauncherActivityInfoCompat app = componentMap.remove(component);
                 if (version == info.versionCode && updateTime == info.lastUpdateTime &&
-                        TextUtils.equals(c.getString(systemStateIndex),
-                                mIconProvider.getIconSystemState(info.packageName))) {
+                        TextUtils.equals(c.getString(systemStateIndex), Locale.getDefault().toString())) {
                     continue;
                 }
                 if (app == null) {
@@ -855,7 +854,7 @@ public class IconCache {
         values.put(IconDB.COLUMN_ICON_LOW_RES, Utilities.flattenBitmap(lowResIcon));
 
         values.put(IconDB.COLUMN_LABEL, label);
-        values.put(IconDB.COLUMN_SYSTEM_STATE, mIconProvider.getIconSystemState(packageName));
+        values.put(IconDB.COLUMN_SYSTEM_STATE, Locale.getDefault().toString());
 
         return values;
     }
