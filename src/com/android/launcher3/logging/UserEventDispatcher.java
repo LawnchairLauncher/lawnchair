@@ -62,17 +62,11 @@ public class UserEventDispatcher {
     private static final boolean IS_VERBOSE =
             FeatureFlags.IS_DOGFOOD_BUILD && Utilities.isPropertyEnabled(LogConfig.USEREVENT);
 
-    private static UserEventDispatcher sInstance;
-    private static final Object LOCK = new Object();
-
-    public static UserEventDispatcher get(Context context) {
-        synchronized (LOCK) {
-            if (sInstance == null) {
-                sInstance = Utilities.getOverrideObject(UserEventDispatcher.class,
-                        context.getApplicationContext(), R.string.user_event_dispatcher_class);
-            }
-            return sInstance;
-        }
+    public static UserEventDispatcher newInstance(Context context, boolean isInMultiWindowMode) {
+        UserEventDispatcher ued = Utilities.getOverrideObject(UserEventDispatcher.class,
+                context.getApplicationContext(), R.string.user_event_dispatcher_class);
+        ued.mIsInMultiWindowMode = isInMultiWindowMode;
+        return ued;
     }
 
     /**
@@ -117,6 +111,7 @@ public class UserEventDispatcher {
     private long mElapsedContainerMillis;
     private long mElapsedSessionMillis;
     private long mActionDurationMillis;
+    private boolean mIsInMultiWindowMode;
 
     // Used for filling in predictedRank on {@link Target}s.
     private List<ComponentKey> mPredictedApps;
@@ -301,6 +296,7 @@ public class UserEventDispatcher {
     }
 
     public void dispatchUserEvent(LauncherEvent ev, Intent intent) {
+        ev.isInMultiWindowMode = mIsInMultiWindowMode;
         ev.elapsedContainerMillis = SystemClock.uptimeMillis() - mElapsedContainerMillis;
         ev.elapsedSessionMillis = SystemClock.uptimeMillis() - mElapsedSessionMillis;
 
@@ -319,6 +315,7 @@ public class UserEventDispatcher {
                 ev.elapsedContainerMillis,
                 ev.elapsedSessionMillis,
                 ev.actionDurationMillis);
+        log += "\n isInMultiWindowMode " + ev.isInMultiWindowMode;
         Log.d(TAG, log);
     }
 

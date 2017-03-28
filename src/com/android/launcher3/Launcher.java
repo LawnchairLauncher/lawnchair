@@ -366,7 +366,7 @@ public class Launcher extends BaseActivity
 
         // Load configuration-specific DeviceProfile
         mDeviceProfile = app.getInvariantDeviceProfile().getDeviceProfile(this);
-        if (Utilities.ATLEAST_NOUGAT && isInMultiWindowMode()) {
+        if (isInMultiWindowModeCompat()) {
             Display display = getWindowManager().getDefaultDisplay();
             Point mwSize = new Point();
             display.getSize(mwSize);

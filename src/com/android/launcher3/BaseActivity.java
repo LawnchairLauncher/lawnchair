@@ -38,9 +38,14 @@ public abstract class BaseActivity extends Activity {
 
     public final UserEventDispatcher getUserEventDispatcher() {
         if (mUserEventDispatcher == null) {
-            mUserEventDispatcher = UserEventDispatcher.get(this);
+            mUserEventDispatcher = UserEventDispatcher.newInstance(this,
+                    isInMultiWindowModeCompat());
         }
         return mUserEventDispatcher;
+    }
+
+    public boolean isInMultiWindowModeCompat() {
+        return Utilities.ATLEAST_NOUGAT && isInMultiWindowMode();
     }
 
     public static BaseActivity fromContext(Context context) {
