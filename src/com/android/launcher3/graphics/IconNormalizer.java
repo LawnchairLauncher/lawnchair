@@ -220,7 +220,9 @@ public class IconNormalizer {
             @Nullable Path path, @Nullable boolean[] outMaskShape) {
         if (Utilities.isAtLeastO() && d instanceof AdaptiveIconDrawable &&
                 mAdaptiveIconScale != SCALE_NOT_INITIALIZED) {
-            outBounds.set(mBounds);
+            if (outBounds != null) {
+                outBounds.set(mBounds);
+            }
             return mAdaptiveIconScale;
         }
         int width = d.getIntrinsicWidth();
