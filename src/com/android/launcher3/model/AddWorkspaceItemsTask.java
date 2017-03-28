@@ -179,7 +179,7 @@ public class AddWorkspaceItemsTask extends ExtendedModelTask {
                         // checking for existing promise icon with same package name
                         if (isLauncherAppTarget
                                 && info.isPromise()
-                                && info.hasStatusFlag(ShortcutInfo.FLAG_AUTOINTALL_ICON)
+                                && info.hasStatusFlag(ShortcutInfo.FLAG_AUTOINSTALL_ICON)
                                 && info.getTargetComponent() != null
                                 && compPkgName != null
                                 && compPkgName.equals(info.getTargetComponent().getPackageName())) {

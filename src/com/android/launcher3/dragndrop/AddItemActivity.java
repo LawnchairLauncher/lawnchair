@@ -31,7 +31,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.*;
+import android.view.View.DragShadowBuilder;
+import android.view.View.OnLongClickListener;
+import android.view.View.OnTouchListener;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.InstallShortcutReceiver;

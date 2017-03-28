@@ -40,7 +40,7 @@ public class PromiseAppInfo extends AppInfo {
         ShortcutInfo shortcut = new ShortcutInfo(this);
         shortcut.setInstallProgress(level);
         // We need to update the component name when the apk is installed
-        shortcut.status |= ShortcutInfo.FLAG_AUTOINTALL_ICON;
+        shortcut.status |= ShortcutInfo.FLAG_AUTOINSTALL_ICON;
         // Since the user is manually placing it on homescreen, it should not be auto-removed later
         shortcut.status |= ShortcutInfo.FLAG_RESTORE_STARTED;
         return shortcut;

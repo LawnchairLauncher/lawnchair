@@ -58,7 +58,6 @@ import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logging.LoggerUtils;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TouchController;
 

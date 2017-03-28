@@ -26,7 +26,6 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.ShortcutInfo;
 
 import java.util.ArrayList;

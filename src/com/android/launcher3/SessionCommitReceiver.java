@@ -29,7 +29,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.compat.UserManagerCompat;
 
 import java.util.List;
 

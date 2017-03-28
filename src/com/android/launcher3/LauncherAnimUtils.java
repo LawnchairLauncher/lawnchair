@@ -23,9 +23,7 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.util.Property;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.ViewAnimator;
 
 import java.util.HashSet;
 import java.util.WeakHashMap;
