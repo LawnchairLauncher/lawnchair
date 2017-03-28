@@ -160,10 +160,6 @@ public class InvariantDeviceProfile {
         hotseatIconSize = interpolatedDeviceProfileOut.hotseatIconSize;
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
 
-        // If the partner customization apk contains any grid overrides, apply them
-        // Supported overrides: numRows, numColumns, iconSize
-        applyPartnerDeviceProfileOverrides(context, dm);
-
         customizationHook(context,dm);
 
         Point realSize = new Point();
@@ -270,18 +266,6 @@ public class InvariantDeviceProfile {
         }
 
         return density;
-    }
-
-    /**
-     * Apply any Partner customization grid overrides.
-     *
-     * Currently we support: all apps row / column count.
-     */
-    private void applyPartnerDeviceProfileOverrides(Context context, DisplayMetrics dm) {
-        Partner p = Partner.get(context.getPackageManager());
-        if (p != null) {
-            p.applyInvariantDeviceProfileOverrides(this, dm);
-        }
     }
 
     @Thunk float dist(float x0, float y0, float x1, float y1) {

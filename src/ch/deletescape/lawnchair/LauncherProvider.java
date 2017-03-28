@@ -482,18 +482,6 @@ public class LauncherProvider extends ContentProvider {
             if (loader == null) {
                 loader = AutoInstallsLayout.get(getContext(),widgetHost, mOpenHelper);
             }
-            if (loader == null) {
-                final Partner partner = Partner.get(getContext().getPackageManager());
-                if (partner != null && partner.hasDefaultLayout()) {
-                    final Resources partnerRes = partner.getResources();
-                    int workspaceResId = partnerRes.getIdentifier(Partner.RES_DEFAULT_LAYOUT,
-                            "xml", partner.getPackageName());
-                    if (workspaceResId != 0) {
-                        loader = new DefaultLayoutParser(getContext(), widgetHost,
-                                mOpenHelper, partnerRes, workspaceResId);
-                    }
-                }
-            }
 
             final boolean usingExternallyProvidedLayout = loader != null;
             if (loader == null) {

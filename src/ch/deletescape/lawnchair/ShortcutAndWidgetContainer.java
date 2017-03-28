@@ -117,6 +117,11 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
                 grid.hotseatCellHeightPx : grid.cellHeightPx);
     }
 
+    @Override
+    protected void setChildrenDrawnWithCacheEnabled(boolean enabled) {
+        super.setChildrenDrawnWithCacheEnabled(enabled);
+    }
+
     public void measureChild(View child) {
         final DeviceProfile grid = mLauncher.getDeviceProfile();
         final int cellWidth = mCellWidth;

@@ -38,7 +38,6 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     private static final String TAG_APPWIDGET = "appwidget";
     protected static final String TAG_SHORTCUT = "shortcut";
     private static final String TAG_FOLDER = "folder";
-    private static final String TAG_PARTNER_FOLDER = "partner-folder";
 
     protected static final String ATTR_URI = "uri";
     private static final String ATTR_CONTAINER = "container";
@@ -79,7 +78,6 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
         parsers.put(TAG_SHORTCUT, new UriShortcutParser(mSourceRes));
         parsers.put(TAG_RESOLVE, new ResolveParser());
         parsers.put(TAG_FOLDER, new MyFolderParser());
-        parsers.put(TAG_PARTNER_FOLDER, new PartnerFolderParser());
         return parsers;
     }
 
@@ -232,32 +230,6 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
                 }
             }
             return addedId;
-        }
-    }
-
-    /**
-     * A parser which adds a folder whose contents come from partner apk.
-     */
-    @Thunk class PartnerFolderParser implements TagParser {
-
-        @Override
-        public long parseAndAdd(XmlResourceParser parser) throws XmlPullParserException,
-                IOException {
-            // Folder contents come from an external XML resource
-            final Partner partner = Partner.get(mPackageManager);
-            if (partner != null) {
-                final Resources partnerRes = partner.getResources();
-                final int resId = partnerRes.getIdentifier(Partner.RES_FOLDER,
-                        "xml", partner.getPackageName());
-                if (resId != 0) {
-                    final XmlResourceParser partnerParser = partnerRes.getXml(resId);
-                    beginDocument(partnerParser, TAG_FOLDER);
-
-                    FolderParser folderParser = new FolderParser(getFolderElementsMap(partnerRes));
-                    return folderParser.parseAndAdd(partnerParser);
-                }
-            }
-            return -1;
         }
     }
 
