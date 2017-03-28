@@ -1757,8 +1757,7 @@ public class Launcher extends Activity
         // as slow logic in the callbacks eat into the time the scroller expects for the snapToPage
         // animation.
         if (isActionMain) {
-            boolean callbackAllowsMoveToDefaultScreen = mLauncherCallbacks != null ?
-                    mLauncherCallbacks.shouldMoveToDefaultScreenOnHomeIntent() : true;
+            boolean callbackAllowsMoveToDefaultScreen = mLauncherCallbacks == null || mLauncherCallbacks.shouldMoveToDefaultScreenOnHomeIntent();
             if (shouldMoveToDefaultScreen && !mWorkspace.isTouchActive()
                     && callbackAllowsMoveToDefaultScreen) {
 
@@ -1860,11 +1859,6 @@ public class Launcher extends Activity
 
     public DragController getDragController() {
         return mDragController;
-    }
-
-    @Override
-    public void startActivityForResult(Intent intent, int requestCode, Bundle options) {
-        super.startActivityForResult(intent, requestCode, options);
     }
 
     @Override
@@ -4136,10 +4130,7 @@ public class Launcher extends Activity
         if (!mIsResumeFromActionScreenOff) {
             return false;
         }
-        if (mSharedPrefs.getBoolean(APPS_VIEW_SHOWN, false)) {
-            return false;
-        }
-        return true;
+        return !mSharedPrefs.getBoolean(APPS_VIEW_SHOWN, false);
     }
 
     // TODO: These method should be a part of LauncherSearchCallback

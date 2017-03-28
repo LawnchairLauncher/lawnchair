@@ -215,10 +215,6 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
         }
     }
 
-    protected void setChildrenDrawnWithCacheEnabled(boolean enabled) {
-        super.setChildrenDrawnWithCacheEnabled(enabled);
-    }
-
     @Override
     public void setLayerType(int layerType, Paint paint) {
         // When clip children is disabled do not use hardware layer,

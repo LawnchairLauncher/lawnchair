@@ -187,12 +187,6 @@ public abstract class AllAppsSearchBarController
     public interface Callbacks {
 
         /**
-         * Called when the bounds of the search bar has changed.
-         */
-        @Deprecated
-        void onBoundsChanged(Rect newBounds);
-
-        /**
          * Called when the search is complete.
          *
          * @param apps sorted list of matching components or null if in case of failure.

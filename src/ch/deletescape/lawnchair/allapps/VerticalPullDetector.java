@@ -136,11 +136,8 @@ public class VerticalPullDetector {
             return false;
         }
         // Check if the client is interested in scroll in current direction.
-        if (((mScrollConditions & DIRECTION_DOWN) > 0 && mDisplacementY > 0) ||
-                ((mScrollConditions & DIRECTION_UP) > 0 && mDisplacementY < 0)) {
-            return true;
-        }
-        return false;
+        return ((mScrollConditions & DIRECTION_DOWN) > 0 && mDisplacementY > 0) ||
+                ((mScrollConditions & DIRECTION_UP) > 0 && mDisplacementY < 0);
     }
 
     public boolean onTouchEvent(MotionEvent ev) {

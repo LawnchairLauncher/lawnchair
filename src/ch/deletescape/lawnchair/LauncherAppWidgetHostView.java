@@ -85,10 +85,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
     public boolean isReinflateRequired() {
         // Re-inflate is required if the orientation has changed since last inflated.
         int orientation = mContext.getResources().getConfiguration().orientation;
-        if (mPreviousOrientation != orientation) {
-           return true;
-       }
-       return false;
+        return mPreviousOrientation != orientation;
     }
 
     public boolean onInterceptTouchEvent(MotionEvent ev) {

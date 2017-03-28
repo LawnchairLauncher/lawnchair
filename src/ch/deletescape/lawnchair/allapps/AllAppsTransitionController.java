@@ -377,9 +377,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (canceled) {
-                    return;
-                } else {
+                if (!canceled){
                     finishPullUp();
                     cleanUpAnimation();
                     mDetector.finishedScrolling();
@@ -460,9 +458,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (canceled) {
-                    return;
-                } else {
+                if (!canceled) {
                     finishPullDown();
                     cleanUpAnimation();
                     mDetector.finishedScrolling();

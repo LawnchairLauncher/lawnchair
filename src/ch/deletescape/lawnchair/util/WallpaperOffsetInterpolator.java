@@ -96,10 +96,7 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
         if (Math.abs(mCurrentOffset - mFinalOffset) > 0.0000001f) {
             scheduleUpdate();
         }
-        if (Math.abs(oldOffset - mCurrentOffset) > 0.0000001f) {
-            return true;
-        }
-        return false;
+        return Math.abs(oldOffset - mCurrentOffset) > 0.0000001f;
     }
 
     /**

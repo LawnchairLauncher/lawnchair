@@ -289,10 +289,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             }
             // Ensure we have a holder position
             int pos = holder.getLayoutPosition();
-            if (pos < 0 || pos >= items.size()) {
-                return false;
-            }
-            return true;
+            return !(pos < 0 || pos >= items.size());
         }
 
         /**
