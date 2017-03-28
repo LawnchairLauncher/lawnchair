@@ -69,7 +69,6 @@ class FullscreenKeyEventListener implements View.OnKeyListener {
 public class FocusHelper {
 
     private static final String TAG = "FocusHelper";
-    private static final boolean DEBUG = false;
 
     /**
      * Handles key events in paged folder.
@@ -87,10 +86,6 @@ public class FocusHelper {
             boolean consume = FocusLogic.shouldConsume(keyCode);
             if (e.getAction() == KeyEvent.ACTION_UP) {
                 return consume;
-            }
-            if (DEBUG) {
-                Log.v(TAG, String.format("Handle ALL Folders keyevent=[%s].",
-                        KeyEvent.keyCodeToString(keyCode)));
             }
 
             if (!(v.getParent() instanceof ShortcutAndWidgetContainer)) {
@@ -203,12 +198,6 @@ public class FocusHelper {
 
         final Launcher launcher = Launcher.getLauncher(v.getContext());
         final DeviceProfile profile = launcher.getDeviceProfile();
-
-        if (DEBUG) {
-            Log.v(TAG, String.format(
-                    "Handle HOTSEAT BUTTONS keyevent=[%s] on hotseat buttons, isVertical=%s",
-                    KeyEvent.keyCodeToString(keyCode), profile.isVerticalBarLayout()));
-        }
 
         // Initialize the variables.
         final Workspace workspace = (Workspace) v.getRootView().findViewById(R.id.workspace);
@@ -340,11 +329,6 @@ public class FocusHelper {
 
         Launcher launcher = Launcher.getLauncher(v.getContext());
         DeviceProfile profile = launcher.getDeviceProfile();
-
-        if (DEBUG) {
-            Log.v(TAG, String.format("Handle WORKSPACE ICONS keyevent=[%s] isVerticalBar=%s",
-                    KeyEvent.keyCodeToString(keyCode), profile.isVerticalBarLayout()));
-        }
 
         // Initialize the variables.
         ShortcutAndWidgetContainer parent = (ShortcutAndWidgetContainer) v.getParent();

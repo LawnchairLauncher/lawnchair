@@ -302,17 +302,6 @@ public final class Utilities {
             final int left = (textureWidth-width) / 2;
             final int top = (textureHeight-height) / 2;
 
-            @SuppressWarnings("all") // suppress dead code warning
-            final boolean debug = false;
-            if (debug) {
-                // draw a big box for the icon for debugging
-                canvas.drawColor(sColors[sColorIndex]);
-                if (++sColorIndex >= sColors.length) sColorIndex = 0;
-                Paint debugPaint = new Paint();
-                debugPaint.setColor(0xffcccc00);
-                canvas.drawRect(left, top, left+width, top+height, debugPaint);
-            }
-
             sOldBounds.set(icon.getBounds());
             icon.setBounds(left, top, left+width, top+height);
             canvas.save(Canvas.MATRIX_SAVE_FLAG);

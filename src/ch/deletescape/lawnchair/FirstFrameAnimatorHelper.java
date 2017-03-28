@@ -33,7 +33,6 @@ import ch.deletescape.lawnchair.util.Thunk;
  */
 public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
     implements ValueAnimator.AnimatorUpdateListener {
-    private static final boolean DEBUG = false;
     private static final int MAX_DELAY = 1000;
     private static final int IDEAL_FRAME_DURATION = 16;
     private View mTarget;
@@ -75,11 +74,6 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
                 private long mTime = System.currentTimeMillis();
                 public void onDraw() {
                     sGlobalFrameCounter++;
-                    if (DEBUG) {
-                        long newTime = System.currentTimeMillis();
-                        Log.d("FirstFrameAnimatorHelper", "TICK " + (newTime - mTime));
-                        mTime = newTime;
-                    }
                 }
             };
         view.getViewTreeObserver().addOnDrawListener(sGlobalDrawListener);
@@ -121,19 +115,14 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
                        currentPlayTime > IDEAL_FRAME_DURATION) {
                 animation.setCurrentPlayTime(IDEAL_FRAME_DURATION);
                 mAdjustedSecondFrameTime = true;
-            } else {
-                if (frameNum > 1) {
-                    mTarget.post(new Runnable() {
-                            public void run() {
-                                animation.removeUpdateListener(FirstFrameAnimatorHelper.this);
-                            }
-                        });
-                }
-                if (DEBUG) print(animation);
+            } else if (frameNum > 1) {
+                mTarget.post(new Runnable() {
+                        public void run() {
+                            animation.removeUpdateListener(FirstFrameAnimatorHelper.this);
+                        }
+                    });
             }
             mHandlingOnAnimationUpdate = false;
-        } else {
-            if (DEBUG) print(animation);
         }
     }
 

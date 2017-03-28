@@ -72,9 +72,6 @@ public class IconCache {
     // Empty class name is used for storing package default entry.
     private static final String EMPTY_CLASS_NAME = ".";
 
-    private static final boolean DEBUG = false;
-    private static final boolean DEBUG_IGNORE_CACHE = false;
-
     private static final int LOW_RES_SCALE_FACTOR = 5;
 
     @Thunk static final Object ICON_UPDATE_TOKEN = new Object();
@@ -562,7 +559,7 @@ public class IconCache {
             mCache.put(cacheKey, entry);
 
             // Check the DB first.
-            if (!getEntryFromDB(cacheKey, entry, useLowResIcon) || DEBUG_IGNORE_CACHE) {
+            if (!getEntryFromDB(cacheKey, entry, useLowResIcon)) {
                 if (info != null) {
                     entry.icon = Utilities.createBadgedIconBitmap(
                             info.getIcon(mIconDpi), info.getUser(),
@@ -572,16 +569,12 @@ public class IconCache {
                         CacheEntry packageEntry = getEntryForPackageLocked(
                                 componentName.getPackageName(), user, false);
                         if (packageEntry != null) {
-                            if (DEBUG) Log.d(TAG, "using package default icon for " +
-                                    componentName.toShortString());
                             entry.icon = packageEntry.icon;
                             entry.title = packageEntry.title;
                             entry.contentDescription = packageEntry.contentDescription;
                         }
                     }
                     if (entry.icon == null) {
-                        if (DEBUG) Log.d(TAG, "using default icon for " +
-                                componentName.toShortString());
                         entry.icon = getDefaultIcon(user);
                     }
                 }
@@ -666,7 +659,6 @@ public class IconCache {
                             mUserManager.getSerialNumberForUser(user));
 
                 } catch (NameNotFoundException e) {
-                    if (DEBUG) Log.d(TAG, "Application not installed " + packageName);
                     entryUpdated = false;
                 }
             }
