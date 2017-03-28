@@ -67,9 +67,6 @@
     <string name="settings_button_text" msgid="8119458837558863227">"Cài đặt"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Bị tắt bởi quản trị viên của bạn"</string>
     <string name="accessibility_action_overview" msgid="6257665857640347026">"Tổng quan"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"Cho phép xoay Màn hình chính"</string>
-    <string name="allow_rotation_desc" msgid="8662546029078692509">"Khi xoay điện thoại"</string>
-    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Cài đặt Hiển thị hiện tại không cho phép xoay"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Không xác định"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Xóa"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Tìm kiếm"</string>

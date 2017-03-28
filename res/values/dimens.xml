@@ -38,10 +38,8 @@
 
 <!-- Drop target bar -->
     <dimen name="dynamic_grid_drop_target_size">48dp</dimen>
-    <dimen name="vert_drop_target_vertical_gap">20dp</dimen>
-    <dimen name="vert_drop_target_horizontal_gap">14dp</dimen>
 
-<!-- App Widget resize frame -->
+    <!-- App Widget resize frame -->
     <dimen name="default_widget_padding">8dp</dimen>
     <dimen name="widget_handle_margin">13dp</dimen>
     <dimen name="resize_frame_background_padding">24dp</dimen>
@@ -77,7 +75,6 @@
 <!-- Search bar in All Apps -->
     <dimen name="all_apps_header_max_elevation">3dp</dimen>
     <dimen name="all_apps_header_scroll_to_elevation">16dp</dimen>
-    <dimen name="all_apps_header_shadow_height">6dp</dimen>
 
     <dimen name="all_apps_divider_margin_vertical">8dp</dimen>
 

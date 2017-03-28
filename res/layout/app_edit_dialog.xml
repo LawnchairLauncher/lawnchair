@@ -55,7 +55,6 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/visibility_label"
             android:layout_width="52dp"
             android:layout_height="wrap_content"
             android:text="Visibility" />

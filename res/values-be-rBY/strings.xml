@@ -67,9 +67,6 @@
     <string name="settings_button_text" msgid="8119458837558863227">"Налады"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Адключаная адміністратарам"</string>
     <string name="accessibility_action_overview" msgid="6257665857640347026">"Агляд"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"Дазволіць паварот галоўнага экрана"</string>
-    <string name="allow_rotation_desc" msgid="8662546029078692509">"Пры павароце тэлефона"</string>
-    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Бягучая налада дысплэя не прадугледжвае паварот"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Невядома"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Выдаліць"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Шукаць"</string>
