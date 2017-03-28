@@ -35,7 +35,7 @@ public final class FeatureFlags {
     // When enabled allows to use any point on the fast scrollbar to start dragging.
     public static boolean LAUNCHER3_DIRECT_SCROLL = true;
     // When enabled while all-apps open, the soft input will be set to adjust resize .
-    public static boolean LAUNCHER3_UPDATE_SOFT_INPUT_MODE = false;
+    public static boolean LAUNCHER3_UPDATE_SOFT_INPUT_MODE = true;
     // When enabled the promise icon is visible in all apps while installation an app.
     public static boolean LAUNCHER3_PROMISE_APPS_IN_ALL_APPS = true;
 
