@@ -113,11 +113,8 @@ public class IconNormalizer {
         int[] mPixels = new int[mMaxSize * mMaxSize];
         mAdaptiveIconScale = SCALE_NOT_INITIALIZED;
 
-        // Only needed when DEBUG == true
-        if (DEBUG) {
-            mDir = context.getExternalFilesDir(null);
-            mRandom = new Random();
-        }
+        mDir = context.getExternalFilesDir(null);
+        mRandom = new Random();
     }
 
     /**
