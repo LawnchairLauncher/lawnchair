@@ -2270,6 +2270,9 @@ public class Launcher extends BaseActivity
 
         if (v instanceof Workspace) {
             if (mWorkspace.isInOverviewMode()) {
+                getUserEventDispatcher().logActionOnContainer(LauncherLogProto.Action.Type.TOUCH,
+                        LauncherLogProto.Action.Direction.NONE,
+                        LauncherLogProto.ContainerType.OVERVIEW, mWorkspace.getCurrentPage());
                 showWorkspace(true);
             }
             return;
