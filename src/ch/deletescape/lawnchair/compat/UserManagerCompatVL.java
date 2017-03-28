@@ -22,6 +22,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.UserHandle;
+import android.os.UserManager;
 
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.util.LongArrayMap;
@@ -32,14 +33,17 @@ import java.util.HashMap;
 import java.util.List;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-public class UserManagerCompatVL extends UserManagerCompatV17 {
+public class UserManagerCompatVL extends UserManagerCompat {
     private static final String USER_CREATION_TIME_KEY = "user_creation_time_";
 
+    protected LongArrayMap<UserHandleCompat> mUsers;
+    protected HashMap<UserHandleCompat, Long> mUserToSerialMap;
+    protected UserManager mUserManager;
     private final PackageManager mPm;
     private final Context mContext;
 
     UserManagerCompatVL(Context context) {
-        super(context);
+        mUserManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
         mPm = context.getPackageManager();
         mContext = context;
     }
@@ -99,6 +103,40 @@ public class UserManagerCompatVL extends UserManagerCompatV17 {
             prefs.edit().putLong(key, System.currentTimeMillis()).apply();
         }
         return prefs.getLong(key, 0);
+    }
+
+    @Override
+    public boolean isQuietModeEnabled(UserHandleCompat user) {
+        return false;
+    }
+
+    public UserHandleCompat getUserForSerialNumber(long serialNumber) {
+        synchronized (this) {
+            if (mUsers != null) {
+                return mUsers.get(serialNumber);
+            }
+        }
+        return UserHandleCompat.fromUser(mUserManager.getUserForSerialNumber(serialNumber));
+    }
+
+    @Override
+    public boolean isUserUnlocked(UserHandleCompat user) {
+        return true;
+    }
+
+    @Override
+    public boolean isDemoUser() {
+        return false;
+    }
+
+    public long getSerialNumberForUser(UserHandleCompat user) {
+        synchronized (this) {
+            if (mUserToSerialMap != null) {
+                Long serial = mUserToSerialMap.get(user);
+                return serial == null ? 0 : serial;
+            }
+        }
+        return mUserManager.getSerialNumberForUser(user.getUser());
     }
 }
 

@@ -21,6 +21,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.LauncherActivityInfo;
+import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
@@ -437,8 +439,9 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         }
 
         // Ignore any conflicts in the label name, as that can change based on locale.
-        LauncherActivityInfoCompat launcherInfo = LauncherActivityInfoCompat
-                .fromResolveInfo(info, original.mContext);
+        LauncherApps launcherApps  = (LauncherApps) original.mContext.getSystemService("launcherapps");
+        LauncherActivityInfo info1 = launcherApps.resolveActivity(original.launchIntent, original.user.getUser());
+        LauncherActivityInfoCompat launcherInfo = new LauncherActivityInfoCompat(info1);
         return new PendingInstallShortcutInfo(launcherInfo, original.mContext);
     }
 }

@@ -24,7 +24,6 @@ import android.content.pm.ShortcutInfo;
 import android.os.Build;
 
 import ch.deletescape.lawnchair.ItemInfo;
-import ch.deletescape.lawnchair.compat.DeferredLauncherActivityInfo;
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.compat.UserHandleCompat;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
@@ -124,6 +123,9 @@ public class ShortcutInfoCompat {
     }
 
     public LauncherActivityInfoCompat getActivityInfo(Context context) {
-        return new DeferredLauncherActivityInfo(getActivity(), getUserHandle(), context);
+        Intent intent = new Intent(Intent.ACTION_MAIN)
+                .addCategory(Intent.CATEGORY_LAUNCHER)
+                .setComponent(getActivity());
+        return LauncherActivityInfoCompat.create(context, getUserHandle().getUser(),intent);
     }
 }

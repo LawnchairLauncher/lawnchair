@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-public class LauncherAppsCompatVL extends LauncherAppsCompatV16 {
+public class LauncherAppsCompatVL extends LauncherAppsCompat {
 
     protected LauncherApps mLauncherApps;
 
@@ -45,7 +45,6 @@ public class LauncherAppsCompatVL extends LauncherAppsCompatV16 {
             = new HashMap<>();
 
     LauncherAppsCompatVL(Context context) {
-        super(context);
         mLauncherApps = (LauncherApps) context.getSystemService("launcherapps");
     }
 
@@ -59,7 +58,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompatV16 {
         ArrayList<LauncherActivityInfoCompat> compatList =
                 new ArrayList<>(list.size());
         for (LauncherActivityInfo info : list) {
-            compatList.add(new LauncherActivityInfoCompatVL(info));
+            compatList.add(new LauncherActivityInfoCompat(info));
         }
         return compatList;
     }
@@ -67,7 +66,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompatV16 {
     public LauncherActivityInfoCompat resolveActivity(Intent intent, UserHandleCompat user) {
         LauncherActivityInfo activity = mLauncherApps.resolveActivity(intent, user.getUser());
         if (activity != null) {
-            return new LauncherActivityInfoCompatVL(activity);
+            return new LauncherActivityInfoCompat(activity);
         } else {
             return null;
         }
