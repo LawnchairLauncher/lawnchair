@@ -439,9 +439,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         }
 
         // Ignore any conflicts in the label name, as that can change based on locale.
-        LauncherApps launcherApps  = (LauncherApps) original.mContext.getSystemService("launcherapps");
-        LauncherActivityInfo info1 = launcherApps.resolveActivity(original.launchIntent, original.user.getUser());
-        LauncherActivityInfoCompat launcherInfo = new LauncherActivityInfoCompat(info1);
+        LauncherActivityInfoCompat launcherInfo = LauncherActivityInfoCompat.create(original.mContext, original.user.getUser(), original.launchIntent);
         return new PendingInstallShortcutInfo(launcherInfo, original.mContext);
     }
 }
