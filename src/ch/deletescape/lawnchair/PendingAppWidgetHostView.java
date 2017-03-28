@@ -63,7 +63,6 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
     private final TextPaint mPaint;
     private Layout mSetupTextLayout;
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public PendingAppWidgetHostView(Context context, LauncherAppWidgetInfo info,
             boolean disabledForSafeMode) {
         super(new ContextThemeWrapper(context, R.style.WidgetContainerTheme));

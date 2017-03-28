@@ -2209,7 +2209,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     /* Accessibility */
     @SuppressWarnings("deprecation")
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(info);

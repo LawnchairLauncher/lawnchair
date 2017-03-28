@@ -4143,7 +4143,6 @@ public class Launcher extends Activity
     }
 
     // TODO: These method should be a part of LauncherSearchCallback
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public ItemInfo createAppDragInfo(Intent appLaunchIntent) {
         // Called from search suggestion
         UserHandleCompat user = null;

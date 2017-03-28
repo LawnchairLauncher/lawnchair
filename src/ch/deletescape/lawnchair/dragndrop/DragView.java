@@ -86,7 +86,6 @@ public class DragView extends View {
      * @param registrationX The x coordinate of the registration point.
      * @param registrationY The y coordinate of the registration point.
      */
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public DragView(Launcher launcher, Bitmap bitmap, int registrationX, int registrationY,
                     final float initialScale, final float finalScaleDps) {
         super(launcher);
@@ -270,7 +269,6 @@ public class DragView extends View {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void animateFilterTo(float[] targetFilter) {
         float[] oldFilter = mCurrentFilter == null ? new ColorMatrix().getArray() : mCurrentFilter;
         mCurrentFilter = Arrays.copyOf(oldFilter, oldFilter.length);

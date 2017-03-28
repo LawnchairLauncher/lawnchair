@@ -92,7 +92,6 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
                 (minResizeHeight + widgetPadding.top + widgetPadding.bottom) / smallestCellHeight));
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public String getLabel(PackageManager packageManager) {
         if (isCustomWidget) {
             return Utilities.trim(label);
@@ -100,7 +99,6 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
         return super.loadLabel(packageManager);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public Drawable getIcon(Context context, IconCache cache) {
         if (isCustomWidget) {
             return cache.getFullResIcon(provider.getPackageName(), icon);

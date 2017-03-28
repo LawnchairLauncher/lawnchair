@@ -291,7 +291,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         addView(mShortcutsAndWidgets);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void enableAccessibleDrag(boolean enable, int dragType) {
         mUseTouchHelper = enable;
         if (!enable) {

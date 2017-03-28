@@ -189,7 +189,6 @@ public final class Utilities {
      * Returns a bitmap suitable for the all apps view. The icon is badged for {@param user}.
      * The bitmap is also visually normalized with other icons.
      */
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static Bitmap createBadgedIconBitmap(
             Drawable icon, UserHandleCompat user, Context context) {
         float scale = IconNormalizer.getInstance().getScale(icon, null);
@@ -237,7 +236,6 @@ public final class Utilities {
     /**
      * Adds the {@param badge} on top of {@param srcTgt} using the badge dimensions.
      */
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static Bitmap badgeWithBitmap(Bitmap srcTgt, Bitmap badge, Context context) {
         int badgeSize = context.getResources().getDimensionPixelSize(R.dimen.profile_badge_size);
         synchronized (sCanvas) {
@@ -759,7 +757,6 @@ public final class Utilities {
                 LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static boolean isPowerSaverOn(Context context) {
         PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         return powerManager.isPowerSaveMode();

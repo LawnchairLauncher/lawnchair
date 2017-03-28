@@ -604,7 +604,6 @@ public class LauncherStateTransitionAnimation {
 
             final AnimatorSet stateAnimation = animation;
             final Runnable startAnimRunnable = new Runnable() {
-                @TargetApi(Build.VERSION_CODES.LOLLIPOP)
                 public void run() {
                     // Check that mCurrentAnimation hasn't changed while
                     // we waited for a layout/draw pass
@@ -844,7 +843,6 @@ public class LauncherStateTransitionAnimation {
 
             final AnimatorSet stateAnimation = animation;
             final Runnable startAnimRunnable = new Runnable() {
-                @TargetApi(Build.VERSION_CODES.LOLLIPOP)
                 public void run() {
                     // Check that mCurrentAnimation hasn't changed while
                     // we waited for a layout/draw pass

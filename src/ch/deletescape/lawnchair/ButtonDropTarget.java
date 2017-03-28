@@ -137,7 +137,6 @@ public abstract class ButtonDropTarget extends TextView
         animateTextColor(mOriginalTextColor.getDefaultColor());
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void animateTextColor(int targetColor) {
         if (mCurrentColorAnim != null) {
             mCurrentColorAnim.cancel();
