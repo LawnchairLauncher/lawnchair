@@ -47,7 +47,6 @@ import java.util.Arrays;
 public class FocusLogic {
 
     private static final String TAG = "FocusLogic";
-    private static final boolean DEBUG = false;
 
     /** Item and page index related constant used by {@link #handleKeyEvent}. */
     public static final int NOOP = -1;
@@ -87,12 +86,6 @@ public class FocusLogic {
         int cntX = map == null ? -1 : map.length;
         int cntY = map == null ? -1 : map[0].length;
 
-        if (DEBUG) {
-            Log.v(TAG, String.format(
-                    "handleKeyEvent START: cntX=%d, cntY=%d, iconIdx=%d, pageIdx=%d, pageCnt=%d",
-                    cntX, cntY, iconIdx, pageIndex, pageCount));
-        }
-
         int newIndex = NOOP;
         switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_LEFT:
@@ -131,11 +124,6 @@ public class FocusLogic {
                 break;
             default:
                 break;
-        }
-
-        if (DEBUG) {
-            Log.v(TAG, String.format("handleKeyEvent FINISH: index [%d -> %s]",
-                    iconIdx, getStringIndex(newIndex)));
         }
         return newIndex;
     }
@@ -178,9 +166,6 @@ public class FocusLogic {
             int cx = ((CellLayout.LayoutParams) cell.getLayoutParams()).cellX;
             int cy = ((CellLayout.LayoutParams) cell.getLayoutParams()).cellY;
             matrix[invert ? (m - cx - 1) : cx][cy] = i;
-        }
-        if (DEBUG) {
-            printMatrix(matrix);
         }
         return matrix;
     }
@@ -231,9 +216,6 @@ public class FocusLogic {
                 matrix[iconLayout.getCountX()][cy] = iconParent.getChildCount() + i;
             }
         }
-        if (DEBUG) {
-            printMatrix(matrix);
-        }
         return matrix;
     }
 
@@ -275,9 +257,6 @@ public class FocusLogic {
         } else {
             matrix[pivotX][pivotY] = PIVOT;
         }
-        if (DEBUG) {
-            printMatrix(matrix);
-        }
         return matrix;
     }
 
@@ -313,10 +292,6 @@ public class FocusLogic {
                 }
             }
         }
-        if (DEBUG) {
-            Log.v(TAG, String.format("\thandleDpadHorizontal: \t[x, y]=[%d, %d] iconIndex=%d",
-                    xPos, yPos, iconIdx));
-        }
 
         // Rule1: check first in the horizontal direction
         for (int x = xPos + increment; 0 <= x && x < cntX; x += increment) {
@@ -332,7 +307,7 @@ public class FocusLogic {
         int nextYPos2;
         boolean haveCrossedAllAppsColumn1 = false;
         boolean haveCrossedAllAppsColumn2 = false;
-        int x = -1;
+        int x;
         for (int coeff = 1; coeff < cntY; coeff++) {
             nextYPos1 = yPos + coeff * increment;
             nextYPos2 = yPos - coeff * increment;
@@ -397,11 +372,6 @@ public class FocusLogic {
             }
         }
 
-        if (DEBUG) {
-            Log.v(TAG, String.format("\thandleDpadVertical: \t[x, y]=[%d, %d] iconIndex=%d",
-                    xPos, yPos, iconIndex));
-        }
-
         // Rule1: check first in the dpad direction
         for (int y = yPos + increment; 0 <= y && y <cntY && 0 <= y; y += increment) {
             if ((newIconIndex = inspectMatrix(xPos, y, cntX, cntY, matrix)) != NOOP
@@ -416,7 +386,7 @@ public class FocusLogic {
         int nextXPos2;
         boolean haveCrossedAllAppsColumn1 = false;
         boolean haveCrossedAllAppsColumn2 = false;
-        int y = -1;
+        int y;
         for (int coeff = 1; coeff < cntX; coeff++) {
             nextXPos1 = xPos + coeff * increment;
             nextXPos2 = xPos - coeff * increment;
@@ -479,50 +449,10 @@ public class FocusLogic {
         if (isValid(x, y, cntX, cntY)) {
             if (matrix[x][y] != -1) {
                 newIconIndex = matrix[x][y];
-                if (DEBUG) {
-                    Log.v(TAG, String.format("\t\tinspect: \t[x, y]=[%d, %d] %d",
-                            x, y, matrix[x][y]));
-                }
                 return newIconIndex;
             }
         }
         return newIconIndex;
-    }
-
-    /**
-     * Only used for debugging.
-     */
-    private static String getStringIndex(int index) {
-        switch(index) {
-            case NOOP: return "NOOP";
-            case PREVIOUS_PAGE_FIRST_ITEM:  return "PREVIOUS_PAGE_FIRST";
-            case PREVIOUS_PAGE_LAST_ITEM:   return "PREVIOUS_PAGE_LAST";
-            case PREVIOUS_PAGE_RIGHT_COLUMN:return "PREVIOUS_PAGE_RIGHT_COLUMN";
-            case CURRENT_PAGE_FIRST_ITEM:   return "CURRENT_PAGE_FIRST";
-            case CURRENT_PAGE_LAST_ITEM:    return "CURRENT_PAGE_LAST";
-            case NEXT_PAGE_FIRST_ITEM:      return "NEXT_PAGE_FIRST";
-            case NEXT_PAGE_LEFT_COLUMN:     return "NEXT_PAGE_LEFT_COLUMN";
-            case ALL_APPS_COLUMN:           return "ALL_APPS_COLUMN";
-            default:
-                return Integer.toString(index);
-        }
-    }
-
-    /**
-     * Only used for debugging.
-     */
-    private static void printMatrix(int[][] matrix) {
-        Log.v(TAG, "\tprintMap:");
-        int m = matrix.length;
-        int n = matrix[0].length;
-
-        for (int j=0; j < n; j++) {
-            String colY = "\t\t";
-            for (int[] aMatrix : matrix) {
-                colY += String.format("%3d", aMatrix[j]);
-            }
-            Log.v(TAG, colY);
-        }
     }
 
     /**

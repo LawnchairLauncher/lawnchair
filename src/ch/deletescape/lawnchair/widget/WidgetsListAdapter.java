@@ -46,7 +46,6 @@ import java.util.List;
 public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
     private static final String TAG = "WidgetsListAdapter";
-    private static final boolean DEBUG = false;
 
     private final WidgetPreviewLoader mWidgetPreviewLoader;
     private final LayoutInflater mLayoutInflater;
@@ -86,11 +85,6 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
         List<WidgetItem> infoList = mWidgetsModel.getSortedWidgets(pos);
 
         ViewGroup row = holder.cellContainer;
-        if (DEBUG) {
-            Log.d(TAG, String.format(
-                    "onBindViewHolder [pos=%d, widget#=%d, row.getChildCount=%d]",
-                    pos, infoList.size(), row.getChildCount()));
-        }
 
         // Add more views.
         // if there are too many, hide them.
@@ -132,9 +126,6 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public WidgetsRowViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (DEBUG) {
-            Log.v(TAG, "\nonCreateViewHolder");
-        }
 
         ViewGroup container = (ViewGroup) mLayoutInflater.inflate(
                 R.layout.widgets_list_row_view, parent, false);

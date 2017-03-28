@@ -45,7 +45,6 @@ public class GridSizeMigrationTask {
     public static boolean ENABLED = Utilities.isNycOrAbove();
 
     private static final String TAG = "GridSizeMigrationTask";
-    private static final boolean DEBUG = true;
 
     private static final String KEY_MIGRATION_SRC_WORKSPACE_SIZE = "migration_src_workspace_size";
     private static final String KEY_MIGRATION_SRC_HOTSEAT_COUNT = "migration_src_hotseat_count";
@@ -121,9 +120,6 @@ public class GridSizeMigrationTask {
         }
 
         if (!mEntryToRemove.isEmpty()) {
-            if (DEBUG) {
-                Log.d(TAG, "Removing items: " + TextUtils.join(", ", mEntryToRemove));
-            }
             mContext.getContentResolver().delete(LauncherSettings.Favorites.CONTENT_URI,
                     Utilities.createDbSelectionQuery(
                             LauncherSettings.Favorites._ID, mEntryToRemove), null);
@@ -190,9 +186,6 @@ public class GridSizeMigrationTask {
         }
 
         for (long screenId : allScreens) {
-            if (DEBUG) {
-                Log.d(TAG, "Migrating " + screenId);
-            }
             migrateScreen(screenId);
         }
 
@@ -301,11 +294,6 @@ public class GridSizeMigrationTask {
             if (!mShouldRemoveX) {
                 break;
             }
-        }
-
-        if (DEBUG) {
-            Log.d(TAG, String.format("Removing row %d, column %d on screen %d",
-                    removedRow, removedCol, screenId));
         }
 
         LongArrayMap<DbEntry> itemMap = new LongArrayMap<>();
@@ -651,9 +639,6 @@ public class GridSizeMigrationTask {
                         throw new Exception("Invalid item type");
                 }
             } catch (Exception e) {
-                if (DEBUG) {
-                    Log.d(TAG, "Removing item " + entry.id, e);
-                }
                 mEntryToRemove.add(entry.id);
                 continue;
             }
@@ -751,9 +736,6 @@ public class GridSizeMigrationTask {
                         throw new Exception("Invalid item type");
                 }
             } catch (Exception e) {
-                if (DEBUG) {
-                    Log.d(TAG, "Removing item " + entry.id, e);
-                }
                 mEntryToRemove.add(entry.id);
                 continue;
             }

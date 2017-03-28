@@ -33,7 +33,6 @@ import java.util.List;
 public class WidgetsModel {
 
     private static final String TAG = "WidgetsModel";
-    private static final boolean DEBUG = false;
 
     /* List of packages that is tracked by this model. */
     private final ArrayList<PackageItemInfo> mPackageItemInfos;
@@ -132,9 +131,6 @@ public class WidgetsModel {
 
     private void setWidgetsAndShortcuts(ArrayList<WidgetItem> rawWidgetsShortcuts, Context context) {
         mRawList = rawWidgetsShortcuts;
-        if (DEBUG) {
-            Log.d(TAG, "addWidgetsAndShortcuts, widgetsShortcuts#=" + rawWidgetsShortcuts.size());
-        }
 
         // Temporary list for {@link PackageItemInfos} to avoid having to go through
         // {@link mPackageItemInfos} to locate the key to be used for {@link #mWidgetsList}
@@ -153,20 +149,11 @@ public class WidgetsModel {
                 int minSpanX = Math.min(item.widgetInfo.spanX, item.widgetInfo.minSpanX);
                 int minSpanY = Math.min(item.widgetInfo.spanY, item.widgetInfo.minSpanY);
                 if (minSpanX > idp.numColumns || minSpanY > idp.numRows) {
-                    if (DEBUG) {
-                        Log.d(TAG, String.format(
-                                "Widget %s : (%d X %d) can't fit on this device",
-                                item.componentName, minSpanX, minSpanY));
-                    }
                     continue;
                 }
             }
 
             if (mAppFilter != null && !mAppFilter.shouldShowApp(item.componentName, context)) {
-                if (DEBUG) {
-                    Log.d(TAG, String.format("%s is filtered and not added to the widget tray.",
-                            item.componentName));
-                }
                 continue;
             }
 

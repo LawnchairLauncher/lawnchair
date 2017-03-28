@@ -58,8 +58,6 @@ public class DragController implements DragDriver.EventListener, TouchController
     public static final int SCROLL_DELAY = 500;
     public static final int RESCROLL_DELAY = PagedView.PAGE_SNAP_ANIMATION_DURATION + 150;
 
-    private static final boolean PROFILE_DRAWING_DURING_DRAG = false;
-
     private static final int SCROLL_OUTSIDE_ZONE = 0;
     private static final int SCROLL_WAITING_IN_ZONE = 1;
 
@@ -202,9 +200,6 @@ public class DragController implements DragDriver.EventListener, TouchController
     public DragView startDrag(Bitmap b, int dragLayerX, int dragLayerY,
             DragSource source, ItemInfo dragInfo, Point dragOffset, Rect dragRegion,
             float initialDragViewScale, DragOptions options) {
-        if (PROFILE_DRAWING_DURING_DRAG) {
-            android.os.Debug.startMethodTracing("Launcher");
-        }
 
         // Hide soft keyboard, if visible
         if (mInputMethodManager == null) {

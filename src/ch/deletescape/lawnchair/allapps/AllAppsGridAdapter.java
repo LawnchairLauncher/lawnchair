@@ -52,7 +52,6 @@ import java.util.List;
 public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHolder> {
 
     public static final String TAG = "AppsGridAdapter";
-    private static final boolean DEBUG = false;
 
     // A section break in the grid
     public static final int VIEW_TYPE_SECTION_BREAK = 1;
@@ -163,7 +162,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
      */
     public class GridItemDecoration extends RecyclerView.ItemDecoration {
 
-        private static final boolean DEBUG_SECTION_MARGIN = false;
         private static final boolean FADE_OUT_SECTIONS = false;
 
         private HashMap<String, PointF> mCachedSectionBounds = new HashMap<>();
@@ -173,13 +171,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
             if (mApps.hasFilter() || mAppsPerRow == 0) {
                 return;
-            }
-
-            if (DEBUG_SECTION_MARGIN) {
-                Paint p = new Paint();
-                p.setColor(0x33ff0000);
-                c.drawRect(mBackgroundPadding.left, 0, mBackgroundPadding.left + mSectionNamesMargin,
-                        parent.getMeasuredHeight(), p);
             }
 
             List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();

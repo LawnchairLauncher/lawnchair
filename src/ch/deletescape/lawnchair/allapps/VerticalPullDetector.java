@@ -13,7 +13,6 @@ import android.view.ViewConfiguration;
  */
 public class VerticalPullDetector {
 
-    private static final boolean DBG = false;
     private static final String TAG = "VerticalPullDetector";
 
     private float mTouchSlop;
@@ -51,9 +50,6 @@ public class VerticalPullDetector {
     // SETTLING -> (View settled) -> IDLE
 
     private void setState(ScrollState newState) {
-        if (DBG) {
-            Log.d(TAG, "setState:" + mState + "->" + newState);
-        }
         // onDragStart and onDragEnd is reported ONLY on state transition
         if (newState == ScrollState.DRAGGING) {
             initializeDragging();
@@ -196,9 +192,6 @@ public class VerticalPullDetector {
 
     private boolean reportDragStart(boolean recatch) {
         mListener.onDragStart(!recatch);
-        if (DBG) {
-            Log.d(TAG, "onDragStart recatch:" + recatch);
-        }
         return true;
     }
 
@@ -216,21 +209,12 @@ public class VerticalPullDetector {
     private boolean reportDragging() {
         float delta = mDisplacementY - mLastDisplacement;
         if (delta != 0) {
-            if (DBG) {
-                Log.d(TAG, String.format("onDrag disp=%.1f, velocity=%.1f",
-                        mDisplacementY, mVelocity));
-            }
-
             return mListener.onDrag(mDisplacementY - mSubtractDisplacement, mVelocity);
         }
         return true;
     }
 
     private void reportDragEnd() {
-        if (DBG) {
-            Log.d(TAG, String.format("onScrolEnd disp=%.1f, velocity=%.1f",
-                    mDisplacementY, mVelocity));
-        }
         mListener.onDragEnd(mVelocity, Math.abs(mVelocity) > RELEASE_VELOCITY_PX_MS);
 
     }

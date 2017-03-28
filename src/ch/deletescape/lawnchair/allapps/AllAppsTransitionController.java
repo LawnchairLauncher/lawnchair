@@ -41,7 +41,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         View.OnLayoutChangeListener {
 
     private static final String TAG = "AllAppsTrans";
-    private static final boolean DBG = false;
 
     private final Interpolator mAccelInterpolator = new AccelerateInterpolator(2f);
     private final Interpolator mDecelInterpolator = new DecelerateInterpolator(3f);
@@ -339,9 +338,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         float velocityDivisor = Math.max(2f, Math.abs(0.5f * velocity));
         float travelDistance = Math.max(0.2f, disp / mShiftRange);
         mAnimationDuration = (long) Math.max(100, ANIMATION_DURATION / velocityDivisor * travelDistance);
-        if (DBG) {
-            Log.d(TAG, String.format("calculateDuration=%d, v=%f, d=%f", mAnimationDuration, velocity, disp));
-        }
     }
 
     public boolean animateToAllApps(AnimatorSet animationOut, long duration) {

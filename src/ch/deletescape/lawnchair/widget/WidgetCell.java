@@ -50,7 +50,6 @@ import ch.deletescape.lawnchair.model.WidgetItem;
 public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
     private static final String TAG = "WidgetCell";
-    private static final boolean DEBUG = false;
 
     private static final int FADE_IN_DURATION_MS = 90;
 
@@ -115,9 +114,6 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
      * Called to clear the view and free attached resources. (e.g., {@link Bitmap}
      */
     public void clear() {
-        if (DEBUG) {
-            Log.d(TAG, "reset called on:" + mWidgetName.getText());
-        }
         mWidgetImage.animate().cancel();
         mWidgetImage.setBitmap(null);
         mWidgetName.setText(null);
@@ -167,10 +163,6 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             return;
         }
         int[] size = getPreviewSize();
-        if (DEBUG) {
-            Log.d(TAG, String.format("[tag=%s] ensurePreview (%d, %d):",
-                    getTagToString(), size[0], size[1]));
-        }
         mActiveRequest = mWidgetPreviewLoader.getPreview(mItem, size[0], size[1], this);
     }
 
