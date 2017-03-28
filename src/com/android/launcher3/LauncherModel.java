@@ -25,7 +25,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInstaller;
 import android.net.Uri;
@@ -930,7 +929,7 @@ public class LauncherModel extends BroadcastReceiver
                                         // no special handling necessary for this item
                                         c.markRestored();
                                     } else {
-                                        if (c.hasRestoreFlag(ShortcutInfo.FLAG_AUTOINTALL_ICON)) {
+                                        if (c.hasRestoreFlag(ShortcutInfo.FLAG_AUTOINSTALL_ICON)) {
                                             // We allow auto install apps to have their intent
                                             // updated after an install.
                                             intent = pmHelper.getAppLaunchIntent(targetPkg, c.user);

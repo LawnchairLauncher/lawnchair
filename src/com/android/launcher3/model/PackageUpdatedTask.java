@@ -225,7 +225,7 @@ public class PackageUpdatedTask extends ExtendedModelTask {
                             AppInfo appInfo = addedOrUpdatedApps.get(cn);
 
                             if (si.isPromise() && mOp == OP_ADD) {
-                                if (si.hasStatusFlag(ShortcutInfo.FLAG_AUTOINTALL_ICON)) {
+                                if (si.hasStatusFlag(ShortcutInfo.FLAG_AUTOINSTALL_ICON)) {
                                     // Auto install icon
                                     LauncherAppsCompat launcherApps
                                             = LauncherAppsCompat.getInstance(context);

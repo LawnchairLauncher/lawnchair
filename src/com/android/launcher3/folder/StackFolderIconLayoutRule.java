@@ -16,11 +16,7 @@
 
 package com.android.launcher3.folder;
 
-import android.view.View;
-
 import com.android.launcher3.folder.FolderIcon.PreviewItemDrawingParams;
-
-import java.util.List;
 
 public class StackFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule {
 

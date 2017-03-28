@@ -25,10 +25,11 @@ import android.os.Process;
 import android.os.UserHandle;
 import android.util.Log;
 
+import com.android.launcher3.compat.ShortcutConfigActivityInfo.ShortcutConfigActivityInfoVO;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import com.android.launcher3.compat.ShortcutConfigActivityInfo.*;
 
 public class LauncherAppsCompatVO extends LauncherAppsCompatVL {
 

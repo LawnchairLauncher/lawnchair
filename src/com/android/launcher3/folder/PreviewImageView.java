@@ -22,7 +22,6 @@ import android.graphics.Canvas;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.android.launcher3.Launcher;

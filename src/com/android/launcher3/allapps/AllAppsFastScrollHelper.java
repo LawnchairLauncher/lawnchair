@@ -16,11 +16,7 @@
 package com.android.launcher3.allapps;
 
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 
-import com.android.launcher3.BaseRecyclerViewFastScrollBar;
-import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.util.Thunk;
 
 import java.util.HashSet;
