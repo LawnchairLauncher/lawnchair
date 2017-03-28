@@ -49,7 +49,6 @@ import java.util.concurrent.ExecutionException;
 public class WidgetPreviewLoader {
 
     private static final String TAG = "WidgetPreviewLoader";
-    private static final boolean DEBUG = false;
 
     private static final float WIDGET_PREVIEW_ICON_PADDING_PERCENTAGE = 0.25f;
 
@@ -538,10 +537,6 @@ public class WidgetPreviewLoader {
             mPreviewHeight = previewHeight;
             mPreviewWidth = previewWidth;
             mCaller = caller;
-            if (DEBUG) {
-                Log.d(TAG, String.format("%s, %s, %d, %d",
-                        mKey, mInfo, mPreviewHeight, mPreviewWidth));
-            }
         }
 
         @Override

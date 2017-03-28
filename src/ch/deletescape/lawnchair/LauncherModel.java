@@ -97,8 +97,6 @@ import java.util.concurrent.Executor;
  */
 public class LauncherModel extends BroadcastReceiver
         implements LauncherAppsCompat.OnAppsChangedCallbackCompat {
-    static final boolean DEBUG_LOADERS = false;
-    private static final boolean DEBUG_RECEIVER = false;
 
     static final String TAG = "Launcher.Model";
 
@@ -1195,8 +1193,6 @@ public class LauncherModel extends BroadcastReceiver
      */
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (DEBUG_RECEIVER) Log.d(TAG, "onReceive intent=" + intent);
-
         final String action = intent.getAction();
         if (Intent.ACTION_LOCALE_CHANGED.equals(action)) {
             // If we have changed locale we need to clear out the labels in all apps/workspace.
@@ -1360,10 +1356,6 @@ public class LauncherModel extends BroadcastReceiver
             mIsLoadingAndBindingWorkspace = true;
 
             // Load the workspace
-            if (DEBUG_LOADERS) {
-                Log.d(TAG, "loadAndBindWorkspace mWorkspaceLoaded=" + mWorkspaceLoaded);
-            }
-
             if (!mWorkspaceLoaded) {
                 loadWorkspace();
                 synchronized (LoaderTask.this) {
@@ -1383,15 +1375,11 @@ public class LauncherModel extends BroadcastReceiver
             // This way we don't start loading all apps until the workspace has settled
             // down.
             synchronized (LoaderTask.this) {
-                final long workspaceWaitTime = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
 
                 mHandler.postIdle(new Runnable() {
                         public void run() {
                             synchronized (LoaderTask.this) {
                                 mLoadAndBindStepFinished = true;
-                                if (DEBUG_LOADERS) {
-                                    Log.d(TAG, "done with previous binding step");
-                                }
                                 LoaderTask.this.notify();
                             }
                         }
@@ -1405,11 +1393,6 @@ public class LauncherModel extends BroadcastReceiver
                     } catch (InterruptedException ex) {
                         // Ignore
                     }
-                }
-                if (DEBUG_LOADERS) {
-                    Log.d(TAG, "waited "
-                            + (SystemClock.uptimeMillis()-workspaceWaitTime)
-                            + "ms for previous step to finish binding");
                 }
             }
         }
@@ -1463,7 +1446,6 @@ public class LauncherModel extends BroadcastReceiver
             // All Apps interface in the foreground, load All Apps first. Otherwise, load the
             // workspace first (default).
             keep_running: {
-                if (DEBUG_LOADERS) Log.d(TAG, "step 1: loading workspace");
                 loadAndBindWorkspace();
 
                 if (mStopped) {
@@ -1473,13 +1455,11 @@ public class LauncherModel extends BroadcastReceiver
                 waitForIdle();
 
                 // second step
-                if (DEBUG_LOADERS) Log.d(TAG, "step 2: loading all apps");
                 loadAndBindAllApps();
 
                 waitForIdle();
 
                 // third step
-                if (DEBUG_LOADERS) Log.d(TAG, "step 3: loading deep shortcuts");
                 loadAndBindDeepShortcuts();
             }
 
@@ -1624,8 +1604,6 @@ public class LauncherModel extends BroadcastReceiver
         }
 
         private void loadWorkspace() {
-            final long t = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
-
             final Context context = mContext;
             final ContentResolver contentResolver = context.getContentResolver();
             final PackageManager manager = context.getPackageManager();
@@ -1672,7 +1650,6 @@ public class LauncherModel extends BroadcastReceiver
                 final ArrayList<Long> restoredRows = new ArrayList<>();
                 Map<ShortcutKey, ShortcutInfoCompat> shortcutKeyToPinnedShortcuts = new HashMap<>();
                 final Uri contentUri = LauncherSettings.Favorites.CONTENT_URI;
-                if (DEBUG_LOADERS) Log.d(TAG, "loading model from " + contentUri);
                 final Cursor c = contentResolver.query(contentUri, null, null, null, null);
 
                 // +1 for the hotseat (it can be larger than the workspace)
@@ -2208,10 +2185,6 @@ public class LauncherModel extends BroadcastReceiver
                     contentResolver.delete(LauncherSettings.Favorites.CONTENT_URI,
                             Utilities.createDbSelectionQuery(
                                     LauncherSettings.Favorites._ID, itemsToRemove), null);
-                    if (DEBUG_LOADERS) {
-                        Log.d(TAG, "Removed = " + Utilities.createDbSelectionQuery(
-                                LauncherSettings.Favorites._ID, itemsToRemove));
-                    }
 
                     // Remove any empty folder
                     ArrayList<Long> deletedFolderIds = (ArrayList<Long>) LauncherSettings.Settings
@@ -2278,23 +2251,6 @@ public class LauncherModel extends BroadcastReceiver
                 if (unusedScreens.size() != 0) {
                     sBgWorkspaceScreens.removeAll(unusedScreens);
                     updateWorkspaceScreenOrder(context, sBgWorkspaceScreens);
-                }
-
-                if (DEBUG_LOADERS) {
-                    Log.d(TAG, "loaded workspace in " + (SystemClock.uptimeMillis()-t) + "ms");
-                    Log.d(TAG, "workspace layout: ");
-                    int nScreens = occupied.size();
-                    for (int y = 0; y < countY; y++) {
-                        String line = "";
-
-                        for (int i = 0; i < nScreens; i++) {
-                            long screenId = occupied.keyAt(i);
-                            if (screenId > 0) {
-                                line += " | ";
-                            }
-                        }
-                        Log.d(TAG, "[ " + line + " ]");
-                    }
                 }
             }
         }
@@ -2574,13 +2530,6 @@ public class LauncherModel extends BroadcastReceiver
                             mBindCompleteRunnables.clear();
                         }
                     }
-
-                    // If we're profiling, ensure this is the last thing in the queue.
-                    if (DEBUG_LOADERS) {
-                        Log.d(TAG, "bound workspace in "
-                            + (SystemClock.uptimeMillis()-t) + "ms");
-                    }
-
                 }
             };
             deferredExecutor.execute(r);
@@ -2605,9 +2554,6 @@ public class LauncherModel extends BroadcastReceiver
         }
 
         private void loadAndBindAllApps() {
-            if (DEBUG_LOADERS) {
-                Log.d(TAG, "loadAndBindAllApps mAllAppsLoaded=" + mAllAppsLoaded);
-            }
             if (!mAllAppsLoaded) {
                 loadAllApps();
                 synchronized (LoaderTask.this) {
@@ -2667,17 +2613,12 @@ public class LauncherModel extends BroadcastReceiver
                     if (callbacks != null) {
                         callbacks.bindAllApplications(list);
                     }
-                    if (DEBUG_LOADERS) {
-                        Log.d(TAG, "bound all " + list.size() + " apps from cache in "
-                                + (SystemClock.uptimeMillis() - t) + "ms");
-                    }
                 }
             };
             runOnMainThread(r);
         }
 
         private void loadAllApps() {
-            final long loadTime = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
 
             final Callbacks oldCallbacks = mCallbacks.get();
             if (oldCallbacks == null) {
@@ -2692,13 +2633,7 @@ public class LauncherModel extends BroadcastReceiver
             mBgAllAppsList.clear();
             for (UserHandleCompat user : profiles) {
                 // Query for the set of apps
-                final long qiaTime = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
                 final List<LauncherActivityInfoCompat> apps = mLauncherApps.getActivityList(null, user);
-                if (DEBUG_LOADERS) {
-                    Log.d(TAG, "getActivityList took "
-                            + (SystemClock.uptimeMillis()-qiaTime) + "ms for user " + user);
-                    Log.d(TAG, "getActivityList got " + apps.size() + " apps for user " + user);
-                }
                 // Fail if we don't have any apps
                 // TODO: Fix this. Only fail for the current user.
                 if (apps == null || apps.isEmpty()) {
@@ -2745,15 +2680,9 @@ public class LauncherModel extends BroadcastReceiver
             // Post callback on main thread
             mHandler.post(new Runnable() {
                 public void run() {
-
-                    final long bindTime = SystemClock.uptimeMillis();
                     final Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                     if (callbacks != null) {
                         callbacks.bindAllApplications(added);
-                        if (DEBUG_LOADERS) {
-                            Log.d(TAG, "bound " + added.size() + " apps in "
-                                    + (SystemClock.uptimeMillis() - bindTime) + "ms");
-                        }
                     } else {
                         Log.i(TAG, "not binding apps: no Launcher activity");
                     }
@@ -2761,16 +2690,9 @@ public class LauncherModel extends BroadcastReceiver
             });
             // Cleanup any data stored for a deleted user.
             ManagedProfileHeuristic.processAllUsers(profiles, mContext);
-            if (DEBUG_LOADERS) {
-                Log.d(TAG, "Icons processed in "
-                        + (SystemClock.uptimeMillis() - loadTime) + "ms");
-            }
         }
 
         private void loadAndBindDeepShortcuts() {
-            if (DEBUG_LOADERS) {
-                Log.d(TAG, "loadAndBindDeepShortcuts mDeepShortcutsLoaded=" + mDeepShortcutsLoaded);
-            }
             if (!mDeepShortcutsLoaded) {
                 mBgDeepShortcutMap.clear();
                 mHasShortcutHostPermission = mDeepShortcutManager.hasHostPermission();
@@ -2995,7 +2917,6 @@ public class LauncherModel extends BroadcastReceiver
             switch (mOp) {
                 case OP_ADD: {
                     for (String aPackage : packages) {
-                        if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.addPackage " + aPackage);
                         mIconCache.updateIconsForPkg(aPackage, mUser);
                         mBgAllAppsList.addPackage(context, aPackage, mUser);
                     }
@@ -3008,7 +2929,6 @@ public class LauncherModel extends BroadcastReceiver
                 }
                 case OP_UPDATE:
                     for (String aPackage1 : packages) {
-                        if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.updatePackage " + aPackage1);
                         mIconCache.updateIconsForPkg(aPackage1, mUser);
                         mBgAllAppsList.updatePackage(context, aPackage1, mUser);
                         mApp.getWidgetCache().removePackage(aPackage1, mUser);
@@ -3022,14 +2942,12 @@ public class LauncherModel extends BroadcastReceiver
                         heuristic.processPackageRemoved(mPackages);
                     }
                     for (String aPackage : packages) {
-                        if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.removePackage " + aPackage);
                         mIconCache.removeIconsForPkg(aPackage, mUser);
                     }
                     // Fall through
                 }
                 case OP_UNAVAILABLE:
                     for (String aPackage : packages) {
-                        if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.removePackage " + aPackage);
                         mBgAllAppsList.removePackage(aPackage, mUser);
                         mApp.getWidgetCache().removePackage(aPackage, mUser);
                     }
@@ -3040,7 +2958,6 @@ public class LauncherModel extends BroadcastReceiver
                     flagOp = mOp == OP_SUSPEND ?
                             FlagOp.addFlag(ShortcutInfo.FLAG_DISABLED_SUSPENDED) :
                                     FlagOp.removeFlag(ShortcutInfo.FLAG_DISABLED_SUSPENDED);
-                    if (DEBUG_LOADERS) Log.d(TAG, "mAllAppsList.(un)suspend " + N);
                     mBgAllAppsList.updatePackageFlags(pkgFilter, mUser, flagOp);
                     break;
                 case OP_USER_AVAILABILITY_CHANGE:

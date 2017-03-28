@@ -29,7 +29,6 @@ import java.util.ArrayList;
 public class InvariantDeviceProfileTest extends AndroidTestCase {
 
     private static final String TAG = "DeviceProfileTest";
-    private static final boolean DEBUG = false;
 
     private InvariantDeviceProfile mInvariantProfile;
     private ArrayList<InvariantDeviceProfile> mPredefinedDeviceProfiles;
@@ -79,10 +78,6 @@ public class InvariantDeviceProfileTest extends AndroidTestCase {
             InvariantDeviceProfile result =
                     mInvariantProfile.invDistWeightedInterpolate( getContext(),
                             pts.get(i).x, pts.get(i).y, closestProfiles);
-            if (DEBUG) {
-                Log.d(TAG, String.format("width x height = (%f, %f)] iconSize = %f",
-                        pts.get(i).x, pts.get(i).y, result.iconSize));
-            }
         }
     }
 

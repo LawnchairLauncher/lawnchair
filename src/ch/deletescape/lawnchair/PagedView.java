@@ -64,7 +64,6 @@ import ch.deletescape.lawnchair.R;
  */
 public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarchyChangeListener {
     private static final String TAG = "PagedView";
-    private static final boolean DEBUG = false;
     protected static final int INVALID_PAGE = -1;
 
     // the min drag distance for a fling to register, to prevent random page shifts
@@ -278,9 +277,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             float y = mLastMotionY - mDownMotionY;
             mDragView.setTranslationX(x);
             mDragView.setTranslationY(y);
-
-            if (DEBUG) Log.d(TAG, "PagedView.updateDragViewTranslationDuringDrag(): "
-                    + x + ", " + y);
         }
     }
 
@@ -723,11 +719,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         int referenceChildWidth = 0;
         // The children are given the same width and height as the workspace
         // unless they were set to WRAP_CONTENT
-        if (DEBUG) Log.d(TAG, "PagedView.onMeasure(): " + widthSize + ", " + heightSize);
-        if (DEBUG) Log.d(TAG, "PagedView.scaledSize: " + scaledWidthSize + ", " + scaledHeightSize);
-        if (DEBUG) Log.d(TAG, "PagedView.parentSize: " + parentWidthSize + ", " + parentHeightSize);
-        if (DEBUG) Log.d(TAG, "PagedView.horizontalPadding: " + horizontalPadding);
-        if (DEBUG) Log.d(TAG, "PagedView.verticalPadding: " + verticalPadding);
         final int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
             // disallowing padding in paged view (just pass 0)
@@ -786,7 +777,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             return;
         }
 
-        if (DEBUG) Log.d(TAG, "PagedView.onLayout()");
         final int childCount = getChildCount();
 
         int offsetX = getViewportOffsetX();
@@ -824,7 +814,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 final int childWidth = child.getMeasuredWidth();
                 final int childHeight = child.getMeasuredHeight();
 
-                if (DEBUG) Log.d(TAG, "\tlayout-child" + i + ": " + childLeft + ", " + childTop);
                 child.layout(childLeft, childTop,
                         childLeft + child.getMeasuredWidth(), childTop + childHeight);
 
@@ -1620,11 +1609,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
                 // Find the closest page to the touch point
                 final int dragViewIndex = indexOfChild(mDragView);
-
-                if (DEBUG) Log.d(TAG, "mLastMotionX: " + mLastMotionX);
-                if (DEBUG) Log.d(TAG, "mLastMotionY: " + mLastMotionY);
-                if (DEBUG) Log.d(TAG, "mParentDownMotionX: " + mParentDownMotionX);
-                if (DEBUG) Log.d(TAG, "mParentDownMotionY: " + mParentDownMotionY);
 
                 final int pageUnderPointIndex = getNearestHoverOverPageIndex();
                 // Do not allow any page to be moved to 0th position.

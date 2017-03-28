@@ -239,7 +239,7 @@ public class IconCache {
     public void updateDbIcons(Set<String> ignorePackagesForMainUser) {
         // Remove all active icon update tasks.
         mWorkerHandler.removeCallbacksAndMessages(ICON_UPDATE_TOKEN);
-        
+
         for (UserHandleCompat user : mUserManager.getUserProfiles()) {
             // Query for the set of apps
             final List<LauncherActivityInfoCompat> apps = mLauncherApps.getActivityList(null, user);
