@@ -49,8 +49,8 @@ public final class FeatureFlags {
     public static final boolean LIGHT_STATUS_BAR = false;
     // When enabled icons are badged with the number of notifications associated with that app.
     public static final boolean BADGE_ICONS = true;
-    // When enabled, icons not supporting {@link MaskableIconDrawable} will be wrapped in this class.
-    public static final boolean LEGACY_ICON_TREATMENT = false;
+    // When enabled, icons not supporting {@link AdaptiveIconDrawable} will be wrapped in {@link FixedScaleDrawable}.
+    public static final boolean LEGACY_ICON_TREATMENT = true;
     // When enabled, adaptive icons would have shadows baked when being stored to icon cache.
     public static final boolean ADAPTIVE_ICON_SHADOW = true;
     // When enabled, app discovery will be enabled if service is implemented
