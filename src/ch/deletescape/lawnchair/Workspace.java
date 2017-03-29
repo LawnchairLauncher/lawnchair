@@ -111,8 +111,6 @@ public class Workspace extends PagedView
     // The is the first screen. It is always present, even if its empty.
     public static final long FIRST_SCREEN_ID = 0;
 
-    private final static long CUSTOM_CONTENT_SCREEN_ID = -301;
-
     private LayoutTransition mLayoutTransition;
     @Thunk
     final WallpaperManager mWallpaperManager;
@@ -682,7 +680,6 @@ public class Workspace extends PagedView
         if (hasExtraEmptyScreen() || mScreenOrder.size() == 0) return;
         long finalScreenId = mScreenOrder.get(mScreenOrder.size() - 1);
 
-        if (finalScreenId == CUSTOM_CONTENT_SCREEN_ID) return;
         CellLayout finalScreen = mWorkspaceScreens.get(finalScreenId);
 
         // If the final screen is empty, convert it to the extra empty screen
@@ -1596,14 +1593,11 @@ public class Workspace extends PagedView
                 }
             }
 
-            final CellLayout customScreen = mWorkspaceScreens.get(CUSTOM_CONTENT_SCREEN_ID);
             for (int i = 0; i < screenCount; i++) {
                 final CellLayout layout = (CellLayout) getPageAt(i);
 
-                // enable layers between left and right screen inclusive, except for the
-                // customScreen, which may animate its content during transitions.
-                boolean enableLayer = layout != customScreen &&
-                        leftScreen <= i && i <= rightScreen && shouldDrawChild(layout);
+                // enable layers between left and right screen inclusive
+                boolean enableLayer = leftScreen <= i && i <= rightScreen && shouldDrawChild(layout);
                 layout.enableHardwareLayer(enableLayer);
             }
         }
@@ -2600,10 +2594,6 @@ public class Workspace extends PagedView
         float smallestDistSoFar = Float.MAX_VALUE;
 
         for (int i = 0; i < screenCount; i++) {
-            // The custom content screen is not a valid drag over option
-            if (mScreenOrder.get(i) == CUSTOM_CONTENT_SCREEN_ID) {
-                continue;
-            }
 
             CellLayout cl = (CellLayout) getChildAt(i);
 
@@ -3428,10 +3418,6 @@ public class Workspace extends PagedView
             setCurrentDropLayout(null);
 
             if (0 <= page && page < getChildCount()) {
-                // Ensure that we are not dragging over to the custom content screen
-                if (getScreenIdForPageIndex(page) == CUSTOM_CONTENT_SCREEN_ID) {
-                    return false;
-                }
 
                 CellLayout layout = (CellLayout) getChildAt(page);
                 setCurrentDragOverlappingLayout(layout);
