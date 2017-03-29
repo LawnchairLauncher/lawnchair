@@ -261,7 +261,6 @@ public class LauncherProvider extends ContentProvider {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         db.beginTransaction();
         try {
-            int numValues = values.length;
             for (ContentValues value : values) {
                 addModifiedTime(value);
                 if (dbInsertAndCheck(mOpenHelper, db, args.table, null, value) < 0) {
@@ -461,7 +460,7 @@ public class LauncherProvider extends ContentProvider {
     }
 
     private void clearFlagEmptyDbCreated() {
-        Utilities.getPrefs(getContext()).edit().remove(EMPTY_DATABASE_CREATED).commit();
+        Utilities.getPrefs(getContext()).edit().remove(EMPTY_DATABASE_CREATED).apply();
     }
 
     /**
@@ -624,7 +623,7 @@ public class LauncherProvider extends ContentProvider {
             }
 
             // Set the flag for empty DB
-            Utilities.getPrefs(mContext).edit().putBoolean(EMPTY_DATABASE_CREATED, true).commit();
+            Utilities.getPrefs(mContext).edit().putBoolean(EMPTY_DATABASE_CREATED, true).apply();
 
             // When a new DB is created, remove all previously stored managed profile information.
             ManagedProfileHeuristic.processAllUsers(Collections.<UserHandleCompat>emptyList(),
