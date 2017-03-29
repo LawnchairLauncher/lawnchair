@@ -286,7 +286,6 @@ public class WorkspaceStateTransitionAnimation {
         }
 
         final int childCount = mWorkspace.getChildCount();
-        final int customPageCount = mWorkspace.numCustomPages();
 
         mNewScale = 1.0f;
 
@@ -316,7 +315,7 @@ public class WorkspaceStateTransitionAnimation {
                 finalAlpha = (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP &&
                         i == mWorkspace.getNextPage()) ? 1 : 0;
             } else if (states.stateIsNormal && mWorkspaceFadeInAdjacentScreens) {
-                finalAlpha = (i == toPage || i < customPageCount) ? 1f : 0f;
+                finalAlpha = (i == toPage) ? 1f : 0f;
             } else {
                 finalAlpha = 1f;
             }
@@ -418,7 +417,6 @@ public class WorkspaceStateTransitionAnimation {
             AlphaUpdateListener.updateVisibility(overviewPanel, accessibilityEnabled);
 
             mWorkspace.createHotseatAlphaAnimator(finalHotseatAlpha).end();
-            mWorkspace.updateCustomContentVisibility();
             mWorkspace.setScaleX(mNewScale);
             mWorkspace.setScaleY(mNewScale);
             mWorkspace.setTranslationY(finalWorkspaceTranslationY);

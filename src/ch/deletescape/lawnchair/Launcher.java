@@ -494,21 +494,6 @@ public class Launcher extends Activity
         }
     }
 
-    /** To be overridden by subclasses to hint to Launcher that we have custom content */
-    protected boolean hasCustomContentToLeft() {
-        return mLauncherCallbacks != null && mLauncherCallbacks.hasCustomContentToLeft();
-    }
-
-    /**
-     * To be overridden by subclasses to populate the custom content container and call This will only be invoked if
-     * {@link #hasCustomContentToLeft()} is {@code true}.
-     */
-    protected void populateCustomContentContainer() {
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.populateCustomContentContainer();
-        }
-    }
-
     public UserEventDispatcher getUserEventDispatcher() {
         if (mLauncherCallbacks != null) {
             UserEventDispatcher dispatcher = mLauncherCallbacks.getUserEventDispatcher();
@@ -994,8 +979,8 @@ public class Launcher extends Activity
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_MENU) {
-            // Ignore the menu key if we are currently dragging or are on the custom content screen
-            if (!isOnCustomContent() && !mDragController.isDragging()) {
+            // Ignore the menu key if we are currently dragging
+            if (!mDragController.isDragging()) {
                 // Close any open folders
                 closeFolder();
 
@@ -1654,7 +1639,7 @@ public class Launcher extends Activity
     protected void onSaveInstanceState(Bundle outState) {
         if (mWorkspace.getChildCount() > 0) {
             outState.putInt(RUNTIME_STATE_CURRENT_SCREEN,
-                    mWorkspace.getCurrentPageOffsetFromCustomContent());
+                    mWorkspace.getNextPage());
 
         }
         super.onSaveInstanceState(outState);
@@ -1803,10 +1788,6 @@ public class Launcher extends Activity
         } catch (ActivityNotFoundException ex) {
             Log.e(TAG, "Global search activity not found: " + globalSearchActivity);
         }
-    }
-
-    public boolean isOnCustomContent() {
-        return mWorkspace.isOnOrMovingToCustomContent();
     }
 
     @Override
@@ -2412,12 +2393,8 @@ public class Launcher extends Activity
         mDragLayer.onAccessibilityStateChanged(enabled);
     }
 
+    @Deprecated
     public void onDragStarted() {
-        if (isOnCustomContent()) {
-            // Custom content screen doesn't participate in drag and drop. If on custom
-            // content screen, move to default.
-            moveWorkspaceToDefaultScreen();
-        }
     }
 
     /**
@@ -3280,13 +3257,6 @@ public class Launcher extends Activity
         }
         bindAddScreens(orderedScreenIds);
 
-        // Create the custom content page (this call updates mDefaultScreen which calls
-        // setCurrentPage() so ensure that all pages are added before calling this).
-        if (hasCustomContentToLeft()) {
-            mWorkspace.createCustomContentContainer();
-            populateCustomContentContainer();
-        }
-
         // After we have added all the screens, if the wallpaper was locked to the default state,
         // then notify to indicate that it can be released and a proper wallpaper offset can be
         // computed before the next layout
@@ -4022,37 +3992,6 @@ public class Launcher extends Activity
         // TODO(hyunyoungs): add mWidgetsView.dumpState(); or mWidgetsModel.dumpState();
 
         Log.d(TAG, "END launcher3 dump state");
-    }
-
-    @Override
-    public void dump(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
-        super.dump(prefix, fd, writer, args);
-        // Dump workspace
-        writer.println(prefix + "Workspace Items");
-        for (int i = mWorkspace.numCustomPages(); i < mWorkspace.getPageCount(); i++) {
-            writer.println(prefix + "  Homescreen " + i);
-
-            ViewGroup layout = ((CellLayout) mWorkspace.getPageAt(i)).getShortcutsAndWidgets();
-            for (int j = 0; j < layout.getChildCount(); j++) {
-                Object tag = layout.getChildAt(j).getTag();
-                if (tag != null) {
-                    writer.println(prefix + "    " + tag.toString());
-                }
-            }
-        }
-
-        writer.println(prefix + "  Hotseat");
-        ViewGroup layout = mHotseat.getLayout().getShortcutsAndWidgets();
-        for (int j = 0; j < layout.getChildCount(); j++) {
-            Object tag = layout.getChildAt(j).getTag();
-            if (tag != null) {
-                writer.println(prefix + "    " + tag.toString());
-            }
-        }
-
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.dump(prefix, fd, writer, args);
-        }
     }
 
     public static List<View> getFolderContents(View icon) {

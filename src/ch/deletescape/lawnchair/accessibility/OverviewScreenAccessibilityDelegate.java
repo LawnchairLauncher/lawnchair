@@ -90,7 +90,7 @@ public class OverviewScreenAccessibilityDelegate extends AccessibilityDelegate {
             info.addAction(mActions.get(MOVE_FORWARD));
         }
 
-        int startIndex = mWorkspace.numCustomPages();
+        int startIndex = 0;
         if (index > startIndex) {
             info.addAction(mActions.get(MOVE_BACKWARD));
         }

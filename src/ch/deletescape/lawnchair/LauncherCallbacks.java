@@ -83,8 +83,7 @@ public interface LauncherCallbacks {
      */
     boolean startSearch(
             String initialQuery, boolean selectInitialQuery, Bundle appSearchData);
-    boolean hasCustomContentToLeft();
-    void populateCustomContentContainer();
+
     Bundle getAdditionalSearchWidgetOptions();
 
     /*

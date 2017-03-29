@@ -2030,6 +2030,36 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         return super.performLongClick();
     }
 
+    public static class SavedState extends BaseSavedState {
+        int currentPage = -1;
+
+        SavedState(Parcelable superState) {
+            super(superState);
+        }
+
+        @Thunk SavedState(Parcel in) {
+            super(in);
+            currentPage = in.readInt();
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            super.writeToParcel(out, flags);
+            out.writeInt(currentPage);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR =
+                new Parcelable.Creator<SavedState>() {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
+    }
+
     // Animate the drag view back to the original position
     private void animateDragViewToOriginalPosition() {
         if (mDragView != null) {
