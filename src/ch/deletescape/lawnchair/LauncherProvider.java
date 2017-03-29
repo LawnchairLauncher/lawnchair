@@ -68,7 +68,6 @@ import java.util.Objects;
 
 public class LauncherProvider extends ContentProvider {
     private static final String TAG = "LauncherProvider";
-    private static final boolean LOGD = false;
 
     private static final int DATABASE_VERSION = 27;
 
@@ -595,8 +594,6 @@ public class LauncherProvider extends ContentProvider {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            if (LOGD) Log.d(TAG, "creating new launcher database");
-
             mMaxItemId = 1;
             mMaxScreenId = 0;
 
@@ -681,7 +678,6 @@ public class LauncherProvider extends ContentProvider {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            if (LOGD) Log.d(TAG, "onUpgrade triggered: " + oldVersion);
             switch (oldVersion) {
                 case 27: {
                     // DB Upgraded successfully
