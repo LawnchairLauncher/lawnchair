@@ -164,7 +164,7 @@ public class UserEventDispatcher {
         LauncherEvent event = LoggerUtils.initLauncherEvent(
                 Action.TOUCH, icon, Target.CONTAINER);
         LaunchSourceProvider provider = getLaunchProviderRecursive(icon);
-        if (icon == null && !(icon.getTag() instanceof ItemInfo)) {
+        if (icon == null || !(icon.getTag() instanceof ItemInfo)) {
             return;
         }
         ItemInfo info = (ItemInfo) icon.getTag();
@@ -229,8 +229,8 @@ public class UserEventDispatcher {
         if (ev.destTarget != null && ev.destTarget.length > 0) {
             Log.d(TAG, String.format(Locale.US,
                     " Destination child:%s\tparent:%s",
-                    LoggerUtils.getTargetStr(ev.destTarget != null ? ev.destTarget[0] : null),
-                    LoggerUtils.getTargetStr(ev.destTarget != null && ev.destTarget.length > 1 ?
+                    LoggerUtils.getTargetStr(ev.destTarget[0]),
+                    LoggerUtils.getTargetStr(ev.destTarget.length > 1 ?
                             ev.destTarget[1] : null)));
         }
         Log.d(TAG, String.format(Locale.US,
