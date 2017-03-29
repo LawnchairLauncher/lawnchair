@@ -34,10 +34,9 @@
         <item name="android:colorAccent">@color/accent_material_light</item>
     </style>
 
-    <!-- Theme for the widget container. Overridden on API 25. -->
-    <style name="WidgetContainerTheme" parent="@android:style/Theme.DeviceDefault.Settings">
-        <item name="colorSecondary">@color/fallback_secondary_color</item>
-        <item name="android:colorAccent">@color/accent_material_light</item>
+    <!-- Theme for the widget container. -->
+    <style name="WidgetContainerTheme" parent="@style/SettingsTheme">
+        <item name="colorSecondary">@color/secondary_color</item>
     </style>
 
     <!-- Overscroll effect -->

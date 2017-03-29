@@ -42,7 +42,7 @@
 
         <ch.deletescape.lawnchair.widget.WidgetsRecyclerView
             android:id="@+id/widgets_list_view"
-            android:theme="@style/CustomOverscroll.Dark"
+            android:theme="@style/CustomOverscroll.Light"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

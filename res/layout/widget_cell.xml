@@ -18,7 +18,7 @@
     android:layout_weight="1"
     android:orientation="vertical"
     android:focusable="true"
-    android:background="?android:attr/colorPrimary"
+    android:background="#CFD8DC"
     android:gravity="center_horizontal">
 
     <LinearLayout
@@ -40,10 +40,9 @@
             android:fadingEdge="horizontal"
             android:fontFamily="sans-serif-condensed"
             android:gravity="start"
-            android:shadowColor="#B0000000"
+            android:shadowColor="#B0BDBDBD"
             android:shadowRadius="2.0"
             android:maxLines="1"
-            android:textColor="@color/widgets_view_item_text_color"
             android:textSize="14sp" />
 
         <!-- The original dimensions of the widget (can't be the same text as above due to different
@@ -53,11 +52,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:textColor="@color/widgets_view_item_text_color"
             android:textSize="14sp"
             android:fontFamily="sans-serif-condensed"
             android:shadowRadius="2.0"
-            android:shadowColor="#B0000000" />
+            android:shadowColor="#B0BDBDBD" />
     </LinearLayout>
 
     <!-- The image of the widget. This view does not support padding. Any placement adjustment
