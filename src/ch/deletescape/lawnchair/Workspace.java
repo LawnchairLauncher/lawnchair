@@ -394,7 +394,6 @@ public class Workspace extends PagedView
         }
 
         updateChildrenLayersEnabled(false);
-        mLauncher.onDragStarted();
         mLauncher.onInteractionBegin();
         // Prevent any Un/InstallShortcutReceivers from updating the db while we are dragging
         InstallShortcutReceiver.enableInstallQueue();
