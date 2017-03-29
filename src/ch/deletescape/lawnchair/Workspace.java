@@ -1236,32 +1236,6 @@ public class Workspace extends PagedView
     private final Interpolator mAlphaInterpolator = new DecelerateInterpolator(3f);
 
     /**
-     * The overlay scroll is being controlled locally, just update our overlay effect
-     */
-    public void onOverlayScrollChanged(float scroll) {
-        float offset = 0f;
-        float slip = 0f;
-
-        scroll = Math.max(scroll - offset, 0);
-        scroll = Math.min(1, scroll / (1 - offset));
-
-        float alpha = 1 - mAlphaInterpolator.getInterpolation(scroll);
-        float transX = mLauncher.getDragLayer().getMeasuredWidth() * scroll;
-        transX *= 1 - slip;
-
-        if (mIsRtl) {
-            transX = -transX;
-        }
-        mOverlayTranslation = transX;
-
-        // TODO(adamcohen): figure out a final effect here. We may need to recommend
-        // different effects based on device performance. On at least one relatively high-end
-        // device I've tried, translating the launcher causes things to get quite laggy.
-        setWorkspaceTranslationAndAlpha(Direction.X, transX, alpha);
-        setHotseatTranslationAndAlpha(Direction.X, transX, alpha);
-    }
-
-    /**
      * Moves the workspace UI in the Y direction.
      * @param translation the amount of shift.
      * @param alpha the alpha for the workspace page

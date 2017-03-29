@@ -284,8 +284,6 @@ public class Launcher extends Activity
 
     private DeviceProfile mDeviceProfile;
 
-    private boolean mMoveToDefaultScreenFromNewIntent;
-
     // This is set to the view that launched the activity that navigated the user away from
     // launcher. Since there is no callback for when the activity has finished launching, enable
     // the press state and keep this reference to reset the press state when we return to launcher.
@@ -876,7 +874,6 @@ public class Launcher extends Activity
             getWorkspace().reinflateWidgetsIfNecessary();
         }
 
-        mMoveToDefaultScreenFromNewIntent = false;
         updateInteraction(Workspace.State.NORMAL, mWorkspace.getState());
         mWorkspace.onResume();
 
@@ -1614,7 +1611,6 @@ public class Launcher extends Activity
 
                 // We use this flag to suppress noisy callbacks above custom content state
                 // from onResume.
-                mMoveToDefaultScreenFromNewIntent = true;
                 mWorkspace.post(new Runnable() {
                     @Override
                     public void run() {
@@ -3955,10 +3951,6 @@ public class Launcher extends Activity
             Bitmap icon) {
         return new ShortcutInfo(shortcutIntent, caption, caption, icon,
                 UserHandleCompat.myUserHandle());
-    }
-
-    protected void moveWorkspaceToDefaultScreen() {
-        mWorkspace.moveToDefaultScreen(false);
     }
 
     /**
