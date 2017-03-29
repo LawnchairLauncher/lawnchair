@@ -56,7 +56,6 @@ import ch.deletescape.lawnchair.util.TransformingTouchDelegate;
 public class WidgetsContainerView extends BaseContainerView
         implements View.OnLongClickListener, View.OnClickListener, DragSource {
     private static final String TAG = "WidgetsContainerView";
-    private static final boolean LOGD = false;
 
     /* Global instances that are used inside this container. */
     @Thunk
@@ -91,9 +90,6 @@ public class WidgetsContainerView extends BaseContainerView
         mDragController = mLauncher.getDragController();
         mAdapter = new WidgetsListAdapter(this, this, context);
         mIconCache = (LauncherAppState.getInstance()).getIconCache();
-        if (LOGD) {
-            Log.d(TAG, "WidgetsContainerView constructor");
-        }
     }
 
     @Override
@@ -155,9 +151,6 @@ public class WidgetsContainerView extends BaseContainerView
 
     @Override
     public boolean onLongClick(View v) {
-        if (LOGD) {
-            Log.d(TAG, String.format("onLonglick [v=%s]", v));
-        }
         // Return early if this is not initiated from a touch
         if (!v.isInTouchMode()) return false;
         // When we have exited all apps or are in transition, disregard long clicks
@@ -170,9 +163,6 @@ public class WidgetsContainerView extends BaseContainerView
         if (status && v.getTag() instanceof PendingAddWidgetInfo) {
             WidgetHostViewLoader hostLoader = new WidgetHostViewLoader(mLauncher, v);
             boolean preloadStatus = hostLoader.preloadWidget();
-            if (LOGD) {
-                Log.d(TAG, String.format("preloading widget [status=%s]", preloadStatus));
-            }
             mLauncher.getDragController().addDragListener(hostLoader);
         }
         return status;
@@ -295,9 +285,6 @@ public class WidgetsContainerView extends BaseContainerView
     @Override
     public void onDropCompleted(View target, DragObject d, boolean isFlingToDelete,
                                 boolean success) {
-        if (LOGD) {
-            Log.d(TAG, "onDropCompleted");
-        }
         if (isFlingToDelete || !success || (target != mLauncher.getWorkspace() &&
                 !(target instanceof DeleteDropTarget) && !(target instanceof Folder))) {
             // Exit spring loaded mode if we have not successfully dropped or have not handled the

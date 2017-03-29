@@ -51,7 +51,6 @@ import ch.deletescape.lawnchair.util.Thunk;
  */
 public class AutoInstallsLayout {
     private static final String TAG = "AutoInstalls";
-    private static final boolean LOGD = false;
 
     /**
      * Marker action used to discover a package which defines launcher customization
@@ -275,7 +274,6 @@ public class AutoInstallsLayout {
 
         TagParser tagParser = tagParserMap.get(parser.getName());
         if (tagParser == null) {
-            if (LOGD) Log.d(TAG, "Ignoring unknown element tag: " + parser.getName());
             return 0;
         }
         long newElementId = tagParser.parseAndAdd(parser);
@@ -392,7 +390,6 @@ public class AutoInstallsLayout {
             final String packageName = getAttributeValue(parser, ATTR_PACKAGE_NAME);
             final String className = getAttributeValue(parser, ATTR_CLASS_NAME);
             if (TextUtils.isEmpty(packageName) || TextUtils.isEmpty(className)) {
-                if (LOGD) Log.d(TAG, "Skipping invalid <favorite> with no component");
                 return -1;
             }
 
@@ -424,7 +421,6 @@ public class AutoInstallsLayout {
             final int iconId = getAttributeResourceValue(parser, ATTR_ICON, 0);
 
             if (titleResId == 0 || iconId == 0) {
-                if (LOGD) Log.d(TAG, "Ignoring shortcut");
                 return -1;
             }
 
@@ -435,7 +431,6 @@ public class AutoInstallsLayout {
 
             Drawable icon = mIconRes.getDrawable(iconId);
             if (icon == null) {
-                if (LOGD) Log.d(TAG, "Ignoring shortcut, can't load icon");
                 return -1;
             }
 
@@ -452,7 +447,6 @@ public class AutoInstallsLayout {
         protected Intent parseIntent(XmlResourceParser parser) {
             final String url = getAttributeValue(parser, ATTR_URL);
             if (TextUtils.isEmpty(url) || !Patterns.WEB_URL.matcher(url).matches()) {
-                if (LOGD) Log.d(TAG, "Ignoring shortcut, invalid url: " + url);
                 return null;
             }
             return new Intent(Intent.ACTION_VIEW, null).setData(Uri.parse(url));
@@ -475,7 +469,6 @@ public class AutoInstallsLayout {
             final String packageName = getAttributeValue(parser, ATTR_PACKAGE_NAME);
             final String className = getAttributeValue(parser, ATTR_CLASS_NAME);
             if (TextUtils.isEmpty(packageName) || TextUtils.isEmpty(className)) {
-                if (LOGD) Log.d(TAG, "Skipping invalid <appwidget> with no component");
                 return -1;
             }
 
@@ -558,7 +551,6 @@ public class AutoInstallsLayout {
             mValues.put(Favorites._ID, mCallback.generateNewItemId());
             long folderId = mCallback.insertAndCheck(mDb, mValues);
             if (folderId < 0) {
-                if (LOGD) Log.e(TAG, "Unable to add folder");
                 return -1;
             }
 

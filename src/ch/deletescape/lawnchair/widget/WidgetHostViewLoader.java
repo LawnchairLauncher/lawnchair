@@ -21,7 +21,6 @@ import ch.deletescape.lawnchair.util.Thunk;
 
 public class WidgetHostViewLoader implements DragController.DragListener {
     private static final String TAG = "WidgetHostViewLoader";
-    private static final boolean LOGD = false;
 
     /* Runnables to handle inflation and binding. */
     @Thunk
@@ -57,9 +56,6 @@ public class WidgetHostViewLoader implements DragController.DragListener {
 
     @Override
     public void onDragEnd() {
-        if (LOGD) {
-            Log.d(TAG, "Cleaning up in onDragEnd()...");
-        }
 
         // Cleanup up preloading state.
         mLauncher.getDragController().removeDragListener(this);
@@ -75,9 +71,6 @@ public class WidgetHostViewLoader implements DragController.DragListener {
 
         // The widget was inflated and added to the DragLayer -- remove it.
         if (mInfo.boundWidget != null) {
-            if (LOGD) {
-                Log.d(TAG, "...removing widget from drag layer");
-            }
             mLauncher.getDragLayer().removeView(mInfo.boundWidget);
             mLauncher.getAppWidgetHost().deleteAppWidgetId(mInfo.boundWidget.getAppWidgetId());
             mInfo.boundWidget = null;
@@ -105,9 +98,6 @@ public class WidgetHostViewLoader implements DragController.DragListener {
             @Override
             public void run() {
                 mWidgetLoadingId = mLauncher.getAppWidgetHost().allocateAppWidgetId();
-                if (LOGD) {
-                    Log.d(TAG, "Binding widget, id: " + mWidgetLoadingId);
-                }
                 if (AppWidgetManagerCompat.getInstance(mLauncher).bindAppWidgetIdIfAllowed(
                         mWidgetLoadingId, pInfo, options)) {
 
@@ -120,9 +110,6 @@ public class WidgetHostViewLoader implements DragController.DragListener {
         mInflateWidgetRunnable = new Runnable() {
             @Override
             public void run() {
-                if (LOGD) {
-                    Log.d(TAG, "Inflating widget, id: " + mWidgetLoadingId);
-                }
                 if (mWidgetLoadingId == -1) {
                     return;
                 }
@@ -142,17 +129,11 @@ public class WidgetHostViewLoader implements DragController.DragListener {
                 lp.x = lp.y = 0;
                 lp.customPosition = true;
                 hostView.setLayoutParams(lp);
-                if (LOGD) {
-                    Log.d(TAG, "Adding host view to drag layer");
-                }
                 mLauncher.getDragLayer().addView(hostView);
                 mView.setTag(mInfo);
             }
         };
 
-        if (LOGD) {
-            Log.d(TAG, "About to bind/inflate widget");
-        }
         mHandler.post(mBindWidgetRunnable);
         return true;
     }

@@ -132,7 +132,6 @@ public class Launcher extends Activity
         LauncherModel.Callbacks, View.OnTouchListener, LauncherProviderChangeListener,
         AccessibilityManager.AccessibilityStateChangeListener {
     public static final String TAG = "Launcher";
-    static final boolean LOGD = false;
 
     private static final int REQUEST_CREATE_SHORTCUT = 1;
     private static final int REQUEST_CREATE_APPWIDGET = 5;
@@ -1857,9 +1856,6 @@ public class Launcher extends Activity
 
     void addAppWidgetFromDropImpl(int appWidgetId, ItemInfo info, AppWidgetHostView boundWidget,
                                   LauncherAppWidgetProviderInfo appWidgetInfo) {
-        if (LOGD) {
-            Log.d(TAG, "Adding widget from drop");
-        }
         addAppWidgetImpl(appWidgetId, info, boundWidget, appWidgetInfo, 0);
     }
 
@@ -1928,9 +1924,6 @@ public class Launcher extends Activity
         int appWidgetId;
         if (hostView != null) {
             // In the case where we've prebound the widget, we remove it from the DragLayer
-            if (LOGD) {
-                Log.d(TAG, "Removing widget view from drag layer and setting boundWidget to null");
-            }
             getDragLayer().removeView(hostView);
 
             appWidgetId = hostView.getAppWidgetId();
@@ -2219,7 +2212,6 @@ public class Launcher extends Activity
      * @param v The view that was clicked.
      */
     protected void onClickAllAppsButton(View v) {
-        if (LOGD) Log.d(TAG, "onClickAllAppsButton");
         if (!isAppsViewVisible()) {
             getUserEventDispatcher().logActionOnControl(LauncherLogProto.Action.TAP,
                     LauncherLogProto.ALL_APPS_BUTTON);
@@ -2229,7 +2221,6 @@ public class Launcher extends Activity
     }
 
     protected void onLongClickAllAppsButton(View v) {
-        if (LOGD) Log.d(TAG, "onLongClickAllAppsButton");
         if (!isAppsViewVisible()) {
             getUserEventDispatcher().logActionOnControl(LauncherLogProto.Action.LONGPRESS,
                     LauncherLogProto.ALL_APPS_BUTTON);
@@ -2261,7 +2252,6 @@ public class Launcher extends Activity
      * @param v The view that was clicked. Must be a tagged with a {@link ShortcutInfo}.
      */
     protected void onClickAppShortcut(final View v) {
-        if (LOGD) Log.d(TAG, "onClickAppShortcut");
         Object tag = v.getTag();
         if (!(tag instanceof ShortcutInfo)) {
             throw new IllegalArgumentException("Input must be a Shortcut");
@@ -2334,7 +2324,6 @@ public class Launcher extends Activity
      * @param v The view that was clicked. Must be an instance of {@link FolderIcon}.
      */
     protected void onClickFolderIcon(View v) {
-        if (LOGD) Log.d(TAG, "onClickFolder");
         if (!(v instanceof FolderIcon)) {
             throw new IllegalArgumentException("Input must be a FolderIcon");
         }
@@ -2351,7 +2340,6 @@ public class Launcher extends Activity
      * on the home screen.
      */
     public void onClickAddWidgetButton(View view) {
-        if (LOGD) Log.d(TAG, "onClickAddWidgetButton");
         if (mIsSafeModeEnabled) {
             Toast.makeText(this, R.string.safemode_widget_error, Toast.LENGTH_SHORT).show();
         } else {
@@ -2387,7 +2375,6 @@ public class Launcher extends Activity
      * on the home screen.
      */
     public void onClickSettingsButton(View v) {
-        if (LOGD) Log.d(TAG, "onClickSettingsButton");
         Intent intent = new Intent(Intent.ACTION_APPLICATION_PREFERENCES)
                 .setPackage(getPackageName());
         intent.setSourceBounds(getViewBounds(v));
@@ -3000,7 +2987,6 @@ public class Launcher extends Activity
      * Shows the widgets view.
      */
     void showWidgetsView(boolean animated, boolean resetPageToZero) {
-        if (LOGD) Log.d(TAG, "showWidgetsView:" + animated + " resetPageToZero:" + resetPageToZero);
         if (resetPageToZero) {
             mWidgetsView.scrollToTop();
         }
@@ -3073,7 +3059,6 @@ public class Launcher extends Activity
     }
 
     public void enterSpringLoadedDragMode() {
-        if (LOGD) Log.d(TAG, String.format("enterSpringLoadedDragMode [mState=%s", mState.name()));
         if (isStateSpringLoaded()) {
             return;
         }
@@ -3182,7 +3167,6 @@ public class Launcher extends Activity
     @Thunk
     boolean waitUntilResume(Runnable run, boolean deletePreviousRunnables) {
         if (mPaused) {
-            if (LOGD) Log.d(TAG, "Deferring update until onResume");
             if (deletePreviousRunnables) {
                 while (mBindOnResumeCallbacks.remove(run)) {
                 }
@@ -3219,7 +3203,6 @@ public class Launcher extends Activity
     @Override
     public boolean setLoadOnResume() {
         if (mPaused) {
-            if (LOGD) Log.d(TAG, "setLoadOnResume");
             mOnResumeNeedsLoad = true;
             return true;
         } else {
@@ -3736,7 +3719,6 @@ public class Launcher extends Activity
     @Override
     public void bindDeepShortcutMap(MultiHashMap<ComponentKey, String> deepShortcutMapCopy) {
         mDeepShortcutMap = deepShortcutMapCopy;
-        if (LOGD) Log.d(TAG, "bindDeepShortcutMap: " + mDeepShortcutMap);
     }
 
     public List<String> getShortcutIdsForItem(ItemInfo info) {
