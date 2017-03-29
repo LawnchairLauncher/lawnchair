@@ -30,7 +30,7 @@ import ch.deletescape.lawnchair.compat.UserManagerCompat;
 
 /**
  * Wrapper class for {@link android.content.pm.ShortcutInfo}, representing deep shortcuts into apps.
- *
+ * <p>
  * Not to be confused with {@link ch.deletescape.lawnchair.ShortcutInfo}.
  */
 @TargetApi(Build.VERSION_CODES.N)
@@ -126,6 +126,6 @@ public class ShortcutInfoCompat {
         Intent intent = new Intent(Intent.ACTION_MAIN)
                 .addCategory(Intent.CATEGORY_LAUNCHER)
                 .setComponent(getActivity());
-        return LauncherActivityInfoCompat.create(context, getUserHandle().getUser(),intent);
+        return LauncherActivityInfoCompat.create(context, getUserHandle().getUser(), intent);
     }
 }

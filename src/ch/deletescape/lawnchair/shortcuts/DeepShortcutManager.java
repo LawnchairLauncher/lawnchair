@@ -27,14 +27,14 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.LauncherSettings;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.compat.UserHandleCompat;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Performs operations related to deep shortcuts, such as querying for them, pinning them, etc.
@@ -71,12 +71,12 @@ public class DeepShortcutManager {
 
     /**
      * Queries for the shortcuts with the package name and provided ids.
-     *
+     * <p>
      * This method is intended to get the full details for shortcuts when they are added or updated,
      * because we only get "key" fields in onShortcutsChanged().
      */
     public List<ShortcutInfoCompat> queryForFullDetails(String packageName,
-            List<String> shortcutIds, UserHandleCompat user) {
+                                                        List<String> shortcutIds, UserHandleCompat user) {
         return query(FLAG_GET_ALL, packageName, null, shortcutIds, user);
     }
 
@@ -85,7 +85,7 @@ public class DeepShortcutManager {
      * to be displayed in the shortcuts container on long press.
      */
     public List<ShortcutInfoCompat> queryForShortcutsContainer(ComponentName activity,
-            List<String> ids, UserHandleCompat user) {
+                                                               List<String> ids, UserHandleCompat user) {
         return query(FLAG_MATCH_MANIFEST | FLAG_MATCH_DYNAMIC,
                 activity.getPackageName(), activity, ids, user);
     }
@@ -105,7 +105,7 @@ public class DeepShortcutManager {
             try {
                 mLauncherApps.pinShortcuts(packageName, pinnedIds, user.getUser());
                 mWasLastCallSuccess = true;
-            } catch (SecurityException|IllegalStateException e) {
+            } catch (SecurityException | IllegalStateException e) {
                 Log.w(TAG, "Failed to unpin shortcut", e);
                 mWasLastCallSuccess = false;
             }
@@ -127,7 +127,7 @@ public class DeepShortcutManager {
             try {
                 mLauncherApps.pinShortcuts(packageName, pinnedIds, user.getUser());
                 mWasLastCallSuccess = true;
-            } catch (SecurityException|IllegalStateException e) {
+            } catch (SecurityException | IllegalStateException e) {
                 Log.w(TAG, "Failed to pin shortcut", e);
                 mWasLastCallSuccess = false;
             }
@@ -136,13 +136,13 @@ public class DeepShortcutManager {
 
     @TargetApi(25)
     public void startShortcut(String packageName, String id, Rect sourceBounds,
-          Bundle startActivityOptions, UserHandleCompat user) {
+                              Bundle startActivityOptions, UserHandleCompat user) {
         if (Utilities.isNycMR1OrAbove()) {
             try {
                 mLauncherApps.startShortcut(packageName, id, sourceBounds,
                         startActivityOptions, user.getUser());
                 mWasLastCallSuccess = true;
-            } catch (SecurityException|IllegalStateException e) {
+            } catch (SecurityException | IllegalStateException e) {
                 Log.e(TAG, "Failed to start shortcut", e);
                 mWasLastCallSuccess = false;
             }
@@ -157,7 +157,7 @@ public class DeepShortcutManager {
                         shortcutInfo.getShortcutInfo(), density);
                 mWasLastCallSuccess = true;
                 return icon;
-            } catch (SecurityException|IllegalStateException e) {
+            } catch (SecurityException | IllegalStateException e) {
                 Log.e(TAG, "Failed to get shortcut icon", e);
                 mWasLastCallSuccess = false;
             }
@@ -167,11 +167,11 @@ public class DeepShortcutManager {
 
     /**
      * Returns the id's of pinned shortcuts associated with the given package and user.
-     *
+     * <p>
      * If packageName is null, returns all pinned shortcuts regardless of package.
      */
     public List<ShortcutInfoCompat> queryForPinnedShortcuts(String packageName,
-            UserHandleCompat user) {
+                                                            UserHandleCompat user) {
         return query(FLAG_MATCH_PINNED, packageName, null, null, user);
     }
 
@@ -190,12 +190,12 @@ public class DeepShortcutManager {
     /**
      * Query the system server for all the shortcuts matching the given parameters.
      * If packageName == null, we query for all shortcuts with the passed flags, regardless of app.
-     *
+     * <p>
      * TODO: Use the cache to optimize this so we don't make an RPC every time.
      */
     @TargetApi(25)
     private List<ShortcutInfoCompat> query(int flags, String packageName,
-            ComponentName activity, List<String> shortcutIds, UserHandleCompat user) {
+                                           ComponentName activity, List<String> shortcutIds, UserHandleCompat user) {
         if (Utilities.isNycMR1OrAbove()) {
             ShortcutQuery q = new ShortcutQuery();
             q.setQueryFlags(flags);
@@ -208,7 +208,7 @@ public class DeepShortcutManager {
             try {
                 shortcutInfos = mLauncherApps.getShortcuts(q, user.getUser());
                 mWasLastCallSuccess = true;
-            } catch (SecurityException|IllegalStateException e) {
+            } catch (SecurityException | IllegalStateException e) {
                 Log.e(TAG, "Failed to query for shortcuts", e);
                 mWasLastCallSuccess = false;
             }
@@ -230,7 +230,7 @@ public class DeepShortcutManager {
         if (Utilities.isNycMR1OrAbove()) {
             try {
                 return mLauncherApps.hasShortcutHostPermission();
-            } catch (SecurityException|IllegalStateException e) {
+            } catch (SecurityException | IllegalStateException e) {
                 Log.e(TAG, "Failed to make shortcut manager call", e);
             }
         }

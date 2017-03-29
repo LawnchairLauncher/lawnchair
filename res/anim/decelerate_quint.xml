@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 /*
 ** Copyright 2014, The Android Open Source Project
 **
@@ -18,4 +17,4 @@
 -->
 
 <decelerateInterpolator xmlns:android="http://schemas.android.com/apk/res/android"
-        android:factor="2.5" />
+    android:factor="2.5" />

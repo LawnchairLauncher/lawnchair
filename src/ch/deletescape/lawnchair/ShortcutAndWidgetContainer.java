@@ -53,7 +53,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
     }
 
     public void setCellDimensions(int cellWidth, int cellHeight, int widthGap, int heightGap,
-            int countX, int countY) {
+                                  int countX, int countY) {
         mCellWidth = cellWidth;
         mCellHeight = cellHeight;
         mWidthGap = widthGap;
@@ -80,7 +80,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
         int count = getChildCount();
 
         int widthSpecSize = MeasureSpec.getSize(widthMeasureSpec);
-        int heightSpecSize =  MeasureSpec.getSize(heightMeasureSpec);
+        int heightSpecSize = MeasureSpec.getSize(heightMeasureSpec);
         setMeasuredDimension(widthSpecSize, heightSpecSize);
 
         for (int i = 0; i < count; i++) {
@@ -108,7 +108,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
     int getCellContentWidth() {
         final DeviceProfile grid = mLauncher.getDeviceProfile();
         return Math.min(getMeasuredHeight(), mIsHotseatLayout ?
-                grid.hotseatCellWidthPx: grid.cellWidthPx);
+                grid.hotseatCellWidthPx : grid.cellWidthPx);
     }
 
     int getCellContentHeight() {

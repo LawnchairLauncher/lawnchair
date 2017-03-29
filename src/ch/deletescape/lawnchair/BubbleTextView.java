@@ -40,13 +40,11 @@ import android.view.ViewDebug;
 import android.view.ViewParent;
 import android.widget.TextView;
 
+import java.text.NumberFormat;
+
 import ch.deletescape.lawnchair.IconCache.IconLoadRequest;
 import ch.deletescape.lawnchair.folder.FolderIcon;
 import ch.deletescape.lawnchair.model.PackageItemInfo;
-
-import java.text.NumberFormat;
-
-import ch.deletescape.lawnchair.R;
 
 /**
  * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan
@@ -161,7 +159,7 @@ public class BubbleTextView extends TextView
     }
 
     public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache,
-            boolean promiseStateChanged) {
+                                      boolean promiseStateChanged) {
         applyIconAndLabel(info.getIcon(iconCache), info);
         setTag(info);
         if (promiseStateChanged || info.isPromise()) {
@@ -248,12 +246,16 @@ public class BubbleTextView extends TextView
         }
     }
 
-    /** Returns the icon for this view. */
+    /**
+     * Returns the icon for this view.
+     */
     public Drawable getIcon() {
         return mIcon;
     }
 
-    /** Returns whether the layout is horizontal. */
+    /**
+     * Returns whether the layout is horizontal.
+     */
     public boolean isLayoutHorizontal() {
         return mLayoutHorizontal;
     }
@@ -392,7 +394,7 @@ public class BubbleTextView extends TextView
             final int scrollY = getScrollY();
 
             if (mBackgroundSizeChanged) {
-                background.setBounds(0, 0,  getRight() - getLeft(), getBottom() - getTop());
+                background.setBounds(0, 0, getRight() - getLeft(), getBottom() - getTop());
                 mBackgroundSizeChanged = false;
             }
 
@@ -494,8 +496,8 @@ public class BubbleTextView extends TextView
                             info.getInstallProgress() : 0)) : 100;
 
             setContentDescription(progressLevel > 0 ?
-                getContext().getString(R.string.app_downloading_title, info.title,
-                        NumberFormat.getPercentInstance().format(progressLevel * 0.01)) :
+                    getContext().getString(R.string.app_downloading_title, info.title,
+                            NumberFormat.getPercentInstance().format(progressLevel * 0.01)) :
                     getContext().getString(R.string.app_waiting_download_title, info.title));
 
             if (mIcon != null) {
@@ -519,7 +521,7 @@ public class BubbleTextView extends TextView
         Object tag = getTag();
         int style = ((tag != null) && (tag instanceof ShortcutInfo) &&
                 (((ShortcutInfo) tag).container >= 0)) ? R.style.PreloadIcon_Folder
-                        : R.style.PreloadIcon;
+                : R.style.PreloadIcon;
         Theme theme = sPreloaderThemes.get(style);
         if (theme == null) {
             theme = getResources().newTheme();
@@ -662,7 +664,7 @@ public class BubbleTextView extends TextView
      * Returns the start delay when animating between certain {@link FastBitmapDrawable} states.
      */
     private static int getStartDelayForStateChange(final FastBitmapDrawable.State fromState,
-            final FastBitmapDrawable.State toState) {
+                                                   final FastBitmapDrawable.State toState) {
         switch (toState) {
             case NORMAL:
                 switch (fromState) {

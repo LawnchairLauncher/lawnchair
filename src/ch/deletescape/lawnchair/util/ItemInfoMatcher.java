@@ -18,13 +18,13 @@ package ch.deletescape.lawnchair.util;
 
 import android.content.ComponentName;
 
+import java.util.HashSet;
+
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.LauncherSettings.Favorites;
 import ch.deletescape.lawnchair.ShortcutInfo;
 import ch.deletescape.lawnchair.compat.UserHandleCompat;
 import ch.deletescape.lawnchair.shortcuts.ShortcutKey;
-
-import java.util.HashSet;
 
 /**
  * A utility class to check for {@link ItemInfo}

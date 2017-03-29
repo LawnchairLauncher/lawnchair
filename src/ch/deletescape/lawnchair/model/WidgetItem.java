@@ -5,6 +5,8 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 
+import java.text.Collator;
+
 import ch.deletescape.lawnchair.InvariantDeviceProfile;
 import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.LauncherAppWidgetProviderInfo;
@@ -12,8 +14,6 @@ import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
 import ch.deletescape.lawnchair.compat.UserHandleCompat;
 import ch.deletescape.lawnchair.util.ComponentKey;
-
-import java.text.Collator;
 
 /**
  * An wrapper over various items displayed in a widget picker,

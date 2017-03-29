@@ -47,7 +47,7 @@ public class ShortcutCache {
 
     /**
      * Removes shortcuts from the cache when shortcuts change for a given package.
-     *
+     * <p>
      * Returns a map of ids to their evicted shortcuts.
      *
      * @see android.content.pm.LauncherApps.Callback#onShortcutsChanged(String, List, UserHandle).

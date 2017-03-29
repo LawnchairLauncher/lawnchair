@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * An executor service that executes its tasks on the main thread.
- *
+ * <p>
  * Shutting down this executor is not supported.
  */
 public class MainThreadExecutor extends AbstractExecutorService {

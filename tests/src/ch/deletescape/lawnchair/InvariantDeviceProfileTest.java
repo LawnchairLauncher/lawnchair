@@ -18,7 +18,6 @@ package ch.deletescape.lawnchair;
 import android.graphics.PointF;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -46,7 +45,7 @@ public class InvariantDeviceProfileTest extends AndroidTestCase {
     }
 
     public void testFindClosestDeviceProfile2() {
-        for (InvariantDeviceProfile idf: mPredefinedDeviceProfiles) {
+        for (InvariantDeviceProfile idf : mPredefinedDeviceProfiles) {
             ArrayList<InvariantDeviceProfile> predefinedProfilesCopy =
                     new ArrayList<>(mPredefinedDeviceProfiles);
             ArrayList<InvariantDeviceProfile> closestProfiles =
@@ -76,7 +75,7 @@ public class InvariantDeviceProfileTest extends AndroidTestCase {
                     mInvariantProfile.findClosestDeviceProfiles(
                             pts.get(i).x, pts.get(i).y, mPredefinedDeviceProfiles);
             InvariantDeviceProfile result =
-                    mInvariantProfile.invDistWeightedInterpolate( getContext(),
+                    mInvariantProfile.invDistWeightedInterpolate(getContext(),
                             pts.get(i).x, pts.get(i).y, closestProfiles);
         }
     }
@@ -85,7 +84,7 @@ public class InvariantDeviceProfileTest extends AndroidTestCase {
         ArrayList<PointF> result = new ArrayList<>();
         result.add(a);
         for (float i = 1; i < numPts; i = i + 1.0f) {
-            result.add(new PointF((b.x * i +  a.x * (numPts - i)) / numPts,
+            result.add(new PointF((b.x * i + a.x * (numPts - i)) / numPts,
                     (b.y * i + a.y * (numPts - i)) / numPts));
         }
         result.add(b);

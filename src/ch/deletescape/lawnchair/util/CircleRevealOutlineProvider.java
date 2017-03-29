@@ -28,8 +28,8 @@ public class CircleRevealOutlineProvider extends RevealOutlineAnimation {
     private float mRadius1;
 
     /**
-     * @param x reveal center x
-     * @param y reveal center y
+     * @param x  reveal center x
+     * @param y  reveal center y
      * @param r0 initial radius
      * @param r1 final radius
      */

@@ -58,8 +58,8 @@ public class AllAppsCaretController {
      * angle of caret.
      *
      * @param containerProgress The progress of the container in the range [0..1]
-     * @param velocity The velocity of the container
-     * @param dragging {@code true} if the container is being dragged
+     * @param velocity          The velocity of the container
+     * @param dragging          {@code true} if the container is being dragged
      */
     public void updateCaret(float containerProgress, float velocity, boolean dragging) {
         // If we're in portrait and the shift is not 0 or 1, adjust the caret based on velocity

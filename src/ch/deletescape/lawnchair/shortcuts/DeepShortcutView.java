@@ -92,7 +92,9 @@ public class DeepShortcutView extends FrameLayout implements ValueAnimator.Anima
         mPillRect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
     }
 
-    /** package private **/
+    /**
+     * package private
+     **/
     void applyShortcutInfo(UnbadgedShortcutInfo info, DeepShortcutsContainer container) {
         mInfo = info;
         IconCache cache = LauncherAppState.getInstance().getIconCache();
@@ -133,9 +135,9 @@ public class DeepShortcutView extends FrameLayout implements ValueAnimator.Anima
      */
     public Animator createOpenAnimation(boolean isContainerAboveIcon, boolean pivotLeft) {
         Point center = getIconCenter();
-        ValueAnimator openAnimator =  new ZoomRevealOutlineProvider(center.x, center.y,
+        ValueAnimator openAnimator = new ZoomRevealOutlineProvider(center.x, center.y,
                 mPillRect, this, mIconView, isContainerAboveIcon, pivotLeft)
-                        .createRevealAnimator(this, false);
+                .createRevealAnimator(this, false);
         mOpenAnimationProgress = 0f;
         openAnimator.addUpdateListener(this);
         return openAnimator;
@@ -154,11 +156,11 @@ public class DeepShortcutView extends FrameLayout implements ValueAnimator.Anima
      * Creates an animator to play when the shortcut container is being closed.
      */
     public Animator createCloseAnimation(boolean isContainerAboveIcon, boolean pivotLeft,
-            long duration) {
+                                         long duration) {
         Point center = getIconCenter();
-        ValueAnimator closeAnimator =  new ZoomRevealOutlineProvider(center.x, center.y,
+        ValueAnimator closeAnimator = new ZoomRevealOutlineProvider(center.x, center.y,
                 mPillRect, this, mIconView, isContainerAboveIcon, pivotLeft)
-                        .createRevealAnimator(this, true);
+                .createRevealAnimator(this, true);
         // Scale down the duration and interpolator according to the progress
         // that the open animation was at when the close started.
         closeAnimator.setDuration((long) (duration * mOpenAnimationProgress));
@@ -174,7 +176,7 @@ public class DeepShortcutView extends FrameLayout implements ValueAnimator.Anima
         int iconCenterX = getIconCenter().x;
         return new PillWidthRevealOutlineProvider(mPillRect,
                 iconCenterX - halfHeight, iconCenterX + halfHeight)
-                        .createRevealAnimator(this, true);
+                .createRevealAnimator(this, true);
     }
 
     /**
@@ -203,7 +205,7 @@ public class DeepShortcutView extends FrameLayout implements ValueAnimator.Anima
         private final float mTranslateX;
 
         public ZoomRevealOutlineProvider(int x, int y, Rect pillRect,
-                View translateView, View zoomView, boolean isContainerAboveIcon, boolean pivotLeft) {
+                                         View translateView, View zoomView, boolean isContainerAboveIcon, boolean pivotLeft) {
             super(x, y, pillRect);
             mTranslateView = translateView;
             mZoomView = zoomView;

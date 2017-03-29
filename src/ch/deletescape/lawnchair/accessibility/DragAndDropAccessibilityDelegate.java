@@ -25,11 +25,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.accessibility.AccessibilityEvent;
 
+import java.util.List;
+
 import ch.deletescape.lawnchair.CellLayout;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
-
-import java.util.List;
 
 /**
  * Helper class to make drag-and-drop in a {@link CellLayout} accessible.

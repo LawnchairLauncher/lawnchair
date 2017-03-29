@@ -24,13 +24,13 @@ import android.os.Build;
 import android.os.UserHandle;
 import android.os.UserManager;
 
-import ch.deletescape.lawnchair.Utilities;
-import ch.deletescape.lawnchair.util.LongArrayMap;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+
+import ch.deletescape.lawnchair.Utilities;
+import ch.deletescape.lawnchair.util.LongArrayMap;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class UserManagerCompatVL extends UserManagerCompat {

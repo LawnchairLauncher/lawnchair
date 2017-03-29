@@ -31,8 +31,6 @@ import android.view.ViewConfiguration;
 
 import ch.deletescape.lawnchair.util.Thunk;
 
-import ch.deletescape.lawnchair.R;
-
 /**
  * The track and scrollbar that shows when you scroll the list.
  */
@@ -45,19 +43,24 @@ public class BaseRecyclerViewFastScrollBar {
     private final static int MAX_TRACK_ALPHA = 30;
     private final static int SCROLL_BAR_VIS_DURATION = 150;
 
-    @Thunk BaseRecyclerView mRv;
+    @Thunk
+    BaseRecyclerView mRv;
     private BaseRecyclerViewFastScrollPopup mPopup;
 
     private AnimatorSet mScrollbarAnimator;
 
     private int mThumbInactiveColor;
     private int mThumbActiveColor;
-    @Thunk Point mThumbOffset = new Point(-1, -1);
-    @Thunk Paint mThumbPaint;
+    @Thunk
+    Point mThumbOffset = new Point(-1, -1);
+    @Thunk
+    Paint mThumbPaint;
     private int mThumbMinWidth;
     private int mThumbMaxWidth;
-    @Thunk int mThumbWidth;
-    @Thunk int mThumbHeight;
+    @Thunk
+    int mThumbWidth;
+    @Thunk
+    int mThumbHeight;
     private int mThumbCurvature;
     private Path mThumbPath = new Path();
     private Paint mTrackPaint;

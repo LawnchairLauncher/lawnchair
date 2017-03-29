@@ -47,7 +47,7 @@ public class SpringLoadedDragController implements OnAlarmListener {
     public void setAlarm(CellLayout cl) {
         mAlarm.cancelAlarm();
         mAlarm.setAlarm((cl == null) ? ENTER_SPRING_LOAD_CANCEL_HOVER_TIME :
-            ENTER_SPRING_LOAD_HOVER_TIME);
+                ENTER_SPRING_LOAD_HOVER_TIME);
         mScreen = cl;
     }
 

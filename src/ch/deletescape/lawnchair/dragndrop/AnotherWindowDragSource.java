@@ -62,7 +62,7 @@ public class AnotherWindowDragSource implements DragSource {
 
     @Override
     public void onDropCompleted(View target, DragObject d,
-            boolean isFlingToDelete, boolean success) {
+                                boolean isFlingToDelete, boolean success) {
         if (!success) {
             Launcher.getLauncher(mContext).exitSpringLoadedDragModeDelayed(false, 0, null);
         }

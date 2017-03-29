@@ -16,7 +16,6 @@
 
 package ch.deletescape.lawnchair;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources.Theme;
@@ -26,7 +25,6 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Layout;
 import android.text.StaticLayout;
@@ -35,8 +33,6 @@ import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.View.OnClickListener;
-
-import ch.deletescape.lawnchair.R;
 
 public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implements OnClickListener {
     private static final float SETUP_ICON_SIZE_FACTOR = 2f / 5;
@@ -64,7 +60,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
     private Layout mSetupTextLayout;
 
     public PendingAppWidgetHostView(Context context, LauncherAppWidgetInfo info,
-            boolean disabledForSafeMode) {
+                                    boolean disabledForSafeMode) {
         super(new ContextThemeWrapper(context, R.style.WidgetContainerTheme));
 
         mLauncher = Launcher.getLauncher(context);
@@ -85,7 +81,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
 
     @Override
     public void updateAppWidgetSize(Bundle newOptions, int minWidth, int minHeight, int maxWidth,
-            int maxHeight) {
+                                    int maxHeight) {
         // No-op
     }
 
@@ -166,7 +162,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
         hsv[2] = 1;
         color = Color.HSVToColor(hsv);
 
-        mSettingIconDrawable.setColorFilter(color,  PorterDuff.Mode.SRC_IN);
+        mSettingIconDrawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
     }
 
     @Override
@@ -191,12 +187,12 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
 
     /**
      * A pending widget is ready for setup after the provider is installed and
-     *   1) Widget id is not valid: the widget id is not yet bound to the provider, probably
-     *                              because the launcher doesn't have appropriate permissions.
-     *                              Note that we would still have an allocated id as that does not
-     *                              require any permissions and can be done during view inflation.
-     *   2) UI is not ready: the id is valid and the bound. But the widget has a configure activity
-     *                       which needs to be called once.
+     * 1) Widget id is not valid: the widget id is not yet bound to the provider, probably
+     * because the launcher doesn't have appropriate permissions.
+     * Note that we would still have an allocated id as that does not
+     * require any permissions and can be done during view inflation.
+     * 2) UI is not ready: the id is valid and the bound. But the widget has a configure activity
+     * which needs to be called once.
      */
     public boolean isReadyForClickSetup() {
         return !mInfo.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)
@@ -227,7 +223,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
             mRect.inset(outset, outset);
             mRect.offsetTo((getWidth() - mRect.width()) / 2, (getHeight() - mRect.height()) / 2);
             mCenterDrawable.setBounds(mRect);
-        } else  {
+        } else {
             float iconSize = Math.max(0, Math.min(availableWidth, availableHeight));
 
             // Use twice the setting size factor, as the setting is drawn at a corner and the

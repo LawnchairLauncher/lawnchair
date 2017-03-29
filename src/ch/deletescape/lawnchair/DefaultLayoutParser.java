@@ -15,9 +15,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
-import ch.deletescape.lawnchair.LauncherSettings.Favorites;
-import ch.deletescape.lawnchair.util.Thunk;
-
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -25,6 +22,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
+
+import ch.deletescape.lawnchair.LauncherSettings.Favorites;
+import ch.deletescape.lawnchair.util.Thunk;
 
 /**
  * Implements the layout parser with rules for internal layouts and partner layouts.
@@ -49,12 +49,12 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
             "com.android.launcher.action.APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE";
 
     public DefaultLayoutParser(Context context, AppWidgetHost appWidgetHost,
-            LayoutParserCallback callback, Resources sourceRes, int layoutId) {
+                               LayoutParserCallback callback, Resources sourceRes, int layoutId) {
         super(context, appWidgetHost, callback, sourceRes, layoutId, TAG_FAVORITES);
     }
 
     public DefaultLayoutParser(Context context, AppWidgetHost appWidgetHost,
-            LayoutParserCallback callback, Resources sourceRes, int layoutId, String rootTag) {
+                               LayoutParserCallback callback, Resources sourceRes, int layoutId, String rootTag) {
         super(context, appWidgetHost, callback, sourceRes, layoutId, rootTag);
     }
 
@@ -63,7 +63,8 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
         return getFolderElementsMap(mSourceRes);
     }
 
-    @Thunk HashMap<String, TagParser> getFolderElementsMap(Resources res) {
+    @Thunk
+    HashMap<String, TagParser> getFolderElementsMap(Resources res) {
         HashMap<String, TagParser> parsers = new HashMap<>();
         parsers.put(TAG_FAVORITE, new AppShortcutWithUriParser());
         parsers.put(TAG_SHORTCUT, new UriShortcutParser(res));
@@ -166,7 +167,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
         }
 
         private boolean wouldLaunchResolverActivity(ResolveInfo resolved,
-                List<ResolveInfo> appList) {
+                                                    List<ResolveInfo> appList) {
             // If the list contains the above resolved activity, then it can't be
             // ResolverActivity itself.
             for (int i = 0; i < appList.size(); ++i) {
@@ -236,7 +237,8 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     /**
      * An extension of FolderParser which allows adding items from a different xml.
      */
-    @Thunk class MyFolderParser extends FolderParser {
+    @Thunk
+    class MyFolderParser extends FolderParser {
 
         @Override
         public long parseAndAdd(XmlResourceParser parser) throws XmlPullParserException,
@@ -262,7 +264,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
                 mPackageManager.getReceiverInfo(cn, 0);
             } catch (Exception e) {
                 String[] packages = mPackageManager.currentToCanonicalPackageNames(
-                        new String[] { cn.getPackageName() });
+                        new String[]{cn.getPackageName()});
                 cn = new ComponentName(packages[0], cn.getClassName());
                 try {
                     mPackageManager.getReceiverInfo(cn, 0);

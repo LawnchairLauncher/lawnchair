@@ -43,7 +43,7 @@ public class StylusEventHelper {
      * the helper to correctly identify stylus events.
      *
      * @param listener The listener to call for stylus events.
-     * @param view Optional view associated with the touch events.
+     * @param view     Optional view associated with the touch events.
      */
     public StylusEventHelper(StylusButtonListener listener, View view) {
         mListener = listener;
@@ -104,6 +104,6 @@ public class StylusEventHelper {
     private static boolean isStylusButtonPressed(MotionEvent event) {
         return event.getToolType(0) == MotionEvent.TOOL_TYPE_STYLUS
                 && ((event.getButtonState() & MotionEvent.BUTTON_SECONDARY)
-                        == MotionEvent.BUTTON_SECONDARY);
+                == MotionEvent.BUTTON_SECONDARY);
     }
 }

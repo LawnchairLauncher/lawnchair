@@ -4,36 +4,34 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.util.ArrayMap;
 import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParser;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class IconPackProvider {
     private static Map<String, IconPack> iconPacks = new ArrayMap<>();
 
-    public static IconPack getIconPack(String packageName){
+    public static IconPack getIconPack(String packageName) {
         return iconPacks.get(packageName);
     }
 
-    public static IconPack loadAndGetIconPack(Context context){
+    public static IconPack loadAndGetIconPack(Context context) {
         SharedPreferences prefs = Utilities.getPrefs(context);
         String packageName = prefs.getString("pref_iconPackPackage", "");
-        if("".equals(packageName)){
+        if ("".equals(packageName)) {
             return null;
         }
-        if(!iconPacks.containsKey(packageName)){
+        if (!iconPacks.containsKey(packageName)) {
             loadIconPack(context, packageName);
         }
         return getIconPack(packageName);
     }
 
     public static void loadIconPack(Context context, String packageName) {
-        if("".equals(packageName)){
+        if ("".equals(packageName)) {
             iconPacks.put("", null);
         }
         Map<String, String> appFilter;

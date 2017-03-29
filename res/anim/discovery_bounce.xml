@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 /*
 ** Copyright 2016, The Android Open Source Project
 **
@@ -18,8 +17,8 @@
 -->
 
 <set xmlns:android="http://schemas.android.com/apk/res/android"
-        android:ordering="sequentially"
-        android:startOffset="200">
+    android:ordering="sequentially"
+    android:startOffset="200">
 
     <objectAnimator
         android:propertyName="progress"
@@ -27,19 +26,19 @@
         android:interpolator="@anim/disco_bounce_section1"
         android:valueFrom="1f"
         android:valueTo=".94f"
-        android:valueType="floatType"/>
+        android:valueType="floatType" />
     <objectAnimator
         android:propertyName="progress"
         android:duration="216"
         android:interpolator="@anim/disco_bounce_section2"
         android:valueFrom=".94f"
         android:valueTo="1.012f"
-        android:valueType="floatType"/>
+        android:valueType="floatType" />
     <objectAnimator
         android:propertyName="progress"
         android:duration="234"
         android:interpolator="@anim/disco_bounce_section3"
         android:valueFrom="1.012f"
         android:valueTo="1f"
-        android:valueType="floatType"/>
+        android:valueType="floatType" />
 </set>

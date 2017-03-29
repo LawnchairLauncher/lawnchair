@@ -23,9 +23,14 @@ public abstract class RevealOutlineAnimation extends ViewOutlineProvider {
         mOutline = new Rect();
     }
 
-    /** Returns whether elevation should be removed for the duration of the reveal animation. */
+    /**
+     * Returns whether elevation should be removed for the duration of the reveal animation.
+     */
     abstract boolean shouldRemoveElevationDuringAnimation();
-    /** Sets the progress, from 0 to 1, of the reveal animation. */
+
+    /**
+     * Sets the progress, from 0 to 1, of the reveal animation.
+     */
     abstract void setProgress(float progress);
 
     public ValueAnimator createRevealAnimator(final View revealView) {

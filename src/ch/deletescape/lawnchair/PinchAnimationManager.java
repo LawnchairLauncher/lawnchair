@@ -29,13 +29,13 @@ import static ch.deletescape.lawnchair.Workspace.State.OVERVIEW;
 
 /**
  * Manages the animations that play as the user pinches to/from overview mode.
- *
- *  It will look like this pinching in:
+ * <p>
+ * It will look like this pinching in:
  * - Workspace scales down
  * - At some threshold 1, hotseat and QSB fade out (full animation)
  * - At a later threshold 2, panel buttons fade in and scrim fades in
  * - At a final threshold 3, snap to overview
- *
+ * <p>
  * Pinching out:
  * - Workspace scales up
  * - At threshold 1, panel buttons fade out
@@ -86,20 +86,20 @@ public class PinchAnimationManager {
      * the default overview transition duration is used.
      */
     public void animateToProgress(float currentProgress, float toProgress, int duration,
-            final PinchThresholdManager thresholdManager) {
+                                  final PinchThresholdManager thresholdManager) {
         if (duration == -1) {
             duration = mNormalOverviewTransitionDuration;
         }
         ValueAnimator animator = ValueAnimator.ofFloat(currentProgress, toProgress);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    float pinchProgress = (Float) animation.getAnimatedValue();
-                    setAnimationProgress(pinchProgress);
-                    thresholdManager.updateAndAnimatePassedThreshold(pinchProgress,
-                            PinchAnimationManager.this);
-                }
-            }
+                                       @Override
+                                       public void onAnimationUpdate(ValueAnimator animation) {
+                                           float pinchProgress = (Float) animation.getAnimatedValue();
+                                           setAnimationProgress(pinchProgress);
+                                           thresholdManager.updateAndAnimatePassedThreshold(pinchProgress,
+                                                   PinchAnimationManager.this);
+                                       }
+                                   }
         );
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -120,6 +120,7 @@ public class PinchAnimationManager {
     /**
      * Animates to the specified progress. This should be called repeatedly throughout the pinch
      * gesture to run animations that interpolate throughout the gesture.
+     *
      * @param interpolatedProgress The progress from 0 to 1, where 0 is overview and 1 is workspace.
      */
     public void setAnimationProgress(float interpolatedProgress) {
@@ -135,15 +136,16 @@ public class PinchAnimationManager {
      * Animates certain properties based on which threshold was passed, and in what direction. The
      * starting state must also be taken into account because the thresholds mean different things
      * when going from workspace to overview and vice versa.
-     * @param threshold One of {@link PinchThresholdManager#THRESHOLD_ONE},
-     *                  {@link PinchThresholdManager#THRESHOLD_TWO}, or
-     *                  {@link PinchThresholdManager#THRESHOLD_THREE}
-     * @param startState {@link Workspace.State#NORMAL} or {@link Workspace.State#OVERVIEW}.
+     *
+     * @param threshold    One of {@link PinchThresholdManager#THRESHOLD_ONE},
+     *                     {@link PinchThresholdManager#THRESHOLD_TWO}, or
+     *                     {@link PinchThresholdManager#THRESHOLD_THREE}
+     * @param startState   {@link Workspace.State#NORMAL} or {@link Workspace.State#OVERVIEW}.
      * @param goingTowards {@link Workspace.State#NORMAL} or {@link Workspace.State#OVERVIEW}.
      *                     Note that this doesn't have to be the opposite of startState;
      */
     public void animateThreshold(float threshold, Workspace.State startState,
-            Workspace.State goingTowards) {
+                                 Workspace.State goingTowards) {
         if (threshold == PinchThresholdManager.THRESHOLD_ONE) {
             if (startState == OVERVIEW) {
                 animateOverviewPanelButtons(goingTowards == OVERVIEW);

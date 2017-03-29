@@ -26,16 +26,16 @@ import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.text.TextUtils;
 
-import ch.deletescape.lawnchair.Utilities;
-
 import java.util.ArrayList;
+
+import ch.deletescape.lawnchair.Utilities;
 
 /**
  * Utility methods using package manager
  */
 public class PackageManagerHelper {
 
-    private static final int FLAG_SUSPENDED = 1<<30;
+    private static final int FLAG_SUSPENDED = 1 << 30;
     private static final String LIVE_WALLPAPER_PICKER_PKG = "com.android.wallpaper.livepicker";
 
     /**
@@ -104,7 +104,7 @@ public class PackageManagerHelper {
      * any permissions
      */
     public static boolean hasPermissionForActivity(Context context, Intent intent,
-            String srcPackage) {
+                                                   String srcPackage) {
         PackageManager pm = context.getPackageManager();
         ResolveInfo target = pm.resolveActivity(intent, 0);
         if (target == null) {
@@ -121,7 +121,7 @@ public class PackageManagerHelper {
         }
 
         // Source does not have sufficient permissions.
-        if(pm.checkPermission(target.activityInfo.permission, srcPackage) !=
+        if (pm.checkPermission(target.activityInfo.permission, srcPackage) !=
                 PackageManager.PERMISSION_GRANTED) {
             return false;
         }
@@ -142,7 +142,8 @@ public class PackageManagerHelper {
 
         try {
             return pm.getApplicationInfo(srcPackage, 0).targetSdkVersion >= Build.VERSION_CODES.M;
-        } catch (NameNotFoundException ignored) { }
+        } catch (NameNotFoundException ignored) {
+        }
 
         return false;
     }

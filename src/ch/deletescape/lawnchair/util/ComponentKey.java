@@ -19,10 +19,10 @@ package ch.deletescape.lawnchair.util;
 import android.content.ComponentName;
 import android.content.Context;
 
+import java.util.Arrays;
+
 import ch.deletescape.lawnchair.compat.UserHandleCompat;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
-
-import java.util.Arrays;
 
 public class ComponentKey {
 
@@ -34,7 +34,7 @@ public class ComponentKey {
     public ComponentKey(ComponentName componentName, UserHandleCompat user) {
         this.componentName = componentName;
         this.user = user;
-        mHashCode = Arrays.hashCode(new Object[] {componentName, user});
+        mHashCode = Arrays.hashCode(new Object[]{componentName, user});
 
     }
 
@@ -56,7 +56,7 @@ public class ComponentKey {
             componentName = ComponentName.unflattenFromString(componentKeyStr);
             user = UserHandleCompat.myUserHandle();
         }
-        mHashCode = Arrays.hashCode(new Object[] {componentName, user});
+        mHashCode = Arrays.hashCode(new Object[]{componentName, user});
     }
 
     @Override

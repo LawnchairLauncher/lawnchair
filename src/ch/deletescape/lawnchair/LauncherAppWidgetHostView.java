@@ -30,11 +30,9 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.RemoteViews;
 
-import ch.deletescape.lawnchair.dragndrop.DragLayer.TouchCompleteListener;
-
 import java.util.ArrayList;
 
-import ch.deletescape.lawnchair.R;
+import ch.deletescape.lawnchair.dragndrop.DragLayer.TouchCompleteListener;
 
 /**
  * {@inheritDoc}

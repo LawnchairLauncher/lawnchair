@@ -19,7 +19,6 @@ package ch.deletescape.lawnchair.util;
 import android.annotation.TargetApi;
 import android.graphics.Rect;
 import android.os.Build;
-import android.view.ViewOutlineProvider;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 /*
@@ -34,8 +33,8 @@ public class PillRevealOutlineProvider extends RevealOutlineAnimation {
     protected Rect mPillRect;
 
     /**
-     * @param x reveal center x
-     * @param y reveal center y
+     * @param x        reveal center x
+     * @param y        reveal center y
      * @param pillRect round rect that represents the final pill shape
      */
     public PillRevealOutlineProvider(int x, int y, Rect pillRect) {

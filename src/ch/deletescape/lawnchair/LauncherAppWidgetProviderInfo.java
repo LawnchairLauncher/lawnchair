@@ -1,6 +1,5 @@
 package ch.deletescape.lawnchair;
 
-import android.annotation.TargetApi;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
@@ -9,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Parcel;
 
 /**
@@ -28,7 +26,7 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
     public int minSpanY;
 
     public static LauncherAppWidgetProviderInfo fromProviderInfo(Context context,
-            AppWidgetProviderInfo info) {
+                                                                 AppWidgetProviderInfo info) {
 
         // In lieu of a public super copy constructor, we first write the AppWidgetProviderInfo
         // into a parcel, and then construct a new LauncherAppWidgetProvider info from the
@@ -82,7 +80,7 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
         Rect widgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(
                 app.getContext(), provider, null);
         spanX = Math.max(1, (int) Math.ceil(
-                        (minWidth + widgetPadding.left + widgetPadding.right) / smallestCellWidth));
+                (minWidth + widgetPadding.left + widgetPadding.right) / smallestCellWidth));
         spanY = Math.max(1, (int) Math.ceil(
                 (minHeight + widgetPadding.top + widgetPadding.bottom) / smallestCellHeight));
 
@@ -118,6 +116,6 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
     public Point getMinSpans(InvariantDeviceProfile idp, Context context) {
         return new Point(
                 (resizeMode & RESIZE_HORIZONTAL) != 0 ? minSpanX : -1,
-                        (resizeMode & RESIZE_VERTICAL) != 0 ? minSpanY : -1);
+                (resizeMode & RESIZE_VERTICAL) != 0 ? minSpanY : -1);
     }
- }
+}

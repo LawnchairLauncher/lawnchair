@@ -29,21 +29,23 @@ public final class FeatureFlags {
     private static final String KEY_PREF_PINCH_TO_OVERVIEW = "pref_pinchToOverview";
     private static final String KEY_PREF_PULLDOWN_SEARCH = "pref_pulldownSearch";
 
-    private FeatureFlags() {}
+    private FeatureFlags() {
+    }
 
     // Custom flags go below this
     public static boolean LAUNCHER3_ALL_APPS_PULL_UP = true;
 
     // When enabled fling down gesture on the first workspace triggers search.
-    public static boolean pulldownSearch(Context context){
+    public static boolean pulldownSearch(Context context) {
         return Utilities.getPrefs(context).getBoolean(KEY_PREF_PULLDOWN_SEARCH, true);
     }
 
-    public static boolean pinchToOverview(Context context){
+    public static boolean pinchToOverview(Context context) {
         return Utilities.getPrefs(context).getBoolean(KEY_PREF_PINCH_TO_OVERVIEW, true);
     }
+
     // When enabled the status bar may show dark icons based on the top of the wallpaper.
-    public static boolean lightStatusBar(Context context){
+    public static boolean lightStatusBar(Context context) {
         return Utilities.getPrefs(context).getBoolean(KEY_PREF_LIGHT_STATUS_BAR, false);
     }
 }

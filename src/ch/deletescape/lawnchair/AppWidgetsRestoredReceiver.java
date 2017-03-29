@@ -54,7 +54,7 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
             values.put(LauncherSettings.Favorites.APPWIDGET_ID, newWidgetIds[i]);
             values.put(LauncherSettings.Favorites.RESTORED, state);
 
-            String[] widgetIdParams = new String[] { Integer.toString(oldWidgetIds[i]) };
+            String[] widgetIdParams = new String[]{Integer.toString(oldWidgetIds[i])};
 
             int result = cr.update(Favorites.CONTENT_URI, values,
                     "appWidgetId=? and (restored & 1) = 1", widgetIdParams);

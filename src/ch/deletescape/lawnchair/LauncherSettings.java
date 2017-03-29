@@ -28,7 +28,9 @@ import ch.deletescape.lawnchair.config.ProviderConfig;
  * Settings related utilities.
  */
 public class LauncherSettings {
-    /** Columns required on table staht will be subject to backup and restore. */
+    /**
+     * Columns required on table staht will be subject to backup and restore.
+     */
     interface ChangeLogColumns extends BaseColumns {
         /**
          * The time of the last update to this row.
@@ -54,7 +56,7 @@ public class LauncherSettings {
 
         /**
          * The type of the gesture
-         *
+         * <p>
          * <P>Type: INTEGER</P>
          */
         String ITEM_TYPE = "itemType";
@@ -90,7 +92,7 @@ public class LauncherSettings {
 
     /**
      * Workspace Screens.
-     *
+     * <p>
      * Tracks the order of workspace screens.
      */
     public static final class WorkspaceScreens implements ChangeLogColumns {
@@ -127,7 +129,6 @@ public class LauncherSettings {
          * The content:// style URL for a given row, identified by its id.
          *
          * @param id The row id.
-         *
          * @return The unique content URL for the specified row.
          */
         public static Uri getContentUri(long id) {
@@ -149,9 +150,12 @@ public class LauncherSettings {
 
         static final String containerToString(int container) {
             switch (container) {
-                case CONTAINER_DESKTOP: return "desktop";
-                case CONTAINER_HOTSEAT: return "hotseat";
-                default: return String.valueOf(container);
+                case CONTAINER_DESKTOP:
+                    return "desktop";
+                case CONTAINER_HOTSEAT:
+                    return "hotseat";
+                default:
+                    return String.valueOf(container);
             }
         }
 
@@ -189,7 +193,7 @@ public class LauncherSettings {
 
         /**
          * The profile id of the item in the cell.
-         * <P>
+         * <p>
          * Type: INTEGER
          * </P>
          */
@@ -217,14 +221,14 @@ public class LauncherSettings {
 
         /**
          * The appWidgetId of the widget
-         *
+         * <p>
          * <P>Type: INTEGER</P>
          */
         public static final String APPWIDGET_ID = "appWidgetId";
 
         /**
          * The ComponentName of the widget provider
-         *
+         * <p>
          * <P>Type: STRING</P>
          */
         public static final String APPWIDGET_PROVIDER = "appWidgetProvider";

@@ -18,12 +18,12 @@ package ch.deletescape.lawnchair.allapps;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import java.util.HashSet;
+import java.util.List;
+
 import ch.deletescape.lawnchair.BaseRecyclerViewFastScrollBar;
 import ch.deletescape.lawnchair.FastBitmapDrawable;
 import ch.deletescape.lawnchair.util.Thunk;
-
-import java.util.HashSet;
-import java.util.List;
 
 public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallback {
 
@@ -37,8 +37,10 @@ public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallb
     // Keeps track of the current and targetted fast scroll section (the section to scroll to after
     // the initial delay)
     int mTargetFastScrollPosition = -1;
-    @Thunk String mCurrentFastScrollSection;
-    @Thunk String mTargetFastScrollSection;
+    @Thunk
+    String mCurrentFastScrollSection;
+    @Thunk
+    String mTargetFastScrollSection;
 
     // The settled states affect the delay before the fast scroll animation is applied
     private boolean mHasFastScrollTouchSettled;
@@ -50,14 +52,17 @@ public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallb
             new HashSet<>();
 
     // Smooth fast-scroll animation frames
-    @Thunk int mFastScrollFrameIndex;
-    @Thunk final int[] mFastScrollFrames = new int[10];
+    @Thunk
+    int mFastScrollFrameIndex;
+    @Thunk
+    final int[] mFastScrollFrames = new int[10];
 
     /**
      * This runnable runs a single frame of the smooth scroll animation and posts the next frame
      * if necessary.
      */
-    @Thunk Runnable mSmoothSnapNextFrameRunnable = new Runnable() {
+    @Thunk
+    Runnable mSmoothSnapNextFrameRunnable = new Runnable() {
         @Override
         public void run() {
             if (mFastScrollFrameIndex < mFastScrollFrames.length) {
@@ -97,7 +102,7 @@ public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallb
      * @return whether the fastscroller can scroll to the new section.
      */
     public boolean smoothScrollToSection(int scrollY, int availableScrollHeight,
-            AlphabeticalAppsList.FastScrollSectionInfo info) {
+                                         AlphabeticalAppsList.FastScrollSectionInfo info) {
         if (mTargetFastScrollPosition != info.fastScrollToItem.position) {
             mTargetFastScrollPosition = info.fastScrollToItem.position;
             smoothSnapToPosition(scrollY, availableScrollHeight, info);
@@ -111,7 +116,7 @@ public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallb
      * ourselves and animating the scroll on the recycler view.
      */
     private void smoothSnapToPosition(int scrollY, int availableScrollHeight,
-            AlphabeticalAppsList.FastScrollSectionInfo info) {
+                                      AlphabeticalAppsList.FastScrollSectionInfo info) {
         mRv.removeCallbacks(mSmoothSnapNextFrameRunnable);
         mRv.removeCallbacks(mFastScrollToTargetSectionRunnable);
 
@@ -149,8 +154,8 @@ public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallb
                 mApps.getFastScrollerSections();
         int newPosition = info.fastScrollToItem.position;
         int newScrollY = fastScrollSections.size() > 0 && fastScrollSections.get(0) == info
-                        ? 0
-                        : Math.min(availableScrollHeight, mRv.getCurrentScrollY(newPosition, 0));
+                ? 0
+                : Math.min(availableScrollHeight, mRv.getCurrentScrollY(newPosition, 0));
         int numFrames = mFastScrollFrames.length;
         int deltaY = newScrollY - scrollY;
         float ySign = Math.signum(deltaY);

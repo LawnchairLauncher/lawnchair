@@ -104,7 +104,9 @@ public class ExtractedColors {
         }
     }
 
-    /** @param index must be one of the index values defined at the top of this class. */
+    /**
+     * @param index must be one of the index values defined at the top of this class.
+     */
     public int getColor(int index, int defaultColor) {
         if (index > VERSION_INDEX && index < mColors.length) {
             return mColors[index];
@@ -126,17 +128,17 @@ public class ExtractedColors {
             // but this is how we would add them if we ever need them.
 
             // setColorAtIndex(ExtractedColors.VIBRANT_INDEX,
-                // palette.getVibrantColor(ExtractedColors.DEFAULT_COLOR));
+            // palette.getVibrantColor(ExtractedColors.DEFAULT_COLOR));
             // setColorAtIndex(ExtractedColors.VIBRANT_DARK_INDEX,
-                // palette.getDarkVibrantColor(ExtractedColors.DEFAULT_DARK));
+            // palette.getDarkVibrantColor(ExtractedColors.DEFAULT_DARK));
             // setColorAtIndex(ExtractedColors.VIBRANT_LIGHT_INDEX,
-                // palette.getLightVibrantColor(ExtractedColors.DEFAULT_LIGHT));
+            // palette.getLightVibrantColor(ExtractedColors.DEFAULT_LIGHT));
             // setColorAtIndex(ExtractedColors.MUTED_INDEX,
-                // palette.getMutedColor(DEFAULT_COLOR));
+            // palette.getMutedColor(DEFAULT_COLOR));
             // setColorAtIndex(ExtractedColors.MUTED_DARK_INDEX,
-                // palette.getDarkMutedColor(ExtractedColors.DEFAULT_DARK));
+            // palette.getDarkMutedColor(ExtractedColors.DEFAULT_DARK));
             // setColorAtIndex(ExtractedColors.MUTED_LIGHT_INDEX,
-                // palette.getLightVibrantColor(ExtractedColors.DEFAULT_LIGHT));
+            // palette.getLightVibrantColor(ExtractedColors.DEFAULT_LIGHT));
         }
     }
 

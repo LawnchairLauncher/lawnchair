@@ -16,14 +16,6 @@
 package ch.deletescape.lawnchair.allapps;
 
 import android.content.Context;
-import android.util.Log;
-
-import ch.deletescape.lawnchair.AppInfo;
-import ch.deletescape.lawnchair.Launcher;
-import ch.deletescape.lawnchair.compat.AlphabeticIndexCompat;
-import ch.deletescape.lawnchair.compat.UserHandleCompat;
-import ch.deletescape.lawnchair.model.AppNameComparator;
-import ch.deletescape.lawnchair.util.ComponentKey;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,6 +24,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
+
+import ch.deletescape.lawnchair.AppInfo;
+import ch.deletescape.lawnchair.Launcher;
+import ch.deletescape.lawnchair.compat.AlphabeticIndexCompat;
+import ch.deletescape.lawnchair.model.AppNameComparator;
+import ch.deletescape.lawnchair.util.ComponentKey;
 
 /**
  * The alphabetically sorted list of applications.
@@ -78,17 +76,23 @@ public class AlphabeticalAppsList {
      * Info about a particular adapter item (can be either section or app)
      */
     public static class AdapterItem {
-        /** Common properties */
+        /**
+         * Common properties
+         */
         // The index of this adapter item in the list
         public int position;
         // The type of this item
         public int viewType;
 
-        /** Section & App properties */
+        /**
+         * Section & App properties
+         */
         // The section for this item
         public SectionInfo sectionInfo;
 
-        /** App-only properties */
+        /**
+         * App-only properties
+         */
         // The section name of this app.  Note that there can be multiple items with different
         // sectionNames in the same section
         public String sectionName = null;
@@ -113,14 +117,14 @@ public class AlphabeticalAppsList {
         }
 
         public static AdapterItem asPredictedApp(int pos, SectionInfo section, String sectionName,
-                int sectionAppIndex, AppInfo appInfo, int appIndex) {
+                                                 int sectionAppIndex, AppInfo appInfo, int appIndex) {
             AdapterItem item = asApp(pos, section, sectionName, sectionAppIndex, appInfo, appIndex);
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON;
             return item;
         }
 
         public static AdapterItem asApp(int pos, SectionInfo section, String sectionName,
-                int sectionAppIndex, AppInfo appInfo, int appIndex) {
+                                        int sectionAppIndex, AppInfo appInfo, int appIndex) {
             AdapterItem item = new AdapterItem();
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_ICON;
             item.position = pos;
@@ -173,7 +177,7 @@ public class AlphabeticalAppsList {
      */
     public interface MergeAlgorithm {
         boolean continueMerging(SectionInfo section, SectionInfo withSection,
-                int sectionAppCount, int numAppsPerRow, int mergeCount);
+                                int sectionAppCount, int numAppsPerRow, int mergeCount);
     }
 
     private Launcher mLauncher;
@@ -215,7 +219,7 @@ public class AlphabeticalAppsList {
      * Sets the number of apps per row.
      */
     public void setNumAppsPerRow(int numAppsPerRow, int numPredictedAppsPerRow,
-            MergeAlgorithm mergeAlgorithm) {
+                                 MergeAlgorithm mergeAlgorithm) {
         mNumAppsPerRow = numAppsPerRow;
         mNumPredictedAppsPerRow = numPredictedAppsPerRow;
         mMergeAlgorithm = mergeAlgorithm;

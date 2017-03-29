@@ -19,19 +19,18 @@ package ch.deletescape.lawnchair.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import ch.deletescape.lawnchair.Utilities;
-import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
-import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
-import ch.deletescape.lawnchair.compat.LauncherAppsCompat.OnAppsChangedCallbackCompat;
-import ch.deletescape.lawnchair.compat.UserHandleCompat;
-import ch.deletescape.lawnchair.compat.UserManagerCompat;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
+import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
+import ch.deletescape.lawnchair.compat.LauncherAppsCompat.OnAppsChangedCallbackCompat;
+import ch.deletescape.lawnchair.compat.UserHandleCompat;
+import ch.deletescape.lawnchair.compat.UserManagerCompat;
 
 /**
  * Utility class to track list of installed packages. It persists the list so that apps
@@ -94,6 +93,7 @@ public abstract class CachedPackageTracker implements OnAppsChangedCallbackCompa
 
     /**
      * Reads the list of user apps which have already been processed.
+     *
      * @return false if the list didn't exist, true otherwise
      */
     private boolean getUserApps(HashSet<String> outExistingApps, String prefKey) {
@@ -138,32 +138,38 @@ public abstract class CachedPackageTracker implements OnAppsChangedCallbackCompa
     }
 
     @Override
-    public void onPackageChanged(String packageName, UserHandleCompat user) { }
+    public void onPackageChanged(String packageName, UserHandleCompat user) {
+    }
 
     @Override
     public void onPackagesAvailable(
-            String[] packageNames, UserHandleCompat user, boolean replacing) { }
+            String[] packageNames, UserHandleCompat user, boolean replacing) {
+    }
 
     @Override
     public void onPackagesUnavailable(
-            String[] packageNames, UserHandleCompat user, boolean replacing) { }
+            String[] packageNames, UserHandleCompat user, boolean replacing) {
+    }
 
     @Override
-    public void onPackagesSuspended(String[] packageNames, UserHandleCompat user) { }
+    public void onPackagesSuspended(String[] packageNames, UserHandleCompat user) {
+    }
 
     @Override
-    public void onPackagesUnsuspended(String[] packageNames, UserHandleCompat user) { }
+    public void onPackagesUnsuspended(String[] packageNames, UserHandleCompat user) {
+    }
 
     /**
      * Called when new launcher apps are added.
-     * @param apps list of newly added activities. Only one entry per package is sent.
-     * @param user the user for this event. All activities in {@param apps} will belong to
-     *             the same user.
+     *
+     * @param apps            list of newly added activities. Only one entry per package is sent.
+     * @param user            the user for this event. All activities in {@param apps} will belong to
+     *                        the same user.
      * @param userAppsExisted false if the list was processed for the first time, like in case
      *                        when Launcher was newly installed or a new user was added.
      */
     protected abstract void onLauncherAppsAdded(List<LauncherActivityInstallInfo> apps,
-            UserHandleCompat user, boolean userAppsExisted);
+                                                UserHandleCompat user, boolean userAppsExisted);
 
     /**
      * Called when apps are removed from the system.

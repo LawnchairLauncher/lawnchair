@@ -22,10 +22,9 @@ import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PixelFormat;
+import android.graphics.drawable.Drawable;
 
 import ch.deletescape.lawnchair.R;
-
-import android.graphics.drawable.Drawable;
 
 public class CaretDrawable extends Drawable {
     public static final float PROGRESS_CARET_POINTING_UP = -1f;
@@ -102,8 +101,8 @@ public class CaretDrawable extends Drawable {
      * Sets the caret progress
      *
      * @param progress The progress ({@value #PROGRESS_CARET_POINTING_UP} for pointing up,
-     * {@value #PROGRESS_CARET_POINTING_DOWN} for pointing down, {@value #PROGRESS_CARET_NEUTRAL}
-     * for neutral)
+     *                 {@value #PROGRESS_CARET_POINTING_DOWN} for pointing down, {@value #PROGRESS_CARET_NEUTRAL}
+     *                 for neutral)
      */
     public void setCaretProgress(float progress) {
         mCaretProgress = progress;

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2009 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2009 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -15,15 +14,15 @@
 -->
 
 <resources>
-<!-- All Apps -->
+    <!-- All Apps -->
     <dimen name="all_apps_grid_view_start_margin">0dp</dimen>
     <dimen name="all_apps_grid_section_text_size">26sp</dimen>
     <dimen name="all_apps_background_canvas_width">850dp</dimen>
     <dimen name="all_apps_background_canvas_height">525dp</dimen>
 
-<!-- Widget tray -->
+    <!-- Widget tray -->
     <dimen name="widget_section_indent">56dp</dimen>
 
-<!-- DragController -->
+    <!-- DragController -->
     <dimen name="drag_flingToDeleteMinVelocity">-1000dp</dimen>
 </resources>

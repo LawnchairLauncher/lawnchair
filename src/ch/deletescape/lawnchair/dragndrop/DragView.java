@@ -21,8 +21,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.FloatArrayEvaluator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -31,36 +29,38 @@ import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.os.Build;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
+import java.util.Arrays;
+
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAnimUtils;
-import ch.deletescape.lawnchair.util.Thunk;
-
 import ch.deletescape.lawnchair.R;
-
-import java.util.Arrays;
+import ch.deletescape.lawnchair.util.Thunk;
 
 public class DragView extends View {
     public static final int COLOR_CHANGE_DURATION = 120;
     public static final int VIEW_ZOOM_DURATION = 150;
 
-    @Thunk static float sDragAlpha = 1f;
+    @Thunk
+    static float sDragAlpha = 1f;
 
     private Bitmap mBitmap;
     private Bitmap mCrossFadeBitmap;
-    @Thunk Paint mPaint;
+    @Thunk
+    Paint mPaint;
     private final int mRegistrationX;
     private final int mRegistrationY;
 
     private Point mDragVisualizeOffset = null;
     private Rect mDragRegion = null;
     private final DragLayer mDragLayer;
-    @Thunk final DragController mDragController;
+    @Thunk
+    final DragController mDragController;
     private boolean mHasDrawn = false;
-    @Thunk float mCrossFadeProgress = 0f;
+    @Thunk
+    float mCrossFadeProgress = 0f;
     private boolean mAnimationCancelled = false;
 
     ValueAnimator mAnim;
@@ -68,7 +68,8 @@ public class DragView extends View {
     // size.  This is ignored for non-icons.
     private float mIntrinsicIconScale = 1f;
 
-    @Thunk float[] mCurrentFilter;
+    @Thunk
+    float[] mCurrentFilter;
     private ValueAnimator mFilterAnimator;
 
     private int mLastTouchX;
@@ -81,8 +82,9 @@ public class DragView extends View {
      * <p>
      * The registration point is the point inside our view that the touch events should
      * be centered upon.
-     * @param launcher The Launcher instance
-     * @param bitmap The view that we're dragging around.  We scale it up when we draw it.
+     *
+     * @param launcher      The Launcher instance
+     * @param bitmap        The view that we're dragging around.  We scale it up when we draw it.
      * @param registrationX The x coordinate of the registration point.
      * @param registrationY The y coordinate of the registration point.
      */
@@ -142,7 +144,9 @@ public class DragView extends View {
         setElevation(getResources().getDimension(R.dimen.drag_elevation));
     }
 
-    /** Sets the scale of the view over the normal workspace icon size. */
+    /**
+     * Sets the scale of the view over the normal workspace icon size.
+     */
     public void setIntrinsicIconScaleFactor(float scale) {
         mIntrinsicIconScale = scale;
     }

@@ -19,6 +19,8 @@ package ch.deletescape.lawnchair.accessibility;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import java.util.ArrayList;
+
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherModel;
@@ -26,8 +28,6 @@ import ch.deletescape.lawnchair.LauncherSettings;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.ShortcutInfo;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutView;
-
-import java.util.ArrayList;
 
 /**
  * Extension of {@link LauncherAccessibilityDelegate} with actions specific to shortcuts in

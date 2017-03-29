@@ -57,10 +57,10 @@ public class FlingAnimation implements AnimatorUpdateListener {
 
     /**
      * The fling animation is based on the following system
-     *   - Apply a constant force in the y direction to causing the fling to decelerate.
-     *   - The animation runs for the time taken by the object to go out of the screen.
-     *   - Calculate a constant acceleration in x direction such that the object reaches
-     *     {@link #mIconRect} in the given time.
+     * - Apply a constant force in the y direction to causing the fling to decelerate.
+     * - The animation runs for the time taken by the object to go out of the screen.
+     * - Calculate a constant acceleration in x direction such that the object reaches
+     * {@link #mIconRect} in the given time.
      */
     protected int initFlingUpDuration() {
         float sY = -mFrom.bottom;
@@ -85,10 +85,10 @@ public class FlingAnimation implements AnimatorUpdateListener {
 
     /**
      * The fling animation is based on the following system
-     *   - Apply a constant force in the x direction to causing the fling to decelerate.
-     *   - The animation runs for the time taken by the object to go out of the screen.
-     *   - Calculate a constant acceleration in y direction such that the object reaches
-     *     {@link #mIconRect} in the given time.
+     * - Apply a constant force in the x direction to causing the fling to decelerate.
+     * - The animation runs for the time taken by the object to go out of the screen.
+     * - Calculate a constant acceleration in y direction such that the object reaches
+     * {@link #mIconRect} in the given time.
      */
     protected int initFlingLeftDuration() {
         float sX = -mFrom.right;

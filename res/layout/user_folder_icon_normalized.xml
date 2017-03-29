@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
      Copyright (C) 2015 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +19,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/quantum_panel"
     android:elevation="5dp"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <ch.deletescape.lawnchair.folder.FolderPagedView
         android:id="@+id/folder_content"
@@ -38,7 +37,7 @@
         android:clipChildren="false"
         android:orientation="horizontal"
         android:paddingLeft="12dp"
-        android:paddingRight="12dp" >
+        android:paddingRight="12dp">
 
         <ch.deletescape.lawnchair.ExtendedEditText
             android:id="@+id/folder_name"
@@ -65,8 +64,7 @@
             android:layout_gravity="center_vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:elevation="1dp"
-            />
+            android:elevation="1dp" />
 
     </LinearLayout>
 

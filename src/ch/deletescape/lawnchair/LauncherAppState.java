@@ -21,6 +21,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 
+import java.lang.ref.WeakReference;
+
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
 import ch.deletescape.lawnchair.compat.PackageInstallerCompat;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
@@ -30,17 +32,17 @@ import ch.deletescape.lawnchair.shortcuts.ShortcutCache;
 import ch.deletescape.lawnchair.util.ConfigMonitor;
 import ch.deletescape.lawnchair.util.Thunk;
 
-import java.lang.ref.WeakReference;
-
 public class LauncherAppState {
 
     private final AppFilter mAppFilter;
-    @Thunk final LauncherModel mModel;
+    @Thunk
+    final LauncherModel mModel;
     private final IconCache mIconCache;
     private final WidgetPreviewLoader mWidgetCache;
     private final DeepShortcutManager mDeepShortcutManager;
 
-    @Thunk boolean mWallpaperChangedSinceLastCheck;
+    @Thunk
+    boolean mWallpaperChangedSinceLastCheck;
 
     private static WeakReference<LauncherProvider> sLauncherProvider;
     private static Context sContext;

@@ -21,20 +21,27 @@ public class LoggerUtils {
     private static final String TAG = "LoggerUtils";
 
     public static String getActionStr(LauncherLogProto.Action action) {
-        switch(action.touch) {
-            case Action.TAP: return "TAP";
-            case Action.LONGPRESS: return "LONGPRESS";
-            case Action.DRAGDROP: return "DRAGDROP";
-            case Action.PINCH: return "PINCH";
-            case Action.SWIPE: return "SWIPE";
-            case Action.FLING: return "FLING";
-            default: return "UNKNOWN";
+        switch (action.touch) {
+            case Action.TAP:
+                return "TAP";
+            case Action.LONGPRESS:
+                return "LONGPRESS";
+            case Action.DRAGDROP:
+                return "DRAGDROP";
+            case Action.PINCH:
+                return "PINCH";
+            case Action.SWIPE:
+                return "SWIPE";
+            case Action.FLING:
+                return "FLING";
+            default:
+                return "UNKNOWN";
         }
     }
 
     public static String getTargetStr(Target t) {
         String typeStr = "";
-        if (t == null){
+        if (t == null) {
             return typeStr;
         }
         switch (t.type) {
@@ -51,18 +58,31 @@ public class LoggerUtils {
 
     private static String getItemStr(Target t) {
         String typeStr = "";
-        if (t == null){
+        if (t == null) {
             return typeStr;
         }
-        switch(t.itemType){
-            case LauncherLogProto.APP_ICON: typeStr = "APPICON"; break;
-            case LauncherLogProto.SHORTCUT: typeStr = "SHORTCUT"; break;
-            case LauncherLogProto.WIDGET: typeStr = "WIDGET"; break;
-            case LauncherLogProto.DEEPSHORTCUT: typeStr = "DEEPSHORTCUT"; break;
-            case LauncherLogProto.FOLDER_ICON: typeStr = "FOLDERICON"; break;
-            case LauncherLogProto.SEARCHBOX: typeStr = "SEARCHBOX"; break;
+        switch (t.itemType) {
+            case LauncherLogProto.APP_ICON:
+                typeStr = "APPICON";
+                break;
+            case LauncherLogProto.SHORTCUT:
+                typeStr = "SHORTCUT";
+                break;
+            case LauncherLogProto.WIDGET:
+                typeStr = "WIDGET";
+                break;
+            case LauncherLogProto.DEEPSHORTCUT:
+                typeStr = "DEEPSHORTCUT";
+                break;
+            case LauncherLogProto.FOLDER_ICON:
+                typeStr = "FOLDERICON";
+                break;
+            case LauncherLogProto.SEARCHBOX:
+                typeStr = "SEARCHBOX";
+                break;
 
-            default: typeStr = "UNKNOWN";
+            default:
+                typeStr = "UNKNOWN";
         }
 
         if (t.packageNameHash != 0) {
@@ -81,19 +101,28 @@ public class LoggerUtils {
     }
 
     private static String getControlStr(Target t) {
-        if (t == null){
+        if (t == null) {
             return "";
         }
-        switch(t.controlType) {
-            case LauncherLogProto.ALL_APPS_BUTTON: return "ALL_APPS_BUTTON";
-            case LauncherLogProto.WIDGETS_BUTTON: return "WIDGETS_BUTTON";
-            case LauncherLogProto.WALLPAPER_BUTTON: return "WALLPAPER_BUTTON";
-            case LauncherLogProto.SETTINGS_BUTTON: return "SETTINGS_BUTTON";
-            case LauncherLogProto.REMOVE_TARGET: return "REMOVE_TARGET";
-            case LauncherLogProto.UNINSTALL_TARGET: return "UNINSTALL_TARGET";
-            case LauncherLogProto.APPINFO_TARGET: return "APPINFO_TARGET";
-            case LauncherLogProto.RESIZE_HANDLE: return "RESIZE_HANDLE";
-            default: return "UNKNOWN";
+        switch (t.controlType) {
+            case LauncherLogProto.ALL_APPS_BUTTON:
+                return "ALL_APPS_BUTTON";
+            case LauncherLogProto.WIDGETS_BUTTON:
+                return "WIDGETS_BUTTON";
+            case LauncherLogProto.WALLPAPER_BUTTON:
+                return "WALLPAPER_BUTTON";
+            case LauncherLogProto.SETTINGS_BUTTON:
+                return "SETTINGS_BUTTON";
+            case LauncherLogProto.REMOVE_TARGET:
+                return "REMOVE_TARGET";
+            case LauncherLogProto.UNINSTALL_TARGET:
+                return "UNINSTALL_TARGET";
+            case LauncherLogProto.APPINFO_TARGET:
+                return "APPINFO_TARGET";
+            case LauncherLogProto.RESIZE_HANDLE:
+                return "RESIZE_HANDLE";
+            default:
+                return "UNKNOWN";
         }
     }
 
@@ -142,7 +171,7 @@ public class LoggerUtils {
     public static LauncherLogProto.LauncherEvent initLauncherEvent(
             int actionType,
             View v,
-            int parentTargetType){
+            int parentTargetType) {
         LauncherLogProto.LauncherEvent event = new LauncherLogProto.LauncherEvent();
 
         event.srcTarget = new LauncherLogProto.Target[2];
@@ -160,7 +189,7 @@ public class LoggerUtils {
      */
     public static LauncherLogProto.LauncherEvent initLauncherEvent(
             int actionType,
-            int childTargetType){
+            int childTargetType) {
         LauncherLogProto.LauncherEvent event = new LauncherLogProto.LauncherEvent();
 
         event.srcTarget = new LauncherLogProto.Target[1];
@@ -180,7 +209,7 @@ public class LoggerUtils {
             View v,
             ItemInfo info,
             int parentSrcTargetType,
-            View parentDestTargetType){
+            View parentDestTargetType) {
         LauncherLogProto.LauncherEvent event = new LauncherLogProto.LauncherEvent();
 
         event.srcTarget = new LauncherLogProto.Target[2];
@@ -222,7 +251,7 @@ public class LoggerUtils {
 
     private static Target initDropTarget(View v) {
         Target t = new LauncherLogProto.Target();
-        t.type = (v instanceof ButtonDropTarget)? Target.CONTROL : Target.CONTAINER;
+        t.type = (v instanceof ButtonDropTarget) ? Target.CONTROL : Target.CONTAINER;
         if (t.type == Target.CONTAINER) {
             return t;
         }

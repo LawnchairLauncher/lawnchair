@@ -22,13 +22,13 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.compat.UserHandleCompat;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 import ch.deletescape.lawnchair.util.ComponentKey;
 import ch.deletescape.lawnchair.util.PackageManagerHelper;
-
-import java.util.ArrayList;
 
 /**
  * Represents an app in AllAppsView.
@@ -81,13 +81,13 @@ public class AppInfo extends ItemInfo {
      * Must not hold the Context.
      */
     public AppInfo(Context context, LauncherActivityInfoCompat info, UserHandleCompat user,
-            IconCache iconCache) {
+                   IconCache iconCache) {
         this(context, info, user, iconCache,
                 UserManagerCompat.getInstance(context).isQuietModeEnabled(user));
     }
 
     public AppInfo(Context context, LauncherActivityInfoCompat info, UserHandleCompat user,
-            IconCache iconCache, boolean quietModeEnabled) {
+                   IconCache iconCache, boolean quietModeEnabled) {
         this.componentName = info.getComponentName();
         this.container = ItemInfo.NO_ID;
         flags = initFlags(info);
@@ -136,7 +136,7 @@ public class AppInfo extends ItemInfo {
      */
     public static void dumpApplicationInfoList(String tag, String label, ArrayList<AppInfo> list) {
         Log.d(tag, label + " size=" + list.size());
-        for (AppInfo info: list) {
+        for (AppInfo info : list) {
             Log.d(tag, "   title=\"" + info.title + "\" iconBitmap=" + info.iconBitmap
                     + " componentName=" + info.componentName.getPackageName());
         }
@@ -151,13 +151,13 @@ public class AppInfo extends ItemInfo {
     }
 
     public static Intent makeLaunchIntent(Context context, LauncherActivityInfoCompat info,
-            UserHandleCompat user) {
+                                          UserHandleCompat user) {
         long serialNumber = UserManagerCompat.getInstance(context).getSerialNumberForUser(user);
         return new Intent(Intent.ACTION_MAIN)
-            .addCategory(Intent.CATEGORY_LAUNCHER)
-            .setComponent(info.getComponentName())
-            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
-            .putExtra(EXTRA_PROFILE, serialNumber);
+                .addCategory(Intent.CATEGORY_LAUNCHER)
+                .setComponent(info.getComponentName())
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+                .putExtra(EXTRA_PROFILE, serialNumber);
     }
 
     @Override

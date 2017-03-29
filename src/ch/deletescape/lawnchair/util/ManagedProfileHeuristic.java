@@ -19,6 +19,10 @@ package ch.deletescape.lawnchair.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
 import ch.deletescape.lawnchair.FolderInfo;
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.LauncherAppState;
@@ -28,13 +32,9 @@ import ch.deletescape.lawnchair.MainThreadExecutor;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.ShortcutInfo;
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
-import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
 import ch.deletescape.lawnchair.compat.UserHandleCompat;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
 
 /**
  * Handles addition of app shortcuts for managed profiles.
@@ -180,7 +180,7 @@ public class ManagedProfileHeuristic {
 
         @Override
         public void onShortcutsChanged(String packageName, List<ShortcutInfoCompat> shortcuts,
-                UserHandleCompat user) {
+                                       UserHandleCompat user) {
             // Do nothing
         }
     }

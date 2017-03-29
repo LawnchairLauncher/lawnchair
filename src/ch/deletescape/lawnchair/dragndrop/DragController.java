@@ -34,6 +34,8 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.inputmethod.InputMethodManager;
 
+import java.util.ArrayList;
+
 import ch.deletescape.lawnchair.DragSource;
 import ch.deletescape.lawnchair.DropTarget;
 import ch.deletescape.lawnchair.ItemInfo;
@@ -46,8 +48,6 @@ import ch.deletescape.lawnchair.accessibility.DragViewStateAnnouncer;
 import ch.deletescape.lawnchair.util.ItemInfoMatcher;
 import ch.deletescape.lawnchair.util.Thunk;
 import ch.deletescape.lawnchair.util.TouchController;
-
-import java.util.ArrayList;
 
 /**
  * Class for initiating a drag within a view or across multiple views.
@@ -67,7 +67,8 @@ public class DragController implements DragDriver.EventListener, TouchController
 
     private static final float MAX_FLING_DEGREES = 35f;
 
-    @Thunk Launcher mLauncher;
+    @Thunk
+    Launcher mLauncher;
     private Handler mHandler;
 
     // temporaries to avoid gc thrash
@@ -81,46 +82,64 @@ public class DragController implements DragDriver.EventListener, TouchController
      */
     private DragDriver mDragDriver = null;
 
-    /** Options controlling the drag behavior. */
+    /**
+     * Options controlling the drag behavior.
+     */
     private DragOptions mOptions;
 
-    /** X coordinate of the down event. */
+    /**
+     * X coordinate of the down event.
+     */
     private int mMotionDownX;
 
-    /** Y coordinate of the down event. */
+    /**
+     * Y coordinate of the down event.
+     */
     private int mMotionDownY;
 
-    /** the area at the edge of the screen that makes the workspace go left
-     *   or right while you're dragging.
+    /**
+     * the area at the edge of the screen that makes the workspace go left
+     * or right while you're dragging.
      */
     private final int mScrollZone;
 
     private DropTarget.DragObject mDragObject;
 
-    /** Who can receive drop events */
+    /**
+     * Who can receive drop events
+     */
     private ArrayList<DropTarget> mDropTargets = new ArrayList<>();
     private ArrayList<DragListener> mListeners = new ArrayList<>();
     private DropTarget mFlingToDeleteDropTarget;
 
-    /** The window token used as the parent for the DragView. */
+    /**
+     * The window token used as the parent for the DragView.
+     */
     private IBinder mWindowToken;
 
-    /** The view that will be scrolled when dragging to the left and right edges of the screen. */
+    /**
+     * The view that will be scrolled when dragging to the left and right edges of the screen.
+     */
     private View mScrollView;
 
     private View mMoveTarget;
 
-    @Thunk DragScroller mDragScroller;
-    @Thunk int mScrollState = SCROLL_OUTSIDE_ZONE;
+    @Thunk
+    DragScroller mDragScroller;
+    @Thunk
+    int mScrollState = SCROLL_OUTSIDE_ZONE;
     private ScrollRunnable mScrollRunnable = new ScrollRunnable();
 
     private DropTarget mLastDropTarget;
 
     private InputMethodManager mInputMethodManager;
 
-    @Thunk int mLastTouch[] = new int[2];
-    @Thunk long mLastTouchUpTime = -1;
-    @Thunk int mDistanceSinceScroll = 0;
+    @Thunk
+    int mLastTouch[] = new int[2];
+    @Thunk
+    long mLastTouchUpTime = -1;
+    @Thunk
+    int mDistanceSinceScroll = 0;
 
     private int mTmpPoint[] = new int[2];
     private Rect mDragLayerRect = new Rect();
@@ -138,7 +157,7 @@ public class DragController implements DragDriver.EventListener, TouchController
          * A drag has begun
          *
          * @param dragObject The object being dragged
-         * @param options Options used to start the drag
+         * @param options    Options used to start the drag
          */
         void onDragStart(DropTarget.DragObject dragObject, DragOptions options);
 
@@ -166,14 +185,14 @@ public class DragController implements DragDriver.EventListener, TouchController
     /**
      * Starts a drag.
      *
-     * @param v The view that is being dragged
-     * @param bmp The bitmap that represents the view being dragged
-     * @param source An object representing where the drag originated
-     * @param dragInfo The data associated with the object that is being dragged
+     * @param v               The view that is being dragged
+     * @param bmp             The bitmap that represents the view being dragged
+     * @param source          An object representing where the drag originated
+     * @param dragInfo        The data associated with the object that is being dragged
      * @param viewImageBounds the position of the image inside the view
      */
     public void startDrag(View v, Bitmap bmp, DragSource source, ItemInfo dragInfo,
-            Rect viewImageBounds, float initialDragViewScale, DragOptions options) {
+                          Rect viewImageBounds, float initialDragViewScale, DragOptions options) {
         int[] loc = mCoordinatesTemp;
         mLauncher.getDragLayer().getLocationInDragLayer(v, loc);
         int dragLayerX = loc[0] + viewImageBounds.left
@@ -188,18 +207,18 @@ public class DragController implements DragDriver.EventListener, TouchController
     /**
      * Starts a drag.
      *
-     * @param b The bitmap to display as the drag image.  It will be re-scaled to the
-     *          enlarged size.
+     * @param b          The bitmap to display as the drag image.  It will be re-scaled to the
+     *                   enlarged size.
      * @param dragLayerX The x position in the DragLayer of the left-top of the bitmap.
      * @param dragLayerY The y position in the DragLayer of the left-top of the bitmap.
-     * @param source An object representing where the drag originated
-     * @param dragInfo The data associated with the object that is being dragged
+     * @param source     An object representing where the drag originated
+     * @param dragInfo   The data associated with the object that is being dragged
      * @param dragRegion Coordinates within the bitmap b for the position of item being dragged.
-     *          Makes dragging feel more precise, e.g. you can clip out a transparent border
+     *                   Makes dragging feel more precise, e.g. you can clip out a transparent border
      */
     public DragView startDrag(Bitmap b, int dragLayerX, int dragLayerY,
-            DragSource source, ItemInfo dragInfo, Point dragOffset, Rect dragRegion,
-            float initialDragViewScale, DragOptions options) {
+                              DragSource source, ItemInfo dragInfo, Point dragOffset, Rect dragRegion,
+                              float initialDragViewScale, DragOptions options) {
 
         // Hide soft keyboard, if visible
         if (mInputMethodManager == null) {
@@ -228,8 +247,8 @@ public class DragController implements DragDriver.EventListener, TouchController
 
         final Resources res = mLauncher.getResources();
         final float scaleDps = mIsDragDeferred
-                    ? res.getDimensionPixelSize(R.dimen.deferred_drag_view_scale)
-                    : 0f;
+                ? res.getDimensionPixelSize(R.dimen.deferred_drag_view_scale)
+                : 0f;
         final DragView dragView = mDragObject.dragView = new DragView(mLauncher, b, registrationX,
                 registrationY, initialDragViewScale, scaleDps);
 
@@ -290,7 +309,7 @@ public class DragController implements DragDriver.EventListener, TouchController
 
     /**
      * Call this from a drag source view like this:
-     *
+     * <p>
      * <pre>
      *  @Override
      *  public boolean dispatchKeyEvent(KeyEvent event) {
@@ -563,7 +582,8 @@ public class DragController implements DragDriver.EventListener, TouchController
         mLastDropTarget = dropTarget;
     }
 
-    @Thunk void checkScrollState(int x, int y) {
+    @Thunk
+    void checkScrollState(int x, int y) {
         final int slop = ViewConfiguration.get(mLauncher).getScaledWindowTouchSlop();
         final int delay = mDistanceSinceScroll < slop ? RESCROLL_DELAY : SCROLL_DELAY;
         final DragLayer dragLayer = mLauncher.getDragLayer();
@@ -739,7 +759,7 @@ public class DragController implements DragDriver.EventListener, TouchController
 
         final ArrayList<DropTarget> dropTargets = mDropTargets;
         final int count = dropTargets.size();
-        for (int i=count-1; i>=0; i--) {
+        for (int i = count - 1; i >= 0; i--) {
             DropTarget target = dropTargets.get(i);
             if (!target.isDropEnabled())
                 continue;

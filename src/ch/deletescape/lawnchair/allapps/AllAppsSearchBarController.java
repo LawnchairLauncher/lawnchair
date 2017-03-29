@@ -17,7 +17,6 @@ package ch.deletescape.lawnchair.allapps;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -29,12 +28,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
+import java.util.ArrayList;
+
 import ch.deletescape.lawnchair.ExtendedEditText;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.util.ComponentKey;
-
-import java.util.ArrayList;
 
 /**
  * An interface to a search box that AllApps can command.
@@ -54,6 +53,7 @@ public abstract class AllAppsSearchBarController
     public void setVisibility(int visibility) {
         mInput.setVisibility(visibility);
     }
+
     /**
      * Sets the references to the apps model and the search result callback.
      */

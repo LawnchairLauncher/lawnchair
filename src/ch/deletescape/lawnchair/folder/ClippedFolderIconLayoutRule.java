@@ -29,7 +29,7 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
 
     @Override
     public FolderIcon.PreviewItemDrawingParams computePreviewItemDrawingParams(int index,
-            int curNumItems, FolderIcon.PreviewItemDrawingParams params) {
+                                                                               int curNumItems, FolderIcon.PreviewItemDrawingParams params) {
 
         float totalScale = scaleForNumItems(curNumItems);
         float transX;
@@ -93,7 +93,7 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
         // of the icon, and to be based from the top / left of the preview area. The y component
         // is inverted to match the coordinate system.
         result[0] = mAvailableSpace / 2 + (float) (radius * Math.cos(theta) / 2) - halfIconSize;
-        result[1] = mAvailableSpace / 2 + (float) (- radius * Math.sin(theta) / 2) - halfIconSize;
+        result[1] = mAvailableSpace / 2 + (float) (-radius * Math.sin(theta) / 2) - halfIconSize;
 
     }
 

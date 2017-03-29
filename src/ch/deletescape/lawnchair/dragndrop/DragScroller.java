@@ -18,10 +18,10 @@ package ch.deletescape.lawnchair.dragndrop;
 
 /**
  * Handles scrolling while dragging
- *
  */
 public interface DragScroller {
     void scrollLeft();
+
     void scrollRight();
 
     /**

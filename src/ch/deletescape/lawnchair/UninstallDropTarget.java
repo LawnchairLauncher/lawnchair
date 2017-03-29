@@ -14,8 +14,6 @@ import android.widget.Toast;
 
 import ch.deletescape.lawnchair.compat.UserHandleCompat;
 
-import ch.deletescape.lawnchair.R;
-
 public class UninstallDropTarget extends ButtonDropTarget {
 
     public UninstallDropTarget(Context context, AttributeSet attrs) {
@@ -120,7 +118,7 @@ public class UninstallDropTarget extends ButtonDropTarget {
 
     /**
      * Notifies the {@param callback} whether the uninstall was successful or not.
-     *
+     * <p>
      * Since there is no direct callback for an uninstall request, we check the package existence
      * when the launch resumes next time. This assumes that the uninstall activity will finish only
      * after the task is completed
@@ -129,7 +127,7 @@ public class UninstallDropTarget extends ButtonDropTarget {
             final Launcher launcher, boolean activityStarted,
             final ComponentName cn, final UserHandleCompat user,
             final DropTargetResultCallback callback) {
-        if (activityStarted)  {
+        if (activityStarted) {
             final Runnable checkIfUninstallWasSuccess = new Runnable() {
                 @Override
                 public void run() {
@@ -148,6 +146,7 @@ public class UninstallDropTarget extends ButtonDropTarget {
     public interface DropTargetResultCallback {
         /**
          * A drag operation was complete.
+         *
          * @param isRemoved true if the drag object should be removed, false otherwise.
          */
         void onDragObjectRemoved(boolean isRemoved);

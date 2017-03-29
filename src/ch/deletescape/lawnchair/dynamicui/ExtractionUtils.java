@@ -24,11 +24,11 @@ import android.graphics.Color;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.graphics.Palette;
 
-import ch.deletescape.lawnchair.Utilities;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+
+import ch.deletescape.lawnchair.Utilities;
 
 /**
  * Contains helper fields and methods related to extracting colors from the wallpaper.
@@ -57,7 +57,9 @@ public class ExtractionUtils {
         });
     }
 
-    /** Starts the {@link ColorExtractionService} without checking the wallpaper id */
+    /**
+     * Starts the {@link ColorExtractionService} without checking the wallpaper id
+     */
     public static void startColorExtractionService(Context context) {
         context.startService(new Intent(context, ColorExtractionService.class));
     }
@@ -108,7 +110,9 @@ public class ExtractionUtils {
         return legiblePopulation > illegiblePopulation;
     }
 
-    /** @return Whether the foreground color is legible on the background color. */
+    /**
+     * @return Whether the foreground color is legible on the background color.
+     */
     private static boolean isLegible(int foreground, int background) {
         background = ColorUtils.setAlphaComponent(background, 255);
         return ColorUtils.calculateContrast(foreground, background) >= MIN_CONTRAST_RATIO;

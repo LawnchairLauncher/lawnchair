@@ -23,15 +23,13 @@ import android.content.res.XmlResourceParser;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import ch.deletescape.lawnchair.AutoInstallsLayout.LayoutParserCallback;
-import ch.deletescape.lawnchair.LauncherSettings.Favorites;
-import ch.deletescape.lawnchair.util.Thunk;
-
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
-import ch.deletescape.lawnchair.R;
+import ch.deletescape.lawnchair.AutoInstallsLayout.LayoutParserCallback;
+import ch.deletescape.lawnchair.LauncherSettings.Favorites;
+import ch.deletescape.lawnchair.util.Thunk;
 
 /**
  * A class that parses content values corresponding to some common app types.
@@ -52,8 +50,10 @@ public class CommonAppTypeParser implements LayoutParserCallback {
     public static final int TARGET_CAMERA = 6;
 
     private final long mItemId;
-    @Thunk final int mResId;
-    @Thunk final Context mContext;
+    @Thunk
+    final int mResId;
+    @Thunk
+    final Context mContext;
 
     ContentValues parsedValues;
     Intent parsedIntent;

@@ -31,8 +31,6 @@ import android.util.SparseArray;
 
 import java.nio.ByteBuffer;
 
-import ch.deletescape.lawnchair.R;
-
 /**
  * Utility class to generate shadow and outline effect, which are used for click feedback
  * and drag-n-drop respectively.
@@ -88,7 +86,7 @@ public class HolographicOutlineHelper {
     }
 
     public void applyExpensiveOutlineWithBlur(Bitmap srcDst, Canvas srcDstCanvas,
-            boolean clipAlpha) {
+                                              boolean clipAlpha) {
 
         // We start by removing most of the alpha channel so as to ignore shadows, and
         // other types of partial transparency when defining the shape of the object
@@ -161,7 +159,7 @@ public class HolographicOutlineHelper {
     }
 
     Bitmap createMediumDropShadow(Drawable drawable, float scaleX, float scaleY,
-                boolean shouldCache) {
+                                  boolean shouldCache) {
         if (drawable == null) {
             return null;
         }

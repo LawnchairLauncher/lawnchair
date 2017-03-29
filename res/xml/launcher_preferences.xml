@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2015 Google Inc.
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2015 Google Inc.
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -15,13 +14,12 @@
 -->
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory
-        android:title="UI"/>
+    <PreferenceCategory android:title="UI" />
 
     <EditTextPreference
         android:key="pref_iconPackPackage"
         android:title="Icon Pack"
-        android:persistent="true"/>
+        android:persistent="true" />
 
     <SwitchPreference
         android:key="pref_lightStatusBar"
@@ -35,21 +33,21 @@
         android:title="Number of columns"
         android:entries="@array/numColsTexts"
         android:entryValues="@array/numColsValues"
-        android:persistent="true"/>
+        android:persistent="true" />
 
     <ListPreference
         android:key="pref_numRows"
         android:title="Number of rows"
         android:entryValues="@array/numRowsValues"
         android:entries="@array/numRowsTexts"
-        android:persistent="true"/>
+        android:persistent="true" />
 
     <ListPreference
         android:key="pref_numRows"
         android:title="Number of icons in hotseat"
         android:entryValues="@array/numHotseatIconsValues"
         android:entries="@array/numHotseatIconsTexts"
-        android:persistent="true"/>
+        android:persistent="true" />
 
     <ListPreference
         android:key="pref_iconScale"
@@ -57,7 +55,7 @@
         android:entryValues="@array/iconScaleValues"
         android:entries="@array/iconScaleTexts"
         android:defaultValue="@string/defaultIconScale"
-        android:persistent="true"/>
+        android:persistent="true" />
 
     <ListPreference
         android:key="pref_iconTextScale"
@@ -65,10 +63,9 @@
         android:entryValues="@array/iconScaleValues"
         android:entries="@array/iconScaleTexts"
         android:defaultValue="@string/defaultIconScale"
-        android:persistent="true"/>
+        android:persistent="true" />
 
-    <PreferenceCategory
-        android:title="Behavior"/>
+    <PreferenceCategory android:title="Behavior" />
 
     <SwitchPreference
         android:key="pref_pinchToOverview"

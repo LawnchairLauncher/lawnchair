@@ -40,11 +40,11 @@ public class FastBitmapDrawable extends Drawable {
      */
     public enum State {
 
-        NORMAL                      (0f, 0f, 1f, new DecelerateInterpolator()),
-        PRESSED                     (0f, 100f / 255f, 1f, CLICK_FEEDBACK_INTERPOLATOR),
-        FAST_SCROLL_HIGHLIGHTED     (0f, 0f, 1.15f, new DecelerateInterpolator()),
-        FAST_SCROLL_UNHIGHLIGHTED   (0f, 0f, 1f, new DecelerateInterpolator()),
-        DISABLED                    (1f, 0.5f, 1f, new DecelerateInterpolator());
+        NORMAL(0f, 0f, 1f, new DecelerateInterpolator()),
+        PRESSED(0f, 100f / 255f, 1f, CLICK_FEEDBACK_INTERPOLATOR),
+        FAST_SCROLL_HIGHLIGHTED(0f, 0f, 1.15f, new DecelerateInterpolator()),
+        FAST_SCROLL_UNHIGHLIGHTED(0f, 0f, 1f, new DecelerateInterpolator()),
+        DISABLED(1f, 0.5f, 1f, new DecelerateInterpolator());
 
         public final float desaturation;
         public final float brightness;
@@ -68,7 +68,7 @@ public class FastBitmapDrawable extends Drawable {
         public float getInterpolation(float input) {
             if (input < 0.05f) {
                 return input / 0.05f;
-            } else if (input < 0.3f){
+            } else if (input < 0.3f) {
                 return 1;
             } else {
                 return (1 - input) / 0.7f;

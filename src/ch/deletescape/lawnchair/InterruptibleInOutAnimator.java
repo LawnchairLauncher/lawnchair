@@ -45,7 +45,8 @@ public class InterruptibleInOutAnimator {
     private static final int OUT = 2;
 
     // TODO: This isn't really necessary, but is here to help diagnose a bug in the drag viz
-    @Thunk int mDirection = STOPPED;
+    @Thunk
+    int mDirection = STOPPED;
 
     public InterruptibleInOutAnimator(View view, long duration, float fromValue, float toValue) {
         mAnimator = LauncherAnimUtils.ofFloat(view, fromValue, toValue).setDuration(duration);

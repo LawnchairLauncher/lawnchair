@@ -22,6 +22,7 @@ import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
 import android.view.View;
+
 import ch.deletescape.lawnchair.BaseRecyclerView;
 import ch.deletescape.lawnchair.model.PackageItemInfo;
 import ch.deletescape.lawnchair.model.WidgetsModel;
@@ -48,7 +49,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
     }
 
     public WidgetsRecyclerView(Context context, AttributeSet attrs, int defStyleAttr,
-            int defStyleRes) {
+                               int defStyleRes) {
         this(context, attrs, defStyleAttr);
     }
 
@@ -71,7 +72,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
     public void setWidgets(WidgetsModel widgets) {
         mWidgets = widgets;
     }
-    
+
     /**
      * We need to override the draw to ensure that we don't draw the overscroll effect beyond the
      * background bounds.
@@ -103,7 +104,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
         LinearLayoutManager layoutManager = ((LinearLayoutManager) getLayoutManager());
         layoutManager.scrollToPositionWithOffset(0, (int) -(availableScrollHeight * touchFraction));
 
-        int posInt = (int) ((touchFraction == 1)? pos -1 : pos);
+        int posInt = (int) ((touchFraction == 1) ? pos - 1 : pos);
         PackageItemInfo p = mWidgets.getPackageItemInfo(posInt);
         return p.titleSectionName;
     }
@@ -145,7 +146,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
 
     /**
      * Returns the available scroll height:
-     *   AvailableScrollHeight = Total height of the all items - last page height
+     * AvailableScrollHeight = Total height of the all items - last page height
      */
     @Override
     protected int getAvailableScrollHeight() {

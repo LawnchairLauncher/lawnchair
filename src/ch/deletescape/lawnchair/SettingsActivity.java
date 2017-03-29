@@ -17,15 +17,8 @@
 package ch.deletescape.lawnchair;
 
 import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.SharedPreferences;
-import android.database.ContentObserver;
 import android.os.Bundle;
-import android.os.Handler;
-import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.provider.Settings;
-import android.provider.Settings.System;
 
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation

@@ -29,8 +29,6 @@ import android.widget.LinearLayout;
 import ch.deletescape.lawnchair.dragndrop.DragController;
 import ch.deletescape.lawnchair.dragndrop.DragOptions;
 
-import ch.deletescape.lawnchair.R;
-
 /*
  * The top bar containing various drop targets: Delete/App Info/Uninstall.
  */

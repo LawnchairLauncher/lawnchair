@@ -42,15 +42,6 @@ import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
 
-import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
-import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
-import ch.deletescape.lawnchair.compat.UserHandleCompat;
-import ch.deletescape.lawnchair.compat.UserManagerCompat;
-import ch.deletescape.lawnchair.model.PackageItemInfo;
-import ch.deletescape.lawnchair.util.ComponentKey;
-import ch.deletescape.lawnchair.util.SQLiteCacheHelper;
-import ch.deletescape.lawnchair.util.Thunk;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -59,7 +50,14 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.Stack;
 
-import ch.deletescape.lawnchair.R;
+import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
+import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
+import ch.deletescape.lawnchair.compat.UserHandleCompat;
+import ch.deletescape.lawnchair.compat.UserManagerCompat;
+import ch.deletescape.lawnchair.model.PackageItemInfo;
+import ch.deletescape.lawnchair.util.ComponentKey;
+import ch.deletescape.lawnchair.util.SQLiteCacheHelper;
+import ch.deletescape.lawnchair.util.Thunk;
 
 /**
  * Cache of application icons.  Icons can be made from any thread.
@@ -75,9 +73,11 @@ public class IconCache {
 
     private static final int LOW_RES_SCALE_FACTOR = 5;
 
-    @Thunk static final Object ICON_UPDATE_TOKEN = new Object();
+    @Thunk
+    static final Object ICON_UPDATE_TOKEN = new Object();
 
-    @Thunk static class CacheEntry {
+    @Thunk
+    static class CacheEntry {
         public Bitmap icon;
         public CharSequence title = "";
         public CharSequence contentDescription = "";
@@ -85,18 +85,22 @@ public class IconCache {
     }
 
     private final HashMap<UserHandleCompat, Bitmap> mDefaultIcons = new HashMap<>();
-    @Thunk final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
+    @Thunk
+    final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
 
     private final Context mContext;
     private final PackageManager mPackageManager;
-    @Thunk final UserManagerCompat mUserManager;
+    @Thunk
+    final UserManagerCompat mUserManager;
     private final LauncherAppsCompat mLauncherApps;
     private final HashMap<ComponentKey, CacheEntry> mCache =
             new HashMap<>(INITIAL_ICON_CACHE_CAPACITY);
     private final int mIconDpi;
-    @Thunk final IconDB mIconDb;
+    @Thunk
+    final IconDB mIconDb;
 
-    @Thunk final Handler mWorkerHandler;
+    @Thunk
+    final Handler mWorkerHandler;
 
     // The background color used for activity icons. Since these icons are displayed in all-apps
     // and folders, this would be same as the light quantum panel background. This color
@@ -163,7 +167,7 @@ public class IconCache {
     }
 
     public Drawable getFullResIcon(ActivityInfo info) {
-       Resources resources;
+        Resources resources;
         try {
             resources = mPackageManager.getResourcesForApplication(
                     info.applicationInfo);
@@ -196,13 +200,13 @@ public class IconCache {
      */
     private void removeFromMemCacheLocked(String packageName, UserHandleCompat user) {
         HashSet<ComponentKey> forDeletion = new HashSet<>();
-        for (ComponentKey key: mCache.keySet()) {
+        for (ComponentKey key : mCache.keySet()) {
             if (key.componentName.getPackageName().equals(packageName)
                     && key.user.equals(user)) {
                 forDeletion.add(key);
             }
         }
-        for (ComponentKey condemned: forDeletion) {
+        for (ComponentKey condemned : forDeletion) {
             mCache.remove(condemned);
         }
     }
@@ -259,10 +263,11 @@ public class IconCache {
     /**
      * Updates the persistent DB, such that only entries corresponding to {@param apps} remain in
      * the DB and are updated.
+     *
      * @return The set of packages for which icons have updated.
      */
     private void updateDBIcons(UserHandleCompat user, List<LauncherActivityInfoCompat> apps,
-            Set<String> ignorePackages) {
+                               Set<String> ignorePackages) {
         long userSerial = mUserManager.getSerialNumberForUser(user);
         PackageManager pm = mContext.getPackageManager();
         HashMap<String, PackageInfo> pkgInfoMap = new HashMap<>();
@@ -345,8 +350,9 @@ public class IconCache {
         }
     }
 
-    @Thunk void addIconToDBAndMemCache(LauncherActivityInfoCompat app, PackageInfo info,
-            long userSerial) {
+    @Thunk
+    void addIconToDBAndMemCache(LauncherActivityInfoCompat app, PackageInfo info,
+                                long userSerial) {
         // Reuse the existing entry if it already exists in the DB. This ensures that we do not
         // create bitmap if it was already created during loader.
         ContentValues values = updateCacheAndGetContentValues(app, false);
@@ -355,10 +361,11 @@ public class IconCache {
 
     /**
      * Updates {@param values} to contain versoning information and adds it to the DB.
+     *
      * @param values {@link ContentValues} containing icon & title
      */
     private void addIconToDB(ContentValues values, ComponentName key,
-            PackageInfo info, long userSerial) {
+                             PackageInfo info, long userSerial) {
         values.put(IconDB.COLUMN_COMPONENT, key.flattenToString());
         values.put(IconDB.COLUMN_USER, userSerial);
         values.put(IconDB.COLUMN_LAST_UPDATED, info.lastUpdateTime);
@@ -366,8 +373,9 @@ public class IconCache {
         mIconDb.insertOrReplace(values);
     }
 
-    @Thunk ContentValues updateCacheAndGetContentValues(LauncherActivityInfoCompat app,
-            boolean replaceExisting) {
+    @Thunk
+    ContentValues updateCacheAndGetContentValues(LauncherActivityInfoCompat app,
+                                                 boolean replaceExisting) {
         final ComponentKey key = new ComponentKey(app.getComponentName(), app.getUser());
         CacheEntry entry = null;
         if (!replaceExisting) {
@@ -394,6 +402,7 @@ public class IconCache {
 
     /**
      * Fetches high-res icon for the provided ItemInfo and updates the caller when done.
+     *
      * @return a request ID that can be used to cancel the request.
      */
     public IconLoadRequest updateIconInBackground(final BubbleTextView caller, final ItemInfo info) {
@@ -433,7 +442,7 @@ public class IconCache {
      * Fill in "application" with the icon and label for "info."
      */
     public synchronized void getTitleAndIcon(AppInfo application,
-            LauncherActivityInfoCompat info, boolean useLowResIcon) {
+                                             LauncherActivityInfoCompat info, boolean useLowResIcon) {
         UserHandleCompat user = info == null ? application.user : info.getUser();
         CacheEntry entry = cacheLocked(application.componentName, info, user,
                 false, useLowResIcon);
@@ -486,7 +495,7 @@ public class IconCache {
      * corresponding activity is not found, it reverts to the package icon.
      */
     public synchronized void getTitleAndIcon(ShortcutInfo shortcutInfo, Intent intent,
-            UserHandleCompat user, boolean useLowResIcon) {
+                                             UserHandleCompat user, boolean useLowResIcon) {
         ComponentName component = intent.getComponent();
         // null info means not installed, but if we have a component from the intent then
         // we should still look in the cache for restored app icons.
@@ -550,7 +559,7 @@ public class IconCache {
      * This method is not thread safe, it must be called from a synchronized method.
      */
     private CacheEntry cacheLocked(ComponentName componentName, LauncherActivityInfoCompat info,
-            UserHandleCompat user, boolean usePackageIcon, boolean useLowResIcon) {
+                                   UserHandleCompat user, boolean usePackageIcon, boolean useLowResIcon) {
         ComponentKey cacheKey = new ComponentKey(componentName, user);
         CacheEntry entry = mCache.get(cacheKey);
         if (entry == null || (entry.isLowResIcon && !useLowResIcon)) {
@@ -592,7 +601,7 @@ public class IconCache {
      * when the cache is flushed.
      */
     public synchronized void cachePackageInstallInfo(String packageName, UserHandleCompat user,
-            Bitmap icon, CharSequence title) {
+                                                     Bitmap icon, CharSequence title) {
         removeFromMemCacheLocked(packageName, user);
 
         ComponentKey cacheKey = getPackageKey(packageName, user);
@@ -621,7 +630,7 @@ public class IconCache {
      * This method is not thread safe, it must be called from a synchronized method.
      */
     private CacheEntry getEntryForPackageLocked(String packageName, UserHandleCompat user,
-            boolean useLowResIcon) {
+                                                boolean useLowResIcon) {
         ComponentKey cacheKey = getPackageKey(packageName, user);
         CacheEntry entry = mCache.get(cacheKey);
 
@@ -633,7 +642,7 @@ public class IconCache {
             if (!getEntryFromDB(cacheKey, entry, useLowResIcon)) {
                 try {
                     int flags = UserHandleCompat.myUserHandle().equals(user) ? 0 :
-                        PackageManager.GET_UNINSTALLED_PACKAGES;
+                            PackageManager.GET_UNINSTALLED_PACKAGES;
                     PackageInfo info = mPackageManager.getPackageInfo(packageName, flags);
                     ApplicationInfo appInfo = info.applicationInfo;
                     if (appInfo == null) {
@@ -644,7 +653,7 @@ public class IconCache {
                     // only keep the low resolution icon instead of the larger full-sized icon
                     Bitmap icon = Utilities.createBadgedIconBitmap(
                             appInfo.loadIcon(mPackageManager), user, mContext);
-                    Bitmap lowResIcon =  generateLowResIcon(icon, mPackageBgColor);
+                    Bitmap lowResIcon = generateLowResIcon(icon, mPackageBgColor);
                     entry.title = appInfo.loadLabel(mPackageManager);
                     entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);
                     entry.icon = useLowResIcon ? lowResIcon : icon;
@@ -672,16 +681,16 @@ public class IconCache {
 
     /**
      * Pre-load an icon into the persistent cache.
-     *
+     * <p>
      * <P>Queries for a component that does not exist in the package manager
      * will be answered by the persistent cache.
      *
      * @param componentName the icon should be returned for this component
-     * @param icon the icon to be persisted
-     * @param dpi the native density of the icon
+     * @param icon          the icon to be persisted
+     * @param dpi           the native density of the icon
      */
     public void preloadIcon(ComponentName componentName, Bitmap icon, int dpi, String label,
-            long userSerial, InvariantDeviceProfile idp) {
+                            long userSerial, InvariantDeviceProfile idp) {
         // TODO rescale to the correct native DPI
         try {
             PackageManager packageManager = mContext.getPackageManager();
@@ -705,11 +714,11 @@ public class IconCache {
         Cursor c = null;
         try {
             c = mIconDb.query(
-                new String[]{lowRes ? IconDB.COLUMN_ICON_LOW_RES : IconDB.COLUMN_ICON,
-                        IconDB.COLUMN_LABEL},
-                IconDB.COLUMN_COMPONENT + " = ? AND " + IconDB.COLUMN_USER + " = ?",
-                new String[]{cacheKey.componentName.flattenToString(),
-                        Long.toString(mUserManager.getSerialNumberForUser(cacheKey.user))});
+                    new String[]{lowRes ? IconDB.COLUMN_ICON_LOW_RES : IconDB.COLUMN_ICON,
+                            IconDB.COLUMN_LABEL},
+                    IconDB.COLUMN_COMPONENT + " = ? AND " + IconDB.COLUMN_USER + " = ?",
+                    new String[]{cacheKey.componentName.flattenToString(),
+                            Long.toString(mUserManager.getSerialNumberForUser(cacheKey.user))});
             if (c.moveToNext()) {
                 entry.icon = loadIconNoResize(c, 0, lowRes ? mLowResOptions : null);
                 entry.isLowResIcon = lowRes;
@@ -752,16 +761,18 @@ public class IconCache {
      * LauncherActivityInfoCompat list. Items are updated/added one at a time, so that the
      * worker thread doesn't get blocked.
      */
-    @Thunk class SerializedIconUpdateTask implements Runnable {
+    @Thunk
+    class SerializedIconUpdateTask implements Runnable {
         private final long mUserSerial;
         private final HashMap<String, PackageInfo> mPkgInfoMap;
         private final Stack<LauncherActivityInfoCompat> mAppsToAdd;
         private final Stack<LauncherActivityInfoCompat> mAppsToUpdate;
         private final HashSet<String> mUpdatedPackages = new HashSet<>();
 
-        @Thunk SerializedIconUpdateTask(long userSerial, HashMap<String, PackageInfo> pkgInfoMap,
-                Stack<LauncherActivityInfoCompat> appsToAdd,
-                Stack<LauncherActivityInfoCompat> appsToUpdate) {
+        @Thunk
+        SerializedIconUpdateTask(long userSerial, HashMap<String, PackageInfo> pkgInfoMap,
+                                 Stack<LauncherActivityInfoCompat> appsToAdd,
+                                 Stack<LauncherActivityInfoCompat> appsToUpdate) {
             mUserSerial = userSerial;
             mPkgInfoMap = pkgInfoMap;
             mAppsToAdd = appsToAdd;
@@ -848,7 +859,7 @@ public class IconCache {
     }
 
     private ContentValues newContentValues(Bitmap icon, Bitmap lowResIcon, String label,
-            String packageName) {
+                                           String packageName) {
         ContentValues values = new ContentValues();
         values.put(IconDB.COLUMN_ICON, Utilities.flattenBitmap(icon));
         values.put(IconDB.COLUMN_ICON_LOW_RES, Utilities.flattenBitmap(lowResIcon));
@@ -865,8 +876,8 @@ public class IconCache {
     private Bitmap generateLowResIcon(Bitmap icon, int lowResBackgroundColor) {
         if (lowResBackgroundColor == Color.TRANSPARENT) {
             return Bitmap.createScaledBitmap(icon,
-                            icon.getWidth() / LOW_RES_SCALE_FACTOR,
-                            icon.getHeight() / LOW_RES_SCALE_FACTOR, true);
+                    icon.getWidth() / LOW_RES_SCALE_FACTOR,
+                    icon.getHeight() / LOW_RES_SCALE_FACTOR, true);
         } else {
             Bitmap lowResIcon = Bitmap.createBitmap(icon.getWidth() / LOW_RES_SCALE_FACTOR,
                     icon.getHeight() / LOW_RES_SCALE_FACTOR, Bitmap.Config.RGB_565);

@@ -22,9 +22,9 @@ import android.graphics.Color;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 
-import ch.deletescape.lawnchair.LauncherAppState;
-
 import java.nio.ByteBuffer;
+
+import ch.deletescape.lawnchair.LauncherAppState;
 
 public class IconNormalizer {
 
@@ -67,12 +67,12 @@ public class IconNormalizer {
     /**
      * Returns the amount by which the {@param d} should be scaled (in both dimensions) so that it
      * matches the design guidelines for a launcher icon.
-     *
+     * <p>
      * We first calculate the convex hull of the visible portion of the icon.
      * This hull then compared with the bounding rectangle of the hull to find how closely it
      * resembles a circle and a square, by comparing the ratio of the areas. Note that this is not an
      * ideal solution but it gives satisfactory result without affecting the performance.
-     *
+     * <p>
      * This closeness is used to determine the ratio of hull area to the full icon size.
      * Refer {@link #MAX_CIRCLE_AREA_FACTOR} and {@link #MAX_SQUARE_AREA_FACTOR}
      *
@@ -168,7 +168,7 @@ public class IconNormalizer {
         if (hullByRect < CIRCLE_AREA_BY_RECT) {
             scaleRequired = MAX_CIRCLE_AREA_FACTOR;
         } else {
-            scaleRequired = MAX_SQUARE_AREA_FACTOR + LINEAR_SCALE_SLOPE * (1  - hullByRect);
+            scaleRequired = MAX_SQUARE_AREA_FACTOR + LINEAR_SCALE_SLOPE * (1 - hullByRect);
         }
 
         if (outBounds != null) {
@@ -188,10 +188,11 @@ public class IconNormalizer {
     /**
      * Modifies {@param xCordinates} to represent a convex border. Fills in all missing values
      * (except on either ends) with appropriate values.
+     *
      * @param xCordinates map of x coordinate per y.
-     * @param direction 1 for left border and -1 for right border.
-     * @param topY the first Y position (inclusive) with a valid value.
-     * @param bottomY the last Y position (inclusive) with a valid value.
+     * @param direction   1 for left border and -1 for right border.
+     * @param topY        the first Y position (inclusive) with a valid value.
+     * @param bottomY     the last Y position (inclusive) with a valid value.
      */
     private static void convertToConvexArray(
             float[] xCordinates, int direction, int topY, int bottomY) {
@@ -219,7 +220,7 @@ public class IconNormalizer {
                 // position which creates a convex angle.
                 if ((currentAngle - lastAngle) * direction < 0) {
                     while (start > first) {
-                        start --;
+                        start--;
                         currentAngle = (xCordinates[i] - xCordinates[start]) / (i - start);
                         if ((currentAngle - angles[start]) * direction >= 0) {
                             break;

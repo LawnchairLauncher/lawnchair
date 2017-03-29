@@ -26,8 +26,6 @@ import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 
-import ch.deletescape.lawnchair.R;
-
 public class ClickShadowView extends View {
 
     private static final int SHADOW_SIZE_FACTOR = 3;
@@ -61,10 +59,11 @@ public class ClickShadowView extends View {
 
     /**
      * Applies the new bitmap.
+     *
      * @return true if the view was invalidated.
      */
     public boolean setBitmap(Bitmap b) {
-        if (b != mBitmap){
+        if (b != mBitmap) {
             mBitmap = b;
             invalidate();
             return true;
@@ -85,13 +84,14 @@ public class ClickShadowView extends View {
     public void animateShadow() {
         setAlpha(0);
         animate().alpha(1)
-            .setDuration(FastBitmapDrawable.CLICK_FEEDBACK_DURATION)
-            .setInterpolator(FastBitmapDrawable.CLICK_FEEDBACK_INTERPOLATOR)
-            .start();
+                .setDuration(FastBitmapDrawable.CLICK_FEEDBACK_DURATION)
+                .setInterpolator(FastBitmapDrawable.CLICK_FEEDBACK_INTERPOLATOR)
+                .start();
     }
 
     /**
      * Aligns the shadow with {@param view}
+     *
      * @param viewParent immediate parent of {@param view}. It must be a sibling of this view.
      */
     public void alignWithIconView(BubbleTextView view, ViewGroup viewParent, View clipAgainstView) {
@@ -104,11 +104,11 @@ public class ClickShadowView extends View {
 
         if (clipAgainstView != null) {
             // Set the bounds to clip against
-            int[] coords = new int[] {0, 0};
+            int[] coords = new int[]{0, 0};
             Utilities.getDescendantCoordRelativeToAncestor(clipAgainstView, (View) getParent(),
                     coords, false);
             int clipLeft = (int) Math.max(0, coords[0] - leftShift - mShadowPadding);
-            int clipTop = (int) Math.max(0, coords[1] - topShift - mShadowPadding) ;
+            int clipTop = (int) Math.max(0, coords[1] - topShift - mShadowPadding);
             setClipBounds(new Rect(clipLeft, clipTop, clipLeft + iconWidth, clipTop + iconHeight));
         } else {
             // Reset the clip bounds
@@ -121,12 +121,12 @@ public class ClickShadowView extends View {
                 + (iconHSpace - drawableWidth) * view.getScaleX() / 2  /* drawable gap */
                 + iconWidth * (1 - view.getScaleX()) / 2  /* gap due to scale */
                 - mShadowPadding  /* extra shadow size */
-                );
+        );
         setTranslationY(topShift
                 + viewParent.getTranslationY()
                 + view.getPaddingTop() * view.getScaleY()  /* drawable gap */
                 + view.getHeight() * (1 - view.getScaleY()) / 2  /* gap due to scale */
                 - mShadowPadding  /* extra shadow size */
-                );
+        );
     }
 }

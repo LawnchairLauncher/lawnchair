@@ -25,19 +25,21 @@ import android.os.Build;
 import android.os.Handler;
 import android.util.SparseArray;
 
+import java.util.HashMap;
+
 import ch.deletescape.lawnchair.IconCache;
 import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.LauncherModel;
 import ch.deletescape.lawnchair.util.Thunk;
 
-import java.util.HashMap;
-
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
-    @Thunk final SparseArray<String> mActiveSessions = new SparseArray<>();
+    @Thunk
+    final SparseArray<String> mActiveSessions = new SparseArray<>();
 
-    @Thunk final PackageInstaller mInstaller;
+    @Thunk
+    final PackageInstaller mInstaller;
     private final IconCache mCache;
     private final Handler mWorker;
 
@@ -63,7 +65,8 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         return activePackages;
     }
 
-    @Thunk void addSessionInfoToCahce(SessionInfo info, UserHandleCompat user) {
+    @Thunk
+    void addSessionInfoToCahce(SessionInfo info, UserHandleCompat user) {
         String packageName = info.getAppPackageName();
         if (packageName != null) {
             mCache.cachePackageInstallInfo(packageName, user, info.getAppIcon(),
@@ -76,7 +79,8 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         mInstaller.unregisterSessionCallback(mCallback);
     }
 
-    @Thunk void sendUpdate(PackageInstallInfo info) {
+    @Thunk
+    void sendUpdate(PackageInstallInfo info) {
         LauncherAppState app = LauncherAppState.getInstanceNoCreate();
         if (app != null) {
             app.getModel().setPackageState(info);
@@ -114,7 +118,8 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         }
 
         @Override
-        public void onActiveChanged(int sessionId, boolean active) { }
+        public void onActiveChanged(int sessionId, boolean active) {
+        }
 
         @Override
         public void onBadgingChanged(int sessionId) {

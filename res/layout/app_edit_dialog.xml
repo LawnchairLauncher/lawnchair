@@ -23,9 +23,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:orientation="vertical">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
+
                 <EditText
                     android:id="@+id/title"
                     android:layout_width="150dp"
@@ -33,19 +35,21 @@
                     android:ellipsize="end"
                     android:layout_height="wrap_content"
                     android:text="Test" />
+
                 <ImageButton
                     android:id="@+id/reset_title"
                     android:src="@drawable/ic_undo_black_24dp"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent" />
             </LinearLayout>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
                 android:textSize="12sp"
                 android:layout_height="wrap_content"
                 android:id="@+id/package_name"
-                android:text="com.example.test"/>
+                android:text="com.example.test" />
         </LinearLayout>
     </LinearLayout>
 

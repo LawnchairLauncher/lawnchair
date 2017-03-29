@@ -30,13 +30,11 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.DecelerateInterpolator;
 
+import java.util.HashMap;
+
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dragndrop.DragLayer;
 import ch.deletescape.lawnchair.util.Thunk;
-
-import java.util.HashMap;
-
-import ch.deletescape.lawnchair.R;
 
 /**
  * A convenience class to update a view's visibility state after an alpha animation.
@@ -112,9 +110,11 @@ class ZInterpolator implements TimeInterpolator {
  */
 class InverseZInterpolator implements TimeInterpolator {
     private ZInterpolator zInterpolator;
+
     public InverseZInterpolator(float foc) {
         zInterpolator = new ZInterpolator(foc);
     }
+
     public float getInterpolation(float input) {
         return 1 - zInterpolator.getInterpolation(1 - input);
     }
@@ -185,25 +185,41 @@ public class WorkspaceStateTransitionAnimation {
 
     public static final String TAG = "WorkspaceStateTransitionAnimation";
 
-    @Thunk static final int BACKGROUND_FADE_OUT_DURATION = 350;
+    @Thunk
+    static final int BACKGROUND_FADE_OUT_DURATION = 350;
 
-    final @Thunk Launcher mLauncher;
-    final @Thunk Workspace mWorkspace;
+    final
+    @Thunk
+    Launcher mLauncher;
+    final
+    @Thunk
+    Workspace mWorkspace;
 
-    @Thunk AnimatorSet mStateAnimator;
+    @Thunk
+    AnimatorSet mStateAnimator;
 
-    @Thunk float mNewScale;
+    @Thunk
+    float mNewScale;
 
-    @Thunk final ZoomInInterpolator mZoomInInterpolator = new ZoomInInterpolator();
+    @Thunk
+    final ZoomInInterpolator mZoomInInterpolator = new ZoomInInterpolator();
 
-    @Thunk float mSpringLoadedShrinkFactor;
-    @Thunk float mOverviewModeShrinkFactor;
-    @Thunk float mWorkspaceScrimAlpha;
-    @Thunk int mAllAppsTransitionTime;
-    @Thunk int mOverviewTransitionTime;
-    @Thunk int mOverlayTransitionTime;
-    @Thunk int mSpringLoadedTransitionTime;
-    @Thunk boolean mWorkspaceFadeInAdjacentScreens;
+    @Thunk
+    float mSpringLoadedShrinkFactor;
+    @Thunk
+    float mOverviewModeShrinkFactor;
+    @Thunk
+    float mWorkspaceScrimAlpha;
+    @Thunk
+    int mAllAppsTransitionTime;
+    @Thunk
+    int mOverviewTransitionTime;
+    @Thunk
+    int mOverlayTransitionTime;
+    @Thunk
+    int mSpringLoadedTransitionTime;
+    @Thunk
+    boolean mWorkspaceFadeInAdjacentScreens;
 
     public WorkspaceStateTransitionAnimation(Launcher launcher, Workspace workspace) {
         mLauncher = launcher;
@@ -227,7 +243,7 @@ public class WorkspaceStateTransitionAnimation {
     }
 
     public AnimatorSet getAnimationToState(Workspace.State fromState, Workspace.State toState,
-            boolean animated, HashMap<View, Integer> layerViews) {
+                                           boolean animated, HashMap<View, Integer> layerViews) {
         AccessibilityManager am = (AccessibilityManager)
                 mLauncher.getSystemService(Context.ACCESSIBILITY_SERVICE);
         final boolean accessibilityEnabled = am.isEnabled();
@@ -311,7 +327,7 @@ public class WorkspaceStateTransitionAnimation {
             float finalAlpha;
             if (states.stateIsOverviewHidden) {
                 finalAlpha = 0f;
-            } else if(states.stateIsNormalHidden) {
+            } else if (states.stateIsNormalHidden) {
                 finalAlpha = (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP &&
                         i == mWorkspace.getNextPage()) ? 1 : 0;
             } else if (states.stateIsNormal && mWorkspaceFadeInAdjacentScreens) {
@@ -397,6 +413,7 @@ public class WorkspaceStateTransitionAnimation {
             mStateAnimator.play(hotseatAlpha);
             mStateAnimator.addListener(new AnimatorListenerAdapter() {
                 boolean canceled = false;
+
                 @Override
                 public void onAnimationCancel(Animator animation) {
                     canceled = true;
@@ -431,12 +448,12 @@ public class WorkspaceStateTransitionAnimation {
     /**
      * Animates the background scrim. Add to the state animator to prevent jankiness.
      *
-     * @param states the current and final workspace states
+     * @param states   the current and final workspace states
      * @param animated whether or not to set the background alpha immediately
      * @duration duration of the animation
      */
     private void animateBackgroundGradient(TransitionStates states,
-            boolean animated, int duration) {
+                                           boolean animated, int duration) {
 
         final DragLayer dragLayer = mLauncher.getDragLayer();
         final float startAlpha = dragLayer.getBackgroundAlpha();

@@ -3,11 +3,9 @@ package ch.deletescape.lawnchair;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.util.ArrayMap;
-import android.widget.Toast;
 
 import java.util.Map;
 
@@ -25,7 +23,7 @@ class IconPack {
     private String packageName;
     private Context mContext;
 
-    public IconPack(Map<String, String> icons, Context context, String packageName){
+    public IconPack(Map<String, String> icons, Context context, String packageName) {
         this.icons = icons;
         this.packageName = packageName;
         mContext = context;
@@ -44,7 +42,7 @@ class IconPack {
     }
 
     private Drawable getDrawable(String name) {
-        if (cache.containsKey(name)){
+        if (cache.containsKey(name)) {
             return cache.get(name);
         }
         Resources res;
@@ -56,7 +54,8 @@ class IconPack {
                 cache.put(name, drawable);
                 return drawable;
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
         return null;
     }
 }

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2015 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2015 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -23,7 +22,7 @@
         launcher:container="-101"
         launcher:screen="0"
         launcher:x="0"
-        launcher:y="0" >
+        launcher:y="0">
         <favorite launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_MESSAGING;end" />
         <favorite launcher:uri="sms:" />
         <favorite launcher:uri="smsto:" />
@@ -37,7 +36,7 @@
         launcher:container="-101"
         launcher:screen="2"
         launcher:x="2"
-        launcher:y="0" >
+        launcher:y="0">
         <favorite launcher:uri="#Intent;action=android.intent.action.DIAL;end" />
         <favorite launcher:uri="tel:123" />
         <favorite launcher:uri="#Intent;action=android.intent.action.CALL_BUTTON;end" />
@@ -47,7 +46,7 @@
     <resolve
         launcher:screen="0"
         launcher:x="0"
-        launcher:y="-1" >
+        launcher:y="-1">
         <favorite launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_EMAIL;end" />
         <favorite launcher:uri="mailto:" />
     </resolve>
@@ -55,7 +54,7 @@
     <resolve
         launcher:screen="0"
         launcher:x="1"
-        launcher:y="-1" >
+        launcher:y="-1">
         <favorite launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_GALLERY;end" />
         <favorite launcher:uri="#Intent;type=images/*;end" />
     </resolve>
@@ -63,7 +62,7 @@
     <resolve
         launcher:screen="0"
         launcher:x="2"
-        launcher:y="-1" >
+        launcher:y="-1">
         <favorite launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_MARKET;end" />
         <favorite launcher:uri="market://details?id=com.android.launcher" />
     </resolve>
@@ -72,7 +71,7 @@
     <resolve
         launcher:screen="0"
         launcher:x="0"
-        launcher:y="-2" >
+        launcher:y="-2">
         <favorite launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_BROWSER;end" />
         <favorite launcher:uri="http://www.example.com/" />
     </resolve>
@@ -80,7 +79,7 @@
     <resolve
         launcher:screen="0"
         launcher:x="2"
-        launcher:y="-2" >
+        launcher:y="-2">
         <favorite launcher:uri="#Intent;action=android.media.action.STILL_IMAGE_CAMERA;end" />
         <favorite launcher:uri="#Intent;action=android.intent.action.CAMERA_BUTTON;end" />
     </resolve>

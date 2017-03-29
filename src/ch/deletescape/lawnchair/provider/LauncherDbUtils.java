@@ -19,13 +19,11 @@ package ch.deletescape.lawnchair.provider;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
-
-import ch.deletescape.lawnchair.LauncherAppState;
-import ch.deletescape.lawnchair.LauncherSettings.Favorites;
-import ch.deletescape.lawnchair.LauncherSettings.WorkspaceScreens;
 
 import java.util.ArrayList;
+
+import ch.deletescape.lawnchair.LauncherSettings.Favorites;
+import ch.deletescape.lawnchair.LauncherSettings.WorkspaceScreens;
 
 /**
  * A set of utility methods for Launcher DB used for DB updates and migration.
@@ -35,7 +33,7 @@ public class LauncherDbUtils {
     private static final String TAG = "LauncherDbUtils";
 
     private static void renameScreen(SQLiteDatabase db, long oldScreen, long newScreen) {
-        String[] whereParams = new String[] { Long.toString(oldScreen) };
+        String[] whereParams = new String[]{Long.toString(oldScreen)};
 
         ContentValues values = new ContentValues();
         values.put(WorkspaceScreens._ID, newScreen);

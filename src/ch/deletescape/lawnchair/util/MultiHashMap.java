@@ -24,7 +24,8 @@ import java.util.HashMap;
  */
 public class MultiHashMap<K, V> extends HashMap<K, ArrayList<V>> {
 
-    public MultiHashMap() { }
+    public MultiHashMap() {
+    }
 
     public MultiHashMap(int size) {
         super(size);

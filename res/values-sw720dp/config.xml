@@ -2,10 +2,10 @@
     <bool name="config_largeHeap">true</bool>
     <bool name="is_large_tablet">true</bool>
 
-<!-- All Apps & Widgets -->
+    <!-- All Apps & Widgets -->
     <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
     <integer name="config_workspaceSpringLoadShrinkPercentage">90</integer>
 
-<!-- Hotseat -->
+    <!-- Hotseat -->
     <bool name="hotseat_transpose_layout_with_orientation">false</bool>
 </resources>

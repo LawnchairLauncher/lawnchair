@@ -23,6 +23,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewParent;
 
+import java.util.List;
+import java.util.Locale;
+
 import ch.deletescape.lawnchair.DropTarget;
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto.Action;
@@ -30,13 +33,10 @@ import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto.LauncherEvent;
 import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto.Target;
 import ch.deletescape.lawnchair.util.ComponentKey;
 
-import java.util.List;
-import java.util.Locale;
-
 /**
  * Manages the creation of {@link LauncherEvent}.
  * To debug this class, execute following command before sideloading a new apk.
- *
+ * <p>
  * $ adb shell setprop log.tag.UserEvent VERBOSE
  */
 public class UserEventDispatcher {
@@ -49,7 +49,7 @@ public class UserEventDispatcher {
      * TODO: change the name of this interface to LogContainerProvider
      * and the method name to fillInLogContainerData. Not changed to minimize CL diff
      * in this branch.
-     *
+     * <p>
      * Implemented by containers to provide a launch source for a given child.
      */
     public interface LaunchSourceProvider {

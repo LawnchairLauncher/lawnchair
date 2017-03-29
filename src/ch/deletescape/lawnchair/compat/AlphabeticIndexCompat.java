@@ -7,10 +7,10 @@ import android.os.Build;
 import android.os.LocaleList;
 import android.util.Log;
 
-import ch.deletescape.lawnchair.Utilities;
-
 import java.lang.reflect.Method;
 import java.util.Locale;
+
+import ch.deletescape.lawnchair.Utilities;
 
 public class AlphabeticIndexCompat {
     private static final String TAG = "AlphabeticIndexCompat";

@@ -24,19 +24,25 @@ public class WidgetHostViewLoader implements DragController.DragListener {
     private static final boolean LOGD = false;
 
     /* Runnables to handle inflation and binding. */
-    @Thunk Runnable mInflateWidgetRunnable = null;
+    @Thunk
+    Runnable mInflateWidgetRunnable = null;
     private Runnable mBindWidgetRunnable = null;
 
     // TODO: technically, this class should not have to know the existence of the launcher.
-    @Thunk Launcher mLauncher;
-    @Thunk Handler mHandler;
-    @Thunk final View mView;
-    @Thunk final PendingAddWidgetInfo mInfo;
+    @Thunk
+    Launcher mLauncher;
+    @Thunk
+    Handler mHandler;
+    @Thunk
+    final View mView;
+    @Thunk
+    final PendingAddWidgetInfo mInfo;
 
     // Widget id generated for binding a widget host view or -1 for invalid id. The id is
     // not is use as long as it is stored here and can be deleted safely. Once its used, this value
     // to be set back to -1.
-    @Thunk int mWidgetLoadingId = -1;
+    @Thunk
+    int mWidgetLoadingId = -1;
 
     public WidgetHostViewLoader(Launcher launcher, View view) {
         mLauncher = launcher;
@@ -46,7 +52,8 @@ public class WidgetHostViewLoader implements DragController.DragListener {
     }
 
     @Override
-    public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) { }
+    public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
+    }
 
     @Override
     public void onDragEnd() {
@@ -101,7 +108,7 @@ public class WidgetHostViewLoader implements DragController.DragListener {
                 if (LOGD) {
                     Log.d(TAG, "Binding widget, id: " + mWidgetLoadingId);
                 }
-                if(AppWidgetManagerCompat.getInstance(mLauncher).bindAppWidgetIdIfAllowed(
+                if (AppWidgetManagerCompat.getInstance(mLauncher).bindAppWidgetIdIfAllowed(
                         mWidgetLoadingId, pInfo, options)) {
 
                     // Widget id bound. Inflate the widget.

@@ -23,13 +23,13 @@ import android.content.Intent;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 
+import java.util.ArrayList;
+
 import ch.deletescape.lawnchair.DropTarget;
 import ch.deletescape.lawnchair.DropTarget.DragObject;
 import ch.deletescape.lawnchair.InstallShortcutReceiver;
 import ch.deletescape.lawnchair.ShortcutInfo;
 import ch.deletescape.lawnchair.Utilities;
-
-import java.util.ArrayList;
 
 /**
  * Base class for driving a drag/drop operation.
@@ -39,8 +39,11 @@ public abstract class DragDriver {
 
     public interface EventListener {
         void onDriverDragMove(float x, float y);
+
         void onDriverDragExitWindow();
+
         void onDriverDragEnd(float x, float y, DropTarget dropTargetOverride);
+
         void onDriverDragCancel();
     }
 
@@ -51,7 +54,8 @@ public abstract class DragDriver {
     /**
      * Handles ending of the DragView animation.
      */
-    public void onDragViewAnimationEnd() { }
+    public void onDragViewAnimationEnd() {
+    }
 
     public boolean onTouchEvent(MotionEvent ev) {
         final int action = ev.getAction();
@@ -72,7 +76,7 @@ public abstract class DragDriver {
         return true;
     }
 
-    public abstract boolean onDragEvent (DragEvent event);
+    public abstract boolean onDragEvent(DragEvent event);
 
 
     public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -91,7 +95,7 @@ public abstract class DragDriver {
     }
 
     public static DragDriver create(Context context, DragController dragController,
-            DragObject dragObject, DragOptions options) {
+                                    DragObject dragObject, DragOptions options) {
         if (Utilities.isNycOrAbove() && options.systemDndStartPoint != null) {
             return new SystemDragDriver(dragController, context, dragObject);
         } else {
@@ -129,7 +133,7 @@ class SystemDragDriver extends DragDriver {
     }
 
     @Override
-    public boolean onDragEvent (DragEvent event) {
+    public boolean onDragEvent(DragEvent event) {
         final int action = event.getAction();
 
         switch (action) {
@@ -220,5 +224,7 @@ class InternalDragDriver extends DragDriver {
     }
 
     @Override
-    public boolean onDragEvent (DragEvent event) { return false; }
+    public boolean onDragEvent(DragEvent event) {
+        return false;
+    }
 }

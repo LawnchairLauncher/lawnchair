@@ -16,16 +16,14 @@
 
 package ch.deletescape.lawnchair;
 
-import ch.deletescape.lawnchair.dragndrop.DragView;
-
 import android.graphics.PointF;
 import android.graphics.Rect;
 
 import ch.deletescape.lawnchair.accessibility.DragViewStateAnnouncer;
+import ch.deletescape.lawnchair.dragndrop.DragView;
 
 /**
  * Interface defining an object that can receive a drag.
- *
  */
 public interface DropTarget {
 
@@ -33,40 +31,61 @@ public interface DropTarget {
         public int x = -1;
         public int y = -1;
 
-        /** X offset from the upper-left corner of the cell to where we touched.  */
+        /**
+         * X offset from the upper-left corner of the cell to where we touched.
+         */
         public int xOffset = -1;
 
-        /** Y offset from the upper-left corner of the cell to where we touched.  */
+        /**
+         * Y offset from the upper-left corner of the cell to where we touched.
+         */
         public int yOffset = -1;
 
-        /** This indicates whether a drag is in final stages, either drop or cancel. It
+        /**
+         * This indicates whether a drag is in final stages, either drop or cancel. It
          * differentiates onDragExit, since this is called when the drag is ending, above
          * the current drag target, or when the drag moves off the current drag object.
          */
         public boolean dragComplete = false;
 
-        /** The view that moves around while you drag.  */
+        /**
+         * The view that moves around while you drag.
+         */
         public DragView dragView = null;
 
-        /** The data associated with the object, after item is dropped. */
+        /**
+         * The data associated with the object, after item is dropped.
+         */
         public ItemInfo dragInfo = null;
 
-        /** The data associated with the object  being dragged */
+        /**
+         * The data associated with the object  being dragged
+         */
         public ItemInfo originalDragInfo = null;
 
-        /** Where the drag originated */
+        /**
+         * Where the drag originated
+         */
         public DragSource dragSource = null;
 
-        /** The object is part of an accessible drag operation */
+        /**
+         * The object is part of an accessible drag operation
+         */
         public boolean accessibleDrag;
 
-        /** Post drag animation runnable */
+        /**
+         * Post drag animation runnable
+         */
         public Runnable postAnimationRunnable = null;
 
-        /** Indicates that the drag operation was cancelled */
+        /**
+         * Indicates that the drag operation was cancelled
+         */
         public boolean cancelled = false;
 
-        /** Defers removing the DragView from the DragLayer until after the drop animation. */
+        /**
+         * Defers removing the DragView from the DragLayer until after the drop animation.
+         */
         public boolean deferDragViewCleanupPostAnimation = true;
 
         public DragViewStateAnnouncer stateAnnouncer;
@@ -107,8 +126,6 @@ public interface DropTarget {
 
     /**
      * Handle an object being dropped on the DropTarget
-     *
-     *
      */
     void onDrop(DragObject dragObject);
 

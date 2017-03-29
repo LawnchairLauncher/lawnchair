@@ -28,8 +28,6 @@ import android.widget.FrameLayout;
 import ch.deletescape.lawnchair.allapps.AllAppsContainerView;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 
-import ch.deletescape.lawnchair.R;
-
 /**
  * A base container view, which supports resizing.
  */

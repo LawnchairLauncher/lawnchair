@@ -19,18 +19,11 @@ package ch.deletescape.lawnchair.compat;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.UserHandle;
-
-import ch.deletescape.lawnchair.Launcher;
 
 public class LauncherActivityInfoCompat {
     private LauncherActivityInfo mLauncherActivityInfo;
@@ -39,8 +32,8 @@ public class LauncherActivityInfoCompat {
         mLauncherActivityInfo = info;
     }
 
-    public static LauncherActivityInfoCompat create(Context context, UserHandle user, Intent intent){
-        LauncherApps launcherApps  = (LauncherApps) context.getSystemService("launcherapps");
+    public static LauncherActivityInfoCompat create(Context context, UserHandle user, Intent intent) {
+        LauncherApps launcherApps = (LauncherApps) context.getSystemService("launcherapps");
         LauncherActivityInfo info = launcherApps.resolveActivity(intent, user);
         return new LauncherActivityInfoCompat(info);
     }

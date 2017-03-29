@@ -26,12 +26,12 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
+import java.util.HashMap;
+import java.util.List;
+
 import ch.deletescape.lawnchair.IconCache;
 import ch.deletescape.lawnchair.LauncherAppWidgetProviderInfo;
 import ch.deletescape.lawnchair.util.ComponentKey;
-
-import java.util.HashMap;
-import java.util.List;
 
 public abstract class AppWidgetManagerCompat {
 
@@ -75,14 +75,14 @@ public abstract class AppWidgetManagerCompat {
     public abstract UserHandleCompat getUser(LauncherAppWidgetProviderInfo info);
 
     public abstract void startConfigActivity(AppWidgetProviderInfo info, int widgetId,
-            Activity activity, AppWidgetHost host, int requestCode);
+                                             Activity activity, AppWidgetHost host, int requestCode);
 
     public abstract Drawable loadPreview(AppWidgetProviderInfo info);
 
     public abstract Drawable loadIcon(LauncherAppWidgetProviderInfo info, IconCache cache);
 
     public abstract Bitmap getBadgeBitmap(LauncherAppWidgetProviderInfo info, Bitmap bitmap,
-            int imageWidth, int imageHeight);
+                                          int imageWidth, int imageHeight);
 
     public abstract LauncherAppWidgetProviderInfo findProvider(
             ComponentName provider, UserHandleCompat user);

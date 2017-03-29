@@ -167,13 +167,15 @@ public class ShortcutInfo extends ItemInfo {
         return intent;
     }
 
-    /** Returns {@link #promisedIntent}, or {@link #intent} if promisedIntent is null. */
+    /**
+     * Returns {@link #promisedIntent}, or {@link #intent} if promisedIntent is null.
+     */
     public Intent getPromisedIntent() {
         return promisedIntent != null ? promisedIntent : intent;
     }
 
     ShortcutInfo(Intent intent, CharSequence title, CharSequence contentDescription,
-            Bitmap icon, UserHandleCompat user) {
+                 Bitmap icon, UserHandleCompat user) {
         this();
         this.intent = intent;
         this.title = Utilities.trim(title);
@@ -195,7 +197,9 @@ public class ShortcutInfo extends ItemInfo {
         usingFallbackIcon = info.usingFallbackIcon;
     }
 
-    /** TODO: Remove this.  It's only called by ApplicationInfo.makeShortcut. */
+    /**
+     * TODO: Remove this.  It's only called by ApplicationInfo.makeShortcut.
+     */
     public ShortcutInfo(AppInfo info) {
         super(info);
         title = Utilities.trim(info.title);
@@ -328,7 +332,7 @@ public class ShortcutInfo extends ItemInfo {
     }
 
     protected Bitmap getBadgedIcon(Bitmap unbadgedBitmap, ShortcutInfoCompat shortcutInfo,
-            IconCache cache, Context context) {
+                                   IconCache cache, Context context) {
         unbadgedBitmap = Utilities.addShadowToIcon(unbadgedBitmap);
         // Get the app info for the source activity.
         AppInfo appInfo = new AppInfo();
@@ -343,7 +347,9 @@ public class ShortcutInfo extends ItemInfo {
         return Utilities.badgeWithBitmap(unbadgedBitmap, appInfo.iconBitmap, context);
     }
 
-    /** Returns the ShortcutInfo id associated with the deep shortcut. */
+    /**
+     * Returns the ShortcutInfo id associated with the deep shortcut.
+     */
     public String getDeepShortcutId() {
         return itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT ?
                 getPromisedIntent().getStringExtra(ShortcutInfoCompat.EXTRA_SHORTCUT_ID) : null;

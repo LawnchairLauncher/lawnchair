@@ -17,12 +17,12 @@ package ch.deletescape.lawnchair.model;
 
 import android.content.Context;
 
+import java.text.Collator;
+import java.util.Comparator;
+
 import ch.deletescape.lawnchair.AppInfo;
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.util.Thunk;
-
-import java.text.Collator;
-import java.util.Comparator;
 
 /**
  * Class to manage access to an app name comparator.
@@ -81,7 +81,8 @@ public class AppNameComparator {
     /**
      * Compares two titles with the same return value semantics as Comparator.
      */
-    @Thunk int compareTitles(String titleA, String titleB) {
+    @Thunk
+    int compareTitles(String titleA, String titleB) {
         // Ensure that we de-prioritize any titles that don't start with a linguistic letter or digit
         boolean aStartsWithLetter = (titleA.length() > 0) &&
                 Character.isLetterOrDigit(titleA.codePointAt(0));

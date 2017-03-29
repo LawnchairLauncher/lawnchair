@@ -40,16 +40,17 @@ public class PinchThresholdManager {
     /**
      * Uses the pinch progress to determine whether a threshold has been passed,
      * and asks the {@param animationManager} to animate if so.
-     * @param progress From 0 to 1, where 0 is overview and 1 is workspace.
+     *
+     * @param progress         From 0 to 1, where 0 is overview and 1 is workspace.
      * @param animationManager Animates the threshold change if one is passed.
      * @return The last passed threshold, one of
-     *         {@link PinchThresholdManager#THRESHOLD_ZERO},
-     *         {@link PinchThresholdManager#THRESHOLD_ONE},
-     *         {@link PinchThresholdManager#THRESHOLD_TWO}, or
-     *         {@link PinchThresholdManager#THRESHOLD_THREE}
+     * {@link PinchThresholdManager#THRESHOLD_ZERO},
+     * {@link PinchThresholdManager#THRESHOLD_ONE},
+     * {@link PinchThresholdManager#THRESHOLD_TWO}, or
+     * {@link PinchThresholdManager#THRESHOLD_THREE}
      */
     public float updateAndAnimatePassedThreshold(float progress,
-            PinchAnimationManager animationManager) {
+                                                 PinchAnimationManager animationManager) {
         if (!mWorkspace.isInOverviewMode()) {
             // Invert the progress, because going from workspace to overview is 1 to 0.
             progress = 1f - progress;

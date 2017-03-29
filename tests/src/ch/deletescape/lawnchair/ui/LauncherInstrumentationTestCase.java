@@ -1,8 +1,6 @@
 package ch.deletescape.lawnchair.ui;
 
-import android.app.SearchManager;
 import android.appwidget.AppWidgetProviderInfo;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -19,22 +17,21 @@ import android.support.test.uiautomator.Until;
 import android.test.InstrumentationTestCase;
 import android.view.MotionEvent;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Locale;
+import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicReference;
+
 import ch.deletescape.lawnchair.InvariantDeviceProfile;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.LauncherAppWidgetProviderInfo;
 import ch.deletescape.lawnchair.LauncherSettings;
 import ch.deletescape.lawnchair.R;
-import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.util.ManagedProfileHeuristic;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Locale;
-import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Base class for all instrumentation tests providing various utility methods.
@@ -87,7 +84,7 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
                     "appwidget grantbind --package " + mTargetPackage);
             // Read the input stream fully.
             FileInputStream fis = new ParcelFileDescriptor.AutoCloseInputStream(pfd);
-            while (fis.read() != -1);
+            while (fis.read() != -1) ;
             fis.close();
         }
     }
@@ -120,6 +117,7 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
 
     /**
      * Scrolls the {@param container} until it finds an object matching {@param condition}.
+     *
      * @return the matching object.
      */
     protected UiObject2 scrollAndFind(UiObject2 container, BySelector condition) {
@@ -147,7 +145,7 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
         Point moveLocation = findViewById(R.id.drag_layer).getVisibleCenter();
 
         // Move to center
-        while(!moveLocation.equals(center)) {
+        while (!moveLocation.equals(center)) {
             center.x = getNextMoveValue(moveLocation.x, center.x);
             center.y = getNextMoveValue(moveLocation.y, center.y);
             sendPointer(MotionEvent.ACTION_MOVE, center);
@@ -205,15 +203,18 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
                 public void run() {
                     try {
                         result.set(callback.call());
-                    } catch (Exception ignored) { }
+                    } catch (Exception ignored) {
+                    }
                 }
             });
-        } catch (Throwable ignored) { }
+        } catch (Throwable ignored) {
+        }
         return result.get();
     }
 
     /**
      * Finds a widget provider which can fit on the home screen.
+     *
      * @param hasConfigureScreen if true, a provider with a config screen is returned.
      */
     protected LauncherAppWidgetProviderInfo findWidgetProvider(final boolean hasConfigureScreen) {

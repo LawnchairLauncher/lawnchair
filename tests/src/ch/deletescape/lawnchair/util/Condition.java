@@ -2,11 +2,11 @@ package ch.deletescape.lawnchair.util;
 
 import android.support.test.uiautomator.UiObject2;
 
-import ch.deletescape.lawnchair.MainThreadExecutor;
-
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import ch.deletescape.lawnchair.MainThreadExecutor;
 
 public abstract class Condition {
 

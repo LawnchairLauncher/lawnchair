@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLayoutChangeListener;
@@ -31,8 +30,8 @@ import android.widget.TextView;
 import ch.deletescape.lawnchair.DeviceProfile;
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Launcher;
-import ch.deletescape.lawnchair.SimpleOnStylusPressListener;
 import ch.deletescape.lawnchair.R;
+import ch.deletescape.lawnchair.SimpleOnStylusPressListener;
 import ch.deletescape.lawnchair.StylusEventHelper;
 import ch.deletescape.lawnchair.WidgetPreviewLoader;
 import ch.deletescape.lawnchair.WidgetPreviewLoader.PreviewLoadRequest;
@@ -41,7 +40,7 @@ import ch.deletescape.lawnchair.model.WidgetItem;
 /**
  * Represents the individual cell of the widget inside the widget tray. The preview is drawn
  * horizontally centered, and scaled down if needed.
- *
+ * <p>
  * This view does not support padding. Since the image is scaled down to fit the view, padding will
  * further decrease the scaling factor. Drag-n-drop uses the view bounds for showing a smooth
  * transition from the view to drag view, so when adding padding support, DnD would need to
@@ -53,10 +52,14 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
     private static final int FADE_IN_DURATION_MS = 90;
 
-    /** Widget cell width is calculated by multiplying this factor to grid cell width. */
+    /**
+     * Widget cell width is calculated by multiplying this factor to grid cell width.
+     */
     private static final float WIDTH_SCALE = 2.6f;
 
-    /** Widget preview width is calculated by multiplying this factor to the widget cell width. */
+    /**
+     * Widget preview width is calculated by multiplying this factor to the widget cell width.
+     */
     private static final float PREVIEW_SCALE = 0.8f;
 
     private int mPresetPreviewSize;
@@ -168,7 +171,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
     @Override
     public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft,
-            int oldTop, int oldRight, int oldBottom) {
+                               int oldTop, int oldRight, int oldBottom) {
         removeOnLayoutChangeListener(this);
         ensurePreview();
     }

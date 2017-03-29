@@ -24,7 +24,7 @@ import android.view.View;
 /**
  * This class differs from the framework {@link TouchDelegate} in that it transforms the
  * coordinates of the motion event to the provided bounds.
- *
+ * <p>
  * You can also modify the bounds post construction. Since the bounds are available during layout,
  * this avoids new object creation during every layout.
  */

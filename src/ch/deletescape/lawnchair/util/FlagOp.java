@@ -2,9 +2,11 @@ package ch.deletescape.lawnchair.util;
 
 public abstract class FlagOp {
 
-    public static FlagOp NO_OP = new FlagOp() {};
+    public static FlagOp NO_OP = new FlagOp() {
+    };
 
-    private FlagOp() {}
+    private FlagOp() {
+    }
 
     public int apply(int flags) {
         return flags;

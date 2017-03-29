@@ -27,8 +27,6 @@ import android.widget.Toast;
 
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
 
-import ch.deletescape.lawnchair.R;
-
 public class InfoDropTarget extends UninstallDropTarget {
 
     private static final String TAG = "InfoDropTarget";

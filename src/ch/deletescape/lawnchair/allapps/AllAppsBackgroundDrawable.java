@@ -23,8 +23,8 @@ import android.graphics.ColorFilter;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-
 import android.view.Gravity;
+
 import ch.deletescape.lawnchair.R;
 
 /**
@@ -42,7 +42,7 @@ class TransformedImageDrawable {
      *                and height of the image into account to center the image to the offset.
      */
     public TransformedImageDrawable(Resources res, int resourceId, float xPct, float yPct,
-            int gravity) {
+                                    int gravity) {
         mImage = res.getDrawable(resourceId);
         mXPercent = xPct;
         mYPercent = yPct;

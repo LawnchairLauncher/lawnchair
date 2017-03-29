@@ -1,16 +1,11 @@
 package ch.deletescape.lawnchair.allapps;
 
-import android.annotation.TargetApi;
 import android.content.res.Resources;
 import android.graphics.Outline;
 import android.graphics.Rect;
-import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
-import android.widget.FrameLayout;
 
 import ch.deletescape.lawnchair.BaseRecyclerView;
 import ch.deletescape.lawnchair.R;
@@ -33,10 +28,11 @@ public abstract class HeaderElevationController extends RecyclerView.OnScrollLis
         onScroll(mCurrentY);
     }
 
-    public void updateBackgroundPadding(Rect bgPadding) { }
+    public void updateBackgroundPadding(Rect bgPadding) {
+    }
 
     abstract void onScroll(int scrollY);
-    
+
     public static class ControllerVL extends HeaderElevationController {
 
         private final View mHeader;

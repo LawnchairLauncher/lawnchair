@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 /*
 **
 ** Copyright 2016, The Android Open Source Project
@@ -17,8 +16,7 @@
 ** limitations under the License.
 */
 -->
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ch.deletescape.lawnchair">
 
     <!--
@@ -52,7 +50,7 @@
         android:label="@string/derived_app_name"
         android:largeHeap="@bool/config_largeHeap"
         android:restoreAnyVersion="true"
-        android:supportsRtl="true" >
+        android:supportsRtl="true">
 
         <!-- Intent received used to install shortcuts from other applications -->
         <receiver
@@ -64,19 +62,20 @@
         </receiver>
 
         <!-- Intent received used to initialize a restored widget -->
-        <receiver android:name="ch.deletescape.lawnchair.AppWidgetsRestoredReceiver" >
+        <receiver android:name="ch.deletescape.lawnchair.AppWidgetsRestoredReceiver">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_HOST_RESTORED"/>
+                <action android:name="android.appwidget.action.APPWIDGET_HOST_RESTORED" />
             </intent-filter>
         </receiver>
 
-        <service android:name="ch.deletescape.lawnchair.dynamicui.ColorExtractionService"
+        <service
+            android:name="ch.deletescape.lawnchair.dynamicui.ColorExtractionService"
             android:exported="false"
-            android:process=":wallpaper_chooser">
-        </service>
+            android:process=":wallpaper_chooser"></service>
 
-        <meta-data android:name="android.nfc.disable_beam_default"
-                       android:value="true" />
+        <meta-data
+            android:name="android.nfc.disable_beam_default"
+            android:value="true" />
 
     </application>
 </manifest>

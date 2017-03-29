@@ -18,9 +18,9 @@ package ch.deletescape.lawnchair.compat;
 
 import android.content.Context;
 
-import ch.deletescape.lawnchair.Utilities;
-
 import java.util.List;
+
+import ch.deletescape.lawnchair.Utilities;
 
 public abstract class UserManagerCompat {
     protected UserManagerCompat() {
@@ -52,11 +52,17 @@ public abstract class UserManagerCompat {
     public abstract void enableAndResetCache();
 
     public abstract List<UserHandleCompat> getUserProfiles();
+
     public abstract long getSerialNumberForUser(UserHandleCompat user);
+
     public abstract UserHandleCompat getUserForSerialNumber(long serialNumber);
+
     public abstract CharSequence getBadgedLabelForUser(CharSequence label, UserHandleCompat user);
+
     public abstract long getUserCreationTime(UserHandleCompat user);
+
     public abstract boolean isQuietModeEnabled(UserHandleCompat user);
+
     public abstract boolean isUserUnlocked(UserHandleCompat user);
 
     public abstract boolean isDemoUser();

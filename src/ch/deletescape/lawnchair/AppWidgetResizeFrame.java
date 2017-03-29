@@ -1,7 +1,5 @@
 package ch.deletescape.lawnchair;
 
-import ch.deletescape.lawnchair.dragndrop.DragLayer;
-
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
@@ -20,9 +18,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import ch.deletescape.lawnchair.accessibility.DragViewStateAnnouncer;
+import ch.deletescape.lawnchair.dragndrop.DragLayer;
 import ch.deletescape.lawnchair.util.FocusLogic;
-
-import ch.deletescape.lawnchair.R;
 
 public class AppWidgetResizeFrame extends FrameLayout implements View.OnKeyListener {
     private static final int SNAP_DURATION = 150;
@@ -79,7 +76,7 @@ public class AppWidgetResizeFrame extends FrameLayout implements View.OnKeyListe
     private int mBottomTouchRegionAdjustment = 0;
 
     public AppWidgetResizeFrame(Context context,
-            LauncherAppWidgetHostView widgetView, CellLayout cellLayout, DragLayer dragLayer) {
+                                LauncherAppWidgetHostView widgetView, CellLayout cellLayout, DragLayer dragLayer) {
 
         super(context);
         mLauncher = Launcher.getLauncher(context);
@@ -178,7 +175,7 @@ public class AppWidgetResizeFrame extends FrameLayout implements View.OnKeyListe
 
         if (anyBordersActive) {
             mLeftHandle.setAlpha(mLeftBorderActive ? 1.0f : DIMMED_HANDLE_ALPHA);
-            mRightHandle.setAlpha(mRightBorderActive ? 1.0f :DIMMED_HANDLE_ALPHA);
+            mRightHandle.setAlpha(mRightBorderActive ? 1.0f : DIMMED_HANDLE_ALPHA);
             mTopHandle.setAlpha(mTopBorderActive ? 1.0f : DIMMED_HANDLE_ALPHA);
             mBottomHandle.setAlpha(mBottomBorderActive ? 1.0f : DIMMED_HANDLE_ALPHA);
         }
@@ -186,12 +183,12 @@ public class AppWidgetResizeFrame extends FrameLayout implements View.OnKeyListe
     }
 
     /**
-     *  Here we bound the deltas such that the frame cannot be stretched beyond the extents
-     *  of the CellLayout, and such that the frame's borders can't cross.
+     * Here we bound the deltas such that the frame cannot be stretched beyond the extents
+     * of the CellLayout, and such that the frame's borders can't cross.
      */
     public void updateDeltas(int deltaX, int deltaY) {
         if (mLeftBorderActive) {
-            mDeltaX = Math.max(-mBaselineX, deltaX); 
+            mDeltaX = Math.max(-mBaselineX, deltaX);
             mDeltaX = Math.min(mBaselineWidth - 2 * mTouchTargetWidth, mDeltaX);
         } else if (mRightBorderActive) {
             mDeltaX = Math.min(mDragLayer.getWidth() - (mBaselineX + mBaselineWidth), deltaX);
@@ -212,7 +209,7 @@ public class AppWidgetResizeFrame extends FrameLayout implements View.OnKeyListe
     }
 
     /**
-     *  Based on the deltas, we resize the frame, and, if needed, we resize the widget.
+     * Based on the deltas, we resize the frame, and, if needed, we resize the widget.
      */
     private void visualizeResizeForDelta(int deltaX, int deltaY, boolean onDismiss) {
         updateDeltas(deltaX, deltaY);
@@ -237,7 +234,7 @@ public class AppWidgetResizeFrame extends FrameLayout implements View.OnKeyListe
     }
 
     /**
-     *  Based on the current deltas, we determine if and how to resize the widget.
+     * Based on the current deltas, we determine if and how to resize the widget.
      */
     private void resizeWidgetIfNeeded(boolean onDismiss) {
         int xThreshold = mCellLayout.getCellWidth() + mCellLayout.getWidthGap();
@@ -339,7 +336,7 @@ public class AppWidgetResizeFrame extends FrameLayout implements View.OnKeyListe
 
         if (mCellLayout.createAreaForResize(cellX, cellY, spanX, spanY, mWidgetView,
                 mDirectionVector, onDismiss)) {
-            if (mStateAnnouncer != null && (lp.cellHSpan != spanX || lp.cellVSpan != spanY) ) {
+            if (mStateAnnouncer != null && (lp.cellHSpan != spanX || lp.cellVSpan != spanY)) {
                 mStateAnnouncer.announce(
                         mLauncher.getString(R.string.widget_resized, spanX, spanY));
             }
@@ -359,7 +356,7 @@ public class AppWidgetResizeFrame extends FrameLayout implements View.OnKeyListe
     }
 
     static void updateWidgetSizeRanges(AppWidgetHostView widgetView, Launcher launcher,
-            int spanX, int spanY) {
+                                       int spanX, int spanY) {
         getWidgetSizeRanges(launcher, spanX, spanY, sTmpRect);
         widgetView.updateAppWidgetSize(null, sTmpRect.left, sTmpRect.top,
                 sTmpRect.right, sTmpRect.bottom);
@@ -404,8 +401,8 @@ public class AppWidgetResizeFrame extends FrameLayout implements View.OnKeyListe
         int xThreshold = mCellLayout.getCellWidth() + mCellLayout.getWidthGap();
         int yThreshold = mCellLayout.getCellHeight() + mCellLayout.getHeightGap();
 
-        mDeltaXAddOn = mRunningHInc * xThreshold; 
-        mDeltaYAddOn = mRunningVInc * yThreshold; 
+        mDeltaXAddOn = mRunningHInc * xThreshold;
+        mDeltaYAddOn = mRunningVInc * yThreshold;
         mDeltaX = 0;
         mDeltaY = 0;
 

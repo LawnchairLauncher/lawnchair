@@ -35,9 +35,11 @@ public abstract class PageIndicator extends FrameLayout {
         setWillNotDraw(false);
     }
 
-    public void setScroll(int currentScroll, int totalScroll) {}
+    public void setScroll(int currentScroll, int totalScroll) {
+    }
 
-    public void setActiveMarker(int activePage) {}
+    public void setActiveMarker(int activePage) {
+    }
 
     public void addMarker() {
         mNumPages++;
@@ -70,11 +72,14 @@ public abstract class PageIndicator extends FrameLayout {
         }
     }
 
-    protected void onPageCountChanged() {}
+    protected void onPageCountChanged() {
+    }
 
-    public void setShouldAutoHide(boolean shouldAutoHide) {}
+    public void setShouldAutoHide(boolean shouldAutoHide) {
+    }
 
-    public void updateColor(ExtractedColors extractedColors) {}
+    public void updateColor(ExtractedColors extractedColors) {
+    }
 
     @Override
     protected boolean verifyDrawable(Drawable who) {

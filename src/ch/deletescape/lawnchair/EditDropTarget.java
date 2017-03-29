@@ -1,22 +1,7 @@
 package ch.deletescape.lawnchair;
 
-import android.app.Dialog;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StyleRes;
 import android.util.AttributeSet;
-import android.util.Pair;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.Switch;
-import android.widget.TextView;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class EditDropTarget extends ButtonDropTarget {
 

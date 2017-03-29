@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2016 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2016 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -12,8 +11,7 @@
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
      See the License for the specific language governing permissions and
      limitations under the License.
--->
-<!-- The top and bottom paddings are defined in this container, but since we want
+--><!-- The top and bottom paddings are defined in this container, but since we want
      the list view to span the full width (for touch interception purposes), we
      will bake the left/right padding into that view's background itself. -->
 <ch.deletescape.lawnchair.allapps.AllAppsContainerView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -83,6 +81,7 @@
         </FrameLayout>
 
     </ch.deletescape.lawnchair.allapps.AllAppsRecyclerViewContainerView>
+
     <View
         android:id="@+id/nav_bar_bg"
         android:layout_width="match_parent"

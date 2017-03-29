@@ -23,20 +23,26 @@ import android.graphics.Point;
  */
 public class DragOptions {
 
-    /** Whether or not an accessible drag operation is in progress. */
+    /**
+     * Whether or not an accessible drag operation is in progress.
+     */
     public boolean isAccessibleDrag = false;
 
-    /** Specifies the start location for the system DnD, null when using internal DnD */
+    /**
+     * Specifies the start location for the system DnD, null when using internal DnD
+     */
     public Point systemDndStartPoint = null;
 
-    /** Determines when a deferred drag should start. By default, drags aren't deferred at all. */
+    /**
+     * Determines when a deferred drag should start. By default, drags aren't deferred at all.
+     */
     public DeferDragCondition deferDragCondition = new DeferDragCondition();
 
     /**
      * Specifies a condition that must be met before DragListener#onDragStart() is called.
      * By default, there is no condition and onDragStart() is called immediately following
      * DragController#startDrag().
-     *
+     * <p>
      * This condition can be overridden, and callbacks are provided for the following cases:
      * - The drag starts, but onDragStart() is deferred (onDeferredDragStart()).
      * - The drag ends before the condition is met (onDropBeforeDeferredDrag()).
@@ -63,7 +69,9 @@ public class DragOptions {
             // Do nothing
         }
 
-        /** onDragStart() has been called, now we are in a normal drag. */
+        /**
+         * onDragStart() has been called, now we are in a normal drag.
+         */
         public void onDragStart() {
             // Do nothing
         }

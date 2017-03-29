@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 /*
 ** Copyright 2014, The Android Open Source Project
 **
@@ -18,17 +17,27 @@
 -->
 
 <set xmlns:android="http://schemas.android.com/apk/res/android"
-        android:background="#ff000000" android:shareInterpolator="false" android:zAdjustment="top">
+    android:background="#ff000000"
+    android:shareInterpolator="false"
+    android:zAdjustment="top">
 
-    <alpha android:fromAlpha="0" android:toAlpha="1.0"
-            android:fillEnabled="true" android:fillBefore="true" android:fillAfter="true"
-            android:interpolator="@anim/decelerate_quart"
-            android:startOffset="0"
-            android:duration="167"/>
+    <alpha
+        android:fromAlpha="0"
+        android:toAlpha="1.0"
+        android:fillEnabled="true"
+        android:fillBefore="true"
+        android:fillAfter="true"
+        android:interpolator="@anim/decelerate_quart"
+        android:startOffset="0"
+        android:duration="167" />
 
-    <translate android:fromYDelta="110%" android:toYDelta="0"
-            android:fillEnabled="true" android:fillBefore="true" android:fillAfter="true"
-            android:interpolator="@anim/decelerate_quint"
-            android:startOffset="0"
-            android:duration="417" />
+    <translate
+        android:fromYDelta="110%"
+        android:toYDelta="0"
+        android:fillEnabled="true"
+        android:fillBefore="true"
+        android:fillAfter="true"
+        android:interpolator="@anim/decelerate_quint"
+        android:startOffset="0"
+        android:duration="417" />
 </set>

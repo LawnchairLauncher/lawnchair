@@ -32,8 +32,6 @@ import ch.deletescape.lawnchair.CellLayout;
 import ch.deletescape.lawnchair.DeleteDropTarget;
 import ch.deletescape.lawnchair.DragSource;
 import ch.deletescape.lawnchair.DropTarget.DragObject;
-import ch.deletescape.lawnchair.dragndrop.DragOptions;
-import ch.deletescape.lawnchair.folder.Folder;
 import ch.deletescape.lawnchair.IconCache;
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Launcher;
@@ -44,6 +42,8 @@ import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.WidgetPreviewLoader;
 import ch.deletescape.lawnchair.Workspace;
 import ch.deletescape.lawnchair.dragndrop.DragController;
+import ch.deletescape.lawnchair.dragndrop.DragOptions;
+import ch.deletescape.lawnchair.folder.Folder;
 import ch.deletescape.lawnchair.model.WidgetsModel;
 import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto;
 import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto.Target;
@@ -59,7 +59,8 @@ public class WidgetsContainerView extends BaseContainerView
     private static final boolean LOGD = false;
 
     /* Global instances that are used inside this container. */
-    @Thunk Launcher mLauncher;
+    @Thunk
+    Launcher mLauncher;
     private DragController mDragController;
     private IconCache mIconCache;
 
@@ -293,7 +294,7 @@ public class WidgetsContainerView extends BaseContainerView
 
     @Override
     public void onDropCompleted(View target, DragObject d, boolean isFlingToDelete,
-            boolean success) {
+                                boolean success) {
         if (LOGD) {
             Log.d(TAG, "onDropCompleted");
         }

@@ -90,18 +90,18 @@ public class EditAppDialog extends Dialog {
     @Override
     public void dismiss() {
         String key = info.componentName.flattenToString();
-        if(visibility.isChecked() != visibleState){
-            if(visibility.isChecked()){
+        if (visibility.isChecked() != visibleState) {
+            if (visibility.isChecked()) {
                 hiddenApps.remove(key);
             } else {
                 hiddenApps.add(key);
             }
-            sharedPrefs.edit().putStringSet(KEY_PREF_HIDDEN_APPS,hiddenApps).apply();
+            sharedPrefs.edit().putStringSet(KEY_PREF_HIDDEN_APPS, hiddenApps).apply();
         }
         String titleS = title.getText().toString();
-        if(!titleS.trim().equals(info.title.toString().trim())){
+        if (!titleS.trim().equals(info.title.toString().trim())) {
             info.title = titleS.trim();
-            sharedPrefs.edit().putString("alias_"+key, titleS).apply();
+            sharedPrefs.edit().putString("alias_" + key, titleS).apply();
         }
         LauncherAppState app = LauncherAppState.getInstanceNoCreate();
         if (app != null) {

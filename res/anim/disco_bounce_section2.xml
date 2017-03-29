@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2016 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +15,7 @@
   -->
 
 <pathInterpolator xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:controlX1="0.9"
-                  android:controlY1="0"
-                  android:controlX2="0.6"
-                  android:controlY2="1"/>
+    android:controlX1="0.9"
+    android:controlY1="0"
+    android:controlX2="0.6"
+    android:controlY2="1" />

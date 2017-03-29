@@ -47,8 +47,6 @@ import ch.deletescape.lawnchair.dragndrop.DragOptions;
 import ch.deletescape.lawnchair.dragndrop.DragView;
 import ch.deletescape.lawnchair.util.Thunk;
 
-import ch.deletescape.lawnchair.R;
-
 /**
  * Implements a DropTarget.
  */
@@ -63,21 +61,30 @@ public abstract class ButtonDropTarget extends TextView
     private int mBottomDragPadding;
     protected DropTargetBar mDropTargetBar;
 
-    /** Whether this drop target is active for the current drag */
+    /**
+     * Whether this drop target is active for the current drag
+     */
     protected boolean mActive;
-    /** Whether an accessible drag is in progress */
+    /**
+     * Whether an accessible drag is in progress
+     */
     private boolean mAccessibleDrag;
-    /** An item must be dragged at least this many pixels before this drop target is enabled. */
+    /**
+     * An item must be dragged at least this many pixels before this drop target is enabled.
+     */
     private final int mDragDistanceThreshold;
 
-    /** The paint applied to the drag view on hover */
+    /**
+     * The paint applied to the drag view on hover
+     */
     protected int mHoverColor = 0;
 
     protected ColorStateList mOriginalTextColor;
     protected Drawable mDrawable;
 
     private AnimatorSet mCurrentColorAnim;
-    @Thunk ColorMatrix mSrcFilter, mDstFilter, mCurrentFilter;
+    @Thunk
+    ColorMatrix mSrcFilter, mDstFilter, mCurrentFilter;
 
     public ButtonDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -116,7 +123,8 @@ public abstract class ButtonDropTarget extends TextView
     }
 
     @Override
-    public void onFlingToDelete(DragObject d, PointF vec) { }
+    public void onFlingToDelete(DragObject d, PointF vec) {
+    }
 
     @Override
     public final void onDragEnter(DragObject d) {
@@ -248,9 +256,11 @@ public abstract class ButtonDropTarget extends TextView
     }
 
     @Override
-    public void prepareAccessibilityDrop() { }
+    public void prepareAccessibilityDrop() {
+    }
 
-    @Thunk abstract void completeDrop(DragObject d);
+    @Thunk
+    abstract void completeDrop(DragObject d);
 
     @Override
     public void getHitRectRelativeToDragLayer(android.graphics.Rect outRect) {
@@ -284,7 +294,7 @@ public abstract class ButtonDropTarget extends TextView
         }
 
         final int top = to.top + (getMeasuredHeight() - height) / 2;
-        final int bottom = top +  height;
+        final int bottom = top + height;
 
         to.set(left, top, right, bottom);
 

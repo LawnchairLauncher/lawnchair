@@ -25,7 +25,7 @@ import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 
 /**
  * A PageIndicator that briefly shows a fraction of a line when moving between pages.
- *
+ * <p>
  * The fraction is 1 / number of pages and the position is based on the progress of the page scroll.
  */
 public class PageIndicatorLineCaret extends PageIndicator {
@@ -258,7 +258,7 @@ public class PageIndicatorLineCaret extends PageIndicator {
     /**
      * Starts the given animator and stores it in the provided index in {@link #mAnimators} until
      * the animation ends.
-     *
+     * <p>
      * If an animator is already at the index (i.e. it is already playing), it is canceled and
      * replaced with the new animator.
      */

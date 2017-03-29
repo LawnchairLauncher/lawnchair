@@ -18,10 +18,10 @@ package ch.deletescape.lawnchair.allapps;
 import android.content.ComponentName;
 import android.test.InstrumentationTestCase;
 
-import ch.deletescape.lawnchair.AppInfo;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import ch.deletescape.lawnchair.AppInfo;
 
 /**
  * Unit tests for {@link DefaultAppSearchAlgorithm}

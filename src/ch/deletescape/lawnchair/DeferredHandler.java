@@ -21,23 +21,25 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.MessageQueue;
 
-import ch.deletescape.lawnchair.util.Thunk;
-
 import java.util.LinkedList;
+
+import ch.deletescape.lawnchair.util.Thunk;
 
 /**
  * Queue of things to run on a looper thread.  Items posted with {@link #post} will not
  * be actually enqued on the handler until after the last one has run, to keep from
  * starving the thread.
- *
+ * <p>
  * This class is fifo.
  */
 public class DeferredHandler {
-    @Thunk LinkedList<Runnable> mQueue = new LinkedList<>();
+    @Thunk
+    LinkedList<Runnable> mQueue = new LinkedList<>();
     private MessageQueue mMessageQueue = Looper.myQueue();
     private Impl mHandler = new Impl();
 
-    @Thunk class Impl extends Handler implements MessageQueue.IdleHandler {
+    @Thunk
+    class Impl extends Handler implements MessageQueue.IdleHandler {
         public void handleMessage(Message msg) {
             Runnable r;
             synchronized (mQueue) {
@@ -73,7 +75,9 @@ public class DeferredHandler {
     public DeferredHandler() {
     }
 
-    /** Schedule runnable to run after everything that's on the queue right now. */
+    /**
+     * Schedule runnable to run after everything that's on the queue right now.
+     */
     public void post(Runnable runnable) {
         synchronized (mQueue) {
             mQueue.add(runnable);
@@ -83,7 +87,9 @@ public class DeferredHandler {
         }
     }
 
-    /** Schedule runnable to run when the queue goes idle. */
+    /**
+     * Schedule runnable to run when the queue goes idle.
+     */
     public void postIdle(final Runnable runnable) {
         post(new IdleRunnable(runnable));
     }
@@ -94,7 +100,9 @@ public class DeferredHandler {
         }
     }
 
-    /** Runs all queued Runnables from the calling thread. */
+    /**
+     * Runs all queued Runnables from the calling thread.
+     */
     public void flush() {
         LinkedList<Runnable> queue = new LinkedList<>();
         synchronized (mQueue) {

@@ -32,6 +32,11 @@ import android.text.TextUtils;
 import android.util.LongSparseArray;
 import android.util.SparseBooleanArray;
 
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+
 import ch.deletescape.lawnchair.AutoInstallsLayout.LayoutParserCallback;
 import ch.deletescape.lawnchair.DefaultLayoutParser;
 import ch.deletescape.lawnchair.LauncherAppState;
@@ -43,18 +48,11 @@ import ch.deletescape.lawnchair.LauncherSettings.Settings;
 import ch.deletescape.lawnchair.LauncherSettings.WorkspaceScreens;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
-import ch.deletescape.lawnchair.Workspace;
 import ch.deletescape.lawnchair.compat.UserHandleCompat;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
-import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.config.ProviderConfig;
 import ch.deletescape.lawnchair.model.GridSizeMigrationTask;
 import ch.deletescape.lawnchair.util.LongArrayMap;
-
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 
 /**
  * Utility class to import data from another Launcher which is based on Launcher3 schema.
@@ -230,7 +228,7 @@ public class ImportDataTask {
                             values.put(Favorites.ICON_PACKAGE, c.getString(iconPackageIndex));
                             values.put(Favorites.ICON_RESOURCE, c.getString(iconResourceIndex));
                         }
-                        values.put(Favorites.ICON,  c.getBlob(iconIndex));
+                        values.put(Favorites.ICON, c.getBlob(iconIndex));
                         values.put(Favorites.INTENT, intent.toUri(0));
                         values.put(Favorites.RANK, c.getInt(rankIndex));
 
@@ -306,6 +304,7 @@ public class ImportDataTask {
 
     /**
      * Performs data import if possible.
+     *
      * @return true on successful data import, false if it was not available
      * @throws Exception if the import failed
      */

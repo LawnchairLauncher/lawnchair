@@ -14,6 +14,11 @@ import android.os.Bundle;
 import android.support.test.filters.LargeTest;
 import android.support.test.uiautomator.UiSelector;
 
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
 import ch.deletescape.lawnchair.compat.PackageInstallerCompat;
 import ch.deletescape.lawnchair.ui.LauncherInstrumentationTestCase;
@@ -21,14 +26,9 @@ import ch.deletescape.lawnchair.util.ManagedProfileHeuristic;
 import ch.deletescape.lawnchair.widget.PendingAddWidgetInfo;
 import ch.deletescape.lawnchair.widget.WidgetHostViewLoader;
 
-import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
 /**
  * Tests for bind widget flow.
- *
+ * <p>
  * Note running these tests will clear the workspace on the device.
  */
 @LargeTest
@@ -200,8 +200,9 @@ public class BindWidgetTest extends LauncherInstrumentationTestCase {
     /**
      * Adds {@param item} on the homescreen on the 0th screen at 0,0, and verifies that the
      * widget class is displayed on the homescreen.
+     *
      * @param widgetClass the View class which is displayed on the homescreen
-     * @param desc the content description of the view or null.
+     * @param desc        the content description of the view or null.
      */
     private void setupAndVerifyContents(
             LauncherAppWidgetInfo item, Class<?> widgetClass, String desc) {
@@ -252,6 +253,7 @@ public class BindWidgetTest extends LauncherInstrumentationTestCase {
 
     /**
      * Creates a LauncherAppWidgetInfo corresponding to {@param info}
+     *
      * @param bindWidget if true the info is bound and a valid widgetId is assigned to
      *                   the LauncherAppWidgetInfo
      */
@@ -302,7 +304,7 @@ public class BindWidgetTest extends LauncherInstrumentationTestCase {
                         .updateAndGetActiveSessionCache().keySet();
             }
         });
-        while(true) {
+        while (true) {
             try {
                 mTargetContext.getPackageManager().getPackageInfo(
                         pkg, PackageManager.GET_UNINSTALLED_PACKAGES);
@@ -312,7 +314,7 @@ public class BindWidgetTest extends LauncherInstrumentationTestCase {
                 }
             }
             pkg = invalidPackage + count;
-            count ++;
+            count++;
         }
         LauncherAppWidgetInfo item = new LauncherAppWidgetInfo(10,
                 new ComponentName(pkg, "com.test.widgetprovider"));

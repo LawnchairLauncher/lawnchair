@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
      Copyright (C) 2016 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +14,7 @@
      limitations under the License.
 -->
 
-<profiles xmlns:launcher="http://schemas.android.com/apk/res-auto/ch.deletescape.lawnchair" >
+<profiles xmlns:launcher="http://schemas.android.com/apk/res-auto/ch.deletescape.lawnchair">
 
     <profile
         launcher:name="Super Short Stubby"
@@ -30,8 +29,7 @@
         launcher:iconTextSize="13.0"
         launcher:numHotseatIcons="3"
         launcher:hotseatIconSize="48"
-        launcher:defaultLayoutId="@xml/default_workspace_3x3"
-        />
+        launcher:defaultLayoutId="@xml/default_workspace_3x3" />
 
     <profile
         launcher:name="Shorter Stubby"
@@ -46,8 +44,7 @@
         launcher:iconTextSize="13.0"
         launcher:numHotseatIcons="3"
         launcher:hotseatIconSize="48"
-        launcher:defaultLayoutId="@xml/default_workspace_3x3"
-        />
+        launcher:defaultLayoutId="@xml/default_workspace_3x3" />
 
     <profile
         launcher:name="Short Stubby"
@@ -62,8 +59,7 @@
         launcher:iconTextSize="13.0"
         launcher:numHotseatIcons="5"
         launcher:hotseatIconSize="48"
-        launcher:defaultLayoutId="@xml/default_workspace_4x4"
-        />
+        launcher:defaultLayoutId="@xml/default_workspace_4x4" />
 
     <profile
         launcher:name="Stubby"
@@ -78,8 +74,7 @@
         launcher:iconTextSize="13.0"
         launcher:numHotseatIcons="5"
         launcher:hotseatIconSize="48"
-        launcher:defaultLayoutId="@xml/default_workspace_4x4"
-        />
+        launcher:defaultLayoutId="@xml/default_workspace_4x4" />
 
     <profile
         launcher:name="Nexus S"
@@ -94,8 +89,7 @@
         launcher:iconTextSize="13.0"
         launcher:numHotseatIcons="5"
         launcher:hotseatIconSize="48"
-        launcher:defaultLayoutId="@xml/default_workspace_4x4"
-        />
+        launcher:defaultLayoutId="@xml/default_workspace_4x4" />
 
     <profile
         launcher:name="Nexus 4"
@@ -110,8 +104,7 @@
         launcher:iconTextSize="13.0"
         launcher:numHotseatIcons="5"
         launcher:hotseatIconSize="56"
-        launcher:defaultLayoutId="@xml/default_workspace_4x4"
-        />
+        launcher:defaultLayoutId="@xml/default_workspace_4x4" />
 
     <profile
         launcher:name="Nexus 5"
@@ -126,8 +119,7 @@
         launcher:iconTextSize="13.0"
         launcher:numHotseatIcons="5"
         launcher:hotseatIconSize="56"
-        launcher:defaultLayoutId="@xml/default_workspace_4x4"
-        />
+        launcher:defaultLayoutId="@xml/default_workspace_4x4" />
 
     <profile
         launcher:name="Large Phone"
@@ -142,8 +134,7 @@
         launcher:iconTextSize="14.4"
         launcher:numHotseatIcons="5"
         launcher:hotseatIconSize="56"
-        launcher:defaultLayoutId="@xml/default_workspace_5x5"
-        />
+        launcher:defaultLayoutId="@xml/default_workspace_5x5" />
 
     <profile
         launcher:name="Nexus 7"
@@ -158,8 +149,7 @@
         launcher:iconTextSize="14.4"
         launcher:numHotseatIcons="7"
         launcher:hotseatIconSize="60"
-        launcher:defaultLayoutId="@xml/default_workspace_5x6"
-        />
+        launcher:defaultLayoutId="@xml/default_workspace_5x6" />
 
     <profile
         launcher:name="Nexus 10"
@@ -174,8 +164,7 @@
         launcher:iconTextSize="14.4"
         launcher:numHotseatIcons="7"
         launcher:hotseatIconSize="76"
-        launcher:defaultLayoutId="@xml/default_workspace_5x6"
-        />
+        launcher:defaultLayoutId="@xml/default_workspace_5x6" />
 
     <profile
         launcher:name="20-inch Tablet"
@@ -190,7 +179,6 @@
         launcher:iconTextSize="20.0"
         launcher:numHotseatIcons="7"
         launcher:hotseatIconSize="72"
-        launcher:defaultLayoutId="@xml/default_workspace_5x6"
-        />
+        launcher:defaultLayoutId="@xml/default_workspace_5x6" />
 
 </profiles>

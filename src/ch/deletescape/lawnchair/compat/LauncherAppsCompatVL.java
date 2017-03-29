@@ -28,13 +28,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.UserHandle;
 
-import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class LauncherAppsCompatVL extends LauncherAppsCompat {
@@ -49,7 +49,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
     }
 
     public List<LauncherActivityInfoCompat> getActivityList(String packageName,
-            UserHandleCompat user) {
+                                                            UserHandleCompat user) {
         List<LauncherActivityInfo> list = mLauncherApps.getActivityList(packageName,
                 user.getUser());
         if (list.size() == 0) {
@@ -73,7 +73,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
     }
 
     public void startActivityForProfile(ComponentName component, UserHandleCompat user,
-            Rect sourceBounds, Bundle opts) {
+                                        Rect sourceBounds, Bundle opts) {
         mLauncherApps.startMainActivity(component, user.getUser(), sourceBounds, opts);
     }
 
@@ -136,7 +136,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
         }
 
         public void onPackagesUnavailable(String[] packageNames, UserHandle user,
-                boolean replacing) {
+                                          boolean replacing) {
             mCallback.onPackagesUnavailable(packageNames, UserHandleCompat.fromUser(user),
                     replacing);
         }
@@ -151,7 +151,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
 
         @Override
         public void onShortcutsChanged(String packageName, List<ShortcutInfo> shortcuts,
-                UserHandle user) {
+                                       UserHandle user) {
             List<ShortcutInfoCompat> shortcutInfoCompats = new ArrayList<>(shortcuts.size());
             for (ShortcutInfo shortcutInfo : shortcuts) {
                 shortcutInfoCompats.add(new ShortcutInfoCompat(shortcutInfo));

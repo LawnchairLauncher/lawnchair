@@ -20,11 +20,11 @@ import android.view.View;
 import android.view.View.OnAttachStateChangeListener;
 import android.view.ViewTreeObserver.OnDrawListener;
 
-import ch.deletescape.lawnchair.DeferredHandler;
-import ch.deletescape.lawnchair.Launcher;
-
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
+
+import ch.deletescape.lawnchair.DeferredHandler;
+import ch.deletescape.lawnchair.Launcher;
 
 /**
  * An executor which runs all the tasks after the first onDraw is called on the target view.
@@ -71,7 +71,8 @@ public class ViewOnDrawExecutor implements Executor, OnDrawListener, Runnable,
     }
 
     @Override
-    public void onViewDetachedFromWindow(View v) { }
+    public void onViewDetachedFromWindow(View v) {
+    }
 
     @Override
     public void onDraw() {

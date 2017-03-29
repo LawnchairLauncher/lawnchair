@@ -23,7 +23,6 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.util.Property;
 import android.view.View;
-import android.view.ViewTreeObserver;
 
 import java.util.HashSet;
 import java.util.WeakHashMap;
@@ -75,7 +74,7 @@ public class LauncherAnimUtils {
     }
 
     public static ObjectAnimator ofFloat(View target, Property<View, Float> property,
-            float... values) {
+                                         float... values) {
         ObjectAnimator anim = ObjectAnimator.ofFloat(target, property, values);
         cancelOnDestroyActivity(anim);
         new FirstFrameAnimatorHelper(anim, target);
@@ -83,7 +82,7 @@ public class LauncherAnimUtils {
     }
 
     public static ObjectAnimator ofViewAlphaAndScale(View target,
-            float alpha, float scaleX, float scaleY) {
+                                                     float alpha, float scaleX, float scaleY) {
         return ofPropertyValuesHolder(target,
                 PropertyValuesHolder.ofFloat(View.ALPHA, alpha),
                 PropertyValuesHolder.ofFloat(View.SCALE_X, scaleX),
@@ -91,12 +90,12 @@ public class LauncherAnimUtils {
     }
 
     public static ObjectAnimator ofPropertyValuesHolder(View target,
-            PropertyValuesHolder... values) {
+                                                        PropertyValuesHolder... values) {
         return ofPropertyValuesHolder(target, target, values);
     }
 
     public static ObjectAnimator ofPropertyValuesHolder(Object target,
-            View view, PropertyValuesHolder... values) {
+                                                        View view, PropertyValuesHolder... values) {
         ObjectAnimator anim = ObjectAnimator.ofPropertyValuesHolder(target, values);
         cancelOnDestroyActivity(anim);
         new FirstFrameAnimatorHelper(anim, view);

@@ -36,8 +36,6 @@ import ch.deletescape.lawnchair.logging.UserEventDispatcher;
 import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto;
 import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto.Target;
 
-import ch.deletescape.lawnchair.R;
-
 public class Hotseat extends FrameLayout
         implements UserEventDispatcher.LaunchSourceProvider {
 

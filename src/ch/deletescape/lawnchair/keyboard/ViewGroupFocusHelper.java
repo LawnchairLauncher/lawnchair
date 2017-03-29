@@ -18,7 +18,6 @@ package ch.deletescape.lawnchair.keyboard;
 
 import android.graphics.Rect;
 import android.view.View;
-import android.view.View.OnFocusChangeListener;
 
 import ch.deletescape.lawnchair.PagedView;
 

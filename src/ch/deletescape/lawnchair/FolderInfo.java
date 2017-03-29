@@ -19,9 +19,9 @@ package ch.deletescape.lawnchair;
 import android.content.ContentValues;
 import android.content.Context;
 
-import ch.deletescape.lawnchair.compat.UserHandleCompat;
-
 import java.util.ArrayList;
+
+import ch.deletescape.lawnchair.compat.UserHandleCompat;
 
 /**
  * Represents a folder containing shortcuts or apps.
@@ -121,8 +121,11 @@ public class FolderInfo extends ItemInfo {
 
     public interface FolderListener {
         void onAdd(ShortcutInfo item);
+
         void onRemove(ShortcutInfo item);
+
         void onTitleChanged(CharSequence title);
+
         void onItemsChanged(boolean animate);
     }
 
@@ -131,9 +134,9 @@ public class FolderInfo extends ItemInfo {
     }
 
     /**
-     * @param option flag to set or clear
+     * @param option    flag to set or clear
      * @param isEnabled whether to set or clear the flag
-     * @param context if not null, save changes to the db.
+     * @param context   if not null, save changes to the db.
      */
     public void setOption(int option, boolean isEnabled, Context context) {
         int oldOptions = options;

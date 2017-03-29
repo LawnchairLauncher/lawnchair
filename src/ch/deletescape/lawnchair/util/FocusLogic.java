@@ -16,29 +16,28 @@
 
 package ch.deletescape.lawnchair.util;
 
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.Arrays;
 
 import ch.deletescape.lawnchair.CellLayout;
 import ch.deletescape.lawnchair.DeviceProfile;
 import ch.deletescape.lawnchair.ShortcutAndWidgetContainer;
 
-import java.util.Arrays;
-
 /**
  * Calculates the next item that a {@link KeyEvent} should change the focus to.
- *<p>
+ * <p>
  * Note, this utility class calculates everything regards to icon index and its (x,y) coordinates.
  * Currently supports:
  * <ul>
- *  <li> full matrix of cells that are 1x1
- *  <li> sparse matrix of cells that are 1x1
- *     [ 1][  ][ 2][  ]
- *     [  ][  ][ 3][  ]
- *     [  ][ 4][  ][  ]
- *     [  ][ 5][ 6][ 7]
+ * <li> full matrix of cells that are 1x1
+ * <li> sparse matrix of cells that are 1x1
+ * [ 1][  ][ 2][  ]
+ * [  ][  ][ 3][  ]
+ * [  ][ 4][  ][  ]
+ * [  ][ 5][ 6][ 7]
  * </ul>
  * *<p>
  * For testing, one can use a BT keyboard, or use following adb command.
@@ -48,20 +47,22 @@ public class FocusLogic {
 
     private static final String TAG = "FocusLogic";
 
-    /** Item and page index related constant used by {@link #handleKeyEvent}. */
+    /**
+     * Item and page index related constant used by {@link #handleKeyEvent}.
+     */
     public static final int NOOP = -1;
 
-    public static final int PREVIOUS_PAGE_RIGHT_COLUMN  = -2;
-    public static final int PREVIOUS_PAGE_FIRST_ITEM    = -3;
-    public static final int PREVIOUS_PAGE_LAST_ITEM     = -4;
-    public static final int PREVIOUS_PAGE_LEFT_COLUMN   = -5;
+    public static final int PREVIOUS_PAGE_RIGHT_COLUMN = -2;
+    public static final int PREVIOUS_PAGE_FIRST_ITEM = -3;
+    public static final int PREVIOUS_PAGE_LAST_ITEM = -4;
+    public static final int PREVIOUS_PAGE_LEFT_COLUMN = -5;
 
-    public static final int CURRENT_PAGE_FIRST_ITEM     = -6;
-    public static final int CURRENT_PAGE_LAST_ITEM      = -7;
+    public static final int CURRENT_PAGE_FIRST_ITEM = -6;
+    public static final int CURRENT_PAGE_LAST_ITEM = -7;
 
-    public static final int NEXT_PAGE_FIRST_ITEM        = -8;
-    public static final int NEXT_PAGE_LEFT_COLUMN       = -9;
-    public static final int NEXT_PAGE_RIGHT_COLUMN      = -10;
+    public static final int NEXT_PAGE_FIRST_ITEM = -8;
+    public static final int NEXT_PAGE_LEFT_COLUMN = -9;
+    public static final int NEXT_PAGE_RIGHT_COLUMN = -10;
 
     public static final int ALL_APPS_COLUMN = -11;
 
@@ -80,8 +81,8 @@ public class FocusLogic {
                 keyCode == KeyEvent.KEYCODE_DEL || keyCode == KeyEvent.KEYCODE_FORWARD_DEL);
     }
 
-    public static int handleKeyEvent(int keyCode, int [][] map, int iconIdx, int pageIndex,
-            int pageCount, boolean isRtl) {
+    public static int handleKeyEvent(int keyCode, int[][] map, int iconIdx, int pageIndex,
+                                     int pageCount, boolean isRtl) {
 
         int cntX = map == null ? -1 : map.length;
         int cntY = map == null ? -1 : map[0].length;
@@ -131,14 +132,14 @@ public class FocusLogic {
     /**
      * Returns a matrix of size (m x n) that has been initialized with {@link #EMPTY}.
      *
-     * @param m                 number of columns in the matrix
-     * @param n                 number of rows in the matrix
+     * @param m number of columns in the matrix
+     * @param n number of rows in the matrix
      */
     // TODO: get rid of dynamic matrix creation.
     private static int[][] createFullMatrix(int m, int n) {
-        int[][] matrix = new int [m][n];
+        int[][] matrix = new int[m][n];
 
-        for (int i=0; i < m;i++) {
+        for (int i = 0; i < m; i++) {
             Arrays.fill(matrix[i], EMPTY);
         }
         return matrix;
@@ -158,7 +159,7 @@ public class FocusLogic {
         int[][] matrix = createFullMatrix(m, n);
 
         // Iterate thru the children.
-        for (int i = 0; i < parent.getChildCount(); i++ ) {
+        for (int i = 0; i < parent.getChildCount(); i++) {
             View cell = parent.getChildAt(i);
             if (!cell.isFocusable()) {
                 continue;
@@ -226,12 +227,12 @@ public class FocusLogic {
      * key is triggered on the rightmost column, sparse matrix is created that combines this column
      * on the 0th column and the next page matrix.
      *
-     * @param pivotX    x coordinate of the focused item in the current page
-     * @param pivotY    y coordinate of the focused item in the current page
+     * @param pivotX x coordinate of the focused item in the current page
+     * @param pivotY y coordinate of the focused item in the current page
      */
     // TODO: get rid of the dynamic matrix creation
     public static int[][] createSparseMatrixWithPivotColumn(CellLayout iconLayout,
-            int pivotX, int pivotY) {
+                                                            int pivotX, int pivotY) {
 
         ViewGroup iconParent = iconLayout.getShortcutsAndWidgets();
 
@@ -266,7 +267,7 @@ public class FocusLogic {
 
     /**
      * Calculates icon that has is closest to the horizontal axis in reference to the cur icon.
-     *
+     * <p>
      * Example of the check order for KEYCODE_DPAD_RIGHT:
      * [  ][  ][13][14][15]
      * [  ][ 6][ 8][10][12]
@@ -275,8 +276,8 @@ public class FocusLogic {
      */
     // TODO: add unit tests to verify all permutation.
     private static int handleDpadHorizontal(int iconIdx, int cntX, int cntY,
-            int[][] matrix, int increment, boolean isRtl) {
-        if(matrix == null) {
+                                            int[][] matrix, int increment, boolean isRtl) {
+        if (matrix == null) {
             throw new IllegalStateException("Dpad navigation requires a matrix.");
         }
         int newIconIndex = NOOP;
@@ -345,7 +346,7 @@ public class FocusLogic {
 
     /**
      * Calculates icon that is closest to the vertical axis in reference to the current icon.
-     *
+     * <p>
      * Example of the check order for KEYCODE_DPAD_DOWN:
      * [  ][  ][  ][ X][  ][  ][  ]
      * [  ][  ][ 5][ 1][ 4][  ][  ]
@@ -354,16 +355,16 @@ public class FocusLogic {
      */
     // TODO: add unit tests to verify all permutation.
     private static int handleDpadVertical(int iconIndex, int cntX, int cntY,
-            int [][] matrix, int increment) {
+                                          int[][] matrix, int increment) {
         int newIconIndex = NOOP;
-        if(matrix == null) {
+        if (matrix == null) {
             throw new IllegalStateException("Dpad navigation requires a matrix.");
         }
 
         int xPos = -1;
         int yPos = -1;
         // Figure out the location of the icon.
-        for (int i = 0; i< cntX; i++) {
+        for (int i = 0; i < cntX; i++) {
             for (int j = 0; j < cntY; j++) {
                 if (matrix[i][j] == iconIndex) {
                     xPos = i;
@@ -373,7 +374,7 @@ public class FocusLogic {
         }
 
         // Rule1: check first in the dpad direction
-        for (int y = yPos + increment; 0 <= y && y <cntY && 0 <= y; y += increment) {
+        for (int y = yPos + increment; 0 <= y && y < cntY && 0 <= y; y += increment) {
             if ((newIconIndex = inspectMatrix(xPos, y, cntX, cntY, matrix)) != NOOP
                     && newIconIndex != ALL_APPS_COLUMN) {
                 return newIconIndex;
@@ -422,7 +423,7 @@ public class FocusLogic {
     }
 
     private static int handlePageDown(int pageIndex, int pageCount) {
-        if (pageIndex < pageCount -1) {
+        if (pageIndex < pageCount - 1) {
             return NEXT_PAGE_FIRST_ITEM;
         }
         return CURRENT_PAGE_LAST_ITEM;
@@ -457,7 +458,7 @@ public class FocusLogic {
 
     /**
      * @param edgeColumn the column of the new icon. either {@link #NEXT_PAGE_LEFT_COLUMN} or
-     * {@link #NEXT_PAGE_RIGHT_COLUMN}
+     *                   {@link #NEXT_PAGE_RIGHT_COLUMN}
      * @return the view adjacent to {@param oldView} in the {@param nextPage} of the folder.
      */
     public static View getAdjacentChildInNextFolderPage(

@@ -27,8 +27,6 @@ import android.util.Xml;
 import android.view.Display;
 import android.view.WindowManager;
 
-import ch.deletescape.lawnchair.util.Thunk;
-
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -36,6 +34,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+
+import ch.deletescape.lawnchair.util.Thunk;
 
 public class InvariantDeviceProfile {
 
@@ -99,7 +99,7 @@ public class InvariantDeviceProfile {
     }
 
     InvariantDeviceProfile(Context context, String n, float w, float h, int r, int c, int fr, int fc, int maapc,
-            float is, float its, int hs, float his, int dlId) {
+                           float is, float its, int hs, float his, int dlId) {
         name = n;
         minWidthDps = w;
         minHeightDps = h;
@@ -138,7 +138,7 @@ public class InvariantDeviceProfile {
         ArrayList<InvariantDeviceProfile> closestProfiles = findClosestDeviceProfiles(
                 minWidthDps, minHeightDps, getPredefinedDeviceProfiles(context));
         InvariantDeviceProfile interpolatedDeviceProfileOut =
-                invDistWeightedInterpolate(context, minWidthDps,  minHeightDps, closestProfiles);
+                invDistWeightedInterpolate(context, minWidthDps, minHeightDps, closestProfiles);
 
         InvariantDeviceProfile closestProfile = closestProfiles.get(0);
         numRows = closestProfile.numRows;
@@ -155,7 +155,7 @@ public class InvariantDeviceProfile {
         hotseatIconSize = interpolatedDeviceProfileOut.hotseatIconSize;
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
 
-        customizationHook(context,dm);
+        customizationHook(context, dm);
 
         Point realSize = new Point();
         display.getRealSize(realSize);
@@ -183,22 +183,22 @@ public class InvariantDeviceProfile {
     private void customizationHook(Context context, DisplayMetrics dm) {
         SharedPreferences prefs = Utilities.getPrefs(context.getApplicationContext());
         String valueDefault = "default";
-        if(!prefs.getString("pref_numRows", valueDefault).equals(valueDefault)){
+        if (!prefs.getString("pref_numRows", valueDefault).equals(valueDefault)) {
             numRows = Integer.valueOf(prefs.getString("pref_numRows", ""));
         }
-        if(!prefs.getString("pref_numCols", valueDefault).equals(valueDefault)){
+        if (!prefs.getString("pref_numCols", valueDefault).equals(valueDefault)) {
             numColumns = Integer.valueOf(prefs.getString("pref_numCols", ""));
         }
-        if(!prefs.getString("pref_numHotseatIcons", valueDefault).equals(valueDefault)){
+        if (!prefs.getString("pref_numHotseatIcons", valueDefault).equals(valueDefault)) {
             numHotseatIcons = Integer.valueOf(prefs.getString("pref_numHotseatIcons", ""));
         }
-        if(!prefs.getString("pref_iconScale", valueDefault).equals(valueDefault)){
-            float iconScale = Float.valueOf(prefs.getString("pref_iconScale",  ""));
+        if (!prefs.getString("pref_iconScale", valueDefault).equals(valueDefault)) {
+            float iconScale = Float.valueOf(prefs.getString("pref_iconScale", ""));
             iconSize *= iconScale;
             hotseatIconSize *= iconScale;
         }
-        if(!prefs.getString("pref_iconTextScale", valueDefault).equals(valueDefault)){
-            iconTextSize *= Float.valueOf(prefs.getString("pref_iconTextScale",  ""));
+        if (!prefs.getString("pref_iconTextScale", valueDefault).equals(valueDefault)) {
+            iconTextSize *= Float.valueOf(prefs.getString("pref_iconTextScale", ""));
         }
     }
 
@@ -233,7 +233,7 @@ public class InvariantDeviceProfile {
                     a.recycle();
                 }
             }
-        } catch (IOException|XmlPullParserException e) {
+        } catch (IOException | XmlPullParserException e) {
             throw new RuntimeException(e);
         }
         return profiles;
@@ -241,7 +241,7 @@ public class InvariantDeviceProfile {
 
     private int getLauncherIconDensity(int requiredSize) {
         // Densities typically defined by an app.
-        int[] densityBuckets = new int[] {
+        int[] densityBuckets = new int[]{
                 DisplayMetrics.DENSITY_LOW,
                 DisplayMetrics.DENSITY_MEDIUM,
                 DisplayMetrics.DENSITY_TV,
@@ -263,7 +263,8 @@ public class InvariantDeviceProfile {
         return density;
     }
 
-    @Thunk float dist(float x0, float y0, float x1, float y1) {
+    @Thunk
+    float dist(float x0, float y0, float x1, float y1) {
         return (float) Math.hypot(x1 - x0, y1 - y0);
     }
 
@@ -288,7 +289,7 @@ public class InvariantDeviceProfile {
 
     // Package private visibility for testing.
     InvariantDeviceProfile invDistWeightedInterpolate(Context context, float width, float height,
-                ArrayList<InvariantDeviceProfile> points) {
+                                                      ArrayList<InvariantDeviceProfile> points) {
         float weights = 0;
 
         InvariantDeviceProfile p = points.get(0);
@@ -303,7 +304,7 @@ public class InvariantDeviceProfile {
             weights += w;
             out.add(p.multiply(w));
         }
-        return out.multiply(1.0f/weights);
+        return out.multiply(1.0f / weights);
     }
 
     private void add(InvariantDeviceProfile p) {
@@ -339,8 +340,8 @@ public class InvariantDeviceProfile {
         // We will use these two data points to extrapolate how much the wallpaper parallax effect
         // to span (ie travel) at any aspect ratio:
 
-        final float ASPECT_RATIO_LANDSCAPE = 16/10f;
-        final float ASPECT_RATIO_PORTRAIT = 10/16f;
+        final float ASPECT_RATIO_LANDSCAPE = 16 / 10f;
+        final float ASPECT_RATIO_PORTRAIT = 10 / 16f;
         final float WALLPAPER_WIDTH_TO_SCREEN_RATIO_LANDSCAPE = 1.5f;
         final float WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT = 1.2f;
 

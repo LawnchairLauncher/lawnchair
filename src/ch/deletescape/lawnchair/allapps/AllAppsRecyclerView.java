@@ -24,14 +24,14 @@ import android.util.AttributeSet;
 import android.util.SparseIntArray;
 import android.view.View;
 
+import java.util.List;
+
 import ch.deletescape.lawnchair.BaseRecyclerView;
 import ch.deletescape.lawnchair.BubbleTextView;
 import ch.deletescape.lawnchair.DeviceProfile;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto;
-
-import java.util.List;
 
 /**
  * A RecyclerView with custom fast scroll support for the all apps view.
@@ -65,7 +65,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     }
 
     public AllAppsRecyclerView(Context context, AttributeSet attrs, int defStyleAttr,
-            int defStyleRes) {
+                               int defStyleRes) {
         super(context, attrs, defStyleAttr);
         Resources res = getResources();
         addOnItemTouchListener(this);
@@ -423,7 +423,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
 
     /**
      * Returns the available scroll height:
-     *   AvailableScrollHeight = Total height of the all items - last page height
+     * AvailableScrollHeight = Total height of the all items - last page height
      */
     @Override
     protected int getAvailableScrollHeight() {

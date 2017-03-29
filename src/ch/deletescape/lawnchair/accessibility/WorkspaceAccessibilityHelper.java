@@ -27,9 +27,9 @@ import ch.deletescape.lawnchair.CellLayout;
 import ch.deletescape.lawnchair.FolderInfo;
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Launcher;
-import ch.deletescape.lawnchair.accessibility.LauncherAccessibilityDelegate.DragType;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.ShortcutInfo;
+import ch.deletescape.lawnchair.accessibility.LauncherAccessibilityDelegate.DragType;
 import ch.deletescape.lawnchair.dragndrop.DragLayer;
 
 /**

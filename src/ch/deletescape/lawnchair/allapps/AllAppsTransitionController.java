@@ -10,7 +10,6 @@ import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -285,7 +284,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     /**
-     * @param progress       value between 0 and 1, 0 shows all apps and 1 shows workspace
+     * @param progress value between 0 and 1, 0 shows all apps and 1 shows workspace
      */
     public void setProgress(float progress) {
         float shiftPrevious = mProgress * mShiftRange;
@@ -377,7 +376,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (!canceled){
+                if (!canceled) {
                     finishPullUp();
                     cleanUpAnimation();
                     mDetector.finishedScrolling();
@@ -514,7 +513,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     @Override
     public void onLayoutChange(View v, int left, int top, int right, int bottom,
-            int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                               int oldLeft, int oldTop, int oldRight, int oldBottom) {
         if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
             mShiftRange = top;
         } else {

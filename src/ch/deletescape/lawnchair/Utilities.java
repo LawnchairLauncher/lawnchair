@@ -16,7 +16,6 @@
 
 package ch.deletescape.lawnchair;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.WallpaperManager;
 import android.content.ActivityNotFoundException;
@@ -62,10 +61,6 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.Toast;
 
-import ch.deletescape.lawnchair.compat.UserHandleCompat;
-import ch.deletescape.lawnchair.graphics.ShadowGenerator;
-import ch.deletescape.lawnchair.util.IconNormalizer;
-
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
@@ -81,7 +76,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import ch.deletescape.lawnchair.R;
+import ch.deletescape.lawnchair.compat.UserHandleCompat;
+import ch.deletescape.lawnchair.graphics.ShadowGenerator;
+import ch.deletescape.lawnchair.util.IconNormalizer;
 
 /**
  * Various utilities shared amongst the Launcher's classes.
@@ -151,7 +148,7 @@ public final class Utilities {
      * exist, it returns null.
      */
     public static Bitmap createIconBitmap(String packageName, String resourceName,
-            Context context) {
+                                          Context context) {
         PackageManager packageManager = context.getPackageManager();
         // the resource
         try {
@@ -197,7 +194,7 @@ public final class Utilities {
     /**
      * Badges the provided icon with the user badge if required.
      */
-    public static Bitmap badgeIconForUser(Bitmap icon,  UserHandleCompat user, Context context) {
+    public static Bitmap badgeIconForUser(Bitmap icon, UserHandleCompat user, Context context) {
         if (user != null && !UserHandleCompat.myUserHandle().equals(user)) {
             BitmapDrawable drawable = new FixedSizeBitmapDrawable(icon);
             Drawable badged = context.getPackageManager().getUserBadgedIcon(
@@ -297,11 +294,11 @@ public final class Utilities {
             final Canvas canvas = sCanvas;
             canvas.setBitmap(bitmap);
 
-            final int left = (textureWidth-width) / 2;
-            final int top = (textureHeight-height) / 2;
+            final int left = (textureWidth - width) / 2;
+            final int top = (textureHeight - height) / 2;
 
             sOldBounds.set(icon.getBounds());
-            icon.setBounds(left, top, left+width, top+height);
+            icon.setBounds(left, top, left + width, top + height);
             canvas.save(Canvas.MATRIX_SAVE_FLAG);
             canvas.scale(scale, scale, textureWidth / 2, textureHeight / 2);
             icon.draw(canvas);
@@ -317,21 +314,21 @@ public final class Utilities {
      * Given a coordinate relative to the descendant, find the coordinate in a parent view's
      * coordinates.
      *
-     * @param descendant The descendant to which the passed coordinate is relative.
-     * @param ancestor The root view to make the coordinates relative to.
-     * @param coord The coordinate that we want mapped.
+     * @param descendant        The descendant to which the passed coordinate is relative.
+     * @param ancestor          The root view to make the coordinates relative to.
+     * @param coord             The coordinate that we want mapped.
      * @param includeRootScroll Whether or not to account for the scroll of the descendant:
-     *          sometimes this is relevant as in a child's coordinates within the descendant.
+     *                          sometimes this is relevant as in a child's coordinates within the descendant.
      * @return The factor by which this descendant is scaled relative to this DragLayer. Caution
-     *         this scale factor is assumed to be equal in X and Y, and so if at any point this
-     *         assumption fails, we will need to return a pair of scale factors.
+     * this scale factor is assumed to be equal in X and Y, and so if at any point this
+     * assumption fails, we will need to return a pair of scale factors.
      */
     public static float getDescendantCoordRelativeToAncestor(
             View descendant, View ancestor, int[] coord, boolean includeRootScroll) {
         float[] pt = {coord[0], coord[1]};
         float scale = 1.0f;
         View v = descendant;
-        while(v != ancestor && v != null) {
+        while (v != ancestor && v != null) {
             // For TextViews, scroll has a meaning which relates to the text position
             // which is very strange... ignore the scroll.
             if (v != descendant || includeRootScroll) {
@@ -362,7 +359,7 @@ public final class Utilities {
         float[] pt = {coord[0], coord[1]};
 
         View v = descendant;
-        while(v != root) {
+        while (v != root) {
             ancestorChain.add(v);
             v = (View) v.getParent();
         }
@@ -373,7 +370,7 @@ public final class Utilities {
         int count = ancestorChain.size();
         for (int i = count - 1; i >= 0; i--) {
             View ancestor = ancestorChain.get(i);
-            View next = i > 0 ? ancestorChain.get(i-1) : null;
+            View next = i > 0 ? ancestorChain.get(i - 1) : null;
 
             pt[0] += ancestor.getScrollX();
             pt[1] += ancestor.getScrollY();
@@ -403,7 +400,9 @@ public final class Utilities {
                 localY < (v.getHeight() + slop);
     }
 
-    /** Translates MotionEvents from src's coordinate system to dst's. */
+    /**
+     * Translates MotionEvents from src's coordinate system to dst's.
+     */
     public static void translateEventCoordinates(View src, View dst, MotionEvent dstEvent) {
         toGlobalMotionEvent(src, dstEvent);
         toLocalMotionEvent(dst, dstEvent);
@@ -502,7 +501,8 @@ public final class Utilities {
 
     /**
      * This picks a dominant color, looking for high-saturation, high-value, repeated hues.
-     * @param bitmap The bitmap to scan
+     *
+     * @param bitmap  The bitmap to scan
      * @param samples The approximate max number of samples to use.
      */
     static int findDominantColorByHue(Bitmap bitmap, int samples) {
@@ -675,14 +675,16 @@ public final class Utilities {
         return false;
     }
 
-    public static float dpiFromPx(int size, DisplayMetrics metrics){
+    public static float dpiFromPx(int size, DisplayMetrics metrics) {
         float densityRatio = (float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT;
         return (size / densityRatio);
     }
+
     public static int pxFromDp(float size, DisplayMetrics metrics) {
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 size, metrics));
     }
+
     public static int pxFromSp(float size, DisplayMetrics metrics) {
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
                 size, metrics));
@@ -729,7 +731,8 @@ public final class Utilities {
     /**
      * Wraps a message with a TTS span, so that a different message is spoken than
      * what is getting displayed.
-     * @param msg original message
+     *
+     * @param msg    original message
      * @param ttsMsg message to be spoken
      */
     public static CharSequence wrapForTts(CharSequence msg, String ttsMsg) {
@@ -755,7 +758,8 @@ public final class Utilities {
                 WallpaperManager wm = context.getSystemService(WallpaperManager.class);
                 return (Boolean) wm.getClass().getDeclaredMethod("isSetWallpaperAllowed")
                         .invoke(wm);
-            } catch (Exception ignored) { }
+            } catch (Exception ignored) {
+            }
         }
         return true;
     }
@@ -769,7 +773,9 @@ public final class Utilities {
         }
     }
 
-    /** Returns whether the collection is null or empty. */
+    /**
+     * Returns whether the collection is null or empty.
+     */
     public static boolean isEmpty(Collection c) {
         return c == null || c.isEmpty();
     }

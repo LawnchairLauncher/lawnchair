@@ -36,15 +36,15 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.TextView;
 
+import java.util.HashMap;
+import java.util.List;
+
 import ch.deletescape.lawnchair.AppInfo;
 import ch.deletescape.lawnchair.BubbleTextView;
 import ch.deletescape.lawnchair.DeviceProfile;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
-
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * The grid view adapter of all the apps.
@@ -121,7 +121,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
         @Override
         public int getRowCountForAccessibility(RecyclerView.Recycler recycler,
-                RecyclerView.State state) {
+                                               RecyclerView.State state) {
             if (mApps.hasNoFilteredResults()) {
                 // Disregard the no-search-results text as a list item for accessibility
                 return 0;
@@ -151,8 +151,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             if (isIconViewType(mApps.getAdapterItems().get(position).viewType)) {
                 return 1;
             } else {
-                    // Section breaks span the full width
-                    return mAppsPerRow;
+                // Section breaks span the full width
+                return mAppsPerRow;
             }
         }
     }
@@ -255,7 +255,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
         @Override
         public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
-                RecyclerView.State state) {
+                                   RecyclerView.State state) {
             // Do nothing
         }
 
@@ -276,7 +276,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
          * Returns whether we consider this a valid view holder for us to draw a divider or section for.
          */
         private boolean isValidHolderAndChild(ViewHolder holder, View child,
-                List<AlphabeticalAppsList.AdapterItem> items) {
+                                              List<AlphabeticalAppsList.AdapterItem> items) {
             // Ensure item is not already removed
             GridLayoutManager.LayoutParams lp = (GridLayoutManager.LayoutParams)
                     child.getLayoutParams();
@@ -296,7 +296,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
          * Returns whether to draw the section for the given child.
          */
         private boolean shouldDrawItemSection(ViewHolder holder, int childIndex,
-                List<AlphabeticalAppsList.AdapterItem> items) {
+                                              List<AlphabeticalAppsList.AdapterItem> items) {
             int pos = holder.getLayoutPosition();
             AlphabeticalAppsList.AdapterItem item = items.get(pos);
 

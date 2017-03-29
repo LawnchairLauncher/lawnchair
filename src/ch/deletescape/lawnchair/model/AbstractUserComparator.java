@@ -17,11 +17,11 @@ package ch.deletescape.lawnchair.model;
 
 import android.content.Context;
 
+import java.util.Comparator;
+
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.compat.UserHandleCompat;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
-
-import java.util.Comparator;
 
 /**
  * A comparator to arrange items based on user profiles.

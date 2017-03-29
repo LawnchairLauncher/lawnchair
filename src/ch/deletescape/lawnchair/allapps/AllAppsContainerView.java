@@ -34,6 +34,11 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
+import java.util.ArrayList;
+import java.util.List;
+
 import ch.deletescape.lawnchair.AppInfo;
 import ch.deletescape.lawnchair.BaseContainerView;
 import ch.deletescape.lawnchair.BubbleTextView;
@@ -58,11 +63,6 @@ import ch.deletescape.lawnchair.shortcuts.DeepShortcutsContainer;
 import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto.Target;
 import ch.deletescape.lawnchair.util.ComponentKey;
 
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
-import java.util.ArrayList;
-import java.util.List;
-
 
 /**
  * A merge algorithm that merges every section indiscriminately.
@@ -71,8 +71,8 @@ final class FullMergeAlgorithm implements AlphabeticalAppsList.MergeAlgorithm {
 
     @Override
     public boolean continueMerging(AlphabeticalAppsList.SectionInfo section,
-            AlphabeticalAppsList.SectionInfo withSection,
-            int sectionAppCount, int numAppsPerRow, int mergeCount) {
+                                   AlphabeticalAppsList.SectionInfo withSection,
+                                   int sectionAppCount, int numAppsPerRow, int mergeCount) {
         // Don't merge the predicted apps
         if (section.firstAppItem.viewType != AllAppsGridAdapter.VIEW_TYPE_ICON) {
             return false;
@@ -103,8 +103,8 @@ final class SimpleSectionMergeAlgorithm implements AlphabeticalAppsList.MergeAlg
 
     @Override
     public boolean continueMerging(AlphabeticalAppsList.SectionInfo section,
-            AlphabeticalAppsList.SectionInfo withSection,
-            int sectionAppCount, int numAppsPerRow, int mergeCount) {
+                                   AlphabeticalAppsList.SectionInfo withSection,
+                                   int sectionAppCount, int numAppsPerRow, int mergeCount) {
         // Don't merge the predicted apps
         if (section.firstAppItem.viewType != AllAppsGridAdapter.VIEW_TYPE_ICON) {
             return false;
@@ -590,7 +590,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     @Override
     public void onDropCompleted(View target, DropTarget.DragObject d, boolean isFlingToDelete,
-            boolean success) {
+                                boolean success) {
         if (isFlingToDelete || !success || (target != mLauncher.getWorkspace() &&
                 !(target instanceof DeleteDropTarget) && !(target instanceof Folder))) {
             // Exit spring loaded mode if we have not successfully dropped or have not handled the
@@ -623,7 +623,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     @Override
     public void onLauncherTransitionPrepare(Launcher l, boolean animated,
-            boolean multiplePagesVisible) {
+                                            boolean multiplePagesVisible) {
         // Do nothing
     }
 

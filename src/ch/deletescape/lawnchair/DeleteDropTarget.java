@@ -30,8 +30,6 @@ import ch.deletescape.lawnchair.folder.Folder;
 import ch.deletescape.lawnchair.util.FlingAnimation;
 import ch.deletescape.lawnchair.util.Thunk;
 
-import ch.deletescape.lawnchair.R;
-
 public class DeleteDropTarget extends ButtonDropTarget {
 
     public DeleteDropTarget(Context context, AttributeSet attrs) {
@@ -57,7 +55,9 @@ public class DeleteDropTarget extends ButtonDropTarget {
         setTextBasedOnDragSource(dragObject.dragSource);
     }
 
-    /** @return true for items that should have a "Remove" action in accessibility. */
+    /**
+     * @return true for items that should have a "Remove" action in accessibility.
+     */
     public static boolean supportsAccessibleDrop(ItemInfo info) {
         return (info instanceof ShortcutInfo)
                 || (info instanceof LauncherAppWidgetInfo)
@@ -80,7 +80,8 @@ public class DeleteDropTarget extends ButtonDropTarget {
     }
 
     @Override
-    @Thunk void completeDrop(DragObject d) {
+    @Thunk
+    void completeDrop(DragObject d) {
         ItemInfo item = d.dragInfo;
         if ((d.dragSource instanceof Workspace) || (d.dragSource instanceof Folder)) {
             removeWorkspaceOrFolderItem(mLauncher, item, null);
@@ -108,7 +109,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         FlingAnimation fling = new FlingAnimation(d, vel,
                 getIconRect(d.dragView.getMeasuredWidth(), d.dragView.getMeasuredHeight(),
                         mDrawable.getIntrinsicWidth(), mDrawable.getIntrinsicHeight()),
-                        dragLayer);
+                dragLayer);
 
         final int duration = fling.getDuration();
         final long startTime = AnimationUtils.currentAnimationTimeMillis();

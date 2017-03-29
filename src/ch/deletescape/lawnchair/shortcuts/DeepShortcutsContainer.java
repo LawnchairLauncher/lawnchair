@@ -41,6 +41,9 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 
+import java.util.Collections;
+import java.util.List;
+
 import ch.deletescape.lawnchair.BubbleTextView;
 import ch.deletescape.lawnchair.DragSource;
 import ch.deletescape.lawnchair.DropTarget;
@@ -65,9 +68,6 @@ import ch.deletescape.lawnchair.dragndrop.DragView;
 import ch.deletescape.lawnchair.graphics.TriangleShape;
 import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto;
 import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto.Target;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * A container for shortcuts to deep links within apps.
@@ -176,7 +176,9 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         });
     }
 
-    /** Updates the child of this container at the given index based on the given shortcut info. */
+    /**
+     * Updates the child of this container at the given index based on the given shortcut info.
+     */
     private class UpdateShortcutChild implements Runnable {
         private int mShortcutChildIndex;
         private UnbadgedShortcutInfo mShortcutChildInfo;
@@ -273,13 +275,13 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
     /**
      * Orients this container above or below the given icon, aligning with the left or right.
-     *
+     * <p>
      * These are the preferred orientations, in order (RTL prefers right-aligned over left):
      * - Above and left-aligned
      * - Above and right-aligned
      * - Below and left-aligned
      * - Below and right-aligned
-     *
+     * <p>
      * So we always align left if there is enough horizontal space
      * and align above if there is enough vertical space.
      */
@@ -347,8 +349,9 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
     /**
      * Adds an arrow view pointing at the original icon.
+     *
      * @param horizontalOffset the horizontal offset of the arrow, so that it
-     *                              points at the center of the original icon
+     *                         points at the center of the original icon
      */
     private View addArrowView(int horizontalOffset, int verticalOffset, int width, int height) {
         LinearLayout.LayoutParams layoutParams = new LayoutParams(width, height);
@@ -386,7 +389,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
     /**
      * Determines when the deferred drag should be started.
-     *
+     * <p>
      * Current behavior:
      * - Start the drag if the touch passes a certain distance from the original touch down.
      */
@@ -483,7 +486,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
     @Override
     public void onDropCompleted(View target, DropTarget.DragObject d, boolean isFlingToDelete,
-            boolean success) {
+                                boolean success) {
         if (!success) {
             d.dragView.remove();
             mLauncher.showWorkspace(true);
@@ -632,6 +635,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
     /**
      * Shows the shortcuts container for {@param icon}
+     *
      * @return the container if shown or null.
      */
     public static DeepShortcutsContainer showForIcon(BubbleTextView icon) {
@@ -668,7 +672,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
         @Override
         protected Bitmap getBadgedIcon(Bitmap unbadgedBitmap, ShortcutInfoCompat shortcutInfo,
-                IconCache cache, Context context) {
+                                       IconCache cache, Context context) {
             return unbadgedBitmap;
         }
     }

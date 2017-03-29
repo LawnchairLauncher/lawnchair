@@ -46,7 +46,7 @@ public class TintedDrawableSpan extends DynamicDrawableSpan {
 
     @Override
     public void draw(Canvas canvas, CharSequence text,
-            int start, int end, float x, int top, int y, int bottom, Paint paint) {
+                     int start, int end, float x, int top, int y, int bottom, Paint paint) {
         int color = paint.getColor();
         if (mOldTint != color) {
             mOldTint = color;

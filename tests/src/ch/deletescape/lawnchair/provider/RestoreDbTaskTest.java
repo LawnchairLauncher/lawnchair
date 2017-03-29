@@ -70,6 +70,7 @@ public class RestoreDbTaskTest extends AndroidTestCase {
             return mProfileId;
         }
 
-        protected void onEmptyDbCreated() { }
+        protected void onEmptyDbCreated() {
+        }
     }
 }

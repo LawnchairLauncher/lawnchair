@@ -27,6 +27,11 @@ import android.view.View;
 import android.view.ViewDebug;
 import android.view.animation.DecelerateInterpolator;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import ch.deletescape.lawnchair.BubbleTextView;
 import ch.deletescape.lawnchair.CellLayout;
 import ch.deletescape.lawnchair.DeviceProfile;
@@ -47,11 +52,6 @@ import ch.deletescape.lawnchair.dragndrop.DragController;
 import ch.deletescape.lawnchair.keyboard.ViewGroupFocusHelper;
 import ch.deletescape.lawnchair.pageindicators.PageIndicator;
 import ch.deletescape.lawnchair.util.Thunk;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 public class FolderPagedView extends PagedView {
 
@@ -76,7 +76,8 @@ public class FolderPagedView extends PagedView {
     private final IconCache mIconCache;
     private final ViewGroupFocusHelper mFocusIndicatorHelper;
 
-    @Thunk final HashMap<View, Runnable> mPendingAnimations = new HashMap<>();
+    @Thunk
+    final HashMap<View, Runnable> mPendingAnimations = new HashMap<>();
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private final int mMaxCountX;
@@ -172,6 +173,7 @@ public class FolderPagedView extends PagedView {
 
     /**
      * Binds items to the layout.
+     *
      * @return list of items that could not be bound, probably because we hit the max size limit.
      */
     public ArrayList<ShortcutInfo> bindItems(ArrayList<ShortcutInfo> items) {
@@ -272,13 +274,13 @@ public class FolderPagedView extends PagedView {
     public void setFixedSize(int width, int height) {
         width -= (getPaddingLeft() + getPaddingRight());
         height -= (getPaddingTop() + getPaddingBottom());
-        for (int i = getChildCount() - 1; i >= 0; i --) {
+        for (int i = getChildCount() - 1; i >= 0; i--) {
             ((CellLayout) getChildAt(i)).setFixedSize(width, height);
         }
     }
 
     public void removeItem(View v) {
-        for (int i = getChildCount() - 1; i >= 0; i --) {
+        for (int i = getChildCount() - 1; i >= 0; i--) {
             getPageAt(i).removeView(v);
         }
     }
@@ -294,10 +296,9 @@ public class FolderPagedView extends PagedView {
      * It essentially removes all views from all the pages and then adds them again in appropriate
      * page.
      *
-     * @param list the ordered list of children.
+     * @param list      the ordered list of children.
      * @param itemCount if greater than the total children count, empty spaces are left
-     * at the end, otherwise it is ignored.
-     *
+     *                  at the end, otherwise it is ignored.
      */
     public void arrangeChildren(ArrayList<View> list, int itemCount) {
         arrangeChildren(list, itemCount, true);
@@ -356,7 +357,7 @@ public class FolderPagedView extends PagedView {
                 }
             }
 
-            rank ++;
+            rank++;
             position++;
         }
 
@@ -384,8 +385,8 @@ public class FolderPagedView extends PagedView {
                 (getPageAt(0).getDesiredWidth() + getPaddingLeft() + getPaddingRight()) : 0;
     }
 
-    public int getDesiredHeight()  {
-        return  getPageCount() > 0 ?
+    public int getDesiredHeight() {
+        return getPageCount() > 0 ?
                 (getPageAt(0).getDesiredHeight() + getPaddingTop() + getPaddingBottom()) : 0;
     }
 
@@ -444,10 +445,11 @@ public class FolderPagedView extends PagedView {
 
     /**
      * Iterates over all its items in a reading order.
+     *
      * @return the view for which the operator returned true.
      */
     public View iterateOverItems(ItemOperator op) {
-        for (int k = 0 ; k < getChildCount(); k++) {
+        for (int k = 0; k < getChildCount(); k++) {
             CellLayout page = getPageAt(k);
             for (int j = 0; j < page.getCountY(); j++) {
                 for (int i = 0; i < page.getCountX(); i++) {
@@ -644,10 +646,10 @@ public class FolderPagedView extends PagedView {
                         }
                     };
                     v.animate()
-                        .translationXBy((direction > 0 ^ mIsRtl) ? -v.getWidth() : v.getWidth())
-                        .setDuration(REORDER_ANIMATION_DURATION)
-                        .setStartDelay(0)
-                        .withEndAction(endAction);
+                            .translationXBy((direction > 0 ^ mIsRtl) ? -v.getWidth() : v.getWidth())
+                            .setDuration(REORDER_ANIMATION_DURATION)
+                            .setStartDelay(0)
+                            .withEndAction(endAction);
                     mPendingAnimations.put(v, endAction);
                 }
             }

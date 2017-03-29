@@ -29,7 +29,8 @@ import java.util.List;
 public class ShortcutFilter {
 
     public static final int MAX_SHORTCUTS = 4;
-    @VisibleForTesting static final int NUM_DYNAMIC = 2;
+    @VisibleForTesting
+    static final int NUM_DYNAMIC = 2;
 
     /**
      * Sorts shortcuts in rank order, with manifest shortcuts coming before dynamic shortcuts.

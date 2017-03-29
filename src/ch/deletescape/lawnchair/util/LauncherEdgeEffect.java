@@ -25,8 +25,8 @@ import android.view.animation.Interpolator;
 
 /**
  * This class differs from the framework {@link android.widget.EdgeEffect}:
- *   1) It does not use PorterDuffXfermode
- *   2) The width to radius factor is smaller (0.5 instead of 0.75)
+ * 1) It does not use PorterDuffXfermode
+ * 2) The width to radius factor is smaller (0.5 instead of 0.75)
  */
 public class LauncherEdgeEffect {
 
@@ -102,7 +102,7 @@ public class LauncherEdgeEffect {
     /**
      * Set the size of this edge effect in pixels.
      *
-     * @param width Effect width in pixels
+     * @param width  Effect width in pixels
      * @param height Effect height in pixels
      */
     public void setSize(int width, int height) {
@@ -143,7 +143,7 @@ public class LauncherEdgeEffect {
      * This will update the state of the current visual effect and its associated animation.
      * The host view should always {@link android.view.View#invalidate()} after this
      * and draw the results accordingly.
-     *
+     * <p>
      * <p>Views using EdgeEffect should favor {@link #onPull(float, float)} when the displacement
      * of the pull point is known.</p>
      *
@@ -164,9 +164,9 @@ public class LauncherEdgeEffect {
      * @param deltaDistance Change in distance since the last call. Values may be 0 (no change) to
      *                      1.f (full length of the view) or negative values to express change
      *                      back toward the edge reached to initiate the effect.
-     * @param displacement The displacement from the starting side of the effect of the point
-     *                     initiating the pull. In the case of touch this is the finger position.
-     *                     Values may be from 0-1.
+     * @param displacement  The displacement from the starting side of the effect of the point
+     *                      initiating the pull. In the case of touch this is the finger position.
+     *                      Values may be from 0-1.
      */
     public void onPull(float deltaDistance, float displacement) {
         final long now = AnimationUtils.currentAnimationTimeMillis();
@@ -228,7 +228,7 @@ public class LauncherEdgeEffect {
     /**
      * Call when the effect absorbs an impact at the given velocity.
      * Used when a fling reaches the scroll boundary.
-     *
+     * <p>
      * <p>When using a {@link android.widget.Scroller} or {@link android.widget.OverScroller},
      * the method <code>getCurrVelocity</code> will provide a reasonable approximation
      * to use here.</p>
@@ -270,6 +270,7 @@ public class LauncherEdgeEffect {
 
     /**
      * Return the color of this edge effect in argb.
+     *
      * @return The color of this edge effect in argb
      */
     public int getColor() {
@@ -284,7 +285,7 @@ public class LauncherEdgeEffect {
      *
      * @param canvas Canvas to draw into
      * @return true if drawing should continue beyond this frame to continue the
-     *         animation
+     * animation
      */
     public boolean draw(Canvas canvas) {
         update();
@@ -311,6 +312,7 @@ public class LauncherEdgeEffect {
     /**
      * Return the maximum height that the edge effect will be drawn at given the original
      * {@link #setSize(int, int) input size}.
+     *
      * @return The maximum height of the edge effect
      */
     public int getMaxHeight() {

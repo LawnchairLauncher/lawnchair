@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2016 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2016 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,14 +13,13 @@
      limitations under the License.
 -->
 
-<ch.deletescape.lawnchair.shortcuts.DeepShortcutView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ch.deletescape.lawnchair.shortcuts.DeepShortcutView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/bg_pill_width"
     android:layout_height="@dimen/bg_pill_height"
     android:elevation="@dimen/deep_shortcuts_elevation"
     android:background="@drawable/bg_white_pill">
 
-<ch.deletescape.lawnchair.shortcuts.DeepShortcutTextView
+    <ch.deletescape.lawnchair.shortcuts.DeepShortcutTextView
         android:id="@+id/deep_shortcut"
         style="@style/Icon.DeepShortcut"
         android:layout_width="match_parent"

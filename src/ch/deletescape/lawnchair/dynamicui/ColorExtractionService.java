@@ -34,7 +34,9 @@ import ch.deletescape.lawnchair.config.FeatureFlags;
  */
 public class ColorExtractionService extends IntentService {
 
-    /** The fraction of the wallpaper to extract colors for use on the hotseat. */
+    /**
+     * The fraction of the wallpaper to extract colors for use on the hotseat.
+     */
     private static final float HOTSEAT_FRACTION = 1f / 4;
 
     public ColorExtractionService() {

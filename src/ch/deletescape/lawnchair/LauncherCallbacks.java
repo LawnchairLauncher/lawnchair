@@ -19,16 +19,15 @@ package ch.deletescape.lawnchair;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.View;
-
-import ch.deletescape.lawnchair.allapps.AllAppsSearchBarController;
-import ch.deletescape.lawnchair.logging.UserEventDispatcher;
-import ch.deletescape.lawnchair.util.ComponentKey;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+
+import ch.deletescape.lawnchair.allapps.AllAppsSearchBarController;
+import ch.deletescape.lawnchair.logging.UserEventDispatcher;
+import ch.deletescape.lawnchair.util.ComponentKey;
 
 /**
  * LauncherCallbacks is an interface used to extend the Launcher activity. It includes many hooks
@@ -44,35 +43,59 @@ public interface LauncherCallbacks {
      * the code in the corresponding Launcher method is executed.
      */
     void preOnCreate();
+
     void onCreate(Bundle savedInstanceState);
+
     void preOnResume();
+
     void onResume();
+
     void onStart();
+
     void onStop();
+
     void onPause();
+
     void onDestroy();
+
     void onSaveInstanceState(Bundle outState);
+
     void onPostCreate(Bundle savedInstanceState);
+
     void onNewIntent(Intent intent);
+
     void onActivityResult(int requestCode, int resultCode, Intent data);
+
     void onRequestPermissionsResult(int requestCode, String[] permissions,
                                     int[] grantResults);
+
     void onWindowFocusChanged(boolean hasFocus);
+
     void onAttachedToWindow();
+
     void onDetachedFromWindow();
+
     boolean onPrepareOptionsMenu(Menu menu);
+
     void dump(String prefix, FileDescriptor fd, PrintWriter w, String[] args);
+
     void onHomeIntent();
+
     boolean handleBackPressed();
+
     void onTrimMemory(int level);
 
     /*
      * Extension points for providing custom behavior on certain user interactions.
      */
     void onLauncherProviderChange();
+
     void finishBindingItems(final boolean upgradePath);
+
     void bindAllApplications(ArrayList<AppInfo> apps);
+
     void onInteractionBegin();
+
     void onInteractionEnd();
 
     @Deprecated
@@ -90,12 +113,20 @@ public interface LauncherCallbacks {
      * Extensions points for adding / replacing some other aspects of the Launcher experience.
      */
     UserEventDispatcher getUserEventDispatcher();
+
     boolean shouldMoveToDefaultScreenOnHomeIntent();
+
     boolean hasSettings();
+
     AllAppsSearchBarController getAllAppsSearchBarController();
+
     List<ComponentKey> getPredictedApps();
+
     int SEARCH_BAR_HEIGHT_NORMAL = 0, SEARCH_BAR_HEIGHT_TALL = 1;
-    /** Must return one of {@link #SEARCH_BAR_HEIGHT_NORMAL} or {@link #SEARCH_BAR_HEIGHT_TALL} */
+
+    /**
+     * Must return one of {@link #SEARCH_BAR_HEIGHT_NORMAL} or {@link #SEARCH_BAR_HEIGHT_TALL}
+     */
     int getSearchBarHeight();
 
     /**

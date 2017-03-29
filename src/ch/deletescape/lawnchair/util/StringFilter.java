@@ -7,7 +7,8 @@ import java.util.Set;
  */
 public abstract class StringFilter {
 
-    private StringFilter() { }
+    private StringFilter() {
+    }
 
     public abstract boolean matches(String str);
 
