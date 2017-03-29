@@ -260,11 +260,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                     // If an animation is started and then stopped very quickly, we can still
                     // get spurious updates we've cleared the tag. Guard against this.
                     if (outline == null) {
-                        if (LOGD) {
-                            Object val = animation.getAnimatedValue();
-                            Log.d(TAG, "anim " + thisIndex + " update: " + val +
-                                    ", isStopped " + anim.isStopped());
-                        }
                         // Try to prevent it from continuing to run
                         animation.cancel();
                     } else {
