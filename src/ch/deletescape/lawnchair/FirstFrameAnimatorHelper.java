@@ -71,8 +71,7 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
             view.getViewTreeObserver().removeOnDrawListener(sGlobalDrawListener);
         }
         sGlobalDrawListener = new ViewTreeObserver.OnDrawListener() {
-                private long mTime = System.currentTimeMillis();
-                public void onDraw() {
+            public void onDraw() {
                     sGlobalFrameCounter++;
                 }
             };
@@ -126,10 +125,4 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
         }
     }
 
-    public void print(ValueAnimator animation) {
-        float flatFraction = animation.getCurrentPlayTime() / (float) animation.getDuration();
-        Log.d("FirstFrameAnimatorHelper", sGlobalFrameCounter +
-              "(" + (sGlobalFrameCounter - mStartFrame) + ") " + mTarget + " dirty? " +
-              mTarget.isDirty() + " " + flatFraction + " " + this + " " + animation);
-    }
 }

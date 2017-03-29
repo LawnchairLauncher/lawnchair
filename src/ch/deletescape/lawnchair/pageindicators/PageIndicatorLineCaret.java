@@ -31,8 +31,6 @@ import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 public class PageIndicatorLineCaret extends PageIndicator {
     private static final String TAG = "PageIndicatorLine";
 
-    private static final int[] sTempCoords = new int[2];
-
     private static final int LINE_ANIMATE_DURATION = ViewConfiguration.getScrollBarFadeDuration();
     private static final int LINE_FADE_DELAY = ViewConfiguration.getScrollDefaultDelay();
     public static final int WHITE_ALPHA = (int) (0.70f * 255);

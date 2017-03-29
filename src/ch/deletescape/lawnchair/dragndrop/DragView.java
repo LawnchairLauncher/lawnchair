@@ -188,26 +188,6 @@ public class DragView extends View {
         setMeasuredDimension(mBitmap.getWidth(), mBitmap.getHeight());
     }
 
-    // Draws drag shadow for system DND.
-    @SuppressLint("WrongCall")
-    public void drawDragShadow(Canvas canvas) {
-        final int saveCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
-        canvas.scale(getScaleX(), getScaleY());
-        onDraw(canvas);
-        canvas.restoreToCount(saveCount);
-    }
-
-    // Provides drag shadow metrics for system DND.
-    public void provideDragShadowMetrics(Point size, Point touch) {
-        size.set((int)(mBitmap.getWidth() * getScaleX()), (int)(mBitmap.getHeight() * getScaleY()));
-
-        final float xGrowth = mBitmap.getWidth() * (getScaleX() - 1);
-        final float yGrowth = mBitmap.getHeight() * (getScaleY() - 1);
-        touch.set(
-                mRegistrationX + Math.round(xGrowth / 2),
-                mRegistrationY + Math.round(yGrowth / 2));
-    }
-
     @Override
     protected void onDraw(Canvas canvas) {
         mHasDrawn = true;

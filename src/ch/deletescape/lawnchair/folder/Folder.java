@@ -505,18 +505,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         return (Folder) launcher.getLayoutInflater().inflate(R.layout.user_folder_icon_normalized, null);
     }
 
-    /**
-     * This method is intended to make the UserFolder to be visually identical in size and position
-     * to its associated FolderIcon. This allows for a seamless transition into the expanded state.
-     */
-    private void positionAndSizeAsIcon() {
-        if (!(getParent() instanceof DragLayer)) return;
-        setScaleX(0.8f);
-        setScaleY(0.8f);
-        setAlpha(0f);
-        mState = STATE_SMALL;
-    }
-
     private void prepareReveal() {
         setScaleX(1f);
         setScaleY(1f);

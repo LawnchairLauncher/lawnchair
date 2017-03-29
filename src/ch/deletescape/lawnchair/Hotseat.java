@@ -77,13 +77,6 @@ public class Hotseat extends FrameLayout
     }
 
     /**
-     * Returns whether there are other icons than the all apps button in the hotseat.
-     */
-    public boolean hasIcons() {
-        return mContent.getShortcutsAndWidgets().getChildCount() > 1;
-    }
-
-    /**
      * Registers the specified listener on the cell layout of the hotseat.
      */
     @Override

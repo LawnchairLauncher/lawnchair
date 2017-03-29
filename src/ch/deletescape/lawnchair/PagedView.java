@@ -617,9 +617,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     public static class LayoutParams extends ViewGroup.LayoutParams {
         public boolean isFullScreenPage = false;
 
-        // If true, the start edge of the page snaps to the start edge of the viewport.
-        public boolean matchStartEdge = false;
-
         /**
          * {@inheritDoc}
          */
@@ -1227,28 +1224,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             currentPage.cancelLongPress();
         }
         super.requestDisallowInterceptTouchEvent(disallowIntercept);
-    }
-
-    /**
-     * Return true if a tap at (x, y) should trigger a flip to the previous page.
-     */
-    protected boolean hitsPreviousPage(float x, float y) {
-        if (mIsRtl) {
-            return (x > (getViewportOffsetX() + getViewportWidth() -
-                    getPaddingRight() - mPageSpacing));
-        }
-        return (x < getViewportOffsetX() + getPaddingLeft() + mPageSpacing);
-    }
-
-    /**
-     * Return true if a tap at (x, y) should trigger a flip to the next page.
-     */
-    protected boolean hitsNextPage(float x, float y) {
-        if (mIsRtl) {
-            return (x < getViewportOffsetX() + getPaddingLeft() + mPageSpacing);
-        }
-        return  (x > (getViewportOffsetX() + getViewportWidth() -
-                getPaddingRight() - mPageSpacing));
     }
 
     /** Returns whether x and y originated within the buffered viewport */
@@ -2053,36 +2028,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     public boolean performLongClick() {
         mCancelTap = true;
         return super.performLongClick();
-    }
-
-    public static class SavedState extends BaseSavedState {
-        int currentPage = -1;
-
-        SavedState(Parcelable superState) {
-            super(superState);
-        }
-
-        @Thunk SavedState(Parcel in) {
-            super(in);
-            currentPage = in.readInt();
-        }
-
-        @Override
-        public void writeToParcel(Parcel out, int flags) {
-            super.writeToParcel(out, flags);
-            out.writeInt(currentPage);
-        }
-
-        public static final Parcelable.Creator<SavedState> CREATOR =
-                new Parcelable.Creator<SavedState>() {
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        };
     }
 
     // Animate the drag view back to the original position

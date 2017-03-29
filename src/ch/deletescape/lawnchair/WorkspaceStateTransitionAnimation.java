@@ -192,7 +192,6 @@ public class WorkspaceStateTransitionAnimation {
 
     @Thunk AnimatorSet mStateAnimator;
 
-    @Thunk float mCurrentScale;
     @Thunk float mNewScale;
 
     @Thunk final ZoomInInterpolator mZoomInInterpolator = new ZoomInInterpolator();

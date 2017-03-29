@@ -23,7 +23,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
@@ -42,8 +41,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
@@ -53,7 +50,6 @@ import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -64,12 +60,10 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.Log;
-import android.view.Display;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MotionEvent;
-import android.view.Surface;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -155,12 +149,6 @@ public class Launcher extends Activity
 
     private static final float BOUNCE_ANIMATION_TENSION = 1.3f;
 
-    /**
-     * IntentStarter uses request codes starting with this. This must be greater than all activity
-     * request codes used internally.
-     */
-    protected static final int REQUEST_LAST = 100;
-
     // To turn on these properties, type
     // adb shell setprop logTap.tag.PROPERTY_NAME [VERBOSE | SUPPRESS]
     static final String DUMP_STATE_PROPERTY = "launcher_dump_state";
@@ -195,7 +183,6 @@ public class Launcher extends Activity
     static final int APPWIDGET_HOST_ID = 1024;
     public static final int EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT = 500;
     private static final int ON_ACTIVITY_RESULT_ANIMATION_DELAY = 500;
-    private static final int ACTIVITY_START_DELAY = 1000;
 
     // How long to wait before the new-shortcut animation automatically pans the workspace
     private static int NEW_APPS_PAGE_MOVE_DELAY = 500;
@@ -282,10 +269,6 @@ public class Launcher extends Activity
     private long mAutoAdvanceTimeLeft = -1;
     @Thunk HashMap<View, AppWidgetProviderInfo> mWidgetsToAdvance = new HashMap<>();
 
-    // Determines how long to wait after a rotation before restoring the screen orientation to
-    // match the sensor state.
-    private static final int RESTORE_SCREEN_ORIENTATION_DELAY = 500;
-
     private final ArrayList<Integer> mSynchronouslyBoundPages = new ArrayList<>();
 
     // We only want to get the SharedPreferences once since it does an FS stat each time we get
@@ -308,8 +291,6 @@ public class Launcher extends Activity
     // the press state and keep this reference to reset the press state when we return to launcher.
     private BubbleTextView mWaitingForResume;
 
-    protected static HashMap<String, CustomAppWidget> sCustomAppWidgets =
-            new HashMap<>();
 
     // Exiting spring loaded mode happens with a delay. This runnable object triggers the
     // state transition. If another state transition happened during this delay,
@@ -383,8 +364,6 @@ public class Launcher extends Activity
 
         ((AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE))
                 .addAccessibilityStateChangeListener(this);
-
-        lockAllApps();
 
         mSavedState = savedInstanceState;
         restoreState(mSavedState);
@@ -462,16 +441,6 @@ public class Launcher extends Activity
         mDeviceProfile.layout(this, true /* notifyListeners */);
     }
 
-    /**
-     * Call this after onCreate to set or clear overlay.
-     */
-    public void setLauncherOverlay(LauncherOverlay overlay) {
-        if (overlay != null) {
-            overlay.setOverlayCallbacks(new LauncherOverlayCallbacksImpl());
-        }
-        mWorkspace.setLauncherOverlay(overlay);
-    }
-
     public boolean setLauncherCallbacks(LauncherCallbacks callbacks) {
         mLauncherCallbacks = callbacks;
         mLauncherCallbacks.setLauncherSearchCallback(new Launcher.LauncherSearchCallbacks() {
@@ -531,32 +500,12 @@ public class Launcher extends Activity
     }
 
     /**
-     * To be overridden by subclasses to populate the custom content container and call
-     * {@link #addToCustomContentPage}. This will only be invoked if
+     * To be overridden by subclasses to populate the custom content container and call This will only be invoked if
      * {@link #hasCustomContentToLeft()} is {@code true}.
      */
     protected void populateCustomContentContainer() {
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.populateCustomContentContainer();
-        }
-    }
-
-    /**
-     * Invoked by subclasses to signal a change to the  value to
-     * ensure the custom content page is added or removed if necessary.
-     */
-    protected void invalidateHasCustomContentToLeft() {
-        if (mWorkspace == null || mWorkspace.getScreenOrder().isEmpty()) {
-            // Not bound yet, wait for bindScreens to be called.
-            return;
-        }
-
-        if (!mWorkspace.hasCustomContent() && hasCustomContentToLeft()) {
-            // Create the custom content page and call the subclass to populate it.
-            mWorkspace.createCustomContentContainer();
-            populateCustomContentContainer();
-        } else if (mWorkspace.hasCustomContent() && !hasCustomContentToLeft()) {
-            mWorkspace.removeCustomContentPage();
         }
     }
 
@@ -942,20 +891,6 @@ public class Launcher extends Activity
             getWorkspace().reinflateWidgetsIfNecessary();
         }
 
-        // We want to suppress callbacks about CustomContent being shown if we have just received
-        // onNewIntent while the user was present within launcher. In that case, we post a call
-        // to move the user to the main screen (which will occur after onResume). We don't want to
-        // have onHide (from onPause), then onShow, then onHide again, which we get if we don't
-        // suppress here.
-        if (mWorkspace.getCustomContentCallbacks() != null
-                && !mMoveToDefaultScreenFromNewIntent) {
-            // If we are resuming and the custom content is the current page, we call onShow().
-            // It is also possible that onShow will instead be called slightly after first layout
-            // if PagedView#setRestorePage was set to the custom content page in onCreate().
-            if (mWorkspace.isOnOrMovingToCustomContent()) {
-                mWorkspace.getCustomContentCallbacks().onShow(true);
-            }
-        }
         mMoveToDefaultScreenFromNewIntent = false;
         updateInteraction(Workspace.State.NORMAL, mWorkspace.getState());
         mWorkspace.onResume();
@@ -987,55 +922,9 @@ public class Launcher extends Activity
         mDragController.cancelDrag();
         mDragController.resetLastGestureUpTime();
 
-        // We call onHide() aggressively. The custom content callbacks should be able to
-        // debounce excess onHide calls.
-        if (mWorkspace.getCustomContentCallbacks() != null) {
-            mWorkspace.getCustomContentCallbacks().onHide();
-        }
-
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onPause();
         }
-    }
-
-    public interface CustomContentCallbacks {
-        // Custom content is completely shown. {@code fromResume} indicates whether this was caused
-        // by a onResume or by scrolling otherwise.
-        void onShow(boolean fromResume);
-
-        // Custom content is completely hidden
-        void onHide();
-
-        // Custom content scroll progress changed. From 0 (not showing) to 1 (fully showing).
-        void onScrollProgressChanged(float progress);
-
-        // Indicates whether the user is allowed to scroll away from the custom content.
-        boolean isScrollingAllowed();
-    }
-
-    public interface LauncherOverlay {
-
-        /**
-         * Touch interaction leading to overscroll has begun
-         */
-        void onScrollInteractionBegin();
-
-        /**
-         * Touch interaction related to overscroll has ended
-         */
-        void onScrollInteractionEnd();
-
-        /**
-         * Scroll progress, between 0 and 100, when the user scrolls beyond the leftmost
-         * screen (or in the case of RTL, the rightmost screen).
-         */
-        void onScrollChange(float progress, boolean rtl);
-
-        /**
-         * Called when the launcher is ready to use the overlay
-         * @param callbacks A set of callbacks provided by Launcher in relation to the overlay
-         */
-        void setOverlayCallbacks(LauncherOverlayCallbacks callbacks);
     }
 
     public interface LauncherSearchCallbacks {
@@ -1048,29 +937,6 @@ public class Launcher extends Activity
          * Called when the search overlay is dismissed.
          */
         void onSearchOverlayClosed();
-    }
-
-    public interface LauncherOverlayCallbacks {
-        void onScrollChanged(float progress);
-    }
-
-    class LauncherOverlayCallbacksImpl implements LauncherOverlayCallbacks {
-
-        public void onScrollChanged(float progress) {
-            if (mWorkspace != null) {
-                mWorkspace.onOverlayScrollChanged(progress);
-            }
-        }
-    }
-
-    public void addToCustomContentPage(View customContent,
-            CustomContentCallbacks callbacks, String description) {
-        mWorkspace.addToCustomContentPage(customContent, callbacks, description);
-    }
-
-    // The custom content needs to offset its content to account for the QSB
-    public int getTopOffsetForCustomContent() {
-        return mWorkspace.getPaddingTop();
     }
 
     @Override
@@ -2016,12 +1882,6 @@ public class Launcher extends Activity
             completeAddAppWidget(appWidgetId, info, boundWidget, appWidgetInfo);
             mWorkspace.removeExtraEmptyScreenDelayed(true, onComplete, delay, false);
         }
-    }
-
-    protected void moveToCustomContentScreen(boolean animate) {
-        // Close any folders that may be open.
-        closeFolder();
-        mWorkspace.moveToCustomContentScreen(animate);
     }
 
     public void addPendingItem(PendingAddItemInfo info, long container, long screenId,
@@ -3286,14 +3146,6 @@ public class Launcher extends Activity
         }
     }
 
-    void lockAllApps() {
-        // TODO
-    }
-
-    void unlockAllApps() {
-        // TODO
-    }
-
     @Override
     public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
         final boolean result = super.dispatchPopulateAccessibilityEvent(event);
@@ -3842,12 +3694,12 @@ public class Launcher extends Activity
         return mDeviceProfile.isVerticalBarLayout();
     }
 
-    public int getSearchBarHeight() {
+/*    public int getSearchBarHeight() {
         if (mLauncherCallbacks != null) {
             return mLauncherCallbacks.getSearchBarHeight();
         }
         return LauncherCallbacks.SEARCH_BAR_HEIGHT_NORMAL;
-    }
+    }*/
 
     /**
      * A runnable that we can dequeue and re-enqueue when all applications are bound (to prevent
@@ -4081,38 +3933,6 @@ public class Launcher extends Activity
         }
     }
 
-    private int mapConfigurationOriActivityInfoOri(int configOri) {
-        final Display d = getWindowManager().getDefaultDisplay();
-        int naturalOri = Configuration.ORIENTATION_LANDSCAPE;
-        switch (d.getRotation()) {
-        case Surface.ROTATION_0:
-        case Surface.ROTATION_180:
-            // We are currently in the same basic orientation as the natural orientation
-            naturalOri = configOri;
-            break;
-        case Surface.ROTATION_90:
-        case Surface.ROTATION_270:
-            // We are currently in the other basic orientation to the natural orientation
-            naturalOri = (configOri == Configuration.ORIENTATION_LANDSCAPE) ?
-                    Configuration.ORIENTATION_PORTRAIT : Configuration.ORIENTATION_LANDSCAPE;
-            break;
-        }
-
-        int[] oriMap = {
-                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT,
-                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE,
-                ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT,
-                ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE
-        };
-        // Since the map starts at portrait, we need to offset if this device's natural orientation
-        // is landscape.
-        int indexOffset = 0;
-        if (naturalOri == Configuration.ORIENTATION_LANDSCAPE) {
-            indexOffset = 1;
-        }
-        return oriMap[(d.getRotation() + indexOffset) % 4];
-    }
-
     private void markAppsViewShown() {
         if (mSharedPrefs.getBoolean(APPS_VIEW_SHOWN, false)) {
             return;
@@ -4233,14 +4053,6 @@ public class Launcher extends Activity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.dump(prefix, fd, writer, args);
         }
-    }
-
-    public static CustomAppWidget getCustomAppWidget(String name) {
-        return sCustomAppWidgets.get(name);
-    }
-
-    public static HashMap<String, CustomAppWidget> getCustomAppWidgets() {
-        return sCustomAppWidgets;
     }
 
     public static List<View> getFolderContents(View icon) {

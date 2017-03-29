@@ -54,7 +54,4 @@ public class PendingAddWidgetInfo extends PendingAddItemInfo {
         minSpanY = i.minSpanY;
     }
 
-    public boolean isCustomWidget() {
-        return itemType == LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
-    }
 }

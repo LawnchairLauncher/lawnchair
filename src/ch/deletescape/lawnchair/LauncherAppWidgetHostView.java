@@ -170,10 +170,6 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
         return info;
     }
 
-    public LauncherAppWidgetProviderInfo getLauncherAppWidgetProviderInfo() {
-        return (LauncherAppWidgetProviderInfo) getAppWidgetInfo();
-    }
-
     @Override
     public void onTouchComplete() {
         if (!mLongPressHelper.hasPerformedLongPress()) {

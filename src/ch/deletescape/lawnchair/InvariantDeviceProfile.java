@@ -37,12 +37,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import ch.deletescape.lawnchair.R;
-
 public class InvariantDeviceProfile {
-
-    // This is a static that we use for the default icon size on a 4/5-inch phone
-    private static float DEFAULT_ICON_SIZE_DP = 60;
 
     private static final float ICON_SIZE_DEFINED_IN_APP_DP = 48;
 
@@ -322,14 +317,6 @@ public class InvariantDeviceProfile {
         iconTextSize *= w;
         hotseatIconSize *= w;
         return this;
-    }
-
-    public int getAllAppsButtonRank() {
-        return numHotseatIcons / 2;
-    }
-
-    public boolean isAllAppsButtonRank(int rank) {
-        return rank == getAllAppsButtonRank();
     }
 
     private float weight(float x0, float y0, float x1, float y1, float pow) {

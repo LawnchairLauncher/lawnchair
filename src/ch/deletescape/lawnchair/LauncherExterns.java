@@ -28,7 +28,5 @@ public interface LauncherExterns {
 
     SharedPreferences getSharedPrefs();
 
-    void setLauncherOverlay(Launcher.LauncherOverlay overlay);
-
     void clearTypedText();
 }

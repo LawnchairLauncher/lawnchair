@@ -28,9 +28,6 @@ public class UserHandleCompat {
         mUser = user;
     }
 
-    private UserHandleCompat() {
-    }
-
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static UserHandleCompat myUserHandle() {
         return new UserHandleCompat(android.os.Process.myUserHandle());
