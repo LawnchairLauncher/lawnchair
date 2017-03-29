@@ -42,7 +42,7 @@ public class RoundedRectRevealOutlineProvider extends RevealOutlineAnimation {
 
     @Override
     public boolean shouldRemoveElevationDuringAnimation() {
-        return false;
+        return true;
     }
 
     @Override
