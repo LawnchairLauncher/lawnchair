@@ -66,7 +66,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     public static final int FOLDER_ACCESSIBILITY_DRAG = 1;
 
     private static final String TAG = "CellLayout";
-    private static final boolean LOGD = false;
 
     private Launcher mLauncher;
     @ViewDebug.ExportedProperty(category = "launcher")
@@ -617,12 +616,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             if (lp.cellVSpan < 0) lp.cellVSpan = mCountY;
 
             child.setId(childId);
-            if (LOGD) {
-                Log.d(TAG, "Adding view to ShortcutsAndWidgetsContainer: " + child);
-            }
-            mShortcutsAndWidgets.addView(child, index, lp);
 
-            if (markCells) markCellsAsOccupiedForView(child);
+            mShortcutsAndWidgets.addView(child, index, lp);
 
             return true;
         }
