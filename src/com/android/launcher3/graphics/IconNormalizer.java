@@ -60,7 +60,7 @@ public class IconNormalizer {
 
     // Shape detection related constants
     private static final float BOUND_RATIO_MARGIN = .05f;
-    private static final float PIXEL_DIFF_PERCENTAGE_THRESHOLD = 0.1f;
+    private static final float PIXEL_DIFF_PERCENTAGE_THRESHOLD = 0.005f;
     private static final float SCALE_NOT_INITIALIZED = 0;
 
     private static final Object LOCK = new Object();
@@ -71,6 +71,7 @@ public class IconNormalizer {
     private final Bitmap mBitmapARGB;
     private final Canvas mCanvas;
     private final Paint mPaintMaskShape;
+    private final Paint mPaintMaskShapeOutline;
     private final byte[] mPixels;
     private final int[] mPixelsARGB;
     private float mAdaptiveIconScale;
@@ -79,14 +80,15 @@ public class IconNormalizer {
     private final float[] mLeftBorder;
     private final float[] mRightBorder;
     private final Rect mBounds;
-    private final RectF mShapeBounds;
     private final Matrix mMatrix;
 
     private Paint mPaintIcon;
     private Canvas mCanvasARGB;
 
     private File mDir;
+    private int mFileId;
     private Random mRandom;
+    private float mDensity;
 
     private IconNormalizer(Context context) {
         // Use twice the icon size as maximum size to avoid scaling down twice.
@@ -98,17 +100,25 @@ public class IconNormalizer {
         mLeftBorder = new float[mMaxSize];
         mRightBorder = new float[mMaxSize];
         mBounds = new Rect();
-
+        mDensity = context.getResources().getDisplayMetrics().density;
         // Needed for isShape() method
         mBitmapARGB = Bitmap.createBitmap(mMaxSize, mMaxSize, Bitmap.Config.ARGB_8888);
         mCanvasARGB = new Canvas(mBitmapARGB);
-        mShapeBounds = new RectF();
 
         mPaintIcon = new Paint();
         mPaintIcon.setColor(Color.WHITE);
+
         mPaintMaskShape = new Paint();
         mPaintMaskShape.setColor(Color.RED);
+        mPaintMaskShape.setStyle(Paint.Style.FILL);
         mPaintMaskShape.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.XOR));
+
+        mPaintMaskShapeOutline = new Paint();
+        mPaintMaskShapeOutline.setStrokeWidth(2 * mDensity);
+        mPaintMaskShapeOutline.setStyle(Paint.Style.STROKE);
+        mPaintMaskShapeOutline.setColor(Color.BLACK);
+        mPaintMaskShapeOutline.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+
         mMatrix = new Matrix();
         int[] mPixels = new int[mMaxSize * mMaxSize];
         mAdaptiveIconScale = SCALE_NOT_INITIALIZED;
@@ -136,12 +146,12 @@ public class IconNormalizer {
         // Condition 2:
         // Actual icon (white) and the fitted shape (e.g., circle)(red) XOR operation
         // should generate transparent image, if the actual icon is equivalent to the shape.
-        int id = mRandom.nextInt();
+        mFileId = mRandom.nextInt();
         mBitmapARGB.eraseColor(Color.TRANSPARENT);
         mCanvasARGB.drawBitmap(mBitmap, 0, 0, mPaintIcon);
 
         if (DEBUG) {
-            final File beforeFile = new File(mDir, "isShape" + id + "_before.png");
+            final File beforeFile = new File(mDir, "isShape" + mFileId + "_before.png");
             try {
                 mBitmapARGB.compress(Bitmap.CompressFormat.PNG, 100,
                         new FileOutputStream(beforeFile));
@@ -149,24 +159,28 @@ public class IconNormalizer {
         }
 
         // Fit the shape within the icon's bounding box
+        mMatrix.reset();
         mMatrix.setScale(mBounds.width(), mBounds.height());
         mMatrix.postTranslate(mBounds.left, mBounds.top);
         maskPath.transform(mMatrix);
-        maskPath.computeBounds(mShapeBounds, false);
 
         // XOR operation
         mCanvasARGB.drawPath(maskPath, mPaintMaskShape);
 
+        // DST_OUT operation around the mask path outline
+        mCanvasARGB.drawPath(maskPath, mPaintMaskShapeOutline);
+
+        boolean isTrans = isTransparentBitmap(mBitmapARGB);
         if (DEBUG) {
-            final File afterFile = new File(mDir, "isShape" + id + "_after.png");
+            final File afterFile = new File(mDir, "isShape" + mFileId + "_after_" + isTrans + ".png");
             try {
                 mBitmapARGB.compress(Bitmap.CompressFormat.PNG, 100,
                         new FileOutputStream(afterFile));
             } catch (Exception e) {}
         }
 
-        // Check if the XOR operation result is almost transparent
-        if (!isTransparentBitmap(mBitmapARGB)) {
+        // Check if the result is almost transparent
+        if (!isTrans) {
             if (DEBUG) {
                 Log.d(TAG, "Not same as mask shape");
             }
@@ -194,7 +208,7 @@ public class IconNormalizer {
         float percentageDiffPixels = ((float) sum) / (mBounds.width() * mBounds.height());
         boolean transparentImage = percentageDiffPixels < PIXEL_DIFF_PERCENTAGE_THRESHOLD;
         if (DEBUG) {
-            Log.d(TAG, "Total # pixel that is different:" + percentageDiffPixels + "="+ sum + "/" + mBounds.width() * mBounds.height());
+            Log.d(TAG, "Total # pixel that is different (id="+ mFileId + "):" + percentageDiffPixels + "="+ sum + "/" + mBounds.width() * mBounds.height());
         }
         return transparentImage;
     }
