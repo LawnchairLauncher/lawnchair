@@ -2431,6 +2431,7 @@ public class Launcher extends Activity
         }
     }
 
+    @SuppressLint("NewApi")
     private void startShortcutIntentSafely(Intent intent, Bundle optsBundle, ItemInfo info) {
         try {
             StrictMode.VmPolicy oldPolicy = StrictMode.getVmPolicy();
