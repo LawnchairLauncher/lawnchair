@@ -38,6 +38,7 @@ import com.android.launcher3.notification.NotificationKeyData;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
+import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -219,7 +220,8 @@ public class PopupPopulator {
                 uiHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        launcher.notifyWidgetProvidersChanged(true /* force */);
+                        launcher.refreshAndBindWidgetsForPackageUser(
+                                PackageUserKey.fromItemInfo(originalInfo));
                     }
                 });
             }

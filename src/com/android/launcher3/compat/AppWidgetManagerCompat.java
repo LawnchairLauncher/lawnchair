@@ -22,12 +22,15 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.UserHandle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.PackageUserKey;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +43,11 @@ public abstract class AppWidgetManagerCompat {
     public static AppWidgetManagerCompat getInstance(Context context) {
         synchronized (sInstanceLock) {
             if (sInstance == null) {
-                sInstance = new AppWidgetManagerCompatVL(context.getApplicationContext());
+                if (Utilities.isAtLeastO()) {
+                    sInstance = new AppWidgetManagerCompatVO(context.getApplicationContext());
+                } else {
+                    sInstance = new AppWidgetManagerCompatVL(context.getApplicationContext());
+                }
             }
             return sInstance;
         }
@@ -63,7 +70,8 @@ public abstract class AppWidgetManagerCompat {
         return info == null ? null : LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, info);
     }
 
-    public abstract List<AppWidgetProviderInfo> getAllProviders();
+    public abstract List<AppWidgetProviderInfo> getAllProviders(
+            @Nullable PackageUserKey packageUser);
 
     public abstract boolean bindAppWidgetIdIfAllowed(
             int appWidgetId, AppWidgetProviderInfo info, Bundle options);

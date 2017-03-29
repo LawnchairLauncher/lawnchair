@@ -34,6 +34,7 @@ import android.os.Process;
 import android.os.SystemClock;
 import android.os.Trace;
 import android.os.UserHandle;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.LongSparseArray;
@@ -74,6 +75,7 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ManagedProfileHeuristic;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.Thunk;
@@ -1905,19 +1907,20 @@ public class LauncherModel extends BroadcastReceiver
         });
     }
 
-    public void refreshAndBindWidgetsAndShortcuts(
-            final Callbacks callbacks, final boolean bindFirst) {
+    public void refreshAndBindWidgetsAndShortcuts(final Callbacks callbacks,
+            final boolean bindFirst, @Nullable final PackageUserKey packageUser) {
         runOnWorkerThread(new Runnable() {
             @Override
             public void run() {
                 if (bindFirst && !mBgWidgetsModel.isEmpty()) {
                     bindWidgetsModel(callbacks);
                 }
-                ArrayList<WidgetItem> allWidgets = mBgWidgetsModel.update(mApp.getContext());
+                ArrayList<WidgetItem> widgets = mBgWidgetsModel.update(
+                        mApp.getContext(), packageUser);
                 bindWidgetsModel(callbacks);
 
                 // update the Widget entries inside DB on the worker thread.
-                mApp.getWidgetCache().removeObsoletePreviews(allWidgets);
+                mApp.getWidgetCache().removeObsoletePreviews(widgets, packageUser);
             }
         });
     }

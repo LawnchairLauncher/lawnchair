@@ -29,9 +29,11 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Process;
 import android.os.UserHandle;
+import android.support.annotation.Nullable;
 
 import com.android.launcher3.compat.ShortcutConfigActivityInfo.ShortcutConfigActivityInfoVL;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
+import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -175,12 +177,19 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
     }
 
     @Override
-    public List<ShortcutConfigActivityInfo> getCustomShortcutActivityList() {
-        PackageManager pm = mContext.getPackageManager();
+    public List<ShortcutConfigActivityInfo> getCustomShortcutActivityList(
+            @Nullable PackageUserKey packageUser) {
         List<ShortcutConfigActivityInfo> result = new ArrayList<>();
+        if (packageUser != null && !packageUser.mUser.equals(Process.myUserHandle())) {
+            return result;
+        }
+        PackageManager pm = mContext.getPackageManager();
         for (ResolveInfo info :
                 pm.queryIntentActivities(new Intent(Intent.ACTION_CREATE_SHORTCUT), 0)) {
-            result.add(new ShortcutConfigActivityInfoVL(info.activityInfo, pm));
+            if (packageUser == null || packageUser.mPackageName
+                    .equals(info.activityInfo.packageName)) {
+                result.add(new ShortcutConfigActivityInfoVL(info.activityInfo, pm));
+            }
         }
         return result;
     }
