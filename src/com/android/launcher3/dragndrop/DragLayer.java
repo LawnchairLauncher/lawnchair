@@ -60,6 +60,7 @@ import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TouchController;
+import com.android.launcher3.widget.WidgetsAndMore;
 
 import java.util.ArrayList;
 
@@ -242,6 +243,12 @@ public class DragLayer extends InsettableFrameLayout {
 
         if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && mAllAppsController.onControllerInterceptTouchEvent(ev)) {
             mActiveController = mAllAppsController;
+            return true;
+        }
+
+        WidgetsAndMore widgetsAndMore = WidgetsAndMore.getOpen(mLauncher);
+        if (widgetsAndMore != null && widgetsAndMore.onControllerInterceptTouchEvent(ev)) {
+            mActiveController = widgetsAndMore;
             return true;
         }
 

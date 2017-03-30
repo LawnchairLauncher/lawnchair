@@ -392,15 +392,6 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         return mFolderIcon;
     }
 
-    /**
-     * We need to handle touch events to prevent them from falling through to the workspace below.
-     */
-    @SuppressLint("ClickableViewAccessibility")
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        return true;
-    }
-
     public void setDragController(DragController dragController) {
         mDragController = dragController;
     }

@@ -29,13 +29,10 @@ import com.android.launcher3.BaseContainerView;
 import com.android.launcher3.DeleteDropTarget;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
-import com.android.launcher3.IconCache;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.model.PackageItemInfo;
@@ -55,8 +52,6 @@ public class WidgetsContainerView extends BaseContainerView
 
     /* Global instances that are used inside this container. */
     @Thunk Launcher mLauncher;
-    private DragController mDragController;
-    private IconCache mIconCache;
 
     /* Recycler view related member variables */
     private WidgetsRecyclerView mRecyclerView;
@@ -76,9 +71,7 @@ public class WidgetsContainerView extends BaseContainerView
     public WidgetsContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mLauncher = Launcher.getLauncher(context);
-        mDragController = mLauncher.getDragController();
         mAdapter = new WidgetsListAdapter(this, this, context);
-        mIconCache = LauncherAppState.getInstance(context).getIconCache();
         if (LOGD) {
             Log.d(TAG, "WidgetsContainerView constructor");
         }
@@ -116,6 +109,10 @@ public class WidgetsContainerView extends BaseContainerView
                 || mLauncher.getWorkspace().isSwitchingState()
                 || !(v instanceof WidgetCell)) return;
 
+        handleClick();
+    }
+
+    public void handleClick() {
         // Let the user know that they have to long press to add a widget
         if (mWidgetInstructionToast != null) {
             mWidgetInstructionToast.cancel();
@@ -130,14 +127,19 @@ public class WidgetsContainerView extends BaseContainerView
 
     @Override
     public boolean onLongClick(View v) {
+        // When we have exited the widget tray, disregard long clicks
+        if (!mLauncher.isWidgetsViewVisible()) return false;
+        return handleLongClick(v);
+    }
+
+    public boolean handleLongClick(View v) {
         if (LOGD) {
             Log.d(TAG, String.format("onLongClick [v=%s]", v));
         }
         // Return early if this is not initiated from a touch
         if (!v.isInTouchMode()) return false;
-        // When we have exited all apps or are in transition, disregard long clicks
-        if (!mLauncher.isWidgetsViewVisible() ||
-                mLauncher.getWorkspace().isSwitchingState()) return false;
+        // When we  are in transition, disregard long clicks
+        if (mLauncher.getWorkspace().isSwitchingState()) return false;
         // Return if global dragging is not enabled
         if (!mLauncher.isDraggingEnabled()) return false;
 
