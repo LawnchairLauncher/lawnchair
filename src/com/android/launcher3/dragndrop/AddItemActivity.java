@@ -16,6 +16,11 @@
 
 package com.android.launcher3.dragndrop;
 
+import static com.android.launcher3.logging.LoggerUtils.newCommandAction;
+import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
+import static com.android.launcher3.logging.LoggerUtils.newItemTarget;
+import static com.android.launcher3.logging.LoggerUtils.newLauncherEvent;
+
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.appwidget.AppWidgetHost;
@@ -46,6 +51,9 @@ import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.PinItemRequestCompat;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetImageView;
@@ -104,6 +112,12 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
 
         mWidgetCell.setOnTouchListener(this);
         mWidgetCell.setOnLongClickListener(this);
+
+        // savedInstanceState is null when the activity is created the first time (i.e., avoids
+        // duplicate logging during rotation)
+        if (savedInstanceState == null) {
+            logCommand(Action.Command.ENTRY);
+        }
     }
 
     @Override
@@ -156,7 +170,10 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     }
 
     private void setupShortcut() {
-        WidgetItem item = new WidgetItem(new PinShortcutRequestActivityInfo(mRequest, this));
+        PinShortcutRequestActivityInfo shortcutInfo =
+                new PinShortcutRequestActivityInfo(mRequest, this);
+        WidgetItem item = new WidgetItem(shortcutInfo);
+        mWidgetCell.getWidgetView().setTag(new PendingAddShortcutInfo(shortcutInfo));
         mWidgetCell.applyFromCellItem(item, mApp.getWidgetCache());
         mWidgetCell.ensurePreview();
     }
@@ -179,6 +196,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
         mWidgetOptions = WidgetHostViewLoader.getDefaultOptionsForWidget(this, mPendingWidgetInfo);
 
         WidgetItem item = new WidgetItem(widgetInfo, getPackageManager(), mIdp);
+        mWidgetCell.getWidgetView().setTag(mPendingWidgetInfo);
         mWidgetCell.applyFromCellItem(item, mApp.getWidgetCache());
         mWidgetCell.ensurePreview();
         return true;
@@ -188,6 +206,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
      * Called when the cancel button is clicked.
      */
     public void onCancelClick(View v) {
+        logCommand(Action.Command.CANCEL);
         finish();
     }
 
@@ -198,6 +217,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
         if (mRequest.getRequestType() == PinItemRequestCompat.REQUEST_TYPE_SHORTCUT) {
             InstallShortcutReceiver.queueShortcut(
                     new ShortcutInfoCompat(mRequest.getShortcutInfo()), this);
+            logCommand(Action.Command.CONFIRM);
             mRequest.accept();
             finish();
             return;
@@ -225,7 +245,14 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
         InstallShortcutReceiver.queueWidget(mRequest.getAppWidgetProviderInfo(this), widgetId, this);
         mWidgetOptions.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
         mRequest.accept(mWidgetOptions);
+        logCommand(Action.Command.CONFIRM);
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        logCommand(Action.Command.BACK);
+        super.onBackPressed();
     }
 
     @Override
@@ -257,5 +284,12 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
         super.onRestoreInstanceState(savedInstanceState);
         mPendingBindWidgetId = savedInstanceState
                 .getInt(STATE_EXTRA_WIDGET_ID, mPendingBindWidgetId);
+    }
+
+    private void logCommand(int command) {
+        getUserEventDispatcher().dispatchUserEvent(newLauncherEvent(
+                newCommandAction(command),
+                newItemTarget(mWidgetCell.getWidgetView()),
+                newContainerTarget(ContainerType.PINITEM)), null);
     }
 }

@@ -32,6 +32,6 @@ public class PendingAddShortcutInfo extends PendingAddItemInfo {
         this.activityInfo = activityInfo;
         componentName = activityInfo.getComponent();
         user = activityInfo.getUser();
-        itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+        itemType = activityInfo.getItemType();
     }
 }
