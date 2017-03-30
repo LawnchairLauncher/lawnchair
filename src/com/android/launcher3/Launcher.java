@@ -1455,7 +1455,7 @@ public class Launcher extends BaseActivity
         ShortcutInfo info = null;
         if (Utilities.isAtLeastO()) {
             info = LauncherAppsCompat.createShortcutInfoFromPinItemRequest(
-                    this, PinItemRequestCompat.getPinItemRequest(data));
+                    this, PinItemRequestCompat.getPinItemRequest(data), 0);
         }
 
         if (info == null) {
