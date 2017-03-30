@@ -27,10 +27,12 @@ import android.os.UserHandle;
 import android.support.annotation.Nullable;
 
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherModel;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
+import com.android.launcher3.util.LooperExecuter;
 
 import java.util.List;
 
@@ -100,10 +102,32 @@ public abstract class LauncherAppsCompat {
      */
     @Nullable
     public static ShortcutInfo createShortcutInfoFromPinItemRequest(
-            Context context, PinItemRequestCompat request) {
+            Context context, final PinItemRequestCompat request, final long acceptDelay) {
         if (request != null &&
                 request.getRequestType() == PinItemRequestCompat.REQUEST_TYPE_SHORTCUT &&
-                request.isValid() && request.accept()) {
+                request.isValid()) {
+
+            if (acceptDelay <= 0) {
+                if (!request.accept()) {
+                    return null;
+                }
+            } else {
+                // Block the worker thread until the accept() is called.
+                new LooperExecuter(LauncherModel.getWorkerLooper()).execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(acceptDelay);
+                        } catch (InterruptedException e) {
+                            // Ignore
+                        }
+                        if (request.isValid()) {
+                            request.accept();
+                        }
+                    }
+                });
+            }
+
             ShortcutInfoCompat compat = new ShortcutInfoCompat(request.getShortcutInfo());
             ShortcutInfo info = new ShortcutInfo(compat, context);
             // Apply the unbadged icon and fetch the actual icon asynchronously.

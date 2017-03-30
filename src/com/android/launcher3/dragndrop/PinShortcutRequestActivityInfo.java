@@ -26,8 +26,10 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 
 import com.android.launcher3.IconCache;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.R;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PinItemRequestCompat;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
@@ -73,7 +75,13 @@ class PinShortcutRequestActivityInfo extends ShortcutConfigActivityInfo {
 
     @Override
     public com.android.launcher3.ShortcutInfo createShortcutInfo() {
-        return LauncherAppsCompat.createShortcutInfoFromPinItemRequest(mContext, mRequest);
+        // Total duration for the drop animation to complete.
+        long duration = mContext.getResources().getInteger(R.integer.config_dropAnimMaxDuration) +
+                Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT +
+                mContext.getResources().getInteger(R.integer.config_overlayTransitionTime) / 2;
+        // Delay the actual accept() call until the drop animation is complete.
+        return LauncherAppsCompat.createShortcutInfoFromPinItemRequest(
+                mContext, mRequest, duration);
     }
 
     @Override
