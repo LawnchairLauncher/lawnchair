@@ -18,6 +18,7 @@ package com.android.launcher3.dragndrop;
 
 import android.appwidget.AppWidgetManager;
 import android.content.ClipDescription;
+import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -245,6 +246,13 @@ public class PinItemDragListener
     }
 
     private void postCleanup() {
+        if (mLauncher != null) {
+            // Remove any drag params from the launcher intent since the drag operation is complete.
+            Intent newIntent = new Intent(mLauncher.getIntent());
+            newIntent.removeExtra(EXTRA_PIN_ITEM_DRAG_LISTENER);
+            mLauncher.setIntent(newIntent);
+        }
+
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
@@ -266,6 +274,21 @@ public class PinItemDragListener
             return (RemoteViews) extras.get(AppWidgetManager.EXTRA_APPWIDGET_PREVIEW);
         }
         return null;
+    }
+
+    public static boolean handleDragRequest(Launcher launcher, Intent intent) {
+        if (intent == null || !Intent.ACTION_MAIN.equals(intent.getAction())) {
+            return false;
+        }
+        Parcelable dragExtra = intent.getParcelableExtra(EXTRA_PIN_ITEM_DRAG_LISTENER);
+        if (dragExtra instanceof PinItemDragListener) {
+            PinItemDragListener dragListener = (PinItemDragListener) dragExtra;
+            dragListener.setLauncher(launcher);
+
+            launcher.getDragLayer().setOnDragListener(dragListener);
+            return true;
+        }
+        return false;
     }
 
     public static final Parcelable.Creator<PinItemDragListener> CREATOR =

@@ -49,7 +49,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.os.Process;
 import android.os.StrictMode;
 import android.os.SystemClock;
@@ -441,6 +440,11 @@ public class Launcher extends BaseActivity
             mRotationEnabled = Utilities.isAllowRotationPrefEnabled(getApplicationContext());
             mRotationPrefChangeHandler = new RotationPrefChangeHandler();
             mSharedPrefs.registerOnSharedPreferenceChangeListener(mRotationPrefChangeHandler);
+        }
+
+        if (PinItemDragListener.handleDragRequest(this, getIntent())) {
+            // Temporarily enable the rotation
+            mRotationEnabled = true;
         }
 
         // On large interfaces, or on devices that a user has specifically enabled screen rotation,
@@ -1768,15 +1772,8 @@ public class Launcher extends BaseActivity
             if (mLauncherCallbacks != null) {
                 mLauncherCallbacks.onHomeIntent();
             }
-
-            Parcelable dragExtra = intent
-                    .getParcelableExtra(PinItemDragListener.EXTRA_PIN_ITEM_DRAG_LISTENER);
-            if (dragExtra instanceof PinItemDragListener) {
-                PinItemDragListener dragListener = (PinItemDragListener) dragExtra;
-                dragListener.setLauncher(this);
-                mDragLayer.setOnDragListener(dragListener);
-            }
         }
+        PinItemDragListener.handleDragRequest(this, intent);
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onNewIntent(intent);
@@ -4120,22 +4117,16 @@ public class Launcher extends BaseActivity
         return ((Launcher) ((ContextWrapper) context).getBaseContext());
     }
 
-    private class RotationPrefChangeHandler implements OnSharedPreferenceChangeListener, Runnable {
+    private class RotationPrefChangeHandler implements OnSharedPreferenceChangeListener {
 
         @Override
         public void onSharedPreferenceChanged(
                 SharedPreferences sharedPreferences, String key) {
             if (Utilities.ALLOW_ROTATION_PREFERENCE_KEY.equals(key)) {
-                mRotationEnabled = Utilities.isAllowRotationPrefEnabled(getApplicationContext());
-                if (!waitUntilResume(this, true)) {
-                    run();
-                }
+                // Finish this instance of the activity. When the activity is recreated,
+                // it will initialize the rotation preference again.
+                finish();
             }
-        }
-
-        @Override
-        public void run() {
-            setOrientation();
         }
     }
 }
