@@ -47,19 +47,5 @@
         launcher:iconSizeOverride="@dimen/widget_section_icon_size"
         launcher:layoutHorizontal="true" />
 
-    <HorizontalScrollView
-        android:id="@+id/widgets_scroll_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?android:attr/colorPrimaryDark"
-        android:scrollbars="none">
-        <LinearLayout
-            android:id="@+id/widgets_cell_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingStart="@dimen/widget_row_padding"
-            android:paddingEnd="0dp"
-            android:orientation="horizontal"
-            android:showDividers="none"/>
-    </HorizontalScrollView>
+    <include layout="@layout/widgets_scroll_container" />
 </LinearLayout>
