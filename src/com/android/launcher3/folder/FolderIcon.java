@@ -1174,28 +1174,21 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     public void shrinkAndFadeIn(boolean animate) {
-        final CellLayout cl = (CellLayout) getParent().getParent();
-        ((CellLayout.LayoutParams) getLayoutParams()).canReorder = true;
-
         // We remove and re-draw the FolderIcon in-case it has changed
         final PreviewImageView previewImage = PreviewImageView.get(getContext());
         previewImage.removeFromParent();
         copyToPreview(previewImage);
 
-        if (cl != null) {
-            cl.clearFolderLeaveBehind();
-        }
+        clearLeaveBehindIfExists();
 
         ObjectAnimator oa = LauncherAnimUtils.ofViewAlphaAndScale(previewImage, 1, 1, 1);
         oa.setDuration(getResources().getInteger(R.integer.config_folderExpandDuration));
         oa.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (cl != null) {
-                    // Remove the ImageView copy of the FolderIcon and make the original visible.
-                    previewImage.removeFromParent();
-                    setVisibility(View.VISIBLE);
-                }
+                // Remove the ImageView copy of the FolderIcon and make the original visible.
+                previewImage.removeFromParent();
+                setVisibility(View.VISIBLE);
             }
         });
         oa.start();
@@ -1204,7 +1197,15 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         }
     }
 
-    public void growAndFadeOut() {
+    public void clearLeaveBehindIfExists() {
+        ((CellLayout.LayoutParams) getLayoutParams()).canReorder = true;
+        if (mInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+            CellLayout cl = (CellLayout) getParent().getParent();
+            cl.clearFolderLeaveBehind();
+        }
+    }
+
+    public void drawLeaveBehindIfExists() {
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
         // While the folder is open, the position of the icon cannot change.
         lp.canReorder = false;
@@ -1212,6 +1213,10 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             CellLayout cl = (CellLayout) getParent().getParent();
             cl.setFolderLeaveBehindCell(lp.cellX, lp.cellY);
         }
+    }
+
+    public void growAndFadeOut() {
+        drawLeaveBehindIfExists();
 
         // Push an ImageView copy of the FolderIcon into the DragLayer and hide the original
         PreviewImageView previewImage = PreviewImageView.get(getContext());
