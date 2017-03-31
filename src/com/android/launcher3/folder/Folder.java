@@ -34,7 +34,6 @@ import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.accessibility.AccessibilityEvent;
@@ -633,6 +632,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
             @Override
             public void onAnimationStart(Animator animation) {
                 if (FeatureFlags.LAUNCHER3_NEW_FOLDER_ANIMATION) {
+                    mFolderIcon.drawLeaveBehindIfExists();
                     mFolderIcon.setVisibility(INVISIBLE);
                 }
 
@@ -723,8 +723,12 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
             mFolderName.dispatchBackKey();
         }
 
-        if (mFolderIcon != null && !FeatureFlags.LAUNCHER3_NEW_FOLDER_ANIMATION) {
-            mFolderIcon.shrinkAndFadeIn(animate);
+        if (mFolderIcon != null) {
+            if (FeatureFlags.LAUNCHER3_NEW_FOLDER_ANIMATION) {
+                mFolderIcon.clearLeaveBehindIfExists();
+            } else {
+                mFolderIcon.shrinkAndFadeIn(animate);
+            }
         }
 
         if (!(getParent() instanceof DragLayer)) return;
