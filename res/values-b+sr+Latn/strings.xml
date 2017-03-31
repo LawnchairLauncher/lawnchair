@@ -33,9 +33,9 @@
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Dvaput dodirnite i zadržite da biste izabrali vidžet ili koristite prilagođene radnje."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d×%2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"širina od %1$d i visina od %2$d"</string>
-    <!-- no translation found for add_item_request_drag_hint (8662194377800507270) -->
+    <!-- no translation found for add_item_request_drag_hint (5899764264480397019) -->
     <skip />
-    <!-- no translation found for place_automatically (1502491650329146581) -->
+    <!-- no translation found for place_automatically (8064208734425456485) -->
     <skip />
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Pretražite aplikacije"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Aplikacije se učitavaju..."</string>
@@ -77,6 +77,8 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"Dozvoli rotaciju početnog ekrana"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Kada se telefon rotira"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Aktuelno podešavanje prikaza ne dozvoljava rotaciju"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Dodaj ikonu na početni ekran"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Za nove aplikacije"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Nepoznato"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Ukloni"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Pretraži"</string>
