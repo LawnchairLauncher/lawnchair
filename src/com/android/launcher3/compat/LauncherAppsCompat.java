@@ -32,7 +32,7 @@ import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
-import com.android.launcher3.util.LooperExecuter;
+import com.android.launcher3.util.LooperExecutor;
 
 import java.util.List;
 
@@ -113,7 +113,7 @@ public abstract class LauncherAppsCompat {
                 }
             } else {
                 // Block the worker thread until the accept() is called.
-                new LooperExecuter(LauncherModel.getWorkerLooper()).execute(new Runnable() {
+                new LooperExecutor(LauncherModel.getWorkerLooper()).execute(new Runnable() {
                     @Override
                     public void run() {
                         try {
