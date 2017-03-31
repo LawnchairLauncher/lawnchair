@@ -33,8 +33,10 @@
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"విడ్జెట్‌ను ఎంచుకోవడానికి లేదా అనుకూల చర్యలను ఉపయోగించడానికి రెండుసార్లు నొక్కి, ఉంచండి."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d వెడల్పు X %2$d ఎత్తు"</string>
-    <string name="add_item_request_drag_hint" msgid="8662194377800507270">"హోమ్ స్క్రీన్‌లో ఉంచడానికి నొక్కి &amp; పట్టుకోండి"</string>
-    <string name="place_automatically" msgid="1502491650329146581">"స్వయంచాలకంగా ఉంచండి"</string>
+    <!-- no translation found for add_item_request_drag_hint (5899764264480397019) -->
+    <skip />
+    <!-- no translation found for place_automatically (8064208734425456485) -->
+    <skip />
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"అనువర్తనాలను శోధించండి"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"అనువర్తనాలను లోడ్ చేస్తోంది…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"కి సరిపోలే అనువర్తనాలేవీ కనుగొనబడలేదు"</string>
