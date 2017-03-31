@@ -155,6 +155,10 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     }
 
     public void applyPreview(Bitmap bitmap) {
+        applyPreview(bitmap, true);
+    }
+
+    public void applyPreview(Bitmap bitmap, boolean animate) {
         if (bitmap != null) {
             mWidgetImage.setBitmap(bitmap,
                     DrawableFactory.get(getContext()).getBadgeForUser(mItem.user, getContext()));
@@ -169,11 +173,15 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     }
 
     public void ensurePreview() {
+        ensurePreview(true);
+    }
+
+    public void ensurePreview(boolean animate) {
         if (mActiveRequest != null) {
             return;
         }
         mActiveRequest = mWidgetPreviewLoader.getPreview(
-                mItem, mPresetPreviewSize, mPresetPreviewSize, this);
+                mItem, mPresetPreviewSize, mPresetPreviewSize, this, animate);
     }
 
     @Override

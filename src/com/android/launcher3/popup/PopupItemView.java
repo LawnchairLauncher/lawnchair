@@ -156,7 +156,8 @@ public abstract class PopupItemView extends FrameLayout
      * Returns the position of the center of the icon relative to the container.
      */
     public Point getIconCenter() {
-        sTempPoint.y = sTempPoint.x = getMeasuredHeight() / 2;
+        sTempPoint.y = getMeasuredHeight() / 2;
+        sTempPoint.x = getResources().getDimensionPixelSize(R.dimen.bg_popup_item_height) / 2;
         if (Utilities.isRtl(getResources())) {
             sTempPoint.x = getMeasuredWidth() - sTempPoint.x;
         }

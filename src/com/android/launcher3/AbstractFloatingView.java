@@ -92,6 +92,9 @@ public abstract class AbstractFloatingView extends LinearLayout {
         return mIsOpen;
     }
 
+    protected void onWidgetsBound() {
+    }
+
     protected abstract boolean isOfType(@FloatingViewType int type);
 
     protected static <T extends AbstractFloatingView> T getOpenView(

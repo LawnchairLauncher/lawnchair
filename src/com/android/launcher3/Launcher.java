@@ -3938,11 +3938,24 @@ public class Launcher extends BaseActivity
             mWidgetsView.setWidgets(allWidgets);
             mAllWidgets = null;
         }
+
+        AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(this);
+        if (topView != null) {
+            topView.onWidgetsBound();
+        }
+    }
+
+    public List<WidgetItem> getWidgetsForPackageUser(PackageUserKey packageUserKey) {
+        return mWidgetsView.getWidgetsForPackageUser(packageUserKey);
     }
 
     @Override
     public void notifyWidgetProvidersChanged() {
-        if (mWorkspace.getState().shouldUpdateWidget) {
+        notifyWidgetProvidersChanged(false);
+    }
+
+    public void notifyWidgetProvidersChanged(boolean force) {
+        if (force || mWorkspace.getState().shouldUpdateWidget) {
             mModel.refreshAndBindWidgetsAndShortcuts(this, mWidgetsView.isEmpty());
         }
     }

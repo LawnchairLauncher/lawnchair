@@ -40,7 +40,10 @@ import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.MultiHashMap;
+import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Thunk;
+
+import java.util.List;
 
 /**
  * The widgets list view container.
@@ -241,6 +244,10 @@ public class WidgetsContainerView extends BaseContainerView
 
     public boolean isEmpty() {
         return mAdapter.getItemCount() == 0;
+    }
+
+    public List<WidgetItem> getWidgetsForPackageUser(PackageUserKey packageUserKey) {
+        return mAdapter.copyWidgetsForPackageUser(packageUserKey);
     }
 
     @Override

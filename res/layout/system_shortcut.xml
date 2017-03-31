@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2016 The Android Open Source Project
+<!-- Copyright (C) 2017 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
     android:layout_width="@dimen/bg_popup_item_width"
     android:layout_height="@dimen/bg_popup_item_height" >
 
-    <com.android.launcher3.shortcuts.DeepShortcutTextView
+    <com.android.launcher3.BubbleTextView
         style="@style/BaseIcon"
         android:id="@+id/bubble_text"
         android:background="?android:attr/selectableItemBackground"
@@ -28,19 +28,15 @@
         android:textAlignment="viewStart"
         android:paddingStart="@dimen/bg_popup_item_height"
         android:paddingEnd="@dimen/deep_shortcut_padding_end"
-        android:drawableEnd="@drawable/deep_shortcuts_drag_handle"
-        android:drawablePadding="@dimen/deep_shortcut_drawable_padding"
         android:textSize="14sp"
         android:fontFamily="sans-serif"
-        launcher:layoutHorizontal="true"
-        launcher:iconDisplay="shortcut_popup"
-        launcher:iconSizeOverride="@dimen/deep_shortcut_icon_size" />
+        launcher:layoutHorizontal="true" />
 
     <View
         android:id="@+id/icon"
-        android:layout_width="@dimen/deep_shortcut_icon_size"
-        android:layout_height="@dimen/deep_shortcut_icon_size"
-        android:layout_margin="@dimen/deep_shortcut_padding_start"
+        android:layout_width="@dimen/system_shortcut_icon_size"
+        android:layout_height="@dimen/system_shortcut_icon_size"
+        android:layout_margin="@dimen/system_shortcut_padding_start"
         android:layout_gravity="start" />
 
     <View

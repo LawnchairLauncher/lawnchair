@@ -46,11 +46,14 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.TouchController;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import static android.R.attr.bottom;
 
 /**
  * Bottom sheet for the "Widgets & more" long-press option.
@@ -64,6 +67,7 @@ public class WidgetsAndMore extends AbstractFloatingView implements Insettable, 
     private float mTranslationYRange;
 
     private Launcher mLauncher;
+    private ItemInfo mOriginalItemInfo;
     private ObjectAnimator mOpenCloseAnimator;
     private Interpolator mFastOutSlowInInterpolator;
     private VerticalPullDetector.ScrollInterpolator mScrollInterpolator;
@@ -95,9 +99,25 @@ public class WidgetsAndMore extends AbstractFloatingView implements Insettable, 
         mTranslationYRange = mTranslationYClosed - mTranslationYOpen;
     }
 
-    public void populateAndShow(ItemInfo itemInfo, List<WidgetItem> widgets) {
-        ((TextView) findViewById(R.id.title)).setText(itemInfo.title);
+    public void populateAndShow(ItemInfo itemInfo) {
+        mOriginalItemInfo = itemInfo;
+        ((TextView) findViewById(R.id.title)).setText(mOriginalItemInfo.title);
 
+        onWidgetsBound();
+
+        mWasNavBarLight = (mLauncher.getWindow().getDecorView().getSystemUiVisibility()
+                & View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR) != 0;
+        mLauncher.getDragLayer().addView(this);
+        measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
+        setTranslationY(mTranslationYClosed);
+        mIsOpen = false;
+        open(true);
+    }
+
+    @Override
+    protected void onWidgetsBound() {
+        List<WidgetItem> widgets = mLauncher.getWidgetsForPackageUser(new PackageUserKey(
+                mOriginalItemInfo.getTargetComponent().getPackageName(), mOriginalItemInfo.user));
         List<WidgetItem> shortcuts = new ArrayList<>();
         // Transfer configurable widgets to shortcuts
         Iterator<WidgetItem> widgetsIter = widgets.iterator();
@@ -115,6 +135,9 @@ public class WidgetsAndMore extends AbstractFloatingView implements Insettable, 
 
         ViewGroup shortcutRow = (ViewGroup) findViewById(R.id.shortcuts);
         ViewGroup shortcutCells = (ViewGroup) shortcutRow.findViewById(R.id.widgets_cell_list);
+
+        widgetCells.removeAllViews();
+        shortcutCells.removeAllViews();
 
         for (int i = 0; i < widgets.size(); i++) {
             addItemCell(widgetCells);
@@ -152,14 +175,6 @@ public class WidgetsAndMore extends AbstractFloatingView implements Insettable, 
         } else {
             removeView(findViewById(R.id.shortcuts_header));
         }
-
-        mWasNavBarLight = (mLauncher.getWindow().getDecorView().getSystemUiVisibility()
-                & View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR) != 0;
-        mLauncher.getDragLayer().addView(this);
-        measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
-        setTranslationY(mTranslationYClosed);
-        mIsOpen = false;
-        open(true);
     }
 
     private void addDivider(ViewGroup parent) {

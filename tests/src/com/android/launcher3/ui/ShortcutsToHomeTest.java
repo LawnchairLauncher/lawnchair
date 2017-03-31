@@ -61,7 +61,7 @@ public class ShortcutsToHomeTest extends LauncherInstrumentationTestCase {
         // Drag the first shortcut to the home screen.
         assertTrue(deepShortcutsContainer.getChildCount() > 0);
         UiObject2 shortcut = deepShortcutsContainer.getChildren().get(0)
-                .findObject(getSelectorForId(R.id.deep_shortcut));
+                .findObject(getSelectorForId(R.id.bubble_text));
         String shortcutName = shortcut.getText();
         dragToWorkspace(shortcut, false);
 

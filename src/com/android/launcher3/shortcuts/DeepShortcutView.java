@@ -24,6 +24,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
@@ -39,7 +40,7 @@ public class DeepShortcutView extends FrameLayout {
 
     private final Rect mPillRect;
 
-    private DeepShortcutTextView mBubbleText;
+    private BubbleTextView mBubbleText;
     private View mIconView;
 
     private ShortcutInfo mInfo;
@@ -62,11 +63,11 @@ public class DeepShortcutView extends FrameLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mBubbleText = (DeepShortcutTextView) findViewById(R.id.deep_shortcut);
+        mBubbleText = findViewById(R.id.bubble_text);
         mIconView = findViewById(R.id.icon);
     }
 
-    public DeepShortcutTextView getBubbleText() {
+    public BubbleTextView getBubbleText() {
         return mBubbleText;
     }
 

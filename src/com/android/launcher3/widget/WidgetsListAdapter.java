@@ -31,10 +31,12 @@ import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.util.LabelComparator;
 import com.android.launcher3.util.MultiHashMap;
+import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -96,6 +98,26 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
     public String getSectionName(int pos) {
         return mEntries.get(pos).titleSectionName;
+    }
+
+    /**
+     * Copies and returns the widgets associated with the package and user of the ComponentKey.
+     */
+    public List<WidgetItem> copyWidgetsForPackageUser(PackageUserKey packageUserKey) {
+        for (WidgetListRowEntry entry : mEntries) {
+            if (entry.pkgItem.packageName.equals(packageUserKey.mPackageName)) {
+                ArrayList<WidgetItem> widgets = new ArrayList<>(entry.widgets);
+                // Remove widgets not associated with the correct user.
+                Iterator<WidgetItem> iterator = widgets.iterator();
+                while (iterator.hasNext()) {
+                    if (!iterator.next().user.equals(packageUserKey.mUser)) {
+                        iterator.remove();
+                    }
+                }
+                return widgets.isEmpty() ? null : widgets;
+            }
+        }
+        return null;
     }
 
     @Override

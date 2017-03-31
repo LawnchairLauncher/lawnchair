@@ -172,6 +172,8 @@
     <dimen name="deep_shortcuts_arrow_horizontal_offset">19dp</dimen>
     <!-- popup_item_width - icon_size - padding_start - drawable_padding -->
     <dimen name="deep_shortcuts_divider_width">158dp</dimen>
+    <dimen name="system_shortcut_icon_size">28dp</dimen>
+    <dimen name="system_shortcut_padding_start">10dp</dimen>
 
 <!-- Icon badges (with notification counts) -->
     <dimen name="badge_size">24dp</dimen>
