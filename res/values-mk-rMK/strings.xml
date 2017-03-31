@@ -33,8 +33,10 @@
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Допрете двапати и задржете за да изберете додаток или да користите приспособени дејства."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d широк на %2$d висок"</string>
-    <string name="add_item_request_drag_hint" msgid="8662194377800507270">"Допрете и задржете за да поставите на почетниот екран"</string>
-    <string name="place_automatically" msgid="1502491650329146581">"Постави автоматски"</string>
+    <!-- no translation found for add_item_request_drag_hint (5899764264480397019) -->
+    <skip />
+    <!-- no translation found for place_automatically (8064208734425456485) -->
+    <skip />
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Пребарување апликации"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Се вчитуваат апликации…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Не се најдени апликации што одговараат на „<xliff:g id="QUERY">%1$s</xliff:g>“"</string>
