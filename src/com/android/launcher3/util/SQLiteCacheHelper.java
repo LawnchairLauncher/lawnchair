@@ -83,6 +83,10 @@ public abstract class SQLiteCacheHelper {
                 mTableName, columns, selection, selectionArgs, null, null, null);
     }
 
+    public void clear() {
+        mOpenHelper.clearDB(mOpenHelper.getWritableDatabase());
+    }
+
     protected abstract void onCreateTable(SQLiteDatabase db);
 
     /**

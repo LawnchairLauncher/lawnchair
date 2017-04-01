@@ -572,6 +572,11 @@ public class IconCache {
         return entry;
     }
 
+    public synchronized void clear() {
+        Preconditions.assertWorkerThread();
+        mIconDb.clear();
+    }
+
     /**
      * Adds a default package entry in the cache. This entry is not persisted and will be removed
      * when the cache is flushed.

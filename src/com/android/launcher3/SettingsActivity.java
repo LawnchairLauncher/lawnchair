@@ -21,11 +21,14 @@ import android.content.ContentResolver;
 import android.database.ContentObserver;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.provider.Settings;
 import android.provider.Settings.System;
 import android.support.v4.os.BuildCompat;
+
+import com.android.launcher3.graphics.IconShapeOverride;
 
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
@@ -77,6 +80,15 @@ public class SettingsActivity extends Activity {
             if (!BuildCompat.isAtLeastO()) {
                 getPreferenceScreen().removePreference(
                         findPreference(SessionCommitReceiver.ADD_ICON_PREFERENCE_KEY));
+            }
+
+            Preference iconShapeOverride = findPreference(IconShapeOverride.KEY_PREFERENCE);
+            if (iconShapeOverride != null) {
+                if (IconShapeOverride.isSupported(getActivity())) {
+                    IconShapeOverride.handlePreferenceUi((ListPreference) iconShapeOverride);
+                } else {
+                    getPreferenceScreen().removePreference(iconShapeOverride);
+                }
             }
         }
 
