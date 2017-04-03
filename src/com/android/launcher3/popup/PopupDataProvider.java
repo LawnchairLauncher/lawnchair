@@ -50,8 +50,8 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
 
     /** Note that these are in order of priority. */
     public static final SystemShortcut[] SYSTEM_SHORTCUTS = new SystemShortcut[] {
-            new SystemShortcut.Widgets(),
             new SystemShortcut.AppInfo(),
+            new SystemShortcut.Widgets(),
     };
 
     private final Launcher mLauncher;
