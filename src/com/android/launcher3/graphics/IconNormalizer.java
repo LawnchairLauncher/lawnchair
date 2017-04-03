@@ -88,7 +88,6 @@ public class IconNormalizer {
     private File mDir;
     private int mFileId;
     private Random mRandom;
-    private float mDensity;
 
     private IconNormalizer(Context context) {
         // Use twice the icon size as maximum size to avoid scaling down twice.
@@ -100,7 +99,7 @@ public class IconNormalizer {
         mLeftBorder = new float[mMaxSize];
         mRightBorder = new float[mMaxSize];
         mBounds = new Rect();
-        mDensity = context.getResources().getDisplayMetrics().density;
+
         // Needed for isShape() method
         mBitmapARGB = Bitmap.createBitmap(mMaxSize, mMaxSize, Bitmap.Config.ARGB_8888);
         mCanvasARGB = new Canvas(mBitmapARGB);
@@ -114,7 +113,7 @@ public class IconNormalizer {
         mPaintMaskShape.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.XOR));
 
         mPaintMaskShapeOutline = new Paint();
-        mPaintMaskShapeOutline.setStrokeWidth(2 * mDensity);
+        mPaintMaskShapeOutline.setStrokeWidth(2 * context.getResources().getDisplayMetrics().density);
         mPaintMaskShapeOutline.setStyle(Paint.Style.STROKE);
         mPaintMaskShapeOutline.setColor(Color.BLACK);
         mPaintMaskShapeOutline.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
