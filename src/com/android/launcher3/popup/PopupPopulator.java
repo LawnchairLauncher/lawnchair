@@ -211,12 +211,17 @@ public class PopupPopulator {
 
                 // This ensures that mLauncher.getWidgetsForPackageUser()
                 // doesn't return null (it puts all the widgets in memory).
-                launcher.notifyWidgetProvidersChanged(true /* force */);
                 for (int i = 0; i < PopupDataProvider.SYSTEM_SHORTCUTS.length; i++) {
                     final SystemShortcut systemShortcut = PopupDataProvider.SYSTEM_SHORTCUTS[i];
                     uiHandler.post(new UpdateSystemShortcutChild(container,
                             systemShortcutViews.get(i), systemShortcut, launcher, originalInfo));
                 }
+                uiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        launcher.notifyWidgetProvidersChanged(true /* force */);
+                    }
+                });
             }
         };
     }
