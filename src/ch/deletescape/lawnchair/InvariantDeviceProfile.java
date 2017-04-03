@@ -196,6 +196,7 @@ public class InvariantDeviceProfile {
             float iconScale = Float.valueOf(prefs.getString("pref_iconScale", ""));
             iconSize *= iconScale;
             hotseatIconSize *= iconScale;
+            fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
         }
         if (!prefs.getString("pref_iconTextScale", valueDefault).equals(valueDefault)) {
             iconTextSize *= Float.valueOf(prefs.getString("pref_iconTextScale", ""));
