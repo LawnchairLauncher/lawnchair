@@ -155,19 +155,22 @@ public class ExtractedColors {
             boolean shouldUseExtractedColors = FeatureFlags.hotseatShouldUseExtractedColors(context);
             if(ExtractionUtils.isSuperLight(hotseatPalette)) {
                 if (shouldUseExtractedColors){
-                    hotseatColor = ColorUtils.setAlphaComponent(hotseatPalette.getDarkMutedColor(Color.BLACK), (int) (0.20f * 255));
+                    int baseColor = hotseatPalette.getDarkMutedColor(hotseatPalette.getDarkVibrantColor(Color.BLACK));
+                    hotseatColor = ColorUtils.setAlphaComponent(baseColor, (int) (0.20f * 255));
                 } else {
                     hotseatColor = ColorUtils.setAlphaComponent(Color.BLACK, (int) (0.12f * 255));
                 }
             } else if (ExtractionUtils.isSuperDark(hotseatPalette)) {
                 if(shouldUseExtractedColors){
-                    hotseatColor = ColorUtils.setAlphaComponent(hotseatPalette.getLightMutedColor(Color.WHITE), (int) (0.25f * 255));
+                    int baseColor = hotseatPalette.getLightMutedColor(hotseatPalette.getLightVibrantColor(Color.WHITE));
+                    hotseatColor = ColorUtils.setAlphaComponent(baseColor, (int) (0.25f * 255));
                 } else {
                     hotseatColor = ColorUtils.setAlphaComponent(Color.WHITE, (int) (0.18f * 255));
                 }
             } else {
                 if(shouldUseExtractedColors){
-                    hotseatColor = ColorUtils.setAlphaComponent(hotseatPalette.getLightVibrantColor(Color.WHITE), (int) (0.40f * 255));
+                    int baseColor = hotseatPalette.getLightVibrantColor(hotseatPalette.getLightMutedColor(Color.WHITE));
+                    hotseatColor = ColorUtils.setAlphaComponent(baseColor, (int) (0.40f * 255));
                 } else {
                     hotseatColor = ColorUtils.setAlphaComponent(Color.WHITE, (int) (0.25f * 255));
                 }
