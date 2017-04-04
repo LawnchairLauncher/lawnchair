@@ -37,7 +37,7 @@ public class ColorExtractionService extends IntentService {
     /**
      * The fraction of the wallpaper to extract colors for use on the hotseat.
      */
-    private static final float HOTSEAT_FRACTION = 1f / 4;
+    private static final float HOTSEAT_FRACTION = 1f / 2;
 
     public ColorExtractionService() {
         super("ColorExtractionService");

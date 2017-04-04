@@ -151,9 +151,11 @@ public class ExtractedColors {
     public void updateHotseatPalette(Palette hotseatPalette) {
         int hotseatColor;
         if (hotseatPalette != null && ExtractionUtils.isSuperLight(hotseatPalette)) {
-            hotseatColor = ColorUtils.setAlphaComponent(Color.BLACK, (int) (0.12f * 255));
+            hotseatColor = ColorUtils.setAlphaComponent(hotseatPalette.getDarkMutedColor(Color.BLACK), (int) (0.20f * 255));
         } else if (hotseatPalette != null && ExtractionUtils.isSuperDark(hotseatPalette)) {
-            hotseatColor = ColorUtils.setAlphaComponent(Color.WHITE, (int) (0.18f * 255));
+            hotseatColor = ColorUtils.setAlphaComponent(hotseatPalette.getLightMutedColor(Color.WHITE), (int) (0.25f * 255));
+        } else if(hotseatPalette != null) {
+            hotseatColor = ColorUtils.setAlphaComponent(hotseatPalette.getLightVibrantColor(Color.WHITE), (int) (0.40f * 255));
         } else {
             hotseatColor = ColorUtils.setAlphaComponent(Color.WHITE, (int) (0.25f * 255));
         }
