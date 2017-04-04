@@ -41,6 +41,7 @@ public class ExtractionUtils {
     private static final float MIN_CONTRAST_RATIO = 2f;
 
     /**
+     * TODO: Find a way to use this pre-N
      * Extract colors in the :wallpaper-chooser process, if the wallpaper id has changed.
      * When the new colors are saved in the LauncherProvider,
      * Launcher will be notified in Launcher#onSettingsChanged(String, String).

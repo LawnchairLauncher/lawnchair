@@ -409,15 +409,12 @@ public class Launcher extends Activity
     }
 
     private void loadExtractedColorsAndColorItems() {
-        // TODO: do this in pre-N as well, once the extraction part is complete.
-        if (Utilities.isNycOrAbove()) {
-            mExtractedColors.load(this);
-            mHotseat.updateColor(mExtractedColors, !mPaused);
-            mWorkspace.getPageIndicator().updateColor(mExtractedColors);
-            // It's possible that All Apps is visible when this is run,
-            // so always use light status bar in that case.
-            activateLightStatusBar(isAllAppsVisible());
-        }
+        mExtractedColors.load(this);
+        mHotseat.updateColor(mExtractedColors, !mPaused);
+        mWorkspace.getPageIndicator().updateColor(mExtractedColors);
+        // It's possible that All Apps is visible when this is run,
+        // so always use light status bar in that case.
+        activateLightStatusBar(isAllAppsVisible());
     }
 
     /**
