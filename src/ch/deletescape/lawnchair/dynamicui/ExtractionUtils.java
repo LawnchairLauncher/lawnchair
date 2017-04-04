@@ -51,7 +51,7 @@ public class ExtractionUtils {
         Utilities.THREAD_POOL_EXECUTOR.execute(new Runnable() {
             @Override
             public void run() {
-                if (hasWallpaperIdChanged(context)) {
+                if (hasWallpaperIdChanged(context) || hasExtractionPreferencesChanged(context)) {
                     startColorExtractionService(context);
                 }
             }
@@ -119,4 +119,21 @@ public class ExtractionUtils {
         return ColorUtils.calculateContrast(foreground, background) >= MIN_CONTRAST_RATIO;
     }
 
+    private static boolean hasExtractionPreferencesChanged(Context context){
+        SharedPreferences prefs = Utilities.getPrefs(context);
+        boolean result = false;
+        String hotseatColoringKey = "pref_hotseatShouldUseExtractedColors";
+        boolean hotseatColoringValue = prefs.getBoolean(hotseatColoringKey, true);
+        String lightStatusBarKey = "pref_lightStatusBar";
+        boolean lightStatusBarValue = prefs.getBoolean(lightStatusBarKey, true);
+        if(prefs.getBoolean(hotseatColoringKey + "_cache", !hotseatColoringValue) != hotseatColoringValue) {
+            result = true;
+            prefs.edit().putBoolean(hotseatColoringKey + "_cache", hotseatColoringValue).apply();
+        }
+        if(prefs.getBoolean(lightStatusBarKey + "_cache", !lightStatusBarValue) != lightStatusBarValue){
+            result = true;
+            prefs.edit().putBoolean(lightStatusBarKey + "_cache", lightStatusBarValue).apply();
+        }
+        return result;
+    }
 }
