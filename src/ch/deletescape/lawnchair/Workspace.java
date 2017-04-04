@@ -72,6 +72,7 @@ import ch.deletescape.lawnchair.dragndrop.DragOptions;
 import ch.deletescape.lawnchair.dragndrop.DragScroller;
 import ch.deletescape.lawnchair.dragndrop.DragView;
 import ch.deletescape.lawnchair.dragndrop.SpringLoadedDragController;
+import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.folder.Folder;
 import ch.deletescape.lawnchair.folder.FolderIcon;
 import ch.deletescape.lawnchair.graphics.DragPreviewProvider;
@@ -472,7 +473,7 @@ public class Workspace extends PagedView
         // Set the wallpaper dimensions when Launcher starts up
         setWallpaperDimension();
 
-        setEdgeGlowColor(getResources().getColor(R.color.workspace_edge_effect_color));
+        setEdgeGlowColor(Utilities.getColor(getContext(), ExtractedColors.DOMINANT_INDEX, getResources().getColor(R.color.workspace_edge_effect_color)));
     }
 
     @Override

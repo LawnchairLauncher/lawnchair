@@ -77,6 +77,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import ch.deletescape.lawnchair.compat.UserHandleCompat;
+import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.graphics.ShadowGenerator;
 import ch.deletescape.lawnchair.util.IconNormalizer;
 
@@ -807,6 +808,12 @@ public final class Utilities {
         int colorAccent = ta.getColor(0, 0);
         ta.recycle();
         return colorAccent;
+    }
+
+    public static int getColor(Context context, int index, int defaultColor) {
+        ExtractedColors ec = new ExtractedColors();
+        ec.load(context);
+        return ec.getColor(index, defaultColor);
     }
 
     public static void sendCustomAccessibilityEvent(View target, int type, String text) {

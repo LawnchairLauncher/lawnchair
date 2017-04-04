@@ -40,15 +40,16 @@ public class ExtractedColors {
     public static final int VERSION_INDEX = 0;
     public static final int HOTSEAT_INDEX = 1;
     public static final int STATUS_BAR_INDEX = 2;
-    // public static final int VIBRANT_INDEX = 2;
-    // public static final int VIBRANT_DARK_INDEX = 3;
-    // public static final int VIBRANT_LIGHT_INDEX = 4;
-    // public static final int MUTED_INDEX = 5;
-    // public static final int MUTED_DARK_INDEX = 6;
-    // public static final int MUTED_LIGHT_INDEX = 7;
+    public static final int DOMINANT_INDEX = 3;
+    public static final int VIBRANT_INDEX = 4;
+    public static final int VIBRANT_DARK_INDEX = 5;
+    public static final int VIBRANT_LIGHT_INDEX = 6;
+    public static final int MUTED_INDEX = 7;
+    public static final int MUTED_DARK_INDEX = 8;
+    public static final int MUTED_LIGHT_INDEX = 9;
 
-    public static final int NUM_COLOR_PROFILES = 2;
-    private static final int VERSION = 2;
+    public static final int NUM_COLOR_PROFILES = 9;
+    private static final int VERSION = 4;
 
     private static final String COLOR_SEPARATOR = ",";
 
@@ -125,21 +126,20 @@ public class ExtractedColors {
                 setColorAtIndex(i, ExtractedColors.DEFAULT_COLOR);
             }
         } else {
-            // We currently don't use any of the colors defined by the Palette API,
-            // but this is how we would add them if we ever need them.
-
-            // setColorAtIndex(ExtractedColors.VIBRANT_INDEX,
-            // palette.getVibrantColor(ExtractedColors.DEFAULT_COLOR));
-            // setColorAtIndex(ExtractedColors.VIBRANT_DARK_INDEX,
-            // palette.getDarkVibrantColor(ExtractedColors.DEFAULT_DARK));
-            // setColorAtIndex(ExtractedColors.VIBRANT_LIGHT_INDEX,
-            // palette.getLightVibrantColor(ExtractedColors.DEFAULT_LIGHT));
-            // setColorAtIndex(ExtractedColors.MUTED_INDEX,
-            // palette.getMutedColor(DEFAULT_COLOR));
-            // setColorAtIndex(ExtractedColors.MUTED_DARK_INDEX,
-            // palette.getDarkMutedColor(ExtractedColors.DEFAULT_DARK));
-            // setColorAtIndex(ExtractedColors.MUTED_LIGHT_INDEX,
-            // palette.getLightVibrantColor(ExtractedColors.DEFAULT_LIGHT));
+            int dominant = palette.getDominantColor(DEFAULT_COLOR);
+            int muted_dark = palette.getDarkMutedColor(DEFAULT_DARK);
+            int muted_light = palette.getLightMutedColor(DEFAULT_LIGHT);
+            int muted = palette.getMutedColor(DEFAULT_COLOR);
+            int vibrant_dark = palette.getDarkVibrantColor(DEFAULT_DARK);
+            int vibrant_light = palette.getLightVibrantColor(DEFAULT_LIGHT);
+            int vibrant = palette.getVibrantColor(DEFAULT_COLOR);
+            setColorAtIndex(DOMINANT_INDEX, dominant);
+            setColorAtIndex(VIBRANT_DARK_INDEX, vibrant_dark);
+            setColorAtIndex(VIBRANT_LIGHT_INDEX, vibrant_light);
+            setColorAtIndex(VIBRANT_INDEX, vibrant);
+            setColorAtIndex(MUTED_INDEX, muted);
+            setColorAtIndex(MUTED_DARK_INDEX, muted_dark);
+            setColorAtIndex(MUTED_LIGHT_INDEX, muted_light);
         }
     }
 
