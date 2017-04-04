@@ -51,7 +51,7 @@ public class ColorExtractionService extends IntentService {
         if (wallpaperManager.getWallpaperInfo() != null) {
             // We can't extract colors from live wallpapers, so just use the default color always.
             extractedColors.updatePalette(null);
-            extractedColors.updateHotseatPalette(null);
+            extractedColors.updateHotseatPalette(getApplicationContext(), null);
         } else {
             Bitmap wallpaper = ((BitmapDrawable) wallpaperManager.getDrawable()).getBitmap();
             Palette palette = Palette.from(wallpaper).generate();
@@ -63,7 +63,7 @@ public class ColorExtractionService extends IntentService {
                             wallpaper.getWidth(), wallpaper.getHeight())
                     .clearFilters()
                     .generate();
-            extractedColors.updateHotseatPalette(hotseatPalette);
+            extractedColors.updateHotseatPalette(getApplicationContext(), hotseatPalette);
 
             if (FeatureFlags.lightStatusBar(getApplicationContext())) {
                 int statusBarHeight = getResources()

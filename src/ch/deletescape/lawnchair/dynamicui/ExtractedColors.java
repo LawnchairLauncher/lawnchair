@@ -23,6 +23,7 @@ import android.support.v7.graphics.Palette;
 import android.util.Log;
 
 import ch.deletescape.lawnchair.Utilities;
+import ch.deletescape.lawnchair.config.FeatureFlags;
 
 /**
  * Saves and loads colors extracted from the wallpaper, as well as the associated wallpaper id.
@@ -144,18 +145,33 @@ public class ExtractedColors {
 
     /**
      * The hotseat's color is defined as follows:
-     * - 12% black for super light wallpaper
-     * - 18% white for super dark
-     * - 25% white otherwise
+     * - 20% darkMuted or 12% black for super light wallpaper
+     * - 25% lightMuted or 18% white for super dark
+     * - 40% lightVibrant or 25% white otherwise
      */
-    public void updateHotseatPalette(Palette hotseatPalette) {
+    public void updateHotseatPalette(Context context, Palette hotseatPalette) {
         int hotseatColor;
-        if (hotseatPalette != null && ExtractionUtils.isSuperLight(hotseatPalette)) {
-            hotseatColor = ColorUtils.setAlphaComponent(hotseatPalette.getDarkMutedColor(Color.BLACK), (int) (0.20f * 255));
-        } else if (hotseatPalette != null && ExtractionUtils.isSuperDark(hotseatPalette)) {
-            hotseatColor = ColorUtils.setAlphaComponent(hotseatPalette.getLightMutedColor(Color.WHITE), (int) (0.25f * 255));
-        } else if(hotseatPalette != null) {
-            hotseatColor = ColorUtils.setAlphaComponent(hotseatPalette.getLightVibrantColor(Color.WHITE), (int) (0.40f * 255));
+        if (hotseatPalette != null){
+            boolean shouldUseExtractedColors = FeatureFlags.hotseatShouldUseExtractedColors(context);
+            if(ExtractionUtils.isSuperLight(hotseatPalette)) {
+                if (shouldUseExtractedColors){
+                    hotseatColor = ColorUtils.setAlphaComponent(hotseatPalette.getDarkMutedColor(Color.BLACK), (int) (0.20f * 255));
+                } else {
+                    hotseatColor = ColorUtils.setAlphaComponent(Color.BLACK, (int) (0.12f * 255));
+                }
+            } else if (ExtractionUtils.isSuperDark(hotseatPalette)) {
+                if(shouldUseExtractedColors){
+                    hotseatColor = ColorUtils.setAlphaComponent(hotseatPalette.getLightMutedColor(Color.WHITE), (int) (0.25f * 255));
+                } else {
+                    hotseatColor = ColorUtils.setAlphaComponent(Color.WHITE, (int) (0.18f * 255));
+                }
+            } else {
+                if(shouldUseExtractedColors){
+                    hotseatColor = ColorUtils.setAlphaComponent(hotseatPalette.getLightVibrantColor(Color.WHITE), (int) (0.40f * 255));
+                } else {
+                    hotseatColor = ColorUtils.setAlphaComponent(Color.WHITE, (int) (0.25f * 255));
+                }
+            }
         } else {
             hotseatColor = ColorUtils.setAlphaComponent(Color.WHITE, (int) (0.25f * 255));
         }

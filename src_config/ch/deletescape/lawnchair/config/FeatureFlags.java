@@ -28,6 +28,7 @@ public final class FeatureFlags {
     private static final String KEY_PREF_LIGHT_STATUS_BAR = "pref_lightStatusBar";
     private static final String KEY_PREF_PINCH_TO_OVERVIEW = "pref_pinchToOverview";
     private static final String KEY_PREF_PULLDOWN_SEARCH = "pref_pulldownSearch";
+    private static final String KEY_PREF_HOTSEAT_EXTRACTED_COLORS = "pref_hotseatShouldUseExtractedColors";
 
     private FeatureFlags() {
     }
@@ -47,5 +48,9 @@ public final class FeatureFlags {
     // When enabled the status bar may show dark icons based on the top of the wallpaper.
     public static boolean lightStatusBar(Context context) {
         return Utilities.getPrefs(context).getBoolean(KEY_PREF_LIGHT_STATUS_BAR, false);
+    }
+
+    public static boolean hotseatShouldUseExtractedColors(Context context){
+        return Utilities.getPrefs(context).getBoolean(KEY_PREF_HOTSEAT_EXTRACTED_COLORS, true);
     }
 }

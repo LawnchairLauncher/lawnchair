@@ -28,6 +28,13 @@
         android:defaultValue="false"
         android:persistent="true" />
 
+    <SwitchPreference
+        android:key="pref_hotseatShouldUseExtractedColors"
+        android:title="Hotseat uses Wallpaper colors"
+        android:summary="When enabled the Hotseat will be colored with a color extracted from the wallpaper"
+        android:defaultValue="true"
+        android:persistent="true" />
+
     <ListPreference
         android:key="pref_numCols"
         android:title="Number of columns"
