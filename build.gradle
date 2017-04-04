@@ -62,15 +62,15 @@ repositories {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:25.3.0'
-    compile 'com.android.support:recyclerview-v7:25.3.0'
-    compile 'com.android.support:palette-v7:25.3.0'
+    compile 'com.android.support:support-v4:25.3.1'
+    compile 'com.android.support:recyclerview-v7:25.3.1'
+    compile 'com.android.support:palette-v7:25.3.1'
     compile 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-2'
 
     testCompile 'junit:junit:4.12'
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
-    androidTestCompile 'com.android.support:support-annotations:25.3.0'
+    androidTestCompile 'com.android.support:support-annotations:25.3.1'
 }
 
 protobuf {
