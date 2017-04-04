@@ -47,9 +47,10 @@ public class ExtractedColors {
     public static final int MUTED_INDEX = 7;
     public static final int MUTED_DARK_INDEX = 8;
     public static final int MUTED_LIGHT_INDEX = 9;
+    public static final int VIBRANT_FOREGROUND_INDEX = 10;
 
-    public static final int NUM_COLOR_PROFILES = 9;
-    private static final int VERSION = 4;
+    public static final int NUM_COLOR_PROFILES = 10;
+    private static final int VERSION = 5;
 
     private static final String COLOR_SEPARATOR = ",";
 
@@ -132,11 +133,12 @@ public class ExtractedColors {
             int muted = palette.getMutedColor(DEFAULT_COLOR);
             int vibrant_dark = palette.getDarkVibrantColor(DEFAULT_DARK);
             int vibrant_light = palette.getLightVibrantColor(DEFAULT_LIGHT);
-            int vibrant = palette.getVibrantColor(DEFAULT_COLOR);
+            Palette.Swatch vibrant = palette.getVibrantSwatch();
             setColorAtIndex(DOMINANT_INDEX, dominant);
             setColorAtIndex(VIBRANT_DARK_INDEX, vibrant_dark);
             setColorAtIndex(VIBRANT_LIGHT_INDEX, vibrant_light);
-            setColorAtIndex(VIBRANT_INDEX, vibrant);
+            setColorAtIndex(VIBRANT_INDEX, vibrant != null ? vibrant.getRgb() : DEFAULT_COLOR);
+            setColorAtIndex(VIBRANT_FOREGROUND_INDEX, vibrant != null ? vibrant.getBodyTextColor() : Color.BLACK);
             setColorAtIndex(MUTED_INDEX, muted);
             setColorAtIndex(MUTED_DARK_INDEX, muted_dark);
             setColorAtIndex(MUTED_LIGHT_INDEX, muted_light);

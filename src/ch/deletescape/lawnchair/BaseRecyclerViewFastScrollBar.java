@@ -29,6 +29,7 @@ import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
+import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.util.Thunk;
 
 /**
@@ -86,7 +87,7 @@ public class BaseRecyclerViewFastScrollBar {
         mTrackPaint = new Paint();
         mTrackPaint.setColor(rv.getFastScrollerTrackColor(Color.BLACK));
         mTrackPaint.setAlpha(MAX_TRACK_ALPHA);
-        mThumbActiveColor = mThumbInactiveColor = Utilities.getColorAccent(rv.getContext());
+        mThumbActiveColor = mThumbInactiveColor = Utilities.getColor(rv.getContext(), ExtractedColors.VIBRANT_INDEX, Utilities.getColorAccent(rv.getContext()));
         mThumbPaint = new Paint();
         mThumbPaint.setAntiAlias(true);
         mThumbPaint.setColor(mThumbInactiveColor);

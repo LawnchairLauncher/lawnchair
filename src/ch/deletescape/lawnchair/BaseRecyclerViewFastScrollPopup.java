@@ -25,6 +25,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
+import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
+
 /**
  * The fast scroller popup that shows the section name the list will jump to.
  */
@@ -63,12 +65,18 @@ public class BaseRecyclerViewFastScrollPopup {
 
         mBgOriginalSize = res.getDimensionPixelSize(R.dimen.container_fastscroll_popup_size);
         mBg = rv.getContext().getDrawable(R.drawable.container_fastscroll_popup_bg);
+        int tint = Utilities.getColor(rv.getContext(), ExtractedColors.VIBRANT_INDEX, -1);
         mBg.setBounds(0, 0, mBgOriginalSize, mBgOriginalSize);
 
         mTextPaint = new Paint();
         mTextPaint.setColor(Color.WHITE);
         mTextPaint.setAntiAlias(true);
         mTextPaint.setTextSize(res.getDimensionPixelSize(R.dimen.container_fastscroll_popup_text_size));
+
+        if(tint != -1){
+            mBg.setTint(tint);
+            mTextPaint.setColor(Utilities.getColor(rv.getContext(), ExtractedColors.VIBRANT_FOREGROUND_INDEX, Color.WHITE));
+        }
 
         mShadowPaint = new Paint();
         mShadowPaint.setAntiAlias(true);
