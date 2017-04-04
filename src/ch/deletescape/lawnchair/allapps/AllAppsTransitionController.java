@@ -6,7 +6,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
-import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
@@ -40,7 +39,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         View.OnLayoutChangeListener {
 
     private static final String TAG = "AllAppsTrans";
-    private float mBgAlpha;
 
     private final Interpolator mAccelInterpolator = new AccelerateInterpolator(2f);
     private final Interpolator mDecelInterpolator = new DecelerateInterpolator(3f);
@@ -101,7 +99,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mProgress = 1f;
         mBezelSwipeUpHeight = l.getResources().getDimensionPixelSize(
                 R.dimen.all_apps_bezel_swipe_height);
-        mBgAlpha = Float.valueOf(Utilities.getPrefs(l.getApplicationContext()).getString("pref_allAppsOpacity", "1.0"));
         mEvaluator = new ArgbEvaluator();
         mAllAppsBackgroundColor = ContextCompat.getColor(l, R.color.all_apps_container_color);
     }
@@ -298,7 +295,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
         int color = (Integer) mEvaluator.evaluate(mDecelInterpolator.getInterpolation(alpha),
                 mHotseatBackgroundColor, mAllAppsBackgroundColor);
-        int bgAlpha = (int) (mBgAlpha * 255);
+        float tmpAlpha = Float.valueOf(Utilities.getPrefs(mLauncher.getApplicationContext()).getString("pref_allAppsOpacity", "1.0"));
+        int bgAlpha = (int) (tmpAlpha * 255);
 
         mAppsView.setRevealDrawableColor(ColorUtils.setAlphaComponent(color, bgAlpha));
         mAppsView.getContentView().setAlpha(alpha);
