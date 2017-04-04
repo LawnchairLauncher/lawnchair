@@ -40,6 +40,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         View.OnLayoutChangeListener {
 
     private static final String TAG = "AllAppsTrans";
+    public static final float ALL_APPS_BACKGROUND_ALPHA = 0.80f;
 
     private final Interpolator mAccelInterpolator = new AccelerateInterpolator(2f);
     private final Interpolator mDecelInterpolator = new DecelerateInterpolator(3f);
@@ -291,14 +292,13 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mProgress = progress;
         float shiftCurrent = progress * mShiftRange;
 
-        float workspaceHotseatAlpha = Utilities.boundToRange(progress, 0f, 1f);
-        float alpha = 1 - workspaceHotseatAlpha;
+        float workspaceHotseatAlpha = Utilities.boundToRange(progress, 0f, 1);
+        float alpha = 1f - workspaceHotseatAlpha;
         float interpolation = mAccelInterpolator.getInterpolation(workspaceHotseatAlpha);
 
         int color = (Integer) mEvaluator.evaluate(mDecelInterpolator.getInterpolation(alpha),
                 mHotseatBackgroundColor, mAllAppsBackgroundColor);
-        int bgAlpha = Color.alpha((int) mEvaluator.evaluate(alpha,
-                mHotseatBackgroundColor, mAllAppsBackgroundColor));
+        int bgAlpha = (int) (ALL_APPS_BACKGROUND_ALPHA * 255);
 
         mAppsView.setRevealDrawableColor(ColorUtils.setAlphaComponent(color, bgAlpha));
         mAppsView.getContentView().setAlpha(alpha);

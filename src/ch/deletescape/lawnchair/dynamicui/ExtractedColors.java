@@ -127,18 +127,18 @@ public class ExtractedColors {
                 setColorAtIndex(i, ExtractedColors.DEFAULT_COLOR);
             }
         } else {
-            int dominant = palette.getDominantColor(DEFAULT_COLOR);
-            int muted_dark = palette.getDarkMutedColor(DEFAULT_DARK);
-            int muted_light = palette.getLightMutedColor(DEFAULT_LIGHT);
-            int muted = palette.getMutedColor(DEFAULT_COLOR);
-            int vibrant_dark = palette.getDarkVibrantColor(DEFAULT_DARK);
-            int vibrant_light = palette.getLightVibrantColor(DEFAULT_LIGHT);
+            int dominant = palette.getDominantColor(-1);
+            int muted_dark = palette.getDarkMutedColor(-1);
+            int muted_light = palette.getLightMutedColor(-1);
+            int muted = palette.getMutedColor(-1);
+            int vibrant_dark = palette.getDarkVibrantColor(-1);
+            int vibrant_light = palette.getLightVibrantColor(-1);
             Palette.Swatch vibrant = palette.getVibrantSwatch();
             setColorAtIndex(DOMINANT_INDEX, dominant);
             setColorAtIndex(VIBRANT_DARK_INDEX, vibrant_dark);
             setColorAtIndex(VIBRANT_LIGHT_INDEX, vibrant_light);
-            setColorAtIndex(VIBRANT_INDEX, vibrant != null ? vibrant.getRgb() : DEFAULT_COLOR);
-            setColorAtIndex(VIBRANT_FOREGROUND_INDEX, vibrant != null ? vibrant.getBodyTextColor() : Color.BLACK);
+            setColorAtIndex(VIBRANT_INDEX, vibrant != null ? vibrant.getRgb() : -1);
+            setColorAtIndex(VIBRANT_FOREGROUND_INDEX, vibrant != null ? vibrant.getBodyTextColor() : -1);
             setColorAtIndex(MUTED_INDEX, muted);
             setColorAtIndex(MUTED_DARK_INDEX, muted_dark);
             setColorAtIndex(MUTED_LIGHT_INDEX, muted_light);
