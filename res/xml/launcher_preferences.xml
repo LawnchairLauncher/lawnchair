@@ -36,6 +36,14 @@
         android:persistent="true" />
 
     <ListPreference
+        android:key="pref_allAppsOpacity"
+        android:title="All apps opacity"
+        android:entries="@array/allAppsOpacityTexts"
+        android:entryValues="@array/allAppsOpacityValues"
+        android:defaultValue="@string/allAppsOpacityDefault"
+        android:persistent="true" />
+
+    <ListPreference
         android:key="pref_numCols"
         android:title="Number of columns"
         android:entries="@array/numColsTexts"

@@ -40,7 +40,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         View.OnLayoutChangeListener {
 
     private static final String TAG = "AllAppsTrans";
-    public static final float ALL_APPS_BACKGROUND_ALPHA = 0.80f;
+    private float mBgAlpha;
 
     private final Interpolator mAccelInterpolator = new AccelerateInterpolator(2f);
     private final Interpolator mDecelInterpolator = new DecelerateInterpolator(3f);
@@ -101,7 +101,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mProgress = 1f;
         mBezelSwipeUpHeight = l.getResources().getDimensionPixelSize(
                 R.dimen.all_apps_bezel_swipe_height);
-
+        mBgAlpha = Float.valueOf(Utilities.getPrefs(l.getApplicationContext()).getString("pref_allAppsOpacity", "1.0"));
         mEvaluator = new ArgbEvaluator();
         mAllAppsBackgroundColor = ContextCompat.getColor(l, R.color.all_apps_container_color);
     }
@@ -298,7 +298,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
         int color = (Integer) mEvaluator.evaluate(mDecelInterpolator.getInterpolation(alpha),
                 mHotseatBackgroundColor, mAllAppsBackgroundColor);
-        int bgAlpha = (int) (ALL_APPS_BACKGROUND_ALPHA * 255);
+        int bgAlpha = (int) (mBgAlpha * 255);
 
         mAppsView.setRevealDrawableColor(ColorUtils.setAlphaComponent(color, bgAlpha));
         mAppsView.getContentView().setAlpha(alpha);
