@@ -38,7 +38,7 @@ import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.util.LooperExecuter;
+import com.android.launcher3.util.LooperExecutor;
 
 import java.lang.reflect.Field;
 
@@ -169,7 +169,7 @@ public class IconShapeOverride {
                         mContext.getString(R.string.icon_shape_override_progress),
                         true /* indeterminate */,
                         false /* cancelable */);
-                new LooperExecuter(LauncherModel.getWorkerLooper()).execute(
+                new LooperExecutor(LauncherModel.getWorkerLooper()).execute(
                         new OverrideApplyHandler(mContext, newValue));
             }
             return false;
