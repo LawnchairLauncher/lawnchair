@@ -1259,7 +1259,11 @@ public class LauncherModel extends BroadcastReceiver
                 }
             }
         } else if (Intent.ACTION_WALLPAPER_CHANGED.equals(action)) {
-            ExtractionUtils.startColorExtractionService(context);
+            if(Utilities.isNycOrAbove()) {
+                ExtractionUtils.startColorExtractionServiceIfNecessary(context);
+            } else {
+                ExtractionUtils.startColorExtractionService(context);
+            }
         }
     }
 
