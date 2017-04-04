@@ -54,6 +54,7 @@ import com.android.launcher3.LauncherSettings.WorkspaceScreens;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dynamicui.ExtractionUtils;
+import com.android.launcher3.graphics.IconShapeOverride;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.RestoreDbTask;
@@ -109,6 +110,7 @@ public class LauncherProvider extends ContentProvider {
         // is the first component to get created. Initializing FileLog here ensures that it's
         // always available in the main process.
         FileLog.setDir(getContext().getApplicationContext().getFilesDir());
+        IconShapeOverride.apply(getContext());
         return true;
     }
 
