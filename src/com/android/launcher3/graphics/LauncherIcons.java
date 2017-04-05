@@ -28,6 +28,7 @@ import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
@@ -97,6 +98,10 @@ public class LauncherIcons {
         float scale = FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION ?
                 1 : IconNormalizer.getInstance(context).getScale(icon, null);
         Bitmap bitmap = createIconBitmap(icon, context, scale);
+        if (FeatureFlags.ADAPTIVE_ICON_SHADOW && Utilities.isAtLeastO() &&
+                icon instanceof AdaptiveIconDrawable) {
+            bitmap = ShadowGenerator.getInstance(context).recreateIcon(bitmap);
+        }
         return badgeIconForUser(bitmap, user, context);
     }
 
@@ -158,7 +163,17 @@ public class LauncherIcons {
      * Returns a bitmap suitable for the all apps view.
      */
     public static Bitmap createIconBitmap(Drawable icon, Context context) {
-        return createIconBitmap(icon, context, 1.0f /* scale */);
+        float scale = 1f;
+        if (FeatureFlags.ADAPTIVE_ICON_SHADOW && Utilities.isAtLeastO() &&
+                icon instanceof AdaptiveIconDrawable) {
+            scale = ShadowGenerator.getScaleForBounds(new RectF(0, 0, 0, 0));
+        }
+        Bitmap bitmap =  createIconBitmap(icon, context, scale);
+        if (FeatureFlags.ADAPTIVE_ICON_SHADOW && Utilities.isAtLeastO() &&
+                icon instanceof AdaptiveIconDrawable) {
+            bitmap = ShadowGenerator.getInstance(context).recreateIcon(bitmap);
+        }
+        return bitmap;
     }
 
     /**
@@ -185,16 +200,6 @@ public class LauncherIcons {
                 }
             }
 
-            Class iconClass = null;
-            if (FeatureFlags.ADAPTIVE_ICON_SHADOW && Utilities.isAtLeastO()) {
-                try {
-                    iconClass = Class.forName("android.graphics.drawable.AdaptiveIconDrawable");
-                } catch (Exception e) {
-                }
-            }
-            if (iconClass != null && iconClass.isAssignableFrom(icon.getClass())) {
-                scale *= ShadowGenerator.getScaleForBounds(new RectF(0, 0, 0, 0));
-            }
             int sourceWidth = icon.getIntrinsicWidth();
             int sourceHeight = icon.getIntrinsicHeight();
             if (sourceWidth > 0 && sourceHeight > 0) {
@@ -228,9 +233,6 @@ public class LauncherIcons {
             icon.setBounds(sOldBounds);
             canvas.setBitmap(null);
 
-            if (iconClass != null && iconClass.isAssignableFrom(icon.getClass())) {
-                bitmap = ShadowGenerator.getInstance(context).recreateIcon(bitmap);
-            }
             return bitmap;
         }
     }
