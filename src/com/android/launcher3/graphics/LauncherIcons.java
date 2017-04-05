@@ -184,6 +184,17 @@ public class LauncherIcons {
                     bitmapDrawable.setTargetDensity(context.getResources().getDisplayMetrics());
                 }
             }
+
+            Class iconClass = null;
+            if (FeatureFlags.ADAPTIVE_ICON_SHADOW && Utilities.isAtLeastO()) {
+                try {
+                    iconClass = Class.forName("android.graphics.drawable.AdaptiveIconDrawable");
+                } catch (Exception e) {
+                }
+            }
+            if (iconClass != null && iconClass.isAssignableFrom(icon.getClass())) {
+                scale *= ShadowGenerator.getScaleForBounds(new RectF(0, 0, 0, 0));
+            }
             int sourceWidth = icon.getIntrinsicWidth();
             int sourceHeight = icon.getIntrinsicHeight();
             if (sourceWidth > 0 && sourceHeight > 0) {
@@ -217,15 +228,8 @@ public class LauncherIcons {
             icon.setBounds(sOldBounds);
             canvas.setBitmap(null);
 
-            if (FeatureFlags.ADAPTIVE_ICON_SHADOW && Utilities.isAtLeastO()) {
-                try {
-                    Class clazz = Class.forName("android.graphics.drawable.AdaptiveIconDrawable");
-                    if (clazz.isAssignableFrom(icon.getClass())) {
-                        bitmap = ShadowGenerator.getInstance(context).recreateIcon(bitmap);
-                    }
-                } catch (Exception e) {
-                    // do nothing
-                }
+            if (iconClass != null && iconClass.isAssignableFrom(icon.getClass())) {
+                bitmap = ShadowGenerator.getInstance(context).recreateIcon(bitmap);
             }
             return bitmap;
         }
