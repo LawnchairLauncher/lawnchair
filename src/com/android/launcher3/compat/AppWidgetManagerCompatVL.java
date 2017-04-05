@@ -22,36 +22,48 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.UserHandle;
 import android.os.UserManager;
+import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
 
     private final UserManager mUserManager;
-    private final PackageManager mPm;
 
     AppWidgetManagerCompatVL(Context context) {
         super(context);
-        mPm = context.getPackageManager();
         mUserManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
     }
 
     @Override
-    public List<AppWidgetProviderInfo> getAllProviders() {
-        ArrayList<AppWidgetProviderInfo> providers = new ArrayList<AppWidgetProviderInfo>();
-        for (UserHandle user : mUserManager.getUserProfiles()) {
-            providers.addAll(mAppWidgetManager.getInstalledProvidersForProfile(user));
+    public List<AppWidgetProviderInfo> getAllProviders(@Nullable PackageUserKey packageUser) {
+        if (packageUser == null) {
+            ArrayList<AppWidgetProviderInfo> providers = new ArrayList<AppWidgetProviderInfo>();
+            for (UserHandle user : mUserManager.getUserProfiles()) {
+                providers.addAll(mAppWidgetManager.getInstalledProvidersForProfile(user));
+            }
+            return providers;
+        }
+        // Only get providers for the given package/user.
+        List<AppWidgetProviderInfo> providers = new ArrayList<>(mAppWidgetManager
+                .getInstalledProvidersForProfile(packageUser.mUser));
+        Iterator<AppWidgetProviderInfo> iterator = providers.iterator();
+        while (iterator.hasNext()) {
+            if (!iterator.next().provider.getPackageName().equals(packageUser.mPackageName)) {
+                iterator.remove();
+            }
         }
         return providers;
     }
