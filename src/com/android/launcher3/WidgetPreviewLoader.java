@@ -25,6 +25,7 @@ import android.os.AsyncTask;
 import android.os.CancellationSignal;
 import android.os.Handler;
 import android.os.UserHandle;
+import android.support.annotation.Nullable;
 import android.support.v4.graphics.ColorUtils;
 import android.util.Log;
 import android.util.LongSparseArray;
@@ -36,6 +37,7 @@ import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.graphics.ShadowGenerator;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SQLiteCacheHelper;
 import com.android.launcher3.util.Thunk;
@@ -170,8 +172,12 @@ public class WidgetPreviewLoader {
      *   1. Any preview generated for an old package version is removed
      *   2. Any preview for an absent package is removed
      * This ensures that we remove entries for packages which changed while the launcher was dead.
+     *
+     * @param packageUser if provided, specifies that list only contains previews for the
+     *                    given package/user, otherwise the list contains all previews
      */
-    public void removeObsoletePreviews(ArrayList<? extends ComponentKey> list) {
+    public void removeObsoletePreviews(ArrayList<? extends ComponentKey> list,
+            @Nullable PackageUserKey packageUser) {
         Preconditions.assertWorkerThread();
 
         LongSparseArray<HashSet<String>> validPackages = new LongSparseArray<>();
@@ -187,6 +193,8 @@ public class WidgetPreviewLoader {
         }
 
         LongSparseArray<HashSet<String>> packagesToDelete = new LongSparseArray<>();
+        long passedUserId = packageUser == null ? 0
+                : mUserManager.getSerialNumberForUser(packageUser.mUser);
         Cursor c = null;
         try {
             c = mDb.query(
@@ -198,6 +206,12 @@ public class WidgetPreviewLoader {
                 String pkg = c.getString(1);
                 long lastUpdated = c.getLong(2);
                 long version = c.getLong(3);
+
+                if (packageUser != null && (!pkg.equals(packageUser.mPackageName)
+                        || userId != passedUserId)) {
+                    // This preview is associated with a different package/user, no need to remove.
+                    continue;
+                }
 
                 HashSet<String> packages = validPackages.get(userId);
                 if (packages != null && packages.contains(pkg)) {

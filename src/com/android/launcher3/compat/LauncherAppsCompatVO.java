@@ -23,9 +23,11 @@ import android.content.pm.LauncherApps;
 import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.android.launcher3.compat.ShortcutConfigActivityInfo.ShortcutConfigActivityInfoVO;
+import com.android.launcher3.util.PackageUserKey;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -45,17 +47,28 @@ public class LauncherAppsCompatVO extends LauncherAppsCompatVL {
     }
 
     @Override
-    public List<ShortcutConfigActivityInfo> getCustomShortcutActivityList() {
+    public List<ShortcutConfigActivityInfo> getCustomShortcutActivityList(
+            @Nullable PackageUserKey packageUser) {
         List<ShortcutConfigActivityInfo> result = new ArrayList<>();
         UserHandle myUser = Process.myUserHandle();
 
         try {
             Method m = LauncherApps.class.getDeclaredMethod("getShortcutConfigActivityList",
                     String.class, UserHandle.class);
-            for (UserHandle user : UserManagerCompat.getInstance(mContext).getUserProfiles()) {
+            final List<UserHandle> users;
+            final String packageName;
+            if (packageUser == null) {
+                users = UserManagerCompat.getInstance(mContext).getUserProfiles();
+                packageName = null;
+            } else {
+                users = new ArrayList<>(1);
+                users.add(packageUser.mUser);
+                packageName = packageUser.mPackageName;
+            }
+            for (UserHandle user : users) {
                 boolean ignoreTargetSdk = myUser.equals(user);
                 List<LauncherActivityInfo> activities =
-                        (List<LauncherActivityInfo>) m.invoke(mLauncherApps, null, user);
+                        (List<LauncherActivityInfo>) m.invoke(mLauncherApps, packageName, user);
                 for (LauncherActivityInfo activityInfo : activities) {
                     if (ignoreTargetSdk || activityInfo.getApplicationInfo().targetSdkVersion >=
                             Build.VERSION_CODES.O) {

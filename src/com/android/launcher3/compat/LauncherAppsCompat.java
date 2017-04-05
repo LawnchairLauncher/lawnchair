@@ -33,6 +33,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.LooperExecutor;
+import com.android.launcher3.util.PackageUserKey;
 
 import java.util.List;
 
@@ -83,7 +84,8 @@ public abstract class LauncherAppsCompat {
     public abstract boolean isPackageEnabledForProfile(String packageName, UserHandle user);
     public abstract boolean isActivityEnabledForProfile(ComponentName component,
             UserHandle user);
-    public abstract List<ShortcutConfigActivityInfo> getCustomShortcutActivityList();
+    public abstract List<ShortcutConfigActivityInfo> getCustomShortcutActivityList(
+            @Nullable PackageUserKey packageUser);
 
     /**
      * request.accept() will initiate the following flow:

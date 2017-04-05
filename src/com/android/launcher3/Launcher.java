@@ -54,6 +54,7 @@ import android.os.StrictMode;
 import android.os.SystemClock;
 import android.os.Trace;
 import android.os.UserHandle;
+import android.support.annotation.Nullable;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -3951,13 +3952,17 @@ public class Launcher extends BaseActivity
 
     @Override
     public void notifyWidgetProvidersChanged() {
-        notifyWidgetProvidersChanged(false);
+        if (mWorkspace.getState().shouldUpdateWidget) {
+            refreshAndBindWidgetsForPackageUser(null);
+        }
     }
 
-    public void notifyWidgetProvidersChanged(boolean force) {
-        if (force || mWorkspace.getState().shouldUpdateWidget) {
-            mModel.refreshAndBindWidgetsAndShortcuts(this, mWidgetsView.isEmpty());
-        }
+    /**
+     * @param packageUser if null, refreshes all widgets and shortcuts, otherwise only
+     *                    refreshes the widgets and shortcuts associated with the given package/user
+     */
+    public void refreshAndBindWidgetsForPackageUser(@Nullable PackageUserKey packageUser) {
+        mModel.refreshAndBindWidgetsAndShortcuts(this, mWidgetsView.isEmpty(), packageUser);
     }
 
     public void lockScreenOrientation() {
