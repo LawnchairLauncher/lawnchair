@@ -119,6 +119,10 @@ public class LauncherIcons {
             }
         }
         Bitmap bitmap = createIconBitmap(icon, context, scale);
+        if (FeatureFlags.ADAPTIVE_ICON_SHADOW && Utilities.isAtLeastO() &&
+                icon instanceof AdaptiveIconDrawable) {
+            bitmap = ShadowGenerator.getInstance(context).recreateIcon(bitmap);
+        }
         return badgeIconForUser(bitmap, user, context);
     }
 
@@ -201,7 +205,17 @@ public class LauncherIcons {
      * Returns a bitmap suitable for the all apps view.
      */
     public static Bitmap createIconBitmap(Drawable icon, Context context) {
-        return createIconBitmap(icon, context, 1.0f /* scale */);
+        float scale = 1f;
+        if (FeatureFlags.ADAPTIVE_ICON_SHADOW && Utilities.isAtLeastO() &&
+                icon instanceof AdaptiveIconDrawable) {
+            scale = ShadowGenerator.getScaleForBounds(new RectF(0, 0, 0, 0));
+        }
+        Bitmap bitmap =  createIconBitmap(icon, context, scale);
+        if (FeatureFlags.ADAPTIVE_ICON_SHADOW && Utilities.isAtLeastO() &&
+                icon instanceof AdaptiveIconDrawable) {
+            bitmap = ShadowGenerator.getInstance(context).recreateIcon(bitmap);
+        }
+        return bitmap;
     }
 
     /**
@@ -226,16 +240,6 @@ public class LauncherIcons {
                 }
             }
 
-            Class iconClass = null;
-            if (FeatureFlags.ADAPTIVE_ICON_SHADOW && Utilities.isAtLeastO()) {
-                try {
-                    iconClass = Class.forName("android.graphics.drawable.AdaptiveIconDrawable");
-                } catch (Exception e) {
-                }
-            }
-            if (iconClass != null && iconClass.isAssignableFrom(icon.getClass())) {
-                scale *= ShadowGenerator.getScaleForBounds(new RectF(0, 0, 0, 0));
-            }
             int sourceWidth = icon.getIntrinsicWidth();
             int sourceHeight = icon.getIntrinsicHeight();
             if (sourceWidth > 0 && sourceHeight > 0) {
@@ -269,9 +273,6 @@ public class LauncherIcons {
             icon.setBounds(sOldBounds);
             canvas.setBitmap(null);
 
-            if (iconClass != null && iconClass.isAssignableFrom(icon.getClass())) {
-                bitmap = ShadowGenerator.getInstance(context).recreateIcon(bitmap);
-            }
             return bitmap;
         }
     }
