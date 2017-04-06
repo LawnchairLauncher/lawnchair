@@ -129,6 +129,11 @@ public class LauncherModel extends BroadcastReceiver
     // our monitoring of the package manager provides all updates and we never
     // need to do a requery. This is only ever touched from the loader thread.
     private boolean mModelLoaded;
+    public boolean isModelLoaded() {
+        synchronized (mLock) {
+            return mModelLoaded && mLoaderTask == null;
+        }
+    }
 
     /**
      * Set of runnables to be called on the background thread after the workspace binding
