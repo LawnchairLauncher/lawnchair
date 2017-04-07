@@ -21,14 +21,13 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapShader;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -52,8 +51,9 @@ public abstract class PopupItemView extends FrameLayout
 
     protected View mIconView;
 
-    private final Paint mBackgroundClipPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG |
-            Paint.FILTER_BITMAP_FLAG);
+    private final Paint mBackgroundClipPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+    private final Matrix mMatrix = new Matrix();
+    private Bitmap mRoundedCornerBitmap;
 
     public PopupItemView(Context context) {
         this(context, null, 0);
@@ -67,6 +67,14 @@ public abstract class PopupItemView extends FrameLayout
         super(context, attrs, defStyle);
 
         mPillRect = new Rect();
+
+        // Initialize corner clipping Bitmap and Paint.
+        int radius = (int) getBackgroundRadius();
+        mRoundedCornerBitmap = Bitmap.createBitmap(radius, radius, Bitmap.Config.ALPHA_8);
+        Canvas canvas = new Canvas();
+        canvas.setBitmap(mRoundedCornerBitmap);
+        canvas.drawArc(0, 0, radius*2, radius*2, 180, 90, true, mBackgroundClipPaint);
+        mBackgroundClipPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
     }
 
     @Override
@@ -81,30 +89,29 @@ public abstract class PopupItemView extends FrameLayout
         mPillRect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
     }
 
-    protected void initializeBackgroundClipping(boolean force) {
-        if (force || mBackgroundClipPaint.getShader() == null) {
-            mBackgroundClipPaint.setXfermode(null);
-            mBackgroundClipPaint.setShader(null);
-            Bitmap backgroundBitmap = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(),
-                    Bitmap.Config.ALPHA_8);
-            Canvas canvas = new Canvas();
-            canvas.setBitmap(backgroundBitmap);
-            canvas.drawRoundRect(0, 0, getMeasuredWidth(), getMeasuredHeight(),
-                    getBackgroundRadius(), getBackgroundRadius(), mBackgroundClipPaint);
-            Shader backgroundClipShader = new BitmapShader(backgroundBitmap,
-                    Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-            mBackgroundClipPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
-            mBackgroundClipPaint.setShader(backgroundClipShader);
-        }
-    }
-
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        initializeBackgroundClipping(false /* force */);
-        int saveCount = canvas.saveLayer(0, 0, getWidth(), getHeight(), null,
-                Canvas.HAS_ALPHA_LAYER_SAVE_FLAG | Canvas.CLIP_TO_LAYER_SAVE_FLAG);
+        int saveCount = canvas.saveLayer(0, 0, getWidth(), getHeight(), null);
         super.dispatchDraw(canvas);
-        canvas.drawPaint(mBackgroundClipPaint);
+
+        int cornerWidth = mRoundedCornerBitmap.getWidth();
+        int cornerHeight = mRoundedCornerBitmap.getHeight();
+        // Clip top left corner.
+        mMatrix.reset();
+        canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
+        // Clip top right corner.
+        mMatrix.setRotate(90, cornerWidth / 2, cornerHeight / 2);
+        mMatrix.postTranslate(canvas.getWidth() - cornerWidth, 0);
+        canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
+        // Clip bottom right corner.
+        mMatrix.setRotate(180, cornerWidth / 2, cornerHeight / 2);
+        mMatrix.postTranslate(canvas.getWidth() - cornerWidth, canvas.getHeight() - cornerHeight);
+        canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
+        // Clip bottom left corner.
+        mMatrix.setRotate(270, cornerWidth / 2, cornerHeight / 2);
+        mMatrix.postTranslate(0, canvas.getHeight() - cornerHeight);
+        canvas.drawBitmap(mRoundedCornerBitmap, mMatrix, mBackgroundClipPaint);
+
         canvas.restoreToCount(saveCount);
     }
 
