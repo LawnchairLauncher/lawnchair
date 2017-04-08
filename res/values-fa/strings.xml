@@ -33,10 +33,8 @@
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"برای انتخاب یک ابزارک، دو ضربه سریع بزنید و نگه‌دارید یا از اقدامات سفارشی استفاده کنید."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"‏%1$d عرض در %2$d طول"</string>
-    <!-- no translation found for add_item_request_drag_hint (5899764264480397019) -->
-    <skip />
-    <!-- no translation found for place_automatically (8064208734425456485) -->
-    <skip />
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"برای قرار دادن به‌صورت دستی لمس کنید و بکشید"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"افزودن خودکار"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"جستجوی برنامه‌ها"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"در حال بارگیری برنامه‌ها..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"هیچ برنامه‌ای مطابق با «<xliff:g id="QUERY">%1$s</xliff:g>» پیدا نشد"</string>
@@ -79,6 +77,12 @@
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"تنظیم نمایشگر کنونی اجازه چرخش نمی‌دهد"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"افزودن نماد به صفحه اصلی"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"برای برنامه‌های جدید"</string>
+    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
+    <skip />
+    <!-- no translation found for icon_shape_no_override (3678524428085518367) -->
+    <skip />
+    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
+    <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"نامشخص"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"حذف"</string>
     <string name="abandoned_search" msgid="891119232568284442">"جستجو"</string>
