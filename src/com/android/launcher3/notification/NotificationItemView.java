@@ -17,7 +17,6 @@
 package com.android.launcher3.notification;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -74,20 +73,8 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
 
     public Animator animateHeightRemoval(int heightToRemove) {
         final int newHeight = getHeight() - heightToRemove;
-        Animator heightAnimator = new PillHeightRevealOutlineProvider(mPillRect,
+        return new PillHeightRevealOutlineProvider(mPillRect,
                 getBackgroundRadius(), newHeight).createRevealAnimator(this, true /* isReversed */);
-        heightAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (newHeight > 0) {
-                    measure(MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.EXACTLY),
-                            MeasureSpec.makeMeasureSpec(newHeight, MeasureSpec.EXACTLY));
-                    initializeBackgroundClipping(true /* force */);
-                    invalidate();
-                }
-            }
-        });
-        return heightAnimator;
     }
 
     public void updateHeader(int notificationCount) {
