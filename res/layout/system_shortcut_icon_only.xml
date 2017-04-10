@@ -16,8 +16,7 @@
 
 <ImageView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/deep_shortcut_icon_size"
-    android:layout_height="@dimen/deep_shortcut_icon_size"
-    android:background="?android:attr/selectableItemBackground"
-    android:layout_marginEnd="@dimen/deep_shortcut_padding_start"
-    android:padding="4dp" />
+    android:layout_width="@dimen/system_shortcut_header_icon_touch_size"
+    android:layout_height="@dimen/system_shortcut_header_icon_touch_size"
+    android:background="?android:attr/selectableItemBackgroundBorderless"
+    android:padding="@dimen/system_shortcut_header_icon_padding" />

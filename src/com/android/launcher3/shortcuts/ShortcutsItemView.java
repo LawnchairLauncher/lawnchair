@@ -118,8 +118,7 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
         return false;
     }
 
-    public void addShortcutView(View shortcutView, PopupPopulator.Item shortcutType,
-            boolean isAboveIcon) {
+    public void addShortcutView(View shortcutView, PopupPopulator.Item shortcutType) {
         if (shortcutType == PopupPopulator.Item.SHORTCUT) {
             mDeepShortcutViews.add((DeepShortcutView) shortcutView);
         } else {
@@ -130,11 +129,7 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
             if (mSystemShortcutIcons == null) {
                 mSystemShortcutIcons = (LinearLayout) mLauncher.getLayoutInflater().inflate(
                         R.layout.system_shortcut_icons, mShortcutsLayout, false);
-                if (isAboveIcon) {
-                    mShortcutsLayout.addView(mSystemShortcutIcons, 0);
-                } else {
-                    mShortcutsLayout.addView(mSystemShortcutIcons);
-                }
+                mShortcutsLayout.addView(mSystemShortcutIcons, 0);
             }
             mSystemShortcutIcons.addView(shortcutView);
         } else {

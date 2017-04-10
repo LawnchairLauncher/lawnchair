@@ -167,7 +167,7 @@ public class FastBitmapDrawable extends Drawable {
         }
     }
 
-    protected IconPalette getIconPalette() {
+    public IconPalette getIconPalette() {
         if (mIconPalette == null) {
             mIconPalette = IconPalette.fromDominantColor(Utilities
                     .findDominantColorByHue(mBitmap, 20));

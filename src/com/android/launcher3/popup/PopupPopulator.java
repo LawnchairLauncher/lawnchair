@@ -54,6 +54,7 @@ public class PopupPopulator {
 
     public static final int MAX_ITEMS = 4;
     @VisibleForTesting static final int NUM_DYNAMIC = 2;
+    private static final int MAX_SHORTCUTS_IF_NOTIFICATIONS = 2;
 
     public enum Item {
         SHORTCUT(R.layout.deep_shortcut, true),
@@ -74,7 +75,11 @@ public class PopupPopulator {
             @NonNull List<NotificationKeyData> notificationKeys) {
         boolean hasNotifications = notificationKeys.size() > 0;
         int numNotificationItems = hasNotifications ? 1 : 0;
-        int numItems = Math.min(MAX_ITEMS, shortcutIds.size() + numNotificationItems)
+        int numShortcuts = shortcutIds.size();
+        if (hasNotifications && numShortcuts > MAX_SHORTCUTS_IF_NOTIFICATIONS) {
+            numShortcuts = MAX_SHORTCUTS_IF_NOTIFICATIONS;
+        }
+        int numItems = Math.min(MAX_ITEMS, numShortcuts + numNotificationItems)
                 + PopupDataProvider.SYSTEM_SHORTCUTS.length;
         Item[] items = new Item[numItems];
         for (int i = 0; i < numItems; i++) {

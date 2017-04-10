@@ -27,7 +27,7 @@
         android:gravity="start|center_vertical"
         android:textAlignment="viewStart"
         android:paddingStart="@dimen/bg_popup_item_height"
-        android:paddingEnd="@dimen/deep_shortcut_padding_end"
+        android:paddingEnd="@dimen/popup_padding_end"
         android:textSize="14sp"
         android:fontFamily="sans-serif"
         launcher:layoutHorizontal="true" />
@@ -36,8 +36,8 @@
         android:id="@+id/icon"
         android:layout_width="@dimen/system_shortcut_icon_size"
         android:layout_height="@dimen/system_shortcut_icon_size"
-        android:layout_margin="@dimen/system_shortcut_padding_start"
-        android:layout_gravity="start" />
+        android:layout_marginStart="@dimen/system_shortcut_margin_start"
+        android:layout_gravity="start|center_vertical" />
 
     <View
         android:id="@+id/divider"
