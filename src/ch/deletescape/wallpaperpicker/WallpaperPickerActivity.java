@@ -143,10 +143,6 @@ public class WallpaperPickerActivity extends WallpaperCropActivity
         mSavedImages = new SavedWallpaperImages(this);
         populateWallpapers(mWallpapersView, mSavedImages.loadThumbnailsAndImageIdList(), true);
 
-        // Populate the built-in wallpapers
-        ArrayList<WallpaperTileInfo> wallpapers = findBundledWallpapers();
-        populateWallpapers(mWallpapersView, wallpapers, false);
-
         // Load live wallpapers asynchronously
         new LiveWallpaperInfo.LoaderTask(this) {
 
@@ -424,49 +420,6 @@ public class WallpaperPickerActivity extends WallpaperCropActivity
             // Something was set on the third-party activity.
             setResult(Activity.RESULT_OK);
             finish();
-        }
-    }
-
-    public ArrayList<WallpaperTileInfo> findBundledWallpapers() {
-        final ArrayList<WallpaperTileInfo> bundled = new ArrayList<WallpaperTileInfo>(24);
-        Pair<ApplicationInfo, Integer> r = getWallpaperArrayResourceId();
-        if (r != null) {
-            try {
-                Resources wallpaperRes = getPackageManager().getResourcesForApplication(r.first);
-                addWallpapers(bundled, wallpaperRes, r.first.packageName, r.second);
-            } catch (PackageManager.NameNotFoundException e) {
-            }
-        }
-
-        // Add an entry for the default wallpaper (stored in system resources)
-        WallpaperTileInfo defaultWallpaperInfo = DefaultWallpaperInfo.get(this);
-        if (defaultWallpaperInfo != null) {
-            bundled.add(0, defaultWallpaperInfo);
-        }
-        return bundled;
-    }
-
-    public Pair<ApplicationInfo, Integer> getWallpaperArrayResourceId() {
-        return new Pair<>(getApplicationInfo(), R.array.wallpapers);
-    }
-
-    public void addWallpapers(ArrayList<WallpaperTileInfo> known, Resources res,
-            String packageName, int listResId) {
-        final String[] extras = res.getStringArray(listResId);
-        for (String extra : extras) {
-            int resId = res.getIdentifier(extra, "drawable", packageName);
-            if (resId != 0) {
-                final int thumbRes = res.getIdentifier(extra + "_small", "drawable", packageName);
-
-                if (thumbRes != 0) {
-                    ResourceWallpaperInfo wallpaperInfo =
-                            new ResourceWallpaperInfo(res, resId, res.getDrawable(thumbRes));
-                    known.add(wallpaperInfo);
-                    // Log.d(TAG, "add: [" + packageName + "]: " + extra + " (" + res + ")");
-                }
-            } else {
-                Log.e(TAG, "Couldn't find wallpaper " + extra);
-            }
         }
     }
 
