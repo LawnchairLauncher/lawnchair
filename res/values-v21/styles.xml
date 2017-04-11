@@ -27,7 +27,7 @@
 
     <style name="WallpaperCropperActionBar" parent="@android:style/Widget.DeviceDefault.ActionBar">
         <item name="android:displayOptions">showCustom</item>
-        <item name="android:background">#88000000</item>
+        <item name="android:background">#88212121</item>
         <item name="android:contentInsetEnd">0dp</item>
         <item name="android:contentInsetLeft">0dp</item>
         <item name="android:contentInsetRight">0dp</item>
