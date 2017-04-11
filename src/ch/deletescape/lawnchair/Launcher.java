@@ -2367,7 +2367,11 @@ public class Launcher extends Activity
                 .setPackage(pickerPackage)
                 .putExtra(Utilities.EXTRA_WALLPAPER_OFFSET, offset);
         intent.setSourceBounds(getViewBounds(v));
-        startActivityForResult(intent, REQUEST_PICK_WALLPAPER, getActivityLaunchOptions(v));
+        try{
+            startActivityForResult(intent, REQUEST_PICK_WALLPAPER, getActivityLaunchOptions(v));
+        } catch(ActivityNotFoundException e){
+            Toast.makeText(this, "Something went horribly wrong, please report this issue!", Toast.LENGTH_LONG).show();
+        }
     }
 
     /**
