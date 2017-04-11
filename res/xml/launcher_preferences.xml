@@ -24,14 +24,16 @@
     <SwitchPreference
         android:key="pref_lightStatusBar"
         android:title="Light StatusBar"
-        android:summary="When enabled the status bar may show dark icons based on the top of the wallpaper."
-        android:defaultValue="false"
+        android:summaryOn="The status bar may show dark icons based on the wallpaper."
+        android:summaryOff="The status bar will always show light icons."
+        android:defaultValue="true"
         android:persistent="true" />
 
     <SwitchPreference
         android:key="pref_hotseatShouldUseExtractedColors"
-        android:title="Hotseat uses Wallpaper colors"
-        android:summary="When enabled the Hotseat will be colored with a color extracted from the wallpaper"
+        android:title="Tray uses wallpaper colors"
+        android:summaryOn="The Tray will be colored with a color extracted from the wallpaper"
+        android:summaryOff="The Tray will be colored gray, but adjusted by the wallpaper brightness"
         android:defaultValue="true"
         android:persistent="true" />
 
@@ -92,14 +94,16 @@
     <SwitchPreference
         android:key="pref_pulldownSearch"
         android:title="Pulldown to Search"
-        android:summary="When enabled fling down gesture on the first workspace triggers search."
+        android:summaryOn="Pulling down on the Homescreen will open search."
+        android:summaryOff="When enabled pulling down on the Homescreen will open search."
         android:defaultValue="true"
         android:persistent="true" />
 
     <SwitchPreference
         android:key="pref_showHidden"
         android:title="Show Hidden Apps"
-        android:summary="When enabled hidden apps will be shown to change visibility settings"
+        android:summaryOn="Hidden apps will be shown to change visibility settings"
+        android:summaryOff="Hidden apps won't be visible"
         android:defaultValue="false"
         android:persistent="true" />
 
