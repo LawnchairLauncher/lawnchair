@@ -27,7 +27,9 @@ import android.os.Build;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ch.deletescape.lawnchair.Utilities;
 
@@ -99,11 +101,15 @@ public class PackageManagerHelper {
         return excludePackages.get(0);
     }
 
-    public static List<ResolveInfo> getIconPackPackages(PackageManager pm){
+    public static Map<String, String> getIconPackPackages(PackageManager pm){
         List<ResolveInfo> list;
         list = pm.queryIntentActivities(new Intent("com.novalauncher.THEME"), 0);
         list.addAll(pm.queryIntentActivities(new Intent("org.adw.launcher.icons.ACTION_PICK_ICON"),0));
-        return list;
+        Map<String, String> iconPackPackages = new HashMap<>();
+        for(ResolveInfo info : list){
+            iconPackPackages.put(info.activityInfo.packageName, info.activityInfo.loadLabel(pm).toString());
+        }
+        return iconPackPackages;
     }
 
     /**
