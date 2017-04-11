@@ -25,7 +25,7 @@
         <item name="android:navigationBarColor">#00000000</item>
     </style>
 
-    <style name="WallpaperCropperActionBar" parent="@android:style/Widget.DeviceDefault.ActionBar">
+    <style name="WallpaperCropperActionBar" parent="@android:style/Widget.DeviceDefault.Light.ActionBar">
         <item name="android:displayOptions">showCustom</item>
         <item name="android:background">#88212121</item>
         <item name="android:contentInsetEnd">0dp</item>
@@ -34,7 +34,7 @@
         <item name="android:contentInsetStart">0dp</item>
     </style>
 
-    <style name="ActionBarSetWallpaperStyle" parent="@android:style/Widget.DeviceDefault.ActionButton">
+    <style name="ActionBarSetWallpaperStyle" parent="@android:style/Widget.DeviceDefault.Light.ActionButton">
         <item name="android:textColor">#ffffffff</item>
         <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
     </style>
