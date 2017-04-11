@@ -435,7 +435,6 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
     }
 
     public void setBoundsAndFinish(Point bounds, boolean overrideTransition) {
-        WallpaperUtils.saveWallpaperDimensions(bounds.x, bounds.y, this);
         setResult(Activity.RESULT_OK);
         finish();
         if (overrideTransition) {

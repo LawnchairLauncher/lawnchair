@@ -7,9 +7,6 @@ public class WallpaperFiles {
 
   public static final String DEFAULT_WALLPAPER_THUMBNAIL = "default_thumb2.jpg";
   public static final String DEFAULT_WALLPAPER_THUMBNAIL_OLD = "default_thumb.jpg";
-  public static final String WALLPAPER_CROP_PREFERENCES_KEY =
-          "com.android.launcher3.WallpaperCropActivity";
-
   public static final String WALLPAPER_IMAGES_DB = "saved_wallpaper_images.db";
 
 }

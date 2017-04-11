@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import ch.deletescape.lawnchair.R;
+import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.wallpaperpicker.WallpaperPickerActivity;
 import ch.deletescape.wallpaperpicker.WallpaperUtils;
 
@@ -36,7 +37,7 @@ public class ThirdPartyWallpaperInfo extends WallpaperTileInfo {
                 mResolveInfo.activityInfo.packageName, mResolveInfo.activityInfo.name);
         Intent launchIntent = new Intent(Intent.ACTION_SET_WALLPAPER)
             .setComponent(itemComponentName)
-            .putExtra(WallpaperUtils.EXTRA_WALLPAPER_OFFSET,
+            .putExtra(Utilities.EXTRA_WALLPAPER_OFFSET,
                     a.getWallpaperParallaxOffset());
         a.startActivityForResultSafely(
                 launchIntent, WallpaperPickerActivity.PICK_WALLPAPER_THIRD_PARTY_ACTIVITY);

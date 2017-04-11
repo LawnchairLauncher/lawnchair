@@ -43,6 +43,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
 import ch.deletescape.lawnchair.R;
+import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.wallpaperpicker.tileinfo.DefaultWallpaperInfo;
 import ch.deletescape.wallpaperpicker.tileinfo.LiveWallpaperInfo;
 import ch.deletescape.wallpaperpicker.tileinfo.PickImageInfo;
@@ -135,7 +136,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity
         mCropView.setTouchCallback(new ToggleOnTapCallback(mWallpaperStrip));
 
         mWallpaperParallaxOffset = getIntent().getFloatExtra(
-                WallpaperUtils.EXTRA_WALLPAPER_OFFSET, 0);
+                Utilities.EXTRA_WALLPAPER_OFFSET, 0);
 
         mWallpapersView = (LinearLayout) findViewById(R.id.wallpaper_list);
         // Populate the saved wallpapers

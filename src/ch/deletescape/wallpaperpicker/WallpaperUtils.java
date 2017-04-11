@@ -32,69 +32,8 @@ import android.view.WindowManager;
  */
 public final class WallpaperUtils {
 
-    public static final String WALLPAPER_WIDTH_KEY = "wallpaper.width";
-    public static final String WALLPAPER_HEIGHT_KEY = "wallpaper.height";
-
-    // An intent extra to indicate the horizontal scroll of the wallpaper.
-    public static final String EXTRA_WALLPAPER_OFFSET = "com.android.launcher3.WALLPAPER_OFFSET";
-
     public static final float WALLPAPER_SCREENS_SPAN = 2f;
 
-    public static void saveWallpaperDimensions(int width, int height, Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            // From Kitkat onwards, ImageWallpaper does not care about the
-            // desired width and desired height of the wallpaper.
-            return;
-        }
-        String spKey = WallpaperFiles.WALLPAPER_CROP_PREFERENCES_KEY;
-        SharedPreferences sp = activity.getSharedPreferences(spKey, Context.MODE_MULTI_PROCESS);
-        SharedPreferences.Editor editor = sp.edit();
-        if (width != 0 && height != 0) {
-            editor.putInt(WALLPAPER_WIDTH_KEY, width);
-            editor.putInt(WALLPAPER_HEIGHT_KEY, height);
-        } else {
-            editor.remove(WALLPAPER_WIDTH_KEY);
-            editor.remove(WALLPAPER_HEIGHT_KEY);
-        }
-        editor.commit();
-        suggestWallpaperDimensionPreK(activity, true);
-    }
-
-    public static void suggestWallpaperDimensionPreK(
-            Activity activity, boolean fallBackToDefaults) {
-        final Point defaultWallpaperSize = getDefaultWallpaperSize(
-                activity.getResources(), activity.getWindowManager());
-
-        SharedPreferences sp = activity.getSharedPreferences(
-              WallpaperFiles.WALLPAPER_CROP_PREFERENCES_KEY, Context.MODE_MULTI_PROCESS);
-        // If we have saved a wallpaper width/height, use that instead
-        int width = sp.getInt(WALLPAPER_WIDTH_KEY, -1);
-        int height = sp.getInt(WALLPAPER_HEIGHT_KEY, -1);
-
-        if (width == -1 || height == -1) {
-            if (!fallBackToDefaults) {
-                return;
-            } else {
-                width = defaultWallpaperSize.x;
-                height = defaultWallpaperSize.y;
-            }
-        }
-
-        WallpaperManager wm = WallpaperManager.getInstance(activity);
-        if (width != wm.getDesiredMinimumWidth() || height != wm.getDesiredMinimumHeight()) {
-            wm.suggestDesiredDimensions(width, height);
-        }
-    }
-
-    public static void suggestWallpaperDimension(Activity activity) {
-        // Only live wallpapers care about desired size. Update the size to what launcher expects.
-        final Point size = getDefaultWallpaperSize(
-                activity.getResources(), activity.getWindowManager());
-        WallpaperManager wm = WallpaperManager.getInstance(activity);
-        if (size.x != wm.getDesiredMinimumWidth() || size.y != wm.getDesiredMinimumHeight()) {
-            wm.suggestDesiredDimensions(size.x, size.y);
-        }
-    }
 
     /**
      * As a ratio of screen height, the total distance we want the parallax effect to span
@@ -127,7 +66,6 @@ public final class WallpaperUtils {
 
     private static Point sDefaultWallpaperSize;
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static Point getDefaultWallpaperSize(Resources res, WindowManager windowManager) {
         if (sDefaultWallpaperSize == null) {
             Point realSize = new Point();
@@ -150,9 +88,7 @@ public final class WallpaperUtils {
         return sDefaultWallpaperSize;
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static boolean isRtl(Resources res) {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 &&
-                (res.getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL);
+        return res.getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
     }
 }

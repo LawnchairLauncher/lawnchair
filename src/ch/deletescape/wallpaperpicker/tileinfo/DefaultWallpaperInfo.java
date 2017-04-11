@@ -134,11 +134,9 @@ public class DefaultWallpaperInfo extends DrawableThumbWallpaperInfo {
      * @return the system default wallpaper tile or null
      */
     public static WallpaperTileInfo get(Context context) {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
-                ? getDefaultWallpaper(context) : getPreKKDefaultWallpaperInfo(context);
+        return getDefaultWallpaper(context);
     }
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     private static DefaultWallpaperInfo getDefaultWallpaper(Context context) {
         File defaultThumbFile = getDefaultThumbFile(context);
         Bitmap thumb = null;
@@ -166,32 +164,6 @@ public class DefaultWallpaperInfo extends DrawableThumbWallpaperInfo {
         }
         if (defaultWallpaperExists) {
             return new DefaultWallpaperInfo(new BitmapDrawable(res, thumb));
-        }
-        return null;
-    }
-
-    private static ResourceWallpaperInfo getPreKKDefaultWallpaperInfo(Context context) {
-        Resources sysRes = Resources.getSystem();
-        Resources res = context.getResources();
-
-        int resId = sysRes.getIdentifier("default_wallpaper", "drawable", "android");
-
-        File defaultThumbFile = getDefaultThumbFile(context);
-        Bitmap thumb = null;
-        boolean defaultWallpaperExists = false;
-        if (defaultThumbFile.exists()) {
-            thumb = BitmapFactory.decodeFile(defaultThumbFile.getAbsolutePath());
-            defaultWallpaperExists = true;
-        } else {
-            InputStreamProvider streamProvider = InputStreamProvider.fromResource(res, resId);
-            thumb = createThumbnail(
-                    streamProvider, context, streamProvider.getRotationFromExif(context), false);
-            if (thumb != null) {
-                defaultWallpaperExists = saveDefaultWallpaperThumb(context, thumb);
-            }
-        }
-        if (defaultWallpaperExists) {
-            return new ResourceWallpaperInfo(sysRes, resId, new BitmapDrawable(res, thumb));
         }
         return null;
     }
