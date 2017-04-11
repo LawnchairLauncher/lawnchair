@@ -17,6 +17,7 @@
     <PreferenceCategory android:title="UI" />
 
     <ListPreference
+        android:defaultValue="@string/iconPackPackageDefault"
         android:key="pref_iconPackPackage"
         android:title="Icon Pack"
         android:persistent="true" />

@@ -172,4 +172,6 @@
     </string-array>
 
     <string name="allAppsOpacityDefault" translatable="false">1.0</string>
+
+    <string name="iconPackPackageDefault" translatable="false">""</string>
 </resources>

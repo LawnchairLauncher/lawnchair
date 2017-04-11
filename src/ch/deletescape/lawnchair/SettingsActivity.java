@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
 
+import java.util.Arrays;
 import java.util.List;
 
 import ch.deletescape.lawnchair.util.PackageManagerHelper;
@@ -53,12 +54,15 @@ public class SettingsActivity extends Activity {
             addPreferencesFromResource(R.xml.launcher_preferences);
             PackageManager pm = getActivity().getPackageManager();
             List<ResolveInfo> iconPackPackages = PackageManagerHelper.getIconPackPackages(pm);
-            CharSequence[] entries = new String[iconPackPackages.size()];
-            String[] entryValues = new String[iconPackPackages.size()];
-            for(int i = 0; i < iconPackPackages.size(); i++){
-                ResolveInfo info = iconPackPackages.get(i);
+            CharSequence[] entries = new String[iconPackPackages.size() + 1];
+            String[] entryValues = new String[iconPackPackages.size() + 1];
+            entries[0] = "None";
+            entryValues[0] = "";
+            for(int i = 1; i < entries.length; i++){
+                ResolveInfo info = iconPackPackages.get(i - 1);
+                String packageName = info.activityInfo.packageName;
+                entryValues[i] = packageName;
                 entries[i] = info.activityInfo.loadLabel(pm);
-                entryValues[i] = info.activityInfo.packageName;
             }
             ListPreference iconPackPackagePreference = (ListPreference) findPreference("pref_iconPackPackage");
             iconPackPackagePreference.setEntries(entries);

@@ -100,7 +100,10 @@ public class PackageManagerHelper {
     }
 
     public static List<ResolveInfo> getIconPackPackages(PackageManager pm){
-        return pm.queryIntentActivities(new Intent("com.novalauncher.THEME"), 0);
+        List<ResolveInfo> list;
+        list = pm.queryIntentActivities(new Intent("com.novalauncher.THEME"), 0);
+        list.addAll(pm.queryIntentActivities(new Intent("org.adw.launcher.icons.ACTION_PICK_ICON"),0));
+        return list;
     }
 
     /**
