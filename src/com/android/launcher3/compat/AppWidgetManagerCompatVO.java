@@ -16,17 +16,12 @@
 
 package com.android.launcher3.compat;
 
-import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
-import android.os.UserHandle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.android.launcher3.util.PackageUserKey;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 class AppWidgetManagerCompatVO extends AppWidgetManagerCompatVL {
@@ -40,14 +35,7 @@ class AppWidgetManagerCompatVO extends AppWidgetManagerCompatVL {
         if (packageUser == null) {
             return super.getAllProviders(null);
         }
-        // TODO: don't use reflection once API and sdk are ready.
-        try {
-            return (List<AppWidgetProviderInfo>) AppWidgetManager.class.getMethod(
-                    "getInstalledProvidersForPackage", String.class, UserHandle.class)
-                    .invoke(mAppWidgetManager, packageUser.mPackageName, packageUser.mUser);
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            Log.e("AppWidgetManagerCompat", "Failed to call new API", e);
-        }
-        return super.getAllProviders(packageUser);
+        return mAppWidgetManager.getInstalledProvidersForPackage(packageUser.mPackageName,
+                packageUser.mUser);
     }
 }
