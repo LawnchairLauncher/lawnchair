@@ -27,49 +27,49 @@ import android.graphics.RectF;
 //
 public interface GLCanvas {
 
-    public GLId getGLId();
+    GLId getGLId();
 
     // Tells GLCanvas the size of the underlying GL surface. This should be
     // called before first drawing and when the size of GL surface is changed.
     // This is called by GLRoot and should not be called by the clients
     // who only want to draw on the GLCanvas. Both width and height must be
     // nonnegative.
-    public abstract void setSize(int width, int height);
+    void setSize(int width, int height);
 
     // Clear the drawing buffers. This should only be used by GLRoot.
-    public abstract void clearBuffer();
+    void clearBuffer();
 
-    public abstract void translate(float x, float y);
+    void translate(float x, float y);
 
-    public abstract void rotate(float angle, float x, float y, float z);
+    void rotate(float angle, float x, float y, float z);
 
     // Same as save(), but only save those specified in saveFlags.
-    public abstract void save(int saveFlags);
+    void save(int saveFlags);
 
-    public static final int SAVE_FLAG_ALL = 0xFFFFFFFF;
-    public static final int SAVE_FLAG_MATRIX = 0x02;
+    int SAVE_FLAG_ALL = 0xFFFFFFFF;
+    int SAVE_FLAG_MATRIX = 0x02;
 
     // Pops from the top of the stack as current configuration state (matrix,
     // alpha, and clip). This call balances a previous call to save(), and is
     // used to remove all modifications to the configuration state since the
     // last save call.
-    public abstract void restore();
+    void restore();
 
     // Draws a texture to the specified rectangle.
-    public abstract void drawTexture(BasicTexture texture, int x, int y, int width, int height);
+    void drawTexture(BasicTexture texture, int x, int y, int width, int height);
 
     // Draws the source rectangle part of the texture to the target rectangle.
-    public abstract void drawTexture(BasicTexture texture, RectF source, RectF target);
+    void drawTexture(BasicTexture texture, RectF source, RectF target);
 
     // Unloads the specified texture from the canvas. The resource allocated
     // to draw the texture will be released. The specified texture will return
     // to the unloaded state. This function should be called only from
     // BasicTexture or its descendant
-    public abstract boolean unloadTexture(BasicTexture texture);
+    boolean unloadTexture(BasicTexture texture);
 
     // Delete the textures and buffers in GL side. This function should only be
     // called in the GL thread.
-    public abstract void deleteRecycledResources();
+    void deleteRecycledResources();
 
     /**
      * Sets texture parameters to use GL_CLAMP_TO_EDGE for both
@@ -79,7 +79,7 @@ public interface GLCanvas {
      *
      * @param texture The texture to set parameters on.
      */
-    public abstract void setTextureParameters(BasicTexture texture);
+    void setTextureParameters(BasicTexture texture);
 
     /**
      * Initializes the texture to a size by calling texImage2D on it.
@@ -88,7 +88,7 @@ public interface GLCanvas {
      * @param format The texture format (e.g. GL_RGBA)
      * @param type The texture type (e.g. GL_UNSIGNED_BYTE)
      */
-    public abstract void initializeTextureSize(BasicTexture texture, int format, int type);
+    void initializeTextureSize(BasicTexture texture, int format, int type);
 
     /**
      * Initializes the texture to a size by calling texImage2D on it.
@@ -96,7 +96,7 @@ public interface GLCanvas {
      * @param texture The texture to initialize the size.
      * @param bitmap The bitmap to initialize the bitmap with.
      */
-    public abstract void initializeTexture(BasicTexture texture, Bitmap bitmap);
+    void initializeTexture(BasicTexture texture, Bitmap bitmap);
 
     /**
      * Calls glTexSubImage2D to upload a bitmap to the texture.
@@ -109,9 +109,9 @@ public interface GLCanvas {
      * @param format The texture format (e.g. GL_RGBA)
      * @param type The texture type (e.g. GL_UNSIGNED_BYTE)
      */
-    public abstract void texSubImage2D(BasicTexture texture, int xOffset, int yOffset,
-            Bitmap bitmap,
-            int format, int type);
+    void texSubImage2D(BasicTexture texture, int xOffset, int yOffset,
+                       Bitmap bitmap,
+                       int format, int type);
 
     /**
      * Generates buffers and uploads the buffer data.
@@ -119,5 +119,5 @@ public interface GLCanvas {
      * @param buffer The buffer to upload
      * @return The buffer ID that was generated.
      */
-    public abstract int uploadBuffer(java.nio.FloatBuffer buffer);
+    int uploadBuffer(java.nio.FloatBuffer buffer);
 }
