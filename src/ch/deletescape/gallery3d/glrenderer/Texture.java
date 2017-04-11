@@ -30,8 +30,8 @@ package ch.deletescape.gallery3d.glrenderer;
 //       -- Tile
 //
 public interface Texture {
-    public int getWidth();
-    public int getHeight();
-    public void draw(GLCanvas canvas, int x, int y);
-    public void draw(GLCanvas canvas, int x, int y, int w, int h);
+    int getWidth();
+    int getHeight();
+    void draw(GLCanvas canvas, int x, int y);
+    void draw(GLCanvas canvas, int x, int y, int w, int h);
 }
