@@ -27,6 +27,7 @@ import android.os.Build;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ch.deletescape.lawnchair.Utilities;
 
@@ -96,6 +97,10 @@ public class PackageManagerHelper {
             }
         }
         return excludePackages.get(0);
+    }
+
+    public static List<ResolveInfo> getIconPackPackages(PackageManager pm){
+        return pm.queryIntentActivities(new Intent("com.novalauncher.THEME"), 0);
     }
 
     /**

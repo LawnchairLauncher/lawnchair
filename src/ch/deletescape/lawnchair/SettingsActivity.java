@@ -17,8 +17,15 @@
 package ch.deletescape.lawnchair;
 
 import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
+
+import java.util.List;
+
+import ch.deletescape.lawnchair.util.PackageManagerHelper;
 
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
@@ -44,6 +51,18 @@ public class SettingsActivity extends Activity {
             super.onCreate(savedInstanceState);
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
             addPreferencesFromResource(R.xml.launcher_preferences);
+            PackageManager pm = getActivity().getPackageManager();
+            List<ResolveInfo> iconPackPackages = PackageManagerHelper.getIconPackPackages(pm);
+            CharSequence[] entries = new String[iconPackPackages.size()];
+            String[] entryValues = new String[iconPackPackages.size()];
+            for(int i = 0; i < iconPackPackages.size(); i++){
+                ResolveInfo info = iconPackPackages.get(i);
+                entries[i] = info.activityInfo.loadLabel(pm);
+                entryValues[i] = info.activityInfo.packageName;
+            }
+            ListPreference iconPackPackagePreference = (ListPreference) findPreference("pref_iconPackPackage");
+            iconPackPackagePreference.setEntries(entries);
+            iconPackPackagePreference.setEntryValues(entryValues);
         }
 
         @Override
