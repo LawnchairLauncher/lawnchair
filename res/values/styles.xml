@@ -133,4 +133,27 @@
         <item name="indicatorSize">4dp</item>
         <item name="ringOutset">4dp</item>
     </style>
+
+    <style name="WallpaperTheme" parent="@android:style/Theme.DeviceDefault">
+        <item name="android:actionBarStyle">@style/WallpaperCropperActionBar</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+
+    <style name="WallpaperTheme.Picker" parent="WallpaperTheme">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowShowWallpaper">true</item>
+    </style>
+
+    <style name="WallpaperCropperActionBar" parent="@android:style/Widget.DeviceDefault.ActionBar">
+        <item name="android:displayOptions">showCustom</item>
+        <item name="android:background">#88000000</item>
+    </style>
+
+    <style name="ActionBarSetWallpaperStyle" parent="@android:style/Widget.DeviceDefault.ActionButton">
+        <item name="android:textColor">#ffffffff</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+    </style>
 </resources>

@@ -24,4 +24,18 @@
         <item name="android:statusBarColor">#00000000</item>
         <item name="android:navigationBarColor">#00000000</item>
     </style>
+
+    <style name="WallpaperCropperActionBar" parent="@android:style/Widget.DeviceDefault.ActionBar">
+        <item name="android:displayOptions">showCustom</item>
+        <item name="android:background">#88000000</item>
+        <item name="android:contentInsetEnd">0dp</item>
+        <item name="android:contentInsetLeft">0dp</item>
+        <item name="android:contentInsetRight">0dp</item>
+        <item name="android:contentInsetStart">0dp</item>
+    </style>
+
+    <style name="ActionBarSetWallpaperStyle" parent="@android:style/Widget.DeviceDefault.ActionButton">
+        <item name="android:textColor">#ffffffff</item>
+        <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
+    </style>
 </resources>

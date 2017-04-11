@@ -2357,21 +2357,15 @@ public class Launcher extends Activity
             return;
         }
 
-        String pickerPackage = PackageManagerHelper.getWallpaperPickerPackage(getPackageManager());
-
         int pageScroll = mWorkspace.getScrollForPage(mWorkspace.getPageNearestToCenterOfScreen());
         float offset = mWorkspace.mWallpaperOffset.wallpaperOffsetForScroll(pageScroll);
 
         setWaitingForResult(new PendingRequestArgs(new ItemInfo()));
         Intent intent = new Intent(Intent.ACTION_SET_WALLPAPER)
-                .setPackage(pickerPackage)
+                .setPackage("ch.deletescape.lawnchair")
                 .putExtra(Utilities.EXTRA_WALLPAPER_OFFSET, offset);
         intent.setSourceBounds(getViewBounds(v));
-        try{
-            startActivityForResult(intent, REQUEST_PICK_WALLPAPER, getActivityLaunchOptions(v));
-        } catch(ActivityNotFoundException e){
-            Toast.makeText(this, "Something went horribly wrong, please report this issue!", Toast.LENGTH_LONG).show();
-        }
+        startActivityForResult(intent, REQUEST_PICK_WALLPAPER, getActivityLaunchOptions(v));
     }
 
     /**

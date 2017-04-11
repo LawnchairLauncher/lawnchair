@@ -43,6 +43,7 @@
 
     <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
     <uses-permission android:name="com.android.launcher.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="ch.deletescape.lawnchair.permission.READ_SETTINGS" />
     <uses-permission android:name="ch.deletescape.lawnchair.permission.WRITE_SETTINGS" />
 
@@ -93,6 +94,29 @@
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
                 <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="ch.deletescape.wallpaperpicker.WallpaperPickerActivity"
+            android:theme="@style/WallpaperTheme.Picker"
+            android:label="@string/pick_wallpaper"
+            android:finishOnCloseSystemDialogs="true">
+            <intent-filter>
+                <action android:name="android.intent.action.SET_WALLPAPER" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="ch.deletescape.wallpaperpicker.WallpaperCropActivity"
+            android:theme="@style/WallpaperTheme"
+            android:label="@string/crop_wallpaper"
+            android:finishOnCloseSystemDialogs="true">
+            <intent-filter>
+                <action android:name="android.service.wallpaper.CROP_AND_SET_WALLPAPER" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
 

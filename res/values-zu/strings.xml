@@ -99,4 +99,19 @@
     <string name="widget_resized" msgid="9130327887929620">"Iwijethi inikezwe usayizi omusha ngobubanzi obungu-<xliff:g id="NUMBER_0">%1$s</xliff:g> ubude obungu-<xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Izinqamuleli"</string>
     <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> izinqamuleli ze-<xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
+    <string name="wallpaper_instructions" msgid="3524143401182707094">"Setha isithombe sangemuva"</string>
+    <string name="image_load_fail" msgid="7538534580694411837">"Ayikwazanga ukulayisha isithombe"</string>
+    <string name="wallpaper_load_fail" msgid="4800700444605404650">"Ayikwazanga ukulayisha isithombe njengesithombe sangemuva"</string>
+    <string name="wallpaper_set_fail" msgid="7023180794008631780">"Ayikwazanga ukusetha isithombe njengesithombe sangemuva"</string>
+    <plurals name="number_of_items_selected">
+        <item quantity="zero" msgid="9015111147509924344">"%1$d khethiwe"</item>
+        <item quantity="one" msgid="8409622005831789373">"%1$d khethiwe"</item>
+        <item quantity="other" msgid="479468347731745357">"%1$d khethiwe"</item>
+    </plurals>
+    <string name="wallpaper_accessibility_name" msgid="4093221025304876354">"Isithombe sangemuva esingu-%1$d kwezingu-%2$d"</string>
+    <string name="announce_selection" msgid="123723511662250539">"I-<xliff:g id="LABEL">%1$s</xliff:g> ekhethiwe"</string>
+    <string name="wallpaper_delete" msgid="1459353972739215344">"Susa"</string>
+    <string name="pick_image" msgid="3189640419551368385">"Izithombe zami"</string>
+    <string name="pick_wallpaper" msgid="4628969645948454559">"Izithombe zangemuva"</string>
+    <string name="crop_wallpaper" msgid="4882870800623585836">"Nqampuna isithombe sangemuva"</string>
 </resources>

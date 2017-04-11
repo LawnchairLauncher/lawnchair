@@ -50,4 +50,6 @@
 
     <color name="secondary_color">#0277BD</color>
     <color name="accent_material_light">#00bcd4</color>
+
+    <color name="wallpaper_picker_translucent_gray">#66000000</color>
 </resources>
