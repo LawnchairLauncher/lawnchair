@@ -48,9 +48,10 @@ public class ExtractedColors {
     public static final int MUTED_DARK_INDEX = 8;
     public static final int MUTED_LIGHT_INDEX = 9;
     public static final int VIBRANT_FOREGROUND_INDEX = 10;
+    public static final int DOMINANT_FOREGROUND_INDEX = 11;
 
-    public static final int NUM_COLOR_PROFILES = 10;
-    private static final int VERSION = 5;
+    public static final int NUM_COLOR_PROFILES = 11;
+    private static final int VERSION = 6;
 
     private static final String COLOR_SEPARATOR = ",";
 
@@ -127,18 +128,19 @@ public class ExtractedColors {
                 setColorAtIndex(i, ExtractedColors.DEFAULT_COLOR);
             }
         } else {
-            int dominant = palette.getDominantColor(-1);
+            Palette.Swatch dominant = palette.getDominantSwatch();
             int muted_dark = palette.getDarkMutedColor(-1);
             int muted_light = palette.getLightMutedColor(-1);
             int muted = palette.getMutedColor(-1);
             int vibrant_dark = palette.getDarkVibrantColor(-1);
             int vibrant_light = palette.getLightVibrantColor(-1);
             Palette.Swatch vibrant = palette.getVibrantSwatch();
-            setColorAtIndex(DOMINANT_INDEX, dominant);
+            setColorAtIndex(DOMINANT_INDEX, dominant != null ? dominant.getRgb() : -1);
+            setColorAtIndex(DOMINANT_FOREGROUND_INDEX, dominant != null ? ColorUtils.setAlphaComponent(dominant.getBodyTextColor(), 255) : -1);
             setColorAtIndex(VIBRANT_DARK_INDEX, vibrant_dark);
             setColorAtIndex(VIBRANT_LIGHT_INDEX, vibrant_light);
             setColorAtIndex(VIBRANT_INDEX, vibrant != null ? vibrant.getRgb() : -1);
-            setColorAtIndex(VIBRANT_FOREGROUND_INDEX, vibrant != null ? vibrant.getBodyTextColor() : -1);
+            setColorAtIndex(VIBRANT_FOREGROUND_INDEX, vibrant != null ? ColorUtils.setAlphaComponent(vibrant.getBodyTextColor(), 255) : -1);
             setColorAtIndex(MUTED_INDEX, muted);
             setColorAtIndex(MUTED_DARK_INDEX, muted_dark);
             setColorAtIndex(MUTED_LIGHT_INDEX, muted_light);
