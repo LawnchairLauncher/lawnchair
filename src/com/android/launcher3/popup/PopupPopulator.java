@@ -17,7 +17,7 @@
 package com.android.launcher3.popup;
 
 import android.content.ComponentName;
-import android.content.res.Resources;
+import android.content.Context;
 import android.os.Handler;
 import android.os.UserHandle;
 import android.service.notification.StatusBarNotification;
@@ -288,15 +288,19 @@ public class PopupPopulator {
 
         @Override
         public void run() {
-            final Resources res = mSystemShortcutChild.getResources();
+            final Context context = mSystemShortcutChild.getContext();
             if (mSystemShortcutChild instanceof DeepShortcutView) {
+                // Expanded system shortcut, with both icon and text shown on white background.
                 final DeepShortcutView shortcutView = (DeepShortcutView) mSystemShortcutChild;
-                shortcutView.getIconView().setBackground(mSystemShortcutInfo.getIcon(res));
-                shortcutView.getBubbleText().setText(mSystemShortcutInfo.getLabel(res));
+                shortcutView.getIconView().setBackground(mSystemShortcutInfo.getIcon(context,
+                        android.R.attr.textColorTertiary));
+                shortcutView.getBubbleText().setText(mSystemShortcutInfo.getLabel(context));
             } else if (mSystemShortcutChild instanceof ImageView) {
+                // Only the system shortcut icon shows on a gray background header.
                 final ImageView shortcutIcon = (ImageView) mSystemShortcutChild;
-                shortcutIcon.setImageDrawable(mSystemShortcutInfo.getIcon(res));
-                shortcutIcon.setContentDescription(mSystemShortcutInfo.getLabel(res));
+                shortcutIcon.setImageDrawable(mSystemShortcutInfo.getIcon(context,
+                        android.R.attr.textColorHint));
+                shortcutIcon.setContentDescription(mSystemShortcutInfo.getLabel(context));
             }
             if (!(mSystemShortcutInfo instanceof SystemShortcut.Widgets)) {
                 mSystemShortcutChild.setOnClickListener(mSystemShortcutInfo
