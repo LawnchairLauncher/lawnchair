@@ -105,6 +105,8 @@ public class PackageManagerHelper {
         List<ResolveInfo> list;
         list = pm.queryIntentActivities(new Intent("com.novalauncher.THEME"), 0);
         list.addAll(pm.queryIntentActivities(new Intent("org.adw.launcher.icons.ACTION_PICK_ICON"),0));
+        list.addAll(pm.queryIntentActivities(new Intent("com.dlto.atom.launcher.THEME"),0));
+        list.addAll(pm.queryIntentActivities(new Intent("android.intent.action.MAIN").addCategory("com.anddoes.launcher.THEME"),0));
         Map<String, String> iconPackPackages = new HashMap<>();
         for(ResolveInfo info : list){
             iconPackPackages.put(info.activityInfo.packageName, info.activityInfo.loadLabel(pm).toString());
