@@ -1142,16 +1142,21 @@ public class Launcher extends Activity
 
         // Bind wallpaper button actions
         View wallpaperButton = findViewById(R.id.wallpaper_button);
-        wallpaperButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!mWorkspace.isSwitchingState()) {
-                    onClickWallpaperPicker(view);
+        if(Utilities.isWallapaperAllowed(getApplicationContext())) {
+            wallpaperButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (!mWorkspace.isSwitchingState()) {
+                        onClickWallpaperPicker(view);
+                    }
                 }
-            }
-        });
-        wallpaperButton.setOnLongClickListener(performClickOnLongClick);
-        wallpaperButton.setOnTouchListener(getHapticFeedbackTouchListener());
+            });
+            wallpaperButton.setOnLongClickListener(performClickOnLongClick);
+            wallpaperButton.setOnTouchListener(getHapticFeedbackTouchListener());
+        } else {
+            wallpaperButton.setVisibility(View.GONE);
+        }
+
 
         // Bind widget button actions
         mWidgetsButton = findViewById(R.id.widget_button);
