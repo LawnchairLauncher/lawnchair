@@ -103,9 +103,9 @@ public class ExtractedColors {
 
         decodeFromString(encodedString);
 
-        if (mColors[VERSION_INDEX] != VERSION) {
+        //if (mColors[VERSION_INDEX] != VERSION) {
             ExtractionUtils.startColorExtractionService(context);
-        }
+        //}
     }
 
     /**
@@ -113,7 +113,8 @@ public class ExtractedColors {
      */
     public int getColor(int index, int defaultColor) {
         if (index > VERSION_INDEX && index < mColors.length) {
-            return mColors[index];
+            int color = mColors[index];
+            return color == -1 ? defaultColor : color;
         }
         return defaultColor;
     }
