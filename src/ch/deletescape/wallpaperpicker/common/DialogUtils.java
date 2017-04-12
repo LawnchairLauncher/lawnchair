@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 
-import ch.deletescape.lawnchair.R;
+import ch.deletescape.lawnchair.*;
 
 /**
  * Utility class used to show dialogs for things like picking which wallpaper to set.
@@ -20,7 +20,7 @@ public class DialogUtils {
     public static void executeCropTaskAfterPrompt(
             Context context, final AsyncTask<Integer, ?, ?> cropTask,
             DialogInterface.OnCancelListener onCancelListener) {
-        if (Utilities.isAtLeastN()) {
+        if (Utilities.isNycOrAbove()) {
             new AlertDialog.Builder(context)
                     .setTitle(R.string.wallpaper_instructions)
                     .setItems(R.array.which_wallpaper_options, new DialogInterface.OnClickListener() {

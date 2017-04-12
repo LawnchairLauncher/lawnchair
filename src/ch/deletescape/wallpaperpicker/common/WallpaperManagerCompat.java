@@ -6,6 +6,8 @@ import android.graphics.Rect;
 import java.io.IOException;
 import java.io.InputStream;
 
+import ch.deletescape.lawnchair.Utilities;
+
 public abstract class WallpaperManagerCompat {
     public static final int FLAG_SET_SYSTEM = 1 << 0; // TODO: use WallpaperManager.FLAG_SET_SYSTEM
     public static final int FLAG_SET_LOCK = 1 << 1; // TODO: use WallpaperManager.FLAG_SET_LOCK
@@ -16,7 +18,7 @@ public abstract class WallpaperManagerCompat {
     public static WallpaperManagerCompat getInstance(Context context) {
         synchronized (sInstanceLock) {
             if (sInstance == null) {
-                if (Utilities.isAtLeastN()) {
+                if (Utilities.isNycOrAbove()) {
                     sInstance = new WallpaperManagerCompatVN(context.getApplicationContext());
                 } else {
                     sInstance = new WallpaperManagerCompatV16(context.getApplicationContext());
