@@ -36,8 +36,7 @@ import ch.deletescape.lawnchair.Utilities;
 public class ExtractionUtils {
     public static final String EXTRACTED_COLORS_PREFERENCE_KEY = "pref_extractedColors";
     public static final String WALLPAPER_ID_PREFERENCE_KEY = "pref_wallpaperId";
-
-    private static final int FLAG_SET_SYSTEM = 1; // TODO: use WallpaperManager.FLAG_SET_SYSTEM
+    
     private static final float MIN_CONTRAST_RATIO = 2f;
 
     /**
@@ -77,11 +76,9 @@ public class ExtractionUtils {
     }
 
     public static int getWallpaperId(WallpaperManager wallpaperManager) {
-        // TODO: use WallpaperManager#getWallpaperId(WallpaperManager.FLAG_SET_SYSTEM) directly.
-        try {
-            Method getWallpaperId = WallpaperManager.class.getMethod("getWallpaperId", int.class);
-            return (int) getWallpaperId.invoke(wallpaperManager, FLAG_SET_SYSTEM);
-        } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+        if(Utilities.isNycOrAbove()){
+            return wallpaperManager.getWallpaperId(WallpaperManager.FLAG_SYSTEM);
+        } else {
             return -1;
         }
     }
