@@ -151,51 +151,57 @@
 <!-- Deep shortcuts -->
     <dimen name="deep_shortcuts_elevation">9dp</dimen>
     <dimen name="bg_popup_item_width">208dp</dimen>
-    <dimen name="bg_popup_item_height">48dp</dimen>
+    <dimen name="bg_popup_item_height">56dp</dimen>
     <dimen name="popup_items_spacing">4dp</dimen>
     <dimen name="pre_drag_view_scale">6dp</dimen>
     <!-- an icon with shortcuts must be dragged this far before the container is removed. -->
     <dimen name="deep_shortcuts_start_drag_threshold">16dp</dimen>
     <dimen name="deep_shortcut_icon_size">36dp</dimen>
-    <dimen name="deep_shortcut_padding_start">6dp</dimen>
-    <dimen name="deep_shortcut_padding_end">16dp</dimen>
     <dimen name="deep_shortcut_drawable_padding">8dp</dimen>
-    <dimen name="deep_shortcut_anim_translation_y">5dp</dimen>
     <dimen name="deep_shortcut_drag_handle_size">16dp</dimen>
-    <dimen name="deep_shortcuts_arrow_width">10dp</dimen>
-    <dimen name="deep_shortcuts_arrow_height">8dp</dimen>
-    <dimen name="deep_shortcuts_arrow_vertical_offset">-2dp</dimen>
-    <!-- deep_shortcut_padding_start + deep_shortcut_icon_size / 2 - deep_shortcuts_arrow_width / 2-->
+    <dimen name="popup_padding_start">6dp</dimen>
+    <dimen name="popup_padding_end">16dp</dimen>
+    <dimen name="popup_arrow_width">10dp</dimen>
+    <dimen name="popup_arrow_height">8dp</dimen>
+    <dimen name="popup_arrow_vertical_offset">-2dp</dimen>
+    <!-- popup_padding_start + deep_shortcut_icon_size / 2 -->
     <!-- Note that this works for right-aligned shortcuts, too, because
-         deep_shortcut_padding_end + deep_shortcut_drag_handle_size / 2 - deep_shortcuts_arrow_width / 2
-         also happens to equal 19dp-->
-    <dimen name="deep_shortcuts_arrow_horizontal_offset">19dp</dimen>
+         popup_padding_end + deep_shortcut_drag_handle_size / 2 also equals 24dp-->
+    <dimen name="popup_arrow_horizontal_center">24dp</dimen>
+    <!-- popup_arrow_center - popup_arrow_width / 2-->
+    <dimen name="popup_arrow_horizontal_offset">19dp</dimen>
     <!-- popup_item_width - icon_size - padding_start - drawable_padding -->
     <dimen name="deep_shortcuts_divider_width">158dp</dimen>
-    <dimen name="system_shortcut_icon_size">28dp</dimen>
-    <dimen name="system_shortcut_padding_start">10dp</dimen>
+    <dimen name="system_shortcut_icon_size">24dp</dimen>
+    <!-- popup_arrow_center - system_shortcut_icon_size / 2 -->
+    <dimen name="system_shortcut_margin_start">12dp</dimen>
+    <dimen name="system_shortcut_header_height">40dp</dimen>
+    <dimen name="system_shortcut_header_icon_touch_size">48dp</dimen>
+    <!-- (touch_size - icon_size) / 2 -->
+    <dimen name="system_shortcut_header_icon_padding">12dp</dimen>
 
 <!-- Icon badges (with notification counts) -->
     <dimen name="badge_size">24dp</dimen>
     <dimen name="badge_text_size">12dp</dimen>
     <dimen name="badge_small_padding">0dp</dimen>
     <dimen name="badge_large_padding">3dp</dimen>
-    <dimen name="notification_icon_size">24dp</dimen>
-    <dimen name="notification_footer_icon_size">18dp</dimen>
 
 <!-- Notifications -->
     <dimen name="bg_round_rect_radius">12dp</dimen>
-    <dimen name="notification_padding">12dp</dimen>
-    <!-- notification_padding + (icon_size - footer_icon_size) / 2 -->
+    <dimen name="notification_padding_start">16dp</dimen>
+    <dimen name="notification_padding_end">12dp</dimen>
+    <!-- notification_padding_end + (icon_size - footer_icon_size) / 2 -->
     <dimen name="notification_footer_icon_row_padding">15dp</dimen>
-    <dimen name="notification_header_padding_after_count">8dp</dimen>
     <dimen name="notification_header_height">32dp</dimen>
-    <dimen name="notification_main_height">60dp</dimen>
-    <dimen name="notification_footer_height">@dimen/bg_popup_item_height</dimen>
-    <dimen name="notification_header_text_size">12dp</dimen>
-    <dimen name="notification_main_text_size">14dp</dimen>
-    <!-- notification_icon_size + notification+padding + padding we want between icon and text -->
-    <dimen name="notification_main_text_padding_end">40dp</dimen>
+    <dimen name="notification_main_height">80dp</dimen>
+    <dimen name="notification_footer_height">32dp</dimen>
+    <dimen name="notification_header_text_size">13sp</dimen>
+    <dimen name="notification_header_count_text_size">12sp</dimen>
+    <dimen name="notification_main_text_size">15sp</dimen>
+    <dimen name="notification_icon_size">24dp</dimen>
+    <dimen name="notification_footer_icon_size">18dp</dimen>
+    <!-- notification_icon_size + notification_padding_end + 16dp padding between icon and text -->
+    <dimen name="notification_main_text_padding_end">52dp</dimen>
     <dimen name="notification_elevation">2dp</dimen>
     <dimen name="horizontal_ellipsis_size">18dp</dimen>
     <!-- arrow_horizontal_offset - (ellipsis_size - arrow_width) / 2 -->

@@ -46,6 +46,7 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
+import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
@@ -62,6 +63,7 @@ import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
+import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.TriangleShape;
 import com.android.launcher3.notification.NotificationItemView;
 import com.android.launcher3.notification.NotificationKeyData;
@@ -158,12 +160,12 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     public void populateAndShow(final BubbleTextView originalIcon, final List<String> shortcutIds,
             final List<NotificationKeyData> notificationKeys) {
         final Resources resources = getResources();
-        final int arrowWidth = resources.getDimensionPixelSize(R.dimen.deep_shortcuts_arrow_width);
-        final int arrowHeight = resources.getDimensionPixelSize(R.dimen.deep_shortcuts_arrow_height);
+        final int arrowWidth = resources.getDimensionPixelSize(R.dimen.popup_arrow_width);
+        final int arrowHeight = resources.getDimensionPixelSize(R.dimen.popup_arrow_height);
         final int arrowHorizontalOffset = resources.getDimensionPixelSize(
-                R.dimen.deep_shortcuts_arrow_horizontal_offset);
+                R.dimen.popup_arrow_horizontal_offset);
         final int arrowVerticalOffset = resources.getDimensionPixelSize(
-                R.dimen.deep_shortcuts_arrow_vertical_offset);
+                R.dimen.popup_arrow_vertical_offset);
 
         // Add dummy views first, and populate with real info when ready.
         PopupPopulator.Item[] itemsToPopulate = PopupPopulator
@@ -191,11 +193,11 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                 : mShortcutsItemView.getDeepShortcutViews(reverseOrder);
         List<View> systemShortcutViews = mShortcutsItemView == null
                 ? Collections.EMPTY_LIST
-                : mShortcutsItemView.getSystemShortcutViews(reverseOrder);
+                : mShortcutsItemView.getSystemShortcutViews(reverseOrder || true);
         if (mNotificationItemView != null) {
             BadgeInfo badgeInfo = mLauncher.getPopupDataProvider()
                     .getBadgeInfoForItem(originalItemInfo);
-            updateNotificationHeader(badgeInfo);
+            updateNotificationHeader(badgeInfo, originalIcon);
         }
 
         // Add the arrow.
@@ -247,7 +249,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                             R.layout.shortcuts_item, this, false);
                     addView(mShortcutsItemView);
                 }
-                mShortcutsItemView.addShortcutView(item, itemTypeToPopulate, mIsAboveIcon);
+                mShortcutsItemView.addShortcutView(item, itemTypeToPopulate);
                 if (shouldAddBottomMargin) {
                     ((LayoutParams) mShortcutsItemView.getLayoutParams()).bottomMargin = spacing;
                 }
@@ -384,14 +386,14 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             // Aligning with the shortcut icon.
             int shortcutIconWidth = resources.getDimensionPixelSize(R.dimen.deep_shortcut_icon_size);
             int shortcutPaddingStart = resources.getDimensionPixelSize(
-                    R.dimen.deep_shortcut_padding_start);
+                    R.dimen.popup_padding_start);
             xOffset = iconWidth / 2 - shortcutIconWidth / 2 - shortcutPaddingStart;
         } else {
             // Aligning with the drag handle.
             int shortcutDragHandleWidth = resources.getDimensionPixelSize(
                     R.dimen.deep_shortcut_drag_handle_size);
             int shortcutPaddingEnd = resources.getDimensionPixelSize(
-                    R.dimen.deep_shortcut_padding_end);
+                    R.dimen.popup_padding_end);
             xOffset = iconWidth / 2 - shortcutDragHandleWidth / 2 - shortcutPaddingEnd;
         }
         x += mIsLeftAligned ? xOffset : -xOffset;
@@ -548,12 +550,15 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         if (originalItemInfo != mOriginalIcon.getTag()) {
             return;
         }
-        updateNotificationHeader(badgeInfo);
+        updateNotificationHeader(badgeInfo, mOriginalIcon);
     }
 
-    private void updateNotificationHeader(BadgeInfo badgeInfo) {
+    private void updateNotificationHeader(BadgeInfo badgeInfo, BubbleTextView originalIcon) {
         if (mNotificationItemView != null && badgeInfo != null) {
-            mNotificationItemView.updateHeader(badgeInfo.getNotificationCount());
+            IconPalette palette = originalIcon.getIcon() instanceof FastBitmapDrawable
+                    ? ((FastBitmapDrawable) originalIcon.getIcon()).getIconPalette()
+                    : null;
+            mNotificationItemView.updateHeader(badgeInfo.getNotificationCount(), palette);
         }
     }
 

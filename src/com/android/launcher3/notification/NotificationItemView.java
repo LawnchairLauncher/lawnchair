@@ -17,16 +17,20 @@
 package com.android.launcher3.notification;
 
 import android.animation.Animator;
+import android.app.Notification;
 import android.content.Context;
 import android.graphics.Rect;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.PillHeightRevealOutlineProvider;
+import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
 import com.android.launcher3.popup.PopupItemView;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -43,11 +47,12 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
 
     private static final Rect sTempRect = new Rect();
 
-    private NotificationHeaderView mHeader;
+    private TextView mHeaderCount;
     private NotificationMainView mMainView;
     private NotificationFooterLayout mFooter;
     private SwipeHelper mSwipeHelper;
     private boolean mAnimatingNextIcon;
+    private int mNotificationHeaderTextColor = Notification.COLOR_DEFAULT;
 
     public NotificationItemView(Context context) {
         this(context, null, 0);
@@ -64,7 +69,7 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mHeader = (NotificationHeaderView) findViewById(R.id.header);
+        mHeaderCount = (TextView) findViewById(R.id.notification_count);
         mMainView = (NotificationMainView) findViewById(R.id.main_view);
         mFooter = (NotificationFooterLayout) findViewById(R.id.footer);
         mSwipeHelper = new SwipeHelper(SwipeHelper.X, mMainView, getContext());
@@ -77,8 +82,16 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
                 getBackgroundRadius(), newHeight).createRevealAnimator(this, true /* isReversed */);
     }
 
-    public void updateHeader(int notificationCount) {
-        mHeader.update(notificationCount);
+    public void updateHeader(int notificationCount, @Nullable IconPalette palette) {
+        mHeaderCount.setText(notificationCount <= 1 ? "" : String.valueOf(notificationCount));
+        if (palette != null) {
+            if (mNotificationHeaderTextColor == Notification.COLOR_DEFAULT) {
+                mNotificationHeaderTextColor =
+                        IconPalette.resolveContrastColor(getContext(), palette.dominantColor,
+                            getResources().getColor(R.color.notification_header_background_color));
+            }
+            mHeaderCount.setTextColor(mNotificationHeaderTextColor);
+        }
     }
 
     @Override

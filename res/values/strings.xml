@@ -67,15 +67,9 @@
     <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
     <string name="all_apps_search_market_message">Search for more apps</string>
 
-    <!-- Deep items -->
-    <!-- Text to indicate more items that couldn't be displayed due to space constraints.
-         The text must fit in the size of a small icon [CHAR_LIMIT=3] -->
-    <string name="deep_notifications_overflow" translatable="false">+%1$d</string>
+    <!-- Popup items -->
     <!-- Text to display as the header above notifications. [CHAR_LIMIT=30] -->
-    <plurals name="notifications_header" translatable="false">
-        <item quantity="one">Notification</item>
-        <item quantity="other">Notifications</item>
-    </plurals>
+    <string name="notifications_header">Notifications</string>
 
     <!-- Drag and drop -->
     <skip />
