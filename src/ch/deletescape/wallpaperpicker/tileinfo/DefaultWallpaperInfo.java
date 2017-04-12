@@ -1,6 +1,5 @@
 package ch.deletescape.wallpaperpicker.tileinfo;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.WallpaperManager;
 import android.content.Context;
@@ -20,7 +19,6 @@ import ch.deletescape.wallpaperpicker.WallpaperFiles;
 import ch.deletescape.wallpaperpicker.WallpaperPickerActivity;
 import ch.deletescape.wallpaperpicker.common.CropAndSetWallpaperTask;
 import ch.deletescape.wallpaperpicker.common.DialogUtils;
-import ch.deletescape.wallpaperpicker.common.InputStreamProvider;
 import ch.deletescape.wallpaperpicker.common.WallpaperManagerCompat;
 
 import java.io.ByteArrayInputStream;

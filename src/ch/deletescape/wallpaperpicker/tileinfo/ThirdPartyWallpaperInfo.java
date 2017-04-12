@@ -15,7 +15,6 @@ import android.widget.TextView;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.wallpaperpicker.WallpaperPickerActivity;
-import ch.deletescape.wallpaperpicker.WallpaperUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;

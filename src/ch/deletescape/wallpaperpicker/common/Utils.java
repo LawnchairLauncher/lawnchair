@@ -16,9 +16,7 @@
 
 package ch.deletescape.wallpaperpicker.common;
 
-import android.database.Cursor;
 import android.graphics.RectF;
-import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
 import java.io.Closeable;

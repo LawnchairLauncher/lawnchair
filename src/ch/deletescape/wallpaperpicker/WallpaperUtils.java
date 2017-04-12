@@ -16,14 +16,8 @@
 
 package ch.deletescape.wallpaperpicker;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.WallpaperManager;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Point;
-import android.os.Build;
 import android.view.View;
 import android.view.WindowManager;
 
