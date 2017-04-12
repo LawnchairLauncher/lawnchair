@@ -53,8 +53,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static android.R.attr.bottom;
-
 /**
  * Bottom sheet for the "Widgets & more" long-press option.
  */
