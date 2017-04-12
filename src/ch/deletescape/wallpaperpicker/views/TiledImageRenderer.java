@@ -67,7 +67,7 @@ public class TiledImageRenderer {
     private static final int STATE_RECYCLING = 0x20;
     private static final int STATE_RECYCLED = 0x40;
 
-    private static Pool<Bitmap> sTilePool = new SynchronizedPool<Bitmap>(64);
+    private static Pool<Bitmap> sTilePool = new SynchronizedPool<>(64);
 
     // TILE_SIZE must be 2^N
     private int mTileSize;
@@ -93,7 +93,7 @@ public class TiledImageRenderer {
     private final RectF mSourceRect = new RectF();
     private final RectF mTargetRect = new RectF();
 
-    private final LongSparseArray<Tile> mActiveTiles = new LongSparseArray<Tile>();
+    private final LongSparseArray<Tile> mActiveTiles = new LongSparseArray<>();
 
     // The following three queue are guarded by mQueueLock
     private final Object mQueueLock = new Object();

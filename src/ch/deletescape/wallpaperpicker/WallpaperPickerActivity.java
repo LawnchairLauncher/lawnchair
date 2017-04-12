@@ -68,7 +68,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity
 
     private ActionMode mActionMode;
 
-    ArrayList<Uri> mTempWallpaperTiles = new ArrayList<Uri>();
+    ArrayList<Uri> mTempWallpaperTiles = new ArrayList<>();
     private SavedWallpaperImages mSavedImages;
     private int mSelectedIndex = -1;
     private float mWallpaperParallaxOffset;
@@ -471,7 +471,7 @@ public class WallpaperPickerActivity extends WallpaperCropActivity
         int itemId = item.getItemId();
         if (itemId == R.id.menu_delete) {
             int childCount = mWallpapersView.getChildCount();
-            ArrayList<View> viewsToRemove = new ArrayList<View>();
+            ArrayList<View> viewsToRemove = new ArrayList<>();
             boolean selectedTileRemoved = false;
             for (int i = 0; i < childCount; i++) {
                 CheckableFrameLayout c =

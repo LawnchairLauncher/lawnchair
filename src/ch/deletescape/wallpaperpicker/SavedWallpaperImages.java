@@ -66,7 +66,7 @@ public class SavedWallpaperImages {
     }
 
     public List<SavedWallpaperInfo> loadThumbnailsAndImageIdList() {
-        List<SavedWallpaperInfo> result = new ArrayList<SavedWallpaperInfo>();
+        List<SavedWallpaperInfo> result = new ArrayList<>();
 
         SQLiteDatabase db = mDb.getReadableDatabase();
         Cursor c = db.query(ImageDb.TABLE_NAME,
