@@ -235,15 +235,13 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
         return false;
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public boolean isActivityDestroyed() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && isDestroyed();
+        return isDestroyed();
     }
 
     private void addReusableBitmap(TileSource src) {
         synchronized (mReusableBitmaps) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
-                && src instanceof BitmapRegionTileSource) {
+            if (src instanceof BitmapRegionTileSource) {
                 Bitmap preview = ((BitmapRegionTileSource) src).getBitmap();
                 if (preview != null && preview.isMutable()) {
                     mReusableBitmaps.add(preview);
