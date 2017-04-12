@@ -22,8 +22,10 @@ import android.content.Context;
 import android.content.pm.LauncherApps;
 import android.content.pm.LauncherApps.ShortcutQuery;
 import android.content.pm.ShortcutInfo;
+import android.content.pm.ShortcutManager;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -39,16 +41,12 @@ import ch.deletescape.lawnchair.compat.UserHandleCompat;
 /**
  * Performs operations related to deep shortcuts, such as querying for them, pinning them, etc.
  */
+@TargetApi(Build.VERSION_CODES.N_MR1)
 public class DeepShortcutManager {
     private static final String TAG = "DeepShortcutManager";
 
-    // TODO: Replace this with platform constants when the new sdk is available.
-    public static final int FLAG_MATCH_DYNAMIC = 1;
-    public static final int FLAG_MATCH_MANIFEST = 1 << 3;
-    public static final int FLAG_MATCH_PINNED = 1 << 1;
-
     private static final int FLAG_GET_ALL =
-            FLAG_MATCH_DYNAMIC | FLAG_MATCH_PINNED | FLAG_MATCH_MANIFEST;
+            ShortcutQuery.FLAG_MATCH_DYNAMIC | ShortcutQuery.FLAG_MATCH_PINNED | ShortcutQuery.FLAG_MATCH_MANIFEST;
 
     private final LauncherApps mLauncherApps;
     private boolean mWasLastCallSuccess;
@@ -86,7 +84,7 @@ public class DeepShortcutManager {
      */
     public List<ShortcutInfoCompat> queryForShortcutsContainer(ComponentName activity,
                                                                List<String> ids, UserHandleCompat user) {
-        return query(FLAG_MATCH_MANIFEST | FLAG_MATCH_DYNAMIC,
+        return query(ShortcutQuery.FLAG_MATCH_MANIFEST | ShortcutQuery.FLAG_MATCH_DYNAMIC,
                 activity.getPackageName(), activity, ids, user);
     }
 
@@ -94,7 +92,6 @@ public class DeepShortcutManager {
      * Removes the given shortcut from the current list of pinned shortcuts.
      * (Runs on background thread)
      */
-    @TargetApi(25)
     public void unpinShortcut(final ShortcutKey key) {
         if (Utilities.isNycMR1OrAbove()) {
             String packageName = key.componentName.getPackageName();
@@ -116,7 +113,6 @@ public class DeepShortcutManager {
      * Adds the given shortcut to the current list of pinned shortcuts.
      * (Runs on background thread)
      */
-    @TargetApi(25)
     public void pinShortcut(final ShortcutKey key) {
         if (Utilities.isNycMR1OrAbove()) {
             String packageName = key.componentName.getPackageName();
@@ -134,7 +130,6 @@ public class DeepShortcutManager {
         }
     }
 
-    @TargetApi(25)
     public void startShortcut(String packageName, String id, Rect sourceBounds,
                               Bundle startActivityOptions, UserHandleCompat user) {
         if (Utilities.isNycMR1OrAbove()) {
@@ -149,7 +144,6 @@ public class DeepShortcutManager {
         }
     }
 
-    @TargetApi(25)
     public Drawable getShortcutIconDrawable(ShortcutInfoCompat shortcutInfo, int density) {
         if (Utilities.isNycMR1OrAbove()) {
             try {
@@ -172,7 +166,7 @@ public class DeepShortcutManager {
      */
     public List<ShortcutInfoCompat> queryForPinnedShortcuts(String packageName,
                                                             UserHandleCompat user) {
-        return query(FLAG_MATCH_PINNED, packageName, null, null, user);
+        return query(ShortcutQuery.FLAG_MATCH_PINNED, packageName, null, null, user);
     }
 
     public List<ShortcutInfoCompat> queryForAllShortcuts(UserHandleCompat user) {
@@ -193,7 +187,6 @@ public class DeepShortcutManager {
      * <p>
      * TODO: Use the cache to optimize this so we don't make an RPC every time.
      */
-    @TargetApi(25)
     private List<ShortcutInfoCompat> query(int flags, String packageName,
                                            ComponentName activity, List<String> shortcutIds, UserHandleCompat user) {
         if (Utilities.isNycMR1OrAbove()) {
@@ -225,7 +218,6 @@ public class DeepShortcutManager {
         }
     }
 
-    @TargetApi(25)
     public boolean hasHostPermission() {
         if (Utilities.isNycMR1OrAbove()) {
             try {
