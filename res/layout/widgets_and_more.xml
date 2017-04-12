@@ -19,7 +19,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp"
+    android:paddingStart="16dp"
+    android:paddingTop="28dp"
     android:background="?android:attr/colorPrimary"
     android:elevation="@dimen/deep_shortcuts_elevation"
     android:layout_gravity="bottom">
@@ -27,54 +28,27 @@
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:gravity="center_horizontal|bottom"
-        android:fontFamily="sans-serif"
-        android:textStyle="bold"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textSize="20sp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:gravity="center_horizontal|top"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:fontFamily="sans-serif"
         android:textColor="?android:attr/textColorPrimary"
-        android:textSize="16sp"
-        android:text="@string/long_press_widget_to_add"/>
+        android:textSize="24sp"/>
 
     <TextView
-        android:id="@+id/widgets_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:paddingTop="4dp"
         android:fontFamily="sans-serif"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:text="@string/widget_button_text"/>
+        android:textColor="?android:attr/textColorTertiary"
+        android:textSize="14sp"
+        android:text="@string/long_press_widget_to_add"/>
 
     <include layout="@layout/widgets_scroll_container"
          android:id="@+id/widgets"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"
-         android:layout_marginTop="@dimen/widget_row_padding"
-         android:layout_marginBottom="@dimen/widget_row_padding"/>
-
-    <TextView
-        android:id="@+id/shortcuts_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:text="@string/widgets_bottom_sheet_custom_shortcuts_section_title"/>
-
-    <include layout="@layout/widgets_scroll_container"
-             android:id="@+id/shortcuts"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_marginTop="@dimen/widget_row_padding"
-             android:layout_marginBottom="@dimen/widget_row_padding" />
+         android:layout_marginTop="45dp"
+         android:layout_marginBottom="40dp"/>
 
 </com.android.launcher3.widget.WidgetsAndMore>
