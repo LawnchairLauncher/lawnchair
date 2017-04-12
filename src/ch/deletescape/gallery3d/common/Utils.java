@@ -89,22 +89,6 @@ public class Utils {
         }
     }
 
-    public static void closeSilently(ParcelFileDescriptor fd) {
-        try {
-            if (fd != null) fd.close();
-        } catch (Throwable t) {
-            Log.w(TAG, "fail to close", t);
-        }
-    }
-
-    public static void closeSilently(Cursor cursor) {
-        try {
-            if (cursor != null) cursor.close();
-        } catch (Throwable t) {
-            Log.w(TAG, "fail to close", t);
-        }
-    }
-
     public static RectF getMaxCropRect(
             int inWidth, int inHeight, int outWidth, int outHeight, boolean leftAligned) {
         RectF cropRect = new RectF();
