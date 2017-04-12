@@ -78,29 +78,6 @@ public class PackageManagerHelper {
         return Utilities.isNycOrAbove() && (info.flags & FLAG_SUSPENDED) != 0;
     }
 
-    /**
-     * Returns the package for a wallpaper picker system app giving preference to a app which
-     * is not as image picker.
-     */
-    public static String getWallpaperPickerPackage(PackageManager pm) {
-        ArrayList<String> excludePackages = new ArrayList<>();
-        // Exclude packages which contain an image picker
-        for (ResolveInfo info : pm.queryIntentActivities(
-                new Intent(Intent.ACTION_GET_CONTENT).setType("image/*"), 0)) {
-            excludePackages.add(info.activityInfo.packageName);
-        }
-        excludePackages.add(LIVE_WALLPAPER_PICKER_PKG);
-
-        for (ResolveInfo info : pm.queryIntentActivities(
-                new Intent(Intent.ACTION_SET_WALLPAPER), 0)) {
-            if (!excludePackages.contains(info.activityInfo.packageName) &&
-                    (info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
-                return info.activityInfo.packageName;
-            }
-        }
-        return excludePackages.get(0);
-    }
-
     public static Map<String, String> getIconPackPackages(PackageManager pm){
         List<ResolveInfo> list;
         list = pm.queryIntentActivities(new Intent("com.novalauncher.THEME"), 0);
