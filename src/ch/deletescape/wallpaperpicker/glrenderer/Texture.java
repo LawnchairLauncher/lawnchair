@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ch.deletescape.gallery3d.glrenderer;
+package ch.deletescape.wallpaperpicker.glrenderer;
 
 
 // Texture is a rectangular image which can be drawn on GLCanvas.

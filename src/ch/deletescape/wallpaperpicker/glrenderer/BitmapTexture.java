@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package ch.deletescape.gallery3d.glrenderer;
+package ch.deletescape.wallpaperpicker.glrenderer;
 
 import android.graphics.Bitmap;
 
-import ch.deletescape.gallery3d.common.Utils;
+import ch.deletescape.wallpaperpicker.common.Utils;
 
 // BitmapTexture is a texture whose content is specified by a fixed Bitmap.
 //

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ch.deletescape.photos;
+package ch.deletescape.wallpaperpicker;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -30,11 +30,11 @@ import android.opengl.GLUtils;
 import android.os.Build;
 import android.util.Log;
 
-import ch.deletescape.gallery3d.common.ExifOrientation;
-import ch.deletescape.gallery3d.common.Utils;
-import ch.deletescape.gallery3d.glrenderer.BasicTexture;
-import ch.deletescape.gallery3d.glrenderer.BitmapTexture;
-import ch.deletescape.photos.views.TiledImageRenderer;
+import ch.deletescape.wallpaperpicker.common.ExifOrientation;
+import ch.deletescape.wallpaperpicker.common.Utils;
+import ch.deletescape.wallpaperpicker.glrenderer.BasicTexture;
+import ch.deletescape.wallpaperpicker.glrenderer.BitmapTexture;
+import ch.deletescape.wallpaperpicker.views.TiledImageRenderer;
 import ch.deletescape.wallpaperpicker.common.InputStreamProvider;
 
 import java.io.File;
@@ -119,7 +119,7 @@ class DumbBitmapRegionDecoder implements SimpleBitmapRegionDecoder {
 }
 
 /**
- * A {@link ch.deletescape.photos.views.TiledImageRenderer.TileSource} using
+ * A {@link ch.deletescape.wallpaperpicker.views.TiledImageRenderer.TileSource} using
  * {@link BitmapRegionDecoder} to wrap a local file
  */
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)

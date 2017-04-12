@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ch.deletescape.gallery3d.glrenderer;
+package ch.deletescape.wallpaperpicker.glrenderer;
 
 public class IntArray {
     private static final int INIT_CAPACITY = 8;

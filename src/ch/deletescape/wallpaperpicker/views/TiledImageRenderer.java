@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ch.deletescape.photos.views;
+package ch.deletescape.wallpaperpicker.views;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -28,10 +28,10 @@ import android.util.LongSparseArray;
 import android.view.View;
 import android.view.WindowManager;
 
-import ch.deletescape.gallery3d.common.Utils;
-import ch.deletescape.gallery3d.glrenderer.BasicTexture;
-import ch.deletescape.gallery3d.glrenderer.GLCanvas;
-import ch.deletescape.gallery3d.glrenderer.UploadedTexture;
+import ch.deletescape.wallpaperpicker.common.Utils;
+import ch.deletescape.wallpaperpicker.glrenderer.BasicTexture;
+import ch.deletescape.wallpaperpicker.glrenderer.GLCanvas;
+import ch.deletescape.wallpaperpicker.glrenderer.UploadedTexture;
 
 /**
  * Handles laying out, decoding, and drawing of tiles in GL

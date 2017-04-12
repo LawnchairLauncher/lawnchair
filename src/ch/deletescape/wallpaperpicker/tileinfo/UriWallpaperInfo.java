@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import ch.deletescape.wallpaperpicker.common.CropAndSetWallpaperTask;
-import ch.deletescape.photos.BitmapRegionTileSource;
-import ch.deletescape.photos.BitmapRegionTileSource.BitmapSource;
+import ch.deletescape.wallpaperpicker.BitmapRegionTileSource;
+import ch.deletescape.wallpaperpicker.BitmapRegionTileSource.BitmapSource;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.wallpaperpicker.WallpaperPickerActivity;
 import ch.deletescape.wallpaperpicker.common.InputStreamProvider;

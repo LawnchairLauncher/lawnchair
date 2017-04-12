@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package ch.deletescape.gallery3d.glrenderer;
+package ch.deletescape.wallpaperpicker.glrenderer;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.opengl.GLUtils;
 import android.util.Pair;
 
-import ch.deletescape.gallery3d.common.Utils;
+import ch.deletescape.wallpaperpicker.common.Utils;
 
 import java.util.HashMap;
 

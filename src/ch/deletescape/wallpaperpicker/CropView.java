@@ -28,8 +28,8 @@ import android.view.ViewConfiguration;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 
-import ch.deletescape.photos.views.TiledImageRenderer.TileSource;
-import ch.deletescape.photos.views.TiledImageView;
+import ch.deletescape.wallpaperpicker.views.TiledImageRenderer.TileSource;
+import ch.deletescape.wallpaperpicker.views.TiledImageView;
 
 public class CropView extends TiledImageView implements OnScaleGestureListener {
 

@@ -1,4 +1,4 @@
-package ch.deletescape.gallery3d.glrenderer;
+package ch.deletescape.wallpaperpicker.glrenderer;
 
 import android.opengl.GLES20;
 

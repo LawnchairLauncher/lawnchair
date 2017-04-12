@@ -42,11 +42,10 @@ import android.widget.Toast;
 
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.wallpaperpicker.common.CropAndSetWallpaperTask;
-import ch.deletescape.gallery3d.common.Utils;
-import ch.deletescape.photos.BitmapRegionTileSource;
-import ch.deletescape.photos.BitmapRegionTileSource.BitmapSource;
-import ch.deletescape.photos.BitmapRegionTileSource.BitmapSource.InBitmapProvider;
-import ch.deletescape.photos.views.TiledImageRenderer.TileSource;
+import ch.deletescape.wallpaperpicker.common.Utils;
+import ch.deletescape.wallpaperpicker.BitmapRegionTileSource.BitmapSource;
+import ch.deletescape.wallpaperpicker.BitmapRegionTileSource.BitmapSource.InBitmapProvider;
+import ch.deletescape.wallpaperpicker.views.TiledImageRenderer.TileSource;
 import ch.deletescape.wallpaperpicker.common.DialogUtils;
 import ch.deletescape.wallpaperpicker.common.InputStreamProvider;
 

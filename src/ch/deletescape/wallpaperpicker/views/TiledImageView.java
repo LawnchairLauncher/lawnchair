@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ch.deletescape.photos.views;
+package ch.deletescape.wallpaperpicker.views;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
@@ -24,9 +24,9 @@ import android.view.Choreographer;
 import android.view.Choreographer.FrameCallback;
 import android.widget.FrameLayout;
 
-import ch.deletescape.gallery3d.glrenderer.BasicTexture;
-import ch.deletescape.gallery3d.glrenderer.GLES20Canvas;
-import ch.deletescape.photos.views.TiledImageRenderer.TileSource;
+import ch.deletescape.wallpaperpicker.glrenderer.BasicTexture;
+import ch.deletescape.wallpaperpicker.glrenderer.GLES20Canvas;
+import ch.deletescape.wallpaperpicker.views.TiledImageRenderer.TileSource;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;

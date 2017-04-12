@@ -5,8 +5,8 @@ import android.graphics.Point;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 
-import ch.deletescape.photos.BitmapRegionTileSource;
-import ch.deletescape.photos.BitmapRegionTileSource.BitmapSource;
+import ch.deletescape.wallpaperpicker.BitmapRegionTileSource;
+import ch.deletescape.wallpaperpicker.BitmapRegionTileSource.BitmapSource;
 import ch.deletescape.wallpaperpicker.WallpaperCropActivity.CropViewScaleAndOffsetProvider;
 import ch.deletescape.wallpaperpicker.WallpaperPickerActivity;
 

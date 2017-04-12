@@ -14,9 +14,6 @@ import android.graphics.RectF;
 import android.net.Uri;
 import android.util.Log;
 
-import ch.deletescape.gallery3d.common.ExifOrientation;
-import ch.deletescape.gallery3d.common.Utils;
-
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ch.deletescape.gallery3d.common;
+package ch.deletescape.wallpaperpicker.common;
 
 import android.content.Context;
 import android.media.ExifInterface;

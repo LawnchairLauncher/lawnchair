@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ch.deletescape.gallery3d.common;
+package ch.deletescape.wallpaperpicker.common;
 
 import android.database.Cursor;
 import android.graphics.RectF;

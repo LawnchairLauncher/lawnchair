@@ -22,9 +22,9 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
-import ch.deletescape.gallery3d.glrenderer.BasicTexture;
-import ch.deletescape.gallery3d.glrenderer.BitmapTexture;
-import ch.deletescape.photos.views.TiledImageRenderer;
+import ch.deletescape.wallpaperpicker.glrenderer.BasicTexture;
+import ch.deletescape.wallpaperpicker.glrenderer.BitmapTexture;
+import ch.deletescape.wallpaperpicker.views.TiledImageRenderer;
 
 public class DrawableTileSource implements TiledImageRenderer.TileSource {
     private static final int GL_SIZE_LIMIT = 2048;
