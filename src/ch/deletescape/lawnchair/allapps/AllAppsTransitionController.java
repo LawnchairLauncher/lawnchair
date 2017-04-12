@@ -296,7 +296,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         int color = (Integer) mEvaluator.evaluate(mDecelInterpolator.getInterpolation(alpha),
                 mHotseatBackgroundColor, mAllAppsBackgroundColor);
         float tmpAlpha = Float.valueOf(Utilities.getPrefs(mLauncher.getApplicationContext()).getString("pref_allAppsOpacity", "1.0"));
-        int bgAlpha = (int) (tmpAlpha * 255);
+        int bgAlpha = (int) (Utilities.boundToRange(1f - progress, 0, tmpAlpha) * 255);
 
         mAppsView.setRevealDrawableColor(ColorUtils.setAlphaComponent(color, bgAlpha));
         mAppsView.getContentView().setAlpha(alpha);
