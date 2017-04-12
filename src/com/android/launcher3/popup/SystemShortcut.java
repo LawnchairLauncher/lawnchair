@@ -1,6 +1,6 @@
 package com.android.launcher3.popup;
 
-import android.content.res.Resources;
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 
@@ -10,6 +10,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.widget.WidgetsAndMore;
 
 import java.util.List;
@@ -29,14 +30,14 @@ public abstract class SystemShortcut {
         mLabelResId = labelResId;
     }
 
-    public Drawable getIcon(Resources resources) {
-        Drawable icon = resources.getDrawable(mIconResId);
-        icon.setTint(resources.getColor(R.color.system_shortcuts_icon_color));
+    public Drawable getIcon(Context context, int colorAttr) {
+        Drawable icon = context.getResources().getDrawable(mIconResId);
+        icon.setTint(Themes.getAttrColor(context, colorAttr));
         return icon;
     }
 
-    public String getLabel(Resources resources) {
-        return resources.getString(mLabelResId);
+    public String getLabel(Context context) {
+        return context.getString(mLabelResId);
     }
 
     public abstract View.OnClickListener getOnClickListener(final Launcher launcher,
@@ -72,7 +73,7 @@ public abstract class SystemShortcut {
 
     public static class AppInfo extends SystemShortcut {
         public AppInfo() {
-            super(R.drawable.ic_info_launcher, R.string.app_info_drop_target_label);
+            super(R.drawable.ic_info_no_shadow, R.string.app_info_drop_target_label);
         }
 
         @Override
