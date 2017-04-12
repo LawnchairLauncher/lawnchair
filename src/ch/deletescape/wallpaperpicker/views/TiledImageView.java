@@ -52,8 +52,6 @@ public class TiledImageView extends FrameLayout {
         TiledImageRenderer image;
     }
 
-    private float[] mValues = new float[9];
-
     // -------------------------
     // Guarded by mLock
     // -------------------------
