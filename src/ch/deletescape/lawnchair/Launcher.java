@@ -1298,10 +1298,6 @@ public class Launcher extends Activity
             appWidgetInfo = mAppWidgetManager.getLauncherAppWidgetInfo(appWidgetId);
         }
 
-        if (appWidgetInfo.isCustomWidget) {
-            appWidgetId = LauncherAppWidgetInfo.CUSTOM_WIDGET_ID;
-        }
-
         LauncherAppWidgetInfo launcherInfo;
         launcherInfo = new LauncherAppWidgetInfo(appWidgetId, appWidgetInfo.provider);
         launcherInfo.spanX = itemInfo.spanX;

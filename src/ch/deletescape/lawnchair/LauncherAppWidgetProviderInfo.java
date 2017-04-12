@@ -2,7 +2,6 @@ package ch.deletescape.lawnchair;
 
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
@@ -17,8 +16,6 @@ import android.os.Parcel;
  * as opposed to a widget instance, and so should not be confused with {@link LauncherAppWidgetInfo}
  */
 public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
-
-    public boolean isCustomWidget = false;
 
     public int spanX;
     public int spanY;
@@ -42,18 +39,6 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
 
     public LauncherAppWidgetProviderInfo(Parcel in) {
         super(in);
-        initSpans();
-    }
-
-    public LauncherAppWidgetProviderInfo(Context context, CustomAppWidget widget) {
-        isCustomWidget = true;
-
-        provider = new ComponentName(context, widget.getClass().getName());
-        icon = widget.getIcon();
-        label = widget.getLabel();
-        previewImage = widget.getPreviewImage();
-        initialLayout = widget.getWidgetLayout();
-        resizeMode = widget.getResizeMode();
         initSpans();
     }
 
@@ -91,24 +76,15 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
     }
 
     public String getLabel(PackageManager packageManager) {
-        if (isCustomWidget) {
-            return Utilities.trim(label);
-        }
         return super.loadLabel(packageManager);
     }
 
     public Drawable getIcon(Context context, IconCache cache) {
-        if (isCustomWidget) {
-            return cache.getFullResIcon(provider.getPackageName(), icon);
-        }
         return super.loadIcon(context,
                 LauncherAppState.getInstance().getInvariantDeviceProfile().fillResIconDpi);
     }
 
     public String toString(PackageManager pm) {
-        if (isCustomWidget) {
-            return "WidgetProviderInfo(" + provider + ")";
-        }
         return String.format("WidgetProviderInfo provider:%s package:%s short:%s label:%s",
                 provider.toString(), provider.getPackageName(), provider.getShortClassName(), getLabel(pm));
     }

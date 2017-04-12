@@ -88,17 +88,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
 
     public AppWidgetHostView createView(Context context, int appWidgetId,
                                         LauncherAppWidgetProviderInfo appWidget) {
-        if (appWidget.isCustomWidget) {
-            LauncherAppWidgetHostView lahv = new LauncherAppWidgetHostView(context);
-            LayoutInflater inflater = (LayoutInflater)
-                    context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            inflater.inflate(appWidget.initialLayout, lahv);
-            lahv.setAppWidget(0, appWidget);
-            lahv.updateLastInflationOrientation();
-            return lahv;
-        } else {
-            return super.createView(context, appWidgetId, appWidget);
-        }
+        return super.createView(context, appWidgetId, appWidget);
     }
 
     /**

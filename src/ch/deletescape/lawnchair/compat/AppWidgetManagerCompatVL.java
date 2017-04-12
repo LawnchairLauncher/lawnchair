@@ -82,9 +82,6 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
 
     @Override
     public UserHandleCompat getUser(LauncherAppWidgetProviderInfo info) {
-        if (info.isCustomWidget) {
-            return UserHandleCompat.myUserHandle();
-        }
         return UserHandleCompat.fromUser(info.getProfile());
     }
 
@@ -111,7 +108,7 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
     @Override
     public Bitmap getBadgeBitmap(LauncherAppWidgetProviderInfo info, Bitmap bitmap,
                                  int imageWidth, int imageHeight) {
-        if (info.isCustomWidget || info.getProfile().equals(android.os.Process.myUserHandle())) {
+        if (info.getProfile().equals(android.os.Process.myUserHandle())) {
             return bitmap;
         }
 

@@ -37,11 +37,7 @@ public class PendingAddWidgetInfo extends PendingAddItemInfo {
     public Bundle bindOptions = null;
 
     public PendingAddWidgetInfo(Context context, LauncherAppWidgetProviderInfo i) {
-        if (i.isCustomWidget) {
-            itemType = LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
-        } else {
-            itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
-        }
+        itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
         this.info = i;
         user = AppWidgetManagerCompat.getInstance(context).getUser(i);
         componentName = i.provider;

@@ -126,14 +126,8 @@ public class AppWidgetResizeFrame extends FrameLayout implements View.OnKeyListe
         lp.bottomMargin = handleMargin;
         addView(mBottomHandle, lp);
 
-        if (!info.isCustomWidget) {
-            mWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(context,
-                    widgetView.getAppWidgetInfo().provider, null);
-        } else {
-            Resources r = context.getResources();
-            int padding = r.getDimensionPixelSize(R.dimen.default_widget_padding);
-            mWidgetPadding = new Rect(padding, padding, padding, padding);
-        }
+        mWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(context,
+                widgetView.getAppWidgetInfo().provider, null);
 
         if (mResizeMode == AppWidgetProviderInfo.RESIZE_HORIZONTAL) {
             mTopHandle.setVisibility(GONE);
