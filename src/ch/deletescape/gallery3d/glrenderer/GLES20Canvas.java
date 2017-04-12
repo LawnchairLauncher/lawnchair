@@ -32,7 +32,7 @@ import javax.microedition.khronos.opengles.GL11;
 
 public class GLES20Canvas implements GLCanvas {
     // ************** Constants **********************
-    private static final String TAG = GLES20Canvas.class.getSimpleName();
+    private static final String TAG = "GLES20Canvas";
     private static final int FLOAT_SIZE = Float.SIZE / Byte.SIZE;
 
     private static final int COORDS_PER_VERTEX = 2;
@@ -213,8 +213,8 @@ public class GLES20Canvas implements GLCanvas {
             GLES20.glDeleteProgram(program);
             program = 0;
         }
-        for (int i = 0; i < params.length; i++) {
-            params[i].loadHandle(program);
+        for (ShaderParameter param : params) {
+            param.loadHandle(program);
         }
         return program;
     }
