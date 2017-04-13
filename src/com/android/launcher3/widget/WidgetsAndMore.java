@@ -24,6 +24,7 @@ import android.graphics.Rect;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.AttributeSet;
 import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -49,8 +50,6 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.TouchController;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -99,7 +98,8 @@ public class WidgetsAndMore extends AbstractFloatingView implements Insettable, 
 
     public void populateAndShow(ItemInfo itemInfo) {
         mOriginalItemInfo = itemInfo;
-        ((TextView) findViewById(R.id.title)).setText(mOriginalItemInfo.title);
+        ((TextView) findViewById(R.id.title)).setText(getContext().getString(
+                R.string.widgets_bottom_sheet_title, mOriginalItemInfo.title));
 
         onWidgetsBound();
 
@@ -116,70 +116,33 @@ public class WidgetsAndMore extends AbstractFloatingView implements Insettable, 
     protected void onWidgetsBound() {
         List<WidgetItem> widgets = mLauncher.getWidgetsForPackageUser(new PackageUserKey(
                 mOriginalItemInfo.getTargetComponent().getPackageName(), mOriginalItemInfo.user));
-        List<WidgetItem> shortcuts = new ArrayList<>();
-        // Transfer configurable widgets to shortcuts
-        Iterator<WidgetItem> widgetsIter = widgets.iterator();
-        WidgetItem nextWidget;
-        while (widgetsIter.hasNext()) {
-            nextWidget = widgetsIter.next();
-            if (nextWidget.activityInfo != null) {
-                shortcuts.add(nextWidget);
-                widgetsIter.remove();
-            }
-        }
 
         ViewGroup widgetRow = (ViewGroup) findViewById(R.id.widgets);
         ViewGroup widgetCells = (ViewGroup) widgetRow.findViewById(R.id.widgets_cell_list);
 
-        ViewGroup shortcutRow = (ViewGroup) findViewById(R.id.shortcuts);
-        ViewGroup shortcutCells = (ViewGroup) shortcutRow.findViewById(R.id.widgets_cell_list);
-
         widgetCells.removeAllViews();
-        shortcutCells.removeAllViews();
 
         for (int i = 0; i < widgets.size(); i++) {
-            addItemCell(widgetCells);
+            WidgetCell widget = addItemCell(widgetCells);
+            widget.applyFromCellItem(widgets.get(i), LauncherAppState.getInstance(mLauncher)
+                    .getWidgetCache());
+            widget.ensurePreview();
+            widget.setVisibility(View.VISIBLE);
             if (i < widgets.size() - 1) {
                 addDivider(widgetCells);
             }
         }
-        for (int i = 0; i < shortcuts.size(); i++) {
-            addItemCell(shortcutCells);
-            if (i < shortcuts.size() - 1) {
-                addDivider(shortcutCells);
-            }
-        }
 
-        // Bind the views in the horizontal tray regions.
-        if (widgetCells.getChildCount() > 0) {
-            for (int i = 0; i < widgets.size(); i++) {
-                WidgetCell widget = (WidgetCell) widgetCells.getChildAt(i*2); // skip dividers
-                widget.applyFromCellItem(widgets.get(i), LauncherAppState.getInstance(mLauncher)
-                        .getWidgetCache());
-                widget.ensurePreview();
-                widget.setVisibility(View.VISIBLE);
-            }
-        } else {
-            removeView(findViewById(R.id.widgets_header));
-        }
-        if (shortcutCells.getChildCount() > 0) {
-            for (int i = 0; i < shortcuts.size(); i++) {
-                WidgetCell shortcut = (WidgetCell) shortcutCells.getChildAt(i*2); // skip dividers
-                shortcut.applyFromCellItem(shortcuts.get(i), LauncherAppState.getInstance(mLauncher)
-                        .getWidgetCache());
-                shortcut.ensurePreview();
-                shortcut.setVisibility(View.VISIBLE);
-            }
-        } else {
-            removeView(findViewById(R.id.shortcuts_header));
-        }
+        // If there is only one widget, we want to center it instead of left-align.
+        WidgetsAndMore.LayoutParams params = (WidgetsAndMore.LayoutParams) widgetRow.getLayoutParams();
+        params.gravity = widgets.size() == 1 ? Gravity.CENTER_HORIZONTAL : Gravity.START;
     }
 
     private void addDivider(ViewGroup parent) {
         LayoutInflater.from(getContext()).inflate(R.layout.widget_list_divider, parent, true);
     }
 
-    private void addItemCell(ViewGroup parent) {
+    private WidgetCell addItemCell(ViewGroup parent) {
         WidgetCell widget = (WidgetCell) LayoutInflater.from(getContext()).inflate(
                 R.layout.widget_cell, parent, false);
 
@@ -188,6 +151,7 @@ public class WidgetsAndMore extends AbstractFloatingView implements Insettable, 
         widget.setAnimatePreview(false);
 
         parent.addView(widget);
+        return widget;
     }
 
     @Override
