@@ -39,6 +39,8 @@
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Φόρτωση εφαρμογών…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Δεν βρέθηκαν εφαρμογές για το ερώτημα \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Αναζήτηση περισσότερων εφαρμογών"</string>
+    <!-- no translation found for notifications_header (1404149926117359025) -->
+    <skip />
     <string name="out_of_space" msgid="4691004494942118364">"Δεν υπάρχει χώρος σε αυτήν την αρχική οθόνη."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Δεν υπάρχει επιπλέον χώρος στην περιοχή Αγαπημένα"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Λίστα εφαρμογών"</string>

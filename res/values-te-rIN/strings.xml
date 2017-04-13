@@ -39,6 +39,8 @@
     <string name="all_apps_loading_message" msgid="7557140873644765180">"అనువర్తనాలను లోడ్ చేస్తోంది…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"కి సరిపోలే అనువర్తనాలేవీ కనుగొనబడలేదు"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"మరిన్ని అనువర్తనాల కోసం శోధించు"</string>
+    <!-- no translation found for notifications_header (1404149926117359025) -->
+    <skip />
     <string name="out_of_space" msgid="4691004494942118364">"ఈ హోమ్ స్క్రీన్‌లో ఖాళీ లేదు."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ఇష్టమైనవి ట్రేలో ఖాళీ లేదు"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"అనువర్తనాల జాబితా"</string>
@@ -77,12 +79,9 @@
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"ప్రస్తుత డిస్‌ప్లే సెట్టింగ్ భ్రమణాన్ని అనుమతించలేదు"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"హోమ్ స్క్రీన్‌కి చిహ్నాన్ని జోడించు"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"కొత్త అనువర్తనాల కోసం"</string>
-    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
-    <skip />
-    <!-- no translation found for icon_shape_no_override (3678524428085518367) -->
-    <skip />
-    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
-    <skip />
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"చిహ్న ఆకారాన్ని మార్చు"</string>
+    <string name="icon_shape_no_override" msgid="3678524428085518367">"మార్చవద్దు"</string>
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"చిహ్న ఆకార మార్పులను వర్తింపజేస్తోంది"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"తెలియదు"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"తీసివేయి"</string>
     <string name="abandoned_search" msgid="891119232568284442">"శోధించు"</string>
