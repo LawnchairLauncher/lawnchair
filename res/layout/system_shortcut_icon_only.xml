@@ -16,6 +16,7 @@
 
 <ImageView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:theme="@style/IconOnlySystemShortcut"
     android:layout_width="@dimen/system_shortcut_header_icon_touch_size"
     android:layout_height="@dimen/system_shortcut_header_icon_touch_size"
     android:background="?android:attr/selectableItemBackgroundBorderless"

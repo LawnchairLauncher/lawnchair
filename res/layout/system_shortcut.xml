@@ -15,6 +15,7 @@
 -->
 
 <com.android.launcher3.shortcuts.DeepShortcutView
+    android:theme="@style/IconWithTextSystemShortcut"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:layout_width="@dimen/bg_popup_item_width"
