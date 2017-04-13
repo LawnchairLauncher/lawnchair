@@ -39,6 +39,8 @@
     <string name="all_apps_loading_message" msgid="7557140873644765180">"பயன்பாடுகளை ஏற்றுகிறது..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" உடன் பொருந்தும் பயன்பாடுகள் இல்லை"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"கூடுதல் பயன்பாடுகளைத் தேடு"</string>
+    <!-- no translation found for notifications_header (1404149926117359025) -->
+    <skip />
     <string name="out_of_space" msgid="4691004494942118364">"முகப்புத் திரையில் இடமில்லை."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"பிடித்தவை ட்ரேயில் இடமில்லை"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"பயன்பாடுகளின் பட்டியல்"</string>

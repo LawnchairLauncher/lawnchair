@@ -39,6 +39,8 @@
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Načítavajú sa aplikácie..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Nenašli sa žiadne aplikácie zodpovedajúce dopytu <xliff:g id="QUERY">%1$s</xliff:g>"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Hľadať ďalšie aplikácie"</string>
+    <!-- no translation found for notifications_header (1404149926117359025) -->
+    <skip />
     <string name="out_of_space" msgid="4691004494942118364">"Na tejto ploche už nie je miesto"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Na paneli Obľúbené položky už nie je miesto"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Zoznam aplikácií"</string>
