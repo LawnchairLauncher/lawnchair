@@ -1,9 +1,10 @@
 buildscript {
     repositories {
         mavenCentral()
+        jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath 'com.android.tools.build:gradle:2.3.1'
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.0'
     }
 }
@@ -13,7 +14,7 @@ apply plugin: 'com.google.protobuf'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion '24.0.0'
+    buildToolsVersion '26.0.0'
 
     defaultConfig {
         minSdkVersion 21
@@ -61,6 +62,7 @@ android {
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 final String SUPPORT_LIBS_VERSION = '26.0.0-SNAPSHOT'
