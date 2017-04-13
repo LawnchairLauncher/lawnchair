@@ -45,7 +45,7 @@ public abstract class SystemShortcut {
     public static class Widgets extends SystemShortcut {
 
         public Widgets() {
-            super(R.drawable.ic_widget, R.string.widgets_and_more);
+            super(R.drawable.ic_widget, R.string.widget_button_text);
         }
 
         @Override
