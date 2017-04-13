@@ -151,7 +151,9 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
     }
 
     public List<View> getSystemShortcutViews(boolean reverseOrder) {
-        if (reverseOrder) {
+        // Always reverse system shortcut icons (in the header)
+        // so they are in priority order from right to left.
+        if (reverseOrder || mSystemShortcutIcons != null) {
             Collections.reverse(mSystemShortcutViews);
         }
         return mSystemShortcutViews;
