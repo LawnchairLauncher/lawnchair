@@ -37,13 +37,13 @@ public abstract class AbstractFloatingView extends LinearLayout {
     @IntDef(flag = true, value = {
             TYPE_FOLDER,
             TYPE_POPUP_CONTAINER_WITH_ARROW,
-            TYPE_WIDGETS_AND_MORE
+            TYPE_WIDGETS_BOTTOM_SHEET
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface FloatingViewType {}
     public static final int TYPE_FOLDER = 1 << 0;
     public static final int TYPE_POPUP_CONTAINER_WITH_ARROW = 1 << 1;
-    public static final int TYPE_WIDGETS_AND_MORE = 1 << 2;
+    public static final int TYPE_WIDGETS_BOTTOM_SHEET = 1 << 2;
 
     protected boolean mIsOpen;
 
@@ -139,7 +139,7 @@ public abstract class AbstractFloatingView extends LinearLayout {
 
     public static AbstractFloatingView getTopOpenView(Launcher launcher) {
         return getOpenView(launcher, TYPE_FOLDER | TYPE_POPUP_CONTAINER_WITH_ARROW
-                | TYPE_WIDGETS_AND_MORE);
+                | TYPE_WIDGETS_BOTTOM_SHEET);
     }
 
     public abstract int getLogContainerType();

@@ -58,10 +58,9 @@ import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logging.LoggerUtils;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TouchController;
-import com.android.launcher3.widget.WidgetsAndMore;
+import com.android.launcher3.widget.WidgetsBottomSheet;
 
 import java.util.ArrayList;
 
@@ -247,9 +246,9 @@ public class DragLayer extends InsettableFrameLayout {
             return true;
         }
 
-        WidgetsAndMore widgetsAndMore = WidgetsAndMore.getOpen(mLauncher);
-        if (widgetsAndMore != null && widgetsAndMore.onControllerInterceptTouchEvent(ev)) {
-            mActiveController = widgetsAndMore;
+        WidgetsBottomSheet widgetsBottomSheet = WidgetsBottomSheet.getOpen(mLauncher);
+        if (widgetsBottomSheet != null && widgetsBottomSheet.onControllerInterceptTouchEvent(ev)) {
+            mActiveController = widgetsBottomSheet;
             return true;
         }
 

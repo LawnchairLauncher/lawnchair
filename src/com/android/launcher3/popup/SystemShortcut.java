@@ -11,7 +11,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Themes;
-import com.android.launcher3.widget.WidgetsAndMore;
+import com.android.launcher3.widget.WidgetsBottomSheet;
 
 import java.util.List;
 
@@ -62,10 +62,10 @@ public abstract class SystemShortcut {
                 @Override
                 public void onClick(View view) {
                     PopupContainerWithArrow.getOpen(launcher).close(true);
-                    WidgetsAndMore widgetsAndMore =
-                            (WidgetsAndMore) launcher.getLayoutInflater().inflate(
-                                    R.layout.widgets_and_more, launcher.getDragLayer(), false);
-                    widgetsAndMore.populateAndShow(itemInfo);
+                    WidgetsBottomSheet widgetsBottomSheet =
+                            (WidgetsBottomSheet) launcher.getLayoutInflater().inflate(
+                                    R.layout.widgets_bottom_sheet, launcher.getDragLayer(), false);
+                    widgetsBottomSheet.populateAndShow(itemInfo);
                 }
             };
         }
