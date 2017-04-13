@@ -44,6 +44,7 @@ import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.ManagedProfileHeuristic;
+import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -370,6 +371,14 @@ public class PackageUpdatedTask extends ExtendedModelTask {
                     callbacks.notifyWidgetProvidersChanged();
                 }
             });
+        } else if (Utilities.isAtLeastO() && mOp == OP_ADD) {
+            // Load widgets for the new package.
+            for (int i = 0; i < N; i++) {
+                LauncherModel model = app.getModel();
+                model.refreshAndBindWidgetsAndShortcuts(
+                        model.getCallback(), false /* bindFirst */,
+                        new PackageUserKey(packages[i], mUser) /* packageUser */);
+            }
         }
     }
 }

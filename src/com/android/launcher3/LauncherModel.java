@@ -732,6 +732,16 @@ public class LauncherModel extends BroadcastReceiver
                 if (DEBUG_LOADERS) Log.d(TAG, "step 3.2: bind deep shortcuts");
                 bindDeepShortcuts();
 
+                // Take a break
+                if (DEBUG_LOADERS) Log.d(TAG, "step 3 completed, wait for idle");
+                waitForIdle();
+                verifyNotStopped();
+
+                // fourth step
+                if (DEBUG_LOADERS) Log.d(TAG, "step 4.1: loading widgets");
+                refreshAndBindWidgetsAndShortcuts(getCallback(), false /* bindFirst */,
+                        null /* packageUser */);
+
                 synchronized (mLock) {
                     // Everything loaded bind the data.
                     mModelLoaded = true;

@@ -43,7 +43,6 @@ public abstract class SystemShortcut {
     public abstract View.OnClickListener getOnClickListener(final Launcher launcher,
             final ItemInfo itemInfo);
 
-
     public static class Widgets extends SystemShortcut {
 
         public Widgets() {
