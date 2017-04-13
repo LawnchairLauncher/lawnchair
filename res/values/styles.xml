@@ -91,6 +91,21 @@
         <item name="android:shadowColor">#B0000000</item>
     </style>
 
+    <!-- Theme for the popup container -->
+    <style name="PopupContainer" parent="@style/LauncherTheme">
+        <!-- TODO: move hardcoded colors from colors.xml to this theme and use for popup items -->
+    </style>
+    <style name="IconOnlySystemShortcut">
+        <!-- The icons use this color, then are tinted -->
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:tint">?android:attr/textColorHint</item>
+    </style>
+    <style name="IconWithTextSystemShortcut">
+        <!-- The icons use this color, then are tinted -->
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:backgroundTint">?android:attr/textColorTertiary</item>
+    </style>
+
     <!-- Drop targets -->
     <style name="DropTargetButtonBase">
         <item name="android:drawablePadding">7.5dp</item>
