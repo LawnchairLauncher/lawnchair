@@ -193,7 +193,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                 : mShortcutsItemView.getDeepShortcutViews(reverseOrder);
         List<View> systemShortcutViews = mShortcutsItemView == null
                 ? Collections.EMPTY_LIST
-                : mShortcutsItemView.getSystemShortcutViews(reverseOrder || true);
+                : mShortcutsItemView.getSystemShortcutViews(reverseOrder);
         if (mNotificationItemView != null) {
             BadgeInfo badgeInfo = mLauncher.getPopupDataProvider()
                     .getBadgeInfoForItem(originalItemInfo);
