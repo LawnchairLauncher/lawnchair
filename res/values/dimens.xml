@@ -170,6 +170,7 @@
     <dimen name="popup_arrow_horizontal_center">24dp</dimen>
     <!-- popup_arrow_center - popup_arrow_width / 2-->
     <dimen name="popup_arrow_horizontal_offset">19dp</dimen>
+    <dimen name="popup_arrow_corner_radius">2dp</dimen>
     <!-- popup_item_width - icon_size - padding_start - drawable_padding -->
     <dimen name="deep_shortcuts_divider_width">158dp</dimen>
     <dimen name="system_shortcut_icon_size">24dp</dimen>
