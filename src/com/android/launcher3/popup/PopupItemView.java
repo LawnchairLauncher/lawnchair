@@ -120,8 +120,9 @@ public abstract class PopupItemView extends FrameLayout
      */
     public Animator createOpenAnimation(boolean isContainerAboveIcon, boolean pivotLeft) {
         Point center = getIconCenter();
+        int arrowCenter = getResources().getDimensionPixelSize(R.dimen.popup_arrow_horizontal_center);
         ValueAnimator openAnimator =  new ZoomRevealOutlineProvider(center.x, center.y,
-                mPillRect, this, mIconView, isContainerAboveIcon, pivotLeft)
+                mPillRect, this, mIconView, isContainerAboveIcon, pivotLeft, arrowCenter)
                         .createRevealAnimator(this, false);
         mOpenAnimationProgress = 0f;
         openAnimator.addUpdateListener(this);
@@ -143,8 +144,9 @@ public abstract class PopupItemView extends FrameLayout
     public Animator createCloseAnimation(boolean isContainerAboveIcon, boolean pivotLeft,
             long duration) {
         Point center = getIconCenter();
+        int arrowCenter = getResources().getDimensionPixelSize(R.dimen.popup_arrow_horizontal_center);
         ValueAnimator closeAnimator = new ZoomRevealOutlineProvider(center.x, center.y,
-                mPillRect, this, mIconView, isContainerAboveIcon, pivotLeft)
+                mPillRect, this, mIconView, isContainerAboveIcon, pivotLeft, arrowCenter)
                         .createRevealAnimator(this, true);
         // Scale down the duration and interpolator according to the progress
         // that the open animation was at when the close started.
@@ -188,9 +190,10 @@ public abstract class PopupItemView extends FrameLayout
 
         private final boolean mPivotLeft;
         private final float mTranslateX;
+        private final float mArrowCenter;
 
         public ZoomRevealOutlineProvider(int x, int y, Rect pillRect, PopupItemView translateView,
-                View zoomView, boolean isContainerAboveIcon, boolean pivotLeft) {
+                View zoomView, boolean isContainerAboveIcon, boolean pivotLeft, float arrowCenter) {
             super(x, y, pillRect, translateView.getBackgroundRadius());
             mTranslateView = translateView;
             mZoomView = zoomView;
@@ -199,7 +202,8 @@ public abstract class PopupItemView extends FrameLayout
             mTranslateYMultiplier = isContainerAboveIcon ? 0.5f : -0.5f;
 
             mPivotLeft = pivotLeft;
-            mTranslateX = pivotLeft ? pillRect.height() / 2 : pillRect.right - pillRect.height() / 2;
+            mTranslateX = pivotLeft ? arrowCenter : pillRect.right - arrowCenter;
+            mArrowCenter = arrowCenter;
         }
 
         @Override
@@ -214,7 +218,8 @@ public abstract class PopupItemView extends FrameLayout
             float height = mOutline.height();
             mTranslateView.setTranslationY(mTranslateYMultiplier * (mFullHeight - height));
 
-            float pivotX = mPivotLeft ? (mOutline.left + height / 2) : (mOutline.right - height / 2);
+            float offsetX = Math.min(mOutline.width(), mArrowCenter);
+            float pivotX = mPivotLeft ? (mOutline.left + offsetX) : (mOutline.right - offsetX);
             mTranslateView.setTranslationX(mTranslateX - pivotX);
         }
     }
