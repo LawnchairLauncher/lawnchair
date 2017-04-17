@@ -236,6 +236,10 @@ public class PinItemDragListener
             mLauncher.exitSpringLoadedDragModeDelayed(true,
                     Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
         }
+
+        if (!success) {
+            d.deferDragViewCleanupPostAnimation = false;
+        }
         postCleanup();
     }
 
