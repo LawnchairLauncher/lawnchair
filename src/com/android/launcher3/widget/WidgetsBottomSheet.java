@@ -53,9 +53,9 @@ import com.android.launcher3.util.TouchController;
 import java.util.List;
 
 /**
- * Bottom sheet for the "Widgets & more" long-press option.
+ * Bottom sheet for the "Widgets" system shortcut in the long-press popup.
  */
-public class WidgetsAndMore extends AbstractFloatingView implements Insettable, TouchController,
+public class WidgetsBottomSheet extends AbstractFloatingView implements Insettable, TouchController,
         VerticalPullDetector.Listener, View.OnClickListener, View.OnLongClickListener,
         DragController.DragListener {
 
@@ -72,11 +72,11 @@ public class WidgetsAndMore extends AbstractFloatingView implements Insettable, 
     private boolean mWasNavBarLight;
     private VerticalPullDetector mVerticalPullDetector;
 
-    public WidgetsAndMore(Context context, AttributeSet attrs) {
+    public WidgetsBottomSheet(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public WidgetsAndMore(Context context, AttributeSet attrs, int defStyleAttr) {
+    public WidgetsBottomSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(new ContextThemeWrapper(context, R.style.WidgetContainerTheme), attrs, defStyleAttr);
         setWillNotDraw(false);
         mLauncher = Launcher.getLauncher(context);
@@ -134,7 +134,8 @@ public class WidgetsAndMore extends AbstractFloatingView implements Insettable, 
         }
 
         // If there is only one widget, we want to center it instead of left-align.
-        WidgetsAndMore.LayoutParams params = (WidgetsAndMore.LayoutParams) widgetRow.getLayoutParams();
+        WidgetsBottomSheet.LayoutParams params = (WidgetsBottomSheet.LayoutParams)
+                widgetRow.getLayoutParams();
         params.gravity = widgets.size() == 1 ? Gravity.CENTER_HORIZONTAL : Gravity.START;
     }
 
@@ -200,7 +201,7 @@ public class WidgetsAndMore extends AbstractFloatingView implements Insettable, 
                 public void onAnimationEnd(Animator animation) {
                     mIsOpen = false;
                     mVerticalPullDetector.finishedScrolling();
-                    ((ViewGroup) getParent()).removeView(WidgetsAndMore.this);
+                    ((ViewGroup) getParent()).removeView(WidgetsBottomSheet.this);
                     setLightNavBar(mWasNavBarLight);
                 }
             });
@@ -220,7 +221,7 @@ public class WidgetsAndMore extends AbstractFloatingView implements Insettable, 
 
     @Override
     protected boolean isOfType(@FloatingViewType int type) {
-        return (type & TYPE_WIDGETS_AND_MORE) != 0;
+        return (type & TYPE_WIDGETS_BOTTOM_SHEET) != 0;
     }
 
     @Override
@@ -229,10 +230,10 @@ public class WidgetsAndMore extends AbstractFloatingView implements Insettable, 
     }
 
     /**
-     * Returns a WidgetsAndMore which is already open or null
+     * Returns a {@link WidgetsBottomSheet} which is already open or null
      */
-    public static WidgetsAndMore getOpen(Launcher launcher) {
-        return getOpenView(launcher, TYPE_WIDGETS_AND_MORE);
+    public static WidgetsBottomSheet getOpen(Launcher launcher) {
+        return getOpenView(launcher, TYPE_WIDGETS_BOTTOM_SHEET);
     }
 
     @Override
