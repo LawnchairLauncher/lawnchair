@@ -95,8 +95,29 @@ public class LauncherIcons {
      */
     public static Bitmap createBadgedIconBitmap(
             Drawable icon, UserHandle user, Context context) {
-        float scale = FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION ?
-                1 : IconNormalizer.getInstance(context).getScale(icon, null);
+
+        IconNormalizer normalizer;
+        float scale = 1f;
+        if (!FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION) {
+            normalizer = IconNormalizer.getInstance(context);
+            if (Utilities.isAtLeastO()) {
+                boolean[] outShape = new boolean[1];
+                AdaptiveIconDrawable dr = (AdaptiveIconDrawable)
+                        context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper).mutate();
+                dr.setBounds(0, 0, 1, 1);
+                scale = normalizer.getScale(icon, null, dr.getIconMask(), outShape);
+                if (FeatureFlags.LEGACY_ICON_TREATMENT &&
+                        !outShape[0]){
+                    Drawable wrappedIcon = wrapToAdaptiveIconDrawable(context, icon, scale);
+                    if (wrappedIcon != icon) {
+                        icon = wrappedIcon;
+                        scale = normalizer.getScale(icon, null, null, null);
+                    }
+                }
+            } else {
+                scale = normalizer.getScale(icon, null, null, null);
+            }
+        }
         Bitmap bitmap = createIconBitmap(icon, context, scale);
         if (FeatureFlags.ADAPTIVE_ICON_SHADOW && Utilities.isAtLeastO() &&
                 icon instanceof AdaptiveIconDrawable) {
@@ -129,8 +150,29 @@ public class LauncherIcons {
      */
     public static Bitmap createScaledBitmapWithoutShadow(Drawable icon, Context context) {
         RectF iconBounds = new RectF();
-        float scale = FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION ?
-                1 : IconNormalizer.getInstance(context).getScale(icon, iconBounds);
+        IconNormalizer normalizer;
+        float scale = 1f;
+        if (!FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION) {
+            normalizer = IconNormalizer.getInstance(context);
+            if (Utilities.isAtLeastO()) {
+                boolean[] outShape = new boolean[1];
+                AdaptiveIconDrawable dr = (AdaptiveIconDrawable)
+                        context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper).mutate();
+                dr.setBounds(0, 0, 1, 1);
+                scale = normalizer.getScale(icon, iconBounds, dr.getIconMask(), outShape);
+                if (Utilities.isAtLeastO() && FeatureFlags.LEGACY_ICON_TREATMENT &&
+                        !outShape[0]) {
+                    Drawable wrappedIcon = wrapToAdaptiveIconDrawable(context, icon, scale);
+                    if (wrappedIcon != icon) {
+                        icon = wrappedIcon;
+                        scale = normalizer.getScale(icon, iconBounds, null, null);
+                    }
+                }
+            } else {
+                scale = normalizer.getScale(icon, iconBounds, null, null);
+            }
+
+        }
         scale = Math.min(scale, ShadowGenerator.getScaleForBounds(iconBounds));
         return createIconBitmap(icon, context, scale);
     }
@@ -180,10 +222,8 @@ public class LauncherIcons {
      * @param scale the scale to apply before drawing {@param icon} on the canvas
      */
     public static Bitmap createIconBitmap(Drawable icon, Context context, float scale) {
-        icon = wrapToAdaptiveIconDrawable(context, icon);
         synchronized (sCanvas) {
             final int iconBitmapSize = LauncherAppState.getIDP(context).iconBitmapSize;
-
             int width = iconBitmapSize;
             int height = iconBitmapSize;
 
@@ -242,7 +282,7 @@ public class LauncherIcons {
      * shrink the legacy icon and set it as foreground. Use color drawable as background to
      * create AdaptiveIconDrawable.
      */
-    static Drawable wrapToAdaptiveIconDrawable(Context context, Drawable drawable) {
+    static Drawable wrapToAdaptiveIconDrawable(Context context, Drawable drawable, float scale) {
         if (!(FeatureFlags.LEGACY_ICON_TREATMENT && Utilities.isAtLeastO())) {
             return drawable;
         }
@@ -252,8 +292,10 @@ public class LauncherIcons {
             if (!clazz.isAssignableFrom(drawable.getClass())) {
                 Drawable iconWrapper =
                         context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper).mutate();
-                ((FixedScaleDrawable) clazz.getMethod("getForeground").invoke(iconWrapper))
-                        .setDrawable(drawable);
+                FixedScaleDrawable fsd = ((FixedScaleDrawable) clazz.getMethod("getForeground")
+                        .invoke(iconWrapper));
+                fsd.setDrawable(drawable);
+                fsd.setScale(scale);
 
                 return iconWrapper;
             }
