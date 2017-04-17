@@ -26,6 +26,8 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.CornerPathEffect;
+import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.ShapeDrawable;
@@ -486,7 +488,11 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         } else {
             ShapeDrawable arrowDrawable = new ShapeDrawable(TriangleShape.create(
                     width, height, !mIsAboveIcon));
-            arrowDrawable.getPaint().setColor(Color.WHITE);
+            Paint arrowPaint = arrowDrawable.getPaint();
+            arrowPaint.setColor(Color.WHITE);
+            // The corner path effect won't be reflected in the shadow, but shouldn't be noticeable.
+            int radius = getResources().getDimensionPixelSize(R.dimen.popup_arrow_corner_radius);
+            arrowPaint.setPathEffect(new CornerPathEffect(radius));
             arrowView.setBackground(arrowDrawable);
             arrowView.setElevation(getElevation());
         }
