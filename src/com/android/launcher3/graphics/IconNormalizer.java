@@ -74,6 +74,8 @@ public class IconNormalizer {
     private final Paint mPaintMaskShapeOutline;
     private final byte[] mPixels;
     private final int[] mPixelsARGB;
+
+    private final Rect mAdaptiveIconBounds;
     private float mAdaptiveIconScale;
 
     // for each y, stores the position of the leftmost x and the rightmost x
@@ -99,6 +101,7 @@ public class IconNormalizer {
         mLeftBorder = new float[mMaxSize];
         mRightBorder = new float[mMaxSize];
         mBounds = new Rect();
+        mAdaptiveIconBounds = new Rect();
 
         // Needed for isShape() method
         mBitmapARGB = Bitmap.createBitmap(mMaxSize, mMaxSize, Bitmap.Config.ARGB_8888);
@@ -231,7 +234,7 @@ public class IconNormalizer {
         if (Utilities.isAtLeastO() && d instanceof AdaptiveIconDrawable &&
                 mAdaptiveIconScale != SCALE_NOT_INITIALIZED) {
             if (outBounds != null) {
-                outBounds.set(mBounds);
+                outBounds.set(mAdaptiveIconBounds);
             }
             return mAdaptiveIconScale;
         }
@@ -347,6 +350,7 @@ public class IconNormalizer {
         if (Utilities.isAtLeastO() && d instanceof AdaptiveIconDrawable &&
                 mAdaptiveIconScale == SCALE_NOT_INITIALIZED) {
             mAdaptiveIconScale = scale;
+            mAdaptiveIconBounds.set(mBounds);
         }
         return scale;
     }
