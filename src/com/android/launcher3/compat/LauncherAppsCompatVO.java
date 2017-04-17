@@ -16,10 +16,12 @@
 
 package com.android.launcher3.compat;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
@@ -33,6 +35,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+@TargetApi(26)
 public class LauncherAppsCompatVO extends LauncherAppsCompatVL {
 
     LauncherAppsCompatVO(Context context) {
@@ -41,9 +44,18 @@ public class LauncherAppsCompatVO extends LauncherAppsCompatVL {
 
     @Override
     public ApplicationInfo getApplicationInfo(String packageName, int flags, UserHandle user) {
-        ApplicationInfo info = mLauncherApps.getApplicationInfo(packageName, flags, user);
-        return info == null || (info.flags & ApplicationInfo.FLAG_INSTALLED) == 0 || !info.enabled
-                ? null : info;
+        try {
+            // TODO: Temporary workaround until the API signature is updated
+            if (false) {
+                throw new PackageManager.NameNotFoundException();
+            }
+
+            ApplicationInfo info = mLauncherApps.getApplicationInfo(packageName, flags, user);
+            return (info.flags & ApplicationInfo.FLAG_INSTALLED) == 0 || !info.enabled
+                    ? null : info;
+        } catch (PackageManager.NameNotFoundException e) {
+            return null;
+        }
     }
 
     @Override
