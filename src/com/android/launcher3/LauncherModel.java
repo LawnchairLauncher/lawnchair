@@ -1249,6 +1249,10 @@ public class LauncherModel extends BroadcastReceiver
                         sBgDataModel.folders.remove(folderId);
                         sBgDataModel.itemsIdMap.remove(folderId);
                     }
+
+                    // Remove any ghost widgets
+                    LauncherSettings.Settings.call(contentResolver,
+                            LauncherSettings.Settings.METHOD_REMOVE_GHOST_WIDGETS);
                 }
 
                 // Unpin shortcuts that don't exist on the workspace.
