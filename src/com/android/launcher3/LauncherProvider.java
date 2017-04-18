@@ -65,10 +65,11 @@ import com.android.launcher3.util.Thunk;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
+import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Locale;
+import java.util.HashSet;
 
 public class LauncherProvider extends ContentProvider {
     private static final String TAG = "LauncherProvider";
@@ -83,7 +84,7 @@ public class LauncherProvider extends ContentProvider {
      * overtime. These must be backwards compatible, else we risk breaking old devices during
      * restore or binary version downgrade.
      */
-    private static final int DATA_VERSION = 2;
+    private static final int DATA_VERSION = 3;
 
     private static final String PREF_KEY_DATA_VERISON = "provider_data_version";
 
@@ -260,10 +261,11 @@ public class LauncherProvider extends ContentProvider {
 
             if (cn != null) {
                 try {
-                    int appWidgetId = new AppWidgetHost(getContext(), Launcher.APPWIDGET_HOST_ID)
-                            .allocateAppWidgetId();
+                    AppWidgetHost widgetHost = mOpenHelper.newLauncherWidgetHost();
+                    int appWidgetId = widgetHost.allocateAppWidgetId();
                     values.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId);
                     if (!appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId,cn)) {
+                        widgetHost.deleteAppWidgetId(appWidgetId);
                         return false;
                     }
                 } catch (RuntimeException e) {
@@ -345,23 +347,7 @@ public class LauncherProvider extends ContentProvider {
 
         if (Binder.getCallingPid() != Process.myPid()
                 && Favorites.TABLE_NAME.equalsIgnoreCase(args.table)) {
-            String widgetSelection = TextUtils.isEmpty(args.where) ? "1=1" : args.where;
-            widgetSelection = String.format(Locale.ENGLISH, "%1$s = %2$d AND ( %3$s )",
-                    Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_APPWIDGET, widgetSelection);
-            try (Cursor c = db.query(Favorites.TABLE_NAME, new String[] { Favorites.APPWIDGET_ID },
-                    widgetSelection, args.args, null, null, null)) {
-                AppWidgetHost host = new AppWidgetHost(getContext(), Launcher.APPWIDGET_HOST_ID);
-                while (c.moveToNext()) {
-                    int widgetId = c.getInt(0);
-                    if (widgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
-                        try {
-                            host.deleteAppWidgetId(widgetId);
-                        } catch (RuntimeException e) {
-                            Log.e(TAG, "Error deleting widget id " + widgetId, e);
-                        }
-                    }
-                }
-            }
+            mOpenHelper.removeGhostWidgets(mOpenHelper.getWritableDatabase());
         }
         int count = db.delete(args.table, args.where, args.args);
         if (count > 0) {
@@ -439,6 +425,10 @@ public class LauncherProvider extends ContentProvider {
                 loadDefaultFavoritesIfNecessary();
                 return null;
             }
+            case LauncherSettings.Settings.METHOD_REMOVE_GHOST_WIDGETS: {
+                mOpenHelper.removeGhostWidgets(mOpenHelper.getWritableDatabase());
+                return null;
+            }
         }
         return null;
     }
@@ -507,7 +497,7 @@ public class LauncherProvider extends ContentProvider {
         if (sp.getBoolean(EMPTY_DATABASE_CREATED, false)) {
             Log.d(TAG, "loading default workspace");
 
-            AppWidgetHost widgetHost = new AppWidgetHost(getContext(), Launcher.APPWIDGET_HOST_ID);
+            AppWidgetHost widgetHost = mOpenHelper.newLauncherWidgetHost();
             AutoInstallsLayout loader = createWorkspaceLoaderFromAppRestriction(widgetHost);
             if (loader == null) {
                 loader = AutoInstallsLayout.get(getContext(),widgetHost, mOpenHelper);
@@ -657,7 +647,7 @@ public class LauncherProvider extends ContentProvider {
         protected void onEmptyDbCreated() {
             // Database was just created, so wipe any previous widgets
             if (mWidgetHostResetHandler != null) {
-                new AppWidgetHost(mContext, Launcher.APPWIDGET_HOST_ID).deleteHost();
+                newLauncherWidgetHost().deleteHost();
                 mWidgetHostResetHandler.sendEmptyMessage(
                         ChangeListenerWrapper.MSG_APP_WIDGET_HOST_RESET);
             }
@@ -763,6 +753,8 @@ public class LauncherProvider extends ContentProvider {
                     }
                 }
                 case 2:
+                    removeGhostWidgets(db);
+                case 3:
                     // data updated
                     return;
             }
@@ -900,6 +892,47 @@ public class LauncherProvider extends ContentProvider {
                 db.setTransactionSuccessful();
             } finally {
                 db.endTransaction();
+            }
+        }
+
+        /**
+         * Removes widgets which are registered to the Launcher's host, but are not present
+         * in our model.
+         */
+        public void removeGhostWidgets(SQLiteDatabase db) {
+            // Get all existing widget ids.
+            final AppWidgetHost host = newLauncherWidgetHost();
+            final int[] allWidgets;
+            try {
+                Method getter = AppWidgetHost.class.getDeclaredMethod("getAppWidgetIds");
+                getter.setAccessible(true);
+                allWidgets = (int[]) getter.invoke(host);
+            } catch (Exception e) {
+                Log.e(TAG, "getAppWidgetIds not supported", e);
+                return;
+            }
+            try {
+                Cursor c = db.query(Favorites.TABLE_NAME,
+                        new String[] {Favorites.APPWIDGET_ID },
+                        "itemType=" + Favorites.ITEM_TYPE_APPWIDGET, null, null, null, null);
+                HashSet<Integer> validWidgets = new HashSet<>();
+                while (c.moveToNext()) {
+                    validWidgets.add(c.getInt(0));
+                }
+                c.close();
+
+                for (int widgetId : allWidgets) {
+                    if (!validWidgets.contains(widgetId)) {
+                        try {
+                            FileLog.d(TAG, "Deleting invalid widget " + widgetId);
+                            host.deleteAppWidgetId(widgetId);
+                        } catch (RuntimeException e) {
+                            // Ignore
+                        }
+                    }
+                }
+            } catch (SQLException ex) {
+                Log.w(TAG, "Error getting widgets list", ex);
             }
         }
 
@@ -1070,6 +1103,10 @@ public class LauncherProvider extends ContentProvider {
             }
             mMaxItemId += 1;
             return mMaxItemId;
+        }
+
+        public AppWidgetHost newLauncherWidgetHost() {
+            return new AppWidgetHost(mContext, Launcher.APPWIDGET_HOST_ID);
         }
 
         @Override

@@ -309,6 +309,8 @@ public class LauncherSettings {
         public static final String EXTRA_EXTRACTED_COLORS = "extra_extractedColors";
         public static final String EXTRA_WALLPAPER_ID = "extra_wallpaperId";
 
+        public static final String METHOD_REMOVE_GHOST_WIDGETS = "remove_ghost_widgets";
+
         public static final String EXTRA_VALUE = "value";
 
         public static Bundle call(ContentResolver cr, String method) {
