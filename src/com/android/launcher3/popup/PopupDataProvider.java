@@ -33,6 +33,7 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageUserKey;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -49,7 +50,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     private static final String TAG = "PopupDataProvider";
 
     /** Note that these are in order of priority. */
-    public static final SystemShortcut[] SYSTEM_SHORTCUTS = new SystemShortcut[] {
+    private static final SystemShortcut[] SYSTEM_SHORTCUTS = new SystemShortcut[] {
             new SystemShortcut.AppInfo(),
             new SystemShortcut.Widgets(),
     };
@@ -238,6 +239,16 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         NotificationListener notificationListener = NotificationListener.getInstanceIfConnected();
         return notificationListener == null ? Collections.EMPTY_LIST
                 : notificationListener.getNotificationsForKeys(notificationKeys);
+    }
+
+    public @NonNull List<SystemShortcut> getEnabledSystemShortcutsForItem(ItemInfo info) {
+        List<SystemShortcut> systemShortcuts = new ArrayList<>();
+        for (SystemShortcut systemShortcut : SYSTEM_SHORTCUTS) {
+            if (systemShortcut.getOnClickListener(mLauncher, info) != null) {
+                systemShortcuts.add(systemShortcut);
+            }
+        }
+        return systemShortcuts;
     }
 
     public void cancelNotification(String notificationKey) {

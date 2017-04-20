@@ -72,7 +72,8 @@ public class PopupPopulator {
     }
 
     public static @NonNull Item[] getItemsToPopulate(@NonNull List<String> shortcutIds,
-            @NonNull List<NotificationKeyData> notificationKeys) {
+            @NonNull List<NotificationKeyData> notificationKeys,
+            @NonNull List<SystemShortcut> systemShortcuts) {
         boolean hasNotifications = notificationKeys.size() > 0;
         int numNotificationItems = hasNotifications ? 1 : 0;
         int numShortcuts = shortcutIds.size();
@@ -80,7 +81,7 @@ public class PopupPopulator {
             numShortcuts = MAX_SHORTCUTS_IF_NOTIFICATIONS;
         }
         int numItems = Math.min(MAX_ITEMS, numShortcuts + numNotificationItems)
-                + PopupDataProvider.SYSTEM_SHORTCUTS.length;
+                + systemShortcuts.size();
         Item[] items = new Item[numItems];
         for (int i = 0; i < numItems; i++) {
             items[i] = Item.SHORTCUT;
@@ -91,7 +92,7 @@ public class PopupPopulator {
         }
         // The system shortcuts are always last.
         boolean iconsOnly = !shortcutIds.isEmpty();
-        for (int i = 0; i < PopupDataProvider.SYSTEM_SHORTCUTS.length; i++) {
+        for (int i = 0; i < systemShortcuts.size(); i++) {
             items[numItems - 1 - i] = iconsOnly ? Item.SYSTEM_SHORTCUT_ICON : Item.SYSTEM_SHORTCUT;
         }
         return items;
@@ -182,7 +183,8 @@ public class PopupPopulator {
             final Handler uiHandler, final PopupContainerWithArrow container,
             final List<String> shortcutIds, final List<DeepShortcutView> shortcutViews,
             final List<NotificationKeyData> notificationKeys,
-            final NotificationItemView notificationView, final List<View> systemShortcutViews) {
+            final NotificationItemView notificationView, final List<SystemShortcut> systemShortcuts,
+            final List<View> systemShortcutViews) {
         final ComponentName activity = originalInfo.getTargetComponent();
         final UserHandle user = originalInfo.user;
         return new Runnable() {
@@ -217,8 +219,8 @@ public class PopupPopulator {
 
                 // This ensures that mLauncher.getWidgetsForPackageUser()
                 // doesn't return null (it puts all the widgets in memory).
-                for (int i = 0; i < PopupDataProvider.SYSTEM_SHORTCUTS.length; i++) {
-                    final SystemShortcut systemShortcut = PopupDataProvider.SYSTEM_SHORTCUTS[i];
+                for (int i = 0; i < systemShortcuts.size(); i++) {
+                    final SystemShortcut systemShortcut = systemShortcuts.get(i);
                     uiHandler.post(new UpdateSystemShortcutChild(container,
                             systemShortcutViews.get(i), systemShortcut, launcher, originalInfo));
                 }
@@ -274,7 +276,6 @@ public class PopupPopulator {
 
     /** Updates the system shortcut child based on the given shortcut info. */
     private static class UpdateSystemShortcutChild implements Runnable {
-        private static final float DISABLED_ALPHA = 0.38f;
 
         private final PopupContainerWithArrow mContainer;
         private final View mSystemShortcutChild;
@@ -294,31 +295,26 @@ public class PopupPopulator {
         @Override
         public void run() {
             final Context context = mSystemShortcutChild.getContext();
-            if (mSystemShortcutChild instanceof DeepShortcutView) {
-                // Expanded system shortcut, with both icon and text shown on white background.
-                final DeepShortcutView shortcutView = (DeepShortcutView) mSystemShortcutChild;
-                shortcutView.getIconView().setBackground(mSystemShortcutInfo.getIcon(context,
-                        android.R.attr.textColorTertiary));
-                shortcutView.getBubbleText().setText(mSystemShortcutInfo.getLabel(context));
-            } else if (mSystemShortcutChild instanceof ImageView) {
-                // Only the system shortcut icon shows on a gray background header.
-                final ImageView shortcutIcon = (ImageView) mSystemShortcutChild;
-                shortcutIcon.setImageDrawable(mSystemShortcutInfo.getIcon(context,
-                        android.R.attr.textColorHint));
-                shortcutIcon.setContentDescription(mSystemShortcutInfo.getLabel(context));
-            }
-            if (!(mSystemShortcutInfo instanceof SystemShortcut.Widgets)) {
-                mSystemShortcutChild.setOnClickListener(mSystemShortcutInfo
-                        .getOnClickListener(mLauncher, mItemInfo));
-            } else {
-                mSystemShortcutChild.setTag(mSystemShortcutInfo);
-                // Widgets might not be enabled right away.
-                if (mContainer.enableWidgets()) {
-                    return;
-                }
-                // Disable Widgets (we might be able to re-enable when widgets are bound).
-                mSystemShortcutChild.setAlpha(DISABLED_ALPHA);
-            }
+            initializeSystemShortcut(context, mSystemShortcutChild, mSystemShortcutInfo);
+            mSystemShortcutChild.setOnClickListener(mSystemShortcutInfo
+                    .getOnClickListener(mLauncher, mItemInfo));
         }
+    }
+
+    public static void initializeSystemShortcut(Context context, View view, SystemShortcut info) {
+        if (view instanceof DeepShortcutView) {
+            // Expanded system shortcut, with both icon and text shown on white background.
+            final DeepShortcutView shortcutView = (DeepShortcutView) view;
+            shortcutView.getIconView().setBackground(info.getIcon(context,
+                    android.R.attr.textColorTertiary));
+            shortcutView.getBubbleText().setText(info.getLabel(context));
+        } else if (view instanceof ImageView) {
+            // Only the system shortcut icon shows on a gray background header.
+            final ImageView shortcutIcon = (ImageView) view;
+            shortcutIcon.setImageDrawable(info.getIcon(context,
+                    android.R.attr.textColorHint));
+            shortcutIcon.setContentDescription(info.getLabel(context));
+        }
+        view.setTag(info);
     }
 }
