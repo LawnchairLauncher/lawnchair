@@ -31,7 +31,7 @@ public abstract class SystemShortcut {
     }
 
     public Drawable getIcon(Context context, int colorAttr) {
-        Drawable icon = context.getResources().getDrawable(mIconResId);
+        Drawable icon = context.getResources().getDrawable(mIconResId, context.getTheme()).mutate();
         icon.setTint(Themes.getAttrColor(context, colorAttr));
         return icon;
     }
