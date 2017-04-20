@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Point;
+import android.support.animation.SpringAnimation;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.support.v4.view.accessibility.AccessibilityRecordCompat;
@@ -38,6 +39,8 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AlphabeticalAppsList.AdapterItem;
+import com.android.launcher3.anim.SpringAnimationHandler;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.discovery.AppDiscoveryAppInfo;
 import com.android.launcher3.discovery.AppDiscoveryItemView;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -80,6 +83,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             | VIEW_TYPE_PREDICTION_ICON;
     public static final int VIEW_TYPE_MASK_CONTENT = VIEW_TYPE_MASK_ICON
             | VIEW_TYPE_DISCOVERY_ITEM;
+    public static final int VIEW_TYPE_MASK_HAS_SPRINGS = VIEW_TYPE_MASK_ICON
+            | VIEW_TYPE_PREDICTION_DIVIDER;
 
 
     public interface BindViewCallback {
@@ -90,6 +95,12 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
      * ViewHolder for each icon.
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        /**
+         * Springs used for items where isViewType(viewType, VIEW_TYPE_MASK_HAS_SPRINGS) is true.
+         */
+        private SpringAnimation spring;
+
         public ViewHolder(View v) {
             super(v);
         }
@@ -202,8 +213,11 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     // The intent to send off to the market app, updated each time the search query changes.
     private Intent mMarketSearchIntent;
 
+    private SpringAnimationHandler mSpringAnimationHandler;
+
     public AllAppsGridAdapter(Launcher launcher, AlphabeticalAppsList apps, View.OnClickListener
-            iconClickListener, View.OnLongClickListener iconLongClickListener) {
+            iconClickListener, View.OnLongClickListener iconLongClickListener,
+            SpringAnimationHandler springAnimationHandler) {
         Resources res = launcher.getResources();
         mLauncher = launcher;
         mApps = apps;
@@ -214,6 +228,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         mLayoutInflater = LayoutInflater.from(launcher);
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
+        mSpringAnimationHandler = springAnimationHandler;
     }
 
     public static boolean isDividerViewType(int viewType) {
@@ -234,6 +249,10 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     public void setNumAppsPerRow(int appsPerRow) {
         mAppsPerRow = appsPerRow;
         mGridLayoutMgr.setSpanCount(appsPerRow);
+    }
+
+    public int getNumAppsPerRow() {
+        return mAppsPerRow;
     }
 
     public void setIconFocusListener(OnFocusChangeListener focusListener) {
@@ -327,7 +346,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 AppInfo info = mApps.getAdapterItems().get(position).appInfo;
                 BubbleTextView icon = (BubbleTextView) holder.itemView;
                 icon.applyFromApplicationInfo(info);
-                icon.setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
                 break;
             case VIEW_TYPE_DISCOVERY_ITEM:
                 AppDiscoveryAppInfo appDiscoveryAppInfo = (AppDiscoveryAppInfo)
@@ -361,6 +379,23 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         }
         if (mBindViewCallback != null) {
             mBindViewCallback.onBindView(holder);
+        }
+    }
+
+    @Override
+    public void onViewAttachedToWindow(ViewHolder holder) {
+        int type = holder.getItemViewType();
+        if (FeatureFlags.LAUNCHER3_PHYSICS && isViewType(type, VIEW_TYPE_MASK_HAS_SPRINGS)) {
+            holder.spring = mSpringAnimationHandler.add(holder.itemView,
+                    holder.getAdapterPosition(), mApps, mAppsPerRow, holder.spring);
+        }
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(ViewHolder holder) {
+        int type = holder.getItemViewType();
+        if (FeatureFlags.LAUNCHER3_PHYSICS && isViewType(type, VIEW_TYPE_MASK_HAS_SPRINGS)) {
+            holder.spring = mSpringAnimationHandler.remove(holder.spring);
         }
     }
 

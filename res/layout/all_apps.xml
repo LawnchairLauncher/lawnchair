@@ -51,6 +51,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal|top"
             android:clipToPadding="false"
+            android:overScrollMode="never"
             android:descendantFocusability="afterDescendants"
             android:focusable="true"
             android:paddingStart="@dimen/container_fastscroll_thumb_max_width"

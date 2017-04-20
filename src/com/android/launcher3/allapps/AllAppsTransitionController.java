@@ -22,6 +22,7 @@ import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.graphics.GradientView;
@@ -99,6 +100,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private GradientView mGradientView;
     private ScrimView mScrimView;
 
+    private SpringAnimationHandler mSpringAnimationHandler;
+
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
         mDetector = new VerticalPullDetector(l);
@@ -161,6 +164,9 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     @Override
     public boolean onControllerTouchEvent(MotionEvent ev) {
+        if (hasSpringAnimationHandler()) {
+            mSpringAnimationHandler.addMovement(ev);
+        }
         return mDetector.onTouchEvent(ev);
     }
 
@@ -179,6 +185,9 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mCurrentAnimation = LauncherAnimUtils.createAnimatorSet();
         mShiftStart = mAppsView.getTranslationY();
         preparePull(start);
+        if (hasSpringAnimationHandler()) {
+            mSpringAnimationHandler.skipToEnd();
+        }
     }
 
     @Override
@@ -214,6 +223,9 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                 mLauncher.showAppsView(true /* animated */,
                         false /* updatePredictedApps */,
                         false /* focusSearchBar */);
+                if (hasSpringAnimationHandler()) {
+                    mSpringAnimationHandler.animateToFinalPosition(0);
+                }
             } else {
                 calculateDuration(velocity, Math.abs(mShiftRange - mAppsView.getTranslationY()));
                 mLauncher.showWorkspace(true);
@@ -498,6 +510,9 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     public void finishPullUp() {
         mHotseat.setVisibility(View.INVISIBLE);
+        if (hasSpringAnimationHandler()) {
+            mSpringAnimationHandler.reset();
+        }
         setProgress(0f);
     }
 
@@ -506,6 +521,9 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mHotseat.setBackgroundTransparent(false /* transparent */);
         mHotseat.setVisibility(View.VISIBLE);
         mAppsView.reset();
+        if (hasSpringAnimationHandler()) {
+            mSpringAnimationHandler.reset();
+        }
         setProgress(1f);
     }
 
@@ -537,6 +555,11 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mCaretController = new AllAppsCaretController(
                 mWorkspace.getPageIndicator().getCaretDrawable(), mLauncher);
         mAppsView.getSearchUiManager().addOnScrollRangeChangeListener(this);
+        mSpringAnimationHandler = mAppsView.getSpringAnimationHandler();
+    }
+
+    private boolean hasSpringAnimationHandler() {
+        return FeatureFlags.LAUNCHER3_PHYSICS && mSpringAnimationHandler != null;
     }
 
     @Override

@@ -228,6 +228,13 @@ public class AlphabeticalAppsList {
     }
 
     /**
+     * Returns the predicted apps.
+     */
+    public List<AppInfo> getPredictedApps() {
+        return mPredictedApps;
+    }
+
+    /**
      * Returns fast scroller sections of all the current filtered applications.
      */
     public List<FastScrollSectionInfo> getFastScrollerSections() {
