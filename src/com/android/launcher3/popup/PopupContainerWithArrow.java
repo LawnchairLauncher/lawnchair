@@ -146,21 +146,24 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             return null;
         }
 
-        List<String> shortcutIds = launcher.getPopupDataProvider().getShortcutIdsForItem(itemInfo);
-        List<NotificationKeyData> notificationKeys = launcher.getPopupDataProvider()
+        PopupDataProvider popupDataProvider = launcher.getPopupDataProvider();
+        List<String> shortcutIds = popupDataProvider.getShortcutIdsForItem(itemInfo);
+        List<NotificationKeyData> notificationKeys = popupDataProvider
                 .getNotificationKeysForItem(itemInfo);
+        List<SystemShortcut> systemShortcuts = popupDataProvider
+                .getEnabledSystemShortcutsForItem(itemInfo);
 
         final PopupContainerWithArrow container =
                 (PopupContainerWithArrow) launcher.getLayoutInflater().inflate(
                         R.layout.popup_container, launcher.getDragLayer(), false);
         container.setVisibility(View.INVISIBLE);
         launcher.getDragLayer().addView(container);
-        container.populateAndShow(icon, shortcutIds, notificationKeys);
+        container.populateAndShow(icon, shortcutIds, notificationKeys, systemShortcuts);
         return container;
     }
 
     public void populateAndShow(final BubbleTextView originalIcon, final List<String> shortcutIds,
-            final List<NotificationKeyData> notificationKeys) {
+            final List<NotificationKeyData> notificationKeys, List<SystemShortcut> systemShortcuts) {
         final Resources resources = getResources();
         final int arrowWidth = resources.getDimensionPixelSize(R.dimen.popup_arrow_width);
         final int arrowHeight = resources.getDimensionPixelSize(R.dimen.popup_arrow_height);
@@ -171,7 +174,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
 
         // Add dummy views first, and populate with real info when ready.
         PopupPopulator.Item[] itemsToPopulate = PopupPopulator
-                .getItemsToPopulate(shortcutIds, notificationKeys);
+                .getItemsToPopulate(shortcutIds, notificationKeys, systemShortcuts);
         addDummyViews(originalIcon, itemsToPopulate, notificationKeys.size() > 1);
 
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
@@ -218,7 +221,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         new Handler(workerLooper).postAtFrontOfQueue(PopupPopulator.createUpdateRunnable(
                 mLauncher, originalItemInfo, new Handler(Looper.getMainLooper()),
                 this, shortcutIds, shortcutViews, notificationKeys, mNotificationItemView,
-                systemShortcutViews));
+                systemShortcuts, systemShortcutViews));
     }
 
     private void addDummyViews(BubbleTextView originalIcon,
@@ -624,12 +627,9 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
 
     @Override
     protected void onWidgetsBound() {
-        enableWidgets();
-    }
-
-    public boolean enableWidgets() {
-        return mShortcutsItemView != null && mShortcutsItemView.enableWidgets(
-                (ItemInfo) mOriginalIcon.getTag());
+        if (mShortcutsItemView != null) {
+            mShortcutsItemView.enableWidgetsIfExist(mOriginalIcon);
+        }
     }
 
     private ObjectAnimator createArrowScaleAnim(float scale) {

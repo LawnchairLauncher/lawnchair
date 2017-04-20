@@ -26,6 +26,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
@@ -119,6 +120,10 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
     }
 
     public void addShortcutView(View shortcutView, PopupPopulator.Item shortcutType) {
+        addShortcutView(shortcutView, shortcutType, -1);
+    }
+
+    private void addShortcutView(View shortcutView, PopupPopulator.Item shortcutType, int index) {
         if (shortcutType == PopupPopulator.Item.SHORTCUT) {
             mDeepShortcutViews.add((DeepShortcutView) shortcutView);
         } else {
@@ -131,7 +136,7 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
                         R.layout.system_shortcut_icons, mShortcutsLayout, false);
                 mShortcutsLayout.addView(mSystemShortcutIcons, 0);
             }
-            mSystemShortcutIcons.addView(shortcutView);
+            mSystemShortcutIcons.addView(shortcutView, index);
         } else {
             if (mShortcutsLayout.getChildCount() > 0) {
                 View prevChild = mShortcutsLayout.getChildAt(mShortcutsLayout.getChildCount() - 1);
@@ -139,7 +144,7 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
                     prevChild.findViewById(R.id.divider).setVisibility(VISIBLE);
                 }
             }
-            mShortcutsLayout.addView(shortcutView);
+            mShortcutsLayout.addView(shortcutView, index);
         }
     }
 
@@ -160,24 +165,47 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
     }
 
     /**
-     * Sets the onClickListener on widgets system shortcut child, and updates alpha to 1.
-     * @return whether widgets is enabled, i.e. the onClickListener is not null.
+     * Adds a {@link SystemShortcut.Widgets} item if there are widgets for the given ItemInfo.
      */
-    public boolean enableWidgets(ItemInfo itemInfo) {
-        for (View systemShortcut : mSystemShortcutViews) {
-            if (systemShortcut.getTag() instanceof SystemShortcut.Widgets) {
-                View.OnClickListener onClickListener =
-                        ((SystemShortcut.Widgets) systemShortcut.getTag()).getOnClickListener(
-                                mLauncher, itemInfo);
-                if (onClickListener != null) {
-                    systemShortcut.setAlpha(1f);
-                    systemShortcut.setOnClickListener(onClickListener);
-                    return true;
-                }
-                return false;
+    public void enableWidgetsIfExist(final BubbleTextView originalIcon) {
+        ItemInfo itemInfo = (ItemInfo) originalIcon.getTag();
+        SystemShortcut widgetInfo = new SystemShortcut.Widgets();
+        View.OnClickListener onClickListener = widgetInfo.getOnClickListener(mLauncher, itemInfo);
+        View widgetsView = null;
+        for (View systemShortcutView : mSystemShortcutViews) {
+            if (systemShortcutView.getTag() instanceof SystemShortcut.Widgets) {
+                widgetsView = systemShortcutView;
+                break;
             }
         }
-        return false;
+        final PopupPopulator.Item widgetsItem = mSystemShortcutIcons == null
+                ? PopupPopulator.Item.SYSTEM_SHORTCUT
+                : PopupPopulator.Item.SYSTEM_SHORTCUT_ICON;
+        if (onClickListener != null && widgetsView == null) {
+            // We didn't have any widgets cached but now there are some, so enable the shortcut.
+            widgetsView = mLauncher.getLayoutInflater().inflate(widgetsItem.layoutId, this, false);
+            PopupPopulator.initializeSystemShortcut(getContext(), widgetsView, widgetInfo);
+            widgetsView.setOnClickListener(onClickListener);
+            if (widgetsItem == PopupPopulator.Item.SYSTEM_SHORTCUT_ICON) {
+                addShortcutView(widgetsView, widgetsItem, 0);
+            } else {
+                // If using the expanded system shortcut (as opposed to just the icon), we need to
+                // reopen the container to ensure measurements etc. all work out. While this could
+                // be quite janky, in practice the user would typically see a small flicker as the
+                // animation restarts partway through, and this is a very rare edge case anyway.
+                ((PopupContainerWithArrow) getParent()).close(false);
+                PopupContainerWithArrow.showForIcon(originalIcon);
+            }
+        } else if (onClickListener == null && widgetsView != null) {
+            // No widgets exist, but we previously added the shortcut so remove it.
+            if (widgetsItem == PopupPopulator.Item.SYSTEM_SHORTCUT_ICON) {
+                mSystemShortcutViews.remove(widgetsView);
+                mSystemShortcutIcons.removeView(widgetsView);
+            } else {
+                ((PopupContainerWithArrow) getParent()).close(false);
+                PopupContainerWithArrow.showForIcon(originalIcon);
+            }
+        }
     }
 
     @Override
