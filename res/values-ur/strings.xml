@@ -39,6 +39,7 @@
     <string name="all_apps_loading_message" msgid="7557140873644765180">"ایپس لوڈ ہو رہی ہیں…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" سے مماثل کوئی ایپس نہیں ملیں"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"مزید ایپس تلاش کریں"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"اطلاعات"</string>
     <string name="out_of_space" msgid="4691004494942118364">"اس ہوم اسکرین پر مزید کوئی گنجائش نہیں ہے۔"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"پسندیدہ ٹرے میں مزید کوئی گنجائش نہیں ہے"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ایپس کی فہرست"</string>
@@ -77,12 +78,9 @@
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"موجودہ ڈسپلے ترتیب گھمانے کی اجازت نہیں دیتی"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"آئیکن کو ہوم اسکرین میں شامل کریں"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"نئی ایپس کیلئے"</string>
-    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
-    <skip />
-    <!-- no translation found for icon_shape_no_override (3678524428085518367) -->
-    <skip />
-    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
-    <skip />
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"آئیکن کی شکل تبدیل کریں"</string>
+    <string name="icon_shape_no_override" msgid="3678524428085518367">"تبدیل نہ کریں"</string>
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"آئيکن کی شکل کی تبدیلیاں لاگو ہو رہی ہیں"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"نامعلوم"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ہٹائیں"</string>
     <string name="abandoned_search" msgid="891119232568284442">"تلاش کریں"</string>
@@ -90,6 +88,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"اس آئیکن کیلئے ایپ انسٹال کردہ نہیں ہے۔ آپ اسے ہٹا سکتے ہیں یا ایپ کو تلاش کر سکتے اور دستی طور پر اسے انسٹال کر سکتے ہیں۔"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ڈاؤن لوڈ ہو رہا ہے، <xliff:g id="PROGRESS">%2$s</xliff:g> مکمل ہو گیا"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> انسٹال ہونے کا انتظار کر رہی ہے"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> ویجیٹس"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"ہوم اسکرین میں شامل کریں"</string>
     <string name="action_move_here" msgid="2170188780612570250">"آئٹم یہاں منتقل کریں"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"آئٹم کو ہوم اسکرین میں شامل کر دیا گیا"</string>

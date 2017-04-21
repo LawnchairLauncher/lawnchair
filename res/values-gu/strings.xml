@@ -39,6 +39,7 @@
     <string name="all_apps_loading_message" msgid="7557140873644765180">"ઍપ્લિકેશનો લોડ કરી રહ્યું છે…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" થી મેળ ખાતી કોઈ ઍપ્લિકેશનો મળી નથી"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"વધુ ઍપ્લિકેશનો શોધો"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"સૂચનાઓ"</string>
     <string name="out_of_space" msgid="4691004494942118364">"આ હોમ સ્ક્રીન પર વધુ જગ્યા નથી."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"મનપસંદ ટ્રે પર વધુ જગ્યા નથી"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ઍપ્લિકેશનોની સૂચિ"</string>
@@ -77,12 +78,9 @@
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"વર્તમાન પ્રદર્શન સેટિંગ ફેરવવાની પરવાનગી આપતી નથી"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"હોમ સ્ક્રીન પર આઇકન ઉમેરો"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"નવી ઍપ્લિકેશનો માટે"</string>
-    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
-    <skip />
-    <!-- no translation found for icon_shape_no_override (3678524428085518367) -->
-    <skip />
-    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
-    <skip />
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"આઇકનનો આકાર બદલો"</string>
+    <string name="icon_shape_no_override" msgid="3678524428085518367">"બદલશો નહીં"</string>
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"આઇકનના આકારમાં કરેલ ફેરફારો લાગુ કરી રહ્યા છીએ"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"અજાણ્યો"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"દૂર કરો"</string>
     <string name="abandoned_search" msgid="891119232568284442">"શોધો"</string>
@@ -90,6 +88,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"આ આયકન માટેની ઍપ્લિકેશન ઇન્સ્ટોલ થયેલ નથી. તમે તેને દૂર કરી શકો છો અથવા ઍપ્લિકેશન માટે શોધ કરી અને તેને મેન્યુઅલી ઇન્સ્ટોલ કરી શકો છો."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ડાઉનલોડ કરી રહ્યાં છે, <xliff:g id="PROGRESS">%2$s</xliff:g> પૂર્ણ"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g>, ઇન્સ્ટૉલ થવાની રાહ જોઈ રહ્યું છે"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> વિજેટ"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"હોમ સ્ક્રીન પર ઉમેરો"</string>
     <string name="action_move_here" msgid="2170188780612570250">"આઇટમ અહીં ખસેડો"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"હોમ સ્ક્રીનમાં આઇટમ ઉમેરી"</string>

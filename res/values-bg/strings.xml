@@ -39,6 +39,7 @@
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Приложенията се зареждат…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Няма намерени приложения, съответстващи на „<xliff:g id="QUERY">%1$s</xliff:g>“"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Търсене на още приложения"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"Известия"</string>
     <string name="out_of_space" msgid="4691004494942118364">"На този начален екран няма повече място."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Няма повече място в областта с любимите"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Списък с приложения"</string>
@@ -90,6 +91,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Приложението за тази икона не е инсталирано. Можете да я премахнете или да потърсите приложението и да го инсталирате ръчно."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> се изтегля. Завършено: <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> изчаква инсталиране"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"Приспособления за <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Добавяне към началния екран"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Преместване на елемента тук"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Елементът е добавен към началния екран"</string>
