@@ -39,8 +39,7 @@
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Ідзе загрузка праграм…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Праграм, якія адпавядаюць запыту \"<xliff:g id="QUERY">%1$s</xliff:g>\", не знойдзена"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Шукаць іншыя праграмы"</string>
-    <!-- no translation found for notifications_header (1404149926117359025) -->
-    <skip />
+    <string name="notifications_header" msgid="1404149926117359025">"Апавяшчэнні"</string>
     <string name="out_of_space" msgid="4691004494942118364">"На гэтым Галоўным экране больш няма месца."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"У латку \"Абранае\" больш няма месца"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Спіс праграм"</string>
@@ -92,6 +91,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Праграма для гэтага значка не ўсталявана. Вы можаце выдаліць яе або выканаць пошук і ўсталяваць яе ўручную."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Ідзе спампоўка <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="PROGRESS">%2$s</xliff:g> завершана"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> чакае ўсталёўкі"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"Віджэты <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Дадаць на Галоўны экран"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Перамясціць элемент сюды"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Элемент дададзены на галоўны экран"</string>

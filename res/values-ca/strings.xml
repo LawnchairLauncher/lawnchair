@@ -39,8 +39,7 @@
     <string name="all_apps_loading_message" msgid="7557140873644765180">"S\'estan carregant les aplicacions..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"No s\'ha trobat cap aplicació que coincideixi amb <xliff:g id="QUERY">%1$s</xliff:g>"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Cerca més aplicacions"</string>
-    <!-- no translation found for notifications_header (1404149926117359025) -->
-    <skip />
+    <string name="notifications_header" msgid="1404149926117359025">"Notificacions"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Ja no queda espai en aquesta pantalla d\'inici."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"No hi ha més espai a la safata Preferits."</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Llista d\'aplicacions"</string>
@@ -92,6 +91,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"L\'aplicació d\'aquesta icona no està instal·lada. Pots suprimir-la o cercar l\'aplicació i instal·lar-la manualment."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"S\'està baixant <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="PROGRESS">%2$s</xliff:g> completat"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"S\'està esperant per instal·lar <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"Widgets de: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Afegeix a la pantalla d\'inici"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Mou l\'element aquí"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"S\'ha afegit l\'element a la pantalla d\'inici"</string>

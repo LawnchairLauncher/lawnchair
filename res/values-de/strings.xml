@@ -39,8 +39,7 @@
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Apps werden geladen..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Keine Apps für \"<xliff:g id="QUERY">%1$s</xliff:g>\" gefunden"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Weitere Apps suchen"</string>
-    <!-- no translation found for notifications_header (1404149926117359025) -->
-    <skip />
+    <string name="notifications_header" msgid="1404149926117359025">"Benachrichtigungen"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Auf diesem Startbildschirm ist kein Platz mehr vorhanden."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Ablage \"Favoriten\" ist voll."</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Liste der Apps"</string>
@@ -92,6 +91,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Die App für dieses Symbol ist nicht installiert. Du kannst das Symbol entfernen oder die App lokalisieren und dann manuell installieren."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> wird heruntergeladen, <xliff:g id="PROGRESS">%2$s</xliff:g> abgeschlossen"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"Warten auf Installation von <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g>-Widgets"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Zum Startbildschirm hinzufügen"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Element hierhin verschieben"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Element zum Startbildschirm hinzugefügt"</string>

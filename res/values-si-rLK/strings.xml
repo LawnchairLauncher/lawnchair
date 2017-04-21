@@ -39,8 +39,7 @@
     <string name="all_apps_loading_message" msgid="7557140873644765180">"යෙදුම් පූරණය වෙමින්…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" සමග ගැළපෙන යෙදුම් හමු නොවිණි"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"තව යෙදුම් සඳහා සොයන්න"</string>
-    <!-- no translation found for notifications_header (1404149926117359025) -->
-    <skip />
+    <string name="notifications_header" msgid="1404149926117359025">"දැනුම්දීම්"</string>
     <string name="out_of_space" msgid="4691004494942118364">"මෙම මුල් පිටු තිරය මත තවත් අවසර නැත."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ප්‍රියතම දෑ ඇති තැටියේ තවත් ඉඩ නොමැත"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"යෙදුම් ලැයිස්තුව"</string>
@@ -92,6 +91,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"මෙම නිරුපකයට යෙදුම ස්ථාපනය කර නොමැත. ඔබට එය ඉවත් කළ හැක, හෝ යෙදුම් සඳහා සොයන්න සහ අතින් ස්ථාපනය කරන්න."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> බාගත කරමින්, <xliff:g id="PROGRESS">%2$s</xliff:g> සම්පූර්ණයි"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ස්ථාපනය කිරීමට බලා සිටිමින්"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> විජට්"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"මුල් තිරය වෙත එක් කරන්න"</string>
     <string name="action_move_here" msgid="2170188780612570250">"මෙතනට අයිතමය ගෙන එන්න"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"අයිතමය මුල් තිරය වෙත එකතු කරන ලදි"</string>

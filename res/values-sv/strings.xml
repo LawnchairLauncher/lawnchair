@@ -39,8 +39,7 @@
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Läser in appar …"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Det gick inte att hitta några appar som matchar <xliff:g id="QUERY">%1$s</xliff:g>"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Sök efter fler appar"</string>
-    <!-- no translation found for notifications_header (1404149926117359025) -->
-    <skip />
+    <string name="notifications_header" msgid="1404149926117359025">"Aviseringar"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Det finns inte plats för mer på den här startskärmen."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Favoritfältet är fullt"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Applista"</string>
@@ -92,6 +91,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Appen för den här ikonen har inte installerats. Du kan ta bort den eller söka efter appen och installera den manuellt."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> laddas ned, <xliff:g id="PROGRESS">%2$s</xliff:g> klart"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> väntar på installation"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> widgetar"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Lägg till på startskärmen"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Flytta objekt hit"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Objektet har lagts till på startskärmen"</string>
