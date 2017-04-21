@@ -39,6 +39,7 @@
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Chargement des applications en cours..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Aucune application trouvée correspondant à « <xliff:g id="QUERY">%1$s</xliff:g> »"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Rechercher plus d\'applications"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"Notifications"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Pas d\'espace libre sur l\'écran d\'accueil."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Il n\'y a plus d\'espace dans la zone des favoris"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Liste des applications"</string>
@@ -90,6 +91,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"L\'application liée à cette icône n\'est pas installée. Vous pouvez la supprimer ou rechercher l\'application et l\'installer manuellement."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Téléchargement de <xliff:g id="NAME">%1$s</xliff:g> : <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> en attente d\'installation"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"Widgets pour <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Ajouter à l\'écran d\'accueil"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Déplacer l\'élément ici"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Élément ajouté à l\'écran d\'accueil"</string>

@@ -39,6 +39,7 @@
     <string name="all_apps_loading_message" msgid="7557140873644765180">"ऐप्स लोड हो रहे हैं..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" से मिलान करने वाला कोई ऐप नहीं मिला"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"अधिक ऐप्लिकेशन खोजें"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"नोटिफ़िकेशन"</string>
     <string name="out_of_space" msgid="4691004494942118364">"इस होम स्‍क्रीन पर स्थान शेष नहीं है."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"पसंदीदा ट्रे में और स्थान नहीं है"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ऐप्लिकेशन सूची"</string>
@@ -90,6 +91,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"इस आइकन का ऐप्स इंस्टॉल नहीं है. आप उसे निकाल सकते हैं या ऐप्स की खोज करके उसे मैन्युअल रूप से इंस्टॉल कर सकते हैं."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> डाउनलोड हो रहा है, <xliff:g id="PROGRESS">%2$s</xliff:g> पूर्ण"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> के इंस्टॉल होने की प्रतीक्षा की जा रही है"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> विजेट"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"होम स्‍क्रीन में जोड़ें"</string>
     <string name="action_move_here" msgid="2170188780612570250">"आइटम यहां ले जाएं"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"होम स्क्रीन में आइटम जोड़ा गया"</string>

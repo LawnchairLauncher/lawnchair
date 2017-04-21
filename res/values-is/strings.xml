@@ -39,6 +39,7 @@
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Hleður forrit…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Ekki fundust forrit sem samsvara „<xliff:g id="QUERY">%1$s</xliff:g>“"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Leita að fleiri forritum"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"Tilkynningar"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Ekki meira pláss á þessum heimaskjá."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Ekki meira pláss í bakka fyrir uppáhald"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Forritalisti"</string>
@@ -90,6 +91,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Forritið fyrir þetta tákn er ekki uppsett. Þú getur fjarlægt það eða leitað að forritinu og sett það upp handvirkt."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> í niðurhali, <xliff:g id="PROGRESS">%2$s</xliff:g> lokið"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> bíður uppsetningar"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g>-græjur"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Bæta á heimaskjá"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Færa atriði hingað"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Atriði bætt á heimaskjáinn"</string>

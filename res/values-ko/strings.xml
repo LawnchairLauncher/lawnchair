@@ -39,6 +39,7 @@
     <string name="all_apps_loading_message" msgid="7557140873644765180">"앱 로드 중..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\'<xliff:g id="QUERY">%1$s</xliff:g>\'와(과) 일치하는 앱이 없습니다."</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"더 많은 앱 검색"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"알림"</string>
     <string name="out_of_space" msgid="4691004494942118364">"홈 화면에 더 이상 공간이 없습니다."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"즐겨찾기 트레이에 더 이상 공간이 없습니다."</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"앱 목록"</string>
@@ -90,6 +91,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"이 아이콘의 앱이 설치되어 있지 않습니다. 아이콘을 삭제하거나 앱을 검색하여 수동으로 설치하세요."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> 다운로드 중, <xliff:g id="PROGRESS">%2$s</xliff:g> 완료"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> 설치 대기 중"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> 위젯"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"홈 화면에 추가"</string>
     <string name="action_move_here" msgid="2170188780612570250">"여기에 항목을 이동"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"홈 화면에 항목 추가됨"</string>
