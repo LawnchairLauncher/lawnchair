@@ -2247,16 +2247,12 @@ public class Workspace extends PagedView
         Point dragVisualizeOffset = null;
         Rect dragRect = null;
         if (child instanceof BubbleTextView) {
-            int iconSize = grid.iconSizePx;
-            int top = child.getPaddingTop();
-            int left = (b.getWidth() - iconSize) / 2;
-            int right = left + iconSize;
-            int bottom = top + iconSize;
-            dragLayerY += top;
-            // Note: The drag region is used to calculate drag layer offsets, but the
+            dragRect = new Rect();
+            ((BubbleTextView) child).getIconBounds(dragRect);
+            dragLayerY += dragRect.top;
+            // Note: The dragRect is used to calculate drag layer offsets, but the
             // dragVisualizeOffset in addition to the dragRect (the size) to position the outline.
             dragVisualizeOffset = new Point(- halfPadding, halfPadding);
-            dragRect = new Rect(left, top, right, bottom);
         } else if (child instanceof FolderIcon) {
             int previewSize = grid.folderIconSizePx;
             dragVisualizeOffset = new Point(- halfPadding, halfPadding - child.getPaddingTop());

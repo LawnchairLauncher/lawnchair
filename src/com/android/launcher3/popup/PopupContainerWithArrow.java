@@ -213,8 +213,8 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         animateOpen();
 
         mOriginalIcon = originalIcon;
-
         mLauncher.getDragController().addDragListener(this);
+        mOriginalIcon.forceHideBadge(true);
 
         // Load the shortcuts on a background thread and update the container as it animates.
         final Looper workerLooper = LauncherModel.getWorkerLooper();
@@ -799,6 +799,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         });
         mOpenCloseAnimator = shortcutAnims;
         shortcutAnims.start();
+        mOriginalIcon.forceHideBadge(false);
     }
 
     /**
@@ -814,6 +815,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         boolean isInHotseat = ((ItemInfo) mOriginalIcon.getTag()).container
                 == LauncherSettings.Favorites.CONTAINER_HOTSEAT;
         mOriginalIcon.setTextVisibility(!isInHotseat);
+        mOriginalIcon.forceHideBadge(false);
         mLauncher.getDragController().removeDragListener(this);
         mLauncher.getDragLayer().removeView(this);
     }
