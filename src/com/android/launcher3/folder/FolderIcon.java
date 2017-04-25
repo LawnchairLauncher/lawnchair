@@ -27,6 +27,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RadialGradient;
@@ -121,7 +122,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private PreviewLayoutRule mPreviewLayoutRule;
 
     boolean mAnimating = false;
-    private Rect mOldBounds = new Rect();
+    private Rect mTempBounds = new Rect();
 
     private float mSlop;
 
@@ -135,6 +136,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private FolderBadgeInfo mBadgeInfo = new FolderBadgeInfo();
     private BadgeRenderer mBadgeRenderer;
     private float mBadgeScale;
+    private Point mTempSpaceForBadgeOffset = new Point();
 
     private static final Property<FolderIcon, Float> BADGE_SCALE_PROPERTY
             = new Property<FolderIcon, Float>(Float.TYPE, "badgeScale") {
@@ -503,7 +505,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         Drawable d = params.drawable;
 
         if (d != null) {
-            mOldBounds.set(d.getBounds());
+            mTempBounds.set(d.getBounds());
             d.setBounds(0, 0, mIntrinsicIconSize, mIntrinsicIconSize);
             if (d instanceof FastBitmapDrawable) {
                 FastBitmapDrawable fd = (FastBitmapDrawable) d;
@@ -514,7 +516,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 d.draw(canvas);
                 d.clearColorFilter();
             }
-            d.setBounds(mOldBounds);
+            d.setBounds(mTempBounds);
         }
         canvas.restore();
     }
@@ -893,14 +895,16 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         }
 
         if ((mBadgeInfo != null && mBadgeInfo.getNotificationCount() > 0) || mBadgeScale > 0) {
-            // If we are animating to the accepting state, animate the badge out.
             int offsetX = mBackground.getOffsetX();
             int offsetY = mBackground.getOffsetY();
             int previewSize = (int) (mBackground.previewSize * mBackground.mScale);
-            Rect bounds = new Rect(offsetX, offsetY, offsetX + previewSize, offsetY + previewSize);
+            mTempBounds.set(offsetX, offsetY, offsetX + previewSize, offsetY + previewSize);
 
+            // If we are animating to the accepting state, animate the badge out.
             float badgeScale = Math.max(0, mBadgeScale - mBackground.getScaleProgress());
-            mBadgeRenderer.draw(canvas, IconPalette.FOLDER_ICON_PALETTE, mBadgeInfo, bounds, badgeScale);
+            mTempSpaceForBadgeOffset.set(getWidth() - mTempBounds.right, mTempBounds.top);
+            mBadgeRenderer.draw(canvas, IconPalette.FOLDER_ICON_PALETTE, mBadgeInfo, mTempBounds,
+                    badgeScale, mTempSpaceForBadgeOffset);
         }
     }
 

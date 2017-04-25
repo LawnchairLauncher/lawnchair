@@ -185,8 +185,6 @@
     <dimen name="system_shortcut_header_icon_padding">12dp</dimen>
 
 <!-- Icon badges (with notification counts) -->
-    <dimen name="badge_size">24dp</dimen>
-    <dimen name="badge_text_size">12dp</dimen>
     <dimen name="badge_small_padding">0dp</dimen>
     <dimen name="badge_large_padding">3dp</dimen>
 
