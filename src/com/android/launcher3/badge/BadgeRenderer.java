@@ -22,9 +22,11 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Shader;
 import android.support.annotation.Nullable;
+import android.util.SparseArray;
 
 import com.android.launcher3.R;
 import com.android.launcher3.graphics.IconPalette;
@@ -36,31 +38,41 @@ import com.android.launcher3.graphics.ShadowGenerator;
  */
 public class BadgeRenderer {
 
+    // The badge sizes are defined as percentages of the app icon size.
+    private static final float SIZE_PERCENTAGE = 0.38f;
+    // Used to expand the width of the badge for each additional digit.
+    private static final float CHAR_SIZE_PERCENTAGE = 0.12f;
+    private static final float TEXT_SIZE_PERCENTAGE = 0.26f;
+    private static final float OFFSET_PERCENTAGE = 0.02f;
+
     private final Context mContext;
     private final int mSize;
+    private final int mCharSize;
     private final int mTextHeight;
+    private final int mOffset;
     private final IconDrawer mLargeIconDrawer;
     private final IconDrawer mSmallIconDrawer;
     private final Paint mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG
             | Paint.FILTER_BITMAP_FLAG);
-    private final Bitmap mBackgroundWithShadow;
+    private final SparseArray<Bitmap> mBackgroundsWithShadow;
 
-    public BadgeRenderer(final Context context) {
+    public BadgeRenderer(Context context, int iconSizePx) {
         mContext = context;
         Resources res = context.getResources();
-        mSize = res.getDimensionPixelSize(R.dimen.badge_size);
+        mSize = (int) (SIZE_PERCENTAGE * iconSizePx);
+        mCharSize = (int) (CHAR_SIZE_PERCENTAGE * iconSizePx);
+        mOffset = (int) (OFFSET_PERCENTAGE * iconSizePx);
+        mTextPaint.setTextSize(iconSizePx * TEXT_SIZE_PERCENTAGE);
+        mTextPaint.setTextAlign(Paint.Align.CENTER);
         mLargeIconDrawer = new IconDrawer(res.getDimensionPixelSize(R.dimen.badge_small_padding));
         mSmallIconDrawer = new IconDrawer(res.getDimensionPixelSize(R.dimen.badge_large_padding));
-        mTextPaint.setTextAlign(Paint.Align.CENTER);
-        mTextPaint.setTextSize(res.getDimensionPixelSize(R.dimen.badge_text_size));
-        mTextPaint.setFakeBoldText(true);
         // Measure the text height.
         Rect tempTextHeight = new Rect();
         mTextPaint.getTextBounds("0", 0, 1, tempTextHeight);
         mTextHeight = tempTextHeight.height();
 
-        mBackgroundWithShadow = ShadowGenerator.createCircleWithShadow(Color.WHITE, mSize);
+        mBackgroundsWithShadow = new SparseArray<>(3);
     }
 
     /**
@@ -70,29 +82,43 @@ public class BadgeRenderer {
      * @param badgeInfo Contains data to draw on the badge. Could be null if we are animating out.
      * @param iconBounds The bounds of the icon being badged.
      * @param badgeScale The progress of the animation, from 0 to 1.
+     * @param spaceForOffset How much space is available to offset the badge up and to the right.
      */
     public void draw(Canvas canvas, IconPalette palette, @Nullable BadgeInfo badgeInfo,
-            Rect iconBounds, float badgeScale) {
+            Rect iconBounds, float badgeScale, Point spaceForOffset) {
         mTextPaint.setColor(palette.textColor);
-        canvas.save(Canvas.MATRIX_SAVE_FLAG);
-        // We draw the badge relative to its center.
-        canvas.translate(iconBounds.right - mSize / 2, iconBounds.top + mSize / 2);
-        canvas.scale(badgeScale, badgeScale);
-        mBackgroundPaint.setColorFilter(palette.backgroundColorMatrixFilter);
-        int backgroundSize = mBackgroundWithShadow.getHeight(); // Same as width.
-        canvas.drawBitmap(mBackgroundWithShadow, -backgroundSize / 2, -backgroundSize / 2,
-                mBackgroundPaint);
         IconDrawer iconDrawer = badgeInfo != null && badgeInfo.isIconLarge()
                 ? mLargeIconDrawer : mSmallIconDrawer;
         Shader icon = badgeInfo == null ? null : badgeInfo.getNotificationIconForBadge(
                 mContext, palette.backgroundColor, mSize, iconDrawer.mPadding);
+        String notificationCount = icon != null || badgeInfo == null ? "0"
+                : String.valueOf(badgeInfo.getNotificationCount());
+        int numChars = notificationCount.length();
+        int width = mSize + mCharSize * (numChars - 1);
+        // Lazily load the background with shadow.
+        Bitmap backgroundWithShadow = mBackgroundsWithShadow.get(numChars);
+        if (backgroundWithShadow == null) {
+            backgroundWithShadow = ShadowGenerator.createPillWithShadow(Color.WHITE, width, mSize);
+            mBackgroundsWithShadow.put(numChars, backgroundWithShadow);
+        }
+        canvas.save(Canvas.MATRIX_SAVE_FLAG);
+        // We draw the badge relative to its center.
+        int badgeCenterX = iconBounds.right - width / 2;
+        int badgeCenterY = iconBounds.top + mSize / 2;
+        int offsetX = Math.min(mOffset, spaceForOffset.x);
+        int offsetY = Math.min(mOffset, spaceForOffset.y);
+        canvas.translate(badgeCenterX + offsetX, badgeCenterY - offsetY);
+        canvas.scale(badgeScale, badgeScale);
+        // Draw the background and shadow.
+        mBackgroundPaint.setColorFilter(palette.backgroundColorMatrixFilter);
+        int backgroundWithShadowSize = backgroundWithShadow.getHeight(); // Same as width.
+        canvas.drawBitmap(backgroundWithShadow, -backgroundWithShadowSize / 2,
+                -backgroundWithShadowSize / 2, mBackgroundPaint);
         if (icon != null) {
             // Draw the notification icon with padding.
             iconDrawer.drawIcon(icon, canvas);
         } else {
             // Draw the notification count.
-            String notificationCount = badgeInfo == null ? "0"
-                    : String.valueOf(badgeInfo.getNotificationCount());
             canvas.drawText(notificationCount, 0, mTextHeight / 2, mTextPaint);
         }
         canvas.restore();

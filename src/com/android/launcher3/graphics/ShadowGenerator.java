@@ -83,34 +83,44 @@ public class ShadowGenerator {
         return result;
     }
 
-    public static Bitmap createCircleWithShadow(int circleColor, int diameter) {
+    public static Bitmap createPillWithShadow(int rectColor, int width, int height) {
 
-        float shadowRadius = diameter * 1f / 32;
-        float shadowYOffset = diameter * 1f / 16;
+        float shadowRadius = height * 1f / 32;
+        float shadowYOffset = height * 1f / 16;
+        int ambientShadowAlpha = AMBIENT_SHADOW_ALPHA / 2;
+        int keyShadowAlpha = KEY_SHADOW_ALPHA / 2;
 
-        int radius = diameter / 2;
+        int radius = height / 2;
 
         Canvas canvas = new Canvas();
         Paint blurPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
         blurPaint.setMaskFilter(new BlurMaskFilter(shadowRadius, Blur.NORMAL));
 
-        int center = Math.round(radius + shadowRadius + shadowYOffset);
+        int centerX = Math.round(width / 2 + shadowRadius);
+        int centerY = Math.round(radius + shadowRadius + shadowYOffset);
+        int center = Math.max(centerX, centerY);
         int size = center * 2;
         Bitmap result = Bitmap.createBitmap(size, size, Config.ARGB_8888);
         canvas.setBitmap(result);
 
+        int left = center - width / 2;
+        int top = center - height / 2;
+        int right = center + width / 2;
+        int bottom = center + height / 2;
+
         // Draw ambient shadow, center aligned within size
-        blurPaint.setAlpha(AMBIENT_SHADOW_ALPHA);
-        canvas.drawCircle(center, center, radius, blurPaint);
+        blurPaint.setAlpha(ambientShadowAlpha);
+        canvas.drawRoundRect(left, top, right, bottom, radius, radius, blurPaint);
 
         // Draw key shadow, bottom aligned within size
-        blurPaint.setAlpha(KEY_SHADOW_ALPHA);
-        canvas.drawCircle(center, center + shadowYOffset, radius, blurPaint);
+        blurPaint.setAlpha(keyShadowAlpha);
+        canvas.drawRoundRect(left, top + shadowYOffset, right, bottom + shadowYOffset,
+                radius, radius, blurPaint);
 
         // Draw the circle
         Paint drawPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
-        drawPaint.setColor(circleColor);
-        canvas.drawCircle(center, center, radius, drawPaint);
+        drawPaint.setColor(rectColor);
+        canvas.drawRoundRect(left, top, right, bottom, radius, radius, drawPaint);
 
         return result;
     }
