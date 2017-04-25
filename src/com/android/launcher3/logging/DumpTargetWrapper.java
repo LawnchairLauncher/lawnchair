@@ -19,6 +19,7 @@ import android.os.Process;
 import android.text.TextUtils;
 
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.nano.LauncherDumpProto;
 import com.android.launcher3.model.nano.LauncherDumpProto.ContainerType;
@@ -38,11 +39,6 @@ public class DumpTargetWrapper {
 
     public DumpTargetWrapper() {
         children = new ArrayList<>();
-    }
-
-    public DumpTargetWrapper(DumpTarget t) {
-        this();
-        node = t;
     }
 
     public DumpTargetWrapper(int containerType, int id) {
@@ -138,7 +134,13 @@ public class DumpTargetWrapper {
     public DumpTarget writeToDumpTarget(ItemInfo info) {
         node.component = info.getTargetComponent() == null? "":
                 info.getTargetComponent().flattenToString();
-        node.packageName = info.getIntent() == null? "": info.getIntent().getPackage();
+        node.packageName = info.getTargetComponent() == null? "":
+                info.getTargetComponent().getPackageName();
+        if (info instanceof LauncherAppWidgetInfo) {
+            node.component = ((LauncherAppWidgetInfo) info).providerName.flattenToString();
+            node.packageName = ((LauncherAppWidgetInfo) info).providerName.getPackageName();
+        }
+
         node.gridX = info.cellX;
         node.gridY = info.cellY;
         node.spanX = info.spanX;
