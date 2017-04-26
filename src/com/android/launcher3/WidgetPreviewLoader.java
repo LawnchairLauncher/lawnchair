@@ -22,6 +22,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.CancellationSignal;
 import android.os.Handler;
 import android.os.UserHandle;
@@ -481,7 +482,7 @@ public class WidgetPreviewLoader {
         RectF boxRect = drawBoxWithShadow(c, p, size, size);
 
         Bitmap icon = LauncherIcons.createScaledBitmapWithoutShadow(
-                mutateOnMainThread(info.getFullResIcon(mIconCache)), mContext);
+                mutateOnMainThread(info.getFullResIcon(mIconCache)), mContext, Build.VERSION_CODES.O);
         Rect src = new Rect(0, 0, icon.getWidth(), icon.getHeight());
 
         boxRect.set(0, 0, iconSize, iconSize);

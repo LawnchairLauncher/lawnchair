@@ -37,6 +37,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Process;
 import android.os.SystemClock;
@@ -194,7 +195,7 @@ public class IconCache {
 
     protected Bitmap makeDefaultIcon(UserHandle user) {
         Drawable unbadged = getFullResDefaultActivityIcon();
-        return LauncherIcons.createBadgedIconBitmap(unbadged, user, mContext);
+        return LauncherIcons.createBadgedIconBitmap(unbadged, user, mContext, Build.VERSION_CODES.O);
     }
 
     /**
@@ -380,7 +381,7 @@ public class IconCache {
         if (entry == null) {
             entry = new CacheEntry();
             entry.icon = LauncherIcons.createBadgedIconBitmap(getFullResIcon(app), app.getUser(),
-                    mContext);
+                    mContext,  app.getApplicationInfo().targetSdkVersion);
         }
         entry.title = app.getLabel();
         entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, app.getUser());
@@ -537,7 +538,8 @@ public class IconCache {
 
                 if (info != null) {
                     entry.icon = LauncherIcons.createBadgedIconBitmap(
-                            getFullResIcon(info), info.getUser(), mContext);
+                            getFullResIcon(info), info.getUser(), mContext,
+                            infoProvider.get().getApplicationInfo().targetSdkVersion);
                 } else {
                     if (usePackageIcon) {
                         CacheEntry packageEntry = getEntryForPackageLocked(
@@ -634,7 +636,7 @@ public class IconCache {
                     // Load the full res icon for the application, but if useLowResIcon is set, then
                     // only keep the low resolution icon instead of the larger full-sized icon
                     Bitmap icon = LauncherIcons.createBadgedIconBitmap(
-                            appInfo.loadIcon(mPackageManager), user, mContext);
+                            appInfo.loadIcon(mPackageManager), user, mContext, appInfo.targetSdkVersion);
                     Bitmap lowResIcon =  generateLowResIcon(icon, mPackageBgColor);
                     entry.title = appInfo.loadLabel(mPackageManager);
                     entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);
@@ -767,7 +769,7 @@ public class IconCache {
     }
 
     private static final class IconDB extends SQLiteCacheHelper {
-        private final static int DB_VERSION = 12;
+        private final static int DB_VERSION = 13;
 
         private final static int RELEASE_VERSION = DB_VERSION +
                 (FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION ? 0 : 1);
