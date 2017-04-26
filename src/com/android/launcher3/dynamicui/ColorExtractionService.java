@@ -21,6 +21,7 @@ import android.app.IntentService;
 import android.app.WallpaperManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
@@ -61,6 +62,10 @@ public class ColorExtractionService extends IntentService {
         if (wallpaperManager.getWallpaperInfo() != null) {
             // We can't extract colors from live wallpapers, so just use the default color always.
             extractedColors.updateHotseatPalette(null);
+
+            if (FeatureFlags.QSB_IN_HOTSEAT) {
+                extractedColors.updateWallpaperThemePalette(null);
+            }
         } else {
             // We extract colors for the hotseat and status bar separately,
             // since they only consider part of the wallpaper.
@@ -68,6 +73,10 @@ public class ColorExtractionService extends IntentService {
 
             if (FeatureFlags.LIGHT_STATUS_BAR) {
                 extractedColors.updateStatusBarPalette(getStatusBarPalette());
+            }
+
+            if (FeatureFlags.QSB_IN_HOTSEAT) {
+                extractedColors.updateWallpaperThemePalette(getWallpaperPalette());
             }
         }
 
@@ -139,5 +148,24 @@ public class ColorExtractionService extends IntentService {
                 .setRegion(0, 0, wallpaper.getWidth(), statusBarHeight)
                 .clearFilters()
                 .generate();
+    }
+
+    @TargetApi(Build.VERSION_CODES.N)
+    private Palette getWallpaperPalette() {
+        WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
+        if (Utilities.ATLEAST_NOUGAT) {
+            try (ParcelFileDescriptor fd = wallpaperManager
+                    .getWallpaperFile(WallpaperManager.FLAG_SYSTEM)) {
+                Bitmap bitmap = BitmapFactory.decodeFileDescriptor(fd.getFileDescriptor());
+                if (bitmap != null) {
+                    return Palette.from(bitmap).clearFilters().generate();
+                }
+            } catch (IOException | NullPointerException e) {
+                Log.e(TAG, "Fetching partial bitmap failed, trying old method", e);
+            }
+        }
+
+        Bitmap wallpaper = ((BitmapDrawable) wallpaperManager.getDrawable()).getBitmap();
+        return Palette.from(wallpaper).clearFilters().generate();
     }
 }

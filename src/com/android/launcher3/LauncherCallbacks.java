@@ -107,4 +107,6 @@ public interface LauncherCallbacks {
     void setLauncherSearchCallback(Object callbacks);
 
     boolean shouldShowDiscoveryBounce();
+
+    void onExtractedColorsChanged();
 }
