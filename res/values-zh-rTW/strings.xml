@@ -30,7 +30,7 @@
     <string name="home_screen" msgid="806512411299847073">"主螢幕"</string>
     <string name="custom_actions" msgid="3747508247759093328">"自訂動作"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"輕觸並按住小工具即可選取。"</string>
-    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"輕觸兩下並按住小工具即可選取，您也可以使用自訂動作。"</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"輕觸兩下並按住小工具即可選取，你也可以使用自訂動作。"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"寬度為 %1$d，高度為 %2$d"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"按住即可手動放置"</string>
@@ -71,7 +71,7 @@
     <string name="widget_button_text" msgid="2880537293434387943">"小工具"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"桌布"</string>
     <string name="settings_button_text" msgid="8119458837558863227">"設定"</string>
-    <string name="msg_disabled_by_admin" msgid="6898038085516271325">"已由您的管理員停用"</string>
+    <string name="msg_disabled_by_admin" msgid="6898038085516271325">"已由你的管理員停用"</string>
     <string name="accessibility_action_overview" msgid="6257665857640347026">"總覽"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"允許旋轉主螢幕"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"當手機旋轉時"</string>
@@ -88,7 +88,7 @@
     <string name="abandoned_clean_this" msgid="7610119707847920412">"移除"</string>
     <string name="abandoned_search" msgid="891119232568284442">"搜尋"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"尚未安裝這個應用程式"</string>
-    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"您尚未安裝這個圖示代表的應用程式。您可以移除這個圖示，也可以搜尋該應用程式並手動安裝。"</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"你尚未安裝這個圖示代表的應用程式。你可以移除這個圖示，也可以搜尋該應用程式並手動安裝。"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"正在下載「<xliff:g id="NAME">%1$s</xliff:g>」，已完成 <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"正在等待安裝「<xliff:g id="NAME">%1$s</xliff:g>」"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"「<xliff:g id="NAME">%1$s</xliff:g>」小工具"</string>
