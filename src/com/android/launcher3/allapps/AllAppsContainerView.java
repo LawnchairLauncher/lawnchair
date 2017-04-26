@@ -498,11 +498,15 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     public void updateIconBadges(Set<PackageUserKey> updatedBadges) {
         final PackageUserKey packageUserKey = new PackageUserKey(null, null);
-        for (AlphabeticalAppsList.AdapterItem app : mApps.getAdapterItems()) {
-            if (app.appInfo != null && packageUserKey.updateFromItemInfo(app.appInfo)) {
-                if (updatedBadges.contains(packageUserKey)) {
-                    mAdapter.notifyItemChanged(app.position);
-                }
+        final int n = mAppsRecyclerView.getChildCount();
+        for (int i = 0; i < n; i++) {
+            View child = mAppsRecyclerView.getChildAt(i);
+            if (!(child instanceof BubbleTextView) || !(child.getTag() instanceof ItemInfo)) {
+                continue;
+            }
+            ItemInfo info = (ItemInfo) child.getTag();
+            if (packageUserKey.updateFromItemInfo(info) && updatedBadges.contains(packageUserKey)) {
+                ((BubbleTextView) child).applyBadgeState(info, true /* animate */);
             }
         }
     }
