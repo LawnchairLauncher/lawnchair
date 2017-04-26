@@ -466,6 +466,14 @@ public class Launcher extends BaseActivity
     @Override
     public void onExtractedColorsChanged() {
         loadExtractedColorsAndColorItems();
+
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onExtractedColorsChanged();
+        }
+    }
+
+    public ExtractedColors getExtractedColors() {
+        return mExtractedColors;
     }
 
     @Override
@@ -481,9 +489,9 @@ public class Launcher extends BaseActivity
             mExtractedColors.load(this);
             mHotseat.updateColor(mExtractedColors, !mPaused);
             mWorkspace.getPageIndicator().updateColor(mExtractedColors);
-            boolean lightStatusBar = (FeatureFlags.LIGHT_STATUS_BAR
-                    && mExtractedColors.getColor(ExtractedColors.STATUS_BAR_INDEX,
-                    ExtractedColors.DEFAULT_DARK) == ExtractedColors.DEFAULT_LIGHT);
+            boolean lightStatusBar = (FeatureFlags.LIGHT_STATUS_BAR &&
+                    mExtractedColors.getColor(ExtractedColors.STATUS_BAR_INDEX) ==
+                            ExtractedColors.DEFAULT_LIGHT);
             // It's possible that All Apps is visible when this is run,
             // so always use light status bar in that case. Only change nav bar color to status bar
             // color when All Apps is visible.

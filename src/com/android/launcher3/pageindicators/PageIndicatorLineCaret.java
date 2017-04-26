@@ -221,7 +221,7 @@ public class PageIndicatorLineCaret extends PageIndicator {
      */
     public void updateColor(ExtractedColors extractedColors) {
         int originalLineAlpha = mLinePaint.getAlpha();
-        int color = extractedColors.getColor(ExtractedColors.HOTSEAT_INDEX, Color.TRANSPARENT);
+        int color = extractedColors.getColor(ExtractedColors.HOTSEAT_INDEX);
         if (color != Color.TRANSPARENT) {
             color = ColorUtils.setAlphaComponent(color, 255);
             if (color == Color.BLACK) {
