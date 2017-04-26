@@ -1576,6 +1576,11 @@ public class Launcher extends BaseActivity
             public void run() {
                 mWorkspace.updateIconBadges(updatedBadges);
                 mAppsView.updateIconBadges(updatedBadges);
+
+                PopupContainerWithArrow popup = PopupContainerWithArrow.getOpen(Launcher.this);
+                if (popup != null) {
+                    popup.updateNotificationHeader(updatedBadges);
+                }
             }
         };
         if (!waitUntilResume(r)) {

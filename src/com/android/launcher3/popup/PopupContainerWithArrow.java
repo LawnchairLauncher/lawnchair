@@ -77,6 +77,7 @@ import com.android.launcher3.util.PackageUserKey;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.ItemType;
@@ -172,6 +173,8 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         final int arrowVerticalOffset = resources.getDimensionPixelSize(
                 R.dimen.popup_arrow_vertical_offset);
 
+        mOriginalIcon = originalIcon;
+
         // Add dummy views first, and populate with real info when ready.
         PopupPopulator.Item[] itemsToPopulate = PopupPopulator
                 .getItemsToPopulate(shortcutIds, notificationKeys, systemShortcuts);
@@ -200,9 +203,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                 ? Collections.EMPTY_LIST
                 : mShortcutsItemView.getSystemShortcutViews(reverseOrder);
         if (mNotificationItemView != null) {
-            BadgeInfo badgeInfo = mLauncher.getPopupDataProvider()
-                    .getBadgeInfoForItem(originalItemInfo);
-            updateNotificationHeader(badgeInfo, originalIcon);
+            updateNotificationHeader();
         }
 
         // Add the arrow.
@@ -212,7 +213,6 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
 
         animateOpen();
 
-        mOriginalIcon = originalIcon;
         mLauncher.getDragController().addDragListener(this);
         mOriginalIcon.forceHideBadge(true);
 
@@ -551,21 +551,22 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     }
 
     /**
-     * Updates the notification header to reflect the badge info. Since this can be called
-     * for any badge info (not necessarily the one associated with this app), we first
-     * check that the ItemInfo matches the one of this popup.
+     * Updates the notification header if the original icon's badge updated.
      */
-    public void updateNotificationHeader(BadgeInfo badgeInfo, ItemInfo originalItemInfo) {
-        if (originalItemInfo != mOriginalIcon.getTag()) {
-            return;
+    public void updateNotificationHeader(Set<PackageUserKey> updatedBadges) {
+        ItemInfo itemInfo = (ItemInfo) mOriginalIcon.getTag();
+        PackageUserKey packageUser = PackageUserKey.fromItemInfo(itemInfo);
+        if (updatedBadges.contains(packageUser)) {
+            updateNotificationHeader();
         }
-        updateNotificationHeader(badgeInfo, mOriginalIcon);
     }
 
-    private void updateNotificationHeader(BadgeInfo badgeInfo, BubbleTextView originalIcon) {
+    private void updateNotificationHeader() {
+        ItemInfo itemInfo = (ItemInfo) mOriginalIcon.getTag();
+        BadgeInfo badgeInfo = mLauncher.getPopupDataProvider().getBadgeInfoForItem(itemInfo);
         if (mNotificationItemView != null && badgeInfo != null) {
-            IconPalette palette = originalIcon.getIcon() instanceof FastBitmapDrawable
-                    ? ((FastBitmapDrawable) originalIcon.getIcon()).getIconPalette()
+            IconPalette palette = mOriginalIcon.getIcon() instanceof FastBitmapDrawable
+                    ? ((FastBitmapDrawable) mOriginalIcon.getIcon()).getIconPalette()
                     : null;
             mNotificationItemView.updateHeader(badgeInfo.getNotificationCount(), palette);
         }
