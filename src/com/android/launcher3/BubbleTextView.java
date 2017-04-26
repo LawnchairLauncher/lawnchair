@@ -49,7 +49,6 @@ import com.android.launcher3.graphics.HolographicOutlineHelper;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.model.PackageItemInfo;
-import com.android.launcher3.popup.PopupContainerWithArrow;
 
 import java.text.NumberFormat;
 
@@ -586,18 +585,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
 
     public void applyBadgeState(ItemInfo itemInfo, boolean animate) {
         if (mIcon instanceof FastBitmapDrawable) {
-            BadgeInfo badgeInfo = mLauncher.getPopupDataProvider().getBadgeInfoForItem(itemInfo);
-            BadgeRenderer badgeRenderer = mLauncher.getDeviceProfile().mBadgeRenderer;
-            PopupContainerWithArrow popup = PopupContainerWithArrow.getOpen(mLauncher);
-            if (popup != null) {
-                popup.updateNotificationHeader(badgeInfo, itemInfo);
-            }
-
             boolean wasBadged = mBadgeInfo != null;
-            boolean isBadged = badgeInfo != null;
+            mBadgeInfo = mLauncher.getPopupDataProvider().getBadgeInfoForItem(itemInfo);
+            boolean isBadged = mBadgeInfo != null;
             float newBadgeScale = isBadged ? 1f : 0;
-            mBadgeInfo = badgeInfo;
-            mBadgeRenderer = badgeRenderer;
+            mBadgeRenderer = mLauncher.getDeviceProfile().mBadgeRenderer;
             if (wasBadged || isBadged) {
                 mIconPalette = ((FastBitmapDrawable) mIcon).getIconPalette();
                 // Animate when a badge is first added or when it is removed.
