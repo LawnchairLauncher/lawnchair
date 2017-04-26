@@ -55,4 +55,6 @@ public final class FeatureFlags {
     public static final boolean ADAPTIVE_ICON_SHADOW = true;
     // When enabled, app discovery will be enabled if service is implemented
     public static final boolean DISCOVERY_ENABLED = false;
+    // When enabled, the qsb will be moved to the hotseat.
+    public static final boolean QSB_IN_HOTSEAT = true;
 }
