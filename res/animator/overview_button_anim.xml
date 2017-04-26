@@ -24,13 +24,6 @@
             android:valueType="floatType" />
     </item>
 
-    <item android:state_focused="true">
-        <objectAnimator
-            android:duration="@android:integer/config_shortAnimTime"
-            android:propertyName="alpha"
-            android:valueTo="0.5"
-            android:valueType="floatType" />
-    </item>
     <item>
         <objectAnimator
             android:duration="@android:integer/config_shortAnimTime"
