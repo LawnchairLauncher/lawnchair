@@ -403,17 +403,15 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     public void setBadgeInfo(FolderBadgeInfo badgeInfo) {
-        updateBadgeScale(mBadgeInfo.getNotificationCount(), badgeInfo.getNotificationCount());
+        updateBadgeScale(mBadgeInfo.hasBadge(), badgeInfo.hasBadge());
         mBadgeInfo = badgeInfo;
     }
 
     /**
-     * Sets mBadgeScale to 1 or 0, animating if oldCount or newCount is 0
+     * Sets mBadgeScale to 1 or 0, animating if wasBadged or isBadged is false
      * (the badge is being added or removed).
      */
-    private void updateBadgeScale(int oldCount, int newCount) {
-        boolean wasBadged = oldCount > 0;
-        boolean isBadged = newCount > 0;
+    private void updateBadgeScale(boolean wasBadged, boolean isBadged) {
         float newBadgeScale = isBadged ? 1f : 0f;
         // Animate when a badge is first added or when it is removed.
         if ((wasBadged ^ isBadged) && isShown()) {
@@ -879,7 +877,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             mBackground.drawBackgroundStroke(canvas);
         }
 
-        if ((mBadgeInfo != null && mBadgeInfo.getNotificationCount() > 0) || mBadgeScale > 0) {
+        if ((mBadgeInfo != null && mBadgeInfo.hasBadge()) || mBadgeScale > 0) {
             int offsetX = mBackground.getOffsetX();
             int offsetY = mBackground.getOffsetY();
             int previewSize = (int) (mBackground.previewSize * mBackground.mScale);
@@ -1046,20 +1044,20 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     @Override
     public void onAdd(ShortcutInfo item) {
-        int oldCount = mBadgeInfo.getNotificationCount();
+        boolean wasBadged = mBadgeInfo.hasBadge();
         mBadgeInfo.addBadgeInfo(mLauncher.getPopupDataProvider().getBadgeInfoForItem(item));
-        int newCount = mBadgeInfo.getNotificationCount();
-        updateBadgeScale(oldCount, newCount);
+        boolean isBadged = mBadgeInfo.hasBadge();
+        updateBadgeScale(wasBadged, isBadged);
         invalidate();
         requestLayout();
     }
 
     @Override
     public void onRemove(ShortcutInfo item) {
-        int oldCount = mBadgeInfo.getNotificationCount();
+        boolean wasBadged = mBadgeInfo.hasBadge();
         mBadgeInfo.subtractBadgeInfo(mLauncher.getPopupDataProvider().getBadgeInfoForItem(item));
-        int newCount = mBadgeInfo.getNotificationCount();
-        updateBadgeScale(oldCount, newCount);
+        boolean isBadged = mBadgeInfo.hasBadge();
+        updateBadgeScale(wasBadged, isBadged);
         invalidate();
         requestLayout();
     }

@@ -473,7 +473,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
     }
 
     private boolean hasBadge() {
-        return (mBadgeInfo != null && mBadgeInfo.getNotificationCount() > 0);
+        return mBadgeInfo != null;
     }
 
     public void getIconBounds(Rect outBounds) {

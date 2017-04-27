@@ -37,7 +37,7 @@ public class NotificationKeyData {
     private NotificationKeyData(String notificationKey, String shortcutId, int count) {
         this.notificationKey = notificationKey;
         this.shortcutId = shortcutId;
-        this.count = Math.max(1, count);
+        this.count = count;
     }
 
     public static NotificationKeyData fromNotification(StatusBarNotification sbn) {
