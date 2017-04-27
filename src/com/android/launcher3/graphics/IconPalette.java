@@ -35,7 +35,7 @@ public class IconPalette {
     private static final boolean DEBUG = false;
     private static final String TAG = "IconPalette";
 
-    public static final IconPalette FOLDER_ICON_PALETTE = new IconPalette(Color.WHITE);
+    public static final IconPalette FOLDER_ICON_PALETTE = new IconPalette(Color.parseColor("#BDC1C6"));
 
     private static final float MIN_PRELOAD_COLOR_SATURATION = 0.2f;
     private static final float MIN_PRELOAD_COLOR_LIGHTNESS = 0.6f;

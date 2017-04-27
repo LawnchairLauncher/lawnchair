@@ -38,6 +38,8 @@ import com.android.launcher3.graphics.ShadowGenerator;
  */
 public class BadgeRenderer {
 
+    private static final boolean DOTS_ONLY = true;
+
     // The badge sizes are defined as percentages of the app icon size.
     private static final float SIZE_PERCENTAGE = 0.38f;
     // Used to expand the width of the badge for each additional digit.
@@ -101,7 +103,7 @@ public class BadgeRenderer {
         String notificationCount = badgeInfo == null ? "0"
                 : String.valueOf(badgeInfo.getNotificationCount());
         int numChars = notificationCount.length();
-        int width = mSize + mCharSize * (numChars - 1);
+        int width = DOTS_ONLY ? mSize : mSize + mCharSize * (numChars - 1);
         // Lazily load the background with shadow.
         Bitmap backgroundWithShadow = mBackgroundsWithShadow.get(numChars);
         if (backgroundWithShadow == null) {
@@ -112,8 +114,8 @@ public class BadgeRenderer {
         // We draw the badge relative to its center.
         int badgeCenterX = iconBounds.right - width / 2;
         int badgeCenterY = iconBounds.top + mSize / 2;
-        boolean isText = badgeInfo != null && badgeInfo.getNotificationCount() != 0;
-        boolean isIcon = icon != null;
+        boolean isText = !DOTS_ONLY && badgeInfo != null && badgeInfo.getNotificationCount() != 0;
+        boolean isIcon = !DOTS_ONLY && icon != null;
         boolean isDot = !(isText || isIcon);
         if (isDot) {
             badgeScale *= DOT_SCALE;

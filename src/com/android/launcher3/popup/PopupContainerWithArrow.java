@@ -562,11 +562,6 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     }
 
     private void updateNotificationHeader() {
-        if (true) {
-            // For now, don't show any number in the popup.
-            // TODO: determine whether a number makes sense, and if not, remove associated code.
-            return;
-        }
         ItemInfo itemInfo = (ItemInfo) mOriginalIcon.getTag();
         BadgeInfo badgeInfo = mLauncher.getPopupDataProvider().getBadgeInfoForItem(itemInfo);
         if (mNotificationItemView != null && badgeInfo != null) {
