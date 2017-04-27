@@ -22,6 +22,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -115,7 +116,7 @@ public class PendingItemDragHelper extends DragPreviewProvider {
         } else {
             PendingAddShortcutInfo createShortcutInfo = (PendingAddShortcutInfo) mAddInfo;
             Drawable icon = createShortcutInfo.activityInfo.getFullResIcon(app.getIconCache());
-            preview = LauncherIcons.createScaledBitmapWithoutShadow(icon, launcher);
+            preview = LauncherIcons.createScaledBitmapWithoutShadow(icon, launcher, Build.VERSION_CODES.O);
             mAddInfo.spanX = mAddInfo.spanY = 1;
             scale = ((float) launcher.getDeviceProfile().iconSizePx) / preview.getWidth();
 

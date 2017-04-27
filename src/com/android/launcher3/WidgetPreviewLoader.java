@@ -22,6 +22,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.CancellationSignal;
 import android.os.Handler;
 import android.os.UserHandle;
@@ -435,20 +436,19 @@ public class WidgetPreviewLoader {
         float shadowBlur = res.getDimension(R.dimen.widget_preview_shadow_blur);
         float keyShadowDistance = res.getDimension(R.dimen.widget_preview_key_shadow_distance);
         float corner = res.getDimension(R.dimen.widget_preview_corner_radius);
-        int shadowColor = ColorUtils.setAlphaComponent(
-                res.getColor(R.color.default_shadow_color_no_alpha),
-                ShadowGenerator.AMBIENT_SHADOW_ALPHA);
 
         RectF bounds = new RectF(shadowBlur, shadowBlur,
                 width - shadowBlur, height - shadowBlur - keyShadowDistance);
         p.setColor(Color.WHITE);
 
         // Key shadow
-        p.setShadowLayer(shadowBlur, 0, keyShadowDistance, shadowColor);
+        p.setShadowLayer(shadowBlur, 0, keyShadowDistance,
+                ShadowGenerator.KEY_SHADOW_ALPHA << 24);
         c.drawRoundRect(bounds, corner, corner, p);
 
         // Ambient shadow
-        p.setShadowLayer(shadowBlur, 0, 0, shadowColor);
+        p.setShadowLayer(shadowBlur, 0, 0,
+                ColorUtils.setAlphaComponent(Color.BLACK, ShadowGenerator.AMBIENT_SHADOW_ALPHA));
         c.drawRoundRect(bounds, corner, corner, p);
 
         p.clearShadowLayer();
@@ -482,7 +482,7 @@ public class WidgetPreviewLoader {
         RectF boxRect = drawBoxWithShadow(c, p, size, size);
 
         Bitmap icon = LauncherIcons.createScaledBitmapWithoutShadow(
-                mutateOnMainThread(info.getFullResIcon(mIconCache)), mContext);
+                mutateOnMainThread(info.getFullResIcon(mIconCache)), mContext, Build.VERSION_CODES.O);
         Rect src = new Rect(0, 0, icon.getWidth(), icon.getHeight());
 
         boxRect.set(0, 0, iconSize, iconSize);

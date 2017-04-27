@@ -32,6 +32,7 @@ import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
+import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
 
@@ -94,13 +95,13 @@ public class LauncherIcons {
      * The bitmap is also visually normalized with other icons.
      */
     public static Bitmap createBadgedIconBitmap(
-            Drawable icon, UserHandle user, Context context) {
+            Drawable icon, UserHandle user, Context context, int iconAppTargetSdk) {
 
         IconNormalizer normalizer;
         float scale = 1f;
         if (!FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION) {
             normalizer = IconNormalizer.getInstance(context);
-            if (Utilities.isAtLeastO()) {
+            if (Utilities.isAtLeastO() && iconAppTargetSdk >= Build.VERSION_CODES.O) {
                 boolean[] outShape = new boolean[1];
                 AdaptiveIconDrawable dr = (AdaptiveIconDrawable)
                         context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper).mutate();
@@ -148,13 +149,13 @@ public class LauncherIcons {
      * Creates a normalized bitmap suitable for the all apps view. The bitmap is also visually
      * normalized with other icons and has enough spacing to add shadow.
      */
-    public static Bitmap createScaledBitmapWithoutShadow(Drawable icon, Context context) {
+    public static Bitmap createScaledBitmapWithoutShadow(Drawable icon, Context context, int iconAppTargetSdk) {
         RectF iconBounds = new RectF();
         IconNormalizer normalizer;
         float scale = 1f;
         if (!FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION) {
             normalizer = IconNormalizer.getInstance(context);
-            if (Utilities.isAtLeastO()) {
+            if (Utilities.isAtLeastO() && iconAppTargetSdk >= Build.VERSION_CODES.O) {
                 boolean[] outShape = new boolean[1];
                 AdaptiveIconDrawable dr = (AdaptiveIconDrawable)
                         context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper).mutate();
@@ -179,7 +180,7 @@ public class LauncherIcons {
 
     /**
      * Adds a shadow to the provided icon. It assumes that the icon has already been scaled using
-     * {@link #createScaledBitmapWithoutShadow(Drawable, Context)}
+     * {@link #createScaledBitmapWithoutShadow(Drawable, Context, int)}
      */
     public static Bitmap addShadowToIcon(Bitmap icon, Context context) {
         return ShadowGenerator.getInstance(context).recreateIcon(icon);
@@ -318,7 +319,8 @@ public class LauncherIcons {
         IconCache cache = app.getIconCache();
         Bitmap unbadgedBitmap = unbadgedDrawable == null
                 ? cache.getDefaultIcon(Process.myUserHandle())
-                : LauncherIcons.createScaledBitmapWithoutShadow(unbadgedDrawable, context);
+                : LauncherIcons.createScaledBitmapWithoutShadow(unbadgedDrawable, context,
+                Build.VERSION_CODES.O);
 
         if (!badged) {
             return unbadgedBitmap;
