@@ -87,8 +87,6 @@ public class ShadowGenerator {
 
         float shadowRadius = height * 1f / 32;
         float shadowYOffset = height * 1f / 16;
-        int ambientShadowAlpha = AMBIENT_SHADOW_ALPHA / 2;
-        int keyShadowAlpha = KEY_SHADOW_ALPHA / 2;
 
         int radius = height / 2;
 
@@ -109,11 +107,11 @@ public class ShadowGenerator {
         int bottom = center + height / 2;
 
         // Draw ambient shadow, center aligned within size
-        blurPaint.setAlpha(ambientShadowAlpha);
+        blurPaint.setAlpha(AMBIENT_SHADOW_ALPHA);
         canvas.drawRoundRect(left, top, right, bottom, radius, radius, blurPaint);
 
         // Draw key shadow, bottom aligned within size
-        blurPaint.setAlpha(keyShadowAlpha);
+        blurPaint.setAlpha(KEY_SHADOW_ALPHA);
         canvas.drawRoundRect(left, top + shadowYOffset, right, bottom + shadowYOffset,
                 radius, radius, blurPaint);
 
