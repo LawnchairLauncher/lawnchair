@@ -43,6 +43,7 @@ public class IconPalette {
     public final int dominantColor;
     public final int backgroundColor;
     public final ColorMatrixColorFilter backgroundColorMatrixFilter;
+    public final ColorMatrixColorFilter saturatedBackgroundColorMatrixFilter;
     public final int textColor;
     public final int secondaryColor;
 
@@ -52,6 +53,9 @@ public class IconPalette {
         ColorMatrix backgroundColorMatrix = new ColorMatrix();
         Themes.setColorScaleOnMatrix(backgroundColor, backgroundColorMatrix);
         backgroundColorMatrixFilter = new ColorMatrixColorFilter(backgroundColorMatrix);
+        // Get slightly more saturated background color.
+        Themes.setColorScaleOnMatrix(getMutedColor(dominantColor, 0.54f), backgroundColorMatrix);
+        saturatedBackgroundColorMatrixFilter = new ColorMatrixColorFilter(backgroundColorMatrix);
         textColor = getTextColorForBackground(backgroundColor);
         secondaryColor = getLowContrastColor(backgroundColor);
     }
@@ -173,7 +177,11 @@ public class IconPalette {
     }
 
     private static int getMutedColor(int color) {
-        int whiteScrim = ColorUtils.setAlphaComponent(Color.WHITE, (int) (255 * 0.87f));
+        return getMutedColor(color, 0.87f);
+    }
+
+    private static int getMutedColor(int color, float whiteScrimAlpha) {
+        int whiteScrim = ColorUtils.setAlphaComponent(Color.WHITE, (int) (255 * whiteScrimAlpha));
         return ColorUtils.compositeColors(whiteScrim, color);
     }
 

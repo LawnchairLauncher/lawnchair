@@ -562,6 +562,11 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     }
 
     private void updateNotificationHeader() {
+        if (true) {
+            // For now, don't show any number in the popup.
+            // TODO: determine whether a number makes sense, and if not, remove associated code.
+            return;
+        }
         ItemInfo itemInfo = (ItemInfo) mOriginalIcon.getTag();
         BadgeInfo badgeInfo = mLauncher.getPopupDataProvider().getBadgeInfoForItem(itemInfo);
         if (mNotificationItemView != null && badgeInfo != null) {
@@ -578,7 +583,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         }
         ItemInfo originalInfo = (ItemInfo) mOriginalIcon.getTag();
         BadgeInfo badgeInfo = updatedBadges.get(PackageUserKey.fromItemInfo(originalInfo));
-        if (badgeInfo == null || badgeInfo.getNotificationCount() == 0) {
+        if (badgeInfo == null || badgeInfo.getNotificationKeys().size() == 0) {
             AnimatorSet removeNotification = LauncherAnimUtils.createAnimatorSet();
             final int duration = getResources().getInteger(
                     R.integer.config_removeNotificationViewDuration);

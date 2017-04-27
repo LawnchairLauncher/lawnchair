@@ -84,7 +84,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             badgeShouldBeRefreshed = shouldBeFilteredOut
                     ? badgeInfo.removeNotificationKey(notificationKey)
                     : badgeInfo.addOrUpdateNotificationKey(notificationKey);
-            if (badgeInfo.getNotificationCount() == 0) {
+            if (badgeInfo.getNotificationKeys().size() == 0) {
                 mPackageUserToBadgeInfos.remove(postedPackageUserKey);
             }
         }
@@ -97,7 +97,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             NotificationKeyData notificationKey) {
         BadgeInfo oldBadgeInfo = mPackageUserToBadgeInfos.get(removedPackageUserKey);
         if (oldBadgeInfo != null && oldBadgeInfo.removeNotificationKey(notificationKey)) {
-            if (oldBadgeInfo.getNotificationCount() == 0) {
+            if (oldBadgeInfo.getNotificationKeys().size() == 0) {
                 mPackageUserToBadgeInfos.remove(removedPackageUserKey);
             }
             updateLauncherIconBadges(Utilities.singletonHashSet(removedPackageUserKey));
@@ -187,14 +187,21 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         boolean hadNotificationToShow = badgeInfo.hasNotificationToShow();
         NotificationInfo notificationInfo = null;
         NotificationListener notificationListener = NotificationListener.getInstanceIfConnected();
-        if (notificationListener != null && badgeInfo.getNotificationKeys().size() == 1) {
-            String onlyNotificationKey = badgeInfo.getNotificationKeys().get(0).notificationKey;
-            StatusBarNotification[] activeNotifications = notificationListener
-                    .getActiveNotifications(new String[] {onlyNotificationKey});
-            if (activeNotifications.length == 1) {
-                notificationInfo = new NotificationInfo(mLauncher, activeNotifications[0]);
-                if (!notificationInfo.shouldShowIconInBadge()) {
-                    notificationInfo = null;
+        if (notificationListener != null && badgeInfo.getNotificationKeys().size() >= 1) {
+            // Look for the most recent notification that has an icon that should be shown in badge.
+            for (NotificationKeyData notificationKeyData : badgeInfo.getNotificationKeys()) {
+                String notificationKey = notificationKeyData.notificationKey;
+                StatusBarNotification[] activeNotifications = notificationListener
+                        .getActiveNotifications(new String[]{notificationKey});
+                if (activeNotifications.length == 1) {
+                    notificationInfo = new NotificationInfo(mLauncher, activeNotifications[0]);
+                    if (notificationInfo.shouldShowIconInBadge()) {
+                        // Found an appropriate icon.
+                        break;
+                    } else {
+                        // Keep looking.
+                        notificationInfo = null;
+                    }
                 }
             }
         }

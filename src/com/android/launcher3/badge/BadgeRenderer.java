@@ -44,12 +44,17 @@ public class BadgeRenderer {
     private static final float CHAR_SIZE_PERCENTAGE = 0.12f;
     private static final float TEXT_SIZE_PERCENTAGE = 0.26f;
     private static final float OFFSET_PERCENTAGE = 0.02f;
+    private static final float STACK_OFFSET_PERCENTAGE_X = 0.05f;
+    private static final float STACK_OFFSET_PERCENTAGE_Y = 0.06f;
+    private static final float DOT_SCALE = 0.6f;
 
     private final Context mContext;
     private final int mSize;
     private final int mCharSize;
     private final int mTextHeight;
     private final int mOffset;
+    private final int mStackOffsetX;
+    private final int mStackOffsetY;
     private final IconDrawer mLargeIconDrawer;
     private final IconDrawer mSmallIconDrawer;
     private final Paint mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -63,6 +68,8 @@ public class BadgeRenderer {
         mSize = (int) (SIZE_PERCENTAGE * iconSizePx);
         mCharSize = (int) (CHAR_SIZE_PERCENTAGE * iconSizePx);
         mOffset = (int) (OFFSET_PERCENTAGE * iconSizePx);
+        mStackOffsetX = (int) (STACK_OFFSET_PERCENTAGE_X * iconSizePx);
+        mStackOffsetY = (int) (STACK_OFFSET_PERCENTAGE_Y * iconSizePx);
         mTextPaint.setTextSize(iconSizePx * TEXT_SIZE_PERCENTAGE);
         mTextPaint.setTextAlign(Paint.Align.CENTER);
         mLargeIconDrawer = new IconDrawer(res.getDimensionPixelSize(R.dimen.badge_small_padding));
@@ -91,7 +98,7 @@ public class BadgeRenderer {
                 ? mLargeIconDrawer : mSmallIconDrawer;
         Shader icon = badgeInfo == null ? null : badgeInfo.getNotificationIconForBadge(
                 mContext, palette.backgroundColor, mSize, iconDrawer.mPadding);
-        String notificationCount = icon != null || badgeInfo == null ? "0"
+        String notificationCount = badgeInfo == null ? "0"
                 : String.valueOf(badgeInfo.getNotificationCount());
         int numChars = notificationCount.length();
         int width = mSize + mCharSize * (numChars - 1);
@@ -105,21 +112,42 @@ public class BadgeRenderer {
         // We draw the badge relative to its center.
         int badgeCenterX = iconBounds.right - width / 2;
         int badgeCenterY = iconBounds.top + mSize / 2;
+        boolean isText = badgeInfo != null && badgeInfo.getNotificationCount() != 0;
+        boolean isIcon = icon != null;
+        boolean isDot = !(isText || isIcon);
+        if (isDot) {
+            badgeScale *= DOT_SCALE;
+        }
         int offsetX = Math.min(mOffset, spaceForOffset.x);
         int offsetY = Math.min(mOffset, spaceForOffset.y);
         canvas.translate(badgeCenterX + offsetX, badgeCenterY - offsetY);
         canvas.scale(badgeScale, badgeScale);
-        // Draw the background and shadow.
+        // Prepare the background and shadow and possible stacking effect.
         mBackgroundPaint.setColorFilter(palette.backgroundColorMatrixFilter);
         int backgroundWithShadowSize = backgroundWithShadow.getHeight(); // Same as width.
-        canvas.drawBitmap(backgroundWithShadow, -backgroundWithShadowSize / 2,
-                -backgroundWithShadowSize / 2, mBackgroundPaint);
-        if (icon != null) {
-            // Draw the notification icon with padding.
-            iconDrawer.drawIcon(icon, canvas);
-        } else {
-            // Draw the notification count.
+        boolean shouldStack = !isDot && badgeInfo != null
+                && badgeInfo.getNotificationKeys().size() > 1;
+        if (shouldStack) {
+            int offsetDiffX = mStackOffsetX - mOffset;
+            int offsetDiffY = mStackOffsetY - mOffset;
+            canvas.translate(offsetDiffX, offsetDiffY);
+            canvas.drawBitmap(backgroundWithShadow, -backgroundWithShadowSize / 2,
+                    -backgroundWithShadowSize / 2, mBackgroundPaint);
+            canvas.translate(-offsetDiffX, -offsetDiffY);
+        }
+
+        if (isText) {
+            canvas.drawBitmap(backgroundWithShadow, -backgroundWithShadowSize / 2,
+                    -backgroundWithShadowSize / 2, mBackgroundPaint);
             canvas.drawText(notificationCount, 0, mTextHeight / 2, mTextPaint);
+        } else if (isIcon) {
+            canvas.drawBitmap(backgroundWithShadow, -backgroundWithShadowSize / 2,
+                    -backgroundWithShadowSize / 2, mBackgroundPaint);
+            iconDrawer.drawIcon(icon, canvas);
+        } else if (isDot) {
+            mBackgroundPaint.setColorFilter(palette.saturatedBackgroundColorMatrixFilter);
+            canvas.drawBitmap(backgroundWithShadow, -backgroundWithShadowSize / 2,
+                    -backgroundWithShadowSize / 2, mBackgroundPaint);
         }
         canvas.restore();
     }
