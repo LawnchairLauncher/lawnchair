@@ -19,14 +19,14 @@ package com.android.launcher3.badge;
 import com.android.launcher3.Utilities;
 
 /**
- * Subclass of BadgeInfo that only contains the badge count,
- * which is the sum of all the Folder's items' counts.
+ * Subclass of BadgeInfo that only contains the badge count, which is
+ * the sum of all the Folder's items' notifications (each counts as 1).
  */
 public class FolderBadgeInfo extends BadgeInfo {
 
     private static final int MIN_COUNT = 0;
 
-    private int mTotalNotificationCount;
+    private int mNumNotifications;
 
     public FolderBadgeInfo() {
         super(null);
@@ -36,22 +36,27 @@ public class FolderBadgeInfo extends BadgeInfo {
         if (badgeToAdd == null) {
             return;
         }
-        mTotalNotificationCount += badgeToAdd.getNotificationCount();
-        mTotalNotificationCount = Utilities.boundToRange(
-                mTotalNotificationCount, MIN_COUNT, BadgeInfo.MAX_COUNT);
+        mNumNotifications += badgeToAdd.getNotificationKeys().size();
+        mNumNotifications = Utilities.boundToRange(
+                mNumNotifications, MIN_COUNT, BadgeInfo.MAX_COUNT);
     }
 
     public void subtractBadgeInfo(BadgeInfo badgeToSubtract) {
         if (badgeToSubtract == null) {
             return;
         }
-        mTotalNotificationCount -= badgeToSubtract.getNotificationCount();
-        mTotalNotificationCount = Utilities.boundToRange(
-                mTotalNotificationCount, MIN_COUNT, BadgeInfo.MAX_COUNT);
+        mNumNotifications -= badgeToSubtract.getNotificationKeys().size();
+        mNumNotifications = Utilities.boundToRange(
+                mNumNotifications, MIN_COUNT, BadgeInfo.MAX_COUNT);
     }
 
     @Override
     public int getNotificationCount() {
-        return mTotalNotificationCount;
+        // This forces the folder badge to always show up as a dot.
+        return 0;
+    }
+
+    public boolean hasBadge() {
+        return mNumNotifications > 0;
     }
 }
