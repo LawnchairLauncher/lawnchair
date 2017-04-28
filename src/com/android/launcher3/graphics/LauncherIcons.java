@@ -252,7 +252,6 @@ public class LauncherIcons {
                     width = (int) (height * ratio);
                 }
             }
-
             // no intrinsic size --> use default size
             int textureWidth = iconBitmapSize;
             int textureHeight = iconBitmapSize;
@@ -266,7 +265,13 @@ public class LauncherIcons {
             final int top = (textureHeight-height) / 2;
 
             sOldBounds.set(icon.getBounds());
-            icon.setBounds(left, top, left+width, top+height);
+            if (icon instanceof AdaptiveIconDrawable) {
+                int offset = Math.min(left, top);
+                int size = Math.max(width, height);
+                icon.setBounds(offset, offset, offset + size, offset + size);
+            } else {
+                icon.setBounds(left, top, left+width, top+height);
+            }
             canvas.save(Canvas.MATRIX_SAVE_FLAG);
             canvas.scale(scale, scale, textureWidth / 2, textureHeight / 2);
             icon.draw(canvas);
@@ -289,16 +294,13 @@ public class LauncherIcons {
         }
 
         try {
-            Class clazz = Class.forName("android.graphics.drawable.AdaptiveIconDrawable");
-            if (!clazz.isAssignableFrom(drawable.getClass())) {
-                Drawable iconWrapper =
+            if (!(drawable instanceof AdaptiveIconDrawable)) {
+                AdaptiveIconDrawable iconWrapper = (AdaptiveIconDrawable)
                         context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper).mutate();
-                FixedScaleDrawable fsd = ((FixedScaleDrawable) clazz.getMethod("getForeground")
-                        .invoke(iconWrapper));
+                FixedScaleDrawable fsd = ((FixedScaleDrawable) iconWrapper.getForeground());
                 fsd.setDrawable(drawable);
                 fsd.setScale(scale);
-
-                return iconWrapper;
+                return (Drawable) iconWrapper;
             }
         } catch (Exception e) {
             return drawable;

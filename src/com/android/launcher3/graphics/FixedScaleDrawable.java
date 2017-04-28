@@ -19,17 +19,18 @@ public class FixedScaleDrawable extends DrawableWrapper {
 
     // TODO b/33553066 use the constant defined in MaskableIconDrawable
     private static final float LEGACY_ICON_SCALE = .7f * .6667f;
-    private float mScale;
+    private float mScaleX, mScaleY;
 
     public FixedScaleDrawable() {
         super(new ColorDrawable());
-        mScale = LEGACY_ICON_SCALE;
+        mScaleX = LEGACY_ICON_SCALE;
+        mScaleY = LEGACY_ICON_SCALE;
     }
 
     @Override
     public void draw(Canvas canvas) {
         int saveCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
-        canvas.scale(mScale, mScale,
+        canvas.scale(mScaleX, mScaleY,
                 getBounds().exactCenterX(), getBounds().exactCenterY());
         super.draw(canvas);
         canvas.restoreToCount(saveCount);
@@ -42,6 +43,14 @@ public class FixedScaleDrawable extends DrawableWrapper {
     public void inflate(Resources r, XmlPullParser parser, AttributeSet attrs, Theme theme) { }
 
     public void setScale(float scale) {
-        mScale = scale * LEGACY_ICON_SCALE;
+        float h = getIntrinsicHeight();
+        float w = getIntrinsicWidth();
+        mScaleX = scale * LEGACY_ICON_SCALE;
+        mScaleY = scale * LEGACY_ICON_SCALE;
+        if (h > w && w > 0) {
+            mScaleX *= w / h;
+        } else if (w > h && h > 0) {
+            mScaleY *= h / w;
+        }
     }
 }
