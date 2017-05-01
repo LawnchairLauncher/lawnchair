@@ -71,7 +71,6 @@ public class LauncherScroller {
 
     private static final int NB_SAMPLES = 100;
     private static final float[] SPLINE_POSITION = new float[NB_SAMPLES + 1];
-    private static final float[] SPLINE_TIME = new float[NB_SAMPLES + 1];
 
     private float mDeceleration;
     private final float mPpi;
@@ -107,9 +106,8 @@ public class LauncherScroller {
                 if (dy > alpha) y_max = y;
                 else y_min = y;
             }
-            SPLINE_TIME[i] = coef * ((1.0f - y) * P1 + y * P2) + y * y * y;
         }
-        SPLINE_POSITION[NB_SAMPLES] = SPLINE_TIME[NB_SAMPLES] = 1.0f;
+        SPLINE_POSITION[NB_SAMPLES] = 1.0f;
 
         // This controls the viscous fluid effect (how much of it)
         sViscousFluidScale = 8.0f;
@@ -543,13 +541,5 @@ public class LauncherScroller {
         mFinalY = newY;
         mDeltaY = mFinalY - mStartY;
         mFinished = false;
-    }
-
-    /**
-     * @hide
-     */
-    public boolean isScrollingInDirection(float xvel, float yvel) {
-        return !mFinished && Math.signum(xvel) == Math.signum(mFinalX - mStartX) &&
-                Math.signum(yvel) == Math.signum(mFinalY - mStartY);
     }
 }
