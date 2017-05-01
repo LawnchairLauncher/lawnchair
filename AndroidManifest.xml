@@ -73,6 +73,7 @@
             android:configChanges="keyboard|keyboardHidden|navigation"
             android:resumeWhilePausing="true"
             android:taskAffinity=""
+            android:excludeFromRecents="true"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
