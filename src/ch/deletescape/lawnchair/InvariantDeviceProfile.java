@@ -83,8 +83,7 @@ public class InvariantDeviceProfile {
     float hotseatIconSize;
     int defaultLayoutId;
 
-    DeviceProfile landscapeProfile;
-    DeviceProfile portraitProfile;
+    DeviceProfile profile;
 
     public Point defaultWallpaperSize;
 
@@ -164,10 +163,8 @@ public class InvariantDeviceProfile {
         int smallSide = Math.min(realSize.x, realSize.y);
         int largeSide = Math.max(realSize.x, realSize.y);
 
-        landscapeProfile = new DeviceProfile(context, this, smallestSize, largestSize,
-                largeSide, smallSide, true /* isLandscape */);
-        portraitProfile = new DeviceProfile(context, this, smallestSize, largestSize,
-                smallSide, largeSide, false /* isLandscape */);
+        profile = new DeviceProfile(context, this, smallestSize, largestSize,
+                smallSide, largeSide);
 
         // We need to ensure that there is enough extra space in the wallpaper
         // for the intended parallax effects

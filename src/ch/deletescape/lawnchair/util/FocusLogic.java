@@ -183,16 +183,9 @@ public class FocusLogic {
         ViewGroup iconParent = iconLayout.getShortcutsAndWidgets();
         ViewGroup hotseatParent = hotseatLayout.getShortcutsAndWidgets();
 
-        boolean isHotseatHorizontal = !dp.isVerticalBarLayout();
-
         int m, n;
-        if (isHotseatHorizontal) {
-            m = hotseatLayout.getCountX();
-            n = iconLayout.getCountY() + hotseatLayout.getCountY();
-        } else {
-            m = iconLayout.getCountX() + hotseatLayout.getCountX();
-            n = hotseatLayout.getCountY();
-        }
+        m = hotseatLayout.getCountX();
+        n = iconLayout.getCountY() + hotseatLayout.getCountY();
         int[][] matrix = createFullMatrix(m, n);
         // Iterate thru the children of the workspace.
         for (int i = 0; i < iconParent.getChildCount(); i++) {
@@ -207,15 +200,9 @@ public class FocusLogic {
 
         // Iterate thru the children of the hotseat.
         for (int i = hotseatParent.getChildCount() - 1; i >= 0; i--) {
-            if (isHotseatHorizontal) {
-                int cx = ((CellLayout.LayoutParams)
-                        hotseatParent.getChildAt(i).getLayoutParams()).cellX;
-                matrix[cx][iconLayout.getCountY()] = iconParent.getChildCount() + i;
-            } else {
-                int cy = ((CellLayout.LayoutParams)
-                        hotseatParent.getChildAt(i).getLayoutParams()).cellY;
-                matrix[iconLayout.getCountX()][cy] = iconParent.getChildCount() + i;
-            }
+            int cx = ((CellLayout.LayoutParams)
+                    hotseatParent.getChildAt(i).getLayoutParams()).cellX;
+            matrix[cx][iconLayout.getCountY()] = iconParent.getChildCount() + i;
         }
         return matrix;
     }

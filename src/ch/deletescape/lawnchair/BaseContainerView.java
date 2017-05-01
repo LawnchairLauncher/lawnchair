@@ -113,9 +113,7 @@ public abstract class BaseContainerView extends FrameLayout
         Context context = getContext();
         Launcher launcher = Launcher.getLauncher(context);
 
-        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP &&
-                this instanceof AllAppsContainerView &&
-                !launcher.getDeviceProfile().isVerticalBarLayout()) {
+        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && this instanceof AllAppsContainerView) {
             mContainerPaddingLeft = mContainerPaddingRight = 0;
             mContainerPaddingTop = mContainerPaddingBottom = 0;
         } else {
@@ -123,11 +121,7 @@ public abstract class BaseContainerView extends FrameLayout
             int[] padding = grid.getContainerPadding(context);
             mContainerPaddingLeft = padding[0] + grid.edgeMarginPx;
             mContainerPaddingRight = padding[1] + grid.edgeMarginPx;
-            if (!launcher.getDeviceProfile().isVerticalBarLayout()) {
-                mContainerPaddingTop = mContainerPaddingBottom = grid.edgeMarginPx;
-            } else {
-                mContainerPaddingTop = mContainerPaddingBottom = 0;
-            }
+            mContainerPaddingTop = mContainerPaddingBottom = grid.edgeMarginPx;
         }
 
         mRevealDrawable = new InsetDrawable(mBaseDrawable,

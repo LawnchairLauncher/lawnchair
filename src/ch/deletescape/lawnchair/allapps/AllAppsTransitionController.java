@@ -151,22 +151,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     private boolean shouldPossiblyIntercept(MotionEvent ev) {
-        DeviceProfile grid = mLauncher.getDeviceProfile();
-        if (mDetector.isIdleState()) {
-            if (grid.isVerticalBarLayout()) {
-                if (ev.getY() > mLauncher.getDeviceProfile().heightPx - mBezelSwipeUpHeight) {
-                    return true;
-                }
-            } else {
-                if (mLauncher.getDragLayer().isEventOverHotseat(ev) ||
-                        mLauncher.getDragLayer().isEventOverPageIndicator(ev)) {
-                    return true;
-                }
-            }
-            return false;
-        } else {
-            return true;
-        }
+        return !mDetector.isIdleState() || mLauncher.getDragLayer().isEventOverHotseat(ev) ||
+                mLauncher.getDragLayer().isEventOverPageIndicator(ev);
     }
 
     @Override
@@ -271,10 +257,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     private void updateLightStatusBar(float shift) {
-        // Do not modify status bar on landscape as all apps is not full bleed.
-        if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
-            return;
-        }
         // Use a light status bar (dark icons) if all apps is behind at least half of the status
         // bar. If the status bar is already light due to wallpaper extraction, keep it that way.
         boolean forceLight = shift <= mStatusBarHeight / 2;
@@ -301,15 +283,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mAppsView.setRevealDrawableColor(ColorUtils.setAlphaComponent(color, bgAlpha));
         mAppsView.getContentView().setAlpha(alpha);
         mAppsView.setTranslationY(shiftCurrent);
-
-        if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
-            mWorkspace.setHotseatTranslationAndAlpha(Workspace.Direction.Y, -mShiftRange + shiftCurrent,
+        mWorkspace.setHotseatTranslationAndAlpha(Workspace.Direction.Y, -mShiftRange + shiftCurrent,
                     interpolation);
-        } else {
-            mWorkspace.setHotseatTranslationAndAlpha(Workspace.Direction.Y,
-                    PARALLAX_COEFFICIENT * (-mShiftRange + shiftCurrent),
-                    interpolation);
-        }
 
         if (mIsTranslateWithoutWorkspace) {
             return;
@@ -512,11 +487,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     @Override
     public void onLayoutChange(View v, int left, int top, int right, int bottom,
                                int oldLeft, int oldTop, int oldRight, int oldBottom) {
-        if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
-            mShiftRange = top;
-        } else {
-            mShiftRange = bottom;
-        }
+        mShiftRange = top;
         setProgress(mProgress);
     }
 

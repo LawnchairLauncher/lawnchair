@@ -44,9 +44,6 @@ public class Hotseat extends FrameLayout
     private Launcher mLauncher;
 
     @ViewDebug.ExportedProperty(category = "launcher")
-    private final boolean mHasVerticalHotseat;
-
-    @ViewDebug.ExportedProperty(category = "launcher")
     private int mBackgroundColor;
     @ViewDebug.ExportedProperty(category = "launcher")
     private ColorDrawable mBackground;
@@ -63,7 +60,6 @@ public class Hotseat extends FrameLayout
     public Hotseat(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mLauncher = Launcher.getLauncher(context);
-        mHasVerticalHotseat = mLauncher.getDeviceProfile().isVerticalBarLayout();
         mBackgroundColor = ColorUtils.setAlphaComponent(
                 ContextCompat.getColor(context, R.color.all_apps_container_color), 0);
         mBackground = new ColorDrawable(mBackgroundColor);
@@ -84,16 +80,16 @@ public class Hotseat extends FrameLayout
 
     /* Get the orientation invariant order of the item in the hotseat for persistence. */
     int getOrderInHotseat(int x, int y) {
-        return mHasVerticalHotseat ? (mContent.getCountY() - y - 1) : x;
+        return x;
     }
 
     /* Get the orientation specific coordinates given an invariant order in the hotseat. */
     int getCellXFromOrder(int rank) {
-        return mHasVerticalHotseat ? 0 : rank;
+        return rank;
     }
 
     int getCellYFromOrder(int rank) {
-        return mHasVerticalHotseat ? (mContent.getCountY() - (rank + 1)) : 0;
+        return 0;
     }
 
     @Override
@@ -101,11 +97,7 @@ public class Hotseat extends FrameLayout
         super.onFinishInflate();
         DeviceProfile grid = mLauncher.getDeviceProfile();
         mContent = (CellLayout) findViewById(R.id.layout);
-        if (grid.isLandscape && !grid.isLargeTablet) {
-            mContent.setGridSize(1, grid.inv.numHotseatIcons);
-        } else {
-            mContent.setGridSize(grid.inv.numHotseatIcons, 1);
-        }
+        mContent.setGridSize(grid.inv.numHotseatIcons, 1);
         mContent.setIsHotseat(true);
 
         resetLayout();
@@ -131,32 +123,30 @@ public class Hotseat extends FrameLayout
     }
 
     public void updateColor(ExtractedColors extractedColors, boolean animate) {
-        if (!mHasVerticalHotseat) {
-            int color = extractedColors.getColor(ExtractedColors.HOTSEAT_INDEX, Color.TRANSPARENT);
-            if (mBackgroundColorAnimator != null) {
-                mBackgroundColorAnimator.cancel();
-            }
-            if (!animate) {
-                setBackgroundColor(color);
-            } else {
-                mBackgroundColorAnimator = ValueAnimator.ofInt(mBackgroundColor, color);
-                mBackgroundColorAnimator.setEvaluator(new ArgbEvaluator());
-                mBackgroundColorAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        mBackground.setColor((Integer) animation.getAnimatedValue());
-                    }
-                });
-                mBackgroundColorAnimator.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mBackgroundColorAnimator = null;
-                    }
-                });
-                mBackgroundColorAnimator.start();
-            }
-            mBackgroundColor = color;
+        int color = extractedColors.getColor(ExtractedColors.HOTSEAT_INDEX, Color.TRANSPARENT);
+        if (mBackgroundColorAnimator != null) {
+            mBackgroundColorAnimator.cancel();
         }
+        if (!animate) {
+            setBackgroundColor(color);
+        } else {
+            mBackgroundColorAnimator = ValueAnimator.ofInt(mBackgroundColor, color);
+            mBackgroundColorAnimator.setEvaluator(new ArgbEvaluator());
+            mBackgroundColorAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    mBackground.setColor((Integer) animation.getAnimatedValue());
+                }
+            });
+            mBackgroundColorAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mBackgroundColorAnimator = null;
+                }
+            });
+            mBackgroundColorAnimator.start();
+        }
+        mBackgroundColor = color;
     }
 
     public void setBackgroundTransparent(boolean enable) {

@@ -203,19 +203,10 @@ public class FocusHelper {
         ViewGroup parent = null;
         int[][] matrix = null;
 
-        if (keyCode == KeyEvent.KEYCODE_DPAD_UP &&
-                !profile.isVerticalBarLayout()) {
+        if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
             matrix = FocusLogic.createSparseMatrixWithHotseat(iconLayout, hotseatLayout, profile);
             iconIndex += iconParent.getChildCount();
             parent = iconParent;
-        } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT &&
-                profile.isVerticalBarLayout()) {
-            matrix = FocusLogic.createSparseMatrixWithHotseat(iconLayout, hotseatLayout, profile);
-            iconIndex += iconParent.getChildCount();
-            parent = iconParent;
-        } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT &&
-                profile.isVerticalBarLayout()) {
-            keyCode = KeyEvent.KEYCODE_PAGE_DOWN;
         } else if (isUninstallKeyChord(e)) {
             matrix = FocusLogic.createSparseMatrix(iconLayout);
             if (UninstallDropTarget.supportsDrop(launcher, itemInfo)) {
@@ -330,10 +321,7 @@ public class FocusHelper {
         // KEYCODE_DPAD_DOWN in portrait (KEYCODE_DPAD_RIGHT in landscape) is the only key allowed
         // to take a user to the hotseat. For other dpad navigation, do not use the matrix extended
         // with the hotseat.
-        if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN && !profile.isVerticalBarLayout()) {
-            matrix = FocusLogic.createSparseMatrixWithHotseat(iconLayout, hotseatLayout, profile);
-        } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT &&
-                profile.isVerticalBarLayout()) {
+        if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
             matrix = FocusLogic.createSparseMatrixWithHotseat(iconLayout, hotseatLayout, profile);
         } else if (isUninstallKeyChord(e)) {
             matrix = FocusLogic.createSparseMatrix(iconLayout);

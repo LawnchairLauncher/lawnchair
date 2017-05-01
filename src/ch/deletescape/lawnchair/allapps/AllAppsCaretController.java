@@ -63,8 +63,7 @@ public class AllAppsCaretController {
      */
     public void updateCaret(float containerProgress, float velocity, boolean dragging) {
         // If we're in portrait and the shift is not 0 or 1, adjust the caret based on velocity
-        if (getThreshold() < containerProgress && containerProgress < 1 - getThreshold() &&
-                !mLauncher.useVerticalBarLayout()) {
+        if (getThreshold() < containerProgress && containerProgress < 1 - getThreshold()) {
             mThresholdCrossed = true;
 
             // How fast are we moving as a percentage of the peak velocity?
@@ -104,11 +103,6 @@ public class AllAppsCaretController {
     }
 
     private float getThreshold() {
-        // In landscape, just return the landscape threshold.
-        if (mLauncher.useVerticalBarLayout()) {
-            return CARET_THRESHOLD_LAND;
-        }
-
         // Before the threshold is crossed, it is reported as zero. This makes the caret immediately
         // responsive when a drag begins. After the threshold is crossed, we return the constant
         // value. This means the caret will start its state-based adjustment sooner. That is, we

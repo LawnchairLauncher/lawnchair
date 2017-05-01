@@ -8,7 +8,6 @@ import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.view.Gravity;
@@ -29,7 +28,7 @@ public class AppWidgetResizeFrame extends FrameLayout implements View.OnKeyListe
     private static final Rect sTmpRect = new Rect();
 
     // Represents the cell size on the grid in the two orientations.
-    private static Point[] sCellSize;
+    private static Point sCellSize;
 
     private final Launcher mLauncher;
     private final LauncherAppWidgetHostView mWidgetView;
@@ -361,9 +360,7 @@ public class AppWidgetResizeFrame extends FrameLayout implements View.OnKeyListe
             InvariantDeviceProfile inv = LauncherAppState.getInstance().getInvariantDeviceProfile();
 
             // Initiate cell sizes.
-            sCellSize = new Point[2];
-            sCellSize[0] = inv.landscapeProfile.getCellSize();
-            sCellSize[1] = inv.portraitProfile.getCellSize();
+            sCellSize = inv.profile.getCellSize();
         }
 
         if (rect == null) {
@@ -371,14 +368,10 @@ public class AppWidgetResizeFrame extends FrameLayout implements View.OnKeyListe
         }
         final float density = context.getResources().getDisplayMetrics().density;
 
-        // Compute landscape size
-        int landWidth = (int) ((spanX * sCellSize[0].x) / density);
-        int landHeight = (int) ((spanY * sCellSize[0].y) / density);
-
         // Compute portrait size
-        int portWidth = (int) ((spanX * sCellSize[1].x) / density);
-        int portHeight = (int) ((spanY * sCellSize[1].y) / density);
-        rect.set(portWidth, landHeight, landWidth, portHeight);
+        int portWidth = (int) ((spanX * sCellSize.x) / density);
+        int portHeight = (int) ((spanY * sCellSize.y) / density);
+        rect.set(portWidth, portHeight, portWidth , portHeight);
         return rect;
     }
 

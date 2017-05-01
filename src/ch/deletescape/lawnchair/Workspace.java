@@ -1300,9 +1300,7 @@ public class Workspace extends PagedView
     public void setHotseatTranslationAndAlpha(Direction direction, float translation, float alpha) {
         Property<View, Float> property = direction.viewProperty;
         // Skip the page indicator movement in the vertical bar layout
-        if (direction != Direction.Y || !mLauncher.getDeviceProfile().isVerticalBarLayout()) {
-            property.set(mPageIndicator, translation);
-        }
+        property.set(mPageIndicator, translation);
         property.set(mLauncher.getHotseat(), translation);
         setHotseatAlphaAtIndex(alpha, direction.ordinal());
     }
@@ -1715,7 +1713,7 @@ public class Workspace extends PagedView
 
     float getSpringLoadedTranslationY() {
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        if (grid.isVerticalBarLayout() || getChildCount() == 0) {
+        if (getChildCount() == 0) {
             return 0;
         }
 
@@ -3400,8 +3398,7 @@ public class Workspace extends PagedView
     @Override
     public boolean onEnterScrollArea(int x, int y, int direction) {
         // Ignore the scroll area if we are dragging over the hot seat
-        boolean isPortrait = !mLauncher.getDeviceProfile().isLandscape;
-        if (mLauncher.getHotseat() != null && isPortrait) {
+        if (mLauncher.getHotseat() != null) {
             Rect r = new Rect();
             mLauncher.getHotseat().getHitRect(r);
             if (r.contains(x, y)) {

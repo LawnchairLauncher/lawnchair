@@ -42,7 +42,6 @@ import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -343,10 +342,7 @@ public class Launcher extends Activity
         LauncherAppState app = LauncherAppState.getInstance();
 
         // Load configuration-specific DeviceProfile
-        mDeviceProfile = getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_LANDSCAPE ?
-                app.getInvariantDeviceProfile().landscapeProfile
-                : app.getInvariantDeviceProfile().portraitProfile;
+        mDeviceProfile = app.getInvariantDeviceProfile().profile;
 
         mSharedPrefs = Utilities.getPrefs(this);
         mIsSafeModeEnabled = getPackageManager().isSafeMode();
@@ -3657,10 +3653,6 @@ public class Launcher extends Activity
         bounceAnim.setStartDelay(i * InstallShortcutReceiver.NEW_SHORTCUT_STAGGER_DELAY);
         bounceAnim.setInterpolator(new OvershootInterpolator(BOUNCE_ANIMATION_TENSION));
         return bounceAnim;
-    }
-
-    public boolean useVerticalBarLayout() {
-        return mDeviceProfile.isVerticalBarLayout();
     }
 
 /*    public int getSearchBarHeight() {

@@ -185,7 +185,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mLayoutManager = mAdapter.getLayoutManager();
         mItemDecoration = mAdapter.getItemDecoration();
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && !grid.isVerticalBarLayout()) {
+        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
             mRecyclerViewBottomPadding = 0;
             setPadding(0, 0, 0, 0);
         } else {
@@ -469,29 +469,27 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         DeviceProfile grid = mLauncher.getDeviceProfile();
         if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
-            if (!grid.isVerticalBarLayout()) {
-                MarginLayoutParams mlp = (MarginLayoutParams) mAppsRecyclerView.getLayoutParams();
+            MarginLayoutParams mlp = (MarginLayoutParams) mAppsRecyclerView.getLayoutParams();
 
-                Rect insets = mLauncher.getDragLayer().getInsets();
-                getContentView().setPadding(0, 0, 0, 0);
-                int height = insets.top + grid.hotseatCellHeightPx;
+            Rect insets = mLauncher.getDragLayer().getInsets();
+            getContentView().setPadding(0, 0, 0, 0);
+            int height = insets.top + grid.hotseatCellHeightPx;
 
-                mlp.topMargin = height;
-                mAppsRecyclerView.setLayoutParams(mlp);
+            mlp.topMargin = height;
+            mAppsRecyclerView.setLayoutParams(mlp);
 
-                mSearchContainer.setPadding(
-                        mSearchContainer.getPaddingLeft(),
-                        insets.top + mSearchContainerOffsetTop,
-                        mSearchContainer.getPaddingRight(),
-                        mSearchContainer.getPaddingBottom());
-                lp.height = height;
+            mSearchContainer.setPadding(
+                    mSearchContainer.getPaddingLeft(),
+                    insets.top + mSearchContainerOffsetTop,
+                    mSearchContainer.getPaddingRight(),
+                    mSearchContainer.getPaddingBottom());
+            lp.height = height;
 
-                View navBarBg = findViewById(R.id.nav_bar_bg);
-                ViewGroup.LayoutParams params = navBarBg.getLayoutParams();
-                params.height = insets.bottom;
-                navBarBg.setLayoutParams(params);
-                navBarBg.setVisibility(View.VISIBLE);
-            }
+            View navBarBg = findViewById(R.id.nav_bar_bg);
+            ViewGroup.LayoutParams params = navBarBg.getLayoutParams();
+            params.height = insets.bottom;
+            navBarBg.setLayoutParams(params);
+            navBarBg.setVisibility(View.VISIBLE);
         }
         mSearchContainer.setLayoutParams(lp);
     }
