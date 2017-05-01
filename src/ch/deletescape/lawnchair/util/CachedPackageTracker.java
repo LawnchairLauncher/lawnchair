@@ -130,7 +130,7 @@ public abstract class CachedPackageTracker implements OnAppsChangedCallbackCompa
 
                 packageSet.add(packageName);
                 mPrefs.edit().putStringSet(prefKey, packageSet).apply();
-                onLauncherAppsAdded(Arrays.asList(
+                onLauncherAppsAdded(Collections.singletonList(
                         new LauncherActivityInstallInfo(activityInfo, System.currentTimeMillis())),
                         user, userAppsExisted);
             }

@@ -51,9 +51,7 @@ public class GridOccupancy {
 
     public void copyTo(GridOccupancy dest) {
         for (int i = 0; i < mCountX; i++) {
-            for (int j = 0; j < mCountY; j++) {
-                dest.cells[i][j] = cells[i][j];
-            }
+            System.arraycopy(cells[i], 0, dest.cells[i], 0, mCountY);
         }
     }
 
