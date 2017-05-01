@@ -128,9 +128,7 @@ public abstract class BaseContainerView extends FrameLayout
                 mContainerPaddingLeft, mContainerPaddingTop, mContainerPaddingRight,
                 mContainerPaddingBottom);
         mRevealView.setBackground(mRevealDrawable);
-        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && this instanceof AllAppsContainerView) {
-            // Skip updating the content background
-        } else {
+        if (!FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP || !(this instanceof AllAppsContainerView)) {
             mContent.setBackground(mRevealDrawable);
         }
     }
