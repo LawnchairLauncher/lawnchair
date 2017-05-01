@@ -547,6 +547,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         private float mScale = 1f;
         private float mColorMultiplier = 1f;
         private float mStrokeWidth;
+        private int mStrokeAlpha = MAX_BG_OPACITY;
         private View mInvalidateDelegate;
 
         public int previewSize;
@@ -572,6 +573,21 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         private static final int SHADOW_OPACITY = 40;
 
         ValueAnimator mScaleAnimator;
+        ObjectAnimator mStrokeAlphaAnimator;
+
+        private static final Property<PreviewBackground, Integer> STROKE_ALPHA =
+                new Property<PreviewBackground, Integer>(Integer.class, "strokeAlpha") {
+                    @Override
+                    public Integer get(PreviewBackground previewBackground) {
+                        return previewBackground.mStrokeAlpha;
+                    }
+
+                    @Override
+                    public void set(PreviewBackground previewBackground, Integer alpha) {
+                        previewBackground.mStrokeAlpha = alpha;
+                        previewBackground.invalidate();
+                    }
+                };
 
         public void setup(DisplayMetrics dm, DeviceProfile grid, View invalidateDelegate,
                    int availableSpace, int topPadding) {
@@ -681,8 +697,24 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             canvas.restoreToCount(saveCount);
         }
 
+        public void animateBackgroundStroke() {
+            if (mStrokeAlphaAnimator != null) {
+                mStrokeAlphaAnimator.cancel();
+            }
+            mStrokeAlphaAnimator = ObjectAnimator
+                    .ofArgb(this, STROKE_ALPHA, MAX_BG_OPACITY / 2, MAX_BG_OPACITY)
+                    .setDuration(100);
+            mStrokeAlphaAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mStrokeAlphaAnimator = null;
+                }
+            });
+            mStrokeAlphaAnimator.start();
+        }
+
         public void drawBackgroundStroke(Canvas canvas) {
-            mPaint.setColor(Color.argb(255, BG_INTENSITY, BG_INTENSITY, BG_INTENSITY));
+            mPaint.setColor(Color.argb(mStrokeAlpha, BG_INTENSITY, BG_INTENSITY, BG_INTENSITY));
             mPaint.setStyle(Paint.Style.STROKE);
             mPaint.setStrokeWidth(mStrokeWidth);
             drawCircle(canvas, 1 /* deltaRadius */);
