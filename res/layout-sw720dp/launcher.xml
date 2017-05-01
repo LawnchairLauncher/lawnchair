@@ -37,7 +37,7 @@
             android:id="@+id/workspace"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            launcher:pageIndicator="@id/page_indicator"></ch.deletescape.lawnchair.Workspace>
+            launcher:pageIndicator="@id/page_indicator" />
 
         <!-- DO NOT CHANGE THE ID -->
         <include

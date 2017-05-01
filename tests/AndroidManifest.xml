@@ -27,5 +27,5 @@
         android:functionalTest="false"
         android:handleProfiling="false"
         android:name="android.support.test.runner.AndroidJUnitRunner"
-        android:targetPackage="ch.deletescape.lawnchair"></instrumentation>
+        android:targetPackage="ch.deletescape.lawnchair" />
 </manifest>
