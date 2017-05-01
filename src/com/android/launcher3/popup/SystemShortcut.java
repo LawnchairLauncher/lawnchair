@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.InfoDropTarget;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
@@ -60,7 +61,7 @@ public abstract class SystemShortcut {
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    PopupContainerWithArrow.getOpen(launcher).close(true);
+                    AbstractFloatingView.closeAllOpenViews(launcher);
                     WidgetsBottomSheet widgetsBottomSheet =
                             (WidgetsBottomSheet) launcher.getLayoutInflater().inflate(
                                     R.layout.widgets_bottom_sheet, launcher.getDragLayer(), false);
