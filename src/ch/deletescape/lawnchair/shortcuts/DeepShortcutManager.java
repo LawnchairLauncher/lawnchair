@@ -214,7 +214,7 @@ public class DeepShortcutManager {
             }
             return shortcutInfoCompats;
         } else {
-            return Collections.EMPTY_LIST;
+            return ShortcutsCompat.query(activity);
         }
     }
 
