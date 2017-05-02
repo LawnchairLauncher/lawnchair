@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.RippleDrawable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -83,11 +84,21 @@ public class NotificationMainView extends FrameLayout implements SwipeHelper.Cal
     public void applyNotificationInfo(NotificationInfo mainNotification, View iconView,
            boolean animate) {
         mNotificationInfo = mainNotification;
-        mTitleView.setText(mNotificationInfo.title);
-        mTextView.setText(mNotificationInfo.text);
+        CharSequence title = mNotificationInfo.title;
+        CharSequence text = mNotificationInfo.text;
+        if (!TextUtils.isEmpty(title) && !TextUtils.isEmpty(text)) {
+            mTitleView.setText(title);
+            mTextView.setText(text);
+        } else {
+            mTitleView.setMaxLines(2);
+            mTitleView.setText(TextUtils.isEmpty(title) ? text : title);
+            mTextView.setVisibility(GONE);
+        }
         iconView.setBackground(mNotificationInfo.getIconForBackground(getContext(),
                 mBackgroundColor));
-        setOnClickListener(mNotificationInfo);
+        if (mNotificationInfo.intent != null) {
+            setOnClickListener(mNotificationInfo);
+        }
         setTranslationX(0);
         // Add a dummy ItemInfo so that logging populates the correct container and item types
         // instead of DEFAULT_CONTAINERTYPE and DEFAULT_ITEMTYPE, respectively.
