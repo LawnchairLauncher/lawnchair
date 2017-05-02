@@ -16,6 +16,7 @@
 <ch.deletescape.lawnchair.shortcuts.DeepShortcutView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/bg_pill_width"
     android:layout_height="@dimen/bg_pill_height"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:elevation="@dimen/deep_shortcuts_elevation"
     android:background="@drawable/bg_white_pill">
 
@@ -25,7 +26,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:focusable="true"
-        android:background="@drawable/bg_pill_focused" />
+        android:background="@drawable/bg_pill_focused"
+        app:iconDisplay="deep_shortcut"/>
 
     <View
         android:id="@+id/deep_shortcut_icon"
