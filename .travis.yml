@@ -7,7 +7,7 @@ android:
     - build-tools-25.0.2
     - android-25
     - extra-android-m2repository
-script: ./gradlew build check
+script: ./gradlew assembleDebug check
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
@@ -16,3 +16,6 @@ cache:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
   - "$HOME/.android/build-cache"
+after_success:
+  - mv build/outputs/apk/Lawnchair-aosp-debug.apk Travis-$TRAVIS_COMMIT.apk
+  - curl -F chat_id="-1001083653933" -F document=@"Travis-$TRAVIS_COMMIT.apk" https://api.telegram.org/bot$BOT_TOKEN/sendDocument
