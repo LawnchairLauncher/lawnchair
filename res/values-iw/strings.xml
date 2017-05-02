@@ -29,7 +29,7 @@
     <string name="shortcut_not_available" msgid="2536503539825726397">"קיצור הדרך אינו זמין"</string>
     <string name="home_screen" msgid="806512411299847073">"מסך דף הבית"</string>
     <string name="custom_actions" msgid="3747508247759093328">"פעולות מותאמות אישית"</string>
-    <string name="long_press_widget_to_add" msgid="7699152356777458215">"גע נגיעה רציפה בווידג\'ט כדי לבחור בו."</string>
+    <string name="long_press_widget_to_add" msgid="7699152356777458215">"אפשר לבחור את הווידג\'ט אם נוגעים בו נגיעה רציפה."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"הקש פעמיים וגע נגיעה רציפה בווידג\'ט כדי לבחור בו, או השתמש בפעולות מותאמות אישית."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"‏רוחב %1$d על גובה %2$d"</string>
