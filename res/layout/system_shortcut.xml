@@ -30,6 +30,7 @@
         android:paddingEnd="@dimen/popup_padding_end"
         android:textSize="14sp"
         android:fontFamily="sans-serif"
+        launcher:iconDisplay="shortcut_popup"
         launcher:layoutHorizontal="true" />
 
     <View
