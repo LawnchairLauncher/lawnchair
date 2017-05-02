@@ -82,6 +82,10 @@
   *;
 }
 
+-keep class com.android.launcher3.graphics.ShadowDrawable {
+  public <init>(...);
+}
+
 # Proguard will strip methods required for talkback to properly scroll to
 # next row when focus is on the last item of last row when using a RecyclerView
 # Keep optimized and shrunk proguard to prevent issues like this when using

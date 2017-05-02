@@ -21,6 +21,7 @@
     android:orientation="vertical"
     android:layout_height="match_parent"
     android:layout_gravity="left"
+    android:visibility="invisible"
     android:focusable="false"
     android:paddingTop="@dimen/vert_drop_target_vertical_gap" >
 
