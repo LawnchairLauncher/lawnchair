@@ -40,12 +40,10 @@ public class InfoDropTarget extends UninstallDropTarget {
     }
 
     @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
+    protected void setupUi() {
         // Get the hover color
         mHoverColor = Themes.getColorAccent(getContext());
-
-        setDrawable(R.drawable.ic_info_launcher);
+        setDrawable(R.drawable.ic_info_shadow);
     }
 
     @Override
