@@ -107,6 +107,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
 
     protected Animator mOpenCloseAnimator;
     private boolean mDeferContainerRemoval;
+    private AnimatorSet mReduceHeightAnimatorSet;
 
     public PopupContainerWithArrow(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -584,7 +585,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                     R.integer.config_removeNotificationViewDuration);
             final int spacing = getResources().getDimensionPixelSize(R.dimen.popup_items_spacing);
             removeNotification.play(reduceNotificationViewHeight(
-                    mNotificationItemView.getHeight() + spacing, duration));
+                    mNotificationItemView.getHeightMinusFooter() + spacing, duration));
             final View removeMarginView = mIsAboveIcon ? getItemViewAt(getItemCount() - 2)
                     : mNotificationItemView;
             if (removeMarginView != null) {
@@ -642,9 +643,12 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
      * Animates the height of the notification item and the translationY of other items accordingly.
      */
     public Animator reduceNotificationViewHeight(int heightToRemove, int duration) {
+        if (mReduceHeightAnimatorSet != null) {
+            mReduceHeightAnimatorSet.cancel();
+        }
         final int translateYBy = mIsAboveIcon ? heightToRemove : -heightToRemove;
-        AnimatorSet animatorSet = LauncherAnimUtils.createAnimatorSet();
-        animatorSet.play(mNotificationItemView.animateHeightRemoval(heightToRemove));
+        mReduceHeightAnimatorSet = LauncherAnimUtils.createAnimatorSet();
+        mReduceHeightAnimatorSet.play(mNotificationItemView.animateHeightRemoval(heightToRemove));
         PropertyResetListener<View, Float> resetTranslationYListener
                 = new PropertyResetListener<>(TRANSLATION_Y, 0f);
         for (int i = 0; i < getItemCount(); i++) {
@@ -656,20 +660,21 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             ValueAnimator translateItem = ObjectAnimator.ofFloat(itemView, TRANSLATION_Y,
                     itemView.getTranslationY() + translateYBy).setDuration(duration);
             translateItem.addListener(resetTranslationYListener);
-            animatorSet.play(translateItem);
+            mReduceHeightAnimatorSet.play(translateItem);
         }
-        if (mIsAboveIcon) {
-            // All the items, including the notification item, translated down, but the
-            // container itself did not. This means the items would jump back to their
-            // original translation unless we update the container's translationY here.
-            animatorSet.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
+        mReduceHeightAnimatorSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (mIsAboveIcon) {
+                    // All the items, including the notification item, translated down, but the
+                    // container itself did not. This means the items would jump back to their
+                    // original translation unless we update the container's translationY here.
                     setTranslationY(getTranslationY() + translateYBy);
                 }
-            });
-        }
-        return animatorSet;
+                mReduceHeightAnimatorSet = null;
+            }
+        });
+        return mReduceHeightAnimatorSet;
     }
 
     @Override
