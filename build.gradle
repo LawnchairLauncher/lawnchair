@@ -20,7 +20,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 25
         if(System.getenv("TRAVIS") == "true"){
-            versionCode = System.getenv("TRAVIS_BUILD_NUMBER")
+            versionCode = Integer.valueOf(System.getenv("TRAVIS_BUILD_NUMBER"))
             versionName = "Travis-" + System.getenv("TRAVIS_COMMIT")
         } else {
             versionCode 1
