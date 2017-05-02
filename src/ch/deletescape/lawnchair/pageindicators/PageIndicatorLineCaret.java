@@ -22,6 +22,7 @@ import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
+import ch.deletescape.lawnchair.dynamicui.ExtractionUtils;
 
 /**
  * A PageIndicator that briefly shows a fraction of a line when moving between pages.
@@ -227,8 +228,7 @@ public class PageIndicatorLineCaret extends PageIndicator {
             } else if (color == Color.WHITE) {
                 mActiveAlpha = WHITE_ALPHA;
             } else {
-                Log.e(TAG, "Setting workspace page indicators to an unsupported color: #"
-                        + Integer.toHexString(color));
+                mActiveAlpha = 178;
             }
             mLinePaint.setColor(color);
             mLinePaint.setAlpha(originalLineAlpha);
