@@ -76,6 +76,11 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
         mSwipeHelper.setDisableHardwareLayers(true);
     }
 
+    public int getHeightMinusFooter() {
+        int footerHeight = mFooter.getParent() == null ? 0 : mFooter.getHeight();
+        return getHeight() - footerHeight;
+    }
+
     public Animator animateHeightRemoval(int heightToRemove) {
         final int newHeight = getHeight() - heightToRemove;
         return new PillHeightRevealOutlineProvider(mPillRect,
