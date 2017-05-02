@@ -232,8 +232,8 @@ public class NotificationListener extends NotificationListenerService {
         boolean isGroupHeader = (notification.flags & Notification.FLAG_GROUP_SUMMARY) != 0;
         CharSequence title = notification.extras.getCharSequence(Notification.EXTRA_TITLE);
         CharSequence text = notification.extras.getCharSequence(Notification.EXTRA_TEXT);
-        boolean missingTitleOrText = TextUtils.isEmpty(title) || TextUtils.isEmpty(text);
-        return (notification.contentIntent == null || isGroupHeader || missingTitleOrText);
+        boolean missingTitleAndText = TextUtils.isEmpty(title) && TextUtils.isEmpty(text);
+        return (isGroupHeader || missingTitleAndText);
     }
 
     public interface NotificationsChangedListener {
