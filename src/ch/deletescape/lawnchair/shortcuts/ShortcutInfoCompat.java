@@ -21,9 +21,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 
 import ch.deletescape.lawnchair.ItemInfo;
+import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.compat.UserHandleCompat;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
@@ -37,11 +39,35 @@ import ch.deletescape.lawnchair.compat.UserManagerCompat;
 public class ShortcutInfoCompat {
     private static final String INTENT_CATEGORY = "ch.deletescape.lawnchair.DEEP_SHORTCUT";
     public static final String EXTRA_SHORTCUT_ID = "shortcut_id";
+    private String packageName;
+    private String id;
+    private CharSequence shortLabel;
+    private CharSequence longLabel;
+    private ComponentName activity;
+    private UserHandleCompat userHandle;
+    private int rank;
+    private boolean enabled;
+    private CharSequence disabledMessage;
+    private Drawable icon;
 
     private ShortcutInfo mShortcutInfo;
 
     public ShortcutInfoCompat(ShortcutInfo shortcutInfo) {
         mShortcutInfo = shortcutInfo;
+    }
+
+    public ShortcutInfoCompat(String packageName, String id, CharSequence shortLabel, CharSequence longLabel,
+                              ComponentName activity, UserHandleCompat userHandle, int rank, boolean enabled, CharSequence disabledMessage, Drawable icon){
+        this.packageName = packageName;
+        this.id = id;
+        this.shortLabel = shortLabel;
+        this.longLabel = longLabel;
+        this.activity = activity;
+        this.userHandle = userHandle;
+        this.rank = rank;
+        this.enabled = enabled;
+        this.disabledMessage = disabledMessage;
+        this.icon = icon;
     }
 
     @TargetApi(Build.VERSION_CODES.N)
@@ -62,64 +88,128 @@ public class ShortcutInfoCompat {
     }
 
     public String getPackage() {
-        return mShortcutInfo.getPackage();
+        if(Utilities.isNycOrAbove()){
+            return mShortcutInfo.getPackage();
+        } else {
+            return packageName;
+        }
     }
 
     public String getId() {
-        return mShortcutInfo.getId();
+        if(Utilities.isNycOrAbove()){
+            return mShortcutInfo.getId();
+        } else {
+            return id;
+        }
     }
 
     public CharSequence getShortLabel() {
-        return mShortcutInfo.getShortLabel();
+        if(Utilities.isNycOrAbove()){
+            return mShortcutInfo.getShortLabel();
+        } else {
+            return shortLabel;
+        }
     }
 
     public CharSequence getLongLabel() {
-        return mShortcutInfo.getLongLabel();
+        if(Utilities.isNycOrAbove()){
+            return mShortcutInfo.getLongLabel();
+        } else {
+            return longLabel;
+        }
     }
 
     public long getLastChangedTimestamp() {
-        return mShortcutInfo.getLastChangedTimestamp();
+        if(Utilities.isNycOrAbove()){
+            return mShortcutInfo.getLastChangedTimestamp();
+        } else {
+            return 0;
+        }
     }
 
     public ComponentName getActivity() {
-        return mShortcutInfo.getActivity();
+        if(Utilities.isNycOrAbove()){
+            return mShortcutInfo.getActivity();
+        } else {
+            return activity;
+        }
     }
 
     public UserHandleCompat getUserHandle() {
-        return UserHandleCompat.fromUser(mShortcutInfo.getUserHandle());
+        if(Utilities.isNycOrAbove()){
+            return UserHandleCompat.fromUser(mShortcutInfo.getUserHandle());
+        } else {
+            return userHandle;
+        }
     }
 
     public boolean hasKeyFieldsOnly() {
-        return mShortcutInfo.hasKeyFieldsOnly();
+        if(Utilities.isNycOrAbove()){
+            return mShortcutInfo.hasKeyFieldsOnly();
+        } else {
+            return false;
+        }
     }
 
     public boolean isPinned() {
-        return mShortcutInfo.isPinned();
+        if(Utilities.isNycOrAbove()){
+            return mShortcutInfo.isPinned();
+        } else {
+            return false;
+        }
     }
 
     public boolean isDeclaredInManifest() {
-        return mShortcutInfo.isDeclaredInManifest();
+        if(Utilities.isNycOrAbove()) {
+            return mShortcutInfo.isDeclaredInManifest();
+        } else {
+            return true;
+        }
     }
 
     public boolean isEnabled() {
-        return mShortcutInfo.isEnabled();
+        if(Utilities.isNycOrAbove()){
+            return mShortcutInfo.isEnabled();
+        } else {
+            return enabled;
+        }
     }
 
     public boolean isDynamic() {
-        return mShortcutInfo.isDynamic();
+        if(Utilities.isNycOrAbove()) {
+            return mShortcutInfo.isDynamic();
+        } else {
+            return false;
+        }
     }
 
     public int getRank() {
-        return mShortcutInfo.getRank();
+        if(Utilities.isNycOrAbove()){
+            return mShortcutInfo.getRank();
+        } else {
+            return rank;
+        }
     }
 
     public CharSequence getDisabledMessage() {
-        return mShortcutInfo.getDisabledMessage();
+        if(Utilities.isNycOrAbove()){
+            return mShortcutInfo.getDisabledMessage();
+        } else {
+            return disabledMessage;
+        }
+    }
+
+    public Drawable getIcon(){
+        return icon;
     }
 
     @Override
     public String toString() {
-        return mShortcutInfo.toString();
+        if(Utilities.isNycOrAbove()){
+            return mShortcutInfo.toString();
+        } else {
+            return super.toString();
+        }
     }
 
     public LauncherActivityInfoCompat getActivityInfo(Context context) {

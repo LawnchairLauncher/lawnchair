@@ -155,6 +155,8 @@ public class DeepShortcutManager {
                 Log.e(TAG, "Failed to get shortcut icon", e);
                 mWasLastCallSuccess = false;
             }
+        } else {
+            return shortcutInfo.getIcon();
         }
         return null;
     }
@@ -214,7 +216,14 @@ public class DeepShortcutManager {
             }
             return shortcutInfoCompats;
         } else {
-            return ShortcutsCompat.query(activity);
+            switch (flags){
+                case ShortcutQuery.FLAG_MATCH_PINNED:
+                case ShortcutQuery.FLAG_MATCH_DYNAMIC:
+                    return Collections.EMPTY_LIST;
+                default:
+                    return Collections.EMPTY_LIST;
+                    //return ShortcutsCompat.query(activity, user);
+            }
         }
     }
 
@@ -226,6 +235,6 @@ public class DeepShortcutManager {
                 Log.e(TAG, "Failed to make shortcut manager call", e);
             }
         }
-        return false;
+        return true;
     }
 }
