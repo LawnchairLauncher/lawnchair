@@ -18,7 +18,4 @@ cache:
   - "$HOME/.android/build-cache"
 after_success:
   - mv build/outputs/apk/Lawnchair-aosp-debug.apk Travis-$TRAVIS_COMMIT.apk
-  - curl -i -X GET https://api.telegram.org/bot$BOT_TOKEN/sendMessage?chat_id=-1001083653933&text=Build%20$TRAVIS_BUILD_NUMBER%20finished
   - curl -F chat_id="-1001083653933" -F document=@"Travis-$TRAVIS_COMMIT.apk" https://api.telegram.org/bot$BOT_TOKEN/sendDocument
-after_failure:
-  - curl -i -X GET https://api.telegram.org/bot$BOT_TOKEN/sendMessage?chat_id=-1001083653933&text=Build%20$TRAVIS_BUILD_NUMBER%20failed
