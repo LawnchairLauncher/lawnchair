@@ -125,6 +125,7 @@ public class LauncherProvider extends ContentProvider {
         // always available in the main process.
         FileLog.setDir(getContext().getApplicationContext().getFilesDir());
         IconShapeOverride.apply(getContext());
+        SessionCommitReceiver.applyDefaultUserPrefs(getContext());
         return true;
     }
 
