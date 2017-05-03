@@ -1,7 +1,9 @@
 package com.android.launcher3.popup;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.view.View;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -80,7 +82,9 @@ public abstract class SystemShortcut {
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    InfoDropTarget.startDetailsActivityForInfo(itemInfo, launcher, null);
+                    Rect sourceBounds = launcher.getViewBounds(view);
+                    Bundle opts = launcher.getActivityLaunchOptions(view);
+                    InfoDropTarget.startDetailsActivityForInfo(itemInfo, launcher, null, sourceBounds, opts);
                 }
             };
         }
