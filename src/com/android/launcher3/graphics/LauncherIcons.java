@@ -265,7 +265,7 @@ public class LauncherIcons {
             final int top = (textureHeight-height) / 2;
 
             sOldBounds.set(icon.getBounds());
-            if (icon instanceof AdaptiveIconDrawable) {
+            if (Utilities.isAtLeastO() && icon instanceof AdaptiveIconDrawable) {
                 int offset = Math.min(left, top);
                 int size = Math.max(width, height);
                 icon.setBounds(offset, offset, offset + size, offset + size);
