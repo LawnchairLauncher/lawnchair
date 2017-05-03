@@ -133,10 +133,19 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
             }
         }
 
-        // If there is only one widget, we want to center it instead of left-align.
-        WidgetsBottomSheet.LayoutParams params = (WidgetsBottomSheet.LayoutParams)
-                widgetRow.getLayoutParams();
-        params.gravity = widgets.size() == 1 ? Gravity.CENTER_HORIZONTAL : Gravity.START;
+        if (widgets.size() == 1) {
+            // If there is only one widget, we want to center it instead of left-align.
+            WidgetsBottomSheet.LayoutParams params = (WidgetsBottomSheet.LayoutParams)
+                    widgetRow.getLayoutParams();
+            params.gravity = Gravity.CENTER_HORIZONTAL;
+        } else {
+            // Otherwise, add an empty view to the start as padding (but still scroll edge to edge).
+            View leftPaddingView = LayoutInflater.from(getContext()).inflate(
+                    R.layout.widget_list_divider, widgetRow, false);
+            leftPaddingView.getLayoutParams().width = Utilities.pxFromDp(
+                    16, getResources().getDisplayMetrics());
+            widgetCells.addView(leftPaddingView, 0);
+        }
     }
 
     private void addDivider(ViewGroup parent) {
