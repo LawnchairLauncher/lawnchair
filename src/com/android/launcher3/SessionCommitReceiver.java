@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -23,55 +24,56 @@ import android.content.SharedPreferences;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.compat.UserManagerCompat;
 
 import java.util.List;
 
 /**
  * BroadcastReceiver to handle session commit intent.
  */
+@TargetApi(Build.VERSION_CODES.O)
 public class SessionCommitReceiver extends BroadcastReceiver {
 
-    private static final long SESSION_IGNORE_DURATION = 3 * 60 * 60 * 1000; // 3 hours
+    private static final String TAG = "SessionCommitReceiver";
+
+    // The content provider for the add to home screen setting. It should be of the format:
+    // <package name>.addtohomescreen
+    private static final String MARKER_PROVIDER_PREFIX = ".addtohomescreen";
 
     // Preference key for automatically adding icon to homescreen.
     public static final String ADD_ICON_PREFERENCE_KEY = "pref_add_icon_to_home";
-
-    private static final String KEY_FIRST_TIME = "first_session_broadcast_time";
+    public static final String ADD_ICON_PREFERENCE_INITIALIZED_KEY =
+            "pref_add_icon_to_home_initialized";
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (!isEnabled(context)) {
+        if (!isEnabled(context) || !Utilities.isAtLeastO()) {
             // User has decided to not add icons on homescreen.
             return;
         }
 
         SessionInfo info = intent.getParcelableExtra(PackageInstaller.EXTRA_SESSION);
         UserHandle user = intent.getParcelableExtra(Intent.EXTRA_USER);
-        // TODO: Verify install reason
-        if (TextUtils.isEmpty(info.getAppPackageName())) {
+
+        if (TextUtils.isEmpty(info.getAppPackageName()) ||
+                info.getInstallReason() != PackageManager.INSTALL_REASON_USER) {
             return;
         }
 
         if (!Process.myUserHandle().equals(user)) {
             // Managed profile is handled using ManagedProfileHeuristic
-            return;
-        }
-
-        // STOPSHIP: Remove this workaround when we start getting proper install reason
-        SharedPreferences prefs = context
-                .getSharedPreferences(LauncherFiles.DEVICE_PREFERENCES_KEY, 0);
-        long now = System.currentTimeMillis();
-        long firstTime = prefs.getLong(KEY_FIRST_TIME, now);
-        prefs.edit().putLong(KEY_FIRST_TIME, firstTime).apply();
-        if ((now - firstTime) < SESSION_IGNORE_DURATION) {
-            Log.d("SessionCommitReceiver", "Temporarily ignoring session broadcast");
             return;
         }
 
@@ -86,5 +88,69 @@ public class SessionCommitReceiver extends BroadcastReceiver {
 
     public static boolean isEnabled(Context context) {
         return Utilities.getPrefs(context).getBoolean(ADD_ICON_PREFERENCE_KEY, true);
+    }
+
+    public static void applyDefaultUserPrefs(final Context context) {
+        if (!Utilities.isAtLeastO()) {
+            return;
+        }
+        SharedPreferences prefs = Utilities.getPrefs(context);
+        if (prefs.getAll().isEmpty()) {
+            // This logic assumes that the code is the first thing that is executed (before any
+            // shared preference is written).
+            // TODO: Move this logic to DB upgrade once we have proper support for db downgrade
+            // If it is a fresh start, just apply the default value. We use prefs.isEmpty() to infer
+            // a fresh start as put preferences always contain some values corresponding to current
+            // grid.
+            prefs.edit().putBoolean(ADD_ICON_PREFERENCE_KEY, true).apply();
+        } else if (!prefs.contains(ADD_ICON_PREFERENCE_INITIALIZED_KEY)) {
+            new PrefInitTask(context).executeOnExecutor(Utilities.THREAD_POOL_EXECUTOR);
+        }
+    }
+
+    private static class PrefInitTask extends AsyncTask<Void, Void, Void> {
+        private final Context mContext;
+
+        PrefInitTask(Context context) {
+            mContext = context;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            boolean addIconToHomeScreenEnabled = readValueFromMarketApp();
+            Utilities.getPrefs(mContext).edit()
+                    .putBoolean(ADD_ICON_PREFERENCE_KEY, addIconToHomeScreenEnabled)
+                    .putBoolean(ADD_ICON_PREFERENCE_INITIALIZED_KEY, true)
+                    .apply();
+            return null;
+        }
+
+        public boolean readValueFromMarketApp() {
+            // Get the marget package
+            ResolveInfo ri = mContext.getPackageManager().resolveActivity(
+                    new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_APP_MARKET),
+                    PackageManager.MATCH_DEFAULT_ONLY | PackageManager.MATCH_SYSTEM_ONLY);
+            if (ri == null) {
+                return true;
+            }
+
+            Cursor c = null;
+            try {
+                c = mContext.getContentResolver().query(
+                        Uri.parse("content://" + ri.activityInfo.packageName
+                                + MARKER_PROVIDER_PREFIX),
+                        null, null, null, null);
+                if (c.moveToNext()) {
+                    return c.getInt(c.getColumnIndexOrThrow(Settings.NameValueTable.VALUE)) != 0;
+                }
+            } catch (Exception e) {
+                Log.d(TAG, "Error reading add to homescreen preference", e);
+            } finally {
+                if (c != null) {
+                    c.close();
+                }
+            }
+            return true;
+        }
     }
 }
