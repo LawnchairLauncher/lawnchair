@@ -21,6 +21,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Process;
 
+import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.util.ContentWriter;
 
 /**
@@ -94,6 +95,11 @@ public class LauncherAppWidgetInfo extends ItemInfo {
      * Optional extras sent during widget bind. See {@link #FLAG_DIRECT_CONFIG}.
      */
     public Intent bindOptions;
+
+    /**
+     * Nonnull for pending widgets. We use this to get the icon and title for the widget.
+     */
+    public PackageItemInfo pendingItemInfo;
 
     private boolean mHasNotifiedInitialWidgetSizeChanged;
 
