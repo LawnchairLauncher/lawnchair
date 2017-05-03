@@ -28,6 +28,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
@@ -644,5 +645,29 @@ public final class Utilities {
         HashSet<T> hashSet = new HashSet<>(1);
         hashSet.add(elem);
         return hashSet;
+    }
+
+    /**
+     * @return creates a new alpha mask bitmap out of an existing bitmap
+     */
+    public static Bitmap convertToAlphaMask(Bitmap b, float applyAlpha) {
+        Bitmap a = Bitmap.createBitmap(b.getWidth(), b.getHeight(), Bitmap.Config.ALPHA_8);
+        Canvas c = new Canvas(a);
+        Paint paint = new Paint();
+        paint.setAlpha((int) (255f * applyAlpha));
+        c.drawBitmap(b, 0f, 0f, paint);
+        return a;
+    }
+
+    /**
+     * @return a new white 1x1 bitmap with ALPHA_8
+     */
+    public static Bitmap createOnePixBitmap() {
+        Bitmap a = Bitmap.createBitmap(1, 1, Bitmap.Config.ALPHA_8);
+        Canvas c = new Canvas(a);
+        Paint paint = new Paint();
+        paint.setColor(Color.WHITE);
+        c.drawPaint(paint);
+        return a;
     }
 }

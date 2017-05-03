@@ -22,6 +22,10 @@ import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.dynamicui.ExtractedColors;
+import com.android.launcher3.graphics.RadialGradientView;
+import com.android.launcher3.graphics.ScrimView;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.Themes;
@@ -91,6 +95,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     // Used in discovery bounce animation to provide the transition without workspace changing.
     private boolean mIsTranslateWithoutWorkspace = false;
     private AnimatorSet mDiscoBounceAnimation;
+    private RadialGradientView mGradientView;
+    private ScrimView mScrimView;
 
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
@@ -247,7 +253,9 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             if (!mLauncher.isAllAppsVisible()) {
                 mLauncher.tryAndUpdatePredictedApps();
                 mAppsView.setVisibility(View.VISIBLE);
-                mAppsView.setRevealDrawableColor(mHotseatBackgroundColor);
+                if (!FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
+                    mAppsView.setRevealDrawableColor(mHotseatBackgroundColor);
+                }
             }
         }
     }
@@ -261,6 +269,36 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         // bar. If the status bar is already light due to wallpaper extraction, keep it that way.
         boolean forceLight = shift <= mStatusBarHeight / 2;
         mLauncher.activateLightSystemBars(forceLight, true /* statusBar */, true /* navBar */);
+    }
+
+    private void updateAllAppsBg(float progress) {
+        // gradient
+        if (mGradientView == null) {
+            mGradientView = (RadialGradientView) mLauncher.findViewById(R.id.gradient_bg);
+            mGradientView.setVisibility(View.VISIBLE);
+            onExtractedColorsChanged();
+        }
+        mGradientView.setProgress(progress);
+
+        // scrim
+        if (mScrimView == null) {
+            mScrimView = (ScrimView) mLauncher.findViewById(R.id.scrim_bg);
+            mScrimView.setVisibility(View.VISIBLE);
+        }
+        mScrimView.setProgress(progress);
+    }
+
+    public void onExtractedColorsChanged() {
+        if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
+            if (mGradientView != null) {
+                int color1 = mLauncher.getExtractedColors()
+                        .getColor(ExtractedColors.ALLAPPS_GRADIENT_MAIN_INDEX);
+                int color2 = mLauncher.getExtractedColors()
+                        .getColor(ExtractedColors.ALLAPPS_GRADIENT_SECONDARY_INDEX);
+                mGradientView.onExtractedColorsChanged(color1, color2);
+                mGradientView.requestLayout();
+            }
+        }
     }
 
     /**
@@ -280,7 +318,12 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         int bgAlpha = Color.alpha((int) mEvaluator.evaluate(alpha,
                 mHotseatBackgroundColor, mAllAppsBackgroundColor));
 
-        mAppsView.setRevealDrawableColor(ColorUtils.setAlphaComponent(color, bgAlpha));
+        if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
+            updateAllAppsBg(alpha);
+        } else {
+            mAppsView.setRevealDrawableColor(ColorUtils.setAlphaComponent(color, bgAlpha));
+        }
+
         mAppsView.getContentView().setAlpha(alpha);
         mAppsView.setTranslationY(shiftCurrent);
 

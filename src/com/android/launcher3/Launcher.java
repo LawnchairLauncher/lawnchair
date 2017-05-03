@@ -466,7 +466,9 @@ public class Launcher extends BaseActivity
     @Override
     public void onExtractedColorsChanged() {
         loadExtractedColorsAndColorItems();
-
+        if (mAllAppsController != null) {
+            mAllAppsController.onExtractedColorsChanged();
+        }
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onExtractedColorsChanged();
         }

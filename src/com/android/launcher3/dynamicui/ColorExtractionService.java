@@ -63,8 +63,11 @@ public class ColorExtractionService extends IntentService {
             // We can't extract colors from live wallpapers, so just use the default color always.
             extractedColors.updateHotseatPalette(null);
 
-            if (FeatureFlags.QSB_IN_HOTSEAT) {
+            if (FeatureFlags.QSB_IN_HOTSEAT || FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
                 extractedColors.updateWallpaperThemePalette(null);
+                if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
+                    extractedColors.updateAllAppsGradientPalette(null);
+                }
             }
         } else {
             // We extract colors for the hotseat and status bar separately,
@@ -75,8 +78,12 @@ public class ColorExtractionService extends IntentService {
                 extractedColors.updateStatusBarPalette(getStatusBarPalette());
             }
 
-            if (FeatureFlags.QSB_IN_HOTSEAT) {
-                extractedColors.updateWallpaperThemePalette(getWallpaperPalette());
+            if (FeatureFlags.QSB_IN_HOTSEAT || FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
+                Palette wallpaperPalette = getWallpaperPalette();
+                extractedColors.updateWallpaperThemePalette(wallpaperPalette);
+                if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
+                    extractedColors.updateAllAppsGradientPalette(wallpaperPalette);
+                }
             }
         }
 

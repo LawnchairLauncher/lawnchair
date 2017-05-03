@@ -18,6 +18,7 @@ package com.android.launcher3.dynamicui;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.annotation.Nullable;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.graphics.Palette;
 import android.util.Log;
@@ -42,12 +43,24 @@ public class ExtractedColors {
     public static final int HOTSEAT_INDEX = 1;
     public static final int STATUS_BAR_INDEX = 2;
     public static final int WALLPAPER_VIBRANT_INDEX = 3;
+    public static final int ALLAPPS_GRADIENT_MAIN_INDEX = 4;
+    public static final int ALLAPPS_GRADIENT_SECONDARY_INDEX = 5;
 
     private static final int VERSION;
     private static final int[] DEFAULT_VALUES;
 
     static {
-        if (FeatureFlags.QSB_IN_HOTSEAT) {
+        if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
+            VERSION = 3;
+            DEFAULT_VALUES = new int[] {
+                    VERSION,            // VERSION_INDEX
+                    0x40FFFFFF,         // HOTSEAT_INDEX: White with 25% alpha
+                    DEFAULT_DARK,       // STATUS_BAR_INDEX
+                    0xFFCCCCCC,         // WALLPAPER_VIBRANT_INDEX
+                    0xFF000000,         // ALLAPPS_GRADIENT_MAIN_INDEX
+                    0xFF000000          // ALLAPPS_GRADIENT_SECONDARY_INDEX
+            };
+        } else if (FeatureFlags.QSB_IN_HOTSEAT) {
             VERSION = 2;
             DEFAULT_VALUES = new int[] {
                     VERSION,            // VERSION_INDEX
@@ -142,9 +155,20 @@ public class ExtractedColors {
                 DEFAULT_LIGHT : DEFAULT_DARK);
     }
 
-    public void updateWallpaperThemePalette(Palette wallpaperPalette) {
+    public void updateWallpaperThemePalette(@Nullable Palette wallpaperPalette) {
         int defaultColor = DEFAULT_VALUES[WALLPAPER_VIBRANT_INDEX];
         setColorAtIndex(WALLPAPER_VIBRANT_INDEX, wallpaperPalette == null
                 ? defaultColor : wallpaperPalette.getVibrantColor(defaultColor));
+    }
+
+    public void updateAllAppsGradientPalette(@Nullable Palette wallpaperPalette) {
+        // TODO b/37089857 will be modified to take the system extracted colors into account
+        int idx;
+        idx = ALLAPPS_GRADIENT_MAIN_INDEX;
+        setColorAtIndex(idx, wallpaperPalette == null
+                ? DEFAULT_VALUES[idx] : wallpaperPalette.getDarkVibrantColor(DEFAULT_VALUES[idx]));
+        idx = ALLAPPS_GRADIENT_SECONDARY_INDEX;
+        setColorAtIndex(idx, wallpaperPalette == null
+                ? DEFAULT_VALUES[idx] : wallpaperPalette.getVibrantColor(DEFAULT_VALUES[idx]));
     }
 }

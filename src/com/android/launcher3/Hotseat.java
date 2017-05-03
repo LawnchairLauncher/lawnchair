@@ -72,7 +72,9 @@ public class Hotseat extends FrameLayout
         mBackgroundColor = ColorUtils.setAlphaComponent(
                 Themes.getAttrColor(context, android.R.attr.colorPrimary), 0);
         mBackground = new ColorDrawable(mBackgroundColor);
-        setBackground(mBackground);
+        if (!FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
+            setBackground(mBackground);
+        }
     }
 
     public CellLayout getLayout() {
@@ -179,6 +181,10 @@ public class Hotseat extends FrameLayout
     }
 
     public void updateColor(ExtractedColors extractedColors, boolean animate) {
+        if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
+            // not hotseat visible
+            return;
+        }
         if (!mHasVerticalHotseat) {
             int color = extractedColors.getColor(ExtractedColors.HOTSEAT_INDEX);
             if (mBackgroundColorAnimator != null) {
