@@ -78,7 +78,8 @@ public abstract class LauncherAppsCompat {
             Rect sourceBounds, Bundle opts);
     public abstract ApplicationInfo getApplicationInfo(
             String packageName, int flags, UserHandle user);
-    public abstract void showAppDetailsForProfile(ComponentName component, UserHandle user);
+    public abstract void showAppDetailsForProfile(ComponentName component, UserHandle user,
+            Rect sourceBounds, Bundle opts);
     public abstract void addOnAppsChangedCallback(OnAppsChangedCallbackCompat listener);
     public abstract void removeOnAppsChangedCallback(OnAppsChangedCallbackCompat listener);
     public abstract boolean isPackageEnabledForProfile(String packageName, UserHandle user);
@@ -141,5 +142,9 @@ public abstract class LauncherAppsCompat {
         } else {
             return null;
         }
+    }
+
+    public void showAppDetailsForProfile(ComponentName component, UserHandle user) {
+        showAppDetailsForProfile(component, user, null, null);
     }
 }
