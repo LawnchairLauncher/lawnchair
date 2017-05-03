@@ -95,8 +95,9 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
     }
 
     @Override
-    public void showAppDetailsForProfile(ComponentName component, UserHandle user) {
-        mLauncherApps.startAppDetailsActivity(component, user, null, null);
+    public void showAppDetailsForProfile(ComponentName component, UserHandle user,
+            Rect sourceBounds, Bundle opts) {
+        mLauncherApps.startAppDetailsActivity(component, user, sourceBounds, opts);
     }
 
     @Override

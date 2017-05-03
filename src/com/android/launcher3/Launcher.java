@@ -2668,7 +2668,7 @@ public class Launcher extends BaseActivity
     }
 
     @TargetApi(Build.VERSION_CODES.M)
-    private Bundle getActivityLaunchOptions(View v) {
+    public Bundle getActivityLaunchOptions(View v) {
         if (Utilities.ATLEAST_MARSHMALLOW) {
             int left = 0, top = 0;
             int width = v.getMeasuredWidth(), height = v.getMeasuredHeight();
@@ -2694,7 +2694,7 @@ public class Launcher extends BaseActivity
         return null;
     }
 
-    private Rect getViewBounds(View v) {
+    public Rect getViewBounds(View v) {
         int[] pos = new int[2];
         v.getLocationOnScreen(pos);
         return new Rect(pos[0], pos[1], pos[0] + v.getWidth(), pos[1] + v.getHeight());

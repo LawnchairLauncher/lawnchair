@@ -19,6 +19,8 @@ package com.android.launcher3;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
+import android.graphics.Rect;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -60,6 +62,11 @@ public class InfoDropTarget extends UninstallDropTarget {
      */
     public static boolean startDetailsActivityForInfo(
             ItemInfo info, Launcher launcher, DropTargetResultCallback callback) {
+        return startDetailsActivityForInfo(info, launcher, callback, null, null);
+    }
+
+    public static boolean startDetailsActivityForInfo(ItemInfo info, Launcher launcher,
+            DropTargetResultCallback callback, Rect sourceBounds, Bundle opts) {
         boolean result = false;
         ComponentName componentName = null;
         if (info instanceof AppInfo) {
@@ -74,7 +81,7 @@ public class InfoDropTarget extends UninstallDropTarget {
         if (componentName != null) {
             try {
                 LauncherAppsCompat.getInstance(launcher)
-                        .showAppDetailsForProfile(componentName, info.user);
+                        .showAppDetailsForProfile(componentName, info.user, sourceBounds, opts);
                 result = true;
             } catch (SecurityException | ActivityNotFoundException e) {
                 Toast.makeText(launcher, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
