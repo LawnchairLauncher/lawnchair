@@ -52,6 +52,7 @@ public class LauncherDbUtils {
 
             if (screenIds.isEmpty()) {
                 // No update needed
+                t.commit();
                 return true;
             }
             if (screenIds.get(0) != 0) {
@@ -71,6 +72,7 @@ public class LauncherDbUtils {
             if (DatabaseUtils.queryNumEntries(db, Favorites.TABLE_NAME,
                     "container = -100 and screen = 0 and cellY = 0") == 0) {
                 // First row is empty, no need to migrate.
+                t.commit();
                 return true;
             }
 

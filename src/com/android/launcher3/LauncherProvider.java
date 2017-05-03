@@ -56,6 +56,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dynamicui.ExtractionUtils;
 import com.android.launcher3.graphics.IconShapeOverride;
 import com.android.launcher3.logging.FileLog;
+import com.android.launcher3.model.DbDowngradeHelper;
 import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.provider.RestoreDbTask;
@@ -64,6 +65,7 @@ import com.android.launcher3.util.NoLocaleSqliteContext;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Thunk;
 
+import java.io.File;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
@@ -77,18 +79,12 @@ public class LauncherProvider extends ContentProvider {
     private static final String TAG = "LauncherProvider";
     private static final boolean LOGD = false;
 
+    private static final String DOWNGRADE_SCHEMA_FILE = "downgrade_schema.json";
+
     /**
      * Represents the schema of the database. Changes in scheme need not be backwards compatible.
      */
-    private static final int SCHEMA_VERSION = 27;
-    /**
-     * Represents the actual data. It could include additional validations and normalizations added
-     * overtime. These must be backwards compatible, else we risk breaking old devices during
-     * restore or binary version downgrade.
-     */
-    private static final int DATA_VERSION = 3;
-
-    private static final String PREF_KEY_DATA_VERISON = "provider_data_version";
+    public static final int SCHEMA_VERSION = 27;
 
     public static final String AUTHORITY = (BuildConfig.APPLICATION_ID + ".settings").intern();
 
@@ -703,47 +699,30 @@ public class LauncherProvider extends ContentProvider {
         @Override
         public void onOpen(SQLiteDatabase db) {
             super.onOpen(db);
-            SharedPreferences prefs = mContext
-                    .getSharedPreferences(LauncherFiles.DEVICE_PREFERENCES_KEY, 0);
-            int oldVersion = prefs.getInt(PREF_KEY_DATA_VERISON, 0);
-            if (oldVersion != DATA_VERSION) {
-                // Only run the data upgrade path for an existing db.
-                if (!Utilities.getPrefs(mContext).getBoolean(EMPTY_DATABASE_CREATED, false)) {
-                    try (SQLiteTransaction t = new SQLiteTransaction(db)) {
-                        onDataUpgrade(db, oldVersion);
-                        t.commit();
-                    } catch (Exception e) {
-                        Log.d(TAG, "Error updating data version, ignoring", e);
-                        return;
-                    }
-                }
-                prefs.edit().putInt(PREF_KEY_DATA_VERISON, DATA_VERSION).apply();
+
+            File schemaFile = mContext.getFileStreamPath(DOWNGRADE_SCHEMA_FILE);
+            if (!schemaFile.exists()) {
+                handleOneTimeDataUpgrade(db);
             }
+            DbDowngradeHelper.updateSchemaFile(schemaFile, SCHEMA_VERSION, mContext,
+                    R.raw.downgrade_schema);
         }
 
         /**
-         * Called when the data is updated as part of app update. It can be called multiple times
-         * with old version, even though it had been run before. The changes made here must be
-         * backwards compatible, else we risk breaking old devices during restore or binary
-         * version downgrade.
+         * One-time data updated before support of onDowngrade was added. This update is backwards
+         * compatible and can safely be run multiple times.
+         * Note: No new logic should be added here after release, as the new logic might not get
+         * executed on an existing device.
+         * TODO: Move this to db upgrade path, once the downgrade path is released.
          */
-        protected void onDataUpgrade(SQLiteDatabase db, int oldVersion) {
-            switch (oldVersion) {
-                case 0:
-                case 1: {
-                    // Remove "profile extra"
-                    UserManagerCompat um = UserManagerCompat.getInstance(mContext);
-                    for (UserHandle user : um.getUserProfiles()) {
-                        long serial = um.getSerialNumberForUser(user);
-                        String sql = "update favorites set intent = replace(intent, "
-                                + "';l.profile=" + serial + ";', ';') where itemType = 0;";
-                        db.execSQL(sql);
-                    }
-                }
-                case 2:
-                case 3:
-                    // data updated
-                    return;
+        protected void handleOneTimeDataUpgrade(SQLiteDatabase db) {
+            // Remove "profile extra"
+            UserManagerCompat um = UserManagerCompat.getInstance(mContext);
+            for (UserHandle user : um.getUserProfiles()) {
+                long serial = um.getSerialNumberForUser(user);
+                String sql = "update favorites set intent = replace(intent, "
+                        + "';l.profile=" + serial + ";', ';') where itemType = 0;";
+                db.execSQL(sql);
             }
         }
 
@@ -850,15 +829,14 @@ public class LauncherProvider extends ContentProvider {
 
         @Override
         public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            if (oldVersion == 28 && newVersion == 27) {
-                // TODO: remove this check. This is only applicable for internal development/testing
-                // and for any released version of Launcher.
-                return;
+            try {
+                DbDowngradeHelper.parse(mContext.getFileStreamPath(DOWNGRADE_SCHEMA_FILE))
+                        .onDowngrade(db, oldVersion, newVersion);
+            } catch (Exception e) {
+                Log.d(TAG, "Unable to downgrade from: " + oldVersion + " to " + newVersion +
+                        ". Wiping databse.", e);
+                createEmptyDB(db);
             }
-            // This shouldn't happen -- throw our hands up in the air and start over.
-            Log.w(TAG, "Database version downgrade from: " + oldVersion + " to " + newVersion +
-                    ". Wiping databse.");
-            createEmptyDB(db);
         }
 
         /**
