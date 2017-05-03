@@ -27,7 +27,6 @@ import android.os.CancellationSignal;
 import android.os.Handler;
 import android.os.UserHandle;
 import android.support.annotation.Nullable;
-import android.support.v4.graphics.ColorUtils;
 import android.util.Log;
 import android.util.LongSparseArray;
 
@@ -388,10 +387,10 @@ public class WidgetPreviewLoader {
             drawable.setBounds(x, 0, x + previewWidth, previewHeight);
             drawable.draw(c);
         } else {
-            final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
-            RectF boxRect = drawBoxWithShadow(c, p, previewWidth, previewHeight);
+            RectF boxRect = drawBoxWithShadow(c, previewWidth, previewHeight);
 
             // Draw horizontal and vertical lines to represent individual columns.
+            final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
             p.setStyle(Paint.Style.STROKE);
             p.setStrokeWidth(mContext.getResources()
                     .getDimension(R.dimen.widget_preview_cell_divider_width));
@@ -431,7 +430,7 @@ public class WidgetPreviewLoader {
         return preview;
     }
 
-    private RectF drawBoxWithShadow(Canvas c, Paint p, int width, int height) {
+    private RectF drawBoxWithShadow(Canvas c, int width, int height) {
         Resources res = mContext.getResources();
         float shadowBlur = res.getDimension(R.dimen.widget_preview_shadow_blur);
         float keyShadowDistance = res.getDimension(R.dimen.widget_preview_key_shadow_distance);
@@ -439,19 +438,7 @@ public class WidgetPreviewLoader {
 
         RectF bounds = new RectF(shadowBlur, shadowBlur,
                 width - shadowBlur, height - shadowBlur - keyShadowDistance);
-        p.setColor(Color.WHITE);
-
-        // Key shadow
-        p.setShadowLayer(shadowBlur, 0, keyShadowDistance,
-                ShadowGenerator.KEY_SHADOW_ALPHA << 24);
-        c.drawRoundRect(bounds, corner, corner, p);
-
-        // Ambient shadow
-        p.setShadowLayer(shadowBlur, 0, 0,
-                ColorUtils.setAlphaComponent(Color.BLACK, ShadowGenerator.AMBIENT_SHADOW_ALPHA));
-        c.drawRoundRect(bounds, corner, corner, p);
-
-        p.clearShadowLayer();
+        ShadowGenerator.drawShadow(c, bounds, Color.WHITE, shadowBlur, keyShadowDistance, corner);
         return bounds;
     }
 
@@ -478,8 +465,7 @@ public class WidgetPreviewLoader {
             c.setBitmap(preview);
             c.drawColor(0, PorterDuff.Mode.CLEAR);
         }
-        Paint p = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
-        RectF boxRect = drawBoxWithShadow(c, p, size, size);
+        RectF boxRect = drawBoxWithShadow(c, size, size);
 
         Bitmap icon = LauncherIcons.createScaledBitmapWithoutShadow(
                 mutateOnMainThread(info.getFullResIcon(mIconCache)), mContext, Build.VERSION_CODES.O);
@@ -487,7 +473,8 @@ public class WidgetPreviewLoader {
 
         boxRect.set(0, 0, iconSize, iconSize);
         boxRect.offset(padding, padding);
-        c.drawBitmap(icon, src, boxRect, p);
+        c.drawBitmap(icon, src, boxRect,
+                new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG));
         c.setBitmap(null);
         return preview;
     }
