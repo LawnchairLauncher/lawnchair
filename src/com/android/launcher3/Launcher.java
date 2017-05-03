@@ -3932,6 +3932,7 @@ public class Launcher extends BaseActivity
         // Update AllApps
         if (mAppsView != null) {
             mAppsView.removeApps(appInfos);
+            tryAndUpdatePredictedApps();
         }
     }
 
