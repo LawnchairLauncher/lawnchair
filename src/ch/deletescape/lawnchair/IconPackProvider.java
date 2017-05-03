@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParser;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 public class IconPackProvider {
@@ -34,6 +36,7 @@ public class IconPackProvider {
         if ("".equals(packageName)) {
             iconPacks.put("", null);
         }
+        clearCache(context, packageName);
         Map<String, String> appFilter;
         try {
             appFilter = parseAppFilter(getAppFilter(context, packageName));
@@ -43,6 +46,25 @@ public class IconPackProvider {
             return;
         }
         iconPacks.put(packageName, new IconPack(appFilter, context, packageName));
+    }
+
+    private static void clearCache(Context context, String packageName) {
+        File cacheFolder = new File(context.getCacheDir(), "iconpack");
+        File indicatorFile = new File(cacheFolder, packageName);
+        if(cacheFolder.exists()){
+            if(!indicatorFile.exists()){
+                for(File file : cacheFolder.listFiles()){
+                    file.delete();
+                }
+            }
+        } else {
+            cacheFolder.mkdir();
+            try {
+                indicatorFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private static Map<String, String> parseAppFilter(XmlPullParser parser) throws Exception {

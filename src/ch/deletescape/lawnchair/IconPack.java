@@ -4,10 +4,21 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.ArrayMap;
+import android.util.Log;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 
@@ -19,7 +30,7 @@ class IconPack {
     http://stackoverflow.com/questions/3890012/how-to-access-string-resource-from-another-application
      */
     private Map<String, String> icons = new ArrayMap<>();
-    private Map<String, Drawable> cache = new ArrayMap<>();
+    private Map<String, Drawable> memoryCache = new ArrayMap<>();
     private String packageName;
     private Context mContext;
 
@@ -42,20 +53,52 @@ class IconPack {
     }
 
     private Drawable getDrawable(String name) {
-        if (cache.containsKey(name)) {
-            return cache.get(name);
+        if (memoryCache.containsKey(name)) {
+            return memoryCache.get(name);
+        }
+        File cachePath = new File(mContext.getCacheDir(), "iconpack/" + name);
+        if(cachePath.exists()){
+                Bitmap b = BitmapFactory.decodeFile(cachePath.toString());
+                Drawable d = new FastBitmapDrawable(b) ;
+                memoryCache.put(name, d);
+                return d;
         }
         Resources res;
         try {
             res = mContext.getPackageManager().getResourcesForApplication(packageName);
             int resourceId = res.getIdentifier(name, "drawable", packageName);
             if (0 != resourceId) {
-                Drawable drawable = mContext.getPackageManager().getDrawable(packageName, resourceId, null);
-                cache.put(name, drawable);
+                Bitmap b = BitmapFactory.decodeResource(res, resourceId);
+                saveBitmapToFile(cachePath, b);
+                Drawable drawable = new FastBitmapDrawable(b);
+                memoryCache.put(name, drawable);
                 return drawable;
             }
         } catch (Exception ignored) {
         }
         return null;
+    }
+    private boolean saveBitmapToFile(File imageFile, Bitmap bm) {
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(imageFile);
+
+            bm.compress(Bitmap.CompressFormat.PNG,100,fos);
+
+            fos.close();
+
+            return true;
+        }
+        catch (IOException e) {
+            Log.e("IconPack",e.getMessage());
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
+        return false;
     }
 }
