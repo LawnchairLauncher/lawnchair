@@ -22,8 +22,10 @@ import android.graphics.Bitmap.Config;
 import android.graphics.BlurMaskFilter;
 import android.graphics.BlurMaskFilter.Blur;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.support.v4.graphics.ColorUtils;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.util.Preconditions;
@@ -39,9 +41,9 @@ public class ShadowGenerator {
 
     // Percent of actual icon size
     private static final float KEY_SHADOW_DISTANCE = 1f/48;
-    public static final int KEY_SHADOW_ALPHA = 61;
+    private static final int KEY_SHADOW_ALPHA = 61;
 
-    public static final int AMBIENT_SHADOW_ALPHA = 30;
+    private static final int AMBIENT_SHADOW_ALPHA = 30;
 
     private static final Object LOCK = new Object();
     // Singleton object guarded by {@link #LOCK}
@@ -84,43 +86,43 @@ public class ShadowGenerator {
     }
 
     public static Bitmap createPillWithShadow(int rectColor, int width, int height) {
-
         float shadowRadius = height * 1f / 32;
         float shadowYOffset = height * 1f / 16;
+        return createPillWithShadow(rectColor, width, height, shadowRadius, shadowYOffset,
+                new RectF());
+    }
 
+    public static Bitmap createPillWithShadow(int rectColor, int width, int height,
+            float shadowRadius, float shadowYOffset, RectF outRect) {
         int radius = height / 2;
-
-        Canvas canvas = new Canvas();
-        Paint blurPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
-        blurPaint.setMaskFilter(new BlurMaskFilter(shadowRadius, Blur.NORMAL));
 
         int centerX = Math.round(width / 2 + shadowRadius);
         int centerY = Math.round(radius + shadowRadius + shadowYOffset);
         int center = Math.max(centerX, centerY);
         int size = center * 2;
         Bitmap result = Bitmap.createBitmap(size, size, Config.ARGB_8888);
-        canvas.setBitmap(result);
 
-        int left = center - width / 2;
-        int top = center - height / 2;
-        int right = center + width / 2;
-        int bottom = center + height / 2;
+        outRect.set(0, 0, width, height);
+        outRect.offsetTo(center - width / 2, center - height / 2);
 
-        // Draw ambient shadow, center aligned within size
-        blurPaint.setAlpha(AMBIENT_SHADOW_ALPHA);
-        canvas.drawRoundRect(left, top, right, bottom, radius, radius, blurPaint);
-
-        // Draw key shadow, bottom aligned within size
-        blurPaint.setAlpha(KEY_SHADOW_ALPHA);
-        canvas.drawRoundRect(left, top + shadowYOffset, right, bottom + shadowYOffset,
-                radius, radius, blurPaint);
-
-        // Draw the circle
-        Paint drawPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
-        drawPaint.setColor(rectColor);
-        canvas.drawRoundRect(left, top, right, bottom, radius, radius, drawPaint);
-
+        drawShadow(new Canvas(result), outRect, rectColor, shadowRadius, shadowYOffset, radius);
         return result;
+    }
+
+    public static void drawShadow(Canvas c, RectF bounds, int color,
+            float shadowBlur, float keyShadowDistance, float radius) {
+        Paint p = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+        p.setColor(color);
+
+        // Key shadow
+        p.setShadowLayer(shadowBlur, 0, keyShadowDistance,
+                ColorUtils.setAlphaComponent(Color.BLACK, KEY_SHADOW_ALPHA));
+        c.drawRoundRect(bounds, radius, radius, p);
+
+        // Ambient shadow
+        p.setShadowLayer(shadowBlur, 0, 0,
+                ColorUtils.setAlphaComponent(Color.BLACK, AMBIENT_SHADOW_ALPHA));
+        c.drawRoundRect(bounds, radius, radius, p);
     }
 
     public static ShadowGenerator getInstance(Context context) {
