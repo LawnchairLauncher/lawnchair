@@ -1036,13 +1036,12 @@ public class Launcher extends BaseActivity
         updateInteraction(Workspace.State.NORMAL, mWorkspace.getState());
         mWorkspace.onResume();
 
-        if (!isWorkspaceLoading()) {
-            // Process any items that were added while Launcher was away.
-            InstallShortcutReceiver.disableAndFlushInstallQueue(this);
+        // Process any items that were added while Launcher was away.
+        InstallShortcutReceiver.disableAndFlushInstallQueue(
+                InstallShortcutReceiver.FLAG_ACTIVITY_PAUSED, this);
 
-            // Refresh shortcuts if the permission changed.
-            mModel.refreshShortcutsIfRequired();
-        }
+        // Refresh shortcuts if the permission changed.
+        mModel.refreshShortcutsIfRequired();
 
         if (shouldShowDiscoveryBounce()) {
             mAllAppsController.showDiscoveryBounce();
@@ -1057,7 +1056,7 @@ public class Launcher extends BaseActivity
     @Override
     protected void onPause() {
         // Ensure that items added to Launcher are queued until Launcher returns
-        InstallShortcutReceiver.enableInstallQueue();
+        InstallShortcutReceiver.enableInstallQueue(InstallShortcutReceiver.FLAG_ACTIVITY_PAUSED);
 
         super.onPause();
         mPaused = true;
@@ -3655,7 +3654,8 @@ public class Launcher extends BaseActivity
             mPendingActivityResult = null;
         }
 
-        InstallShortcutReceiver.disableAndFlushInstallQueue(this);
+        InstallShortcutReceiver.disableAndFlushInstallQueue(
+                InstallShortcutReceiver.FLAG_LOADER_RUNNING, this);
 
         NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
 

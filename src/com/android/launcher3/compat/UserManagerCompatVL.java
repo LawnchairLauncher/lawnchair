@@ -22,8 +22,8 @@ import android.content.pm.PackageManager;
 import android.os.UserHandle;
 import android.os.UserManager;
 
-import com.android.launcher3.Utilities;
 import com.android.launcher3.util.LongArrayMap;
+import com.android.launcher3.util.ManagedProfileHeuristic;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -122,7 +122,7 @@ public class UserManagerCompatVL extends UserManagerCompat {
 
     @Override
     public long getUserCreationTime(UserHandle user) {
-        SharedPreferences prefs = Utilities.getPrefs(mContext);
+        SharedPreferences prefs = ManagedProfileHeuristic.prefs(mContext);
         String key = USER_CREATION_TIME_KEY + getSerialNumberForUser(user);
         if (!prefs.contains(key)) {
             prefs.edit().putLong(key, System.currentTimeMillis()).apply();

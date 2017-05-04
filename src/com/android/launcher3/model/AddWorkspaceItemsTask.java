@@ -17,6 +17,8 @@ package com.android.launcher3.model;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.LauncherActivityInfo;
+import android.os.Process;
 import android.os.UserHandle;
 import android.util.LongSparseArray;
 import android.util.Pair;
@@ -35,9 +37,11 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.GridOccupancy;
+import com.android.launcher3.util.ManagedProfileHeuristic.UserFolderInfo;
 import com.android.launcher3.util.Provider;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -45,18 +49,18 @@ import java.util.List;
  */
 public class AddWorkspaceItemsTask extends ExtendedModelTask {
 
-    private final Provider<List<ItemInfo>> mAppsProvider;
+    private final Provider<List<Pair<ItemInfo, Object>>> mAppsProvider;
 
     /**
      * @param appsProvider items to add on the workspace
      */
-    public AddWorkspaceItemsTask(Provider<List<ItemInfo>> appsProvider) {
+    public AddWorkspaceItemsTask(Provider<List<Pair<ItemInfo, Object>>> appsProvider) {
         mAppsProvider = appsProvider;
     }
 
     @Override
     public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
-        List<ItemInfo> workspaceApps = mAppsProvider.get();
+        List<Pair<ItemInfo, Object>> workspaceApps = mAppsProvider.get();
         if (workspaceApps.isEmpty()) {
             return;
         }
@@ -64,13 +68,17 @@ public class AddWorkspaceItemsTask extends ExtendedModelTask {
 
         final ArrayList<ItemInfo> addedItemsFinal = new ArrayList<>();
         final ArrayList<Long> addedWorkspaceScreensFinal = new ArrayList<>();
+        HashMap<UserHandle, UserFolderInfo> userFolderMap = new HashMap<>();
 
         // Get the list of workspace screens.  We need to append to this list and
         // can not use sBgWorkspaceScreens because loadWorkspace() may not have been
         // called.
         ArrayList<Long> workspaceScreens = LauncherModel.loadWorkspaceScreensDb(context);
         synchronized(dataModel) {
-            for (ItemInfo item : workspaceApps) {
+
+            List<ItemInfo> filteredItems = new ArrayList<>();
+            for (Pair<ItemInfo, Object> entry : workspaceApps) {
+                ItemInfo item = entry.first;
                 if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
                         item.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
                     // Short-circuit this logic if the icon exists somewhere on the workspace
@@ -79,6 +87,32 @@ public class AddWorkspaceItemsTask extends ExtendedModelTask {
                     }
                 }
 
+                if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+                    if (item instanceof AppInfo) {
+                        item = ((AppInfo) item).makeShortcut();
+                    }
+
+                    if (!Process.myUserHandle().equals(item.user)) {
+                        // Check if this belongs to a work folder.
+                        if (!(entry.second instanceof LauncherActivityInfo)) {
+                            continue;
+                        }
+
+                        UserFolderInfo userFolderInfo = userFolderMap.get(item.user);
+                        if (userFolderInfo == null) {
+                            userFolderInfo = new UserFolderInfo(context, item.user, dataModel);
+                            userFolderMap.put(item.user, userFolderInfo);
+                        }
+                        item = userFolderInfo.convertToWorkspaceItem(
+                                (ShortcutInfo) item, (LauncherActivityInfo) entry.second);
+                    }
+                }
+                if (item != null) {
+                    filteredItems.add(item);
+                }
+            }
+
+            for (ItemInfo item : filteredItems) {
                 // Find appropriate space for the item.
                 Pair<Long, int[]> coords = findSpaceForItem(app, dataModel, workspaceScreens,
                         addedWorkspaceScreensFinal, item.spanX, item.spanY);
@@ -129,6 +163,10 @@ public class AddWorkspaceItemsTask extends ExtendedModelTask {
                             addNotAnimated, addAnimated, null);
                 }
             });
+        }
+
+        for (UserFolderInfo userFolderInfo : userFolderMap.values()) {
+            userFolderInfo.applyPendingState(getModelWriter());
         }
     }
 
@@ -276,4 +314,5 @@ public class AddWorkspaceItemsTask extends ExtendedModelTask {
         }
         return occupied.findVacantCell(xy, spanX, spanY);
     }
+
 }

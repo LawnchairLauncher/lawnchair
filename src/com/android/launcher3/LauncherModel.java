@@ -40,6 +40,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.LongSparseArray;
 import android.util.MutableInt;
+import android.util.Pair;
 
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -137,12 +138,6 @@ public class LauncherModel extends BroadcastReceiver
             return mModelLoaded && mLoaderTask == null;
         }
     }
-
-    /**
-     * Set of runnables to be called on the background thread after the workspace binding
-     * is complete.
-     */
-    static final ArrayList<Runnable> mBindCompleteRunnables = new ArrayList<Runnable>();
 
     @Thunk WeakReference<Callbacks> mCallbacks;
 
@@ -251,15 +246,8 @@ public class LauncherModel extends BroadcastReceiver
     /**
      * Adds the provided items to the workspace.
      */
-    public void addAndBindAddedWorkspaceItems(List<ItemInfo> workspaceApps) {
-        addAndBindAddedWorkspaceItems(Provider.of(workspaceApps));
-    }
-
-    /**
-     * Adds the provided items to the workspace.
-     */
     public void addAndBindAddedWorkspaceItems(
-            Provider<List<ItemInfo>> appsProvider) {
+            Provider<List<Pair<ItemInfo, Object>>> appsProvider) {
         enqueueModelUpdateTask(new AddWorkspaceItemsTask(appsProvider));
     }
 
@@ -529,7 +517,7 @@ public class LauncherModel extends BroadcastReceiver
      */
     public boolean startLoader(int synchronousBindPage) {
         // Enable queue before starting loader. It will get disabled in Launcher#finishBindingItems
-        InstallShortcutReceiver.enableInstallQueue();
+        InstallShortcutReceiver.enableInstallQueue(InstallShortcutReceiver.FLAG_LOADER_RUNNING);
         synchronized (mLock) {
             // Don't bother to start the thread if we know it's not going to do anything
             if (mCallbacks != null && mCallbacks.get() != null) {
@@ -607,7 +595,6 @@ public class LauncherModel extends BroadcastReceiver
         private Context mContext;
         private int mPageToBindFirst;
 
-        @Thunk boolean mIsLoadingAndBindingWorkspace;
         private boolean mStopped;
 
         LoaderTask(Context context, int pageToBindFirst) {
@@ -675,8 +662,6 @@ public class LauncherModel extends BroadcastReceiver
             try {
                 long now = 0;
                 if (DEBUG_LOADERS) Log.d(TAG, "step 1.1: loading workspace");
-                // Set to false in bindWorkspace()
-                mIsLoadingAndBindingWorkspace = true;
                 loadWorkspace();
 
                 verifyNotStopped();
@@ -1584,18 +1569,6 @@ public class LauncherModel extends BroadcastReceiver
                         callbacks.finishBindingItems();
                     }
 
-                    mIsLoadingAndBindingWorkspace = false;
-
-                    // Run all the bind complete runnables after workspace is bound.
-                    if (!mBindCompleteRunnables.isEmpty()) {
-                        synchronized (mBindCompleteRunnables) {
-                            for (final Runnable r : mBindCompleteRunnables) {
-                                runOnWorkerThread(r);
-                            }
-                            mBindCompleteRunnables.clear();
-                        }
-                    }
-
                     // If we're profiling, ensure this is the last thing in the queue.
                     if (DEBUG_LOADERS) {
                         Log.d(TAG, "bound workspace in "
@@ -1710,31 +1683,7 @@ public class LauncherModel extends BroadcastReceiver
                     mBgAllAppsList.add(new AppInfo(app, user, quietMode), app);
                 }
 
-                final ManagedProfileHeuristic heuristic = ManagedProfileHeuristic.get(mContext, user);
-                if (heuristic != null) {
-                    final Runnable r = new Runnable() {
-
-                        @Override
-                        public void run() {
-                            heuristic.processUserApps(apps);
-                        }
-                    };
-                    mUiExecutor.execute(new Runnable() {
-
-                                    @Override
-                                    public void run() {
-                                        // Check isLoadingWorkspace on the UI thread, as it is updated on
-                                        // the UI thread.
-                                        if (mIsLoadingAndBindingWorkspace) {
-                                            synchronized (mBindCompleteRunnables) {
-                                                mBindCompleteRunnables.add(r);
-                                            }
-                                        } else {
-                                            runOnWorkerThread(r);
-                                        }
-                                    }
-                                });
-                }
+                ManagedProfileHeuristic.onAllAppsLoaded(mContext, apps, user);
             }
 
             if (FeatureFlags.LAUNCHER3_PROMISE_APPS_IN_ALL_APPS) {
@@ -1768,8 +1717,6 @@ public class LauncherModel extends BroadcastReceiver
                     }
                 }
             });
-            // Cleanup any data stored for a deleted user.
-            ManagedProfileHeuristic.processAllUsers(profiles, mContext);
             if (DEBUG_LOADERS) {
                 Log.d(TAG, "Icons processed in "
                         + (SystemClock.uptimeMillis() - loadTime) + "ms");

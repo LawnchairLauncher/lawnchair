@@ -21,6 +21,7 @@ import org.mockito.ArgumentCaptor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
@@ -50,7 +51,11 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
     }
 
     private AddWorkspaceItemsTask newTask(ItemInfo... items) {
-        return new AddWorkspaceItemsTask(Provider.of(Arrays.asList(items))) {
+        List<Pair<ItemInfo, Object>> list = new ArrayList<>();
+        for (ItemInfo item : items) {
+            list.add(Pair.create(item, null));
+        }
+        return new AddWorkspaceItemsTask(Provider.of(list)) {
 
             @Override
             protected void updateScreens(Context context, ArrayList<Long> workspaceScreens) { }

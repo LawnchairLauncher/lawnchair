@@ -35,6 +35,7 @@ import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.SessionCommitReceiver;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -43,7 +44,6 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.ItemInfoMatcher;
-import com.android.launcher3.util.ManagedProfileHeuristic;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 
@@ -100,11 +100,11 @@ public class PackageUpdatedTask extends ExtendedModelTask {
                         appsList.removePackage(packages[i], Process.myUserHandle());
                     }
                     appsList.addPackage(context, packages[i], mUser);
-                }
 
-                ManagedProfileHeuristic heuristic = ManagedProfileHeuristic.get(context, mUser);
-                if (heuristic != null) {
-                    heuristic.processPackageAdd(mPackages);
+                    // Automatically add homescreen icon for work profile apps for below O device.
+                    if (!Utilities.isAtLeastO() && !Process.myUserHandle().equals(mUser)) {
+                        SessionCommitReceiver.queueAppIconAddition(context, packages[i], mUser);
+                    }
                 }
                 break;
             }
@@ -119,10 +119,6 @@ public class PackageUpdatedTask extends ExtendedModelTask {
                 flagOp = FlagOp.removeFlag(ShortcutInfo.FLAG_DISABLED_NOT_AVAILABLE);
                 break;
             case OP_REMOVE: {
-                ManagedProfileHeuristic heuristic = ManagedProfileHeuristic.get(context, mUser);
-                if (heuristic != null) {
-                    heuristic.processPackageRemoved(mPackages);
-                }
                 for (int i = 0; i < N; i++) {
                     iconCache.removeIconsForPkg(packages[i], mUser);
                 }
