@@ -3615,6 +3615,9 @@ public class Launcher extends BaseActivity
 
         LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) view.getTag();
         info.restoreStatus = finalRestoreFlag;
+        if (info.restoreStatus == LauncherAppWidgetInfo.RESTORE_COMPLETED) {
+            info.pendingItemInfo = null;
+        }
 
         mWorkspace.reinflateWidgetsIfNecessary();
         getModelWriter().updateItemInDatabase(info);
