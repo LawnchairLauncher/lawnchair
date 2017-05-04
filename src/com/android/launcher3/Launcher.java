@@ -18,7 +18,9 @@ package com.android.launcher3;
 
 import android.Manifest;
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -266,6 +268,8 @@ public class Launcher extends BaseActivity
     private boolean mIsResumeFromActionScreenOff;
     private boolean mHasFocus = false;
     private boolean mAttached = false;
+
+    private ObjectAnimator mScrimAnimator;
 
     private PopupDataProvider mPopupDataProvider;
 
@@ -919,6 +923,24 @@ public class Launcher extends BaseActivity
 
         if (!isWorkspaceLoading()) {
             NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
+        }
+
+        if (mIsResumeFromActionScreenOff && mDragLayer.getBackground() != null) {
+            if (mScrimAnimator != null) {
+                mScrimAnimator.cancel();
+            }
+            mDragLayer.getBackground().setAlpha(0);
+            mScrimAnimator = ObjectAnimator.ofInt(mDragLayer.getBackground(),
+                    LauncherAnimUtils.DRAWABLE_ALPHA, 0, 255);
+            mScrimAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mScrimAnimator = null;
+                }
+            });
+            mScrimAnimator.setDuration(600);
+            mScrimAnimator.setStartDelay(getWindow().getTransitionBackgroundFadeDuration());
+            mScrimAnimator.start();
         }
     }
 
