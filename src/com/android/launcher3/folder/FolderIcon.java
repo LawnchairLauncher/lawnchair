@@ -76,6 +76,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.widget.PendingAddShortcutInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -251,11 +252,9 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         mBackground.animateToAccept(cl, lp.cellX, lp.cellY);
         mOpenAlarm.setOnAlarmListener(mOnOpenListener);
         if (SPRING_LOADING_ENABLED &&
-                ((dragInfo instanceof AppInfo) || (dragInfo instanceof ShortcutInfo))) {
-            // TODO: we currently don't support spring-loading for PendingAddShortcutInfos even
-            // though widget-style shortcuts can be added to folders. The issue is that we need
-            // to deal with configuration activities which are currently handled in
-            // Workspace#onDropExternal.
+                ((dragInfo instanceof AppInfo)
+                        || (dragInfo instanceof ShortcutInfo)
+                        || (dragInfo instanceof PendingAddShortcutInfo))) {
             mOpenAlarm.setAlarm(ON_OPEN_DELAY);
         }
     }
@@ -1107,7 +1106,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     @Override
-    public void onAdd(ShortcutInfo item) {
+    public void onAdd(ShortcutInfo item, int rank) {
         boolean wasBadged = mBadgeInfo.hasBadge();
         mBadgeInfo.addBadgeInfo(mLauncher.getPopupDataProvider().getBadgeInfoForItem(item));
         boolean isBadged = mBadgeInfo.hasBadge();
