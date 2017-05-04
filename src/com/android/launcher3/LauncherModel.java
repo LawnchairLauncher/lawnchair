@@ -1216,6 +1216,16 @@ public class LauncherModel extends BroadcastReceiver
                                                     .commit();
                                         }
                                     }
+
+                                    if (appWidgetInfo.restoreStatus !=
+                                            LauncherAppWidgetInfo.RESTORE_COMPLETED) {
+                                        String pkg = appWidgetInfo.providerName.getPackageName();
+                                        appWidgetInfo.pendingItemInfo = new PackageItemInfo(pkg);
+                                        appWidgetInfo.pendingItemInfo.user = appWidgetInfo.user;
+                                        mIconCache.getTitleAndIconForApp(
+                                                appWidgetInfo.pendingItemInfo, false);
+                                    }
+
                                     c.checkAndAddItem(appWidgetInfo, sBgDataModel);
                                 }
                                 break;
