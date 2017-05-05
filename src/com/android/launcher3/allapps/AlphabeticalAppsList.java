@@ -183,10 +183,7 @@ public class AlphabeticalAppsList {
     private final List<ComponentKey> mPredictedAppComponents = new ArrayList<>();
     // The set of predicted apps resolved from the component names and the current set of apps
     private final List<AppInfo> mPredictedApps = new ArrayList<>();
-    // The set of apps returned from a discovery service while searching
     private final List<AppDiscoveryAppInfo> mDiscoveredApps = new ArrayList<>();
-    // The suggested app returned by a discovery service
-    private AppDiscoveryAppInfo mSuggestedApp;
 
     // The of ordered component names as a result of a search query
     private ArrayList<ComponentKey> mSearchResults;
@@ -291,9 +288,6 @@ public class AlphabeticalAppsList {
                 @NonNull AppDiscoveryUpdateState state) {
         mAppDiscoveryUpdateState = state;
         switch (state) {
-            case SUGGESTED:
-                mSuggestedApp = app != null ? new AppDiscoveryAppInfo(app) : null;
-                break;
             case START:
                 mDiscoveredApps.clear();
                 break;
@@ -441,7 +435,6 @@ public class AlphabeticalAppsList {
         // Process the predicted app components
         mPredictedApps.clear();
         if (mPredictedAppComponents != null && !mPredictedAppComponents.isEmpty() && !hasFilter()) {
-            int suggestedAppsCount = mSuggestedApp != null ? 1 : 0;
             for (ComponentKey ck : mPredictedAppComponents) {
                 AppInfo info = mComponentToAppMap.get(ck);
                 if (info != null) {
@@ -452,14 +445,9 @@ public class AlphabeticalAppsList {
                     }
                 }
                 // Stop at the number of predicted apps
-                if (mPredictedApps.size() + suggestedAppsCount == mNumPredictedAppsPerRow) {
+                if (mPredictedApps.size() == mNumPredictedAppsPerRow) {
                     break;
                 }
-            }
-
-            if (mSuggestedApp != null) {
-                // adding suggested app as the last predicted app
-                mPredictedApps.add(mSuggestedApp);
             }
 
             if (!mPredictedApps.isEmpty()) {
