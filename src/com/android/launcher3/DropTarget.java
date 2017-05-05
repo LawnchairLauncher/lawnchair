@@ -16,12 +16,10 @@
 
 package com.android.launcher3;
 
-import com.android.launcher3.dragndrop.DragView;
-
-import android.graphics.PointF;
 import android.graphics.Rect;
 
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
+import com.android.launcher3.dragndrop.DragView;
 
 /**
  * Interface defining an object that can receive a drag.
@@ -107,17 +105,6 @@ public interface DropTarget {
 
     /**
      * Handle an object being dropped on the DropTarget
-     *
-     * @param source DragSource where the drag started
-     * @param x X coordinate of the drop location
-     * @param y Y coordinate of the drop location
-     * @param xOffset Horizontal offset with the object being dragged where the original
-     *          touch happened
-     * @param yOffset Vertical offset with the object being dragged where the original
-     *          touch happened
-     * @param dragView The DragView that's being dragged around on screen.
-     * @param dragInfo Data associated with the object being dragged
-     *
      */
     void onDrop(DragObject dragObject);
 
@@ -128,25 +115,8 @@ public interface DropTarget {
     void onDragExit(DragObject dragObject);
 
     /**
-     * Handle an object being dropped as a result of flinging to delete and will be called in place
-     * of onDrop().  (This is only called on objects that are set as the DragController's
-     * fling-to-delete target.
-     */
-    void onFlingToDelete(DragObject dragObject, PointF vec);
-
-    /**
      * Check if a drop action can occur at, or near, the requested location.
      * This will be called just before onDrop.
-     *
-     * @param source DragSource where the drag started
-     * @param x X coordinate of the drop location
-     * @param y Y coordinate of the drop location
-     * @param xOffset Horizontal offset with the object being dragged where the
-     *            original touch happened
-     * @param yOffset Vertical offset with the object being dragged where the
-     *            original touch happened
-     * @param dragView The DragView that's being dragged around on screen.
-     * @param dragInfo Data associated with the object being dragged
      * @return True if the drop will be accepted, false otherwise.
      */
     boolean acceptDrop(DragObject dragObject);

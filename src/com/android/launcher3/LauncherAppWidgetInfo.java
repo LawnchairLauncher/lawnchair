@@ -18,11 +18,10 @@ package com.android.launcher3;
 
 import android.appwidget.AppWidgetHostView;
 import android.content.ComponentName;
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
+import android.os.Process;
 
-import com.android.launcher3.compat.UserHandleCompat;
+import com.android.launcher3.util.ContentWriter;
 
 /**
  * Represents a widget (either instantiated or about to be) in the Launcher.
@@ -66,7 +65,7 @@ public class LauncherAppWidgetInfo extends ItemInfo {
     /**
      * Indicates that the widget hasn't been instantiated yet.
      */
-    static final int NO_ID = -1;
+    public static final int NO_ID = -1;
 
     /**
      * Indicates that this is a locally defined widget and hence has no system allocated id.
@@ -77,19 +76,19 @@ public class LauncherAppWidgetInfo extends ItemInfo {
      * Identifier for this widget when talking with
      * {@link android.appwidget.AppWidgetManager} for updates.
      */
-    int appWidgetId = NO_ID;
+    public int appWidgetId = NO_ID;
 
     public ComponentName providerName;
 
     /**
      * Indicates the restore status of the widget.
      */
-    int restoreStatus;
+    public int restoreStatus;
 
     /**
      * Indicates the installation progress of the widget provider
      */
-    int installProgress = -1;
+    public int installProgress = -1;
 
     /**
      * Optional extras sent during widget bind. See {@link #FLAG_DIRECT_CONFIG}.
@@ -98,7 +97,7 @@ public class LauncherAppWidgetInfo extends ItemInfo {
 
     private boolean mHasNotifiedInitialWidgetSizeChanged;
 
-    LauncherAppWidgetInfo(int appWidgetId, ComponentName providerName) {
+    public LauncherAppWidgetInfo(int appWidgetId, ComponentName providerName) {
         if (appWidgetId == CUSTOM_WIDGET_ID) {
             itemType = LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
         } else {
@@ -113,8 +112,13 @@ public class LauncherAppWidgetInfo extends ItemInfo {
         spanX = -1;
         spanY = -1;
         // We only support app widgets on current user.
-        user = UserHandleCompat.myUserHandle();
+        user = Process.myUserHandle();
         restoreStatus = RESTORE_COMPLETED;
+    }
+
+    /** Used for testing **/
+    public LauncherAppWidgetInfo() {
+        itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
     }
 
     public boolean isCustomWidget() {
@@ -122,13 +126,12 @@ public class LauncherAppWidgetInfo extends ItemInfo {
     }
 
     @Override
-    void onAddToDatabase(Context context, ContentValues values) {
-        super.onAddToDatabase(context, values);
-        values.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId);
-        values.put(LauncherSettings.Favorites.APPWIDGET_PROVIDER, providerName.flattenToString());
-        values.put(LauncherSettings.Favorites.RESTORED, restoreStatus);
-        values.put(LauncherSettings.Favorites.INTENT,
-                bindOptions == null ? null : bindOptions.toUri(0));
+    public void onAddToDatabase(ContentWriter writer) {
+        super.onAddToDatabase(writer);
+        writer.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId)
+                .put(LauncherSettings.Favorites.APPWIDGET_PROVIDER, providerName.flattenToString())
+                .put(LauncherSettings.Favorites.RESTORED, restoreStatus)
+                .put(LauncherSettings.Favorites.INTENT, bindOptions);
     }
 
     /**

@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import android.annotation.TargetApi;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
@@ -39,12 +38,12 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.database.sqlite.SQLiteStatement;
 import android.net.Uri;
 import android.os.Binder;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
 import android.os.Trace;
+import android.os.UserHandle;
 import android.os.UserManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -52,11 +51,12 @@ import android.util.Log;
 import com.android.launcher3.AutoInstallsLayout.LayoutParserCallback;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.WorkspaceScreens;
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.dynamicui.ExtractionUtils;
+import com.android.launcher3.graphics.IconShapeOverride;
+import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.util.ManagedProfileHeuristic;
@@ -64,16 +64,30 @@ import com.android.launcher3.util.NoLocaleSqliteContext;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Thunk;
 
+import java.io.FileDescriptor;
+import java.io.PrintWriter;
+import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Locale;
+import java.util.HashSet;
 
 public class LauncherProvider extends ContentProvider {
     private static final String TAG = "LauncherProvider";
     private static final boolean LOGD = false;
 
-    private static final int DATABASE_VERSION = 27;
+    /**
+     * Represents the schema of the database. Changes in scheme need not be backwards compatible.
+     */
+    private static final int SCHEMA_VERSION = 27;
+    /**
+     * Represents the actual data. It could include additional validations and normalizations added
+     * overtime. These must be backwards compatible, else we risk breaking old devices during
+     * restore or binary version downgrade.
+     */
+    private static final int DATA_VERSION = 3;
+
+    private static final String PREF_KEY_DATA_VERISON = "provider_data_version";
 
     public static final String AUTHORITY = ProviderConfig.AUTHORITY;
 
@@ -86,6 +100,18 @@ public class LauncherProvider extends ContentProvider {
 
     protected DatabaseHelper mOpenHelper;
 
+    /**
+     * $ adb shell dumpsys activity provider com.android.launcher3
+     */
+    @Override
+    public void dump(FileDescriptor fd, PrintWriter writer, String[] args) {
+        LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
+        if (appState == null || !appState.getModel().isModelLoaded()) {
+            return;
+        }
+        appState.getModel().dumpState("", fd, writer, args);
+    }
+
     @Override
     public boolean onCreate() {
         if (ProviderConfig.IS_DOGFOOD_BUILD) {
@@ -93,7 +119,12 @@ public class LauncherProvider extends ContentProvider {
         }
         mListenerHandler = new Handler(mListenerWrapper);
 
-        LauncherAppState.setLauncherProvider(this);
+        // The content provider exists for the entire duration of the launcher main process and
+        // is the first component to get created. Initializing FileLog here ensures that it's
+        // always available in the main process.
+        FileLog.setDir(getContext().getApplicationContext().getFilesDir());
+        IconShapeOverride.apply(getContext());
+        SessionCommitReceiver.applyDefaultUserPrefs(getContext());
         return true;
     }
 
@@ -172,7 +203,7 @@ public class LauncherProvider extends ContentProvider {
         if (Utilities.ATLEAST_MARSHMALLOW && Binder.getCallingPid() != Process.myPid()) {
             LauncherAppState app = LauncherAppState.getInstanceNoCreate();
             if (app != null) {
-                app.reloadWorkspace();
+                app.getModel().forceReload();
             }
         }
     }
@@ -203,7 +234,7 @@ public class LauncherProvider extends ContentProvider {
             // Deprecated behavior to support legacy devices which rely on provider callbacks.
             LauncherAppState app = LauncherAppState.getInstanceNoCreate();
             if (app != null && "true".equals(uri.getQueryParameter("isExternalAdd"))) {
-                app.reloadWorkspace();
+                app.getModel().forceReload();
             }
 
             String notify = uri.getQueryParameter("notify");
@@ -232,10 +263,11 @@ public class LauncherProvider extends ContentProvider {
 
             if (cn != null) {
                 try {
-                    int appWidgetId = new AppWidgetHost(getContext(), Launcher.APPWIDGET_HOST_ID)
-                            .allocateAppWidgetId();
+                    AppWidgetHost widgetHost = mOpenHelper.newLauncherWidgetHost();
+                    int appWidgetId = widgetHost.allocateAppWidgetId();
                     values.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId);
                     if (!appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId,cn)) {
+                        widgetHost.deleteAppWidgetId(appWidgetId);
                         return false;
                     }
                 } catch (RuntimeException e) {
@@ -317,23 +349,7 @@ public class LauncherProvider extends ContentProvider {
 
         if (Binder.getCallingPid() != Process.myPid()
                 && Favorites.TABLE_NAME.equalsIgnoreCase(args.table)) {
-            String widgetSelection = TextUtils.isEmpty(args.where) ? "1=1" : args.where;
-            widgetSelection = String.format(Locale.ENGLISH, "%1$s = %2$d AND ( %3$s )",
-                    Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_APPWIDGET, widgetSelection);
-            try (Cursor c = db.query(Favorites.TABLE_NAME, new String[] { Favorites.APPWIDGET_ID },
-                    widgetSelection, args.args, null, null, null)) {
-                AppWidgetHost host = new AppWidgetHost(getContext(), Launcher.APPWIDGET_HOST_ID);
-                while (c.moveToNext()) {
-                    int widgetId = c.getInt(0);
-                    if (widgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
-                        try {
-                            host.deleteAppWidgetId(widgetId);
-                        } catch (RuntimeException e) {
-                            Log.e(TAG, "Error deleting widget id " + widgetId, e);
-                        }
-                    }
-                }
-            }
+            mOpenHelper.removeGhostWidgets(mOpenHelper.getWritableDatabase());
         }
         int count = db.delete(args.table, args.where, args.args);
         if (count > 0) {
@@ -404,16 +420,15 @@ public class LauncherProvider extends ContentProvider {
                 return result;
             }
             case LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB: {
-                createEmptyDB();
+                mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
                 return null;
             }
             case LauncherSettings.Settings.METHOD_LOAD_DEFAULT_FAVORITES: {
                 loadDefaultFavoritesIfNecessary();
                 return null;
             }
-            case LauncherSettings.Settings.METHOD_DELETE_DB: {
-                // Are you sure? (y/n)
-                mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
+            case LauncherSettings.Settings.METHOD_REMOVE_GHOST_WIDGETS: {
+                mOpenHelper.removeGhostWidgets(mOpenHelper.getWritableDatabase());
                 return null;
             }
         }
@@ -467,13 +482,6 @@ public class LauncherProvider extends ContentProvider {
         values.put(LauncherSettings.ChangeLogColumns.MODIFIED, System.currentTimeMillis());
     }
 
-    /**
-     * Clears all the data for a fresh start.
-     */
-    synchronized private void createEmptyDB() {
-        mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
-    }
-
     private void clearFlagEmptyDbCreated() {
         Utilities.getPrefs(getContext()).edit().remove(EMPTY_DATABASE_CREATED).commit();
     }
@@ -491,7 +499,7 @@ public class LauncherProvider extends ContentProvider {
         if (sp.getBoolean(EMPTY_DATABASE_CREATED, false)) {
             Log.d(TAG, "loading default workspace");
 
-            AppWidgetHost widgetHost = new AppWidgetHost(getContext(), Launcher.APPWIDGET_HOST_ID);
+            AppWidgetHost widgetHost = mOpenHelper.newLauncherWidgetHost();
             AutoInstallsLayout loader = createWorkspaceLoaderFromAppRestriction(widgetHost);
             if (loader == null) {
                 loader = AutoInstallsLayout.get(getContext(),widgetHost, mOpenHelper);
@@ -516,12 +524,12 @@ public class LauncherProvider extends ContentProvider {
 
             // There might be some partially restored DB items, due to buggy restore logic in
             // previous versions of launcher.
-            createEmptyDB();
+            mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
             // Populate favorites table with initial favorites
             if ((mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(), loader) <= 0)
                     && usingExternallyProvidedLayout) {
                 // Unable to load external layout. Cleanup and load the internal layout.
-                createEmptyDB();
+                mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
                 mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(),
                         getDefaultLayoutParser(widgetHost));
             }
@@ -534,13 +542,7 @@ public class LauncherProvider extends ContentProvider {
      *
      * @return the loader if the restrictions are set and the resource exists; null otherwise.
      */
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     private AutoInstallsLayout createWorkspaceLoaderFromAppRestriction(AppWidgetHost widgetHost) {
-        // UserManager.getApplicationRestrictions() requires minSdkVersion >= 18
-        if (!Utilities.ATLEAST_JB_MR2) {
-            return null;
-        }
-
         Context ctx = getContext();
         UserManager um = (UserManager) ctx.getSystemService(Context.USER_SERVICE);
         Bundle bundle = um.getApplicationRestrictions(ctx.getPackageName());
@@ -564,8 +566,7 @@ public class LauncherProvider extends ContentProvider {
     }
 
     private DefaultLayoutParser getDefaultLayoutParser(AppWidgetHost widgetHost) {
-        int defaultLayout = LauncherAppState.getInstance()
-                .getInvariantDeviceProfile().defaultLayoutId;
+        int defaultLayout = LauncherAppState.getIDP(getContext()).defaultLayoutId;
         return new DefaultLayoutParser(getContext(), widgetHost,
                 mOpenHelper, getContext().getResources(), defaultLayout);
     }
@@ -599,7 +600,7 @@ public class LauncherProvider extends ContentProvider {
          */
         public DatabaseHelper(
                 Context context, Handler widgetHostResetHandler, String tableName) {
-            super(new NoLocaleSqliteContext(context), tableName, null, DATABASE_VERSION);
+            super(new NoLocaleSqliteContext(context), tableName, null, SCHEMA_VERSION);
             mContext = context;
             mWidgetHostResetHandler = widgetHostResetHandler;
         }
@@ -648,25 +649,22 @@ public class LauncherProvider extends ContentProvider {
         protected void onEmptyDbCreated() {
             // Database was just created, so wipe any previous widgets
             if (mWidgetHostResetHandler != null) {
-                new AppWidgetHost(mContext, Launcher.APPWIDGET_HOST_ID).deleteHost();
-                mWidgetHostResetHandler.sendMessage(Message.obtain(
-                        mWidgetHostResetHandler,
-                        ChangeListenerWrapper.MSG_APP_WIDGET_HOST_RESET,
-                        mContext
-                ));
+                newLauncherWidgetHost().deleteHost();
+                mWidgetHostResetHandler.sendEmptyMessage(
+                        ChangeListenerWrapper.MSG_APP_WIDGET_HOST_RESET);
             }
 
             // Set the flag for empty DB
             Utilities.getPrefs(mContext).edit().putBoolean(EMPTY_DATABASE_CREATED, true).commit();
 
             // When a new DB is created, remove all previously stored managed profile information.
-            ManagedProfileHeuristic.processAllUsers(Collections.<UserHandleCompat>emptyList(),
+            ManagedProfileHeuristic.processAllUsers(Collections.<UserHandle>emptyList(),
                     mContext);
         }
 
         public long getDefaultUserSerial() {
             return UserManagerCompat.getInstance(mContext).getSerialNumberForUser(
-                    UserHandleCompat.myUserHandle());
+                    Process.myUserHandle());
         }
 
         private void addFavoritesTable(SQLiteDatabase db, boolean optional) {
@@ -711,6 +709,57 @@ public class LauncherProvider extends ContentProvider {
                     " WHERE " + LauncherSettings.Favorites.ITEM_TYPE + " = " +
                     LauncherSettings.Favorites.ITEM_TYPE_FOLDER + ")";
             db.execSQL(removeOrphanedFolderItems);
+        }
+
+        @Override
+        public void onOpen(SQLiteDatabase db) {
+            super.onOpen(db);
+            SharedPreferences prefs = mContext
+                    .getSharedPreferences(LauncherFiles.DEVICE_PREFERENCES_KEY, 0);
+            int oldVersion = prefs.getInt(PREF_KEY_DATA_VERISON, 0);
+            if (oldVersion != DATA_VERSION) {
+                // Only run the data upgrade path for an existing db.
+                if (!Utilities.getPrefs(mContext).getBoolean(EMPTY_DATABASE_CREATED, false)) {
+                    db.beginTransaction();
+                    try {
+                        onDataUpgrade(db, oldVersion);
+                        db.setTransactionSuccessful();
+                    } catch (Exception e) {
+                        Log.d(TAG, "Error updating data version, ignoring", e);
+                        return;
+                    } finally {
+                        db.endTransaction();
+                    }
+                }
+                prefs.edit().putInt(PREF_KEY_DATA_VERISON, DATA_VERSION).apply();
+            }
+        }
+
+        /**
+         * Called when the data is updated as part of app update. It can be called multiple times
+         * with old version, even though it had been run before. The changes made here must be
+         * backwards compatible, else we risk breaking old devices during restore or binary
+         * version downgrade.
+         */
+        protected void onDataUpgrade(SQLiteDatabase db, int oldVersion) {
+            switch (oldVersion) {
+                case 0:
+                case 1: {
+                    // Remove "profile extra"
+                    UserManagerCompat um = UserManagerCompat.getInstance(mContext);
+                    for (UserHandle user : um.getUserProfiles()) {
+                        long serial = um.getSerialNumberForUser(user);
+                        String sql = "update favorites set intent = replace(intent, "
+                                + "';l.profile=" + serial + ";', ';') where itemType = 0;";
+                        db.execSQL(sql);
+                    }
+                }
+                case 2:
+                    removeGhostWidgets(db);
+                case 3:
+                    // data updated
+                    return;
+            }
         }
 
         @Override
@@ -764,12 +813,7 @@ public class LauncherProvider extends ContentProvider {
                     }
                 }
                 case 16: {
-                    // We use the db version upgrade here to identify users who may not have seen
-                    // clings yet (because they weren't available), but for whom the clings are now
-                    // available (tablet users). Because one of the possible cling flows (migration)
-                    // is very destructive (wipes out workspaces), we want to prevent this from showing
-                    // until clear data. We do so by marking that the clings have been shown.
-                    LauncherClings.markFirstRunClingDismissed(mContext);
+                    // No-op
                 }
                 case 17: {
                     // No-op
@@ -812,13 +856,12 @@ public class LauncherProvider extends ContentProvider {
                 case 26:
                     // QSB was moved to the grid. Clear the first row on screen 0.
                     if (FeatureFlags.QSB_ON_FIRST_SCREEN &&
-                            !LauncherDbUtils.prepareScreenZeroToHostQsb(db)) {
+                            !LauncherDbUtils.prepareScreenZeroToHostQsb(mContext, db)) {
                         break;
                     }
-                case 27: {
+                case 27:
                     // DB Upgraded successfully
                     return;
-                }
             }
 
             // DB was not upgraded
@@ -828,6 +871,11 @@ public class LauncherProvider extends ContentProvider {
 
         @Override
         public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            if (oldVersion == 28 && newVersion == 27) {
+                // TODO: remove this check. This is only applicable for internal development/testing
+                // and for any released version of Launcher.
+                return;
+            }
             // This shouldn't happen -- throw our hands up in the air and start over.
             Log.w(TAG, "Database version downgrade from: " + oldVersion + " to " + newVersion +
                     ". Wiping databse.");
@@ -838,9 +886,56 @@ public class LauncherProvider extends ContentProvider {
          * Clears all the data for a fresh start.
          */
         public void createEmptyDB(SQLiteDatabase db) {
-            db.execSQL("DROP TABLE IF EXISTS " + Favorites.TABLE_NAME);
-            db.execSQL("DROP TABLE IF EXISTS " + WorkspaceScreens.TABLE_NAME);
-            onCreate(db);
+            db.beginTransaction();
+            try {
+                db.execSQL("DROP TABLE IF EXISTS " + Favorites.TABLE_NAME);
+                db.execSQL("DROP TABLE IF EXISTS " + WorkspaceScreens.TABLE_NAME);
+                onCreate(db);
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
+            }
+        }
+
+        /**
+         * Removes widgets which are registered to the Launcher's host, but are not present
+         * in our model.
+         */
+        public void removeGhostWidgets(SQLiteDatabase db) {
+            // Get all existing widget ids.
+            final AppWidgetHost host = newLauncherWidgetHost();
+            final int[] allWidgets;
+            try {
+                Method getter = AppWidgetHost.class.getDeclaredMethod("getAppWidgetIds");
+                getter.setAccessible(true);
+                allWidgets = (int[]) getter.invoke(host);
+            } catch (Exception e) {
+                Log.e(TAG, "getAppWidgetIds not supported", e);
+                return;
+            }
+            try {
+                Cursor c = db.query(Favorites.TABLE_NAME,
+                        new String[] {Favorites.APPWIDGET_ID },
+                        "itemType=" + Favorites.ITEM_TYPE_APPWIDGET, null, null, null, null);
+                HashSet<Integer> validWidgets = new HashSet<>();
+                while (c.moveToNext()) {
+                    validWidgets.add(c.getInt(0));
+                }
+                c.close();
+
+                for (int widgetId : allWidgets) {
+                    if (!validWidgets.contains(widgetId)) {
+                        try {
+                            FileLog.d(TAG, "Deleting invalid widget " + widgetId);
+                            host.deleteAppWidgetId(widgetId);
+                        } catch (RuntimeException e) {
+                            // Ignore
+                        }
+                    }
+                }
+            } catch (SQLException ex) {
+                Log.w(TAG, "Error getting widgets list", ex);
+            }
         }
 
         /**
@@ -1012,6 +1107,10 @@ public class LauncherProvider extends ContentProvider {
             return mMaxItemId;
         }
 
+        public AppWidgetHost newLauncherWidgetHost() {
+            return new AppWidgetHost(mContext, Launcher.APPWIDGET_HOST_ID);
+        }
+
         @Override
         public long insertAndCheck(SQLiteDatabase db, ContentValues values) {
             return dbInsertAndCheck(this, db, Favorites.TABLE_NAME, null, values);
@@ -1019,7 +1118,7 @@ public class LauncherProvider extends ContentProvider {
 
         public void checkId(String table, ContentValues values) {
             long id = values.getAsLong(LauncherSettings.BaseLauncherColumns._ID);
-            if (table == WorkspaceScreens.TABLE_NAME) {
+            if (WorkspaceScreens.TABLE_NAME.equals(table)) {
                 mMaxScreenId = Math.max(id, mMaxScreenId);
             }  else {
                 mMaxItemId = Math.max(id, mMaxItemId);
@@ -1141,17 +1240,13 @@ public class LauncherProvider extends ContentProvider {
             if (mListener != null) {
                 switch (msg.what) {
                     case MSG_LAUNCHER_PROVIDER_CHANGED:
-                        mListener.onLauncherProviderChange();
+                        mListener.onLauncherProviderChanged();
                         break;
                     case MSG_EXTRACTED_COLORS_CHANGED:
                         mListener.onExtractedColorsChanged();
                         break;
                     case MSG_APP_WIDGET_HOST_RESET:
-                        Context context = (Context) msg.obj;
-                        if (context != null) {
-                            context.sendBroadcast(new Intent(Launcher.ACTION_APPWIDGET_HOST_RESET)
-                                    .setPackage(context.getPackageName()));
-                        }
+                        mListener.onAppWidgetHostReset();
                         break;
                 }
             }

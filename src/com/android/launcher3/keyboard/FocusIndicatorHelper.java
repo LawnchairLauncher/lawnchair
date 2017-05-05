@@ -23,12 +23,10 @@ import android.animation.PropertyValuesHolder;
 import android.animation.RectEvaluator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
-import android.annotation.TargetApi;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.os.Build.VERSION_CODES;
 import android.util.Property;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
@@ -38,7 +36,6 @@ import com.android.launcher3.R;
 /**
  * A helper class to draw background of a focused view.
  */
-@TargetApi(VERSION_CODES.LOLLIPOP)
 public abstract class FocusIndicatorHelper implements
         OnFocusChangeListener, AnimatorUpdateListener {
 
@@ -143,7 +140,7 @@ public abstract class FocusIndicatorHelper implements
     }
 
     private Rect getDrawRect() {
-        if (mCurrentView != null) {
+        if (mCurrentView != null && mCurrentView.isAttachedToWindow()) {
             viewToRect(mCurrentView, sTempRect1);
 
             if (mShift > 0 && mTargetView != null) {

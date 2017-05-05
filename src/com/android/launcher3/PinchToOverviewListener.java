@@ -61,12 +61,12 @@ public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleG
         mPinchDetector = new ScaleGestureDetector((Context) mLauncher, this);
     }
 
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
+    public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
         mPinchDetector.onTouchEvent(ev);
         return mPinchStarted;
     }
 
-    public boolean onTouchEvent(MotionEvent ev) {
+    public boolean onControllerTouchEvent(MotionEvent ev) {
         if (mPinchStarted) {
             if (ev.getPointerCount() > 2) {
                 // Using more than two fingers causes weird behavior, so just cancel the pinch.
@@ -102,7 +102,7 @@ public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleG
             // once the state switching animation is complete.
             return false;
         }
-        if (mLauncher.getTopFloatingView() != null) {
+        if (AbstractFloatingView.getTopOpenView(mLauncher) != null) {
             // Don't listen for the pinch gesture if a floating view is open.
             return false;
         }
@@ -112,7 +112,7 @@ public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleG
         mInterpolator = mWorkspace.isInOverviewMode() ? new LogDecelerateInterpolator(100, 0)
                 : new LogAccelerateInterpolator(100, 0);
         mPinchStarted = true;
-        mWorkspace.onLauncherTransitionPrepare(mLauncher, false, true);
+        mWorkspace.onPrepareStateTransition(true);
         return true;
     }
 
@@ -142,7 +142,7 @@ public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleG
                     mThresholdManager);
         } else {
             mThresholdManager.reset();
-            mWorkspace.onLauncherTransitionEnd(mLauncher, false, true);
+            mWorkspace.onEndStateTransition();
         }
         mPinchStarted = false;
         mPinchCanceled = false;

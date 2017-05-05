@@ -18,22 +18,16 @@ package com.android.launcher3;
 
 import android.content.ComponentName;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.os.Process;
+import android.os.UserHandle;
 
-import com.android.launcher3.compat.UserHandleCompat;
-import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.util.ContentWriter;
 
 /**
  * Represents an item in the launcher.
  */
 public class ItemInfo {
-
-    /**
-     * Intent extra to store the profile. Format: UserHandle
-     */
-    public static final String EXTRA_PROFILE = "profile";
 
     public static final int NO_ID = -1;
 
@@ -59,7 +53,7 @@ public class ItemInfo {
     public long container = NO_ID;
 
     /**
-     * Iindicates the screen in which the shortcut appears.
+     * Indicates the screen in which the shortcut appears.
      */
     public long screenId = -1;
 
@@ -108,10 +102,10 @@ public class ItemInfo {
      */
     public CharSequence contentDescription;
 
-    public UserHandleCompat user;
+    public UserHandle user;
 
     public ItemInfo() {
-        user = UserHandleCompat.myUserHandle();
+        user = Process.myUserHandle();
     }
 
     ItemInfo(ItemInfo info) {
@@ -142,15 +136,15 @@ public class ItemInfo {
         return getIntent() == null ? null : getIntent().getComponent();
     }
 
-    public void writeToValues(ContentValues values) {
-        values.put(LauncherSettings.Favorites.ITEM_TYPE, itemType);
-        values.put(LauncherSettings.Favorites.CONTAINER, container);
-        values.put(LauncherSettings.Favorites.SCREEN, screenId);
-        values.put(LauncherSettings.Favorites.CELLX, cellX);
-        values.put(LauncherSettings.Favorites.CELLY, cellY);
-        values.put(LauncherSettings.Favorites.SPANX, spanX);
-        values.put(LauncherSettings.Favorites.SPANY, spanY);
-        values.put(LauncherSettings.Favorites.RANK, rank);
+    public void writeToValues(ContentWriter writer) {
+        writer.put(LauncherSettings.Favorites.ITEM_TYPE, itemType)
+                .put(LauncherSettings.Favorites.CONTAINER, container)
+                .put(LauncherSettings.Favorites.SCREEN, screenId)
+                .put(LauncherSettings.Favorites.CELLX, cellX)
+                .put(LauncherSettings.Favorites.CELLY, cellY)
+                .put(LauncherSettings.Favorites.SPANX, spanX)
+                .put(LauncherSettings.Favorites.SPANY, spanY)
+                .put(LauncherSettings.Favorites.RANK, rank);
     }
 
     public void readFromValues(ContentValues values) {
@@ -166,26 +160,15 @@ public class ItemInfo {
 
     /**
      * Write the fields of this item to the DB
-     *
-     * @param context A context object to use for getting UserManagerCompat
-     * @param values
      */
-    void onAddToDatabase(Context context, ContentValues values) {
-        writeToValues(values);
-        long serialNumber = UserManagerCompat.getInstance(context).getSerialNumberForUser(user);
-        values.put(LauncherSettings.Favorites.PROFILE_ID, serialNumber);
-
+    public void onAddToDatabase(ContentWriter writer) {
         if (screenId == Workspace.EXTRA_EMPTY_SCREEN_ID) {
             // We should never persist an item on the extra empty screen.
             throw new RuntimeException("Screen id should not be EXTRA_EMPTY_SCREEN_ID");
         }
-    }
 
-    static void writeBitmap(ContentValues values, Bitmap bitmap) {
-        if (bitmap != null) {
-            byte[] data = Utilities.flattenBitmap(bitmap);
-            values.put(LauncherSettings.Favorites.ICON, data);
-        }
+        writeToValues(writer);
+        writer.put(LauncherSettings.Favorites.PROFILE_ID, user);
     }
 
     @Override

@@ -27,14 +27,19 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Изтегленото приложение е деактивирано в безопасния режим"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Приспособленията са деактивирани в безопасния режим"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"Няма достъп до прекия път"</string>
+    <string name="home_screen" msgid="806512411299847073">"Начален екран"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"Персонализирани действия"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Докоснете и задръжте за избор на приспособление."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Докоснете двукратно и задръжте за избор на приспособление или използвайте персонализирани действия."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Ширина %1$d и височина %2$d"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Докоснете и задръжте, за да поставите ръчно"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"Автоматично добавяне"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Търсене в приложенията"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Приложенията се зареждат…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Няма намерени приложения, съответстващи на „<xliff:g id="QUERY">%1$s</xliff:g>“"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Търсене на още приложения"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"Известия"</string>
     <string name="out_of_space" msgid="4691004494942118364">"На този начален екран няма повече място."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Няма повече място в областта с любимите"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Списък с приложения"</string>
@@ -71,6 +76,14 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"Разрешаване на завъртането на началния екран"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"При завъртане на телефона"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Текущата настройка на екрана не разрешава завъртане"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Добавяне на икона към началния екран"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"За нови приложения"</string>
+    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
+    <skip />
+    <!-- no translation found for icon_shape_no_override (3678524428085518367) -->
+    <skip />
+    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
+    <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"Няма информация"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Премахване"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Търсене"</string>
@@ -78,6 +91,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Приложението за тази икона не е инсталирано. Можете да я премахнете или да потърсите приложението и да го инсталирате ръчно."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> се изтегля. Завършено: <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> изчаква инсталиране"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"Приспособления за <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Добавяне към началния екран"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Преместване на елемента тук"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Елементът е добавен към началния екран"</string>

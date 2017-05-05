@@ -19,7 +19,12 @@ package com.android.launcher3;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
+import android.graphics.PointF;
 import android.graphics.Rect;
+import android.os.Handler;
+import android.os.SystemClock;
+import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -28,22 +33,38 @@ import android.view.ViewConfiguration;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.widget.AdapterView;
+import android.widget.Advanceable;
 import android.widget.RemoteViews;
 
+import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragLayer.TouchCompleteListener;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.concurrent.Executor;
 
 /**
  * {@inheritDoc}
  */
-public class LauncherAppWidgetHostView extends AppWidgetHostView implements TouchCompleteListener {
+public class LauncherAppWidgetHostView extends AppWidgetHostView
+        implements TouchCompleteListener, View.OnLongClickListener {
 
-    LayoutInflater mInflater;
+    private static final String TAG = "LauncherWidgetHostView";
 
-    private CheckLongPressHelper mLongPressHelper;
-    private StylusEventHelper mStylusEventHelper;
-    private Context mContext;
+    // Related to the auto-advancing of widgets
+    private static final long ADVANCE_INTERVAL = 20000;
+    private static final long ADVANCE_STAGGER = 250;
+
+    // Maintains a list of widget ids which are supposed to be auto advanced.
+    private static final SparseBooleanArray sAutoAdvanceWidgetIds = new SparseBooleanArray();
+
+    protected final LayoutInflater mInflater;
+
+    private final CheckLongPressHelper mLongPressHelper;
+    private final StylusEventHelper mStylusEventHelper;
+    private final Context mContext;
+
     @ViewDebug.ExportedProperty(category = "launcher")
     private int mPreviousOrientation;
 
@@ -52,21 +73,54 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mChildrenFocused;
 
-    protected int mErrorViewId = R.layout.appwidget_error;
+    private boolean mIsScrollable;
+    private boolean mIsAttachedToWindow;
+    private boolean mIsAutoAdvanceRegistered;
+    private Runnable mAutoAdvanceRunnable;
+
+    /**
+     * The scaleX and scaleY value such that the widget fits within its cellspans, scaleX = scaleY.
+     */
+    private float mScaleToFit = 1f;
+
+    /**
+     * The translation values to center the widget within its cellspans.
+     */
+    private final PointF mTranslationForCentering = new PointF(0, 0);
 
     public LauncherAppWidgetHostView(Context context) {
         super(context);
         mContext = context;
-        mLongPressHelper = new CheckLongPressHelper(this);
+        mLongPressHelper = new CheckLongPressHelper(this, this);
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
-        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mInflater = LayoutInflater.from(context);
         setAccessibilityDelegate(Launcher.getLauncher(context).getAccessibilityDelegate());
         setBackgroundResource(R.drawable.widget_internal_focus_bg);
+
+        if (Utilities.isAtLeastO()) {
+            try {
+                Method asyncMethod = AppWidgetHostView.class
+                        .getMethod("setAsyncExecutor", Executor.class);
+                asyncMethod.invoke(this, Utilities.THREAD_POOL_EXECUTOR);
+            } catch (Exception e) {
+                Log.e(TAG, "Unable to set async executor", e);
+            }
+        }
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        if (mIsScrollable) {
+            DragLayer dragLayer = Launcher.getLauncher(getContext()).getDragLayer();
+            dragLayer.requestDisallowInterceptTouchEvent(false);
+        }
+        view.performLongClick();
+        return true;
     }
 
     @Override
     protected View getErrorView() {
-        return mInflater.inflate(mErrorViewId, this, false);
+        return mInflater.inflate(R.layout.appwidget_error, this, false);
     }
 
     public void updateLastInflationOrientation() {
@@ -78,6 +132,25 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
         // Store the orientation in which the widget was inflated
         updateLastInflationOrientation();
         super.updateAppWidget(remoteViews);
+
+        // The provider info or the views might have changed.
+        checkIfAutoAdvance();
+    }
+
+    private boolean checkScrollableRecursively(ViewGroup viewGroup) {
+        if (viewGroup instanceof AdapterView) {
+            return true;
+        } else {
+            for (int i=0; i < viewGroup.getChildCount(); i++) {
+                View child = viewGroup.getChildAt(i);
+                if (child instanceof ViewGroup) {
+                    if (checkScrollableRecursively((ViewGroup) child)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     public boolean isReinflateRequired() {
@@ -108,12 +181,18 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
             mLongPressHelper.cancelLongPress();
             return true;
         }
+
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN: {
+                DragLayer dragLayer = Launcher.getLauncher(getContext()).getDragLayer();
+
+                if (mIsScrollable) {
+                     dragLayer.requestDisallowInterceptTouchEvent(true);
+                }
                 if (!mStylusEventHelper.inStylusButtonPressed()) {
                     mLongPressHelper.postCheckForLongPress();
                 }
-                Launcher.getLauncher(getContext()).getDragLayer().setTouchCompleteListener(this);
+                dragLayer.setTouchCompleteListener(this);
                 break;
             }
 
@@ -153,6 +232,19 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+
+        mIsAttachedToWindow = true;
+        checkIfAutoAdvance();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+        // We can't directly use isAttachedToWindow() here, as this is called before the internal
+        // state is updated. So isAttachedToWindow() will return true until next frame.
+        mIsAttachedToWindow = false;
+        checkIfAutoAdvance();
     }
 
     @Override
@@ -169,10 +261,6 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
                     + " LauncherAppWidgetProviderInfo");
         }
         return info;
-    }
-
-    public LauncherAppWidgetProviderInfo getLauncherAppWidgetProviderInfo() {
-        return (LauncherAppWidgetProviderInfo) getAppWidgetInfo();
     }
 
     @Override
@@ -276,6 +364,11 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
         setSelected(childIsFocused);
     }
 
+    public void switchToErrorView() {
+        // Update the widget with 0 Layout id, to reset the view to error view.
+        updateAppWidget(new RemoteViews(getAppWidgetInfo().provider.getPackageName(), 0));
+    }
+
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         try {
@@ -284,16 +377,112 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
             post(new Runnable() {
                 @Override
                 public void run() {
-                    // Update the widget with 0 Layout id, to reset the view to error view.
-                    updateAppWidget(new RemoteViews(getAppWidgetInfo().provider.getPackageName(), 0));
+                    switchToErrorView();
                 }
             });
         }
+
+        mIsScrollable = checkScrollableRecursively(this);
     }
 
     @Override
     public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(info);
         info.setClassName(getClass().getName());
+    }
+
+    @Override
+    protected void onWindowVisibilityChanged(int visibility) {
+        super.onWindowVisibilityChanged(visibility);
+        maybeRegisterAutoAdvance();
+    }
+
+    private void checkIfAutoAdvance() {
+        boolean isAutoAdvance = false;
+        Advanceable target = getAdvanceable();
+        if (target != null) {
+            isAutoAdvance = true;
+            target.fyiWillBeAdvancedByHostKThx();
+        }
+
+        boolean wasAutoAdvance = sAutoAdvanceWidgetIds.indexOfKey(getAppWidgetId()) >= 0;
+        if (isAutoAdvance != wasAutoAdvance) {
+            if (isAutoAdvance) {
+                sAutoAdvanceWidgetIds.put(getAppWidgetId(), true);
+            } else {
+                sAutoAdvanceWidgetIds.delete(getAppWidgetId());
+            }
+            maybeRegisterAutoAdvance();
+        }
+    }
+
+    private Advanceable getAdvanceable() {
+        AppWidgetProviderInfo info = getAppWidgetInfo();
+        if (info == null || info.autoAdvanceViewId == NO_ID || !mIsAttachedToWindow) {
+            return null;
+        }
+        View v = findViewById(info.autoAdvanceViewId);
+        return (v instanceof Advanceable) ? (Advanceable) v : null;
+    }
+
+    private void maybeRegisterAutoAdvance() {
+        Handler handler = getHandler();
+        boolean shouldRegisterAutoAdvance = getWindowVisibility() == VISIBLE && handler != null
+                && (sAutoAdvanceWidgetIds.indexOfKey(getAppWidgetId()) >= 0);
+        if (shouldRegisterAutoAdvance != mIsAutoAdvanceRegistered) {
+            mIsAutoAdvanceRegistered = shouldRegisterAutoAdvance;
+            if (mAutoAdvanceRunnable == null) {
+                mAutoAdvanceRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        runAutoAdvance();
+                    }
+                };
+            }
+
+            handler.removeCallbacks(mAutoAdvanceRunnable);
+            scheduleNextAdvance();
+        }
+    }
+
+    private void scheduleNextAdvance() {
+        if (!mIsAutoAdvanceRegistered) {
+            return;
+        }
+        long now = SystemClock.uptimeMillis();
+        long advanceTime = now + (ADVANCE_INTERVAL - (now % ADVANCE_INTERVAL)) +
+                ADVANCE_STAGGER * sAutoAdvanceWidgetIds.indexOfKey(getAppWidgetId());
+        Handler handler = getHandler();
+        if (handler != null) {
+            handler.postAtTime(mAutoAdvanceRunnable, advanceTime);
+        }
+    }
+
+    private void runAutoAdvance() {
+        Advanceable target = getAdvanceable();
+        if (target != null) {
+            target.advance();
+        }
+        scheduleNextAdvance();
+    }
+
+    public void setScaleToFit(float scale) {
+        mScaleToFit = scale;
+        setScaleX(scale);
+        setScaleY(scale);
+    }
+
+    public float getScaleToFit() {
+        return mScaleToFit;
+    }
+
+    public void setTranslationForCentering(float x, float y) {
+        mTranslationForCentering.set(x, y);
+        setTranslationX(x);
+        setTranslationY(y);
+    }
+
+    public PointF getTranslationForCentering() {
+        return mTranslationForCentering;
     }
 }

@@ -27,14 +27,19 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"ආරක්ෂිත ආකාරය තුළ බාගන්න ලද යෙදුම් අබල කරන්න"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"සුරක්ෂිත ආකාරය තුළ විජටය අබල කරන ලදි"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"කෙටි මග ලබා ගත නොහැකිය"</string>
+    <string name="home_screen" msgid="806512411299847073">"මුල් පිටු තිරය"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"අභිරුචි ක්‍රියා"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"විජට් එක ස්පර්ශ කර අහුලා ගැනීමට අල්ලාගෙන සිටින්න."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"විජට් එකක් අහුලා ගැනීමට හෝ අභිරුචි ක්‍රියා කිරීමට ඩබල් ටැප් කර අල්ලා ගෙන සිටින්න."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"පළල %1$d උස %2$d"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"අතින් ස්ථානගත කිරීමට ස්පර්ශ කර අල්ලාගෙන සිටින්න"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"ස්වයංක්‍රියව එක් කරන්න"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"යෙදුම් සෙවීම"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"යෙදුම් පූරණය වෙමින්…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" සමග ගැළපෙන යෙදුම් හමු නොවිණි"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"තව යෙදුම් සඳහා සොයන්න"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"දැනුම්දීම්"</string>
     <string name="out_of_space" msgid="4691004494942118364">"මෙම මුල් පිටු තිරය මත තවත් අවසර නැත."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ප්‍රියතම දෑ ඇති තැටියේ තවත් ඉඩ නොමැත"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"යෙදුම් ලැයිස්තුව"</string>
@@ -71,6 +76,14 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"මුල් පිටු තිරය කරකැවීමට ඉඩ දෙන්න"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"දුරකථනය කරකවන විට"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"වත්මන් සංදර්ශක සැකසීම් කරකැවීමට සහාය නොදක්වයි"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"මුල් පිටු තිරය වෙත අයිකනය එක් කරන්න"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"නව යෙදුම් සඳහා"</string>
+    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
+    <skip />
+    <!-- no translation found for icon_shape_no_override (3678524428085518367) -->
+    <skip />
+    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
+    <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"නොදනී"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ඉවත් කරන්න"</string>
     <string name="abandoned_search" msgid="891119232568284442">"සොයන්න"</string>
@@ -78,6 +91,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"මෙම නිරුපකයට යෙදුම ස්ථාපනය කර නොමැත. ඔබට එය ඉවත් කළ හැක, හෝ යෙදුම් සඳහා සොයන්න සහ අතින් ස්ථාපනය කරන්න."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> බාගත කරමින්, <xliff:g id="PROGRESS">%2$s</xliff:g> සම්පූර්ණයි"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ස්ථාපනය කිරීමට බලා සිටිමින්"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> විජට්"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"මුල් තිරය වෙත එක් කරන්න"</string>
     <string name="action_move_here" msgid="2170188780612570250">"මෙතනට අයිතමය ගෙන එන්න"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"අයිතමය මුල් තිරය වෙත එකතු කරන ලදි"</string>
@@ -88,7 +102,7 @@
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"ප්‍රියතම ස්ථානය <xliff:g id="NUMBER">%1$s</xliff:g> වෙත ගෙන යන්න"</string>
     <string name="item_moved" msgid="4606538322571412879">"අයිතමය ගෙන යන ලදි"</string>
     <string name="add_to_folder" msgid="9040534766770853243">"ෆෝල්ඩරය එක් කරන්න: <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="add_to_folder_with_app" msgid="4534929978967147231">"<xliff:g id="NAME">%1$s</xliff:g> සමග ෆෝල්ඩරය වෙත එකතු කරන්න"</string>
+    <string name="add_to_folder_with_app" msgid="4534929978967147231">"<xliff:g id="NAME">%1$s</xliff:g> සමඟ ෆෝල්ඩරය වෙත එක් කරන්න"</string>
     <string name="added_to_folder" msgid="4793259502305558003">"අයිතමය ෆෝඩරය වෙතට එක් කරන ලදි"</string>
     <string name="create_folder_with" msgid="4050141361160214248">"මේ සමග ෆෝල්ඩරය සාදන්න: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"ෆෝල්ඩරය සාදන ලදි"</string>

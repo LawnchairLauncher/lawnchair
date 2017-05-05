@@ -54,11 +54,6 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
         super(context, appWidgetHost, callback, sourceRes, layoutId, TAG_FAVORITES);
     }
 
-    public DefaultLayoutParser(Context context, AppWidgetHost appWidgetHost,
-            LayoutParserCallback callback, Resources sourceRes, int layoutId, String rootTag) {
-        super(context, appWidgetHost, callback, sourceRes, layoutId, rootTag);
-    }
-
     @Override
     protected HashMap<String, TagParser> getFolderElementsMap() {
         return getFolderElementsMap(mSourceRes);

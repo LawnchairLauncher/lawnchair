@@ -25,7 +25,6 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -38,11 +37,12 @@ import android.widget.TextView;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.logging.UserEventDispatcher;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+import com.android.launcher3.util.Themes;
 
 public class Hotseat extends FrameLayout
-        implements UserEventDispatcher.LaunchSourceProvider {
+        implements UserEventDispatcher.LogContainerProvider {
 
     private CellLayout mContent;
 
@@ -70,7 +70,7 @@ public class Hotseat extends FrameLayout
         mLauncher = Launcher.getLauncher(context);
         mHasVerticalHotseat = mLauncher.getDeviceProfile().isVerticalBarLayout();
         mBackgroundColor = ColorUtils.setAlphaComponent(
-                ContextCompat.getColor(context, R.color.all_apps_container_color), 0);
+                Themes.getAttrColor(context, android.R.attr.colorPrimary), 0);
         mBackground = new ColorDrawable(mBackgroundColor);
         setBackground(mBackground);
     }
@@ -113,12 +113,11 @@ public class Hotseat extends FrameLayout
         super.onFinishInflate();
         DeviceProfile grid = mLauncher.getDeviceProfile();
         mContent = (CellLayout) findViewById(R.id.layout);
-        if (grid.isLandscape && !grid.isLargeTablet) {
-            mContent.setGridSize(1, (int) grid.inv.numHotseatIcons);
+        if (grid.isVerticalBarLayout()) {
+            mContent.setGridSize(1, grid.inv.numHotseatIcons);
         } else {
-            mContent.setGridSize((int) grid.inv.numHotseatIcons, 1);
+            mContent.setGridSize(grid.inv.numHotseatIcons, 1);
         }
-        mContent.setIsHotseat(true);
 
         resetLayout();
     }
@@ -129,14 +128,15 @@ public class Hotseat extends FrameLayout
         if (!FeatureFlags.NO_ALL_APPS_ICON) {
             // Add the Apps button
             Context context = getContext();
-            int allAppsButtonRank = mLauncher.getDeviceProfile().inv.getAllAppsButtonRank();
+            DeviceProfile grid = mLauncher.getDeviceProfile();
+            int allAppsButtonRank = grid.inv.getAllAppsButtonRank();
 
             LayoutInflater inflater = LayoutInflater.from(context);
             TextView allAppsButton = (TextView)
                     inflater.inflate(R.layout.all_apps_button, mContent, false);
             Drawable d = context.getResources().getDrawable(R.drawable.all_apps_button_icon);
+            d.setBounds(0, 0, grid.iconSizePx, grid.iconSizePx);
 
-            mLauncher.resizeIconDrawable(d);
             int scaleDownPx = getResources().getDimensionPixelSize(R.dimen.all_apps_button_scale_down);
             Rect bounds = d.getBounds();
             d.setBounds(bounds.left, bounds.top + scaleDownPx / 2, bounds.right - scaleDownPx,
@@ -167,15 +167,15 @@ public class Hotseat extends FrameLayout
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         // We don't want any clicks to go through to the hotseat unless the workspace is in
         // the normal state or an accessible drag is in progress.
-        return mLauncher.getWorkspace().workspaceInModalState() &&
+        return !mLauncher.getWorkspace().workspaceIconsCanBeDragged() &&
                 !mLauncher.getAccessibilityDelegate().isInAccessibleDrag();
     }
 
     @Override
-    public void fillInLaunchSourceData(View v, ItemInfo info, Target target, Target targetParent) {
+    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
         target.gridX = info.cellX;
         target.gridY = info.cellY;
-        targetParent.containerType = LauncherLogProto.HOTSEAT;
+        targetParent.containerType = ContainerType.HOTSEAT;
     }
 
     public void updateColor(ExtractedColors extractedColors, boolean animate) {

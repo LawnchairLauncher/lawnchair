@@ -33,8 +33,6 @@
     <dimen name="dynamic_grid_workspace_page_spacing">8dp</dimen>
     <!-- Minimum space between workspace and hotseat in spring loaded mode -->
     <dimen name="dynamic_grid_min_spring_loaded_space">8dp</dimen>
-    <dimen name="dynamic_grid_container_land_left_padding">118dp</dimen>
-    <dimen name="dynamic_grid_container_land_right_padding">66dp</dimen>
 
 <!-- Drop target bar -->
     <dimen name="dynamic_grid_drop_target_size">48dp</dimen>
@@ -54,6 +52,7 @@
 
     <dimen name="container_fastscroll_thumb_min_width">5dp</dimen>
     <dimen name="container_fastscroll_thumb_max_width">9dp</dimen>
+    <dimen name="container_fastscroll_popup_margin">18dp</dimen>
     <dimen name="container_fastscroll_thumb_height">72dp</dimen>
     <dimen name="container_fastscroll_thumb_touch_inset">-24dp</dimen>
     <dimen name="container_fastscroll_popup_size">72dp</dimen>
@@ -61,11 +60,8 @@
 
 <!-- All Apps -->
     <dimen name="all_apps_button_scale_down">0dp</dimen>
-    <dimen name="all_apps_grid_view_start_margin">0dp</dimen>
-    <dimen name="all_apps_grid_section_y_offset">8dp</dimen>
-    <dimen name="all_apps_grid_section_text_size">24sp</dimen>
+    <dimen name="all_apps_search_bar_field_height">48dp</dimen>
     <dimen name="all_apps_search_bar_height">60dp</dimen>
-    <dimen name="all_apps_search_bar_margin_top">12dp</dimen>
     <dimen name="all_apps_search_bar_icon_margin_right">4dp</dimen>
     <dimen name="all_apps_search_bar_icon_margin_top">1dp</dimen>
     <dimen name="all_apps_list_bottom_padding">8dp</dimen>
@@ -85,11 +81,15 @@
 
     <dimen name="all_apps_divider_margin_vertical">8dp</dimen>
 
-    <dimen name="all_apps_bezel_swipe_height">24dp</dimen>
-
 <!-- Widget tray -->
     <dimen name="widget_preview_label_vertical_padding">8dp</dimen>
-    <dimen name="widget_preview_label_horizontal_padding">8dp</dimen>
+    <dimen name="widget_preview_label_horizontal_padding">16dp</dimen>
+
+    <dimen name="widget_preview_shadow_blur">0.5dp</dimen>
+    <dimen name="widget_preview_key_shadow_distance">1dp</dimen>
+    <dimen name="widget_preview_corner_radius">2dp</dimen>
+    <dimen name="widget_preview_cell_divider_width">0.5dp</dimen>
+    <dimen name="widget_preview_shortcut_padding">8dp</dimen>
 
     <dimen name="widget_section_height">56dp</dimen>
     <dimen name="widget_section_icon_size">40dp</dimen>
@@ -113,14 +113,6 @@
     <!-- the distance an icon must be dragged before button drop targets accept it -->
     <dimen name="drag_distanceThreshold">30dp</dimen>
 
-    <!-- the area at the edge of the screen that makes the workspace go left
-         or right while you're dragging. -->
-    <dimen name="scroll_zone">20dp</dimen>
-
-    <!-- When dragging an item, how much bigger (fixed dps) the dragged view
-         should be. If 0, it will not be scaled at all. -->
-    <dimen name="dragViewScale">12dp</dimen>
-
     <!-- Elevation for the drag view. It should be larger than elevation of all other drag sources
          and drop targets like all-apps and folders -->
     <dimen name="drag_elevation">30dp</dimen>
@@ -128,9 +120,6 @@
     <dimen name="drag_flingToDeleteMinVelocity">-1500dp</dimen>
 
     <dimen name="spring_loaded_panel_border">1dp</dimen>
-
-<!-- Theme -->
-    <dimen name="quantum_panel_outer_padding">4dp</dimen>
 
 <!-- Folders -->
     <!-- The size of the padding on the preview background drawable -->
@@ -161,30 +150,65 @@
 
 <!-- Deep shortcuts -->
     <dimen name="deep_shortcuts_elevation">9dp</dimen>
-    <dimen name="bg_pill_width">208dp</dimen>
-    <dimen name="bg_pill_height">48dp</dimen>
-    <dimen name="bg_pill_radius">24dp</dimen>
-    <dimen name="deep_shortcuts_spacing">4dp</dimen>
-    <dimen name="deferred_drag_view_scale">6dp</dimen>
+    <dimen name="bg_popup_item_width">208dp</dimen>
+    <dimen name="bg_popup_item_height">56dp</dimen>
+    <dimen name="popup_items_spacing">4dp</dimen>
+    <dimen name="pre_drag_view_scale">6dp</dimen>
     <!-- an icon with shortcuts must be dragged this far before the container is removed. -->
     <dimen name="deep_shortcuts_start_drag_threshold">16dp</dimen>
     <dimen name="deep_shortcut_icon_size">36dp</dimen>
-    <dimen name="deep_shortcut_padding_start">6dp</dimen>
-    <dimen name="deep_shortcut_padding_end">16dp</dimen>
     <dimen name="deep_shortcut_drawable_padding">8dp</dimen>
-    <dimen name="deep_shortcut_anim_translation_y">5dp</dimen>
     <dimen name="deep_shortcut_drag_handle_size">16dp</dimen>
-    <dimen name="deep_shortcuts_arrow_width">10dp</dimen>
-    <dimen name="deep_shortcuts_arrow_height">8dp</dimen>
-    <dimen name="deep_shortcuts_arrow_vertical_offset">-2dp</dimen>
-    <!-- deep_shortcut_padding_start + deep_shortcut_icon_size / 2 - deep_shortcuts_arrow_width / 2-->
+    <dimen name="popup_padding_start">6dp</dimen>
+    <dimen name="popup_padding_end">16dp</dimen>
+    <dimen name="popup_arrow_width">10dp</dimen>
+    <dimen name="popup_arrow_height">8dp</dimen>
+    <dimen name="popup_arrow_vertical_offset">-2dp</dimen>
+    <!-- popup_padding_start + deep_shortcut_icon_size / 2 -->
     <!-- Note that this works for right-aligned shortcuts, too, because
-         deep_shortcut_padding_end + deep_shortcut_drag_handle_size / 2 - deep_shortcuts_arrow_width / 2
-         also happens to equal 19dp-->
-    <dimen name="deep_shortcuts_arrow_horizontal_offset">19dp</dimen>
+         popup_padding_end + deep_shortcut_drag_handle_size / 2 also equals 24dp-->
+    <dimen name="popup_arrow_horizontal_center">24dp</dimen>
+    <!-- popup_arrow_center - popup_arrow_width / 2-->
+    <dimen name="popup_arrow_horizontal_offset">19dp</dimen>
+    <dimen name="popup_arrow_corner_radius">2dp</dimen>
+    <!-- popup_item_width - icon_size - padding_start - drawable_padding -->
+    <dimen name="deep_shortcuts_divider_width">158dp</dimen>
+    <dimen name="system_shortcut_icon_size">24dp</dimen>
+    <!-- popup_arrow_center - system_shortcut_icon_size / 2 -->
+    <dimen name="system_shortcut_margin_start">12dp</dimen>
+    <dimen name="system_shortcut_header_height">40dp</dimen>
+    <dimen name="system_shortcut_header_icon_touch_size">48dp</dimen>
+    <!-- (touch_size - icon_size) / 2 -->
+    <dimen name="system_shortcut_header_icon_padding">12dp</dimen>
+
+<!-- Icon badges (with notification counts) -->
+    <dimen name="badge_small_padding">0dp</dimen>
+    <dimen name="badge_large_padding">3dp</dimen>
+
+<!-- Notifications -->
+    <dimen name="bg_round_rect_radius">12dp</dimen>
+    <dimen name="notification_padding_start">16dp</dimen>
+    <dimen name="notification_padding_end">12dp</dimen>
+    <!-- notification_padding_end + (icon_size - footer_icon_size) / 2 -->
+    <dimen name="notification_footer_icon_row_padding">15dp</dimen>
+    <dimen name="notification_header_height">32dp</dimen>
+    <dimen name="notification_main_height">80dp</dimen>
+    <dimen name="notification_footer_height">32dp</dimen>
+    <dimen name="notification_header_text_size">13sp</dimen>
+    <dimen name="notification_header_count_text_size">12sp</dimen>
+    <dimen name="notification_main_text_size">15sp</dimen>
+    <dimen name="notification_icon_size">24dp</dimen>
+    <dimen name="notification_footer_icon_size">18dp</dimen>
+    <!-- notification_icon_size + notification_padding_end + 16dp padding between icon and text -->
+    <dimen name="notification_main_text_padding_end">52dp</dimen>
+    <dimen name="notification_elevation">2dp</dimen>
+    <dimen name="horizontal_ellipsis_size">18dp</dimen>
+    <!-- arrow_horizontal_offset - (ellipsis_size - arrow_width) / 2 -->
+    <dimen name="horizontal_ellipsis_offset">15dp</dimen>
+    <dimen name="popup_item_divider_height">0.5dp</dimen>
+    <dimen name="swipe_helper_falsing_threshold">70dp</dimen>
 
 <!-- Other -->
     <!-- Approximates the system status bar height. Not guaranteed to be always be correct. -->
     <dimen name="status_bar_height">24dp</dimen>
-
 </resources>

@@ -35,12 +35,14 @@ LOCAL_SRC_FILES := \
 
 LOCAL_RESOURCE_DIR := \
     $(LOCAL_PATH)/res \
-    frameworks/support/v7/recyclerview/res
+    prebuilts/sdk/current/support/v7/recyclerview/res \
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 
 LOCAL_PROTOC_OPTIMIZE_TYPE := nano
 LOCAL_PROTOC_FLAGS := --proto_path=$(LOCAL_PATH)/protos/
+LOCAL_PROTO_JAVA_OUTPUT_PARAMS := enum_style=java
+
 LOCAL_AAPT_FLAGS := \
     --auto-add-overlay \
     --extra-packages android.support.v7.recyclerview \
@@ -48,6 +50,7 @@ LOCAL_AAPT_FLAGS := \
 LOCAL_SDK_VERSION := current
 LOCAL_MIN_SDK_VERSION := 21
 LOCAL_PACKAGE_NAME := Launcher3
+LOCAL_PRIVILEGED_MODULE := true
 LOCAL_OVERRIDES_PACKAGES := Home Launcher2
 
 LOCAL_FULL_LIBS_MANIFEST_FILES := $(LOCAL_PATH)/AndroidManifest-common.xml
@@ -65,6 +68,7 @@ LOCAL_SRC_FILES := $(call all-proto-files-under, protos)
 
 LOCAL_PROTOC_OPTIMIZE_TYPE := nano
 LOCAL_PROTOC_FLAGS := --proto_path=$(LOCAL_PATH)/protos/
+LOCAL_PROTO_JAVA_OUTPUT_PARAMS := enum_style=java
 
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE := launcher_proto_lib

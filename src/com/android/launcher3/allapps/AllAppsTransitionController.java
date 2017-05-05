@@ -7,24 +7,24 @@ import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.graphics.Color;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 
-import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TouchController;
 
 /**
@@ -46,11 +46,10 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private final Interpolator mAccelInterpolator = new AccelerateInterpolator(2f);
     private final Interpolator mDecelInterpolator = new DecelerateInterpolator(3f);
     private final Interpolator mFastOutSlowInInterpolator = new FastOutSlowInInterpolator();
-    private final ScrollInterpolator mScrollInterpolator = new ScrollInterpolator();
+    private final VerticalPullDetector.ScrollInterpolator mScrollInterpolator
+            = new VerticalPullDetector.ScrollInterpolator();
 
-    private static final float ANIMATION_DURATION = 1200;
     private static final float PARALLAX_COEFFICIENT = .125f;
-    private static final float FAST_FLING_PX_MS = 10;
     private static final int SINGLE_FRAME_MS = 16;
 
     private AllAppsContainerView mAppsView;
@@ -84,7 +83,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     private static final float RECATCH_REJECTION_FRACTION = .0875f;
 
-    private int mBezelSwipeUpHeight;
     private long mAnimationDuration;
 
     private AnimatorSet mCurrentAnimation;
@@ -100,15 +98,13 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mDetector.setListener(this);
         mShiftRange = DEFAULT_SHIFT_RANGE;
         mProgress = 1f;
-        mBezelSwipeUpHeight = l.getResources().getDimensionPixelSize(
-                R.dimen.all_apps_bezel_swipe_height);
 
         mEvaluator = new ArgbEvaluator();
-        mAllAppsBackgroundColor = ContextCompat.getColor(l, R.color.all_apps_container_color);
+        mAllAppsBackgroundColor = Themes.getAttrColor(l, android.R.attr.colorPrimary);
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
+    public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             mNoIntercept = false;
             if (!mLauncher.isAllAppsVisible() && mLauncher.getWorkspace().workspaceInModalState()) {
@@ -116,7 +112,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             } else if (mLauncher.isAllAppsVisible() &&
                     !mAppsView.shouldContainerScroll(ev)) {
                 mNoIntercept = true;
-            } else if (!mLauncher.isAllAppsVisible() && !shouldPossiblyIntercept(ev)) {
+            } else if (AbstractFloatingView.getTopOpenView(mLauncher) != null) {
                 mNoIntercept = true;
             } else {
                 // Now figure out which direction scroll events the controller will start
@@ -144,6 +140,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                         ignoreSlopWhenSettling);
             }
         }
+
         if (mNoIntercept) {
             return false;
         }
@@ -154,27 +151,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         return mDetector.isDraggingOrSettling();
     }
 
-    private boolean shouldPossiblyIntercept(MotionEvent ev) {
-        DeviceProfile grid = mLauncher.getDeviceProfile();
-        if (mDetector.isIdleState()) {
-            if (grid.isVerticalBarLayout()) {
-                if (ev.getY() > mLauncher.getDeviceProfile().heightPx - mBezelSwipeUpHeight) {
-                    return true;
-                }
-            } else {
-                if (mLauncher.getDragLayer().isEventOverHotseat(ev) ||
-                        mLauncher.getDragLayer().isEventOverPageIndicator(ev)) {
-                    return true;
-                }
-            }
-            return false;
-        } else {
-            return true;
-        }
-    }
-
     @Override
-    public boolean onTouchEvent(MotionEvent ev) {
+    public boolean onControllerTouchEvent(MotionEvent ev) {
         return mDetector.onTouchEvent(ev);
     }
 
@@ -221,9 +199,9 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
                 if (!mLauncher.isAllAppsVisible()) {
                     mLauncher.getUserEventDispatcher().logActionOnContainer(
-                            LauncherLogProto.Action.FLING,
-                            LauncherLogProto.Action.UP,
-                            LauncherLogProto.HOTSEAT);
+                            Action.Touch.FLING,
+                            Action.Direction.UP,
+                            ContainerType.HOTSEAT);
                 }
                 mLauncher.showAppsView(true /* animated */,
                         false /* updatePredictedApps */,
@@ -241,9 +219,9 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                 calculateDuration(velocity, Math.abs(mAppsView.getTranslationY()));
                 if (!mLauncher.isAllAppsVisible()) {
                     mLauncher.getUserEventDispatcher().logActionOnContainer(
-                            LauncherLogProto.Action.SWIPE,
-                            LauncherLogProto.Action.UP,
-                            LauncherLogProto.HOTSEAT);
+                            Action.Touch.SWIPE,
+                            Action.Direction.UP,
+                            ContainerType.HOTSEAT);
                 }
                 mLauncher.showAppsView(true, /* animated */
                         false /* updatePredictedApps */,
@@ -282,7 +260,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         // Use a light status bar (dark icons) if all apps is behind at least half of the status
         // bar. If the status bar is already light due to wallpaper extraction, keep it that way.
         boolean forceLight = shift <= mStatusBarHeight / 2;
-        mLauncher.activateLightStatusBar(forceLight);
+        mLauncher.activateLightSystemBars(forceLight, true /* statusBar */, true /* navBar */);
     }
 
     /**
@@ -335,13 +313,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     private void calculateDuration(float velocity, float disp) {
-        // TODO: make these values constants after tuning.
-        float velocityDivisor = Math.max(2f, Math.abs(0.5f * velocity));
-        float travelDistance = Math.max(0.2f, disp / mShiftRange);
-        mAnimationDuration = (long) Math.max(100, ANIMATION_DURATION / velocityDivisor * travelDistance);
-        if (DBG) {
-            Log.d(TAG, String.format("calculateDuration=%d, v=%f, d=%f", mAnimationDuration, velocity, disp));
-        }
+        mAnimationDuration = mDetector.calculateDuration(velocity, disp / mShiftRange);
     }
 
     public boolean animateToAllApps(AnimatorSet animationOut, long duration) {
@@ -531,21 +503,4 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         setProgress(mProgress);
     }
 
-    static class ScrollInterpolator implements Interpolator {
-
-        boolean mSteeper;
-
-        public void setVelocityAtZero(float velocity) {
-            mSteeper = velocity > FAST_FLING_PX_MS;
-        }
-
-        public float getInterpolation(float t) {
-            t -= 1.0f;
-            float output = t * t * t;
-            if (mSteeper) {
-                output *= t * t; // Make interpolation initial slope steeper
-            }
-            return output + 1;
-        }
-    }
 }

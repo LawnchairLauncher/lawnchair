@@ -21,6 +21,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewDebug;
+import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.AccelerateInterpolator;
@@ -56,11 +57,6 @@ public class DropTargetBar extends LinearLayout implements DragController.DragLi
 
     private ViewPropertyAnimator mCurrentAnimation;
 
-    // Drop targets
-    private ButtonDropTarget mDeleteDropTarget;
-    private ButtonDropTarget mAppInfoDropTarget;
-    private ButtonDropTarget mUninstallDropTarget;
-
     public DropTargetBar(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -73,30 +69,27 @@ public class DropTargetBar extends LinearLayout implements DragController.DragLi
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        // Get the individual components
-        mDeleteDropTarget = (ButtonDropTarget) findViewById(R.id.delete_target_text);
-        mAppInfoDropTarget = (ButtonDropTarget) findViewById(R.id.info_target_text);
-        mUninstallDropTarget = (ButtonDropTarget) findViewById(R.id.uninstall_target_text);
-
-        mDeleteDropTarget.setDropTargetBar(this);
-        mAppInfoDropTarget.setDropTargetBar(this);
-        mUninstallDropTarget.setDropTargetBar(this);
-
         // Initialize with hidden state
         setAlpha(0f);
     }
 
     public void setup(DragController dragController) {
         dragController.addDragListener(this);
-        dragController.setFlingToDeleteDropTarget(mDeleteDropTarget);
+        setupButtonDropTarget(this, dragController);
+    }
 
-        dragController.addDragListener(mDeleteDropTarget);
-        dragController.addDragListener(mAppInfoDropTarget);
-        dragController.addDragListener(mUninstallDropTarget);
-
-        dragController.addDropTarget(mDeleteDropTarget);
-        dragController.addDropTarget(mAppInfoDropTarget);
-        dragController.addDropTarget(mUninstallDropTarget);
+    private void setupButtonDropTarget(View view, DragController dragController) {
+        if (view instanceof ButtonDropTarget) {
+            ButtonDropTarget bdt = (ButtonDropTarget) view;
+            bdt.setDropTargetBar(this);
+            dragController.addDragListener(bdt);
+            dragController.addDropTarget(bdt);
+        } else if (view instanceof ViewGroup) {
+            ViewGroup vg = (ViewGroup) view;
+            for (int i = vg.getChildCount() - 1; i >= 0; i--) {
+                setupButtonDropTarget(vg.getChildAt(i), dragController);
+            }
+        }
     }
 
     private void animateToVisibility(boolean isVisible) {
