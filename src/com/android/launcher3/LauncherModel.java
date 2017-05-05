@@ -1049,7 +1049,8 @@ public class LauncherModel extends BroadcastReceiver
                                     info = c.loadSimpleShortcut();
 
                                     // Shortcuts are only available on the primary profile
-                                    if (pmHelper.isAppSuspended(targetPkg, c.user)) {
+                                    if (!TextUtils.isEmpty(targetPkg)
+                                            && pmHelper.isAppSuspended(targetPkg, c.user)) {
                                         disabledState |= ShortcutInfo.FLAG_DISABLED_SUSPENDED;
                                     }
 
