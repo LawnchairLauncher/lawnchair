@@ -741,7 +741,6 @@ public class LauncherProvider extends ContentProvider {
                     }
                 }
                 case 2:
-                    removeGhostWidgets(db);
                 case 3:
                     // data updated
                     return;
