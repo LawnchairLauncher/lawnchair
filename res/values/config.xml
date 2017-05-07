@@ -13,6 +13,10 @@
      easily override the app name without providing all translations -->
     <string name="derived_app_name" translatable="false">@string/app_name</string>
 
+    <!-- String representing the intent for search on the apps market. To specify a query, add
+    q=<query> to the data to the intent -->
+    <string name="market_search_intent" translatable="false">market://search?c=apps</string>
+
     <!-- Values for icon shape overrides. These should correspond to entries defined
      in icon_shape_override_paths_names -->
     <string-array name="icon_shape_override_paths_values">

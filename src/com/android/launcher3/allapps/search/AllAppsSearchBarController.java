@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.allapps;
+package com.android.launcher3.allapps.search;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Rect;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
@@ -34,16 +31,18 @@ import android.widget.TextView.OnEditorActionListener;
 import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.discovery.AppDiscoveryItem;
 import com.android.launcher3.discovery.AppDiscoveryUpdateState;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.PackageManagerHelper;
 
 import java.util.ArrayList;
 
 /**
  * An interface to a search box that AllApps can command.
  */
-public abstract class AllAppsSearchBarController
+public class AllAppsSearchBarController
         implements TextWatcher, OnEditorActionListener, ExtendedEditText.OnBackKeyListener {
 
     protected Launcher mLauncher;
@@ -88,9 +87,11 @@ public abstract class AllAppsSearchBarController
     }
 
     /**
-     * To be implemented by subclasses. This method will get called when the controller is set.
+     * This method will get called when the controller is set.
      */
-    protected abstract DefaultAppSearchAlgorithm onInitializeSearch();
+    public DefaultAppSearchAlgorithm onInitializeSearch() {
+        return new DefaultAppSearchAlgorithm(mApps.getApps());
+    }
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -114,7 +115,7 @@ public abstract class AllAppsSearchBarController
         }
     }
 
-    protected void refreshSearchResult() {
+    public void refreshSearchResult() {
         if (TextUtils.isEmpty(mQuery)) {
             return;
         }
@@ -135,7 +136,8 @@ public abstract class AllAppsSearchBarController
         if (query.isEmpty()) {
             return false;
         }
-        return mLauncher.startActivitySafely(v, createMarketSearchIntent(query), null);
+        return mLauncher.startActivitySafely(v,
+                PackageManagerHelper.getMarketSearchIntent(mLauncher, query), null);
     }
 
     @Override
@@ -186,27 +188,9 @@ public abstract class AllAppsSearchBarController
     }
 
     /**
-     * Creates a new market search intent.
-     */
-    public Intent createMarketSearchIntent(String query) {
-        Uri marketSearchUri = Uri.parse("market://search")
-                .buildUpon()
-                .appendQueryParameter("c", "apps")
-                .appendQueryParameter("q", query)
-                .build();
-        return new Intent(Intent.ACTION_VIEW).setData(marketSearchUri);
-    }
-
-    /**
      * Callback for getting search results.
      */
     public interface Callbacks {
-
-        /**
-         * Called when the bounds of the search bar has changed.
-         */
-        @Deprecated
-        void onBoundsChanged(Rect newBounds);
 
         /**
          * Called when the search is complete.
@@ -219,7 +203,6 @@ public abstract class AllAppsSearchBarController
          * Called when the search results should be cleared.
          */
         void clearSearchResult();
-
 
         /**
          * Called when the app discovery is providing an update of search, which can either be

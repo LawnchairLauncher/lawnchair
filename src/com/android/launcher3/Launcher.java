@@ -85,7 +85,6 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
-import com.android.launcher3.allapps.DefaultAppSearchController;
 import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -560,47 +559,6 @@ public class Launcher extends BaseActivity
 
     public boolean setLauncherCallbacks(LauncherCallbacks callbacks) {
         mLauncherCallbacks = callbacks;
-        mLauncherCallbacks.setLauncherSearchCallback(new Launcher.LauncherSearchCallbacks() {
-            private boolean mWorkspaceImportanceStored = false;
-            private boolean mHotseatImportanceStored = false;
-            private int mWorkspaceImportanceForAccessibility =
-                    View.IMPORTANT_FOR_ACCESSIBILITY_AUTO;
-            private int mHotseatImportanceForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_AUTO;
-
-            @Override
-            public void onSearchOverlayOpened() {
-                if (mWorkspaceImportanceStored || mHotseatImportanceStored) {
-                    return;
-                }
-                // The underlying workspace and hotseat are temporarily suppressed by the search
-                // overlay. So they shouldn't be accessible.
-                if (mWorkspace != null) {
-                    mWorkspaceImportanceForAccessibility =
-                            mWorkspace.getImportantForAccessibility();
-                    mWorkspace.setImportantForAccessibility(
-                            View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
-                    mWorkspaceImportanceStored = true;
-                }
-                if (mHotseat != null) {
-                    mHotseatImportanceForAccessibility = mHotseat.getImportantForAccessibility();
-                    mHotseat.setImportantForAccessibility(
-                            View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
-                    mHotseatImportanceStored = true;
-                }
-            }
-
-            @Override
-            public void onSearchOverlayClosed() {
-                if (mWorkspaceImportanceStored && mWorkspace != null) {
-                    mWorkspace.setImportantForAccessibility(mWorkspaceImportanceForAccessibility);
-                }
-                if (mHotseatImportanceStored && mHotseat != null) {
-                    mHotseat.setImportantForAccessibility(mHotseatImportanceForAccessibility);
-                }
-                mWorkspaceImportanceStored = false;
-                mHotseatImportanceStored = false;
-            }
-        });
         return true;
     }
 
@@ -1140,18 +1098,6 @@ public class Launcher extends BaseActivity
         public void setOverlayCallbacks(LauncherOverlayCallbacks callbacks);
     }
 
-    public interface LauncherSearchCallbacks {
-        /**
-         * Called when the search overlay is shown.
-         */
-        public void onSearchOverlayOpened();
-
-        /**
-         * Called when the search overlay is dismissed.
-         */
-        public void onSearchOverlayClosed();
-    }
-
     public interface LauncherOverlayCallbacks {
         public void onScrollChanged(float progress);
     }
@@ -1344,11 +1290,6 @@ public class Launcher extends BaseActivity
         // Setup Apps and Widgets
         mAppsView = (AllAppsContainerView) findViewById(R.id.apps_view);
         mWidgetsView = (WidgetsContainerView) findViewById(R.id.widgets_view);
-        if (mLauncherCallbacks != null && mLauncherCallbacks.getAllAppsSearchBarController() != null) {
-            mAppsView.setSearchBarController(mLauncherCallbacks.getAllAppsSearchBarController());
-        } else {
-            mAppsView.setSearchBarController(new DefaultAppSearchController());
-        }
 
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
         mDragController.setMoveTarget(mWorkspace);
@@ -1777,7 +1718,7 @@ public class Launcher extends BaseActivity
 
             // Reset the apps view
             if (!alreadyOnHome && mAppsView != null) {
-                mAppsView.scrollToTop();
+                mAppsView.reset();
             }
 
             // Reset the widgets view

@@ -1,4 +1,4 @@
-package com.android.launcher3.allapps;
+package com.android.launcher3.allapps.search;
 
 import android.content.res.Resources;
 import android.graphics.Outline;
