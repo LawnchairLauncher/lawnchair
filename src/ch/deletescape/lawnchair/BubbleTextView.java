@@ -32,6 +32,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -126,7 +127,7 @@ public class BubbleTextView extends TextView
         int defaultIconSize = grid.iconSizePx;
         if (display == DISPLAY_WORKSPACE) {
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.iconTextSizePx);
-            setTextColor(Color.parseColor(Utilities.getPrefs(getContext()).getString("pref_workspaceLabelColor","white")));
+            setTextColor(Utilities.getColor(getContext(), "pref_workspaceLabelColorHue", "-3", "pref_workspaceLabelColorVariation", "5"));
         } else if (display == DISPLAY_ALL_APPS) {
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.allAppsIconTextSizePx);
             setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
