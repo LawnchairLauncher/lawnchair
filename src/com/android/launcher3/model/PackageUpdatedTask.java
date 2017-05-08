@@ -226,7 +226,9 @@ public class PackageUpdatedTask extends ExtendedModelTask {
                         if (cn != null && matcher.matches(si, cn)) {
                             AppInfo appInfo = addedOrUpdatedApps.get(cn);
 
-                            if (si.isPromise() && mOp == OP_ADD) {
+                            // For system apps, package manager send OP_UPDATE when an
+                            // app is enabled.
+                            if (si.isPromise() && (mOp == OP_ADD || mOp == OP_UPDATE)) {
                                 if (si.hasStatusFlag(ShortcutInfo.FLAG_AUTOINSTALL_ICON)) {
                                     // Auto install icon
                                     LauncherAppsCompat launcherApps
