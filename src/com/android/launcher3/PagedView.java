@@ -1599,7 +1599,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                 mTotalMotionX += Math.abs(mLastMotionX + mLastMotionXRemainder - x);
 
                 boolean isFling = mTotalMotionX > MIN_LENGTH_FOR_FLING &&
-                        Math.abs(velocityX) > mFlingThresholdVelocity;
+                        shouldFlingForVelocity(velocityX);
 
                 if (!mFreeScroll) {
                     // In the case that the page is moved far to one direction and then is flung
@@ -1703,6 +1703,10 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         }
 
         return true;
+    }
+
+    protected boolean shouldFlingForVelocity(int velocityX) {
+        return Math.abs(velocityX) > mFlingThresholdVelocity;
     }
 
     private void resetTouchState() {
