@@ -12,5 +12,6 @@ bin/
 .gradle/
 local.properties
 build/
+captures/
 .DS_Store
 google-services.json
