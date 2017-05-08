@@ -104,7 +104,7 @@ public class ExtractedColors {
         decodeFromString(encodedString);
 
         //if (mColors[VERSION_INDEX] != VERSION) {
-            ExtractionUtils.startColorExtractionService(context);
+         //   ExtractionUtils.startColorExtractionService(context);
         //}
     }
 
