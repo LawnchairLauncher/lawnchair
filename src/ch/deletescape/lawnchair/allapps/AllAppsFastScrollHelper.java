@@ -29,7 +29,6 @@ public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallb
 
     private static final int INITIAL_TOUCH_SETTLING_DURATION = 100;
     private static final int REPEAT_TOUCH_SETTLING_DURATION = 200;
-    private static final float FAST_SCROLL_TOUCH_VELOCITY_BARRIER = 1900f;
 
     private AllAppsRecyclerView mRv;
     private AlphabeticalAppsList mApps;

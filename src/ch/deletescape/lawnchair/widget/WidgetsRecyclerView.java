@@ -32,7 +32,6 @@ import ch.deletescape.lawnchair.model.WidgetsModel;
  */
 public class WidgetsRecyclerView extends BaseRecyclerView {
 
-    private static final String TAG = "WidgetsRecyclerView";
     private WidgetsModel mWidgets;
 
     public WidgetsRecyclerView(Context context) {

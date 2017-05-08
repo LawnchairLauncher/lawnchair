@@ -73,10 +73,6 @@ public class AppInfo extends ItemInfo {
         return intent;
     }
 
-    protected Intent getRestoredIntent() {
-        return null;
-    }
-
     /**
      * Must not hold the Context.
      */

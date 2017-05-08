@@ -75,7 +75,6 @@ import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto.Target;
 @TargetApi(Build.VERSION_CODES.N)
 public class DeepShortcutsContainer extends LinearLayout implements View.OnLongClickListener,
         View.OnTouchListener, DragSource, DragController.DragListener {
-    private static final String TAG = "ShortcutsContainer";
 
     private final Point mIconShift = new Point();
 

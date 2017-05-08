@@ -26,11 +26,8 @@ import ch.deletescape.lawnchair.pageindicators.CaretDrawable;
 public class AllAppsCaretController {
     // Determines when the caret should flip. Should be accessed via getThreshold()
     private static final float CARET_THRESHOLD = 0.015f;
-    private static final float CARET_THRESHOLD_LAND = 0.5f;
     // The velocity at which the caret will peak (i.e. exhibit a 90 degree bend)
     private static final float PEAK_VELOCITY = VerticalPullDetector.RELEASE_VELOCITY_PX_MS * .7f;
-
-    private Launcher mLauncher;
 
     private ObjectAnimator mCaretAnimator;
     private CaretDrawable mCaretDrawable;
@@ -38,7 +35,6 @@ public class AllAppsCaretController {
     private boolean mThresholdCrossed;
 
     public AllAppsCaretController(CaretDrawable caret, Launcher launcher) {
-        mLauncher = launcher;
         mCaretDrawable = caret;
 
         final long caretAnimationDuration = launcher.getResources().getInteger(

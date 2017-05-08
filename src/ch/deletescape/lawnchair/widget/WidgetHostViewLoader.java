@@ -20,7 +20,6 @@ import ch.deletescape.lawnchair.dragndrop.DragOptions;
 import ch.deletescape.lawnchair.util.Thunk;
 
 public class WidgetHostViewLoader implements DragController.DragListener {
-    private static final String TAG = "WidgetHostViewLoader";
 
     /* Runnables to handle inflation and binding. */
     @Thunk

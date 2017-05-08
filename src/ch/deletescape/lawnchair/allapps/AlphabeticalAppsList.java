@@ -36,8 +36,6 @@ import ch.deletescape.lawnchair.util.ComponentKey;
  */
 public class AlphabeticalAppsList {
 
-    public static final String TAG = "AlphabeticalAppsList";
-
     private static final int FAST_SCROLL_FRACTION_DISTRIBUTE_BY_ROWS_FRACTION = 0;
     private static final int FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS = 1;
 
@@ -104,8 +102,6 @@ public class AlphabeticalAppsList {
         public int rowAppIndex;
         // The associated AppInfo for the app
         public AppInfo appInfo = null;
-        // The index of this app not including sections
-        public int appIndex = -1;
 
         public static AdapterItem asSectionBreak(int pos, SectionInfo section) {
             AdapterItem item = new AdapterItem();
@@ -117,14 +113,14 @@ public class AlphabeticalAppsList {
         }
 
         public static AdapterItem asPredictedApp(int pos, SectionInfo section, String sectionName,
-                                                 int sectionAppIndex, AppInfo appInfo, int appIndex) {
-            AdapterItem item = asApp(pos, section, sectionName, sectionAppIndex, appInfo, appIndex);
+                                                 int sectionAppIndex, AppInfo appInfo) {
+            AdapterItem item = asApp(pos, section, sectionName, sectionAppIndex, appInfo);
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON;
             return item;
         }
 
         public static AdapterItem asApp(int pos, SectionInfo section, String sectionName,
-                                        int sectionAppIndex, AppInfo appInfo, int appIndex) {
+                                        int sectionAppIndex, AppInfo appInfo) {
             AdapterItem item = new AdapterItem();
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_ICON;
             item.position = pos;
@@ -132,7 +128,6 @@ public class AlphabeticalAppsList {
             item.sectionName = sectionName;
             item.sectionAppIndex = sectionAppIndex;
             item.appInfo = appInfo;
-            item.appIndex = appIndex;
             return item;
         }
 
@@ -239,13 +234,6 @@ public class AlphabeticalAppsList {
      */
     public List<AppInfo> getApps() {
         return mApps;
-    }
-
-    /**
-     * Returns sections of all the current filtered applications.
-     */
-    public List<SectionInfo> getSections() {
-        return mSections;
     }
 
     /**
@@ -408,7 +396,6 @@ public class AlphabeticalAppsList {
         String lastSectionName = null;
         FastScrollSectionInfo lastFastScrollerSectionInfo = null;
         int position = 0;
-        int appIndex = 0;
 
         // Prepare to update the list of sections, filtered apps, etc.
         mFilteredApps.clear();
@@ -445,7 +432,7 @@ public class AlphabeticalAppsList {
                 // Add the predicted app items
                 for (AppInfo info : mPredictedApps) {
                     AdapterItem appItem = AdapterItem.asPredictedApp(position++, lastSectionInfo,
-                            "", lastSectionInfo.numApps++, info, appIndex++);
+                            "", lastSectionInfo.numApps++, info);
                     if (lastSectionInfo.firstAppItem == null) {
                         lastSectionInfo.firstAppItem = appItem;
                         lastFastScrollerSectionInfo.fastScrollToItem = appItem;
@@ -480,7 +467,7 @@ public class AlphabeticalAppsList {
 
             // Create an app item
             AdapterItem appItem = AdapterItem.asApp(position++, lastSectionInfo, sectionName,
-                    lastSectionInfo.numApps++, info, appIndex++);
+                    lastSectionInfo.numApps++, info);
             if (lastSectionInfo.firstAppItem == null) {
                 lastSectionInfo.firstAppItem = appItem;
                 lastFastScrollerSectionInfo.fastScrollToItem = appItem;

@@ -210,10 +210,6 @@ public class PreloadIconDrawable extends Drawable {
         }
     }
 
-    public float getAnimationProgress() {
-        return mAnimationProgress;
-    }
-
     public boolean hasNotCompleted() {
         return mAnimationProgress < ANIMATION_PROGRESS_COMPLETED;
     }

@@ -146,9 +146,6 @@ public class AutoInstallsLayout {
     private static final String HOTSEAT_CONTAINER_NAME =
             Favorites.containerToString(Favorites.CONTAINER_HOTSEAT);
 
-    private static final String ACTION_APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE =
-            "com.android.launcher.action.APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE";
-
     @Thunk
     final Context mContext;
     @Thunk

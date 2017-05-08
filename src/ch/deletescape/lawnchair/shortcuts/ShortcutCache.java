@@ -31,7 +31,6 @@ import java.util.List;
  */
 @TargetApi(Build.VERSION_CODES.N)
 public class ShortcutCache {
-    private static final String TAG = "ShortcutCache";
 
     private static final int CACHE_SIZE = 30; // Max number shortcuts we cache.
 

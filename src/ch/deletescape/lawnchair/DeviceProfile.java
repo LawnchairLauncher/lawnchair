@@ -76,9 +76,7 @@ public class DeviceProfile {
 
     // Page indicator
     private final int pageIndicatorHeightPx;
-    private final int pageIndicatorLandGutterLeftNavBarPx;
     private final int pageIndicatorLandGutterRightNavBarPx;
-    private final int pageIndicatorLandWorkspaceOffsetPx;
 
     // Workspace icons
     public int iconSizePx;
@@ -112,10 +110,6 @@ public class DeviceProfile {
     public int allAppsIconSizePx;
     public int allAppsIconDrawablePaddingPx;
     public float allAppsIconTextSizePx;
-
-    // Containers
-    private final int containerLeftPaddingPx;
-    private final int containerRightPaddingPx;
 
     // Drop Target
     public int dropTargetBarSizePx;
@@ -151,10 +145,6 @@ public class DeviceProfile {
         desiredWorkspaceLeftRightMarginPx = edgeMarginPx;
         pageIndicatorHeightPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_height);
-        pageIndicatorLandGutterLeftNavBarPx = res.getDimensionPixelSize(
-                R.dimen.dynamic_grid_page_indicator_gutter_width_left_nav_bar);
-        pageIndicatorLandWorkspaceOffsetPx =
-                res.getDimensionPixelSize(R.dimen.all_apps_caret_workspace_offset);
         pageIndicatorLandGutterRightNavBarPx = res.getDimensionPixelSize(
                 R.dimen.dynamic_grid_page_indicator_gutter_width_right_nav_bar);
         defaultPageSpacingPx =
@@ -180,10 +170,6 @@ public class DeviceProfile {
         hotseatBarTopPaddingPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_top_padding);
         hotseatLandGutterPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_gutter_width);
-        containerLeftPaddingPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_container_land_left_padding);
-        containerRightPaddingPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_container_land_right_padding);
 
         // Determine sizes.
         widthPx = width;

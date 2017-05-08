@@ -183,8 +183,6 @@ class TransitionStates {
  */
 public class WorkspaceStateTransitionAnimation {
 
-    public static final String TAG = "WorkspaceStateTransitionAnimation";
-
     @Thunk
     static final int BACKGROUND_FADE_OUT_DURATION = 350;
 

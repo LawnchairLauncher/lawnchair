@@ -30,7 +30,6 @@ import ch.deletescape.lawnchair.dynamicui.ExtractionUtils;
  * The fraction is 1 / number of pages and the position is based on the progress of the page scroll.
  */
 public class PageIndicatorLineCaret extends PageIndicator {
-    private static final String TAG = "PageIndicatorLine";
 
     private static final int LINE_ANIMATE_DURATION = ViewConfiguration.getScrollBarFadeDuration();
     private static final int LINE_FADE_DELAY = ViewConfiguration.getScrollDefaultDelay();

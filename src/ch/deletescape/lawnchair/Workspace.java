@@ -299,8 +299,6 @@ public class Workspace extends PagedView
     // Total over scrollX in the overlay direction.
     private int mUnboundedScrollX;
     private boolean mForceDrawAdjacentPages = false;
-    // Total over scrollX in the overlay direction.
-    private float mOverlayTranslation;
 
     // Handles workspace state transitions
     private WorkspaceStateTransitionAnimation mStateTransitionAnimation;
@@ -1250,8 +1248,6 @@ public class Workspace extends PagedView
         }
     }
 
-    private final Interpolator mAlphaInterpolator = new DecelerateInterpolator(3f);
-
     /**
      * Moves the workspace UI in the Y direction.
      *
@@ -1341,18 +1337,6 @@ public class Workspace extends PagedView
     }
 
     @Override
-    protected Matrix getPageShiftMatrix() {
-        if (Float.compare(mOverlayTranslation, 0) != 0) {
-            // The pages are translated by mOverlayTranslation. incorporate that in the
-            // visible page calculation by shifting everything back by that same amount.
-            mTempMatrix.set(getMatrix());
-            mTempMatrix.postTranslate(-mOverlayTranslation, 0);
-            return mTempMatrix;
-        }
-        return super.getPageShiftMatrix();
-    }
-
-    @Override
     protected void getEdgeVerticalPostion(int[] pos) {
         View child = getChildAt(getPageCount() - 1);
         pos[0] = child.getTop();
@@ -1394,10 +1378,6 @@ public class Workspace extends PagedView
         }
         mDelayedSnapToPageRunnable = r;
         snapToPage(whichPage, duration);
-    }
-
-    public void snapToScreenId(long screenId) {
-        snapToScreenId(screenId, null);
     }
 
     protected void snapToScreenId(long screenId, Runnable r) {

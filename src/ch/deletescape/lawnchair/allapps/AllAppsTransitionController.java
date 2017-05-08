@@ -38,8 +38,6 @@ import ch.deletescape.lawnchair.util.TouchController;
 public class AllAppsTransitionController implements TouchController, VerticalPullDetector.Listener,
         View.OnLayoutChangeListener {
 
-    private static final String TAG = "AllAppsTrans";
-
     private final Interpolator mAccelInterpolator = new AccelerateInterpolator(2f);
     private final Interpolator mDecelInterpolator = new DecelerateInterpolator(3f);
     private final Interpolator mFastOutSlowInInterpolator = new FastOutSlowInInterpolator();

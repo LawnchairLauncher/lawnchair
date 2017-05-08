@@ -48,7 +48,6 @@ import android.os.UserManager;
 import android.text.TextUtils;
 import android.util.Log;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
@@ -648,37 +647,6 @@ public class LauncherProvider extends ContentProvider {
                     ");");
         }
 
-        private void removeOrphanedItems(SQLiteDatabase db) {
-            // Delete items directly on the workspace who's screen id doesn't exist
-            //  "DELETE FROM favorites WHERE screen NOT IN (SELECT _id FROM workspaceScreens)
-            //   AND container = -100"
-            String removeOrphanedDesktopItems = "DELETE FROM " + Favorites.TABLE_NAME +
-                    " WHERE " +
-                    LauncherSettings.Favorites.SCREEN + " NOT IN (SELECT " +
-                    LauncherSettings.WorkspaceScreens._ID + " FROM " + WorkspaceScreens.TABLE_NAME + ")" +
-                    " AND " +
-                    LauncherSettings.Favorites.CONTAINER + " = " +
-                    LauncherSettings.Favorites.CONTAINER_DESKTOP;
-            db.execSQL(removeOrphanedDesktopItems);
-
-            // Delete items contained in folders which no longer exist (after above statement)
-            //  "DELETE FROM favorites  WHERE container <> -100 AND container <> -101 AND container
-            //   NOT IN (SELECT _id FROM favorites WHERE itemType = 2)"
-            String removeOrphanedFolderItems = "DELETE FROM " + Favorites.TABLE_NAME +
-                    " WHERE " +
-                    LauncherSettings.Favorites.CONTAINER + " <> " +
-                    LauncherSettings.Favorites.CONTAINER_DESKTOP +
-                    " AND "
-                    + LauncherSettings.Favorites.CONTAINER + " <> " +
-                    LauncherSettings.Favorites.CONTAINER_HOTSEAT +
-                    " AND "
-                    + LauncherSettings.Favorites.CONTAINER + " NOT IN (SELECT " +
-                    LauncherSettings.Favorites._ID + " FROM " + Favorites.TABLE_NAME +
-                    " WHERE " + LauncherSettings.Favorites.ITEM_TYPE + " = " +
-                    LauncherSettings.Favorites.ITEM_TYPE_FOLDER + ")";
-            db.execSQL(removeOrphanedFolderItems);
-        }
-
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             switch (oldVersion) {
@@ -708,160 +676,6 @@ public class LauncherProvider extends ContentProvider {
             db.execSQL("DROP TABLE IF EXISTS " + Favorites.TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + WorkspaceScreens.TABLE_NAME);
             onCreate(db);
-        }
-
-        /**
-         * Replaces all shortcuts of type {@link Favorites#ITEM_TYPE_SHORTCUT} which have a valid
-         * launcher activity target with {@link Favorites#ITEM_TYPE_APPLICATION}.
-         */
-        @Thunk
-        void convertShortcutsToLauncherActivities(SQLiteDatabase db) {
-            db.beginTransaction();
-            Cursor c = null;
-            SQLiteStatement updateStmt = null;
-
-            try {
-                // Only consider the primary user as other users can't have a shortcut.
-                long userSerial = getDefaultUserSerial();
-                c = db.query(Favorites.TABLE_NAME, new String[]{
-                                Favorites._ID,
-                                Favorites.INTENT,
-                        }, "itemType=" + Favorites.ITEM_TYPE_SHORTCUT + " AND profileId=" + userSerial,
-                        null, null, null, null);
-
-                updateStmt = db.compileStatement("UPDATE favorites SET itemType="
-                        + Favorites.ITEM_TYPE_APPLICATION + " WHERE _id=?");
-
-                final int idIndex = c.getColumnIndexOrThrow(Favorites._ID);
-                final int intentIndex = c.getColumnIndexOrThrow(Favorites.INTENT);
-
-                while (c.moveToNext()) {
-                    String intentDescription = c.getString(intentIndex);
-                    Intent intent;
-                    try {
-                        intent = Intent.parseUri(intentDescription, 0);
-                    } catch (URISyntaxException e) {
-                        Log.e(TAG, "Unable to parse intent", e);
-                        continue;
-                    }
-
-                    if (!Utilities.isLauncherAppTarget(intent)) {
-                        continue;
-                    }
-
-                    long id = c.getLong(idIndex);
-                    updateStmt.bindLong(1, id);
-                    updateStmt.executeUpdateDelete();
-                }
-                db.setTransactionSuccessful();
-            } catch (SQLException ex) {
-                Log.w(TAG, "Error deduping shortcuts", ex);
-            } finally {
-                db.endTransaction();
-                if (c != null) {
-                    c.close();
-                }
-                if (updateStmt != null) {
-                    updateStmt.close();
-                }
-            }
-        }
-
-        /**
-         * Recreates workspace table and migrates data to the new table.
-         */
-        public boolean recreateWorkspaceTable(SQLiteDatabase db) {
-            db.beginTransaction();
-            try {
-                ArrayList<Long> sortedIDs = new ArrayList<>();
-                long maxId = 0;
-                try (Cursor c = db.query(WorkspaceScreens.TABLE_NAME,
-                        new String[]{WorkspaceScreens._ID},
-                        null, null, null, null,
-                        WorkspaceScreens.SCREEN_RANK)) {
-                    while (c.moveToNext()) {
-                        Long id = c.getLong(0);
-                        if (!sortedIDs.contains(id)) {
-                            sortedIDs.add(id);
-                            maxId = Math.max(maxId, id);
-                        }
-                    }
-                }
-
-                db.execSQL("DROP TABLE IF EXISTS " + WorkspaceScreens.TABLE_NAME);
-                addWorkspacesTable(db, false);
-
-                // Add all screen ids back
-                int total = sortedIDs.size();
-                for (int i = 0; i < total; i++) {
-                    ContentValues values = new ContentValues();
-                    values.put(LauncherSettings.WorkspaceScreens._ID, sortedIDs.get(i));
-                    values.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
-                    addModifiedTime(values);
-                    db.insertOrThrow(WorkspaceScreens.TABLE_NAME, null, values);
-                }
-                db.setTransactionSuccessful();
-                mMaxScreenId = maxId;
-            } catch (SQLException ex) {
-                // Old version remains, which means we wipe old data
-                Log.e(TAG, ex.getMessage(), ex);
-                return false;
-            } finally {
-                db.endTransaction();
-            }
-            return true;
-        }
-
-        @Thunk
-        boolean updateFolderItemsRank(SQLiteDatabase db, boolean addRankColumn) {
-            db.beginTransaction();
-            try {
-                if (addRankColumn) {
-                    // Insert new column for holding rank
-                    db.execSQL("ALTER TABLE favorites ADD COLUMN rank INTEGER NOT NULL DEFAULT 0;");
-                }
-
-                // Get a map for folder ID to folder width
-                Cursor c = db.rawQuery("SELECT container, MAX(cellX) FROM favorites"
-                                + " WHERE container IN (SELECT _id FROM favorites WHERE itemType = ?)"
-                                + " GROUP BY container;",
-                        new String[]{Integer.toString(LauncherSettings.Favorites.ITEM_TYPE_FOLDER)});
-
-                while (c.moveToNext()) {
-                    db.execSQL("UPDATE favorites SET rank=cellX+(cellY*?) WHERE "
-                                    + "container=? AND cellX IS NOT NULL AND cellY IS NOT NULL;",
-                            new Object[]{c.getLong(1) + 1, c.getLong(0)});
-                }
-
-                c.close();
-                db.setTransactionSuccessful();
-            } catch (SQLException ex) {
-                // Old version remains, which means we wipe old data
-                Log.e(TAG, ex.getMessage(), ex);
-                return false;
-            } finally {
-                db.endTransaction();
-            }
-            return true;
-        }
-
-        private boolean addProfileColumn(SQLiteDatabase db) {
-            return addIntegerColumn(db, Favorites.PROFILE_ID, getDefaultUserSerial());
-        }
-
-        private boolean addIntegerColumn(SQLiteDatabase db, String columnName, long defaultValue) {
-            db.beginTransaction();
-            try {
-                db.execSQL("ALTER TABLE favorites ADD COLUMN "
-                        + columnName + " INTEGER NOT NULL DEFAULT " + defaultValue + ";");
-                db.setTransactionSuccessful();
-            } catch (SQLException ex) {
-                Log.e(TAG, ex.getMessage(), ex);
-                return false;
-            } finally {
-                db.endTransaction();
-            }
-            return true;
         }
 
         // Generates a new ID to use for an object in your database. This method should be only

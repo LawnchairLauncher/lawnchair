@@ -45,8 +45,6 @@ import ch.deletescape.lawnchair.ShortcutAndWidgetContainer;
  */
 public class FocusLogic {
 
-    private static final String TAG = "FocusLogic";
-
     /**
      * Item and page index related constant used by {@link #handleKeyEvent}.
      */

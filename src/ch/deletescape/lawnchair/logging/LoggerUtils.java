@@ -18,7 +18,6 @@ import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto.Target;
  * Note: switch statement cannot be replaced with reflection as proguard strips the constants
  */
 public class LoggerUtils {
-    private static final String TAG = "LoggerUtils";
 
     public static String getActionStr(LauncherLogProto.Action action) {
         switch (action.touch) {

@@ -62,7 +62,6 @@ public class ImportDataTask {
     public static final String KEY_DATA_IMPORT_SRC_PKG = "data_import_src_pkg";
     public static final String KEY_DATA_IMPORT_SRC_AUTHORITY = "data_import_src_authority";
 
-    private static final String TAG = "ImportDataTask";
     private static final int MIN_ITEM_COUNT_FOR_SUCCESSFUL_MIGRATION = 6;
     // Insert items progressively to avoid OOM exception when loading icons.
     private static final int BATCH_INSERT_SIZE = 15;

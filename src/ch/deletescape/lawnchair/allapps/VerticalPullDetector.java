@@ -12,8 +12,6 @@ import android.view.ViewConfiguration;
  */
 public class VerticalPullDetector {
 
-    private static final String TAG = "VerticalPullDetector";
-
     private float mTouchSlop;
 
     private int mScrollConditions;

@@ -80,8 +80,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     @Thunk
     Folder mFolder;
     private FolderInfo mInfo;
-    @Thunk
-    static boolean sStaticValuesDirty = true;
 
     public static final int NUM_ITEMS_IN_PREVIEW = ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 
@@ -187,7 +185,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     @Override
     protected Parcelable onSaveInstanceState() {
-        sStaticValuesDirty = true;
         return super.onSaveInstanceState();
     }
 

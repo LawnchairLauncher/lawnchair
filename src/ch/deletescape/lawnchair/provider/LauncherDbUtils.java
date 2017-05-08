@@ -30,20 +30,6 @@ import ch.deletescape.lawnchair.LauncherSettings.WorkspaceScreens;
  */
 public class LauncherDbUtils {
 
-    private static final String TAG = "LauncherDbUtils";
-
-    private static void renameScreen(SQLiteDatabase db, long oldScreen, long newScreen) {
-        String[] whereParams = new String[]{Long.toString(oldScreen)};
-
-        ContentValues values = new ContentValues();
-        values.put(WorkspaceScreens._ID, newScreen);
-        db.update(WorkspaceScreens.TABLE_NAME, values, "_id = ?", whereParams);
-
-        values.clear();
-        values.put(Favorites.SCREEN, newScreen);
-        db.update(Favorites.TABLE_NAME, values, "container = -100 and screen = ?", whereParams);
-    }
-
     /**
      * Parses the cursor containing workspace screens table and returns the list of screen IDs
      */

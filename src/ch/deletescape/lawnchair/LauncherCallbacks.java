@@ -107,8 +107,6 @@ public interface LauncherCallbacks {
     boolean startSearch(
             String initialQuery, boolean selectInitialQuery, Bundle appSearchData);
 
-    Bundle getAdditionalSearchWidgetOptions();
-
     /*
      * Extensions points for adding / replacing some other aspects of the Launcher experience.
      */
@@ -121,13 +119,6 @@ public interface LauncherCallbacks {
     AllAppsSearchBarController getAllAppsSearchBarController();
 
     List<ComponentKey> getPredictedApps();
-
-    int SEARCH_BAR_HEIGHT_NORMAL = 0, SEARCH_BAR_HEIGHT_TALL = 1;
-
-    /**
-     * Must return one of {@link #SEARCH_BAR_HEIGHT_NORMAL} or {@link #SEARCH_BAR_HEIGHT_TALL}
-     */
-    int getSearchBarHeight();
 
     /**
      * Sets the callbacks to allow reacting the actions of search overlays of the launcher.

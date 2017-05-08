@@ -51,10 +51,6 @@ public abstract class PackageInstallerCompat {
         public int state;
         public int progress;
 
-        public PackageInstallInfo(String packageName) {
-            this.packageName = packageName;
-        }
-
         public PackageInstallInfo(String packageName, int state, int progress) {
             this.packageName = packageName;
             this.state = state;

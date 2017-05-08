@@ -48,8 +48,6 @@ import ch.deletescape.lawnchair.model.WidgetItem;
  */
 public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
-    private static final String TAG = "WidgetCell";
-
     private static final int FADE_IN_DURATION_MS = 90;
 
     /**
@@ -88,7 +86,6 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     public WidgetCell(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        final Resources r = context.getResources();
         mLauncher = Launcher.getLauncher(context);
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
 
@@ -176,29 +173,10 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         ensurePreview();
     }
 
-    public int getActualItemWidth() {
-        ItemInfo info = (ItemInfo) getTag();
-        int[] size = getPreviewSize();
-        int cellWidth = mLauncher.getDeviceProfile().cellWidthPx;
-
-        return Math.min(size[0], info.spanX * cellWidth);
-    }
-
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         boolean handled = super.onTouchEvent(ev);
         return mStylusEventHelper.onMotionEvent(ev) || handled;
-    }
-
-    /**
-     * Helper method to get the string info of the tag.
-     */
-    private String getTagToString() {
-        if (getTag() instanceof PendingAddWidgetInfo ||
-                getTag() instanceof PendingAddShortcutInfo) {
-            return getTag().toString();
-        }
-        return "";
     }
 
     @Override

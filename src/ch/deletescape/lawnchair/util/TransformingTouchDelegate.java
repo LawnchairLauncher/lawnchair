@@ -34,7 +34,6 @@ public class TransformingTouchDelegate extends TouchDelegate {
     private final RectF mBounds;
 
     private final RectF mTouchCheckBounds;
-    private float mTouchExtension;
     private boolean mWasTouchOutsideBounds;
 
     private View mDelegateView;
@@ -53,18 +52,8 @@ public class TransformingTouchDelegate extends TouchDelegate {
         updateTouchBounds();
     }
 
-    public void extendTouchBounds(float extension) {
-        mTouchExtension = extension;
-        updateTouchBounds();
-    }
-
     private void updateTouchBounds() {
         mTouchCheckBounds.set(mBounds);
-        mTouchCheckBounds.inset(-mTouchExtension, -mTouchExtension);
-    }
-
-    public void setDelegateView(View view) {
-        mDelegateView = view;
     }
 
     /**

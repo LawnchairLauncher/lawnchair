@@ -94,14 +94,6 @@ public class TiledImageView extends FrameLayout {
         }
     };
 
-    public void onPause() {
-        mGLSurfaceView.onPause();
-    }
-
-    public void onResume() {
-        mGLSurfaceView.onResume();
-    }
-
     public void setTileSource(TileSource source, Runnable isReadyCallback) {
         synchronized (mLock) {
             mRenderer.source = source;

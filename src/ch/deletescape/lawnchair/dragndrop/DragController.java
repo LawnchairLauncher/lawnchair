@@ -53,7 +53,6 @@ import ch.deletescape.lawnchair.util.TouchController;
  * Class for initiating a drag within a view or across multiple views.
  */
 public class DragController implements DragDriver.EventListener, TouchController {
-    private static final String TAG = "Launcher.DragController";
 
     public static final int SCROLL_DELAY = 500;
     public static final int RESCROLL_DELAY = PagedView.PAGE_SNAP_ANIMATION_DURATION + 150;

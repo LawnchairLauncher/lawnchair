@@ -48,8 +48,6 @@ class HotseatIconKeyEventListener implements View.OnKeyListener {
 
 public class FocusHelper {
 
-    private static final String TAG = "FocusHelper";
-
     /**
      * Handles key events in paged folder.
      */

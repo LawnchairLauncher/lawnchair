@@ -44,8 +44,6 @@ import ch.deletescape.lawnchair.model.WidgetsModel;
  */
 public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
 
-    private static final String TAG = "WidgetsListAdapter";
-
     private final WidgetPreviewLoader mWidgetPreviewLoader;
     private final LayoutInflater mLayoutInflater;
 

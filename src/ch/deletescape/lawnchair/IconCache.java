@@ -151,21 +151,6 @@ public class IconCache {
         return (d != null) ? d : getFullResDefaultActivityIcon();
     }
 
-    public Drawable getFullResIcon(String packageName, int iconId) {
-        Resources resources;
-        try {
-            resources = mPackageManager.getResourcesForApplication(packageName);
-        } catch (PackageManager.NameNotFoundException e) {
-            resources = null;
-        }
-        if (resources != null) {
-            if (iconId != 0) {
-                return getFullResIcon(resources, iconId);
-            }
-        }
-        return getFullResDefaultActivityIcon();
-    }
-
     public Drawable getFullResIcon(ActivityInfo info) {
         Resources resources;
         try {
@@ -677,37 +662,6 @@ public class IconCache {
             }
         }
         return entry;
-    }
-
-    /**
-     * Pre-load an icon into the persistent cache.
-     * <p>
-     * <P>Queries for a component that does not exist in the package manager
-     * will be answered by the persistent cache.
-     *
-     * @param componentName the icon should be returned for this component
-     * @param icon          the icon to be persisted
-     * @param dpi           the native density of the icon
-     */
-    public void preloadIcon(ComponentName componentName, Bitmap icon, int dpi, String label,
-                            long userSerial, InvariantDeviceProfile idp) {
-        // TODO rescale to the correct native DPI
-        try {
-            PackageManager packageManager = mContext.getPackageManager();
-            packageManager.getActivityIcon(componentName);
-            // component is present on the system already, do nothing
-            return;
-        } catch (PackageManager.NameNotFoundException e) {
-            // pass
-        }
-
-        icon = Bitmap.createScaledBitmap(icon, idp.iconBitmapSize, idp.iconBitmapSize, true);
-        Bitmap lowResIcon = generateLowResIcon(icon, Color.TRANSPARENT);
-        ContentValues values = newContentValues(icon, lowResIcon, label,
-                componentName.getPackageName());
-        values.put(IconDB.COLUMN_COMPONENT, componentName.flattenToString());
-        values.put(IconDB.COLUMN_USER, userSerial);
-        mIconDb.insertOrReplace(values);
     }
 
     private boolean getEntryFromDB(ComponentKey cacheKey, CacheEntry entry, boolean lowRes) {

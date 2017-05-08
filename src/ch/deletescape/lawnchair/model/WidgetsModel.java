@@ -30,8 +30,6 @@ import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
  */
 public class WidgetsModel {
 
-    private static final String TAG = "WidgetsModel";
-
     /* List of packages that is tracked by this model. */
     private final ArrayList<PackageItemInfo> mPackageItemInfos;
 

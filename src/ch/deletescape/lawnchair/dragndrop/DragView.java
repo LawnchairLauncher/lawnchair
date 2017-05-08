@@ -155,10 +155,6 @@ public class DragView extends View {
         return mIntrinsicIconScale;
     }
 
-    public int getDragRegionLeft() {
-        return mDragRegion.left;
-    }
-
     public int getDragRegionTop() {
         return mDragRegion.top;
     }

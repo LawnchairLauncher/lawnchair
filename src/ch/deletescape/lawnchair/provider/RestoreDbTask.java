@@ -37,7 +37,6 @@ import ch.deletescape.lawnchair.Utilities;
  */
 public class RestoreDbTask {
 
-    private static final String TAG = "RestoreDbTask";
     private static final String RESTORE_TASK_PENDING = "restore_task_pending";
 
     private static final String INFO_COLUMN_NAME = "name";

@@ -176,14 +176,6 @@ public class TiledImageRenderer {
         mTileDecoder.start();
     }
 
-    public int getViewWidth() {
-        return mViewWidth;
-    }
-
-    public int getViewHeight() {
-        return mViewHeight;
-    }
-
     private void invalidate() {
         mParent.postInvalidate();
     }

@@ -51,8 +51,6 @@ import ch.deletescape.lawnchair.Utilities;
  */
 public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHolder> {
 
-    public static final String TAG = "AppsGridAdapter";
-
     // A section break in the grid
     public static final int VIEW_TYPE_SECTION_BREAK = 1;
     // A normal icon

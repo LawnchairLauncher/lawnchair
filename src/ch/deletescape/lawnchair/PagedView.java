@@ -58,7 +58,6 @@ import ch.deletescape.lawnchair.util.Thunk;
  * sequential list of "pages"
  */
 public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarchyChangeListener {
-    private static final String TAG = "PagedView";
     protected static final int INVALID_PAGE = -1;
 
     // the min drag distance for a fling to register, to prevent random page shifts
@@ -655,12 +654,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     @Override
     protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         return p instanceof LayoutParams;
-    }
-
-    public void addFullScreenPage(View page) {
-        LayoutParams lp = generateDefaultLayoutParams();
-        lp.isFullScreenPage = true;
-        super.addView(page, 0, lp);
     }
 
     public int getNormalChildHeight() {
@@ -2040,37 +2033,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     public boolean performLongClick() {
         mCancelTap = true;
         return super.performLongClick();
-    }
-
-    public static class SavedState extends BaseSavedState {
-        int currentPage = -1;
-
-        SavedState(Parcelable superState) {
-            super(superState);
-        }
-
-        @Thunk
-        SavedState(Parcel in) {
-            super(in);
-            currentPage = in.readInt();
-        }
-
-        @Override
-        public void writeToParcel(Parcel out, int flags) {
-            super.writeToParcel(out, flags);
-            out.writeInt(currentPage);
-        }
-
-        public static final Parcelable.Creator<SavedState> CREATOR =
-                new Parcelable.Creator<SavedState>() {
-                    public SavedState createFromParcel(Parcel in) {
-                        return new SavedState(in);
-                    }
-
-                    public SavedState[] newArray(int size) {
-                        return new SavedState[size];
-                    }
-                };
     }
 
     // Animate the drag view back to the original position
