@@ -51,7 +51,6 @@
         <!-- Fast scroller popup -->
         <TextView
             style="@style/FastScrollerPopup"
-            android:layout_below="@+id/search_container"
             android:id="@+id/fast_scroller_popup"
             android:layout_gravity="top|end"
             android:layout_marginEnd="@dimen/container_fastscroll_popup_margin" />

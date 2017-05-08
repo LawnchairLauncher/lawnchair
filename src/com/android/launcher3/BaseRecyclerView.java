@@ -82,10 +82,6 @@ public abstract class BaseRecyclerView extends RecyclerView
         }
     }
 
-    public void reset() {
-        mScrollbar.reattachThumbToScroll();
-    }
-
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();

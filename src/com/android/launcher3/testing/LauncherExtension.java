@@ -10,7 +10,6 @@ import android.widget.FrameLayout;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherCallbacks;
-import com.android.launcher3.allapps.AllAppsSearchBarController;
 import com.android.launcher3.util.ComponentKey;
 
 import java.io.FileDescriptor;
@@ -198,11 +197,6 @@ public class LauncherExtension extends Launcher {
         }
 
         @Override
-        public AllAppsSearchBarController getAllAppsSearchBarController() {
-            return null;
-        }
-
-        @Override
         public List<ComponentKey> getPredictedApps() {
             // To debug app predictions, enable AlphabeticalAppsList#DEBUG_PREDICTIONS
             return new ArrayList<>();
@@ -211,11 +205,6 @@ public class LauncherExtension extends Launcher {
         @Override
         public int getSearchBarHeight() {
             return SEARCH_BAR_HEIGHT_NORMAL;
-        }
-
-        @Override
-        public void setLauncherSearchCallback(Object callbacks) {
-            // Do nothing
         }
 
         @Override

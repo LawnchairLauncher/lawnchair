@@ -64,33 +64,9 @@
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="@dimen/container_fastscroll_popup_margin" />
 
-        <FrameLayout
-            android:id="@+id/search_container"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/all_apps_search_bar_height"
-            android:layout_gravity="center|top"
-            android:gravity="center|bottom"
-            android:orientation="horizontal"
-            android:saveEnabled="false">
-
-            <com.android.launcher3.ExtendedEditText
-                android:id="@+id/search_box_input"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/all_apps_search_bar_field_height"
-                android:background="@android:color/transparent"
-                android:layout_gravity="bottom"
-                android:focusableInTouchMode="true"
-                android:gravity="center"
-                android:imeOptions="actionSearch|flagNoExtractUi"
-                android:inputType="text|textNoSuggestions|textCapWords"
-                android:maxLines="1"
-                android:scrollHorizontally="true"
-                android:singleLine="true"
-                android:textColor="?android:attr/textColorSecondary"
-                android:hint="@string/all_apps_search_bar_hint"
-                android:textColorHint="@drawable/all_apps_search_hint"
-                android:textSize="16sp" />
-        </FrameLayout>
+        <include
+            layout="@layout/all_apps_search_container"
+            android:id="@+id/search_container" />
 
     </com.android.launcher3.allapps.AllAppsRecyclerViewContainerView>
     <View

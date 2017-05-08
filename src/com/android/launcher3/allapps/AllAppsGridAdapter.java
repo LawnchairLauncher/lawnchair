@@ -40,6 +40,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.allapps.AlphabeticalAppsList.AdapterItem;
 import com.android.launcher3.discovery.AppDiscoveryAppInfo;
 import com.android.launcher3.discovery.AppDiscoveryItemView;
+import com.android.launcher3.util.PackageManagerHelper;
 
 import java.util.List;
 
@@ -199,7 +200,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     private int mAppsPerRow;
 
     private BindViewCallback mBindViewCallback;
-    private AllAppsSearchBarController mSearchController;
     private OnFocusChangeListener mIconFocusListener;
 
     // The text to show when there are no search results and no market search handler.
@@ -241,10 +241,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         mGridLayoutMgr.setSpanCount(appsPerRow);
     }
 
-    public void setSearchController(AllAppsSearchBarController searchController) {
-        mSearchController = searchController;
-    }
-
     public void setIconFocusListener(OnFocusChangeListener focusListener) {
         mIconFocusListener = focusListener;
     }
@@ -256,7 +252,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     public void setLastSearchQuery(String query) {
         Resources res = mLauncher.getResources();
         mEmptySearchMessage = res.getString(R.string.all_apps_no_search_results, query);
-        mMarketSearchIntent = mSearchController.createMarketSearchIntent(query);
+        mMarketSearchIntent = PackageManagerHelper.getMarketSearchIntent(mLauncher, query);
     }
 
     /**

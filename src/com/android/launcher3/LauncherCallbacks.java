@@ -21,7 +21,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 
-import com.android.launcher3.allapps.AllAppsSearchBarController;
 import com.android.launcher3.util.ComponentKey;
 
 import java.io.FileDescriptor;
@@ -92,19 +91,10 @@ public interface LauncherCallbacks {
      */
     boolean shouldMoveToDefaultScreenOnHomeIntent();
     boolean hasSettings();
-    AllAppsSearchBarController getAllAppsSearchBarController();
     List<ComponentKey> getPredictedApps();
     int SEARCH_BAR_HEIGHT_NORMAL = 0, SEARCH_BAR_HEIGHT_TALL = 1;
     /** Must return one of {@link #SEARCH_BAR_HEIGHT_NORMAL} or {@link #SEARCH_BAR_HEIGHT_TALL} */
     int getSearchBarHeight();
-
-    /**
-     * Sets the callbacks to allow reacting the actions of search overlays of the launcher.
-     *
-     * @param callbacks A set of callbacks to the Launcher, is actually a LauncherSearchCallback,
-     *                  but for implementation purposes is passed around as an object.
-     */
-    void setLauncherSearchCallback(Object callbacks);
 
     boolean shouldShowDiscoveryBounce();
 
