@@ -109,7 +109,7 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
         mIconShift.x = mIconLastTouchPos.x - sv.getIconCenter().x;
         mIconShift.y = mIconLastTouchPos.y - mLauncher.getDeviceProfile().iconSizePx;
 
-        DragView dv = mLauncher.getWorkspace().beginDragShared(sv.getBubbleText(),
+        DragView dv = mLauncher.getWorkspace().beginDragShared(sv.getIconView(),
                 (PopupContainerWithArrow) getParent(), sv.getFinalInfo(),
                 new ShortcutDragPreviewProvider(sv.getIconView(), mIconShift), new DragOptions());
         dv.animateShift(-mIconShift.x, -mIconShift.y);
