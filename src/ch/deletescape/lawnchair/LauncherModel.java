@@ -72,7 +72,6 @@ import ch.deletescape.lawnchair.folder.Folder;
 import ch.deletescape.lawnchair.folder.FolderIcon;
 import ch.deletescape.lawnchair.model.GridSizeMigrationTask;
 import ch.deletescape.lawnchair.model.WidgetsModel;
-import ch.deletescape.lawnchair.provider.ImportDataTask;
 import ch.deletescape.lawnchair.provider.LauncherDbUtils;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
 import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
@@ -1665,12 +1664,6 @@ public class LauncherModel extends BroadcastReceiver
             int countY = profile.numRows;
 
             boolean clearDb = false;
-            try {
-                ImportDataTask.performImportIfPossible(context);
-            } catch (Exception e) {
-                // Migration failed. Clear workspace.
-                clearDb = true;
-            }
 
             if (!clearDb && GridSizeMigrationTask.ENABLED &&
                     !GridSizeMigrationTask.migrateGridIfNeeded(mContext)) {
