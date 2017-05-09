@@ -195,6 +195,8 @@ public class AlphabeticalAppsList {
     private int mNumPredictedAppsPerRow;
     private int mNumAppRowsInAdapter;
 
+    private boolean mHasSearchDivider = true;
+
     public AlphabeticalAppsList(Context context) {
         mLauncher = Launcher.getLauncher(context);
         mIndexer = new AlphabeticIndexCompat(context);
@@ -343,6 +345,10 @@ public class AlphabeticalAppsList {
         onAppsUpdated();
     }
 
+    public void disableSearchDivider() {
+        mHasSearchDivider = false;
+    }
+
     /**
      * Updates internals when the set of apps are updated.
      */
@@ -429,8 +435,10 @@ public class AlphabeticalAppsList {
             }
         }
 
-        // Add the search divider
-        mAdapterItems.add(AdapterItem.asSearchDivider(position++));
+        if (mHasSearchDivider) {
+            // Add the search divider
+            mAdapterItems.add(AdapterItem.asSearchDivider(position++));
+        }
 
         // Process the predicted app components
         mPredictedApps.clear();

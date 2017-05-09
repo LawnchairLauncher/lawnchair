@@ -26,6 +26,7 @@ import android.util.Log;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -80,6 +81,7 @@ public class ExtractedColors {
 
     private static final String COLOR_SEPARATOR = ",";
 
+    private final ArrayList<OnChangeListener> mListeners = new ArrayList<>();
     private final int[] mColors;
 
     public ExtractedColors() {
@@ -170,5 +172,23 @@ public class ExtractedColors {
         idx = ALLAPPS_GRADIENT_SECONDARY_INDEX;
         setColorAtIndex(idx, wallpaperPalette == null
                 ? DEFAULT_VALUES[idx] : wallpaperPalette.getVibrantColor(DEFAULT_VALUES[idx]));
+    }
+
+    public void addOnChangeListener(OnChangeListener listener) {
+        mListeners.add(listener);
+    }
+
+    public void notifyChange() {
+        for (OnChangeListener listener : mListeners) {
+            listener.onExtractedColorsChanged();
+        }
+    }
+
+    /**
+     * Interface for listening for extracted color changes
+     */
+    public interface OnChangeListener {
+
+        void onExtractedColorsChanged();
     }
 }

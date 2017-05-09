@@ -42,7 +42,7 @@ import com.android.launcher3.util.TouchController;
  * closer to top or closer to the page indicator.
  */
 public class AllAppsTransitionController implements TouchController, VerticalPullDetector.Listener,
-        View.OnLayoutChangeListener {
+        View.OnLayoutChangeListener, ExtractedColors.OnChangeListener {
 
     private static final String TAG = "AllAppsTrans";
     private static final boolean DBG = false;
@@ -107,6 +107,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
         mEvaluator = new ArgbEvaluator();
         mAllAppsBackgroundColor = Themes.getAttrColor(l, android.R.attr.colorPrimary);
+        mLauncher.getExtractedColors().addOnChangeListener(this);
     }
 
     @Override
@@ -288,6 +289,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mScrimView.setProgress(progress);
     }
 
+    @Override
     public void onExtractedColorsChanged() {
         if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
             if (mGradientView != null) {
