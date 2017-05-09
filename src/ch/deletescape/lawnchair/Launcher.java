@@ -145,10 +145,6 @@ public class Launcher extends Activity
 
     private static final float BOUNCE_ANIMATION_TENSION = 1.3f;
 
-    // To turn on these properties, type
-    // adb shell setprop logTap.tag.PROPERTY_NAME [VERBOSE | SUPPRESS]
-    static final String DUMP_STATE_PROPERTY = "launcher_dump_state";
-
     // The Intent extra that defines whether to ignore the launch animation
     static final String INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION =
             "ch.deletescape.lawnchair.intent.extra.shortcut.INGORE_LAUNCH_ANIMATION";
@@ -1109,11 +1105,7 @@ public class Launcher extends Activity
         // Setup Apps and Widgets
         mAppsView = (AllAppsContainerView) findViewById(R.id.apps_view);
         mWidgetsView = (WidgetsContainerView) findViewById(R.id.widgets_view);
-        if (mLauncherCallbacks != null && mLauncherCallbacks.getAllAppsSearchBarController() != null) {
-            mAppsView.setSearchBarController(mLauncherCallbacks.getAllAppsSearchBarController());
-        } else {
-            mAppsView.setSearchBarController(new DefaultAppSearchController());
-        }
+        mAppsView.setSearchBarController(new DefaultAppSearchController());
 
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
         mDragController.setDragScoller(mWorkspace);
@@ -2032,12 +2024,6 @@ public class Launcher extends Activity
             switch (event.getKeyCode()) {
                 case KeyEvent.KEYCODE_HOME:
                     return true;
-                case KeyEvent.KEYCODE_VOLUME_DOWN:
-                    if (Utilities.isPropertyEnabled(DUMP_STATE_PROPERTY)) {
-                        dumpState();
-                        return true;
-                    }
-                    break;
             }
         } else if (event.getAction() == KeyEvent.ACTION_UP) {
             switch (event.getKeyCode()) {
@@ -3964,29 +3950,6 @@ public class Launcher extends Activity
     public Drawable resizeIconDrawable(Drawable icon) {
         icon.setBounds(0, 0, mDeviceProfile.iconSizePx, mDeviceProfile.iconSizePx);
         return icon;
-    }
-
-    /**
-     * Prints out out state for debugging.
-     */
-    public void dumpState() {
-        Log.d(TAG, "BEGIN launcher3 dump state for launcher " + this);
-        Log.d(TAG, "mSavedState=" + mSavedState);
-        Log.d(TAG, "mWorkspaceLoading=" + mWorkspaceLoading);
-        Log.d(TAG, "mPendingRequestArgs=" + mPendingRequestArgs);
-        Log.d(TAG, "mPendingActivityResult=" + mPendingActivityResult);
-        mModel.dumpState();
-        // TODO(hyunyoungs): add mWidgetsView.dumpState(); or mWidgetsModel.dumpState();
-
-        Log.d(TAG, "END launcher3 dump state");
-    }
-
-    public static List<View> getFolderContents(View icon) {
-        if (icon instanceof FolderIcon) {
-            return ((FolderIcon) icon).getFolder().getItemsInReadingOrder();
-        } else {
-            return Collections.EMPTY_LIST;
-        }
     }
 
     public static Launcher getLauncher(Context context) {

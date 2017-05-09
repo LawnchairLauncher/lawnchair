@@ -77,8 +77,6 @@ public interface LauncherCallbacks {
 
     boolean onPrepareOptionsMenu(Menu menu);
 
-    void dump(String prefix, FileDescriptor fd, PrintWriter w, String[] args);
-
     void onHomeIntent();
 
     boolean handleBackPressed();
@@ -113,10 +111,6 @@ public interface LauncherCallbacks {
     UserEventDispatcher getUserEventDispatcher();
 
     boolean shouldMoveToDefaultScreenOnHomeIntent();
-
-    boolean hasSettings();
-
-    AllAppsSearchBarController getAllAppsSearchBarController();
 
     List<ComponentKey> getPredictedApps();
 
