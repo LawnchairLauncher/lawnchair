@@ -222,12 +222,12 @@ public class PageIndicatorLineCaret extends PageIndicator {
         int color = extractedColors.getColor(ExtractedColors.HOTSEAT_INDEX, Color.TRANSPARENT);
         if (color != Color.TRANSPARENT) {
             color = ColorUtils.setAlphaComponent(color, 255);
-            if (color == Color.BLACK) {
+            int diffToWhite = Color.WHITE - color;
+            int diffToBlack = Color.BLACK - color;
+            if (diffToBlack <= diffToWhite ) {
                 mActiveAlpha = BLACK_ALPHA;
-            } else if (color == Color.WHITE) {
-                mActiveAlpha = WHITE_ALPHA;
             } else {
-                mActiveAlpha = 178;
+                mActiveAlpha = WHITE_ALPHA;
             }
             mLinePaint.setColor(color);
             mLinePaint.setAlpha(originalLineAlpha);
