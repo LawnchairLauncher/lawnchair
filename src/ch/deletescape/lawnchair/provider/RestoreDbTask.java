@@ -134,6 +134,6 @@ public class RestoreDbTask {
     }
 
     public static void setPending(Context context, boolean isPending) {
-        Utilities.getPrefs(context).edit().putBoolean(RESTORE_TASK_PENDING, isPending).commit();
+        Utilities.getPrefs(context).edit().putBoolean(RESTORE_TASK_PENDING, isPending).apply();
     }
 }
