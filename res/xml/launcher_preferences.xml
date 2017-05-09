@@ -117,6 +117,12 @@
         android:persistent="true" />
 
     <SwitchPreference
+        android:key="pref_enableHapticFeedback"
+        android:title="Enable Haptic Feedback"
+        android:defaultValue="false"
+        android:persistent="true" />
+
+    <SwitchPreference
         android:key="pref_showHidden"
         android:title="Show Hidden Apps"
         android:summaryOn="Hidden apps will be shown to change visibility settings"

@@ -29,6 +29,7 @@ public final class FeatureFlags {
     private static final String KEY_PREF_PINCH_TO_OVERVIEW = "pref_pinchToOverview";
     private static final String KEY_PREF_PULLDOWN_SEARCH = "pref_pulldownSearch";
     private static final String KEY_PREF_HOTSEAT_EXTRACTED_COLORS = "pref_hotseatShouldUseExtractedColors";
+    private static final String KEY_PREF_HAPTIC_FEEDBACK = "pref_enableHapticFeedback";
 
     private FeatureFlags() {
     }
@@ -52,5 +53,9 @@ public final class FeatureFlags {
 
     public static boolean hotseatShouldUseExtractedColors(Context context){
         return Utilities.getPrefs(context).getBoolean(KEY_PREF_HOTSEAT_EXTRACTED_COLORS, true);
+    }
+
+    public static boolean enableHapticFeedback(Context context){
+        return Utilities.getPrefs(context).getBoolean(KEY_PREF_HAPTIC_FEEDBACK, false);
     }
 }

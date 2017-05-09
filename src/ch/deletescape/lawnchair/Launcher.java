@@ -1094,7 +1094,7 @@ public class Launcher extends Activity
         setupOverviewPanel();
 
         // Setup the workspace
-        mWorkspace.setHapticFeedbackEnabled(false);
+        mWorkspace.setHapticFeedbackEnabled(FeatureFlags.enableHapticFeedback(this));
         mWorkspace.setOnLongClickListener(this);
         mWorkspace.setup(mDragController);
         // Until the workspace is bound, ensure that we keep the wallpaper offset locked to the
