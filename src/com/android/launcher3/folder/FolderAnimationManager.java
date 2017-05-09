@@ -139,6 +139,7 @@ public class FolderAnimationManager {
         final Rect folderIconPos = new Rect();
         float scaleRelativeToDragLayer = mLauncher.getDragLayer()
                 .getDescendantRectRelativeToSelf(mFolderIcon, folderIconPos);
+        float initialSize = (mFolderIcon.mBackground.getRadius() * 2) * scaleRelativeToDragLayer;
 
         // Match size/scale of icons in the preview
         float previewScale = rule.scaleForItem(0, itemsInPreview.size());
@@ -156,6 +157,9 @@ public class FolderAnimationManager {
         // expected path to their final locations. ie. an icon should not move right, if it's final
         // location is to its left. This value is arbitrarily defined.
         int previewItemOffsetX = (int) (previewSize / 2);
+        if (Utilities.isRtl(mContext.getResources())) {
+            previewItemOffsetX = (int) (lp.width * initialScale - initialSize - previewItemOffsetX);
+        }
 
         final int paddingOffsetX = (int) ((mFolder.getPaddingLeft() + mContent.getPaddingLeft())
                 * initialScale);
@@ -186,9 +190,6 @@ public class FolderAnimationManager {
                 : finalTextColor);
 
         // Set up the reveal animation that clips the Folder.
-        float initialSize = (mFolderIcon.mBackground.getRadius() * 2
-                + mPreviewBackground.getStrokeWidth()) * scaleRelativeToDragLayer;
-
         int totalOffsetX = paddingOffsetX + previewItemOffsetX;
         Rect startRect = new Rect(
                 Math.round(totalOffsetX / initialScale),
