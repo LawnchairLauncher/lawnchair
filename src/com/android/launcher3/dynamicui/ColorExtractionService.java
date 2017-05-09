@@ -66,7 +66,7 @@ public class ColorExtractionService extends IntentService {
             if (FeatureFlags.QSB_IN_HOTSEAT || FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
                 extractedColors.updateWallpaperThemePalette(null);
                 if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
-                    extractedColors.updateAllAppsGradientPalette(null);
+                    extractedColors.updateAllAppsGradientPalette(this);
                 }
             }
         } else {
@@ -79,10 +79,9 @@ public class ColorExtractionService extends IntentService {
             }
 
             if (FeatureFlags.QSB_IN_HOTSEAT || FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
-                Palette wallpaperPalette = getWallpaperPalette();
-                extractedColors.updateWallpaperThemePalette(wallpaperPalette);
+                extractedColors.updateWallpaperThemePalette(getWallpaperPalette());
                 if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
-                    extractedColors.updateAllAppsGradientPalette(wallpaperPalette);
+                    extractedColors.updateAllAppsGradientPalette(this);
                 }
             }
         }
