@@ -16,6 +16,7 @@
 
 package com.android.launcher3.dynamicui;
 
+import android.app.WallpaperManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.Nullable;
@@ -25,6 +26,7 @@ import android.util.Log;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.dynamicui.colorextraction.ColorExtractor;
 
 import java.util.Arrays;
 
@@ -161,14 +163,17 @@ public class ExtractedColors {
                 ? defaultColor : wallpaperPalette.getVibrantColor(defaultColor));
     }
 
-    public void updateAllAppsGradientPalette(@Nullable Palette wallpaperPalette) {
-        // TODO b/37089857 will be modified to take the system extracted colors into account
-        int idx;
-        idx = ALLAPPS_GRADIENT_MAIN_INDEX;
-        setColorAtIndex(idx, wallpaperPalette == null
-                ? DEFAULT_VALUES[idx] : wallpaperPalette.getDarkVibrantColor(DEFAULT_VALUES[idx]));
-        idx = ALLAPPS_GRADIENT_SECONDARY_INDEX;
-        setColorAtIndex(idx, wallpaperPalette == null
-                ? DEFAULT_VALUES[idx] : wallpaperPalette.getVibrantColor(DEFAULT_VALUES[idx]));
+    public void updateAllAppsGradientPalette(Context context) {
+        // TODO use isAtLeastO when available
+        try {
+            WallpaperManager.class.getDeclaredMethod("getWallpaperColors", int.class);
+            ColorExtractor extractor = new ColorExtractor(context);
+            ColorExtractor.GradientColors colors = extractor.getColors(WallpaperManager.FLAG_SYSTEM);
+            setColorAtIndex(ALLAPPS_GRADIENT_MAIN_INDEX, colors.getMainColor());
+            setColorAtIndex(ALLAPPS_GRADIENT_SECONDARY_INDEX, colors.getSecondaryColor());
+        } catch (NoSuchMethodException e) {
+            setColorAtIndex(ALLAPPS_GRADIENT_MAIN_INDEX, Color.WHITE);
+            setColorAtIndex(ALLAPPS_GRADIENT_SECONDARY_INDEX, Color.WHITE);
+        }
     }
 }
