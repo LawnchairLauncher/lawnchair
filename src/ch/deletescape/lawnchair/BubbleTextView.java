@@ -210,15 +210,6 @@ public class BubbleTextView extends TextView
     }
 
     /**
-     * Used for measurement only, sets some dummy values on this view.
-     */
-    public void applyDummyInfo() {
-        ColorDrawable d = new ColorDrawable();
-        setIcon(mLauncher.resizeIconDrawable(d));
-        setText("");
-    }
-
-    /**
      * Overrides the default long press timeout.
      */
     public void setLongPressTimeout(int longPressTimeout) {

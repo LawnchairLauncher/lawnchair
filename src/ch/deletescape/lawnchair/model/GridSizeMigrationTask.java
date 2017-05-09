@@ -861,14 +861,6 @@ public class GridSizeMigrationTask {
         return String.format(Locale.ENGLISH, "%d,%d", x, y);
     }
 
-    public static void markForMigration(
-            Context context, int gridX, int gridY, int hotseatSize) {
-        Utilities.getPrefs(context).edit()
-                .putString(KEY_MIGRATION_SRC_WORKSPACE_SIZE, getPointString(gridX, gridY))
-                .putInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, hotseatSize)
-                .apply();
-    }
-
     /**
      * Migrates the workspace and hotseat in case their sizes changed.
      *
@@ -952,27 +944,6 @@ public class GridSizeMigrationTask {
         validPackages.addAll(PackageInstallerCompat.getInstance(context)
                 .updateAndGetActiveSessionCache().keySet());
         return validPackages;
-    }
-
-    /**
-     * Removes any broken item from the hotseat.
-     *
-     * @return a map with occupied hotseat position set to non-null value.
-     */
-    public static LongArrayMap<Object> removeBrokenHotseatItems(Context context) throws Exception {
-        GridSizeMigrationTask task = new GridSizeMigrationTask(context,
-                LauncherAppState.getInstance().getInvariantDeviceProfile(),
-                getValidPackages(context), Integer.MAX_VALUE, Integer.MAX_VALUE);
-
-        // Load all the valid entries
-        ArrayList<DbEntry> items = task.loadHotseatEntries();
-        // Delete any entry marked for deletion by above load.
-        task.applyOperations();
-        LongArrayMap<Object> positions = new LongArrayMap<>();
-        for (DbEntry item : items) {
-            positions.put(item.screenId, item);
-        }
-        return positions;
     }
 
     /**

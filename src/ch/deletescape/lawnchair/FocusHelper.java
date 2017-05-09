@@ -186,8 +186,6 @@ public class FocusHelper {
         int pageIndex = workspace.getNextPage();
         int pageCount = workspace.getChildCount();
         int iconIndex = hotseatParent.indexOfChild(v);
-        int iconRank = ((CellLayout.LayoutParams) hotseatLayout.getShortcutsAndWidgets()
-                .getChildAt(iconIndex).getLayoutParams()).cellX;
 
         final CellLayout iconLayout = (CellLayout) workspace.getChildAt(pageIndex);
         if (iconLayout == null) {

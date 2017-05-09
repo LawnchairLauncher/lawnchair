@@ -79,7 +79,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     private static final float RECATCH_REJECTION_FRACTION = .0875f;
 
-    private int mBezelSwipeUpHeight;
     private long mAnimationDuration;
 
     private AnimatorSet mCurrentAnimation;
@@ -95,8 +94,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mDetector.setListener(this);
         mShiftRange = DEFAULT_SHIFT_RANGE;
         mProgress = 1f;
-        mBezelSwipeUpHeight = l.getResources().getDimensionPixelSize(
-                R.dimen.all_apps_bezel_swipe_height);
         mEvaluator = new ArgbEvaluator();
         mAllAppsBackgroundColor = ContextCompat.getColor(l, R.color.all_apps_container_color);
     }

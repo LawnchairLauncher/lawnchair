@@ -1018,11 +1018,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         DeviceProfile grid = mLauncher.getDeviceProfile();
 
         DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
-        DragLayer parent = (DragLayer) mLauncher.findViewById(R.id.drag_layer);
         int width = getPaddingLeft() + getPaddingRight() + mContent.getDesiredWidth();
         int height = getFolderHeight();
 
-        float scale = parent.getDescendantRectRelativeToSelf(mFolderIcon, sTempRect);
         int centerX = sTempRect.centerX();
         int centerY = sTempRect.centerY();
         int centeredLeft = centerX - width / 2;

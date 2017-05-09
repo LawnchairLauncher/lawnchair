@@ -632,8 +632,7 @@ public class LauncherModel extends BroadcastReceiver
             // to be consistent with the database-- for now, just require
             // modelItem == item or the equality check above
             String msg = "item: " + ((item != null) ? item.toString() : "null") +
-                    "modelItem: " +
-                    ((modelItem != null) ? modelItem.toString() : "null") +
+                    "modelItem: " + modelItem.toString() +
                     "Error: ItemInfo passed to checkItemInfo doesn't match original";
             RuntimeException e = new RuntimeException(msg);
             if (stackTrace != null) {
@@ -1658,11 +1657,6 @@ public class LauncherModel extends BroadcastReceiver
             final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
             final boolean isSdCardReady = Utilities.isBootCompleted();
 
-            LauncherAppState app = LauncherAppState.getInstance();
-            InvariantDeviceProfile profile = app.getInvariantDeviceProfile();
-            int countX = profile.numColumns;
-            int countY = profile.numRows;
-
             boolean clearDb = false;
 
             if (!clearDb && GridSizeMigrationTask.ENABLED &&
@@ -2469,7 +2463,6 @@ public class LauncherModel extends BroadcastReceiver
          * Binds all loaded data to actual views on the main thread.
          */
         private void bindWorkspace(int synchronizeBindPage) {
-            final long t = SystemClock.uptimeMillis();
             Runnable r;
 
             // Don't use these two variables in any of the callback runnables.
@@ -2655,7 +2648,6 @@ public class LauncherModel extends BroadcastReceiver
                     = (ArrayList<AppInfo>) mBgAllAppsList.data.clone();
             Runnable r = new Runnable() {
                 public void run() {
-                    final long t = SystemClock.uptimeMillis();
                     final Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                     if (callbacks != null) {
                         callbacks.bindAllApplications(list);
@@ -2762,14 +2754,6 @@ public class LauncherModel extends BroadcastReceiver
             bindDeepShortcuts();
         }
 
-        public void dumpState() {
-            synchronized (sBgLock) {
-                Log.d(TAG, "mLoaderTask.mContext=" + mContext);
-                Log.d(TAG, "mLoaderTask.mStopped=" + mStopped);
-                Log.d(TAG, "mLoaderTask.mLoadAndBindStepFinished=" + mLoadAndBindStepFinished);
-                Log.d(TAG, "mItems size=" + sBgWorkspaceItems.size());
-            }
-        }
     }
 
     /**
@@ -2959,7 +2943,6 @@ public class LauncherModel extends BroadcastReceiver
             final Context context = mApp.getContext();
 
             final String[] packages = mPackages;
-            final int N = packages.length;
             FlagOp flagOp = FlagOp.NO_OP;
             StringFilter pkgFilter = StringFilter.of(new HashSet<>(Arrays.asList(packages)));
             switch (mOp) {
@@ -3468,18 +3451,6 @@ public class LauncherModel extends BroadcastReceiver
         return !launcherApps.isPackageEnabledForProfile(packageName, user);
     }
 
-    public static boolean isValidPackageActivity(Context context, ComponentName cn,
-                                                 UserHandleCompat user) {
-        if (cn == null) {
-            return false;
-        }
-        final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
-        if (!launcherApps.isPackageEnabledForProfile(cn.getPackageName(), user)) {
-            return false;
-        }
-        return launcherApps.isActivityEnabledForProfile(cn, user);
-    }
-
     public static boolean isValidPackage(Context context, String packageName,
                                          UserHandleCompat user) {
         if (packageName == null) {
@@ -3690,12 +3661,10 @@ public class LauncherModel extends BroadcastReceiver
         }
 
         Bitmap icon = null;
-        boolean customIcon = false;
         ShortcutIconResource iconResource = null;
 
         if (bitmap instanceof Bitmap) {
             icon = Utilities.createIconBitmap((Bitmap) bitmap, context);
-            customIcon = true;
         } else {
             Parcelable extra = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE);
             if (extra instanceof ShortcutIconResource) {
@@ -3744,19 +3713,6 @@ public class LauncherModel extends BroadcastReceiver
     static boolean isValidProvider(AppWidgetProviderInfo provider) {
         return (provider != null) && (provider.provider != null)
                 && (provider.provider.getPackageName() != null);
-    }
-
-    public void dumpState() {
-        Log.d(TAG, "mCallbacks=" + mCallbacks);
-        AppInfo.dumpApplicationInfoList(TAG, "mAllAppsList.data", mBgAllAppsList.data);
-        AppInfo.dumpApplicationInfoList(TAG, "mAllAppsList.added", mBgAllAppsList.added);
-        AppInfo.dumpApplicationInfoList(TAG, "mAllAppsList.removed", mBgAllAppsList.removed);
-        AppInfo.dumpApplicationInfoList(TAG, "mAllAppsList.modified", mBgAllAppsList.modified);
-        if (mLoaderTask != null) {
-            mLoaderTask.dumpState();
-        } else {
-            Log.d(TAG, "mLoaderTask=null");
-        }
     }
 
     public Callbacks getCallback() {

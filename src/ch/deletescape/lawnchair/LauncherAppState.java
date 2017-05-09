@@ -123,16 +123,6 @@ public class LauncherAppState {
     }
 
     /**
-     * Call from Application.onTerminate(), which is not guaranteed to ever be called.
-     */
-    public void onTerminate() {
-        sContext.unregisterReceiver(mModel);
-        final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(sContext);
-        launcherApps.removeOnAppsChangedCallback(mModel);
-        PackageInstallerCompat.getInstance(sContext).onStop();
-    }
-
-    /**
      * Reloads the workspace items from the DB and re-binds the workspace. This should generally
      * not be called as DB updates are automatically followed by UI update
      */

@@ -1317,9 +1317,7 @@ public class Launcher extends Activity
         mWorkspace.addInScreen(hostView, item.container, item.screenId,
                 item.cellX, item.cellY, item.spanX, item.spanY, insert);
 
-        if (!item.isCustomWidget()) {
-            addWidgetToAutoAdvanceIfNeeded(hostView, appWidgetInfo);
-        }
+        addWidgetToAutoAdvanceIfNeeded(hostView, appWidgetInfo);
     }
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -2005,7 +2003,7 @@ public class Launcher extends Activity
      */
     private void deleteWidgetInfo(final LauncherAppWidgetInfo widgetInfo) {
         final LauncherAppWidgetHost appWidgetHost = getAppWidgetHost();
-        if (appWidgetHost != null && !widgetInfo.isCustomWidget() && widgetInfo.isWidgetIdAllocated()) {
+        if (appWidgetHost != null && widgetInfo.isWidgetIdAllocated()) {
             // Deleting an app widget ID is a void call but writes to disk before returning
             // to the caller...
             new AsyncTask<Void, Void, Void>() {
@@ -2108,7 +2106,7 @@ public class Launcher extends Activity
                 onClickFolderIcon(v);
             }
         } else if ((FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && v instanceof PageIndicator) ||
-                (v == mAllAppsButton && mAllAppsButton != null)) {
+                v == mAllAppsButton) {
             onClickAllAppsButton(v);
         } else if (tag instanceof AppInfo) {
             startAppShortcutOrInfoActivity(v);

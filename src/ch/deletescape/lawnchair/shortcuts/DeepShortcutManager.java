@@ -216,14 +216,7 @@ public class DeepShortcutManager {
             }
             return shortcutInfoCompats;
         } else {
-            switch (flags){
-                case ShortcutQuery.FLAG_MATCH_PINNED:
-                case ShortcutQuery.FLAG_MATCH_DYNAMIC:
-                    return Collections.EMPTY_LIST;
-                default:
-                    return Collections.EMPTY_LIST;
-                    //return ShortcutsCompat.query(activity, user);
-            }
+            return Collections.EMPTY_LIST;
         }
     }
 

@@ -127,17 +127,6 @@ public class AppInfo extends ItemInfo {
         return super.dumpProperties() + " componentName=" + componentName;
     }
 
-    /**
-     * Helper method used for debugging.
-     */
-    public static void dumpApplicationInfoList(String tag, String label, ArrayList<AppInfo> list) {
-        Log.d(tag, label + " size=" + list.size());
-        for (AppInfo info : list) {
-            Log.d(tag, "   title=\"" + info.title + "\" iconBitmap=" + info.iconBitmap
-                    + " componentName=" + info.componentName.getPackageName());
-        }
-    }
-
     public ShortcutInfo makeShortcut() {
         return new ShortcutInfo(this);
     }

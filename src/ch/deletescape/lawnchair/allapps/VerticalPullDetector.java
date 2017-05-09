@@ -202,10 +202,7 @@ public class VerticalPullDetector {
 
     private boolean reportDragging() {
         float delta = mDisplacementY - mLastDisplacement;
-        if (delta != 0) {
-            return mListener.onDrag(mDisplacementY - mSubtractDisplacement, mVelocity);
-        }
-        return true;
+        return delta == 0 || mListener.onDrag(mDisplacementY - mSubtractDisplacement, mVelocity);
     }
 
     private void reportDragEnd() {

@@ -210,8 +210,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     public boolean acceptDrop(ItemInfo dragInfo) {
-        final ItemInfo item = dragInfo;
-        return !mFolder.isDestroyed() && willAcceptItem(item);
+        return !mFolder.isDestroyed() && willAcceptItem(dragInfo);
     }
 
     public void addItem(ShortcutInfo item) {
