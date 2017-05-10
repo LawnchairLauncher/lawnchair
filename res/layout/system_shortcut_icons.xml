@@ -21,4 +21,4 @@
     android:layout_height="@dimen/system_shortcut_header_height"
     android:orientation="horizontal"
     android:gravity="end|center_vertical"
-    android:background="@color/notification_header_background_color" />
+    android:background="@color/popup_header_background_color" />
