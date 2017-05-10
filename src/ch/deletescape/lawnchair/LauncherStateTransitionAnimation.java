@@ -259,12 +259,12 @@ public class LauncherStateTransitionAnimation {
             // Show the content view
             contentView.setVisibility(View.VISIBLE);
 
-            dispatchOnLauncherTransitionPrepare(fromView, animated, false);
-            dispatchOnLauncherTransitionStart(fromView, animated, false);
-            dispatchOnLauncherTransitionEnd(fromView, animated, false);
-            dispatchOnLauncherTransitionPrepare(toView, animated, false);
-            dispatchOnLauncherTransitionStart(toView, animated, false);
-            dispatchOnLauncherTransitionEnd(toView, animated, false);
+            dispatchOnLauncherTransitionPrepare(fromView, false);
+            dispatchOnLauncherTransitionStart(fromView);
+            dispatchOnLauncherTransitionEnd(fromView, false);
+            dispatchOnLauncherTransitionPrepare(toView, false);
+            dispatchOnLauncherTransitionStart(toView);
+            dispatchOnLauncherTransitionEnd(toView, false);
             pCb.onTransitionComplete();
             return;
         }
@@ -341,8 +341,8 @@ public class LauncherStateTransitionAnimation {
             animation.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    dispatchOnLauncherTransitionEnd(fromView, animated, false);
-                    dispatchOnLauncherTransitionEnd(toView, animated, false);
+                    dispatchOnLauncherTransitionEnd(fromView, false);
+                    dispatchOnLauncherTransitionEnd(toView, false);
 
                     // Hide the reveal view
                     revealView.setVisibility(View.INVISIBLE);
@@ -362,8 +362,8 @@ public class LauncherStateTransitionAnimation {
             });
 
             // Dispatch the prepare transition signal
-            dispatchOnLauncherTransitionPrepare(fromView, animated, false);
-            dispatchOnLauncherTransitionPrepare(toView, animated, false);
+            dispatchOnLauncherTransitionPrepare(fromView, false);
+            dispatchOnLauncherTransitionPrepare(toView, false);
 
             final AnimatorSet stateAnimation = animation;
             final Runnable startAnimRunnable = new Runnable() {
@@ -372,8 +372,8 @@ public class LauncherStateTransitionAnimation {
                     // we waited for a layout/draw pass
                     if (mCurrentAnimation != stateAnimation)
                         return;
-                    dispatchOnLauncherTransitionStart(fromView, animated, false);
-                    dispatchOnLauncherTransitionStart(toView, animated, false);
+                    dispatchOnLauncherTransitionStart(fromView);
+                    dispatchOnLauncherTransitionStart(toView);
 
                     // Enable all necessary layers
                     for (View v : layerViews.keySet()) {
@@ -402,8 +402,8 @@ public class LauncherStateTransitionAnimation {
             animation.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    dispatchOnLauncherTransitionEnd(fromView, animated, false);
-                    dispatchOnLauncherTransitionEnd(toView, animated, false);
+                    dispatchOnLauncherTransitionEnd(fromView, false);
+                    dispatchOnLauncherTransitionEnd(toView, false);
 
                     // Disable all necessary layers
                     for (View v : layerViews.keySet()) {
@@ -418,8 +418,8 @@ public class LauncherStateTransitionAnimation {
             });
             boolean shouldPost = mAllAppsController.animateToAllApps(animation, revealDurationSlide);
 
-            dispatchOnLauncherTransitionPrepare(fromView, animated, false);
-            dispatchOnLauncherTransitionPrepare(toView, animated, false);
+            dispatchOnLauncherTransitionPrepare(fromView, false);
+            dispatchOnLauncherTransitionPrepare(toView, false);
 
             final AnimatorSet stateAnimation = animation;
             final Runnable startAnimRunnable = new Runnable() {
@@ -429,8 +429,8 @@ public class LauncherStateTransitionAnimation {
                     if (mCurrentAnimation != stateAnimation)
                         return;
 
-                    dispatchOnLauncherTransitionStart(fromView, animated, false);
-                    dispatchOnLauncherTransitionStart(toView, animated, false);
+                    dispatchOnLauncherTransitionStart(fromView);
+                    dispatchOnLauncherTransitionStart(toView);
 
                     // Enable all necessary layers
                     for (View v : layerViews.keySet()) {
@@ -591,7 +591,7 @@ public class LauncherStateTransitionAnimation {
                 animated, animated, animation, layerViews);
 
         if (animated) {
-            dispatchOnLauncherTransitionPrepare(fromWorkspace, animated, multiplePagesVisible);
+            dispatchOnLauncherTransitionPrepare(fromWorkspace, multiplePagesVisible);
 
             final AnimatorSet stateAnimation = animation;
             final Runnable startAnimRunnable = new Runnable() {
@@ -601,7 +601,7 @@ public class LauncherStateTransitionAnimation {
                     if (mCurrentAnimation != stateAnimation)
                         return;
 
-                    dispatchOnLauncherTransitionStart(fromWorkspace, animated, true);
+                    dispatchOnLauncherTransitionStart(fromWorkspace);
 
                     // Enable all necessary layers
                     for (View v : layerViews.keySet()) {
@@ -618,7 +618,7 @@ public class LauncherStateTransitionAnimation {
             animation.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    dispatchOnLauncherTransitionEnd(fromWorkspace, animated, true);
+                    dispatchOnLauncherTransitionEnd(fromWorkspace, true);
 
                     // Run any queued runnables
                     if (onCompleteRunnable != null) {
@@ -639,9 +639,9 @@ public class LauncherStateTransitionAnimation {
             fromWorkspace.post(startAnimRunnable);
             mCurrentAnimation = animation;
         } else /* if (!animated) */ {
-            dispatchOnLauncherTransitionPrepare(fromWorkspace, animated, multiplePagesVisible);
-            dispatchOnLauncherTransitionStart(fromWorkspace, animated, true);
-            dispatchOnLauncherTransitionEnd(fromWorkspace, animated, true);
+            dispatchOnLauncherTransitionPrepare(fromWorkspace, multiplePagesVisible);
+            dispatchOnLauncherTransitionStart(fromWorkspace);
+            dispatchOnLauncherTransitionEnd(fromWorkspace, true);
 
             // Run any queued runnables
             if (onCompleteRunnable != null) {
@@ -688,12 +688,12 @@ public class LauncherStateTransitionAnimation {
                 mAllAppsController.finishPullDown();
             }
             fromView.setVisibility(View.GONE);
-            dispatchOnLauncherTransitionPrepare(fromView, animated, multiplePagesVisible);
-            dispatchOnLauncherTransitionStart(fromView, animated, true);
-            dispatchOnLauncherTransitionEnd(fromView, animated, true);
-            dispatchOnLauncherTransitionPrepare(toView, animated, multiplePagesVisible);
-            dispatchOnLauncherTransitionStart(toView, animated, true);
-            dispatchOnLauncherTransitionEnd(toView, animated, true);
+            dispatchOnLauncherTransitionPrepare(fromView, multiplePagesVisible);
+            dispatchOnLauncherTransitionStart(fromView);
+            dispatchOnLauncherTransitionEnd(fromView, true);
+            dispatchOnLauncherTransitionPrepare(toView, multiplePagesVisible);
+            dispatchOnLauncherTransitionStart(toView);
+            dispatchOnLauncherTransitionEnd(toView, true);
             pCb.onTransitionComplete();
 
             // Run any queued runnables
@@ -796,15 +796,15 @@ public class LauncherStateTransitionAnimation {
                 animation.play(reveal);
             }
 
-            dispatchOnLauncherTransitionPrepare(fromView, animated, multiplePagesVisible);
-            dispatchOnLauncherTransitionPrepare(toView, animated, multiplePagesVisible);
+            dispatchOnLauncherTransitionPrepare(fromView, multiplePagesVisible);
+            dispatchOnLauncherTransitionPrepare(toView, multiplePagesVisible);
 
             animation.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     fromView.setVisibility(View.GONE);
-                    dispatchOnLauncherTransitionEnd(fromView, animated, true);
-                    dispatchOnLauncherTransitionEnd(toView, animated, true);
+                    dispatchOnLauncherTransitionEnd(fromView, true);
+                    dispatchOnLauncherTransitionEnd(toView, true);
 
                     // Run any queued runnables
                     if (onCompleteRunnable != null) {
@@ -839,8 +839,8 @@ public class LauncherStateTransitionAnimation {
                     if (mCurrentAnimation != stateAnimation)
                         return;
 
-                    dispatchOnLauncherTransitionStart(fromView, animated, false);
-                    dispatchOnLauncherTransitionStart(toView, animated, false);
+                    dispatchOnLauncherTransitionStart(fromView);
+                    dispatchOnLauncherTransitionStart(toView);
 
                     // Enable all necessary layers
                     for (View v : layerViews.keySet()) {
@@ -871,8 +871,8 @@ public class LauncherStateTransitionAnimation {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     if (canceled) return;
-                    dispatchOnLauncherTransitionEnd(fromView, animated, true);
-                    dispatchOnLauncherTransitionEnd(toView, animated, true);
+                    dispatchOnLauncherTransitionEnd(fromView, true);
+                    dispatchOnLauncherTransitionEnd(toView, true);
                     // Run any queued runnables
                     if (onCompleteRunnable != null) {
                         onCompleteRunnable.run();
@@ -893,8 +893,8 @@ public class LauncherStateTransitionAnimation {
             boolean shouldPost = mAllAppsController.animateToWorkspace(animation, revealDurationSlide);
 
             // Dispatch the prepare transition signal
-            dispatchOnLauncherTransitionPrepare(fromView, animated, multiplePagesVisible);
-            dispatchOnLauncherTransitionPrepare(toView, animated, multiplePagesVisible);
+            dispatchOnLauncherTransitionPrepare(fromView, multiplePagesVisible);
+            dispatchOnLauncherTransitionPrepare(toView, multiplePagesVisible);
 
             final AnimatorSet stateAnimation = animation;
             final Runnable startAnimRunnable = new Runnable() {
@@ -904,8 +904,8 @@ public class LauncherStateTransitionAnimation {
                     if (mCurrentAnimation != stateAnimation)
                         return;
 
-                    dispatchOnLauncherTransitionStart(fromView, animated, false);
-                    dispatchOnLauncherTransitionStart(toView, animated, false);
+                    dispatchOnLauncherTransitionStart(fromView);
+                    dispatchOnLauncherTransitionStart(toView);
 
                     // Enable all necessary layers
                     for (View v : layerViews.keySet()) {
@@ -935,7 +935,7 @@ public class LauncherStateTransitionAnimation {
     /**
      * Dispatches the prepare-transition event to suitable views.
      */
-    void dispatchOnLauncherTransitionPrepare(View v, boolean animated,
+    void dispatchOnLauncherTransitionPrepare(View v,
                                              boolean multiplePagesVisible) {
         if (v instanceof LauncherTransitionable) {
             ((LauncherTransitionable) v).onLauncherTransitionPrepare(
@@ -946,7 +946,7 @@ public class LauncherStateTransitionAnimation {
     /**
      * Dispatches the start-transition event to suitable views.
      */
-    void dispatchOnLauncherTransitionStart(View v, boolean animated, boolean toWorkspace) {
+    void dispatchOnLauncherTransitionStart(View v) {
         if (v instanceof LauncherTransitionable) {
             ((LauncherTransitionable) v).onLauncherTransitionStart(
             );
@@ -968,7 +968,7 @@ public class LauncherStateTransitionAnimation {
     /**
      * Dispatches the end-transition event to suitable views.
      */
-    void dispatchOnLauncherTransitionEnd(View v, boolean animated, boolean toWorkspace) {
+    void dispatchOnLauncherTransitionEnd(View v, boolean toWorkspace) {
         if (v instanceof LauncherTransitionable) {
             ((LauncherTransitionable) v).onLauncherTransitionEnd(
                     toWorkspace);

@@ -388,7 +388,7 @@ public class WidgetPreviewLoader {
             float iconScale = Math.min((float) smallestSide / (appIconSize + 2 * minOffset), scale);
 
             try {
-                Drawable icon = mWidgetManager.loadIcon(info, mIconCache);
+                Drawable icon = mWidgetManager.loadIcon(info);
                 if (icon != null) {
                     icon = mutateOnMainThread(icon);
                     int hoffset = (int) ((tileW - appIconSize * iconScale) / 2) + x;

@@ -156,18 +156,6 @@ public class LauncherScroller {
         mPhysicalCoeff = computeDeceleration(0.84f); // look and feel tuning
     }
 
-    /**
-     * The amount of friction applied to flings. The default value
-     * is {@link ViewConfiguration#getScrollFriction}.
-     *
-     * @param friction A scalar dimension-less value representing the coefficient of
-     *                 friction.
-     */
-    public final void setFriction(float friction) {
-        mDeceleration = computeDeceleration(friction);
-        mFlingFriction = friction;
-    }
-
     private float computeDeceleration(float friction) {
         return SensorManager.GRAVITY_EARTH   // g (m/s^2)
                 * 39.37f               // inch/meter
@@ -494,21 +482,6 @@ public class LauncherScroller {
     }
 
     /**
-     * Extend the scroll animation. This allows a running animation to scroll
-     * further and longer, when used with {@link #setFinalX(int)} or {@link #setFinalY(int)}.
-     *
-     * @param extend Additional time to scroll in milliseconds.
-     * @see #setFinalX(int)
-     * @see #setFinalY(int)
-     */
-    public void extendDuration(int extend) {
-        int passed = timePassed();
-        mDuration = passed + extend;
-        mDurationReciprocal = 1.0f / mDuration;
-        mFinished = false;
-    }
-
-    /**
      * Returns the time elapsed since the beginning of the scrolling.
      *
      * @return The elapsed time in milliseconds.
@@ -521,7 +494,6 @@ public class LauncherScroller {
      * Sets the final position (X) for this scroller.
      *
      * @param newX The new X offset as an absolute distance from the origin.
-     * @see #extendDuration(int)
      * @see #setFinalY(int)
      */
     public void setFinalX(int newX) {
@@ -534,7 +506,6 @@ public class LauncherScroller {
      * Sets the final position (Y) for this scroller.
      *
      * @param newY The new Y offset as an absolute distance from the origin.
-     * @see #extendDuration(int)
      * @see #setFinalX(int)
      */
     public void setFinalY(int newY) {

@@ -250,7 +250,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
         for (int i = 0; i < mDragOutlineAnims.length; i++) {
             final InterruptibleInOutAnimator anim =
-                    new InterruptibleInOutAnimator(this, duration, fromAlphaValue, toAlphaValue);
+                    new InterruptibleInOutAnimator(duration, fromAlphaValue, toAlphaValue);
             anim.getAnimator().setInterpolator(mEaseOutInterpolator);
             final int thisIndex = i;
             anim.getAnimator().addUpdateListener(new AnimatorUpdateListener() {

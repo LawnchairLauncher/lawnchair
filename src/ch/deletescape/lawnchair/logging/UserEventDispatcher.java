@@ -23,7 +23,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewParent;
 
-import java.util.List;
 import java.util.Locale;
 
 import ch.deletescape.lawnchair.DropTarget;
@@ -31,7 +30,6 @@ import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto.Action;
 import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto.LauncherEvent;
 import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto.Target;
-import ch.deletescape.lawnchair.util.ComponentKey;
 
 /**
  * Manages the creation of {@link LauncherEvent}.
@@ -95,9 +93,6 @@ public class UserEventDispatcher {
     private long mElapsedSessionMillis;
     private long mActionDurationMillis;
 
-    // Used for filling in predictedRank on {@link Target}s.
-    private List<ComponentKey> mPredictedApps;
-
     public UserEventDispatcher() {
         mIsVerbose = false;
     }
@@ -129,10 +124,6 @@ public class UserEventDispatcher {
         if (cn != null) {
             event.srcTarget[idx].packageNameHash = cn.getPackageName().hashCode();
             event.srcTarget[idx].componentHash = cn.hashCode();
-            if (mPredictedApps != null) {
-                event.srcTarget[idx].predictedRank = mPredictedApps.indexOf(
-                        new ComponentKey(cn, itemInfo.user));
-            }
         }
         return event;
     }
@@ -173,13 +164,8 @@ public class UserEventDispatcher {
         dispatchUserEvent(event);
     }
 
-    public void setPredictedApps(List<ComponentKey> predictedApps) {
-        mPredictedApps = predictedApps;
-    }
-
     public void logDragNDrop(DropTarget.DragObject dragObj, View dropTargetAsView) {
         LauncherEvent event = LoggerUtils.initLauncherEvent(Action.TOUCH,
-                dragObj.dragView,
                 dragObj.originalDragInfo,
                 Target.CONTAINER,
                 dropTargetAsView);

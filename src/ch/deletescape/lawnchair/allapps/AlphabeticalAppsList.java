@@ -36,11 +36,6 @@ import ch.deletescape.lawnchair.util.ComponentKey;
  */
 public class AlphabeticalAppsList {
 
-    private static final int FAST_SCROLL_FRACTION_DISTRIBUTE_BY_ROWS_FRACTION = 0;
-    private static final int FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS = 1;
-
-    private final int mFastScrollDistributionMode = FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS;
-
     /**
      * Info about a section in the alphabetic list
      */
@@ -112,13 +107,6 @@ public class AlphabeticalAppsList {
             return item;
         }
 
-        public static AdapterItem asPredictedApp(int pos, SectionInfo section, String sectionName,
-                                                 int sectionAppIndex, AppInfo appInfo) {
-            AdapterItem item = asApp(pos, section, sectionName, sectionAppIndex, appInfo);
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON;
-            return item;
-        }
-
         public static AdapterItem asApp(int pos, SectionInfo section, String sectionName,
                                         int sectionAppIndex, AppInfo appInfo) {
             AdapterItem item = new AdapterItem();
@@ -134,13 +122,6 @@ public class AlphabeticalAppsList {
         public static AdapterItem asEmptySearch(int pos) {
             AdapterItem item = new AdapterItem();
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH;
-            item.position = pos;
-            return item;
-        }
-
-        public static AdapterItem asPredictionDivider(int pos) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_PREDICTION_DIVIDER;
             item.position = pos;
             return item;
         }
@@ -171,8 +152,7 @@ public class AlphabeticalAppsList {
      * Common interface for different merging strategies.
      */
     public interface MergeAlgorithm {
-        boolean continueMerging(SectionInfo section, SectionInfo withSection,
-                                int sectionAppCount, int numAppsPerRow, int mergeCount);
+        boolean continueMerging(SectionInfo section);
     }
 
     private Launcher mLauncher;
@@ -189,10 +169,6 @@ public class AlphabeticalAppsList {
     private List<SectionInfo> mSections = new ArrayList<>();
     // The set of sections that we allow fast-scrolling to (includes non-merged sections)
     private List<FastScrollSectionInfo> mFastScrollerSections = new ArrayList<>();
-    // The set of predicted app component names
-    private List<ComponentKey> mPredictedAppComponents = new ArrayList<>();
-    // The set of predicted apps resolved from the component names and the current set of apps
-    private List<AppInfo> mPredictedApps = new ArrayList<>();
     // The of ordered component names as a result of a search query
     private ArrayList<ComponentKey> mSearchResults;
     private HashMap<CharSequence, String> mCachedSectionNames = new HashMap<>();
@@ -201,7 +177,6 @@ public class AlphabeticalAppsList {
     private AppNameComparator mAppNameComparator;
     private MergeAlgorithm mMergeAlgorithm;
     private int mNumAppsPerRow;
-    private int mNumPredictedAppsPerRow;
     private int mNumAppRowsInAdapter;
 
     public AlphabeticalAppsList(Context context) {
@@ -213,10 +188,8 @@ public class AlphabeticalAppsList {
     /**
      * Sets the number of apps per row.
      */
-    public void setNumAppsPerRow(int numAppsPerRow, int numPredictedAppsPerRow,
-                                 MergeAlgorithm mergeAlgorithm) {
+    public void setNumAppsPerRow(int numAppsPerRow, MergeAlgorithm mergeAlgorithm) {
         mNumAppsPerRow = numAppsPerRow;
-        mNumPredictedAppsPerRow = numPredictedAppsPerRow;
         mMergeAlgorithm = mergeAlgorithm;
 
         updateAdapterItems();
@@ -289,16 +262,6 @@ public class AlphabeticalAppsList {
             return !same;
         }
         return false;
-    }
-
-    /**
-     * Sets the current set of predicted apps.  Since this can be called before we get the full set
-     * of applications, we should merge the results only in onAppsUpdated() which is idempotent.
-     */
-    public void setPredictedApps(List<ComponentKey> apps) {
-        mPredictedAppComponents.clear();
-        mPredictedAppComponents.addAll(apps);
-        onAppsUpdated();
     }
 
     /**
@@ -406,45 +369,6 @@ public class AlphabeticalAppsList {
         // Add the search divider
         mAdapterItems.add(AdapterItem.asSearchDivder(position++));
 
-        // Process the predicted app components
-        mPredictedApps.clear();
-        if (mPredictedAppComponents != null && !mPredictedAppComponents.isEmpty() && !hasFilter()) {
-            for (ComponentKey ck : mPredictedAppComponents) {
-                AppInfo info = mComponentToAppMap.get(ck);
-                if (info != null) {
-                    mPredictedApps.add(info);
-                }
-                // Stop at the number of predicted apps
-                if (mPredictedApps.size() == mNumPredictedAppsPerRow) {
-                    break;
-                }
-            }
-
-            if (!mPredictedApps.isEmpty()) {
-                // Add a section for the predictions
-                lastSectionInfo = new SectionInfo();
-                lastFastScrollerSectionInfo = new FastScrollSectionInfo("");
-                AdapterItem sectionItem = AdapterItem.asSectionBreak(position++, lastSectionInfo);
-                mSections.add(lastSectionInfo);
-                mFastScrollerSections.add(lastFastScrollerSectionInfo);
-                mAdapterItems.add(sectionItem);
-
-                // Add the predicted app items
-                for (AppInfo info : mPredictedApps) {
-                    AdapterItem appItem = AdapterItem.asPredictedApp(position++, lastSectionInfo,
-                            "", lastSectionInfo.numApps++, info);
-                    if (lastSectionInfo.firstAppItem == null) {
-                        lastSectionInfo.firstAppItem = appItem;
-                        lastFastScrollerSectionInfo.fastScrollToItem = appItem;
-                    }
-                    mAdapterItems.add(appItem);
-                    mFilteredApps.add(info);
-                }
-
-                mAdapterItems.add(AdapterItem.asPredictionDivider(position++));
-            }
-        }
-
         // Recreate the filtered and sectioned apps (for convenience for the grid layout) from the
         // ordered set of sections
         for (AppInfo info : getFiltersAppInfos()) {
@@ -513,33 +437,16 @@ public class AlphabeticalAppsList {
             mNumAppRowsInAdapter = rowIndex + 1;
 
             // Pre-calculate all the fast scroller fractions
-            switch (mFastScrollDistributionMode) {
-                case FAST_SCROLL_FRACTION_DISTRIBUTE_BY_ROWS_FRACTION:
-                    float rowFraction = 1f / mNumAppRowsInAdapter;
-                    for (FastScrollSectionInfo info : mFastScrollerSections) {
-                        AdapterItem item = info.fastScrollToItem;
-                        if (!AllAppsGridAdapter.isIconViewType(item.viewType)) {
-                            info.touchFraction = 0f;
-                            continue;
-                        }
-
-                        float subRowFraction = item.rowAppIndex * (rowFraction / mNumAppsPerRow);
-                        info.touchFraction = item.rowIndex * rowFraction + subRowFraction;
-                    }
-                    break;
-                case FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS:
-                    float perSectionTouchFraction = 1f / mFastScrollerSections.size();
-                    float cumulativeTouchFraction = 0f;
-                    for (FastScrollSectionInfo info : mFastScrollerSections) {
-                        AdapterItem item = info.fastScrollToItem;
-                        if (!AllAppsGridAdapter.isIconViewType(item.viewType)) {
-                            info.touchFraction = 0f;
-                            continue;
-                        }
-                        info.touchFraction = cumulativeTouchFraction;
-                        cumulativeTouchFraction += perSectionTouchFraction;
-                    }
-                    break;
+            float perSectionTouchFraction = 1f / mFastScrollerSections.size();
+            float cumulativeTouchFraction = 0f;
+            for (FastScrollSectionInfo info : mFastScrollerSections) {
+                AdapterItem item = info.fastScrollToItem;
+                if (!AllAppsGridAdapter.isIconViewType(item.viewType)) {
+                    info.touchFraction = 0f;
+                    continue;
+                }
+                info.touchFraction = cumulativeTouchFraction;
+                cumulativeTouchFraction += perSectionTouchFraction;
             }
         }
 
@@ -575,16 +482,13 @@ public class AlphabeticalAppsList {
 
         // Go through each section and try and merge some of the sections
         if (!hasFilter()) {
-            int sectionAppCount = 0;
             for (int i = 0; i < mSections.size() - 1; i++) {
                 SectionInfo section = mSections.get(i);
-                sectionAppCount = section.numApps;
-                int mergeCount = 1;
 
                 // Merge rows based on the current strategy
                 while (i < (mSections.size() - 1) &&
-                        mMergeAlgorithm.continueMerging(section, mSections.get(i + 1),
-                                sectionAppCount, mNumAppsPerRow, mergeCount)) {
+                        mMergeAlgorithm.continueMerging(section
+                        )) {
                     SectionInfo nextSection = mSections.remove(i + 1);
 
                     // Remove the next section break
@@ -606,8 +510,6 @@ public class AlphabeticalAppsList {
                         item.position--;
                     }
                     section.numApps += nextSection.numApps;
-                    sectionAppCount += nextSection.numApps;
-                    mergeCount++;
                 }
             }
         }

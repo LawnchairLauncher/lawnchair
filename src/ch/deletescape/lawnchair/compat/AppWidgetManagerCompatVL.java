@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import ch.deletescape.lawnchair.IconCache;
 import ch.deletescape.lawnchair.LauncherAppWidgetProviderInfo;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.util.ComponentKey;
@@ -101,7 +100,7 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
     }
 
     @Override
-    public Drawable loadIcon(LauncherAppWidgetProviderInfo info, IconCache cache) {
+    public Drawable loadIcon(LauncherAppWidgetProviderInfo info) {
         return info.getIcon(mContext);
     }
 

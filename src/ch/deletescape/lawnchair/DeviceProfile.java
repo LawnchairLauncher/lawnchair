@@ -43,7 +43,6 @@ public class DeviceProfile {
     public final boolean isTablet;
     public final boolean isLargeTablet;
     public final boolean isPhone;
-    public final boolean transposeLayoutWithOrientation;
 
     // Device properties in current orientation
     public final int widthPx;
@@ -104,8 +103,6 @@ public class DeviceProfile {
     private int hotseatLandGutterPx;
 
     // All apps
-    public int allAppsNumCols;
-    public int allAppsNumPredictiveCols;
     public int allAppsButtonVisualSize;
     public int allAppsIconSizePx;
     public int allAppsIconDrawablePaddingPx;
@@ -135,9 +132,6 @@ public class DeviceProfile {
         isPhone = !isTablet && !isLargeTablet;
 
         // Some more constants
-        transposeLayoutWithOrientation =
-                res.getBoolean(R.bool.hotseat_transpose_layout_with_orientation);
-
         ComponentName cn = new ComponentName(context.getPackageName(),
                 this.getClass().getName());
         defaultWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(context, cn, null);
@@ -274,10 +268,6 @@ public class DeviceProfile {
 
     public void updateInsets(Rect insets) {
         mInsets.set(insets);
-    }
-
-    public void updateAppsViewNumCols() {
-        allAppsNumCols = allAppsNumPredictiveCols = inv.numColumns;
     }
 
     /**

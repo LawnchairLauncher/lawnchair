@@ -79,7 +79,7 @@ public abstract class AppWidgetManagerCompat {
 
     public abstract Drawable loadPreview(AppWidgetProviderInfo info);
 
-    public abstract Drawable loadIcon(LauncherAppWidgetProviderInfo info, IconCache cache);
+    public abstract Drawable loadIcon(LauncherAppWidgetProviderInfo info);
 
     public abstract Bitmap getBadgeBitmap(LauncherAppWidgetProviderInfo info, Bitmap bitmap,
                                           int imageWidth, int imageHeight);

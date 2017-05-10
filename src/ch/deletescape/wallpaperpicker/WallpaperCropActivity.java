@@ -328,26 +328,6 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
         return true;
     }
 
-    public void cropImageAndSetWallpaper(Resources res, int resId, boolean shouldFadeOutOnFinish) {
-        // crop this image and scale it down to the default wallpaper size for
-        // this device
-        InputStreamProvider streamProvider = InputStreamProvider.fromResource(res, resId);
-        Point inSize = mCropView.getSourceDimensions();
-        Point outSize = WallpaperUtils.getDefaultWallpaperSize(getResources(),
-                getWindowManager());
-        RectF crop = Utils.getMaxCropRect(
-                inSize.x, inSize.y, outSize.x, outSize.y, false);
-        // Passing 0, 0 will cause launcher to revert to using the
-        // default wallpaper size
-        CropAndFinishHandler onEndCrop = new CropAndFinishHandler(new Point(0, 0),
-                shouldFadeOutOnFinish);
-        CropAndSetWallpaperTask cropTask = new CropAndSetWallpaperTask(
-                streamProvider, this, crop, streamProvider.getRotationFromExif(this),
-                outSize.x, outSize.y, onEndCrop);
-        DialogUtils.executeCropTaskAfterPrompt(this, cropTask, getOnDialogCancelListener());
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void cropImageAndSetWallpaper(Uri uri,
             CropAndSetWallpaperTask.OnBitmapCroppedHandler onBitmapCroppedHandler,
             boolean shouldFadeOutOnFinish) {

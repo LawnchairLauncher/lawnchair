@@ -39,7 +39,7 @@ public class InterruptibleInOutAnimator {
     private static final int IN = 1;
     private static final int OUT = 2;
 
-    public InterruptibleInOutAnimator(View view, long duration, float fromValue, float toValue) {
+    public InterruptibleInOutAnimator(long duration, float fromValue, float toValue) {
         mAnimator = LauncherAnimUtils.ofFloat(fromValue, toValue).setDuration(duration);
         mOriginalDuration = duration;
         mOriginalFromValue = fromValue;

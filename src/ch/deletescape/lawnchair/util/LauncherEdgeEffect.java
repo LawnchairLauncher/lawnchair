@@ -226,40 +226,6 @@ public class LauncherEdgeEffect {
     }
 
     /**
-     * Call when the effect absorbs an impact at the given velocity.
-     * Used when a fling reaches the scroll boundary.
-     * <p>
-     * <p>When using a {@link android.widget.Scroller} or {@link android.widget.OverScroller},
-     * the method <code>getCurrVelocity</code> will provide a reasonable approximation
-     * to use here.</p>
-     *
-     * @param velocity Velocity at impact in pixels per second.
-     */
-    public void onAbsorb(int velocity) {
-        mState = STATE_ABSORB;
-        velocity = Math.min(Math.max(MIN_VELOCITY, Math.abs(velocity)), MAX_VELOCITY);
-
-        mStartTime = AnimationUtils.currentAnimationTimeMillis();
-        mDuration = 0.15f + (velocity * 0.02f);
-
-        // The glow depends more on the velocity, and therefore starts out
-        // nearly invisible.
-        mGlowAlphaStart = 0.3f;
-        mGlowScaleYStart = Math.max(mGlowScaleY, 0.f);
-
-
-        // Growth for the size of the glow should be quadratic to properly
-        // respond
-        // to a user's scrolling speed. The faster the scrolling speed, the more
-        // intense the effect should be for both the size and the saturation.
-        mGlowScaleYFinish = Math.min(0.025f + (velocity * (velocity / 100) * 0.00015f) / 2, 1.f);
-        // Alpha should change for the glow as well as size.
-        mGlowAlphaFinish = Math.max(
-                mGlowAlphaStart, Math.min(velocity * VELOCITY_GLOW_FACTOR * .00001f, MAX_ALPHA));
-        mTargetDisplacement = 0.5f;
-    }
-
-    /**
      * Set the color of this edge effect in argb.
      *
      * @param color Color in argb

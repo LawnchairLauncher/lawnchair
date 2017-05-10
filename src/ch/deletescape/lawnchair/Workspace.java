@@ -33,7 +33,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -169,7 +168,6 @@ public class Workspace extends PagedView
     float[] mDragViewVisualCenter = new float[2];
     private float[] mTempCellLayoutCenterCoordinates = new float[2];
     private int[] mTempVisiblePagesRange = new int[2];
-    private Matrix mTempMatrix = new Matrix();
 
     private SpringLoadedDragController mSpringLoadedDragController;
     private float mOverviewModeShrinkFactor;
@@ -2560,7 +2558,7 @@ public class Workspace extends PagedView
      *
      */
     private CellLayout findMatchingPageForDragOver(
-            DragView dragView, float originX, float originY, boolean exact) {
+            float originX, float originY, boolean exact) {
         // We loop through all the screens (ie CellLayouts) and see which ones overlap
         // with the item being dragged and then choose the one that's closest to the touch point
         final int screenCount = getChildCount();
@@ -2679,7 +2677,7 @@ public class Workspace extends PagedView
 
                 // Otherwise, if we aren't adding to or creating a folder and there's no pending
                 // reorder, then we schedule a reorder
-                ReorderAlarmListener listener = new ReorderAlarmListener(mDragViewVisualCenter,
+                ReorderAlarmListener listener = new ReorderAlarmListener(
                         minSpanX, minSpanY, item.spanX, item.spanY, d, child);
                 mReorderAlarm.setOnAlarmListener(listener);
                 mReorderAlarm.setAlarm(REORDER_TIMEOUT);
@@ -2717,7 +2715,7 @@ public class Workspace extends PagedView
             // Identify whether we have dragged over a side page,
             // otherwise just use the current page
             layout = workspaceInModalState() ?
-                    findMatchingPageForDragOver(d.dragView, d.x, d.y, false)
+                    findMatchingPageForDragOver(d.x, d.y, false)
                     : getCurrentDropLayout();
         }
         if (layout != mDragTargetLayout) {
@@ -2810,14 +2808,12 @@ public class Workspace extends PagedView
     }
 
     class ReorderAlarmListener implements OnAlarmListener {
-        float[] dragViewCenter;
         int minSpanX, minSpanY, spanX, spanY;
         DragObject dragObject;
         View child;
 
-        public ReorderAlarmListener(float[] dragViewCenter, int minSpanX, int minSpanY, int spanX,
+        public ReorderAlarmListener(int minSpanX, int minSpanY, int spanX,
                                     int spanY, DragObject dragObject, View child) {
-            this.dragViewCenter = dragViewCenter;
             this.minSpanX = minSpanX;
             this.minSpanY = minSpanY;
             this.spanX = spanX;

@@ -53,7 +53,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
-import android.os.UserHandle;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -90,7 +89,6 @@ import ch.deletescape.lawnchair.allapps.AllAppsContainerView;
 import ch.deletescape.lawnchair.allapps.AllAppsTransitionController;
 import ch.deletescape.lawnchair.allapps.DefaultAppSearchController;
 import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
-import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
 import ch.deletescape.lawnchair.compat.UserHandleCompat;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
@@ -126,7 +124,7 @@ import ch.deletescape.lawnchair.widget.WidgetsContainerView;
  * Default launcher application.
  */
 public class Launcher extends Activity
-        implements LauncherExterns, View.OnClickListener, OnLongClickListener,
+        implements View.OnClickListener, OnLongClickListener,
         LauncherModel.Callbacks, View.OnTouchListener, LauncherProviderChangeListener,
         AccessibilityManager.AccessibilityStateChangeListener {
     public static final String TAG = "Launcher";
@@ -894,7 +892,6 @@ public class Launcher extends Activity
         return mDefaultKeySsb.toString();
     }
 
-    @Override
     public void clearTypedText() {
         mDefaultKeySsb.clear();
         mDefaultKeySsb.clearSpans();
@@ -1404,10 +1401,6 @@ public class Launcher extends Activity
 
     public LauncherModel getModel() {
         return mModel;
-    }
-
-    public SharedPreferences getSharedPrefs() {
-        return mSharedPrefs;
     }
 
     public DeviceProfile getDeviceProfile() {
@@ -3660,40 +3653,6 @@ public class Launcher extends Activity
             return false;
         }
         return !mSharedPrefs.getBoolean(APPS_VIEW_SHOWN, false);
-    }
-
-    // TODO: These method should be a part of LauncherSearchCallback
-    public ItemInfo createAppDragInfo(Intent appLaunchIntent) {
-        // Called from search suggestion
-        UserHandleCompat user = null;
-        UserHandle userHandle = appLaunchIntent.getParcelableExtra(Intent.EXTRA_USER);
-        if (userHandle != null) {
-            user = UserHandleCompat.fromUser(userHandle);
-        }
-        return createAppDragInfo(appLaunchIntent, user);
-    }
-
-    // TODO: This method should be a part of LauncherSearchCallback
-    public ItemInfo createAppDragInfo(Intent intent, UserHandleCompat user) {
-        if (user == null) {
-            user = UserHandleCompat.myUserHandle();
-        }
-
-        // Called from search suggestion, add the profile extra to the intent to ensure that we
-        // can launch it correctly
-        LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(this);
-        LauncherActivityInfoCompat activityInfo = launcherApps.resolveActivity(intent, user);
-        if (activityInfo == null) {
-            return null;
-        }
-        return new AppInfo(this, activityInfo, user, mIconCache);
-    }
-
-    // TODO: This method should be a part of LauncherSearchCallback
-    public ItemInfo createShortcutDragInfo(Intent shortcutIntent, CharSequence caption,
-                                           Bitmap icon) {
-        return new ShortcutInfo(shortcutIntent, caption, caption, icon,
-                UserHandleCompat.myUserHandle());
     }
 
     /**

@@ -94,8 +94,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET_DIVIDER, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_ICON, approxRows * mNumAppsPerRow);
-        pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON, mNumAppsPerRow);
-        pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_PREDICTION_DIVIDER, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_SECTION_BREAK, approxRows);
     }
 
@@ -114,7 +112,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
                 AllAppsGridAdapter.VIEW_TYPE_ICON).mContent;
         int iconHeight = icon.getLayoutParams().height;
         mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_ICON, iconHeight);
-        mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON, iconHeight);
 
         // Search divider
         View searchDivider = adapter.onCreateViewHolder(this,
@@ -125,10 +122,9 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
 
         // Generic dividers
         View divider = adapter.onCreateViewHolder(this,
-                AllAppsGridAdapter.VIEW_TYPE_PREDICTION_DIVIDER).mContent;
+                AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET_DIVIDER).mContent;
         divider.measure(widthMeasureSpec, heightMeasureSpec);
         int dividerHeight = divider.getMeasuredHeight();
-        mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_PREDICTION_DIVIDER, dividerHeight);
         mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET_DIVIDER, dividerHeight);
 
         // Search views
@@ -198,21 +194,10 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         updateEmptySearchBackgroundBounds();
     }
 
-    public int getContainerType(View v) {
+    public int getContainerType() {
         if (mApps.hasFilter()) {
             return LauncherLogProto.SEARCHRESULT;
         } else {
-            if (v instanceof BubbleTextView) {
-                BubbleTextView icon = (BubbleTextView) v;
-                int position = getChildAdapterPosition(icon);
-                if (position != NO_POSITION) {
-                    List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
-                    AlphabeticalAppsList.AdapterItem item = items.get(position);
-                    if (item.viewType == AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON) {
-                        return LauncherLogProto.PREDICTION;
-                    }
-                }
-            }
             return LauncherLogProto.ALLAPPS;
         }
     }

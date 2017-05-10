@@ -205,7 +205,6 @@ public class LoggerUtils {
      */
     public static LauncherLogProto.LauncherEvent initLauncherEvent(
             int actionType,
-            View v,
             ItemInfo info,
             int parentSrcTargetType,
             View parentDestTargetType) {
