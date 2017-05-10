@@ -43,7 +43,7 @@ class TransformedImageDrawable {
      */
     public TransformedImageDrawable(Resources res, int resourceId, float xPct, float yPct,
                                     int gravity) {
-        mImage = res.getDrawable(resourceId);
+        mImage = res.getDrawable(resourceId, null);
         mXPercent = xPct;
         mYPercent = yPct;
         mGravity = gravity;

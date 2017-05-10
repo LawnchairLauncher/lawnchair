@@ -39,7 +39,7 @@ public class AlphabeticIndexCompat {
 
         mBaseIndex = index == null ? new BaseIndex() : index;
 
-        if (context.getResources().getConfiguration().locale
+        if (context.getResources().getConfiguration().getLocales().get(0)
                 .getLanguage().equals(Locale.JAPANESE.getLanguage())) {
             // Japanese character 他 ("misc")
             mDefaultMiscLabel = "\u4ed6";
@@ -119,7 +119,7 @@ public class AlphabeticIndexCompat {
         private Method mGetBucketLabelMethod;
 
         public AlphabeticIndexV16(Context context) throws Exception {
-            Locale curLocale = context.getResources().getConfiguration().locale;
+            Locale curLocale = context.getResources().getConfiguration().getLocales().get(0);
             Class clazz = Class.forName("libcore.icu.AlphabeticIndex");
             mGetBucketIndexMethod = clazz.getDeclaredMethod("getBucketIndex", String.class);
             mGetBucketLabelMethod = clazz.getDeclaredMethod("getBucketLabel", int.class);

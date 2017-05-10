@@ -96,7 +96,7 @@ public abstract class DragAndDropAccessibilityDelegate extends ExploreByTouchHel
 
     @Override
     public void onClick(View v) {
-        onPerformActionForVirtualView(getFocusedVirtualView(),
+        onPerformActionForVirtualView(getAccessibilityFocusedVirtualViewId(),
                 AccessibilityNodeInfoCompat.ACTION_CLICK, null);
     }
 

@@ -136,7 +136,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView {
         }
 
         View child = getChildAt(0);
-        int rowIndex = getChildPosition(child);
+        int rowIndex = getChildAdapterPosition(child);
         int y = (child.getMeasuredHeight() * rowIndex);
         int offset = getLayoutManager().getDecoratedTop(child);
 

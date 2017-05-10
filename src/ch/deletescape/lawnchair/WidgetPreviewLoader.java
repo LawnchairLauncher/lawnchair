@@ -325,7 +325,7 @@ public class WidgetPreviewLoader {
         } else {
             // Generate a preview image if we couldn't load one
             tileBitmap = ((BitmapDrawable) mContext.getResources().getDrawable(
-                    R.drawable.widget_tile)).getBitmap();
+                    R.drawable.widget_tile, null)).getBitmap();
             previewWidth = tileBitmap.getWidth() * spanX;
             previewHeight = tileBitmap.getHeight() * spanY;
         }

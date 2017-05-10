@@ -426,7 +426,7 @@ public class AutoInstallsLayout {
                 return -1;
             }
 
-            Drawable icon = mIconRes.getDrawable(iconId);
+            Drawable icon = mIconRes.getDrawable(iconId, null);
             if (icon == null) {
                 return -1;
             }

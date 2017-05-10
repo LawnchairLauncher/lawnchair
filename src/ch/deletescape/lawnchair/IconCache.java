@@ -143,7 +143,7 @@ public class IconCache {
     private Drawable getFullResIcon(Resources resources, int iconId) {
         Drawable d;
         try {
-            d = resources.getDrawableForDensity(iconId, mIconDpi);
+            d = resources.getDrawableForDensity(iconId, mIconDpi, null);
         } catch (Resources.NotFoundException e) {
             d = null;
         }

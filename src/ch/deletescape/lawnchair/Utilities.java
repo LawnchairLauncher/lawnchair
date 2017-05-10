@@ -158,7 +158,7 @@ public final class Utilities {
                 final int id = resources.getIdentifier(resourceName, null, null);
                 return createIconBitmap(
                         resources.getDrawableForDensity(id, LauncherAppState.getInstance()
-                                .getInvariantDeviceProfile().fillResIconDpi), context);
+                                .getInvariantDeviceProfile().fillResIconDpi, null), context);
             }
         } catch (Exception e) {
             // Icon not found.
