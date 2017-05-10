@@ -71,7 +71,7 @@
         <service
             android:name="ch.deletescape.lawnchair.dynamicui.ColorExtractionService"
             android:exported="false"
-            android:process=":wallpaper_chooser" />
+            android:process=":color_extraction" />
 
         <meta-data
             android:name="android.nfc.disable_beam_default"
