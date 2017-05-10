@@ -22,7 +22,7 @@
     android:elevation="@dimen/notification_elevation"
     android:clipChildren="false"
     android:layout_gravity="center_vertical"
-    android:background="@color/notification_background_color">
+    android:background="@color/popup_background_color">
 
     <LinearLayout
         android:id="@+id/icon_row"
