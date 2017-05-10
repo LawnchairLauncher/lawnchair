@@ -310,7 +310,7 @@ public class AlphabeticalAppsList {
 
         // As a special case for some languages (currently only Simplified Chinese), we may need to
         // coalesce sections
-        Locale curLocale = mLauncher.getResources().getConfiguration().getLocales().get(0);
+        Locale curLocale = mLauncher.getResources().getConfiguration().locale;
         TreeMap<String, ArrayList<AppInfo>> sectionMap = null;
         boolean localeRequiresSectionSorting = curLocale.equals(Locale.SIMPLIFIED_CHINESE);
         if (localeRequiresSectionSorting) {
