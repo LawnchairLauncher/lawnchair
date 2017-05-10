@@ -28,7 +28,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center_vertical"
-        android:background="@color/notification_background_color"
+        android:background="@color/popup_background_color"
         android:paddingStart="@dimen/notification_padding_start"
         android:paddingEnd="@dimen/notification_main_text_padding_end">
         <TextView

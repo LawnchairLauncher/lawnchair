@@ -25,7 +25,6 @@ import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.CornerPathEffect;
 import android.graphics.Paint;
 import android.graphics.PointF;
@@ -169,8 +168,6 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         final Resources resources = getResources();
         final int arrowWidth = resources.getDimensionPixelSize(R.dimen.popup_arrow_width);
         final int arrowHeight = resources.getDimensionPixelSize(R.dimen.popup_arrow_height);
-        final int arrowHorizontalOffset = resources.getDimensionPixelSize(
-                R.dimen.popup_arrow_horizontal_offset);
         final int arrowVerticalOffset = resources.getDimensionPixelSize(
                 R.dimen.popup_arrow_vertical_offset);
 
@@ -208,6 +205,9 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         }
 
         // Add the arrow.
+        final int arrowHorizontalOffset = resources.getDimensionPixelSize(isAlignedWithStart() ?
+                R.dimen.popup_arrow_horizontal_offset_start :
+                R.dimen.popup_arrow_horizontal_offset_end);
         mArrow = addArrowView(arrowHorizontalOffset, arrowVerticalOffset, arrowWidth, arrowHeight);
         mArrow.setPivotX(arrowWidth / 2);
         mArrow.setPivotY(mIsAboveIcon ? 0 : arrowHeight);
@@ -493,7 +493,11 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             ShapeDrawable arrowDrawable = new ShapeDrawable(TriangleShape.create(
                     width, height, !mIsAboveIcon));
             Paint arrowPaint = arrowDrawable.getPaint();
-            arrowPaint.setColor(Color.WHITE);
+            // Note that we have to use getChildAt() instead of getItemViewAt(),
+            // since the latter expects the arrow which hasn't been added yet.
+            PopupItemView itemAttachedToArrow = (PopupItemView)
+                    (getChildAt(mIsAboveIcon ? getChildCount() - 1 : 0));
+            arrowPaint.setColor(itemAttachedToArrow.getArrowColor(mIsAboveIcon));
             // The corner path effect won't be reflected in the shadow, but shouldn't be noticeable.
             int radius = getResources().getDimensionPixelSize(R.dimen.popup_arrow_corner_radius);
             arrowPaint.setPathEffect(new CornerPathEffect(radius));
