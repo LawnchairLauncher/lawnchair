@@ -16,17 +16,13 @@
 
 package com.android.launcher3;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.Intent;
-import android.content.res.Resources.Theme;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Layout;
 import android.text.StaticLayout;
@@ -36,18 +32,21 @@ import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implements OnClickListener {
+import com.android.launcher3.IconCache.ItemInfoUpdateReceiver;
+import com.android.launcher3.graphics.DrawableFactory;
+import com.android.launcher3.model.PackageItemInfo;
+import com.android.launcher3.util.Themes;
+
+public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
+        implements OnClickListener, ItemInfoUpdateReceiver {
     private static final float SETUP_ICON_SIZE_FACTOR = 2f / 5;
     private static final float MIN_SATUNATION = 0.7f;
-
-    private static Theme sPreloaderTheme;
 
     private final Rect mRect = new Rect();
     private View mDefaultView;
     private OnClickListener mClickListener;
     private final LauncherAppWidgetInfo mInfo;
     private final int mStartState;
-    private final Intent mIconLookupIntent;
     private final boolean mDisabledForSafeMode;
     private Launcher mLauncher;
 
@@ -61,27 +60,30 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
     private final TextPaint mPaint;
     private Layout mSetupTextLayout;
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public PendingAppWidgetHostView(Context context, LauncherAppWidgetInfo info,
-            boolean disabledForSafeMode) {
+            IconCache cache, boolean disabledForSafeMode) {
         super(new ContextThemeWrapper(context, R.style.WidgetContainerTheme));
 
         mLauncher = Launcher.getLauncher(context);
         mInfo = info;
         mStartState = info.restoreStatus;
-        mIconLookupIntent = new Intent().setComponent(info.providerName);
         mDisabledForSafeMode = disabledForSafeMode;
 
         mPaint = new TextPaint();
-        mPaint.setColor(0xFFFFFFFF);
+        mPaint.setColor(Themes.getAttrColor(getContext(), android.R.attr.textColorPrimary));
         mPaint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX,
                 mLauncher.getDeviceProfile().iconTextSizePx, getResources().getDisplayMetrics()));
-        setBackgroundResource(R.drawable.quantum_panel_dark);
+        setBackgroundResource(R.drawable.pending_widget_bg);
         setWillNotDraw(false);
 
-        if (Utilities.ATLEAST_LOLLIPOP) {
-            setElevation(getResources().getDimension(R.dimen.pending_widget_elevation));
-        }
+        setElevation(getResources().getDimension(R.dimen.pending_widget_elevation));
+        updateAppWidget(null);
+        setOnClickListener(mLauncher);
+
+        // Load icon
+        PackageItemInfo item = new PackageItemInfo(info.providerName.getPackageName());
+        item.user = info.user;
+        cache.updateIconInBackground(this, item);
     }
 
     @Override
@@ -117,8 +119,9 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
         mDrawableSizeChanged = true;
     }
 
-    public void updateIcon(IconCache cache) {
-        Bitmap icon = cache.getIcon(mIconLookupIntent, mInfo.user);
+    @Override
+    public void reapplyItemInfo(ItemInfoWithIcon info) {
+        Bitmap icon = info.iconBitmap;
         if (mIcon == icon) {
             return;
         }
@@ -132,30 +135,27 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
             //   1) App icon in the center
             //   2) Preload icon in the center
             //   3) Setup icon in the center and app icon in the top right corner.
+            DrawableFactory drawableFactory = DrawableFactory.get(getContext());
             if (mDisabledForSafeMode) {
-                FastBitmapDrawable disabledIcon = mLauncher.createIconDrawable(mIcon);
-                disabledIcon.setState(FastBitmapDrawable.State.DISABLED);
+                FastBitmapDrawable disabledIcon = drawableFactory.newIcon(mIcon, mInfo);
+                disabledIcon.setIsDisabled(true);
                 mCenterDrawable = disabledIcon;
                 mSettingIconDrawable = null;
             } else if (isReadyForClickSetup()) {
-                mCenterDrawable = new FastBitmapDrawable(mIcon);
+                mCenterDrawable = drawableFactory.newIcon(mIcon, mInfo);
                 mSettingIconDrawable = getResources().getDrawable(R.drawable.ic_setting).mutate();
 
                 updateSettingColor();
             } else {
-                if (sPreloaderTheme == null) {
-                    sPreloaderTheme = getResources().newTheme();
-                    sPreloaderTheme.applyStyle(R.style.PreloadIcon, true);
-                }
-
-                FastBitmapDrawable drawable = mLauncher.createIconDrawable(mIcon);
-                mCenterDrawable = new PreloadIconDrawable(drawable, sPreloaderTheme);
+                mCenterDrawable = DrawableFactory.get(getContext())
+                        .newPendingIcon(mIcon, getContext());
                 mCenterDrawable.setCallback(this);
                 mSettingIconDrawable = null;
                 applyState();
             }
             mDrawableSizeChanged = true;
         }
+        invalidate();
     }
 
     private void updateSettingColor() {
@@ -219,13 +219,10 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
         int availableHeight = getHeight() - paddingTop - paddingBottom - 2 * minPadding;
 
         if (mSettingIconDrawable == null) {
-            int outset = (mCenterDrawable instanceof PreloadIconDrawable) ?
-                    ((PreloadIconDrawable) mCenterDrawable).getOutset() : 0;
-            int maxSize = grid.iconSizePx + 2 * outset;
+            int maxSize = grid.iconSizePx;
             int size = Math.min(maxSize, Math.min(availableWidth, availableHeight));
 
             mRect.set(0, 0, size, size);
-            mRect.inset(outset, outset);
             mRect.offsetTo((getWidth() - mRect.width()) / 2, (getHeight() - mRect.height()) / 2);
             mCenterDrawable.setBounds(mRect);
         } else  {

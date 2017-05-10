@@ -27,14 +27,19 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"डाउनलोड केलेला अ‍ॅप सुरक्षित मोड मध्‍ये अक्षम केला"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"विजेट सुरक्षित मोडमध्ये अक्षम झाले"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"शॉर्टकट उपलब्ध नाही"</string>
+    <string name="home_screen" msgid="806512411299847073">"मुख्यपृष्ठ"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"सानुकूल क्रिया"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"विजेट निवडण्यासाठी स्पर्श करा आणि धरून ठेवा."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"एक विजेट निवडण्यासाठी दोनदा टॅप करा आणि धरून ठेवा किंवा सानुकूल क्रिया वापरा."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d रूंद बाय %2$d उंच"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"स्वतः ठेवण्यासाठी स्पर्श करा आणि धरून ठेवा"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"स्वयंचलितपणे जोडा"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"अॅप्स शोधा"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"अॅप्स लोड करीत आहे..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" शी जुळणारे कोणतेही अॅप्स आढळले नाहीत"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"अधिक अॅप्स शोधा"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"सूचना"</string>
     <string name="out_of_space" msgid="4691004494942118364">"या मुख्य स्क्रीनवर आणखी जागा नाही."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"आवडीच्या ट्रे मध्ये आणखी जागा नाही"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"अॅप्स सूची"</string>
@@ -71,6 +76,11 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"मुख्यस्क्रीन फिरविण्‍यास अनुमती द्या"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"फोन फिरविला जातो तेव्हा"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"वर्तमान प्रदर्शन सेटिंग फिरविण्यास परवानगी देत नाही"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"मुख्य स्क्रीनवर चिन्ह जोडा"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नवीन अॅप्ससाठी"</string>
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"चिन्हाचा आकार बदला"</string>
+    <string name="icon_shape_no_override" msgid="3678524428085518367">"बदलू नका"</string>
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"चिन्हाचा आकार बदल लागू करत आहे"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"अज्ञात"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"काढा"</string>
     <string name="abandoned_search" msgid="891119232568284442">"शोधा"</string>
@@ -78,6 +88,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"या चिन्हासाठी अॅप स्थापित केलेला नाही. आपण ते काढू शकता किंवा अॅपचा शोध घेऊ शकता आणि त्यास व्यक्तिचलितपणे स्थापित करू शकता."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> डाउनलोड होत आहे , <xliff:g id="PROGRESS">%2$s</xliff:g> पूर्ण झाले"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> स्थापित करण्याची प्रतिक्षा करीत आहे"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> विजेट"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"मुख्य स्क्रीनवर जोडा"</string>
     <string name="action_move_here" msgid="2170188780612570250">"आयटम येथे हलवा"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"आयटम मुख्य स्क्रीनवर जोडला"</string>

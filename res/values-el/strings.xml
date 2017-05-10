@@ -27,14 +27,19 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Η λήψη εφαρμογών απενεργοποήθηκε στην Ασφαλή λειτουργία"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Τα γραφικά στοιχεία απενεργοποιήθηκαν στην ασφαλή λειτουργία"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"Η συντόμευση δεν είναι διαθέσιμη"</string>
+    <string name="home_screen" msgid="806512411299847073">"Αρχική οθόνη"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"Προσαρμοσμένες ενέργειες"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Αγγίξτε παρατεταμένα για να πάρετε ένα γραφ.στοιχ."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Πατήστε δύο φορές παρατεταμένα για επιλογή γραφικού στοιχείου ή χρήση προσαρμοσμένων ενεργειών."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Πλάτος %1$d επί ύψος %2$d"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Αγγίξτε παρατεταμένα για μη αυτόματη τοποθέτηση"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"Αυτόματη προσθήκη"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Αναζήτηση εφαρμογών"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Φόρτωση εφαρμογών…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Δεν βρέθηκαν εφαρμογές για το ερώτημα \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Αναζήτηση περισσότερων εφαρμογών"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"Ειδοποιήσεις"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Δεν υπάρχει χώρος σε αυτήν την αρχική οθόνη."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Δεν υπάρχει επιπλέον χώρος στην περιοχή Αγαπημένα"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Λίστα εφαρμογών"</string>
@@ -71,6 +76,14 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"Να επιτρέπεται η περιστροφή της αρχικής οθόνης"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Όταν το τηλέφωνο περιστρέφεται"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Η τρέχουσα ρύθμιση οθόνης δεν επιτρέπει την περιστροφή"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Προσθήκη εικονιδίου στην Αρχική οθόνη"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Για νέες εφαρμογές"</string>
+    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
+    <skip />
+    <!-- no translation found for icon_shape_no_override (3678524428085518367) -->
+    <skip />
+    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
+    <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"Άγνωστο"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Κατάργηση"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Αναζήτηση"</string>
@@ -78,6 +91,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Η εφαρμογή γι\' αυτό το εικονίδιο δεν είναι εγκατεστημένη. Μπορείτε να το καταργήσετε ή να αναζητήσετε την εφαρμογή και να την εγκαταστήσετε με μη αυτόματο τρόπο."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Λήψη <xliff:g id="NAME">%1$s</xliff:g>, ολοκληρώθηκε <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> σε αναμονή για εγκατάσταση"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"Γραφικά στοιχεία <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Προσθήκη στην αρχική οθόνη"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Μετακίνηση στοιχείου εδώ"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Το στοιχείο προστέθηκε στην αρχική οθόνη"</string>

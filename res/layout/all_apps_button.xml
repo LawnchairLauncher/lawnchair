@@ -14,6 +14,4 @@
      limitations under the License.
 -->
 
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-   style="@style/Icon"
-   android:focusable="true" />
+<TextView style="@style/BaseIcon" />

@@ -27,14 +27,19 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Yuklab olingan ilova xavfsiz rejimda o‘chirib qo‘yildi"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Xavfsiz rejimda vidjetlar o‘chirib qo‘yilgan"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"Tezkor tugmadan foydalanib bo‘lmaydi"</string>
+    <string name="home_screen" msgid="806512411299847073">"Bosh ekran"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"Maxsus amallar"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Vidjetni tanlash uchun bosib turing."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Ikki marta bosib va bosib turgan holatda vidjetni tanlang yoki maxsus amaldan foydalaning."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Eni %1$d, bo‘yi %2$d"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Qo‘lda joylashtirish uchun bosib turing"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"Avtomatik chiqarish"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Ilovalar ichidan qidirish"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Ilovalar yuklanmoqda…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"“<xliff:g id="QUERY">%1$s</xliff:g>” so‘rovi bo‘yicha hech narsa topilmadi"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Boshqa ilovalarni qidirish"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"Bildirishnomalar"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Uy ekranida bitta ham xona yo‘q."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Ajratilganlarda birorta ham xona yo‘q"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Ilovalar ro‘yxati"</string>
@@ -71,6 +76,14 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"Asosiy ekranni aylantirishga ruxsat berish"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Telefon burilganda"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Ekran sozlamalariga ko‘ra uni aylantirib bo‘lmaydi"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Bosh ekranga ikonka qo‘shish"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Yangi o‘rnatilgan ilovalar ikonkasini bosh ekranga chiqarish"</string>
+    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
+    <skip />
+    <!-- no translation found for icon_shape_no_override (3678524428085518367) -->
+    <skip />
+    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
+    <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"Noma’lum"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"O‘chirish"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Qidirish"</string>
@@ -78,6 +91,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Ilova o‘rnatilmagan. Belgini o‘chirib tashlashingiz yoki ilovani topib, uni qo‘lda o‘rnatishingiz mumkin."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> yuklab olinmoqda, <xliff:g id="PROGRESS">%2$s</xliff:g> bajarildi"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ilovasi o‘rnatilishi kutilmoqda"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> vidjetlari"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Bosh ekranga qo‘shish"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Obyektni bu yerga ko‘chirish"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Obyekt bosh ekranga qo‘shildi"</string>

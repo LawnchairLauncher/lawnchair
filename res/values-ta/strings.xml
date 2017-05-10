@@ -27,14 +27,19 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"இறக்கிய பயன்பாடு பாதுகாப்பு முறையில் முடக்கப்பட்டது"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"பாதுகாப்புப் பயன்முறையில் விட்ஜெட்கள் முடக்கப்பட்டுள்ளன"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"குறுக்குவழி இல்லை"</string>
+    <string name="home_screen" msgid="806512411299847073">"முகப்புத் திரை"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"தனிப்பயன் செயல்கள்"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"விட்ஜெட்டைத் தேர்வுசெய்ய தொட்டுப் பிடிக்கவும்."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"விட்ஜெட்டைத் தேர்ந்தெடுக்க இருமுறை தட்டிப் பிடிக்கவும் அல்லது தனிப்பயன் செயல்களைப் பயன்படுத்தவும்."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d அகலத்திற்கு %2$d உயரம்"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"நீங்களே சேர்க்க, தொட்டுப் பிடித்திருக்கவும்"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"தானாகவே சேர்"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"பயன்பாடுகளில் தேடுக"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"பயன்பாடுகளை ஏற்றுகிறது..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" உடன் பொருந்தும் பயன்பாடுகள் இல்லை"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"கூடுதல் பயன்பாடுகளைத் தேடு"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"அறிவிப்புகள்"</string>
     <string name="out_of_space" msgid="4691004494942118364">"முகப்புத் திரையில் இடமில்லை."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"பிடித்தவை ட்ரேயில் இடமில்லை"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"பயன்பாடுகளின் பட்டியல்"</string>
@@ -71,6 +76,14 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"முகப்புத் திரை சுழற்சியை அனுமதி"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"மொபைலைச் சுழற்றும் போது"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"தற்போதைய திரை அமைப்பு சுழற்றுவதை அனுமதிக்கவில்லை"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"முகப்புத் திரையில் ஐகானைச் சேர்"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"புதிய பயன்பாடுகளுக்கு"</string>
+    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
+    <skip />
+    <!-- no translation found for icon_shape_no_override (3678524428085518367) -->
+    <skip />
+    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
+    <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"தெரியாதது"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"அகற்று"</string>
     <string name="abandoned_search" msgid="891119232568284442">"தேடு"</string>
@@ -78,6 +91,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ஐகானுக்கான பயன்பாடு நிறுவப்படவில்லை. இதை அகற்றலாம் அல்லது பயன்பாட்டைத் தேடி கைமுறையாக நிறுவலாம்."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g>ஐப் பதிவிறக்குகிறது, <xliff:g id="PROGRESS">%2$s</xliff:g> முடிந்தது"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g>ஐ நிறுவுவதற்காகக் காத்திருக்கிறது"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> விட்ஜெட்டுகள்"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"முகப்புத் திரையில் சேர்"</string>
     <string name="action_move_here" msgid="2170188780612570250">"இங்கு நகர்த்து"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"முகப்புத் திரையில் சேர்க்கப்பட்டது"</string>

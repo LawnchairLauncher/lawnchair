@@ -27,14 +27,19 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"在安全模式中無法使用「已下載的應用程式」功能"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"在安全模式中無法使用小工具"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"沒有可用的捷徑"</string>
+    <string name="home_screen" msgid="806512411299847073">"主畫面"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"自訂操作"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"輕觸並按住小工具即可選取。"</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"連扲兩下，然後扲住，就可以新增小工具，或者執行自訂操作。"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d 闊，%2$d 高"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"按住即可手動新增"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"自動新增"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"搜尋應用程式"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"正在載入應用程式…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"無法找到與「<xliff:g id="QUERY">%1$s</xliff:g>」相符的應用程式"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"搜尋更多應用程式"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"通知"</string>
     <string name="out_of_space" msgid="4691004494942118364">"主畫面已無空間。"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"我的收藏寄存區沒有足夠空間"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"應用程式清單"</string>
@@ -71,6 +76,14 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"允許主畫面旋轉"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"當手機旋轉時"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"「目前顯示屏」設定不允許旋轉"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"將圖示加到主畫面"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"適用於新安裝的應用程式"</string>
+    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
+    <skip />
+    <!-- no translation found for icon_shape_no_override (3678524428085518367) -->
+    <skip />
+    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
+    <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"不明"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"移除"</string>
     <string name="abandoned_search" msgid="891119232568284442">"搜尋"</string>
@@ -78,6 +91,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"您尚未安裝這個圖示代表的應用程式。您可以移除這個圖示，也可以搜尋該應用程式並手動安裝。"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"正在下載 <xliff:g id="NAME">%1$s</xliff:g>，已完成 <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"正在等待安裝 <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g>小工具"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"新增至主畫面"</string>
     <string name="action_move_here" msgid="2170188780612570250">"移動項目至這裡"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"已將項目加入至主畫面"</string>

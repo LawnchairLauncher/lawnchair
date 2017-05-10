@@ -16,20 +16,12 @@
 
 package com.android.launcher3.dragndrop;
 
-import android.content.ClipData;
-import android.content.ClipDescription;
 import android.content.Context;
-import android.content.Intent;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 
-import com.android.launcher3.DropTarget;
 import com.android.launcher3.DropTarget.DragObject;
-import com.android.launcher3.InstallShortcutReceiver;
-import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
-
-import java.util.ArrayList;
 
 /**
  * Base class for driving a drag/drop operation.
@@ -40,7 +32,7 @@ public abstract class DragDriver {
     public interface EventListener {
         void onDriverDragMove(float x, float y);
         void onDriverDragExitWindow();
-        void onDriverDragEnd(float x, float y, DropTarget dropTargetOverride);
+        void onDriverDragEnd(float x, float y);
         void onDriverDragCancel();
     }
 
@@ -62,7 +54,7 @@ public abstract class DragDriver {
                 break;
             case MotionEvent.ACTION_UP:
                 mEventListener.onDriverDragMove(ev.getX(), ev.getY());
-                mEventListener.onDriverDragEnd(ev.getX(), ev.getY(), null);
+                mEventListener.onDriverDragEnd(ev.getX(), ev.getY());
                 break;
             case MotionEvent.ACTION_CANCEL:
                 mEventListener.onDriverDragCancel();
@@ -80,7 +72,7 @@ public abstract class DragDriver {
 
         switch (action) {
             case MotionEvent.ACTION_UP:
-                mEventListener.onDriverDragEnd(ev.getX(), ev.getY(), null);
+                mEventListener.onDriverDragEnd(ev.getX(), ev.getY());
                 break;
             case MotionEvent.ACTION_CANCEL:
                 mEventListener.onDriverDragCancel();
@@ -92,7 +84,7 @@ public abstract class DragDriver {
 
     public static DragDriver create(Context context, DragController dragController,
             DragObject dragObject, DragOptions options) {
-        if (Utilities.isNycOrAbove() && options.systemDndStartPoint != null) {
+        if (Utilities.ATLEAST_NOUGAT && options.systemDndStartPoint != null) {
             return new SystemDragDriver(dragController, context, dragObject);
         } else {
             return new InternalDragDriver(dragController);
@@ -108,7 +100,6 @@ class SystemDragDriver extends DragDriver {
     private final DragObject mDragObject;
     private final Context mContext;
 
-    boolean mReceivedDropEvent = false;
     float mLastX = 0;
     float mLastY = 0;
 
@@ -150,64 +141,20 @@ class SystemDragDriver extends DragDriver {
             case DragEvent.ACTION_DROP:
                 mLastX = event.getX();
                 mLastY = event.getY();
-                mReceivedDropEvent =
-                        updateInfoFromClipData(event.getClipData(), event.getClipDescription());
-                return mReceivedDropEvent;
-
+                mEventListener.onDriverDragMove(event.getX(), event.getY());
+                mEventListener.onDriverDragEnd(mLastX, mLastY);
+                return true;
             case DragEvent.ACTION_DRAG_EXITED:
                 mEventListener.onDriverDragExitWindow();
                 return true;
 
             case DragEvent.ACTION_DRAG_ENDED:
-                if (mReceivedDropEvent) {
-                    mEventListener.onDriverDragEnd(mLastX, mLastY, null);
-                } else {
-                    mEventListener.onDriverDragCancel();
-                }
+                mEventListener.onDriverDragCancel();
                 return true;
 
             default:
                 return false;
         }
-    }
-
-    private boolean updateInfoFromClipData(ClipData data, ClipDescription desc) {
-        if (data == null) {
-            return false;
-        }
-        ArrayList<Intent> intents = new ArrayList<>();
-        int itemCount = data.getItemCount();
-        for (int i = 0; i < itemCount; i++) {
-            Intent intent = data.getItemAt(i).getIntent();
-            if (intent == null) {
-                continue;
-            }
-
-            // Give preference to shortcut intents.
-            if (!Intent.ACTION_CREATE_SHORTCUT.equals(intent.getAction())) {
-                intents.add(intent);
-                continue;
-            }
-            ShortcutInfo info = InstallShortcutReceiver.fromShortcutIntent(mContext, intent);
-            if (info != null) {
-                mDragObject.dragInfo = info;
-                return true;
-            }
-            return true;
-        }
-
-        // Try creating shortcuts just using the intent and label
-        Intent fullIntent = new Intent().putExtra(Intent.EXTRA_SHORTCUT_NAME, desc.getLabel());
-        for (Intent intent : intents) {
-            fullIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, intent);
-            ShortcutInfo info = InstallShortcutReceiver.fromShortcutIntent(mContext, fullIntent);
-            if (info != null) {
-                mDragObject.dragInfo = info;
-                return true;
-            }
-        }
-
-        return false;
     }
 }
 

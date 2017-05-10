@@ -16,18 +16,18 @@
 
 package com.android.launcher3.dynamicui;
 
+import android.annotation.TargetApi;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.graphics.Palette;
 
 import com.android.launcher3.Utilities;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -37,7 +37,6 @@ public class ExtractionUtils {
     public static final String EXTRACTED_COLORS_PREFERENCE_KEY = "pref_extractedColors";
     public static final String WALLPAPER_ID_PREFERENCE_KEY = "pref_wallpaperId";
 
-    private static final int FLAG_SET_SYSTEM = 1 << 0; // TODO: use WallpaperManager.FLAG_SET_SYSTEM
     private static final float MIN_CONTRAST_RATIO = 2f;
 
     /**
@@ -63,7 +62,7 @@ public class ExtractionUtils {
     }
 
     private static boolean hasWallpaperIdChanged(Context context) {
-        if (!Utilities.isNycOrAbove()) {
+        if (!Utilities.ATLEAST_NOUGAT) {
             // TODO: update an id in sharedprefs in onWallpaperChanged broadcast, and read it here.
             return false;
         }
@@ -73,14 +72,10 @@ public class ExtractionUtils {
         return wallpaperId != savedWallpaperId;
     }
 
+    @TargetApi(Build.VERSION_CODES.N)
     public static int getWallpaperId(WallpaperManager wallpaperManager) {
-        // TODO: use WallpaperManager#getWallpaperId(WallpaperManager.FLAG_SET_SYSTEM) directly.
-        try {
-            Method getWallpaperId = WallpaperManager.class.getMethod("getWallpaperId", int.class);
-            return (int) getWallpaperId.invoke(wallpaperManager, FLAG_SET_SYSTEM);
-        } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-            return -1;
-        }
+        return Utilities.ATLEAST_NOUGAT ?
+                wallpaperManager.getWallpaperId(WallpaperManager.FLAG_SYSTEM) : -1;
     }
 
     public static boolean isSuperLight(Palette p) {

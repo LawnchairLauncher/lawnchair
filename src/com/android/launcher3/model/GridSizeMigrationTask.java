@@ -42,7 +42,7 @@ import java.util.Locale;
  */
 public class GridSizeMigrationTask {
 
-    public static boolean ENABLED = Utilities.isNycOrAbove();
+    public static boolean ENABLED = Utilities.ATLEAST_NOUGAT;
 
     private static final String TAG = "GridSizeMigrationTask";
     private static final boolean DEBUG = true;
@@ -895,12 +895,12 @@ public class GridSizeMigrationTask {
      */
     public static boolean migrateGridIfNeeded(Context context) {
         SharedPreferences prefs = Utilities.getPrefs(context);
-        InvariantDeviceProfile idp = LauncherAppState.getInstance().getInvariantDeviceProfile();
+        InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
 
         String gridSizeString = getPointString(idp.numColumns, idp.numRows);
 
         if (gridSizeString.equals(prefs.getString(KEY_MIGRATION_SRC_WORKSPACE_SIZE, "")) &&
-                idp.numHotseatIcons != prefs.getInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, idp.numHotseatIcons)) {
+                idp.numHotseatIcons == prefs.getInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, idp.numHotseatIcons)) {
             // Skip if workspace and hotseat sizes have not changed.
             return true;
         }
@@ -915,8 +915,7 @@ public class GridSizeMigrationTask {
             if (srcHotseatCount != idp.numHotseatIcons) {
                 // Migrate hotseat.
 
-                dbChanged = new GridSizeMigrationTask(context,
-                        LauncherAppState.getInstance().getInvariantDeviceProfile(),
+                dbChanged = new GridSizeMigrationTask(context, LauncherAppState.getIDP(context),
                         validPackages, srcHotseatCount, idp.numHotseatIcons).migrateHotseat();
             }
 
@@ -978,9 +977,9 @@ public class GridSizeMigrationTask {
      * @return a map with occupied hotseat position set to non-null value.
      */
     public static LongArrayMap<Object> removeBrokenHotseatItems(Context context) throws Exception {
-        GridSizeMigrationTask task = new GridSizeMigrationTask(context,
-                LauncherAppState.getInstance().getInvariantDeviceProfile(),
-                getValidPackages(context), Integer.MAX_VALUE, Integer.MAX_VALUE);
+        GridSizeMigrationTask task = new GridSizeMigrationTask(
+                context, LauncherAppState.getIDP(context), getValidPackages(context),
+                Integer.MAX_VALUE, Integer.MAX_VALUE);
 
         // Load all the valid entries
         ArrayList<DbEntry> items = task.loadHotseatEntries();
@@ -1038,8 +1037,7 @@ public class GridSizeMigrationTask {
         }
 
         protected boolean runStepTask(Point sourceSize, Point nextSize) throws Exception {
-            return new GridSizeMigrationTask(mContext,
-                    LauncherAppState.getInstance().getInvariantDeviceProfile(),
+            return new GridSizeMigrationTask(mContext, LauncherAppState.getIDP(mContext),
                     mValidPackages, sourceSize, nextSize).migrateWorkspace();
         }
     }

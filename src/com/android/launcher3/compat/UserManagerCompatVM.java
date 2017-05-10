@@ -19,6 +19,7 @@ package com.android.launcher3.compat;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.os.UserHandle;
 
 @TargetApi(Build.VERSION_CODES.M)
 public class UserManagerCompatVM extends UserManagerCompatVL {
@@ -28,7 +29,7 @@ public class UserManagerCompatVM extends UserManagerCompatVL {
     }
 
     @Override
-    public long getUserCreationTime(UserHandleCompat user) {
-        return mUserManager.getUserCreationTime(user.getUser());
+    public long getUserCreationTime(UserHandle user) {
+        return mUserManager.getUserCreationTime(user);
     }
 }

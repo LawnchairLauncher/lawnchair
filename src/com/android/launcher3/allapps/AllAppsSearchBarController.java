@@ -19,6 +19,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -32,6 +34,8 @@ import android.widget.TextView.OnEditorActionListener;
 import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.discovery.AppDiscoveryItem;
+import com.android.launcher3.discovery.AppDiscoveryUpdateState;
 import com.android.launcher3.util.ComponentKey;
 
 import java.util.ArrayList;
@@ -46,7 +50,7 @@ public abstract class AllAppsSearchBarController
     protected AlphabeticalAppsList mApps;
     protected Callbacks mCb;
     protected ExtendedEditText mInput;
-    private String mQuery;
+    protected String mQuery;
 
     protected DefaultAppSearchAlgorithm mSearchAlgorithm;
     protected InputMethodManager mInputMethodManager;
@@ -73,6 +77,14 @@ public abstract class AllAppsSearchBarController
                 mInput.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
         mSearchAlgorithm = onInitializeSearch();
+
+        onInitialized();
+    }
+
+    /**
+     * You can override this method to perform custom initialization.
+     */
+    protected void onInitialized() {
     }
 
     /**
@@ -117,6 +129,7 @@ public abstract class AllAppsSearchBarController
         if (actionId != EditorInfo.IME_ACTION_SEARCH) {
             return false;
         }
+
         // Skip if the query is empty
         String query = v.getText().toString();
         if (query.isEmpty()) {
@@ -206,5 +219,19 @@ public abstract class AllAppsSearchBarController
          * Called when the search results should be cleared.
          */
         void clearSearchResult();
+
+
+        /**
+         * Called when the app discovery is providing an update of search, which can either be
+         * START for starting a new discovery,
+         * UPDATE for providing a new search result, can be called multiple times,
+         * END for indicating the end of results.
+         *
+         * @param app result item if UPDATE, else null
+         * @param app the update state, START, UPDATE or END
+         */
+        void onAppDiscoverySearchUpdate(@Nullable AppDiscoveryItem app,
+                @NonNull AppDiscoveryUpdateState state);
     }
+
 }

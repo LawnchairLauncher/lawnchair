@@ -113,34 +113,6 @@ public class ExtractedColors {
     }
 
     /**
-     * Updates colors based on the palette.
-     * If the palette is null, the default color is used in all cases.
-     */
-    public void updatePalette(Palette palette) {
-        if (palette == null) {
-            for (int i = 0; i < NUM_COLOR_PROFILES; i++) {
-                setColorAtIndex(i, ExtractedColors.DEFAULT_COLOR);
-            }
-        } else {
-            // We currently don't use any of the colors defined by the Palette API,
-            // but this is how we would add them if we ever need them.
-
-            // setColorAtIndex(ExtractedColors.VIBRANT_INDEX,
-                // palette.getVibrantColor(ExtractedColors.DEFAULT_COLOR));
-            // setColorAtIndex(ExtractedColors.VIBRANT_DARK_INDEX,
-                // palette.getDarkVibrantColor(ExtractedColors.DEFAULT_DARK));
-            // setColorAtIndex(ExtractedColors.VIBRANT_LIGHT_INDEX,
-                // palette.getLightVibrantColor(ExtractedColors.DEFAULT_LIGHT));
-            // setColorAtIndex(ExtractedColors.MUTED_INDEX,
-                // palette.getMutedColor(DEFAULT_COLOR));
-            // setColorAtIndex(ExtractedColors.MUTED_DARK_INDEX,
-                // palette.getDarkMutedColor(ExtractedColors.DEFAULT_DARK));
-            // setColorAtIndex(ExtractedColors.MUTED_LIGHT_INDEX,
-                // palette.getLightVibrantColor(ExtractedColors.DEFAULT_LIGHT));
-        }
-    }
-
-    /**
      * The hotseat's color is defined as follows:
      * - 12% black for super light wallpaper
      * - 18% white for super dark

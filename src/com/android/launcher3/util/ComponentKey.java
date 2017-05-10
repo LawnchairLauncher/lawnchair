@@ -18,8 +18,9 @@ package com.android.launcher3.util;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.os.Process;
+import android.os.UserHandle;
 
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 
 import java.util.Arrays;
@@ -27,11 +28,11 @@ import java.util.Arrays;
 public class ComponentKey {
 
     public final ComponentName componentName;
-    public final UserHandleCompat user;
+    public final UserHandle user;
 
     private final int mHashCode;
 
-    public ComponentKey(ComponentName componentName, UserHandleCompat user) {
+    public ComponentKey(ComponentName componentName, UserHandle user) {
         Preconditions.assertNotNull(componentName);
         Preconditions.assertNotNull(user);
         this.componentName = componentName;
@@ -56,7 +57,7 @@ public class ComponentKey {
         } else {
             // No user provided, default to the current user
             componentName = ComponentName.unflattenFromString(componentKeyStr);
-            user = UserHandleCompat.myUserHandle();
+            user = Process.myUserHandle();
         }
         Preconditions.assertNotNull(componentName);
         Preconditions.assertNotNull(user);

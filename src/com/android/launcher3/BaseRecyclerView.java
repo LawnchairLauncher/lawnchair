@@ -18,10 +18,11 @@ package com.android.launcher3;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.ViewGroup;
+
 import com.android.launcher3.util.Thunk;
 
 
@@ -41,12 +42,11 @@ public abstract class BaseRecyclerView extends RecyclerView
     @Thunk int mDy = 0;
     private float mDeltaThreshold;
 
-    protected BaseRecyclerViewFastScrollBar mScrollbar;
+    protected final BaseRecyclerViewFastScrollBar mScrollbar;
 
     private int mDownX;
     private int mDownY;
     private int mLastY;
-    protected Rect mBackgroundPadding = new Rect();
 
     public BaseRecyclerView(Context context) {
         this(context, null);
@@ -90,6 +90,12 @@ public abstract class BaseRecyclerView extends RecyclerView
     protected void onFinishInflate() {
         super.onFinishInflate();
         addOnItemTouchListener(this);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mScrollbar.setPopupView(((ViewGroup) getParent()).findViewById(R.id.fast_scroller_popup));
     }
 
     /**
@@ -156,28 +162,11 @@ public abstract class BaseRecyclerView extends RecyclerView
         return false;
     }
 
-    public void updateBackgroundPadding(Rect padding) {
-        mBackgroundPadding.set(padding);
-    }
-
-    public Rect getBackgroundPadding() {
-        return mBackgroundPadding;
-    }
-
     /**
-     * Returns the scroll bar width when the user is scrolling.
+     * Returns the height of the fast scroll bar
      */
-    public int getMaxScrollbarWidth() {
-        return mScrollbar.getThumbMaxWidth();
-    }
-
-    /**
-     * Returns the visible height of the recycler view:
-     *   VisibleHeight = View height - top padding - bottom padding
-     */
-    protected int getVisibleHeight() {
-        int visibleHeight = getHeight() - mBackgroundPadding.top - mBackgroundPadding.bottom;
-        return visibleHeight;
+    protected int getScrollbarTrackHeight() {
+        return getHeight();
     }
 
     /**
@@ -191,7 +180,7 @@ public abstract class BaseRecyclerView extends RecyclerView
      *   AvailableScrollBarHeight = Total height of the visible view - thumb height
      */
     protected int getAvailableScrollBarHeight() {
-        int availableScrollBarHeight = getVisibleHeight() - mScrollbar.getThumbHeight();
+        int availableScrollBarHeight = getScrollbarTrackHeight() - mScrollbar.getThumbHeight();
         return availableScrollBarHeight;
     }
 
@@ -200,13 +189,6 @@ public abstract class BaseRecyclerView extends RecyclerView
      */
     public int getFastScrollerTrackColor(int defaultTrackColor) {
         return defaultTrackColor;
-    }
-
-    /**
-     * Returns the inactive thumb color, can be overridden by each subclass.
-     */
-    public int getFastScrollerThumbInactiveColor(int defaultInactiveThumbColor) {
-        return defaultInactiveThumbColor;
     }
 
     /**
@@ -233,31 +215,19 @@ public abstract class BaseRecyclerView extends RecyclerView
     protected void synchronizeScrollBarThumbOffsetToViewScroll(int scrollY,
             int availableScrollHeight) {
         // Only show the scrollbar if there is height to be scrolled
-        int availableScrollBarHeight = getAvailableScrollBarHeight();
         if (availableScrollHeight <= 0) {
-            mScrollbar.setThumbOffset(-1, -1);
+            mScrollbar.setThumbOffsetY(-1);
             return;
         }
 
         // Calculate the current scroll position, the scrollY of the recycler view accounts for the
         // view padding, while the scrollBarY is drawn right up to the background padding (ignoring
         // padding)
-        int scrollBarY = mBackgroundPadding.top +
-                (int) (((float) scrollY / availableScrollHeight) * availableScrollBarHeight);
+        int scrollBarY =
+                (int) (((float) scrollY / availableScrollHeight) * getAvailableScrollBarHeight());
 
         // Calculate the position and size of the scroll bar
-        mScrollbar.setThumbOffset(getScrollBarX(), scrollBarY);
-    }
-
-    /**
-     * @return the x position for the scrollbar thumb
-     */
-    protected int getScrollBarX() {
-        if (Utilities.isRtl(getResources())) {
-            return mBackgroundPadding.left;
-        } else {
-            return getWidth() - mBackgroundPadding.right - mScrollbar.getThumbWidth();
-        }
+        mScrollbar.setThumbOffsetY(scrollBarY);
     }
 
     /**

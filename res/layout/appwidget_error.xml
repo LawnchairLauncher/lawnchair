@@ -19,8 +19,10 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:elevation="2dp"
-    android:background="@drawable/quantum_panel_dark"
+    android:padding="4dp"
+    android:theme="@style/WidgetContainerTheme"
+    android:background="@drawable/round_rect_primary"
     android:textAppearance="?android:attr/textAppearanceMediumInverse"
-    android:textColor="@color/widgets_view_item_text_color"
+    android:textColor="?android:attr/textColorSecondary"
     android:text="@string/gadget_error_text"
     />

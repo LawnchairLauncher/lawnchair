@@ -18,20 +18,27 @@ package com.android.launcher3.folder;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.RadialGradient;
 import android.graphics.Rect;
 import android.graphics.Region;
+import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Property;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -52,26 +59,27 @@ import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.FolderInfo.FolderListener;
-import com.android.launcher3.IconCache;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.OnAlarmListener;
-import com.android.launcher3.PreloadIconDrawable;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.SimpleOnStylusPressListener;
 import com.android.launcher3.StylusEventHelper;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.badge.BadgeRenderer;
+import com.android.launcher3.badge.FolderBadgeInfo;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An icon that can appear on in the workspace representing an {@link Folder}.
@@ -114,7 +122,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private PreviewLayoutRule mPreviewLayoutRule;
 
     boolean mAnimating = false;
-    private Rect mOldBounds = new Rect();
+    private Rect mTempBounds = new Rect();
 
     private float mSlop;
 
@@ -122,9 +130,26 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private ArrayList<PreviewItemDrawingParams> mDrawingParams = new ArrayList<PreviewItemDrawingParams>();
     private Drawable mReferenceDrawable = null;
 
-    Paint mBgPaint = new Paint();
-
     private Alarm mOpenAlarm = new Alarm();
+
+    private FolderBadgeInfo mBadgeInfo = new FolderBadgeInfo();
+    private BadgeRenderer mBadgeRenderer;
+    private float mBadgeScale;
+    private Point mTempSpaceForBadgeOffset = new Point();
+
+    private static final Property<FolderIcon, Float> BADGE_SCALE_PROPERTY
+            = new Property<FolderIcon, Float>(Float.TYPE, "badgeScale") {
+        @Override
+        public Float get(FolderIcon folderIcon) {
+            return folderIcon.mBadgeScale;
+        }
+
+        @Override
+        public void set(FolderIcon folderIcon, Float value) {
+            folderIcon.mBadgeScale = value;
+            folderIcon.invalidate();
+        }
+    };
 
     public FolderIcon(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -142,10 +167,11 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         mPreviewLayoutRule = FeatureFlags.LAUNCHER3_LEGACY_FOLDER_ICON ?
                 new StackFolderIconLayoutRule() :
                 new ClippedFolderIconLayoutRule();
+        mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
     }
 
     public static FolderIcon fromXml(int resId, Launcher launcher, ViewGroup group,
-            FolderInfo folderInfo, IconCache iconCache) {
+            FolderInfo folderInfo) {
         @SuppressWarnings("all") // suppress dead code warning
         final boolean error = INITIAL_ITEM_ANIMATION_DURATION >= DROP_IN_ANIMATION_DURATION;
         if (error) {
@@ -156,11 +182,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
         DeviceProfile grid = launcher.getDeviceProfile();
         FolderIcon icon = (FolderIcon) LayoutInflater.from(launcher).inflate(resId, group, false);
-
-        // For performance and compatibility reasons we render the preview using a software layer.
-        // In particular, hardware path clipping has spotty ecosystem support and bad performance.
-        // Software rendering also allows us to use shadow layers.
-        icon.setLayerType(LAYER_TYPE_SOFTWARE, new Paint(Paint.FILTER_BITMAP_FLAG));
 
         icon.setClipToPadding(false);
         icon.mFolderName = (BubbleTextView) icon.findViewById(R.id.folder_icon_name);
@@ -173,6 +194,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         icon.setOnClickListener(launcher);
         icon.mInfo = folderInfo;
         icon.mLauncher = launcher;
+        icon.mBadgeRenderer = launcher.getDeviceProfile().mBadgeRenderer;
         icon.setContentDescription(launcher.getString(R.string.folder_name_format, folderInfo.title));
         Folder folder = Folder.fromXml(launcher);
         folder.setDragController(launcher.getDragController());
@@ -202,16 +224,12 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         updateItemDrawingParams(false);
     }
 
-    public FolderInfo getFolderInfo() {
-        return mInfo;
-    }
-
     private boolean willAcceptItem(ItemInfo item) {
         final int itemType = item.itemType;
         return ((itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
                 itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT ||
                 itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) &&
-                !mFolder.isFull() && item != mInfo && !mInfo.opened);
+                !mFolder.isFull() && item != mInfo && !mFolder.isOpen());
     }
 
     public boolean acceptDrop(ItemInfo dragInfo) {
@@ -243,12 +261,12 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     OnAlarmListener mOnOpenListener = new OnAlarmListener() {
         public void onAlarm(Alarm alarm) {
             mFolder.beginExternalDrag();
-            mLauncher.openFolder(FolderIcon.this);
+            mFolder.animateOpen();
         }
     };
 
     public Drawable prepareCreate(final View destView) {
-        Drawable animateDrawable = getTopDrawable((TextView) destView);
+        Drawable animateDrawable = ((TextView) destView).getCompoundDrawables()[1];
         computePreviewDrawingParams(animateDrawable.getIntrinsicWidth(),
                 destView.getMeasuredWidth());
         return animateDrawable;
@@ -273,7 +291,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     public void performDestroyAnimation(final View finalView, Runnable onCompleteRunnable) {
-        Drawable animateDrawable = getTopDrawable((TextView) finalView);
+        Drawable animateDrawable = ((TextView) finalView).getCompoundDrawables()[1];
         computePreviewDrawingParams(animateDrawable.getIntrinsicWidth(),
                 finalView.getMeasuredWidth());
 
@@ -325,7 +343,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             to.offset(center[0] - animateView.getMeasuredWidth() / 2,
                       center[1] - animateView.getMeasuredHeight() / 2);
 
-            float finalAlpha = index < mPreviewLayoutRule.numItems() ? 0.5f : 0f;
+            float finalAlpha = index < mPreviewLayoutRule.maxNumItems() ? 0.5f : 0f;
 
             float finalScale = scale * scaleRelativeToDragLayer;
             dragLayer.animateView(animateView, from, to, finalAlpha,
@@ -384,6 +402,26 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         computePreviewDrawingParams(d.getIntrinsicWidth(), getMeasuredWidth());
     }
 
+    public void setBadgeInfo(FolderBadgeInfo badgeInfo) {
+        updateBadgeScale(mBadgeInfo.hasBadge(), badgeInfo.hasBadge());
+        mBadgeInfo = badgeInfo;
+    }
+
+    /**
+     * Sets mBadgeScale to 1 or 0, animating if wasBadged or isBadged is false
+     * (the badge is being added or removed).
+     */
+    private void updateBadgeScale(boolean wasBadged, boolean isBadged) {
+        float newBadgeScale = isBadged ? 1f : 0f;
+        // Animate when a badge is first added or when it is removed.
+        if ((wasBadged ^ isBadged) && isShown()) {
+            ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, newBadgeScale).start();
+        } else {
+            mBadgeScale = newBadgeScale;
+            invalidate();
+        }
+    }
+
     static class PreviewItemDrawingParams {
         PreviewItemDrawingParams(float transX, float transY, float scale, float overlayAlpha) {
             this.transX = transX;
@@ -418,8 +456,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     private float getLocalCenterForIndex(int index, int curNumItems, int[] center) {
-        mTmpParams = computePreviewItemDrawingParams(Math.min(mPreviewLayoutRule.numItems(), index),
-                curNumItems, mTmpParams);
+        mTmpParams = computePreviewItemDrawingParams(
+                Math.min(mPreviewLayoutRule.maxNumItems(), index), curNumItems, mTmpParams);
 
         mTmpParams.transX += mBackground.basePreviewOffsetX;
         mTmpParams.transY += mBackground.basePreviewOffsetY;
@@ -452,27 +490,24 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     private void drawPreviewItem(Canvas canvas, PreviewItemDrawingParams params) {
-        canvas.save();
+        canvas.save(Canvas.MATRIX_SAVE_FLAG);
         canvas.translate(params.transX, params.transY);
         canvas.scale(params.scale, params.scale);
         Drawable d = params.drawable;
 
         if (d != null) {
-            mOldBounds.set(d.getBounds());
+            mTempBounds.set(d.getBounds());
             d.setBounds(0, 0, mIntrinsicIconSize, mIntrinsicIconSize);
             if (d instanceof FastBitmapDrawable) {
                 FastBitmapDrawable fd = (FastBitmapDrawable) d;
-                float oldBrightness = fd.getBrightness();
-                fd.setBrightness(params.overlayAlpha);
-                d.draw(canvas);
-                fd.setBrightness(oldBrightness);
+                fd.drawWithBrightness(canvas, params.overlayAlpha);
             } else {
                 d.setColorFilter(Color.argb((int) (params.overlayAlpha * 255), 255, 255, 255),
                         PorterDuff.Mode.SRC_ATOP);
                 d.draw(canvas);
                 d.clearColorFilter();
             }
-            d.setBounds(mOldBounds);
+            d.setBounds(mTempBounds);
         }
         canvas.restore();
     }
@@ -482,10 +517,29 @@ public class FolderIcon extends FrameLayout implements FolderListener {
      * information, handles drawing, and animation (accept state <--> rest state).
      */
     public static class PreviewBackground {
+
+        private final PorterDuffXfermode mClipPorterDuffXfermode
+                = new PorterDuffXfermode(PorterDuff.Mode.DST_IN);
+        // Create a RadialGradient such that it draws a black circle and then extends with
+        // transparent. To achieve this, we keep the gradient to black for the range [0, 1) and
+        // just at the edge quickly change it to transparent.
+        private final RadialGradient mClipShader = new RadialGradient(0, 0, 1,
+                new int[] {Color.BLACK, Color.BLACK, Color.TRANSPARENT },
+                new float[] {0, 0.999f, 1},
+                Shader.TileMode.CLAMP);
+
+        private final PorterDuffXfermode mShadowPorterDuffXfermode
+                = new PorterDuffXfermode(PorterDuff.Mode.DST_OUT);
+        private RadialGradient mShadowShader = null;
+
+        private final Matrix mShaderMatrix = new Matrix();
+        private final Path mPath = new Path();
+
+        private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
         private float mScale = 1f;
         private float mColorMultiplier = 1f;
-        private Path mClipPath = new Path();
-        private int mStrokeWidth;
+        private float mStrokeWidth;
         private View mInvalidateDelegate;
 
         public int previewSize;
@@ -508,7 +562,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         private static final int BG_OPACITY = 160;
         private static final int MAX_BG_OPACITY = 225;
         private static final int BG_INTENSITY = 245;
-        private static final int SHADOW_OPACITY = 80;
+        private static final int SHADOW_OPACITY = 40;
 
         ValueAnimator mScaleAnimator;
 
@@ -524,7 +578,16 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             basePreviewOffsetX = (availableSpace - this.previewSize) / 2;
             basePreviewOffsetY = previewPadding + grid.folderBackgroundOffset + topPadding;
 
-            mStrokeWidth = Utilities.pxFromDp(1, dm);
+            // Stroke width is 1dp
+            mStrokeWidth = dm.density;
+
+            float radius = getScaledRadius();
+            float shadowRadius = radius + mStrokeWidth;
+            int shadowColor = Color.argb(SHADOW_OPACITY, 0, 0, 0);
+            mShadowShader = new RadialGradient(0, 0, 1,
+                    new int[] {shadowColor, Color.TRANSPARENT},
+                    new float[] {radius / shadowRadius, 1},
+                    Shader.TileMode.CLAMP);
 
             invalidate();
         }
@@ -545,11 +608,15 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             return basePreviewOffsetY - (getScaledRadius() - getRadius());
         }
 
-        void invalidate() {
-            int radius = getScaledRadius();
-            mClipPath.reset();
-            mClipPath.addCircle(radius, radius, radius, Path.Direction.CW);
+        /**
+         * Returns the progress of the scale animation, where 0 means the scale is at 1f
+         * and 1 means the scale is at ACCEPT_SCALE_FACTOR.
+         */
+        float getScaleProgress() {
+            return (mScale - 1f) / (ACCEPT_SCALE_FACTOR - 1f);
+        }
 
+        void invalidate() {
             if (mInvalidateDelegate != null) {
                 mInvalidateDelegate.invalidate();
             }
@@ -564,70 +631,94 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             invalidate();
         }
 
-        public void drawBackground(Canvas canvas, Paint paint) {
-            canvas.save();
-            canvas.translate(getOffsetX(), getOffsetY());
-
-            paint.reset();
-            paint.setStyle(Paint.Style.FILL);
-            paint.setXfermode(null);
-            paint.setAntiAlias(true);
-
+        public void drawBackground(Canvas canvas) {
+            mPaint.setStyle(Paint.Style.FILL);
             int alpha = (int) Math.min(MAX_BG_OPACITY, BG_OPACITY * mColorMultiplier);
-            paint.setColor(Color.argb(alpha, BG_INTENSITY, BG_INTENSITY, BG_INTENSITY));
+            mPaint.setColor(Color.argb(alpha, BG_INTENSITY, BG_INTENSITY, BG_INTENSITY));
 
+            drawCircle(canvas, 0 /* deltaRadius */);
+
+            // Draw shadow.
+            if (mShadowShader == null) {
+                return;
+            }
             float radius = getScaledRadius();
+            float shadowRadius = radius + mStrokeWidth;
+            mPaint.setColor(Color.BLACK);
+            int offsetX = getOffsetX();
+            int offsetY = getOffsetY();
+            final int saveCount;
+            if (canvas.isHardwareAccelerated()) {
+                saveCount = canvas.saveLayer(offsetX - mStrokeWidth, offsetY,
+                        offsetX + radius + shadowRadius, offsetY + shadowRadius + shadowRadius,
+                        null, Canvas.CLIP_TO_LAYER_SAVE_FLAG | Canvas.HAS_ALPHA_LAYER_SAVE_FLAG);
 
-            canvas.drawCircle(radius, radius, radius, paint);
-            canvas.clipPath(mClipPath, Region.Op.DIFFERENCE);
+            } else {
+                saveCount = canvas.save(Canvas.CLIP_SAVE_FLAG);
+                clipCanvasSoftware(canvas, Region.Op.DIFFERENCE);
+            }
 
-            paint.setStyle(Paint.Style.STROKE);
-            paint.setColor(Color.TRANSPARENT);
-            paint.setShadowLayer(mStrokeWidth, 0, mStrokeWidth, Color.argb(SHADOW_OPACITY, 0, 0, 0));
-            canvas.drawCircle(radius, radius, radius, paint);
+            mShaderMatrix.setScale(shadowRadius, shadowRadius);
+            mShaderMatrix.postTranslate(radius + offsetX, shadowRadius + offsetY);
+            mShadowShader.setLocalMatrix(mShaderMatrix);
+            mPaint.setShader(mShadowShader);
+            canvas.drawPaint(mPaint);
+            mPaint.setShader(null);
 
-            canvas.restore();
+            if (canvas.isHardwareAccelerated()) {
+                mPaint.setXfermode(mShadowPorterDuffXfermode);
+                canvas.drawCircle(radius + offsetX, radius + offsetY, radius, mPaint);
+                mPaint.setXfermode(null);
+            }
+
+            canvas.restoreToCount(saveCount);
         }
 
-        public void drawBackgroundStroke(Canvas canvas, Paint paint) {
-            canvas.save();
-            canvas.translate(getOffsetX(), getOffsetY());
-
-            paint.reset();
-            paint.setAntiAlias(true);
-            paint.setColor(Color.argb(255, BG_INTENSITY, BG_INTENSITY, BG_INTENSITY));
-            paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeWidth(mStrokeWidth);
-
-            float radius = getScaledRadius();
-            canvas.drawCircle(radius, radius, radius - 1, paint);
-
-            canvas.restore();
+        public void drawBackgroundStroke(Canvas canvas) {
+            mPaint.setColor(Color.argb(255, BG_INTENSITY, BG_INTENSITY, BG_INTENSITY));
+            mPaint.setStyle(Paint.Style.STROKE);
+            mPaint.setStrokeWidth(mStrokeWidth);
+            drawCircle(canvas, 1 /* deltaRadius */);
         }
 
-        public void drawLeaveBehind(Canvas canvas, Paint paint) {
+        public void drawLeaveBehind(Canvas canvas) {
             float originalScale = mScale;
             mScale = 0.5f;
 
-            canvas.save();
-            canvas.translate(getOffsetX(), getOffsetY());
+            mPaint.setStyle(Paint.Style.FILL);
+            mPaint.setColor(Color.argb(160, 245, 245, 245));
+            drawCircle(canvas, 0 /* deltaRadius */);
 
-            paint.reset();
-            paint.setAntiAlias(true);
-            paint.setColor(Color.argb(160, 245, 245, 245));
-
-            float radius = getScaledRadius();
-            canvas.drawCircle(radius, radius, radius, paint);
-
-            canvas.restore();
             mScale = originalScale;
         }
 
-        // It is the callers responsibility to save and restore the canvas.
-        private void clipCanvas(Canvas canvas) {
-            canvas.translate(getOffsetX(), getOffsetY());
-            canvas.clipPath(mClipPath);
-            canvas.translate(-getOffsetX(), -getOffsetY());
+        private void drawCircle(Canvas canvas,float deltaRadius) {
+            float radius = getScaledRadius();
+            canvas.drawCircle(radius + getOffsetX(), radius + getOffsetY(),
+                    radius - deltaRadius, mPaint);
+        }
+
+        // It is the callers responsibility to save and restore the canvas layers.
+        private void clipCanvasSoftware(Canvas canvas, Region.Op op) {
+            mPath.reset();
+            float r = getScaledRadius();
+            mPath.addCircle(r + getOffsetX(), r + getOffsetY(), r, Path.Direction.CW);
+            canvas.clipPath(mPath, op);
+        }
+
+        // It is the callers responsibility to save and restore the canvas layers.
+        private void clipCanvasHardware(Canvas canvas) {
+            mPaint.setColor(Color.BLACK);
+            mPaint.setXfermode(mClipPorterDuffXfermode);
+
+            float radius = getScaledRadius();
+            mShaderMatrix.setScale(radius, radius);
+            mShaderMatrix.postTranslate(radius + getOffsetX(), radius + getOffsetY());
+            mClipShader.setLocalMatrix(mShaderMatrix);
+            mPaint.setShader(mClipShader);
+            canvas.drawPaint(mPaint);
+            mPaint.setXfermode(null);
+            mPaint.setShader(null);
         }
 
         private void delegateDrawing(CellLayout delegate, int cellX, int cellY) {
@@ -667,7 +758,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 mScaleAnimator.cancel();
             }
 
-            mScaleAnimator = LauncherAnimUtils.ofFloat(null, 0f, 1.0f);
+            mScaleAnimator = LauncherAnimUtils.ofFloat(0f, 1.0f);
 
             mScaleAnimator.addUpdateListener(new AnimatorUpdateListener() {
                 @Override
@@ -747,17 +838,22 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         }
 
         if (!mBackground.drawingDelegated()) {
-            mBackground.drawBackground(canvas, mBgPaint);
+            mBackground.drawBackground(canvas);
         }
 
         if (mFolder == null) return;
         if (mFolder.getItemCount() == 0 && !mAnimating) return;
 
-        canvas.save();
+        final int saveCount;
 
-
-        if (mPreviewLayoutRule.clipToBackground()) {
-            mBackground.clipCanvas(canvas);
+        if (canvas.isHardwareAccelerated()) {
+            saveCount = canvas.saveLayer(0, 0, getWidth(), getHeight(), null,
+                    Canvas.HAS_ALPHA_LAYER_SAVE_FLAG | Canvas.CLIP_TO_LAYER_SAVE_FLAG);
+        } else {
+            saveCount = canvas.save(Canvas.CLIP_SAVE_FLAG);
+            if (mPreviewLayoutRule.clipToBackground()) {
+                mBackground.clipCanvasSoftware(canvas, Region.Op.INTERSECT);
+            }
         }
 
         // The items are drawn in coordinates relative to the preview offset
@@ -770,16 +866,29 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 drawPreviewItem(canvas, p);
             }
         }
-        canvas.restore();
+        canvas.translate(-mBackground.basePreviewOffsetX, -mBackground.basePreviewOffsetY);
+
+        if (mPreviewLayoutRule.clipToBackground() && canvas.isHardwareAccelerated()) {
+            mBackground.clipCanvasHardware(canvas);
+        }
+        canvas.restoreToCount(saveCount);
 
         if (mPreviewLayoutRule.clipToBackground() && !mBackground.drawingDelegated()) {
-            mBackground.drawBackgroundStroke(canvas, mBgPaint);
+            mBackground.drawBackgroundStroke(canvas);
         }
-    }
 
-    private Drawable getTopDrawable(TextView v) {
-        Drawable d = v.getCompoundDrawables()[1];
-        return (d instanceof PreloadIconDrawable) ? ((PreloadIconDrawable) d).mIcon : d;
+        if ((mBadgeInfo != null && mBadgeInfo.hasBadge()) || mBadgeScale > 0) {
+            int offsetX = mBackground.getOffsetX();
+            int offsetY = mBackground.getOffsetY();
+            int previewSize = (int) (mBackground.previewSize * mBackground.mScale);
+            mTempBounds.set(offsetX, offsetY, offsetX + previewSize, offsetY + previewSize);
+
+            // If we are animating to the accepting state, animate the badge out.
+            float badgeScale = Math.max(0, mBadgeScale - mBackground.getScaleProgress());
+            mTempSpaceForBadgeOffset.set(getWidth() - mTempBounds.right, mTempBounds.top);
+            mBadgeRenderer.draw(canvas, IconPalette.FOLDER_ICON_PALETTE, mBadgeInfo, mTempBounds,
+                    badgeScale, mTempSpaceForBadgeOffset);
+        }
     }
 
     class FolderPreviewItemAnim {
@@ -813,7 +922,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             final float transX0 = mTmpParams.transX;
             final float transY0 = mTmpParams.transY;
 
-            mValueAnimator = LauncherAnimUtils.ofFloat(FolderIcon.this, 0f, 1.0f);
+            mValueAnimator = LauncherAnimUtils.ofFloat(0f, 1.0f);
             mValueAnimator.addUpdateListener(new AnimatorUpdateListener(){
                 public void onAnimationUpdate(ValueAnimator animation) {
                     float progress = animation.getAnimatedFraction();
@@ -883,8 +992,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     private void updateItemDrawingParams(boolean animate) {
-        ArrayList<View> items = mFolder.getItemsInReadingOrder();
-        int nItemsInPreview = Math.min(items.size(), mPreviewLayoutRule.numItems());
+        List<View> items = mPreviewLayoutRule.getItemsToDisplay(mFolder);
+        int nItemsInPreview = items.size();
 
         int prevNumItems = mDrawingParams.size();
 
@@ -898,7 +1007,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
         for (int i = 0; i < mDrawingParams.size(); i++) {
             PreviewItemDrawingParams p = mDrawingParams.get(i);
-            p.drawable = getTopDrawable((TextView) items.get(i));
+            p.drawable = ((TextView) items.get(i)).getCompoundDrawables()[1];
 
             if (!animate || FeatureFlags.LAUNCHER3_LEGACY_FOLDER_ICON) {
                 computePreviewItemDrawingParams(i, nItemsInPreview, p);
@@ -929,16 +1038,31 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         requestLayout();
     }
 
+    @Override
+    public void prepareAutoUpdate() {
+    }
+
+    @Override
     public void onAdd(ShortcutInfo item) {
+        boolean wasBadged = mBadgeInfo.hasBadge();
+        mBadgeInfo.addBadgeInfo(mLauncher.getPopupDataProvider().getBadgeInfoForItem(item));
+        boolean isBadged = mBadgeInfo.hasBadge();
+        updateBadgeScale(wasBadged, isBadged);
         invalidate();
         requestLayout();
     }
 
+    @Override
     public void onRemove(ShortcutInfo item) {
+        boolean wasBadged = mBadgeInfo.hasBadge();
+        mBadgeInfo.subtractBadgeInfo(mLauncher.getPopupDataProvider().getBadgeInfoForItem(item));
+        boolean isBadged = mBadgeInfo.hasBadge();
+        updateBadgeScale(wasBadged, isBadged);
         invalidate();
         requestLayout();
     }
 
+    @Override
     public void onTitleChanged(CharSequence title) {
         mFolderName.setText(title);
         setContentDescription(getContext().getString(R.string.folder_name_format, title));
@@ -974,12 +1098,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
-    }
-
-    @Override
     public void cancelLongPress() {
         super.cancelLongPress();
         mLongPressHelper.cancelLongPress();
@@ -990,13 +1108,76 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         mInfo.removeListener(mFolder);
     }
 
+    public void shrinkAndFadeIn(boolean animate) {
+        final CellLayout cl = (CellLayout) getParent().getParent();
+        ((CellLayout.LayoutParams) getLayoutParams()).canReorder = true;
+
+        // We remove and re-draw the FolderIcon in-case it has changed
+        final PreviewImageView previewImage = PreviewImageView.get(getContext());
+        previewImage.removeFromParent();
+        copyToPreview(previewImage);
+
+        if (cl != null) {
+            cl.clearFolderLeaveBehind();
+        }
+
+        ObjectAnimator oa = LauncherAnimUtils.ofViewAlphaAndScale(previewImage, 1, 1, 1);
+        oa.setDuration(getResources().getInteger(R.integer.config_folderExpandDuration));
+        oa.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (cl != null) {
+                    // Remove the ImageView copy of the FolderIcon and make the original visible.
+                    previewImage.removeFromParent();
+                    setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        oa.start();
+        if (!animate) {
+            oa.end();
+        }
+    }
+
+    public void growAndFadeOut() {
+        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
+        // While the folder is open, the position of the icon cannot change.
+        lp.canReorder = false;
+        if (mInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+            CellLayout cl = (CellLayout) getParent().getParent();
+            cl.setFolderLeaveBehindCell(lp.cellX, lp.cellY);
+        }
+
+        // Push an ImageView copy of the FolderIcon into the DragLayer and hide the original
+        PreviewImageView previewImage = PreviewImageView.get(getContext());
+        copyToPreview(previewImage);
+        setVisibility(View.INVISIBLE);
+
+        ObjectAnimator oa = LauncherAnimUtils.ofViewAlphaAndScale(previewImage, 0, 1.5f, 1.5f);
+        oa.setDuration(getResources().getInteger(R.integer.config_folderExpandDuration));
+        oa.start();
+    }
+
+    /**
+     * This method draws the FolderIcon to an ImageView and then adds and positions that ImageView
+     * in the DragLayer in the exact absolute location of the original FolderIcon.
+     */
+    private void copyToPreview(PreviewImageView previewImageView) {
+        previewImageView.copy(this);
+        if (mFolder != null) {
+            previewImageView.setPivotX(mFolder.getPivotXForIconAnimation());
+            previewImageView.setPivotY(mFolder.getPivotYForIconAnimation());
+            mFolder.bringToFront();
+        }
+    }
+
     public interface PreviewLayoutRule {
-        public PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
+        PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
             PreviewItemDrawingParams params);
-
-        public void init(int availableSpace, int intrinsicIconSize, boolean rtl);
-
-        public int numItems();
-        public boolean clipToBackground();
+        void init(int availableSpace, int intrinsicIconSize, boolean rtl);
+        float scaleForItem(int index, int totalNumItems);
+        int maxNumItems();
+        boolean clipToBackground();
+        List<View> getItemsToDisplay(Folder folder);
     }
 }
