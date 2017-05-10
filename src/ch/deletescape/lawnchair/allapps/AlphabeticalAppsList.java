@@ -157,7 +157,7 @@ public class AlphabeticalAppsList {
 
     private Launcher mLauncher;
 
-    // The set of apps from the system not including predictions
+    // The set of apps from the system
     private final List<AppInfo> mApps = new ArrayList<>();
     private final HashMap<ComponentKey, AppInfo> mComponentToAppMap = new HashMap<>();
 
@@ -224,7 +224,7 @@ public class AlphabeticalAppsList {
     }
 
     /**
-     * Returns the number of rows of applications (not including predictions)
+     * Returns the number of rows of applications
      */
     public int getNumAppRows() {
         return mNumAppRowsInAdapter;

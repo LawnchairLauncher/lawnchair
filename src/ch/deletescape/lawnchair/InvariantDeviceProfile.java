@@ -61,12 +61,6 @@ public class InvariantDeviceProfile {
     public int numColumns;
 
     /**
-     * The minimum number of predicted apps in all apps.
-     */
-    @Deprecated
-    int minAllAppsPredictionColumns;
-
-    /**
      * Number of icons per row and column in the folder.
      */
     public int numFolderRows;
@@ -92,12 +86,12 @@ public class InvariantDeviceProfile {
 
     public InvariantDeviceProfile(Context context, InvariantDeviceProfile p) {
         this(context, p.name, p.minWidthDps, p.minHeightDps, p.numRows, p.numColumns,
-                p.numFolderRows, p.numFolderColumns, p.minAllAppsPredictionColumns,
+                p.numFolderRows, p.numFolderColumns,
                 p.iconSize, p.iconTextSize, p.numHotseatIcons, p.hotseatIconSize,
                 p.defaultLayoutId);
     }
 
-    InvariantDeviceProfile(Context context, String n, float w, float h, int r, int c, int fr, int fc, int maapc,
+    InvariantDeviceProfile(Context context, String n, float w, float h, int r, int c, int fr, int fc,
                            float is, float its, int hs, float his, int dlId) {
         name = n;
         minWidthDps = w;
@@ -106,7 +100,6 @@ public class InvariantDeviceProfile {
         numColumns = c;
         numFolderRows = fr;
         numFolderColumns = fc;
-        minAllAppsPredictionColumns = maapc;
         iconSize = is;
         iconTextSize = its;
         numHotseatIcons = hs;
@@ -146,7 +139,6 @@ public class InvariantDeviceProfile {
         defaultLayoutId = closestProfile.defaultLayoutId;
         numFolderRows = closestProfile.numFolderRows;
         numFolderColumns = closestProfile.numFolderColumns;
-        minAllAppsPredictionColumns = closestProfile.minAllAppsPredictionColumns;
 
         iconSize = interpolatedDeviceProfileOut.iconSize;
         iconBitmapSize = Utilities.pxFromDp(iconSize, dm);
@@ -223,7 +215,6 @@ public class InvariantDeviceProfile {
                             numColumns,
                             a.getInt(R.styleable.InvariantDeviceProfile_numFolderRows, numRows),
                             a.getInt(R.styleable.InvariantDeviceProfile_numFolderColumns, numColumns),
-                            a.getInt(R.styleable.InvariantDeviceProfile_minAllAppsPredictionColumns, numColumns),
                             iconSize,
                             a.getFloat(R.styleable.InvariantDeviceProfile_iconTextSize, 0),
                             a.getInt(R.styleable.InvariantDeviceProfile_numHotseatIcons, numColumns),

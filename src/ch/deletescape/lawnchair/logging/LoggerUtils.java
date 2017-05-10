@@ -149,9 +149,6 @@ public class LoggerUtils {
             case LauncherLogProto.OVERVIEW:
                 str = "OVERVIEW";
                 break;
-            case LauncherLogProto.PREDICTION:
-                str = "PREDICTION";
-                break;
             case LauncherLogProto.SEARCHRESULT:
                 str = "SEARCHRESULT";
                 break;

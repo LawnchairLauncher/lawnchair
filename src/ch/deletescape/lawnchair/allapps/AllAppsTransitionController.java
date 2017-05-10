@@ -201,9 +201,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                             LauncherLogProto.Action.UP,
                             LauncherLogProto.HOTSEAT);
                 }
-                mLauncher.showAppsView(true /* animated */,
-                        /* updatePredictedApps */
-                        false /* focusSearchBar */);
+                mLauncher.showAppsView(true /* animated */, false /* focusSearchBar */);
             } else {
                 calculateDuration(velocity, Math.abs(mShiftRange - mAppsView.getTranslationY()));
                 mLauncher.showWorkspace(true);
@@ -221,9 +219,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                             LauncherLogProto.Action.UP,
                             LauncherLogProto.HOTSEAT);
                 }
-                mLauncher.showAppsView(true, /* animated */
-                        /* updatePredictedApps */
-                        false /* focusSearchBar */);
+                mLauncher.showAppsView(true /* animated */, false /* focusSearchBar */);
             }
         }
     }

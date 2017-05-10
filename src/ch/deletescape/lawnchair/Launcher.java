@@ -738,12 +738,7 @@ public class Launcher extends Activity
         if (mOnResumeState == State.WORKSPACE) {
             showWorkspace(false);
         } else if (mOnResumeState == State.APPS) {
-            boolean launchedFromApp = (mWaitingForResume != null);
-            // Don't update the predicted apps if the user is returning to launcher in the apps
-            // view after launching an app, as they may be depending on the UI to be static to
-            // switch to another app, otherwise, if it was
-            showAppsView(false /* animated */,  /* updatePredictedApps */
-                    mAppsView.shouldRestoreImeState() /* focusSearchBar */);
+            showAppsView(false /* animated */, mAppsView.shouldRestoreImeState() /* focusSearchBar */);
         } else if (mOnResumeState == State.WIDGETS) {
             showWidgetsView(false, false);
         }
@@ -2015,8 +2010,7 @@ public class Launcher extends Activity
         if (!isAppsViewVisible()) {
             getUserEventDispatcher().logActionOnControl(LauncherLogProto.Action.TAP,
                     LauncherLogProto.ALL_APPS_BUTTON);
-            showAppsView(true /* animated */,  /* updatePredictedApps */
-                    false /* focusSearchBar */);
+            showAppsView(true /* animated */, false /* focusSearchBar */);
         }
     }
 
@@ -2024,8 +2018,7 @@ public class Launcher extends Activity
         if (!isAppsViewVisible()) {
             getUserEventDispatcher().logActionOnControl(LauncherLogProto.Action.LONGPRESS,
                     LauncherLogProto.ALL_APPS_BUTTON);
-            showAppsView(true /* animated */,
-                    /* updatePredictedApps */ true /* focusSearchBar */);
+            showAppsView(true /* animated */, true /* focusSearchBar */);
         }
     }
 
@@ -2868,8 +2861,7 @@ public class Launcher extends Activity
 
     void exitSpringLoadedDragMode() {
         if (mState == State.APPS_SPRING_LOADED) {
-            showAppsView(true /* animated */,
-                    /* updatePredictedApps */ false /* focusSearchBar */);
+            showAppsView(true /* animated */, false /* focusSearchBar */);
         } else if (mState == State.WIDGETS_SPRING_LOADED) {
             showWidgetsView(true, false);
         } else if (mState == State.WORKSPACE_SPRING_LOADED) {

@@ -68,12 +68,8 @@ final class FullMergeAlgorithm implements AlphabeticalAppsList.MergeAlgorithm {
 
     @Override
     public boolean continueMerging(AlphabeticalAppsList.SectionInfo section) {
-        // Don't merge the predicted apps
-        if (section.firstAppItem.viewType != AllAppsGridAdapter.VIEW_TYPE_ICON) {
-            return false;
-        }
-        // Otherwise, merge every other section
-        return true;
+        // Only merge apps
+        return section.firstAppItem.viewType == AllAppsGridAdapter.VIEW_TYPE_ICON;
     }
 }
 
@@ -103,7 +99,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     private int mSectionNamesMargin;
     private int mNumAppsPerRow;
-    private int mNumPredictedAppsPerRow;
     private int mRecyclerViewBottomPadding;
     // This coordinate is relative to this container view
     private final Point mBoundsCheckLastTouchDownPos = new Point(-1, -1);
@@ -298,10 +293,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mContentBounds.set(mContainerPaddingLeft, 0, widthPx - mContainerPaddingRight, heightPx);
 
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        if (mNumAppsPerRow != grid.inv.numColumns ||
-                mNumPredictedAppsPerRow != grid.inv.numColumns) {
+        if (mNumAppsPerRow != grid.inv.numColumns) {
             mNumAppsPerRow = grid.inv.numColumns;
-            mNumPredictedAppsPerRow = grid.inv.numColumns;
 
             mAppsRecyclerView.setNumAppsPerRow(grid, mNumAppsPerRow);
             mAdapter.setNumAppsPerRow(mNumAppsPerRow);
