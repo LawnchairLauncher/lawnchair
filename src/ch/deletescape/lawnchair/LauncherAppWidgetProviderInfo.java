@@ -22,8 +22,7 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
     public int minSpanX;
     public int minSpanY;
 
-    public static LauncherAppWidgetProviderInfo fromProviderInfo(Context context,
-                                                                 AppWidgetProviderInfo info) {
+    public static LauncherAppWidgetProviderInfo fromProviderInfo(AppWidgetProviderInfo info) {
 
         // In lieu of a public super copy constructor, we first write the AppWidgetProviderInfo
         // into a parcel, and then construct a new LauncherAppWidgetProvider info from the
@@ -76,7 +75,7 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
         return super.loadLabel(packageManager);
     }
 
-    public Drawable getIcon(Context context, IconCache cache) {
+    public Drawable getIcon(Context context) {
         return super.loadIcon(context,
                 LauncherAppState.getInstance().getInvariantDeviceProfile().fillResIconDpi);
     }
@@ -86,7 +85,7 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
                 provider.toString(), provider.getPackageName(), provider.getShortClassName(), getLabel(pm));
     }
 
-    public Point getMinSpans(InvariantDeviceProfile idp, Context context) {
+    public Point getMinSpans() {
         return new Point(
                 (resizeMode & RESIZE_HORIZONTAL) != 0 ? minSpanX : -1,
                 (resizeMode & RESIZE_VERTICAL) != 0 ? minSpanY : -1);

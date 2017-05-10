@@ -176,7 +176,7 @@ public class DragLayer extends InsettableFrameLayout {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        return mDragController.dispatchKeyEvent(event) || super.dispatchKeyEvent(event);
+        return mDragController.dispatchKeyEvent() || super.dispatchKeyEvent(event);
     }
 
     public void onAccessibilityStateChanged(boolean isAccessibilityEnabled) {
@@ -661,7 +661,7 @@ public class DragLayer extends InsettableFrameLayout {
         return mCurrentResizeFrame != null;
     }
 
-    public void addResizeFrame(ItemInfo itemInfo, LauncherAppWidgetHostView widget,
+    public void addResizeFrame(LauncherAppWidgetHostView widget,
                                CellLayout cellLayout) {
         AppWidgetResizeFrame resizeFrame = new AppWidgetResizeFrame(getContext(),
                 widget, cellLayout, this);

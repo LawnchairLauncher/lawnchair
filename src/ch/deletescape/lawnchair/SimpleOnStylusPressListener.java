@@ -1,6 +1,5 @@
 package ch.deletescape.lawnchair;
 
-import android.view.MotionEvent;
 import android.view.View;
 
 import ch.deletescape.lawnchair.StylusEventHelper.StylusButtonListener;
@@ -15,11 +14,11 @@ public class SimpleOnStylusPressListener implements StylusButtonListener {
         mView = view;
     }
 
-    public boolean onPressed(MotionEvent event) {
+    public boolean onPressed() {
         return mView.isLongClickable() && mView.performLongClick();
     }
 
-    public boolean onReleased(MotionEvent event) {
+    public boolean onReleased() {
         return false;
     }
 }

@@ -35,7 +35,7 @@ public abstract class LauncherAppsCompat {
 
         void onPackageChanged(String packageName, UserHandleCompat user);
 
-        void onPackagesAvailable(String[] packageNames, UserHandleCompat user, boolean replacing);
+        void onPackagesAvailable(String[] packageNames, UserHandleCompat user);
 
         void onPackagesUnavailable(String[] packageNames, UserHandleCompat user, boolean replacing);
 
@@ -82,5 +82,5 @@ public abstract class LauncherAppsCompat {
     public abstract boolean isActivityEnabledForProfile(ComponentName component,
                                                         UserHandleCompat user);
 
-    public abstract boolean isPackageSuspendedForProfile(String packageName, UserHandleCompat user);
+    public abstract boolean isPackageSuspendedForProfile();
 }

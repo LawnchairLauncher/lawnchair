@@ -151,10 +151,10 @@ public class WidgetPreviewLoader {
     }
 
     public void removePackage(String packageName, UserHandleCompat user) {
-        removePackage(packageName, user, mUserManager.getSerialNumberForUser(user));
+        removePackage(packageName, mUserManager.getSerialNumberForUser(user));
     }
 
-    private void removePackage(String packageName, UserHandleCompat user, long userSerial) {
+    private void removePackage(String packageName, long userSerial) {
         synchronized (mPackageVersions) {
             mPackageVersions.remove(packageName);
         }
@@ -218,7 +218,7 @@ public class WidgetPreviewLoader {
                 long userId = packagesToDelete.keyAt(i);
                 UserHandleCompat user = mUserManager.getUserForSerialNumber(userId);
                 for (String pkg : packagesToDelete.valueAt(i)) {
-                    removePackage(pkg, user, userId);
+                    removePackage(pkg, userId);
                 }
             }
         } catch (SQLException e) {

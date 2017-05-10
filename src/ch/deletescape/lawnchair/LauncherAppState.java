@@ -24,11 +24,9 @@ import android.util.Log;
 import java.lang.ref.WeakReference;
 
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
-import ch.deletescape.lawnchair.compat.PackageInstallerCompat;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 import ch.deletescape.lawnchair.dynamicui.ExtractionUtils;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
-import ch.deletescape.lawnchair.shortcuts.ShortcutCache;
 import ch.deletescape.lawnchair.util.ConfigMonitor;
 import ch.deletescape.lawnchair.util.Thunk;
 
@@ -89,7 +87,7 @@ public class LauncherAppState {
         mInvariantDeviceProfile = new InvariantDeviceProfile(sContext);
         mIconCache = new IconCache(sContext, mInvariantDeviceProfile);
         mWidgetCache = new WidgetPreviewLoader(sContext, mIconCache);
-        mDeepShortcutManager = new DeepShortcutManager(sContext, new ShortcutCache());
+        mDeepShortcutManager = new DeepShortcutManager(sContext);
 
         mAppFilter = new StringSetAppFilter();
         mModel = new LauncherModel(this, mIconCache, mAppFilter, mDeepShortcutManager);

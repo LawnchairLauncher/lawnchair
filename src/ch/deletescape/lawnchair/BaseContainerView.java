@@ -26,7 +26,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import ch.deletescape.lawnchair.allapps.AllAppsContainerView;
-import ch.deletescape.lawnchair.config.FeatureFlags;
 
 /**
  * A base container view, which supports resizing.
@@ -118,7 +117,7 @@ public abstract class BaseContainerView extends FrameLayout
             mContainerPaddingTop = mContainerPaddingBottom = 0;
         } else {
             DeviceProfile grid = launcher.getDeviceProfile();
-            int[] padding = grid.getContainerPadding(context);
+            int[] padding = grid.getContainerPadding();
             mContainerPaddingLeft = padding[0] + grid.edgeMarginPx;
             mContainerPaddingRight = padding[1] + grid.edgeMarginPx;
             mContainerPaddingTop = mContainerPaddingBottom = grid.edgeMarginPx;

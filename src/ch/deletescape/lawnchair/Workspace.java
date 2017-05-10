@@ -50,8 +50,6 @@ import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityManager;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.Interpolator;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -960,9 +958,9 @@ public class Workspace extends PagedView
 
             if (computeXYFromRank) {
                 x = mLauncher.getHotseat().getCellXFromOrder((int) screenId);
-                y = mLauncher.getHotseat().getCellYFromOrder((int) screenId);
+                y = mLauncher.getHotseat().getCellYFromOrder();
             } else {
-                screenId = mLauncher.getHotseat().getOrderInHotseat(x, y);
+                screenId = mLauncher.getHotseat().getOrderInHotseat(x);
             }
         } else {
             // Show folder title if not in the hotseat
@@ -994,7 +992,7 @@ public class Workspace extends PagedView
         int childId = mLauncher.getViewIdForItem(info);
 
         boolean markCellsAsOccupied = !(child instanceof Folder);
-        if (!layout.addViewToCellLayout(child, insert ? 0 : -1, childId, lp, markCellsAsOccupied)) {
+        if (!layout.addViewToCellLayout(child, insert ? 0 : -1, childId, lp)) {
             // TODO: This branch occurs when the workspace is adding views
             // outside of the defined grid
             // maybe we should be deleting these items from the LauncherModel?
@@ -1781,8 +1779,7 @@ public class Workspace extends PagedView
     }
 
     @Override
-    public void onLauncherTransitionPrepare(Launcher l, boolean animated,
-                                            boolean multiplePagesVisible) {
+    public void onLauncherTransitionPrepare(boolean multiplePagesVisible) {
         mIsSwitchingState = true;
         mTransitionProgress = 0;
 
@@ -1795,7 +1792,7 @@ public class Workspace extends PagedView
     }
 
     @Override
-    public void onLauncherTransitionStart(Launcher l, boolean animated, boolean toWorkspace) {
+    public void onLauncherTransitionStart() {
         if (mPageIndicator != null) {
             boolean isNewStateSpringLoaded = mState == State.SPRING_LOADED;
             mPageIndicator.setShouldAutoHide(!isNewStateSpringLoaded);
@@ -1807,12 +1804,12 @@ public class Workspace extends PagedView
     }
 
     @Override
-    public void onLauncherTransitionStep(Launcher l, float t) {
+    public void onLauncherTransitionStep(float t) {
         mTransitionProgress = t;
     }
 
     @Override
-    public void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace) {
+    public void onLauncherTransitionEnd(boolean toWorkspace) {
         mIsSwitchingState = false;
         updateChildrenLayersEnabled(false);
         mForceDrawAdjacentPages = false;
@@ -2129,7 +2126,7 @@ public class Workspace extends PagedView
         return false;
     }
 
-    boolean addToExistingFolderIfNecessary(View newView, CellLayout target, int[] targetCell,
+    boolean addToExistingFolderIfNecessary(CellLayout target, int[] targetCell,
                                            float distance, DragObject d, boolean external) {
         if (distance > mMaxDistanceForFolderCreation) return false;
 
@@ -2204,7 +2201,7 @@ public class Workspace extends PagedView
                     return;
                 }
 
-                if (addToExistingFolderIfNecessary(cell, dropTargetLayout, mTargetCell,
+                if (addToExistingFolderIfNecessary(dropTargetLayout, mTargetCell,
                         distance, d, false)) {
                     return;
                 }
@@ -2276,7 +2273,7 @@ public class Workspace extends PagedView
                                 public void run() {
                                     if (!isPageMoving() && !mIsSwitchingState) {
                                         DragLayer dragLayer = mLauncher.getDragLayer();
-                                        dragLayer.addResizeFrame(info, hostView, cellLayout);
+                                        dragLayer.addResizeFrame(hostView, cellLayout);
                                     }
                                 }
                             };
@@ -2748,7 +2745,7 @@ public class Workspace extends PagedView
                 mFolderCreationAlarm.setOnAlarmListener(listener);
                 mFolderCreationAlarm.setAlarm(FOLDER_CREATION_TIMEOUT);
             } else {
-                listener.onAlarm(mFolderCreationAlarm);
+                listener.onAlarm();
             }
 
             if (dragObject.stateAnnouncer != null) {
@@ -2804,7 +2801,7 @@ public class Workspace extends PagedView
             bg.isClipping = false;
         }
 
-        public void onAlarm(Alarm alarm) {
+        public void onAlarm() {
             mFolderCreateBg = bg;
             mFolderCreateBg.animateToAccept(layout, cellX, cellY);
             layout.clearDragOutlines();
@@ -2829,7 +2826,7 @@ public class Workspace extends PagedView
             this.dragObject = dragObject;
         }
 
-        public void onAlarm(Alarm alarm) {
+        public void onAlarm() {
             int[] resultSpan = new int[2];
             mTargetCell = findNearestArea((int) mDragViewVisualCenter[0],
                     (int) mDragViewVisualCenter[1], minSpanX, minSpanY, mDragTargetLayout,
@@ -2982,7 +2979,7 @@ public class Workspace extends PagedView
                     break;
                 case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                     view = FolderIcon.fromXml(R.layout.folder_icon, mLauncher, cellLayout,
-                            (FolderInfo) info, mIconCache);
+                            (FolderInfo) info);
                     break;
                 default:
                     throw new IllegalStateException("Unknown item type: " + info.itemType);
@@ -3000,7 +2997,7 @@ public class Workspace extends PagedView
                         true, d.dragView, d.postAnimationRunnable)) {
                     return;
                 }
-                if (addToExistingFolderIfNecessary(view, cellLayout, mTargetCell, distance, d,
+                if (addToExistingFolderIfNecessary(cellLayout, mTargetCell, distance, d,
                         true)) {
                     return;
                 }
@@ -3028,10 +3025,10 @@ public class Workspace extends PagedView
                 // We wrap the animation call in the temporary set and reset of the current
                 // cellLayout to its final transform -- this means we animate the drag view to
                 // the correct final location.
-                setFinalTransitionTransform(cellLayout);
+                setFinalTransitionTransform();
                 mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, view,
                         exitSpringLoadedRunnable, this);
-                resetTransitionTransform(cellLayout);
+                resetTransitionTransform();
             }
         }
     }
@@ -3066,10 +3063,10 @@ public class Workspace extends PagedView
         loc[0] = r.left;
         loc[1] = r.top;
 
-        setFinalTransitionTransform(layout);
+        setFinalTransitionTransform();
         float cellLayoutScale =
                 mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(layout, loc, true);
-        resetTransitionTransform(layout);
+        resetTransitionTransform();
 
         float dragViewScaleX;
         float dragViewScaleY;
@@ -3145,7 +3142,7 @@ public class Workspace extends PagedView
         }
     }
 
-    public void setFinalTransitionTransform(CellLayout layout) {
+    public void setFinalTransitionTransform() {
         if (isSwitchingState()) {
             mCurrentScale = getScaleX();
             setScaleX(mStateTransitionAnimation.getFinalScale());
@@ -3153,7 +3150,7 @@ public class Workspace extends PagedView
         }
     }
 
-    public void resetTransitionTransform(CellLayout layout) {
+    public void resetTransitionTransform() {
         if (isSwitchingState()) {
             setScaleX(mCurrentScale);
             setScaleY(mCurrentScale);

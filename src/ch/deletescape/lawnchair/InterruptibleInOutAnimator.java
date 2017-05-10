@@ -16,12 +16,8 @@
 
 package ch.deletescape.lawnchair;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.view.View;
-
-import ch.deletescape.lawnchair.util.Thunk;
 
 /**
  * A convenience class for two-way animations, e.g. a fadeIn/fadeOut animation.
@@ -44,7 +40,7 @@ public class InterruptibleInOutAnimator {
     private static final int OUT = 2;
 
     public InterruptibleInOutAnimator(View view, long duration, float fromValue, float toValue) {
-        mAnimator = LauncherAnimUtils.ofFloat(view, fromValue, toValue).setDuration(duration);
+        mAnimator = LauncherAnimUtils.ofFloat(fromValue, toValue).setDuration(duration);
         mOriginalDuration = duration;
         mOriginalFromValue = fromValue;
         mOriginalToValue = toValue;

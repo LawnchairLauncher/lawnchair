@@ -33,7 +33,6 @@ import java.util.HashMap;
 
 import ch.deletescape.lawnchair.allapps.AllAppsContainerView;
 import ch.deletescape.lawnchair.allapps.AllAppsTransitionController;
-import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.util.CircleRevealOutlineProvider;
 import ch.deletescape.lawnchair.util.Thunk;
 import ch.deletescape.lawnchair.widget.WidgetsContainerView;
@@ -213,7 +212,7 @@ public class LauncherStateTransitionAnimation {
             startAnimationToWorkspaceFromWidgets(fromWorkspaceState, toWorkspaceState,
                     animated, onCompleteRunnable);
         } else {
-            startAnimationToNewWorkspaceState(fromWorkspaceState, toWorkspaceState,
+            startAnimationToNewWorkspaceState(toWorkspaceState,
                     animated, onCompleteRunnable);
         }
     }
@@ -577,8 +576,7 @@ public class LauncherStateTransitionAnimation {
     /**
      * Starts an animation to the workspace from another workspace state, e.g. normal to overview.
      */
-    private void startAnimationToNewWorkspaceState(final Workspace.State fromWorkspaceState,
-                                                   final Workspace.State toWorkspaceState, final boolean animated,
+    private void startAnimationToNewWorkspaceState(final Workspace.State toWorkspaceState, final boolean animated,
                                                    final Runnable onCompleteRunnable) {
         final View fromWorkspace = mLauncher.getWorkspace();
         final HashMap<View, Integer> layerViews = new HashMap<>();
@@ -940,7 +938,7 @@ public class LauncherStateTransitionAnimation {
     void dispatchOnLauncherTransitionPrepare(View v, boolean animated,
                                              boolean multiplePagesVisible) {
         if (v instanceof LauncherTransitionable) {
-            ((LauncherTransitionable) v).onLauncherTransitionPrepare(mLauncher, animated,
+            ((LauncherTransitionable) v).onLauncherTransitionPrepare(
                     multiplePagesVisible);
         }
     }
@@ -950,8 +948,8 @@ public class LauncherStateTransitionAnimation {
      */
     void dispatchOnLauncherTransitionStart(View v, boolean animated, boolean toWorkspace) {
         if (v instanceof LauncherTransitionable) {
-            ((LauncherTransitionable) v).onLauncherTransitionStart(mLauncher, animated,
-                    toWorkspace);
+            ((LauncherTransitionable) v).onLauncherTransitionStart(
+            );
         }
 
         // Update the workspace transition step as well
@@ -963,7 +961,7 @@ public class LauncherStateTransitionAnimation {
      */
     void dispatchOnLauncherTransitionStep(View v, float t) {
         if (v instanceof LauncherTransitionable) {
-            ((LauncherTransitionable) v).onLauncherTransitionStep(mLauncher, t);
+            ((LauncherTransitionable) v).onLauncherTransitionStep(t);
         }
     }
 
@@ -972,7 +970,7 @@ public class LauncherStateTransitionAnimation {
      */
     void dispatchOnLauncherTransitionEnd(View v, boolean animated, boolean toWorkspace) {
         if (v instanceof LauncherTransitionable) {
-            ((LauncherTransitionable) v).onLauncherTransitionEnd(mLauncher, animated,
+            ((LauncherTransitionable) v).onLauncherTransitionEnd(
                     toWorkspace);
         }
 

@@ -277,7 +277,7 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
                         getResources(), getWindowManager());
                 RectF crop = Utils.getMaxCropRect(src.getImageWidth(), src.getImageHeight(),
                         wallpaperSize.x, wallpaperSize.y, false /* leftAligned */);
-                mCropView.setScale(req.scaleAndOffsetProvider.getScale(wallpaperSize, crop));
+                mCropView.setScale(req.scaleAndOffsetProvider.getScale());
                 mCropView.setParallaxOffset(req.scaleAndOffsetProvider.getParallaxOffset(), crop);
             }
 
@@ -431,7 +431,7 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
         DialogUtils.executeCropTaskAfterPrompt(this, cropTask, getOnDialogCancelListener());
     }
 
-    public void setBoundsAndFinish(Point bounds, boolean overrideTransition) {
+    public void setBoundsAndFinish(boolean overrideTransition) {
         setResult(Activity.RESULT_OK);
         finish();
         if (overrideTransition) {
@@ -455,7 +455,7 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
 
         @Override
         public void run(boolean cropSucceeded) {
-            setBoundsAndFinish(mBounds, cropSucceeded && mShouldFadeOutOnFinish);
+            setBoundsAndFinish(cropSucceeded && mShouldFadeOutOnFinish);
         }
     }
 
@@ -470,7 +470,7 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
     }
 
     public interface CropViewScaleAndOffsetProvider {
-        float getScale(Point wallpaperSize, RectF crop);
+        float getScale();
         float getParallaxOffset();
     }
 }

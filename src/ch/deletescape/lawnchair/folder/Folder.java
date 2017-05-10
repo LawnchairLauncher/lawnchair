@@ -738,7 +738,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     OnAlarmListener mReorderAlarmListener = new OnAlarmListener() {
-        public void onAlarm(Alarm alarm) {
+        public void onAlarm() {
             mContent.realTimeReorder(mEmptyCellRank, mTargetRank);
             mEmptyCellRank = mTargetRank;
         }
@@ -749,19 +749,14 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         return (getLayoutDirection() == LAYOUT_DIRECTION_RTL);
     }
 
-    @Override
-    public void onDragOver(DragObject d) {
-        onDragOver(d, REORDER_DELAY);
-    }
-
     private int getTargetRank(DragObject d, float[] recycle) {
         recycle = d.getVisualCenter(recycle);
         return mContent.findNearestArea(
                 (int) recycle[0] - getPaddingLeft(), (int) recycle[1] - getPaddingTop());
     }
 
-    @Thunk
-    void onDragOver(DragObject d, int reorderDelay) {
+    @Override
+    public void onDragOver(DragObject d) {
         if (mScrollPauseAlarm.alarmPending()) {
             return;
         }
@@ -822,7 +817,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     OnAlarmListener mOnExitAlarmListener = new OnAlarmListener() {
-        public void onAlarm(Alarm alarm) {
+        public void onAlarm() {
             completeDragExit();
         }
     };
@@ -869,7 +864,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     public void prepareAccessibilityDrop() {
         if (mReorderAlarm.alarmPending()) {
             mReorderAlarm.cancelAlarm();
-            mReorderAlarmListener.onAlarm(mReorderAlarm);
+            mReorderAlarmListener.onAlarm();
         }
     }
 
@@ -1255,7 +1250,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             mTargetRank = getTargetRank(d, null);
 
             // Rearrange items immediately.
-            mReorderAlarmListener.onAlarm(mReorderAlarm);
+            mReorderAlarmListener.onAlarm();
 
             mOnScrollHintAlarm.cancelAlarm();
             mScrollPauseAlarm.cancelAlarm();
@@ -1438,7 +1433,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
          * Scroll hint has been shown long enough. Now scroll to appropriate page.
          */
         @Override
-        public void onAlarm(Alarm alarm) {
+        public void onAlarm() {
             if (mCurrentScrollDir == DragController.SCROLL_LEFT) {
                 mContent.scrollLeft();
                 mScrollHintDir = DragController.SCROLL_NONE;
@@ -1469,9 +1464,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
          * Page scroll is complete.
          */
         @Override
-        public void onAlarm(Alarm alarm) {
+        public void onAlarm() {
             // Reorder immediately on page change.
-            onDragOver(mDragObject, 1);
+            onDragOver(mDragObject);
         }
     }
 

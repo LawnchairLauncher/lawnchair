@@ -744,7 +744,7 @@ public class Launcher extends Activity
             // Don't update the predicted apps if the user is returning to launcher in the apps
             // view after launching an app, as they may be depending on the UI to be static to
             // switch to another app, otherwise, if it was
-            showAppsView(false /* animated */, !launchedFromApp /* updatePredictedApps */,
+            showAppsView(false /* animated */,  /* updatePredictedApps */
                     mAppsView.shouldRestoreImeState() /* focusSearchBar */);
         } else if (mOnResumeState == State.WIDGETS) {
             showWidgetsView(false, false);
@@ -1035,7 +1035,7 @@ public class Launcher extends Activity
             @Override
             public void onClick(View view) {
                 if (!mWorkspace.isSwitchingState()) {
-                    onClickAddWidgetButton(view);
+                    onClickAddWidgetButton();
                 }
             }
         });
@@ -1137,7 +1137,7 @@ public class Launcher extends Activity
             }
             DragObject dragObject = new DragObject();
             dragObject.dragInfo = info;
-            if (mWorkspace.addToExistingFolderIfNecessary(view, layout, cellXY, 0, dragObject,
+            if (mWorkspace.addToExistingFolderIfNecessary(layout, cellXY, 0, dragObject,
                     true)) {
                 return;
             }
@@ -1684,7 +1684,7 @@ public class Launcher extends Activity
             setWaitingForResult(PendingRequestArgs.forWidgetInfo(appWidgetId, appWidgetInfo, info));
 
             // Launch over to configure widget, if needed
-            mAppWidgetManager.startConfigActivity(appWidgetInfo, appWidgetId, this,
+            mAppWidgetManager.startConfigActivity(appWidgetId, this,
                     mAppWidgetHost, REQUEST_CREATE_APPWIDGET);
         } else {
             // Otherwise just add it
@@ -1784,7 +1784,7 @@ public class Launcher extends Activity
 
         // Create the view
         FolderIcon newFolder =
-                FolderIcon.fromXml(R.layout.folder_icon, this, layout, folderInfo, mIconCache);
+                FolderIcon.fromXml(R.layout.folder_icon, this, layout, folderInfo);
         mWorkspace.addInScreen(newFolder, container, screenId, cellX, cellY, 1, 1,
                 isWorkspaceLocked());
         // Force measure the new folder icon
@@ -1939,7 +1939,7 @@ public class Launcher extends Activity
             }
         } else if ((v instanceof PageIndicator) ||
                 v == mAllAppsButton) {
-            onClickAllAppsButton(v);
+            onClickAllAppsButton();
         } else if (tag instanceof AppInfo) {
             startAppShortcutOrInfoActivity(v);
         } else if (tag instanceof LauncherAppWidgetInfo) {
@@ -2009,7 +2009,7 @@ public class Launcher extends Activity
     private void startRestoredWidgetReconfigActivity(
             LauncherAppWidgetProviderInfo provider, LauncherAppWidgetInfo info) {
         setWaitingForResult(PendingRequestArgs.forWidgetInfo(info.appWidgetId, provider, info));
-        mAppWidgetManager.startConfigActivity(provider,
+        mAppWidgetManager.startConfigActivity(
                 info.appWidgetId, this, mAppWidgetHost, REQUEST_RECONFIGURE_APPWIDGET);
     }
 
@@ -2017,23 +2017,22 @@ public class Launcher extends Activity
      * Event handler for the "grid" button that appears on the home screen, which
      * enters all apps mode.
      *
-     * @param v The view that was clicked.
      */
-    protected void onClickAllAppsButton(View v) {
+    protected void onClickAllAppsButton() {
         if (!isAppsViewVisible()) {
             getUserEventDispatcher().logActionOnControl(LauncherLogProto.Action.TAP,
                     LauncherLogProto.ALL_APPS_BUTTON);
-            showAppsView(true /* animated */, true /* updatePredictedApps */,
+            showAppsView(true /* animated */,  /* updatePredictedApps */
                     false /* focusSearchBar */);
         }
     }
 
-    protected void onLongClickAllAppsButton(View v) {
+    protected void onLongClickAllAppsButton() {
         if (!isAppsViewVisible()) {
             getUserEventDispatcher().logActionOnControl(LauncherLogProto.Action.LONGPRESS,
                     LauncherLogProto.ALL_APPS_BUTTON);
             showAppsView(true /* animated */,
-                    true /* updatePredictedApps */, true /* focusSearchBar */);
+                    /* updatePredictedApps */ true /* focusSearchBar */);
         }
     }
 
@@ -2147,7 +2146,7 @@ public class Launcher extends Activity
      * Event handler for the (Add) Widgets button that appears after a long press
      * on the home screen.
      */
-    public void onClickAddWidgetButton(View view) {
+    public void onClickAddWidgetButton() {
         if (mIsSafeModeEnabled) {
             Toast.makeText(this, R.string.safemode_widget_error, Toast.LENGTH_SHORT).show();
         } else {
@@ -2566,7 +2565,7 @@ public class Launcher extends Activity
 
         if ((v instanceof PageIndicator) ||
                 (v == mAllAppsButton && mAllAppsButton != null)) {
-            onLongClickAllAppsButton(v);
+            onLongClickAllAppsButton();
             return true;
         }
 
@@ -2743,7 +2742,7 @@ public class Launcher extends Activity
     /**
      * Shows the apps view.
      */
-    public void showAppsView(boolean animated, boolean updatePredictedApps,
+    public void showAppsView(boolean animated,
                              boolean focusSearchBar) {
         markAppsViewShown();
         showAppsOrWidgets(State.APPS, animated, focusSearchBar);
@@ -2877,7 +2876,7 @@ public class Launcher extends Activity
     void exitSpringLoadedDragMode() {
         if (mState == State.APPS_SPRING_LOADED) {
             showAppsView(true /* animated */,
-                    false /* updatePredictedApps */, false /* focusSearchBar */);
+                    /* updatePredictedApps */ false /* focusSearchBar */);
         } else if (mState == State.WIDGETS_SPRING_LOADED) {
             showWidgetsView(true, false);
         } else if (mState == State.WORKSPACE_SPRING_LOADED) {
@@ -3115,7 +3114,7 @@ public class Launcher extends Activity
                 case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                     view = FolderIcon.fromXml(R.layout.folder_icon, this,
                             (ViewGroup) workspace.getChildAt(workspace.getCurrentPage()),
-                            (FolderInfo) item, mIconCache);
+                            (FolderInfo) item);
                     break;
                 default:
                     throw new RuntimeException("Invalid Item Type");

@@ -316,7 +316,7 @@ public class DragController implements DragDriver.EventListener, TouchController
      *              || super.dispatchKeyEvent(event);
      * </pre>
      */
-    public boolean dispatchKeyEvent(KeyEvent event) {
+    public boolean dispatchKeyEvent() {
         return mDragDriver != null;
     }
 
@@ -453,7 +453,7 @@ public class DragController implements DragDriver.EventListener, TouchController
             }
         }
 
-        drop(dropTarget, x, y, vec);
+        drop(dropTarget, vec);
 
         endDrag();
     }
@@ -674,7 +674,7 @@ public class DragController implements DragDriver.EventListener, TouchController
 
         dropTarget.prepareAccessibilityDrop();
         // Perform the drop
-        drop(dropTarget, location[0], location[1], null);
+        drop(dropTarget, null);
         endDrag();
     }
 
@@ -707,7 +707,7 @@ public class DragController implements DragDriver.EventListener, TouchController
                 (vec1.length() * vec2.length()));
     }
 
-    void drop(DropTarget dropTarget, float x, float y, PointF flingVel) {
+    void drop(DropTarget dropTarget, PointF flingVel) {
         final int[] coordinates = mCoordinatesTemp;
 
         mDragObject.x = coordinates[0];

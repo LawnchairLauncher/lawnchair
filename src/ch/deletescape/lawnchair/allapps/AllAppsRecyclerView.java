@@ -61,11 +61,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     }
 
     public AllAppsRecyclerView(Context context, AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs, defStyleAttr, 0);
-    }
-
-    public AllAppsRecyclerView(Context context, AttributeSet attrs, int defStyleAttr,
-                               int defStyleRes) {
         super(context, attrs, defStyleAttr);
         Resources res = getResources();
         addOnItemTouchListener(this);

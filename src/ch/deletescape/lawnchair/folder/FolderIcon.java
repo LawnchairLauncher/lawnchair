@@ -54,7 +54,6 @@ import ch.deletescape.lawnchair.DropTarget.DragObject;
 import ch.deletescape.lawnchair.FastBitmapDrawable;
 import ch.deletescape.lawnchair.FolderInfo;
 import ch.deletescape.lawnchair.FolderInfo.FolderListener;
-import ch.deletescape.lawnchair.IconCache;
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAnimUtils;
@@ -141,7 +140,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     public static FolderIcon fromXml(int resId, Launcher launcher, ViewGroup group,
-                                     FolderInfo folderInfo, IconCache iconCache) {
+                                     FolderInfo folderInfo) {
         @SuppressWarnings("all") // suppress dead code warning
         final boolean error = INITIAL_ITEM_ANIMATION_DURATION >= DROP_IN_ANIMATION_DURATION;
         if (error) {
@@ -235,7 +234,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     OnAlarmListener mOnOpenListener = new OnAlarmListener() {
-        public void onAlarm(Alarm alarm) {
+        public void onAlarm() {
             mFolder.beginExternalDrag();
             mLauncher.openFolder(FolderIcon.this);
         }
@@ -260,7 +259,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         addItem(destInfo);
         // This will animate the first item from it's position as an icon into its
         // position as the first item in the preview
-        animateFirstItem(animateDrawable, INITIAL_ITEM_ANIMATION_DURATION, false, null);
+        animateFirstItem(INITIAL_ITEM_ANIMATION_DURATION, false, null);
 
         // This will animate the dragView (srcView) into the new folder
         onDrop(srcInfo, srcView, dstRect, scaleRelativeToDragLayer, 1, postAnimationRunnable);
@@ -273,7 +272,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
         // This will animate the first item from it's position as an icon into its
         // position as the first item in the preview
-        animateFirstItem(animateDrawable, FINAL_ITEM_ANIMATION_DURATION, true,
+        animateFirstItem(FINAL_ITEM_ANIMATION_DURATION, true,
                 onCompleteRunnable);
     }
 
@@ -299,7 +298,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 to = new Rect();
                 Workspace workspace = mLauncher.getWorkspace();
                 // Set cellLayout and this to it's final state to compute final animation locations
-                workspace.setFinalTransitionTransform((CellLayout) getParent().getParent());
+                workspace.setFinalTransitionTransform();
                 float scaleX = getScaleX();
                 float scaleY = getScaleY();
                 setScaleX(1.0f);
@@ -308,7 +307,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 // Finished computing final animation locations, restore current state
                 setScaleX(scaleX);
                 setScaleY(scaleY);
-                workspace.resetTransitionTransform((CellLayout) getParent().getParent());
+                workspace.resetTransitionTransform();
             }
 
             int[] center = new int[2];
@@ -661,7 +660,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 mScaleAnimator.cancel();
             }
 
-            mScaleAnimator = LauncherAnimUtils.ofFloat(null, 0f, 1.0f);
+            mScaleAnimator = LauncherAnimUtils.ofFloat(0f, 1.0f);
 
             mScaleAnimator.addUpdateListener(new AnimatorUpdateListener() {
                 @Override
@@ -806,7 +805,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             final float transX0 = mTmpParams.transX;
             final float transY0 = mTmpParams.transY;
 
-            mValueAnimator = LauncherAnimUtils.ofFloat(FolderIcon.this, 0f, 1.0f);
+            mValueAnimator = LauncherAnimUtils.ofFloat(0f, 1.0f);
             mValueAnimator.addUpdateListener(new AnimatorUpdateListener() {
                 public void onAnimationUpdate(ValueAnimator animation) {
                     float progress = animation.getAnimatedFraction();
@@ -849,7 +848,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         }
     }
 
-    private void animateFirstItem(final Drawable d, int duration, final boolean reverse,
+    private void animateFirstItem(int duration, final boolean reverse,
                                   final Runnable onCompleteRunnable) {
 
         FolderPreviewItemAnim anim;

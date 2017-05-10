@@ -100,7 +100,7 @@ public class WidgetsModel {
             AppWidgetManagerCompat widgetManager = AppWidgetManagerCompat.getInstance(context);
             for (AppWidgetProviderInfo widgetInfo : widgetManager.getAllProviders()) {
                 widgetsAndShortcuts.add(new WidgetItem(
-                        LauncherAppWidgetProviderInfo.fromProviderInfo(context, widgetInfo),
+                        LauncherAppWidgetProviderInfo.fromProviderInfo(widgetInfo),
                         widgetManager));
             }
 

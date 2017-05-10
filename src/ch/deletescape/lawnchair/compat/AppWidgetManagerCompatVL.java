@@ -86,7 +86,7 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
     }
 
     @Override
-    public void startConfigActivity(AppWidgetProviderInfo info, int widgetId, Activity activity,
+    public void startConfigActivity(int widgetId, Activity activity,
                                     AppWidgetHost host, int requestCode) {
         try {
             host.startAppWidgetConfigureActivityForResult(activity, widgetId, 0, requestCode, null);
@@ -102,7 +102,7 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
 
     @Override
     public Drawable loadIcon(LauncherAppWidgetProviderInfo info, IconCache cache) {
-        return info.getIcon(mContext, cache);
+        return info.getIcon(mContext);
     }
 
     @Override
@@ -151,7 +151,7 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
         for (AppWidgetProviderInfo info : mAppWidgetManager
                 .getInstalledProvidersForProfile(user.getUser())) {
             if (info.provider.equals(provider)) {
-                return LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, info);
+                return LauncherAppWidgetProviderInfo.fromProviderInfo(info);
             }
         }
         return null;

@@ -79,7 +79,7 @@ public class Hotseat extends FrameLayout
     }
 
     /* Get the orientation invariant order of the item in the hotseat for persistence. */
-    int getOrderInHotseat(int x, int y) {
+    int getOrderInHotseat(int x) {
         return x;
     }
 
@@ -88,7 +88,7 @@ public class Hotseat extends FrameLayout
         return rank;
     }
 
-    int getCellYFromOrder(int rank) {
+    int getCellYFromOrder() {
         return 0;
     }
 

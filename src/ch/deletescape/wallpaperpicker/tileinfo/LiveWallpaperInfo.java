@@ -35,7 +35,7 @@ public class LiveWallpaperInfo extends WallpaperTileInfo {
     private Drawable mThumbnail;
     private WallpaperInfo mInfo;
 
-    public LiveWallpaperInfo(Drawable thumbnail, WallpaperInfo info, Intent intent) {
+    public LiveWallpaperInfo(Drawable thumbnail, WallpaperInfo info) {
         mThumbnail = thumbnail;
         mInfo = info;
     }
@@ -109,7 +109,7 @@ public class LiveWallpaperInfo extends WallpaperTileInfo {
                 Drawable thumb = info.loadThumbnail(pm);
                 Intent launchIntent = new Intent(WallpaperService.SERVICE_INTERFACE);
                 launchIntent.setClassName(info.getPackageName(), info.getServiceName());
-                result.add(new LiveWallpaperInfo(thumb, info, launchIntent));
+                result.add(new LiveWallpaperInfo(thumb, info));
             }
 
             return result;

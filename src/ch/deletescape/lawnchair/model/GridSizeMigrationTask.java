@@ -711,7 +711,7 @@ public class GridSizeMigrationTask {
                         LauncherAppWidgetProviderInfo pInfo = AppWidgetManagerCompat.getInstance(
                                 mContext).getLauncherAppWidgetInfo(widgetId);
                         Point spans = pInfo == null ?
-                                mWidgetMinSize.get(provider) : pInfo.getMinSpans(mIdp, mContext);
+                                mWidgetMinSize.get(provider) : pInfo.getMinSpans();
                         if (spans != null) {
                             entry.minSpanX = spans.x > 0 ? spans.x : entry.spanX;
                             entry.minSpanY = spans.y > 0 ? spans.y : entry.spanY;

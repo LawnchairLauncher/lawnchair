@@ -176,7 +176,7 @@ public class FocusLogic {
      */
     // TODO: get rid of the dynamic matrix creation
     public static int[][] createSparseMatrixWithHotseat(
-            CellLayout iconLayout, CellLayout hotseatLayout, DeviceProfile dp) {
+            CellLayout iconLayout, CellLayout hotseatLayout) {
 
         ViewGroup iconParent = iconLayout.getShortcutsAndWidgets();
         ViewGroup hotseatParent = hotseatLayout.getShortcutsAndWidgets();

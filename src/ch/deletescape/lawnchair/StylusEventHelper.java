@@ -17,19 +17,17 @@ public class StylusEventHelper {
         /**
          * Called when the stylus button is pressed.
          *
-         * @param event The MotionEvent that the button press occurred for.
          * @return Whether the event was handled.
          */
-        boolean onPressed(MotionEvent event);
+        boolean onPressed();
 
         /**
          * Called when the stylus button is released after a button press. This is also called if
          * the event is canceled or the stylus is lifted off the screen.
          *
-         * @param event The MotionEvent the button release occurred for.
          * @return Whether the event was handled.
          */
-        boolean onReleased(MotionEvent event);
+        boolean onReleased();
     }
 
     private boolean mIsButtonPressed;
@@ -61,7 +59,7 @@ public class StylusEventHelper {
             case MotionEvent.ACTION_DOWN:
                 mIsButtonPressed = stylusButtonPressed;
                 if (mIsButtonPressed) {
-                    return mListener.onPressed(event);
+                    return mListener.onPressed();
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -70,17 +68,17 @@ public class StylusEventHelper {
                 }
                 if (!mIsButtonPressed && stylusButtonPressed) {
                     mIsButtonPressed = true;
-                    return mListener.onPressed(event);
+                    return mListener.onPressed();
                 } else if (mIsButtonPressed && !stylusButtonPressed) {
                     mIsButtonPressed = false;
-                    return mListener.onReleased(event);
+                    return mListener.onReleased();
                 }
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 if (mIsButtonPressed) {
                     mIsButtonPressed = false;
-                    return mListener.onReleased(event);
+                    return mListener.onReleased();
                 }
                 break;
         }

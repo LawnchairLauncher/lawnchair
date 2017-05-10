@@ -75,7 +75,7 @@ public class Alarm implements Runnable {
             } else {
                 mAlarmPending = false;
                 if (mAlarmListener != null) {
-                    mAlarmListener.onAlarm(this);
+                    mAlarmListener.onAlarm();
                 }
             }
         }

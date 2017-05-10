@@ -51,7 +51,7 @@ public class DeepShortcutManager {
     private final LauncherApps mLauncherApps;
     private boolean mWasLastCallSuccess;
 
-    public DeepShortcutManager(Context context, ShortcutCache shortcutCache) {
+    public DeepShortcutManager(Context context) {
         mLauncherApps = (LauncherApps) context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
     }
 
@@ -63,7 +63,7 @@ public class DeepShortcutManager {
         return mWasLastCallSuccess;
     }
 
-    public void onShortcutsChanged(List<ShortcutInfoCompat> shortcuts) {
+    public void onShortcutsChanged() {
         // mShortcutCache.removeShortcuts(shortcuts);
     }
 

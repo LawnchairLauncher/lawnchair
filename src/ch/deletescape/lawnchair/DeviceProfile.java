@@ -499,7 +499,7 @@ public class DeviceProfile {
     /**
      * @return the left/right paddings for all containers.
      */
-    public final int[] getContainerPadding(Context context) {
+    public final int[] getContainerPadding() {
 
         // No paddings for portrait phone
         if (isPhone) {

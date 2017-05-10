@@ -283,7 +283,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
         mShortcutsAndWidgets = new ShortcutAndWidgetContainer(context);
         mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap,
-                mCountX, mCountY);
+                mCountX);
 
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
 
@@ -357,7 +357,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         mFixedCellWidth = mCellWidth = width;
         mFixedCellHeight = mCellHeight = height;
         mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap,
-                mCountX, mCountY);
+                mCountX);
     }
 
     public void setGridSize(int x, int y) {
@@ -367,7 +367,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         mTmpOccupied = new GridOccupancy(mCountX, mCountY);
         mTempRectStack.clear();
         mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap,
-                mCountX, mCountY);
+                mCountX);
         requestLayout();
     }
 
@@ -589,8 +589,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         return mIsHotseat;
     }
 
-    public boolean addViewToCellLayout(View child, int index, int childId, LayoutParams params,
-                                       boolean markCells) {
+    public boolean addViewToCellLayout(View child, int index, int childId, LayoutParams params) {
         final LayoutParams lp = params;
 
         // Hotseat icons - remove text
@@ -800,7 +799,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 mCellWidth = cw;
                 mCellHeight = ch;
                 mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap,
-                        mHeightGap, mCountX, mCountY);
+                        mHeightGap, mCountX);
             }
         }
 
@@ -824,7 +823,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             mWidthGap = Math.min(mMaxGap, numWidthGaps > 0 ? (hFreeSpace / numWidthGaps) : 0);
             mHeightGap = Math.min(mMaxGap, numHeightGaps > 0 ? (vFreeSpace / numHeightGaps) : 0);
             mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap,
-                    mHeightGap, mCountX, mCountY);
+                    mHeightGap, mCountX);
         } else {
             mWidthGap = mOriginalWidthGap;
             mHeightGap = mOriginalHeightGap;
@@ -970,7 +969,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 return true;
             }
 
-            ValueAnimator va = LauncherAnimUtils.ofFloat(child, 0f, 1f);
+            ValueAnimator va = LauncherAnimUtils.ofFloat(0f, 1f);
             va.setDuration(duration);
             mReorderAnimators.put(lp, va);
 
@@ -1640,7 +1639,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     }
 
     private boolean addViewsToTempLocation(ArrayList<View> views, Rect rectOccupiedByPotentialDrop,
-                                           int[] direction, View dragView, ItemConfiguration currentState) {
+                                           int[] direction, ItemConfiguration currentState) {
         if (views.size() == 0) return true;
 
         boolean success = false;
@@ -1829,7 +1828,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         }
 
         // Next we try moving the views as a block, but without requiring the push mechanic.
-        if (addViewsToTempLocation(mIntersectingViews, mOccupiedRect, direction, ignoreView,
+        if (addViewsToTempLocation(mIntersectingViews, mOccupiedRect, direction,
                 solution)) {
             return true;
         }
@@ -1961,7 +1960,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     // This method starts or changes the reorder preview animations
     private void beginOrAdjustReorderPreviewAnimations(ItemConfiguration solution,
-                                                       View dragView, int delay, int mode) {
+                                                       View dragView, int mode) {
         int childCount = mShortcutsAndWidgets.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View child = mShortcutsAndWidgets.getChildAt(i);
@@ -2047,7 +2046,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             if (finalDeltaX == 0 && finalDeltaY == 0) {
                 return;
             }
-            ValueAnimator va = LauncherAnimUtils.ofFloat(child, 0f, 1f);
+            ValueAnimator va = LauncherAnimUtils.ofFloat(0f, 1f);
             a = va;
 
             // Animations are disabled in power save mode, causing the repeated animation to jump
@@ -2162,7 +2161,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     }
 
     private ItemConfiguration findConfigurationNoShuffle(int pixelX, int pixelY, int minSpanX, int minSpanY,
-                                                         int spanX, int spanY, View dragView, ItemConfiguration solution) {
+                                                         int spanX, int spanY, ItemConfiguration solution) {
         int[] result = new int[2];
         int[] resultSpan = new int[2];
         findNearestVacantArea(pixelX, pixelY, minSpanX, minSpanY, spanX, spanY, result,
@@ -2304,7 +2303,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 setItemPlacementDirty(false);
             } else {
                 beginOrAdjustReorderPreviewAnimations(swapSolution, dragView,
-                        REORDER_ANIMATION_DURATION, ReorderPreviewAnimation.MODE_PREVIEW);
+                        ReorderPreviewAnimation.MODE_PREVIEW);
             }
             mShortcutsAndWidgets.requestLayout();
         }
@@ -2344,7 +2343,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
         // We attempt the approach which doesn't shuffle views at all
         ItemConfiguration noShuffleSolution = findConfigurationNoShuffle(pixelX, pixelY, minSpanX,
-                minSpanY, spanX, spanY, dragView, new ItemConfiguration());
+                minSpanY, spanX, spanY, new ItemConfiguration());
 
         ItemConfiguration finalSolution = null;
 
@@ -2358,7 +2357,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
         if (mode == MODE_SHOW_REORDER_HINT) {
             if (finalSolution != null) {
-                beginOrAdjustReorderPreviewAnimations(finalSolution, dragView, 0,
+                beginOrAdjustReorderPreviewAnimations(finalSolution, dragView,
                         ReorderPreviewAnimation.MODE_HINT);
                 result[0] = finalSolution.cellX;
                 result[1] = finalSolution.cellY;
@@ -2398,7 +2397,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                     setItemPlacementDirty(false);
                 } else {
                     beginOrAdjustReorderPreviewAnimations(finalSolution, dragView,
-                            REORDER_ANIMATION_DURATION, ReorderPreviewAnimation.MODE_PREVIEW);
+                            ReorderPreviewAnimation.MODE_PREVIEW);
                 }
             }
         } else {

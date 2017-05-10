@@ -62,7 +62,7 @@ public abstract class AppWidgetManagerCompat {
 
     public LauncherAppWidgetProviderInfo getLauncherAppWidgetInfo(int appWidgetId) {
         AppWidgetProviderInfo info = getAppWidgetInfo(appWidgetId);
-        return info == null ? null : LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, info);
+        return info == null ? null : LauncherAppWidgetProviderInfo.fromProviderInfo(info);
     }
 
     public abstract List<AppWidgetProviderInfo> getAllProviders();
@@ -74,7 +74,7 @@ public abstract class AppWidgetManagerCompat {
 
     public abstract UserHandleCompat getUser(LauncherAppWidgetProviderInfo info);
 
-    public abstract void startConfigActivity(AppWidgetProviderInfo info, int widgetId,
+    public abstract void startConfigActivity(int widgetId,
                                              Activity activity, AppWidgetHost host, int requestCode);
 
     public abstract Drawable loadPreview(AppWidgetProviderInfo info);

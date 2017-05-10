@@ -200,7 +200,7 @@ public class FocusHelper {
         int[][] matrix = null;
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
-            matrix = FocusLogic.createSparseMatrixWithHotseat(iconLayout, hotseatLayout, profile);
+            matrix = FocusLogic.createSparseMatrixWithHotseat(iconLayout, hotseatLayout);
             iconIndex += iconParent.getChildCount();
             parent = iconParent;
         } else if (isUninstallKeyChord(e)) {
@@ -318,7 +318,7 @@ public class FocusHelper {
         // to take a user to the hotseat. For other dpad navigation, do not use the matrix extended
         // with the hotseat.
         if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
-            matrix = FocusLogic.createSparseMatrixWithHotseat(iconLayout, hotseatLayout, profile);
+            matrix = FocusLogic.createSparseMatrixWithHotseat(iconLayout, hotseatLayout);
         } else if (isUninstallKeyChord(e)) {
             matrix = FocusLogic.createSparseMatrix(iconLayout);
             if (UninstallDropTarget.supportsDrop(launcher, itemInfo)) {

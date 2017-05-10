@@ -142,14 +142,14 @@ public class UserEventDispatcher {
         if (ev == null) {
             return;
         }
-        dispatchUserEvent(ev, intent);
+        dispatchUserEvent(ev);
     }
 
     public void logActionOnControl(int action, int controlType) {
         LauncherEvent event = LoggerUtils.initLauncherEvent(Action.TOUCH, Target.CONTROL);
         event.action.touch = action;
         event.srcTarget[0].controlType = controlType;
-        dispatchUserEvent(event, null);
+        dispatchUserEvent(event);
     }
 
     public void logActionOnContainer(int action, int dir, int containerType) {
@@ -157,7 +157,7 @@ public class UserEventDispatcher {
         event.action.touch = action;
         event.action.dir = dir;
         event.srcTarget[0].containerType = containerType;
-        dispatchUserEvent(event, null);
+        dispatchUserEvent(event);
     }
 
     public void logDeepShortcutsOpen(View icon) {
@@ -170,7 +170,7 @@ public class UserEventDispatcher {
         ItemInfo info = (ItemInfo) icon.getTag();
         provider.fillInLaunchSourceData(icon, info, event.srcTarget[0], event.srcTarget[1]);
         event.action.touch = Action.LONGPRESS;
-        dispatchUserEvent(event, null);
+        dispatchUserEvent(event);
     }
 
     public void setPredictedApps(List<ComponentKey> predictedApps) {
@@ -194,7 +194,7 @@ public class UserEventDispatcher {
 
         }
         event.actionDurationMillis = SystemClock.uptimeMillis() - mActionDurationMillis;
-        dispatchUserEvent(event, null);
+        dispatchUserEvent(event);
     }
 
     /**
@@ -213,7 +213,7 @@ public class UserEventDispatcher {
         mActionDurationMillis = SystemClock.uptimeMillis();
     }
 
-    public void dispatchUserEvent(LauncherEvent ev, Intent intent) {
+    public void dispatchUserEvent(LauncherEvent ev) {
         ev.elapsedContainerMillis = SystemClock.uptimeMillis() - mElapsedContainerMillis;
         ev.elapsedSessionMillis = SystemClock.uptimeMillis() - mElapsedSessionMillis;
 

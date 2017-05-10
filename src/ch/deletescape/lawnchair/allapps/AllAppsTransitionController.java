@@ -15,7 +15,6 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 
-import ch.deletescape.lawnchair.DeviceProfile;
 import ch.deletescape.lawnchair.Hotseat;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAnimUtils;
@@ -203,7 +202,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                             LauncherLogProto.HOTSEAT);
                 }
                 mLauncher.showAppsView(true /* animated */,
-                        false /* updatePredictedApps */,
+                        /* updatePredictedApps */
                         false /* focusSearchBar */);
             } else {
                 calculateDuration(velocity, Math.abs(mShiftRange - mAppsView.getTranslationY()));
@@ -223,7 +222,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                             LauncherLogProto.HOTSEAT);
                 }
                 mLauncher.showAppsView(true, /* animated */
-                        false /* updatePredictedApps */,
+                        /* updatePredictedApps */
                         false /* focusSearchBar */);
             }
         }

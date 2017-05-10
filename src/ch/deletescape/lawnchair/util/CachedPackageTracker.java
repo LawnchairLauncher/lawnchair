@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -85,7 +84,7 @@ public abstract class CachedPackageTracker implements OnAppsChangedCallbackCompa
 
             if (!packagesRemoved.isEmpty()) {
                 for (String pkg : packagesRemoved) {
-                    onLauncherPackageRemoved(pkg, user);
+                    onLauncherPackageRemoved();
                 }
             }
         }
@@ -114,7 +113,7 @@ public abstract class CachedPackageTracker implements OnAppsChangedCallbackCompa
             mPrefs.edit().putStringSet(prefKey, packageSet).apply();
         }
 
-        onLauncherPackageRemoved(packageName, user);
+        onLauncherPackageRemoved();
     }
 
     @Override
@@ -143,7 +142,7 @@ public abstract class CachedPackageTracker implements OnAppsChangedCallbackCompa
 
     @Override
     public void onPackagesAvailable(
-            String[] packageNames, UserHandleCompat user, boolean replacing) {
+            String[] packageNames, UserHandleCompat user) {
     }
 
     @Override
@@ -174,7 +173,7 @@ public abstract class CachedPackageTracker implements OnAppsChangedCallbackCompa
     /**
      * Called when apps are removed from the system.
      */
-    protected abstract void onLauncherPackageRemoved(String packageName, UserHandleCompat user);
+    protected abstract void onLauncherPackageRemoved();
 
     public static class LauncherActivityInstallInfo
             implements Comparable<LauncherActivityInstallInfo> {

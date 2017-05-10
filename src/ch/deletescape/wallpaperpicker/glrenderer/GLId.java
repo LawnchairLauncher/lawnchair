@@ -25,9 +25,9 @@ public interface GLId {
 
     void glGenBuffers(int n, int[] buffers, int offset);
 
-    void glDeleteTextures(GL11 gl, int n, int[] textures, int offset);
+    void glDeleteTextures(int n, int[] textures, int offset);
 
-    void glDeleteBuffers(GL11 gl, int n, int[] buffers, int offset);
+    void glDeleteBuffers(int n, int[] buffers, int offset);
 
-    void glDeleteFramebuffers(GL11ExtensionPack gl11ep, int n, int[] buffers, int offset);
+    void glDeleteFramebuffers(int n, int[] buffers, int offset);
 }

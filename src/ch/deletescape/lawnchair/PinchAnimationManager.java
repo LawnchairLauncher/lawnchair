@@ -106,7 +106,7 @@ public class PinchAnimationManager {
             public void onAnimationEnd(Animator animation) {
                 mIsAnimating = false;
                 thresholdManager.reset();
-                mWorkspace.onLauncherTransitionEnd(mLauncher, false, true);
+                mWorkspace.onLauncherTransitionEnd(true);
             }
         });
         animator.setDuration(duration).start();

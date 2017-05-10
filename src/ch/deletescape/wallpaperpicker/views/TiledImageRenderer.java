@@ -449,7 +449,7 @@ public class TiledImageRenderer {
 
         if (mRenderComplete) {
             if (!mBackgroundTileUploaded) {
-                uploadBackgroundTiles(canvas);
+                uploadBackgroundTiles();
             }
         } else {
             invalidate();
@@ -457,7 +457,7 @@ public class TiledImageRenderer {
         return mRenderComplete || mPreview != null;
     }
 
-    private void uploadBackgroundTiles(GLCanvas canvas) {
+    private void uploadBackgroundTiles() {
         mBackgroundTileUploaded = true;
         int n = mActiveTiles.size();
         for (int i = 0; i < n; i++) {

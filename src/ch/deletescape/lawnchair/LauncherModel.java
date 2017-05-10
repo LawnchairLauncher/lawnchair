@@ -36,7 +36,6 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Parcelable;
 import android.os.Process;
-import android.os.SystemClock;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
 import android.util.Log;
@@ -393,7 +392,7 @@ public class LauncherModel extends BroadcastReceiver
         runOnWorkerThread(updateRunnable);
     }
 
-    public void addAppsToAllApps(final Context ctx, final ArrayList<AppInfo> allAppsApps) {
+    public void addAppsToAllApps(final ArrayList<AppInfo> allAppsApps) {
         final Callbacks callbacks = getCallback();
 
         if (allAppsApps == null) {
@@ -529,7 +528,7 @@ public class LauncherModel extends BroadcastReceiver
                     for (ItemInfo item : workspaceApps) {
                         if (item instanceof ShortcutInfo) {
                             // Short-circuit this logic if the icon exists somewhere on the workspace
-                            if (shortcutExists(context, item.getIntent(), item.user)) {
+                            if (shortcutExists(item.getIntent(), item.user)) {
                                 continue;
                             }
                         }
@@ -656,7 +655,7 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     static void updateItemInDatabaseHelper(Context context, final ContentValues values,
-                                           final ItemInfo item, final String callingFunction) {
+                                           final ItemInfo item) {
         final long itemId = item.id;
         final Uri uri = LauncherSettings.Favorites.getContentUri(itemId);
         final ContentResolver cr = context.getContentResolver();
@@ -672,7 +671,7 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     static void updateItemsInDatabaseHelper(Context context, final ArrayList<ContentValues> valuesList,
-                                            final ArrayList<ItemInfo> items, final String callingFunction) {
+                                            final ArrayList<ItemInfo> items) {
         final ContentResolver cr = context.getContentResolver();
 
         final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
@@ -757,7 +756,7 @@ public class LauncherModel extends BroadcastReceiver
         if (context instanceof Launcher && screenId < 0 &&
                 container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             item.screenId = Launcher.getLauncher(context).getHotseat()
-                    .getOrderInHotseat(cellX, cellY);
+                    .getOrderInHotseat(cellX);
         } else {
             item.screenId = screenId;
         }
@@ -769,7 +768,7 @@ public class LauncherModel extends BroadcastReceiver
         values.put(LauncherSettings.Favorites.RANK, item.rank);
         values.put(LauncherSettings.Favorites.SCREEN, item.screenId);
 
-        updateItemInDatabaseHelper(context, values, item, "moveItemInDatabase");
+        updateItemInDatabaseHelper(context, values, item);
     }
 
     /**
@@ -790,8 +789,8 @@ public class LauncherModel extends BroadcastReceiver
             // in the hotseat
             if (context instanceof Launcher && screen < 0 &&
                     container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                item.screenId = Launcher.getLauncher(context).getHotseat().getOrderInHotseat(item.cellX,
-                        item.cellY);
+                item.screenId = Launcher.getLauncher(context).getHotseat().getOrderInHotseat(item.cellX
+                );
             } else {
                 item.screenId = screen;
             }
@@ -805,7 +804,7 @@ public class LauncherModel extends BroadcastReceiver
 
             contentValues.add(values);
         }
-        updateItemsInDatabaseHelper(context, contentValues, items, "moveItemInDatabase");
+        updateItemsInDatabaseHelper(context, contentValues, items);
     }
 
     /**
@@ -824,7 +823,7 @@ public class LauncherModel extends BroadcastReceiver
         if (context instanceof Launcher && screenId < 0 &&
                 container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             item.screenId = Launcher.getLauncher(context).getHotseat()
-                    .getOrderInHotseat(cellX, cellY);
+                    .getOrderInHotseat(cellX);
         } else {
             item.screenId = screenId;
         }
@@ -838,7 +837,7 @@ public class LauncherModel extends BroadcastReceiver
         values.put(LauncherSettings.Favorites.SPANY, item.spanY);
         values.put(LauncherSettings.Favorites.SCREEN, item.screenId);
 
-        updateItemInDatabaseHelper(context, values, item, "modifyItemInDatabase");
+        updateItemInDatabaseHelper(context, values, item);
     }
 
     /**
@@ -847,7 +846,7 @@ public class LauncherModel extends BroadcastReceiver
     public static void updateItemInDatabase(Context context, final ItemInfo item) {
         final ContentValues values = new ContentValues();
         item.onAddToDatabase(context, values);
-        updateItemInDatabaseHelper(context, values, item, "updateItemInDatabase");
+        updateItemInDatabaseHelper(context, values, item);
     }
 
     /**
@@ -855,7 +854,7 @@ public class LauncherModel extends BroadcastReceiver
      * the workspace has been loaded. We identify a shortcut by its intent.
      */
     @Thunk
-    boolean shortcutExists(Context context, Intent intent, UserHandleCompat user) {
+    boolean shortcutExists(Intent intent, UserHandleCompat user) {
         final String intentWithPkg, intentWithoutPkg;
         if (intent.getComponent() != null) {
             // If component is not null, an intent with null package will produce
@@ -907,7 +906,7 @@ public class LauncherModel extends BroadcastReceiver
         if (context instanceof Launcher && screenId < 0 &&
                 container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             item.screenId = Launcher.getLauncher(context).getHotseat()
-                    .getOrderInHotseat(cellX, cellY);
+                    .getOrderInHotseat(cellX);
         } else {
             item.screenId = screenId;
         }
@@ -1182,8 +1181,7 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     @Override
-    public void onPackagesAvailable(String[] packageNames, UserHandleCompat user,
-                                    boolean replacing) {
+    public void onPackagesAvailable(String[] packageNames, UserHandleCompat user) {
         enqueueItemUpdatedTask(
                 new PackageUpdatedTask(PackageUpdatedTask.OP_UPDATE, packageNames, user));
     }
@@ -1919,7 +1917,7 @@ public class LauncherModel extends BroadcastReceiver
                                         if (user.equals(UserHandleCompat.myUserHandle())) {
                                             info = getRestoredItemInfo(c, intent,
                                                     promiseType, itemType, cursorIconInfo);
-                                            intent = getRestoredItemIntent(c, context, intent);
+                                            intent = getRestoredItemIntent(intent);
                                         } else {
                                             // Don't restore items for other profiles.
                                             itemsToRemove.add(id);
@@ -3021,7 +3019,7 @@ public class LauncherModel extends BroadcastReceiver
             final HashMap<ComponentName, AppInfo> addedOrUpdatedApps = new HashMap<>();
 
             if (added != null) {
-                addAppsToAllApps(context, added);
+                addAppsToAllApps(added);
                 for (AppInfo ai : added) {
                     addedOrUpdatedApps.put(ai.componentName, ai);
                 }
@@ -3279,7 +3277,7 @@ public class LauncherModel extends BroadcastReceiver
 
         @Override
         public void run() {
-            mDeepShortcutManager.onShortcutsChanged(mShortcuts);
+            mDeepShortcutManager.onShortcutsChanged();
 
             // Find ShortcutInfo's that have changed on the workspace.
             final ArrayList<ShortcutInfo> removedShortcutInfos = new ArrayList<>();
@@ -3502,7 +3500,7 @@ public class LauncherModel extends BroadcastReceiver
      * to the market page for the item.
      */
     @Thunk
-    Intent getRestoredItemIntent(Cursor c, Context context, Intent intent) {
+    Intent getRestoredItemIntent(Intent intent) {
         ComponentName componentName = intent.getComponent();
         return getMarketIntent(componentName.getPackageName());
     }

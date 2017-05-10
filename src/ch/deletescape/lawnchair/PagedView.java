@@ -29,8 +29,6 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.InputDevice;
@@ -1750,7 +1748,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                     updateDragViewTranslationDuringDrag();
                 } else {
                     if (!mCancelTap) {
-                        onUnhandledTap(ev);
+                        onUnhandledTap();
                     }
                 }
 
@@ -1796,7 +1794,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
     protected void onScrollInteractionEnd() {
     }
 
-    protected void onUnhandledTap(MotionEvent ev) {
+    protected void onUnhandledTap() {
         Launcher.getLauncher(getContext()).onClick(this);
     }
 

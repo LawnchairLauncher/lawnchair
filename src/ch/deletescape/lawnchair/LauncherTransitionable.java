@@ -20,11 +20,11 @@ package ch.deletescape.lawnchair;
  * An interface to get callbacks during a launcher transition.
  */
 public interface LauncherTransitionable {
-    void onLauncherTransitionPrepare(Launcher l, boolean animated, boolean multiplePagesVisible);
+    void onLauncherTransitionPrepare(boolean multiplePagesVisible);
 
-    void onLauncherTransitionStart(Launcher l, boolean animated, boolean toWorkspace);
+    void onLauncherTransitionStart();
 
-    void onLauncherTransitionStep(Launcher l, float t);
+    void onLauncherTransitionStep(float t);
 
-    void onLauncherTransitionEnd(Launcher l, boolean animated, boolean toWorkspace);
+    void onLauncherTransitionEnd(boolean toWorkspace);
 }

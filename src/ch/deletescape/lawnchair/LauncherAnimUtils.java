@@ -66,7 +66,7 @@ public class LauncherAnimUtils {
         return anim;
     }
 
-    public static ValueAnimator ofFloat(View target, float... values) {
+    public static ValueAnimator ofFloat(float... values) {
         ValueAnimator anim = new ValueAnimator();
         anim.setFloatValues(values);
         cancelOnDestroyActivity(anim);

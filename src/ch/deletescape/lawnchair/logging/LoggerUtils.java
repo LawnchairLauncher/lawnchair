@@ -212,12 +212,12 @@ public class LoggerUtils {
         LauncherLogProto.LauncherEvent event = new LauncherLogProto.LauncherEvent();
 
         event.srcTarget = new LauncherLogProto.Target[2];
-        event.srcTarget[0] = initTarget(v, info);
+        event.srcTarget[0] = initTarget(info);
         event.srcTarget[1] = new LauncherLogProto.Target();
         event.srcTarget[1].type = parentSrcTargetType;
 
         event.destTarget = new LauncherLogProto.Target[2];
-        event.destTarget[0] = initTarget(v, info);
+        event.destTarget[0] = initTarget(info);
         event.destTarget[1] = initDropTarget(parentDestTargetType);
 
         event.action = new LauncherLogProto.Action();
@@ -225,7 +225,7 @@ public class LoggerUtils {
         return event;
     }
 
-    private static Target initTarget(View v, ItemInfo info) {
+    private static Target initTarget(ItemInfo info) {
         Target t = new LauncherLogProto.Target();
         t.type = Target.ITEM;
         switch (info.itemType) {
@@ -271,6 +271,6 @@ public class LoggerUtils {
         if (!(v.getTag() instanceof ItemInfo)) {
             return t;
         }
-        return initTarget(v, (ItemInfo) v.getTag());
+        return initTarget((ItemInfo) v.getTag());
     }
 }

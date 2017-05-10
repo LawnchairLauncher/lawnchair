@@ -381,8 +381,8 @@ public class IconCache {
         mCache.put(new ComponentKey(app.getComponentName(), app.getUser()), entry);
 
         Bitmap lowResIcon = generateLowResIcon(entry.icon, mActivityBgColor);
-        return newContentValues(entry.icon, lowResIcon, entry.title.toString(),
-                app.getApplicationInfo().packageName);
+        return newContentValues(entry.icon, lowResIcon, entry.title.toString()
+        );
     }
 
     /**
@@ -647,7 +647,7 @@ public class IconCache {
                     // Add the icon in the DB here, since these do not get written during
                     // package updates.
                     ContentValues values =
-                            newContentValues(icon, lowResIcon, entry.title.toString(), packageName);
+                            newContentValues(icon, lowResIcon, entry.title.toString());
                     addIconToDB(values, cacheKey.componentName, info,
                             mUserManager.getSerialNumberForUser(user));
 
@@ -812,8 +812,7 @@ public class IconCache {
         }
     }
 
-    private ContentValues newContentValues(Bitmap icon, Bitmap lowResIcon, String label,
-                                           String packageName) {
+    private ContentValues newContentValues(Bitmap icon, Bitmap lowResIcon, String label) {
         ContentValues values = new ContentValues();
         values.put(IconDB.COLUMN_ICON, Utilities.flattenBitmap(icon));
         values.put(IconDB.COLUMN_ICON_LOW_RES, Utilities.flattenBitmap(lowResIcon));

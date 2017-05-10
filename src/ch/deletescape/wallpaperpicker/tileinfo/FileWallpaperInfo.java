@@ -74,7 +74,7 @@ public class FileWallpaperInfo extends DrawableThumbWallpaperInfo {
             @Override
             protected void onPostExecute(Point bounds) {
                 if (bounds != null) {
-                    a.setBoundsAndFinish(bounds, a.getWallpaperParallaxOffset() == 0f);
+                    a.setBoundsAndFinish(a.getWallpaperParallaxOffset() == 0f);
                 } else {
                     Toast.makeText(a, R.string.wallpaper_set_fail, Toast.LENGTH_SHORT).show();
                 }

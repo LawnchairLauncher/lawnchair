@@ -22,7 +22,6 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.os.DeadObjectException;
 import android.os.TransactionTooLargeException;
-import android.view.LayoutInflater;
 
 import java.util.ArrayList;
 
@@ -97,7 +96,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
     @Override
     protected void onProviderChanged(int appWidgetId, AppWidgetProviderInfo appWidget) {
         LauncherAppWidgetProviderInfo info = LauncherAppWidgetProviderInfo.fromProviderInfo(
-                mLauncher, appWidget);
+                appWidget);
         super.onProviderChanged(appWidgetId, info);
         // The super method updates the dimensions of the providerInfo. Update the
         // launcher spans accordingly.

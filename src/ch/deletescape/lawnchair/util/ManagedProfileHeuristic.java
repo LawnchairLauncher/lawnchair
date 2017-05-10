@@ -122,7 +122,7 @@ public class ManagedProfileHeuristic {
         }
 
         @Override
-        protected void onLauncherPackageRemoved(String packageName, UserHandleCompat user) {
+        protected void onLauncherPackageRemoved() {
         }
 
         /**

@@ -108,7 +108,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
         return mLauncherApps.isActivityEnabled(component, user.getUser());
     }
 
-    public boolean isPackageSuspendedForProfile(String packageName, UserHandleCompat user) {
+    public boolean isPackageSuspendedForProfile() {
         return false;
     }
 
@@ -132,7 +132,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
         }
 
         public void onPackagesAvailable(String[] packageNames, UserHandle user, boolean replacing) {
-            mCallback.onPackagesAvailable(packageNames, UserHandleCompat.fromUser(user), replacing);
+            mCallback.onPackagesAvailable(packageNames, UserHandleCompat.fromUser(user));
         }
 
         public void onPackagesUnavailable(String[] packageNames, UserHandle user,
