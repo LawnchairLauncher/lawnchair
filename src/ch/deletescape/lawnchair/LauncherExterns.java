@@ -24,8 +24,6 @@ import android.content.SharedPreferences;
  */
 public interface LauncherExterns {
 
-    boolean setLauncherCallbacks(LauncherCallbacks callbacks);
-
     SharedPreferences getSharedPrefs();
 
     void clearTypedText();

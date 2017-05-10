@@ -329,10 +329,6 @@ public class Launcher extends Activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.preOnCreate();
-        }
-
         super.onCreate(savedInstanceState);
 
         LauncherAppState app = LauncherAppState.getInstance();
@@ -389,10 +385,6 @@ public class Launcher extends Activity
 
         IntentFilter filter = new IntentFilter(ACTION_APPWIDGET_HOST_RESET);
         registerReceiver(mUiBroadcastReceiver, filter);
-
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onCreate(savedInstanceState);
-        }
     }
 
     @Override
@@ -430,81 +422,16 @@ public class Launcher extends Activity
         }
     }
 
-    private LauncherCallbacks mLauncherCallbacks;
-
-    public void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onPostCreate(savedInstanceState);
-        }
-    }
-
     public void onInsetsChanged(Rect insets) {
         mDeviceProfile.updateInsets(insets);
         mDeviceProfile.layout(this, true /* notifyListeners */);
     }
 
-    public boolean setLauncherCallbacks(LauncherCallbacks callbacks) {
-        mLauncherCallbacks = callbacks;
-        mLauncherCallbacks.setLauncherSearchCallback(new Launcher.LauncherSearchCallbacks() {
-            private boolean mWorkspaceImportanceStored = false;
-            private boolean mHotseatImportanceStored = false;
-            private int mWorkspaceImportanceForAccessibility =
-                    View.IMPORTANT_FOR_ACCESSIBILITY_AUTO;
-            private int mHotseatImportanceForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_AUTO;
-
-            @Override
-            public void onSearchOverlayOpened() {
-                if (mWorkspaceImportanceStored || mHotseatImportanceStored) {
-                    return;
-                }
-                // The underlying workspace and hotseat are temporarily suppressed by the search
-                // overlay. So they shouldn't be accessible.
-                if (mWorkspace != null) {
-                    mWorkspaceImportanceForAccessibility =
-                            mWorkspace.getImportantForAccessibility();
-                    mWorkspace.setImportantForAccessibility(
-                            View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
-                    mWorkspaceImportanceStored = true;
-                }
-                if (mHotseat != null) {
-                    mHotseatImportanceForAccessibility = mHotseat.getImportantForAccessibility();
-                    mHotseat.setImportantForAccessibility(
-                            View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
-                    mHotseatImportanceStored = true;
-                }
-            }
-
-            @Override
-            public void onSearchOverlayClosed() {
-                if (mWorkspaceImportanceStored && mWorkspace != null) {
-                    mWorkspace.setImportantForAccessibility(mWorkspaceImportanceForAccessibility);
-                }
-                if (mHotseatImportanceStored && mHotseat != null) {
-                    mHotseat.setImportantForAccessibility(mHotseatImportanceForAccessibility);
-                }
-                mWorkspaceImportanceStored = false;
-                mHotseatImportanceStored = false;
-            }
-        });
-        return true;
-    }
-
     @Override
     public void onLauncherProviderChange() {
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onLauncherProviderChange();
-        }
     }
 
     public UserEventDispatcher getUserEventDispatcher() {
-        if (mLauncherCallbacks != null) {
-            UserEventDispatcher dispatcher = mLauncherCallbacks.getUserEventDispatcher();
-            if (dispatcher != null) {
-                return dispatcher;
-            }
-        }
-
         // Logger object is a singleton and does not have to be coupled with the foreground
         // activity. Since most user event logging is done on the UI, the object is retrieved
         // from the callback for convenience.
@@ -703,9 +630,6 @@ public class Launcher extends Activity
     protected void onActivityResult(
             final int requestCode, final int resultCode, final Intent data) {
         handleActivityResult(requestCode, resultCode, data);
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onActivityResult(requestCode, resultCode, data);
-        }
     }
 
     /**
@@ -733,10 +657,6 @@ public class Launcher extends Activity
                 Toast.makeText(this, getString(R.string.msg_no_phone_permission,
                         getString(R.string.derived_app_name)), Toast.LENGTH_SHORT).show();
             }
-        }
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onRequestPermissionsResult(requestCode, permissions,
-                    grantResults);
         }
     }
 
@@ -798,10 +718,6 @@ public class Launcher extends Activity
         super.onStop();
         FirstFrameAnimatorHelper.setIsVisible(false);
 
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onStop();
-        }
-
         if (Utilities.isNycMR1OrAbove()) {
             mAppWidgetHost.stopListening();
         }
@@ -812,10 +728,6 @@ public class Launcher extends Activity
         super.onStart();
         FirstFrameAnimatorHelper.setIsVisible(true);
 
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onStart();
-        }
-
         if (Utilities.isNycMR1OrAbove()) {
             mAppWidgetHost.startListening();
         }
@@ -823,10 +735,6 @@ public class Launcher extends Activity
 
     @Override
     protected void onResume() {
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.preOnResume();
-        }
-
         super.onResume();
         getUserEventDispatcher().resetElapsedSessionMillis();
 
@@ -897,9 +805,6 @@ public class Launcher extends Activity
             mAllAppsController.showDiscoveryBounce();
         }
         mIsResumeFromActionScreenOff = false;
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onResume();
-        }
     }
 
     @Override
@@ -911,22 +816,6 @@ public class Launcher extends Activity
         mPaused = true;
         mDragController.cancelDrag();
         mDragController.resetLastGestureUpTime();
-
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onPause();
-        }
-    }
-
-    public interface LauncherSearchCallbacks {
-        /**
-         * Called when the search overlay is shown.
-         */
-        void onSearchOverlayOpened();
-
-        /**
-         * Called when the search overlay is dismissed.
-         */
-        void onSearchOverlayClosed();
     }
 
     @Override
@@ -945,10 +834,6 @@ public class Launcher extends Activity
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         mHasFocus = hasFocus;
-
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onWindowFocusChanged(hasFocus);
-        }
     }
 
     private boolean acceptFilter() {
@@ -1357,10 +1242,6 @@ public class Launcher extends Activity
         FirstFrameAnimatorHelper.initializeDrawListener(getWindow().getDecorView());
         mAttached = true;
         mVisible = true;
-
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onAttachedToWindow();
-        }
     }
 
     @Override
@@ -1373,10 +1254,6 @@ public class Launcher extends Activity
             mAttached = false;
         }
         updateAutoAdvanceState();
-
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onDetachedFromWindow();
-        }
     }
 
     public void onWindowVisibilityChanged(int visibility) {
@@ -1598,23 +1475,13 @@ public class Launcher extends Activity
             if (!alreadyOnHome && mWidgetsView != null) {
                 mWidgetsView.scrollToTop();
             }
-
-            if (mLauncherCallbacks != null) {
-                mLauncherCallbacks.onHomeIntent();
-            }
-        }
-
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onNewIntent(intent);
         }
 
         // Defer moving to the default screen until after we callback to the LauncherCallbacks
         // as slow logic in the callbacks eat into the time the scroller expects for the snapToPage
         // animation.
         if (isActionMain) {
-            boolean callbackAllowsMoveToDefaultScreen = mLauncherCallbacks == null || mLauncherCallbacks.shouldMoveToDefaultScreenOnHomeIntent();
-            if (shouldMoveToDefaultScreen && !mWorkspace.isTouchActive()
-                    && callbackAllowsMoveToDefaultScreen) {
+            if (shouldMoveToDefaultScreen && !mWorkspace.isTouchActive()) {
 
                 // We use this flag to suppress noisy callbacks above custom content state
                 // from onResume.
@@ -1660,10 +1527,6 @@ public class Launcher extends Activity
         if (mPendingActivityResult != null) {
             outState.putParcelable(RUNTIME_STATE_PENDING_ACTIVITY_RESULT, mPendingActivityResult);
         }
-
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onSaveInstanceState(outState);
-        }
     }
 
     @Override
@@ -1701,10 +1564,6 @@ public class Launcher extends Activity
         unregisterReceiver(mUiBroadcastReceiver);
 
         LauncherAnimUtils.onDestroyActivity();
-
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onDestroy();
-        }
     }
 
     public LauncherAccessibilityDelegate getAccessibilityDelegate() {
@@ -1743,11 +1602,8 @@ public class Launcher extends Activity
             appSearchData.putString("source", "launcher-search");
         }
 
-        if (mLauncherCallbacks == null ||
-                !mLauncherCallbacks.startSearch(initialQuery, selectInitialQuery, appSearchData)) {
-            // Starting search from the callbacks failed. Start the default global search.
-            startGlobalSearch(initialQuery, selectInitialQuery, appSearchData, null);
-        }
+        // Starting search from the callbacks failed. Start the default global search.
+        startGlobalSearch(initialQuery, selectInitialQuery, appSearchData, null);
 
         // We need to show the workspace after starting the search
         showWorkspace(true);
@@ -1794,12 +1650,6 @@ public class Launcher extends Activity
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        return mLauncherCallbacks != null && mLauncherCallbacks.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
     public boolean onSearchRequested() {
         startSearch(null, false, null, true);
         // Use a custom animation for launching search
@@ -1817,23 +1667,11 @@ public class Launcher extends Activity
     private void setWorkspaceLoading(boolean value) {
         boolean isLocked = isWorkspaceLocked();
         mWorkspaceLoading = value;
-        if (isLocked != isWorkspaceLocked()) {
-            onWorkspaceLockedChanged();
-        }
     }
 
     private void setWaitingForResult(PendingRequestArgs args) {
         boolean isLocked = isWorkspaceLocked();
         mPendingRequestArgs = args;
-        if (isLocked != isWorkspaceLocked()) {
-            onWorkspaceLockedChanged();
-        }
-    }
-
-    protected void onWorkspaceLockedChanged() {
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onWorkspaceLockedChanged();
-        }
     }
 
     void addAppWidgetFromDropImpl(int appWidgetId, ItemInfo info, AppWidgetHostView boundWidget,
@@ -2035,10 +1873,6 @@ public class Launcher extends Activity
 
     @Override
     public void onBackPressed() {
-        if (mLauncherCallbacks != null && mLauncherCallbacks.handleBackPressed()) {
-            return;
-        }
-
         if (mDragController.isDragging()) {
             mDragController.cancelDrag();
             return;
@@ -2377,31 +2211,6 @@ public class Launcher extends Activity
     }
 
     /**
-     * Called when the user stops interacting with the launcher.
-     * This implies that the user is now on the homescreen and is not doing housekeeping.
-     */
-    protected void onInteractionEnd() {
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onInteractionEnd();
-        }
-    }
-
-    /**
-     * Called when the user starts interacting with the launcher.
-     * The possible interactions are:
-     * - open all apps
-     * - reorder an app shortcut, or a widget
-     * - open the overview mode.
-     * This is a good time to stop doing things that only make sense
-     * when the user is on the homescreen and not doing housekeeping.
-     */
-    protected void onInteractionBegin() {
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onInteractionBegin();
-        }
-    }
-
-    /**
      * Updates the interaction state.
      */
     public void updateInteraction(Workspace.State fromState, Workspace.State toState) {
@@ -2409,11 +2218,6 @@ public class Launcher extends Activity
         // overlay
         boolean fromStateWithOverlay = fromState != Workspace.State.NORMAL;
         boolean toStateWithOverlay = toState != Workspace.State.NORMAL;
-        if (toStateWithOverlay) {
-            onInteractionBegin();
-        } else if (fromStateWithOverlay) {
-            onInteractionEnd();
-        }
     }
 
     @SuppressLint("NewApi")
@@ -2870,9 +2674,6 @@ public class Launcher extends Activity
             // This clears all widget bitmaps from the widget tray
             // TODO(hyunyoungs)
         }
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onTrimMemory(level);
-        }
     }
 
     public boolean showWorkspace(boolean animated) {
@@ -2947,9 +2748,6 @@ public class Launcher extends Activity
     public void showAppsView(boolean animated, boolean updatePredictedApps,
                              boolean focusSearchBar) {
         markAppsViewShown();
-        if (updatePredictedApps) {
-            tryAndUpdatePredictedApps();
-        }
         showAppsOrWidgets(State.APPS, animated, focusSearchBar);
     }
 
@@ -3086,20 +2884,6 @@ public class Launcher extends Activity
             showWidgetsView(true, false);
         } else if (mState == State.WORKSPACE_SPRING_LOADED) {
             showWorkspace(true);
-        }
-    }
-
-    /**
-     * Updates the set of predicted apps if it hasn't been updated since the last time Launcher was
-     * resumed.
-     */
-    public void tryAndUpdatePredictedApps() {
-        if (mLauncherCallbacks != null) {
-            List<ComponentKey> apps = mLauncherCallbacks.getPredictedApps();
-            if (apps != null) {
-                mAppsView.setPredictedApps(apps);
-                getUserEventDispatcher().setPredictedApps(apps);
-            }
         }
     }
 
@@ -3620,10 +3404,6 @@ public class Launcher extends Activity
         }
 
         InstallShortcutReceiver.disableAndFlushInstallQueue(this);
-
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.finishBindingItems(false);
-        }
     }
 
     private boolean canRunNewAppsAnimation() {
@@ -3638,13 +3418,6 @@ public class Launcher extends Activity
         bounceAnim.setInterpolator(new OvershootInterpolator(BOUNCE_ANIMATION_TENSION));
         return bounceAnim;
     }
-
-/*    public int getSearchBarHeight() {
-        if (mLauncherCallbacks != null) {
-            return mLauncherCallbacks.getSearchBarHeight();
-        }
-        return LauncherCallbacks.SEARCH_BAR_HEIGHT_NORMAL;
-    }*/
 
     /**
      * A runnable that we can dequeue and re-enqueue when all applications are bound (to prevent
@@ -3672,9 +3445,6 @@ public class Launcher extends Activity
 
         if (mAppsView != null) {
             mAppsView.setApps(apps);
-        }
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.bindAllApplications(apps);
         }
     }
 
@@ -3888,9 +3658,6 @@ public class Launcher extends Activity
     private boolean shouldShowDiscoveryBounce() {
         if (mState != State.WORKSPACE) {
             return false;
-        }
-        if (mLauncherCallbacks != null && mLauncherCallbacks.shouldShowDiscoveryBounce()) {
-            return true;
         }
         if (!mIsResumeFromActionScreenOff) {
             return false;
