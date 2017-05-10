@@ -20,6 +20,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.content.Context;
 import android.graphics.Point;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -243,6 +244,14 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
                     deepShortcutIcon, new PropertyListBuilder().scale(0).build()));
         }
         return closeAnimation;
+    }
+
+    @Override
+    public int getArrowColor(boolean isArrowAttachedToBottom) {
+        return ContextCompat.getColor(getContext(),
+                isArrowAttachedToBottom || mSystemShortcutIcons == null
+                        ? R.color.popup_background_color
+                        : R.color.popup_header_background_color);
     }
 
     @Override
