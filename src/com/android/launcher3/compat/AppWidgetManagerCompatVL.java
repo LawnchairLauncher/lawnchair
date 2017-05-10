@@ -16,61 +16,56 @@
 
 package com.android.launcher3.compat;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.UserHandle;
 import android.os.UserManager;
-import android.view.View;
+import android.support.annotation.Nullable;
 import android.widget.Toast;
 
-import com.android.launcher3.IconCache;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
 
     private final UserManager mUserManager;
-    private final PackageManager mPm;
 
     AppWidgetManagerCompatVL(Context context) {
         super(context);
-        mPm = context.getPackageManager();
         mUserManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
     }
 
     @Override
-    public List<AppWidgetProviderInfo> getAllProviders() {
-        ArrayList<AppWidgetProviderInfo> providers = new ArrayList<AppWidgetProviderInfo>();
-        for (UserHandle user : mUserManager.getUserProfiles()) {
-            providers.addAll(mAppWidgetManager.getInstalledProvidersForProfile(user));
+    public List<AppWidgetProviderInfo> getAllProviders(@Nullable PackageUserKey packageUser) {
+        if (packageUser == null) {
+            ArrayList<AppWidgetProviderInfo> providers = new ArrayList<AppWidgetProviderInfo>();
+            for (UserHandle user : mUserManager.getUserProfiles()) {
+                providers.addAll(mAppWidgetManager.getInstalledProvidersForProfile(user));
+            }
+            return providers;
+        }
+        // Only get providers for the given package/user.
+        List<AppWidgetProviderInfo> providers = new ArrayList<>(mAppWidgetManager
+                .getInstalledProvidersForProfile(packageUser.mUser));
+        Iterator<AppWidgetProviderInfo> iterator = providers.iterator();
+        while (iterator.hasNext()) {
+            if (!iterator.next().provider.getPackageName().equals(packageUser.mPackageName)) {
+                iterator.remove();
+            }
         }
         return providers;
-    }
-
-    @Override
-    public String loadLabel(LauncherAppWidgetProviderInfo info) {
-        return info.getLabel(mPm);
     }
 
     @Override
@@ -78,14 +73,6 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
             Bundle options) {
         return mAppWidgetManager.bindAppWidgetIdIfAllowed(
                 appWidgetId, info.getProfile(), info.provider, options);
-    }
-
-    @Override
-    public UserHandleCompat getUser(LauncherAppWidgetProviderInfo info) {
-        if (info.isCustomWidget) {
-            return UserHandleCompat.myUserHandle();
-        }
-        return UserHandleCompat.fromUser(info.getProfile());
     }
 
     @Override
@@ -99,60 +86,9 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
     }
 
     @Override
-    public Drawable loadPreview(AppWidgetProviderInfo info) {
-        return info.loadPreviewImage(mContext, 0);
-    }
-
-    @Override
-    public Drawable loadIcon(LauncherAppWidgetProviderInfo info, IconCache cache) {
-        return info.getIcon(mContext, cache);
-    }
-
-    @Override
-    public Bitmap getBadgeBitmap(LauncherAppWidgetProviderInfo info, Bitmap bitmap,
-            int imageWidth, int imageHeight) {
-        if (info.isCustomWidget || info.getProfile().equals(android.os.Process.myUserHandle())) {
-            return bitmap;
-        }
-
-        // Add a user badge in the bottom right of the image.
-        final Resources res = mContext.getResources();
-        final int badgeMinTop = res.getDimensionPixelSize(R.dimen.profile_badge_minimum_top);
-
-        // choose min between badge size defined for widget tray versus width, height of the image.
-        // Width, height of the image can be smaller than widget tray badge size when being dropped
-        // to the workspace.
-        final int badgeSize = Math.min(res.getDimensionPixelSize(R.dimen.profile_badge_size),
-                Math.min(imageWidth, imageHeight - badgeMinTop));
-        final Rect badgeLocation = new Rect(0, 0, badgeSize, badgeSize);
-
-        final int top = Math.max(imageHeight - badgeSize, badgeMinTop);
-
-        if (res.getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
-            badgeLocation.offset(0, top);
-        } else {
-            badgeLocation.offset(bitmap.getWidth() - badgeSize, top);
-        }
-
-        Drawable drawable = mPm.getUserBadgedDrawableForDensity(
-                new BitmapDrawable(res, bitmap), info.getProfile(), badgeLocation, 0);
-
-        if (drawable instanceof BitmapDrawable) {
-            return ((BitmapDrawable) drawable).getBitmap();
-        }
-
-        bitmap.eraseColor(Color.TRANSPARENT);
-        Canvas c = new Canvas(bitmap);
-        drawable.setBounds(0, 0, bitmap.getWidth(), bitmap.getHeight());
-        drawable.draw(c);
-        c.setBitmap(null);
-        return bitmap;
-    }
-
-    @Override
-    public LauncherAppWidgetProviderInfo findProvider(ComponentName provider, UserHandleCompat user) {
+    public LauncherAppWidgetProviderInfo findProvider(ComponentName provider, UserHandle user) {
         for (AppWidgetProviderInfo info : mAppWidgetManager
-                .getInstalledProvidersForProfile(user.getUser())) {
+                .getInstalledProvidersForProfile(user)) {
             if (info.provider.equals(provider)) {
                 return LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, info);
             }
@@ -164,10 +100,9 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
     public HashMap<ComponentKey, AppWidgetProviderInfo> getAllProvidersMap() {
         HashMap<ComponentKey, AppWidgetProviderInfo> result = new HashMap<>();
         for (UserHandle user : mUserManager.getUserProfiles()) {
-            UserHandleCompat userHandle = UserHandleCompat.fromUser(user);
             for (AppWidgetProviderInfo info :
                     mAppWidgetManager.getInstalledProvidersForProfile(user)) {
-                result.put(new ComponentKey(info.provider, userHandle), info);
+                result.put(new ComponentKey(info.provider, user), info);
             }
         }
         return result;

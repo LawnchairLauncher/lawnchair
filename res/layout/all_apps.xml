@@ -22,7 +22,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    launcher:revealBackground="@drawable/quantum_panel_shape">
+    launcher:revealBackground="@drawable/round_rect_primary">
 
     <View
         android:id="@+id/reveal_view"
@@ -46,21 +46,29 @@
         <!-- DO NOT CHANGE THE ID -->
         <com.android.launcher3.allapps.AllAppsRecyclerView
             android:id="@+id/apps_list_view"
+            android:layout_below="@+id/search_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal|top"
-            android:layout_marginTop="@dimen/all_apps_search_bar_height"
             android:clipToPadding="false"
             android:descendantFocusability="afterDescendants"
             android:focusable="true"
-            android:theme="@style/CustomOverscroll.Light" />
+            android:paddingStart="@dimen/container_fastscroll_thumb_max_width"
+            android:paddingEnd="@dimen/container_fastscroll_thumb_max_width" />
+
+        <!-- Fast scroller popup -->
+        <TextView
+            style="@style/FastScrollerPopup"
+            android:layout_below="@+id/search_container"
+            android:id="@+id/fast_scroller_popup"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/container_fastscroll_popup_margin" />
 
         <FrameLayout
             android:id="@+id/search_container"
             android:layout_width="match_parent"
             android:layout_height="@dimen/all_apps_search_bar_height"
             android:layout_gravity="center|top"
-            android:paddingTop="@dimen/all_apps_search_bar_margin_top"
             android:gravity="center|bottom"
             android:orientation="horizontal"
             android:saveEnabled="false">
@@ -68,8 +76,9 @@
             <com.android.launcher3.ExtendedEditText
                 android:id="@+id/search_box_input"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="@dimen/all_apps_search_bar_field_height"
                 android:background="@android:color/transparent"
+                android:layout_gravity="bottom"
                 android:focusableInTouchMode="true"
                 android:gravity="center"
                 android:imeOptions="actionSearch|flagNoExtractUi"
@@ -77,7 +86,7 @@
                 android:maxLines="1"
                 android:scrollHorizontally="true"
                 android:singleLine="true"
-                android:textColor="#4c4c4c"
+                android:textColor="?android:attr/textColorSecondary"
                 android:hint="@string/all_apps_search_bar_hint"
                 android:textColorHint="@drawable/all_apps_search_hint"
                 android:textSize="16sp" />
@@ -85,11 +94,11 @@
 
     </com.android.launcher3.allapps.AllAppsRecyclerViewContainerView>
     <View
+        style="@style/AllAppsNavBarProtection"
         android:id="@+id/nav_bar_bg"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_gravity="bottom"
-        android:background="@color/all_apps_navbar_color"
         android:focusable="false"
         android:visibility="invisible" />
 </com.android.launcher3.allapps.AllAppsContainerView>

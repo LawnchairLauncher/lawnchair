@@ -27,14 +27,19 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"સુરક્ષિત મોડમાં ડાઉનલોડ કરેલ ઍપ્લિકેશન અક્ષમ કરી"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"સુરક્ષિત મોડમાં વિજેટ્સ અક્ષમ કર્યા"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"શૉર્ટકટ ઉપલબ્ધ નથી"</string>
+    <string name="home_screen" msgid="806512411299847073">"હોમ સ્ક્રીન"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"કસ્ટમ ક્રિયાઓ"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"વિજેટ ચૂંટવા માટે ટચ કરો અને પકડી રાખો."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"વિજેટ ચૂંટવા અથવા કસ્ટમ ક્રિયાઓનો ઉપયોગ કરવા માટે બે વાર ટેપ કરો અને પકડી રાખો."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d પહોળાઈ X %2$d ઊંચાઈ"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"મેન્યુઅલી મૂકવા માટે ટચ કરી દબાવી રાખો"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"આપમેળે ઉમેરો"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"શોધ ઍપ્લિકેશનો"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"ઍપ્લિકેશનો લોડ કરી રહ્યું છે…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" થી મેળ ખાતી કોઈ ઍપ્લિકેશનો મળી નથી"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"વધુ ઍપ્લિકેશનો શોધો"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"સૂચનાઓ"</string>
     <string name="out_of_space" msgid="4691004494942118364">"આ હોમ સ્ક્રીન પર વધુ જગ્યા નથી."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"મનપસંદ ટ્રે પર વધુ જગ્યા નથી"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ઍપ્લિકેશનોની સૂચિ"</string>
@@ -71,6 +76,11 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"હોમ સ્ક્રીનને ફેરવવાની મંજૂરી આપો"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"જ્યારે ફોન ફેરવવામાં આવે ત્યારે"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"વર્તમાન પ્રદર્શન સેટિંગ ફેરવવાની પરવાનગી આપતી નથી"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"હોમ સ્ક્રીન પર આઇકન ઉમેરો"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"નવી ઍપ્લિકેશનો માટે"</string>
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"આઇકનનો આકાર બદલો"</string>
+    <string name="icon_shape_no_override" msgid="3678524428085518367">"બદલશો નહીં"</string>
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"આઇકનના આકારમાં કરેલ ફેરફારો લાગુ કરી રહ્યા છીએ"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"અજાણ્યો"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"દૂર કરો"</string>
     <string name="abandoned_search" msgid="891119232568284442">"શોધો"</string>
@@ -78,6 +88,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"આ આયકન માટેની ઍપ્લિકેશન ઇન્સ્ટોલ થયેલ નથી. તમે તેને દૂર કરી શકો છો અથવા ઍપ્લિકેશન માટે શોધ કરી અને તેને મેન્યુઅલી ઇન્સ્ટોલ કરી શકો છો."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ડાઉનલોડ કરી રહ્યાં છે, <xliff:g id="PROGRESS">%2$s</xliff:g> પૂર્ણ"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g>, ઇન્સ્ટૉલ થવાની રાહ જોઈ રહ્યું છે"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> વિજેટ"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"હોમ સ્ક્રીન પર ઉમેરો"</string>
     <string name="action_move_here" msgid="2170188780612570250">"આઇટમ અહીં ખસેડો"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"હોમ સ્ક્રીનમાં આઇટમ ઉમેરી"</string>

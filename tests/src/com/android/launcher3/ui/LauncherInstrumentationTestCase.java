@@ -1,13 +1,31 @@
+/*
+ * Copyright (C) 2017 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.android.launcher3.ui;
 
-import android.app.SearchManager;
-import android.appwidget.AppWidgetProviderInfo;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Point;
 import android.os.ParcelFileDescriptor;
+import android.os.Process;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.test.uiautomator.By;
@@ -19,30 +37,39 @@ import android.support.test.uiautomator.Until;
 import android.test.InstrumentationTestCase;
 import android.view.MotionEvent;
 
-import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
-import com.android.launcher3.LauncherClings;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.testcomponent.AppWidgetNoConfig;
+import com.android.launcher3.testcomponent.AppWidgetWithConfig;
 import com.android.launcher3.util.ManagedProfileHeuristic;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Base class for all instrumentation tests providing various utility methods.
  */
 public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
 
+    public static final long DEFAULT_ACTIVITY_TIMEOUT = TimeUnit.SECONDS.toMillis(10);
+    public static final long DEFAULT_BROADCAST_TIMEOUT_SECS = 5;
+
     public static final long DEFAULT_UI_TIMEOUT = 3000;
+    public static final long DEFAULT_WORKER_TIMEOUT_SECS = 5;
 
     protected UiDevice mDevice;
     protected Context mTargetContext;
@@ -74,11 +101,14 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
      * Starts the launcher activity in the target package and returns the Launcher instance.
      */
     protected Launcher startLauncher() {
-        Intent homeIntent = new Intent(Intent.ACTION_MAIN)
+        return (Launcher) getInstrumentation().startActivitySync(getHomeIntent());
+    }
+
+    protected Intent getHomeIntent() {
+        return new Intent(Intent.ACTION_MAIN)
                 .addCategory(Intent.CATEGORY_HOME)
                 .setPackage(mTargetPackage)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        return (Launcher) getInstrumentation().startActivitySync(homeIntent);
     }
 
     /**
@@ -89,13 +119,28 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
         if (mTargetContext.getPackageManager().checkPermission(
                 mTargetPackage, android.Manifest.permission.BIND_APPWIDGET)
                 != PackageManager.PERMISSION_GRANTED) {
-            ParcelFileDescriptor pfd = getInstrumentation().getUiAutomation().executeShellCommand(
-                    "appwidget grantbind --package " + mTargetPackage);
-            // Read the input stream fully.
-            FileInputStream fis = new ParcelFileDescriptor.AutoCloseInputStream(pfd);
-            while (fis.read() != -1);
-            fis.close();
+            runShellCommand("appwidget grantbind --package " + mTargetPackage);
         }
+    }
+
+    /**
+     * Sets the target launcher as default launcher.
+     */
+    protected void setDefaultLauncher() throws IOException {
+        ActivityInfo launcher = mTargetContext.getPackageManager()
+                .queryIntentActivities(getHomeIntent(), 0).get(0).activityInfo;
+        runShellCommand("cmd package set-home-activity " +
+                new ComponentName(launcher.packageName, launcher.name).flattenToString());
+    }
+
+    protected void runShellCommand(String command) throws IOException {
+        ParcelFileDescriptor pfd = getInstrumentation().getUiAutomation()
+                .executeShellCommand(command);
+
+        // Read the input stream fully.
+        FileInputStream fis = new ParcelFileDescriptor.AutoCloseInputStream(pfd);
+        while (fis.read() != -1);
+        fis.close();
     }
 
     /**
@@ -141,27 +186,50 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
     /**
      * Drags an icon to the center of homescreen.
      */
-    protected void dragToWorkspace(UiObject2 icon) {
+    protected void dragToWorkspace(UiObject2 icon, boolean expectedToShowShortcuts) {
         Point center = icon.getVisibleCenter();
 
         // Action Down
         sendPointer(MotionEvent.ACTION_DOWN, center);
 
-        // Wait until "Remove/Delete target is visible
+        UiObject2 dragLayer = findViewById(R.id.drag_layer);
+
+        if (expectedToShowShortcuts) {
+            // Make sure shortcuts show up, and then move a bit to hide them.
+            assertNotNull(findViewById(R.id.deep_shortcuts_container));
+
+            Point moveLocation = new Point(center);
+            int distanceToMove = mTargetContext.getResources().getDimensionPixelSize(
+                    R.dimen.deep_shortcuts_start_drag_threshold) + 50;
+            if (moveLocation.y - distanceToMove >= dragLayer.getVisibleBounds().top) {
+                moveLocation.y -= distanceToMove;
+            } else {
+                moveLocation.y += distanceToMove;
+            }
+            movePointer(center, moveLocation);
+
+            assertNull(findViewById(R.id.deep_shortcuts_container));
+        }
+
+        // Wait until Remove/Delete target is visible
         assertNotNull(findViewById(R.id.delete_target_text));
 
-        Point moveLocation = findViewById(R.id.drag_layer).getVisibleCenter();
+        Point moveLocation = dragLayer.getVisibleCenter();
 
         // Move to center
-        while(!moveLocation.equals(center)) {
-            center.x = getNextMoveValue(moveLocation.x, center.x);
-            center.y = getNextMoveValue(moveLocation.y, center.y);
-            sendPointer(MotionEvent.ACTION_MOVE, center);
-        }
+        movePointer(center, moveLocation);
         sendPointer(MotionEvent.ACTION_UP, center);
 
         // Wait until remove target is gone.
         mDevice.wait(Until.gone(getSelectorForId(R.id.delete_target_text)), DEFAULT_UI_TIMEOUT);
+    }
+
+    private void movePointer(Point from, Point to) {
+        while(!from.equals(to)) {
+            from.x = getNextMoveValue(to.x, from.x);
+            from.y = getNextMoveValue(to.y, from.y);
+            sendPointer(MotionEvent.ACTION_MOVE, from);
+        }
     }
 
     private int getNextMoveValue(int targetValue, int oldValue) {
@@ -174,7 +242,7 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
         }
     }
 
-    private void sendPointer(int action, Point point) {
+    protected void sendPointer(int action, Point point) {
         MotionEvent event = MotionEvent.obtain(SystemClock.uptimeMillis(),
                 SystemClock.uptimeMillis(), action, point.x, point.y, 0);
         getInstrumentation().sendPointerSync(event);
@@ -189,34 +257,32 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
                 LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
         LauncherSettings.Settings.call(mTargetContext.getContentResolver(),
                 LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG);
-        LauncherClings.markFirstRunClingDismissed(mTargetContext);
-        ManagedProfileHeuristic.markExistingUsersForNoFolderCreation(mTargetContext);
+        resetLoaderState();
+    }
 
-        runTestOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                // Reset the loader state
-                LauncherAppState.getInstance().getModel().resetLoadedState(true, true);
-            }
-        });
+    protected void resetLoaderState() {
+        try {
+            runTestOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ManagedProfileHeuristic.markExistingUsersForNoFolderCreation(mTargetContext);
+                    LauncherAppState.getInstance(mTargetContext).getModel().forceReload();
+                }
+            });
+        } catch (Throwable t) {
+            throw new IllegalArgumentException(t);
+        }
     }
 
     /**
      * Runs the callback on the UI thread and returns the result.
      */
     protected <T> T getOnUiThread(final Callable<T> callback) {
-        final AtomicReference<T> result = new AtomicReference<>(null);
         try {
-            runTestOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        result.set(callback.call());
-                    } catch (Exception e) { }
-                }
-            });
-        } catch (Throwable t) { }
-        return result.get();
+            return new MainThreadExecutor().submit(callback).get();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -224,36 +290,14 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
      * @param hasConfigureScreen if true, a provider with a config screen is returned.
      */
     protected LauncherAppWidgetProviderInfo findWidgetProvider(final boolean hasConfigureScreen) {
-        LauncherAppWidgetProviderInfo info = getOnUiThread(new Callable<LauncherAppWidgetProviderInfo>() {
+        LauncherAppWidgetProviderInfo info =
+                getOnUiThread(new Callable<LauncherAppWidgetProviderInfo>() {
             @Override
             public LauncherAppWidgetProviderInfo call() throws Exception {
-                InvariantDeviceProfile idv =
-                        LauncherAppState.getInstance().getInvariantDeviceProfile();
-
-                ComponentName searchComponent = ((SearchManager) mTargetContext
-                        .getSystemService(Context.SEARCH_SERVICE)).getGlobalSearchActivity();
-                String searchPackage = searchComponent == null
-                        ? null : searchComponent.getPackageName();
-
-                for (AppWidgetProviderInfo info :
-                        AppWidgetManagerCompat.getInstance(mTargetContext).getAllProviders()) {
-                    if ((info.configure != null) ^ hasConfigureScreen) {
-                        continue;
-                    }
-                    // Exclude the widgets in search package, as Launcher already binds them in
-                    // QSB, so they can cause conflicts.
-                    if (info.provider.getPackageName().equals(searchPackage)) {
-                        continue;
-                    }
-                    LauncherAppWidgetProviderInfo widgetInfo = LauncherAppWidgetProviderInfo
-                            .fromProviderInfo(mTargetContext, info);
-                    if (widgetInfo.minSpanX >= idv.numColumns
-                            || widgetInfo.minSpanY >= idv.numRows) {
-                        continue;
-                    }
-                    return widgetInfo;
-                }
-                return null;
+                ComponentName cn = new ComponentName(getInstrumentation().getContext(),
+                        hasConfigureScreen ? AppWidgetWithConfig.class : AppWidgetNoConfig.class);
+                return AppWidgetManagerCompat.getInstance(mTargetContext)
+                        .findProvider(cn, Process.myUserHandle());
             }
         });
         if (info == null) {
@@ -269,5 +313,36 @@ public class LauncherInstrumentationTestCase extends InstrumentationTestCase {
     protected BySelector getSelectorForId(int id) {
         String name = mTargetContext.getResources().getResourceEntryName(id);
         return By.res(mTargetPackage, name);
+    }
+
+
+    /**
+     * Broadcast receiver which blocks until the result is received.
+     */
+    public class BlockingBroadcastReceiver extends BroadcastReceiver {
+
+        private final CountDownLatch latch = new CountDownLatch(1);
+        private Intent mIntent;
+
+        public BlockingBroadcastReceiver(String action) {
+            mTargetContext.registerReceiver(this, new IntentFilter(action));
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mIntent = intent;
+            latch.countDown();
+        }
+
+        public Intent blockingGetIntent() throws InterruptedException {
+            latch.await(DEFAULT_BROADCAST_TIMEOUT_SECS, TimeUnit.SECONDS);
+            mTargetContext.unregisterReceiver(this);
+            return mIntent;
+        }
+
+        public Intent blockingGetExtraIntent() throws InterruptedException {
+            Intent intent = blockingGetIntent();
+            return intent == null ? null : (Intent) intent.getParcelableExtra(Intent.EXTRA_INTENT);
+        }
     }
 }

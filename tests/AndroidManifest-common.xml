@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2017 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.android.launcher3.tests">
+
+    <uses-sdk android:targetSdkVersion="25" android:minSdkVersion="21"/>
+
+    <application android:debuggable="true">
+        <uses-library android:name="android.test.runner" />
+
+        <receiver
+            android:name="com.android.launcher3.testcomponent.AppWidgetNoConfig"
+            android:label="No Config">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                       android:resource="@xml/appwidget_no_config" />
+        </receiver>
+
+        <receiver
+            android:name="com.android.launcher3.testcomponent.AppWidgetWithConfig"
+            android:label="With Config">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                       android:resource="@xml/appwidget_with_config" />
+        </receiver>
+
+        <activity
+            android:name="com.android.launcher3.testcomponent.WidgetConfigActivity">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.android.launcher3.testcomponent.RequestPinItemActivity"
+            android:label="Test Pin Item"
+            android:icon="@drawable/test_drawable_pin_item">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

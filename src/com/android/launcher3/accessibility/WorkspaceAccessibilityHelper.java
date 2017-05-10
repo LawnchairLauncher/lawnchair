@@ -57,7 +57,7 @@ public class WorkspaceAccessibilityHelper extends DragAndDropAccessibilityDelega
         int y = id / mCountX;
         LauncherAccessibilityDelegate.DragInfo dragInfo = mDelegate.getDragInfo();
 
-        if (dragInfo.dragType == DragType.WIDGET && mView.isHotseat()) {
+        if (dragInfo.dragType == DragType.WIDGET && !mView.acceptsWidget()) {
             return INVALID_POSITION;
         }
 
@@ -161,11 +161,7 @@ public class WorkspaceAccessibilityHelper extends DragAndDropAccessibilityDelega
 
         View child = mView.getChildAt(x, y);
         if (child == null || child == dragInfo.item) {
-            if (mView.isHotseat()) {
-                return mContext.getString(R.string.move_to_hotseat_position, id + 1);
-            } else {
-                return mContext.getString(R.string.move_to_empty_cell, y + 1, x + 1);
-            }
+            return mView.getItemMoveDescription(x, y);
         } else {
             return getDescriptionForDropOver(child, mContext);
         }

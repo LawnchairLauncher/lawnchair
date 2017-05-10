@@ -27,6 +27,7 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.FileLog;
+import com.android.launcher3.util.LogConfig;
 
 import java.io.InvalidObjectException;
 
@@ -43,13 +44,6 @@ public class RestoreDbTask {
 
     private static final String INFO_COLUMN_NAME = "name";
     private static final String INFO_COLUMN_DEFAULT_VALUE = "dflt_value";
-
-    /**
-     * When enabled all icons are kept on the home screen, even if they don't have an active
-     * session. To enable use:
-     *      adb shell setprop log.tag.launcher_keep_all_icons VERBOSE
-     */
-    private static final String KEEP_ALL_ICONS = "launcher_keep_all_icons";
 
     public static boolean performRestore(DatabaseHelper helper) {
         SQLiteDatabase db = helper.getWritableDatabase();
@@ -85,7 +79,7 @@ public class RestoreDbTask {
         }
 
         // Mark all items as restored.
-        boolean keepAllIcons = Utilities.isPropertyEnabled(KEEP_ALL_ICONS);
+        boolean keepAllIcons = Utilities.isPropertyEnabled(LogConfig.KEEP_ALL_ICONS);
         ContentValues values = new ContentValues();
         values.put(Favorites.RESTORED, ShortcutInfo.FLAG_RESTORED_ICON
                 | (keepAllIcons ? ShortcutInfo.FLAG_RESTORE_STARTED : 0));
@@ -142,6 +136,7 @@ public class RestoreDbTask {
     }
 
     public static void setPending(Context context, boolean isPending) {
+        FileLog.d(TAG, "Restore data received through full backup");
         Utilities.getPrefs(context).edit().putBoolean(RESTORE_TASK_PENDING, isPending).commit();
     }
 }

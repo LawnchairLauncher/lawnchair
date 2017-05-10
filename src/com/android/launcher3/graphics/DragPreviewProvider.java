@@ -16,6 +16,7 @@
 
 package com.android.launcher3.graphics;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -24,9 +25,9 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.TextView;
 
-import com.android.launcher3.HolographicOutlineHelper;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.PreloadIconDrawable;
+import com.android.launcher3.LauncherAppWidgetHostView;
+import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.folder.FolderIcon;
@@ -36,8 +37,6 @@ import com.android.launcher3.folder.FolderIcon;
  */
 public class DragPreviewProvider {
 
-    public static final int DRAG_BITMAP_PADDING = 2;
-
     private final Rect mTempRect = new Rect();
 
     protected final View mView;
@@ -45,17 +44,25 @@ public class DragPreviewProvider {
     // The padding added to the drag view during the preview generation.
     public final int previewPadding;
 
-    public Bitmap gerenatedDragOutline;
+    protected final int blurSizeOutline;
+
+    public Bitmap generatedDragOutline;
 
     public DragPreviewProvider(View view) {
+        this(view, view.getContext());
+    }
+
+    public DragPreviewProvider(View view, Context context) {
         mView = view;
+        blurSizeOutline =
+                context.getResources().getDimensionPixelSize(R.dimen.blur_size_medium_outline);
 
         if (mView instanceof TextView) {
             Drawable d = Workspace.getTextViewIcon((TextView) mView);
             Rect bounds = getDrawableBounds(d);
-            previewPadding = DRAG_BITMAP_PADDING - bounds.left - bounds.top;
+            previewPadding = blurSizeOutline - bounds.left - bounds.top;
         } else {
-            previewPadding = DRAG_BITMAP_PADDING;
+            previewPadding = blurSizeOutline;
         }
     }
 
@@ -67,8 +74,8 @@ public class DragPreviewProvider {
         if (mView instanceof TextView) {
             Drawable d = Workspace.getTextViewIcon((TextView) mView);
             Rect bounds = getDrawableBounds(d);
-            destCanvas.translate(DRAG_BITMAP_PADDING / 2 - bounds.left,
-                    DRAG_BITMAP_PADDING / 2 - bounds.top);
+            destCanvas.translate(blurSizeOutline / 2 - bounds.left,
+                    blurSizeOutline / 2 - bounds.top);
             d.draw(destCanvas);
         } else {
             final Rect clipRect = mTempRect;
@@ -83,8 +90,8 @@ public class DragPreviewProvider {
                     textVisible = true;
                 }
             }
-            destCanvas.translate(-mView.getScrollX() + DRAG_BITMAP_PADDING / 2,
-                    -mView.getScrollY() + DRAG_BITMAP_PADDING / 2);
+            destCanvas.translate(-mView.getScrollX() + blurSizeOutline / 2,
+                    -mView.getScrollY() + blurSizeOutline / 2);
             destCanvas.clipRect(clipRect, Op.REPLACE);
             mView.draw(destCanvas);
 
@@ -101,31 +108,41 @@ public class DragPreviewProvider {
      * Responsibility for the bitmap is transferred to the caller.
      */
     public Bitmap createDragBitmap(Canvas canvas) {
-        Bitmap b;
+        float scale = 1f;
+        int width = mView.getWidth();
+        int height = mView.getHeight();
 
         if (mView instanceof TextView) {
             Drawable d = Workspace.getTextViewIcon((TextView) mView);
             Rect bounds = getDrawableBounds(d);
-            b = Bitmap.createBitmap(bounds.width() + DRAG_BITMAP_PADDING,
-                    bounds.height() + DRAG_BITMAP_PADDING, Bitmap.Config.ARGB_8888);
-        } else {
-            b = Bitmap.createBitmap(mView.getWidth() + DRAG_BITMAP_PADDING,
-                    mView.getHeight() + DRAG_BITMAP_PADDING, Bitmap.Config.ARGB_8888);
+            width = bounds.width();
+            height = bounds.height();
+        } else if (mView instanceof LauncherAppWidgetHostView) {
+            scale = ((LauncherAppWidgetHostView) mView).getScaleToFit();
+            width = (int) (mView.getWidth() * scale);
+            height = (int) (mView.getHeight() * scale);
         }
 
+        Bitmap b = Bitmap.createBitmap(width + blurSizeOutline, height + blurSizeOutline,
+                Bitmap.Config.ARGB_8888);
         canvas.setBitmap(b);
+
+        canvas.save();
+        canvas.scale(scale, scale);
         drawDragView(canvas);
+        canvas.restore();
+
         canvas.setBitmap(null);
 
         return b;
     }
 
     public final void generateDragOutline(Canvas canvas) {
-        if (ProviderConfig.IS_DOGFOOD_BUILD && gerenatedDragOutline != null) {
+        if (ProviderConfig.IS_DOGFOOD_BUILD && generatedDragOutline != null) {
             throw new RuntimeException("Drag outline generated twice");
         }
 
-        gerenatedDragOutline = createDragOutline(canvas);
+        generatedDragOutline = createDragOutline(canvas);
     }
 
     /**
@@ -133,12 +150,28 @@ public class DragPreviewProvider {
      * Responsibility for the bitmap is transferred to the caller.
      */
     public Bitmap createDragOutline(Canvas canvas) {
-        final Bitmap b = Bitmap.createBitmap(mView.getWidth() + DRAG_BITMAP_PADDING,
-                mView.getHeight() + DRAG_BITMAP_PADDING, Bitmap.Config.ALPHA_8);
+        float scale = 1f;
+        int width = mView.getWidth();
+        int height = mView.getHeight();
+
+        if (mView instanceof LauncherAppWidgetHostView) {
+            scale = ((LauncherAppWidgetHostView) mView).getScaleToFit();
+            width = (int) Math.floor(mView.getWidth() * scale);
+            height = (int) Math.floor(mView.getHeight() * scale);
+        }
+
+        Bitmap b = Bitmap.createBitmap(width + blurSizeOutline, height + blurSizeOutline,
+                Bitmap.Config.ALPHA_8);
         canvas.setBitmap(b);
+
+        canvas.save();
+        canvas.scale(scale, scale);
         drawDragView(canvas);
-        HolographicOutlineHelper.obtain(mView.getContext())
+        canvas.restore();
+
+        HolographicOutlineHelper.getInstance(mView.getContext())
                 .applyExpensiveOutlineWithBlur(b, canvas);
+
         canvas.setBitmap(null);
         return b;
     }
@@ -151,18 +184,22 @@ public class DragPreviewProvider {
         } else {
             bounds.offsetTo(0, 0);
         }
-        if (d instanceof PreloadIconDrawable) {
-            int inset = -((PreloadIconDrawable) d).getOutset();
-            bounds.inset(inset, inset);
-        }
         return bounds;
     }
 
     public float getScaleAndPosition(Bitmap preview, int[] outPos) {
         float scale = Launcher.getLauncher(mView.getContext())
                 .getDragLayer().getLocationInDragLayer(mView, outPos);
-        outPos[0] = Math.round(outPos[0] - (preview.getWidth() - scale * mView.getWidth()) / 2);
-        outPos[1] = Math.round(outPos[1] - (1 - scale) * preview.getHeight() / 2 - previewPadding / 2);
+        if (mView instanceof LauncherAppWidgetHostView) {
+            // App widgets are technically scaled, but are drawn at their expected size -- so the
+            // app widget scale should not affect the scale of the preview.
+            scale /= ((LauncherAppWidgetHostView) mView).getScaleToFit();
+        }
+
+        outPos[0] = Math.round(outPos[0] -
+                (preview.getWidth() - scale * mView.getWidth() * mView.getScaleX()) / 2);
+        outPos[1] = Math.round(outPos[1] - (1 - scale) * preview.getHeight() / 2
+                - previewPadding / 2);
         return scale;
     }
 }

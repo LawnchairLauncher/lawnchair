@@ -17,6 +17,10 @@
 package com.android.launcher3.dragndrop;
 
 import android.graphics.Point;
+import android.support.annotation.CallSuper;
+import android.view.View;
+
+import com.android.launcher3.DropTarget;
 
 /**
  * Set of options to control the drag and drop behavior.
@@ -29,8 +33,8 @@ public class DragOptions {
     /** Specifies the start location for the system DnD, null when using internal DnD */
     public Point systemDndStartPoint = null;
 
-    /** Determines when a deferred drag should start. By default, drags aren't deferred at all. */
-    public DeferDragCondition deferDragCondition = new DeferDragCondition();
+    /** Determines when a pre-drag should transition to a drag. By default, this is immediate. */
+    public PreDragCondition preDragCondition = null;
 
     /**
      * Specifies a condition that must be met before DragListener#onDragStart() is called.
@@ -38,34 +42,26 @@ public class DragOptions {
      * DragController#startDrag().
      *
      * This condition can be overridden, and callbacks are provided for the following cases:
-     * - The drag starts, but onDragStart() is deferred (onDeferredDragStart()).
-     * - The drag ends before the condition is met (onDropBeforeDeferredDrag()).
-     * - The condition is met (onDragStart()).
+     * - The pre-drag starts, but onDragStart() is deferred (onPreDragStart()).
+     * - The pre-drag ends before the condition is met (onPreDragEnd(false)).
+     * - The actual drag starts when the condition is met (onPreDragEnd(true)).
      */
-    public static class DeferDragCondition {
-        public boolean shouldStartDeferredDrag(double distanceDragged) {
-            return true;
-        }
+    public interface PreDragCondition {
+
+        public boolean shouldStartDrag(double distanceDragged);
 
         /**
-         * The drag has started, but onDragStart() is deferred.
-         * This happens when shouldStartDeferredDrag() returns true.
+         * The pre-drag has started, but onDragStart() is
+         * deferred until shouldStartDrag() returns true.
          */
-        public void onDeferredDragStart() {
-            // Do nothing.
-        }
+        void onPreDragStart(DropTarget.DragObject dragObject);
 
         /**
-         * User dropped before the deferred condition was met,
-         * i.e. before shouldStartDeferredDrag() returned true.
+         * The pre-drag has ended. This gets called at the same time as onDragStart()
+         * if the condition is met, otherwise at the same time as onDragEnd().
+         * @param dragStarted Whether the pre-drag ended because the actual drag started.
+         *                    This will be true if the condition was met, otherwise false.
          */
-        public void onDropBeforeDeferredDrag() {
-            // Do nothing
-        }
-
-        /** onDragStart() has been called, now we are in a normal drag. */
-        public void onDragStart() {
-            // Do nothing
-        }
+        void onPreDragEnd(DropTarget.DragObject dragObject, boolean dragStarted);
     }
 }

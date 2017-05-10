@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
+import android.view.animation.Interpolator;
 
 /**
  * One dimensional scroll gesture detector for all apps container pull up interaction.
@@ -22,6 +23,9 @@ public class VerticalPullDetector {
     public static final int DIRECTION_UP = 1 << 0;
     public static final int DIRECTION_DOWN = 1 << 1;
     public static final int DIRECTION_BOTH = DIRECTION_DOWN | DIRECTION_UP;
+
+    private static final float ANIMATION_DURATION = 1200;
+    private static final float FAST_FLING_PX_MS = 10;
 
     /**
      * The minimum release velocity in pixels per millisecond that triggers fling..
@@ -112,7 +116,7 @@ public class VerticalPullDetector {
         mListener = l;
     }
 
-    interface Listener {
+    public interface Listener {
         void onDragStart(boolean start);
 
         boolean onDrag(float displacement, float velocity);
@@ -230,7 +234,7 @@ public class VerticalPullDetector {
 
     private void reportDragEnd() {
         if (DBG) {
-            Log.d(TAG, String.format("onScrolEnd disp=%.1f, velocity=%.1f",
+            Log.d(TAG, String.format("onScrollEnd disp=%.1f, velocity=%.1f",
                     mDisplacementY, mVelocity));
         }
         mListener.onDragEnd(mVelocity, Math.abs(mVelocity) > RELEASE_VELOCITY_PX_MS);
@@ -271,5 +275,34 @@ public class VerticalPullDetector {
      */
     private static float interpolate(float from, float to, float alpha) {
         return (1.0f - alpha) * from + alpha * to;
+    }
+
+    public long calculateDuration(float velocity, float progressNeeded) {
+        // TODO: make these values constants after tuning.
+        float velocityDivisor = Math.max(2f, Math.abs(0.5f * velocity));
+        float travelDistance = Math.max(0.2f, progressNeeded);
+        long duration = (long) Math.max(100, ANIMATION_DURATION / velocityDivisor * travelDistance);
+        if (DBG) {
+            Log.d(TAG, String.format("calculateDuration=%d, v=%f, d=%f", duration, velocity, progressNeeded));
+        }
+        return duration;
+    }
+
+    public static class ScrollInterpolator implements Interpolator {
+
+        boolean mSteeper;
+
+        public void setVelocityAtZero(float velocity) {
+            mSteeper = velocity > FAST_FLING_PX_MS;
+        }
+
+        public float getInterpolation(float t) {
+            t -= 1.0f;
+            float output = t * t * t;
+            if (mSteeper) {
+                output *= t * t; // Make interpolation initial slope steeper
+            }
+            return output + 1;
+        }
     }
 }

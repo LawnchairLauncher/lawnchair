@@ -24,6 +24,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 
+import com.android.launcher3.anim.AnimationLayerSet;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+
 import static com.android.launcher3.Workspace.State.NORMAL;
 import static com.android.launcher3.Workspace.State.OVERVIEW;
 
@@ -58,7 +62,6 @@ public class PinchAnimationManager {
 
     private final Animator[] mAnimators = new Animator[4];
 
-    private final int[] mVisiblePageRange = new int[2];
     private Launcher mLauncher;
     private Workspace mWorkspace;
 
@@ -107,7 +110,7 @@ public class PinchAnimationManager {
             public void onAnimationEnd(Animator animation) {
                 mIsAnimating = false;
                 thresholdManager.reset();
-                mWorkspace.onLauncherTransitionEnd(mLauncher, false, true);
+                mWorkspace.onEndStateTransition();
             }
         });
         animator.setDuration(duration).start();
@@ -162,9 +165,15 @@ public class PinchAnimationManager {
         } else if (threshold == PinchThresholdManager.THRESHOLD_THREE) {
             // Passing threshold 3 ends the pinch and snaps to the new state.
             if (startState == OVERVIEW && goingTowards == NORMAL) {
+                mLauncher.getUserEventDispatcher().logActionOnContainer(
+                        Action.Touch.PINCH, Action.Direction.NONE,
+                        ContainerType.OVERVIEW, mWorkspace.getCurrentPage());
                 mLauncher.showWorkspace(true);
                 mWorkspace.snapToPage(mWorkspace.getCurrentPage());
             } else if (startState == NORMAL && goingTowards == OVERVIEW) {
+                mLauncher.getUserEventDispatcher().logActionOnContainer(
+                        Action.Touch.PINCH, Action.Direction.NONE,
+                        ContainerType.WORKSPACE, mWorkspace.getCurrentPage());
                 mLauncher.showOverviewMode(true);
             }
         } else {
@@ -173,17 +182,13 @@ public class PinchAnimationManager {
     }
 
     private void setOverviewPanelsAlpha(float alpha, int duration) {
-        mWorkspace.getVisiblePages(mVisiblePageRange);
-        for (int i = mVisiblePageRange[0]; i <= mVisiblePageRange[1]; i++) {
-            View page = mWorkspace.getPageAt(i);
-            if (!mWorkspace.shouldDrawChild(page)) {
-                continue;
-            }
+        int childCount = mWorkspace.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            final CellLayout cl = (CellLayout) mWorkspace.getChildAt(i);
             if (duration == 0) {
-                ((CellLayout) page).setBackgroundAlpha(alpha);
+                cl.setBackgroundAlpha(alpha);
             } else {
-                ObjectAnimator.ofFloat(page, "backgroundAlpha", alpha)
-                        .setDuration(duration).start();
+                ObjectAnimator.ofFloat(cl, "backgroundAlpha", alpha).setDuration(duration).start();
             }
         }
     }
@@ -207,14 +212,24 @@ public class PinchAnimationManager {
     }
 
     private void animateShowHideView(int index, final View view, boolean show) {
-        Animator animator = new LauncherViewPropertyAnimator(view).alpha(show ? 1 : 0).withLayer();
+        Animator animator = ObjectAnimator.ofFloat(view, View.ALPHA, show ? 1 : 0);
+        animator.addListener(new AnimationLayerSet(view));
         if (show) {
             view.setVisibility(View.VISIBLE);
         } else {
             animator.addListener(new AnimatorListenerAdapter() {
+                private boolean mCancelled = false;
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    mCancelled = true;
+                }
+
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    view.setVisibility(View.INVISIBLE);
+                    if (!mCancelled) {
+                        view.setVisibility(View.INVISIBLE);
+                    }
                 }
             });
         }
@@ -223,7 +238,6 @@ public class PinchAnimationManager {
 
     private void startAnimator(int index, Animator animator, long duration) {
         if (mAnimators[index] != null) {
-            mAnimators[index].removeAllListeners();
             mAnimators[index].cancel();
         }
         mAnimators[index] = animator;

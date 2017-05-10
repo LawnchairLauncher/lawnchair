@@ -27,14 +27,19 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Prenesena aplikacija je onemogočena v Varnem načinu"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Pripomočki so onemogočeni v varnem načinu"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"Bližnjica ni na voljo"</string>
+    <string name="home_screen" msgid="806512411299847073">"Začetni zaslon"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"Dejanja po meri"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Za izbiro pripomočka se ga dotaknite in pridržite."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Če želite izbrati pripomoček ali uporabiti dejanja po meri, se ga dvakrat dotaknite in ga pridržite."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Širina %1$d, višina %2$d"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Dotaknite se elementa in ga pridržite, da ga ročno dodate"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"Samodejno dodaj"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Iskanje po aplikacijah"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Nalaganje aplikacij …"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Ni aplikacij, ki bi ustrezale poizvedbi »<xliff:g id="QUERY">%1$s</xliff:g>«"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Iskanje več aplikacij"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"Obvestila"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Na tem začetnem zaslonu ni več prostora."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"V vrstici za priljubljene ni več prostora"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Seznam aplikacij"</string>
@@ -71,6 +76,14 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"Omogočanje sukanja začetnega zaslona"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Ko se telefon zasuka"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Trenutna nastavitev zaslona ne dovoljuje sukanja"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Dodaj ikono na začetni zaslon"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Za nove aplikacije"</string>
+    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
+    <skip />
+    <!-- no translation found for icon_shape_no_override (3678524428085518367) -->
+    <skip />
+    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
+    <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"Neznano"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Odstrani"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Iskanje"</string>
@@ -78,6 +91,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Aplikacija za to ikono ni nameščena. Lahko jo odstranite ali poiščete aplikacijo in to namestite ročno."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Prenašanje aplikacije <xliff:g id="NAME">%1$s</xliff:g>; preneseno <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"Aplikacija <xliff:g id="NAME">%1$s</xliff:g> čaka na namestitev"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"Pripomočki za <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Dodajanje na začetni zaslon"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Premik elementa sem"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Element je bil dodan na začetni zaslon"</string>

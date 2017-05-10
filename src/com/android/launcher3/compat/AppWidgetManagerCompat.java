@@ -22,14 +22,15 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.UserHandle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import com.android.launcher3.IconCache;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.PackageUserKey;
 
 import java.util.HashMap;
 import java.util.List;
@@ -39,14 +40,13 @@ public abstract class AppWidgetManagerCompat {
     private static final Object sInstanceLock = new Object();
     private static AppWidgetManagerCompat sInstance;
 
-
     public static AppWidgetManagerCompat getInstance(Context context) {
         synchronized (sInstanceLock) {
             if (sInstance == null) {
-                if (Utilities.ATLEAST_LOLLIPOP) {
-                    sInstance = new AppWidgetManagerCompatVL(context.getApplicationContext());
+                if (Utilities.isAtLeastO()) {
+                    sInstance = new AppWidgetManagerCompatVO(context.getApplicationContext());
                 } else {
-                    sInstance = new AppWidgetManagerCompatV16(context.getApplicationContext());
+                    sInstance = new AppWidgetManagerCompatVL(context.getApplicationContext());
                 }
             }
             return sInstance;
@@ -70,27 +70,17 @@ public abstract class AppWidgetManagerCompat {
         return info == null ? null : LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, info);
     }
 
-    public abstract List<AppWidgetProviderInfo> getAllProviders();
-
-    public abstract String loadLabel(LauncherAppWidgetProviderInfo info);
+    public abstract List<AppWidgetProviderInfo> getAllProviders(
+            @Nullable PackageUserKey packageUser);
 
     public abstract boolean bindAppWidgetIdIfAllowed(
             int appWidgetId, AppWidgetProviderInfo info, Bundle options);
 
-    public abstract UserHandleCompat getUser(LauncherAppWidgetProviderInfo info);
-
     public abstract void startConfigActivity(AppWidgetProviderInfo info, int widgetId,
             Activity activity, AppWidgetHost host, int requestCode);
 
-    public abstract Drawable loadPreview(AppWidgetProviderInfo info);
-
-    public abstract Drawable loadIcon(LauncherAppWidgetProviderInfo info, IconCache cache);
-
-    public abstract Bitmap getBadgeBitmap(LauncherAppWidgetProviderInfo info, Bitmap bitmap,
-            int imageWidth, int imageHeight);
-
     public abstract LauncherAppWidgetProviderInfo findProvider(
-            ComponentName provider, UserHandleCompat user);
+            ComponentName provider, UserHandle user);
 
     public abstract HashMap<ComponentKey, AppWidgetProviderInfo> getAllProvidersMap();
 }

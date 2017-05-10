@@ -27,6 +27,7 @@
             <enum name="all_apps" value="1" />
             <enum name="folder" value="2" />
             <enum name="widget_section" value="3" />
+            <enum name="shortcut_popup" value="4" />
         </attr>
         <attr name="deferShadowGeneration" format="boolean" />
         <attr name="customShadows" format="boolean" />
@@ -71,12 +72,6 @@
         <attr name="folderItems" format="reference" />
     </declare-styleable>
 
-    <declare-styleable name="PreloadIconDrawable">
-        <attr name="background" format="reference" />
-        <attr name="ringOutset" format="dimension" />
-        <attr name="indicatorSize" format="dimension" />
-    </declare-styleable>
-
     <declare-styleable name="InsettableFrameLayout_Layout">
         <attr name="layout_ignoreInsets" format="boolean" />
     </declare-styleable>
@@ -84,9 +79,6 @@
     <declare-styleable name="ButtonDropTarget">
         <attr name="hideParentOnDisable" format="boolean" />
     </declare-styleable>
-
-    <!-- Fallback attr for pre-API 25 support -->
-    <attr name="colorSecondary" format="reference|color" />
 
     <declare-styleable name="InvariantDeviceProfile">
         <attr name="name" format="string" />
@@ -109,6 +101,14 @@
         <attr name="hotseatIconSize" format="float" />
 
         <attr name="defaultLayoutId" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="CellLayout">
+        <attr name="containerType" format="integer">
+            <enum name="workspace" value="0" />
+            <enum name="hotseat" value="1" />
+            <enum name="folder" value="2" />
+        </attr>
     </declare-styleable>
 
 </resources>

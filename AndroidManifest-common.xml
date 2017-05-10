@@ -49,7 +49,7 @@
         android:fullBackupOnly="true"
         android:fullBackupContent="@xml/backupscheme"
         android:hardwareAccelerated="true"
-        android:icon="@mipmap/ic_launcher_home"
+        android:icon="@drawable/ic_launcher_home"
         android:label="@string/derived_app_name"
         android:largeHeap="@bool/config_largeHeap"
         android:restoreAnyVersion="true"
@@ -58,9 +58,18 @@
         <!-- Intent received used to install shortcuts from other applications -->
         <receiver
             android:name="com.android.launcher3.InstallShortcutReceiver"
-            android:permission="com.android.launcher.permission.INSTALL_SHORTCUT">
+            android:permission="com.android.launcher.permission.INSTALL_SHORTCUT"
+            android:enabled="@bool/enable_install_shortcut_api" >
             <intent-filter>
                 <action android:name="com.android.launcher.action.INSTALL_SHORTCUT" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Intent received when a session is committed -->
+        <receiver
+            android:name="com.android.launcher3.SessionCommitReceiver" >
+            <intent-filter>
+                <action android:name="android.content.pm.action.SESSION_COMMITTED" />
             </intent-filter>
         </receiver>
 
@@ -76,8 +85,35 @@
             android:process=":wallpaper_chooser">
         </service>
 
+        <service android:name="com.android.launcher3.notification.NotificationListener"
+                 android:enabled="@bool/notification_badging_enabled"
+                 android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
         <meta-data android:name="android.nfc.disable_beam_default"
                        android:value="true" />
+
+        <activity android:name="com.android.launcher3.dragndrop.AddItemActivity"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog.Alert"
+            android:excludeFromRecents="true"
+            android:autoRemoveFromRecents="true"
+            android:label="@string/action_add_to_workspace" >
+            <intent-filter>
+                <action android:name="android.content.pm.action.CONFIRM_PIN_SHORTCUT" />
+                <action android:name="android.content.pm.action.CONFIRM_PIN_APPWIDGET" />
+            </intent-filter>
+        </activity>
+
+        <!--
+        Should point to the content provider which can be used to dump Launcher3 compatible
+        worspace configuration to the dump's file descriptor by using launcher_dump.proto
+        -->
+        <meta-data
+            android:name="com.android.launcher3.launcher_dump_provider"
+            android:value="com.android.launcher3.LauncherProvider" />
 
     </application>
 </manifest>

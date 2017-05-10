@@ -21,24 +21,15 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
-import android.annotation.TargetApi;
-import android.content.ClipDescription;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Region;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.DragEvent;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,30 +40,28 @@ import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DropTargetBar;
+import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.InsettableFrameLayout;
-import com.android.launcher3.InstallShortcutReceiver;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetHostView;
 import com.android.launcher3.PinchToOverviewListener;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
-import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.Workspace;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
-import com.android.launcher3.shortcuts.DeepShortcutsContainer;
+import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TouchController;
+import com.android.launcher3.widget.WidgetsBottomSheet;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 /**
@@ -90,11 +79,9 @@ public class DragLayer extends InsettableFrameLayout {
 
     @Thunk DragController mDragController;
 
-    private int mXDown, mYDown;
     private Launcher mLauncher;
 
     // Variables relating to resizing widgets
-    private final ArrayList<AppWidgetResizeFrame> mResizeFrames = new ArrayList<>();
     private final boolean mIsRtl;
     private AppWidgetResizeFrame mCurrentResizeFrame;
 
@@ -121,13 +108,6 @@ public class DragLayer extends InsettableFrameLayout {
     private final Rect mScrollChildPosition = new Rect();
     private final ViewGroupFocusHelper mFocusIndicatorHelper;
 
-    private boolean mInScrollArea;
-    private boolean mShowPageHints;
-    private Drawable mLeftHoverDrawable;
-    private Drawable mRightHoverDrawable;
-    private Drawable mLeftHoverDrawableActive;
-    private Drawable mRightHoverDrawableActive;
-
     // Related to pinch-to-go-to-overview gesture.
     private PinchToOverviewListener mPinchListener = null;
 
@@ -148,12 +128,7 @@ public class DragLayer extends InsettableFrameLayout {
         setMotionEventSplittingEnabled(false);
         setChildrenDrawingOrderEnabled(true);
 
-        final Resources res = getResources();
-        mLeftHoverDrawable = res.getDrawable(R.drawable.page_hover_left);
-        mRightHoverDrawable = res.getDrawable(R.drawable.page_hover_right);
-        mLeftHoverDrawableActive = res.getDrawable(R.drawable.page_hover_left_active);
-        mRightHoverDrawableActive = res.getDrawable(R.drawable.page_hover_right_active);
-        mIsRtl = Utilities.isRtl(res);
+        mIsRtl = Utilities.isRtl(getResources());
         mFocusIndicatorHelper = new ViewGroupFocusHelper(this);
     }
 
@@ -183,16 +158,11 @@ public class DragLayer extends InsettableFrameLayout {
     }
 
     public boolean isEventOverPageIndicator(MotionEvent ev) {
-        getDescendantRectRelativeToSelf(mLauncher.getWorkspace().getPageIndicator(), mHitRect);
-        return mHitRect.contains((int) ev.getX(), (int) ev.getY());
+        return isEventOverView(mLauncher.getWorkspace().getPageIndicator(), ev);
     }
 
     public boolean isEventOverHotseat(MotionEvent ev) {
         return isEventOverView(mLauncher.getHotseat(), ev);
-    }
-
-    private boolean isEventOverFolderTextRegion(Folder folder, MotionEvent ev) {
-        return isEventOverView(folder.getEditTextRegion(), ev);
     }
 
     private boolean isEventOverFolder(Folder folder, MotionEvent ev) {
@@ -209,62 +179,29 @@ public class DragLayer extends InsettableFrameLayout {
     }
 
     private boolean handleTouchDown(MotionEvent ev, boolean intercept) {
-        Rect hitRect = new Rect();
-        int x = (int) ev.getX();
-        int y = (int) ev.getY();
-
-        for (AppWidgetResizeFrame child: mResizeFrames) {
-            child.getHitRect(hitRect);
-            if (hitRect.contains(x, y)) {
-                if (child.beginResizeIfPointInRegion(x - child.getLeft(), y - child.getTop())) {
-                    mCurrentResizeFrame = child;
-                    mXDown = x;
-                    mYDown = y;
-                    requestDisallowInterceptTouchEvent(true);
+        AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mLauncher);
+        if (topView != null && intercept) {
+            ExtendedEditText textView = topView.getActiveTextView();
+            if (textView != null) {
+                if (!isEventOverView(textView, ev)) {
+                    textView.dispatchBackKey();
                     return true;
                 }
-            }
-        }
-
-        // Remove the shortcuts container when touching outside of it.
-        DeepShortcutsContainer deepShortcutsContainer = mLauncher.getOpenShortcutsContainer();
-        if (deepShortcutsContainer != null) {
-            if (isEventOverView(deepShortcutsContainer, ev)) {
-                // Let the container handle the event.
-                return false;
-            } else {
+            } else if (!isEventOverView(topView, ev)) {
                 if (isInAccessibleDrag()) {
                     // Do not close the container if in drag and drop.
                     if (!isEventOverDropTargetBar(ev)) {
                         return true;
                     }
                 } else {
-                    mLauncher.closeShortcutsContainer();
+                    mLauncher.getUserEventDispatcher().logActionTapOutside(
+                            LoggerUtils.newContainerTarget(topView.getLogContainerType()));
+                    topView.close(true);
+
                     // We let touches on the original icon go through so that users can launch
                     // the app with one tap if they don't find a shortcut they want.
-                    return !isEventOverView(deepShortcutsContainer.getDeferredDragIcon(), ev);
-                }
-            }
-        }
-
-        Folder currentFolder = mLauncher.getWorkspace().getOpenFolder();
-        if (currentFolder != null && intercept) {
-            if (currentFolder.isEditingName()) {
-                if (!isEventOverFolderTextRegion(currentFolder, ev)) {
-                    currentFolder.dismissEditingName();
-                    return true;
-                }
-            }
-
-            if (!isEventOverFolder(currentFolder, ev)) {
-                if (isInAccessibleDrag()) {
-                    // Do not close the folder if in drag and drop.
-                    if (!isEventOverDropTargetBar(ev)) {
-                        return true;
-                    }
-                } else {
-                    mLauncher.closeFolder();
-                    return true;
+                    View extendedTouch = topView.getExtendedTouchView();
+                    return extendedTouch == null || !isEventOverView(extendedTouch, ev);
                 }
             }
         }
@@ -289,21 +226,33 @@ public class DragLayer extends InsettableFrameLayout {
             }
             mTouchCompleteListener = null;
         }
-        clearAllResizeFrames();
-
         mActiveController = null;
 
-        if (mDragController.onInterceptTouchEvent(ev)) {
+        if (mCurrentResizeFrame != null
+                && mCurrentResizeFrame.onControllerInterceptTouchEvent(ev)) {
+            mActiveController = mCurrentResizeFrame;
+            return true;
+        } else {
+            clearResizeFrame();
+        }
+
+        if (mDragController.onControllerInterceptTouchEvent(ev)) {
             mActiveController = mDragController;
             return true;
         }
 
-        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && mAllAppsController.onInterceptTouchEvent(ev)) {
+        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && mAllAppsController.onControllerInterceptTouchEvent(ev)) {
             mActiveController = mAllAppsController;
             return true;
         }
 
-        if (mPinchListener != null && mPinchListener.onInterceptTouchEvent(ev)) {
+        WidgetsBottomSheet widgetsBottomSheet = WidgetsBottomSheet.getOpen(mLauncher);
+        if (widgetsBottomSheet != null && widgetsBottomSheet.onControllerInterceptTouchEvent(ev)) {
+            mActiveController = widgetsBottomSheet;
+            return true;
+        }
+
+        if (mPinchListener != null && mPinchListener.onControllerInterceptTouchEvent(ev)) {
             // Stop listening for scrolling etc. (onTouchEvent() handles the rest of the pinch.)
             mActiveController = mPinchListener;
             return true;
@@ -316,7 +265,7 @@ public class DragLayer extends InsettableFrameLayout {
         if (mLauncher == null || mLauncher.getWorkspace() == null) {
             return false;
         }
-        Folder currentFolder = mLauncher.getWorkspace().getOpenFolder();
+        Folder currentFolder = Folder.getOpen(mLauncher);
         if (currentFolder == null) {
             return false;
         } else {
@@ -366,7 +315,7 @@ public class DragLayer extends InsettableFrameLayout {
     @Override
     public boolean onRequestSendAccessibilityEvent(View child, AccessibilityEvent event) {
         // Shortcuts can appear above folder
-        View topView = mLauncher.getTopFloatingView();
+        View topView = AbstractFloatingView.getTopOpenView(mLauncher);
         if (topView != null) {
             if (child == topView) {
                 return super.onRequestSendAccessibilityEvent(child, event);
@@ -383,7 +332,7 @@ public class DragLayer extends InsettableFrameLayout {
 
     @Override
     public void addChildrenForAccessibility(ArrayList<View> childrenForAccessibility) {
-        View topView = mLauncher.getTopFloatingView();
+        View topView = AbstractFloatingView.getTopOpenView(mLauncher);
         if (topView != null) {
             // Only add the top view as a child for accessibility when it is open
             childrenForAccessibility.add(topView);
@@ -405,11 +354,7 @@ public class DragLayer extends InsettableFrameLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        boolean handled = false;
         int action = ev.getAction();
-
-        int x = (int) ev.getX();
-        int y = (int) ev.getY();
 
         if (action == MotionEvent.ACTION_DOWN) {
             if (handleTouchDown(ev, false)) {
@@ -422,67 +367,10 @@ public class DragLayer extends InsettableFrameLayout {
             mTouchCompleteListener = null;
         }
 
-        if (mCurrentResizeFrame != null) {
-            handled = true;
-            switch (action) {
-                case MotionEvent.ACTION_MOVE:
-                    mCurrentResizeFrame.visualizeResizeForDelta(x - mXDown, y - mYDown);
-                    break;
-                case MotionEvent.ACTION_CANCEL:
-                case MotionEvent.ACTION_UP:
-                    mCurrentResizeFrame.visualizeResizeForDelta(x - mXDown, y - mYDown);
-                    mCurrentResizeFrame.onTouchUp();
-                    mCurrentResizeFrame = null;
-            }
-        }
-        if (handled) return true;
         if (mActiveController != null) {
-            return mActiveController.onTouchEvent(ev);
+            return mActiveController.onControllerTouchEvent(ev);
         }
         return false;
-    }
-
-    @TargetApi(Build.VERSION_CODES.N)
-    private void handleSystemDragStart(DragEvent event) {
-        if (!FeatureFlags.LAUNCHER3_USE_SYSTEM_DRAG_DRIVER || !Utilities.isNycOrAbove()) {
-            return;
-        }
-        if (mLauncher.isWorkspaceLocked()) {
-            return;
-        }
-
-        ClipDescription description = event.getClipDescription();
-        if (!description.hasMimeType(ClipDescription.MIMETYPE_TEXT_INTENT)) {
-            return;
-        }
-        ShortcutInfo info = new ShortcutInfo();
-        // Set a dummy intent until we get the final value
-        info.intent = new Intent();
-
-        // Since we are not going through the workspace for starting the drag, set drag related
-        // information on the workspace before starting the drag.
-        ExternalDragPreviewProvider previewProvider =
-                new ExternalDragPreviewProvider(mLauncher, info);
-        mLauncher.getWorkspace().prepareDragWithProvider(previewProvider);
-
-        DragOptions options = new DragOptions();
-        options.systemDndStartPoint = new Point((int) event.getX(), (int) event.getY());
-
-        int halfPadding = previewProvider.previewPadding / 2;
-        mDragController.startDrag(
-                Bitmap.createBitmap(1, 1, Config.ARGB_8888),
-                0, 0,
-                new AnotherWindowDragSource(mLauncher), info,
-                new Point(- halfPadding, halfPadding),
-                previewProvider.getPreviewBounds(), 1f, options);
-    }
-
-    @Override
-    public boolean onDragEvent (DragEvent event) {
-        if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
-            handleSystemDragStart(event);
-        }
-        return mDragController.onDragEvent(event);
     }
 
     /**
@@ -534,8 +422,8 @@ public class DragLayer extends InsettableFrameLayout {
     /**
      * Inverse of {@link #getDescendantCoordRelativeToSelf(View, int[])}.
      */
-    public float mapCoordInSelfToDescendent(View descendant, int[] coord) {
-        return Utilities.mapCoordInSelfToDescendent(descendant, this, coord);
+    public void mapCoordInSelfToDescendant(View descendant, int[] coord) {
+        Utilities.mapCoordInSelfToDescendant(descendant, this, coord);
     }
 
     public void getViewRectRelativeToSelf(View v, Rect r) {
@@ -556,8 +444,14 @@ public class DragLayer extends InsettableFrameLayout {
     @Override
     public boolean dispatchUnhandledMove(View focused, int direction) {
         // Consume the unhandled move if a container is open, to avoid switching pages underneath.
-        boolean isContainerOpen = mLauncher.getTopFloatingView() != null;
+        boolean isContainerOpen = AbstractFloatingView.getTopOpenView(mLauncher) != null;
         return isContainerOpen || mDragController.dispatchUnhandledMove(focused, direction);
+    }
+
+    @Override
+    public void setInsets(Rect insets) {
+        super.setInsets(insets);
+        setBackgroundResource(insets.top == 0 ? 0 : R.drawable.workspace_bg);
     }
 
     @Override
@@ -645,36 +539,24 @@ public class DragLayer extends InsettableFrameLayout {
         }
     }
 
-    public void clearAllResizeFrames() {
-        if (mResizeFrames.size() > 0) {
-            for (AppWidgetResizeFrame frame: mResizeFrames) {
-                frame.commitResize();
-                removeView(frame);
-            }
-            mResizeFrames.clear();
+    public void clearResizeFrame() {
+        if (mCurrentResizeFrame != null) {
+            mCurrentResizeFrame.commitResize();
+            removeView(mCurrentResizeFrame);
+            mCurrentResizeFrame = null;
         }
     }
 
-    public boolean hasResizeFrames() {
-        return mResizeFrames.size() > 0;
-    }
+    public void addResizeFrame(LauncherAppWidgetHostView widget, CellLayout cellLayout) {
+        clearResizeFrame();
 
-    public boolean isWidgetBeingResized() {
-        return mCurrentResizeFrame != null;
-    }
+        mCurrentResizeFrame = (AppWidgetResizeFrame) LayoutInflater.from(mLauncher)
+                .inflate(R.layout.app_widget_resize_frame, this, false);
+        mCurrentResizeFrame.setupForWidget(widget, cellLayout, this);
+        ((LayoutParams) mCurrentResizeFrame.getLayoutParams()).customPosition = true;
 
-    public void addResizeFrame(ItemInfo itemInfo, LauncherAppWidgetHostView widget,
-            CellLayout cellLayout) {
-        AppWidgetResizeFrame resizeFrame = new AppWidgetResizeFrame(getContext(),
-                widget, cellLayout, this);
-
-        LayoutParams lp = new LayoutParams(-1, -1);
-        lp.customPosition = true;
-
-        addView(resizeFrame, lp);
-        mResizeFrames.add(resizeFrame);
-
-        resizeFrame.snapToWidget(false);
+        addView(mCurrentResizeFrame);
+        mCurrentResizeFrame.snapToWidget(false);
     }
 
     public void animateViewIntoPosition(DragView dragView, final int[] pos, float alpha,
@@ -736,7 +618,7 @@ public class DragLayer extends InsettableFrameLayout {
         } else if (child instanceof FolderIcon) {
             // Account for holographic blur padding on the drag view
             toY += Math.round(scale * (child.getPaddingTop() - dragView.getDragRegionTop()));
-            toY -= scale * Workspace.DRAG_BITMAP_PADDING / 2;
+            toY -= scale * dragView.getBlurSizeOutline() / 2;
             toY -= (1 - scale) * dragView.getMeasuredHeight() / 2;
             // Center in the x coordinate about the target's drawable
             toX -= (dragView.getMeasuredWidth() - Math.round(scale * child.getMeasuredWidth())) / 2;
@@ -807,15 +689,11 @@ public class DragLayer extends InsettableFrameLayout {
 
         // If duration < 0, this is a cue to compute the duration based on the distance
         if (duration < 0) {
-            if (mDragController != null && mDragController.isExternalDrag()) {
-                duration = 1;
-            } else {
-                duration = res.getInteger(R.integer.config_dropAnimMaxDuration);
-                if (dist < maxDist) {
-                    duration *= mCubicEaseOutInterpolator.getInterpolation(dist / maxDist);
-                }
-                duration = Math.max(duration, res.getInteger(R.integer.config_dropAnimMinDuration));
+            duration = res.getInteger(R.integer.config_dropAnimMaxDuration);
+            if (dist < maxDist) {
+                duration *= mCubicEaseOutInterpolator.getInterpolation(dist / maxDist);
             }
+            duration = Math.max(duration, res.getInteger(R.integer.config_dropAnimMinDuration));
         }
 
         // Fall back to cubic ease out interpolator for the animation if none is specified
@@ -977,29 +855,6 @@ public class DragLayer extends InsettableFrameLayout {
         }
     }
 
-    void onEnterScrollArea() {
-        mInScrollArea = true;
-        invalidate();
-    }
-
-    void onExitScrollArea() {
-        mInScrollArea = false;
-        invalidate();
-    }
-
-    public void showPageHints() {
-        mShowPageHints = true;
-        Workspace workspace = mLauncher.getWorkspace();
-        getDescendantRectRelativeToSelf(workspace.getChildAt(workspace.numCustomPages()),
-                mScrollChildPosition);
-        invalidate();
-    }
-
-    public void hidePageHints() {
-        mShowPageHints = false;
-        invalidate();
-    }
-
     public void invalidateScrim() {
         if (mBackgroundAlpha > 0.0f) {
             invalidate();
@@ -1029,41 +884,6 @@ public class DragLayer extends InsettableFrameLayout {
         super.dispatchDraw(canvas);
     }
 
-    private void drawPageHints(Canvas canvas) {
-        if (mShowPageHints) {
-            Workspace workspace = mLauncher.getWorkspace();
-            int width = getMeasuredWidth();
-            int page = workspace.getNextPage();
-            CellLayout leftPage = (CellLayout) workspace.getChildAt(mIsRtl ? page + 1 : page - 1);
-            CellLayout rightPage = (CellLayout) workspace.getChildAt(mIsRtl ? page - 1 : page + 1);
-
-            if (leftPage != null && leftPage.isDragTarget()) {
-                Drawable left = mInScrollArea && leftPage.getIsDragOverlapping() ?
-                        mLeftHoverDrawableActive : mLeftHoverDrawable;
-                left.setBounds(0, mScrollChildPosition.top,
-                        left.getIntrinsicWidth(), mScrollChildPosition.bottom);
-                left.draw(canvas);
-            }
-            if (rightPage != null && rightPage.isDragTarget()) {
-                Drawable right = mInScrollArea && rightPage.getIsDragOverlapping() ?
-                        mRightHoverDrawableActive : mRightHoverDrawable;
-                right.setBounds(width - right.getIntrinsicWidth(),
-                        mScrollChildPosition.top, width, mScrollChildPosition.bottom);
-                right.draw(canvas);
-            }
-        }
-    }
-
-    protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
-        boolean ret = super.drawChild(canvas, child, drawingTime);
-
-        // We want to draw the page hints above the workspace, but below the drag view.
-        if (child instanceof Workspace) {
-            drawPageHints(canvas);
-        }
-        return ret;
-    }
-
     public void setBackgroundAlpha(float alpha) {
         if (alpha != mBackgroundAlpha) {
             mBackgroundAlpha = alpha;
@@ -1077,7 +897,7 @@ public class DragLayer extends InsettableFrameLayout {
 
     @Override
     protected boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
-        View topView = mLauncher.getTopFloatingView();
+        View topView = AbstractFloatingView.getTopOpenView(mLauncher);
         if (topView != null) {
             return topView.requestFocus(direction, previouslyFocusedRect);
         } else {
@@ -1087,7 +907,7 @@ public class DragLayer extends InsettableFrameLayout {
 
     @Override
     public void addFocusables(ArrayList<View> views, int direction, int focusableMode) {
-        View topView = mLauncher.getTopFloatingView();
+        View topView = AbstractFloatingView.getTopOpenView(mLauncher);
         if (topView != null) {
             topView.addFocusables(views, direction);
         } else {

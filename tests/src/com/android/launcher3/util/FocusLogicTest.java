@@ -49,8 +49,6 @@ public final class FocusLogicTest extends AndroidTestCase {
          assertTrue(FocusLogic.shouldConsume(KeyEvent.KEYCODE_MOVE_END));
          assertTrue(FocusLogic.shouldConsume(KeyEvent.KEYCODE_PAGE_UP));
          assertTrue(FocusLogic.shouldConsume(KeyEvent.KEYCODE_PAGE_DOWN));
-         assertTrue(FocusLogic.shouldConsume(KeyEvent.KEYCODE_DEL));
-         assertTrue(FocusLogic.shouldConsume(KeyEvent.KEYCODE_FORWARD_DEL));
     }
 
     public void testCreateSparseMatrix() {

@@ -27,14 +27,19 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"सुरक्षित मोडमा डाउनलोड गरेको अनुप्रयोग अक्षम गरिएको छ"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"सुरक्षित मोडमा विगेटहरू अक्षम गरियो"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"सर्टकट उपलब्ध छैन"</string>
+    <string name="home_screen" msgid="806512411299847073">"गृह स्क्रिन"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"आफू अनुकूलका कारबाहीहरू"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"एउटा विजेटलाई टिप्नको लागि टच गरेर होल्ड गर्नुहोस्।"</string>
-    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"विजेटलाई छान्न वा अनुकूलन कार्यहरू प्रयोग गर्न डबल ट्याप गरी होल्ड गर्नुहोस्।"</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"विजेटलाई छान्न वा आफू अनुकूल कार्यहरू प्रयोग गर्न डबल ट्याप गरी होल्ड गर्नुहोस्।"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d चौडाइ गुणा %2$d उचाइ"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"म्यानुअल तरिकाले थप्न छुनुहोस् र थिची राख्नुहोस्‌"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"स्वतः थप्नुहोस्"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"अनुप्रयोगहरू खोज्नुहोस्"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"अनुप्रयोगहरू लोड गरिँदै..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" सँग मिल्दो कुनै अनुप्रयोगहरू फेला परेनन्"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"थप अनुप्रयोगहरू खोज्नुहोस्"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"सूचनाहरू"</string>
     <string name="out_of_space" msgid="4691004494942118364">"यो गृह स्क्रिनमा कुनै थप ठाउँ छैन।"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"मनपर्ने ट्रे अब कुनै ठाँउ छैन"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"अनुप्रयोगको सूची"</string>
@@ -71,13 +76,19 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"गृह स्क्रिनलाई घुम्ने अनुमति दिनुहोस्"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"फोनलाई घुमाइँदा"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"हालको प्रदर्शन सम्बन्धी सेटिङले घुमाउने सुविधालाई अनुमति दिँदैन"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"गृह स्क्रिनमा आइकन थप्नुहोस्"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नयाँ अनुप्रयोगका लागि"</string>
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"आइकनको आकार परिवर्तन गर्नुहोस्"</string>
+    <string name="icon_shape_no_override" msgid="3678524428085518367">"परिवर्तन नगर्नुहोस्"</string>
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"आइकनको आकारमा गरिएका परिवर्तनहरू लागू गरिँदैछन्"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"अज्ञात"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"हटाउनुहोस्"</string>
     <string name="abandoned_search" msgid="891119232568284442">"खोजी गर्नुहोस्"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"यो अनुप्रयोग स्थापित छैन"</string>
-    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"यो प्रतिमाका लागि अनुप्रयोगलाई स्थापना गरिएको छैन। तपाईँ यसलाई हटाउन, वा अनुप्रयोग खोजी र स्वयं यो स्थापित गर्न सक्नुहुन्छ।"</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"यो प्रतिमाका लागि अनुप्रयोगलाई स्थापना गरिएको छैन। तपाईं यसलाई हटाउन, वा अनुप्रयोग खोजी र स्वयं यो स्थापित गर्न सक्नुहुन्छ।"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> डाउनलोड गर्दै, <xliff:g id="PROGRESS">%2$s</xliff:g> सम्पन्‍न"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> स्थापना गर्न प्रतीक्षा गर्दै"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> विजेटहरू"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"गृह स्क्रिनमा थप्नुहोस्"</string>
     <string name="action_move_here" msgid="2170188780612570250">"वस्तु यहाँ सार्नुहोस्"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"वस्तु गृह स्क्रिनमा थपियो"</string>

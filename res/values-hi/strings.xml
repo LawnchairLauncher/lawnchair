@@ -27,14 +27,19 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"डाउनलोड किए गए ऐप्स सुरक्षित मोड में अक्षम है"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"विजेट सुरक्षित मोड में अक्षम हैं"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"शॉर्टकट उपलब्ध नहीं है"</string>
+    <string name="home_screen" msgid="806512411299847073">"होम स्क्रीन"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"कस्टम कार्रवाई"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"विजेट को चुनने के लिए स्‍पर्श करके रखें."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"कोई विजेट चुनने के लिए डबल टैप करके रखें या कस्‍टम कार्रवाइयां चुनें."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d चौड़ाई गुणा %2$d ऊंचाई"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"मैन्युअल रूप से जोड़ने के लिए स्पर्श करके रखें"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"अपने आप जोड़ें"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"ऐप्‍स खोजें"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"ऐप्स लोड हो रहे हैं..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" से मिलान करने वाला कोई ऐप नहीं मिला"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"अधिक ऐप्लिकेशन खोजें"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"नोटिफ़िकेशन"</string>
     <string name="out_of_space" msgid="4691004494942118364">"इस होम स्‍क्रीन पर स्थान शेष नहीं है."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"पसंदीदा ट्रे में और स्थान नहीं है"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ऐप्लिकेशन सूची"</string>
@@ -54,7 +59,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"यह एक सिस्टम ऐप्लिकेशन है और इसे अनइंस्टॉल नहीं किया जा सकता."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"अनामित फ़ोल्डर"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> अक्षम है"</string>
-    <string name="default_scroll_format" msgid="7475544710230993317">"पृष्ठ %2$d में से %1$d"</string>
+    <string name="default_scroll_format" msgid="7475544710230993317">"पेज %2$d में से %1$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"होम स्क्रीन %2$d में से %1$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"नया होम स्‍क्रीन पृष्‍ठ"</string>
     <string name="folder_opened" msgid="94695026776264709">"फ़ोल्डर खोला गया, <xliff:g id="WIDTH">%1$d</xliff:g> गुणा <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
@@ -71,6 +76,14 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"होमस्क्रीन घुमाने की अनुमति दें"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"फ़ोन घुुमाए जाने पर"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"वर्तमान प्रदर्शन सेटिंग घुमाने की अनुमति नहीं देती"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"होम स्क्रीन में आइकन जोड़ें"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नए ऐप्लिकेशन के लिए"</string>
+    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
+    <skip />
+    <!-- no translation found for icon_shape_no_override (3678524428085518367) -->
+    <skip />
+    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
+    <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"अज्ञात"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"निकालें"</string>
     <string name="abandoned_search" msgid="891119232568284442">"खोजें"</string>
@@ -78,6 +91,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"इस आइकन का ऐप्स इंस्टॉल नहीं है. आप उसे निकाल सकते हैं या ऐप्स की खोज करके उसे मैन्युअल रूप से इंस्टॉल कर सकते हैं."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> डाउनलोड हो रहा है, <xliff:g id="PROGRESS">%2$s</xliff:g> पूर्ण"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> के इंस्टॉल होने की प्रतीक्षा की जा रही है"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> विजेट"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"होम स्‍क्रीन में जोड़ें"</string>
     <string name="action_move_here" msgid="2170188780612570250">"आइटम यहां ले जाएं"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"होम स्क्रीन में आइटम जोड़ा गया"</string>

@@ -27,14 +27,19 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"డౌన్‌లోడ్ చేసిన అనువర్తనం సురక్షిత మోడ్‌లో నిలిపివేయబడింది"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"సురక్షిత మోడ్‌లో విడ్జెట్‌లు నిలిపివేయబడ్డాయి"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"సత్వరమార్గం అందుబాటులో లేదు"</string>
+    <string name="home_screen" msgid="806512411299847073">"హోమ్ స్క్రీన్"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"అనుకూల చర్యలు"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"విడ్జెట్‌ను ఎంచుకోవడానికి తాకి &amp; నొక్కి పెట్టండి."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"విడ్జెట్‌ను ఎంచుకోవడానికి లేదా అనుకూల చర్యలను ఉపయోగించడానికి రెండుసార్లు నొక్కి, ఉంచండి."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d వెడల్పు X %2$d ఎత్తు"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"మాన్యువల్‌గా ఉంచడానికి నొక్కి &amp;amp పట్టుకోండి"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"స్వయంచాలకంగా జోడించు"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"అనువర్తనాలను శోధించండి"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"అనువర్తనాలను లోడ్ చేస్తోంది…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"కి సరిపోలే అనువర్తనాలేవీ కనుగొనబడలేదు"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"మరిన్ని అనువర్తనాల కోసం శోధించు"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"నోటిఫికేషన్‌లు"</string>
     <string name="out_of_space" msgid="4691004494942118364">"ఈ హోమ్ స్క్రీన్‌లో ఖాళీ లేదు."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ఇష్టమైనవి ట్రేలో ఖాళీ లేదు"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"అనువర్తనాల జాబితా"</string>
@@ -71,6 +76,11 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"హోమ్ స్క్రీన్ భ్రమణాన్ని అనుమతించండి"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"ఫోన్‌‌ను తిప్పినప్పుడు"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"ప్రస్తుత డిస్‌ప్లే సెట్టింగ్ భ్రమణాన్ని అనుమతించలేదు"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"హోమ్ స్క్రీన్‌కి చిహ్నాన్ని జోడించు"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"కొత్త అనువర్తనాల కోసం"</string>
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"చిహ్న ఆకారాన్ని మార్చు"</string>
+    <string name="icon_shape_no_override" msgid="3678524428085518367">"మార్చవద్దు"</string>
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"చిహ్న ఆకార మార్పులను వర్తింపజేస్తోంది"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"తెలియదు"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"తీసివేయి"</string>
     <string name="abandoned_search" msgid="891119232568284442">"శోధించు"</string>
@@ -78,6 +88,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ఈ చిహ్నం యొక్క అనువర్తనం ఇన్‌స్టాల్ చేయబడలేదు. మీరు దీన్ని తీసివేయవచ్చు లేదా ఆ అనువర్తనం కోసం శోధించి దాన్ని మాన్యువల్‌గా ఇన్‌స్టాల్ చేయవచ్చు."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> డౌన్‌లోడ్ అవుతోంది, <xliff:g id="PROGRESS">%2$s</xliff:g> పూర్తయింది"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ఇన్‌స్టాల్ కావడానికి వేచి ఉంది"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> విడ్జెట్‌లు"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"హోమ్ స్క్రీన్‌కు జోడించు"</string>
     <string name="action_move_here" msgid="2170188780612570250">"అంశాన్ని ఇక్కడికి తరలించు"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"అంశం హోమ్‌స్క్రీన్‌కి జోడించబడింది"</string>
