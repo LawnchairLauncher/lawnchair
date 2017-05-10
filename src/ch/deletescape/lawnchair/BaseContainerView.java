@@ -56,7 +56,7 @@ public abstract class BaseContainerView extends FrameLayout
     public BaseContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && this instanceof AllAppsContainerView) {
+        if (this instanceof AllAppsContainerView) {
             mBaseDrawable = new ColorDrawable();
         } else {
             TypedArray a = context.obtainStyledAttributes(attrs,
@@ -113,7 +113,7 @@ public abstract class BaseContainerView extends FrameLayout
         Context context = getContext();
         Launcher launcher = Launcher.getLauncher(context);
 
-        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && this instanceof AllAppsContainerView) {
+        if (this instanceof AllAppsContainerView) {
             mContainerPaddingLeft = mContainerPaddingRight = 0;
             mContainerPaddingTop = mContainerPaddingBottom = 0;
         } else {
@@ -128,7 +128,7 @@ public abstract class BaseContainerView extends FrameLayout
                 mContainerPaddingLeft, mContainerPaddingTop, mContainerPaddingRight,
                 mContainerPaddingBottom);
         mRevealView.setBackground(mRevealDrawable);
-        if (!FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP || !(this instanceof AllAppsContainerView)) {
+        if (!(this instanceof AllAppsContainerView)) {
             mContent.setBackground(mRevealDrawable);
         }
     }

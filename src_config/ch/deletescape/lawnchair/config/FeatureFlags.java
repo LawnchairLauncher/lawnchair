@@ -34,9 +34,6 @@ public final class FeatureFlags {
     private FeatureFlags() {
     }
 
-    // Custom flags go below this
-    public static boolean LAUNCHER3_ALL_APPS_PULL_UP = true;
-
     // When enabled fling down gesture on the first workspace triggers search.
     public static boolean pulldownSearch(Context context) {
         return Utilities.getPrefs(context).getBoolean(KEY_PREF_PULLDOWN_SEARCH, true);

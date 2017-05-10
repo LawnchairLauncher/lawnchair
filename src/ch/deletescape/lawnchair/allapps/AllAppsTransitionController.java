@@ -244,7 +244,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             mHotseatBackgroundColor = mHotseat.getBackgroundDrawableColor();
             mHotseat.setBackgroundTransparent(true /* transparent */);
             if (!mLauncher.isAllAppsVisible()) {
-                mLauncher.tryAndUpdatePredictedApps();
                 mAppsView.setVisibility(View.VISIBLE);
                 mAppsView.setRevealDrawableColor(mHotseatBackgroundColor);
             }

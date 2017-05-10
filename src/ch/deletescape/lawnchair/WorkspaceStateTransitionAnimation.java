@@ -289,7 +289,7 @@ public class WorkspaceStateTransitionAnimation {
         float finalBackgroundAlpha = (states.stateIsSpringLoaded || states.stateIsOverview) ?
                 1.0f : 0f;
         float finalHotseatAlpha = (states.stateIsNormal || states.stateIsSpringLoaded ||
-                (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && states.stateIsNormalHidden)) ? 1f : 0f;
+                states.stateIsNormalHidden) ? 1f : 0f;
         float finalOverviewPanelAlpha = states.stateIsOverview ? 1f : 0f;
 
         float finalWorkspaceTranslationY = 0;
@@ -326,26 +326,11 @@ public class WorkspaceStateTransitionAnimation {
             if (states.stateIsOverviewHidden) {
                 finalAlpha = 0f;
             } else if (states.stateIsNormalHidden) {
-                finalAlpha = (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP &&
-                        i == mWorkspace.getNextPage()) ? 1 : 0;
+                finalAlpha = (i == mWorkspace.getNextPage()) ? 1 : 0;
             } else if (states.stateIsNormal && mWorkspaceFadeInAdjacentScreens) {
                 finalAlpha = (i == toPage) ? 1f : 0f;
             } else {
                 finalAlpha = 1f;
-            }
-
-            // If we are animating to/from the small state, then hide the side pages and fade the
-            // current page in
-            if (!FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && !mWorkspace.isSwitchingState()) {
-                if (states.workspaceToAllApps || states.allAppsToWorkspace) {
-                    boolean isCurrentPage = (i == toPage);
-                    if (states.allAppsToWorkspace && isCurrentPage) {
-                        initialAlpha = 0f;
-                    } else if (!isCurrentPage) {
-                        initialAlpha = finalAlpha = 0f;
-                    }
-                    cl.setShortcutAndWidgetAlpha(initialAlpha);
-                }
             }
 
             if (animated) {
@@ -448,7 +433,7 @@ public class WorkspaceStateTransitionAnimation {
      *
      * @param states   the current and final workspace states
      * @param animated whether or not to set the background alpha immediately
-     * @duration duration of the animation
+     * @param duration duration of the animation
      */
     private void animateBackgroundGradient(TransitionStates states,
                                            boolean animated, int duration) {

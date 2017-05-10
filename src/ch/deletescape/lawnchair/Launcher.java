@@ -61,7 +61,6 @@ import android.text.method.TextKeyListener;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -695,8 +694,7 @@ public class Launcher extends Activity
                 @Override
                 public void run() {
                     completeAddAppWidget(appWidgetId, requestArgs, layout, null);
-                    exitSpringLoadedDragModeDelayed((resultCode != RESULT_CANCELED),
-                            EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
+                    exitSpringLoadedDragModeDelayed(true, EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
                 }
             };
         } else if (resultCode == RESULT_CANCELED) {
@@ -1939,7 +1937,7 @@ public class Launcher extends Activity
             if (v instanceof FolderIcon) {
                 onClickFolderIcon(v);
             }
-        } else if ((FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && v instanceof PageIndicator) ||
+        } else if ((v instanceof PageIndicator) ||
                 v == mAllAppsButton) {
             onClickAllAppsButton(v);
         } else if (tag instanceof AppInfo) {
@@ -2566,7 +2564,7 @@ public class Launcher extends Activity
         if (isWorkspaceLocked()) return false;
         if (mState != State.WORKSPACE) return false;
 
-        if ((FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP && v instanceof PageIndicator) ||
+        if ((v instanceof PageIndicator) ||
                 (v == mAllAppsButton && mAllAppsButton != null)) {
             onLongClickAllAppsButton(v);
             return true;
@@ -2793,10 +2791,10 @@ public class Launcher extends Activity
         }
 
         if (toState == State.APPS) {
-            mStateTransitionAnimation.startAnimationToAllApps(mWorkspace.getState(), animated,
+            mStateTransitionAnimation.startAnimationToAllApps(animated,
                     focusSearchBar);
         } else {
-            mStateTransitionAnimation.startAnimationToWidgets(mWorkspace.getState(), animated);
+            mStateTransitionAnimation.startAnimationToWidgets(animated);
         }
 
         // Change the state *after* we've called all the transition code

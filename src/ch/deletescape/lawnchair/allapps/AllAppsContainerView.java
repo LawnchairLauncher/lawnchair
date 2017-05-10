@@ -184,23 +184,10 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mApps.setAdapter(mAdapter);
         mLayoutManager = mAdapter.getLayoutManager();
         mItemDecoration = mAdapter.getItemDecoration();
-        DeviceProfile grid = mLauncher.getDeviceProfile();
-        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
-            mRecyclerViewBottomPadding = 0;
-            setPadding(0, 0, 0, 0);
-        } else {
-            mRecyclerViewBottomPadding =
-                    res.getDimensionPixelSize(R.dimen.all_apps_list_bottom_padding);
-        }
+        mRecyclerViewBottomPadding = 0;
+        setPadding(0, 0, 0, 0);
         mSearchQueryBuilder = new SpannableStringBuilder();
         Selection.setSelection(mSearchQueryBuilder, 0);
-    }
-
-    /**
-     * Sets the current set of predicted apps.
-     */
-    public void setPredictedApps(List<ComponentKey> apps) {
-        mApps.setPredictedApps(apps);
     }
 
     /**
@@ -360,11 +347,9 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mAppsRecyclerView.preMeasureViews(mAdapter);
         mAdapter.setIconFocusListener(focusedItemDecorator.getFocusListener());
 
-        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
-            getRevealView().setVisibility(View.VISIBLE);
-            getContentView().setVisibility(View.VISIBLE);
-            getContentView().setBackground(null);
-        }
+        getRevealView().setVisibility(View.VISIBLE);
+        getContentView().setVisibility(View.VISIBLE);
+        getContentView().setBackground(null);
     }
 
     @Override
@@ -376,56 +361,26 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         DeviceProfile grid = mLauncher.getDeviceProfile();
         grid.updateAppsViewNumCols();
-        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
-            if (mNumAppsPerRow != grid.inv.numColumns ||
-                    mNumPredictedAppsPerRow != grid.inv.numColumns) {
-                mNumAppsPerRow = grid.inv.numColumns;
-                mNumPredictedAppsPerRow = grid.inv.numColumns;
-
-                mAppsRecyclerView.setNumAppsPerRow(grid, mNumAppsPerRow);
-                mAdapter.setNumAppsPerRow(mNumAppsPerRow);
-                mApps.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow, new FullMergeAlgorithm());
-                if (mNumAppsPerRow > 0) {
-                    int rvPadding = mAppsRecyclerView.getPaddingStart(); // Assumes symmetry
-                    final int thumbMaxWidth =
-                            getResources().getDimensionPixelSize(
-                                    R.dimen.container_fastscroll_thumb_max_width);
-                    mSearchContainer.setPadding(
-                            rvPadding - mContainerPaddingLeft + thumbMaxWidth,
-                            mSearchContainer.getPaddingTop(),
-                            rvPadding - mContainerPaddingRight + thumbMaxWidth,
-                            mSearchContainer.getPaddingBottom());
-                }
-            }
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-            return;
-        }
-
-        // --- remove START when {@code FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP} is enabled. ---
-
-        // Update the number of items in the grid before we measure the view
-        // TODO: mSectionNamesMargin is currently 0, but also account for it,
-        // if it's enabled in the future.
-        grid.updateAppsViewNumCols();
-        if (mNumAppsPerRow != grid.allAppsNumCols ||
-                mNumPredictedAppsPerRow != grid.allAppsNumPredictiveCols) {
-            mNumAppsPerRow = grid.allAppsNumCols;
-            mNumPredictedAppsPerRow = grid.allAppsNumPredictiveCols;
-
-            // If there is a start margin to draw section names, determine how we are going to merge
-            // app sections
-            boolean mergeSectionsFully = mSectionNamesMargin == 0 || !grid.isPhone;
-            AlphabeticalAppsList.MergeAlgorithm mergeAlgorithm = mergeSectionsFully ?
-                    new FullMergeAlgorithm() :
-                    new SimpleSectionMergeAlgorithm((int) Math.ceil(mNumAppsPerRow / 2f),
-                            MIN_ROWS_IN_MERGED_SECTION_PHONE, MAX_NUM_MERGES_PHONE);
+        if (mNumAppsPerRow != grid.inv.numColumns ||
+                mNumPredictedAppsPerRow != grid.inv.numColumns) {
+            mNumAppsPerRow = grid.inv.numColumns;
+            mNumPredictedAppsPerRow = grid.inv.numColumns;
 
             mAppsRecyclerView.setNumAppsPerRow(grid, mNumAppsPerRow);
             mAdapter.setNumAppsPerRow(mNumAppsPerRow);
-            mApps.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow, mergeAlgorithm);
+            mApps.setNumAppsPerRow(mNumAppsPerRow, mNumPredictedAppsPerRow, new FullMergeAlgorithm());
+            if (mNumAppsPerRow > 0) {
+                int rvPadding = mAppsRecyclerView.getPaddingStart(); // Assumes symmetry
+                final int thumbMaxWidth =
+                        getResources().getDimensionPixelSize(
+                                R.dimen.container_fastscroll_thumb_max_width);
+                mSearchContainer.setPadding(
+                        rvPadding - mContainerPaddingLeft + thumbMaxWidth,
+                        mSearchContainer.getPaddingTop(),
+                        rvPadding - mContainerPaddingRight + thumbMaxWidth,
+                        mSearchContainer.getPaddingBottom());
+            }
         }
-
-        // --- remove END when {@code FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP} is enabled. ---
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
@@ -468,29 +423,27 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mAppsRecyclerView.setClipToPadding(false);
 
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        if (FeatureFlags.LAUNCHER3_ALL_APPS_PULL_UP) {
-            MarginLayoutParams mlp = (MarginLayoutParams) mAppsRecyclerView.getLayoutParams();
+        MarginLayoutParams mlp = (MarginLayoutParams) mAppsRecyclerView.getLayoutParams();
 
-            Rect insets = mLauncher.getDragLayer().getInsets();
-            getContentView().setPadding(0, 0, 0, 0);
-            int height = insets.top + grid.hotseatCellHeightPx;
+        Rect insets = mLauncher.getDragLayer().getInsets();
+        getContentView().setPadding(0, 0, 0, 0);
+        int height = insets.top + grid.hotseatCellHeightPx;
 
-            mlp.topMargin = height;
-            mAppsRecyclerView.setLayoutParams(mlp);
+        mlp.topMargin = height;
+        mAppsRecyclerView.setLayoutParams(mlp);
 
-            mSearchContainer.setPadding(
-                    mSearchContainer.getPaddingLeft(),
-                    insets.top + mSearchContainerOffsetTop,
-                    mSearchContainer.getPaddingRight(),
-                    mSearchContainer.getPaddingBottom());
-            lp.height = height;
+        mSearchContainer.setPadding(
+                mSearchContainer.getPaddingLeft(),
+                insets.top + mSearchContainerOffsetTop,
+                mSearchContainer.getPaddingRight(),
+                mSearchContainer.getPaddingBottom());
+        lp.height = height;
 
-            View navBarBg = findViewById(R.id.nav_bar_bg);
-            ViewGroup.LayoutParams params = navBarBg.getLayoutParams();
-            params.height = insets.bottom;
-            navBarBg.setLayoutParams(params);
-            navBarBg.setVisibility(View.VISIBLE);
-        }
+        View navBarBg = findViewById(R.id.nav_bar_bg);
+        ViewGroup.LayoutParams params = navBarBg.getLayoutParams();
+        params.height = insets.bottom;
+        navBarBg.setLayoutParams(params);
+        navBarBg.setVisibility(View.VISIBLE);
         mSearchContainer.setLayoutParams(lp);
     }
 
