@@ -219,8 +219,5 @@ public class LauncherExtension extends Launcher {
         public boolean shouldShowDiscoveryBounce() {
             return false;
         }
-
-        @Override
-        public void onExtractedColorsChanged() { }
     }
 }
