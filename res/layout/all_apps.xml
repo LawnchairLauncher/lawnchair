@@ -59,13 +59,15 @@
         <!-- Fast scroller popup -->
         <TextView
             style="@style/FastScrollerPopup"
-            android:layout_below="@+id/search_container"
+            android:layout_alignTop="@+id/apps_list_view"
             android:id="@+id/fast_scroller_popup"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="@dimen/container_fastscroll_popup_margin" />
 
+        <!-- Note: we are reusing/repurposing a system attribute for search layout, because of a
+         platform bug, which prevents using custom attributes in <include> tag -->
         <include
-            layout="@layout/all_apps_search_container"
+            layout="?android:attr/keyboardLayout"
             android:id="@+id/search_container" />
 
     </com.android.launcher3.allapps.AllAppsRecyclerViewContainerView>

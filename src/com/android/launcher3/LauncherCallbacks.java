@@ -97,6 +97,4 @@ public interface LauncherCallbacks {
     int getSearchBarHeight();
 
     boolean shouldShowDiscoveryBounce();
-
-    void onExtractedColorsChanged();
 }

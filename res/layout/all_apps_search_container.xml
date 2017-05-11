@@ -15,28 +15,28 @@
 -->
 <com.android.launcher3.allapps.search.AppsSearchContainerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/search_container"
     android:layout_width="match_parent"
     android:layout_height="@dimen/all_apps_search_bar_height"
     android:layout_gravity="center|top"
     android:gravity="center|bottom"
-    android:id="@+id/search_container"
     android:saveEnabled="false">
 
     <com.android.launcher3.ExtendedEditText
         android:id="@+id/search_box_input"
         android:layout_width="match_parent"
         android:layout_height="@dimen/all_apps_search_bar_field_height"
-        android:background="@android:color/transparent"
         android:layout_gravity="bottom"
+        android:background="@android:color/transparent"
         android:focusableInTouchMode="true"
         android:gravity="center"
+        android:hint="@string/all_apps_search_bar_hint"
         android:imeOptions="actionSearch|flagNoExtractUi"
         android:inputType="text|textNoSuggestions|textCapWords"
         android:maxLines="1"
         android:scrollHorizontally="true"
         android:singleLine="true"
         android:textColor="?android:attr/textColorSecondary"
-        android:hint="@string/all_apps_search_bar_hint"
         android:textColorHint="@drawable/all_apps_search_hint"
         android:textSize="16sp" />
 </com.android.launcher3.allapps.search.AppsSearchContainerLayout>

@@ -28,6 +28,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dynamicui.colorextraction.ColorExtractor;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -82,6 +83,7 @@ public class ExtractedColors {
 
     private static final String COLOR_SEPARATOR = ",";
 
+    private final ArrayList<OnChangeListener> mListeners = new ArrayList<>();
     private final int[] mColors;
 
     public ExtractedColors() {
@@ -175,5 +177,23 @@ public class ExtractedColors {
             setColorAtIndex(ALLAPPS_GRADIENT_MAIN_INDEX, Color.WHITE);
             setColorAtIndex(ALLAPPS_GRADIENT_SECONDARY_INDEX, Color.WHITE);
         }
+    }
+
+    public void addOnChangeListener(OnChangeListener listener) {
+        mListeners.add(listener);
+    }
+
+    public void notifyChange() {
+        for (OnChangeListener listener : mListeners) {
+            listener.onExtractedColorsChanged();
+        }
+    }
+
+    /**
+     * Interface for listening for extracted color changes
+     */
+    public interface OnChangeListener {
+
+        void onExtractedColorsChanged();
     }
 }

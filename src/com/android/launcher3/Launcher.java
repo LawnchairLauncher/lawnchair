@@ -212,6 +212,8 @@ public class Launcher extends BaseActivity
     private static int NEW_APPS_ANIMATION_INACTIVE_TIMEOUT_SECONDS = 5;
     @Thunk static int NEW_APPS_ANIMATION_DELAY = 500;
 
+    private final ExtractedColors mExtractedColors = new ExtractedColors();
+
     @Thunk Workspace mWorkspace;
     private View mLauncherView;
     @Thunk DragLayer mDragLayer;
@@ -260,7 +262,6 @@ public class Launcher extends BaseActivity
     private LauncherModel mModel;
     private ModelWriter mModelWriter;
     private IconCache mIconCache;
-    private ExtractedColors mExtractedColors;
     private LauncherAccessibilityDelegate mAccessibilityDelegate;
     private Handler mHandler = new Handler();
     private boolean mIsResumeFromActionScreenOff;
@@ -392,11 +393,10 @@ public class Launcher extends BaseActivity
         // LauncherModel load.
         mPaused = false;
 
-        mLauncherView = getLayoutInflater().inflate(R.layout.launcher, null);
+        mLauncherView = LayoutInflater.from(this).inflate(R.layout.launcher, null);
 
         setupViews();
         mDeviceProfile.layout(this, false /* notifyListeners */);
-        mExtractedColors = new ExtractedColors();
         loadExtractedColorsAndColorItems();
 
         mPopupDataProvider = new PopupDataProvider(this);
@@ -465,12 +465,7 @@ public class Launcher extends BaseActivity
     @Override
     public void onExtractedColorsChanged() {
         loadExtractedColorsAndColorItems();
-        if (mAllAppsController != null) {
-            mAllAppsController.onExtractedColorsChanged();
-        }
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onExtractedColorsChanged();
-        }
+        mExtractedColors.notifyChange();
     }
 
     public ExtractedColors getExtractedColors() {
