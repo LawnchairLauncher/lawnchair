@@ -660,14 +660,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
     }
 
     /**
-     * Returns true if the view can show custom shortcuts.
-     */
-    public boolean hasDeepShortcuts() {
-        return !mLauncher.getPopupDataProvider().getShortcutIdsForItem((ItemInfo) getTag())
-                .isEmpty();
-    }
-
-    /**
      * Interface to be implemented by the grand parent to allow click shadow effect.
      */
     public interface BubbleTextShadowHandler {
