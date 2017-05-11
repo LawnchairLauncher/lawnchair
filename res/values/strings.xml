@@ -286,5 +286,13 @@
 
     <!-- Accessibility description for the shortcuts menu shown for an app. -->
     <string name="shortcuts_menu_description"><xliff:g id="number_of_shortcuts" example="3">%1$d</xliff:g> shortcuts for <xliff:g id="app_name" example="Messenger">%2$s</xliff:g></string>
+    <!-- Accessibility description when the shortcuts menu has notifications as well as shortcuts. -->
+    <string name="shortcuts_menu_with_notifications_description"><xliff:g id="number_of_shortcuts" example="3">%1$d</xliff:g> shortcuts and <xliff:g id="number_of_notifications" example="3">%2$d</xliff:g> notifications for <xliff:g id="app_name" example="Messenger">%3$s</xliff:g></string>
+
+    <!-- Accessibility action to dismiss a notification in the shortcuts menu for an icon. [CHAR_LIMIT=30] -->
+    <string name="action_dismiss_notification">Dismiss</string>
+
+    <!-- Accessibility confirmation for notification being dismissed. -->
+    <string name="notification_dismissed">Notification dismissed</string>
 
 </resources>
