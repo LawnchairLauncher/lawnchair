@@ -27,14 +27,19 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Pobrana aplikacja została wyłączona w trybie awaryjnym"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Widżety są wyłączone w trybie bezpiecznym"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"Skrót nie jest dostępny"</string>
+    <string name="home_screen" msgid="806512411299847073">"Ekran główny"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"Działania niestandardowe"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Aby dodać widżet, kliknij go i przytrzymaj."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Kliknij dwukrotnie i przytrzymaj, by wybrać widżet lub użyć działań niestandardowych."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Szerokość %1$d, wysokość %2$d"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Kliknij i przytrzymaj, by umieścić ręcznie"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"Dodaj automatycznie"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Szukaj w aplikacjach"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Wczytuję aplikacje…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Nie znaleziono aplikacji pasujących do zapytania „<xliff:g id="QUERY">%1$s</xliff:g>”"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Wyszukaj więcej aplikacji"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"Powiadomienia"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Brak miejsca na tym ekranie głównym."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Brak miejsca w Ulubionych"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Lista aplikacji"</string>
@@ -71,6 +76,14 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"Zezwalaj na obrót ekranu głównego"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Po obróceniu telefonu"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Obecne ustawienia wyświetlania nie pozwalają na obrót ekranu"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Dodaj ikonę do ekranu głównego"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"W przypadku nowych aplikacji"</string>
+    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
+    <skip />
+    <!-- no translation found for icon_shape_no_override (3678524428085518367) -->
+    <skip />
+    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
+    <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"Brak informacji"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Usuń"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Szukaj"</string>
@@ -78,6 +91,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Aplikacja, której odpowiada ta ikona, nie jest zainstalowana. Możesz usunąć ikonę lub wyszukać aplikację i zainstalować ją ręcznie."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Pobieranie elementu <xliff:g id="NAME">%1$s</xliff:g>, ukończono: <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> oczekuje na instalację"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> – widżety"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Dodaj do strony głównej"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Przenieś element tutaj"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Element został dodany do ekranu głównego"</string>

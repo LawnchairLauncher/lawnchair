@@ -16,23 +16,34 @@
 
 package com.android.launcher3.dynamicui;
 
+import android.annotation.TargetApi;
 import android.app.IntentService;
 import android.app.WallpaperManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapRegionDecoder;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.support.v7.graphics.Palette;
+import android.util.Log;
 
 import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
+
+import java.io.IOException;
 
 /**
  * Extracts colors from the wallpaper, and saves results to {@link LauncherProvider}.
  */
 public class ColorExtractionService extends IntentService {
+
+    private static final String TAG = "ColorExtractionService";
 
     /** The fraction of the wallpaper to extract colors for use on the hotseat. */
     private static final float HOTSEAT_FRACTION = 1f / 4;
@@ -45,32 +56,18 @@ public class ColorExtractionService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
         int wallpaperId = ExtractionUtils.getWallpaperId(wallpaperManager);
+
         ExtractedColors extractedColors = new ExtractedColors();
         if (wallpaperManager.getWallpaperInfo() != null) {
             // We can't extract colors from live wallpapers, so just use the default color always.
-            extractedColors.updatePalette(null);
             extractedColors.updateHotseatPalette(null);
         } else {
-            Bitmap wallpaper = ((BitmapDrawable) wallpaperManager.getDrawable()).getBitmap();
-            Palette palette = Palette.from(wallpaper).generate();
-            extractedColors.updatePalette(palette);
             // We extract colors for the hotseat and status bar separately,
             // since they only consider part of the wallpaper.
-            Palette hotseatPalette = Palette.from(wallpaper)
-                    .setRegion(0, (int) (wallpaper.getHeight() * (1f - HOTSEAT_FRACTION)),
-                            wallpaper.getWidth(), wallpaper.getHeight())
-                    .clearFilters()
-                    .generate();
-            extractedColors.updateHotseatPalette(hotseatPalette);
+            extractedColors.updateHotseatPalette(getHotseatPalette());
 
             if (FeatureFlags.LIGHT_STATUS_BAR) {
-                int statusBarHeight = getResources()
-                        .getDimensionPixelSize(R.dimen.status_bar_height);
-                Palette statusBarPalette = Palette.from(wallpaper)
-                        .setRegion(0, 0, wallpaper.getWidth(), statusBarHeight)
-                        .clearFilters()
-                        .generate();
-                extractedColors.updateStatusBarPalette(statusBarPalette);
+                extractedColors.updateStatusBarPalette(getStatusBarPalette());
             }
         }
 
@@ -83,5 +80,64 @@ public class ColorExtractionService extends IntentService {
                 LauncherSettings.Settings.CONTENT_URI,
                 LauncherSettings.Settings.METHOD_SET_EXTRACTED_COLORS_AND_WALLPAPER_ID,
                 null, extras);
+    }
+
+    @TargetApi(Build.VERSION_CODES.N)
+    private Palette getHotseatPalette() {
+        WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
+        if (Utilities.ATLEAST_NOUGAT) {
+            try (ParcelFileDescriptor fd = wallpaperManager
+                    .getWallpaperFile(WallpaperManager.FLAG_SYSTEM)) {
+                BitmapRegionDecoder decoder = BitmapRegionDecoder
+                        .newInstance(fd.getFileDescriptor(), false);
+                int height = decoder.getHeight();
+                Rect decodeRegion = new Rect(0, (int) (height * (1f - HOTSEAT_FRACTION)),
+                        decoder.getWidth(), height);
+                Bitmap bitmap = decoder.decodeRegion(decodeRegion, null);
+                decoder.recycle();
+                if (bitmap != null) {
+                    return Palette.from(bitmap).clearFilters().generate();
+                }
+            } catch (IOException | NullPointerException e) {
+                Log.e(TAG, "Fetching partial bitmap failed, trying old method", e);
+            }
+        }
+
+        Bitmap wallpaper = ((BitmapDrawable) wallpaperManager.getDrawable()).getBitmap();
+        return Palette.from(wallpaper)
+                .setRegion(0, (int) (wallpaper.getHeight() * (1f - HOTSEAT_FRACTION)),
+                        wallpaper.getWidth(), wallpaper.getHeight())
+                .clearFilters()
+                .generate();
+    }
+
+    @TargetApi(Build.VERSION_CODES.N)
+    private Palette getStatusBarPalette() {
+        WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
+        int statusBarHeight = getResources()
+                .getDimensionPixelSize(R.dimen.status_bar_height);
+
+        if (Utilities.ATLEAST_NOUGAT) {
+            try (ParcelFileDescriptor fd = wallpaperManager
+                    .getWallpaperFile(WallpaperManager.FLAG_SYSTEM)) {
+                BitmapRegionDecoder decoder = BitmapRegionDecoder
+                        .newInstance(fd.getFileDescriptor(), false);
+                Rect decodeRegion = new Rect(0, 0,
+                        decoder.getWidth(), statusBarHeight);
+                Bitmap bitmap = decoder.decodeRegion(decodeRegion, null);
+                decoder.recycle();
+                if (bitmap != null) {
+                    return Palette.from(bitmap).clearFilters().generate();
+                }
+            } catch (IOException | NullPointerException e) {
+                Log.e(TAG, "Fetching partial bitmap failed, trying old method", e);
+            }
+        }
+
+        Bitmap wallpaper = ((BitmapDrawable) wallpaperManager.getDrawable()).getBitmap();
+        return Palette.from(wallpaper)
+                .setRegion(0, 0, wallpaper.getWidth(), statusBarHeight)
+                .clearFilters()
+                .generate();
     }
 }

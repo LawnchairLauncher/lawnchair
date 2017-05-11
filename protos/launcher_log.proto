@@ -63,6 +63,8 @@ enum ItemType {
   FOLDER_ICON = 4;
   DEEPSHORTCUT = 5;
   SEARCHBOX = 6;
+  EDITTEXT = 7;
+  NOTIFICATION = 8;
 }
 
 // Used to define what type of container a Target would represent.
@@ -77,6 +79,7 @@ enum ContainerType {
   PREDICTION = 7;
   SEARCHRESULT = 8;
   DEEPSHORTCUTS = 9;
+  PINITEM = 10;    // confirmation screen
 }
 
 // Used to define what type of control a Target would represent.
@@ -91,7 +94,9 @@ enum ControlType {
   APPINFO_TARGET = 7;
   RESIZE_HANDLE = 8;
   VERTICAL_SCROLL = 9;
-  // HOME, BACK, GO_TO_PLAYSTORE
+  HOME_INTENT = 10; // Deprecated, use enum Command instead
+  BACK_BUTTON = 11; // Deprecated, use enum Command instead
+  // GO_TO_PLAYSTORE
 }
 
 // Used to define the action component of the LauncherEvent.
@@ -99,6 +104,7 @@ message Action {
   enum Type {
     TOUCH = 0;
     AUTOMATED = 1;
+    COMMAND = 2;
     // SOFT_KEYBOARD, HARD_KEYBOARD, ASSIST
   }
   enum Touch {
@@ -116,9 +122,20 @@ message Action {
     LEFT = 3;
     RIGHT = 4;
   }
+  enum Command {
+    HOME_INTENT = 0;
+    BACK = 1;
+    ENTRY = 2;    // Indicates entry to one of Launcher container type target
+                  // not using the HOME_INTENT
+    CANCEL = 3;   // Indicates that a confirmation screen was cancelled
+    CONFIRM = 4;  // Indicates thata confirmation screen was accepted
+  }
   optional Type type = 1;
   optional Touch touch = 2;
   optional Direction dir = 3;
+  optional Command command = 4;
+  // Log if the action was performed on outside of the container
+  optional bool is_outside = 5;
 }
 
 //
@@ -137,4 +154,6 @@ message LauncherEvent {
   optional int64 action_duration_millis = 4;
   optional int64 elapsed_container_millis = 5;
   optional int64 elapsed_session_millis = 6;
+
+  optional bool is_in_multi_window_mode = 7;
 }

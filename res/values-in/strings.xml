@@ -24,17 +24,22 @@
     <string name="work_folder_name" msgid="3753320833950115786">"Kantor"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Aplikasi tidak dipasang."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Aplikasi tidak tersedia"</string>
-    <string name="safemode_shortcut_error" msgid="9160126848219158407">"Aplikasi yang diunduh dinonaktifkan dalam mode Aman"</string>
+    <string name="safemode_shortcut_error" msgid="9160126848219158407">"Aplikasi yang didownload dinonaktifkan dalam mode Aman"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Widget dinonaktifkan dalam mode Aman"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"Pintasan tidak tersedia"</string>
+    <string name="home_screen" msgid="806512411299847073">"Layar utama"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"Tindakan khusus"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Sentuh lama untuk memilih widget."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Ketuk dua kalip &amp; tahan untuk mengambil widget atau menggunakan tindakan khusus."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"lebar %1$d x tinggi %2$d"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Sentuh &amp; tahan untuk menempatkan secara manual"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"Tambahkan otomatis"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Telusuri Apps"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Memuat Aplikasi..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Tidak ditemukan Aplikasi yang cocok dengan \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Telusuri aplikasi lainnya"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"Notifikasi"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Tidak ada ruang lagi pada layar Utama ini."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Tidak ada ruang tersisa di baki Favorit"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Daftar aplikasi"</string>
@@ -71,14 +76,23 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"Izinkan layar Utama diputar"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Saat ponsel diputar"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Setelan Tampilan Saat Ini tidak memungkinkan putaran"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Tambahkan ikon ke layar Utama"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Untuk aplikasi baru"</string>
+    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
+    <skip />
+    <!-- no translation found for icon_shape_no_override (3678524428085518367) -->
+    <skip />
+    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
+    <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"Tidak dikenal"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Buang"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Telusuri"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"Aplikasi ini belum terpasang"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Aplikasi untuk ikon ini belum dipasang. Anda dapat membuangnya, atau menelusuri aplikasi dan memasangnya secara manual."</string>
-    <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> sedang diunduh, <xliff:g id="PROGRESS">%2$s</xliff:g> selesai"</string>
+    <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> sedang didownload, <xliff:g id="PROGRESS">%2$s</xliff:g> selesai"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> menunggu dipasang"</string>
-    <string name="action_add_to_workspace" msgid="8902165848117513641">"Tambahkan ke layar Utama"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"Widget <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"Tambahkan ke Layar Utama"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Pindahkan item ke sini"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Item ditambahkan ke layar utama"</string>
     <string name="item_removed" msgid="851119963877842327">"Item dihapus"</string>

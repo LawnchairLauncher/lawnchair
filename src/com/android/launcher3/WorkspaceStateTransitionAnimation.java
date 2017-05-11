@@ -30,11 +30,11 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.DecelerateInterpolator;
 
+import com.android.launcher3.anim.AnimationLayerSet;
+import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.Thunk;
-
-import java.util.HashMap;
 
 /**
  * A convenience class to update a view's visibility state after an alpha animation.
@@ -226,7 +226,7 @@ public class WorkspaceStateTransitionAnimation {
     }
 
     public AnimatorSet getAnimationToState(Workspace.State fromState, Workspace.State toState,
-            boolean animated, HashMap<View, Integer> layerViews) {
+            boolean animated, AnimationLayerSet layerViews) {
         AccessibilityManager am = (AccessibilityManager)
                 mLauncher.getSystemService(Context.ACCESSIBILITY_SERVICE);
         final boolean accessibilityEnabled = am.isEnabled();
@@ -262,8 +262,7 @@ public class WorkspaceStateTransitionAnimation {
      * Starts a transition animation for the workspace.
      */
     private void animateWorkspace(final TransitionStates states, final boolean animated,
-                                  final int duration, final HashMap<View, Integer> layerViews,
-                                  final boolean accessibilityEnabled) {
+            final int duration, AnimationLayerSet layerViews, final boolean accessibilityEnabled) {
         // Cancel existing workspace animations and create a new animator set if requested
         cancelAnimation();
         if (animated) {
@@ -339,10 +338,9 @@ public class WorkspaceStateTransitionAnimation {
             if (animated) {
                 float oldBackgroundAlpha = cl.getBackgroundAlpha();
                 if (initialAlpha != finalAlpha) {
-                    LauncherViewPropertyAnimator alphaAnim =
-                            new LauncherViewPropertyAnimator(cl.getShortcutsAndWidgets());
-                    alphaAnim.alpha(finalAlpha)
-                            .setDuration(duration)
+                    Animator alphaAnim = ObjectAnimator.ofFloat(
+                            cl.getShortcutsAndWidgets(), View.ALPHA, finalAlpha);
+                    alphaAnim.setDuration(duration)
                             .setInterpolator(mZoomInInterpolator);
                     mStateAnimator.play(alphaAnim);
                 }
@@ -358,7 +356,8 @@ public class WorkspaceStateTransitionAnimation {
                 cl.setShortcutAndWidgetAlpha(finalAlpha);
             }
 
-            if (Workspace.isQsbContainerPage(i)) {
+            if (Workspace.isQsbContainerPage(i) &&
+                    states.stateIsNormal && mWorkspaceFadeInAdjacentScreens) {
                 if (animated) {
                     Animator anim = mWorkspace.mQsbAlphaController
                             .animateAlphaAtIndex(finalAlpha, Workspace.QSB_ALPHA_INDEX_PAGE_SCROLL);
@@ -374,34 +373,29 @@ public class WorkspaceStateTransitionAnimation {
 
         final ViewGroup overviewPanel = mLauncher.getOverviewPanel();
 
-        final View qsbContainer = mLauncher.getQsbContainer();
-
         Animator qsbAlphaAnimation = mWorkspace.mQsbAlphaController
                 .animateAlphaAtIndex(finalQsbAlpha, Workspace.QSB_ALPHA_INDEX_STATE_CHANGE);
 
         if (animated) {
-            LauncherViewPropertyAnimator scale = new LauncherViewPropertyAnimator(mWorkspace);
-            scale.scaleX(mNewScale)
-                    .scaleY(mNewScale)
-                    .translationY(finalWorkspaceTranslationY)
-                    .setDuration(duration)
-                    .setInterpolator(mZoomInInterpolator);
+            Animator scale = LauncherAnimUtils.ofPropertyValuesHolder(mWorkspace,
+                    new PropertyListBuilder().scale(mNewScale)
+                            .translationY(finalWorkspaceTranslationY).build())
+                    .setDuration(duration);
+            scale.setInterpolator(mZoomInInterpolator);
             mStateAnimator.play(scale);
             Animator hotseatAlpha = mWorkspace.createHotseatAlphaAnimator(finalHotseatAlpha);
 
-            LauncherViewPropertyAnimator overviewPanelAlpha =
-                    new LauncherViewPropertyAnimator(overviewPanel).alpha(finalOverviewPanelAlpha);
+            Animator overviewPanelAlpha = ObjectAnimator.ofFloat(
+                    overviewPanel, View.ALPHA, finalOverviewPanelAlpha);
             overviewPanelAlpha.addListener(new AlphaUpdateListener(overviewPanel,
                     accessibilityEnabled));
 
             // For animation optimization, we may need to provide the Launcher transition
             // with a set of views on which to force build and manage layers in certain scenarios.
-            layerViews.put(overviewPanel, LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
-            layerViews.put(qsbContainer, LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
-            layerViews.put(mLauncher.getHotseat(),
-                    LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
-            layerViews.put(mWorkspace.getPageIndicator(),
-                    LauncherStateTransitionAnimation.BUILD_AND_SET_LAYER);
+            layerViews.addView(overviewPanel);
+            layerViews.addView(mLauncher.getQsbContainer());
+            layerViews.addView(mLauncher.getHotseat());
+            layerViews.addView(mWorkspace.getPageIndicator());
 
             if (states.workspaceToOverview) {
                 hotseatAlpha.setInterpolator(new DecelerateInterpolator(2));
@@ -426,6 +420,11 @@ public class WorkspaceStateTransitionAnimation {
                 }
 
                 @Override
+                public void onAnimationStart(Animator animation) {
+                    mWorkspace.getPageIndicator().setShouldAutoHide(!states.stateIsSpringLoaded);
+                }
+
+                @Override
                 public void onAnimationEnd(Animator animation) {
                     mStateAnimator = null;
                     if (canceled) return;
@@ -438,6 +437,7 @@ public class WorkspaceStateTransitionAnimation {
         } else {
             overviewPanel.setAlpha(finalOverviewPanelAlpha);
             AlphaUpdateListener.updateVisibility(overviewPanel, accessibilityEnabled);
+            mWorkspace.getPageIndicator().setShouldAutoHide(!states.stateIsSpringLoaded);
 
             qsbAlphaAnimation.end();
             mWorkspace.createHotseatAlphaAnimator(finalHotseatAlpha).end();

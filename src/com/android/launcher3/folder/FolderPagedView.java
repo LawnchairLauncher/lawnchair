@@ -31,7 +31,6 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.FocusHelper.PagedFolderKeyEventListener;
-import com.android.launcher3.IconCache;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
@@ -46,6 +45,7 @@ import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.pageindicators.PageIndicator;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
@@ -73,7 +73,6 @@ public class FolderPagedView extends PagedView {
     public final boolean mIsRtl;
 
     private final LayoutInflater mInflater;
-    private final IconCache mIconCache;
     private final ViewGroupFocusHelper mFocusIndicatorHelper;
 
     @Thunk final HashMap<View, Runnable> mPendingAnimations = new HashMap<>();
@@ -98,21 +97,18 @@ public class FolderPagedView extends PagedView {
 
     public FolderPagedView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        LauncherAppState app = LauncherAppState.getInstance();
-
-        InvariantDeviceProfile profile = app.getInvariantDeviceProfile();
+        InvariantDeviceProfile profile = LauncherAppState.getIDP(context);
         mMaxCountX = profile.numFolderColumns;
         mMaxCountY = profile.numFolderRows;
 
         mMaxItemsPerPage = mMaxCountX * mMaxCountY;
 
         mInflater = LayoutInflater.from(context);
-        mIconCache = app.getIconCache();
 
         mIsRtl = Utilities.isRtl(getResources());
         setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
 
-        setEdgeGlowColor(getResources().getColor(R.color.folder_edge_effect_color));
+        setEdgeGlowColor(Themes.getAttrColor(context, android.R.attr.colorEdgeEffect));
         mFocusIndicatorHelper = new ViewGroupFocusHelper(this);
     }
 
@@ -231,7 +227,7 @@ public class FolderPagedView extends PagedView {
     public View createNewView(ShortcutInfo item) {
         final BubbleTextView textView = (BubbleTextView) mInflater.inflate(
                 R.layout.folder_application, null, false);
-        textView.applyFromShortcutInfo(item, mIconCache);
+        textView.applyFromShortcutInfo(item);
         textView.setOnClickListener(mFolder);
         textView.setOnLongClickListener(mFolder);
         textView.setOnFocusChangeListener(mFocusIndicatorHelper);
@@ -253,10 +249,9 @@ public class FolderPagedView extends PagedView {
 
     private CellLayout createAndAddNewPage() {
         DeviceProfile grid = Launcher.getLauncher(getContext()).getDeviceProfile();
-        CellLayout page = new CellLayout(getContext());
+        CellLayout page = (CellLayout) mInflater.inflate(R.layout.folder_page, this, false);
         page.setCellDimensions(grid.folderCellWidthPx, grid.folderCellHeightPx);
         page.getShortcutsAndWidgets().setMotionEventSplittingEnabled(false);
-        page.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
         page.setInvertIfRtl(true);
         page.setGridSize(mGridCountX, mGridCountY);
 
@@ -342,7 +337,7 @@ public class FolderPagedView extends PagedView {
                     info.cellY = newY;
                     info.rank = rank;
                     if (saveChanges) {
-                        LauncherModel.addOrMoveItemInDatabase(getContext(), info,
+                        mFolder.mLauncher.getModelWriter().addOrMoveItemInDatabase(info,
                                 mFolder.mInfo.id, 0, info.cellX, info.cellY);
                     }
                 }
@@ -487,7 +482,7 @@ public class FolderPagedView extends PagedView {
      * Scrolls the current view by a fraction
      */
     public void showScrollHint(int direction) {
-        float fraction = (direction == DragController.SCROLL_LEFT) ^ mIsRtl
+        float fraction = (direction == Folder.SCROLL_LEFT) ^ mIsRtl
                 ? -SCROLL_HINT_FRACTION : SCROLL_HINT_FRACTION;
         int hint = (int) (fraction * getWidth());
         int scroll = getScrollForPage(getNextPage()) + hint;
@@ -524,12 +519,11 @@ public class FolderPagedView extends PagedView {
     }
 
     @Override
-    protected void onPageBeginMoving() {
-        super.onPageBeginMoving();
-        getVisiblePages(sTempPosArray);
-        for (int i = sTempPosArray[0]; i <= sTempPosArray[1]; i++) {
-            verifyVisibleHighResIcons(i);
-        }
+    protected void onPageBeginTransition() {
+        super.onPageBeginTransition();
+        // Ensure that adjacent pages have high resolution icons
+        verifyVisibleHighResIcons(getCurrentPage() - 1);
+        verifyVisibleHighResIcons(getCurrentPage() + 1);
     }
 
     /**
@@ -679,7 +673,7 @@ public class FolderPagedView extends PagedView {
     }
 
     @Override
-    protected void getEdgeVerticalPostion(int[] pos) {
+    protected void getEdgeVerticalPosition(int[] pos) {
         pos[0] = 0;
         pos[1] = getViewportHeight();
     }

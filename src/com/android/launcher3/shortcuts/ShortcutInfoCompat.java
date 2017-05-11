@@ -22,11 +22,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
 import android.os.Build;
+import android.os.UserHandle;
 
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.compat.DeferredLauncherActivityInfo;
-import com.android.launcher3.compat.LauncherActivityInfoCompat;
-import com.android.launcher3.compat.UserHandleCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 
 /**
@@ -46,15 +44,12 @@ public class ShortcutInfoCompat {
     }
 
     @TargetApi(Build.VERSION_CODES.N)
-    public Intent makeIntent(Context context) {
-        long serialNumber = UserManagerCompat.getInstance(context)
-                .getSerialNumberForUser(getUserHandle());
+    public Intent makeIntent() {
         return new Intent(Intent.ACTION_MAIN)
                 .addCategory(INTENT_CATEGORY)
                 .setComponent(getActivity())
                 .setPackage(getPackage())
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
-                .putExtra(ItemInfo.EXTRA_PROFILE, serialNumber)
                 .putExtra(EXTRA_SHORTCUT_ID, getId());
     }
 
@@ -86,8 +81,8 @@ public class ShortcutInfoCompat {
         return mShortcutInfo.getActivity();
     }
 
-    public UserHandleCompat getUserHandle() {
-        return UserHandleCompat.fromUser(mShortcutInfo.getUserHandle());
+    public UserHandle getUserHandle() {
+        return mShortcutInfo.getUserHandle();
     }
 
     public boolean hasKeyFieldsOnly() {
@@ -121,9 +116,5 @@ public class ShortcutInfoCompat {
     @Override
     public String toString() {
         return mShortcutInfo.toString();
-    }
-
-    public LauncherActivityInfoCompat getActivityInfo(Context context) {
-        return new DeferredLauncherActivityInfo(getActivity(), getUserHandle(), context);
     }
 }

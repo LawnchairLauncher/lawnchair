@@ -16,10 +16,6 @@
 
 package com.android.launcher3.util;
 
-import android.annotation.TargetApi;
-import android.os.Build;
-
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class CircleRevealOutlineProvider extends RevealOutlineAnimation {
 
     private int mCenterX;

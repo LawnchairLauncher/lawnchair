@@ -11,9 +11,6 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
  */
 public class NoLocaleSqliteContext extends ContextWrapper {
 
-    // TODO: Use the flag defined in Context when the new SDK is available
-    private static final int MODE_NO_LOCALIZED_COLLATORS = 0x0010;
-
     public NoLocaleSqliteContext(Context context) {
         super(context);
     }
@@ -22,6 +19,6 @@ public class NoLocaleSqliteContext extends ContextWrapper {
     public SQLiteDatabase openOrCreateDatabase(
             String name, int mode, CursorFactory factory, DatabaseErrorHandler errorHandler) {
         return super.openOrCreateDatabase(
-                name, mode | MODE_NO_LOCALIZED_COLLATORS, factory, errorHandler);
+                name, mode | Context.MODE_NO_LOCALIZED_COLLATORS, factory, errorHandler);
     }
 }

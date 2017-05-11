@@ -15,11 +15,13 @@
      limitations under the License.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:launcher="http://schemas.android.com/apk/res-auto"
+      launcher:layout_ignoreInsets="true"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_gravity="center_horizontal|bottom"
       android:gravity="top"
-      android:orientation="horizontal" >
+      android:orientation="horizontal">
 
     <TextView
         android:id="@+id/wallpaper_button"

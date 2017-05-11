@@ -16,37 +16,19 @@
 
 package com.android.launcher3.model;
 
-import android.graphics.Bitmap;
-
-import com.android.launcher3.ItemInfo;
+import com.android.launcher3.ItemInfoWithIcon;
 
 /**
  * Represents a {@link Package} in the widget tray section.
  */
-public class PackageItemInfo extends ItemInfo {
+public class PackageItemInfo extends ItemInfoWithIcon {
 
     /**
-     * A bitmap version of the application icon.
-     */
-    public Bitmap iconBitmap;
-
-    /**
-     * Indicates whether we're using a low res icon.
-     */
-    public boolean usingLowResIcon;
-
-    /**
-     * Package name of the {@link ItemInfo}.
+     * Package name of the {@link PackageItemInfo}.
      */
     public String packageName;
 
-    /**
-     * Character that is used as a section name for the {@link ItemInfo#title}.
-     * (e.g., "G" will be stored if title is "Google")
-     */
-    public String titleSectionName;
-
-    PackageItemInfo(String packageName) {
+    public PackageItemInfo(String packageName) {
         this.packageName = packageName;
     }
 

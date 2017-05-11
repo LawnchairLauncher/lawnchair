@@ -37,6 +37,7 @@ import android.view.animation.OvershootInterpolator;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.Themes;
 
 /**
  * {@link PageIndicator} which shows dots per page. The active page is shown with the current
@@ -69,18 +70,6 @@ public class PageIndicatorDots extends PageIndicator {
             obj.mCurrentPosition = pos;
             obj.invalidate();
             obj.invalidateOutline();
-        }
-    };
-
-    /**
-     * Listener for keep running the animation until the final state is reached.
-     */
-    private final AnimatorListenerAdapter mAnimCycleListener = new AnimatorListenerAdapter() {
-
-        @Override
-        public void onAnimationEnd(Animator animation) {
-            mAnimator = null;
-            animateToPostion(mFinalPosition);
         }
     };
 
@@ -123,8 +112,8 @@ public class PageIndicatorDots extends PageIndicator {
         mDotRadius = getResources().getDimension(R.dimen.page_indicator_dot_size) / 2;
         setOutlineProvider(new MyOutlineProver());
 
-        mActiveColor = Utilities.getColorAccent(context);
-        mInActiveColor = getResources().getColor(R.color.page_indicator_dot_color);
+        mActiveColor = Themes.getColorAccent(context);
+        mInActiveColor = Themes.getAttrColor(context, android.R.attr.colorControlHighlight);
 
         mIsRtl = Utilities.isRtl(getResources());
     }
@@ -136,22 +125,25 @@ public class PageIndicatorDots extends PageIndicator {
                 currentScroll = totalScroll - currentScroll;
             }
             int scrollPerPage = totalScroll / (mNumPages - 1);
-            int absScroll = mActivePage * scrollPerPage;
-            float scrollThreshold = SHIFT_THRESHOLD * scrollPerPage;
+            int pageToLeft = currentScroll / scrollPerPage;
+            int pageToLeftScroll = pageToLeft * scrollPerPage;
+            int pageToRightScroll = pageToLeftScroll + scrollPerPage;
 
-            if ((absScroll - currentScroll) > scrollThreshold) {
-                // current scroll is before absolute scroll
-                animateToPostion(mActivePage - SHIFT_PER_ANIMATION);
-            } else if ((currentScroll - absScroll) > scrollThreshold) {
-                // current scroll is ahead of absolute scroll
-                animateToPostion(mActivePage + SHIFT_PER_ANIMATION);
+            float scrollThreshold = SHIFT_THRESHOLD * scrollPerPage;
+            if (currentScroll < pageToLeftScroll + scrollThreshold) {
+                // scroll is within the left page's threshold
+                animateToPosition(pageToLeft);
+            } else if (currentScroll > pageToRightScroll - scrollThreshold) {
+                // scroll is far enough from left page to go to the right page
+                animateToPosition(pageToLeft + 1);
             } else {
-                animateToPostion(mActivePage);
+                // scroll is between left and right page
+                animateToPosition(pageToLeft + SHIFT_PER_ANIMATION);
             }
         }
     }
 
-    private void animateToPostion(float position) {
+    private void animateToPosition(float position) {
         mFinalPosition = position;
         if (Math.abs(mCurrentPosition - mFinalPosition) < SHIFT_THRESHOLD) {
             mCurrentPosition = mFinalPosition;
@@ -160,7 +152,7 @@ public class PageIndicatorDots extends PageIndicator {
             float positionForThisAnim = mCurrentPosition > mFinalPosition ?
                     mCurrentPosition - SHIFT_PER_ANIMATION : mCurrentPosition + SHIFT_PER_ANIMATION;
             mAnimator = ObjectAnimator.ofFloat(this, CURRENT_POSITION, positionForThisAnim);
-            mAnimator.addListener(mAnimCycleListener);
+            mAnimator.addListener(new AnimationCycleListener());
             mAnimator.setDuration(ANIMATION_DURATION);
             mAnimator.start();
         }
@@ -168,7 +160,6 @@ public class PageIndicatorDots extends PageIndicator {
 
     public void stopAllAnimations() {
         if (mAnimator != null) {
-            mAnimator.removeAllListeners();
             mAnimator.cancel();
             mAnimator = null;
         }
@@ -320,6 +311,27 @@ public class PageIndicatorDots extends PageIndicator {
                         (int) activeRect.bottom,
                         mDotRadius
                 );
+            }
+        }
+    }
+
+    /**
+     * Listener for keep running the animation until the final state is reached.
+     */
+    private class AnimationCycleListener extends AnimatorListenerAdapter {
+
+        private boolean mCancelled = false;
+
+        @Override
+        public void onAnimationCancel(Animator animation) {
+            mCancelled = true;
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            if (!mCancelled) {
+                mAnimator = null;
+                animateToPosition(mFinalPosition);
             }
         }
     }

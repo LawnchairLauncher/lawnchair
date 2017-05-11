@@ -19,6 +19,7 @@ package com.android.launcher3.accessibility;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherModel;
@@ -40,8 +41,10 @@ public class ShortcutMenuAccessibilityDelegate extends LauncherAccessibilityDele
     }
 
     @Override
-    protected void addActions(View host, AccessibilityNodeInfo info) {
-        info.addAction(mActions.get(ADD_TO_WORKSPACE));
+    public void addSupportedActions(View host, AccessibilityNodeInfo info, boolean fromKeyboard) {
+        if ((host.getParent() instanceof DeepShortcutView)) {
+            info.addAction(mActions.get(ADD_TO_WORKSPACE));
+        }
     }
 
     @Override
@@ -56,13 +59,13 @@ public class ShortcutMenuAccessibilityDelegate extends LauncherAccessibilityDele
             Runnable onComplete = new Runnable() {
                 @Override
                 public void run() {
-                    LauncherModel.addItemToDatabase(mLauncher, info,
+                    mLauncher.getModelWriter().addItemToDatabase(info,
                             LauncherSettings.Favorites.CONTAINER_DESKTOP,
                             screenId, coordinates[0], coordinates[1]);
                     ArrayList<ItemInfo> itemList = new ArrayList<>();
                     itemList.add(info);
                     mLauncher.bindItems(itemList, 0, itemList.size(), true);
-                    mLauncher.closeShortcutsContainer();
+                    AbstractFloatingView.closeAllOpenViews(mLauncher);
                     announceConfirmation(R.string.item_added_to_workspace);
                 }
             };

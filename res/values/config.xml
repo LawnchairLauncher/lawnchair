@@ -13,6 +13,26 @@
      easily override the app name without providing all translations -->
     <string name="derived_app_name" translatable="false">@string/app_name</string>
 
+    <!-- Values for icon shape overrides. These should correspond to entries defined
+     in icon_shape_override_paths_names -->
+    <string-array name="icon_shape_override_paths_values">
+        <item></item>
+        <item translatable="false">M50,0L100,0 100,100 0,100 0,0z</item>
+        <item translatable="false">M50,0L80,0 A20,20,0,0 1 100,20 L100,80 A20,20,0,0 1 80,100 L20,100 A20,20,0,0 1 0,80 L 0,20 A20,20,0,0 1 20,0z</item>
+        <item translatable="false">M50,0 C10,0 0,10 0,50 0,90 10,100 50,100 90,100 100,90 100,50 100,10 90,0 50,0 Z</item>
+        <item translatable="false">M50 0A50 50,0,1,1,50 100A50 50,0,1,1,50 0</item>
+        <item translatable="false">M50,0A50,30 0,0,1 100,30V70A50,30 0,0,1 0,70V30A50,30 0,0,1 50,0z</item>
+    </string-array>
+
+    <string-array name="icon_shape_override_paths_names">
+        <!-- Option to not change the icon shape on home screen. [CHAR LIMIT=50] -->
+        <item>@string/icon_shape_no_override</item>
+        <item translatable="false">Square</item>
+        <item translatable="false">Rounded corner rect</item>
+        <item translatable="false">Squircle</item>
+        <item translatable="false">Circle</item>
+        <item translatable="false">Cylinder</item>
+    </string-array>
 <!-- DragController -->
     <item type="id" name="drag_event_parity" />
 
@@ -72,12 +92,14 @@
          filter the activities shown in the launcher. Can be empty. -->
     <string name="app_filter_class" translatable="false"></string>
 
-    <!-- List of package names that com.android.launcher3.action.LAUNCH
-     should be targeting. Can be empty. -->
-    <array name="launch_broadcast_targets" translatable="false"></array>
-
     <!-- Name of an icon provider class. -->
     <string name="icon_provider_class" translatable="false"></string>
+
+    <!-- Name of a drawable factory class. -->
+    <string name="drawable_factory_class" translatable="false"></string>
+
+    <!-- Name of a user event dispatcher class. -->
+    <string name="user_event_dispatcher_class" translatable="false"></string>
 
     <!-- Package name of the default wallpaper picker. -->
     <string name="wallpaper_picker_package" translatable="false"></string>
@@ -91,12 +113,16 @@
     <!-- View ID used by cell layout to jail its content -->
     <item type="id" name="cell_layout_jail_id" />
 
-<!-- Deep shortcuts -->
+    <!-- View ID used by PreviewImageView to cache its instance -->
+    <item type="id" name="preview_image_id" />
+
+<!-- Popup items -->
     <integer name="config_deepShortcutOpenDuration">220</integer>
     <integer name="config_deepShortcutArrowOpenDuration">80</integer>
     <integer name="config_deepShortcutOpenStagger">40</integer>
     <integer name="config_deepShortcutCloseDuration">150</integer>
     <integer name="config_deepShortcutCloseStagger">20</integer>
+    <integer name="config_removeNotificationViewDuration">300</integer>
 
 <!-- Accessibility actions -->
     <item type="id" name="action_remove" />

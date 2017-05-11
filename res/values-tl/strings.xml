@@ -27,14 +27,19 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Naka-disable ang na-download na app sa Safe mode"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Naka-disable ang mga widget sa Safe mode"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"Hindi available ang shortcut"</string>
+    <string name="home_screen" msgid="806512411299847073">"Home screen"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"Mga custom na pagkilos"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Pindutin nang matagal upang kumuha ng widget."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"I-double tap nang matagal upang pumili ng widget o gumamit ng mga custom na pagkilos."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d ang lapad at %2$d ang taas"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Pindutin nang matagal upang manual na ilagay"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"Awtomatikong idagdag"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Mga App sa Paghahanap"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Nilo-load ang Mga App…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Walang nakitang Mga App na tumutugma sa \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Maghanap ng higit pang mga app"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"Mga Notification"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Wala nang lugar sa Home screen na ito."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Wala nang lugar sa tray ng Mga Paborito"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Listahan ng mga app"</string>
@@ -71,6 +76,14 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"Payagan ang pag-rotate ng Home screen"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Kailan maro-rotate ang telepono"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Hindi pinahihintulutan ng kasalukuyang setting ng Display ang pag-rotate"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Idagdag ang icon sa Home screen"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Para sa mga bagong app"</string>
+    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
+    <skip />
+    <!-- no translation found for icon_shape_no_override (3678524428085518367) -->
+    <skip />
+    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
+    <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"Hindi kilala"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Alisin"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Maghanap"</string>
@@ -78,6 +91,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Hindi naka-install ang app para sa icon na ito. Maaari mo itong alisin, o maaari mong hanapin ang app at i-install ito nang manu-mano."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Dina-download na ang <xliff:g id="NAME">%1$s</xliff:g>, tapos na ang <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"Hinihintay nang mag-install ang <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"Mga widget ng <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Idagdag sa Home screen"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Ilipat ang item dito"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Naidagdag sa home screen ang item"</string>

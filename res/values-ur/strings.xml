@@ -27,14 +27,19 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"ڈاؤن لوڈ کردہ ایپ کو محفوظ وضع میں غیر فعال کر دیا گیا"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"ویجیٹس کو محفوظ وضع میں غیر فعال کر دیا گیا"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"شارٹ کٹ دستیاب نہیں ہے"</string>
+    <string name="home_screen" msgid="806512411299847073">"ہوم اسکرین"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"حسب ضرورت کارروائیاں"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"کوئی ویجیٹ منتخب کرنے کیلئے ٹچ کریں اور پکڑے رہیں۔"</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"کوئی ویجٹ منتخب کرنے یا حسب ضرورت کاروائیاں استعمال کرنے کیلئے دو بار تھپتھپائیں اور پکڑے رکھیں۔"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"‏%1$d چوڑا اور ‎%2$d اونچا"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"‏دستی طور پر رکھنے کیلئے ‎&amp; ٹچ کرکے ہولڈ کریں"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"خود کار طور پر شامل کریں"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"ایپس تلاش کریں"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"ایپس لوڈ ہو رہی ہیں…"</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" سے مماثل کوئی ایپس نہیں ملیں"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"مزید ایپس تلاش کریں"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"اطلاعات"</string>
     <string name="out_of_space" msgid="4691004494942118364">"اس ہوم اسکرین پر مزید کوئی گنجائش نہیں ہے۔"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"پسندیدہ ٹرے میں مزید کوئی گنجائش نہیں ہے"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ایپس کی فہرست"</string>
@@ -71,6 +76,11 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"ہوم اسکرین گھمانے کی اجازت دیں"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"جب فون گھمایا جاتا ہے"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"موجودہ ڈسپلے ترتیب گھمانے کی اجازت نہیں دیتی"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"آئیکن کو ہوم اسکرین میں شامل کریں"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"نئی ایپس کیلئے"</string>
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"آئیکن کی شکل تبدیل کریں"</string>
+    <string name="icon_shape_no_override" msgid="3678524428085518367">"تبدیل نہ کریں"</string>
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"آئيکن کی شکل کی تبدیلیاں لاگو ہو رہی ہیں"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"نامعلوم"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ہٹائیں"</string>
     <string name="abandoned_search" msgid="891119232568284442">"تلاش کریں"</string>
@@ -78,6 +88,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"اس آئیکن کیلئے ایپ انسٹال کردہ نہیں ہے۔ آپ اسے ہٹا سکتے ہیں یا ایپ کو تلاش کر سکتے اور دستی طور پر اسے انسٹال کر سکتے ہیں۔"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ڈاؤن لوڈ ہو رہا ہے، <xliff:g id="PROGRESS">%2$s</xliff:g> مکمل ہو گیا"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> انسٹال ہونے کا انتظار کر رہی ہے"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> ویجیٹس"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"ہوم اسکرین میں شامل کریں"</string>
     <string name="action_move_here" msgid="2170188780612570250">"آئٹم یہاں منتقل کریں"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"آئٹم کو ہوم اسکرین میں شامل کر دیا گیا"</string>

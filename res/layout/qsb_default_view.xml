@@ -23,7 +23,7 @@
         android:layout_height="48dp"
         android:layout_margin="16dp"
         android:layout_gravity="center_vertical"
-        android:background="@drawable/quantum_panel_shape"
+        android:background="@drawable/round_rect_primary"
         android:elevation="2dp"
         android:orientation="horizontal">
 
@@ -35,7 +35,7 @@
             android:gravity="center_vertical"
             android:paddingStart="16dp"
             android:text="@string/abandoned_search"
-            android:textColor="@color/quantum_panel_text_color"
+            android:textColor="?android:attr/textColorSecondary"
             android:textAppearance="?android:textAppearanceMedium"
             android:clickable="true"
             android:background="?android:attr/selectableItemBackground" />
@@ -46,7 +46,7 @@
             android:visibility="gone"
             android:layout_height="match_parent"
             android:src="@drawable/ic_setting"
-            android:tint="@color/quantum_panel_text_color"
+            android:tint="?android:attr/textColorSecondary"
             android:contentDescription="@string/gadget_setup_text"
             android:padding="8dp"
             android:background="?android:attr/selectableItemBackground" />
