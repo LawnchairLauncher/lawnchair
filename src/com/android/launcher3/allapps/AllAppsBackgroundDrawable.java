@@ -25,6 +25,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.view.Gravity;
 
+import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 
 /**
@@ -119,7 +120,8 @@ public class AllAppsBackgroundDrawable extends Drawable {
         int finalAlphaI = (int) (finalAlpha * 255f);
         if (getAlpha() != finalAlphaI) {
             mBackgroundAnim = cancelAnimator(mBackgroundAnim);
-            mBackgroundAnim = ObjectAnimator.ofInt(this, "alpha", finalAlphaI);
+            mBackgroundAnim = ObjectAnimator.ofInt(this, LauncherAnimUtils.DRAWABLE_ALPHA,
+                    finalAlphaI);
             mBackgroundAnim.setDuration(duration);
             mBackgroundAnim.start();
         }
