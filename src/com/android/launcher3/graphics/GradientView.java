@@ -27,7 +27,8 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Interpolator;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -36,63 +37,50 @@ import com.android.launcher3.Utilities;
  * Draws a translucent radial gradient background from an initial state with progress 0.0 to a
  * final state with progress 1.0;
  */
-public class RadialGradientView extends View {
+public class GradientView extends View {
 
-    public static final int DEFAULT_COLOR_1 = Color.WHITE;
-    public static final int DEFAULT_COLOR_2 = Color.BLACK;
+    private static final int DEFAULT_COLOR = Color.WHITE;
+    private static final float GRADIENT_ALPHA_MASK_LENGTH_DP = 300;
+    private static final float FINAL_GRADIENT_ALPHA = 0.75f;
+    private static final boolean DEBUG = false;
 
     private static Bitmap sFinalGradientMask;
     private static Bitmap sAlphaGradientMask;
 
-    // TODO needs to be cleaned up once design finalizes
-    static class Config {
-        // dimens
-        final float gradientCenterX = 0.5f;
-        final float gradientCenterY = 1.05f;
-        final float gradientHeadStartFactor = 0.35f;
-        final float gradientAlphaMaskLengthDp = 700;
-        // interpolation
-        final boolean useGradientAlphaDecel = false;
-        final float decelFactorForGradientAlpha = 2f;
-        // colors
-        final float finalGradientAlpha = 0.75f;
-        int color1 = DEFAULT_COLOR_1;
-        int color2 = DEFAULT_COLOR_2;
-    }
-
+    private int mColor1 = DEFAULT_COLOR;
+    private int mColor2 = DEFAULT_COLOR;
+    private int mWidth;
+    private int mHeight;
     private final RectF mAlphaMaskRect = new RectF();
     private final RectF mFinalMaskRect = new RectF();
     private final Paint mPaint = new Paint();
-    private final Config mConfig = new Config();
-    private final DecelerateInterpolator mDecelInterpolator;
     private float mProgress;
-    private int mWidth;
-    private int mHeight;
     private final int mMaskHeight;
     private final Context mAppContext;
+    private final Paint mDebugPaint = DEBUG ? new Paint() : null;
+    private final Interpolator mAccelerator = new AccelerateInterpolator();
 
-    public RadialGradientView(Context context, AttributeSet attrs) {
+    public GradientView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.mAppContext = context.getApplicationContext();
-        this.mDecelInterpolator = new DecelerateInterpolator(mConfig.decelFactorForGradientAlpha);
-        this.mMaskHeight = Utilities.pxFromDp(mConfig.gradientAlphaMaskLengthDp,
+        this.mMaskHeight = Utilities.pxFromDp(GRADIENT_ALPHA_MASK_LENGTH_DP,
                 mAppContext.getResources().getDisplayMetrics());
 
         if (sFinalGradientMask == null) {
             sFinalGradientMask = Utilities.convertToAlphaMask(
-                    Utilities.createOnePixBitmap(), mConfig.finalGradientAlpha);
+                    Utilities.createOnePixBitmap(), FINAL_GRADIENT_ALPHA);
         }
         if (sAlphaGradientMask == null) {
             Bitmap alphaMaskFromResource = BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.all_apps_alpha_mask);
             sAlphaGradientMask = Utilities.convertToAlphaMask(
-                    alphaMaskFromResource, mConfig.finalGradientAlpha);
+                    alphaMaskFromResource, FINAL_GRADIENT_ALPHA);
         }
     }
 
     public void onExtractedColorsChanged(int color1, int color2) {
-        mConfig.color1 = color1;
-        mConfig.color2 = color2;
+        this.mColor1 = color1;
+        this.mColor2 = color2;
         if (mWidth + mHeight > 0) {
             createRadialShader();
         }
@@ -110,14 +98,15 @@ public class RadialGradientView extends View {
 
     // only being called when colors change
     private void createRadialShader() {
-        float radius = Math.max(mHeight, mWidth) * mConfig.gradientCenterY;
+        final float gradientCenterY = 1.05f;
+        float radius = Math.max(mHeight, mWidth) * gradientCenterY;
 
         float posScreenBottom = (radius - mHeight) / radius; // center lives below screen
         RadialGradient shader = new RadialGradient(
-                mWidth * mConfig.gradientCenterX,
-                mHeight * mConfig.gradientCenterY,
+                mWidth * 0.5f,
+                mHeight * gradientCenterY,
                 radius,
-                new int[] {mConfig.color1, mConfig.color1, mConfig.color2},
+                new int[] {mColor1, mColor1, mColor2},
                 new float[] {0f, posScreenBottom, 1f},
                 Shader.TileMode.CLAMP);
         mPaint.setShader(shader);
@@ -130,17 +119,22 @@ public class RadialGradientView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        float head = mConfig.gradientHeadStartFactor;
+        float head = 0.29f;
         float linearProgress = head + (mProgress * (1f - head));
-        float adjustProgress = mConfig.useGradientAlphaDecel
-                ? mDecelInterpolator.getInterpolation(linearProgress)
-                : linearProgress;
-        float startMaskY = (1f - adjustProgress) * mHeight - mMaskHeight * adjustProgress;
-
+        float startMaskY = (1f - linearProgress) * mHeight - mMaskHeight * linearProgress;
+        float startAlpha = 100;
+        float interpolatedAlpha = (255 - startAlpha) * mAccelerator.getInterpolation(mProgress);
+        mPaint.setAlpha((int) (startAlpha + interpolatedAlpha));
         mAlphaMaskRect.set(0, startMaskY, mWidth, startMaskY + mMaskHeight);
         mFinalMaskRect.set(0, startMaskY + mMaskHeight, mWidth, mHeight);
         canvas.drawBitmap(sAlphaGradientMask, null, mAlphaMaskRect, mPaint);
         canvas.drawBitmap(sFinalGradientMask, null, mFinalMaskRect, mPaint);
+
+        if (DEBUG) {
+            mDebugPaint.setColor(0xFF00FF00);
+            canvas.drawLine(0, startMaskY, mWidth, startMaskY, mDebugPaint);
+            canvas.drawLine(0, startMaskY + mMaskHeight, mWidth, startMaskY + mMaskHeight, mDebugPaint);
+        }
     }
 
 }

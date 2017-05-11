@@ -26,18 +26,22 @@ import android.graphics.RectF;
 import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Interpolator;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 
 public class ScrimView extends View {
 
-    // Config
-    private static final int MASK_HEIGHT_DP = 600;
-    private static final float MASK_START_LENGTH_FACTOR = 0.4f;
+    private static final boolean DEBUG = false;
+
+    private static final int MASK_HEIGHT_DP = 300;
+    private static final float MASK_START_LENGTH_FACTOR = 1f;
     private static final float FINAL_ALPHA = 0.87f;
     private static final int SCRIM_COLOR = ColorUtils.setAlphaComponent(
             Color.WHITE, (int) (FINAL_ALPHA * 255));
+    private static final boolean APPLY_ALPHA = true;
 
     private static Bitmap sFinalScrimMask;
     private static Bitmap sAlphaScrimMask;
@@ -50,6 +54,8 @@ public class ScrimView extends View {
     private final RectF mFinalMaskRect = new RectF();
     private final Paint mPaint = new Paint();
     private float mProgress;
+    private final Interpolator mAccelerator = new AccelerateInterpolator();
+    private final Paint mDebugPaint = DEBUG ? new Paint() : null;
 
     public ScrimView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -73,17 +79,22 @@ public class ScrimView extends View {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int width = MeasureSpec.getSize(widthMeasureSpec);
         mVisibleHeight = MeasureSpec.getSize(heightMeasureSpec);
-        int fullHeight = mVisibleHeight * 2 + mMaskHeight;
-        setMeasuredDimension(width, fullHeight);
+        setMeasuredDimension(width, mVisibleHeight * 2);
         setProgress(mProgress);
     }
 
     public void setProgress(float progress) {
         mProgress = progress;
         float initialY = mVisibleHeight - mHeadStart;
-        float fullTranslationY = mMaskHeight + initialY + mVisibleHeight;
-        float translationY = initialY - progress * fullTranslationY;
-        setTranslationY(translationY);
+        float fullTranslationY = mVisibleHeight;
+        float linTranslationY = initialY - progress * fullTranslationY;
+        setTranslationY(linTranslationY);
+
+        if (APPLY_ALPHA) {
+            int alpha = 55 + (int) (200f * mAccelerator.getInterpolation(progress));
+            mPaint.setAlpha(alpha);
+            invalidate();
+        }
     }
 
     @Override
@@ -92,6 +103,12 @@ public class ScrimView extends View {
         mFinalMaskRect.set(0, mMaskHeight, getWidth(), getHeight());
         canvas.drawBitmap(sAlphaScrimMask, null, mAlphaMaskRect, mPaint);
         canvas.drawBitmap(sFinalScrimMask, null, mFinalMaskRect, mPaint);
+
+        if (DEBUG) {
+            mDebugPaint.setColor(0xFF0000FF);
+            canvas.drawLine(0, mAlphaMaskRect.top, getWidth(), mAlphaMaskRect.top, mDebugPaint);
+            canvas.drawLine(0, mAlphaMaskRect.bottom, getWidth(), mAlphaMaskRect.bottom, mDebugPaint);
+        }
     }
 
 }

@@ -24,7 +24,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dynamicui.ExtractedColors;
-import com.android.launcher3.graphics.RadialGradientView;
+import com.android.launcher3.graphics.GradientView;
 import com.android.launcher3.graphics.ScrimView;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -47,7 +47,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private static final String TAG = "AllAppsTrans";
     private static final boolean DBG = false;
 
-    private final Interpolator mAccelInterpolator = new AccelerateInterpolator(2f);
+    private final Interpolator mWorkspaceAccelnterpolator = new AccelerateInterpolator(2f);
+    private final Interpolator mHotseatAccelInterpolator = new AccelerateInterpolator(.5f);
     private final Interpolator mDecelInterpolator = new DecelerateInterpolator(3f);
     private final Interpolator mFastOutSlowInInterpolator = new FastOutSlowInInterpolator();
     private final VerticalPullDetector.ScrollInterpolator mScrollInterpolator
@@ -95,7 +96,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     // Used in discovery bounce animation to provide the transition without workspace changing.
     private boolean mIsTranslateWithoutWorkspace = false;
     private AnimatorSet mDiscoBounceAnimation;
-    private RadialGradientView mGradientView;
+    private GradientView mGradientView;
     private ScrimView mScrimView;
 
     public AllAppsTransitionController(Launcher l) {
@@ -275,7 +276,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private void updateAllAppsBg(float progress) {
         // gradient
         if (mGradientView == null) {
-            mGradientView = (RadialGradientView) mLauncher.findViewById(R.id.gradient_bg);
+            mGradientView = (GradientView) mLauncher.findViewById(R.id.gradient_bg);
             mGradientView.setVisibility(View.VISIBLE);
             onExtractedColorsChanged();
         }
@@ -313,7 +314,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
         float workspaceHotseatAlpha = Utilities.boundToRange(progress, 0f, 1f);
         float alpha = 1 - workspaceHotseatAlpha;
-        float interpolation = mAccelInterpolator.getInterpolation(workspaceHotseatAlpha);
+        float workspaceAlpha = mWorkspaceAccelnterpolator.getInterpolation(workspaceHotseatAlpha);
+        float hotseatAlpha = mHotseatAccelInterpolator.getInterpolation(workspaceHotseatAlpha);
 
         int color = (Integer) mEvaluator.evaluate(mDecelInterpolator.getInterpolation(alpha),
                 mHotseatBackgroundColor, mAllAppsBackgroundColor);
@@ -331,18 +333,18 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
         if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
             mWorkspace.setHotseatTranslationAndAlpha(Workspace.Direction.Y, -mShiftRange + shiftCurrent,
-                    interpolation);
+                    hotseatAlpha);
         } else {
             mWorkspace.setHotseatTranslationAndAlpha(Workspace.Direction.Y,
                     PARALLAX_COEFFICIENT * (-mShiftRange + shiftCurrent),
-                    interpolation);
+                    hotseatAlpha);
         }
 
         if (mIsTranslateWithoutWorkspace) {
             return;
         }
         mWorkspace.setWorkspaceYTranslationAndAlpha(
-                PARALLAX_COEFFICIENT * (-mShiftRange + shiftCurrent), interpolation);
+                PARALLAX_COEFFICIENT * (-mShiftRange + shiftCurrent), workspaceAlpha);
 
         if (!mDetector.isDraggingState()) {
             mContainerVelocity = mDetector.computeVelocity(shiftCurrent - shiftPrevious,
