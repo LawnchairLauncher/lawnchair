@@ -21,7 +21,7 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
 	android-support-test \
 	ub-uiautomator \
 	legacy-android-test \
-        mockito-target-minus-junit4
+	mockito-target-minus-junit4
 
 LOCAL_SRC_FILES := $(call all-java-files-under, src)
 LOCAL_FULL_LIBS_MANIFEST_FILES := $(LOCAL_PATH)/AndroidManifest-common.xml
