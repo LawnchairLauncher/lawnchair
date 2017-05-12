@@ -136,6 +136,7 @@ public class BaseRecyclerViewFastScrollBar {
         mTmpRect.set(drawLeft, mThumbOffsetY, drawLeft + mMaxWidth, mThumbOffsetY + mThumbHeight);
         mThumbOffsetY = y;
         mTmpRect.union(drawLeft, mThumbOffsetY, drawLeft + mMaxWidth, mThumbOffsetY + mThumbHeight);
+        mTmpRect.offset(0, mRv.getPaddingTop());
         mRv.invalidate(mTmpRect);
     }
 
@@ -148,8 +149,9 @@ public class BaseRecyclerViewFastScrollBar {
             return;
         }
         int left = getDrawLeft();
+        int top = mRv.getPaddingTop();
         // Invalidate the whole scroll bar area.
-        mRv.invalidate(left, 0, left + mMaxWidth, mRv.getScrollbarTrackHeight());
+        mRv.invalidate(left, top, left + mMaxWidth, top + mRv.getScrollbarTrackHeight());
 
         mWidth = width;
         updateThumbPath();
@@ -265,6 +267,7 @@ public class BaseRecyclerViewFastScrollBar {
         if (!mIsRtl) {
             canvas.translate(mRv.getWidth(), 0);
         }
+        canvas.translate(0, mRv.getPaddingTop());
         // Draw the track
         int thumbWidth = mIsRtl ? mWidth : -mWidth;
         canvas.drawRect(0, 0, thumbWidth, mRv.getScrollbarTrackHeight(), mTrackPaint);

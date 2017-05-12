@@ -42,7 +42,7 @@ import com.android.launcher3.util.TouchController;
  * closer to top or closer to the page indicator.
  */
 public class AllAppsTransitionController implements TouchController, VerticalPullDetector.Listener,
-        View.OnLayoutChangeListener, ExtractedColors.OnChangeListener {
+         ExtractedColors.OnChangeListener, SearchUiManager.OnScrollRangeChangeListener {
 
     private static final String TAG = "AllAppsTrans";
     private static final boolean DBG = false;
@@ -531,21 +531,15 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mAppsView = appsView;
         mHotseat = hotseat;
         mWorkspace = workspace;
-        mHotseat.addOnLayoutChangeListener(this);
         mHotseat.bringToFront();
         mCaretController = new AllAppsCaretController(
                 mWorkspace.getPageIndicator().getCaretDrawable(), mLauncher);
+        mAppsView.getSearchUiManager().addOnScrollRangeChangeListener(this);
     }
 
     @Override
-    public void onLayoutChange(View v, int left, int top, int right, int bottom,
-            int oldLeft, int oldTop, int oldRight, int oldBottom) {
-        if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
-            mShiftRange = top;
-        } else {
-            mShiftRange = bottom;
-        }
+    public void onScrollRangeChanged(int scrollRange) {
+        mShiftRange = scrollRange;
         setProgress(mProgress);
     }
-
 }

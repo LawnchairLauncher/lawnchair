@@ -392,21 +392,14 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         return getPaddingTop() + y - offset;
     }
 
-    @Override
-    protected int getScrollbarTrackHeight() {
-        return super.getScrollbarTrackHeight()
-                - Launcher.getLauncher(getContext()).getDragLayer().getInsets().bottom;
-    }
-
     /**
      * Returns the available scroll height:
      *   AvailableScrollHeight = Total height of the all items - last page height
      */
     @Override
     protected int getAvailableScrollHeight() {
-        int paddedHeight = getCurrentScrollY(mApps.getAdapterItems().size(), 0);
-        int totalHeight = paddedHeight + getPaddingBottom();
-        return totalHeight - getScrollbarTrackHeight();
+        return getCurrentScrollY(mApps.getAdapterItems().size(), 0)
+                - getHeight() + getPaddingBottom();
     }
 
     /**

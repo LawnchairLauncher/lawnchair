@@ -48,11 +48,6 @@
     <dimen name="resize_frame_background_padding">24dp</dimen>
 
 <!-- Container -->
-    <!-- Note: This needs to match the fixed insets for the search box. -->
-    <dimen name="container_bounds_inset">8dp</dimen>
-    <!-- Notes: container_bounds_inset - quantum_panel_outer_padding -->
-    <dimen name="container_bounds_minus_quantum_panel_padding_inset">4dp</dimen>
-
     <dimen name="container_fastscroll_thumb_min_width">5dp</dimen>
     <dimen name="container_fastscroll_thumb_max_width">9dp</dimen>
     <dimen name="container_fastscroll_popup_margin">18dp</dimen>
@@ -65,9 +60,6 @@
     <dimen name="all_apps_button_scale_down">0dp</dimen>
     <dimen name="all_apps_search_bar_field_height">48dp</dimen>
     <dimen name="all_apps_search_bar_height">60dp</dimen>
-    <dimen name="all_apps_search_bar_icon_margin_right">4dp</dimen>
-    <dimen name="all_apps_search_bar_icon_margin_top">1dp</dimen>
-    <dimen name="all_apps_list_bottom_padding">8dp</dimen>
     <dimen name="all_apps_empty_search_message_top_offset">40dp</dimen>
     <dimen name="all_apps_empty_search_bg_top_offset">144dp</dimen>
     <dimen name="all_apps_background_canvas_width">700dp</dimen>
@@ -146,7 +138,7 @@
     <dimen name="blur_size_medium_outline">2dp</dimen>
     <dimen name="blur_size_click_shadow">4dp</dimen>
     <dimen name="click_shadow_high_shift">2dp</dimen>
-    <dimen name="drawable_shadow_size">2dp</dimen>
+    <dimen name="drawable_shadow_size">4dp</dimen>
 
 <!-- Pending widget -->
     <dimen name="pending_widget_min_padding">8dp</dimen>
