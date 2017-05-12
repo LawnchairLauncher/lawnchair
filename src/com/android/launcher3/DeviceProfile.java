@@ -231,9 +231,6 @@ public class DeviceProfile {
         profile.cellHeightPx = profile.iconSizePx + profile.iconDrawablePaddingPx
                 + Utilities.calculateTextHeight(profile.iconTextSizePx);
 
-        // The nav bar is black so we add bottom padding to visually center hotseat icons.
-        profile.hotseatBarBottomPaddingPx = profile.hotseatBarTopPaddingPx;
-
         // We use these scales to measure and layout the widgets using their full invariant profile
         // sizes and then draw them scaled and centered to fit in their multi-window mode cellspans.
         float appWidgetScaleX = (float) profile.getCellSize().x / getCellSize().x;
