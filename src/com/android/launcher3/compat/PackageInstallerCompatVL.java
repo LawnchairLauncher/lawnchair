@@ -24,6 +24,7 @@ import android.content.pm.PackageInstaller.SessionInfo;
 import android.os.Handler;
 import android.os.Process;
 import android.os.UserHandle;
+import android.text.TextUtils;
 import android.util.SparseArray;
 
 import com.android.launcher3.IconCache;
@@ -151,7 +152,9 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
     };
 
     private PackageInstaller.SessionInfo verify(PackageInstaller.SessionInfo sessionInfo) {
-        if (sessionInfo == null || sessionInfo.getInstallerPackageName() == null) {
+        if (sessionInfo == null
+                || sessionInfo.getInstallerPackageName() == null
+                || TextUtils.isEmpty(sessionInfo.getAppPackageName())) {
             return null;
         }
         String pkg = sessionInfo.getInstallerPackageName();
