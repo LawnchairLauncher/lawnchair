@@ -113,6 +113,7 @@ public abstract class BaseRecyclerView extends RecyclerView
      * it is already showing).
      */
     private boolean handleTouchEvent(MotionEvent ev) {
+        ev.offsetLocation(0, -getPaddingTop());
         int action = ev.getAction();
         int x = (int) ev.getX();
         int y = (int) ev.getY();
@@ -136,6 +137,7 @@ public abstract class BaseRecyclerView extends RecyclerView
                 mScrollbar.handleTouchEvent(ev, mDownX, mDownY, mLastY);
                 break;
         }
+        ev.offsetLocation(0, getPaddingTop());
         return mScrollbar.isDraggingThumb();
     }
 
@@ -162,7 +164,7 @@ public abstract class BaseRecyclerView extends RecyclerView
      * Returns the height of the fast scroll bar
      */
     protected int getScrollbarTrackHeight() {
-        return getHeight();
+        return getHeight() - getPaddingTop() - getPaddingBottom();
     }
 
     /**

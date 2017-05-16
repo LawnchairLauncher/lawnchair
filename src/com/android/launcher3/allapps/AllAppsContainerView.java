@@ -245,6 +245,10 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         }
     }
 
+    public SearchUiManager getSearchUiManager() {
+        return mSearchUiManager;
+    }
+
     @Override
     public View getTouchDelegateTargetView() {
         return mAppsRecyclerView;
@@ -366,6 +370,10 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     @Override
     public void setInsets(Rect insets) {
         DeviceProfile grid = mLauncher.getDeviceProfile();
+        mAppsRecyclerView.setPadding(
+                mAppsRecyclerView.getPaddingLeft(), mAppsRecyclerView.getPaddingTop(),
+                mAppsRecyclerView.getPaddingRight(), insets.bottom);
+
         if (grid.isVerticalBarLayout()) {
             ViewGroup.MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
             mlp.leftMargin = insets.left;

@@ -55,4 +55,14 @@ public interface SearchUiManager {
      * TODO: Remove when removing support for opening all-apps in search mode.
      */
     void startAppsSearch();
+
+    void addOnScrollRangeChangeListener(OnScrollRangeChangeListener listener);
+
+    /**
+     * Callback for listening to changes in the vertical scroll range when opening all-apps.
+     */
+    interface OnScrollRangeChangeListener {
+
+        void onScrollRangeChanged(int scrollRange);
+    }
 }

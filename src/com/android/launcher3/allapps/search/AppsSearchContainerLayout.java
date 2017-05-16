@@ -26,6 +26,7 @@ import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import com.android.launcher3.ExtendedEditText;
@@ -191,5 +192,20 @@ public class AppsSearchContainerLayout extends FrameLayout
     private void notifyResultChanged() {
         mElevationController.reset();
         mAppsRecyclerView.onSearchResultsChanged();
+    }
+
+    @Override
+    public void addOnScrollRangeChangeListener(final OnScrollRangeChangeListener listener) {
+        mLauncher.getHotseat().addOnLayoutChangeListener(new OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                    int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+                    listener.onScrollRangeChanged(top);
+                } else {
+                    listener.onScrollRangeChanged(bottom);
+                }
+            }
+        });
     }
 }

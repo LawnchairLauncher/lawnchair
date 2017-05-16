@@ -161,11 +161,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             }
             return extraRows;
         }
-
-        @Override
-        public int getPaddingBottom() {
-            return mLauncher.getDragLayer().getInsets().bottom;
-        }
     }
 
     /**
