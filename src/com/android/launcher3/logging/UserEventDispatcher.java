@@ -62,9 +62,11 @@ public class UserEventDispatcher {
     private static final boolean IS_VERBOSE =
             ProviderConfig.IS_DOGFOOD_BUILD && Utilities.isPropertyEnabled(LogConfig.USEREVENT);
 
-    public static UserEventDispatcher newInstance(Context context, boolean isInMultiWindowMode) {
+    public static UserEventDispatcher newInstance(Context context, boolean isInLandscapeMode,
+            boolean isInMultiWindowMode) {
         UserEventDispatcher ued = Utilities.getOverrideObject(UserEventDispatcher.class,
                 context.getApplicationContext(), R.string.user_event_dispatcher_class);
+        ued.mIsInLandscapeMode = isInLandscapeMode;
         ued.mIsInMultiWindowMode = isInMultiWindowMode;
         return ued;
     }
@@ -112,6 +114,7 @@ public class UserEventDispatcher {
     private long mElapsedSessionMillis;
     private long mActionDurationMillis;
     private boolean mIsInMultiWindowMode;
+    private boolean mIsInLandscapeMode;
 
     // Used for filling in predictedRank on {@link Target}s.
     private List<ComponentKey> mPredictedApps;
@@ -296,6 +299,7 @@ public class UserEventDispatcher {
     }
 
     public void dispatchUserEvent(LauncherEvent ev, Intent intent) {
+        ev.isInLandscapeMode = mIsInLandscapeMode;
         ev.isInMultiWindowMode = mIsInMultiWindowMode;
         ev.elapsedContainerMillis = SystemClock.uptimeMillis() - mElapsedContainerMillis;
         ev.elapsedSessionMillis = SystemClock.uptimeMillis() - mElapsedSessionMillis;
@@ -315,6 +319,7 @@ public class UserEventDispatcher {
                 ev.elapsedContainerMillis,
                 ev.elapsedSessionMillis,
                 ev.actionDurationMillis);
+        log += "\n isInLandscapeMode " + ev.isInLandscapeMode;
         log += "\n isInMultiWindowMode " + ev.isInMultiWindowMode;
         Log.d(TAG, log);
     }
