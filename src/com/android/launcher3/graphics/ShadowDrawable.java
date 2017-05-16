@@ -46,6 +46,7 @@ public class ShadowDrawable extends Drawable {
 
     private final ShadowDrawableState mState;
 
+    @SuppressWarnings("unused")
     public ShadowDrawable() {
         this(new ShadowDrawableState());
     }
@@ -98,17 +99,6 @@ public class ShadowDrawable extends Drawable {
         return mState.mIntrinsicWidth;
     }
 
-    /**
-     * Sets the color for the generated shadow
-     */
-    public void setShadowColor(int color) {
-        if (mState.mShadowColor != color) {
-            mState.mShadowColor = color;
-            mState.mLastDrawnBitmap = null;
-            invalidateSelf();
-        }
-    }
-
     private void regenerateBitmapCache() {
         Bitmap bitmap = Bitmap.createBitmap(mState.mIntrinsicWidth, mState.mIntrinsicHeight,
                 Bitmap.Config.ARGB_8888);
@@ -154,7 +144,8 @@ public class ShadowDrawable extends Drawable {
             }
             mState.mShadowColor = a.getColor(
                     R.styleable.ShadowDrawable_android_shadowColor, Color.BLACK);
-            mState.mShadowSize = r.getDimensionPixelSize(R.dimen.drawable_shadow_size);
+            mState.mShadowSize = a.getDimensionPixelSize(
+                    R.styleable.ShadowDrawable_android_elevation, 0);
 
             mState.mIntrinsicHeight = d.getIntrinsicHeight() + 2 * mState.mShadowSize;
             mState.mIntrinsicWidth = d.getIntrinsicWidth() + 2 * mState.mShadowSize;
