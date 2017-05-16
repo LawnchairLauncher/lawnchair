@@ -156,4 +156,5 @@ message LauncherEvent {
   optional int64 elapsed_session_millis = 6;
 
   optional bool is_in_multi_window_mode = 7;
+  optional bool is_in_landscape_mode = 8;
 }
