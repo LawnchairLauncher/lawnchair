@@ -75,7 +75,6 @@ import com.android.launcher3.badge.FolderBadgeInfo;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
-import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
@@ -886,7 +885,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             // If we are animating to the accepting state, animate the badge out.
             float badgeScale = Math.max(0, mBadgeScale - mBackground.getScaleProgress());
             mTempSpaceForBadgeOffset.set(getWidth() - mTempBounds.right, mTempBounds.top);
-            mBadgeRenderer.draw(canvas, IconPalette.FOLDER_ICON_PALETTE, mBadgeInfo, mTempBounds,
+            mBadgeRenderer.draw(canvas, mBadgeInfo, mTempBounds,
                     badgeScale, mTempSpaceForBadgeOffset);
         }
     }
