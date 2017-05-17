@@ -94,3 +94,7 @@
 -keep interface com.android.launcher3.userevent.nano.LauncherLogProto.** {
   *;
 }
+
+-keep interface com.android.launcher3.model.nano.LauncherDumpProto.** {
+  *;
+}
