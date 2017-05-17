@@ -16,6 +16,7 @@
 package com.android.launcher3.allapps.search;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Selection;
@@ -29,6 +30,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -52,6 +54,7 @@ public class AppsSearchContainerLayout extends FrameLayout
 
     private final Launcher mLauncher;
     private final int mMinHeight;
+    private final int mSearchBoxHeight;
     private final AllAppsSearchBarController mSearchBarController;
     private final SpannableStringBuilder mSearchQueryBuilder;
     private final HeaderElevationController mElevationController;
@@ -74,6 +77,8 @@ public class AppsSearchContainerLayout extends FrameLayout
 
         mLauncher = Launcher.getLauncher(context);
         mMinHeight = getResources().getDimensionPixelSize(R.dimen.all_apps_search_bar_height);
+        mSearchBoxHeight = getResources()
+                .getDimensionPixelSize(R.dimen.all_apps_search_bar_field_height);
         mSearchBarController = new AllAppsSearchBarController();
         mElevationController = new HeaderElevationController(this);
 
@@ -200,8 +205,12 @@ public class AppsSearchContainerLayout extends FrameLayout
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom,
                     int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                if (!mLauncher.getDeviceProfile().isVerticalBarLayout()) {
-                    listener.onScrollRangeChanged(top);
+                DeviceProfile dp = mLauncher.getDeviceProfile();
+                if (!dp.isVerticalBarLayout()) {
+                    Rect insets = mLauncher.getDragLayer().getInsets();
+                    int hotseatBottom = bottom - dp.hotseatBarBottomPaddingPx - insets.bottom;
+                    int searchTopMargin = insets.top + (mMinHeight - mSearchBoxHeight);
+                    listener.onScrollRangeChanged(hotseatBottom - searchTopMargin);
                 } else {
                     listener.onScrollRangeChanged(bottom);
                 }

@@ -113,9 +113,9 @@ public class DeviceProfile {
     public int hotseatCellHeightPx;
     public int hotseatIconSizePx;
     public int hotseatBarHeightPx;
-    private int hotseatBarTopPaddingPx;
-    private int hotseatBarBottomPaddingPx;
-    private int hotseatLandGutterPx;
+    public int hotseatBarTopPaddingPx;
+    public int hotseatBarBottomPaddingPx;
+    public int hotseatLandGutterPx;
 
     // All apps
     public int allAppsNumCols;
