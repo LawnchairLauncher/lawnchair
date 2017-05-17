@@ -23,7 +23,9 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.util.Property;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.ViewAnimator;
 
 import java.util.HashSet;
 import java.util.WeakHashMap;
@@ -92,7 +94,7 @@ public class LauncherAnimUtils {
         return anim;
     }
 
-    public static ValueAnimator ofFloat(View target, float... values) {
+    public static ValueAnimator ofFloat(float... values) {
         ValueAnimator anim = new ValueAnimator();
         anim.setFloatValues(values);
         cancelOnDestroyActivity(anim);
@@ -127,4 +129,5 @@ public class LauncherAnimUtils {
         new FirstFrameAnimatorHelper(anim, view);
         return anim;
     }
+
 }

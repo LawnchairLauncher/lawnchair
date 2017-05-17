@@ -21,9 +21,9 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -32,9 +32,8 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
-import android.os.Build;
 import android.os.Parcelable;
+import android.support.annotation.IntDef;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -51,7 +50,7 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
 import com.android.launcher3.accessibility.FolderAccessibilityHelper;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
-import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.config.ProviderConfig;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.DragPreviewProvider;
@@ -60,6 +59,8 @@ import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.ParcelableSparseArray;
 import com.android.launcher3.util.Thunk;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -87,13 +88,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     @ViewDebug.ExportedProperty(category = "launcher")
     private int mCountY;
 
-    private int mOriginalWidthGap;
-    private int mOriginalHeightGap;
-    @ViewDebug.ExportedProperty(category = "launcher")
-    @Thunk int mWidthGap;
-    @ViewDebug.ExportedProperty(category = "launcher")
-    @Thunk int mHeightGap;
-    private int mMaxGap;
     private boolean mDropPending = false;
     private boolean mIsDragTarget = true;
     private boolean mJailContent = true;
@@ -111,13 +105,12 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     private ArrayList<FolderIcon.PreviewBackground> mFolderBackgrounds = new ArrayList<FolderIcon.PreviewBackground>();
     FolderIcon.PreviewBackground mFolderLeaveBehind = new FolderIcon.PreviewBackground();
-    Paint mFolderBgPaint = new Paint();
 
     private float mBackgroundAlpha;
 
-    private static final int BACKGROUND_ACTIVATE_DURATION =
-            FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND ? 120 : 0;
-    private final TransitionDrawable mBackground;
+    private static final int[] BACKGROUND_STATE_ACTIVE = new int[] { android.R.attr.state_active };
+    private static final int[] BACKGROUND_STATE_DEFAULT = new int[0];
+    private final Drawable mBackground;
 
     // These values allow a fixed measurement to be set on the CellLayout.
     private int mFixedWidth = -1;
@@ -152,8 +145,16 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     private TimeInterpolator mEaseOutInterpolator;
     private ShortcutAndWidgetContainer mShortcutsAndWidgets;
 
-    private boolean mIsHotseat = false;
-    private float mHotseatScale = 1f;
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({WORKSPACE, HOTSEAT, FOLDER})
+    public @interface ContainerType{}
+    public static final int WORKSPACE = 0;
+    public static final int HOTSEAT = 1;
+    public static final int FOLDER = 2;
+
+    @ContainerType private final int mContainerType;
+
+    private final float mChildScale;
 
     public static final int MODE_SHOW_REORDER_HINT = 0;
     public static final int MODE_DRAG_OVER = 1;
@@ -165,7 +166,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     private static final float REORDER_PREVIEW_MAGNITUDE = 0.12f;
     private static final int REORDER_ANIMATION_DURATION = 150;
-    @Thunk float mReorderPreviewAnimationMagnitude;
+    @Thunk final float mReorderPreviewAnimationMagnitude;
 
     private ArrayList<View> mIntersectingViews = new ArrayList<View>();
     private Rect mOccupiedRect = new Rect();
@@ -191,6 +192,9 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     public CellLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CellLayout, defStyle, 0);
+        mContainerType = a.getInteger(R.styleable.CellLayout_containerType, WORKSPACE);
+        a.recycle();
 
         // A ViewGroup usually does not draw, but CellLayout needs to draw a rectangle to show
         // the user where a dragged item will land when dropped.
@@ -202,9 +206,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
         mCellWidth = mCellHeight = -1;
         mFixedCellWidth = mFixedCellHeight = -1;
-        mWidthGap = mOriginalWidthGap = 0;
-        mHeightGap = mOriginalHeightGap = 0;
-        mMaxGap = Integer.MAX_VALUE;
 
         mCountX = grid.inv.numColumns;
         mCountY = grid.inv.numRows;
@@ -217,18 +218,16 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         mFolderLeaveBehind.delegateCellX = -1;
         mFolderLeaveBehind.delegateCellY = -1;
 
+        mChildScale = mContainerType == HOTSEAT ? grid.inv.hotseatScale : 1f;
+
         setAlwaysDrawnWithCacheEnabled(false);
         final Resources res = getResources();
-        mHotseatScale = (float) grid.hotseatIconSizePx / grid.iconSizePx;
 
-        mBackground = (TransitionDrawable) res.getDrawable(
-                FeatureFlags.LAUNCHER3_LEGACY_WORKSPACE_DND ? R.drawable.bg_screenpanel
-                        : R.drawable.bg_celllayout);
+        mBackground = res.getDrawable(R.drawable.bg_celllayout);
         mBackground.setCallback(this);
         mBackground.setAlpha((int) (mBackgroundAlpha * 255));
 
-        mReorderPreviewAnimationMagnitude = (REORDER_PREVIEW_MAGNITUDE *
-                grid.iconSizePx);
+        mReorderPreviewAnimationMagnitude = (REORDER_PREVIEW_MAGNITUDE * grid.iconSizePx);
 
         // Initialize the data structures used for the drag visualization.
         mEaseOutInterpolator = new DecelerateInterpolator(2.5f); // Quint ease out
@@ -286,9 +285,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             mDragOutlineAnims[i] = anim;
         }
 
-        mShortcutsAndWidgets = new ShortcutAndWidgetContainer(context);
-        mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap,
-                mCountX, mCountY);
+        mShortcutsAndWidgets = new ShortcutAndWidgetContainer(context, mContainerType);
+        mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mCountX, mCountY);
 
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
 
@@ -297,7 +295,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         addView(mShortcutsAndWidgets);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void enableAccessibleDrag(boolean enable, int dragType) {
         mUseTouchHelper = enable;
         if (!enable) {
@@ -366,15 +363,10 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         mShortcutsAndWidgets.buildLayer();
     }
 
-    public float getChildrenScale() {
-        return mIsHotseat ? mHotseatScale : 1.0f;
-    }
-
     public void setCellDimensions(int width, int height) {
         mFixedCellWidth = mCellWidth = width;
         mFixedCellHeight = mCellHeight = height;
-        mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap,
-                mCountX, mCountY);
+        mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mCountX, mCountY);
     }
 
     public void setGridSize(int x, int y) {
@@ -383,8 +375,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         mOccupied = new GridOccupancy(mCountX, mCountY);
         mTmpOccupied = new GridOccupancy(mCountX, mCountY);
         mTempRectStack.clear();
-        mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap,
-                mCountX, mCountY);
+        mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mCountX, mCountY);
         requestLayout();
     }
 
@@ -426,15 +417,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     void setIsDragOverlapping(boolean isDragOverlapping) {
         if (mIsDragOverlapping != isDragOverlapping) {
             mIsDragOverlapping = isDragOverlapping;
-            if (mIsDragOverlapping) {
-                mBackground.startTransition(BACKGROUND_ACTIVATE_DURATION);
-            } else {
-                if (mBackgroundAlpha > 0f) {
-                    mBackground.reverseTransition(BACKGROUND_ACTIVATE_DURATION);
-                } else {
-                    mBackground.resetTransition();
-                }
-            }
+            mBackground.setState(mIsDragOverlapping
+                    ? BACKGROUND_STATE_ACTIVE : BACKGROUND_STATE_DEFAULT);
             invalidate();
         }
     }
@@ -516,9 +500,9 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             cellToPoint(bg.delegateCellX, bg.delegateCellY, mTempLocation);
             canvas.save();
             canvas.translate(mTempLocation[0], mTempLocation[1]);
-            bg.drawBackground(canvas, mFolderBgPaint);
+            bg.drawBackground(canvas);
             if (!bg.isClipping) {
-                bg.drawBackgroundStroke(canvas, mFolderBgPaint);
+                bg.drawBackgroundStroke(canvas);
             }
             canvas.restore();
         }
@@ -528,7 +512,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                     mFolderLeaveBehind.delegateCellY, mTempLocation);
             canvas.save();
             canvas.translate(mTempLocation[0], mTempLocation[1]);
-            mFolderLeaveBehind.drawLeaveBehind(canvas, mFolderBgPaint);
+            mFolderLeaveBehind.drawLeaveBehind(canvas);
             canvas.restore();
         }
     }
@@ -543,7 +527,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 cellToPoint(bg.delegateCellX, bg.delegateCellY, mTempLocation);
                 canvas.save();
                 canvas.translate(mTempLocation[0], mTempLocation[1]);
-                bg.drawBackgroundStroke(canvas, mFolderBgPaint);
+                bg.drawBackgroundStroke(canvas);
                 canvas.restore();
             }
         }
@@ -616,13 +600,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         return mCountY;
     }
 
-    public void setIsHotseat(boolean isHotseat) {
-        mIsHotseat = isHotseat;
-        mShortcutsAndWidgets.setIsHotseat(isHotseat);
-    }
-
-    public boolean isHotseat() {
-        return mIsHotseat;
+    public boolean acceptsWidget() {
+        return mContainerType == WORKSPACE;
     }
 
     public boolean addViewToCellLayout(View child, int index, int childId, LayoutParams params,
@@ -632,11 +611,11 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         // Hotseat icons - remove text
         if (child instanceof BubbleTextView) {
             BubbleTextView bubbleChild = (BubbleTextView) child;
-            bubbleChild.setTextVisibility(!mIsHotseat);
+            bubbleChild.setTextVisibility(mContainerType != HOTSEAT);
         }
 
-        child.setScaleX(getChildrenScale());
-        child.setScaleY(getChildrenScale());
+        child.setScaleX(mChildScale);
+        child.setScaleY(mChildScale);
 
         // Generate an id for each view, this assumes we have at most 256x256 cells
         // per workspace screen
@@ -717,8 +696,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         final int hStartPadding = getPaddingLeft();
         final int vStartPadding = getPaddingTop();
 
-        result[0] = (x - hStartPadding) / (mCellWidth + mWidthGap);
-        result[1] = (y - vStartPadding) / (mCellHeight + mHeightGap);
+        result[0] = (x - hStartPadding) / mCellWidth;
+        result[1] = (y - vStartPadding) / mCellHeight;
 
         final int xAxis = mCountX;
         final int yAxis = mCountY;
@@ -751,8 +730,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         final int hStartPadding = getPaddingLeft();
         final int vStartPadding = getPaddingTop();
 
-        result[0] = hStartPadding + cellX * (mCellWidth + mWidthGap);
-        result[1] = vStartPadding + cellY * (mCellHeight + mHeightGap);
+        result[0] = hStartPadding + cellX * mCellWidth;
+        result[1] = vStartPadding + cellY * mCellHeight;
     }
 
     /**
@@ -778,10 +757,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     void regionToCenterPoint(int cellX, int cellY, int spanX, int spanY, int[] result) {
         final int hStartPadding = getPaddingLeft();
         final int vStartPadding = getPaddingTop();
-        result[0] = hStartPadding + cellX * (mCellWidth + mWidthGap) +
-                (spanX * mCellWidth + (spanX - 1) * mWidthGap) / 2;
-        result[1] = vStartPadding + cellY * (mCellHeight + mHeightGap) +
-                (spanY * mCellHeight + (spanY - 1) * mHeightGap) / 2;
+        result[0] = hStartPadding + cellX * mCellWidth + (spanX * mCellWidth) / 2;
+        result[1] = vStartPadding + cellY * mCellHeight + (spanY * mCellHeight) / 2;
     }
 
      /**
@@ -794,10 +771,9 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
      void regionToRect(int cellX, int cellY, int spanX, int spanY, Rect result) {
         final int hStartPadding = getPaddingLeft();
         final int vStartPadding = getPaddingTop();
-        final int left = hStartPadding + cellX * (mCellWidth + mWidthGap);
-        final int top = vStartPadding + cellY * (mCellHeight + mHeightGap);
-        result.set(left, top, left + (spanX * mCellWidth + (spanX - 1) * mWidthGap),
-                top + (spanY * mCellHeight + (spanY - 1) * mHeightGap));
+        final int left = hStartPadding + cellX * mCellWidth;
+        final int top = vStartPadding + cellY * mCellHeight;
+        result.set(left, top, left + (spanX * mCellWidth), top + (spanY * mCellHeight));
     }
 
     public float getDistanceFromCell(float x, float y, int[] cell) {
@@ -811,14 +787,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     int getCellHeight() {
         return mCellHeight;
-    }
-
-    int getWidthGap() {
-        return mWidthGap;
-    }
-
-    int getHeightGap() {
-        return mHeightGap;
     }
 
     public void setFixedSize(int width, int height) {
@@ -840,8 +808,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             if (cw != mCellWidth || ch != mCellHeight) {
                 mCellWidth = cw;
                 mCellHeight = ch;
-                mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap,
-                        mHeightGap, mCountX, mCountY);
+                mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mCountX, mCountY);
             }
         }
 
@@ -852,23 +819,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             newHeight = mFixedHeight;
         } else if (widthSpecMode == MeasureSpec.UNSPECIFIED || heightSpecMode == MeasureSpec.UNSPECIFIED) {
             throw new RuntimeException("CellLayout cannot have UNSPECIFIED dimensions");
-        }
-
-        int numWidthGaps = mCountX - 1;
-        int numHeightGaps = mCountY - 1;
-
-        if (mOriginalWidthGap < 0 || mOriginalHeightGap < 0) {
-            int hSpace = childWidthSize;
-            int vSpace = childHeightSize;
-            int hFreeSpace = hSpace - (mCountX * mCellWidth);
-            int vFreeSpace = vSpace - (mCountY * mCellHeight);
-            mWidthGap = Math.min(mMaxGap, numWidthGaps > 0 ? (hFreeSpace / numWidthGaps) : 0);
-            mHeightGap = Math.min(mMaxGap,numHeightGaps > 0 ? (vFreeSpace / numHeightGaps) : 0);
-            mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap,
-                    mHeightGap, mCountX, mCountY);
-        } else {
-            mWidthGap = mOriginalWidthGap;
-            mHeightGap = mOriginalHeightGap;
         }
 
         // Make the feedback view large enough to hold the blur bitmap.
@@ -930,16 +880,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         return getMeasuredWidth() - getPaddingLeft() - getPaddingRight() - (mCountX * mCellWidth);
     }
 
-    @Override
-    protected void setChildrenDrawingCacheEnabled(boolean enabled) {
-        mShortcutsAndWidgets.setChildrenDrawingCacheEnabled(enabled);
-    }
-
-    @Override
-    protected void setChildrenDrawnWithCacheEnabled(boolean enabled) {
-        mShortcutsAndWidgets.setChildrenDrawnWithCacheEnabled(enabled);
-    }
-
     public float getBackgroundAlpha() {
         return mBackgroundAlpha;
     }
@@ -997,7 +937,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 lp.tmpCellX = cellX;
                 lp.tmpCellY = cellY;
             }
-            clc.setupLp(lp);
+            clc.setupLp(child);
             lp.isLockedToGrid = false;
             final int newX = lp.x;
             final int newY = lp.y;
@@ -1011,14 +951,14 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 return true;
             }
 
-            ValueAnimator va = LauncherAnimUtils.ofFloat(child, 0f, 1f);
+            ValueAnimator va = LauncherAnimUtils.ofFloat(0f, 1f);
             va.setDuration(duration);
             mReorderAnimators.put(lp, va);
 
             va.addUpdateListener(new AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    float r = ((Float) animation.getAnimatedValue()).floatValue();
+                    float r = (Float) animation.getAnimatedValue();
                     lp.x = (int) ((1 - r) * oldX + r * newX);
                     lp.y = (int) ((1 - r) * oldY + r * newY);
                     child.requestLayout();
@@ -1054,11 +994,11 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         final int oldDragCellX = mDragCell[0];
         final int oldDragCellY = mDragCell[1];
 
-        if (outlineProvider == null || outlineProvider.gerenatedDragOutline == null) {
+        if (outlineProvider == null || outlineProvider.generatedDragOutline == null) {
             return;
         }
 
-        Bitmap dragOutline = outlineProvider.gerenatedDragOutline;
+        Bitmap dragOutline = outlineProvider.generatedDragOutline;
         if (cellX != oldDragCellX || cellY != oldDragCellY) {
             Point dragOffset = dragObject.dragView.getDragVisualizeOffset();
             Rect dragRegion = dragObject.dragView.getDragRegion();
@@ -1073,6 +1013,10 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
             if (resize) {
                 cellToRect(cellX, cellY, spanX, spanY, r);
+                if (v instanceof LauncherAppWidgetHostView) {
+                    DeviceProfile profile = mLauncher.getDeviceProfile();
+                    Utilities.shrinkRect(r, profile.appWidgetScale.x, profile.appWidgetScale.y);
+                }
             } else {
                 // Find the top left corner of the rect the object will occupy
                 final int[] topLeft = mTmpPoint;
@@ -1091,45 +1035,43 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                     // Offsets due to the size difference between the View and the dragOutline.
                     // There is a size difference to account for the outer blur, which may lie
                     // outside the bounds of the view.
-                    top += (v.getHeight() - dragOutline.getHeight()) / 2;
+                    top += ((mCellHeight * spanY) - dragOutline.getHeight()) / 2;
                     // We center about the x axis
-                    left += ((mCellWidth * spanX) + ((spanX - 1) * mWidthGap)
-                            - dragOutline.getWidth()) / 2;
+                    left += ((mCellWidth * spanX) - dragOutline.getWidth()) / 2;
                 } else {
                     if (dragOffset != null && dragRegion != null) {
                         // Center the drag region *horizontally* in the cell and apply a drag
                         // outline offset
-                        left += dragOffset.x + ((mCellWidth * spanX) + ((spanX - 1) * mWidthGap)
-                                - dragRegion.width()) / 2;
+                        left += dragOffset.x + ((mCellWidth * spanX) - dragRegion.width()) / 2;
                         int cHeight = getShortcutsAndWidgets().getCellContentHeight();
                         int cellPaddingY = (int) Math.max(0, ((mCellHeight - cHeight) / 2f));
                         top += dragOffset.y + cellPaddingY;
                     } else {
                         // Center the drag outline in the cell
-                        left += ((mCellWidth * spanX) + ((spanX - 1) * mWidthGap)
-                                - dragOutline.getWidth()) / 2;
-                        top += ((mCellHeight * spanY) + ((spanY - 1) * mHeightGap)
-                                - dragOutline.getHeight()) / 2;
+                        left += ((mCellWidth * spanX) - dragOutline.getWidth()) / 2;
+                        top += ((mCellHeight * spanY) - dragOutline.getHeight()) / 2;
                     }
                 }
                 r.set(left, top, left + dragOutline.getWidth(), top + dragOutline.getHeight());
             }
 
-            Utilities.scaleRectAboutCenter(r, getChildrenScale());
+            Utilities.scaleRectAboutCenter(r, mChildScale);
             mDragOutlineAnims[mDragOutlineCurrent].setTag(dragOutline);
             mDragOutlineAnims[mDragOutlineCurrent].animateIn();
 
             if (dragObject.stateAnnouncer != null) {
-                String msg;
-                if (isHotseat()) {
-                    msg = getContext().getString(R.string.move_to_hotseat_position,
-                            Math.max(cellX, cellY) + 1);
-                } else {
-                    msg = getContext().getString(R.string.move_to_empty_cell,
-                            cellY + 1, cellX + 1);
-                }
-                dragObject.stateAnnouncer.announce(msg);
+                dragObject.stateAnnouncer.announce(getItemMoveDescription(cellX, cellY));
             }
+        }
+    }
+
+    public String getItemMoveDescription(int cellX, int cellY) {
+        if (mContainerType == HOTSEAT) {
+            return getContext().getString(R.string.move_to_hotseat_position,
+                    Math.max(cellX, cellY) + 1);
+        } else {
+            return getContext().getString(R.string.move_to_empty_cell,
+                    cellY + 1, cellX + 1);
         }
     }
 
@@ -1198,8 +1140,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         // For items with a spanX / spanY > 1, the passed in point (pixelX, pixelY) corresponds
         // to the center of the item, but we are searching based on the top-left cell, so
         // we translate the point over to correspond to the top-left.
-        pixelX -= (mCellWidth + mWidthGap) * (spanX - 1) / 2f;
-        pixelY -= (mCellHeight + mHeightGap) * (spanY - 1) / 2f;
+        pixelX -= mCellWidth * (spanX - 1) / 2f;
+        pixelY -= mCellHeight * (spanY - 1) / 2f;
 
         // Keep track of best-scoring drop area
         final int[] bestXY = result != null ? result : new int[2];
@@ -1884,7 +1826,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
      * the provided point and the provided cell
      */
     private void computeDirectionVector(float deltaX, float deltaY, int[] result) {
-        double angle = Math.atan(((float) deltaY) / deltaX);
+        double angle = Math.atan(deltaY / deltaX);
 
         result[0] = 0;
         result[1] = 0;
@@ -2030,6 +1972,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         private static final int PREVIEW_DURATION = 300;
         private static final int HINT_DURATION = Workspace.REORDER_TIMEOUT;
 
+        private static final float CHILD_DIVIDEND = 4.0f;
+
         public static final int MODE_HINT = 0;
         public static final int MODE_PREVIEW = 1;
 
@@ -2045,45 +1989,65 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             final int y1 = mTmpPoint[1];
             final int dX = x1 - x0;
             final int dY = y1 - y0;
-            finalDeltaX = 0;
-            finalDeltaY = 0;
+
+            this.child = child;
+            this.mode = mode;
+            setInitialAnimationValues(false);
+            finalScale = (mChildScale - (CHILD_DIVIDEND / child.getWidth())) * initScale;
+            finalDeltaX = initDeltaX;
+            finalDeltaY = initDeltaY;
             int dir = mode == MODE_HINT ? -1 : 1;
             if (dX == dY && dX == 0) {
             } else {
                 if (dY == 0) {
-                    finalDeltaX = - dir * Math.signum(dX) * mReorderPreviewAnimationMagnitude;
+                    finalDeltaX += - dir * Math.signum(dX) * mReorderPreviewAnimationMagnitude;
                 } else if (dX == 0) {
-                    finalDeltaY = - dir * Math.signum(dY) * mReorderPreviewAnimationMagnitude;
+                    finalDeltaY += - dir * Math.signum(dY) * mReorderPreviewAnimationMagnitude;
                 } else {
                     double angle = Math.atan( (float) (dY) / dX);
-                    finalDeltaX = (int) (- dir * Math.signum(dX) *
+                    finalDeltaX += (int) (- dir * Math.signum(dX) *
                             Math.abs(Math.cos(angle) * mReorderPreviewAnimationMagnitude));
-                    finalDeltaY = (int) (- dir * Math.signum(dY) *
+                    finalDeltaY += (int) (- dir * Math.signum(dY) *
                             Math.abs(Math.sin(angle) * mReorderPreviewAnimationMagnitude));
                 }
             }
-            this.mode = mode;
-            initDeltaX = child.getTranslationX();
-            initDeltaY = child.getTranslationY();
-            finalScale = getChildrenScale() - 4.0f / child.getWidth();
-            initScale = child.getScaleX();
-            this.child = child;
+        }
+
+        void setInitialAnimationValues(boolean restoreOriginalValues) {
+            if (restoreOriginalValues) {
+                if (child instanceof LauncherAppWidgetHostView) {
+                    LauncherAppWidgetHostView lahv = (LauncherAppWidgetHostView) child;
+                    initScale = lahv.getScaleToFit();
+                    initDeltaX = lahv.getTranslationForCentering().x;
+                    initDeltaY = lahv.getTranslationForCentering().y;
+                } else {
+                    initScale = mChildScale;
+                    initDeltaX = 0;
+                    initDeltaY = 0;
+                }
+            } else {
+                initScale = child.getScaleX();
+                initDeltaX = child.getTranslationX();
+                initDeltaY = child.getTranslationY();
+            }
         }
 
         void animate() {
+            boolean noMovement = (finalDeltaX == initDeltaX) && (finalDeltaY == initDeltaY);
+
             if (mShakeAnimators.containsKey(child)) {
                 ReorderPreviewAnimation oldAnimation = mShakeAnimators.get(child);
                 oldAnimation.cancel();
                 mShakeAnimators.remove(child);
-                if (finalDeltaX == 0 && finalDeltaY == 0) {
+                if (noMovement) {
                     completeAnimationImmediately();
                     return;
                 }
             }
-            if (finalDeltaX == 0 && finalDeltaY == 0) {
+            if (noMovement) {
                 return;
             }
-            ValueAnimator va = LauncherAnimUtils.ofFloat(child, 0f, 1f);
+            ValueAnimator va = LauncherAnimUtils.ofFloat(0f, 1f);
             a = va;
 
             // Animations are disabled in power save mode, causing the repeated animation to jump
@@ -2099,7 +2063,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             va.addUpdateListener(new AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    float r = ((Float) animation.getAnimatedValue()).floatValue();
+                    float r = (Float) animation.getAnimatedValue();
                     float r1 = (mode == MODE_HINT && repeating) ? 1.0f : r;
                     float x = r1 * finalDeltaX + (1 - r1) * initDeltaX;
                     float y = r1 * finalDeltaY + (1 - r1) * initDeltaY;
@@ -2113,9 +2077,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             va.addListener(new AnimatorListenerAdapter() {
                 public void onAnimationRepeat(Animator animation) {
                     // We make sure to end only after a full period
-                    initDeltaX = 0;
-                    initDeltaY = 0;
-                    initScale = getChildrenScale();
+                    setInitialAnimationValues(true);
                     repeating = true;
                 }
             });
@@ -2134,12 +2096,14 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 a.cancel();
             }
 
-            a = new LauncherViewPropertyAnimator(child)
-                .scaleX(getChildrenScale())
-                .scaleY(getChildrenScale())
-                .translationX(0)
-                .translationY(0)
-                .setDuration(REORDER_ANIMATION_DURATION);
+            setInitialAnimationValues(true);
+            a = LauncherAnimUtils.ofPropertyValuesHolder(child,
+                    new PropertyListBuilder()
+                            .scale(initScale)
+                            .translationX(initDeltaX)
+                            .translationY(initDeltaY)
+                            .build())
+                    .setDuration(REORDER_ANIMATION_DURATION);
             a.setInterpolator(new android.view.animation.DecelerateInterpolator(1.5f));
             a.start();
         }
@@ -2158,7 +2122,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         long screenId = mLauncher.getWorkspace().getIdForScreen(this);
         int container = Favorites.CONTAINER_DESKTOP;
 
-        if (mLauncher.isHotseatLayout(this)) {
+        if (mContainerType == HOTSEAT) {
             screenId = -1;
             container = Favorites.CONTAINER_HOTSEAT;
         }
@@ -2181,7 +2145,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 info.spanY = lp.cellVSpan;
 
                 if (requiresDbUpdate) {
-                    LauncherModel.modifyItemInDatabase(mLauncher, info, container, screenId,
+                    mLauncher.getModelWriter().modifyItemInDatabase(info, container, screenId,
                             info.cellX, info.cellY, info.spanX, info.spanY);
                 }
             }
@@ -2213,10 +2177,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             solution.isSolution = false;
         }
         return solution;
-    }
-
-    public void prepareChildForDrag(View child) {
-        markCellsAsUnoccupiedForView(child);
     }
 
     /* This seems like it should be obvious and straight-forward, but when the direction vector
@@ -2598,17 +2558,14 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     public void cellToRect(int cellX, int cellY, int cellHSpan, int cellVSpan, Rect resultRect) {
         final int cellWidth = mCellWidth;
         final int cellHeight = mCellHeight;
-        final int widthGap = mWidthGap;
-        final int heightGap = mHeightGap;
 
         final int hStartPadding = getPaddingLeft();
         final int vStartPadding = getPaddingTop();
 
-        int width = cellHSpan * cellWidth + ((cellHSpan - 1) * widthGap);
-        int height = cellVSpan * cellHeight + ((cellVSpan - 1) * heightGap);
-
-        int x = hStartPadding + cellX * (cellWidth + widthGap);
-        int y = vStartPadding + cellY * (cellHeight + heightGap);
+        int width = cellHSpan * cellWidth;
+        int height = cellVSpan * cellHeight;
+        int x = hStartPadding + cellX * cellWidth;
+        int y = vStartPadding + cellY * cellHeight;
 
         resultRect.set(x, y, x + width, y + height);
     }
@@ -2626,13 +2583,11 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     }
 
     public int getDesiredWidth() {
-        return getPaddingLeft() + getPaddingRight() + (mCountX * mCellWidth) +
-                (Math.max((mCountX - 1), 0) * mWidthGap);
+        return getPaddingLeft() + getPaddingRight() + (mCountX * mCellWidth);
     }
 
     public int getDesiredHeight()  {
-        return getPaddingTop() + getPaddingBottom() + (mCountY * mCellHeight) +
-                (Math.max((mCountY - 1), 0) * mHeightGap);
+        return getPaddingTop() + getPaddingBottom() + (mCountY * mCellHeight);
     }
 
     public boolean isOccupied(int x, int y) {
@@ -2752,8 +2707,19 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             this.cellVSpan = cellVSpan;
         }
 
-        public void setup(int cellWidth, int cellHeight, int widthGap, int heightGap,
-                boolean invertHorizontally, int colCount) {
+        public void setup(int cellWidth, int cellHeight, boolean invertHorizontally, int colCount) {
+            setup(cellWidth, cellHeight, invertHorizontally, colCount, 1.0f, 1.0f);
+        }
+
+        /**
+         * Use this method, as opposed to {@link #setup(int, int, boolean, int)}, if the view needs
+         * to be scaled.
+         *
+         * ie. In multi-window mode, we setup widgets so that they are measured and laid out
+         * using their full/invariant device profile sizes.
+         */
+        public void setup(int cellWidth, int cellHeight, boolean invertHorizontally, int colCount,
+                float cellScaleX, float cellScaleY) {
             if (isLockedToGrid) {
                 final int myCellHSpan = cellHSpan;
                 final int myCellVSpan = cellVSpan;
@@ -2764,12 +2730,10 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                     myCellX = colCount - myCellX - cellHSpan;
                 }
 
-                width = myCellHSpan * cellWidth + ((myCellHSpan - 1) * widthGap) -
-                        leftMargin - rightMargin;
-                height = myCellVSpan * cellHeight + ((myCellVSpan - 1) * heightGap) -
-                        topMargin - bottomMargin;
-                x = (int) (myCellX * (cellWidth + widthGap) + leftMargin);
-                y = (int) (myCellY * (cellHeight + heightGap) + topMargin);
+                width = (int) (myCellHSpan * cellWidth / cellScaleX - leftMargin - rightMargin);
+                height = (int) (myCellVSpan * cellHeight / cellScaleY - topMargin - bottomMargin);
+                x = (myCellX * cellWidth + leftMargin);
+                y = (myCellY * cellHeight + topMargin);
             }
         }
 

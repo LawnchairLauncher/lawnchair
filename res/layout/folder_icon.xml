@@ -21,8 +21,9 @@
     android:orientation="vertical"
     android:focusable="true" >
     <com.android.launcher3.BubbleTextView
-        style="@style/Icon"
+        style="@style/BaseIcon.Workspace"
         android:id="@+id/folder_icon_name"
+        android:focusable="false"
         android:layout_gravity="top"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

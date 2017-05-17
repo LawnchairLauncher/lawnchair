@@ -18,14 +18,16 @@ package com.android.launcher3;
 
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
+import android.graphics.Rect;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.util.Themes;
 
 public class InfoDropTarget extends UninstallDropTarget {
 
@@ -43,13 +45,13 @@ public class InfoDropTarget extends UninstallDropTarget {
     protected void onFinishInflate() {
         super.onFinishInflate();
         // Get the hover color
-        mHoverColor = Utilities.getColorAccent(getContext());
+        mHoverColor = Themes.getColorAccent(getContext());
 
         setDrawable(R.drawable.ic_info_launcher);
     }
 
     @Override
-    void completeDrop(DragObject d) {
+    public void completeDrop(DragObject d) {
         DropTargetResultCallback callback = d.dragSource instanceof DropTargetResultCallback
                 ? (DropTargetResultCallback) d.dragSource : null;
         startDetailsActivityForInfo(d.dragInfo, mLauncher, callback);
@@ -60,6 +62,11 @@ public class InfoDropTarget extends UninstallDropTarget {
      */
     public static boolean startDetailsActivityForInfo(
             ItemInfo info, Launcher launcher, DropTargetResultCallback callback) {
+        return startDetailsActivityForInfo(info, launcher, callback, null, null);
+    }
+
+    public static boolean startDetailsActivityForInfo(ItemInfo info, Launcher launcher,
+            DropTargetResultCallback callback, Rect sourceBounds, Bundle opts) {
         boolean result = false;
         ComponentName componentName = null;
         if (info instanceof AppInfo) {
@@ -74,7 +81,7 @@ public class InfoDropTarget extends UninstallDropTarget {
         if (componentName != null) {
             try {
                 LauncherAppsCompat.getInstance(launcher)
-                        .showAppDetailsForProfile(componentName, info.user);
+                        .showAppDetailsForProfile(componentName, info.user, sourceBounds, opts);
                 result = true;
             } catch (SecurityException | ActivityNotFoundException e) {
                 Toast.makeText(launcher, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
@@ -90,17 +97,21 @@ public class InfoDropTarget extends UninstallDropTarget {
 
     @Override
     protected boolean supportsDrop(DragSource source, ItemInfo info) {
-        return source.supportsAppInfoDropTarget() && supportsDrop(info);
+        return source.supportsAppInfoDropTarget() && supportsDrop(getContext(), info);
     }
 
-    public static boolean supportsDrop(ItemInfo info) {
+    public static boolean supportsDrop(Context context, ItemInfo info) {
         // Only show the App Info drop target if developer settings are enabled.
-        ContentResolver resolver = LauncherAppState.getInstance().getContext().getContentResolver();
-        boolean developmentSettingsEnabled = Settings.Global.getInt(resolver,
+        boolean developmentSettingsEnabled = Settings.Global.getInt(context.getContentResolver(),
                 Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) == 1;
-        return developmentSettingsEnabled
-                && (info instanceof AppInfo || info instanceof ShortcutInfo
-                || info instanceof PendingAddItemInfo || info instanceof LauncherAppWidgetInfo)
-                && info.itemType != LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+        if (!developmentSettingsEnabled) {
+            return false;
+        }
+        return info.itemType != LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT &&
+                (info instanceof AppInfo ||
+                (info instanceof ShortcutInfo && !((ShortcutInfo) info).isPromise()) ||
+                (info instanceof LauncherAppWidgetInfo &&
+                        ((LauncherAppWidgetInfo) info).restoreStatus == 0) ||
+                info instanceof PendingAddItemInfo);
     }
 }

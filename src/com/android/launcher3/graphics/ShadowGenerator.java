@@ -16,6 +16,7 @@
 
 package com.android.launcher3.graphics;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BlurMaskFilter;
@@ -38,9 +39,9 @@ public class ShadowGenerator {
 
     // Percent of actual icon size
     private static final float KEY_SHADOW_DISTANCE = 1f/48;
-    private static final int KEY_SHADOW_ALPHA = 61;
+    public static final int KEY_SHADOW_ALPHA = 61;
 
-    private static final int AMBIENT_SHADOW_ALPHA = 30;
+    public static final int AMBIENT_SHADOW_ALPHA = 30;
 
     private static final Object LOCK = new Object();
     // Singleton object guarded by {@link #LOCK}
@@ -52,8 +53,8 @@ public class ShadowGenerator {
     private final Paint mBlurPaint;
     private final Paint mDrawPaint;
 
-    private ShadowGenerator() {
-        mIconSize = LauncherAppState.getInstance().getInvariantDeviceProfile().iconBitmapSize;
+    private ShadowGenerator(Context context) {
+        mIconSize = LauncherAppState.getIDP(context).iconBitmapSize;
         mCanvas = new Canvas();
         mBlurPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
         mBlurPaint.setMaskFilter(new BlurMaskFilter(mIconSize * BLUR_FACTOR, Blur.NORMAL));
@@ -82,11 +83,51 @@ public class ShadowGenerator {
         return result;
     }
 
-    public static ShadowGenerator getInstance() {
+    public static Bitmap createPillWithShadow(int rectColor, int width, int height) {
+
+        float shadowRadius = height * 1f / 32;
+        float shadowYOffset = height * 1f / 16;
+
+        int radius = height / 2;
+
+        Canvas canvas = new Canvas();
+        Paint blurPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+        blurPaint.setMaskFilter(new BlurMaskFilter(shadowRadius, Blur.NORMAL));
+
+        int centerX = Math.round(width / 2 + shadowRadius);
+        int centerY = Math.round(radius + shadowRadius + shadowYOffset);
+        int center = Math.max(centerX, centerY);
+        int size = center * 2;
+        Bitmap result = Bitmap.createBitmap(size, size, Config.ARGB_8888);
+        canvas.setBitmap(result);
+
+        int left = center - width / 2;
+        int top = center - height / 2;
+        int right = center + width / 2;
+        int bottom = center + height / 2;
+
+        // Draw ambient shadow, center aligned within size
+        blurPaint.setAlpha(AMBIENT_SHADOW_ALPHA);
+        canvas.drawRoundRect(left, top, right, bottom, radius, radius, blurPaint);
+
+        // Draw key shadow, bottom aligned within size
+        blurPaint.setAlpha(KEY_SHADOW_ALPHA);
+        canvas.drawRoundRect(left, top + shadowYOffset, right, bottom + shadowYOffset,
+                radius, radius, blurPaint);
+
+        // Draw the circle
+        Paint drawPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+        drawPaint.setColor(rectColor);
+        canvas.drawRoundRect(left, top, right, bottom, radius, radius, drawPaint);
+
+        return result;
+    }
+
+    public static ShadowGenerator getInstance(Context context) {
         Preconditions.assertNonUiThread();
         synchronized (LOCK) {
             if (sShadowGenerator == null) {
-                sShadowGenerator = new ShadowGenerator();
+                sShadowGenerator = new ShadowGenerator(context);
             }
         }
         return sShadowGenerator;

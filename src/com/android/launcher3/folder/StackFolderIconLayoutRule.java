@@ -16,9 +16,11 @@
 
 package com.android.launcher3.folder;
 
-import android.graphics.Path;
+import android.view.View;
 
 import com.android.launcher3.folder.FolderIcon.PreviewItemDrawingParams;
+
+import java.util.List;
 
 public class StackFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule {
 
@@ -54,10 +56,10 @@ public class StackFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule {
     @Override
     public PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
             PreviewItemDrawingParams params) {
+        float scale = scaleForItem(index, curNumItems);
 
         index = MAX_NUM_ITEMS_IN_PREVIEW - index - 1;
         float r = (index * 1.0f) / (MAX_NUM_ITEMS_IN_PREVIEW - 1);
-        float scale = (1 - PERSPECTIVE_SCALE_FACTOR * (1 - r));
 
         float offset = (1 - r) * mMaxPerspectiveShift;
         float scaledSize = scale * mBaselineIconSize;
@@ -80,12 +82,26 @@ public class StackFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule {
     }
 
     @Override
-    public int numItems() {
+    public int maxNumItems() {
         return MAX_NUM_ITEMS_IN_PREVIEW;
+    }
+
+    @Override
+    public float scaleForItem(int index, int numItems) {
+        // Scale is determined by the position of the icon in the preview.
+        index = MAX_NUM_ITEMS_IN_PREVIEW - index - 1;
+        float r = (index * 1.0f) / (MAX_NUM_ITEMS_IN_PREVIEW - 1);
+        return (1 - PERSPECTIVE_SCALE_FACTOR * (1 - r));
     }
 
     @Override
     public boolean clipToBackground() {
         return false;
+    }
+
+    @Override
+    public List<View> getItemsToDisplay(Folder folder) {
+        List<View> items = folder.getItemsInReadingOrder();
+        return items.subList(0, Math.min(items.size(), MAX_NUM_ITEMS_IN_PREVIEW));
     }
 }

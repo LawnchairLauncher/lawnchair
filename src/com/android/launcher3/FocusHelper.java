@@ -250,14 +250,6 @@ public class FocusHelper {
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT &&
                 profile.isVerticalBarLayout()) {
             keyCode = KeyEvent.KEYCODE_PAGE_DOWN;
-        } else if (isUninstallKeyChord(e)) {
-            matrix = FocusLogic.createSparseMatrix(iconLayout);
-            if (UninstallDropTarget.supportsDrop(launcher, itemInfo)) {
-                UninstallDropTarget.startUninstallActivity(launcher, itemInfo);
-            }
-        } else if (isDeleteKeyChord(e)) {
-            matrix = FocusLogic.createSparseMatrix(iconLayout);
-            launcher.removeItem(v, itemInfo, true /* deleteFromDb */);
         } else {
             // For other KEYCODE_DPAD_LEFT and KEYCODE_DPAD_RIGHT navigation, do not use the
             // matrix extended with hotseat.
@@ -374,14 +366,6 @@ public class FocusHelper {
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT &&
                 profile.isVerticalBarLayout()) {
             matrix = FocusLogic.createSparseMatrixWithHotseat(iconLayout, hotseatLayout, profile);
-        } else if (isUninstallKeyChord(e)) {
-            matrix = FocusLogic.createSparseMatrix(iconLayout);
-            if (UninstallDropTarget.supportsDrop(launcher, itemInfo)) {
-                UninstallDropTarget.startUninstallActivity(launcher, itemInfo);
-            }
-        } else if (isDeleteKeyChord(e)) {
-            matrix = FocusLogic.createSparseMatrix(iconLayout);
-            launcher.removeItem(v, itemInfo, true /* deleteFromDb */);
         } else {
             matrix = FocusLogic.createSparseMatrix(iconLayout);
         }
@@ -530,24 +514,6 @@ public class FocusHelper {
             default:
                 break;
         }
-    }
-
-    /**
-     * Returns whether the key event represents a valid uninstall key chord.
-     */
-    private static boolean isUninstallKeyChord(KeyEvent event) {
-        int keyCode = event.getKeyCode();
-        return (keyCode == KeyEvent.KEYCODE_DEL || keyCode == KeyEvent.KEYCODE_FORWARD_DEL) &&
-                event.hasModifiers(KeyEvent.META_CTRL_ON | KeyEvent.META_SHIFT_ON);
-    }
-
-    /**
-     * Returns whether the key event represents a valid delete key chord.
-     */
-    private static boolean isDeleteKeyChord(KeyEvent event) {
-        int keyCode = event.getKeyCode();
-        return (keyCode == KeyEvent.KEYCODE_DEL || keyCode == KeyEvent.KEYCODE_FORWARD_DEL) &&
-                event.hasModifiers(KeyEvent.META_CTRL_ON);
     }
 
     private static View handlePreviousPageLastItem(Workspace workspace, CellLayout hotseatLayout,

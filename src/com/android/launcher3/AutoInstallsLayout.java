@@ -17,7 +17,6 @@
 package com.android.launcher3;
 
 import android.appwidget.AppWidgetHost;
-import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
@@ -38,6 +37,7 @@ import android.util.Patterns;
 import com.android.launcher3.LauncherProvider.SqlArguments;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.util.Thunk;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -79,7 +79,7 @@ public class AutoInstallsLayout {
 
     static AutoInstallsLayout get(Context context, String pkg, Resources targetRes,
             AppWidgetHost appWidgetHost, LayoutParserCallback callback) {
-        InvariantDeviceProfile grid = LauncherAppState.getInstance().getInvariantDeviceProfile();
+        InvariantDeviceProfile grid = LauncherAppState.getIDP(context);
 
         // Try with grid size and hotseat count
         String layoutName = String.format(Locale.ENGLISH, FORMATTED_LAYOUT_RES_WITH_HOSTEAT,
@@ -182,7 +182,7 @@ public class AutoInstallsLayout {
         mSourceRes = res;
         mLayoutId = layoutId;
 
-        mIdp = LauncherAppState.getInstance().getInvariantDeviceProfile();
+        mIdp = LauncherAppState.getIDP(context);
         mRowCount = mIdp.numRows;
         mColumnCount = mIdp.numColumns;
     }
@@ -195,7 +195,7 @@ public class AutoInstallsLayout {
         try {
             return parseLayout(mLayoutId, screenIds);
         } catch (Exception e) {
-            Log.w(TAG, "Got exception parsing layout.", e);
+            Log.e(TAG, "Error parsing layout: " + e);
             return -1;
         }
     }
@@ -362,7 +362,7 @@ public class AutoInstallsLayout {
                     return addShortcut(info.loadLabel(mPackageManager).toString(),
                             intent, Favorites.ITEM_TYPE_APPLICATION);
                 } catch (PackageManager.NameNotFoundException e) {
-                    Log.e(TAG, "Unable to add favorite: " + packageName + "/" + className, e);
+                    Log.e(TAG, "Favorite not found: " + packageName + "/" + className);
                 }
                 return -1;
             } else {
@@ -436,7 +436,8 @@ public class AutoInstallsLayout {
                 return -1;
             }
 
-            ItemInfo.writeBitmap(mValues, Utilities.createIconBitmap(icon, mContext));
+            mValues.put(LauncherSettings.Favorites.ICON,
+                    Utilities.flattenBitmap(LauncherIcons.createIconBitmap(icon, mContext)));
             mValues.put(Favorites.ICON_PACKAGE, mIconRes.getResourcePackageName(iconId));
             mValues.put(Favorites.ICON_RESOURCE, mIconRes.getResourceName(iconId));
 

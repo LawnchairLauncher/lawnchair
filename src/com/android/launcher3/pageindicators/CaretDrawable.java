@@ -24,6 +24,7 @@ import android.graphics.Path;
 import android.graphics.PixelFormat;
 
 import com.android.launcher3.R;
+import com.android.launcher3.util.Themes;
 
 import android.graphics.drawable.Drawable;
 
@@ -45,14 +46,15 @@ public class CaretDrawable extends Drawable {
         final int strokeWidth = res.getDimensionPixelSize(R.dimen.all_apps_caret_stroke_width);
         final int shadowSpread = res.getDimensionPixelSize(R.dimen.all_apps_caret_shadow_spread);
 
-        mCaretPaint.setColor(res.getColor(R.color.all_apps_caret_color));
+        mCaretPaint.setColor(res.getColor(R.color.workspace_icon_text_color));
         mCaretPaint.setAntiAlias(true);
         mCaretPaint.setStrokeWidth(strokeWidth);
         mCaretPaint.setStyle(Paint.Style.STROKE);
         mCaretPaint.setStrokeCap(Paint.Cap.SQUARE);
         mCaretPaint.setStrokeJoin(Paint.Join.MITER);
 
-        mShadowPaint.setColor(res.getColor(R.color.all_apps_caret_shadow_color));
+        mShadowPaint.setColor(res.getColor(R.color.default_shadow_color_no_alpha));
+        mShadowPaint.setAlpha(Themes.getAlpha(context, android.R.attr.spotShadowAlpha));
         mShadowPaint.setAntiAlias(true);
         mShadowPaint.setStrokeWidth(strokeWidth + (shadowSpread * 2));
         mShadowPaint.setStyle(Paint.Style.STROKE);

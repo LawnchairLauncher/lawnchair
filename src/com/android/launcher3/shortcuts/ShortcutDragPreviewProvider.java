@@ -23,7 +23,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 
-import com.android.launcher3.HolographicOutlineHelper;
+import com.android.launcher3.graphics.HolographicOutlineHelper;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.DragPreviewProvider;
@@ -44,7 +44,7 @@ public class ShortcutDragPreviewProvider extends DragPreviewProvider {
     public Bitmap createDragOutline(Canvas canvas) {
         Bitmap b = drawScaledPreview(canvas, Bitmap.Config.ALPHA_8);
 
-        HolographicOutlineHelper.obtain(mView.getContext())
+        HolographicOutlineHelper.getInstance(mView.getContext())
                 .applyExpensiveOutlineWithBlur(b, canvas);
         canvas.setBitmap(null);
         return b;
@@ -64,13 +64,13 @@ public class ShortcutDragPreviewProvider extends DragPreviewProvider {
         int size = Launcher.getLauncher(mView.getContext()).getDeviceProfile().iconSizePx;
 
         final Bitmap b = Bitmap.createBitmap(
-                size + DRAG_BITMAP_PADDING,
-                size + DRAG_BITMAP_PADDING,
+                size + blurSizeOutline,
+                size + blurSizeOutline,
                 config);
 
         canvas.setBitmap(b);
         canvas.save(Canvas.MATRIX_SAVE_FLAG);
-        canvas.translate(DRAG_BITMAP_PADDING / 2, DRAG_BITMAP_PADDING / 2);
+        canvas.translate(blurSizeOutline / 2, blurSizeOutline / 2);
         canvas.scale(((float) size) / bounds.width(), ((float) size) / bounds.height(), 0, 0);
         canvas.translate(bounds.left, bounds.top);
         d.draw(canvas);

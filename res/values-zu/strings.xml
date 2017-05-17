@@ -27,14 +27,19 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Uhlelo lokusebenza olulandiwe lukhutshaziwe kumodi ephephile"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Amawijethi akhutshaziwe kwimodi yokuphepha"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"Isinqamuleli asitholakali"</string>
+    <string name="home_screen" msgid="806512411299847073">"Isikrini sasekhaya"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"Izenzo zangokwezifiso"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"Thinta uphinde ubambe ukuze uphakamise iwijethi."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Thepha kabili bese uyabamba ukuze uthathe iwijethi noma sebenzisa izenzo ezingokwezifiso."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d ububanzi ngokungu-%2$d ukuya phezulu"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Thinta futhi ubambe ukuze ubeke ngokwenza"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"Engeza ngokuzenzakalelayo"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"Sesha Izinhlelo Zokusebenza"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"Ilayisha izinhlelo zokusebenza..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"Azikho izinhlelo zokusebenza ezitholakele ezifana ne-\"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Sesha izinhlelo zokusebenza eziningi"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"Izaziso"</string>
     <string name="out_of_space" msgid="4691004494942118364">"Asisekho isikhala kulesi sikrini Sasekhaya."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Asisekho isikhala kwitreyi lezintandokazi"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Uhlu lwezinhlelo zokusebenza"</string>
@@ -71,6 +76,14 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"Vumela ukuphendukiswa kwesikrini sasekhaya"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Uma ifoni iphendukiswa"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Isilungiselelo sesiboniso samanje asivumeli ukuzungezisa"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Engeza isithonjana eskrinini sasekhaya"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Kwezinhlelo zokusebenza ezintsha"</string>
+    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
+    <skip />
+    <!-- no translation found for icon_shape_no_override (3678524428085518367) -->
+    <skip />
+    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
+    <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"Akwaziwa"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Susa"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Sesha"</string>
@@ -78,6 +91,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"Uhlelo lokusebenza lalesi sithonjana alufakiwe. Ungalisusa, noma sesha uhlelo lokusebenza bese uzifakela lona ngokuzenzela."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"I-<xliff:g id="NAME">%1$s</xliff:g> iyalandwa, <xliff:g id="PROGRESS">%2$s</xliff:g> kuqediwe"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ilinde ukufakwa"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> amawijethi"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Faka kusikrini sasekhaya"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Hambisa into lapha"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Into ingezwe kusikrini sasekhaya"</string>

@@ -27,14 +27,19 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"ডাউনলোড করা অ্যাপ্লিকেশান নিরাপদ মোডে অক্ষম রয়েছে"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"সুরক্ষিত মোডে উইজেট নিষ্ক্রিয় থাকে"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"শর্টকাটগুলি অনুপলব্ধ"</string>
+    <string name="home_screen" msgid="806512411299847073">"হোম স্ক্রীন"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"কাস্টম অ্যাকশন"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"একটি উইজেট তুলতে তা স্পর্শ করে ধরে রাখুন৷"</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"কোনো উইজেট বেছে নিতে দুবার-আলতো চেপে ধরে থাকুন অথবা কাস্টম ক্রিয়াগুলি ব্যবহার করুন৷"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%2$d উচ্চতা অনুযায়ী %1$d প্রস্থ"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"নিজে যোগ করতে টাচ করে ধরে রাখুন"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"স্বয়ংক্রিয়ভাবে যোগ করুন"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"অ্যাপ্লিকেশানগুলি অনুসন্ধান করুন"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"অ্যাপ্লিকেশানগুলি লোড হচ্ছে..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" এর সাথে মেলে এমন কোনো অ্যাপ্লিকেশান পাওয়া যায়নি"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"আরো অ্যাপ্লিকেশানের জন্য অনুসন্ধান করুন"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"বিজ্ঞপ্তি"</string>
     <string name="out_of_space" msgid="4691004494942118364">"এই হোম স্ক্রীনে আর কোনো জায়গা নেই৷"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"পছন্দসই ট্রে-তে আর কোনো জায়গা নেই"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"অ্যাপ্লিকেশানগুলির তালিকা"</string>
@@ -71,6 +76,11 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"হোমস্ক্রীন ঘোরানোর অনুমতি দিন"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"যখন ফোনটি ঘোরানো হয়"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"বর্তমান প্রদর্শনের সেটিংস ঘোরানোর মঞ্জুরি দেয় না"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"হোম স্ক্রিনে আইকন যোগ করুন"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"নতুন অ্যাপ্লিকেশানগুলির জন্যে"</string>
+    <string name="icon_shape_override_label" msgid="2977264953998281004">"আইকনের আকৃতি পরিবর্তন করুন"</string>
+    <string name="icon_shape_no_override" msgid="3678524428085518367">"পরিবর্তন করবেন না"</string>
+    <string name="icon_shape_override_progress" msgid="3461735694970239908">"আইকনের আকৃতি পরিবর্তন করা হচ্ছে"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"অজানা"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"সরান"</string>
     <string name="abandoned_search" msgid="891119232568284442">"অনুসন্ধান"</string>
@@ -78,6 +88,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"এই আইকনের অ্যাপ্লিকেশানটি ইন্সটল করা নাই। আপনি এটি সরাতে পারেন বা অ্যাপ্লিকেশানটি অনুসন্ধান করে এটি নিজে ইন্সটল করতে পারেন।"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ডাউনলোড হচ্ছে <xliff:g id="PROGRESS">%2$s</xliff:g> সম্পন্ন হয়েছে"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ইনস্টলের অপেক্ষায় রয়েছে"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> উইজেট"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"হোম স্ক্রীনে যোগ করুন"</string>
     <string name="action_move_here" msgid="2170188780612570250">"এখানে আইটেম সরান"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"হোম স্ক্রীনে আইটেম যোগ করা হয়েছে"</string>
@@ -93,10 +104,10 @@
     <string name="create_folder_with" msgid="4050141361160214248">"এর সাথে ফোল্ডার তৈরি করুন: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"ফোল্ডার তৈরি করা হয়েছে"</string>
     <string name="action_move_to_workspace" msgid="1603837886334246317">"হোম স্ক্রীনে সরান"</string>
-    <string name="action_move_screen_left" msgid="8854216831569401665">"স্ক্রীন বাম দিকে সরান"</string>
+    <string name="action_move_screen_left" msgid="8854216831569401665">"স্ক্রীন বাঁ দিকে সরান"</string>
     <string name="action_move_screen_right" msgid="329334910274311123">"স্ক্রীন ডান দিকে সরান"</string>
     <string name="screen_moved" msgid="266230079505650577">"স্ক্রীন সরানো হয়েছে"</string>
-    <string name="action_resize" msgid="1802976324781771067">"পুনরায় আকার দিন"</string>
+    <string name="action_resize" msgid="1802976324781771067">"আবার আকার দিন"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"প্রস্থ বাড়ান"</string>
     <string name="action_increase_height" msgid="459390020612501122">"উচ্চতা বাড়ান"</string>
     <string name="action_decrease_width" msgid="1374549771083094654">"প্রস্থ কমান"</string>

@@ -1,11 +1,9 @@
 package com.android.launcher3.accessibility;
 
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.DialogInterface;
 import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -20,11 +18,9 @@ import com.android.launcher3.AppInfo;
 import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
+import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.DeleteDropTarget;
-import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
-import com.android.launcher3.dragndrop.DragOptions;
-import com.android.launcher3.folder.Folder;
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.InfoDropTarget;
 import com.android.launcher3.ItemInfo;
@@ -39,13 +35,12 @@ import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.UninstallDropTarget;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.dragndrop.DragController.DragListener;
-import com.android.launcher3.shortcuts.DeepShortcutTextView;
-import com.android.launcher3.shortcuts.DeepShortcutsContainer;
+import com.android.launcher3.dragndrop.DragOptions;
+import com.android.launcher3.folder.Folder;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
 
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class LauncherAccessibilityDelegate extends AccessibilityDelegate implements DragListener {
 
     private static final String TAG = "LauncherAccessibilityDelegate";
@@ -57,7 +52,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
     protected static final int MOVE = R.id.action_move;
     protected static final int MOVE_TO_WORKSPACE = R.id.action_move_to_workspace;
     protected static final int RESIZE = R.id.action_resize;
-    protected static final int DEEP_SHORTCUTS = R.id.action_deep_shortcuts;
+    public static final int DEEP_SHORTCUTS = R.id.action_deep_shortcuts;
 
     public enum DragType {
         ICON,
@@ -100,14 +95,17 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
     @Override
     public void onInitializeAccessibilityNodeInfo(View host, AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(host, info);
-        addActions(host, info);
+        addSupportedActions(host, info, false);
     }
 
-    protected void addActions(View host, AccessibilityNodeInfo info) {
+    public void addSupportedActions(View host, AccessibilityNodeInfo info, boolean fromKeyboard) {
         if (!(host.getTag() instanceof ItemInfo)) return;
         ItemInfo item = (ItemInfo) host.getTag();
 
-        if (host instanceof BubbleTextView && ((BubbleTextView) host).hasDeepShortcuts()) {
+        // If the request came from keyboard, do not add custom shortcuts as that is already
+        // exposed as a direct shortcut
+        if (!fromKeyboard && host instanceof BubbleTextView
+                && ((BubbleTextView) host).hasDeepShortcuts()) {
             info.addAction(mActions.get(DEEP_SHORTCUTS));
         }
 
@@ -117,13 +115,14 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         if (UninstallDropTarget.supportsDrop(host.getContext(), item)) {
             info.addAction(mActions.get(UNINSTALL));
         }
-        if (InfoDropTarget.supportsDrop(item)) {
+        if (InfoDropTarget.supportsDrop(host.getContext(), item)) {
             info.addAction(mActions.get(INFO));
         }
 
-        if ((item instanceof ShortcutInfo)
+        // Do not add move actions for keyboard request as this uses virtual nodes.
+        if (!fromKeyboard && ((item instanceof ShortcutInfo)
                 || (item instanceof LauncherAppWidgetInfo)
-                || (item instanceof FolderInfo)) {
+                || (item instanceof FolderInfo))) {
             info.addAction(mActions.get(MOVE));
 
             if (item.container >= 0) {
@@ -169,7 +168,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
                 public void run() {
                     if (item instanceof AppInfo) {
                         ShortcutInfo info = ((AppInfo) item).makeShortcut();
-                        LauncherModel.addItemToDatabase(mLauncher, info,
+                        mLauncher.getModelWriter().addItemToDatabase(info,
                                 LauncherSettings.Favorites.CONTAINER_DESKTOP,
                                 screenId, coordinates[0], coordinates[1]);
 
@@ -188,14 +187,14 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
             });
             return true;
         } else if (action == MOVE_TO_WORKSPACE) {
-            Folder folder = mLauncher.getWorkspace().getOpenFolder();
-            mLauncher.closeFolder(folder, true);
+            Folder folder = Folder.getOpen(mLauncher);
+            folder.close(true);
             ShortcutInfo info = (ShortcutInfo) item;
             folder.getInfo().remove(info, false);
 
             final int[] coordinates = new int[2];
             final long screenId = findSpaceOnWorkspace(item, coordinates);
-            LauncherModel.moveItemInDatabase(mLauncher, info,
+            mLauncher.getModelWriter().moveItemInDatabase(info,
                     LauncherSettings.Favorites.CONTAINER_DESKTOP,
                     screenId, coordinates[0], coordinates[1]);
 
@@ -232,7 +231,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
                 .show();
             return true;
         } else if (action == DEEP_SHORTCUTS) {
-            return DeepShortcutsContainer.showForIcon((BubbleTextView) host) != null;
+            return PopupContainerWithArrow.showForIcon((BubbleTextView) host) != null;
         }
         return false;
     }
@@ -305,7 +304,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         ((LauncherAppWidgetHostView) host).updateAppWidgetSize(null,
                 sizeRange.left, sizeRange.top, sizeRange.right, sizeRange.bottom);
         host.requestLayout();
-        LauncherModel.updateItemInDatabase(mLauncher, info);
+        mLauncher.getModelWriter().updateItemInDatabase(info);
         announceConfirmation(mLauncher.getString(R.string.widget_resized, info.spanX, info.spanY));
     }
 
@@ -369,12 +368,10 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         mLauncher.getDragLayer().getDescendantRectRelativeToSelf(item, pos);
         mLauncher.getDragController().prepareAccessibleDrag(pos.centerX(), pos.centerY());
 
-        Workspace workspace = mLauncher.getWorkspace();
-
-        Folder folder = workspace.getOpenFolder();
+        Folder folder = Folder.getOpen(mLauncher);
         if (folder != null) {
             if (!folder.getItemsInReadingOrder().contains(item)) {
-                mLauncher.closeFolder();
+                folder.close(true);
                 folder = null;
             }
         }
@@ -386,7 +383,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         if (folder != null) {
             folder.startDrag(cellInfo.cell, options);
         } else {
-            workspace.startDrag(cellInfo, options);
+            mLauncher.getWorkspace().startDrag(cellInfo, options);
         }
     }
 

@@ -27,14 +27,19 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"បាន​បិទ​កម្មវិធី​ដែល​បាន​ទាញ​យក​ក្នុង​របៀប​សុវត្ថិភាព"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"បាន​បិទ​ធាតុ​ក្រាហ្វិក​ក្នុង​របៀប​សុវត្ថិភាព"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"ផ្លូវកាត់មិនអាចប្រើបានទេ"</string>
+    <string name="home_screen" msgid="806512411299847073">"អេក្រង់ដើម"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"សកម្មភាព​ផ្ទាល់ខ្លួន"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"ប៉ះ &amp; សង្កត់ ដើម្បី​ជ្រើស​ធាតុ​ក្រាហ្វិក។"</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"ប៉ះពីរដង ហើយចុចឲ្យជាប់ដើម្បីជ្រើសយកធាតុក្រាហ្វិក ឬប្រើសកម្មភាពផ្ទាល់ខ្លួន។"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"ទទឺង %1$d គុណនឹងកម្ពស់ %2$d"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"ចុច​ឲ្យជាប់​ដើម្បី​បញ្ចូលវា​ដោយផ្ទាល់"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"បញ្ចូល​ដោយ​ស្វ័យ​ប្រវត្តិ"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"ស្វែងរកកម្មវិធី"</string>
     <string name="all_apps_loading_message" msgid="7557140873644765180">"កំពុងដំណើរការកម្មវិធី..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"គ្មានកម្មវិធីដែលត្រូវជាមួយ \"<xliff:g id="QUERY">%1$s</xliff:g>\" ទេ"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"ស្វែងរកកម្មវិធីច្រើនទៀត"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"ការ​ជូនដំណឹង"</string>
     <string name="out_of_space" msgid="4691004494942118364">"គ្មាន​បន្ទប់​នៅ​លើ​អេក្រង់​ដើម​នេះ​ទៀត​ទេ។"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"គ្មាន​បន្ទប់​​ក្នុង​ថាស​និយម​ប្រើ"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"បញ្ជីកម្មវិធី"</string>
@@ -71,6 +76,14 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"អនុញ្ញាតការបងិ្វលអេក្រង់ដើម"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"នៅពេលដែលបង្វិលទូរស័ព្ទរបស់អ្នក"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"ការកំណត់អេក្រង់បច្ចុប្បន្នមិនអនុញ្ញាតការបង្វិលទេ"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"បញ្ចូល​រូបតំណាង​ទៅ​អេក្រង់​ដើម"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"សម្រាប់កម្មវិធីថ្មី"</string>
+    <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
+    <skip />
+    <!-- no translation found for icon_shape_no_override (3678524428085518367) -->
+    <skip />
+    <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
+    <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"មិន​ស្គាល់"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"លុបចេញ"</string>
     <string name="abandoned_search" msgid="891119232568284442">"ស្វែងរក"</string>
@@ -78,6 +91,7 @@
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"មិន​បាន​ដំឡើង​កម្មវិធី​សម្រាប់​រូបតំណាង​នេះ។ អ្នក​អាច​លុប​វា ឬ​ស្វែងរក​កម្មវិធី និង​ដំឡើង​វា​ដោយ​ដៃ។"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"កំពុងដោនឡូត <xliff:g id="NAME">%1$s</xliff:g> បានបញ្ចប់ <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> កំពុងរង់ចាំការដំឡើង"</string>
+    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"ធាតុ​ក្រាហ្វិក <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"បន្ថែមទៅអេក្រង់ដើម"</string>
     <string name="action_move_here" msgid="2170188780612570250">"ផ្លាស់ធាតុមកទីនេះ"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"ធាតុដែលត្រូវបានបន្ថែមទៅអេក្រង់ដើម"</string>
