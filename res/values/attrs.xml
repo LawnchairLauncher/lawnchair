@@ -114,5 +114,6 @@
     <declare-styleable name="ShadowDrawable">
         <attr name="android:src" />
         <attr name="android:shadowColor" />
+        <attr name="android:elevation" />
     </declare-styleable>
 </resources>
