@@ -1763,17 +1763,15 @@ public class LauncherModel extends BroadcastReceiver
         }
 
         private void loadDeepShortcuts() {
-            if (!mModelLoaded) {
-                sBgDataModel.deepShortcutMap.clear();
-                DeepShortcutManager shortcutManager = DeepShortcutManager.getInstance(mContext);
-                mHasShortcutHostPermission = shortcutManager.hasHostPermission();
-                if (mHasShortcutHostPermission) {
-                    for (UserHandle user : mUserManager.getUserProfiles()) {
-                        if (mUserManager.isUserUnlocked(user)) {
-                            List<ShortcutInfoCompat> shortcuts =
-                                    shortcutManager.queryForAllShortcuts(user);
-                            sBgDataModel.updateDeepShortcutMap(null, user, shortcuts);
-                        }
+            sBgDataModel.deepShortcutMap.clear();
+            DeepShortcutManager shortcutManager = DeepShortcutManager.getInstance(mContext);
+            mHasShortcutHostPermission = shortcutManager.hasHostPermission();
+            if (mHasShortcutHostPermission) {
+                for (UserHandle user : mUserManager.getUserProfiles()) {
+                    if (mUserManager.isUserUnlocked(user)) {
+                        List<ShortcutInfoCompat> shortcuts =
+                                shortcutManager.queryForAllShortcuts(user);
+                        sBgDataModel.updateDeepShortcutMap(null, user, shortcuts);
                     }
                 }
             }
