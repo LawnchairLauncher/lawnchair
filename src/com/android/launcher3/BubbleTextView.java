@@ -674,14 +674,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
         }
     }
 
-    /**
-     * Returns true if the view can show custom shortcuts.
-     */
-    public boolean hasDeepShortcuts() {
-        return !mLauncher.getPopupDataProvider().getShortcutIdsForItem((ItemInfo) getTag())
-                .isEmpty();
-    }
-
     public int getIconSize() {
         return mIconSize;
     }

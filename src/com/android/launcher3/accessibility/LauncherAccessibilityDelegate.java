@@ -36,6 +36,7 @@ import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.popup.PopupContainerWithArrow;
+import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.util.Thunk;
 
 import java.util.ArrayList;
@@ -103,8 +104,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
 
         // If the request came from keyboard, do not add custom shortcuts as that is already
         // exposed as a direct shortcut
-        if (!fromKeyboard && host instanceof BubbleTextView
-                && ((BubbleTextView) host).hasDeepShortcuts()) {
+        if (!fromKeyboard && DeepShortcutManager.supportsShortcuts(item)) {
             info.addAction(mActions.get(DEEP_SHORTCUTS));
         }
 
