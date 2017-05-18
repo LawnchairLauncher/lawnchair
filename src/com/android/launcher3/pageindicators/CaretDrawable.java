@@ -49,8 +49,8 @@ public class CaretDrawable extends Drawable {
         mCaretPaint.setAntiAlias(true);
         mCaretPaint.setStrokeWidth(strokeWidth);
         mCaretPaint.setStyle(Paint.Style.STROKE);
-        mCaretPaint.setStrokeCap(Paint.Cap.SQUARE);
-        mCaretPaint.setStrokeJoin(Paint.Join.MITER);
+        mCaretPaint.setStrokeCap(Paint.Cap.ROUND);
+        mCaretPaint.setStrokeJoin(Paint.Join.ROUND);
 
         mShadowPaint.setColor(res.getColor(R.color.default_shadow_color_no_alpha));
         mShadowPaint.setAlpha(Themes.getAlpha(context, android.R.attr.spotShadowAlpha));
