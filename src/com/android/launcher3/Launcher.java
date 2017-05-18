@@ -4061,8 +4061,8 @@ public class Launcher extends BaseActivity
             shortcutInfos.add(new KeyboardShortcutInfo(getString(R.string.custom_actions),
                     KeyEvent.KEYCODE_O, KeyEvent.META_CTRL_ON));
         }
-        if (currentFocus instanceof BubbleTextView &&
-                ((BubbleTextView) currentFocus).hasDeepShortcuts()) {
+        if (currentFocus.getTag() instanceof ItemInfo
+                && DeepShortcutManager.supportsShortcuts((ItemInfo) currentFocus.getTag())) {
             shortcutInfos.add(new KeyboardShortcutInfo(getString(R.string.action_deep_shortcut),
                     KeyEvent.KEYCODE_S, KeyEvent.META_CTRL_ON));
         }
