@@ -33,7 +33,8 @@
         android:textColor="?android:attr/textColorPrimary"
         android:fontFamily="sans-serif"
         launcher:iconDisplay="shortcut_popup"
-        launcher:layoutHorizontal="true" />
+        launcher:layoutHorizontal="true"
+        android:focusable="false" />
 
     <View
         android:id="@+id/icon"
