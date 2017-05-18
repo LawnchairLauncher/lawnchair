@@ -76,11 +76,17 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"Payagan ang pag-rotate ng Home screen"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Kailan maro-rotate ang telepono"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Hindi pinahihintulutan ng kasalukuyang setting ng Display ang pag-rotate"</string>
+    <!-- no translation found for icon_badging_title (4418239350706629417) -->
+    <skip />
+    <!-- no translation found for icon_badging_desc_on (6022379097717134764) -->
+    <skip />
+    <!-- no translation found for icon_badging_desc_off (1574640601251590211) -->
+    <skip />
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Idagdag ang icon sa Home screen"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Para sa mga bagong app"</string>
     <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
     <skip />
-    <!-- no translation found for icon_shape_no_override (3678524428085518367) -->
+    <!-- no translation found for icon_shape_system_default (1709762974822753030) -->
     <skip />
     <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
     <skip />

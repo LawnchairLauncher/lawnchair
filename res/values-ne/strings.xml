@@ -76,10 +76,17 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"गृह स्क्रिनलाई घुम्ने अनुमति दिनुहोस्"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"फोनलाई घुमाइँदा"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"हालको प्रदर्शन सम्बन्धी सेटिङले घुमाउने सुविधालाई अनुमति दिँदैन"</string>
+    <!-- no translation found for icon_badging_title (4418239350706629417) -->
+    <skip />
+    <!-- no translation found for icon_badging_desc_on (6022379097717134764) -->
+    <skip />
+    <!-- no translation found for icon_badging_desc_off (1574640601251590211) -->
+    <skip />
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"गृह स्क्रिनमा आइकन थप्नुहोस्"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नयाँ अनुप्रयोगका लागि"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"आइकनको आकार परिवर्तन गर्नुहोस्"</string>
-    <string name="icon_shape_no_override" msgid="3678524428085518367">"परिवर्तन नगर्नुहोस्"</string>
+    <!-- no translation found for icon_shape_system_default (1709762974822753030) -->
+    <skip />
     <string name="icon_shape_override_progress" msgid="3461735694970239908">"आइकनको आकारमा गरिएका परिवर्तनहरू लागू गरिँदैछन्"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"अज्ञात"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"हटाउनुहोस्"</string>

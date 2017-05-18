@@ -76,10 +76,16 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"ہوم اسکرین گھمانے کی اجازت دیں"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"جب فون گھمایا جاتا ہے"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"موجودہ ڈسپلے ترتیب گھمانے کی اجازت نہیں دیتی"</string>
+    <!-- no translation found for icon_badging_title (4418239350706629417) -->
+    <skip />
+    <!-- no translation found for icon_badging_desc_on (6022379097717134764) -->
+    <skip />
+    <!-- no translation found for icon_badging_desc_off (1574640601251590211) -->
+    <skip />
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"آئیکن کو ہوم اسکرین میں شامل کریں"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"نئی ایپس کیلئے"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"آئیکن کی شکل تبدیل کریں"</string>
-    <string name="icon_shape_no_override" msgid="3678524428085518367">"تبدیل نہ کریں"</string>
+    <string name="icon_shape_system_default" msgid="1709762974822753030">"سسٹم ڈیفالٹ کا استعمال کریں"</string>
     <string name="icon_shape_override_progress" msgid="3461735694970239908">"آئيکن کی شکل کی تبدیلیاں لاگو ہو رہی ہیں"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"نامعلوم"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ہٹائیں"</string>

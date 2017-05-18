@@ -36,7 +36,7 @@
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"സ്വമേധയാ സ്ഥാപിക്കുന്നതിന് സ്‌പർശിച്ചുപിടിക്കുക"</string>
     <string name="place_automatically" msgid="8064208734425456485">"സ്വയമേവ ചേർക്കുക"</string>
     <string name="all_apps_search_bar_hint" msgid="7084713969757597256">"ആപ്പുകളെ തിരയുക"</string>
-    <string name="all_apps_loading_message" msgid="7557140873644765180">"ആപ്പ്‌സ് ലോഡുചെയ്യുന്നു..."</string>
+    <string name="all_apps_loading_message" msgid="7557140873644765180">"ആപ്പുകൾ ലോഡുചെയ്യുന്നു..."</string>
     <string name="all_apps_no_search_results" msgid="6332185285860416787">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" എന്നതുമായി പൊരുത്തപ്പെടുന്ന ആപ്പ്‌സൊന്നും കണ്ടെത്തിയില്ല"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"കൂടുതൽ ആപ്പുകൾക്ക് തിരയുക"</string>
     <string name="notifications_header" msgid="1404149926117359025">"അറിയിപ്പുകൾ"</string>
@@ -76,10 +76,17 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"ഹോം സ്ക്രീൻ തിരിക്കൽ അനുവദിക്കുക"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"ഫോൺ തിരിച്ച നിലയിലായിരിക്കുമ്പോൾ"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"നിലവിലെ ഡിസ്പ്ലേ ക്രമീകരണം തിരിക്കൽ അനുവദിക്കുന്നില്ല"</string>
+    <!-- no translation found for icon_badging_title (4418239350706629417) -->
+    <skip />
+    <!-- no translation found for icon_badging_desc_on (6022379097717134764) -->
+    <skip />
+    <!-- no translation found for icon_badging_desc_off (1574640601251590211) -->
+    <skip />
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"ഹോം സ്ക്രീനിലേക്ക് ഐക്കൺ ചേർക്കുക"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"പുതിയ ആപ്പുകൾക്ക്"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"ഐക്കണിന്റെ ആകാരം മാറ്റുക"</string>
-    <string name="icon_shape_no_override" msgid="3678524428085518367">"മാറ്റരുത്"</string>
+    <!-- no translation found for icon_shape_system_default (1709762974822753030) -->
+    <skip />
     <string name="icon_shape_override_progress" msgid="3461735694970239908">"ഐക്കൺ ആകാര മാറ്റങ്ങൾ പ്രയോഗിക്കുന്നു"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"അജ്ഞാതം"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"നീക്കംചെയ്യുക"</string>
