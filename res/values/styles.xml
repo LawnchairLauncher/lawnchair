@@ -97,13 +97,9 @@
         <!-- TODO: move hardcoded colors from colors.xml to this theme and use for popup items -->
     </style>
     <style name="IconOnlySystemShortcut">
-        <!-- The icons use this color, then are tinted -->
-        <item name="android:textColorPrimary">@android:color/white</item>
         <item name="android:tint">?android:attr/textColorHint</item>
     </style>
     <style name="IconWithTextSystemShortcut">
-        <!-- The icons use this color, then are tinted -->
-        <item name="android:textColorPrimary">@android:color/white</item>
         <item name="android:backgroundTint">?android:attr/textColorTertiary</item>
     </style>
 
