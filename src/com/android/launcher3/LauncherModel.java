@@ -1831,7 +1831,7 @@ public class LauncherModel extends BroadcastReceiver
                 CacheDataUpdatedTask.OP_CACHE_UPDATE, user, updatedPackages));
     }
 
-    void enqueueModelUpdateTask(BaseModelUpdateTask task) {
+    public void enqueueModelUpdateTask(BaseModelUpdateTask task) {
         if (!mModelLoaded && mLoaderTask == null) {
             if (DEBUG_LOADERS) {
                 Log.d(TAG, "enqueueModelUpdateTask Ignoring task since loader is pending=" + task);
