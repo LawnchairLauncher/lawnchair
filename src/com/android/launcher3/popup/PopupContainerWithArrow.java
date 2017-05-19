@@ -114,7 +114,6 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
 
         mStartDragThreshold = getResources().getDimensionPixelSize(
                 R.dimen.deep_shortcuts_start_drag_threshold);
-        // TODO: make sure the delegate works for all items, not just shortcuts.
         mAccessibilityDelegate = new ShortcutMenuAccessibilityDelegate(mLauncher);
         mIsRtl = Utilities.isRtl(getResources());
     }
@@ -176,7 +175,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         // Add dummy views first, and populate with real info when ready.
         PopupPopulator.Item[] itemsToPopulate = PopupPopulator
                 .getItemsToPopulate(shortcutIds, notificationKeys, systemShortcuts);
-        addDummyViews(originalIcon, itemsToPopulate, notificationKeys.size() > 1);
+        addDummyViews(itemsToPopulate, notificationKeys.size() > 1);
 
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
         orientAboutIcon(originalIcon, arrowHeight + arrowVerticalOffset);
@@ -187,7 +186,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             mNotificationItemView = null;
             mShortcutsItemView = null;
             itemsToPopulate = PopupPopulator.reverseItems(itemsToPopulate);
-            addDummyViews(originalIcon, itemsToPopulate, notificationKeys.size() > 1);
+            addDummyViews(itemsToPopulate, notificationKeys.size() > 1);
 
             measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
             orientAboutIcon(originalIcon, arrowHeight + arrowVerticalOffset);
@@ -202,6 +201,17 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                 : mShortcutsItemView.getSystemShortcutViews(reverseOrder);
         if (mNotificationItemView != null) {
             updateNotificationHeader();
+        }
+
+        int numShortcuts = shortcutViews.size() + systemShortcutViews.size();
+        int numNotifications = notificationKeys.size();
+        if (numNotifications == 0) {
+            setContentDescription(getContext().getString(R.string.shortcuts_menu_description,
+                    numShortcuts, originalIcon.getContentDescription().toString()));
+        } else {
+            setContentDescription(getContext().getString(
+                    R.string.shortcuts_menu_with_notifications_description, numShortcuts,
+                    numNotifications, originalIcon.getContentDescription().toString()));
         }
 
         // Add the arrow.
@@ -225,8 +235,8 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                 systemShortcuts, systemShortcutViews));
     }
 
-    private void addDummyViews(BubbleTextView originalIcon,
-            PopupPopulator.Item[] itemTypesToPopulate, boolean notificationFooterHasIcons) {
+    private void addDummyViews(PopupPopulator.Item[] itemTypesToPopulate,
+            boolean notificationFooterHasIcons) {
         final Resources res = getResources();
         final int spacing = res.getDimensionPixelSize(R.dimen.popup_items_spacing);
         final LayoutInflater inflater = mLauncher.getLayoutInflater();
@@ -243,12 +253,14 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                 int footerHeight = notificationFooterHasIcons ?
                         res.getDimensionPixelSize(R.dimen.notification_footer_height) : 0;
                 item.findViewById(R.id.footer).getLayoutParams().height = footerHeight;
+                mNotificationItemView.getMainView().setAccessibilityDelegate(mAccessibilityDelegate);
+            } else if (itemTypeToPopulate == PopupPopulator.Item.SHORTCUT) {
+                item.setAccessibilityDelegate(mAccessibilityDelegate);
             }
 
             boolean shouldAddBottomMargin = nextItemTypeToPopulate != null
                     && itemTypeToPopulate.isShortcut ^ nextItemTypeToPopulate.isShortcut;
 
-            item.setAccessibilityDelegate(mAccessibilityDelegate);
             if (itemTypeToPopulate.isShortcut) {
                 if (mShortcutsItemView == null) {
                     mShortcutsItemView = (ShortcutsItemView) inflater.inflate(
@@ -266,9 +278,6 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                 }
             }
         }
-        // TODO: update this, since not all items are shortcuts
-        setContentDescription(getContext().getString(R.string.shortcuts_menu_description,
-                numItems, originalIcon.getContentDescription().toString()));
     }
 
     protected PopupItemView getItemViewAt(int index) {
