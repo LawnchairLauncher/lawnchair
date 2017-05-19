@@ -259,7 +259,7 @@ public final class Utilities {
         return scale;
     }
 
-    static boolean isSystemApp(Context context, Intent intent) {
+    public static boolean isSystemApp(Context context, Intent intent) {
         PackageManager pm = context.getPackageManager();
         ComponentName cn = intent.getComponent();
         String packageName = null;

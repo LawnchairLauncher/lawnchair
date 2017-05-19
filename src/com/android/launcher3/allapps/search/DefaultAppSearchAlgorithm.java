@@ -54,7 +54,7 @@ public class DefaultAppSearchAlgorithm {
         });
     }
 
-    protected ArrayList<ComponentKey> getTitleMatchResult(String query) {
+    public ArrayList<ComponentKey> getTitleMatchResult(String query) {
         // Do an intersection of the words in the query and each title, and filter out all the
         // apps that don't match all of the words in the query.
         final String queryTextLower = query.toLowerCase();
@@ -67,7 +67,7 @@ public class DefaultAppSearchAlgorithm {
         return result;
     }
 
-    protected boolean matches(AppInfo info, String query) {
+    public boolean matches(AppInfo info, String query) {
         int queryLength = query.length();
 
         String title = info.title.toString();
