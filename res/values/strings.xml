@@ -159,7 +159,7 @@
     <!-- Text for wallpaper change button -->
     <string name="wallpaper_button_text">Wallpapers</string>
     <!-- Text for settings button -->
-    <string name="settings_button_text">Settings</string>
+    <string name="settings_button_text">Home settings</string>
     <!-- Message shown when a feature is disabled by the administrator -->
     <string name="msg_disabled_by_admin">Disabled by your admin</string>
     <!-- Text for custom accessibility action to go to the overview mode, where users can look and change the overall UI of the launcher. -->
