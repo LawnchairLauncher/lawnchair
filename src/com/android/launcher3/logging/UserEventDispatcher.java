@@ -21,6 +21,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.SystemClock;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewParent;
@@ -90,7 +91,7 @@ public class UserEventDispatcher {
     /**
      * Recursively finds the parent of the given child which implements IconLogInfoProvider
      */
-    public static LogContainerProvider getLaunchProviderRecursive(View v) {
+    public static LogContainerProvider getLaunchProviderRecursive(@Nullable View v) {
         ViewParent parent;
         if (v != null) {
             parent = v.getParent();
@@ -147,7 +148,11 @@ public class UserEventDispatcher {
         return event;
     }
 
-    public boolean fillInLogContainerData(LauncherEvent event, View v) {
+    /**
+     * Fills in the container data on the given event if the given view is not null.
+     * @return whether container data was added.
+     */
+    private boolean fillInLogContainerData(LauncherEvent event, @Nullable View v) {
         // Fill in grid(x,y), pageIndex of the child and container type of the parent
         LogContainerProvider provider = getLaunchProviderRecursive(v);
         if (v == null || !(v.getTag() instanceof ItemInfo) || provider == null) {
@@ -203,9 +208,16 @@ public class UserEventDispatcher {
     }
 
     public void logActionOnControl(int action, int controlType) {
-        LauncherEvent event = newLauncherEvent(
-                newTouchAction(action), newTarget(Target.Type.CONTROL));
+        logActionOnControl(action, controlType, null);
+    }
+
+    public void logActionOnControl(int action, int controlType, @Nullable View controlInContainer) {
+        final LauncherEvent event = controlInContainer == null
+                ? newLauncherEvent(newTouchAction(action), newTarget(Target.Type.CONTROL))
+                : newLauncherEvent(newTouchAction(action), newTarget(Target.Type.CONTROL),
+                        newTarget(Target.Type.CONTAINER));
         event.srcTarget[0].controlType = controlType;
+        fillInLogContainerData(event, controlInContainer);
         dispatchUserEvent(event, null);
     }
 
