@@ -18,20 +18,27 @@ package com.android.launcher3.compat;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
+import android.content.pm.LauncherApps.PinItemRequest;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Parcelable;
 import android.os.Process;
 import android.os.UserHandle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherModel;
+import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo.ShortcutConfigActivityInfoVO;
+import com.android.launcher3.graphics.LauncherIcons;
+import com.android.launcher3.shortcuts.ShortcutInfoCompat;
+import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.PackageUserKey;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,11 +52,6 @@ public class LauncherAppsCompatVO extends LauncherAppsCompatVL {
     @Override
     public ApplicationInfo getApplicationInfo(String packageName, int flags, UserHandle user) {
         try {
-            // TODO: Temporary workaround until the API signature is updated
-            if (false) {
-                throw new PackageManager.NameNotFoundException();
-            }
-
             ApplicationInfo info = mLauncherApps.getApplicationInfo(packageName, flags, user);
             return (info.flags & ApplicationInfo.FLAG_INSTALLED) == 0 || !info.enabled
                     ? null : info;
@@ -64,34 +66,89 @@ public class LauncherAppsCompatVO extends LauncherAppsCompatVL {
         List<ShortcutConfigActivityInfo> result = new ArrayList<>();
         UserHandle myUser = Process.myUserHandle();
 
-        try {
-            Method m = LauncherApps.class.getDeclaredMethod("getShortcutConfigActivityList",
-                    String.class, UserHandle.class);
-            final List<UserHandle> users;
-            final String packageName;
-            if (packageUser == null) {
-                users = UserManagerCompat.getInstance(mContext).getUserProfiles();
-                packageName = null;
-            } else {
-                users = new ArrayList<>(1);
-                users.add(packageUser.mUser);
-                packageName = packageUser.mPackageName;
-            }
-            for (UserHandle user : users) {
-                boolean ignoreTargetSdk = myUser.equals(user);
-                List<LauncherActivityInfo> activities =
-                        (List<LauncherActivityInfo>) m.invoke(mLauncherApps, packageName, user);
-                for (LauncherActivityInfo activityInfo : activities) {
-                    if (ignoreTargetSdk || activityInfo.getApplicationInfo().targetSdkVersion >=
-                            Build.VERSION_CODES.O) {
-                        result.add(new ShortcutConfigActivityInfoVO(activityInfo));
-                    }
+        final List<UserHandle> users;
+        final String packageName;
+        if (packageUser == null) {
+            users = UserManagerCompat.getInstance(mContext).getUserProfiles();
+            packageName = null;
+        } else {
+            users = new ArrayList<>(1);
+            users.add(packageUser.mUser);
+            packageName = packageUser.mPackageName;
+        }
+        for (UserHandle user : users) {
+            boolean ignoreTargetSdk = myUser.equals(user);
+            List<LauncherActivityInfo> activities =
+                    mLauncherApps.getShortcutConfigActivityList(packageName, user);
+            for (LauncherActivityInfo activityInfo : activities) {
+                if (ignoreTargetSdk || activityInfo.getApplicationInfo().targetSdkVersion >=
+                        Build.VERSION_CODES.O) {
+                    result.add(new ShortcutConfigActivityInfoVO(activityInfo));
                 }
             }
-        } catch (Exception e) {
-            Log.e("LauncherAppsCompatVO", "Error calling new API", e);
         }
 
         return result;
+    }
+
+    /**
+     * request.accept() will initiate the following flow:
+     *      -> go-to-system-process for actual processing (a)
+     *      -> callback-to-launcher on UI thread (b)
+     *      -> post callback on the worker thread (c)
+     *      -> Update model and unpin (in system) any shortcut not in out model. (d)
+     *
+     * Note that (b) will take at-least one frame as it involves posting callback from binder
+     * thread to UI thread.
+     * If (d) happens before we add this shortcut to our model, we will end up unpinning
+     * the shortcut in the system.
+     * Here its the caller's responsibility to add the newly created ShortcutInfo immediately
+     * to the model (which may involves a single post-to-worker-thread). That will guarantee
+     * that (d) happens after model is updated.
+     */
+    @Nullable
+    public static ShortcutInfo createShortcutInfoFromPinItemRequest(
+            Context context, final PinItemRequest request, final long acceptDelay) {
+        if (request != null &&
+                request.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT &&
+                request.isValid()) {
+
+            if (acceptDelay <= 0) {
+                if (!request.accept()) {
+                    return null;
+                }
+            } else {
+                // Block the worker thread until the accept() is called.
+                new LooperExecutor(LauncherModel.getWorkerLooper()).execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(acceptDelay);
+                        } catch (InterruptedException e) {
+                            // Ignore
+                        }
+                        if (request.isValid()) {
+                            request.accept();
+                        }
+                    }
+                });
+            }
+
+            ShortcutInfoCompat compat = new ShortcutInfoCompat(request.getShortcutInfo());
+            ShortcutInfo info = new ShortcutInfo(compat, context);
+            // Apply the unbadged icon and fetch the actual icon asynchronously.
+            info.iconBitmap = LauncherIcons
+                    .createShortcutIcon(compat, context, false /* badged */);
+            LauncherAppState.getInstance(context).getModel()
+                    .updateAndBindShortcutInfo(info, compat);
+            return info;
+        } else {
+            return null;
+        }
+    }
+
+    public static PinItemRequest getPinItemRequest(Intent intent) {
+        Parcelable extra = intent.getParcelableExtra(LauncherApps.EXTRA_PIN_ITEM_REQUEST);
+        return extra instanceof PinItemRequest ? (PinItemRequest) extra : null;
     }
 }

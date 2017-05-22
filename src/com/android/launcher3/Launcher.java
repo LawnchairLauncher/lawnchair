@@ -90,7 +90,7 @@ import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.compat.PinItemRequestCompat;
+import com.android.launcher3.compat.LauncherAppsCompatVO;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -1423,8 +1423,8 @@ public class Launcher extends BaseActivity
 
         ShortcutInfo info = null;
         if (Utilities.isAtLeastO()) {
-            info = LauncherAppsCompat.createShortcutInfoFromPinItemRequest(
-                    this, PinItemRequestCompat.getPinItemRequest(data), 0);
+            info = LauncherAppsCompatVO.createShortcutInfoFromPinItemRequest(
+                    this, LauncherAppsCompatVO.getPinItemRequest(data), 0);
         }
 
         if (info == null) {
