@@ -84,6 +84,7 @@ import android.widget.Toast;
 
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
@@ -158,14 +159,15 @@ public class Launcher extends BaseActivity
 
     private static final int REQUEST_CREATE_SHORTCUT = 1;
     private static final int REQUEST_CREATE_APPWIDGET = 5;
+
     private static final int REQUEST_PICK_APPWIDGET = 9;
     private static final int REQUEST_PICK_WALLPAPER = 10;
 
     private static final int REQUEST_BIND_APPWIDGET = 11;
-    private static final int REQUEST_BIND_PENDING_APPWIDGET = 14;
-    private static final int REQUEST_RECONFIGURE_APPWIDGET = 12;
+    private static final int REQUEST_BIND_PENDING_APPWIDGET = 12;
+    private static final int REQUEST_RECONFIGURE_APPWIDGET = 13;
 
-    private static final int REQUEST_PERMISSION_CALL_PHONE = 13;
+    private static final int REQUEST_PERMISSION_CALL_PHONE = 14;
 
     private static final float BOUNCE_ANIMATION_TENSION = 1.3f;
 
@@ -1406,19 +1408,19 @@ public class Launcher extends BaseActivity
     }
 
     /**
-     * Add a shortcut to the workspace.
+     * Add a shortcut to the workspace or to a Folder.
      *
      * @param data The intent describing the shortcut.
      */
     private void completeAddShortcut(Intent data, long container, long screenId, int cellX,
             int cellY, PendingRequestArgs args) {
-        int[] cellXY = mTmpAddItemCellCoordinates;
-        CellLayout layout = getCellLayout(container, screenId);
-
-        if (args.getRequestCode() != REQUEST_CREATE_SHORTCUT ||
-                args.getPendingIntent().getComponent() == null) {
+        if (args.getRequestCode() != REQUEST_CREATE_SHORTCUT
+                || args.getPendingIntent().getComponent() == null) {
             return;
         }
+
+        int[] cellXY = mTmpAddItemCellCoordinates;
+        CellLayout layout = getCellLayout(container, screenId);
 
         ShortcutInfo info = null;
         if (Utilities.isAtLeastO()) {
@@ -1442,36 +1444,55 @@ public class Launcher extends BaseActivity
             }
         }
 
-        final View view = createShortcut(info);
-        boolean foundCellSpan = false;
-        // First we check if we already know the exact location where we want to add this item.
-        if (cellX >= 0 && cellY >= 0) {
-            cellXY[0] = cellX;
-            cellXY[1] = cellY;
-            foundCellSpan = true;
+        if (container < 0) {
+            // Adding a shortcut to the Workspace.
+            final View view = createShortcut(info);
+            boolean foundCellSpan = false;
+            // First we check if we already know the exact location where we want to add this item.
+            if (cellX >= 0 && cellY >= 0) {
+                cellXY[0] = cellX;
+                cellXY[1] = cellY;
+                foundCellSpan = true;
 
-            // If appropriate, either create a folder or add to an existing folder
-            if (mWorkspace.createUserFolderIfNecessary(view, container, layout, cellXY, 0,
-                    true, null,null)) {
+                // If appropriate, either create a folder or add to an existing folder
+                if (mWorkspace.createUserFolderIfNecessary(view, container, layout, cellXY, 0,
+                        true, null, null)) {
+                    return;
+                }
+                DragObject dragObject = new DragObject();
+                dragObject.dragInfo = info;
+                if (mWorkspace.addToExistingFolderIfNecessary(view, layout, cellXY, 0, dragObject,
+                        true)) {
+                    return;
+                }
+            } else {
+                foundCellSpan = layout.findCellForSpan(cellXY, 1, 1);
+            }
+
+            if (!foundCellSpan) {
+                mWorkspace.onNoCellFound(layout);
                 return;
             }
-            DragObject dragObject = new DragObject();
-            dragObject.dragInfo = info;
-            if (mWorkspace.addToExistingFolderIfNecessary(view, layout, cellXY, 0, dragObject,
-                    true)) {
-                return;
-            }
+
+            getModelWriter().addItemToDatabase(info, container, screenId, cellXY[0], cellXY[1]);
+            mWorkspace.addInScreen(view, info);
         } else {
-            foundCellSpan = layout.findCellForSpan(cellXY, 1, 1);
-        }
+            // Adding a shortcut to a Folder.
+            final long folderIconId = container;
+            FolderIcon folderIcon = (FolderIcon) mWorkspace.getFirstMatch(new ItemOperator() {
+                @Override
+                public boolean evaluate(ItemInfo info, View view) {
+                    return info != null && info.id == folderIconId;
+                }
+            });
 
-        if (!foundCellSpan) {
-            mWorkspace.onNoCellFound(layout);
-            return;
+            if (folderIcon != null) {
+                FolderInfo folderInfo = (FolderInfo) folderIcon.getTag();
+                folderInfo.add(info, args.rank, false);
+            } else {
+                Log.e(TAG, "Could not find folder with id " + folderIconId + " to add shortcut.");
+            }
         }
-
-        getModelWriter().addItemToDatabase(info, container, screenId, cellXY[0], cellXY[1]);
-        mWorkspace.addInScreen(view, info);
     }
 
     /**

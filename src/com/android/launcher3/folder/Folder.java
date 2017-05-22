@@ -60,6 +60,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LogDecelerateInterpolator;
 import com.android.launcher3.OnAlarmListener;
 import com.android.launcher3.PagedView;
+import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.UninstallDropTarget.DropTargetSource;
@@ -77,6 +78,7 @@ import com.android.launcher3.pageindicators.PageIndicatorDots;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.widget.PendingAddShortcutInfo;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -792,7 +794,6 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
             }
         }
 
-
         if (mRearrangeOnClose) {
             rearrangeChildren();
             mRearrangeOnClose = false;
@@ -1344,53 +1345,68 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         }
         mContent.completePendingPageChanges();
 
-        View currentDragView;
-        final ShortcutInfo si;
-        if (d.dragInfo instanceof AppInfo) {
-            // Came from all apps -- make a copy.
-            si = ((AppInfo) d.dragInfo).makeShortcut();
-        } else {
-            // ShortcutInfo
-            si = (ShortcutInfo) d.dragInfo;
-        }
-        if (mIsExternalDrag) {
-            currentDragView = mContent.createAndAddViewForRank(si, mEmptyCellRank);
-            // Actually move the item in the database if it was an external drag. Call this
-            // before creating the view, so that ShortcutInfo is updated appropriately.
-            mLauncher.getModelWriter().addOrMoveItemInDatabase(
-                    si, mInfo.id, 0, si.cellX, si.cellY);
+        if (d.dragInfo instanceof PendingAddShortcutInfo) {
+            PendingAddShortcutInfo pasi = (PendingAddShortcutInfo) d.dragInfo;
+            pasi.container = mInfo.id;
+            pasi.rank = mEmptyCellRank;
 
-            // We only need to update the locations if it doesn't get handled in #onDropCompleted.
-            if (d.dragSource != this) {
-                updateItemLocationsInDatabaseBatch();
-            }
-            mIsExternalDrag = false;
-        } else {
-            currentDragView = mCurrentDragView;
-            mContent.addViewForRank(currentDragView, si, mEmptyCellRank);
-        }
-
-        if (d.dragView.hasDrawn()) {
-
-            // Temporarily reset the scale such that the animation target gets calculated correctly.
-            float scaleX = getScaleX();
-            float scaleY = getScaleY();
-            setScaleX(1.0f);
-            setScaleY(1.0f);
-            mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, currentDragView,
-                    cleanUpRunnable, null);
-            setScaleX(scaleX);
-            setScaleY(scaleY);
-        } else {
+            mLauncher.addPendingItem(pasi, pasi.container, pasi.screenId, null, pasi.spanX,
+                    pasi.spanY);
             d.deferDragViewCleanupPostAnimation = false;
-            currentDragView.setVisibility(VISIBLE);
-        }
-        mItemsInvalidated = true;
-        rearrangeChildren();
+            mRearrangeOnClose = true;
+        } else {
+            final ShortcutInfo si;
+            if (d.dragInfo instanceof AppInfo) {
+                // Came from all apps -- make a copy.
+                si = ((AppInfo) d.dragInfo).makeShortcut();
+            } else {
+                // ShortcutInfo
+                si = (ShortcutInfo) d.dragInfo;
+            }
 
-        // Temporarily suppress the listener, as we did all the work already here.
-        try (SuppressInfoChanges s = new SuppressInfoChanges()) {
-            mInfo.add(si, false);
+            View currentDragView;
+            if (mIsExternalDrag) {
+                currentDragView = mContent.createAndAddViewForRank(si, mEmptyCellRank);
+
+                // Actually move the item in the database if it was an external drag. Call this
+                // before creating the view, so that ShortcutInfo is updated appropriately.
+                mLauncher.getModelWriter().addOrMoveItemInDatabase(
+                        si, mInfo.id, 0, si.cellX, si.cellY);
+
+                // We only need to update the locations if it doesn't get handled in
+                // #onDropCompleted.
+                if (d.dragSource != this) {
+                    updateItemLocationsInDatabaseBatch();
+                }
+                mIsExternalDrag = false;
+            } else {
+                currentDragView = mCurrentDragView;
+                mContent.addViewForRank(currentDragView, si, mEmptyCellRank);
+            }
+
+            if (d.dragView.hasDrawn()) {
+                // Temporarily reset the scale such that the animation target gets calculated
+                // correctly.
+                float scaleX = getScaleX();
+                float scaleY = getScaleY();
+                setScaleX(1.0f);
+                setScaleY(1.0f);
+                mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, currentDragView,
+                        cleanUpRunnable, null);
+                setScaleX(scaleX);
+                setScaleY(scaleY);
+            } else {
+                d.deferDragViewCleanupPostAnimation = false;
+                currentDragView.setVisibility(VISIBLE);
+            }
+
+            mItemsInvalidated = true;
+            rearrangeChildren();
+
+            // Temporarily suppress the listener, as we did all the work already here.
+            try (SuppressInfoChanges s = new SuppressInfoChanges()) {
+                mInfo.add(si, false);
+            }
         }
 
         // Clear the drag info, as it is no longer being dragged.
@@ -1419,11 +1435,12 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     }
 
     @Override
-    public void onAdd(ShortcutInfo item) {
-        mContent.createAndAddViewForRank(item, mContent.allocateRankForNewItem());
+    public void onAdd(ShortcutInfo item, int rank) {
+        View view = mContent.createAndAddViewForRank(item, rank);
+        ArrayList<View> items = new ArrayList<>(getItemsInReadingOrder());
+        items.add(rank, view);
+        mContent.arrangeChildren(items, items.size());
         mItemsInvalidated = true;
-        mLauncher.getModelWriter().addOrMoveItemInDatabase(
-                item, mInfo.id, 0, item.cellX, item.cellY);
     }
 
     public void onRemove(ShortcutInfo item) {

@@ -199,21 +199,26 @@ public class FolderPagedView extends PagedView {
         return extra;
     }
 
+    public void allocateSpaceForRank(int rank) {
+        ArrayList<View> views = new ArrayList<>(mFolder.getItemsInReadingOrder());
+        views.add(rank, null);
+        arrangeChildren(views, views.size(), false);
+    }
+
     /**
      * Create space for a new item at the end, and returns the rank for that item.
      * Also sets the current page to the last page.
      */
     public int allocateRankForNewItem() {
         int rank = getItemCount();
-        ArrayList<View> views = new ArrayList<>(mFolder.getItemsInReadingOrder());
-        views.add(rank, null);
-        arrangeChildren(views, views.size(), false);
+        allocateSpaceForRank(rank);
         setCurrentPage(rank / mMaxItemsPerPage);
         return rank;
     }
 
     public View createAndAddViewForRank(ShortcutInfo item, int rank) {
         View icon = createNewView(item);
+        allocateSpaceForRank(rank);
         addViewForRank(icon, item, rank);
         return icon;
     }
