@@ -4140,9 +4140,8 @@ public class Launcher extends BaseActivity
         public void onSharedPreferenceChanged(
                 SharedPreferences sharedPreferences, String key) {
             if (Utilities.ALLOW_ROTATION_PREFERENCE_KEY.equals(key)) {
-                // Finish this instance of the activity. When the activity is recreated,
-                // it will initialize the rotation preference again.
-                finish();
+                // Recreate the activity so that it initializes the rotation preference again.
+                recreate();
             }
         }
     }
