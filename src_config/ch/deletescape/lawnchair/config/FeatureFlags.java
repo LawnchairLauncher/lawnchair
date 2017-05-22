@@ -18,6 +18,8 @@ package ch.deletescape.lawnchair.config;
 
 import android.content.Context;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import ch.deletescape.lawnchair.Utilities;
 
 /**
@@ -36,23 +38,33 @@ public final class FeatureFlags {
 
     // When enabled fling down gesture on the first workspace triggers search.
     public static boolean pulldownSearch(Context context) {
-        return Utilities.getPrefs(context).getBoolean(KEY_PREF_PULLDOWN_SEARCH, true);
+        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_PULLDOWN_SEARCH, true);
+        FirebaseAnalytics.getInstance(context).setUserProperty("pulldown_search_enabled", String.valueOf(enabled));
+        return enabled;
     }
 
     public static boolean pinchToOverview(Context context) {
-        return Utilities.getPrefs(context).getBoolean(KEY_PREF_PINCH_TO_OVERVIEW, true);
+        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_PINCH_TO_OVERVIEW, true);
+        FirebaseAnalytics.getInstance(context).setUserProperty("pinch_overview_enabled", String.valueOf(enabled));
+        return enabled;
     }
 
     // When enabled the status bar may show dark icons based on the top of the wallpaper.
     public static boolean lightStatusBar(Context context) {
-        return Utilities.getPrefs(context).getBoolean(KEY_PREF_LIGHT_STATUS_BAR, false);
+        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_LIGHT_STATUS_BAR, false);
+        FirebaseAnalytics.getInstance(context).setUserProperty("light_statusbar_enabled", String.valueOf(enabled));
+        return enabled;
     }
 
     public static boolean hotseatShouldUseExtractedColors(Context context){
-        return Utilities.getPrefs(context).getBoolean(KEY_PREF_HOTSEAT_EXTRACTED_COLORS, true);
+        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_HOTSEAT_EXTRACTED_COLORS, true);
+        FirebaseAnalytics.getInstance(context).setUserProperty("hotseat_extract_enabled", String.valueOf(enabled));
+        return enabled;
     }
 
     public static boolean enableHapticFeedback(Context context){
-        return Utilities.getPrefs(context).getBoolean(KEY_PREF_HAPTIC_FEEDBACK, false);
+        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_HAPTIC_FEEDBACK, false);
+        FirebaseAnalytics.getInstance(context).setUserProperty("haptic_feedback_enabled", String.valueOf(enabled));
+        return enabled;
     }
 }
