@@ -28,6 +28,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Intent;
+import android.content.pm.LauncherApps.PinItemRequest;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Point;
@@ -50,7 +51,7 @@ import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
-import com.android.launcher3.compat.PinItemRequestCompat;
+import com.android.launcher3.compat.LauncherAppsCompatVO;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
@@ -60,7 +61,7 @@ import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetImageView;
 
-@TargetApi(Build.VERSION_CODES.N_MR1)
+@TargetApi(Build.VERSION_CODES.O)
 public class AddItemActivity extends BaseActivity implements OnLongClickListener, OnTouchListener {
 
     private static final int SHADOW_SIZE = 10;
@@ -70,7 +71,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
 
     private final PointF mLastTouchPos = new PointF();
 
-    private PinItemRequestCompat mRequest;
+    private PinItemRequest mRequest;
     private LauncherAppState mApp;
     private InvariantDeviceProfile mIdp;
 
@@ -87,7 +88,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mRequest = PinItemRequestCompat.getPinItemRequest(getIntent());
+        mRequest = LauncherAppsCompatVO.getPinItemRequest(getIntent());
         if (mRequest == null) {
             finish();
             return;
@@ -101,9 +102,9 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
         mDeviceProfile = mIdp.getDeviceProfile(getApplicationContext());
 
         setContentView(R.layout.add_item_confirmation_activity);
-        mWidgetCell = (LivePreviewWidgetCell) findViewById(R.id.widget_cell);
+        mWidgetCell = findViewById(R.id.widget_cell);
 
-        if (mRequest.getRequestType() == PinItemRequestCompat.REQUEST_TYPE_SHORTCUT) {
+        if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT) {
             setupShortcut();
         } else {
             if (!setupWidget()) {
@@ -226,7 +227,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
      * Called when place-automatically button is clicked.
      */
     public void onPlaceAutomaticallyClick(View v) {
-        if (mRequest.getRequestType() == PinItemRequestCompat.REQUEST_TYPE_SHORTCUT) {
+        if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT) {
             InstallShortcutReceiver.queueShortcut(
                     new ShortcutInfoCompat(mRequest.getShortcutInfo()), this);
             logCommand(Action.Command.CONFIRM);

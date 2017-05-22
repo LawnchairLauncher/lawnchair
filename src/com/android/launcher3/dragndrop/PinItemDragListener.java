@@ -16,11 +16,14 @@
 
 package com.android.launcher3.dragndrop;
 
+import android.annotation.TargetApi;
 import android.appwidget.AppWidgetManager;
 import android.content.ClipDescription;
 import android.content.Intent;
+import android.content.pm.LauncherApps.PinItemRequest;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -40,7 +43,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.R;
-import com.android.launcher3.compat.PinItemRequestCompat;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -55,6 +58,7 @@ import java.util.UUID;
  * {@link DragSource} for handling drop from a different window. This object is initialized
  * in the source window and is passed on to the Launcher activity as an Intent extra.
  */
+@TargetApi(Build.VERSION_CODES.O)
 public class PinItemDragListener
         implements Parcelable, View.OnDragListener, DragSource, DragOptions.PreDragCondition {
 
@@ -63,7 +67,7 @@ public class PinItemDragListener
     private static final String MIME_TYPE_PREFIX = "com.android.launcher3.drag_and_drop/";
     public static final String EXTRA_PIN_ITEM_DRAG_LISTENER = "pin_item_drag_listener";
 
-    private final PinItemRequestCompat mRequest;
+    private final PinItemRequest mRequest;
 
     // Position of preview relative to the touch location
     private final Rect mPreviewRect;
@@ -78,7 +82,7 @@ public class PinItemDragListener
     private DragController mDragController;
     private long mDragStartTime;
 
-    public PinItemDragListener(PinItemRequestCompat request, Rect previewRect,
+    public PinItemDragListener(PinItemRequest request, Rect previewRect,
             int previewBitmapWidth, int previewViewWidth) {
         mRequest = request;
         mPreviewRect = previewRect;
@@ -88,7 +92,7 @@ public class PinItemDragListener
     }
 
     private PinItemDragListener(Parcel parcel) {
-        mRequest = PinItemRequestCompat.CREATOR.createFromParcel(parcel);
+        mRequest = PinItemRequest.CREATOR.createFromParcel(parcel);
         mPreviewRect = Rect.CREATOR.createFromParcel(parcel);
         mPreviewBitmapWidth = parcel.readInt();
         mPreviewViewWidth = parcel.readInt();
@@ -146,7 +150,7 @@ public class PinItemDragListener
         }
 
         final PendingAddItemInfo item;
-        if (mRequest.getRequestType() == PinItemRequestCompat.REQUEST_TYPE_SHORTCUT) {
+        if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT) {
             item = new PendingAddShortcutInfo(
                     new PinShortcutRequestActivityInfo(mRequest, mLauncher));
         } else {
@@ -177,7 +181,7 @@ public class PinItemDragListener
         // across windows, using drag position here give a good estimate for relative position
         // to source window.
         PendingItemDragHelper dragHelper = new PendingItemDragHelper(view);
-        if (mRequest.getRequestType() == PinItemRequestCompat.REQUEST_TYPE_APPWIDGET) {
+        if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_APPWIDGET) {
             dragHelper.setPreview(getPreview(mRequest));
         }
 
@@ -271,7 +275,7 @@ public class PinItemDragListener
         }
     }
 
-    public static RemoteViews getPreview(PinItemRequestCompat request) {
+    public static RemoteViews getPreview(PinItemRequest request) {
         Bundle extras = request.getExtras();
         if (extras != null &&
                 extras.get(AppWidgetManager.EXTRA_APPWIDGET_PREVIEW) instanceof RemoteViews) {
@@ -281,6 +285,9 @@ public class PinItemDragListener
     }
 
     public static boolean handleDragRequest(Launcher launcher, Intent intent) {
+        if (!Utilities.isAtLeastO()) {
+            return false;
+        }
         if (intent == null || !Intent.ACTION_MAIN.equals(intent.getAction())) {
             return false;
         }

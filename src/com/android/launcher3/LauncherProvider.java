@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import android.annotation.TargetApi;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
@@ -38,6 +39,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.database.sqlite.SQLiteStatement;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -68,7 +70,6 @@ import com.android.launcher3.util.Thunk;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
-import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -855,15 +856,16 @@ public class LauncherProvider extends ContentProvider {
          * Removes widgets which are registered to the Launcher's host, but are not present
          * in our model.
          */
+        @TargetApi(Build.VERSION_CODES.O)
         public void removeGhostWidgets(SQLiteDatabase db) {
             // Get all existing widget ids.
             final AppWidgetHost host = newLauncherWidgetHost();
             final int[] allWidgets;
             try {
-                Method getter = AppWidgetHost.class.getDeclaredMethod("getAppWidgetIds");
-                getter.setAccessible(true);
-                allWidgets = (int[]) getter.invoke(host);
-            } catch (Exception e) {
+                // Although the method was defined in O, it has existed since the beginning of time,
+                // so it might work on older platforms as well.
+                allWidgets = host.getAppWidgetIds();
+            } catch (IncompatibleClassChangeError e) {
                 Log.e(TAG, "getAppWidgetIds not supported", e);
                 return;
             }
