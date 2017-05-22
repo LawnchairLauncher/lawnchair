@@ -8,6 +8,7 @@ import android.util.ArrayMap;
 import android.widget.Toast;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crash.FirebaseCrash;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -43,6 +44,7 @@ public class IconPackProvider {
         try {
             appFilter = parseAppFilter(getAppFilter(context, packageName));
         } catch (Exception e) {
+            FirebaseCrash.report(e);
             Toast.makeText(context, "Invalid IconPack", Toast.LENGTH_SHORT).show();
             iconPacks.put(packageName, null);
             return;
@@ -65,7 +67,7 @@ public class IconPackProvider {
             try {
                 indicatorFile.createNewFile();
             } catch (IOException e) {
-                e.printStackTrace();
+                FirebaseCrash.report(e);
             }
         }
         FirebaseAnalytics.getInstance(context).logEvent("iconpack_clearcache", null);
@@ -98,6 +100,7 @@ public class IconPackProvider {
                 return context.getPackageManager().getXml(packageName, resourceId, null);
             }
         } catch (PackageManager.NameNotFoundException e) {
+            FirebaseCrash.report(e);
             Toast.makeText(context, "Failed to get AppFilter", Toast.LENGTH_SHORT).show();
         }
         return null;

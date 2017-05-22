@@ -12,6 +12,7 @@ import android.util.ArrayMap;
 import android.util.Log;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crash.FirebaseCrash;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -100,7 +101,7 @@ class IconPack {
                 try {
                     fos.close();
                 } catch (IOException e1) {
-                    e1.printStackTrace();
+                    FirebaseCrash.report(e1);
                 }
             }
         }
