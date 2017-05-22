@@ -7,7 +7,7 @@ android:
     - build-tools-25.0.2
     - android-25
     - extra-android-m2repository
-script: "$GSERVICES_JSON" > google-services.json & ./gradlew assembleDebug check
+script: $GSERVICES_JSON > google-services.json > ./gradlew assembleDebug check
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
