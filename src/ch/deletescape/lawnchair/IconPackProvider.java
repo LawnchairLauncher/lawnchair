@@ -19,13 +19,14 @@ import java.util.Map;
 public class IconPackProvider {
     private static Map<String, IconPack> iconPacks = new ArrayMap<>();
 
-    public static IconPack getIconPack(String packageName) {
+    private static IconPack getIconPack(String packageName) {
         return iconPacks.get(packageName);
     }
 
     public static IconPack loadAndGetIconPack(Context context) {
         SharedPreferences prefs = Utilities.getPrefs(context);
         String packageName = prefs.getString("pref_iconPackPackage", "");
+        FirebaseAnalytics.getInstance(context).setUserProperty("iconpack", packageName);
         if ("".equals(packageName)) {
             return null;
         }
