@@ -7,6 +7,8 @@ import android.content.res.Resources;
 import android.util.ArrayMap;
 import android.widget.Toast;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import org.xmlpull.v1.XmlPullParser;
 
 import java.io.File;
@@ -46,6 +48,7 @@ public class IconPackProvider {
             return;
         }
         iconPacks.put(packageName, new IconPack(appFilter, context, packageName));
+        FirebaseAnalytics.getInstance(context).logEvent("iconpack_loaded", null);
     }
 
     private static void clearCache(Context context, String packageName) {
@@ -65,6 +68,7 @@ public class IconPackProvider {
                 e.printStackTrace();
             }
         }
+        FirebaseAnalytics.getInstance(context).logEvent("iconpack_clearcache", null);
     }
 
     private static Map<String, String> parseAppFilter(XmlPullParser parser) throws Exception {

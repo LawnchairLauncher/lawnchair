@@ -11,6 +11,8 @@ import android.graphics.drawable.Drawable;
 import android.util.ArrayMap;
 import android.util.Log;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,11 +35,13 @@ class IconPack {
     private Map<String, Drawable> memoryCache = new ArrayMap<>();
     private String packageName;
     private Context mContext;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     public IconPack(Map<String, String> icons, Context context, String packageName) {
         this.icons = icons;
         this.packageName = packageName;
         mContext = context;
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(context);
     }
 
     public Drawable getIcon(LauncherActivityInfoCompat info) {
@@ -49,6 +53,7 @@ class IconPack {
     }
 
     public Drawable getIcon(ComponentName name) {
+        mFirebaseAnalytics.logEvent("iconpack_icon_get", null);
         return getDrawable(icons.get(name.toString()));
     }
 
