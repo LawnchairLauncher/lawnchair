@@ -6,6 +6,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.1'
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.0'
+        classpath 'com.google.gms:google-services:3.1.0'
     }
 }
 
@@ -72,6 +73,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.3.1'
     compile 'com.android.support:palette-v7:25.3.1'
     compile 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-2'
+    compile 'com.google.firebase:firebase-core:10.0.1'
 
     testCompile 'junit:junit:4.12'
     androidTestCompile 'com.android.support.test:runner:0.5'
@@ -96,3 +98,4 @@ protobuf {
         }
     }
 }
+apply plugin: 'com.google.gms.google-services'

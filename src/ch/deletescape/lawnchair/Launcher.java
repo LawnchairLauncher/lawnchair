@@ -75,6 +75,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -128,6 +130,8 @@ public class Launcher extends Activity
         LauncherModel.Callbacks, View.OnTouchListener, LauncherProviderChangeListener,
         AccessibilityManager.AccessibilityStateChangeListener {
     public static final String TAG = "Launcher";
+
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     private static final int REQUEST_CREATE_SHORTCUT = 1;
     private static final int REQUEST_CREATE_APPWIDGET = 5;
@@ -327,6 +331,7 @@ public class Launcher extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         LauncherAppState app = LauncherAppState.getInstance();
 
