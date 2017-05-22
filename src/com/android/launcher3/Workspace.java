@@ -451,7 +451,7 @@ public class Workspace extends PagedView
         mLauncher.lockScreenOrientation();
         mLauncher.onInteractionBegin();
         // Prevent any Un/InstallShortcutReceivers from updating the db while we are dragging
-        InstallShortcutReceiver.enableInstallQueue();
+        InstallShortcutReceiver.enableInstallQueue(InstallShortcutReceiver.FLAG_DRAG_AND_DROP);
 
         // Do not add a new page if it is a accessible drag which was not started by the workspace.
         // We do not support accessibility drag from other sources and instead provide a direct
@@ -504,7 +504,8 @@ public class Workspace extends PagedView
         mLauncher.unlockScreenOrientation(false);
 
         // Re-enable any Un/InstallShortcutReceiver and now process any queued items
-        InstallShortcutReceiver.disableAndFlushInstallQueue(getContext());
+        InstallShortcutReceiver.disableAndFlushInstallQueue(
+                InstallShortcutReceiver.FLAG_DRAG_AND_DROP, getContext());
 
         mOutlineProvider = null;
         mDragInfo = null;
