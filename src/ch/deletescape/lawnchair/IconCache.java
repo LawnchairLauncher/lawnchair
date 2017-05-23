@@ -42,6 +42,8 @@ import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -314,6 +316,7 @@ public class IconCache {
                 }
             }
         } catch (SQLiteException e) {
+            FirebaseCrash.report(e);
             Log.d(TAG, "Error reading icon cache", e);
             // Continue updating whatever we have read so far
         } finally {
@@ -687,6 +690,7 @@ public class IconCache {
                 return true;
             }
         } catch (SQLiteException e) {
+            FirebaseCrash.report(e);
             Log.d(TAG, "Error reading icon cache", e);
         } finally {
             if (c != null) {
