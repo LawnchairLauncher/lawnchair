@@ -20,6 +20,8 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.InsetDrawable;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
@@ -42,6 +44,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.PromiseAppInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -63,7 +66,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     private final Launcher mLauncher;
     private final AlphabeticalAppsList mApps;
     private final AllAppsGridAdapter mAdapter;
-    private final RecyclerView.LayoutManager mLayoutManager;
+    private final LinearLayoutManager mLayoutManager;
 
     private AllAppsRecyclerView mAppsRecyclerView;
     private SearchUiManager mSearchUiManager;
@@ -73,6 +76,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
     private int mNumAppsPerRow;
     private int mNumPredictedAppsPerRow;
+
+    private SpringAnimationHandler mSpringAnimationHandler;
 
     public AllAppsContainerView(Context context) {
         this(context, null);
@@ -87,7 +92,9 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         mLauncher = Launcher.getLauncher(context);
         mApps = new AlphabeticalAppsList(context);
-        mAdapter = new AllAppsGridAdapter(mLauncher, mApps, mLauncher, this);
+        mSpringAnimationHandler = new SpringAnimationHandler(SpringAnimationHandler.Y_DIRECTION);
+        mAdapter = new AllAppsGridAdapter(mLauncher, mApps, mLauncher, this,
+                mSpringAnimationHandler);
         mApps.setAdapter(mAdapter);
         mLayoutManager = mAdapter.getLayoutManager();
         mSearchQueryBuilder = new SpannableStringBuilder();
@@ -227,6 +234,10 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mAppsRecyclerView.setLayoutManager(mLayoutManager);
         mAppsRecyclerView.setAdapter(mAdapter);
         mAppsRecyclerView.setHasFixedSize(true);
+        if (FeatureFlags.LAUNCHER3_PHYSICS) {
+            mAppsRecyclerView.setSpringAnimationHandler(mSpringAnimationHandler);
+            mAppsRecyclerView.addOnScrollListener(new SpringMotionOnScrollListener());
+        }
 
         mSearchContainer = findViewById(R.id.search_container);
         mSearchUiManager = (SearchUiManager) mSearchContainer;
@@ -402,6 +413,38 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             if (packageUserKey.updateFromItemInfo(info) && updatedBadges.contains(packageUserKey)) {
                 ((BubbleTextView) child).applyBadgeState(info, true /* animate */);
             }
+        }
+    }
+
+    public SpringAnimationHandler getSpringAnimationHandler() {
+        return mSpringAnimationHandler;
+    }
+
+    public class SpringMotionOnScrollListener extends RecyclerView.OnScrollListener {
+
+        private int mScrollState = RecyclerView.SCROLL_STATE_IDLE;
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            if (mScrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                mSpringAnimationHandler.skipToEnd();
+                return;
+            }
+
+            int first = mLayoutManager.findFirstVisibleItemPosition();
+            int last = mLayoutManager.findLastVisibleItemPosition();
+
+            // We only show the spring animation when at the top or bottom, so we wait until the
+            // first or last row is visible to ensure that all animations run in sync.
+            if (first == 0 || last >= mAdapter.getItemCount() - mAdapter.getNumAppsPerRow()) {
+                mSpringAnimationHandler.animateToFinalPosition(0);
+            }
+        }
+
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+            mScrollState = newState;
         }
     }
 }

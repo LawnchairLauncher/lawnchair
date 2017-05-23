@@ -28,8 +28,8 @@ import android.view.View;
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -53,6 +53,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     private AllAppsBackgroundDrawable mEmptySearchBackground;
     private int mEmptySearchBackgroundTopOffset;
 
+    private SpringAnimationHandler mSpringAnimationHandler;
+
     public AllAppsRecyclerView(Context context) {
         this(context, null);
     }
@@ -73,6 +75,18 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         mScrollbar.setDetachThumbOnFastScroll();
         mEmptySearchBackgroundTopOffset = res.getDimensionPixelSize(
                 R.dimen.all_apps_empty_search_bg_top_offset);
+    }
+
+    public void setSpringAnimationHandler(SpringAnimationHandler springAnimationHandler) {
+        mSpringAnimationHandler = springAnimationHandler;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent e) {
+        if (FeatureFlags.LAUNCHER3_PHYSICS && mSpringAnimationHandler != null) {
+            mSpringAnimationHandler.addMovement(e);
+        }
+        return super.onTouchEvent(e);
     }
 
     /**
