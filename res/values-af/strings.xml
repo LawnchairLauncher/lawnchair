@@ -77,7 +77,7 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"Laat toe dat tuisskerm gedraai word"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Wanneer foon gedraai word"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Huidige vertooninstelling laat nie rotasie toe nie"</string>
-    <string name="icon_badging_title" msgid="4418239350706629417">"Ikoon-kentekengewing"</string>
+    <string name="icon_badging_title" msgid="4418239350706629417">"Ikoon-kentekentoekenning"</string>
     <string name="icon_badging_desc_on" msgid="6022379097717134764">"Aan vir alle programme"</string>
     <string name="icon_badging_desc_off" msgid="1574640601251590211">"Af vir alle programme"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Voeg ikoon by tuisskerm"</string>
