@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.perf.FirebasePerformance;
+import com.google.firebase.perf.metrics.AddTrace;
 import com.google.firebase.perf.metrics.Trace;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -38,12 +39,11 @@ public class IconPackProvider {
         return getIconPack(packageName);
     }
 
+    @AddTrace(name = "iconpack_load")
     public static void loadIconPack(Context context, String packageName) {
         if ("".equals(packageName)) {
             iconPacks.put("", null);
         }
-        Trace trace = FirebasePerformance.getInstance().newTrace("iconpack_load");
-        trace.start();
         clearCache(context, packageName);
         Map<String, String> appFilter;
         try {
@@ -52,17 +52,14 @@ public class IconPackProvider {
             FirebaseCrash.report(e);
             Toast.makeText(context, "Invalid IconPack", Toast.LENGTH_SHORT).show();
             iconPacks.put(packageName, null);
-            trace.stop();
             return;
         }
         iconPacks.put(packageName, new IconPack(appFilter, context, packageName));
-        trace.stop();
         FirebaseAnalytics.getInstance(context).logEvent("iconpack_loaded", null);
     }
 
+    @AddTrace(name = "iconpack_cache_clear")
     private static void clearCache(Context context, String packageName) {
-        Trace trace = FirebasePerformance.getInstance().newTrace("iconpack_cache_clear");
-        trace.start();
         File cacheFolder = new File(context.getCacheDir(), "iconpack");
         File indicatorFile = new File(cacheFolder, packageName);
         if(cacheFolder.exists()){
@@ -79,7 +76,6 @@ public class IconPackProvider {
                 FirebaseCrash.report(e);
             }
         }
-        trace.stop();
         FirebaseAnalytics.getInstance(context).logEvent("iconpack_clearcache", null);
     }
 
