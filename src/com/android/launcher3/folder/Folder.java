@@ -1437,6 +1437,9 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     @Override
     public void onAdd(ShortcutInfo item, int rank) {
         View view = mContent.createAndAddViewForRank(item, rank);
+        mLauncher.getModelWriter().addOrMoveItemInDatabase(item, mInfo.id, 0, item.cellX,
+                item.cellY);
+
         ArrayList<View> items = new ArrayList<>(getItemsInReadingOrder());
         items.add(rank, view);
         mContent.arrangeChildren(items, items.size());
