@@ -41,7 +41,7 @@ public final class FeatureFlags {
     // When enabled uses the AllAppsRadialGradientAndScrimDrawable for all apps
     public static boolean LAUNCHER3_GRADIENT_ALL_APPS = false;
     // When enabled allows use of physics based motions in the Launcher.
-    public static boolean LAUNCHER3_PHYSICS = false;
+    public static boolean LAUNCHER3_PHYSICS = true;
 
     // Feature flag to enable moving the QSB on the 0th screen of the workspace.
     public static final boolean QSB_ON_FIRST_SCREEN = true;
