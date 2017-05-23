@@ -70,24 +70,21 @@
     <string name="folder_name_format" msgid="6629239338071103179">"Ifolda: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Amawijethi"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Izithombe zangemuva"</string>
-    <string name="settings_button_text" msgid="8119458837558863227">"Izilungiselelo"</string>
+    <!-- no translation found for settings_button_text (8873672322605444408) -->
+    <skip />
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Kukhutshazwe umlawuli wakho"</string>
     <string name="accessibility_action_overview" msgid="6257665857640347026">"Ukubuka konke"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Vumela ukuphendukiswa kwesikrini sasekhaya"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Uma ifoni iphendukiswa"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Isilungiselelo sesiboniso samanje asivumeli ukuzungezisa"</string>
-    <!-- no translation found for icon_badging_title (4418239350706629417) -->
-    <skip />
-    <!-- no translation found for icon_badging_desc_on (6022379097717134764) -->
-    <skip />
-    <!-- no translation found for icon_badging_desc_off (1574640601251590211) -->
-    <skip />
+    <string name="icon_badging_title" msgid="4418239350706629417">"Ibheji yesithonjana"</string>
+    <string name="icon_badging_desc_on" msgid="6022379097717134764">"Kuvuliwe kuzo zonke izinhlelo zokusebenza"</string>
+    <string name="icon_badging_desc_off" msgid="1574640601251590211">"Kuvaliwe kuzo zonke izinhlelo zokusebenza"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Engeza isithonjana eskrinini sasekhaya"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Kwezinhlelo zokusebenza ezintsha"</string>
     <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
     <skip />
-    <!-- no translation found for icon_shape_system_default (1709762974822753030) -->
-    <skip />
+    <string name="icon_shape_system_default" msgid="1709762974822753030">"Sebenzisa okuzenzakalelayo kwesistimu"</string>
     <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
     <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"Akwaziwa"</string>
@@ -124,4 +121,10 @@
     <string name="widget_resized" msgid="9130327887929620">"Iwijethi inikezwe usayizi omusha ngobubanzi obungu-<xliff:g id="NUMBER_0">%1$s</xliff:g> ubude obungu-<xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Izinqamuleli"</string>
     <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> izinqamuleli ze-<xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
+    <!-- no translation found for shortcuts_menu_with_notifications_description (8985659504915468840) -->
+    <skip />
+    <!-- no translation found for action_dismiss_notification (5909461085055959187) -->
+    <skip />
+    <!-- no translation found for notification_dismissed (6002233469409822874) -->
+    <skip />
 </resources>

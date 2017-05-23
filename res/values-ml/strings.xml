@@ -70,23 +70,20 @@
     <string name="folder_name_format" msgid="6629239338071103179">"ഫോൾഡർ: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"വിജറ്റുകൾ"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"വാൾപേപ്പർ"</string>
-    <string name="settings_button_text" msgid="8119458837558863227">"ക്രമീകരണം"</string>
+    <!-- no translation found for settings_button_text (8873672322605444408) -->
+    <skip />
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"അഡ്മിൻ പ്രവർത്തനരഹിതമാക്കിയിരിക്കുന്നു"</string>
     <string name="accessibility_action_overview" msgid="6257665857640347026">"കാഴ്ച"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"ഹോം സ്ക്രീൻ തിരിക്കൽ അനുവദിക്കുക"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"ഫോൺ തിരിച്ച നിലയിലായിരിക്കുമ്പോൾ"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"നിലവിലെ ഡിസ്പ്ലേ ക്രമീകരണം തിരിക്കൽ അനുവദിക്കുന്നില്ല"</string>
-    <!-- no translation found for icon_badging_title (4418239350706629417) -->
-    <skip />
-    <!-- no translation found for icon_badging_desc_on (6022379097717134764) -->
-    <skip />
-    <!-- no translation found for icon_badging_desc_off (1574640601251590211) -->
-    <skip />
+    <string name="icon_badging_title" msgid="4418239350706629417">"ഐക്കൺ ബാഡ്‌ജിംഗ്"</string>
+    <string name="icon_badging_desc_on" msgid="6022379097717134764">"എല്ലാ ആപ്പുകൾക്കും ഓണാണ്"</string>
+    <string name="icon_badging_desc_off" msgid="1574640601251590211">"എല്ലാ ആപ്പുകൾക്കും ഓഫാണ്"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"ഹോം സ്ക്രീനിലേക്ക് ഐക്കൺ ചേർക്കുക"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"പുതിയ ആപ്പുകൾക്ക്"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"ഐക്കണിന്റെ ആകാരം മാറ്റുക"</string>
-    <!-- no translation found for icon_shape_system_default (1709762974822753030) -->
-    <skip />
+    <string name="icon_shape_system_default" msgid="1709762974822753030">"സിസ്‌റ്റം ഡിഫോൾട്ട് ഉപയോഗിക്കുക"</string>
     <string name="icon_shape_override_progress" msgid="3461735694970239908">"ഐക്കൺ ആകാര മാറ്റങ്ങൾ പ്രയോഗിക്കുന്നു"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"അജ്ഞാതം"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"നീക്കംചെയ്യുക"</string>
@@ -122,4 +119,10 @@
     <string name="widget_resized" msgid="9130327887929620">"വീതി <xliff:g id="NUMBER_0">%1$s</xliff:g> ഉയരം <xliff:g id="NUMBER_1">%2$s</xliff:g>-ലേക്ക് വിഡ്‌ജെറ്റിന്റെ വലുപ്പം മാറ്റി"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"കുറുക്കുവഴികൾ"</string>
     <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="APP_NAME">%2$s</xliff:g> ആപ്പിനുള്ള <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> കുറുക്കുവഴികൾ"</string>
+    <!-- no translation found for shortcuts_menu_with_notifications_description (8985659504915468840) -->
+    <skip />
+    <!-- no translation found for action_dismiss_notification (5909461085055959187) -->
+    <skip />
+    <!-- no translation found for notification_dismissed (6002233469409822874) -->
+    <skip />
 </resources>
