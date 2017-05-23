@@ -16,6 +16,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -70,6 +72,7 @@ public class EditAppDialog extends Dialog {
                     LauncherAppsCompat.getInstance(launcher).showAppDetailsForProfile(component, info.user);
                     return true;
                 } catch (SecurityException | ActivityNotFoundException e) {
+                    FirebaseCrash.report(e);
                     Toast.makeText(launcher, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
                     Log.e("EditAppDialog", "Unable to launch settings", e);
                 }
