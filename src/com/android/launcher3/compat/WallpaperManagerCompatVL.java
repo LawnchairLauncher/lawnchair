@@ -132,14 +132,15 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
         String[] parts = value.split(",");
         Integer wallpaperId = Integer.parseInt(parts[1]);
         if (parts.length == 2) {
+            // There is no wallpaper color info present, eg when live wallpaper has no preview.
             return Pair.create(wallpaperId, null);
         }
 
-        SparseIntArray colors = new SparseIntArray((parts.length - 2) / 2);
+        SparseIntArray colorsToOccurrences = new SparseIntArray((parts.length - 2) / 2);
         for (int i = 2; i < parts.length; i += 2) {
-            colors.put(Integer.parseInt(parts[i]), Integer.parseInt(parts[i + 1]));
+            colorsToOccurrences.put(Integer.parseInt(parts[i]), Integer.parseInt(parts[i + 1]));
         }
-        return Pair.create(wallpaperId, new WallpaperColorsCompat(colors, false));
+        return Pair.create(wallpaperId, new WallpaperColorsCompat(colorsToOccurrences, false));
     }
 
     /**
@@ -178,7 +179,7 @@ public class WallpaperManagerCompatVL extends WallpaperManagerCompat {
 
                         if (requestedArea > MAX_WALLPAPER_EXTRACTION_AREA) {
                             double areaRatio =
-                                    MAX_WALLPAPER_EXTRACTION_AREA / (double) requestedArea;
+                                    (double) requestedArea / MAX_WALLPAPER_EXTRACTION_AREA;
                             double nearestPowOf2 =
                                     Math.floor(Math.log(areaRatio) / (2 * Math.log(2)));
                             options.inSampleSize = (int) Math.pow(2, nearestPowOf2);
