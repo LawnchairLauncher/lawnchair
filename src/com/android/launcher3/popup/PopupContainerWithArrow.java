@@ -530,6 +530,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
      */
     public DragOptions.PreDragCondition createPreDragCondition() {
         return new DragOptions.PreDragCondition() {
+
             @Override
             public boolean shouldStartDrag(double distanceDragged) {
                 return distanceDragged > mStartDragThreshold;
@@ -537,15 +538,27 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
 
             @Override
             public void onPreDragStart(DropTarget.DragObject dragObject) {
-                mOriginalIcon.setVisibility(INVISIBLE);
+                if (mIsAboveIcon) {
+                    // Hide only the icon, keep the text visible.
+                    mOriginalIcon.setIconVisible(false);
+                    mOriginalIcon.setVisibility(VISIBLE);
+                } else {
+                    // Hide both the icon and text.
+                    mOriginalIcon.setVisibility(INVISIBLE);
+                }
             }
 
             @Override
             public void onPreDragEnd(DropTarget.DragObject dragObject, boolean dragStarted) {
-                if (!dragStarted) {
-                    mOriginalIcon.setVisibility(VISIBLE);
+                mOriginalIcon.setIconVisible(true);
+                if (dragStarted) {
+                    // Make sure we keep the original icon hidden while it is being dragged.
+                    mOriginalIcon.setVisibility(INVISIBLE);
+                } else {
                     mLauncher.getUserEventDispatcher().logDeepShortcutsOpen(mOriginalIcon);
                     if (!mIsAboveIcon) {
+                        // Show the icon but keep the text hidden.
+                        mOriginalIcon.setVisibility(VISIBLE);
                         mOriginalIcon.setTextVisibility(false);
                     }
                 }

@@ -23,10 +23,12 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Region;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Property;
@@ -93,6 +95,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
     private final int mIconSize;
     @ViewDebug.ExportedProperty(category = "launcher")
     private int mTextColor;
+    private boolean mIsIconVisible = true;
 
     private BadgeInfo mBadgeInfo;
     private BadgeRenderer mBadgeRenderer;
@@ -609,7 +612,21 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
     private void setIcon(Drawable icon) {
         mIcon = icon;
         mIcon.setBounds(0, 0, mIconSize, mIconSize);
-        applyCompoundDrawables(mIcon);
+        if (mIsIconVisible) {
+            applyCompoundDrawables(mIcon);
+        }
+    }
+
+    public void setIconVisible(boolean visible) {
+        mIsIconVisible = visible;
+        mDisableRelayout = true;
+        Drawable icon = mIcon;
+        if (!visible) {
+            icon = new ColorDrawable(Color.TRANSPARENT);
+            icon.setBounds(0, 0, mIconSize, mIconSize);
+        }
+        applyCompoundDrawables(icon);
+        mDisableRelayout = false;
     }
 
     protected void applyCompoundDrawables(Drawable icon) {
