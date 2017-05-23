@@ -78,8 +78,8 @@
     <string name="allow_rotation_desc" msgid="8662546029078692509">"當手機旋轉時"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"「目前顯示屏」設定不允許旋轉"</string>
     <string name="icon_badging_title" msgid="4418239350706629417">"在圖示上顯示標誌"</string>
-    <string name="icon_badging_desc_on" msgid="6022379097717134764">"為所有應用程式開啟此設定"</string>
-    <string name="icon_badging_desc_off" msgid="1574640601251590211">"為所有應用程式關閉此設定"</string>
+    <string name="icon_badging_desc_on" msgid="6022379097717134764">"已為所有應用程式開啟"</string>
+    <string name="icon_badging_desc_off" msgid="1574640601251590211">"已為所有應用程式關閉"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"將圖示加到主畫面"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"適用於新安裝的應用程式"</string>
     <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
