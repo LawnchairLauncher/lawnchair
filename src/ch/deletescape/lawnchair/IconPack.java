@@ -13,6 +13,8 @@ import android.util.Log;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
+import com.google.firebase.perf.FirebasePerformance;
+import com.google.firebase.perf.metrics.Trace;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -59,14 +61,21 @@ class IconPack {
     }
 
     private Drawable getDrawable(String name) {
+        Trace trace = FirebasePerformance.getInstance().newTrace("iconpack_getdrawable");
+        trace.start();
         if (memoryCache.containsKey(name)) {
-            return memoryCache.get(name);
+            trace.incrementCounter("memorycache");
+            Drawable d = memoryCache.get(name);
+            trace.stop();
+            return d;
         }
         File cachePath = new File(mContext.getCacheDir(), "iconpack/" + name);
         if(cachePath.exists()){
                 Bitmap b = BitmapFactory.decodeFile(cachePath.toString());
                 Drawable d = new FastBitmapDrawable(b) ;
                 memoryCache.put(name, d);
+                trace.incrementCounter("filecache");
+                trace.stop();
                 return d;
         }
         Resources res;
@@ -78,10 +87,13 @@ class IconPack {
                 saveBitmapToFile(cachePath, b);
                 Drawable drawable = new FastBitmapDrawable(b);
                 memoryCache.put(name, drawable);
+                trace.incrementCounter("nocache");
+                trace.stop();
                 return drawable;
             }
         } catch (Exception ignored) {
         }
+        trace.stop();
         return null;
     }
     private boolean saveBitmapToFile(File imageFile, Bitmap bm) {

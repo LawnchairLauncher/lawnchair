@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
+import com.google.firebase.perf.FirebasePerformance;
+import com.google.firebase.perf.metrics.Trace;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -40,6 +42,8 @@ public class IconPackProvider {
         if ("".equals(packageName)) {
             iconPacks.put("", null);
         }
+        Trace trace = FirebasePerformance.getInstance().newTrace("iconpack_load");
+        trace.start();
         clearCache(context, packageName);
         Map<String, String> appFilter;
         try {
@@ -48,13 +52,17 @@ public class IconPackProvider {
             FirebaseCrash.report(e);
             Toast.makeText(context, "Invalid IconPack", Toast.LENGTH_SHORT).show();
             iconPacks.put(packageName, null);
+            trace.stop();
             return;
         }
         iconPacks.put(packageName, new IconPack(appFilter, context, packageName));
+        trace.stop();
         FirebaseAnalytics.getInstance(context).logEvent("iconpack_loaded", null);
     }
 
     private static void clearCache(Context context, String packageName) {
+        Trace trace = FirebasePerformance.getInstance().newTrace("iconpack_cache_clear");
+        trace.start();
         File cacheFolder = new File(context.getCacheDir(), "iconpack");
         File indicatorFile = new File(cacheFolder, packageName);
         if(cacheFolder.exists()){
@@ -71,10 +79,13 @@ public class IconPackProvider {
                 FirebaseCrash.report(e);
             }
         }
+        trace.stop();
         FirebaseAnalytics.getInstance(context).logEvent("iconpack_clearcache", null);
     }
 
     private static Map<String, String> parseAppFilter(XmlPullParser parser) throws Exception {
+        Trace trace = FirebasePerformance.getInstance().newTrace("iconpack_parse_appfilter");
+        trace.start();
         Map<String, String> entries = new ArrayMap<>();
         while (parser.next() != XmlPullParser.END_DOCUMENT) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
@@ -86,9 +97,11 @@ public class IconPackProvider {
                 String drawable = parser.getAttributeValue(null, "drawable");
                 if (drawable != null && comp != null) {
                     entries.put(comp, drawable);
+                    trace.incrementCounter("icons");
                 }
             }
         }
+        trace.stop();
         return entries;
     }
 
