@@ -20,5 +20,5 @@ cache:
   - "$HOME/.gradle/wrapper/"
   - "$HOME/.android/build-cache"
 after_success:
-  - mv build/outputs/apk/Lawnchair-aosp-debug.apk Travis-$TRAVIS_COMMIT.apk
-  - curl -F chat_id="-1001083653933" -F document=@"Travis-$TRAVIS_COMMIT.apk" https://api.telegram.org/bot$BOT_TOKEN/sendDocument
+  - mv build/outputs/apk/Lawnchair-aosp-debug.apk Travis-$TRAVIS_BUILD_NUMBER.apk
+  - curl -F chat_id="-1001083653933" -F document=@"Travis-$TRAVIS_BUILD_NUMBER.apk" https://api.telegram.org/bot$BOT_TOKEN/sendDocument
