@@ -1,7 +1,7 @@
 package com.android.launcher3.dynamicui.colorextraction.types;
 
+import com.android.launcher3.compat.WallpaperColorsCompat;
 import com.android.launcher3.dynamicui.colorextraction.ColorExtractor;
-import com.android.launcher3.dynamicui.colorextraction.WallpaperColorsCompat;
 
 
 /**

@@ -170,7 +170,7 @@ public class ExtractedColors {
         try {
             WallpaperManager.class.getDeclaredMethod("getWallpaperColors", int.class);
             ColorExtractor extractor = new ColorExtractor(context);
-            ColorExtractor.GradientColors colors = extractor.getColors(WallpaperManager.FLAG_SYSTEM);
+            ColorExtractor.GradientColors colors = extractor.getColors();
             setColorAtIndex(ALLAPPS_GRADIENT_MAIN_INDEX, colors.getMainColor());
             setColorAtIndex(ALLAPPS_GRADIENT_SECONDARY_INDEX, colors.getSecondaryColor());
         } catch (NoSuchMethodException e) {

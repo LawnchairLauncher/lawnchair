@@ -1,15 +1,14 @@
 package com.android.launcher3.dynamicui.colorextraction;
 
-import android.app.WallpaperManager;
+import static android.app.WallpaperManager.FLAG_SYSTEM;
+
 import android.content.Context;
 import android.graphics.Color;
-import android.os.Parcelable;
-import android.util.Log;
 
+import com.android.launcher3.compat.WallpaperColorsCompat;
+import com.android.launcher3.compat.WallpaperManagerCompat;
 import com.android.launcher3.dynamicui.colorextraction.types.ExtractionType;
 import com.android.launcher3.dynamicui.colorextraction.types.Tonal;
-
-import java.lang.reflect.Method;
 
 
 /**
@@ -18,59 +17,32 @@ import java.lang.reflect.Method;
  * TODO remove this class if available by platform
  */
 public class ColorExtractor {
-    private static final String TAG = "ColorExtractor";
     private static final int FALLBACK_COLOR = Color.WHITE;
 
+    private final Context mContext;
     private int mMainFallbackColor = FALLBACK_COLOR;
     private int mSecondaryFallbackColor = FALLBACK_COLOR;
     private final GradientColors mSystemColors;
-    private final GradientColors mLockColors;
-    private final Context mContext;
     private final ExtractionType mExtractionType;
 
     public ColorExtractor(Context context) {
         mContext = context;
         mSystemColors = new GradientColors();
-        mLockColors = new GradientColors();
         mExtractionType = new Tonal();
-        WallpaperManager wallpaperManager = mContext.getSystemService(WallpaperManager.class);
 
-        if (wallpaperManager == null) {
-            Log.w(TAG, "Can't listen to color changes!");
-        } else {
-            Parcelable wallpaperColorsObj;
-            try {
-                Method method = WallpaperManager.class
-                        .getDeclaredMethod("getWallpaperColors", int.class);
-
-                wallpaperColorsObj = (Parcelable) method.invoke(wallpaperManager,
-                        WallpaperManager.FLAG_SYSTEM);
-                extractInto(new WallpaperColorsCompat(wallpaperColorsObj), mSystemColors);
-                wallpaperColorsObj = (Parcelable) method.invoke(wallpaperManager,
-                        WallpaperManager.FLAG_LOCK);
-                extractInto(new WallpaperColorsCompat(wallpaperColorsObj), mLockColors);
-            } catch (Exception e) {
-                Log.e(TAG, "reflection failed", e);
-            }
-        }
+        extractFrom(WallpaperManagerCompat.getInstance(context).getWallpaperColors(FLAG_SYSTEM));
     }
 
-    public GradientColors getColors(int which) {
-        if (which == WallpaperManager.FLAG_LOCK) {
-            return mLockColors;
-        } else if (which == WallpaperManager.FLAG_SYSTEM) {
-            return mSystemColors;
-        } else {
-            throw new IllegalArgumentException("which should be either FLAG_SYSTEM or FLAG_LOCK");
-        }
+    public GradientColors getColors() {
+        return mSystemColors;
     }
 
-    private void extractInto(WallpaperColorsCompat inWallpaperColors, GradientColors outGradientColors) {
-        applyFallback(outGradientColors);
+    private void extractFrom(WallpaperColorsCompat inWallpaperColors) {
+        applyFallback(mSystemColors);
         if (inWallpaperColors == null) {
             return;
         }
-        mExtractionType.extractInto(inWallpaperColors, outGradientColors);
+        mExtractionType.extractInto(inWallpaperColors, mSystemColors);
     }
 
     private void applyFallback(GradientColors outGradientColors) {
