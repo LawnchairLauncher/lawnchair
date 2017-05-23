@@ -22,7 +22,7 @@ android {
         targetSdkVersion 25
         if(System.getenv("TRAVIS") == "true"){
             versionCode = Integer.valueOf(System.getenv("TRAVIS_BUILD_NUMBER"))
-            versionName = "Travis-" + System.getenv("TRAVIS_COMMIT")
+            versionName = "Travis-" + System.getenv("TRAVIS_BUILD_NUMBER")
         } else {
             versionCode 1
             versionName "prerelease"
