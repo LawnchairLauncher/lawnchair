@@ -42,6 +42,8 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.DecelerateInterpolator;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -551,6 +553,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         try {
             dispatchRestoreInstanceState(states);
         } catch (IllegalArgumentException ex) {
+            FirebaseCrash.report(ex);
             // Mismatched viewId / viewType preventing restore. Skip restore on production builds.
             Log.e(TAG, "Ignoring an error while restoring a view instance state", ex);
         }

@@ -76,6 +76,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crash.FirebaseCrash;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -1640,6 +1641,7 @@ public class Launcher extends Activity
             startActivity(intent);
         } catch (ActivityNotFoundException ex) {
             Log.e(TAG, "Global search activity not found: " + globalSearchActivity);
+            FirebaseCrash.report(ex);
         }
     }
 
@@ -2335,6 +2337,7 @@ public class Launcher extends Activity
         } catch (ActivityNotFoundException | SecurityException e) {
             Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Unable to launch. tag=" + item + " intent=" + intent, e);
+            FirebaseCrash.report(e);
         }
         return false;
     }

@@ -13,6 +13,8 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.util.Log;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -916,7 +918,7 @@ public class GridSizeMigrationTask {
             return true;
         } catch (Exception e) {
             Log.e(TAG, "Error during grid migration", e);
-
+            FirebaseCrash.report(e);
             return false;
         } finally {
             Log.v(TAG, "Workspace migration completed in "

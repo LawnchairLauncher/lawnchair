@@ -48,6 +48,8 @@ import android.os.UserManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
@@ -225,6 +227,7 @@ public class LauncherProvider extends ContentProvider {
                     }
                 } catch (RuntimeException e) {
                     Log.e(TAG, "Failed to initialize external widget", e);
+                    FirebaseCrash.report(e);
                     return false;
                 }
             } else {
@@ -314,6 +317,7 @@ public class LauncherProvider extends ContentProvider {
                             host.deleteAppWidgetId(widgetId);
                         } catch (RuntimeException e) {
                             Log.e(TAG, "Error deleting widget id " + widgetId, e);
+                            FirebaseCrash.report(e);
                         }
                     }
                 }
@@ -434,6 +438,7 @@ public class LauncherProvider extends ContentProvider {
             db.setTransactionSuccessful();
         } catch (SQLException ex) {
             Log.e(TAG, ex.getMessage(), ex);
+            FirebaseCrash.report(ex);
             folderIds.clear();
         } finally {
             db.endTransaction();
@@ -527,6 +532,7 @@ public class LauncherProvider extends ContentProvider {
                         widgetHost, mOpenHelper);
             } catch (NameNotFoundException e) {
                 Log.e(TAG, "Target package for restricted profile not found", e);
+                FirebaseCrash.report(e);
                 return null;
             }
         }

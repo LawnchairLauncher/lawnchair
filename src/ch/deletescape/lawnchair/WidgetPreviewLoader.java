@@ -28,6 +28,8 @@ import android.os.Handler;
 import android.util.Log;
 import android.util.LongSparseArray;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -223,6 +225,7 @@ public class WidgetPreviewLoader {
             }
         } catch (SQLException e) {
             Log.e(TAG, "Error updating widget previews", e);
+            FirebaseCrash.report(e);
         } finally {
             if (c != null) {
                 c.close();
@@ -484,6 +487,7 @@ public class WidgetPreviewLoader {
                     versions[1] = info.lastUpdateTime;
                 } catch (NameNotFoundException e) {
                     Log.e(TAG, "PackageInfo not found", e);
+                    FirebaseCrash.report(e);
                 }
                 mPackageVersions.put(packageName, versions);
             }

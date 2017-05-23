@@ -43,6 +43,8 @@ import android.util.LongSparseArray;
 import android.util.MutableInt;
 import android.util.Pair;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
 import java.security.InvalidParameterException;
@@ -693,7 +695,7 @@ public class LauncherModel extends BroadcastReceiver
                 try {
                     cr.applyBatch(LauncherProvider.AUTHORITY, ops);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    FirebaseCrash.report(e);
                 }
             }
         };
@@ -2200,6 +2202,7 @@ public class LauncherModel extends BroadcastReceiver
                                     break;
                             }
                         } catch (Exception e) {
+                            FirebaseCrash.report(e);
                             Log.e(TAG, "Desktop items loading interrupted", e);
                         }
                     }

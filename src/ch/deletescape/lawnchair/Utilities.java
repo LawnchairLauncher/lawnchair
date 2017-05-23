@@ -474,6 +474,7 @@ public final class Utilities {
             Log.e(TAG, "Launcher does not have the permission to launch " + intent +
                     ". Make sure to create a MAIN intent-filter for the corresponding activity " +
                     "or use the exported attribute for this activity.", e);
+            FirebaseCrash.report(e);
         }
     }
 

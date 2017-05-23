@@ -25,6 +25,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
 
 public class InfoDropTarget extends UninstallDropTarget {
@@ -77,6 +79,7 @@ public class InfoDropTarget extends UninstallDropTarget {
             } catch (SecurityException | ActivityNotFoundException e) {
                 Toast.makeText(launcher, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Unable to launch settings", e);
+                FirebaseCrash.report(e);
             }
         }
 

@@ -9,6 +9,8 @@ import android.database.sqlite.SQLiteFullException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 /**
  * An extension of {@link SQLiteOpenHelper} with utility methods for a single table cache DB.
  * Any exception during write operations are ignored, and any version change causes a DB reset.
@@ -63,6 +65,7 @@ public abstract class SQLiteCacheHelper {
 
     private void onDiskFull(SQLiteFullException e) {
         Log.e(TAG, "Disk full, all write operations will be ignored", e);
+        FirebaseCrash.report(e);
         mIgnoreWrites = true;
     }
 
