@@ -6,11 +6,15 @@ import android.support.annotation.Nullable;
 import android.support.v4.graphics.ColorUtils;
 import android.util.Log;
 import android.util.Pair;
+import android.util.SparseIntArray;
 
+import com.android.launcher3.compat.WallpaperColorsCompat;
 import com.android.launcher3.dynamicui.colorextraction.ColorExtractor;
-import com.android.launcher3.dynamicui.colorextraction.WallpaperColorsCompat;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 
 /**
@@ -29,9 +33,10 @@ public class Tonal implements ExtractionType {
     private static final float MIN_COLOR_OCCURRENCE = 0.1f;
     private static final float MIN_LUMINOSITY = 0.5f;
 
-    public void extractInto(WallpaperColorsCompat wallpaperColors,
-                            ColorExtractor.GradientColors gradientColors) {
-        if (wallpaperColors.getColors().size() == 0) {
+    public void extractInto(
+            WallpaperColorsCompat wallpaperColors, ColorExtractor.GradientColors gradientColors) {
+        SparseIntArray colorsArray = wallpaperColors.getColors();
+        if (colorsArray.size() == 0) {
             return;
         }
         // Tonal is not really a sort, it takes a color from the extracted
@@ -39,24 +44,30 @@ public class Tonal implements ExtractionType {
         // palettes. The best fit is tweaked to be closer to the source color
         // and replaces the original palette
 
+        List<Pair<Integer, Integer>> colors = new ArrayList<>(colorsArray.size());
+        for (int i = colorsArray.size() - 1; i >= 0; i --) {
+            colors.add(Pair.create(colorsArray.keyAt(i), colorsArray.valueAt(i)));
+        }
+
         // First find the most representative color in the image
-        populationSort(wallpaperColors);
+        populationSort(colors);
+
         // Calculate total
         int total = 0;
-        for (Pair<Color, Integer> weightedColor : wallpaperColors.getColors()) {
+        for (Pair<Integer, Integer> weightedColor : colors) {
             total += weightedColor.second;
         }
 
         // Get bright colors that occur often enough in this image
-        Pair<Color, Integer> bestColor = null;
+        Pair<Integer, Integer> bestColor = null;
         float[] hsl = new float[3];
-        for (Pair<Color, Integer> weightedColor : wallpaperColors.getColors()) {
+        for (Pair<Integer, Integer> weightedColor : colors) {
             float colorOccurrence = weightedColor.second / (float) total;
             if (colorOccurrence < MIN_COLOR_OCCURRENCE) {
                 break;
             }
 
-            int colorValue = weightedColor.first.toArgb();
+            int colorValue = weightedColor.first;
             ColorUtils.RGBToHSL(Color.red(colorValue), Color.green(colorValue),
                     Color.blue(colorValue), hsl);
             if (hsl[2] > MIN_LUMINOSITY) {
@@ -66,10 +77,10 @@ public class Tonal implements ExtractionType {
 
         // Fallback to first color
         if (bestColor == null) {
-            bestColor = wallpaperColors.getColors().get(0);
+            bestColor = colors.get(0);
         }
 
-        int colorValue = bestColor.first.toArgb();
+        int colorValue = bestColor.first;
         ColorUtils.RGBToHSL(Color.red(colorValue), Color.green(colorValue), Color.blue(colorValue),
                 hsl);
         hsl[0] /= 360.0f; // normalize
@@ -105,10 +116,10 @@ public class Tonal implements ExtractionType {
         gradientColors.setSecondaryColor(ColorUtils.HSLToColor(hsl));
     }
 
-    private static void populationSort(@NonNull WallpaperColorsCompat wallpaperColors) {
-        wallpaperColors.getColors().sort(new Comparator<Pair<Color, Integer>>() {
+    private static void populationSort(@NonNull List<Pair<Integer, Integer>> wallpaperColors) {
+        Collections.sort(wallpaperColors, new Comparator<Pair<Integer, Integer>>() {
             @Override
-            public int compare(Pair<Color, Integer> a, Pair<Color, Integer> b) {
+            public int compare(Pair<Integer, Integer> a, Pair<Integer, Integer> b) {
                 return b.second - a.second;
             }
         });
