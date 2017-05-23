@@ -30,6 +30,9 @@ import android.opengl.GLUtils;
 import android.os.Build;
 import android.util.Log;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crash.FirebaseCrash;
+
 import ch.deletescape.wallpaperpicker.common.ExifOrientation;
 import ch.deletescape.wallpaperpicker.common.Utils;
 import ch.deletescape.wallpaperpicker.glrenderer.BasicTexture;
@@ -61,6 +64,7 @@ class SimpleBitmapRegionDecoderWrapper implements SimpleBitmapRegionDecoder {
                 return new SimpleBitmapRegionDecoderWrapper(d);
             }
         } catch (IOException e) {
+            FirebaseCrash.report(e);
             Log.w("BitmapRegionTileSource", "getting decoder failed", e);
             return null;
         }
@@ -251,6 +255,7 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
                 }
                 return regionDecoder;
             } catch (IOException e) {
+                FirebaseCrash.report(e);
                 Log.e("InputStreamSource", "Failed to load stream", e);
                 return null;
             }
@@ -269,6 +274,7 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
                 Utils.closeSilently(is);
                 return b;
             } catch (IOException | OutOfMemoryError e) {
+                FirebaseCrash.report(e);
                 Log.e("InputStreamSource", "Failed to load stream", e);
                 return null;
             }

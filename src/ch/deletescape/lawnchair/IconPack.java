@@ -96,6 +96,7 @@ class IconPack {
             return true;
         }
         catch (IOException e) {
+            FirebaseCrash.report(e);
             Log.e("IconPack",e.getMessage());
             if (fos != null) {
                 try {

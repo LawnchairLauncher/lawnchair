@@ -23,6 +23,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -89,6 +91,7 @@ public class CropAndSetWallpaperTask extends AsyncTask<Integer, Void, Boolean> {
                     mOnBitmapCroppedHandler.onBitmapCropped(outByteArray);
                 }
             } catch (IOException e) {
+                FirebaseCrash.report(e);
                 Log.w(TAG, "cannot write stream to wallpaper", e);
                 failure = true;
             }

@@ -7,6 +7,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 import ch.deletescape.wallpaperpicker.common.Utils;
 import ch.deletescape.wallpaperpicker.BitmapRegionTileSource;
 import ch.deletescape.wallpaperpicker.BitmapRegionTileSource.BitmapSource;
@@ -64,6 +66,7 @@ public class FileWallpaperInfo extends DrawableThumbWallpaperInfo {
                     WallpaperManagerCompat.getInstance(a).setStream(is, null, true, params[0]);
                     return bounds;
                 } catch (IOException e) {
+                    FirebaseCrash.report(e);
                     Log.w(TAG, "cannot write stream to wallpaper", e);
                 } finally {
                     Utils.closeSilently(is);

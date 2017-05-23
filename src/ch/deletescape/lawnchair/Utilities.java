@@ -61,6 +61,8 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.Toast;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
@@ -616,6 +618,7 @@ public final class Utilities {
             out.close();
             return out.toByteArray();
         } catch (IOException e) {
+            FirebaseCrash.report(e);
             Log.w(TAG, "Could not write bitmap");
             return null;
         }

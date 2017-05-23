@@ -23,6 +23,9 @@ import android.content.res.XmlResourceParser;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crash.FirebaseCrash;
+
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
@@ -117,6 +120,7 @@ public class CommonAppTypeParser implements LayoutParserCallback {
                 beginDocument(parser, mRootTag);
                 new ResolveParser().parseAndAdd(parser);
             } catch (IOException | XmlPullParserException e) {
+                FirebaseCrash.report(e);
                 Log.e(TAG, "Unable to parse default app info", e);
             }
             parser.close();
