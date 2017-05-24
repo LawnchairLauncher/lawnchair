@@ -4,14 +4,11 @@ android:
   components:
     - tools
     - platform-tools
-    - build-tools-25.0.2
+    - build-tools-25.0.3
     - android-25
     - extra-google-google_play_services
     - extra-google-m2repository
     - extra-android-m2repository
-  licenses:
-    - 'android-sdk-license-.+'
-    - 'google-gdk-license-.+'
 before_install: openssl enc -d -aes-256-cbc -in google-services.json.enc -out google-services.json -k $ENC_PASS
 script: ./gradlew assembleDebug check
 before_cache:
