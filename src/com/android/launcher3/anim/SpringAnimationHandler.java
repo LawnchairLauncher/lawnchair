@@ -164,7 +164,7 @@ public class SpringAnimationHandler {
     }
 
     private void computeVelocity() {
-        getVelocityTracker().computeCurrentVelocity(300);
+        getVelocityTracker().computeCurrentVelocity(175);
 
         mCurrentVelocity = isVerticalDirection()
                 ? getVelocityTracker().getYVelocity()
