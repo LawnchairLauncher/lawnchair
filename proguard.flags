@@ -2,11 +2,6 @@
   *;
 }
 
--keep class ch.deletescape.lawnchair.allapps.AllAppsBackgroundDrawable {
-  public void setAlpha(int);
-  public int getAlpha();
-}
-
 -keep class ch.deletescape.lawnchair.BaseRecyclerViewFastScrollBar {
   public void setThumbWidth(int);
   public int getThumbWidth();
