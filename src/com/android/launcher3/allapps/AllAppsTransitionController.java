@@ -24,7 +24,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.graphics.GradientView;
 import com.android.launcher3.graphics.ScrimView;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
@@ -43,7 +42,7 @@ import com.android.launcher3.util.TouchController;
  * closer to top or closer to the page indicator.
  */
 public class AllAppsTransitionController implements TouchController, VerticalPullDetector.Listener,
-         ExtractedColors.OnChangeListener, SearchUiManager.OnScrollRangeChangeListener {
+         SearchUiManager.OnScrollRangeChangeListener {
 
     private static final String TAG = "AllAppsTrans";
     private static final boolean DBG = false;
@@ -112,7 +111,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
         mEvaluator = new ArgbEvaluator();
         mAllAppsBackgroundColor = Themes.getAttrColor(l, android.R.attr.colorPrimary);
-        mLauncher.getExtractedColors().addOnChangeListener(this);
         mIsDarkTheme = Themes.getAttrBoolean(mLauncher, R.attr.isPrimaryColorDark);
     }
 
@@ -293,7 +291,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         if (mGradientView == null) {
             mGradientView = (GradientView) mLauncher.findViewById(R.id.gradient_bg);
             mGradientView.setVisibility(View.VISIBLE);
-            onExtractedColorsChanged();
         }
         mGradientView.setProgress(progress);
 
@@ -303,20 +300,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             mScrimView.setVisibility(View.VISIBLE);
         }
         mScrimView.setProgress(progress);
-    }
-
-    @Override
-    public void onExtractedColorsChanged() {
-        if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
-            if (mGradientView != null) {
-                int color1 = mLauncher.getExtractedColors()
-                        .getColor(ExtractedColors.ALLAPPS_GRADIENT_MAIN_INDEX);
-                int color2 = mLauncher.getExtractedColors()
-                        .getColor(ExtractedColors.ALLAPPS_GRADIENT_SECONDARY_INDEX);
-                mGradientView.onExtractedColorsChanged(color1, color2);
-                mGradientView.requestLayout();
-            }
-        }
     }
 
     /**

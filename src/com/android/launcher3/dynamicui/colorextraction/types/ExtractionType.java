@@ -1,23 +1,22 @@
 package com.android.launcher3.dynamicui.colorextraction.types;
 
+import android.support.annotation.Nullable;
+import android.util.Pair;
+
 import com.android.launcher3.compat.WallpaperColorsCompat;
-import com.android.launcher3.dynamicui.colorextraction.ColorExtractor;
 
 
 /**
  * Interface to allow various color extraction implementations.
- *
- * TODO remove this class if available by platform
  */
 public interface ExtractionType {
 
     /**
      * Executes color extraction by reading WallpaperColors and setting
-     * main and secondary colors on GradientColors.
+     * main and secondary colors.
      *
-     * @param inWallpaperColors where to read from
-     * @param outGradientColors object that should receive the colors
+     * @param wallpaperColors where to read from
+     * @return a pair of main and secondary color
      */
-    void extractInto(WallpaperColorsCompat inWallpaperColors,
-                     ColorExtractor.GradientColors outGradientColors);
+    @Nullable Pair<Integer, Integer> extractInto(WallpaperColorsCompat wallpaperColors);
 }

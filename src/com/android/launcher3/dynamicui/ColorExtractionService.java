@@ -65,9 +65,6 @@ public class ColorExtractionService extends IntentService {
 
             if (FeatureFlags.QSB_IN_HOTSEAT || FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
                 extractedColors.updateWallpaperThemePalette(null);
-                if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
-                    extractedColors.updateAllAppsGradientPalette(this);
-                }
             }
         } else {
             // We extract colors for the hotseat and status bar separately,
@@ -80,9 +77,6 @@ public class ColorExtractionService extends IntentService {
 
             if (FeatureFlags.QSB_IN_HOTSEAT || FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
                 extractedColors.updateWallpaperThemePalette(getWallpaperPalette());
-                if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
-                    extractedColors.updateAllAppsGradientPalette(this);
-                }
             }
         }
 
