@@ -26,6 +26,5 @@
         android:id="@+id/scrim_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        app:layout_ignoreInsets="true"/>
+        android:visibility="gone"/>
 </merge>
