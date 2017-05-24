@@ -34,7 +34,13 @@ android {
     }
     buildTypes {
         debug {
-            minifyEnabled false
+            if(System.getenv("TRAVIS") == "true") {
+                minifyEnabled true
+                proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                        'proguard.flags'
+            } else {
+                minifyEnabled false
+            }
         }
     }
 
