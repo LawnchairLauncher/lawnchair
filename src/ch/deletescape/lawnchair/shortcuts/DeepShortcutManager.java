@@ -196,6 +196,10 @@ public class DeepShortcutManager {
     private List<ShortcutInfoCompat> query(int flags, String packageName,
                                            ComponentName activity, List<String> shortcutIds, UserHandleCompat user) {
         if (Utilities.isNycMR1OrAbove()) {
+            if(!hasHostPermission()){
+                mWasLastCallSuccess = false;
+                return Collections.EMPTY_LIST;
+            }
             ShortcutQuery q = new ShortcutQuery();
             q.setQueryFlags(flags);
             if (packageName != null) {
