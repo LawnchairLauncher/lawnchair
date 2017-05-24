@@ -66,7 +66,7 @@ public abstract class BaseRecyclerView extends RecyclerView
         mScrollbar = new BaseRecyclerViewFastScrollBar(this, getResources());
 
         ScrollListener listener = new ScrollListener();
-        setOnScrollListener(listener);
+        addOnScrollListener(listener);
     }
 
     private class ScrollListener extends OnScrollListener {
