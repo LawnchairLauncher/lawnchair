@@ -40,7 +40,7 @@
             android:fadingEdge="horizontal"
             android:fontFamily="sans-serif-condensed"
             android:gravity="start"
-            android:shadowColor="#B0BDBDBD"
+            android:shadowColor="#B0636363"
             android:shadowRadius="2.0"
             android:maxLines="1"
             android:textSize="14sp" />
@@ -55,7 +55,7 @@
             android:textSize="14sp"
             android:fontFamily="sans-serif-condensed"
             android:shadowRadius="2.0"
-            android:shadowColor="#B0BDBDBD" />
+            android:shadowColor="#B0636363" />
     </LinearLayout>
 
     <!-- The image of the widget. This view does not support padding. Any placement adjustment
