@@ -1461,7 +1461,7 @@ public class Launcher extends Activity
             }
 
             // Reset the apps view
-            if (!alreadyOnHome && mAppsView != null) {
+            if (!alreadyOnHome && mAppsView != null && !FeatureFlags.keepScrollState(this)) {
                 mAppsView.scrollToTop();
             }
 
