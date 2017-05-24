@@ -276,7 +276,8 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     private void updateLightStatusBar(float shift) {
         // Do not modify status bar on landscape as all apps is not full bleed.
-        if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+        if (!FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS
+                && mLauncher.getDeviceProfile().isVerticalBarLayout()) {
             return;
         }
         // Use a light status bar (dark icons) if all apps is behind at least half of the status
