@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Interpolator;
 
+import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 
@@ -56,12 +57,15 @@ public class ScrimView extends View {
     private float mProgress;
     private final Interpolator mAccelerator = new AccelerateInterpolator();
     private final Paint mDebugPaint = DEBUG ? new Paint() : null;
+    private final int mAlphaStart;
 
     public ScrimView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mMaskHeight = Utilities.pxFromDp(MASK_HEIGHT_DP, getResources().getDisplayMetrics());
         mHeadStart = (int) (mMaskHeight * MASK_START_LENGTH_FACTOR);
         mPaint.setColor(SCRIM_COLOR);
+        mAlphaStart = Launcher.getLauncher(context)
+                .getDeviceProfile().isVerticalBarLayout() ? 0 : 55;
 
         if (sFinalScrimMask == null) {
             sFinalScrimMask = Utilities.convertToAlphaMask(
@@ -91,7 +95,8 @@ public class ScrimView extends View {
         setTranslationY(linTranslationY);
 
         if (APPLY_ALPHA) {
-            int alpha = 55 + (int) (200f * mAccelerator.getInterpolation(progress));
+            int alpha = mAlphaStart + (int) ((255f - mAlphaStart)
+                    * mAccelerator.getInterpolation(progress));
             mPaint.setAlpha(alpha);
             invalidate();
         }

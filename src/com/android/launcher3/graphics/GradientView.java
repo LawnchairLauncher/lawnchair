@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Interpolator;
 
+import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 
@@ -59,12 +60,15 @@ public class GradientView extends View {
     private final Context mAppContext;
     private final Paint mDebugPaint = DEBUG ? new Paint() : null;
     private final Interpolator mAccelerator = new AccelerateInterpolator();
+    private final float mAlphaStart;
 
     public GradientView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.mAppContext = context.getApplicationContext();
         this.mMaskHeight = Utilities.pxFromDp(GRADIENT_ALPHA_MASK_LENGTH_DP,
                 mAppContext.getResources().getDisplayMetrics());
+        this.mAlphaStart = Launcher.getLauncher(context)
+                .getDeviceProfile().isVerticalBarLayout() ? 0 : 100;
 
         if (sFinalGradientMask == null) {
             sFinalGradientMask = Utilities.convertToAlphaMask(
@@ -122,9 +126,8 @@ public class GradientView extends View {
         float head = 0.29f;
         float linearProgress = head + (mProgress * (1f - head));
         float startMaskY = (1f - linearProgress) * mHeight - mMaskHeight * linearProgress;
-        float startAlpha = 100;
-        float interpolatedAlpha = (255 - startAlpha) * mAccelerator.getInterpolation(mProgress);
-        mPaint.setAlpha((int) (startAlpha + interpolatedAlpha));
+        float interpolatedAlpha = (255 - mAlphaStart) * mAccelerator.getInterpolation(mProgress);
+        mPaint.setAlpha((int) (mAlphaStart + interpolatedAlpha));
         mAlphaMaskRect.set(0, startMaskY, mWidth, startMaskY + mMaskHeight);
         mFinalMaskRect.set(0, startMaskY + mMaskHeight, mWidth, mHeight);
         canvas.drawBitmap(sAlphaGradientMask, null, mAlphaMaskRect, mPaint);
