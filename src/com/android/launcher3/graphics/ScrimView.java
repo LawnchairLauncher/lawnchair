@@ -29,12 +29,10 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Interpolator;
 
-import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 
-public class ScrimView extends View implements DeviceProfile.LauncherLayoutChangeListener {
+public class ScrimView extends View {
 
     private static final boolean DEBUG = false;
 
@@ -59,10 +57,6 @@ public class ScrimView extends View implements DeviceProfile.LauncherLayoutChang
     private final Interpolator mAccelerator = new AccelerateInterpolator();
     private final Paint mDebugPaint = DEBUG ? new Paint() : null;
 
-    private int mPaddingLeft;
-    private int mPaddingRight;
-    private int mAlphaStart;
-
     public ScrimView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mMaskHeight = Utilities.pxFromDp(MASK_HEIGHT_DP, getResources().getDisplayMetrics());
@@ -78,21 +72,6 @@ public class ScrimView extends View implements DeviceProfile.LauncherLayoutChang
                     R.drawable.all_apps_alpha_mask);
             sAlphaScrimMask = Utilities.convertToAlphaMask(alphaMaskFromResource, FINAL_ALPHA);
         }
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        updatePaddingAndAlphaStart();
-        Launcher.getLauncher(getContext()).getDeviceProfile()
-                .addLauncherLayoutChangedListener(this);
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        Launcher.getLauncher(getContext()).getDeviceProfile()
-                .removeLauncherLayoutChangedListener(this);
     }
 
     @Override
@@ -112,8 +91,7 @@ public class ScrimView extends View implements DeviceProfile.LauncherLayoutChang
         setTranslationY(linTranslationY);
 
         if (APPLY_ALPHA) {
-            int alpha = mAlphaStart + (int) ((255f - mAlphaStart)
-                    * mAccelerator.getInterpolation(progress));
+            int alpha = 55 + (int) (200f * mAccelerator.getInterpolation(progress));
             mPaint.setAlpha(alpha);
             invalidate();
         }
@@ -121,8 +99,8 @@ public class ScrimView extends View implements DeviceProfile.LauncherLayoutChang
 
     @Override
     protected void onDraw(Canvas canvas) {
-        mAlphaMaskRect.set(mPaddingLeft, 0, getWidth() - mPaddingRight, mMaskHeight);
-        mFinalMaskRect.set(mPaddingLeft, mMaskHeight, getWidth() - mPaddingRight, getHeight());
+        mAlphaMaskRect.set(0, 0, getWidth(), mMaskHeight);
+        mFinalMaskRect.set(0, mMaskHeight, getWidth(), getHeight());
         canvas.drawBitmap(sAlphaScrimMask, null, mAlphaMaskRect, mPaint);
         canvas.drawBitmap(sFinalScrimMask, null, mFinalMaskRect, mPaint);
 
@@ -133,23 +111,4 @@ public class ScrimView extends View implements DeviceProfile.LauncherLayoutChang
         }
     }
 
-    @Override
-    public void onLauncherLayoutChanged() {
-        updatePaddingAndAlphaStart();
-        invalidate();
-    }
-
-    private void updatePaddingAndAlphaStart() {
-        DeviceProfile grid = Launcher.getLauncher(getContext()).getDeviceProfile();
-        if (grid.isVerticalBarLayout()) {
-            int[] padding = grid.getContainerPadding();
-            mPaddingLeft = padding[0] + grid.edgeMarginPx;
-            mPaddingRight = padding[1] + grid.edgeMarginPx;
-            mAlphaStart = 0;
-        } else {
-            mPaddingLeft = 0;
-            mPaddingRight = 0;
-            mAlphaStart = 55;
-        }
-    }
 }
