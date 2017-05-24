@@ -52,6 +52,7 @@ import ch.deletescape.lawnchair.LauncherTransitionable;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace;
+import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dragndrop.DragOptions;
 import ch.deletescape.lawnchair.folder.Folder;
 import ch.deletescape.lawnchair.graphics.TintedDrawableSpan;
@@ -229,7 +230,9 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
      */
     public void reset() {
         // Reset the search bar and base recycler view after transitioning home
-        scrollToTop();
+        if(!FeatureFlags.keepScrollState(getContext())){
+            scrollToTop();
+        }
         mSearchBarController.reset();
         mAppsRecyclerView.reset();
     }

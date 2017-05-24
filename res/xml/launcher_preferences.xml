@@ -123,6 +123,13 @@
         android:persistent="true" />
 
     <SwitchPreference
+        android:key="pref_keepScrollState"
+        android:title="Save Scrolled State"
+        android:summary="Saves the scroll position in the app tray"
+        android:defaultValue="false"
+        android:persistent="true" />
+
+    <SwitchPreference
         android:key="pref_showHidden"
         android:title="Show Hidden Apps"
         android:summaryOn="Hidden apps will be shown to change visibility settings"

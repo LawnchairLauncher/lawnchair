@@ -32,6 +32,7 @@ public final class FeatureFlags {
     private static final String KEY_PREF_PULLDOWN_SEARCH = "pref_pulldownSearch";
     private static final String KEY_PREF_HOTSEAT_EXTRACTED_COLORS = "pref_hotseatShouldUseExtractedColors";
     private static final String KEY_PREF_HAPTIC_FEEDBACK = "pref_enableHapticFeedback";
+    private static final String KEY_PREF_KEEP_SCROLL_STATE = "pref_keepScrollState";
 
     private FeatureFlags() {
     }
@@ -65,6 +66,12 @@ public final class FeatureFlags {
     public static boolean enableHapticFeedback(Context context){
         boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_HAPTIC_FEEDBACK, false);
         FirebaseAnalytics.getInstance(context).setUserProperty("haptic_feedback_enabled", String.valueOf(enabled));
+        return enabled;
+    }
+
+    public static boolean keepScrollState(Context context){
+        boolean enabled = Utilities.getPrefs(context).getBoolean(KEY_PREF_KEEP_SCROLL_STATE, false);
+        FirebaseAnalytics.getInstance(context).setUserProperty("keep_scrollstate", String.valueOf(enabled));
         return enabled;
     }
 }
