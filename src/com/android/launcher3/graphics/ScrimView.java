@@ -32,6 +32,7 @@ import android.view.animation.Interpolator;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.Themes;
 
 public class ScrimView extends View {
 
@@ -39,9 +40,6 @@ public class ScrimView extends View {
 
     private static final int MASK_HEIGHT_DP = 300;
     private static final float MASK_START_LENGTH_FACTOR = 1f;
-    private static final float FINAL_ALPHA = 0.87f;
-    private static final int SCRIM_COLOR = ColorUtils.setAlphaComponent(
-            Color.WHITE, (int) (FINAL_ALPHA * 255));
     private static final boolean APPLY_ALPHA = true;
 
     private static Bitmap sFinalScrimMask;
@@ -63,18 +61,20 @@ public class ScrimView extends View {
         super(context, attrs);
         mMaskHeight = Utilities.pxFromDp(MASK_HEIGHT_DP, getResources().getDisplayMetrics());
         mHeadStart = (int) (mMaskHeight * MASK_START_LENGTH_FACTOR);
-        mPaint.setColor(SCRIM_COLOR);
         mAlphaStart = Launcher.getLauncher(context)
                 .getDeviceProfile().isVerticalBarLayout() ? 0 : 55;
 
+        int scrimColor = Themes.getAttrColor(context, R.attr.allAppsScrimColor);
+        int scrimAlpha = Color.alpha(scrimColor);
+        mPaint.setColor(scrimColor);
         if (sFinalScrimMask == null) {
             sFinalScrimMask = Utilities.convertToAlphaMask(
-                    Utilities.createOnePixBitmap(), FINAL_ALPHA);
+                    Utilities.createOnePixBitmap(), scrimAlpha);
         }
         if (sAlphaScrimMask == null) {
             Bitmap alphaMaskFromResource = BitmapFactory.decodeResource(getResources(),
                     R.drawable.all_apps_alpha_mask);
-            sAlphaScrimMask = Utilities.convertToAlphaMask(alphaMaskFromResource, FINAL_ALPHA);
+            sAlphaScrimMask = Utilities.convertToAlphaMask(alphaMaskFromResource, scrimAlpha);
         }
     }
 

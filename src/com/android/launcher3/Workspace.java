@@ -3166,11 +3166,8 @@ public class Workspace extends PagedView
             this.cellX = cellX;
             this.cellY = cellY;
 
-            DeviceProfile grid = mLauncher.getDeviceProfile();
             BubbleTextView cell = (BubbleTextView) layout.getChildAt(cellX, cellY);
-
-            bg.setup(getResources().getDisplayMetrics(), grid, null,
-                    cell.getMeasuredWidth(), cell.getPaddingTop());
+            bg.setup(mLauncher, null, cell.getMeasuredWidth(), cell.getPaddingTop());
 
             // The full preview background should appear behind the icon
             bg.isClipping = false;

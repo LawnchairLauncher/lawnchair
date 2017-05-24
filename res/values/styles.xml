@@ -26,9 +26,22 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:colorEdgeEffect">#FF757575</item>
         <item name="android:keyboardLayout">@layout/all_apps_search_container</item>
+        <item name="allAppsScrimColor">#DDFFFFFF</item>
+        <item name="isPrimaryColorDark">false</item>
     </style>
 
     <style name="LauncherTheme" parent="@style/BaseLauncherTheme"></style>
+
+    <style name="LauncherThemeDark" parent="@style/LauncherTheme">
+        <item name="android:textColorSecondary">#FFFFFFFF</item>
+        <item name="android:textColorTertiary">#CCFFFFFF</item>
+        <item name="android:textColorHint">#A0FFFFFF</item>
+
+        <item name="android:colorControlHighlight">#A0FFFFFF</item>
+        <item name="android:colorPrimary">#FF333333</item>
+        <item name="allAppsScrimColor">#33000000</item>
+        <item name="isPrimaryColorDark">true</item>
+    </style>
 
     <!--
     Theme overrides to element on homescreen, i.e., which are drawn on top on wallpaper.
@@ -93,13 +106,11 @@
     </style>
 
     <!-- Theme for the popup container -->
-    <style name="PopupContainer" parent="@style/LauncherTheme">
-        <!-- TODO: move hardcoded colors from colors.xml to this theme and use for popup items -->
-    </style>
-    <style name="IconOnlySystemShortcut">
+    <!-- TODO: Add support for dark theme in shortcuts and widgets popup -->
+    <style name="IconOnlySystemShortcut" parent="@style/LauncherTheme">
         <item name="android:tint">?android:attr/textColorHint</item>
     </style>
-    <style name="IconWithTextSystemShortcut">
+    <style name="IconWithTextSystemShortcut" parent="@style/LauncherTheme">
         <item name="android:backgroundTint">?android:attr/textColorTertiary</item>
     </style>
 

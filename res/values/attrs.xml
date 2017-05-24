@@ -18,6 +18,10 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Attributes used for launcher theme -->
+    <attr name="allAppsScrimColor" format="color" />
+    <attr name="isPrimaryColorDark" format="boolean" />
+
     <!-- BubbleTextView specific attributes. -->
     <declare-styleable name="BubbleTextView">
         <attr name="layoutHorizontal" format="boolean" />

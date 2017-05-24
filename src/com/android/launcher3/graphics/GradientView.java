@@ -42,7 +42,7 @@ public class GradientView extends View {
 
     private static final int DEFAULT_COLOR = Color.WHITE;
     private static final float GRADIENT_ALPHA_MASK_LENGTH_DP = 300;
-    private static final float FINAL_GRADIENT_ALPHA = 0.75f;
+    private static final int FINAL_GRADIENT_ALPHA = 0xBF;
     private static final boolean DEBUG = false;
 
     private static Bitmap sFinalGradientMask;
