@@ -32,10 +32,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
@@ -55,7 +51,6 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.SQLiteCacheHelper;
-import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 
 import java.util.Collections;
@@ -100,23 +95,13 @@ public class IconCache {
     @Thunk final UserManagerCompat mUserManager;
     private final LauncherAppsCompat mLauncherApps;
     private final HashMap<ComponentKey, CacheEntry> mCache =
-            new HashMap<ComponentKey, CacheEntry>(INITIAL_ICON_CACHE_CAPACITY);
+            new HashMap<>(INITIAL_ICON_CACHE_CAPACITY);
     private final int mIconDpi;
     @Thunk final IconDB mIconDb;
 
     @Thunk final Handler mWorkerHandler;
 
-    // The background color used for activity icons. Since these icons are displayed in all-apps
-    // and folders, this would be same as the light quantum panel background. This color
-    // is used to convert icons to RGB_565.
-    private final int mActivityBgColor;
-    // The background color used for package icons. These are displayed in widget tray, which
-    // has a dark quantum panel background.
-    private final int mPackageBgColor;
     private final BitmapFactory.Options mLowResOptions;
-
-    private Canvas mLowResCanvas;
-    private Paint mLowResPaint;
 
     public IconCache(Context context, InvariantDeviceProfile inv) {
         mContext = context;
@@ -125,15 +110,10 @@ public class IconCache {
         mLauncherApps = LauncherAppsCompat.getInstance(mContext);
         mIconDpi = inv.fillResIconDpi;
         mIconDb = new IconDB(context, inv.iconBitmapSize);
-        mLowResCanvas = new Canvas();
-        mLowResPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
 
         mIconProvider = Utilities.getOverrideObject(
                 IconProvider.class, context, R.string.icon_provider_class);
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
-
-        mActivityBgColor = Themes.getColorPrimary(context, R.style.LauncherTheme);
-        mPackageBgColor = Themes.getColorPrimary(context, R.style.WidgetContainerTheme);
 
         mLowResOptions = new BitmapFactory.Options();
         // Always prefer RGB_565 config for low res. If the bitmap has transparency, it will
@@ -387,7 +367,7 @@ public class IconCache {
         entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, app.getUser());
         mCache.put(key, entry);
 
-        Bitmap lowResIcon = generateLowResIcon(entry.icon, mActivityBgColor);
+        Bitmap lowResIcon = generateLowResIcon(entry.icon);
         ContentValues values = newContentValues(entry.icon, lowResIcon, entry.title.toString(),
                 app.getApplicationInfo().packageName);
         addIconToDB(values, app.getComponentName(), info, userSerial);
@@ -637,7 +617,7 @@ public class IconCache {
                     // only keep the low resolution icon instead of the larger full-sized icon
                     Bitmap icon = LauncherIcons.createBadgedIconBitmap(
                             appInfo.loadIcon(mPackageManager), user, mContext, appInfo.targetSdkVersion);
-                    Bitmap lowResIcon =  generateLowResIcon(icon, mPackageBgColor);
+                    Bitmap lowResIcon =  generateLowResIcon(icon);
                     entry.title = appInfo.loadLabel(mPackageManager);
                     entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);
                     entry.icon = useLowResIcon ? lowResIcon : icon;
@@ -769,7 +749,7 @@ public class IconCache {
     }
 
     private static final class IconDB extends SQLiteCacheHelper {
-        private final static int DB_VERSION = 13;
+        private final static int DB_VERSION = 14;
 
         private final static int RELEASE_VERSION = DB_VERSION +
                 (FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION ? 0 : 1);
@@ -822,24 +802,10 @@ public class IconCache {
     /**
      * Generates a new low-res icon given a high-res icon.
      */
-    private Bitmap generateLowResIcon(Bitmap icon, int lowResBackgroundColor) {
-        if (lowResBackgroundColor == Color.TRANSPARENT) {
-            return Bitmap.createScaledBitmap(icon,
-                            icon.getWidth() / LOW_RES_SCALE_FACTOR,
-                            icon.getHeight() / LOW_RES_SCALE_FACTOR, true);
-        } else {
-            Bitmap lowResIcon = Bitmap.createBitmap(icon.getWidth() / LOW_RES_SCALE_FACTOR,
-                    icon.getHeight() / LOW_RES_SCALE_FACTOR, Bitmap.Config.RGB_565);
-            synchronized (this) {
-                mLowResCanvas.setBitmap(lowResIcon);
-                mLowResCanvas.drawColor(lowResBackgroundColor);
-                mLowResCanvas.drawBitmap(icon, new Rect(0, 0, icon.getWidth(), icon.getHeight()),
-                        new Rect(0, 0, lowResIcon.getWidth(), lowResIcon.getHeight()),
-                        mLowResPaint);
-                mLowResCanvas.setBitmap(null);
-            }
-            return lowResIcon;
-        }
+    private Bitmap generateLowResIcon(Bitmap icon) {
+        return Bitmap.createScaledBitmap(icon,
+                icon.getWidth() / LOW_RES_SCALE_FACTOR,
+                icon.getHeight() / LOW_RES_SCALE_FACTOR, true);
     }
 
     private static Bitmap loadIconNoResize(Cursor c, int iconIndex, BitmapFactory.Options options) {

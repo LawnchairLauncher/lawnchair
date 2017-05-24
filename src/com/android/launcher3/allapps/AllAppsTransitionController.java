@@ -71,6 +71,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     private final Launcher mLauncher;
     private final VerticalPullDetector mDetector;
     private final ArgbEvaluator mEvaluator;
+    private final boolean mIsDarkTheme;
 
     // Animation in this class is controlled by a single variable {@link mProgress}.
     // Visually, it represents top y coordinate of the all apps container if multiplied with
@@ -112,6 +113,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mEvaluator = new ArgbEvaluator();
         mAllAppsBackgroundColor = Themes.getAttrColor(l, android.R.attr.colorPrimary);
         mLauncher.getExtractedColors().addOnChangeListener(this);
+        mIsDarkTheme = Themes.getAttrBoolean(mLauncher, R.attr.isPrimaryColorDark);
     }
 
     @Override
@@ -275,9 +277,9 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     private void updateLightStatusBar(float shift) {
-        // Do not modify status bar on landscape as all apps is not full bleed.
-        if (!FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS
-                && mLauncher.getDeviceProfile().isVerticalBarLayout()) {
+        // Do not modify status bar in dark theme or on landscape as all apps is not full bleed.
+        if (mIsDarkTheme || (!FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS
+                && mLauncher.getDeviceProfile().isVerticalBarLayout())) {
             return;
         }
         // Use a light status bar (dark icons) if all apps is behind at least half of the status

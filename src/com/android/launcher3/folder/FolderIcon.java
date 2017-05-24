@@ -36,8 +36,10 @@ import android.graphics.Region;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
+import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.Property;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -75,6 +77,7 @@ import com.android.launcher3.badge.FolderBadgeInfo;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
@@ -384,14 +387,11 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private void computePreviewDrawingParams(int drawableSize, int totalSize) {
         if (mIntrinsicIconSize != drawableSize || mTotalWidth != totalSize ||
                 mPrevTopPadding != getPaddingTop()) {
-            DeviceProfile grid = mLauncher.getDeviceProfile();
-
             mIntrinsicIconSize = drawableSize;
             mTotalWidth = totalSize;
             mPrevTopPadding = getPaddingTop();
 
-            mBackground.setup(getResources().getDisplayMetrics(), grid, this, mTotalWidth,
-                    getPaddingTop());
+            mBackground.setup(mLauncher, this, mTotalWidth, getPaddingTop());
             mPreviewLayoutRule.init(mBackground.previewSize, mIntrinsicIconSize,
                     Utilities.isRtl(getResources()));
 
@@ -544,6 +544,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
         private float mScale = 1f;
         private float mColorMultiplier = 1f;
+        private int mBgColor;
         private float mStrokeWidth;
         private int mStrokeAlpha = MAX_BG_OPACITY;
         private View mInvalidateDelegate;
@@ -567,7 +568,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         // Expressed on a scale from 0 to 255.
         private static final int BG_OPACITY = 160;
         private static final int MAX_BG_OPACITY = 225;
-        private static final int BG_INTENSITY = 245;
         private static final int SHADOW_OPACITY = 40;
 
         ValueAnimator mScaleAnimator;
@@ -587,10 +587,12 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                     }
                 };
 
-        public void setup(DisplayMetrics dm, DeviceProfile grid, View invalidateDelegate,
+        public void setup(Launcher launcher, View invalidateDelegate,
                    int availableSpace, int topPadding) {
             mInvalidateDelegate = invalidateDelegate;
+            mBgColor = Themes.getAttrColor(launcher, android.R.attr.colorPrimary);
 
+            DeviceProfile grid = launcher.getDeviceProfile();
             final int previewSize = grid.folderIconSizePx;
             final int previewPadding = grid.folderIconPreviewPadding;
 
@@ -600,7 +602,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             basePreviewOffsetY = previewPadding + grid.folderBackgroundOffset + topPadding;
 
             // Stroke width is 1dp
-            mStrokeWidth = dm.density;
+            mStrokeWidth = launcher.getResources().getDisplayMetrics().density;
 
             float radius = getScaledRadius();
             float shadowRadius = radius + mStrokeWidth;
@@ -655,7 +657,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         public void drawBackground(Canvas canvas) {
             mPaint.setStyle(Paint.Style.FILL);
             int alpha = (int) Math.min(MAX_BG_OPACITY, BG_OPACITY * mColorMultiplier);
-            mPaint.setColor(Color.argb(alpha, BG_INTENSITY, BG_INTENSITY, BG_INTENSITY));
+            mPaint.setColor(ColorUtils.setAlphaComponent(mBgColor, alpha));
 
             drawCircle(canvas, 0 /* deltaRadius */);
 
@@ -700,7 +702,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 mStrokeAlphaAnimator.cancel();
             }
             mStrokeAlphaAnimator = ObjectAnimator
-                    .ofArgb(this, STROKE_ALPHA, MAX_BG_OPACITY / 2, MAX_BG_OPACITY)
+                    .ofInt(this, STROKE_ALPHA, MAX_BG_OPACITY / 2, MAX_BG_OPACITY)
                     .setDuration(100);
             mStrokeAlphaAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -712,7 +714,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         }
 
         public void drawBackgroundStroke(Canvas canvas) {
-            mPaint.setColor(Color.argb(mStrokeAlpha, BG_INTENSITY, BG_INTENSITY, BG_INTENSITY));
+            mPaint.setColor(ColorUtils.setAlphaComponent(mBgColor, mStrokeAlpha));
             mPaint.setStyle(Paint.Style.STROKE);
             mPaint.setStrokeWidth(mStrokeWidth);
             drawCircle(canvas, 1 /* deltaRadius */);

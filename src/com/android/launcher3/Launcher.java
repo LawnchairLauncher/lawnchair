@@ -491,13 +491,6 @@ public class Launcher extends BaseActivity
             mExtractedColors.load(this);
             mHotseat.updateColor(mExtractedColors, !mPaused);
             mWorkspace.getPageIndicator().updateColor(mExtractedColors);
-            boolean lightStatusBar = (FeatureFlags.LIGHT_STATUS_BAR &&
-                    mExtractedColors.getColor(ExtractedColors.STATUS_BAR_INDEX) ==
-                            ExtractedColors.DEFAULT_LIGHT);
-            // It's possible that All Apps is visible when this is run,
-            // so always use light status bar in that case. Only change nav bar color to status bar
-            // color when All Apps is visible.
-            activateLightSystemBars(lightStatusBar || isAllAppsVisible(), true, isAllAppsVisible());
         }
     }
 

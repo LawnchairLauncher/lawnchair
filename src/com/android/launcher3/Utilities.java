@@ -650,11 +650,11 @@ public final class Utilities {
     /**
      * @return creates a new alpha mask bitmap out of an existing bitmap
      */
-    public static Bitmap convertToAlphaMask(Bitmap b, float applyAlpha) {
+    public static Bitmap convertToAlphaMask(Bitmap b, int applyAlpha) {
         Bitmap a = Bitmap.createBitmap(b.getWidth(), b.getHeight(), Bitmap.Config.ALPHA_8);
         Canvas c = new Canvas(a);
         Paint paint = new Paint();
-        paint.setAlpha((int) (255f * applyAlpha));
+        paint.setAlpha(applyAlpha);
         c.drawBitmap(b, 0f, 0f, paint);
         return a;
     }
