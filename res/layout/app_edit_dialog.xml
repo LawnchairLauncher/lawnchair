@@ -59,7 +59,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="52dp"
+            android:layout_width="64dp"
             android:layout_height="wrap_content"
             android:text="Visibility" />
 
