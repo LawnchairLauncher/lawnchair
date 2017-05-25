@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string-array name="icon_shape_override_paths_values">
+    <item msgid="6640290598899495380"></item>
+    <item msgid="4009824731445917273">"M50,0L100,0 100,100 0,100 0,0z"</item>
+    <item msgid="1832340187106991439">"M50,0 C10,0 0,10 0,50 0,90 10,100 50,100 90,100 100,90 100,50 100,10 90,0 50,0 Z"</item>
+    <item msgid="8549745892733419075">"M50 0A50 50,0,1,1,50 100A50 50,0,1,1,50 0"</item>
+    <item msgid="7298209005825805703">"M50,0A50,50,0,0 1 100,50 L100,85 A15,15,0,0 1 85,100 L50,100 A50,50,0,0 1 50,0z"</item>
+  </string-array>
+    <!-- no translation found for icon_shape_override_paths_names:0 (4837899951986816538) -->
+</resources>
