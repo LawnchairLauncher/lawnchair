@@ -33,20 +33,20 @@ import android.view.animation.Interpolator;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.dynamicui.WallpaperColorInfo;
 
 /**
  * Draws a translucent radial gradient background from an initial state with progress 0.0 to a
  * final state with progress 1.0;
  */
-public class GradientView extends View {
+public class GradientView extends View implements WallpaperColorInfo.OnChangeListener {
 
     private static final int DEFAULT_COLOR = Color.WHITE;
     private static final float GRADIENT_ALPHA_MASK_LENGTH_DP = 300;
-    private static final int FINAL_GRADIENT_ALPHA = 0xBF;
     private static final boolean DEBUG = false;
 
-    private static Bitmap sFinalGradientMask;
-    private static Bitmap sAlphaGradientMask;
+    private final Bitmap mFinalGradientMask;
+    private final Bitmap mAlphaGradientMask;
 
     private int mColor1 = DEFAULT_COLOR;
     private int mColor2 = DEFAULT_COLOR;
@@ -61,30 +61,48 @@ public class GradientView extends View {
     private final Paint mDebugPaint = DEBUG ? new Paint() : null;
     private final Interpolator mAccelerator = new AccelerateInterpolator();
     private final float mAlphaStart;
+    private final WallpaperColorInfo mWallpaperColorInfo;
 
     public GradientView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.mAppContext = context.getApplicationContext();
         this.mMaskHeight = Utilities.pxFromDp(GRADIENT_ALPHA_MASK_LENGTH_DP,
                 mAppContext.getResources().getDisplayMetrics());
-        this.mAlphaStart = Launcher.getLauncher(context)
-                .getDeviceProfile().isVerticalBarLayout() ? 0 : 100;
+        Launcher launcher = Launcher.getLauncher(context);
+        this.mAlphaStart = launcher.getDeviceProfile().isVerticalBarLayout() ? 0 : 100;
+        this.mWallpaperColorInfo = WallpaperColorInfo.getInstance(launcher);
+        updateColors();
 
-        if (sFinalGradientMask == null) {
-            sFinalGradientMask = Utilities.convertToAlphaMask(
-                    Utilities.createOnePixBitmap(), FINAL_GRADIENT_ALPHA);
-        }
-        if (sAlphaGradientMask == null) {
-            Bitmap alphaMaskFromResource = BitmapFactory.decodeResource(context.getResources(),
-                    R.drawable.all_apps_alpha_mask);
-            sAlphaGradientMask = Utilities.convertToAlphaMask(
-                    alphaMaskFromResource, FINAL_GRADIENT_ALPHA);
-        }
+        int finalAlpha = 0xBF;
+        mFinalGradientMask = Utilities.convertToAlphaMask(
+                Utilities.createOnePixBitmap(), finalAlpha);
+        Bitmap alphaMaskFromResource = BitmapFactory.decodeResource(context.getResources(),
+                R.drawable.all_apps_alpha_mask);
+        mAlphaGradientMask = Utilities.convertToAlphaMask(
+                alphaMaskFromResource, finalAlpha);
     }
 
-    public void onExtractedColorsChanged(int color1, int color2) {
-        this.mColor1 = color1;
-        this.mColor2 = color2;
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mWallpaperColorInfo.addOnChangeListener(this);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mWallpaperColorInfo.removeOnChangeListener(this);
+    }
+
+    @Override
+    public void onExtractedColorsChanged(WallpaperColorInfo info) {
+        updateColors();
+        invalidate();
+    }
+
+    private void updateColors() {
+        this.mColor1 = mWallpaperColorInfo.getMainColor();
+        this.mColor2 = mWallpaperColorInfo.getSecondaryColor();
         if (mWidth + mHeight > 0) {
             createRadialShader();
         }
@@ -130,8 +148,8 @@ public class GradientView extends View {
         mPaint.setAlpha((int) (mAlphaStart + interpolatedAlpha));
         mAlphaMaskRect.set(0, startMaskY, mWidth, startMaskY + mMaskHeight);
         mFinalMaskRect.set(0, startMaskY + mMaskHeight, mWidth, mHeight);
-        canvas.drawBitmap(sAlphaGradientMask, null, mAlphaMaskRect, mPaint);
-        canvas.drawBitmap(sFinalGradientMask, null, mFinalMaskRect, mPaint);
+        canvas.drawBitmap(mAlphaGradientMask, null, mAlphaMaskRect, mPaint);
+        canvas.drawBitmap(mFinalGradientMask, null, mFinalMaskRect, mPaint);
 
         if (DEBUG) {
             mDebugPaint.setColor(0xFF00FF00);
@@ -139,5 +157,4 @@ public class GradientView extends View {
             canvas.drawLine(0, startMaskY + mMaskHeight, mWidth, startMaskY + mMaskHeight, mDebugPaint);
         }
     }
-
 }

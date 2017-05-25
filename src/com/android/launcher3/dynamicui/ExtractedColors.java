@@ -26,7 +26,6 @@ import android.util.Log;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.dynamicui.colorextraction.ColorExtractor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -163,20 +162,6 @@ public class ExtractedColors {
         int defaultColor = DEFAULT_VALUES[WALLPAPER_VIBRANT_INDEX];
         setColorAtIndex(WALLPAPER_VIBRANT_INDEX, wallpaperPalette == null
                 ? defaultColor : wallpaperPalette.getVibrantColor(defaultColor));
-    }
-
-    public void updateAllAppsGradientPalette(Context context) {
-        // TODO use isAtLeastO when available
-        try {
-            WallpaperManager.class.getDeclaredMethod("getWallpaperColors", int.class);
-            ColorExtractor extractor = new ColorExtractor(context);
-            ColorExtractor.GradientColors colors = extractor.getColors();
-            setColorAtIndex(ALLAPPS_GRADIENT_MAIN_INDEX, colors.getMainColor());
-            setColorAtIndex(ALLAPPS_GRADIENT_SECONDARY_INDEX, colors.getSecondaryColor());
-        } catch (NoSuchMethodException e) {
-            setColorAtIndex(ALLAPPS_GRADIENT_MAIN_INDEX, Color.WHITE);
-            setColorAtIndex(ALLAPPS_GRADIENT_SECONDARY_INDEX, Color.WHITE);
-        }
     }
 
     public void addOnChangeListener(OnChangeListener listener) {

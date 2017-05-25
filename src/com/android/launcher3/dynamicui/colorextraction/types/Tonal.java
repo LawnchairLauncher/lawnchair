@@ -9,7 +9,6 @@ import android.util.Pair;
 import android.util.SparseIntArray;
 
 import com.android.launcher3.compat.WallpaperColorsCompat;
-import com.android.launcher3.dynamicui.colorextraction.ColorExtractor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,11 +32,13 @@ public class Tonal implements ExtractionType {
     private static final float MIN_COLOR_OCCURRENCE = 0.1f;
     private static final float MIN_LUMINOSITY = 0.5f;
 
-    public void extractInto(
-            WallpaperColorsCompat wallpaperColors, ColorExtractor.GradientColors gradientColors) {
+    public @Nullable Pair<Integer, Integer> extractInto(WallpaperColorsCompat wallpaperColors) {
+        if (wallpaperColors == null) {
+            return null;
+        }
         SparseIntArray colorsArray = wallpaperColors.getColors();
         if (colorsArray.size() == 0) {
-            return;
+            return null;
         }
         // Tonal is not really a sort, it takes a color from the extracted
         // palette and finds a best fit amongst a collection of pre-defined
@@ -91,13 +92,13 @@ public class Tonal implements ExtractionType {
         // Fall back to population sort if we couldn't find a tonal palette
         if (palette == null) {
             Log.w(TAG, "Could not find a tonal palette!");
-            return;
+            return null;
         }
 
         int fitIndex = bestFit(palette, hsl[0], hsl[1], hsl[2]);
         if (fitIndex == -1) {
             Log.w(TAG, "Could not find best fit!");
-            return;
+            return null;
         }
         float[] h = fit(palette.h, hsl[0], fitIndex,
                 Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY);
@@ -108,12 +109,13 @@ public class Tonal implements ExtractionType {
         hsl[0] = fract(h[0]) * 360.0f;
         hsl[1] = s[0];
         hsl[2] = l[0];
-        gradientColors.setMainColor(ColorUtils.HSLToColor(hsl));
+        int mainColor = ColorUtils.HSLToColor(hsl);
 
         hsl[0] = fract(h[1]) * 360.0f;
         hsl[1] = s[1];
         hsl[2] = l[1];
-        gradientColors.setSecondaryColor(ColorUtils.HSLToColor(hsl));
+        int secondaryColor = ColorUtils.HSLToColor(hsl);
+        return new Pair<>(mainColor, secondaryColor);
     }
 
     private static void populationSort(@NonNull List<Pair<Integer, Integer>> wallpaperColors) {

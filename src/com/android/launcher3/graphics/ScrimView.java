@@ -42,8 +42,8 @@ public class ScrimView extends View {
     private static final float MASK_START_LENGTH_FACTOR = 1f;
     private static final boolean APPLY_ALPHA = true;
 
-    private static Bitmap sFinalScrimMask;
-    private static Bitmap sAlphaScrimMask;
+    private final Bitmap mFinalScrimMask;
+    private final Bitmap mAlphaScrimMask;
 
     private final int mMaskHeight;
     private int mVisibleHeight;
@@ -67,15 +67,11 @@ public class ScrimView extends View {
         int scrimColor = Themes.getAttrColor(context, R.attr.allAppsScrimColor);
         int scrimAlpha = Color.alpha(scrimColor);
         mPaint.setColor(scrimColor);
-        if (sFinalScrimMask == null) {
-            sFinalScrimMask = Utilities.convertToAlphaMask(
-                    Utilities.createOnePixBitmap(), scrimAlpha);
-        }
-        if (sAlphaScrimMask == null) {
-            Bitmap alphaMaskFromResource = BitmapFactory.decodeResource(getResources(),
-                    R.drawable.all_apps_alpha_mask);
-            sAlphaScrimMask = Utilities.convertToAlphaMask(alphaMaskFromResource, scrimAlpha);
-        }
+        mFinalScrimMask = Utilities.convertToAlphaMask(
+                Utilities.createOnePixBitmap(), scrimAlpha);
+        Bitmap alphaMaskFromResource = BitmapFactory.decodeResource(getResources(),
+                R.drawable.all_apps_alpha_mask);
+        mAlphaScrimMask = Utilities.convertToAlphaMask(alphaMaskFromResource, scrimAlpha);
     }
 
     @Override
@@ -106,8 +102,8 @@ public class ScrimView extends View {
     protected void onDraw(Canvas canvas) {
         mAlphaMaskRect.set(0, 0, getWidth(), mMaskHeight);
         mFinalMaskRect.set(0, mMaskHeight, getWidth(), getHeight());
-        canvas.drawBitmap(sAlphaScrimMask, null, mAlphaMaskRect, mPaint);
-        canvas.drawBitmap(sFinalScrimMask, null, mFinalMaskRect, mPaint);
+        canvas.drawBitmap(mAlphaScrimMask, null, mAlphaMaskRect, mPaint);
+        canvas.drawBitmap(mFinalScrimMask, null, mFinalMaskRect, mPaint);
 
         if (DEBUG) {
             mDebugPaint.setColor(0xFF0000FF);
