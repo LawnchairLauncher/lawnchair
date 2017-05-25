@@ -499,9 +499,6 @@ public class Launcher extends BaseActivity
         }
     }
 
-    // TODO: use platform flag on API >= 26
-    private static final int SYSTEM_UI_FLAG_LIGHT_NAV_BAR = 0x10;
-
     /**
      * Sets the status and/or nav bar to be light or not. Light status bar means dark icons.
      * @param isLight make sure the system bar is light.
@@ -516,14 +513,14 @@ public class Launcher extends BaseActivity
                 newSystemUiFlags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
             }
             if (navBar && Utilities.isAtLeastO()) {
-                newSystemUiFlags |= SYSTEM_UI_FLAG_LIGHT_NAV_BAR;
+                newSystemUiFlags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
             }
         } else {
             if (statusBar) {
                 newSystemUiFlags &= ~(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             }
             if (navBar && Utilities.isAtLeastO()) {
-                newSystemUiFlags &= ~(SYSTEM_UI_FLAG_LIGHT_NAV_BAR);
+                newSystemUiFlags &= ~(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
             }
         }
 
