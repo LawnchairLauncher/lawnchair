@@ -99,6 +99,7 @@ import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dragndrop.PinItemDragListener;
 import com.android.launcher3.dynamicui.ExtractedColors;
+import com.android.launcher3.dynamicui.WallpaperColorInfo;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.keyboard.CustomActionsPopup;
@@ -149,7 +150,8 @@ import java.util.Set;
 public class Launcher extends BaseActivity
         implements LauncherExterns, View.OnClickListener, OnLongClickListener,
                    LauncherModel.Callbacks, View.OnTouchListener, LauncherProviderChangeListener,
-                   AccessibilityManager.AccessibilityStateChangeListener {
+                   AccessibilityManager.AccessibilityStateChangeListener,
+                   WallpaperColorInfo.OnThemeChangeListener {
     public static final String TAG = "Launcher";
     static final boolean LOGD = false;
 
@@ -365,6 +367,10 @@ public class Launcher extends BaseActivity
             mLauncherCallbacks.preOnCreate();
         }
 
+        WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.getInstance(this);
+        wallpaperColorInfo.setOnThemeChangeListener(this);
+        overrideTheme(wallpaperColorInfo.isDark());
+
         super.onCreate(savedInstanceState);
 
         LauncherAppState app = LauncherAppState.getInstance(this);
@@ -460,6 +466,17 @@ public class Launcher extends BaseActivity
         setContentView(mLauncherView);
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onCreate(savedInstanceState);
+        }
+    }
+
+    @Override
+    public void onThemeChanged() {
+        recreate();
+    }
+
+    protected void overrideTheme(boolean isDark) {
+        if (isDark) {
+            setTheme(R.style.LauncherThemeDark);
         }
     }
 
@@ -1855,6 +1872,8 @@ public class Launcher extends BaseActivity
 
         ((AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE))
                 .removeAccessibilityStateChangeListener(this);
+
+        WallpaperColorInfo.getInstance(this).setOnThemeChangeListener(null);
 
         LauncherAnimUtils.onDestroyActivity();
 
