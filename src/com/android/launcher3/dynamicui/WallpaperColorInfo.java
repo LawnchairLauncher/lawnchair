@@ -7,8 +7,6 @@ import android.util.Pair;
 
 import com.android.launcher3.compat.WallpaperColorsCompat;
 import com.android.launcher3.compat.WallpaperManagerCompat;
-import com.android.launcher3.dynamicui.colorextraction.types.ExtractionType;
-import com.android.launcher3.dynamicui.colorextraction.types.Tonal;
 
 import java.util.ArrayList;
 
@@ -31,7 +29,7 @@ public class WallpaperColorInfo implements WallpaperManagerCompat.OnColorsChange
 
     private final ArrayList<OnChangeListener> mListeners = new ArrayList<>();
     private final WallpaperManagerCompat mWallpaperManager;
-    private final ExtractionType mExtractionType;
+    private final ColorExtractionAlgorithm mExtractionType;
     private int mMainColor;
     private int mSecondaryColor;
     private boolean mIsDark;
@@ -40,7 +38,7 @@ public class WallpaperColorInfo implements WallpaperManagerCompat.OnColorsChange
     private WallpaperColorInfo(Context context) {
         mWallpaperManager = WallpaperManagerCompat.getInstance(context);
         mWallpaperManager.addOnColorsChangedListener(this);
-        mExtractionType = new Tonal(); // TODO create and use DefaultExtractionLogic
+        mExtractionType = ColorExtractionAlgorithm.newInstance(context);
         update(mWallpaperManager.getWallpaperColors(FLAG_SYSTEM));
     }
 
