@@ -1,5 +1,22 @@
-package com.android.launcher3.dynamicui.colorextraction.types;
+/*
+ * Copyright (C) 2017 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
+package com.android.launcher3.dynamicui;
+
+import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,6 +25,8 @@ import android.util.Log;
 import android.util.Pair;
 import android.util.SparseIntArray;
 
+import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.WallpaperColorsCompat;
 
 import java.util.ArrayList;
@@ -15,13 +34,16 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-
 /**
  * Implementation of tonal color extraction
- *
- * TODO remove this class if available by platform
- */
-public class Tonal implements ExtractionType {
+ **/
+public class ColorExtractionAlgorithm {
+
+    public static ColorExtractionAlgorithm newInstance(Context context) {
+        return Utilities.getOverrideObject(ColorExtractionAlgorithm.class,
+                context.getApplicationContext(), R.string.color_extraction_impl_class);
+    }
+
     private static final String TAG = "Tonal";
 
     // Used for tonal palette fitting
@@ -31,6 +53,9 @@ public class Tonal implements ExtractionType {
 
     private static final float MIN_COLOR_OCCURRENCE = 0.1f;
     private static final float MIN_LUMINOSITY = 0.5f;
+
+    public ColorExtractionAlgorithm() {
+    }
 
     public @Nullable Pair<Integer, Integer> extractInto(WallpaperColorsCompat wallpaperColors) {
         if (wallpaperColors == null) {
@@ -142,33 +167,11 @@ public class Tonal implements ExtractionType {
         float delta = v - data[index];
 
         for (int i = 0; i < data.length; i++) {
-            fitData[i] = constrain(data[i] + delta, min, max);
+            fitData[i] = Utilities.boundToRange(data[i] + delta, min, max);
         }
 
         return fitData;
     }
-
-    // TODO no MathUtils
-    private static float constrain(float x, float min, float max) {
-        x = Math.min(x, max);
-        x = Math.max(x, min);
-        return x;
-    }
-
-    /*function adjustSatLumForFit(val, points, fitIndex) {
-        var fitValue = lerpBetweenPoints(points, fitIndex);
-        var diff = val - fitValue;
-
-        var newPoints = [];
-        for (var ii=0; ii<points.length; ii++) {
-            var point = [points[ii][0], points[ii][1]];
-            point[1] += diff;
-            if (point[1] > 1) point[1] = 1;
-            if (point[1] < 0) point[1] = 0;
-            newPoints[ii] = point;
-        }
-        return newPoints;
-    }*/
 
     /**
      * Finds the closest color in a palette, given another HSL color
@@ -308,5 +311,5 @@ public class Tonal implements ExtractionType {
                     new float[] { 0.241f, 0.316f, 0.46f, 0.586f, 0.655f, 0.7f, 0.75f, 0.8f, 0.84f, 0.88f }
             )
     };
-}
 
+}

@@ -39,7 +39,7 @@ public final class FeatureFlags {
     // When enabled the promise icon is visible in all apps while installation an app.
     public static boolean LAUNCHER3_PROMISE_APPS_IN_ALL_APPS = true;
     // When enabled uses the AllAppsRadialGradientAndScrimDrawable for all apps
-    public static boolean LAUNCHER3_GRADIENT_ALL_APPS = false;
+    public static boolean LAUNCHER3_GRADIENT_ALL_APPS = true;
     // When enabled allows use of physics based motions in the Launcher.
     public static boolean LAUNCHER3_PHYSICS = true;
 
