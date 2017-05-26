@@ -105,6 +105,9 @@
     <!-- Name of a user event dispatcher class. -->
     <string name="user_event_dispatcher_class" translatable="false"></string>
 
+    <!-- Name of a color extraction implementation class. -->
+    <string name="color_extraction_impl_class" translatable="false"></string>
+
     <!-- Package name of the default wallpaper picker. -->
     <string name="wallpaper_picker_package" translatable="false"></string>
 
