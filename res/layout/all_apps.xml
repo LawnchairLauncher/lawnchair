@@ -59,17 +59,17 @@
             android:layout_height="@dimen/all_apps_search_bar_height"
             android:layout_gravity="center|top"
             android:paddingTop="@dimen/all_apps_search_bar_margin_top"
-            android:gravity="center|bottom"
             android:orientation="horizontal"
             android:saveEnabled="false">
 
             <ch.deletescape.lawnchair.ExtendedEditText
                 android:id="@+id/search_box_input"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="30dp"
                 android:background="@android:color/transparent"
                 android:focusableInTouchMode="true"
                 android:gravity="center"
+                android:layout_gravity="bottom"
                 android:imeOptions="actionSearch|flagNoExtractUi"
                 android:inputType="text|textNoSuggestions|textCapWords"
                 android:maxLines="1"
