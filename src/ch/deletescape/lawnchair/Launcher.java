@@ -53,6 +53,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
+import android.support.annotation.NonNull;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -204,7 +205,6 @@ public class Launcher extends Activity
 
     @Thunk
     Workspace mWorkspace;
-    private View mLauncherView;
     @Thunk
     DragLayer mDragLayer;
     private DragController mDragController;
@@ -635,11 +635,9 @@ public class Launcher extends Activity
         handleActivityResult(requestCode, resultCode, data);
     }
 
-    /**
-     * @Override for MNC
-     */
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                           int[] grantResults) {
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         PendingRequestArgs pendingArgs = mPendingRequestArgs;
         if (requestCode == REQUEST_PERMISSION_CALL_PHONE && pendingArgs != null
                 && pendingArgs.getRequestCode() == REQUEST_PERMISSION_CALL_PHONE) {
@@ -787,7 +785,6 @@ public class Launcher extends Activity
             getWorkspace().reinflateWidgetsIfNecessary();
         }
 
-        updateInteraction(Workspace.State.NORMAL, mWorkspace.getState());
         mWorkspace.onResume();
 
         if (!isWorkspaceLoading()) {
@@ -948,7 +945,7 @@ public class Launcher extends Activity
      * Finds all the views we need and configure them properly.
      */
     private void setupViews() {
-        mLauncherView = findViewById(R.id.launcher);
+        View mLauncherView = findViewById(R.id.launcher);
         mDragLayer = (DragLayer) findViewById(R.id.drag_layer);
         mFocusHandler = mDragLayer.getFocusIndicatorHelper();
         mWorkspace = (Workspace) mDragLayer.findViewById(R.id.workspace);
@@ -1121,7 +1118,7 @@ public class Launcher extends Activity
         }
         final View view = createShortcut(info);
 
-        boolean foundCellSpan = false;
+        boolean foundCellSpan;
         // First we check if we already know the exact location where we want to add this item.
         if (cellX >= 0 && cellY >= 0) {
             cellXY[0] = cellX;
@@ -1288,7 +1285,6 @@ public class Launcher extends Activity
                                 }
                             }
                         });
-                        return;
                     }
                 });
             }
@@ -1581,7 +1577,7 @@ public class Launcher extends Activity
 
     /**
      * Indicates that we want global search for this activity by setting the globalSearch
-     * argument for {@link #startSearch} to true.
+     * argument to true.
      */
     @Override
     public void startSearch(String initialQuery, boolean selectInitialQuery,
@@ -1661,12 +1657,10 @@ public class Launcher extends Activity
     }
 
     private void setWorkspaceLoading(boolean value) {
-        boolean isLocked = isWorkspaceLocked();
         mWorkspaceLoading = value;
     }
 
     private void setWaitingForResult(PendingRequestArgs args) {
-        boolean isLocked = isWorkspaceLocked();
         mPendingRequestArgs = args;
     }
 
@@ -2049,7 +2043,6 @@ public class Launcher extends Activity
                             }
                         })
                 .create().show();
-        return;
     }
 
     /**
@@ -2208,16 +2201,6 @@ public class Launcher extends Activity
     @Override
     public void onAccessibilityStateChanged(boolean enabled) {
         mDragLayer.onAccessibilityStateChanged(enabled);
-    }
-
-    /**
-     * Updates the interaction state.
-     */
-    public void updateInteraction(Workspace.State fromState, Workspace.State toState) {
-        // Only update the interacting state if we are transitioning to/from a view with an
-        // overlay
-        boolean fromStateWithOverlay = fromState != Workspace.State.NORMAL;
-        boolean toStateWithOverlay = toState != Workspace.State.NORMAL;
     }
 
     @SuppressLint("NewApi")
@@ -2830,10 +2813,7 @@ public class Launcher extends Activity
      */
     public Animator startWorkspaceStateChangeAnimation(Workspace.State toState,
                                                        boolean animated, HashMap<View, Integer> layerViews) {
-        Workspace.State fromState = mWorkspace.getState();
-        Animator anim = mWorkspace.setStateWithAnimation(toState, animated, layerViews);
-        updateInteraction(fromState, toState);
-        return anim;
+        return mWorkspace.setStateWithAnimation(toState, animated, layerViews);
     }
 
     public void enterSpringLoadedDragMode() {
