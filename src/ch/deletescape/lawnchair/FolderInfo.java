@@ -21,7 +21,7 @@ import android.content.Context;
 
 import java.util.ArrayList;
 
-import ch.deletescape.lawnchair.compat.UserHandleCompat;
+import android.os.UserHandle;
 
 /**
  * Represents a folder containing shortcuts or apps.
@@ -61,7 +61,7 @@ public class FolderInfo extends ItemInfo {
 
     public FolderInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
-        user = UserHandleCompat.myUserHandle();
+        user = Utilities.myUserHandle();
     }
 
     /**

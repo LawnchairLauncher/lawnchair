@@ -42,7 +42,7 @@ import java.util.Set;
 
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
-import ch.deletescape.lawnchair.compat.UserHandleCompat;
+import android.os.UserHandle;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 import ch.deletescape.lawnchair.util.PackageManagerHelper;
 import ch.deletescape.lawnchair.util.Thunk;
@@ -88,7 +88,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     }
 
     public static void removeFromInstallQueue(Context context, HashSet<String> packageNames,
-                                              UserHandleCompat user) {
+                                              UserHandle user) {
         if (packageNames.isEmpty()) {
             return;
         }
@@ -219,7 +219,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 // If the intent specifies a package, make sure the package exists
                 String packageName = pendingInfo.getTargetPackage();
                 if (!TextUtils.isEmpty(packageName)) {
-                    UserHandleCompat myUserHandle = UserHandleCompat.myUserHandle();
+                    UserHandle myUserHandle = Utilities.myUserHandle();
                     if (!LauncherModel.isValidPackage(context, packageName, myUserHandle)) {
                         continue;
                     }
@@ -263,7 +263,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         final Context mContext;
         final Intent launchIntent;
         final String label;
-        final UserHandleCompat user;
+        final UserHandle user;
 
         /**
          * Initializes a PendingInstallShortcutInfo received from a different app.
@@ -274,7 +274,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 
             launchIntent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
             label = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
-            user = UserHandleCompat.myUserHandle();
+            user = Utilities.myUserHandle();
             activityInfo = null;
         }
 
@@ -378,7 +378,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 
             if (object.optBoolean(APP_SHORTCUT_TYPE_KEY)) {
                 // The is an internal launcher target shortcut.
-                UserHandleCompat user = UserManagerCompat.getInstance(context)
+                UserHandle user = UserManagerCompat.getInstance(context)
                         .getUserForSerialNumber(object.getLong(USER_HANDLE_KEY));
                 if (user == null) {
                     return null;
@@ -428,7 +428,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             return original;
         }
         if (!Utilities.isLauncherAppTarget(original.launchIntent)
-                || !original.user.equals(UserHandleCompat.myUserHandle())) {
+                || !original.user.equals(Utilities.myUserHandle())) {
             // We can only convert shortcuts which point to a main activity in the current user.
             return original;
         }
@@ -441,7 +441,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         }
 
         // Ignore any conflicts in the label name, as that can change based on locale.
-        LauncherActivityInfoCompat launcherInfo = LauncherActivityInfoCompat.create(original.mContext, original.user.getUser(), original.launchIntent);
+        LauncherActivityInfoCompat launcherInfo = LauncherActivityInfoCompat.create(original.mContext, original.user, original.launchIntent);
         return new PendingInstallShortcutInfo(launcherInfo, original.mContext);
     }
 }

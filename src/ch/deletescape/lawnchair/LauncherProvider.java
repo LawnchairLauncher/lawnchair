@@ -59,7 +59,7 @@ import java.util.Objects;
 import ch.deletescape.lawnchair.AutoInstallsLayout.LayoutParserCallback;
 import ch.deletescape.lawnchair.LauncherSettings.Favorites;
 import ch.deletescape.lawnchair.LauncherSettings.WorkspaceScreens;
-import ch.deletescape.lawnchair.compat.UserHandleCompat;
+import android.os.UserHandle;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 import ch.deletescape.lawnchair.config.ProviderConfig;
 import ch.deletescape.lawnchair.dynamicui.ExtractionUtils;
@@ -633,13 +633,13 @@ public class LauncherProvider extends ContentProvider {
             Utilities.getPrefs(mContext).edit().putBoolean(EMPTY_DATABASE_CREATED, true).apply();
 
             // When a new DB is created, remove all previously stored managed profile information.
-            ManagedProfileHeuristic.processAllUsers(Collections.<UserHandleCompat>emptyList(),
+            ManagedProfileHeuristic.processAllUsers(Collections.<UserHandle>emptyList(),
                     mContext);
         }
 
         public long getDefaultUserSerial() {
             return UserManagerCompat.getInstance(mContext).getSerialNumberForUser(
-                    UserHandleCompat.myUserHandle());
+                    Utilities.myUserHandle());
         }
 
         private void addFavoritesTable(SQLiteDatabase db, boolean optional) {

@@ -38,7 +38,7 @@ import java.util.List;
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.LauncherSettings;
 import ch.deletescape.lawnchair.Utilities;
-import ch.deletescape.lawnchair.compat.UserHandleCompat;
+import android.os.UserHandle;
 
 /**
  * Performs operations related to deep shortcuts, such as querying for them, pinning them, etc.
@@ -76,7 +76,7 @@ public class DeepShortcutManager {
      * because we only get "key" fields in onShortcutsChanged().
      */
     public List<ShortcutInfoCompat> queryForFullDetails(String packageName,
-                                                        List<String> shortcutIds, UserHandleCompat user) {
+                                                        List<String> shortcutIds, UserHandle user) {
         return query(FLAG_GET_ALL, packageName, null, shortcutIds, user);
     }
 
@@ -85,7 +85,7 @@ public class DeepShortcutManager {
      * to be displayed in the shortcuts container on long press.
      */
     public List<ShortcutInfoCompat> queryForShortcutsContainer(ComponentName activity,
-                                                               List<String> ids, UserHandleCompat user) {
+                                                               List<String> ids, UserHandle user) {
         return query(ShortcutQuery.FLAG_MATCH_MANIFEST | ShortcutQuery.FLAG_MATCH_DYNAMIC,
                 activity.getPackageName(), activity, ids, user);
     }
@@ -98,11 +98,11 @@ public class DeepShortcutManager {
         if (Utilities.isNycMR1OrAbove()) {
             String packageName = key.componentName.getPackageName();
             String id = key.getId();
-            UserHandleCompat user = key.user;
+            UserHandle user = key.user;
             List<String> pinnedIds = extractIds(queryForPinnedShortcuts(packageName, user));
             pinnedIds.remove(id);
             try {
-                mLauncherApps.pinShortcuts(packageName, pinnedIds, user.getUser());
+                mLauncherApps.pinShortcuts(packageName, pinnedIds, user);
                 mWasLastCallSuccess = true;
             } catch (SecurityException | IllegalStateException e) {
                 Log.w(TAG, "Failed to unpin shortcut", e);
@@ -119,11 +119,11 @@ public class DeepShortcutManager {
         if (Utilities.isNycMR1OrAbove()) {
             String packageName = key.componentName.getPackageName();
             String id = key.getId();
-            UserHandleCompat user = key.user;
+            UserHandle user = key.user;
             List<String> pinnedIds = extractIds(queryForPinnedShortcuts(packageName, user));
             pinnedIds.add(id);
             try {
-                mLauncherApps.pinShortcuts(packageName, pinnedIds, user.getUser());
+                mLauncherApps.pinShortcuts(packageName, pinnedIds, user);
                 mWasLastCallSuccess = true;
             } catch (SecurityException | IllegalStateException e) {
                 Log.w(TAG, "Failed to pin shortcut", e);
@@ -133,11 +133,11 @@ public class DeepShortcutManager {
     }
 
     public void startShortcut(String packageName, String id, Rect sourceBounds,
-                              Bundle startActivityOptions, UserHandleCompat user) {
+                              Bundle startActivityOptions, UserHandle user) {
         if (Utilities.isNycMR1OrAbove()) {
             try {
                 mLauncherApps.startShortcut(packageName, id, sourceBounds,
-                        startActivityOptions, user.getUser());
+                        startActivityOptions, user);
                 mWasLastCallSuccess = true;
             } catch (SecurityException | IllegalStateException e) {
                 Log.e(TAG, "Failed to start shortcut", e);
@@ -171,11 +171,11 @@ public class DeepShortcutManager {
      * If packageName is null, returns all pinned shortcuts regardless of package.
      */
     public List<ShortcutInfoCompat> queryForPinnedShortcuts(String packageName,
-                                                            UserHandleCompat user) {
+                                                            UserHandle user) {
         return query(ShortcutQuery.FLAG_MATCH_PINNED, packageName, null, null, user);
     }
 
-    public List<ShortcutInfoCompat> queryForAllShortcuts(UserHandleCompat user) {
+    public List<ShortcutInfoCompat> queryForAllShortcuts(UserHandle user) {
         return query(FLAG_GET_ALL, null, null, null, user);
     }
 
@@ -195,7 +195,7 @@ public class DeepShortcutManager {
      */
     @AddTrace(name = "shortcutmanager_query")
     private List<ShortcutInfoCompat> query(int flags, String packageName,
-                                           ComponentName activity, List<String> shortcutIds, UserHandleCompat user) {
+                                           ComponentName activity, List<String> shortcutIds, UserHandle user) {
         if (Utilities.isNycMR1OrAbove()) {
             if(!hasHostPermission()){
                 mWasLastCallSuccess = false;
@@ -210,7 +210,7 @@ public class DeepShortcutManager {
             }
             List<ShortcutInfo> shortcutInfos = null;
             try {
-                shortcutInfos = mLauncherApps.getShortcuts(q, user.getUser());
+                shortcutInfos = mLauncherApps.getShortcuts(q, user);
                 mWasLastCallSuccess = true;
             } catch (SecurityException | IllegalStateException e) {
                 Log.e(TAG, "Failed to query for shortcuts", e);

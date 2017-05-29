@@ -31,8 +31,9 @@ import ch.deletescape.lawnchair.LauncherModel;
 import ch.deletescape.lawnchair.MainThreadExecutor;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.ShortcutInfo;
+import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
-import ch.deletescape.lawnchair.compat.UserHandleCompat;
+import android.os.UserHandle;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
 
@@ -54,8 +55,8 @@ public class ManagedProfileHeuristic {
      */
     private static final long AUTO_ADD_TO_FOLDER_DURATION = 8 * 60 * 60 * 1000;
 
-    public static ManagedProfileHeuristic get(Context context, UserHandleCompat user) {
-        if (!UserHandleCompat.myUserHandle().equals(user)) {
+    public static ManagedProfileHeuristic get(Context context, UserHandle user) {
+        if (!Utilities.myUserHandle().equals(user)) {
             return new ManagedProfileHeuristic(context, user);
         }
         return null;
@@ -63,9 +64,9 @@ public class ManagedProfileHeuristic {
 
     private final Context mContext;
     private final LauncherModel mModel;
-    private final UserHandleCompat mUser;
+    private final UserHandle mUser;
 
-    private ManagedProfileHeuristic(Context context, UserHandleCompat user) {
+    private ManagedProfileHeuristic(Context context, UserHandle user) {
         mContext = context;
         mUser = user;
         mModel = LauncherAppState.getInstance().getModel();
@@ -96,7 +97,7 @@ public class ManagedProfileHeuristic {
         }
 
         protected void onLauncherAppsAdded(
-                List<LauncherActivityInstallInfo> apps, UserHandleCompat user, boolean userAppsExisted) {
+                List<LauncherActivityInstallInfo> apps, UserHandle user, boolean userAppsExisted) {
             ArrayList<ShortcutInfo> workFolderApps = new ArrayList<>();
             ArrayList<ShortcutInfo> homescreenApps = new ArrayList<>();
 
@@ -129,7 +130,7 @@ public class ManagedProfileHeuristic {
          * Adds and binds shortcuts marked to be added to the work folder.
          */
         private void finalizeWorkFolder(
-                UserHandleCompat user, final ArrayList<ShortcutInfo> workFolderApps,
+                UserHandle user, final ArrayList<ShortcutInfo> workFolderApps,
                 ArrayList<ShortcutInfo> homescreenApps) {
             if (workFolderApps.isEmpty()) {
                 return;
@@ -180,7 +181,7 @@ public class ManagedProfileHeuristic {
 
         @Override
         public void onShortcutsChanged(String packageName, List<ShortcutInfoCompat> shortcuts,
-                                       UserHandleCompat user) {
+                                       UserHandle user) {
             // Do nothing
         }
     }
@@ -200,10 +201,10 @@ public class ManagedProfileHeuristic {
     /**
      * Verifies that entries corresponding to {@param users} exist and removes all invalid entries.
      */
-    public static void processAllUsers(List<UserHandleCompat> users, Context context) {
+    public static void processAllUsers(List<UserHandle> users, Context context) {
         UserManagerCompat userManager = UserManagerCompat.getInstance(context);
         HashSet<String> validKeys = new HashSet<>();
-        for (UserHandleCompat user : users) {
+        for (UserHandle user : users) {
             addAllUserKeys(userManager.getSerialNumberForUser(user), validKeys);
         }
 

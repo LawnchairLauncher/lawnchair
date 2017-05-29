@@ -20,7 +20,9 @@ import android.content.Context;
 import java.util.Comparator;
 
 import ch.deletescape.lawnchair.ItemInfo;
-import ch.deletescape.lawnchair.compat.UserHandleCompat;
+import android.os.UserHandle;
+
+import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 
 /**
@@ -29,11 +31,11 @@ import ch.deletescape.lawnchair.compat.UserManagerCompat;
 public abstract class AbstractUserComparator<T extends ItemInfo> implements Comparator<T> {
 
     private final UserManagerCompat mUserManager;
-    private final UserHandleCompat mMyUser;
+    private final UserHandle mMyUser;
 
     public AbstractUserComparator(Context context) {
         mUserManager = UserManagerCompat.getInstance(context);
-        mMyUser = UserHandleCompat.myUserHandle();
+        mMyUser = Utilities.myUserHandle();
     }
 
     @Override

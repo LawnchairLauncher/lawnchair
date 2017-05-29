@@ -60,7 +60,7 @@ import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.ShortcutInfo;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.accessibility.ShortcutMenuAccessibilityDelegate;
-import ch.deletescape.lawnchair.compat.UserHandleCompat;
+import android.os.UserHandle;
 import ch.deletescape.lawnchair.dragndrop.DragController;
 import ch.deletescape.lawnchair.dragndrop.DragLayer;
 import ch.deletescape.lawnchair.dragndrop.DragOptions;
@@ -155,7 +155,7 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
         final Looper workerLooper = LauncherModel.getWorkerLooper();
         final Handler uiHandler = new Handler(Looper.getMainLooper());
         final ItemInfo originalInfo = (ItemInfo) originalIcon.getTag();
-        final UserHandleCompat user = originalInfo.user;
+        final UserHandle user = originalInfo.user;
         final ComponentName activity = originalInfo.getTargetComponent();
         new Handler(workerLooper).postAtFrontOfQueue(new Runnable() {
             @Override

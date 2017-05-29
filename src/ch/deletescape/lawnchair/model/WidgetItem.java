@@ -13,7 +13,7 @@ import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.LauncherAppWidgetProviderInfo;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
-import ch.deletescape.lawnchair.compat.UserHandleCompat;
+import android.os.UserHandle;
 import ch.deletescape.lawnchair.util.ComponentKey;
 
 /**
@@ -23,7 +23,7 @@ import ch.deletescape.lawnchair.util.ComponentKey;
  */
 public class WidgetItem extends ComponentKey implements Comparable<WidgetItem> {
 
-    private static UserHandleCompat sMyUserHandle;
+    private static UserHandle sMyUserHandle;
     private static Collator sCollator;
 
     public final LauncherAppWidgetProviderInfo widgetInfo;
@@ -46,7 +46,7 @@ public class WidgetItem extends ComponentKey implements Comparable<WidgetItem> {
 
     public WidgetItem(ResolveInfo info, PackageManager pm) {
         super(new ComponentName(info.activityInfo.packageName, info.activityInfo.name),
-                UserHandleCompat.myUserHandle());
+                Utilities.myUserHandle());
         label = Utilities.trim(info.loadLabel(pm));
         widgetInfo = null;
         activityInfo = info.activityInfo;
@@ -57,7 +57,7 @@ public class WidgetItem extends ComponentKey implements Comparable<WidgetItem> {
     public int compareTo(@NonNull WidgetItem another) {
         if (sMyUserHandle == null) {
             // Delay these object creation until required.
-            sMyUserHandle = UserHandleCompat.myUserHandle();
+            sMyUserHandle = Utilities.myUserHandle();
             sCollator = Collator.getInstance();
         }
 

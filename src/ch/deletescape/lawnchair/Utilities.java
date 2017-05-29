@@ -79,7 +79,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import ch.deletescape.lawnchair.compat.UserHandleCompat;
+import android.os.UserHandle;
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.graphics.ShadowGenerator;
 import ch.deletescape.lawnchair.util.IconNormalizer;
@@ -189,7 +189,7 @@ public final class Utilities {
      * The bitmap is also visually normalized with other icons.
      */
     public static Bitmap createBadgedIconBitmap(
-            Drawable icon, UserHandleCompat user, Context context) {
+            Drawable icon, UserHandle user, Context context) {
         float scale = IconNormalizer.getInstance().getScale(icon, null);
         Bitmap bitmap = createIconBitmap(icon, context, scale);
         return badgeIconForUser(bitmap, user, context);
@@ -198,11 +198,11 @@ public final class Utilities {
     /**
      * Badges the provided icon with the user badge if required.
      */
-    public static Bitmap badgeIconForUser(Bitmap icon, UserHandleCompat user, Context context) {
-        if (user != null && !UserHandleCompat.myUserHandle().equals(user)) {
+    public static Bitmap badgeIconForUser(Bitmap icon, UserHandle user, Context context) {
+        if (user != null && !Utilities.myUserHandle().equals(user)) {
             BitmapDrawable drawable = new FixedSizeBitmapDrawable(icon);
             Drawable badged = context.getPackageManager().getUserBadgedIcon(
-                    drawable, user.getUser());
+                    drawable, user);
             if (badged instanceof BitmapDrawable) {
                 return ((BitmapDrawable) badged).getBitmap();
             } else {
@@ -894,5 +894,9 @@ public final class Utilities {
             default:
                 return null;
         }
+    }
+
+    public static UserHandle myUserHandle(){
+        return android.os.Process.myUserHandle();
     }
 }

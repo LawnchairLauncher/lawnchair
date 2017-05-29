@@ -22,7 +22,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 
-import ch.deletescape.lawnchair.compat.UserHandleCompat;
+import android.os.UserHandle;
 
 /**
  * Represents a widget (either instantiated or about to be) in the Launcher.
@@ -104,7 +104,7 @@ public class LauncherAppWidgetInfo extends ItemInfo {
         spanX = -1;
         spanY = -1;
         // We only support app widgets on current user.
-        user = UserHandleCompat.myUserHandle();
+        user = Utilities.myUserHandle();
         restoreStatus = RESTORE_COMPLETED;
     }
 

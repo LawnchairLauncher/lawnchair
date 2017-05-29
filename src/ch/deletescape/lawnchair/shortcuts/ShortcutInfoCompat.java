@@ -27,7 +27,7 @@ import android.os.Build;
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
-import ch.deletescape.lawnchair.compat.UserHandleCompat;
+import android.os.UserHandle;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 
 /**
@@ -44,7 +44,7 @@ public class ShortcutInfoCompat {
     private CharSequence shortLabel;
     private CharSequence longLabel;
     private ComponentName activity;
-    private UserHandleCompat userHandle;
+    private UserHandle userHandle;
     private int rank;
     private boolean enabled;
     private CharSequence disabledMessage;
@@ -57,7 +57,7 @@ public class ShortcutInfoCompat {
     }
 
     public ShortcutInfoCompat(String packageName, String id, CharSequence shortLabel, CharSequence longLabel,
-                              ComponentName activity, UserHandleCompat userHandle, int rank, boolean enabled, CharSequence disabledMessage, Drawable icon){
+                              ComponentName activity, UserHandle userHandle, int rank, boolean enabled, CharSequence disabledMessage, Drawable icon){
         this.packageName = packageName;
         this.id = id;
         this.shortLabel = shortLabel;
@@ -135,9 +135,9 @@ public class ShortcutInfoCompat {
         }
     }
 
-    public UserHandleCompat getUserHandle() {
+    public UserHandle getUserHandle() {
         if(Utilities.isNycOrAbove()){
-            return UserHandleCompat.fromUser(mShortcutInfo.getUserHandle());
+            return mShortcutInfo.getUserHandle();
         } else {
             return userHandle;
         }
@@ -216,6 +216,6 @@ public class ShortcutInfoCompat {
         Intent intent = new Intent(Intent.ACTION_MAIN)
                 .addCategory(Intent.CATEGORY_LAUNCHER)
                 .setComponent(getActivity());
-        return LauncherActivityInfoCompat.create(context, getUserHandle().getUser(), intent);
+        return LauncherActivityInfoCompat.create(context, getUserHandle(), intent);
     }
 }

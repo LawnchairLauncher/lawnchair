@@ -23,7 +23,7 @@ import java.util.HashSet;
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.LauncherSettings.Favorites;
 import ch.deletescape.lawnchair.ShortcutInfo;
-import ch.deletescape.lawnchair.compat.UserHandleCompat;
+import android.os.UserHandle;
 import ch.deletescape.lawnchair.shortcuts.ShortcutKey;
 
 /**
@@ -34,7 +34,7 @@ public abstract class ItemInfoMatcher {
     public abstract boolean matches(ItemInfo info, ComponentName cn);
 
     public static ItemInfoMatcher ofComponents(
-            final HashSet<ComponentName> components, final UserHandleCompat user) {
+            final HashSet<ComponentName> components, final UserHandle user) {
         return new ItemInfoMatcher() {
             @Override
             public boolean matches(ItemInfo info, ComponentName cn) {
@@ -44,7 +44,7 @@ public abstract class ItemInfoMatcher {
     }
 
     public static ItemInfoMatcher ofPackages(
-            final HashSet<String> packageNames, final UserHandleCompat user) {
+            final HashSet<String> packageNames, final UserHandle user) {
         return new ItemInfoMatcher() {
             @Override
             public boolean matches(ItemInfo info, ComponentName cn) {

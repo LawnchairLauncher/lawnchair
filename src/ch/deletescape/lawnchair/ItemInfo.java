@@ -22,7 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 
-import ch.deletescape.lawnchair.compat.UserHandleCompat;
+import android.os.UserHandle;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 
 /**
@@ -108,10 +108,10 @@ public class ItemInfo {
      */
     public CharSequence contentDescription;
 
-    public UserHandleCompat user;
+    public UserHandle user;
 
     public ItemInfo() {
-        user = UserHandleCompat.myUserHandle();
+        user = Utilities.myUserHandle();
     }
 
     ItemInfo(ItemInfo info) {

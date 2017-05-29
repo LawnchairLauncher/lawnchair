@@ -28,7 +28,7 @@ import android.text.TextUtils;
 
 import ch.deletescape.lawnchair.LauncherSettings.Favorites;
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
-import ch.deletescape.lawnchair.compat.UserHandleCompat;
+import android.os.UserHandle;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 import ch.deletescape.lawnchair.folder.FolderIcon;
 import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
@@ -175,7 +175,7 @@ public class ShortcutInfo extends ItemInfo {
     }
 
     ShortcutInfo(Intent intent, CharSequence title, CharSequence contentDescription,
-                 Bitmap icon, UserHandleCompat user) {
+                 Bitmap icon, UserHandle user) {
         this();
         this.intent = intent;
         this.title = Utilities.trim(title);
@@ -326,7 +326,7 @@ public class ShortcutInfo extends ItemInfo {
 
         IconCache cache = launcherAppState.getIconCache();
         Bitmap unbadgedBitmap = unbadgedDrawable == null
-                ? cache.getDefaultIcon(UserHandleCompat.myUserHandle())
+                ? cache.getDefaultIcon(Utilities.myUserHandle())
                 : Utilities.createScaledBitmapWithoutShadow(unbadgedDrawable, context);
         setIcon(getBadgedIcon(unbadgedBitmap, shortcutInfo, cache, context));
     }

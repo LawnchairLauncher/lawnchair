@@ -50,9 +50,9 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
     }
 
     public List<LauncherActivityInfoCompat> getActivityList(String packageName,
-                                                            UserHandleCompat user) {
+                                                            UserHandle user) {
         List<LauncherActivityInfo> list = mLauncherApps.getActivityList(packageName,
-                user.getUser());
+                user);
         if (list.size() == 0) {
             return Collections.emptyList();
         }
@@ -64,8 +64,8 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
         return compatList;
     }
 
-    public LauncherActivityInfoCompat resolveActivity(Intent intent, UserHandleCompat user) {
-        LauncherActivityInfo activity = mLauncherApps.resolveActivity(intent, user.getUser());
+    public LauncherActivityInfoCompat resolveActivity(Intent intent, UserHandle user) {
+        LauncherActivityInfo activity = mLauncherApps.resolveActivity(intent, user);
         if (activity != null) {
             return new LauncherActivityInfoCompat(activity);
         } else {
@@ -73,13 +73,13 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
         }
     }
 
-    public void startActivityForProfile(ComponentName component, UserHandleCompat user,
+    public void startActivityForProfile(ComponentName component, UserHandle user,
                                         Rect sourceBounds, Bundle opts) {
-        mLauncherApps.startMainActivity(component, user.getUser(), sourceBounds, opts);
+        mLauncherApps.startMainActivity(component, user, sourceBounds, opts);
     }
 
-    public void showAppDetailsForProfile(ComponentName component, UserHandleCompat user) {
-        mLauncherApps.startAppDetailsActivity(component, user.getUser(), null, null);
+    public void showAppDetailsForProfile(ComponentName component, UserHandle user) {
+        mLauncherApps.startAppDetailsActivity(component, user, null, null);
     }
 
     public void addOnAppsChangedCallback(LauncherAppsCompat.OnAppsChangedCallbackCompat callback) {
@@ -101,12 +101,12 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
         }
     }
 
-    public boolean isPackageEnabledForProfile(String packageName, UserHandleCompat user) {
-        return mLauncherApps.isPackageEnabled(packageName, user.getUser());
+    public boolean isPackageEnabledForProfile(String packageName, UserHandle user) {
+        return mLauncherApps.isPackageEnabled(packageName, user);
     }
 
-    public boolean isActivityEnabledForProfile(ComponentName component, UserHandleCompat user) {
-        return mLauncherApps.isActivityEnabled(component, user.getUser());
+    public boolean isActivityEnabledForProfile(ComponentName component, UserHandle user) {
+        return mLauncherApps.isActivityEnabled(component, user);
     }
 
     public boolean isPackageSuspendedForProfile() {
@@ -121,33 +121,33 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
         }
 
         public void onPackageRemoved(String packageName, UserHandle user) {
-            mCallback.onPackageRemoved(packageName, UserHandleCompat.fromUser(user));
+            mCallback.onPackageRemoved(packageName, user);
         }
 
         public void onPackageAdded(String packageName, UserHandle user) {
-            mCallback.onPackageAdded(packageName, UserHandleCompat.fromUser(user));
+            mCallback.onPackageAdded(packageName, user);
         }
 
         public void onPackageChanged(String packageName, UserHandle user) {
-            mCallback.onPackageChanged(packageName, UserHandleCompat.fromUser(user));
+            mCallback.onPackageChanged(packageName, user);
         }
 
         public void onPackagesAvailable(String[] packageNames, UserHandle user, boolean replacing) {
-            mCallback.onPackagesAvailable(packageNames, UserHandleCompat.fromUser(user));
+            mCallback.onPackagesAvailable(packageNames, user);
         }
 
         public void onPackagesUnavailable(String[] packageNames, UserHandle user,
                                           boolean replacing) {
-            mCallback.onPackagesUnavailable(packageNames, UserHandleCompat.fromUser(user),
+            mCallback.onPackagesUnavailable(packageNames, user,
                     replacing);
         }
 
         public void onPackagesSuspended(String[] packageNames, UserHandle user) {
-            mCallback.onPackagesSuspended(packageNames, UserHandleCompat.fromUser(user));
+            mCallback.onPackagesSuspended(packageNames, user);
         }
 
         public void onPackagesUnsuspended(String[] packageNames, UserHandle user) {
-            mCallback.onPackagesUnsuspended(packageNames, UserHandleCompat.fromUser(user));
+            mCallback.onPackagesUnsuspended(packageNames, user);
         }
 
         @Override
@@ -159,7 +159,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
             }
 
             mCallback.onShortcutsChanged(packageName, shortcutInfoCompats,
-                    UserHandleCompat.fromUser(user));
+                    user);
         }
     }
 }

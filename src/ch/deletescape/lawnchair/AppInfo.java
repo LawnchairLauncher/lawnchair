@@ -22,7 +22,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
-import ch.deletescape.lawnchair.compat.UserHandleCompat;
+import android.os.UserHandle;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 import ch.deletescape.lawnchair.util.ComponentKey;
 import ch.deletescape.lawnchair.util.PackageManagerHelper;
@@ -73,13 +73,13 @@ public class AppInfo extends ItemInfo {
     /**
      * Must not hold the Context.
      */
-    public AppInfo(Context context, LauncherActivityInfoCompat info, UserHandleCompat user,
+    public AppInfo(Context context, LauncherActivityInfoCompat info, UserHandle user,
                    IconCache iconCache) {
         this(context, info, user, iconCache,
                 UserManagerCompat.getInstance(context).isQuietModeEnabled(user));
     }
 
-    public AppInfo(Context context, LauncherActivityInfoCompat info, UserHandleCompat user,
+    public AppInfo(Context context, LauncherActivityInfoCompat info, UserHandle user,
                    IconCache iconCache, boolean quietModeEnabled) {
         this.componentName = info.getComponentName();
         this.container = ItemInfo.NO_ID;
@@ -133,7 +133,7 @@ public class AppInfo extends ItemInfo {
     }
 
     public static Intent makeLaunchIntent(Context context, LauncherActivityInfoCompat info,
-                                          UserHandleCompat user) {
+                                          UserHandle user) {
         long serialNumber = UserManagerCompat.getInstance(context).getSerialNumberForUser(user);
         return new Intent(Intent.ACTION_MAIN)
                 .addCategory(Intent.CATEGORY_LAUNCHER)

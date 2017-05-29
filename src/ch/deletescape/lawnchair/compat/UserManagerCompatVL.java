@@ -36,8 +36,8 @@ import ch.deletescape.lawnchair.util.LongArrayMap;
 public class UserManagerCompatVL extends UserManagerCompat {
     private static final String USER_CREATION_TIME_KEY = "user_creation_time_";
 
-    protected LongArrayMap<UserHandleCompat> mUsers;
-    protected HashMap<UserHandleCompat, Long> mUserToSerialMap;
+    protected LongArrayMap<UserHandle> mUsers;
+    protected HashMap<UserHandle, Long> mUserToSerialMap;
     protected UserManager mUserManager;
     private final PackageManager mPm;
     private final Context mContext;
@@ -57,7 +57,7 @@ public class UserManagerCompatVL extends UserManagerCompat {
             if (users != null) {
                 for (UserHandle user : users) {
                     long serial = mUserManager.getSerialNumberForUser(user);
-                    UserHandleCompat userCompat = UserHandleCompat.fromUser(user);
+                    UserHandle userCompat = user;
                     mUsers.put(serial, userCompat);
                     mUserToSerialMap.put(userCompat, serial);
                 }
@@ -66,10 +66,10 @@ public class UserManagerCompatVL extends UserManagerCompat {
     }
 
     @Override
-    public List<UserHandleCompat> getUserProfiles() {
+    public List<UserHandle> getUserProfiles() {
         synchronized (this) {
             if (mUsers != null) {
-                List<UserHandleCompat> users = new ArrayList<>();
+                List<UserHandle> users = new ArrayList<>();
                 users.addAll(mUserToSerialMap.keySet());
                 return users;
             }
@@ -79,24 +79,24 @@ public class UserManagerCompatVL extends UserManagerCompat {
         if (users == null) {
             return Collections.emptyList();
         }
-        ArrayList<UserHandleCompat> compatUsers = new ArrayList<>(
+        ArrayList<UserHandle> compatUsers = new ArrayList<>(
                 users.size());
         for (UserHandle user : users) {
-            compatUsers.add(UserHandleCompat.fromUser(user));
+            compatUsers.add(user);
         }
         return compatUsers;
     }
 
     @Override
-    public CharSequence getBadgedLabelForUser(CharSequence label, UserHandleCompat user) {
+    public CharSequence getBadgedLabelForUser(CharSequence label, UserHandle user) {
         if (user == null) {
             return label;
         }
-        return mPm.getUserBadgedLabel(label, user.getUser());
+        return mPm.getUserBadgedLabel(label, user);
     }
 
     @Override
-    public long getUserCreationTime(UserHandleCompat user) {
+    public long getUserCreationTime(UserHandle user) {
         SharedPreferences prefs = Utilities.getPrefs(mContext);
         String key = USER_CREATION_TIME_KEY + getSerialNumberForUser(user);
         if (!prefs.contains(key)) {
@@ -106,21 +106,21 @@ public class UserManagerCompatVL extends UserManagerCompat {
     }
 
     @Override
-    public boolean isQuietModeEnabled(UserHandleCompat user) {
+    public boolean isQuietModeEnabled(UserHandle user) {
         return false;
     }
 
-    public UserHandleCompat getUserForSerialNumber(long serialNumber) {
+    public UserHandle getUserForSerialNumber(long serialNumber) {
         synchronized (this) {
             if (mUsers != null) {
                 return mUsers.get(serialNumber);
             }
         }
-        return UserHandleCompat.fromUser(mUserManager.getUserForSerialNumber(serialNumber));
+        return mUserManager.getUserForSerialNumber(serialNumber);
     }
 
     @Override
-    public boolean isUserUnlocked(UserHandleCompat user) {
+    public boolean isUserUnlocked(UserHandle user) {
         return true;
     }
 
@@ -129,14 +129,14 @@ public class UserManagerCompatVL extends UserManagerCompat {
         return false;
     }
 
-    public long getSerialNumberForUser(UserHandleCompat user) {
+    public long getSerialNumberForUser(UserHandle user) {
         synchronized (this) {
             if (mUserToSerialMap != null) {
                 Long serial = mUserToSerialMap.get(user);
                 return serial == null ? 0 : serial;
             }
         }
-        return mUserManager.getSerialNumberForUser(user.getUser());
+        return mUserManager.getSerialNumberForUser(user);
     }
 }
 

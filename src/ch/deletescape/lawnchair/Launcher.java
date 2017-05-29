@@ -94,7 +94,7 @@ import ch.deletescape.lawnchair.allapps.AllAppsTransitionController;
 import ch.deletescape.lawnchair.allapps.DefaultAppSearchController;
 import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
-import ch.deletescape.lawnchair.compat.UserHandleCompat;
+import android.os.UserHandle;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dragndrop.DragController;
@@ -1747,8 +1747,7 @@ public class Launcher extends Activity
                 Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
                 intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, info.componentName);
-                mAppWidgetManager.getUser(info.info)
-                        .addToIntent(intent, AppWidgetManager.EXTRA_APPWIDGET_PROVIDER_PROFILE);
+                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER_PROFILE, mAppWidgetManager.getUser(info.info));
                 // TODO: we need to make sure that this accounts for the options bundle.
                 // intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, options);
                 startActivityForResult(intent, REQUEST_BIND_APPWIDGET);
@@ -1963,8 +1962,7 @@ public class Launcher extends Activity
                     Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_BIND);
                     intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, info.appWidgetId);
                     intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, appWidgetInfo.provider);
-                    mAppWidgetManager.getUser(appWidgetInfo)
-                            .addToIntent(intent, AppWidgetManager.EXTRA_APPWIDGET_PROVIDER_PROFILE);
+                    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER_PROFILE, mAppWidgetManager.getUser(appWidgetInfo));
                     startActivityForResult(intent, REQUEST_BIND_PENDING_APPWIDGET);
                 }
             } else {
@@ -2029,7 +2027,7 @@ public class Launcher extends Activity
                 .setNeutralButton(R.string.abandoned_clean_this,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                final UserHandleCompat user = UserHandleCompat.myUserHandle();
+                                final UserHandle user = Utilities.myUserHandle();
                                 mWorkspace.removeAbandonedPromise(packageName, user);
                             }
                         })
@@ -2282,7 +2280,7 @@ public class Launcher extends Activity
                 !intent.hasExtra(INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION);
         Bundle optsBundle = useLaunchAnimation ? getActivityLaunchOptions(v) : null;
 
-        UserHandleCompat user = null;
+        UserHandle user = null;
         if (intent.hasExtra(AppInfo.EXTRA_PROFILE)) {
             long serialNumber = intent.getLongExtra(AppInfo.EXTRA_PROFILE, -1);
             user = UserManagerCompat.getInstance(this).getUserForSerialNumber(serialNumber);
@@ -2300,7 +2298,7 @@ public class Launcher extends Activity
                     && ((ShortcutInfo) item).promisedIntent == null) {
                 // Shortcuts need some special checks due to legacy reasons.
                 startShortcutIntentSafely(intent, optsBundle, item);
-            } else if (user == null || user.equals(UserHandleCompat.myUserHandle())) {
+            } else if (user == null || user.equals(Utilities.myUserHandle())) {
                 // Could be launching some bookkeeping activity
                 startActivity(intent, optsBundle);
             } else {
@@ -3493,7 +3491,7 @@ public class Launcher extends Activity
      */
     @Override
     public void bindShortcutsChanged(final ArrayList<ShortcutInfo> updated,
-                                     final ArrayList<ShortcutInfo> removed, final UserHandleCompat user) {
+                                     final ArrayList<ShortcutInfo> removed, final UserHandle user) {
         Runnable r = new Runnable() {
             public void run() {
                 bindShortcutsChanged(updated, removed, user);
@@ -3562,7 +3560,7 @@ public class Launcher extends Activity
     @Override
     public void bindWorkspaceComponentsRemoved(
             final HashSet<String> packageNames, final HashSet<ComponentName> components,
-            final UserHandleCompat user) {
+            final UserHandle user) {
         Runnable r = new Runnable() {
             public void run() {
                 bindWorkspaceComponentsRemoved(packageNames, components, user);

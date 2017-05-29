@@ -4,7 +4,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 
 import ch.deletescape.lawnchair.ShortcutInfo;
-import ch.deletescape.lawnchair.compat.UserHandleCompat;
+import android.os.UserHandle;
 import ch.deletescape.lawnchair.util.ComponentKey;
 
 /**
@@ -12,7 +12,7 @@ import ch.deletescape.lawnchair.util.ComponentKey;
  */
 public class ShortcutKey extends ComponentKey {
 
-    public ShortcutKey(String packageName, UserHandleCompat user, String id) {
+    public ShortcutKey(String packageName, UserHandle user, String id) {
         // Use the id as the class name.
         super(new ComponentName(packageName, id), user);
     }
@@ -26,7 +26,7 @@ public class ShortcutKey extends ComponentKey {
                 shortcutInfo.getId());
     }
 
-    public static ShortcutKey fromIntent(Intent intent, UserHandleCompat user) {
+    public static ShortcutKey fromIntent(Intent intent, UserHandle user) {
         String shortcutId = intent.getStringExtra(
                 ShortcutInfoCompat.EXTRA_SHORTCUT_ID);
         return new ShortcutKey(intent.getPackage(), user, shortcutId);

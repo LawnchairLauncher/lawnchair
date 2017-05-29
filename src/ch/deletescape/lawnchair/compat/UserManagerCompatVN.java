@@ -19,6 +19,7 @@ package ch.deletescape.lawnchair.compat;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.os.UserHandle;
 
 @TargetApi(Build.VERSION_CODES.N)
 public class UserManagerCompatVN extends UserManagerCompatVM {
@@ -28,13 +29,13 @@ public class UserManagerCompatVN extends UserManagerCompatVM {
     }
 
     @Override
-    public boolean isQuietModeEnabled(UserHandleCompat user) {
-        return mUserManager.isQuietModeEnabled(user.getUser());
+    public boolean isQuietModeEnabled(UserHandle user) {
+        return mUserManager.isQuietModeEnabled(user);
     }
 
     @Override
-    public boolean isUserUnlocked(UserHandleCompat user) {
-        return mUserManager.isUserUnlocked(user.getUser());
+    public boolean isUserUnlocked(UserHandle user) {
+        return mUserManager.isUserUnlocked(user);
     }
 }
 

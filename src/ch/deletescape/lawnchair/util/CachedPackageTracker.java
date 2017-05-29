@@ -29,7 +29,7 @@ import java.util.Set;
 import ch.deletescape.lawnchair.compat.LauncherActivityInfoCompat;
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat;
 import ch.deletescape.lawnchair.compat.LauncherAppsCompat.OnAppsChangedCallbackCompat;
-import ch.deletescape.lawnchair.compat.UserHandleCompat;
+import android.os.UserHandle;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 
 /**
@@ -54,7 +54,7 @@ public abstract class CachedPackageTracker implements OnAppsChangedCallbackCompa
      * Checks the list of user apps, and generates package event accordingly.
      * {@see #onLauncherAppsAdded}, {@see #onLauncherPackageRemoved}
      */
-    public void processUserApps(List<LauncherActivityInfoCompat> apps, UserHandleCompat user) {
+    public void processUserApps(List<LauncherActivityInfoCompat> apps, UserHandle user) {
         String prefKey = INSTALLED_PACKAGES_PREFIX + mUserManager.getSerialNumberForUser(user);
         HashSet<String> oldPackageSet = new HashSet<>();
         final boolean userAppsExisted = getUserApps(oldPackageSet, prefKey);
@@ -107,7 +107,7 @@ public abstract class CachedPackageTracker implements OnAppsChangedCallbackCompa
     }
 
     @Override
-    public void onPackageRemoved(String packageName, UserHandleCompat user) {
+    public void onPackageRemoved(String packageName, UserHandle user) {
         String prefKey = INSTALLED_PACKAGES_PREFIX + mUserManager.getSerialNumberForUser(user);
         HashSet<String> packageSet = new HashSet<>();
         if (getUserApps(packageSet, prefKey) && packageSet.remove(packageName)) {
@@ -118,7 +118,7 @@ public abstract class CachedPackageTracker implements OnAppsChangedCallbackCompa
     }
 
     @Override
-    public void onPackageAdded(String packageName, UserHandleCompat user) {
+    public void onPackageAdded(String packageName, UserHandle user) {
         String prefKey = INSTALLED_PACKAGES_PREFIX + mUserManager.getSerialNumberForUser(user);
         HashSet<String> packageSet = new HashSet<>();
         final boolean userAppsExisted = getUserApps(packageSet, prefKey);
@@ -138,25 +138,25 @@ public abstract class CachedPackageTracker implements OnAppsChangedCallbackCompa
     }
 
     @Override
-    public void onPackageChanged(String packageName, UserHandleCompat user) {
+    public void onPackageChanged(String packageName, UserHandle user) {
     }
 
     @Override
     public void onPackagesAvailable(
-            String[] packageNames, UserHandleCompat user) {
+            String[] packageNames, UserHandle user) {
     }
 
     @Override
     public void onPackagesUnavailable(
-            String[] packageNames, UserHandleCompat user, boolean replacing) {
+            String[] packageNames, UserHandle user, boolean replacing) {
     }
 
     @Override
-    public void onPackagesSuspended(String[] packageNames, UserHandleCompat user) {
+    public void onPackagesSuspended(String[] packageNames, UserHandle user) {
     }
 
     @Override
-    public void onPackagesUnsuspended(String[] packageNames, UserHandleCompat user) {
+    public void onPackagesUnsuspended(String[] packageNames, UserHandle user) {
     }
 
     /**
@@ -169,7 +169,7 @@ public abstract class CachedPackageTracker implements OnAppsChangedCallbackCompa
      *                        when Launcher was newly installed or a new user was added.
      */
     protected abstract void onLauncherAppsAdded(List<LauncherActivityInstallInfo> apps,
-                                                UserHandleCompat user, boolean userAppsExisted);
+                                                UserHandle user, boolean userAppsExisted);
 
     /**
      * Called when apps are removed from the system.

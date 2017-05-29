@@ -40,7 +40,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
-import ch.deletescape.lawnchair.compat.UserHandleCompat;
+import android.os.UserHandle;
 import ch.deletescape.lawnchair.compat.UserManagerCompat;
 import ch.deletescape.lawnchair.model.WidgetItem;
 import ch.deletescape.lawnchair.util.ComponentKey;
@@ -152,7 +152,7 @@ public class WidgetPreviewLoader {
         mDb.insertOrReplace(values);
     }
 
-    public void removePackage(String packageName, UserHandleCompat user) {
+    public void removePackage(String packageName, UserHandle user) {
         removePackage(packageName, mUserManager.getSerialNumberForUser(user));
     }
 
@@ -650,7 +650,7 @@ public class WidgetPreviewLoader {
         @Thunk
         final String size;
 
-        public WidgetCacheKey(ComponentName componentName, UserHandleCompat user, String size) {
+        public WidgetCacheKey(ComponentName componentName, UserHandle user, String size) {
             super(componentName, user);
             this.size = size;
         }

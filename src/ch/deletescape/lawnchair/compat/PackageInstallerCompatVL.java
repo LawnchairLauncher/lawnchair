@@ -23,6 +23,7 @@ import android.content.pm.PackageInstaller.SessionCallback;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.os.Build;
 import android.os.Handler;
+import android.os.UserHandle;
 import android.util.SparseArray;
 
 import java.util.HashMap;
@@ -30,6 +31,7 @@ import java.util.HashMap;
 import ch.deletescape.lawnchair.IconCache;
 import ch.deletescape.lawnchair.LauncherAppState;
 import ch.deletescape.lawnchair.LauncherModel;
+import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.util.Thunk;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -54,7 +56,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
     @Override
     public HashMap<String, Integer> updateAndGetActiveSessionCache() {
         HashMap<String, Integer> activePackages = new HashMap<>();
-        UserHandleCompat user = UserHandleCompat.myUserHandle();
+        UserHandle user = Utilities.myUserHandle();
         for (SessionInfo info : mInstaller.getAllSessions()) {
             addSessionInfoToCahce(info, user);
             if (info.getAppPackageName() != null) {
@@ -66,7 +68,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
     }
 
     @Thunk
-    void addSessionInfoToCahce(SessionInfo info, UserHandleCompat user) {
+    void addSessionInfoToCahce(SessionInfo info, UserHandle user) {
         String packageName = info.getAppPackageName();
         if (packageName != null) {
             mCache.cachePackageInstallInfo(packageName, user, info.getAppIcon(),
@@ -129,7 +131,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         private void pushSessionDisplayToLauncher(int sessionId) {
             SessionInfo session = mInstaller.getSessionInfo(sessionId);
             if (session != null && session.getAppPackageName() != null) {
-                addSessionInfoToCahce(session, UserHandleCompat.myUserHandle());
+                addSessionInfoToCahce(session, Utilities.myUserHandle());
                 LauncherAppState app = LauncherAppState.getInstanceNoCreate();
 
                 if (app != null) {
