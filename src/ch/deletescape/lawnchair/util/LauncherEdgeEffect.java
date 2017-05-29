@@ -45,11 +45,6 @@ public class LauncherEdgeEffect {
 
     private static final float PULL_GLOW_BEGIN = 0.f;
 
-    // Minimum velocity that will be absorbed
-    private static final int MIN_VELOCITY = 100;
-    // Maximum velocity, clamps at this value
-    private static final int MAX_VELOCITY = 10000;
-
     private static final float EPSILON = 0.001f;
 
     private static final double ANGLE = Math.PI / 6;
@@ -76,8 +71,6 @@ public class LauncherEdgeEffect {
     private static final int STATE_PULL_DECAY = 4;
 
     private static final float PULL_DISTANCE_ALPHA_GLOW_FACTOR = 0.8f;
-
-    private static final int VELOCITY_GLOW_FACTOR = 6;
 
     private int mState = STATE_IDLE;
 
@@ -128,14 +121,6 @@ public class LauncherEdgeEffect {
      */
     public boolean isFinished() {
         return mState == STATE_IDLE;
-    }
-
-    /**
-     * Immediately finish the current animation.
-     * After this call {@link #isFinished()} will return true.
-     */
-    public void finish() {
-        mState = STATE_IDLE;
     }
 
     /**
@@ -273,16 +258,6 @@ public class LauncherEdgeEffect {
         }
 
         return mState != STATE_IDLE || oneLastFrame;
-    }
-
-    /**
-     * Return the maximum height that the edge effect will be drawn at given the original
-     * {@link #setSize(int, int) input size}.
-     *
-     * @return The maximum height of the edge effect
-     */
-    public int getMaxHeight() {
-        return (int) (mBounds.height() * MAX_GLOW_SCALE + 0.5f);
     }
 
     private void update() {

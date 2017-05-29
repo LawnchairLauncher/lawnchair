@@ -29,6 +29,7 @@
                 android:layout_height="wrap_content">
 
                 <EditText
+                    android:inputType="text"
                     android:id="@+id/title"
                     android:layout_width="150dp"
                     android:maxEms="30"

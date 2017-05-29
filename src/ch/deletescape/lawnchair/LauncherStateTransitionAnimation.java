@@ -929,7 +929,6 @@ public class LauncherStateTransitionAnimation {
                 startAnimRunnable.run();
             }
         }
-        return;
     }
 
     /**

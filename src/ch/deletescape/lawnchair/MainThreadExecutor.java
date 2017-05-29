@@ -18,6 +18,7 @@ package ch.deletescape.lawnchair;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 
 import java.util.List;
 import java.util.concurrent.AbstractExecutorService;
@@ -33,7 +34,7 @@ public class MainThreadExecutor extends AbstractExecutorService {
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
     @Override
-    public void execute(Runnable runnable) {
+    public void execute(@NonNull Runnable runnable) {
         if (Looper.getMainLooper() == Looper.myLooper()) {
             runnable.run();
         } else {
@@ -53,6 +54,7 @@ public class MainThreadExecutor extends AbstractExecutorService {
     /**
      * Not supported and throws an exception when used.
      */
+    @NonNull
     @Override
     @Deprecated
     public List<Runnable> shutdownNow() {
@@ -74,7 +76,7 @@ public class MainThreadExecutor extends AbstractExecutorService {
      */
     @Override
     @Deprecated
-    public boolean awaitTermination(long l, TimeUnit timeUnit) throws InterruptedException {
+    public boolean awaitTermination(long l, @NonNull TimeUnit timeUnit) throws InterruptedException {
         throw new UnsupportedOperationException();
     }
 }

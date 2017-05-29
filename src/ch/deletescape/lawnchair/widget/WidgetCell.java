@@ -17,7 +17,6 @@
 package ch.deletescape.lawnchair.widget;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -28,7 +27,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import ch.deletescape.lawnchair.DeviceProfile;
-import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.SimpleOnStylusPressListener;

@@ -18,7 +18,6 @@ package ch.deletescape.wallpaperpicker;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
@@ -30,7 +29,6 @@ import android.opengl.GLUtils;
 import android.os.Build;
 import android.util.Log;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
 
 import ch.deletescape.wallpaperpicker.common.ExifOrientation;
@@ -230,10 +228,6 @@ public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
 
         public InputStreamSource(Context context, Uri uri) {
             this(InputStreamProvider.fromUri(context, uri), context);
-        }
-
-        public InputStreamSource(Resources res, int resId, Context context) {
-            this(InputStreamProvider.fromResource(res, resId), context);
         }
 
         public InputStreamSource(InputStreamProvider streamProvider, Context context) {

@@ -17,7 +17,6 @@
 package ch.deletescape.lawnchair;
 
 import android.animation.ValueAnimator;
-import android.view.View;
 
 /**
  * A convenience class for two-way animations, e.g. a fadeIn/fadeOut animation.

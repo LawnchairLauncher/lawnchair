@@ -26,8 +26,6 @@ import android.support.v7.graphics.Palette;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 
 import ch.deletescape.lawnchair.Utilities;

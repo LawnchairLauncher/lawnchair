@@ -787,7 +787,6 @@ public class Workspace extends PagedView
             return -1;
         }
 
-        int index = getPageIndexForScreenId(EXTRA_EMPTY_SCREEN_ID);
         CellLayout cl = mWorkspaceScreens.get(EXTRA_EMPTY_SCREEN_ID);
         mWorkspaceScreens.remove(EXTRA_EMPTY_SCREEN_ID);
         mScreenOrder.remove(EXTRA_EMPTY_SCREEN_ID);
@@ -989,7 +988,6 @@ public class Workspace extends PagedView
         ItemInfo info = (ItemInfo) child.getTag();
         int childId = mLauncher.getViewIdForItem(info);
 
-        boolean markCellsAsOccupied = !(child instanceof Folder);
         if (!layout.addViewToCellLayout(child, insert ? 0 : -1, childId, lp)) {
             // TODO: This branch occurs when the workspace is adding views
             // outside of the defined grid
@@ -1064,24 +1062,6 @@ public class Workspace extends PagedView
                 }
         }
         return super.onInterceptTouchEvent(ev);
-    }
-
-    protected void reinflateWidgetsIfNecessary() {
-        final int clCount = getChildCount();
-        for (int i = 0; i < clCount; i++) {
-            CellLayout cl = (CellLayout) getChildAt(i);
-            ShortcutAndWidgetContainer swc = cl.getShortcutsAndWidgets();
-            final int itemCount = swc.getChildCount();
-            for (int j = 0; j < itemCount; j++) {
-                View v = swc.getChildAt(j);
-
-                if (v instanceof LauncherAppWidgetHostView
-                        && v.getTag() instanceof LauncherAppWidgetInfo) {
-                    LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) v.getTag();
-                    LauncherAppWidgetHostView lahv = (LauncherAppWidgetHostView) v;
-                }
-            }
-        }
     }
 
     @Override
@@ -1945,8 +1925,8 @@ public class Workspace extends PagedView
                 mapPointFromSelfToChild(dropTargetLayout, mDragViewVisualCenter);
             }
 
-            int spanX = 1;
-            int spanY = 1;
+            int spanX;
+            int spanY;
             if (mDragInfo != null) {
                 final CellLayout.CellInfo dragCellInfo = mDragInfo;
                 spanX = dragCellInfo.spanX;
@@ -2954,7 +2934,7 @@ public class Workspace extends PagedView
                     animationStyle, finalView, true);
         } else {
             // This is for other drag/drop cases, like dragging from All Apps
-            View view = null;
+            View view;
 
             switch (info.itemType) {
                 case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
@@ -3843,7 +3823,6 @@ public class Workspace extends PagedView
                 @Override
                 public boolean evaluate(ItemInfo info, View view) {
                     if (view instanceof PendingAppWidgetHostView && mInfos.contains(info)) {
-                        PendingAppWidgetHostView hostView = (PendingAppWidgetHostView) view;
                         mLauncher.removeItem(view, info, false /* deleteFromDb */);
                         mLauncher.bindAppWidget((LauncherAppWidgetInfo) info);
                     }

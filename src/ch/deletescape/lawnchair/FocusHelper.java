@@ -89,7 +89,7 @@ public class FocusHelper {
                 handleNoopKey(keyCode, v);
                 return consume;
             }
-            ShortcutAndWidgetContainer newParent = null;
+            ShortcutAndWidgetContainer newParent;
             View child = null;
 
             switch (newIconIndex) {
@@ -196,7 +196,7 @@ public class FocusHelper {
         final ViewGroup iconParent = iconLayout.getShortcutsAndWidgets();
 
         ViewGroup parent = null;
-        int[][] matrix = null;
+        int[][] matrix;
 
         if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
             matrix = FocusLogic.createSparseMatrixWithHotseat(iconLayout, hotseatLayout);
@@ -294,7 +294,6 @@ public class FocusHelper {
         }
 
         Launcher launcher = Launcher.getLauncher(v.getContext());
-        DeviceProfile profile = launcher.getDeviceProfile();
 
         // Initialize the variables.
         ShortcutAndWidgetContainer parent = (ShortcutAndWidgetContainer) v.getParent();

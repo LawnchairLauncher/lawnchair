@@ -17,6 +17,7 @@ package ch.deletescape.lawnchair.pageindicators;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
@@ -82,7 +83,7 @@ public abstract class PageIndicator extends FrameLayout {
     }
 
     @Override
-    protected boolean verifyDrawable(Drawable who) {
+    protected boolean verifyDrawable(@NonNull Drawable who) {
         return super.verifyDrawable(who) || who == getCaretDrawable();
     }
 }

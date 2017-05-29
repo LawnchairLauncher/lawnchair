@@ -11,6 +11,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 
 public class PreloadIconDrawable extends Drawable {
 
@@ -108,7 +109,7 @@ public class PreloadIconDrawable extends Drawable {
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(@NonNull Canvas canvas) {
         final Rect r = new Rect(getBounds());
         if (canvas.getClipBounds(sTempRect) && !Rect.intersects(sTempRect, r)) {
             // The draw region has been clipped.

@@ -213,7 +213,6 @@ public class IconCache {
             }
         } catch (NameNotFoundException e) {
             Log.d(TAG, "Package not found", e);
-            return;
         }
     }
 

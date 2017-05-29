@@ -16,13 +16,10 @@
 
 package ch.deletescape.lawnchair.provider;
 
-import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
 
-import ch.deletescape.lawnchair.LauncherSettings.Favorites;
 import ch.deletescape.lawnchair.LauncherSettings.WorkspaceScreens;
 
 /**

@@ -18,6 +18,7 @@ package ch.deletescape.lawnchair.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -186,7 +187,7 @@ public abstract class CachedPackageTracker implements OnAppsChangedCallbackCompa
         }
 
         @Override
-        public int compareTo(LauncherActivityInstallInfo another) {
+        public int compareTo(@NonNull LauncherActivityInstallInfo another) {
             return Long.compare(installTime, another.installTime);
         }
     }

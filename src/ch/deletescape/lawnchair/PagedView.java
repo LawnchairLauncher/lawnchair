@@ -1925,7 +1925,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
         final int newX = getScrollForPage(whichPage);
         int delta = newX - getUnboundedScrollX();
-        int duration = 0;
+        int duration;
 
         if (Math.abs(velocity) < mMinFlingVelocity) {
             // If the velocity is low enough, then treat this more as an automatic page advance

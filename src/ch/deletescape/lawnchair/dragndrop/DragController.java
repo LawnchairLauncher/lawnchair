@@ -27,7 +27,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.view.DragEvent;
 import android.view.HapticFeedbackConstants;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;

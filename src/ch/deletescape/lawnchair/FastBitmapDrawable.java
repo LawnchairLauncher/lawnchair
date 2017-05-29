@@ -30,6 +30,7 @@ import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.util.SparseArray;
 import android.view.animation.DecelerateInterpolator;
 
@@ -113,7 +114,7 @@ public class FastBitmapDrawable extends Drawable {
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(@NonNull Canvas canvas) {
         canvas.drawBitmap(mBitmap, null, getBounds(), mPaint);
     }
 

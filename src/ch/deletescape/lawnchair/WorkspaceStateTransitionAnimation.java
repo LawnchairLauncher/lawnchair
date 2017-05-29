@@ -32,7 +32,6 @@ import android.view.animation.DecelerateInterpolator;
 
 import java.util.HashMap;
 
-import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dragndrop.DragLayer;
 import ch.deletescape.lawnchair.util.Thunk;
 

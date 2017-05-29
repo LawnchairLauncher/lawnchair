@@ -27,6 +27,7 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.UserHandle;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -91,7 +92,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
 
     public void removeOnAppsChangedCallback(
             LauncherAppsCompat.OnAppsChangedCallbackCompat callback) {
-        WrappedCallback wrappedCallback = null;
+        WrappedCallback wrappedCallback;
         synchronized (mCallbacks) {
             wrappedCallback = mCallbacks.remove(callback);
         }
@@ -150,8 +151,8 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
         }
 
         @Override
-        public void onShortcutsChanged(String packageName, List<ShortcutInfo> shortcuts,
-                                       UserHandle user) {
+        public void onShortcutsChanged(@NonNull String packageName, @NonNull List<ShortcutInfo> shortcuts,
+                                       @NonNull UserHandle user) {
             List<ShortcutInfoCompat> shortcutInfoCompats = new ArrayList<>(shortcuts.size());
             for (ShortcutInfo shortcutInfo : shortcuts) {
                 shortcutInfoCompats.add(new ShortcutInfoCompat(shortcutInfo));

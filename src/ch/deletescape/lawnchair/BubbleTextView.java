@@ -27,12 +27,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Region;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.v4.graphics.ColorUtils;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -46,7 +44,6 @@ import android.widget.TextView;
 import java.text.NumberFormat;
 
 import ch.deletescape.lawnchair.IconCache.IconLoadRequest;
-import ch.deletescape.lawnchair.config.FeatureFlags;
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.folder.FolderIcon;
 import ch.deletescape.lawnchair.model.PackageItemInfo;
@@ -225,7 +222,7 @@ public class BubbleTextView extends TextView
     }
 
     @Override
-    protected boolean verifyDrawable(Drawable who) {
+    protected boolean verifyDrawable(@NonNull Drawable who) {
         return who == mBackground || super.verifyDrawable(who);
     }
 

@@ -26,6 +26,7 @@ import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -101,12 +102,6 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
     }
 
     @Override
-    public boolean isReinflateRequired() {
-        // Re inflate is required any time the widget restore status changes
-        return mStartState != mInfo.restoreStatus;
-    }
-
-    @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         mDrawableSizeChanged = true;
@@ -166,7 +161,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
     }
 
     @Override
-    protected boolean verifyDrawable(Drawable who) {
+    protected boolean verifyDrawable(@NonNull Drawable who) {
         return (who == mCenterDrawable) || super.verifyDrawable(who);
     }
 

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2015 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,7 +46,7 @@ public class ExifOrientation {
     /**
      * Parses the rotation of the JPEG image from the input stream.
      */
-    public static final int readRotation(InputStream in, Context context) {
+    public static int readRotation(InputStream in, Context context) {
         // Since the platform implementation only takes file input, create a temporary file
         // with just the image header.
         File tempFile = null;
@@ -125,7 +125,7 @@ public class ExifOrientation {
     /**
      * Parses the rotation of the JPEG image.
      */
-    public static final int readRotation(String filePath) {
+    public static int readRotation(String filePath) {
         try {
             ExifInterface exif = new ExifInterface(filePath);
             switch (exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 0)) {

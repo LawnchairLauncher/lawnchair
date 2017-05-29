@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.support.annotation.NonNull;
 
 import java.text.Collator;
 
@@ -53,7 +54,7 @@ public class WidgetItem extends ComponentKey implements Comparable<WidgetItem> {
     }
 
     @Override
-    public int compareTo(WidgetItem another) {
+    public int compareTo(@NonNull WidgetItem another) {
         if (sMyUserHandle == null) {
             // Delay these object creation until required.
             sMyUserHandle = UserHandleCompat.myUserHandle();

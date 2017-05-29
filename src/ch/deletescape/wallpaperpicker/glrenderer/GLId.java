@@ -16,9 +16,6 @@
 
 package ch.deletescape.wallpaperpicker.glrenderer;
 
-import javax.microedition.khronos.opengles.GL11;
-import javax.microedition.khronos.opengles.GL11ExtensionPack;
-
 // This mimics corresponding GL functions.
 public interface GLId {
     int generateTexture();
@@ -27,7 +24,4 @@ public interface GLId {
 
     void glDeleteTextures(int n, int[] textures, int offset);
 
-    void glDeleteBuffers(int n, int[] buffers, int offset);
-
-    void glDeleteFramebuffers(int n, int[] buffers, int offset);
 }

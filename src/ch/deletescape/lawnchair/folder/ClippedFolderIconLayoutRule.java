@@ -98,7 +98,7 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
     }
 
     private float scaleForNumItems(int numItems) {
-        float scale = 1f;
+        float scale;
         if (numItems <= 2) {
             scale = MAX_SCALE;
         } else if (numItems == 3) {

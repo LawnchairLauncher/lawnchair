@@ -23,6 +23,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 
 import ch.deletescape.lawnchair.R;
 
@@ -72,7 +73,7 @@ public class CaretDrawable extends Drawable {
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(@NonNull Canvas canvas) {
         // Assumes caret paint is more important than shadow paint
         if (Float.compare(mCaretPaint.getAlpha(), 0f) == 0) {
             return;

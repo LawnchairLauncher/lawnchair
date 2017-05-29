@@ -78,12 +78,6 @@ public class AlphabeticalAppsList {
         public int viewType;
 
         /**
-         * Section & App properties
-         */
-        // The section for this item
-        public SectionInfo sectionInfo;
-
-        /**
          * App-only properties
          */
         // The section name of this app.  Note that there can be multiple items with different
@@ -102,17 +96,15 @@ public class AlphabeticalAppsList {
             AdapterItem item = new AdapterItem();
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_SECTION_BREAK;
             item.position = pos;
-            item.sectionInfo = section;
             section.sectionBreakItem = item;
             return item;
         }
 
-        public static AdapterItem asApp(int pos, SectionInfo section, String sectionName,
+        public static AdapterItem asApp(int pos, String sectionName,
                                         int sectionAppIndex, AppInfo appInfo) {
             AdapterItem item = new AdapterItem();
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_ICON;
             item.position = pos;
-            item.sectionInfo = section;
             item.sectionName = sectionName;
             item.sectionAppIndex = sectionAppIndex;
             item.appInfo = appInfo;
@@ -311,7 +303,7 @@ public class AlphabeticalAppsList {
         // As a special case for some languages (currently only Simplified Chinese), we may need to
         // coalesce sections
         Locale curLocale = mLauncher.getResources().getConfiguration().locale;
-        TreeMap<String, ArrayList<AppInfo>> sectionMap = null;
+        TreeMap<String, ArrayList<AppInfo>> sectionMap;
         boolean localeRequiresSectionSorting = curLocale.equals(Locale.SIMPLIFIED_CHINESE);
         if (localeRequiresSectionSorting) {
             // Compute the section headers.  We use a TreeMap with the section name comparator to
@@ -390,7 +382,7 @@ public class AlphabeticalAppsList {
             }
 
             // Create an app item
-            AdapterItem appItem = AdapterItem.asApp(position++, lastSectionInfo, sectionName,
+            AdapterItem appItem = AdapterItem.asApp(position++, sectionName,
                     lastSectionInfo.numApps++, info);
             if (lastSectionInfo.firstAppItem == null) {
                 lastSectionInfo.firstAppItem = appItem;
@@ -499,7 +491,6 @@ public class AlphabeticalAppsList {
                     int nextPos = pos + section.numApps;
                     for (int j = nextPos; j < (nextPos + nextSection.numApps); j++) {
                         AdapterItem item = mAdapterItems.get(j);
-                        item.sectionInfo = section;
                         item.sectionAppIndex += section.numApps;
                     }
 

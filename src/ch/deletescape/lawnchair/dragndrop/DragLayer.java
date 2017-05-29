@@ -54,7 +54,6 @@ import ch.deletescape.lawnchair.AppWidgetResizeFrame;
 import ch.deletescape.lawnchair.CellLayout;
 import ch.deletescape.lawnchair.DropTargetBar;
 import ch.deletescape.lawnchair.InsettableFrameLayout;
-import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAppWidgetHostView;
 import ch.deletescape.lawnchair.PinchToOverviewListener;

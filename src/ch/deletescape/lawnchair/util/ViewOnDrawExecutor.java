@@ -16,6 +16,7 @@
 
 package ch.deletescape.lawnchair.util;
 
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.View.OnAttachStateChangeListener;
 import android.view.ViewTreeObserver.OnDrawListener;
@@ -61,7 +62,7 @@ public class ViewOnDrawExecutor implements Executor, OnDrawListener, Runnable,
     }
 
     @Override
-    public void execute(Runnable command) {
+    public void execute(@NonNull Runnable command) {
         mTasks.add(command);
     }
 

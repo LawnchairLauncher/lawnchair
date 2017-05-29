@@ -777,14 +777,6 @@ public class Launcher extends Activity
             mWaitingForResume.setStayPressed(false);
         }
 
-        // It is possible that widgets can receive updates while launcher is not in the foreground.
-        // Consequently, the widgets will be inflated in the orientation of the foreground activity
-        // (framework issue). On resuming, we ensure that any widgets are inflated for the current
-        // orientation.
-        if (!isWorkspaceLoading()) {
-            getWorkspace().reinflateWidgetsIfNecessary();
-        }
-
         mWorkspace.onResume();
 
         if (!isWorkspaceLoading()) {
@@ -3309,7 +3301,6 @@ public class Launcher extends Activity
         LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) view.getTag();
         info.restoreStatus = finalRestoreFlag;
 
-        mWorkspace.reinflateWidgetsIfNecessary();
         LauncherModel.updateItemInDatabase(this, info);
         return info;
     }

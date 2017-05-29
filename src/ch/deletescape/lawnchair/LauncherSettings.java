@@ -148,7 +148,7 @@ public class LauncherSettings {
         public static final int CONTAINER_DESKTOP = -100;
         public static final int CONTAINER_HOTSEAT = -101;
 
-        static final String containerToString(int container) {
+        static String containerToString(int container) {
             switch (container) {
                 case CONTAINER_DESKTOP:
                     return "desktop";

@@ -96,7 +96,7 @@ public class LoggerUtils {
         if (t.spanX != 0) {
             typeStr += ", spanX=" + t.spanX;
         }
-        return typeStr += ", grid=(" + t.gridX + "," + t.gridY + "), id=" + t.pageIndex;
+        return typeStr + ", grid=(" + t.gridX + "," + t.gridY + "), id=" + t.pageIndex;
     }
 
     private static String getControlStr(Target t) {

@@ -25,15 +25,4 @@ public class GLES20IdImpl implements GLId {
     }
 
 
-    @Override
-    public void glDeleteBuffers(int n, int[] buffers, int offset) {
-        GLES20.glDeleteBuffers(n, buffers, offset);
-        GLES20Canvas.checkError();
-    }
-
-    @Override
-    public void glDeleteFramebuffers(int n, int[] buffers, int offset) {
-        GLES20.glDeleteFramebuffers(n, buffers, offset);
-        GLES20Canvas.checkError();
-    }
 }

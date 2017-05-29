@@ -97,7 +97,7 @@ public class LiveWallpaperInfo extends WallpaperTileInfo {
             List<LiveWallpaperInfo> result = new ArrayList<>();
 
             for (ResolveInfo resolveInfo : list) {
-                WallpaperInfo info = null;
+                WallpaperInfo info;
                 try {
                     info = new WallpaperInfo(mContext, resolveInfo);
                 } catch (XmlPullParserException | IOException e) {

@@ -37,6 +37,7 @@ import android.os.Looper;
 import android.os.Parcelable;
 import android.os.Process;
 import android.provider.BaseColumns;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.LongSparseArray;
@@ -3733,7 +3734,7 @@ public class LauncherModel extends BroadcastReceiver
     class DeferredMainThreadExecutor implements Executor {
 
         @Override
-        public void execute(Runnable command) {
+        public void execute(@NonNull Runnable command) {
             runOnMainThread(command);
         }
     }

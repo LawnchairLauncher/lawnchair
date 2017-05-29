@@ -13,7 +13,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Property;
 import android.view.ViewConfiguration;
 import android.widget.ImageView;
@@ -22,7 +21,6 @@ import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
-import ch.deletescape.lawnchair.dynamicui.ExtractionUtils;
 
 /**
  * A PageIndicator that briefly shows a fraction of a line when moving between pages.

@@ -612,7 +612,7 @@ public class AutoInstallsLayout {
         }
     }
 
-    protected static final void beginDocument(XmlPullParser parser, String firstElementName)
+    protected static void beginDocument(XmlPullParser parser, String firstElementName)
             throws XmlPullParserException, IOException {
         int type;
         while ((type = parser.next()) != XmlPullParser.START_TAG

@@ -23,7 +23,6 @@ import android.content.res.XmlResourceParser;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -60,7 +59,6 @@ public class CommonAppTypeParser implements LayoutParserCallback {
 
     ContentValues parsedValues;
     Intent parsedIntent;
-    String parsedTitle;
 
     public CommonAppTypeParser(long itemId, int itemType, Context context) {
         mItemId = itemId;
@@ -109,7 +107,6 @@ public class CommonAppTypeParser implements LayoutParserCallback {
         protected long addShortcut(String title, Intent intent, int type) {
             if (type == Favorites.ITEM_TYPE_APPLICATION) {
                 parsedIntent = intent;
-                parsedTitle = title;
             }
             return super.addShortcut(title, intent, type);
         }

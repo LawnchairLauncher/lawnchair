@@ -23,7 +23,6 @@ import android.app.WallpaperManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Point;
@@ -393,7 +392,7 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
 
         final int outWidth = Math.round(cropRect.width() * cropScale);
         final int outHeight = Math.round(cropRect.height() * cropScale);
-        CropAndFinishHandler onEndCrop = new CropAndFinishHandler(new Point(outWidth, outHeight),
+        CropAndFinishHandler onEndCrop = new CropAndFinishHandler(
                 shouldFadeOutOnFinish);
 
         CropAndSetWallpaperTask cropTask = new CropAndSetWallpaperTask(
@@ -420,7 +419,6 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
     }
 
     public class CropAndFinishHandler implements CropAndSetWallpaperTask.OnEndCropHandler {
-        private final Point mBounds;
         private boolean mShouldFadeOutOnFinish;
 
         /**
@@ -428,8 +426,7 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
          * exit animation to fade out instead. This should only be set to true if the wallpaper
          * preview will exactly match the actual wallpaper on the page we are returning to.
          */
-        public CropAndFinishHandler(Point bounds, boolean shouldFadeOutOnFinish) {
-            mBounds = bounds;
+        public CropAndFinishHandler(boolean shouldFadeOutOnFinish) {
             mShouldFadeOutOnFinish = shouldFadeOutOnFinish;
         }
 

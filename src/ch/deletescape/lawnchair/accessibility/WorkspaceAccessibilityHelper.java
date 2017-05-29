@@ -64,7 +64,7 @@ public class WorkspaceAccessibilityHelper extends DragAndDropAccessibilityDelega
         if (dragInfo.dragType == DragType.WIDGET) {
             // For a widget, every cell must be vacant. In addition, we will return any valid
             // drop target by which the passed id is contained.
-            boolean fits = false;
+            boolean fits;
 
             // These represent the amount that we can back off if we hit a problem. They
             // get consumed as we move up and to the right, trying new regions.

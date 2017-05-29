@@ -45,6 +45,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
 import android.os.UserManager;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -99,7 +100,7 @@ public class LauncherProvider extends ContentProvider {
     }
 
     @Override
-    public String getType(Uri uri) {
+    public String getType(@NonNull Uri uri) {
         SqlArguments args = new SqlArguments(uri, null, null);
         if (TextUtils.isEmpty(args.where)) {
             return "vnd.android.cursor.dir/" + args.table;
@@ -127,7 +128,7 @@ public class LauncherProvider extends ContentProvider {
     }
 
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection,
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
         createDbIfNotExists();
 
@@ -165,7 +166,7 @@ public class LauncherProvider extends ContentProvider {
     }
 
     @Override
-    public Uri insert(Uri uri, ContentValues initialValues) {
+    public Uri insert(@NonNull Uri uri, ContentValues initialValues) {
         createDbIfNotExists();
         SqlArguments args = new SqlArguments(uri);
 
@@ -256,7 +257,7 @@ public class LauncherProvider extends ContentProvider {
     }
 
     @Override
-    public int bulkInsert(Uri uri, ContentValues[] values) {
+    public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
         createDbIfNotExists();
         SqlArguments args = new SqlArguments(uri);
 
@@ -279,8 +280,9 @@ public class LauncherProvider extends ContentProvider {
         return values.length;
     }
 
+    @NonNull
     @Override
-    public ContentProviderResult[] applyBatch(ArrayList<ContentProviderOperation> operations)
+    public ContentProviderResult[] applyBatch(@NonNull ArrayList<ContentProviderOperation> operations)
             throws OperationApplicationException {
         createDbIfNotExists();
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
@@ -296,7 +298,7 @@ public class LauncherProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         createDbIfNotExists();
         SqlArguments args = new SqlArguments(uri, selection, selectionArgs);
 
@@ -332,7 +334,7 @@ public class LauncherProvider extends ContentProvider {
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+    public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         createDbIfNotExists();
         SqlArguments args = new SqlArguments(uri, selection, selectionArgs);
 
@@ -346,7 +348,7 @@ public class LauncherProvider extends ContentProvider {
     }
 
     @Override
-    public Bundle call(String method, final String arg, final Bundle extras) {
+    public Bundle call(@NonNull String method, final String arg, final Bundle extras) {
         if (Binder.getCallingUid() != Process.myUid()) {
             return null;
         }

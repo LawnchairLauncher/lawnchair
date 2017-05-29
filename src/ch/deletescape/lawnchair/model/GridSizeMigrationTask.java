@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Point;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.firebase.crash.FirebaseCrash;
@@ -57,7 +58,6 @@ public class GridSizeMigrationTask {
     private static final float WT_FOLDER_FACTOR = 0.5f;
 
     private final Context mContext;
-    private final InvariantDeviceProfile mIdp;
 
     private final HashMap<String, Point> mWidgetMinSize = new HashMap<>();
     private final ContentValues mTempValues = new ContentValues();
@@ -73,11 +73,9 @@ public class GridSizeMigrationTask {
     private final int mSrcHotseatSize;
     private final int mDestHotseatSize;
 
-    protected GridSizeMigrationTask(Context context, InvariantDeviceProfile idp,
-                                    HashSet<String> validPackages, Point sourceSize, Point targetSize) {
+    protected GridSizeMigrationTask(Context context, HashSet<String> validPackages, Point sourceSize, Point targetSize) {
         mContext = context;
         mValidPackages = validPackages;
-        mIdp = idp;
 
         mSrcX = sourceSize.x;
         mSrcY = sourceSize.y;
@@ -92,11 +90,9 @@ public class GridSizeMigrationTask {
         mSrcHotseatSize = mDestHotseatSize = -1;
     }
 
-    protected GridSizeMigrationTask(Context context,
-                                    InvariantDeviceProfile idp, HashSet<String> validPackages,
+    protected GridSizeMigrationTask(Context context, HashSet<String> validPackages,
                                     int srcHotseatSize, int destHotseatSize) {
         mContext = context;
-        mIdp = idp;
         mValidPackages = validPackages;
 
         mSrcHotseatSize = srcHotseatSize;
@@ -817,7 +813,7 @@ public class GridSizeMigrationTask {
          * based on their weights.
          */
         @Override
-        public int compareTo(DbEntry another) {
+        public int compareTo(@NonNull DbEntry another) {
             if (itemType == Favorites.ITEM_TYPE_APPWIDGET) {
                 if (another.itemType == Favorites.ITEM_TYPE_APPWIDGET) {
                     return another.spanY * another.spanX - spanX * spanY;
@@ -891,7 +887,6 @@ public class GridSizeMigrationTask {
                 // Migrate hotseat.
 
                 dbChanged = new GridSizeMigrationTask(context,
-                        LauncherAppState.getInstance().getInvariantDeviceProfile(),
                         validPackages, srcHotseatCount, idp.numHotseatIcons).migrateHotseat();
             }
 
@@ -994,7 +989,6 @@ public class GridSizeMigrationTask {
 
         protected boolean runStepTask(Point sourceSize, Point nextSize) throws Exception {
             return new GridSizeMigrationTask(mContext,
-                    LauncherAppState.getInstance().getInvariantDeviceProfile(),
                     mValidPackages, sourceSize, nextSize).migrateWorkspace();
         }
     }

@@ -27,7 +27,7 @@ import ch.deletescape.lawnchair.compat.AppWidgetManagerCompat;
 /**
  * Meta data used for late binding of {@link LauncherAppWidgetProviderInfo}.
  *
- * @see {@link PendingAddItemInfo}
+ * @see PendingAddItemInfo
  */
 public class PendingAddWidgetInfo extends PendingAddItemInfo {
     public int previewImage;

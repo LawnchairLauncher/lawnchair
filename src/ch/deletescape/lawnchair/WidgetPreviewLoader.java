@@ -218,7 +218,6 @@ public class WidgetPreviewLoader {
 
             for (int i = 0; i < packagesToDelete.size(); i++) {
                 long userId = packagesToDelete.keyAt(i);
-                UserHandleCompat user = mUserManager.getUserForSerialNumber(userId);
                 for (String pkg : packagesToDelete.valueAt(i)) {
                     removePackage(pkg, userId);
                 }

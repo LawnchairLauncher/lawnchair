@@ -31,6 +31,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -913,7 +914,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     }
 
     @Override
-    protected boolean verifyDrawable(Drawable who) {
+    protected boolean verifyDrawable(@NonNull Drawable who) {
         return super.verifyDrawable(who) || (mIsDragTarget && who == mBackground);
     }
 
@@ -1876,7 +1877,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         int result[] = new int[2];
         result = findNearestArea(pixelX, pixelY, spanX, spanY, result);
 
-        boolean success = false;
+        boolean success;
         // First we try the exact nearest position of the item being dragged,
         // we will then want to try to move this around to other neighbouring positions
         success = rearrangementExists(result[0], result[1], spanX, spanY, direction, dragView,
