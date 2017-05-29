@@ -1079,12 +1079,6 @@ public class Workspace extends PagedView
                         && v.getTag() instanceof LauncherAppWidgetInfo) {
                     LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) v.getTag();
                     LauncherAppWidgetHostView lahv = (LauncherAppWidgetHostView) v;
-                    if (lahv.isReinflateRequired()) {
-                        // Remove and rebind the current widget (which was inflated in the wrong
-                        // orientation), but don't delete it from the database
-                        mLauncher.removeItem(lahv, info, false  /* deleteFromDb */);
-                        mLauncher.bindAppWidget(info);
-                    }
                 }
             }
         }

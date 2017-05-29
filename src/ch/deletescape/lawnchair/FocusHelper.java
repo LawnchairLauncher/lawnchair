@@ -175,7 +175,6 @@ public class FocusHelper {
         }
 
         final Launcher launcher = Launcher.getLauncher(v.getContext());
-        final DeviceProfile profile = launcher.getDeviceProfile();
 
         // Initialize the variables.
         final Workspace workspace = (Workspace) v.getRootView().findViewById(R.id.workspace);

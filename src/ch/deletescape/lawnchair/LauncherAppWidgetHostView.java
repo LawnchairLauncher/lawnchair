@@ -43,9 +43,6 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
 
     private CheckLongPressHelper mLongPressHelper;
     private StylusEventHelper mStylusEventHelper;
-    private Context mContext;
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private int mPreviousOrientation;
 
     private float mSlop;
 
@@ -56,7 +53,6 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
 
     public LauncherAppWidgetHostView(Context context) {
         super(context);
-        mContext = context;
         mLongPressHelper = new CheckLongPressHelper(this);
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -67,23 +63,6 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
     @Override
     protected View getErrorView() {
         return mInflater.inflate(mErrorViewId, this, false);
-    }
-
-    public void updateLastInflationOrientation() {
-        mPreviousOrientation = mContext.getResources().getConfiguration().orientation;
-    }
-
-    @Override
-    public void updateAppWidget(RemoteViews remoteViews) {
-        // Store the orientation in which the widget was inflated
-        updateLastInflationOrientation();
-        super.updateAppWidget(remoteViews);
-    }
-
-    public boolean isReinflateRequired() {
-        // Re-inflate is required if the orientation has changed since last inflated.
-        int orientation = mContext.getResources().getConfiguration().orientation;
-        return mPreviousOrientation != orientation;
     }
 
     public boolean onInterceptTouchEvent(MotionEvent ev) {
