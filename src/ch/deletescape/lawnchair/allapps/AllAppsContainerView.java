@@ -599,7 +599,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     }
 
     @Override
-    public void fillInLaunchSourceData(View v, ItemInfo info, Target target, Target targetParent) {
+    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
         targetParent.containerType = mAppsRecyclerView.getContainerType();
     }
 

@@ -818,7 +818,6 @@ public class Launcher extends Activity
         if (mModel.isCurrentCallbacks(this)) {
             mModel.stopLoader();
         }
-        //TODO(hyunyoungs): stop the widgets loader when there is a rotation.
 
         return Boolean.TRUE;
     }

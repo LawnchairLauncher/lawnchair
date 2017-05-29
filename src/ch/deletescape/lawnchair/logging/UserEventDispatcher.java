@@ -44,13 +44,9 @@ public class UserEventDispatcher {
     private final boolean mIsVerbose;
 
     /**
-     * TODO: change the name of this interface to LogContainerProvider
-     * and the method name to fillInLogContainerData. Not changed to minimize CL diff
-     * in this branch.
-     * <p>
      * Implemented by containers to provide a launch source for a given child.
      */
-    public interface LaunchSourceProvider {
+    public interface LogContainerProvider {
 
         /**
          * Copies data from the source to the destination proto.
@@ -60,14 +56,14 @@ public class UserEventDispatcher {
          * @param target       dest of the data
          * @param targetParent dest of the data
          */
-        void fillInLaunchSourceData(View v, ItemInfo info, Target target, Target targetParent);
+        void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent);
     }
 
     /**
      * Recursively finds the parent of the given child which implements IconLogInfoProvider
      */
-    public static LaunchSourceProvider getLaunchProviderRecursive(View v) {
-        ViewParent parent = null;
+    public static LogContainerProvider getLaunchProviderRecursive(View v) {
+        ViewParent parent;
 
         if (v != null) {
             parent = v.getParent();
@@ -78,8 +74,8 @@ public class UserEventDispatcher {
         // Optimization to only check up to 5 parents.
         int count = MAXIMUM_VIEW_HIERARCHY_LEVEL;
         while (parent != null && count-- > 0) {
-            if (parent instanceof LaunchSourceProvider) {
-                return (LaunchSourceProvider) parent;
+            if (parent instanceof LogContainerProvider) {
+                return (LogContainerProvider) parent;
             } else {
                 parent = parent.getParent();
             }
@@ -112,12 +108,12 @@ public class UserEventDispatcher {
         // Fill in grid(x,y), pageIndex of the child and container type of the parent
         // TODO: make this percolate up the view hierarchy if needed.
         int idx = 0;
-        LaunchSourceProvider provider = getLaunchProviderRecursive(v);
+        LogContainerProvider provider = getLaunchProviderRecursive(v);
         if (v == null || !(v.getTag() instanceof ItemInfo) || provider == null) {
             return null;
         }
         ItemInfo itemInfo = (ItemInfo) v.getTag();
-        provider.fillInLaunchSourceData(v, itemInfo, event.srcTarget[idx], event.srcTarget[idx + 1]);
+        provider.fillInLogContainerData(v, itemInfo, event.srcTarget[idx], event.srcTarget[idx + 1]);
 
         event.srcTarget[idx].intentHash = intent.hashCode();
         ComponentName cn = intent.getComponent();
@@ -154,12 +150,12 @@ public class UserEventDispatcher {
     public void logDeepShortcutsOpen(View icon) {
         LauncherEvent event = LoggerUtils.initLauncherEvent(
                 Action.TOUCH, icon, Target.CONTAINER);
-        LaunchSourceProvider provider = getLaunchProviderRecursive(icon);
+        LogContainerProvider provider = getLaunchProviderRecursive(icon);
         if (icon == null || !(icon.getTag() instanceof ItemInfo)) {
             return;
         }
         ItemInfo info = (ItemInfo) icon.getTag();
-        provider.fillInLaunchSourceData(icon, info, event.srcTarget[0], event.srcTarget[1]);
+        provider.fillInLogContainerData(icon, info, event.srcTarget[0], event.srcTarget[1]);
         event.action.touch = Action.LONGPRESS;
         dispatchUserEvent(event);
     }
@@ -171,11 +167,11 @@ public class UserEventDispatcher {
                 dropTargetAsView);
         event.action.touch = Action.DRAGDROP;
 
-        dragObj.dragSource.fillInLaunchSourceData(null, dragObj.originalDragInfo,
+        dragObj.dragSource.fillInLogContainerData(null, dragObj.originalDragInfo,
                 event.srcTarget[0], event.srcTarget[1]);
 
-        if (dropTargetAsView instanceof LaunchSourceProvider) {
-            ((LaunchSourceProvider) dropTargetAsView).fillInLaunchSourceData(null,
+        if (dropTargetAsView instanceof LogContainerProvider) {
+            ((LogContainerProvider) dropTargetAsView).fillInLogContainerData(null,
                     dragObj.dragInfo, event.destTarget[0], event.destTarget[1]);
 
         }

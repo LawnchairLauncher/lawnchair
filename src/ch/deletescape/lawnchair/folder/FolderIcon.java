@@ -204,8 +204,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         final int itemType = item.itemType;
         return ((itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
                 itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT ||
-                itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) &&
-                !mFolder.isFull() && item != mInfo && !mInfo.opened);
+                itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) && item != mInfo && !mInfo.opened);
     }
 
     public boolean acceptDrop(ItemInfo dragInfo) {

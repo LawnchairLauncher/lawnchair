@@ -472,16 +472,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         ArrayList<ShortcutInfo> children = info.contents;
         Collections.sort(children, ITEM_POS_COMPARATOR);
 
-        ArrayList<ShortcutInfo> overflow = mContent.bindItems(children);
-
-        // If our folder has too many items we prune them from the list. This is an issue
-        // when upgrading from the old Folders implementation which could contain an unlimited
-        // number of items.
-        // TODO: Remove this, as with multi-page folders, there will never be any overflow
-        for (ShortcutInfo item : overflow) {
-            mInfo.remove(item, false);
-            LauncherModel.deleteItemFromDatabase(mLauncher, item);
-        }
+        mContent.bindItems(children);
 
         DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
         if (lp == null) {
@@ -732,8 +723,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         final int itemType = item.itemType;
         return ((itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
                 itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT ||
-                itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) &&
-                !isFull());
+                itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT));
     }
 
     public void onDragEnter(DragObject d) {
@@ -1010,10 +1000,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
     public boolean isDropEnabled() {
         return true;
-    }
-
-    public boolean isFull() {
-        return mContent.isFull();
     }
 
     private void centerAboutIcon() {
@@ -1421,7 +1407,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     @Override
-    public void fillInLaunchSourceData(View v, ItemInfo info, Target target, Target targetParent) {
+    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
         target.gridX = info.cellX;
         target.gridY = info.cellY;
         target.pageIndex = mContent.getCurrentPage();

@@ -77,11 +77,6 @@ public abstract class BaseRecyclerView extends RecyclerView
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             mDy = dy;
-
-            // TODO(winsonc): If we want to animate the section heads while scrolling, we can
-            //                initiate that here if the recycler view scroll state is not
-            //                RecyclerView.SCROLL_STATE_IDLE.
-
             onUpdateScrollbar(dy);
         }
     }
