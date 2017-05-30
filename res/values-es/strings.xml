@@ -120,10 +120,7 @@
     <string name="widget_resized" msgid="9130327887929620">"Se ha modificado el tamaño del widget a <xliff:g id="NUMBER_0">%1$s</xliff:g> de ancho y <xliff:g id="NUMBER_1">%2$s</xliff:g> de alto"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Accesos directos"</string>
     <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> accesos directos de <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
-    <!-- no translation found for shortcuts_menu_with_notifications_description (8985659504915468840) -->
-    <skip />
-    <!-- no translation found for action_dismiss_notification (5909461085055959187) -->
-    <skip />
-    <!-- no translation found for notification_dismissed (6002233469409822874) -->
-    <skip />
+    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> accesos directos y <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> notificaciones de <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
+    <string name="action_dismiss_notification" msgid="5909461085055959187">"Ignorar"</string>
+    <string name="notification_dismissed" msgid="6002233469409822874">"Notificación ignorada"</string>
 </resources>
