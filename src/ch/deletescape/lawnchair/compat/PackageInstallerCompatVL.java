@@ -34,7 +34,6 @@ import ch.deletescape.lawnchair.LauncherModel;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.util.Thunk;
 
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
     @Thunk

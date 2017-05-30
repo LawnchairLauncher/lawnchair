@@ -43,7 +43,6 @@ import ch.deletescape.lawnchair.folder.Folder;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutsContainer;
 import ch.deletescape.lawnchair.util.Thunk;
 
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class LauncherAccessibilityDelegate extends AccessibilityDelegate implements DragListener {
 
     private static final String TAG = "LauncherAccessibilityDelegate";

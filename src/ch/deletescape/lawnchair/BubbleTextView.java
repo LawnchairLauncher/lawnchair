@@ -531,7 +531,6 @@ public class BubbleTextView extends TextView
     /**
      * Sets the icon for this view based on the layout direction.
      */
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void setIcon(Drawable icon) {
         mIcon = icon;
         if (mIconSize != -1) {

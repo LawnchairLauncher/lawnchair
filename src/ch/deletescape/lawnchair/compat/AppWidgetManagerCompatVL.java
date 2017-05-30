@@ -46,7 +46,6 @@ import ch.deletescape.lawnchair.LauncherAppWidgetProviderInfo;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.util.ComponentKey;
 
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
 
     private final UserManager mUserManager;

@@ -30,7 +30,6 @@ import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace;
 
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class OverviewScreenAccessibilityDelegate extends AccessibilityDelegate {
 
     private static final int MOVE_BACKWARD = R.id.action_move_screen_backwards;

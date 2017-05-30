@@ -120,7 +120,6 @@ public class WidgetsListAdapter extends Adapter<WidgetsRowViewHolder> {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public WidgetsRowViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 

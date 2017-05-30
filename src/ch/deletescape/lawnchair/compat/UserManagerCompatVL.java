@@ -32,7 +32,6 @@ import java.util.List;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.util.LongArrayMap;
 
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class UserManagerCompatVL extends UserManagerCompat {
     private static final String USER_CREATION_TIME_KEY = "user_creation_time_";
 

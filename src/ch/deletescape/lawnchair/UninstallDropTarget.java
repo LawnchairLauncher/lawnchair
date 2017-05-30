@@ -38,7 +38,6 @@ public class UninstallDropTarget extends ButtonDropTarget {
         return supportsDrop(getContext(), info);
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public static boolean supportsDrop(Context context, Object info) {
         UserManager userManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
         Bundle restrictions = userManager.getUserRestrictions();

@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewDebug;
@@ -41,7 +42,7 @@ public class LauncherRootView extends InsettableFrameLayout {
         super.onFinishInflate();
     }
 
-    @TargetApi(23)
+    @TargetApi(Build.VERSION_CODES.M)
     @Override
     protected boolean fitSystemWindows(Rect insets) {
         boolean rawInsetsChanged = !mInsets.equals(insets);

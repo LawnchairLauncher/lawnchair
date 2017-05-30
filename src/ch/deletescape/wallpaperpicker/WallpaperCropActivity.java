@@ -154,7 +154,6 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
     /**
      * This is called on {@link #mLoaderThread}
      */
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     public boolean handleMessage(Message msg) {
         if (msg.what == MSG_LOAD_IMAGE) {
@@ -294,7 +293,6 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
         mProgressView.setVisibility(View.GONE);
     }
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     public final void setCropViewTileSource(BitmapSource bitmapSource, boolean touchEnabled,
             boolean moveToLeft, CropViewScaleAndOffsetProvider scaleAndOffsetProvider,
             Runnable postExecute) {

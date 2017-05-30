@@ -110,7 +110,6 @@ public abstract class ButtonDropTarget extends TextView
         mOriginalTextColor = getTextColors();
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     protected void setDrawable(int resId) {
         // We do not set the drawable in the xml as that inflates two drawables corresponding to
         // drawableLeft and drawableStart.

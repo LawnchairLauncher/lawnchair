@@ -38,7 +38,6 @@ import ch.deletescape.lawnchair.R;
 /**
  * A helper class to draw background of a focused view.
  */
-@TargetApi(VERSION_CODES.LOLLIPOP)
 public abstract class FocusIndicatorHelper implements
         OnFocusChangeListener, AnimatorUpdateListener {
 

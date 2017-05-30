@@ -515,7 +515,6 @@ public class LauncherProvider extends ContentProvider {
      *
      * @return the loader if the restrictions are set and the resource exists; null otherwise.
      */
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     private AutoInstallsLayout createWorkspaceLoaderFromAppRestriction(AppWidgetHost widgetHost) {
 
         Context ctx = getContext();

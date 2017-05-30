@@ -37,7 +37,6 @@ import java.util.Map;
 
 import ch.deletescape.lawnchair.shortcuts.ShortcutInfoCompat;
 
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class LauncherAppsCompatVL extends LauncherAppsCompat {
 
     protected LauncherApps mLauncherApps;

@@ -22,6 +22,7 @@ import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.Point;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.Xml;
 import android.view.Display;
@@ -117,7 +118,7 @@ public class InvariantDeviceProfile {
         customizationHook(context, dm);
     }
 
-    @TargetApi(23)
+    @TargetApi(Build.VERSION_CODES.M)
     InvariantDeviceProfile(Context context) {
         mFirebaseAnalytic = FirebaseAnalytics.getInstance(context);
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);

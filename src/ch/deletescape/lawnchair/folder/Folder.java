@@ -741,7 +741,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         }
     };
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public boolean isLayoutRtl() {
         return (getLayoutDirection() == LAYOUT_DIRECTION_RTL);
     }

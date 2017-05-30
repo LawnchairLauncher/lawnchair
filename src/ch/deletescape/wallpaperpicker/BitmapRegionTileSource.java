@@ -124,7 +124,6 @@ class DumbBitmapRegionDecoder implements SimpleBitmapRegionDecoder {
  * A {@link ch.deletescape.wallpaperpicker.views.TiledImageRenderer.TileSource} using
  * {@link BitmapRegionDecoder} to wrap a local file
  */
-@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
 public class BitmapRegionTileSource implements TiledImageRenderer.TileSource {
 
     private static final String TAG = "BitmapRegionTileSource";
