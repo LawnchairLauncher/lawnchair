@@ -54,7 +54,7 @@
     <!-- Loading apps text. [CHAR_LIMIT=50] -->
     <string name="all_apps_loading_message">Loading Apps&#8230;</string>
     <!-- No-search-results text. [CHAR_LIMIT=50] -->
-    <string name="all_apps_no_search_results">No Apps found matching \"<xliff:g id="query" example="Android">%1$s</xliff:g>\"</string>
+    <string name="all_apps_no_search_results">No Apps found matching \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
     <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
     <string name="all_apps_search_market_message">Search for more apps</string>
 
@@ -97,7 +97,7 @@
         shortcuts in Home.</string>
 
     <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
-    <string name="msg_no_phone_permission"><xliff:g id="app_name" example="Launcher3">%1$s</xliff:g> is not allowed to make phone calls</string>
+    <string name="msg_no_phone_permission"><xliff:g example="Launcher3" id="app_name">%1$s</xliff:g> is not allowed to make phone calls</string>
 
     <!-- Widgets: -->
     <skip />
@@ -116,7 +116,7 @@
 
     <!-- Accessibility -->
     <!-- The format string for when an app is temporarily disabled. -->
-    <string name="disabled_app_label">Disabled <xliff:g id="app_name" example="Messenger">%1$s</xliff:g></string>
+    <string name="disabled_app_label">Disabled <xliff:g example="Messenger" id="app_name">%1$s</xliff:g></string>
     <skip />
 
     <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
@@ -128,7 +128,7 @@
 
     <!-- Folder accessibility -->
     <!-- The format string for when a folder is opened, speaks the dimensions -->
-    <string name="folder_opened">Folder opened, <xliff:g id="width" example="5">%1$d</xliff:g> by <xliff:g id="height" example="3">%2$d</xliff:g></string>
+    <string name="folder_opened">Folder opened, <xliff:g example="5" id="width">%1$d</xliff:g> by <xliff:g example="3" id="height">%2$d</xliff:g></string>
     <!-- Instruction that clicking outside will close folder -->
     <string name="folder_tap_to_close">Tap to close folder</string>
     <!-- Instruction that clicking outside will commit folder rename -->
@@ -136,9 +136,9 @@
     <!-- Indication that folder closed -->
     <string name="folder_closed">Folder closed</string>
     <!-- Folder renamed format -->
-    <string name="folder_renamed">Folder renamed to <xliff:g id="name" example="Games">%1$s</xliff:g></string>
+    <string name="folder_renamed">Folder renamed to <xliff:g example="Games" id="name">%1$s</xliff:g></string>
     <!-- Folder name format -->
-    <string name="folder_name_format">Folder: <xliff:g id="name" example="Games">%1$s</xliff:g></string>
+    <string name="folder_name_format">Folder: <xliff:g example="Games" id="name">%1$s</xliff:g></string>
 
     <!-- Strings for the customization mode -->
     <!-- Text for widget add button -->
@@ -172,9 +172,9 @@
         You can remove it, or search for the app and install it manually.
     </string>
     <!-- Title for an app which is being downloaded. -->
-    <string name="app_downloading_title"><xliff:g id="name" example="Messenger">%1$s</xliff:g> downloading, <xliff:g id="progress" example="30%">%2$s</xliff:g> complete</string>
+    <string name="app_downloading_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> downloading, <xliff:g example="30%" id="progress">%2$s</xliff:g> complete</string>
     <!-- Title for an app whose download has been started. -->
-    <string name="app_waiting_download_title"><xliff:g id="name" example="Messenger">%1$s</xliff:g> waiting to install</string>
+    <string name="app_waiting_download_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> waiting to install</string>
 
     <!-- Strings for accessibility actions -->
     <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
@@ -193,28 +193,28 @@
     <string name="action_move">Move item</string>
 
     <!-- Accessibility description to move item to empty cell. -->
-    <string name="move_to_empty_cell">Move to row <xliff:g id="number" example="1">%1$s</xliff:g> column <xliff:g id="number" example="1">%2$s</xliff:g></string>
+    <string name="move_to_empty_cell">Move to row <xliff:g example="1" id="number">%1$s</xliff:g> column <xliff:g example="1" id="number">%2$s</xliff:g></string>
 
     <!-- Accessibility description to move item inside a folder. -->
-    <string name="move_to_position">Move to position <xliff:g id="number" example="1">%1$s</xliff:g></string>
+    <string name="move_to_position">Move to position <xliff:g example="1" id="number">%1$s</xliff:g></string>
 
     <!-- Accessibility description to move item to the hotseat. -->
-    <string name="move_to_hotseat_position">Move to favorites position <xliff:g id="number" example="1">%1$s</xliff:g></string>
+    <string name="move_to_hotseat_position">Move to favorites position <xliff:g example="1" id="number">%1$s</xliff:g></string>
 
     <!-- Accessibility confirmation for item move. -->
     <string name="item_moved">Item moved</string>
 
     <!-- Accessibility description to move item into an existing folder. -->
-    <string name="add_to_folder">Add to folder: <xliff:g id="name" example="Games">%1$s</xliff:g></string>
+    <string name="add_to_folder">Add to folder: <xliff:g example="Games" id="name">%1$s</xliff:g></string>
 
     <!-- Accessibility description to move item into an existing folder containing an app. -->
-    <string name="add_to_folder_with_app">Add to folder with <xliff:g id="name" example="Messenger">%1$s</xliff:g></string>
+    <string name="add_to_folder_with_app">Add to folder with <xliff:g example="Messenger" id="name">%1$s</xliff:g></string>
 
     <!-- Accessibility confirmation for item added to folder. -->
     <string name="added_to_folder">Item added to folder</string>
 
     <!-- Accessibility description to create folder with another item. -->
-    <string name="create_folder_with">Create folder with: <xliff:g id="name" example="Game">%1$s</xliff:g></string>
+    <string name="create_folder_with">Create folder with: <xliff:g example="Game" id="name">%1$s</xliff:g></string>
 
     <!-- Accessibility confirmation for folder created. -->
     <string name="folder_created">Folder created</string>
@@ -247,13 +247,13 @@
     <string name="action_decrease_height">Decrease height</string>
 
     <!-- Accessibility confirmation for widget resize. -->
-    <string name="widget_resized">Widget resized to width <xliff:g id="number" example="2">%1$s</xliff:g> height <xliff:g id="number" example="1">%2$s</xliff:g></string>
+    <string name="widget_resized">Widget resized to width <xliff:g example="2" id="number">%1$s</xliff:g> height <xliff:g example="1" id="number">%2$s</xliff:g></string>
 
     <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
     <string name="action_deep_shortcut">Shortcuts</string>
 
     <!-- Accessibility description for the shortcuts menu shown for an app. -->
-    <string name="shortcuts_menu_description"><xliff:g id="number_of_shortcuts" example="3">%1$d</xliff:g> shortcuts for <xliff:g id="app_name" example="Messenger">%2$s</xliff:g></string>
+    <string name="shortcuts_menu_description"><xliff:g example="3" id="number_of_shortcuts">%1$d</xliff:g> shortcuts for <xliff:g example="Messenger" id="app_name">%2$s</xliff:g></string>
     <string name="edit_drop_target_label">Edit</string>
 
     <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
@@ -281,7 +281,7 @@
          e.g. "Wallpaper 3 of 10" -->
     <string name="wallpaper_accessibility_name">Wallpaper %1$d of %2$d</string>
     <!-- Accessibility string used to announce that a wallpaper has been selected. -->
-    <string name="announce_selection">Selected <xliff:g id="label" example="Wallpaper 3 of 10">%1$s</xliff:g></string>
+    <string name="announce_selection">Selected <xliff:g example="Wallpaper 3 of 10" id="label">%1$s</xliff:g></string>
 
     <!-- Label on button to delete wallpaper(s) -->
     <string name="wallpaper_delete">Delete</string>
@@ -298,5 +298,9 @@
     <string name="which_wallpaper_option_lock_screen">Lock screen</string>
     <!-- Option for setting the wallpaper on both the home screen and lock screen. -->
     <string name="which_wallpaper_option_home_screen_and_lock_screen">Home screen and lock screen</string>
+
+    <!-- About Lawnchair -->
+    <string name="about_text">Lawnchair is a Launcher app created by Till Kottmann (aka deletescape). It\'s based on Launcher3 from AOSP.</string>
+    <string name="about_title">About</string>
 
 </resources>

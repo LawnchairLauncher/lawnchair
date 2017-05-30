@@ -140,4 +140,10 @@
         android:defaultValue="false"
         android:persistent="true" />
 
+    <PreferenceCategory android:title="@string/about_title"/>
+
+    <Preference
+        android:summary="@string/about_text"
+        android:layout="@layout/text_preference" />
+
 </PreferenceScreen>
