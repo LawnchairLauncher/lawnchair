@@ -136,6 +136,7 @@ public class LauncherAppState {
         mModel.startLoaderFromBackground();
         mInvariantDeviceProfile.customizationHook(getContext());
         mLauncher.getHotseat().refresh();
+        mLauncher.showWorkspace(true);
     }
 
     LauncherModel setLauncher(Launcher launcher) {
