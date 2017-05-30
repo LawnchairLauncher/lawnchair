@@ -77,7 +77,7 @@
         android:persistent="true" />
 
     <ListPreference
-        android:key="pref_numRows"
+        android:key="pref_numHotseatIcons"
         android:title="Number of icons in hotseat"
         android:entryValues="@array/numHotseatIconsValues"
         android:entries="@array/numHotseatIconsTexts"

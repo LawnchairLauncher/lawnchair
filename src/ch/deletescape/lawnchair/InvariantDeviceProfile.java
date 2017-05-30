@@ -190,6 +190,7 @@ public class InvariantDeviceProfile {
         if (!prefs.getString("pref_numHotseatIcons", valueDefault).equals(valueDefault)) {
             numHotseatIcons = Integer.valueOf(prefs.getString("pref_numHotseatIcons", ""));
         }
+        mFirebaseAnalytic.setUserProperty("num_hotseat_icons", String.valueOf(numColumns));
         if (!prefs.getString("pref_iconScale", valueDefault).equals(valueDefault)) {
             float iconScale = Float.valueOf(prefs.getString("pref_iconScale", ""));
             iconSize *= iconScale;
