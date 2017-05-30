@@ -45,8 +45,6 @@ import ch.deletescape.lawnchair.dragndrop.DragController;
 import ch.deletescape.lawnchair.dragndrop.DragOptions;
 import ch.deletescape.lawnchair.folder.Folder;
 import ch.deletescape.lawnchair.model.WidgetsModel;
-import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto;
-import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto.Target;
 import ch.deletescape.lawnchair.util.Thunk;
 import ch.deletescape.lawnchair.util.TransformingTouchDelegate;
 
@@ -337,10 +335,5 @@ public class WidgetsContainerView extends BaseContainerView
             mWidgetPreviewLoader = LauncherAppState.getInstance().getWidgetCache();
         }
         return mWidgetPreviewLoader;
-    }
-
-    @Override
-    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
-        targetParent.containerType = LauncherLogProto.WIDGETS;
     }
 }

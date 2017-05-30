@@ -58,7 +58,6 @@ import ch.deletescape.lawnchair.folder.Folder;
 import ch.deletescape.lawnchair.graphics.TintedDrawableSpan;
 import ch.deletescape.lawnchair.keyboard.FocusedItemDecorator;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutsContainer;
-import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto.Target;
 import ch.deletescape.lawnchair.util.ComponentKey;
 
 
@@ -596,11 +595,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mSearchQueryBuilder.clear();
         mSearchQueryBuilder.clearSpans();
         Selection.setSelection(mSearchQueryBuilder, 0);
-    }
-
-    @Override
-    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
-        targetParent.containerType = mAppsRecyclerView.getContainerType();
     }
 
     public boolean shouldRestoreImeState() {

@@ -164,7 +164,6 @@ public class LauncherStateTransitionAnimation {
 
             @Override
             void onTransitionComplete() {
-                mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
                 if (startSearchAfterTransition) {
                     toView.startAppsSearch();
                 }
@@ -182,13 +181,7 @@ public class LauncherStateTransitionAnimation {
         final WidgetsContainerView toView = mLauncher.getWidgetsView();
         final View buttonView = mLauncher.getWidgetsButton();
         startAnimationToOverlay(
-                Workspace.State.OVERVIEW_HIDDEN, buttonView, toView, animated, CIRCULAR_REVEAL,
-                new PrivateTransitionCallbacks(FINAL_REVEAL_ALPHA_FOR_WIDGETS) {
-                    @Override
-                    void onTransitionComplete() {
-                        mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
-                    }
-                });
+                Workspace.State.OVERVIEW_HIDDEN, buttonView, toView, animated, CIRCULAR_REVEAL, null);
     }
 
     /**
@@ -530,11 +523,6 @@ public class LauncherStateTransitionAnimation {
                     }
                 };
             }
-
-            @Override
-            void onTransitionComplete() {
-                mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
-            }
         };
         // Only animate the search bar if animating to spring loaded mode from all apps
         startAnimationToWorkspaceFromOverlay(fromWorkspaceState, toWorkspaceState,
@@ -560,11 +548,6 @@ public class LauncherStateTransitionAnimation {
                                 revealView.setVisibility(View.INVISIBLE);
                             }
                         };
-                    }
-
-                    @Override
-                    void onTransitionComplete() {
-                        mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
                     }
                 };
         startAnimationToWorkspaceFromOverlay(

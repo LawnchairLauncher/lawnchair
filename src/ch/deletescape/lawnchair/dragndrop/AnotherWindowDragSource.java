@@ -21,9 +21,7 @@ import android.view.View;
 
 import ch.deletescape.lawnchair.DragSource;
 import ch.deletescape.lawnchair.DropTarget.DragObject;
-import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Launcher;
-import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto.Target;
 
 /**
  * DragSource used when the drag started at another window.
@@ -67,10 +65,5 @@ public class AnotherWindowDragSource implements DragSource {
             Launcher.getLauncher(mContext).exitSpringLoadedDragModeDelayed(false, 0, null);
         }
 
-    }
-
-    @Override
-    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
-        // TODO: Probably log something
     }
 }

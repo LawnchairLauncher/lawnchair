@@ -21,7 +21,6 @@ import ch.deletescape.lawnchair.LauncherAnimUtils;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace;
-import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto;
 import ch.deletescape.lawnchair.util.TouchController;
 
 /**
@@ -194,13 +193,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         if (fling) {
             if (velocity < 0) {
                 calculateDuration(velocity, mAppsView.getTranslationY());
-
-                if (!mLauncher.isAllAppsVisible()) {
-                    mLauncher.getUserEventDispatcher().logActionOnContainer(
-                            LauncherLogProto.Action.FLING,
-                            LauncherLogProto.Action.UP,
-                            LauncherLogProto.HOTSEAT);
-                }
                 mLauncher.showAppsView(true /* animated */, false /* focusSearchBar */);
             } else {
                 calculateDuration(velocity, Math.abs(mShiftRange - mAppsView.getTranslationY()));
@@ -213,12 +205,6 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                 mLauncher.showWorkspace(true);
             } else {
                 calculateDuration(velocity, Math.abs(mAppsView.getTranslationY()));
-                if (!mLauncher.isAllAppsVisible()) {
-                    mLauncher.getUserEventDispatcher().logActionOnContainer(
-                            LauncherLogProto.Action.SWIPE,
-                            LauncherLogProto.Action.UP,
-                            LauncherLogProto.HOTSEAT);
-                }
                 mLauncher.showAppsView(true /* animated */, false /* focusSearchBar */);
             }
         }

@@ -66,8 +66,6 @@ import ch.deletescape.lawnchair.dragndrop.DragLayer;
 import ch.deletescape.lawnchair.dragndrop.DragOptions;
 import ch.deletescape.lawnchair.dragndrop.DragView;
 import ch.deletescape.lawnchair.graphics.TriangleShape;
-import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto;
-import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto.Target;
 
 /**
  * A container for shortcuts to deep links within apps.
@@ -406,7 +404,6 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
 
             @Override
             public void onDropBeforeDeferredDrag() {
-                mLauncher.getUserEventDispatcher().logDeepShortcutsOpen(mDeferredDragIcon);
                 if (!mIsAboveIcon) {
                     mDeferredDragIcon.setTextVisibility(false);
                 }
@@ -514,13 +511,6 @@ public class DeepShortcutsContainer extends LinearLayout implements View.OnLongC
             }
         }
         mDeferredDragIcon.setVisibility(VISIBLE);
-    }
-
-    @Override
-    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
-        target.itemType = LauncherLogProto.DEEPSHORTCUT;
-        // TODO: add target.rank
-        targetParent.containerType = LauncherLogProto.DEEPSHORTCUTS;
     }
 
     public void animateClose() {

@@ -19,12 +19,11 @@ package ch.deletescape.lawnchair;
 import android.view.View;
 
 import ch.deletescape.lawnchair.DropTarget.DragObject;
-import ch.deletescape.lawnchair.logging.UserEventDispatcher.LogContainerProvider;
 
 /**
  * Interface defining an object that can originate a drag.
  */
-public interface DragSource extends LogContainerProvider {
+public interface DragSource {
 
     /**
      * @return whether items dragged from this source supports

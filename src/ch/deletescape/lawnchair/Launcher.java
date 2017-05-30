@@ -105,13 +105,10 @@ import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.folder.Folder;
 import ch.deletescape.lawnchair.folder.FolderIcon;
 import ch.deletescape.lawnchair.keyboard.ViewGroupFocusHelper;
-import ch.deletescape.lawnchair.logging.UserEventDispatcher;
 import ch.deletescape.lawnchair.model.WidgetsModel;
-import ch.deletescape.lawnchair.pageindicators.PageIndicator;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutManager;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutsContainer;
 import ch.deletescape.lawnchair.shortcuts.ShortcutKey;
-import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto;
 import ch.deletescape.lawnchair.util.ActivityResultInfo;
 import ch.deletescape.lawnchair.util.ComponentKey;
 import ch.deletescape.lawnchair.util.ItemInfoMatcher;
@@ -218,7 +215,7 @@ public class Launcher extends Activity
     Hotseat mHotseat;
     private ViewGroup mOverviewPanel;
 
-    private View mAllAppsButton;
+    private View mAllAppsHandle;
     private View mWidgetsButton;
 
     private DropTargetBar mDropTargetBar;
@@ -325,8 +322,6 @@ public class Launcher extends Activity
      */
     private PendingRequestArgs mPendingRequestArgs;
 
-    private UserEventDispatcher mUserEventDispatcher;
-
     public ViewGroupFocusHelper mFocusHandler;
 
     @Override
@@ -432,16 +427,6 @@ public class Launcher extends Activity
 
     @Override
     public void onLauncherProviderChange() {
-    }
-
-    public UserEventDispatcher getUserEventDispatcher() {
-        // Logger object is a singleton and does not have to be coupled with the foreground
-        // activity. Since most user event logging is done on the UI, the object is retrieved
-        // from the callback for convenience.
-        if (mUserEventDispatcher == null) {
-            mUserEventDispatcher = new UserEventDispatcher();
-        }
-        return mUserEventDispatcher;
     }
 
     public boolean isDraggingEnabled() {
@@ -736,7 +721,6 @@ public class Launcher extends Activity
     @Override
     protected void onResume() {
         super.onResume();
-        getUserEventDispatcher().resetElapsedSessionMillis();
 
         // Restore the previous launcher state
         if (mOnResumeState == State.WORKSPACE) {
@@ -1045,11 +1029,10 @@ public class Launcher extends Activity
     }
 
     /**
-     * Sets the all apps button. This method is called from {@link Hotseat}.
-     * TODO: Get rid of this.
+     * Sets the all apps handle.
      */
-    public void setAllAppsButton(View allAppsButton) {
-        mAllAppsButton = allAppsButton;
+    public void setAllAppsHandle(View allAppsHandle) {
+        mAllAppsHandle = allAppsHandle;
     }
 
     public View getStartViewForAllAppsRevealAnimation() {
@@ -1920,9 +1903,8 @@ public class Launcher extends Activity
             if (v instanceof FolderIcon) {
                 onClickFolderIcon(v);
             }
-        } else if ((v instanceof PageIndicator) ||
-                v == mAllAppsButton) {
-            onClickAllAppsButton();
+        } else if (v == mAllAppsHandle) {
+            onClickAllAppsHandle();
         } else if (tag instanceof AppInfo) {
             startAppShortcutOrInfoActivity(v);
         } else if (tag instanceof LauncherAppWidgetInfo) {
@@ -1995,25 +1977,16 @@ public class Launcher extends Activity
                 info.appWidgetId, this, mAppWidgetHost, REQUEST_RECONFIGURE_APPWIDGET);
     }
 
-    /**
-     * Event handler for the "grid" button that appears on the home screen, which
-     * enters all apps mode.
-     *
-     */
-    protected void onClickAllAppsButton() {
-        mFirebaseAnalytics.logEvent("click_allappsbutton", null);
+    protected void onClickAllAppsHandle() {
+        mFirebaseAnalytics.logEvent("click_allappshandle", null);
         if (!isAppsViewVisible()) {
-            getUserEventDispatcher().logActionOnControl(LauncherLogProto.Action.TAP,
-                    LauncherLogProto.ALL_APPS_BUTTON);
             showAppsView(true /* animated */, false /* focusSearchBar */);
         }
     }
 
-    protected void onLongClickAllAppsButton() {
-        mFirebaseAnalytics.logEvent("longclick_allappsbutton", null);
+    protected void onLongClickAllAppsHandle() {
+        mFirebaseAnalytics.logEvent("longclick_allappshandle", null);
         if (!isAppsViewVisible()) {
-            getUserEventDispatcher().logActionOnControl(LauncherLogProto.Action.LONGPRESS,
-                    LauncherLogProto.ALL_APPS_BUTTON);
             showAppsView(true /* animated */, true /* focusSearchBar */);
         }
     }
@@ -2099,7 +2072,6 @@ public class Launcher extends Activity
             throw new IllegalArgumentException("Input must have a valid intent");
         }
         boolean success = startActivitySafely(v, intent, item);
-        getUserEventDispatcher().logAppLaunch(v, intent);
 
         if (success && v instanceof BubbleTextView) {
             mWaitingForResume = (BubbleTextView) v;
@@ -2543,9 +2515,8 @@ public class Launcher extends Activity
         if (isWorkspaceLocked()) return false;
         if (mState != State.WORKSPACE) return false;
 
-        if ((v instanceof PageIndicator) ||
-                (v == mAllAppsButton && mAllAppsButton != null)) {
-            onLongClickAllAppsButton();
+        if (v == mAllAppsHandle && mAllAppsHandle != null) {
+            onLongClickAllAppsHandle();
             return true;
         }
 
@@ -2668,8 +2639,8 @@ public class Launcher extends Activity
                     Workspace.State.NORMAL, animated, onCompleteRunnable);
 
             // Set focus to the AppsCustomize button
-            if (mAllAppsButton != null) {
-                mAllAppsButton.requestFocus();
+            if (mAllAppsHandle != null) {
+                mAllAppsHandle.requestFocus();
             }
         }
 

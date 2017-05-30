@@ -73,8 +73,6 @@ import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.folder.Folder;
 import ch.deletescape.lawnchair.folder.FolderIcon;
 import ch.deletescape.lawnchair.graphics.DragPreviewProvider;
-import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto;
-import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto.Target;
 import ch.deletescape.lawnchair.util.ItemInfoMatcher;
 import ch.deletescape.lawnchair.util.LongArrayMap;
 import ch.deletescape.lawnchair.util.Thunk;
@@ -3768,20 +3766,6 @@ public class Workspace extends PagedView
         }
         return getContext().getString(R.string.workspace_scroll_format,
                 page + 1, nScreens);
-    }
-
-    @Override
-    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
-        target.gridX = info.cellX;
-        target.gridY = info.cellY;
-        target.pageIndex = getCurrentPage();
-        targetParent.containerType = LauncherLogProto.WORKSPACE;
-        if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-            target.rank = info.rank;
-            targetParent.containerType = LauncherLogProto.HOTSEAT;
-        } else if (info.container >= 0) {
-            targetParent.containerType = LauncherLogProto.FOLDER;
-        }
     }
 
     /**

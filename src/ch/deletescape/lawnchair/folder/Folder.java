@@ -83,8 +83,6 @@ import ch.deletescape.lawnchair.dragndrop.DragLayer;
 import ch.deletescape.lawnchair.dragndrop.DragOptions;
 import ch.deletescape.lawnchair.pageindicators.PageIndicatorDots;
 import ch.deletescape.lawnchair.shortcuts.DeepShortcutsContainer;
-import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto;
-import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto.Target;
 import ch.deletescape.lawnchair.util.CircleRevealOutlineProvider;
 import ch.deletescape.lawnchair.util.Thunk;
 
@@ -590,7 +588,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             public void run() {
                 mContent.setLayerType(LAYER_TYPE_NONE, null);
                 mFooter.setLayerType(LAYER_TYPE_NONE, null);
-                mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
             }
         };
         openFolderAnim.addListener(new AnimatorListenerAdapter() {
@@ -1403,14 +1400,6 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         getHitRect(outRect);
         outRect.left -= mScrollAreaOffset;
         outRect.right += mScrollAreaOffset;
-    }
-
-    @Override
-    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
-        target.gridX = info.cellX;
-        target.gridY = info.cellY;
-        target.pageIndex = mContent.getCurrentPage();
-        targetParent.containerType = LauncherLogProto.FOLDER;
     }
 
     private class OnScrollHintListener implements OnAlarmListener {

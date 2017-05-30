@@ -28,7 +28,6 @@ import ch.deletescape.lawnchair.BaseRecyclerView;
 import ch.deletescape.lawnchair.BubbleTextView;
 import ch.deletescape.lawnchair.DeviceProfile;
 import ch.deletescape.lawnchair.Launcher;
-import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto;
 
 /**
  * A RecyclerView with custom fast scroll support for the all apps view.
@@ -158,14 +157,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
                 getWidth() - mBackgroundPadding.right,
                 getHeight() - mBackgroundPadding.bottom);
         super.dispatchDraw(canvas);
-    }
-
-    public int getContainerType() {
-        if (mApps.hasFilter()) {
-            return LauncherLogProto.SEARCHRESULT;
-        } else {
-            return LauncherLogProto.ALLAPPS;
-        }
     }
 
     public void onSearchResultsChanged() {

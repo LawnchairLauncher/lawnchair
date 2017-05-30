@@ -27,17 +27,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewDebug;
 import android.widget.FrameLayout;
 
 import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
-import ch.deletescape.lawnchair.logging.UserEventDispatcher;
-import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto;
-import ch.deletescape.lawnchair.userevent.nano.LauncherLogProto.Target;
 
-public class Hotseat extends FrameLayout
-        implements UserEventDispatcher.LogContainerProvider {
+public class Hotseat extends FrameLayout {
 
     private CellLayout mContent;
 
@@ -117,13 +112,6 @@ public class Hotseat extends FrameLayout
         // the normal state or an accessible drag is in progress.
         return mLauncher.getWorkspace().workspaceInModalState() &&
                 !mLauncher.getAccessibilityDelegate().isInAccessibleDrag();
-    }
-
-    @Override
-    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
-        target.gridX = info.cellX;
-        target.gridY = info.cellY;
-        targetParent.containerType = LauncherLogProto.HOTSEAT;
     }
 
     public void updateColor(ExtractedColors extractedColors, boolean animate) {
