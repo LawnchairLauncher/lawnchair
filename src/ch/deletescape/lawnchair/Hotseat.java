@@ -95,12 +95,16 @@ public class Hotseat extends FrameLayout
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        DeviceProfile grid = mLauncher.getDeviceProfile();
         mContent = (CellLayout) findViewById(R.id.layout);
-        mContent.setGridSize(grid.inv.numHotseatIcons, 1);
         mContent.setIsHotseat(true);
 
+        refresh();
         resetLayout();
+    }
+
+    public void refresh(){
+        DeviceProfile grid = mLauncher.getDeviceProfile();
+        mContent.setGridSize(grid.inv.numHotseatIcons, 1);
     }
 
     void resetLayout() {

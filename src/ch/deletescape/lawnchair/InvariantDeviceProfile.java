@@ -111,11 +111,7 @@ public class InvariantDeviceProfile {
         numHotseatIcons = hs;
         hotseatIconSize = his;
         defaultLayoutId = dlId;
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        DisplayMetrics dm = new DisplayMetrics();
-        display.getMetrics(dm);
-        customizationHook(context, dm);
+        customizationHook(context);
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -153,7 +149,7 @@ public class InvariantDeviceProfile {
         hotseatIconSize = interpolatedDeviceProfileOut.hotseatIconSize;
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
 
-        customizationHook(context, dm);
+        customizationHook(context);
 
         Point realSize = new Point();
         display.getRealSize(realSize);
@@ -176,7 +172,11 @@ public class InvariantDeviceProfile {
         }
     }
 
-    private void customizationHook(Context context, DisplayMetrics dm) {
+    public void customizationHook(Context context) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        DisplayMetrics dm = new DisplayMetrics();
+        display.getMetrics(dm);
         SharedPreferences prefs = Utilities.getPrefs(context.getApplicationContext());
         String valueDefault = "default";
         if (!prefs.getString("pref_numRows", valueDefault).equals(valueDefault)) {

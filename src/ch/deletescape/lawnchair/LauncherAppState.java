@@ -49,6 +49,8 @@ public class LauncherAppState {
 
     private InvariantDeviceProfile mInvariantDeviceProfile;
 
+    private Launcher mLauncher;
+
     public static LauncherAppState getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new LauncherAppState();
@@ -132,11 +134,14 @@ public class LauncherAppState {
     public void reloadAll() {
         mModel.resetLoadedState(true, true);
         mModel.startLoaderFromBackground();
+        mInvariantDeviceProfile.customizationHook(getContext());
+        mLauncher.getHotseat().refresh();
     }
 
     LauncherModel setLauncher(Launcher launcher) {
         sLauncherProvider.get().setLauncherProviderChangeListener(launcher);
         mModel.initialize(launcher);
+        mLauncher = launcher;
         return mModel;
     }
 
