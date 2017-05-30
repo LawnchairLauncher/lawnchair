@@ -13,7 +13,7 @@
     </string-array>
 
     <string-array name="numRowsTexts">
-        <item>default</item>
+        <item>Default</item>
         <item>3</item>
         <item>4</item>
         <item>5</item>
@@ -35,7 +35,7 @@
     </string-array>
 
     <string-array name="numColsTexts">
-        <item>default</item>
+        <item>Default</item>
         <item>3</item>
         <item>4</item>
         <item>5</item>
@@ -57,7 +57,7 @@
     </string-array>
 
     <string-array name="numHotseatIconsTexts">
-        <item>default</item>
+        <item>Default</item>
         <item>3</item>
         <item>4</item>
         <item>5</item>
@@ -174,4 +174,6 @@
     <string name="allAppsOpacityDefault" translatable="false">1.0</string>
 
     <string name="iconPackPackageDefault" translatable="false">""</string>
+
+    <string name="generalDefault" translatable="false">default</string>
 </resources>

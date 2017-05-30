@@ -67,6 +67,7 @@
         android:title="Number of columns"
         android:entries="@array/numColsTexts"
         android:entryValues="@array/numColsValues"
+        android:defaultValue="@string/generalDefault"
         android:persistent="true" />
 
     <ListPreference
@@ -74,6 +75,7 @@
         android:title="Number of rows"
         android:entryValues="@array/numRowsValues"
         android:entries="@array/numRowsTexts"
+        android:defaultValue="@string/generalDefault"
         android:persistent="true" />
 
     <ListPreference
@@ -81,6 +83,7 @@
         android:title="Number of icons in hotseat"
         android:entryValues="@array/numHotseatIconsValues"
         android:entries="@array/numHotseatIconsTexts"
+        android:defaultValue="@string/generalDefault"
         android:persistent="true" />
 
     <ListPreference
