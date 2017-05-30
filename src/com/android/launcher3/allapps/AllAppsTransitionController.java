@@ -93,6 +93,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     private AnimatorSet mCurrentAnimation;
     private boolean mNoIntercept;
+    private boolean mTouchEventStartedOnHotseat;
 
     // Used in discovery bounce animation to provide the transition without workspace changing.
     private boolean mIsTranslateWithoutWorkspace = false;
@@ -118,6 +119,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             mNoIntercept = false;
+            mTouchEventStartedOnHotseat = mLauncher.getDragLayer().isEventOverHotseat(ev);
             if (!mLauncher.isAllAppsVisible() && mLauncher.getWorkspace().workspaceInModalState()) {
                 mNoIntercept = true;
             } else if (mLauncher.isAllAppsVisible() &&
@@ -210,6 +212,9 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             return; // early termination.
         }
 
+        final int containerType = mTouchEventStartedOnHotseat
+                ? ContainerType.HOTSEAT : ContainerType.WORKSPACE;
+
         if (fling) {
             if (velocity < 0) {
                 calculateDuration(velocity, mAppsView.getTranslationY());
@@ -218,7 +223,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                     mLauncher.getUserEventDispatcher().logActionOnContainer(
                             Action.Touch.FLING,
                             Action.Direction.UP,
-                            ContainerType.HOTSEAT);
+                            containerType);
                 }
                 mLauncher.showAppsView(true /* animated */,
                         false /* updatePredictedApps */,
@@ -241,7 +246,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                     mLauncher.getUserEventDispatcher().logActionOnContainer(
                             Action.Touch.SWIPE,
                             Action.Direction.UP,
-                            ContainerType.HOTSEAT);
+                            containerType);
                 }
                 mLauncher.showAppsView(true, /* animated */
                         false /* updatePredictedApps */,
