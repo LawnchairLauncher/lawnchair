@@ -94,11 +94,25 @@
         launcher:numColumns="5"
         launcher:numFolderRows="4"
         launcher:numFolderColumns="4"
+        launcher:iconSize="60"
+        launcher:iconTextSize="13"
         launcher:numHotseatIcons="5"
-        launcher:iconSize="58.0"
-        launcher:iconTextSize="13.0"
-        launcher:hotseatIconSize="58.0"
+        launcher:hotseatIconSize="60"
         launcher:defaultLayoutId="@xml/default_workspace_5x5" />
+
+    <profile
+        launcher:name="Nexus 7"
+        launcher:minWidthDps="575"
+        launcher:minHeightDps="904"
+        launcher:numRows="5"
+        launcher:numColumns="6"
+        launcher:numFolderRows="4"
+        launcher:numFolderColumns="5"
+        launcher:iconSize="72"
+        launcher:iconTextSize="14.4"
+        launcher:numHotseatIcons="7"
+        launcher:hotseatIconSize="60"
+        launcher:defaultLayoutId="@xml/default_workspace_5x6" />
 
     <profile
         launcher:name="Nexus 10"
