@@ -1424,6 +1424,23 @@ public class Workspace extends PagedView
         mWallpaperOffset.onResume();
     }
 
+    private LayoutTransition.TransitionListener onLayoutLayoutTransitionListener = new LayoutTransition.TransitionListener() {
+
+        @Override
+        public void startTransition(LayoutTransition transition, ViewGroup container, View view, int transitionType) {
+        }
+
+        @Override
+        public void endTransition(LayoutTransition transition, ViewGroup container,
+                                  View view, int transitionType) {
+            // Wait until all transitions are complete.
+            if (!transition.isRunning()) {
+                transition.removeTransitionListener(this);
+                getScrollForPage(0);
+            }
+        }
+    };
+
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         if (mUnlockWallpaperFromDefaultPageOnLayout) {
@@ -1441,23 +1458,7 @@ public class Workspace extends PagedView
         // If the transition is running defer updating max scroll, as some empty pages could
         // still be present, and a max scroll change could cause sudden jumps in scroll.
         if (transition != null && transition.isRunning()) {
-            transition.addTransitionListener(new LayoutTransition.TransitionListener() {
-
-                @Override
-                public void startTransition(LayoutTransition transition, ViewGroup container,
-                                            View view, int transitionType) {
-                }
-
-                @Override
-                public void endTransition(LayoutTransition transition, ViewGroup container,
-                                          View view, int transitionType) {
-                    // Wait until all transitions are complete.
-                    if (!transition.isRunning()) {
-                        transition.removeTransitionListener(this);
-                        getScrollForPage(0);
-                    }
-                }
-            });
+            transition.addTransitionListener(onLayoutLayoutTransitionListener);
         }
 
     }
