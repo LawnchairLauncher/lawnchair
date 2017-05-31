@@ -154,7 +154,8 @@ public class QsbContainerView extends FrameLayout {
                         .getAppWidgetOptions(widgetId), opts)) {
                     mQsb.updateAppWidgetOptions(opts);
                 }
-                mQsb.setPadding(0, 0, 0, 0);
+                mQsb.setPadding(mQsb.getPaddingLeft(), 0, mQsb.getPaddingRight(), 0);
+                mQsb.setLayoutParams(new LauncherAppWidgetHostView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, android.view.Gravity.TOP));
                 return mQsb;
             }
 

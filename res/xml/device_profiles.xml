@@ -138,10 +138,10 @@
         launcher:numFolderRows="4"
         launcher:numFolderColumns="4"
         launcher:minAllAppsPredictionColumns="4"
-        launcher:iconSize="64"
-        launcher:iconTextSize="14.4"
+        launcher:iconSize="60"
+        launcher:iconTextSize="13"
         launcher:numHotseatIcons="5"
-        launcher:hotseatIconSize="56"
+        launcher:hotseatIconSize="60"
         launcher:defaultLayoutId="@xml/default_workspace_5x5"
         />
 
