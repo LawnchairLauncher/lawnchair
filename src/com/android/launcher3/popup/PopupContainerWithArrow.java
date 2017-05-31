@@ -25,7 +25,6 @@ import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.CornerPathEffect;
 import android.graphics.Paint;
 import android.graphics.PointF;
@@ -115,7 +114,6 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
 
         mStartDragThreshold = getResources().getDimensionPixelSize(
                 R.dimen.deep_shortcuts_start_drag_threshold);
-        // TODO: make sure the delegate works for all items, not just shortcuts.
         mAccessibilityDelegate = new ShortcutMenuAccessibilityDelegate(mLauncher);
         mIsRtl = Utilities.isRtl(getResources());
     }
@@ -169,8 +167,6 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         final Resources resources = getResources();
         final int arrowWidth = resources.getDimensionPixelSize(R.dimen.popup_arrow_width);
         final int arrowHeight = resources.getDimensionPixelSize(R.dimen.popup_arrow_height);
-        final int arrowHorizontalOffset = resources.getDimensionPixelSize(
-                R.dimen.popup_arrow_horizontal_offset);
         final int arrowVerticalOffset = resources.getDimensionPixelSize(
                 R.dimen.popup_arrow_vertical_offset);
 
@@ -179,7 +175,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         // Add dummy views first, and populate with real info when ready.
         PopupPopulator.Item[] itemsToPopulate = PopupPopulator
                 .getItemsToPopulate(shortcutIds, notificationKeys, systemShortcuts);
-        addDummyViews(originalIcon, itemsToPopulate, notificationKeys.size() > 1);
+        addDummyViews(itemsToPopulate, notificationKeys.size() > 1);
 
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
         orientAboutIcon(originalIcon, arrowHeight + arrowVerticalOffset);
@@ -190,7 +186,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             mNotificationItemView = null;
             mShortcutsItemView = null;
             itemsToPopulate = PopupPopulator.reverseItems(itemsToPopulate);
-            addDummyViews(originalIcon, itemsToPopulate, notificationKeys.size() > 1);
+            addDummyViews(itemsToPopulate, notificationKeys.size() > 1);
 
             measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
             orientAboutIcon(originalIcon, arrowHeight + arrowVerticalOffset);
@@ -207,7 +203,21 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             updateNotificationHeader();
         }
 
+        int numShortcuts = shortcutViews.size() + systemShortcutViews.size();
+        int numNotifications = notificationKeys.size();
+        if (numNotifications == 0) {
+            setContentDescription(getContext().getString(R.string.shortcuts_menu_description,
+                    numShortcuts, originalIcon.getContentDescription().toString()));
+        } else {
+            setContentDescription(getContext().getString(
+                    R.string.shortcuts_menu_with_notifications_description, numShortcuts,
+                    numNotifications, originalIcon.getContentDescription().toString()));
+        }
+
         // Add the arrow.
+        final int arrowHorizontalOffset = resources.getDimensionPixelSize(isAlignedWithStart() ?
+                R.dimen.popup_arrow_horizontal_offset_start :
+                R.dimen.popup_arrow_horizontal_offset_end);
         mArrow = addArrowView(arrowHorizontalOffset, arrowVerticalOffset, arrowWidth, arrowHeight);
         mArrow.setPivotX(arrowWidth / 2);
         mArrow.setPivotY(mIsAboveIcon ? 0 : arrowHeight);
@@ -225,8 +235,8 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                 systemShortcuts, systemShortcutViews));
     }
 
-    private void addDummyViews(BubbleTextView originalIcon,
-            PopupPopulator.Item[] itemTypesToPopulate, boolean notificationFooterHasIcons) {
+    private void addDummyViews(PopupPopulator.Item[] itemTypesToPopulate,
+            boolean notificationFooterHasIcons) {
         final Resources res = getResources();
         final int spacing = res.getDimensionPixelSize(R.dimen.popup_items_spacing);
         final LayoutInflater inflater = mLauncher.getLayoutInflater();
@@ -243,12 +253,14 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                 int footerHeight = notificationFooterHasIcons ?
                         res.getDimensionPixelSize(R.dimen.notification_footer_height) : 0;
                 item.findViewById(R.id.footer).getLayoutParams().height = footerHeight;
+                mNotificationItemView.getMainView().setAccessibilityDelegate(mAccessibilityDelegate);
+            } else if (itemTypeToPopulate == PopupPopulator.Item.SHORTCUT) {
+                item.setAccessibilityDelegate(mAccessibilityDelegate);
             }
 
             boolean shouldAddBottomMargin = nextItemTypeToPopulate != null
                     && itemTypeToPopulate.isShortcut ^ nextItemTypeToPopulate.isShortcut;
 
-            item.setAccessibilityDelegate(mAccessibilityDelegate);
             if (itemTypeToPopulate.isShortcut) {
                 if (mShortcutsItemView == null) {
                     mShortcutsItemView = (ShortcutsItemView) inflater.inflate(
@@ -266,9 +278,6 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                 }
             }
         }
-        // TODO: update this, since not all items are shortcuts
-        setContentDescription(getContext().getString(R.string.shortcuts_menu_description,
-                numItems, originalIcon.getContentDescription().toString()));
     }
 
     protected PopupItemView getItemViewAt(int index) {
@@ -493,7 +502,11 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             ShapeDrawable arrowDrawable = new ShapeDrawable(TriangleShape.create(
                     width, height, !mIsAboveIcon));
             Paint arrowPaint = arrowDrawable.getPaint();
-            arrowPaint.setColor(Color.WHITE);
+            // Note that we have to use getChildAt() instead of getItemViewAt(),
+            // since the latter expects the arrow which hasn't been added yet.
+            PopupItemView itemAttachedToArrow = (PopupItemView)
+                    (getChildAt(mIsAboveIcon ? getChildCount() - 1 : 0));
+            arrowPaint.setColor(itemAttachedToArrow.getArrowColor(mIsAboveIcon));
             // The corner path effect won't be reflected in the shadow, but shouldn't be noticeable.
             int radius = getResources().getDimensionPixelSize(R.dimen.popup_arrow_corner_radius);
             arrowPaint.setPathEffect(new CornerPathEffect(radius));

@@ -76,10 +76,13 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"ಮುಖಪುಟ ತಿರುಗುವಿಕೆಯನ್ನು ಅನುಮತಿಸಿ"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"ಫೋನ್‌ ತಿರುಗಿಸಿದಾಗ"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"ಪ್ರಸ್ತುತ ಪ್ರದರ್ಶನ ಸೆಟ್ಟಿಂಗ್ ತಿರುಗುವಿಕೆಯನ್ನು ಅನುಮತಿಸುವುದಿಲ್ಲ"</string>
+    <string name="icon_badging_title" msgid="4418239350706629417">"ಐಕಾನ್ ಬ್ಯಾಡ್ಜ್‌ ಮಾಡಲಾಗುತ್ತಿದೆ"</string>
+    <string name="icon_badging_desc_on" msgid="6022379097717134764">"ಎಲ್ಲ ಅಪ್ಲಿಕೇಶನ್‌ಗಳಿಗೆ ಆನ್ ಮಾಡಲಾಗಿದೆ"</string>
+    <string name="icon_badging_desc_off" msgid="1574640601251590211">"ಎಲ್ಲಾ ಅಪ್ಲಿಕೇಶನ್‌ಗಳಿಗೆ ಆಫ್ ಆಗಿದೆ"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"ಮುಖಪುಟದ ಪರದೆಗೆ ಐಕಾನ್ ಸೇರಿಸಿ"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"ಹೊಸ ಅಪ್ಲಿಕೇಶನ್‌ಗಳಿಗೆ"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"ಐಕಾನ್ ಆಕಾರವನ್ನು ಬದಲಿಸಿ"</string>
-    <string name="icon_shape_no_override" msgid="3678524428085518367">"ಬದಲಿಸಬೇಡಿ"</string>
+    <string name="icon_shape_system_default" msgid="1709762974822753030">"ಸಿಸ್ಟಂ ಡಿಫಾಲ್ಟ್ ಬಳಸಿ"</string>
     <string name="icon_shape_override_progress" msgid="3461735694970239908">"ಐಕಾನ್ ಆಕಾರ ಬದಲಾವಣೆಯನ್ನು ಅನ್ವಯಿಸಲಾಗುತ್ತಿದೆ"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"ಅಪರಿಚಿತ"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ತೆಗೆದುಹಾಕಿ"</string>
@@ -115,4 +118,7 @@
     <string name="widget_resized" msgid="9130327887929620">"ವಿಜೆಟ್ ಅನ್ನು <xliff:g id="NUMBER_0">%1$s</xliff:g> ಅಗಲ <xliff:g id="NUMBER_1">%2$s</xliff:g> ಎತ್ತರಕ್ಕೆ ಮರುಗಾತ್ರಗೊಳಿಸಲಾಗಿದೆ"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು"</string>
     <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="APP_NAME">%2$s</xliff:g> ಗೆ <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> ಗಾಗಿ <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು ಮತ್ತು <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> ಅಧಿಸೂಚನೆಗಳು"</string>
+    <string name="action_dismiss_notification" msgid="5909461085055959187">"ವಜಾಗೊಳಿಸಿ"</string>
+    <string name="notification_dismissed" msgid="6002233469409822874">"ಅಧಿಸೂಚನೆಯನ್ನು ವಜಾಗೊಳಿಸಲಾಗಿದೆ"</string>
 </resources>

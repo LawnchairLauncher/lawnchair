@@ -76,10 +76,13 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"गृह स्क्रिनलाई घुम्ने अनुमति दिनुहोस्"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"फोनलाई घुमाइँदा"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"हालको प्रदर्शन सम्बन्धी सेटिङले घुमाउने सुविधालाई अनुमति दिँदैन"</string>
+    <string name="icon_badging_title" msgid="4418239350706629417">"आइकनलाई पदक दिने कार्य"</string>
+    <string name="icon_badging_desc_on" msgid="6022379097717134764">"सबै अनुप्रयोगहरूमा सक्रिय छ"</string>
+    <string name="icon_badging_desc_off" msgid="1574640601251590211">"सबै अनुप्रयोगहरूमा निष्क्रिय छ"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"गृह स्क्रिनमा आइकन थप्नुहोस्"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नयाँ अनुप्रयोगका लागि"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"आइकनको आकार परिवर्तन गर्नुहोस्"</string>
-    <string name="icon_shape_no_override" msgid="3678524428085518367">"परिवर्तन नगर्नुहोस्"</string>
+    <string name="icon_shape_system_default" msgid="1709762974822753030">"प्रणालीको पूर्वनिर्धारित सेटिङ प्रयोग गर्नुहोस्"</string>
     <string name="icon_shape_override_progress" msgid="3461735694970239908">"आइकनको आकारमा गरिएका परिवर्तनहरू लागू गरिँदैछन्"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"अज्ञात"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"हटाउनुहोस्"</string>
@@ -115,4 +118,7 @@
     <string name="widget_resized" msgid="9130327887929620">"विजेट चौडाइ <xliff:g id="NUMBER_0">%1$s</xliff:g> उचाइ <xliff:g id="NUMBER_1">%2$s</xliff:g> मा पुनः आकार मिलाइयो"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"सर्टकटहरू"</string>
     <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="APP_NAME">%2$s</xliff:g> का <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> सर्टकटहरू"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> का <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> सर्टकट र <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> सूचनाहरू"</string>
+    <string name="action_dismiss_notification" msgid="5909461085055959187">"खारेज गर्नुहोस्"</string>
+    <string name="notification_dismissed" msgid="6002233469409822874">"सूचना खारेज गरियो"</string>
 </resources>

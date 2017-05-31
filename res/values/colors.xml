@@ -35,12 +35,13 @@
     <color name="spring_loaded_panel_color">#40FFFFFF</color>
     <color name="spring_loaded_highlighted_panel_border_color">#FFF</color>
 
-    <!-- Notifications -->
+    <!-- Popup container -->
+    <color name="popup_header_background_color">#EEEEEE</color> <!-- Gray 200 -->
+    <color name="popup_background_color">#FFF</color>
     <color name="notification_icon_default_color">#757575</color> <!-- Gray 600 -->
-    <color name="notification_header_background_color">#EEEEEE</color> <!-- Gray 200 -->
-    <color name="notification_background_color">#FFF</color>
     <color name="notification_color_beneath">#E0E0E0</color> <!-- Gray 300 -->
-    <color name="divider_color">@color/notification_color_beneath</color>
+
+    <color name="badge_color">#1DE9B6</color> <!-- Teal A400 -->
 
     <!-- System shortcuts -->
     <color name="system_shortcuts_icon_color">@android:color/tertiary_text_light</color>

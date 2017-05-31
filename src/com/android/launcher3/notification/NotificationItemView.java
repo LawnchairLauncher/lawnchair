@@ -21,6 +21,7 @@ import android.app.Notification;
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -76,6 +77,10 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
         mSwipeHelper.setDisableHardwareLayers(true);
     }
 
+    public NotificationMainView getMainView() {
+        return mMainView;
+    }
+
     public int getHeightMinusFooter() {
         int footerHeight = mFooter.getParent() == null ? 0 : mFooter.getHeight();
         return getHeight() - footerHeight;
@@ -93,7 +98,7 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
             if (mNotificationHeaderTextColor == Notification.COLOR_DEFAULT) {
                 mNotificationHeaderTextColor =
                         IconPalette.resolveContrastColor(getContext(), palette.dominantColor,
-                            getResources().getColor(R.color.notification_header_background_color));
+                            getResources().getColor(R.color.popup_header_background_color));
             }
             mHeaderCount.setTextColor(mNotificationHeaderTextColor);
         }
@@ -155,6 +160,13 @@ public class NotificationItemView extends PopupItemView implements LogContainerP
         } else {
             mFooter.trimNotifications(notificationKeys);
         }
+    }
+
+    @Override
+    public int getArrowColor(boolean isArrowAttachedToBottom) {
+        return ContextCompat.getColor(getContext(), isArrowAttachedToBottom
+                ? R.color.popup_background_color
+                : R.color.popup_header_background_color);
     }
 
     @Override

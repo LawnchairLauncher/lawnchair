@@ -100,7 +100,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
         if (Utilities.isAtLeastO()) {
             try {
                 Method asyncMethod = AppWidgetHostView.class
-                        .getMethod("setAsyncExecutor", Executor.class);
+                        .getMethod("setExecutor", Executor.class);
                 asyncMethod.invoke(this, Utilities.THREAD_POOL_EXECUTOR);
             } catch (Exception e) {
                 Log.e(TAG, "Unable to set async executor", e);

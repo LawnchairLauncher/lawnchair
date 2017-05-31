@@ -75,6 +75,7 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.popup.PopupContainerWithArrow;
+import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -2257,6 +2258,8 @@ public class Workspace extends PagedView
             int previewSize = grid.folderIconSizePx;
             dragVisualizeOffset = new Point(- halfPadding, halfPadding - child.getPaddingTop());
             dragRect = new Rect(0, child.getPaddingTop(), child.getWidth(), previewSize);
+        } else if (previewProvider instanceof ShortcutDragPreviewProvider) {
+            dragVisualizeOffset = new Point(- halfPadding, halfPadding);
         }
 
         // Clear the pressed state if necessary
@@ -2269,7 +2272,7 @@ public class Workspace extends PagedView
             mDragSourceInternal = (ShortcutAndWidgetContainer) child.getParent();
         }
 
-        if (child instanceof BubbleTextView) {
+        if (child instanceof BubbleTextView && !dragOptions.isAccessibleDrag) {
             PopupContainerWithArrow popupContainer = PopupContainerWithArrow
                     .showForIcon((BubbleTextView) child);
             if (popupContainer != null) {
@@ -2521,6 +2524,8 @@ public class Workspace extends PagedView
             }
         }
 
+        boolean droppedOnOriginalCell = false;
+
         int snapScreen = -1;
         boolean resizeOnDrop = false;
         if (d.dragSource != this) {
@@ -2572,9 +2577,9 @@ public class Workspace extends PagedView
                     minSpanY = item.minSpanY;
                 }
 
-                droppedOnOriginalCellDuringTransition = mIsSwitchingState
-                        && item.screenId == screenId && item.container == container
+                droppedOnOriginalCell = item.screenId == screenId && item.container == container
                         && item.cellX == mTargetCell[0] && item.cellY == mTargetCell[1];
+                droppedOnOriginalCellDuringTransition = droppedOnOriginalCell && mIsSwitchingState;
 
                 // When quickly moving an item, a user may accidentally rearrange their
                 // workspace. So instead we move the icon back safely to its original position.
@@ -2709,7 +2714,7 @@ public class Workspace extends PagedView
             }
             parent.onDropChild(cell);
         }
-        if (d.stateAnnouncer != null) {
+        if (d.stateAnnouncer != null && !droppedOnOriginalCell) {
             d.stateAnnouncer.completeAction(R.string.item_moved);
         }
     }
