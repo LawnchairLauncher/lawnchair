@@ -76,10 +76,13 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"হোমস্ক্রীন ঘোরানোর অনুমতি দিন"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"যখন ফোনটি ঘোরানো হয়"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"বর্তমান প্রদর্শনের সেটিংস ঘোরানোর মঞ্জুরি দেয় না"</string>
+    <string name="icon_badging_title" msgid="4418239350706629417">"আইকনে ব্যাজ দেওয়া"</string>
+    <string name="icon_badging_desc_on" msgid="6022379097717134764">"সমস্ত অ্যাপের জন্য চালু আছে"</string>
+    <string name="icon_badging_desc_off" msgid="1574640601251590211">"সমস্ত অ্যাপের জন্য বন্ধ আছে"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"হোম স্ক্রিনে আইকন যোগ করুন"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"নতুন অ্যাপ্লিকেশানগুলির জন্যে"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"আইকনের আকৃতি পরিবর্তন করুন"</string>
-    <string name="icon_shape_no_override" msgid="3678524428085518367">"পরিবর্তন করবেন না"</string>
+    <string name="icon_shape_system_default" msgid="1709762974822753030">"সিস্টেমের ডিফল্ট মান ব্যবহার করুন"</string>
     <string name="icon_shape_override_progress" msgid="3461735694970239908">"আইকনের আকৃতি পরিবর্তন করা হচ্ছে"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"অজানা"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"সরান"</string>
@@ -115,4 +118,7 @@
     <string name="widget_resized" msgid="9130327887929620">"উইজেটের আকার প্রস্থ <xliff:g id="NUMBER_0">%1$s</xliff:g> উচ্চতা <xliff:g id="NUMBER_1">%2$s</xliff:g> তে পরিবর্তন করা হয়েছে"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"শর্টকাট"</string>
     <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="APP_NAME">%2$s</xliff:g> এর <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g>টি শর্টকার্ট"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> এর জন্য <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g>টি শর্টকাট এবং <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g>টি বিজ্ঞপ্তি"</string>
+    <string name="action_dismiss_notification" msgid="5909461085055959187">"খারিজ করুন"</string>
+    <string name="notification_dismissed" msgid="6002233469409822874">"বিজ্ঞপ্তি খারিজ করা হয়েছে"</string>
 </resources>

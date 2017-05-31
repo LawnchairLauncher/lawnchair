@@ -45,7 +45,7 @@
     <string name="all_apps_button_label" msgid="8130441508702294465">"Daftar aplikasi"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Layar Utama"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Hapus"</string>
-    <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Copot pemasangan"</string>
+    <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Uninstal"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Info aplikasi"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"memasang pintasan"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Mengizinkan aplikasi menambahkan pintasan tanpa campur tangan pengguna."</string>
@@ -76,12 +76,14 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"Izinkan layar Utama diputar"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Saat ponsel diputar"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Setelan Tampilan Saat Ini tidak memungkinkan putaran"</string>
+    <string name="icon_badging_title" msgid="4418239350706629417">"Badge ikon"</string>
+    <string name="icon_badging_desc_on" msgid="6022379097717134764">"Aktif untuk semua aplikasi"</string>
+    <string name="icon_badging_desc_off" msgid="1574640601251590211">"Nonaktif untuk semua aplikasi"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Tambahkan ikon ke layar Utama"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Untuk aplikasi baru"</string>
     <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
     <skip />
-    <!-- no translation found for icon_shape_no_override (3678524428085518367) -->
-    <skip />
+    <string name="icon_shape_system_default" msgid="1709762974822753030">"Gunakan default sistem"</string>
     <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
     <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"Tidak dikenal"</string>
@@ -118,4 +120,7 @@
     <string name="widget_resized" msgid="9130327887929620">"Widget diubah ukurannya menjadi lebar <xliff:g id="NUMBER_0">%1$s</xliff:g> tinggi <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Pintasan"</string>
     <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> pintasan untuk <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> pintasan dan <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> notifikasi untuk <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
+    <string name="action_dismiss_notification" msgid="5909461085055959187">"Tutup"</string>
+    <string name="notification_dismissed" msgid="6002233469409822874">"Notifikasi ditutup"</string>
 </resources>

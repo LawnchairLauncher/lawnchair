@@ -76,12 +76,14 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"Dozvoli rotaciju početnog ekrana"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Kada se telefon rotira"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Aktuelno podešavanje prikaza ne dozvoljava rotaciju"</string>
+    <string name="icon_badging_title" msgid="4418239350706629417">"Dodavanje znački na ikone"</string>
+    <string name="icon_badging_desc_on" msgid="6022379097717134764">"Uključeno za sve aplikacije"</string>
+    <string name="icon_badging_desc_off" msgid="1574640601251590211">"Isključeno za sve aplikacije"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Dodaj ikonu na početni ekran"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Za nove aplikacije"</string>
     <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
     <skip />
-    <!-- no translation found for icon_shape_no_override (3678524428085518367) -->
-    <skip />
+    <string name="icon_shape_system_default" msgid="1709762974822753030">"Koristi podrazumevano sistemsko podešavanje"</string>
     <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
     <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"Nepoznato"</string>
@@ -118,4 +120,7 @@
     <string name="widget_resized" msgid="9130327887929620">"Veličina vidžeta je promenjena na širinu <xliff:g id="NUMBER_0">%1$s</xliff:g> i visinu <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Prečice"</string>
     <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> prečice(a) za <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"Prečice (<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g>) i obaveštenja (<xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g>) za <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
+    <string name="action_dismiss_notification" msgid="5909461085055959187">"Odbaci"</string>
+    <string name="notification_dismissed" msgid="6002233469409822874">"Obaveštenje je odbačeno"</string>
 </resources>

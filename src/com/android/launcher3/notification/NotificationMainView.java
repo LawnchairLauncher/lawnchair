@@ -122,7 +122,7 @@ public class NotificationMainView extends FrameLayout implements SwipeHelper.Cal
 
     @Override
     public boolean canChildBeDismissed(View v) {
-        return mNotificationInfo.dismissable;
+        return mNotificationInfo != null && mNotificationInfo.dismissable;
     }
 
     @Override
