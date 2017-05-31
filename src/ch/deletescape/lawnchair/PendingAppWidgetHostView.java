@@ -45,7 +45,6 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
     private View mDefaultView;
     private OnClickListener mClickListener;
     private final LauncherAppWidgetInfo mInfo;
-    private final int mStartState;
     private final Intent mIconLookupIntent;
     private final boolean mDisabledForSafeMode;
     private Launcher mLauncher;
@@ -66,7 +65,6 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView implemen
 
         mLauncher = Launcher.getLauncher(context);
         mInfo = info;
-        mStartState = info.restoreStatus;
         mIconLookupIntent = new Intent().setComponent(info.providerName);
         mDisabledForSafeMode = disabledForSafeMode;
 
