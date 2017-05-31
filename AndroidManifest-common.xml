@@ -42,6 +42,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
+        android:allowBackup="true"
         android:backupAgent="ch.deletescape.lawnchair.LauncherBackupAgent"
         android:fullBackupOnly="true"
         android:fullBackupContent="@xml/backupscheme"
