@@ -202,13 +202,6 @@ public abstract class BaseRecyclerView extends RecyclerView
     }
 
     /**
-     * Returns the inactive thumb color, can be overridden by each subclass.
-     */
-    public int getFastScrollerThumbInactiveColor(int defaultInactiveThumbColor) {
-        return defaultInactiveThumbColor;
-    }
-
-    /**
      * Returns the scrollbar for this recycler view.
      */
     public BaseRecyclerViewFastScrollBar getScrollBar() {
