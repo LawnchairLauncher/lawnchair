@@ -880,7 +880,7 @@ public class GridSizeMigrationTask {
         try {
             boolean dbChanged = false;
 
-            HashSet validPackages = getValidPackages(context);
+            HashSet<String> validPackages = getValidPackages(context);
             // Hotseat
             int srcHotseatCount = prefs.getInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, idp.numHotseatIcons);
             if (srcHotseatCount != idp.numHotseatIcons) {
@@ -933,7 +933,7 @@ public class GridSizeMigrationTask {
         // this set is removed.
         // Since the loader removes such items anyway, removing these items here doesn't cause
         // any extra data loss and gives us more free space on the grid for better migration.
-        HashSet validPackages = new HashSet<>();
+        HashSet<String> validPackages = new HashSet<>();
         for (PackageInfo info : context.getPackageManager()
                 .getInstalledPackages(PackageManager.GET_UNINSTALLED_PACKAGES)) {
             validPackages.add(info.packageName);

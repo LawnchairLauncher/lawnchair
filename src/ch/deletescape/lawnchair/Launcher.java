@@ -3407,15 +3407,15 @@ public class Launcher extends Activity
 
     public List<String> getShortcutIdsForItem(ItemInfo info) {
         if (!DeepShortcutManager.supportsShortcuts(info)) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         ComponentName component = info.getTargetComponent();
         if (component == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
 
         List<String> ids = mDeepShortcutMap.get(new ComponentKey(component, info.user));
-        return ids == null ? Collections.EMPTY_LIST : ids;
+        return ids == null ? Collections.<String>emptyList() : ids;
     }
 
     /**

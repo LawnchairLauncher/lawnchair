@@ -92,10 +92,6 @@ public class GLES20Canvas implements GLCanvas {
 
     private int mCurrentMatrixIndex = 0;
 
-    // Viewport size
-    private int mWidth;
-    private int mHeight;
-
     // Projection matrix
     private float[] mProjectionMatrix = new float[MATRIX_SIZE];
 
@@ -235,9 +231,7 @@ public class GLES20Canvas implements GLCanvas {
 
     @Override
     public void setSize(int width, int height) {
-        mWidth = width;
-        mHeight = height;
-        GLES20.glViewport(0, 0, mWidth, mHeight);
+        GLES20.glViewport(0, 0, width, height);
         checkError();
         Matrix.setIdentityM(mMatrices, mCurrentMatrixIndex);
         Matrix.orthoM(mProjectionMatrix, 0, 0, width, 0, height, -1, 1);

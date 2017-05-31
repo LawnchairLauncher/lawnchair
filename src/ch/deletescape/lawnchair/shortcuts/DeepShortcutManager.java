@@ -199,7 +199,7 @@ public class DeepShortcutManager {
         if (Utilities.isNycMR1OrAbove()) {
             if(!hasHostPermission()){
                 mWasLastCallSuccess = false;
-                return Collections.EMPTY_LIST;
+                return Collections.emptyList();
             }
             ShortcutQuery q = new ShortcutQuery();
             q.setQueryFlags(flags);
@@ -218,7 +218,7 @@ public class DeepShortcutManager {
                 mWasLastCallSuccess = false;
             }
             if (shortcutInfos == null) {
-                return Collections.EMPTY_LIST;
+                return Collections.emptyList();
             }
             List<ShortcutInfoCompat> shortcutInfoCompats = new ArrayList<>(shortcutInfos.size());
             for (ShortcutInfo shortcutInfo : shortcutInfos) {
@@ -226,7 +226,7 @@ public class DeepShortcutManager {
             }
             return shortcutInfoCompats;
         } else {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
     }
 

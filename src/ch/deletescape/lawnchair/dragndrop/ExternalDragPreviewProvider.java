@@ -36,16 +36,14 @@ import ch.deletescape.lawnchair.graphics.DragPreviewProvider;
 public class ExternalDragPreviewProvider extends DragPreviewProvider {
 
     private final Launcher mLauncher;
-    private final ItemInfo mAddInfo;
 
     private final int[] mOutlineSize;
 
     public ExternalDragPreviewProvider(Launcher launcher, ItemInfo addInfo) {
         super(null);
         mLauncher = launcher;
-        mAddInfo = addInfo;
 
-        mOutlineSize = mLauncher.getWorkspace().estimateItemSize(mAddInfo, false);
+        mOutlineSize = mLauncher.getWorkspace().estimateItemSize(addInfo, false);
     }
 
     public Rect getPreviewBounds() {

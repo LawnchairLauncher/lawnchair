@@ -32,7 +32,6 @@ import ch.deletescape.lawnchair.util.Thunk;
 
 public class LauncherAppState {
 
-    private final AppFilter mAppFilter;
     @Thunk
     final LauncherModel mModel;
     private final IconCache mIconCache;
@@ -91,8 +90,7 @@ public class LauncherAppState {
         mWidgetCache = new WidgetPreviewLoader(sContext, mIconCache);
         mDeepShortcutManager = new DeepShortcutManager(sContext);
 
-        mAppFilter = new StringSetAppFilter();
-        mModel = new LauncherModel(this, mIconCache, mAppFilter, mDeepShortcutManager);
+        mModel = new LauncherModel(this, mIconCache, new StringSetAppFilter(), mDeepShortcutManager);
 
         LauncherAppsCompat.getInstance(sContext).addOnAppsChangedCallback(mModel);
 
