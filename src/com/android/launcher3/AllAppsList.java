@@ -24,6 +24,7 @@ import android.os.Process;
 import android.os.UserHandle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
@@ -39,6 +40,8 @@ import java.util.List;
  * Stores the list of all applications for the all apps view.
  */
 public class AllAppsList {
+    private static final String TAG = "AllAppsList";
+
     public static final int DEFAULT_APPLICATIONS_NUMBER = 42;
 
     /** The list off all apps. */
@@ -182,6 +185,7 @@ public class AllAppsList {
                 if (user.equals(applicationInfo.user)
                         && packageName.equals(applicationInfo.componentName.getPackageName())) {
                     if (!findActivity(matches, applicationInfo.componentName)) {
+                        Log.w(TAG, "Shortcut will be removed due to app component name change.");
                         removed.add(applicationInfo);
                         data.remove(i);
                     }
