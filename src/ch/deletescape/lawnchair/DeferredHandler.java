@@ -34,12 +34,12 @@ import ch.deletescape.lawnchair.util.Thunk;
  */
 public class DeferredHandler {
     @Thunk
-    LinkedList<Runnable> mQueue = new LinkedList<>();
-    private MessageQueue mMessageQueue = Looper.myQueue();
-    private Impl mHandler = new Impl();
+    static final LinkedList<Runnable> mQueue = new LinkedList<>();
+    private static MessageQueue mMessageQueue = Looper.myQueue();
+    private static Impl mHandler = new Impl();
 
     @Thunk
-    class Impl extends Handler implements MessageQueue.IdleHandler {
+    static class Impl extends Handler implements MessageQueue.IdleHandler {
         public void handleMessage(Message msg) {
             Runnable r;
             synchronized (mQueue) {
@@ -114,7 +114,7 @@ public class DeferredHandler {
         }
     }
 
-    void scheduleNextLocked() {
+    static void scheduleNextLocked() {
         if (mQueue.size() > 0) {
             Runnable peek = mQueue.getFirst();
             if (peek instanceof IdleRunnable) {
