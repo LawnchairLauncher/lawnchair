@@ -36,7 +36,6 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Parcelable;
 import android.os.Process;
-import android.os.UserHandle;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;

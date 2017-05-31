@@ -652,14 +652,6 @@ public class DragLayer extends InsettableFrameLayout {
         }
     }
 
-    public boolean hasResizeFrames() {
-        return mResizeFrames.size() > 0;
-    }
-
-    public boolean isWidgetBeingResized() {
-        return mCurrentResizeFrame != null;
-    }
-
     public void addResizeFrame(LauncherAppWidgetHostView widget,
                                CellLayout cellLayout) {
         AppWidgetResizeFrame resizeFrame = new AppWidgetResizeFrame(getContext(),
@@ -1034,14 +1026,14 @@ public class DragLayer extends InsettableFrameLayout {
             CellLayout leftPage = (CellLayout) workspace.getChildAt(mIsRtl ? page + 1 : page - 1);
             CellLayout rightPage = (CellLayout) workspace.getChildAt(mIsRtl ? page - 1 : page + 1);
 
-            if (leftPage != null && leftPage.isDragTarget()) {
+            if (leftPage != null) {
                 Drawable left = mInScrollArea && leftPage.getIsDragOverlapping() ?
                         mLeftHoverDrawableActive : mLeftHoverDrawable;
                 left.setBounds(0, mScrollChildPosition.top,
                         left.getIntrinsicWidth(), mScrollChildPosition.bottom);
                 left.draw(canvas);
             }
-            if (rightPage != null && rightPage.isDragTarget()) {
+            if (rightPage != null) {
                 Drawable right = mInScrollArea && rightPage.getIsDragOverlapping() ?
                         mRightHoverDrawableActive : mRightHoverDrawable;
                 right.setBounds(width - right.getIntrinsicWidth(),

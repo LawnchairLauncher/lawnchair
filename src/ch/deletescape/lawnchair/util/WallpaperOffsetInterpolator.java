@@ -185,10 +185,6 @@ public class WallpaperOffsetInterpolator implements Choreographer.FrameCallback 
         return mCurrentOffset;
     }
 
-    public float getFinalX() {
-        return mFinalOffset;
-    }
-
     private void animateToFinal() {
         mAnimating = true;
         mAnimationStartOffset = mCurrentOffset;

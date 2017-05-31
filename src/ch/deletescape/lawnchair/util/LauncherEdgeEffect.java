@@ -41,8 +41,6 @@ public class LauncherEdgeEffect {
 
     private static final float MAX_ALPHA = 0.5f;
 
-    private static final float MAX_GLOW_SCALE = 2.f;
-
     private static final float PULL_GLOW_BEGIN = 0.f;
 
     private static final float EPSILON = 0.001f;

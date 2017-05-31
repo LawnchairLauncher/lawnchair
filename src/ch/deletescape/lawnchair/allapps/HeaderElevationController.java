@@ -27,9 +27,6 @@ public abstract class HeaderElevationController extends RecyclerView.OnScrollLis
         onScroll(mCurrentY);
     }
 
-    public void updateBackgroundPadding() {
-    }
-
     abstract void onScroll(int scrollY);
 
     public static class ControllerVL extends HeaderElevationController {

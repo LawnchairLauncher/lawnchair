@@ -21,8 +21,6 @@ import android.content.Context;
 
 import java.util.ArrayList;
 
-import android.os.UserHandle;
-
 /**
  * Represents a folder containing shortcuts or apps.
  */

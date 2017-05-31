@@ -1,7 +1,6 @@
 package ch.deletescape.wallpaperpicker.common;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
@@ -240,15 +239,6 @@ public abstract class InputStreamProvider {
             @Override
             public InputStream newStreamNotNull() throws IOException {
                 return new BufferedInputStream(context.getContentResolver().openInputStream(uri));
-            }
-        };
-    }
-
-    public static InputStreamProvider fromResource(final Resources resources, final int resId) {
-        return new InputStreamProvider() {
-            @Override
-            public InputStream newStreamNotNull() {
-                return new BufferedInputStream(resources.openRawResource(resId));
             }
         };
     }

@@ -117,7 +117,7 @@ public class LauncherStateTransitionAnimation {
     public static final String TAG = "LSTAnimation";
 
     // Flags to determine how to set the layers on views before the transition animation
-    public static final int BUILD_LAYER = 0;
+    //public static final int BUILD_LAYER = 0;
     public static final int BUILD_AND_SET_LAYER = 1;
     public static final int SINGLE_FRAME_DELAY = 16;
 

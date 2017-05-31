@@ -16,20 +16,17 @@
 
 package ch.deletescape.wallpaperpicker;
 
-import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.WallpaperManager;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -86,9 +83,6 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
         mLoaderHandler = new Handler(mLoaderThread.getLooper(), this);
 
         init();
-        if (!enableRotation()) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
     }
 
     protected void init() {
@@ -318,11 +312,6 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
                 }
             }
         }, 1000);
-    }
-
-
-    public boolean enableRotation() {
-        return true;
     }
 
     public void cropImageAndSetWallpaper(Uri uri,

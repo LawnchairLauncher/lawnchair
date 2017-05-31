@@ -16,12 +16,10 @@
 
 package ch.deletescape.lawnchair.compat;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionCallback;
 import android.content.pm.PackageInstaller.SessionInfo;
-import android.os.Build;
 import android.os.Handler;
 import android.os.UserHandle;
 import android.util.SparseArray;
@@ -73,11 +71,6 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
             mCache.cachePackageInstallInfo(packageName, user, info.getAppIcon(),
                     info.getAppLabel());
         }
-    }
-
-    @Override
-    public void onStop() {
-        mInstaller.unregisterSessionCallback(mCallback);
     }
 
     @Thunk

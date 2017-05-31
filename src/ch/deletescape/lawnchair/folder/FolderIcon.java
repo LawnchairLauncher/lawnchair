@@ -29,7 +29,6 @@ import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.drawable.Drawable;
-import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -180,11 +179,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
         icon.setOnFocusChangeListener(launcher.mFocusHandler);
         return icon;
-    }
-
-    @Override
-    protected Parcelable onSaveInstanceState() {
-        return super.onSaveInstanceState();
     }
 
     public Folder getFolder() {

@@ -47,10 +47,6 @@ public class PackageManagerHelper {
         return isAppEnabled(pm, packageName, PackageManager.GET_UNINSTALLED_PACKAGES);
     }
 
-    public static boolean isAppEnabled(PackageManager pm, String packageName) {
-        return isAppEnabled(pm, packageName, 0);
-    }
-
     public static boolean isAppEnabled(PackageManager pm, String packageName, int flags) {
         try {
             ApplicationInfo info = pm.getApplicationInfo(packageName, flags);

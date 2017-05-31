@@ -1,11 +1,9 @@
 package ch.deletescape.lawnchair.accessibility;
 
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.DialogInterface;
 import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;

@@ -27,8 +27,6 @@ public class CheckLongPressHelper {
     @Thunk
     View mView;
     @Thunk
-    View.OnLongClickListener mListener;
-    @Thunk
     boolean mHasPerformedLongPress;
     private int mLongPressTimeout = DEFAULT_LONG_PRESS_TIMEOUT;
     private CheckForLongPress mPendingCheckForLongPress;
@@ -37,12 +35,7 @@ public class CheckLongPressHelper {
         public void run() {
             if ((mView.getParent() != null) && mView.hasWindowFocus()
                     && !mHasPerformedLongPress) {
-                boolean handled;
-                if (mListener != null) {
-                    handled = mListener.onLongClick(mView);
-                } else {
-                    handled = mView.performLongClick();
-                }
+                boolean handled = mView.performLongClick();
                 if (handled) {
                     mView.setPressed(false);
                     mHasPerformedLongPress = true;
@@ -53,11 +46,6 @@ public class CheckLongPressHelper {
 
     public CheckLongPressHelper(View v) {
         mView = v;
-    }
-
-    public CheckLongPressHelper(View v, View.OnLongClickListener listener) {
-        mView = v;
-        mListener = listener;
     }
 
     /**

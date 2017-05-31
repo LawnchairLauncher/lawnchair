@@ -16,9 +16,7 @@
 
 package ch.deletescape.lawnchair.accessibility;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.SparseArray;
 import android.view.View;

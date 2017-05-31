@@ -220,39 +220,12 @@ public class LauncherScroller {
     }
 
     /**
-     * Returns the start X offset in the scroll.
-     *
-     * @return The start X offset as an absolute distance from the origin.
-     */
-    public final int getStartX() {
-        return mStartX;
-    }
-
-    /**
-     * Returns the start Y offset in the scroll.
-     *
-     * @return The start Y offset as an absolute distance from the origin.
-     */
-    public final int getStartY() {
-        return mStartY;
-    }
-
-    /**
      * Returns where the scroll will end. Valid only for "fling" scrolls.
      *
      * @return The final X offset as an absolute distance from the origin.
      */
     public final int getFinalX() {
         return mFinalX;
-    }
-
-    /**
-     * Returns where the scroll will end. Valid only for "fling" scrolls.
-     *
-     * @return The final Y offset as an absolute distance from the origin.
-     */
-    public final int getFinalY() {
-        return mFinalY;
     }
 
     /**
@@ -494,7 +467,6 @@ public class LauncherScroller {
      * Sets the final position (X) for this scroller.
      *
      * @param newX The new X offset as an absolute distance from the origin.
-     * @see #setFinalY(int)
      */
     public void setFinalX(int newX) {
         mFinalX = newX;
@@ -502,15 +474,4 @@ public class LauncherScroller {
         mFinished = false;
     }
 
-    /**
-     * Sets the final position (Y) for this scroller.
-     *
-     * @param newY The new Y offset as an absolute distance from the origin.
-     * @see #setFinalX(int)
-     */
-    public void setFinalY(int newY) {
-        mFinalY = newY;
-        mDeltaY = mFinalY - mStartY;
-        mFinished = false;
-    }
 }

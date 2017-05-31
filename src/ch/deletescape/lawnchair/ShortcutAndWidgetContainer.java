@@ -104,12 +104,6 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
         mIsHotseatLayout = isHotseat;
     }
 
-    int getCellContentWidth() {
-        final DeviceProfile grid = mLauncher.getDeviceProfile();
-        return Math.min(getMeasuredHeight(), mIsHotseatLayout ?
-                grid.hotseatCellWidthPx : grid.cellWidthPx);
-    }
-
     int getCellContentHeight() {
         final DeviceProfile grid = mLauncher.getDeviceProfile();
         return Math.min(getMeasuredHeight(), mIsHotseatLayout ?

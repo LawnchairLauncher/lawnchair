@@ -191,10 +191,6 @@ public class PageIndicatorLineCaret extends PageIndicator {
     }
 
     @Override
-    public void setActiveMarker(int activePage) {
-    }
-
-    @Override
     protected void onPageCountChanged() {
         if (Float.compare(mNumPages, mNumPagesFloat) != 0) {
             animateToNumPages(mNumPages);

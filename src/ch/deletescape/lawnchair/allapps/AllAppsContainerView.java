@@ -327,7 +327,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         mAppsRecyclerView.updateBackgroundPadding(bgPadding);
         mAdapter.updateBackgroundPadding(bgPadding);
-        mElevationController.updateBackgroundPadding();
 
         // Pad the recycler view by the background padding plus the start margin (for the section
         // names)

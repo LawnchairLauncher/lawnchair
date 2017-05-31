@@ -107,6 +107,8 @@ public class Workspace extends PagedView
     // The is the first screen. It is always present, even if its empty.
     public static final long FIRST_SCREEN_ID = 0;
 
+    private static final int DEFAULT_PAGE = 0;
+
     private LayoutTransition mLayoutTransition;
     @Thunk
     final WallpaperManager mWallpaperManager;
@@ -290,8 +292,6 @@ public class Workspace extends PagedView
 
     boolean mScrollInteractionBegan;
     boolean mStartedSendingScrollEvents;
-    // Total over scrollX in the overlay direction.
-    private int mUnboundedScrollX;
     private boolean mForceDrawAdjacentPages = false;
 
     // Handles workspace state transitions
@@ -446,7 +446,7 @@ public class Workspace extends PagedView
      * Initializes various states for this workspace.
      */
     protected void initWorkspace() {
-        mCurrentPage = getDefaultPage();
+        mCurrentPage = DEFAULT_PAGE;
         LauncherAppState app = LauncherAppState.getInstance();
         DeviceProfile grid = mLauncher.getDeviceProfile();
         mIconCache = app.getIconCache();
@@ -470,10 +470,6 @@ public class Workspace extends PagedView
     public void initParentViews(View parent) {
         super.initParentViews(parent);
         mPageIndicator.setAccessibilityDelegate(new OverviewAccessibilityDelegate());
-    }
-
-    private int getDefaultPage() {
-        return 0;
     }
 
     private void setupLayoutTransition() {
@@ -1157,43 +1153,6 @@ public class Workspace extends PagedView
         if (mStartedSendingScrollEvents) {
             mStartedSendingScrollEvents = false;
         }
-    }
-
-    @Override
-    protected int getUnboundedScrollX() {
-        if (isScrollingOverlay()) {
-            return mUnboundedScrollX;
-        }
-
-        return super.getUnboundedScrollX();
-    }
-
-    private boolean isScrollingOverlay() {
-        return false;
-    }
-
-    @Override
-    protected void snapToDestination() {
-        // If we're overscrolling the overlay, we make sure to immediately reset the PagedView
-        // to it's baseline position instead of letting the overscroll settle. The overlay handles
-        // it's own settling, and every gesture to the overlay should be self-contained and start
-        // from 0, so we zero it out here.
-        if (isScrollingOverlay()) {
-            int finalScroll = mIsRtl ? mMaxScrollX : 0;
-
-            // We reset mWasInOverscroll so that PagedView doesn't zero out the overscroll
-            // interaction when we call scrollTo.
-            mWasInOverscroll = false;
-            scrollTo(finalScroll, getScrollY());
-        } else {
-            super.snapToDestination();
-        }
-    }
-
-    @Override
-    public void scrollTo(int x, int y) {
-        mUnboundedScrollX = x;
-        super.scrollTo(x, y);
     }
 
     @Override
@@ -3738,7 +3697,7 @@ public class Workspace extends PagedView
     }
 
     void moveToDefaultScreen(boolean animate) {
-        moveToScreen(getDefaultPage(), animate);
+        moveToScreen(DEFAULT_PAGE, animate);
     }
 
     @Override

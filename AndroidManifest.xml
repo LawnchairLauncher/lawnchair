@@ -102,6 +102,7 @@
             android:name="ch.deletescape.wallpaperpicker.WallpaperPickerActivity"
             android:theme="@style/WallpaperTheme.Picker"
             android:label="@string/pick_wallpaper"
+            android:screenOrientation="portrait"
             android:finishOnCloseSystemDialogs="true">
             <intent-filter>
                 <action android:name="android.intent.action.SET_WALLPAPER" />
@@ -112,6 +113,7 @@
         <activity
             android:name="ch.deletescape.wallpaperpicker.WallpaperCropActivity"
             android:theme="@style/WallpaperTheme"
+            android:screenOrientation="portrait"
             android:label="@string/crop_wallpaper"
             android:finishOnCloseSystemDialogs="true">
             <intent-filter>

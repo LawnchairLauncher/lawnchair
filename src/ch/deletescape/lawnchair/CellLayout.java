@@ -95,8 +95,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     int mHeightGap;
     private int mMaxGap;
     private boolean mDropPending = false;
-    private boolean mIsDragTarget = true;
-    private boolean mJailContent = true;
 
     // These are temporary variables to prevent having to allocate a new object just to
     // return an (x, y) value from helper functions. Do NOT use them to maintain other state.
@@ -401,14 +399,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         }
     }
 
-    void disableDragTarget() {
-        mIsDragTarget = false;
-    }
-
-    public boolean isDragTarget() {
-        return mIsDragTarget;
-    }
-
     void setIsDragOverlapping(boolean isDragOverlapping) {
         if (mIsDragOverlapping != isDragOverlapping) {
             mIsDragOverlapping = isDragOverlapping;
@@ -425,24 +415,16 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         }
     }
 
-    public void disableJailContent() {
-        mJailContent = false;
-    }
-
     @Override
     protected void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
-        if (mJailContent) {
-            ParcelableSparseArray jail = getJailedArray(container);
-            super.dispatchSaveInstanceState(jail);
-            container.put(R.id.cell_layout_jail_id, jail);
-        } else {
-            super.dispatchSaveInstanceState(container);
-        }
+        ParcelableSparseArray jail = getJailedArray(container);
+        super.dispatchSaveInstanceState(jail);
+        container.put(R.id.cell_layout_jail_id, jail);
     }
 
     @Override
     protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
-        super.dispatchRestoreInstanceState(mJailContent ? getJailedArray(container) : container);
+        super.dispatchRestoreInstanceState(getJailedArray(container));
     }
 
     private ParcelableSparseArray getJailedArray(SparseArray<Parcelable> container) {
@@ -457,10 +439,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (!mIsDragTarget) {
-            return;
-        }
-
         // When we're large, we are either drawn in a "hover" state (ie when dragging an item to
         // a neighboring page) or with just a normal background (if backgroundAlpha > 0.0f)
         // When we're small, we are either drawn normally or in the "accepts drops" state (during
@@ -694,17 +672,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     }
 
     /**
-     * Given a point, return the cell that most closely encloses that point
-     *
-     * @param x      X coordinate of the point
-     * @param y      Y coordinate of the point
-     * @param result Array of 2 ints to hold the x and y coordinate of the cell
-     */
-    void pointToCellRounded(int x, int y, int[] result) {
-        pointToCellExact(x + (mCellWidth / 2), y + (mCellHeight / 2), result);
-    }
-
-    /**
      * Given a cell coordinate, return the point that represents the upper left corner of that cell
      *
      * @param cellX  X coordinate of the cell
@@ -915,7 +882,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     @Override
     protected boolean verifyDrawable(@NonNull Drawable who) {
-        return super.verifyDrawable(who) || (mIsDragTarget && who == mBackground);
+        return super.verifyDrawable(who) || who == mBackground;
     }
 
     public void setShortcutAndWidgetAlpha(float alpha) {
@@ -1867,7 +1834,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                                                   int spanX, int spanY, int[] direction, View dragView, boolean decX,
                                                   ItemConfiguration solution) {
         // Copy the current state into the solution. This solution will be manipulated as necessary.
-        copyCurrentStateToSolution(solution, false);
+        copyCurrentStateToSolution(solution);
         // Copy the current occupied array into the temporary occupied array. This array will be
         // manipulated as necessary to find a solution.
         mOccupied.copyTo(mTmpOccupied);
@@ -1904,18 +1871,12 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         return solution;
     }
 
-    private void copyCurrentStateToSolution(ItemConfiguration solution, boolean temp) {
+    private void copyCurrentStateToSolution(ItemConfiguration solution) {
         int childCount = mShortcutsAndWidgets.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View child = mShortcutsAndWidgets.getChildAt(i);
             LayoutParams lp = (LayoutParams) child.getLayoutParams();
-            CellAndSpan c;
-            if (temp) {
-                c = new CellAndSpan(lp.tmpCellX, lp.tmpCellY, lp.cellHSpan, lp.cellVSpan);
-            } else {
-                c = new CellAndSpan(lp.cellX, lp.cellY, lp.cellHSpan, lp.cellVSpan);
-            }
-            solution.add(child, c);
+            solution.add(child, new CellAndSpan(lp.cellX, lp.cellY, lp.cellHSpan, lp.cellVSpan));
         }
     }
 
@@ -2171,7 +2132,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         findNearestVacantArea(pixelX, pixelY, minSpanX, minSpanY, spanX, spanY, result,
                 resultSpan);
         if (result[0] >= 0 && result[1] >= 0) {
-            copyCurrentStateToSolution(solution, false);
+            copyCurrentStateToSolution(solution);
             solution.cellX = result[0];
             solution.cellY = result[1];
             solution.spanX = resultSpan[0];
@@ -2483,10 +2444,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
      */
     public int[] findNearestArea(int pixelX, int pixelY, int spanX, int spanY, int[] result) {
         return findNearestArea(pixelX, pixelY, spanX, spanY, spanX, spanY, false, result, null);
-    }
-
-    boolean existsEmptyCell() {
-        return findCellForSpan(null, 1, 1);
     }
 
     /**

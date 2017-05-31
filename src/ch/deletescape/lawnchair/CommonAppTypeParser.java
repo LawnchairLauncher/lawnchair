@@ -149,10 +149,6 @@ public class CommonAppTypeParser implements LayoutParserCallback {
         }
     }
 
-    public static int encodeItemTypeToFlag(int itemType) {
-        return itemType << RESTORE_FLAG_BIT_SHIFT;
-    }
-
     public static int decodeItemTypeFromFlag(int flag) {
         return (flag & ShortcutInfo.FLAG_RESTORED_APP_TYPE) >> RESTORE_FLAG_BIT_SHIFT;
     }

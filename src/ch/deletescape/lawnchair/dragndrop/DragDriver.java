@@ -51,12 +51,6 @@ public abstract class DragDriver {
         mEventListener = eventListener;
     }
 
-    /**
-     * Handles ending of the DragView animation.
-     */
-    public void onDragViewAnimationEnd() {
-    }
-
     public boolean onTouchEvent(MotionEvent ev) {
         final int action = ev.getAction();
 

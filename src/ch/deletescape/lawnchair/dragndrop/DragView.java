@@ -16,8 +16,6 @@
 
 package ch.deletescape.lawnchair.dragndrop;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.FloatArrayEvaluator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
@@ -120,15 +118,6 @@ public class DragView extends View {
             }
         });
 
-        mAnim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (!mAnimationCancelled) {
-                    mDragController.onDragViewAnimationEnd();
-                }
-            }
-        });
-
         mBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight());
         setDragRegion(new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()));
 
@@ -161,10 +150,6 @@ public class DragView extends View {
 
     public int getDragRegionWidth() {
         return mDragRegion.width();
-    }
-
-    public int getDragRegionHeight() {
-        return mDragRegion.height();
     }
 
     public void setDragVisualizeOffset(Point p) {

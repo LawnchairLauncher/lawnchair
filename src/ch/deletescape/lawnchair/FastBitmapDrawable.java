@@ -178,7 +178,7 @@ public class FastBitmapDrawable extends Drawable {
         if (mState != newState) {
             mState = newState;
 
-            mPropertyAnimator = cancelAnimator(mPropertyAnimator);
+            cancelAnimator(mPropertyAnimator);
             mPropertyAnimator = new AnimatorSet();
             mPropertyAnimator.playTogether(
                     ObjectAnimator
@@ -203,7 +203,7 @@ public class FastBitmapDrawable extends Drawable {
         if (mState != newState) {
             mState = newState;
 
-            mPropertyAnimator = cancelAnimator(mPropertyAnimator);
+            cancelAnimator(mPropertyAnimator);
 
             setDesaturation(newState.desaturation);
             setBrightness(newState.brightness);
@@ -349,11 +349,10 @@ public class FastBitmapDrawable extends Drawable {
         invalidateSelf();
     }
 
-    private AnimatorSet cancelAnimator(AnimatorSet animator) {
+    private void cancelAnimator(AnimatorSet animator) {
         if (animator != null) {
             animator.removeAllListeners();
             animator.cancel();
         }
-        return null;
     }
 }

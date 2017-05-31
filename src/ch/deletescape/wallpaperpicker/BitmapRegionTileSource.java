@@ -16,7 +16,6 @@
 
 package ch.deletescape.wallpaperpicker;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,7 +25,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.opengl.GLUtils;
-import android.os.Build;
 import android.util.Log;
 
 import com.google.firebase.crash.FirebaseCrash;

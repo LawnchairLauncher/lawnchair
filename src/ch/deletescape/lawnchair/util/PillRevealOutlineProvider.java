@@ -16,9 +16,7 @@
 
 package ch.deletescape.lawnchair.util;
 
-import android.annotation.TargetApi;
 import android.graphics.Rect;
-import android.os.Build;
 
 /*
   A {@link ViewOutlineProvider} that animates a reveal in a "pill" shape.

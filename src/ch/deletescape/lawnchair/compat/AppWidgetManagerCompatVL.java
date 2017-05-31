@@ -16,7 +16,6 @@
 
 package ch.deletescape.lawnchair.compat;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetProviderInfo;
@@ -31,7 +30,6 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.UserHandle;
 import android.os.UserManager;

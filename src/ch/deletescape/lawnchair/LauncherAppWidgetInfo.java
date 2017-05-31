@@ -22,8 +22,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 
-import android.os.UserHandle;
-
 /**
  * Represents a widget (either instantiated or about to be) in the Launcher.
  */

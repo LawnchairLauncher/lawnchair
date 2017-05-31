@@ -55,7 +55,6 @@ import android.util.Log;
 import android.util.Pair;
 import android.util.SparseArray;
 import android.util.TypedValue;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
@@ -403,32 +402,6 @@ public final class Utilities {
     public static boolean pointInView(View v, float localX, float localY, float slop) {
         return localX >= -slop && localY >= -slop && localX < (v.getWidth() + slop) &&
                 localY < (v.getHeight() + slop);
-    }
-
-    /**
-     * Translates MotionEvents from src's coordinate system to dst's.
-     */
-    public static void translateEventCoordinates(View src, View dst, MotionEvent dstEvent) {
-        toGlobalMotionEvent(src, dstEvent);
-        toLocalMotionEvent(dst, dstEvent);
-    }
-
-    /**
-     * Emulates View.toGlobalMotionEvent(). This implementation does not handle transformations
-     * (scaleX, scaleY, etc).
-     */
-    private static void toGlobalMotionEvent(View view, MotionEvent event) {
-        view.getLocationOnScreen(sLoc0);
-        event.offsetLocation(sLoc0[0], sLoc0[1]);
-    }
-
-    /**
-     * Emulates View.toLocalMotionEvent(). This implementation does not handle transformations
-     * (scaleX, scaleY, etc).
-     */
-    private static void toLocalMotionEvent(View view, MotionEvent event) {
-        view.getLocationOnScreen(sLoc0);
-        event.offsetLocation(-sLoc0[0], -sLoc0[1]);
     }
 
     public static int[] getCenterDeltaInScreenSpace(View v0, View v1, int[] delta) {

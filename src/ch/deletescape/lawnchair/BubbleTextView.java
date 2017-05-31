@@ -16,7 +16,6 @@
 
 package ch.deletescape.lawnchair;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -28,7 +27,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Region;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.SparseArray;
@@ -73,7 +71,6 @@ public class BubbleTextView extends TextView
     private Drawable mIcon;
     private final boolean mCenterVertically;
     private final Drawable mBackground;
-    private OnLongClickListener mOnLongClickListener;
     private final CheckLongPressHelper mLongPressHelper;
     private final HolographicOutlineHelper mOutlineHelper;
     private final StylusEventHelper mStylusEventHelper;
@@ -274,11 +271,6 @@ public class BubbleTextView extends TextView
     @Override
     public void setOnLongClickListener(OnLongClickListener l) {
         super.setOnLongClickListener(l);
-        mOnLongClickListener = l;
-    }
-
-    public OnLongClickListener getOnLongClickListener() {
-        return mOnLongClickListener;
     }
 
     @Override

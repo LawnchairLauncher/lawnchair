@@ -43,8 +43,6 @@ public abstract class PackageInstallerCompat {
      */
     public abstract HashMap<String, Integer> updateAndGetActiveSessionCache();
 
-    public abstract void onStop();
-
     public static final class PackageInstallInfo {
         public final String packageName;
 

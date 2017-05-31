@@ -499,15 +499,6 @@ public class DragController implements DragDriver.EventListener, TouchController
     }
 
     /**
-     * Call this from a drag view.
-     */
-    public void onDragViewAnimationEnd() {
-        if (mDragDriver != null) {
-            mDragDriver.onDragViewAnimationEnd();
-        }
-    }
-
-    /**
      * Sets the view that should handle move events.
      */
     public void setMoveTarget(View view) {
