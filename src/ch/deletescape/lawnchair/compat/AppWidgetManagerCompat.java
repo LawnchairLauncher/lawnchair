@@ -35,17 +35,8 @@ import ch.deletescape.lawnchair.util.ComponentKey;
 
 public abstract class AppWidgetManagerCompat {
 
-    private static final Object sInstanceLock = new Object();
-    private static AppWidgetManagerCompat sInstance;
-
-
     public static AppWidgetManagerCompat getInstance(Context context) {
-        synchronized (sInstanceLock) {
-            if (sInstance == null) {
-                sInstance = new AppWidgetManagerCompatVL(context.getApplicationContext());
-            }
-            return sInstance;
-        }
+        return new AppWidgetManagerCompatVL(context.getApplicationContext());
     }
 
     final AppWidgetManager mAppWidgetManager;
