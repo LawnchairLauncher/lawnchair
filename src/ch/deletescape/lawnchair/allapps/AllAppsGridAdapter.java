@@ -147,7 +147,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     private final LayoutInflater mLayoutInflater;
     private final AlphabeticalAppsList mApps;
     private final GridLayoutManager mGridLayoutMgr;
-    private final GridSpanSizer mGridSizer;
     private final View.OnClickListener mIconClickListener;
     private final View.OnLongClickListener mIconLongClickListener;
 
@@ -170,9 +169,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         mLauncher = launcher;
         mApps = apps;
         mEmptySearchMessage = res.getString(R.string.all_apps_loading_message);
-        mGridSizer = new GridSpanSizer();
         mGridLayoutMgr = new AppsGridLayoutManager(launcher);
-        mGridLayoutMgr.setSpanSizeLookup(mGridSizer);
+        mGridLayoutMgr.setSpanSizeLookup(new GridSpanSizer());
         mLayoutInflater = LayoutInflater.from(launcher);
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;

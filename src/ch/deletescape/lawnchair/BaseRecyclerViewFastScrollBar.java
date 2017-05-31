@@ -65,7 +65,6 @@ public class BaseRecyclerViewFastScrollBar {
     private int mThumbCurvature;
     private Path mThumbPath = new Path();
     private Paint mTrackPaint;
-    private int mTrackWidth;
     private float mLastTouchY;
     // The inset is the buffer around which a point will still register as a click on the scrollbar
     private int mTouchInset;
@@ -137,21 +136,6 @@ public class BaseRecyclerViewFastScrollBar {
 
     public int getThumbWidth() {
         return mThumbWidth;
-    }
-
-    // Setter/getter for the track bar width for animations
-    public void setTrackWidth(int width) {
-        mInvalidateRect.set(mThumbOffset.x - mThumbCurvature, 0, mThumbOffset.x + mThumbWidth,
-                mRv.getVisibleHeight());
-        mTrackWidth = width;
-        updateThumbPath();
-        mInvalidateRect.union(mThumbOffset.x - mThumbCurvature, 0, mThumbOffset.x + mThumbWidth,
-                mRv.getVisibleHeight());
-        mRv.invalidate(mInvalidateRect);
-    }
-
-    public int getTrackWidth() {
-        return mTrackWidth;
     }
 
     public int getThumbHeight() {

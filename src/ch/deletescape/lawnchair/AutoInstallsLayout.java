@@ -158,7 +158,6 @@ public class AutoInstallsLayout {
     protected final Resources mSourceRes;
     protected final int mLayoutId;
 
-    private final InvariantDeviceProfile mIdp;
     private final int mRowCount;
     private final int mColumnCount;
 
@@ -183,9 +182,9 @@ public class AutoInstallsLayout {
         mSourceRes = res;
         mLayoutId = layoutId;
 
-        mIdp = LauncherAppState.getInstance().getInvariantDeviceProfile();
-        mRowCount = mIdp.numRows;
-        mColumnCount = mIdp.numColumns;
+        InvariantDeviceProfile idp = LauncherAppState.getInstance().getInvariantDeviceProfile();
+        mRowCount = idp.numRows;
+        mColumnCount = idp.numColumns;
     }
 
     /**
