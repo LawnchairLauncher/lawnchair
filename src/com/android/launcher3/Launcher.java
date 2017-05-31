@@ -127,6 +127,7 @@ import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.PendingRequestArgs;
 import com.android.launcher3.util.TestingUtils;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
@@ -368,7 +369,7 @@ public class Launcher extends BaseActivity
 
         WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.getInstance(this);
         wallpaperColorInfo.setOnThemeChangeListener(this);
-        overrideTheme(wallpaperColorInfo.isDark());
+        overrideTheme(wallpaperColorInfo.isDark(), wallpaperColorInfo.supportsDarkText());
 
         super.onCreate(savedInstanceState);
 
@@ -466,6 +467,10 @@ public class Launcher extends BaseActivity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onCreate(savedInstanceState);
         }
+
+        if (Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText)) {
+            activateLightSystemBars(true, true, true);
+        }
     }
 
     @Override
@@ -473,9 +478,11 @@ public class Launcher extends BaseActivity
         recreate();
     }
 
-    protected void overrideTheme(boolean isDark) {
+    protected void overrideTheme(boolean isDark, boolean supportsDarkText) {
         if (isDark) {
             setTheme(R.style.LauncherThemeDark);
+        } else if (supportsDarkText) {
+            setTheme(R.style.LauncherThemeDarkText);
         }
     }
 

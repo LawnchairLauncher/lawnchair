@@ -33,6 +33,7 @@ public class WallpaperColorInfo implements WallpaperManagerCompat.OnColorsChange
     private int mMainColor;
     private int mSecondaryColor;
     private boolean mIsDark;
+    private boolean mSupportsDarkText;
     private OnThemeChangeListener mOnThemeChangeListener;
 
     private WallpaperColorInfo(Context context) {
@@ -54,6 +55,10 @@ public class WallpaperColorInfo implements WallpaperManagerCompat.OnColorsChange
         return mIsDark;
     }
 
+    public boolean supportsDarkText() {
+        return mSupportsDarkText;
+    }
+
     @Override
     public void onColorsChanged(WallpaperColorsCompat colors, int which) {
         if (which == FLAG_SYSTEM) {
@@ -72,6 +77,7 @@ public class WallpaperColorInfo implements WallpaperManagerCompat.OnColorsChange
             mMainColor = FALLBACK_COLOR;
             mSecondaryColor = FALLBACK_COLOR;
         }
+        mSupportsDarkText = wallpaperColors != null ? wallpaperColors.supportsDarkText() : false;
         float[] hsl = new float[3];
         ColorUtils.colorToHSL(mMainColor, hsl);
         mIsDark = hsl[2] < 0.2f;

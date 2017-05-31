@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
+import android.graphics.drawable.Drawable;
 
 /**
  * Various utility methods associated with theming.
@@ -40,6 +41,13 @@ public class Themes {
     public static boolean getAttrBoolean(Context context, int attr) {
         TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
         boolean value = ta.getBoolean(0, false);
+        ta.recycle();
+        return value;
+    }
+
+    public static Drawable getAttrDrawable(Context context, int attr) {
+        TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
+        Drawable value = ta.getDrawable(0);
         ta.recycle();
         return value;
     }

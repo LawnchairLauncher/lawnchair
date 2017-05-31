@@ -31,7 +31,11 @@
         <item name="popupColorPrimary">#FFF</item>
         <item name="popupColorSecondary">#F5F5F5</item> <!-- Gray 100 -->
         <item name="popupColorTertiary">#E0E0E0</item> <!-- Gray 300 -->
-        <item name="isPrimaryColorDark">false</item>
+        <item name="isMainColorDark">false</item>
+        <item name="isWorkspaceDarkText">false</item>
+        <item name="workspaceTextColor">?android:textColorPrimary</item>
+        <item name="workspaceAmbientShadowColor">#22000000</item>
+        <item name="workspaceKeyShadowColor">#44000000</item>
     </style>
 
     <!-- Workspace -->
