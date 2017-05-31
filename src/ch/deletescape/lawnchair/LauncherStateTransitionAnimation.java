@@ -181,7 +181,7 @@ public class LauncherStateTransitionAnimation {
         final WidgetsContainerView toView = mLauncher.getWidgetsView();
         final View buttonView = mLauncher.getWidgetsButton();
         startAnimationToOverlay(
-                Workspace.State.OVERVIEW_HIDDEN, buttonView, toView, animated, CIRCULAR_REVEAL, null);
+                Workspace.State.OVERVIEW_HIDDEN, buttonView, toView, animated, CIRCULAR_REVEAL, new PrivateTransitionCallbacks(FINAL_REVEAL_ALPHA_FOR_WIDGETS));
     }
 
     /**
