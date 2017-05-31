@@ -76,12 +76,14 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"允許旋轉主螢幕"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"當手機旋轉時"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"目前的顯示設定不允許旋轉畫面"</string>
+    <string name="icon_badging_title" msgid="4418239350706629417">"在圖示上顯示標記"</string>
+    <string name="icon_badging_desc_on" msgid="6022379097717134764">"為所有應用程式開啟這項設定"</string>
+    <string name="icon_badging_desc_off" msgid="1574640601251590211">"為所有應用程式關閉這項設定"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"將圖示加到主螢幕"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"適用於新安裝的應用程式"</string>
     <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
     <skip />
-    <!-- no translation found for icon_shape_no_override (3678524428085518367) -->
-    <skip />
+    <string name="icon_shape_system_default" msgid="1709762974822753030">"使用系統預設值"</string>
     <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
     <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"不明"</string>
@@ -118,4 +120,7 @@
     <string name="widget_resized" msgid="9130327887929620">"已將小工具的寬度和高度分別調整為 <xliff:g id="NUMBER_0">%1$s</xliff:g> 和 <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"捷徑"</string>
     <string name="shortcuts_menu_description" msgid="406159963824238648">"「<xliff:g id="APP_NAME">%2$s</xliff:g>」有 <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> 個捷徑"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> 個捷徑和 <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> 則「<xliff:g id="APP_NAME">%3$s</xliff:g>」通知"</string>
+    <string name="action_dismiss_notification" msgid="5909461085055959187">"關閉"</string>
+    <string name="notification_dismissed" msgid="6002233469409822874">"已關閉通知"</string>
 </resources>
