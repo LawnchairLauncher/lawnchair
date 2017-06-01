@@ -76,12 +76,14 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"홈 화면 회전 허용"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"휴대전화 회전 시"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"현재 표시 설정에는 회전 기능이 허용되지 않습니다."</string>
+    <string name="icon_badging_title" msgid="4418239350706629417">"아이콘 배지"</string>
+    <string name="icon_badging_desc_on" msgid="6022379097717134764">"모든 앱에서 사용 설정됨"</string>
+    <string name="icon_badging_desc_off" msgid="1574640601251590211">"모든 앱에서 사용 중지됨"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"홈 화면에 아이콘 추가"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"새로 설치한 앱에 적용"</string>
     <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
     <skip />
-    <!-- no translation found for icon_shape_no_override (3678524428085518367) -->
-    <skip />
+    <string name="icon_shape_system_default" msgid="1709762974822753030">"시스템 기본값 사용"</string>
     <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
     <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"알 수 없음"</string>
@@ -118,4 +120,7 @@
     <string name="widget_resized" msgid="9130327887929620">"폭 <xliff:g id="NUMBER_0">%1$s</xliff:g>, 높이 <xliff:g id="NUMBER_1">%2$s</xliff:g>로 위젯 크기 조정됨"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"바로가기"</string>
     <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="APP_NAME">%2$s</xliff:g>에 사용 가능한 단축키 <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g>개"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"바로가기 <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g>개 및 <xliff:g id="APP_NAME">%3$s</xliff:g> 알림 <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g>개"</string>
+    <string name="action_dismiss_notification" msgid="5909461085055959187">"닫기"</string>
+    <string name="notification_dismissed" msgid="6002233469409822874">"알림이 해제되었습니다."</string>
 </resources>

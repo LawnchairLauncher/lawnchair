@@ -49,7 +49,7 @@ public class IconPalette {
 
     private IconPalette(int color) {
         dominantColor = color;
-        backgroundColor = getMutedColor(dominantColor);
+        backgroundColor = dominantColor;
         ColorMatrix backgroundColorMatrix = new ColorMatrix();
         Themes.setColorScaleOnMatrix(backgroundColor, backgroundColorMatrix);
         backgroundColorMatrixFilter = new ColorMatrixColorFilter(backgroundColorMatrix);
@@ -174,10 +174,6 @@ public class IconPalette {
             }
         }
         return ColorUtils.LABToColor(low, a, b);
-    }
-
-    private static int getMutedColor(int color) {
-        return getMutedColor(color, 0.87f);
     }
 
     private static int getMutedColor(int color, float whiteScrimAlpha) {

@@ -76,12 +76,14 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"Башкы экранды айлантууга уруксат берүү"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Телефон айланганда"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Экранды айлантуу параметри өчүрүлгөн"</string>
+    <string name="icon_badging_title" msgid="4418239350706629417">"Бейджик тагуу сүрөтчөсү"</string>
+    <string name="icon_badging_desc_on" msgid="6022379097717134764">"Бардык колдонмолор үчүн күйүк"</string>
+    <string name="icon_badging_desc_off" msgid="1574640601251590211">"Бардык колдонмолор үчүн өчүк"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Башкы экранга сүрөтчө кошуу"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Жаңы колдонмолор үчүн"</string>
     <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
     <skip />
-    <!-- no translation found for icon_shape_no_override (3678524428085518367) -->
-    <skip />
+    <string name="icon_shape_system_default" msgid="1709762974822753030">"Тутум сушунтаган демейкисин колдонуу"</string>
     <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
     <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"Белгисиз"</string>
@@ -118,4 +120,7 @@
     <string name="widget_resized" msgid="9130327887929620">"Виджеттин кеңдиги <xliff:g id="NUMBER_0">%1$s</xliff:g> бийиктиги <xliff:g id="NUMBER_1">%2$s</xliff:g> болду"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Кыска жолдор"</string>
     <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="APP_NAME">%2$s</xliff:g> колдонмосуна <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> кыска жол бар"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> колдонмосу үчүн <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> кыска жол жана <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> эскертме бар"</string>
+    <string name="action_dismiss_notification" msgid="5909461085055959187">"Этибарга албоо"</string>
+    <string name="notification_dismissed" msgid="6002233469409822874">"Эскертме көз жаздымда калтырылды"</string>
 </resources>

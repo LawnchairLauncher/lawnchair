@@ -48,7 +48,7 @@ public abstract class PopupItemView extends FrameLayout
 
     protected final Rect mPillRect;
     private float mOpenAnimationProgress;
-
+    protected final boolean mIsRtl;
     protected View mIconView;
 
     private final Paint mBackgroundClipPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
@@ -75,6 +75,8 @@ public abstract class PopupItemView extends FrameLayout
         canvas.setBitmap(mRoundedCornerBitmap);
         canvas.drawArc(0, 0, radius*2, radius*2, 180, 90, true, mBackgroundClipPaint);
         mBackgroundClipPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+
+        mIsRtl = Utilities.isRtl(getResources());
     }
 
     @Override
@@ -120,7 +122,9 @@ public abstract class PopupItemView extends FrameLayout
      */
     public Animator createOpenAnimation(boolean isContainerAboveIcon, boolean pivotLeft) {
         Point center = getIconCenter();
-        int arrowCenter = getResources().getDimensionPixelSize(R.dimen.popup_arrow_horizontal_center);
+        int arrowCenter = getResources().getDimensionPixelSize(pivotLeft ^ mIsRtl ?
+                R.dimen.popup_arrow_horizontal_center_start:
+                R.dimen.popup_arrow_horizontal_center_end);
         ValueAnimator openAnimator =  new ZoomRevealOutlineProvider(center.x, center.y,
                 mPillRect, this, mIconView, isContainerAboveIcon, pivotLeft, arrowCenter)
                         .createRevealAnimator(this, false);
@@ -144,7 +148,9 @@ public abstract class PopupItemView extends FrameLayout
     public Animator createCloseAnimation(boolean isContainerAboveIcon, boolean pivotLeft,
             long duration) {
         Point center = getIconCenter();
-        int arrowCenter = getResources().getDimensionPixelSize(R.dimen.popup_arrow_horizontal_center);
+        int arrowCenter = getResources().getDimensionPixelSize(pivotLeft ^ mIsRtl ?
+                R.dimen.popup_arrow_horizontal_center_start :
+                R.dimen.popup_arrow_horizontal_center_end);
         ValueAnimator closeAnimator = new ZoomRevealOutlineProvider(center.x, center.y,
                 mPillRect, this, mIconView, isContainerAboveIcon, pivotLeft, arrowCenter)
                         .createRevealAnimator(this, true);
@@ -176,6 +182,8 @@ public abstract class PopupItemView extends FrameLayout
     protected float getBackgroundRadius() {
         return getResources().getDimensionPixelSize(R.dimen.bg_round_rect_radius);
     }
+
+    public abstract int getArrowColor(boolean isArrowAttachedToBottom);
 
     /**
      * Extension of {@link PillRevealOutlineProvider} which scales the icon based on the height.

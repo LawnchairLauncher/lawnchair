@@ -35,7 +35,7 @@
             android:layout_height="@dimen/notification_header_height"
             android:paddingStart="@dimen/notification_padding_start"
             android:paddingEnd="@dimen/notification_padding_end"
-            android:background="@color/notification_header_background_color"
+            android:background="@color/popup_header_background_color"
             android:elevation="@dimen/notification_elevation">
             <TextView
                 android:id="@+id/notification_text"
@@ -67,7 +67,7 @@
             android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/popup_item_divider_height"
-            android:background="@color/divider_color"
+            android:background="?android:attr/listDivider"
             android:layout_below="@id/main_view"/>
 
         <include layout="@layout/notification_footer"

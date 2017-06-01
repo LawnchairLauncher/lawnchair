@@ -18,14 +18,15 @@ package com.android.launcher3.accessibility;
 
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.notification.NotificationMainView;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 
 import java.util.ArrayList;
@@ -36,14 +37,23 @@ import java.util.ArrayList;
  */
 public class ShortcutMenuAccessibilityDelegate extends LauncherAccessibilityDelegate {
 
+    private static final int DISMISS_NOTIFICATION = R.id.action_dismiss_notification;
+
     public ShortcutMenuAccessibilityDelegate(Launcher launcher) {
         super(launcher);
+        mActions.put(DISMISS_NOTIFICATION, new AccessibilityAction(DISMISS_NOTIFICATION,
+                launcher.getText(R.string.action_dismiss_notification)));
     }
 
     @Override
     public void addSupportedActions(View host, AccessibilityNodeInfo info, boolean fromKeyboard) {
         if ((host.getParent() instanceof DeepShortcutView)) {
             info.addAction(mActions.get(ADD_TO_WORKSPACE));
+        } else if (host instanceof NotificationMainView) {
+            NotificationMainView notificationView = (NotificationMainView) host;
+            if (notificationView.canChildBeDismissed(notificationView)) {
+                info.addAction(mActions.get(DISMISS_NOTIFICATION));
+            }
         }
     }
 
@@ -73,6 +83,14 @@ public class ShortcutMenuAccessibilityDelegate extends LauncherAccessibilityDele
             if (!mLauncher.showWorkspace(true, onComplete)) {
                 onComplete.run();
             }
+            return true;
+        } else if (action == DISMISS_NOTIFICATION) {
+            if (!(host instanceof NotificationMainView)) {
+                return false;
+            }
+            NotificationMainView notificationView = (NotificationMainView) host;
+            notificationView.onChildDismissed(notificationView);
+            announceConfirmation(R.string.notification_dismissed);
             return true;
         }
         return false;

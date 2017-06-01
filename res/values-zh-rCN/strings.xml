@@ -29,8 +29,8 @@
     <string name="shortcut_not_available" msgid="2536503539825726397">"无法使用快捷方式"</string>
     <string name="home_screen" msgid="806512411299847073">"主屏幕"</string>
     <string name="custom_actions" msgid="3747508247759093328">"自定义操作"</string>
-    <string name="long_press_widget_to_add" msgid="7699152356777458215">"触摸并按住小部件即可选择。"</string>
-    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"点按两次并按住小部件即可选择小部件，您也可以使用自定义操作。"</string>
+    <string name="long_press_widget_to_add" msgid="7699152356777458215">"触摸并按住微件即可选择。"</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"点按两次并按住微件即可选择微件，您也可以使用自定义操作。"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"宽 %1$d，高 %2$d"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"触摸并按住即可手动放置"</string>
@@ -54,7 +54,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"写入主屏幕设置和快捷方式"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"允许应用更改主屏幕中的设置和快捷方式。"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"不允许使用“<xliff:g id="APP_NAME">%1$s</xliff:g>”拨打电话"</string>
-    <string name="gadget_error_text" msgid="6081085226050792095">"加载小部件时出现问题"</string>
+    <string name="gadget_error_text" msgid="6081085226050792095">"加载微件时出现问题"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"设置"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"这是系统应用，无法卸载。"</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"未命名文件夹"</string>
@@ -76,12 +76,14 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"允许旋转主屏幕"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"手机旋转时"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"当前的显示设置不允许旋转设备"</string>
+    <string name="icon_badging_title" msgid="4418239350706629417">"在图标上显示标记"</string>
+    <string name="icon_badging_desc_on" msgid="6022379097717134764">"已针对所有应用开启"</string>
+    <string name="icon_badging_desc_off" msgid="1574640601251590211">"已针对所有应用关闭"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"将图标添加到主屏幕"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"适用于新应用"</string>
     <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
     <skip />
-    <!-- no translation found for icon_shape_no_override (3678524428085518367) -->
-    <skip />
+    <string name="icon_shape_system_default" msgid="1709762974822753030">"使用系统默认设置"</string>
     <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
     <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"未知"</string>
@@ -115,7 +117,10 @@
     <string name="action_increase_height" msgid="459390020612501122">"增加高度"</string>
     <string name="action_decrease_width" msgid="1374549771083094654">"减小宽度"</string>
     <string name="action_decrease_height" msgid="282377193880900022">"减小高度"</string>
-    <string name="widget_resized" msgid="9130327887929620">"小部件尺寸已调整为：宽度 <xliff:g id="NUMBER_0">%1$s</xliff:g>，高度 <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="widget_resized" msgid="9130327887929620">"微件尺寸已调整为：宽度 <xliff:g id="NUMBER_0">%1$s</xliff:g>，高度 <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"快捷方式"</string>
     <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="APP_NAME">%2$s</xliff:g>有 <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> 个快捷方式"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g>的 <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> 个快捷方式和 <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> 条通知"</string>
+    <string name="action_dismiss_notification" msgid="5909461085055959187">"关闭"</string>
+    <string name="notification_dismissed" msgid="6002233469409822874">"已关闭通知"</string>
 </resources>
