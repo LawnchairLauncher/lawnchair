@@ -82,7 +82,7 @@ public class AppDiscoveryItemView extends RelativeLayout {
         mPrice.setText(info.priceFormatted != null ? info.priceFormatted : "");
         mReviewCount.setVisibility(SHOW_REVIEW_COUNT ? View.VISIBLE : View.GONE);
         if (info.rating >= 0) {
-            mRatingText.setText(new DecimalFormat("#.#").format(info.rating));
+            mRatingText.setText(new DecimalFormat("#.0").format(info.rating));
             mRatingView.setRating(info.rating);
             mRatingView.setVisibility(View.VISIBLE);
             String reviewCountFormatted = NumberFormat.getInstance().format(info.reviewCount);

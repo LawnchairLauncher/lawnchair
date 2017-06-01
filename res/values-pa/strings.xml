@@ -76,10 +76,13 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"ਮੁੱਖ ਸਕ੍ਰੀਨ ਨੂੰ ਘੁੰਮਾਉਣ ਦੀ ਆਗਿਆ ਦਿਓ"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"ਜਦੋਂ ਫ਼ੋਨ ਘੁੰਮਾਇਆ ਜਾਂਦਾ ਹੈ"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"ਵਰਤਮਾਨ ਡਿਸਪਲੇ ਸੈਟਿੰਗ ਘੁੰਮਾਉਣ ਦੀ ਇਜਾਜ਼ਤ ਨਹੀਂ ਦਿੰਦੀ ਹੈ"</string>
+    <string name="icon_badging_title" msgid="4418239350706629417">"ਪ੍ਰਤੀਕ \'ਤੇ ਬੈਜ ਲਗਾਉਣਾ"</string>
+    <string name="icon_badging_desc_on" msgid="6022379097717134764">"ਸਾਰੀਆਂ ਐਪਾਂ ਦੇ ਲਈ ਚਾਲੂ ਹੈ"</string>
+    <string name="icon_badging_desc_off" msgid="1574640601251590211">"ਸਾਰੀਆਂ ਐਪਾਂ ਦੇ ਲਈ ਬੰਦ ਹੈ"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"ਮੁੱਖ ਸਕ੍ਰੀਨ \'ਤੇ ਪ੍ਰਤੀਕ ਸ਼ਾਮਲ ਕਰੋ"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"ਨਵੀਆਂ ਐਪਾਂ ਲਈ"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"ਆਈਕਨ ਦੀ ਆਕ੍ਰਿਤੀ ਬਦਲੋ"</string>
-    <string name="icon_shape_no_override" msgid="3678524428085518367">"ਨਾ ਬਦਲੋ"</string>
+    <string name="icon_shape_system_default" msgid="1709762974822753030">"ਸਿਸਟਮ ਦੀ ਪੂਰਵ-ਨਿਰਧਾਰਤ ਸੈਟਿੰਗ ਵਰਤੋ"</string>
     <string name="icon_shape_override_progress" msgid="3461735694970239908">"ਆਈਕਨ ਦੀ ਆਕ੍ਰਿਤੀ ਵਿੱਚ ਤਬਦੀਲੀਆਂ ਨੂੰ ਲਾਗੂ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"ਅਗਿਆਤ"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ਹਟਾਓ"</string>
@@ -115,4 +118,7 @@
     <string name="widget_resized" msgid="9130327887929620">"ਵਿਜੈਟ ਨੂੰ ਚੌੜਾਈ <xliff:g id="NUMBER_0">%1$s</xliff:g> ਉਂਚਾਈ <xliff:g id="NUMBER_1">%2$s</xliff:g> ਨੂੰ ਮੁੜ ਆਕਾਰ ਦਿੱਤਾ"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"ਸ਼ਾਰਟਕੱਟ"</string>
     <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="APP_NAME">%2$s</xliff:g> ਲਈ <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> ਸ਼ਾਰਟਕੱਟ"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> ਲਈ <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> ਸ਼ਾਰਟਕੱਟ ਅਤੇ <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> ਸੂਚਨਾਵਾਂ"</string>
+    <string name="action_dismiss_notification" msgid="5909461085055959187">"ਖਾਰਜ ਕਰੋ"</string>
+    <string name="notification_dismissed" msgid="6002233469409822874">"ਸੂਚਨਾ ਖਾਰਜ ਕੀਤੀ ਗਈ"</string>
 </resources>

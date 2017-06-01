@@ -76,12 +76,14 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"אפשרות סיבוב של מסך דף הבית"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"כאשר הטלפון מסובב"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"הגדרת התצוגה הנוכחית אינה מאפשרת סיבוב"</string>
+    <string name="icon_badging_title" msgid="4418239350706629417">"הצגת תגים על גבי סמלים"</string>
+    <string name="icon_badging_desc_on" msgid="6022379097717134764">"מופעלת לכל האפליקציות"</string>
+    <string name="icon_badging_desc_off" msgid="1574640601251590211">"כבויה לכל האפליקציות"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"הוספת סמל במסך דף הבית"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"לאפליקציות חדשות"</string>
     <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
     <skip />
-    <!-- no translation found for icon_shape_no_override (3678524428085518367) -->
-    <skip />
+    <string name="icon_shape_system_default" msgid="1709762974822753030">"השתמש בברירת המחדל של המערכת"</string>
     <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
     <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"לא ידוע"</string>
@@ -118,4 +120,7 @@
     <string name="widget_resized" msgid="9130327887929620">"גודל הווידג\'ט שונה - רוחב <xliff:g id="NUMBER_0">%1$s</xliff:g> גובה <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"קיצורי דרך"</string>
     <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> קיצורי דרך עבור <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> קיצורי דרך ו-<xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> הודעות של <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
+    <string name="action_dismiss_notification" msgid="5909461085055959187">"סגור"</string>
+    <string name="notification_dismissed" msgid="6002233469409822874">"ההודעה נסגרה"</string>
 </resources>
