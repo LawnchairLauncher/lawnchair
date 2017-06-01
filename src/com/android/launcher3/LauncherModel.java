@@ -60,6 +60,7 @@ import com.android.launcher3.model.CacheDataUpdatedTask;
 import com.android.launcher3.model.ExtendedModelTask;
 import com.android.launcher3.model.GridSizeMigrationTask;
 import com.android.launcher3.model.LoaderCursor;
+import com.android.launcher3.model.LoaderResults;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.model.PackageInstallStateChangedTask;
 import com.android.launcher3.model.PackageItemInfo;
@@ -90,13 +91,11 @@ import java.io.PrintWriter;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Executor;
 
@@ -111,9 +110,6 @@ public class LauncherModel extends BroadcastReceiver
     private static final boolean DEBUG_RECEIVER = false;
 
     static final String TAG = "Launcher.Model";
-
-    private static final int ITEMS_CHUNK = 6; // batch size for the workspace icons
-    private static final long INVALID_SCREEN_ID = -1L;
 
     private final MainThreadExecutor mUiExecutor = new MainThreadExecutor();
     @Thunk final LauncherAppState mApp;
@@ -531,13 +527,21 @@ public class LauncherModel extends BroadcastReceiver
 
                 // If there is already one running, tell it to stop.
                 stopLoaderLocked();
-                mLoaderTask = new LoaderTask(mApp.getContext(), synchronousBindPage);
+                LoaderResults loaderResults = new LoaderResults(mApp, sBgDataModel,
+                        mBgAllAppsList, synchronousBindPage, mCallbacks);
                 if (synchronousBindPage != PagedView.INVALID_RESTORE_PAGE
                         && mModelLoaded && !mIsLoaderTaskRunning) {
-                    mLoaderTask.runBindSynchronousPage(synchronousBindPage);
+
+                    // Divide the set of loaded items into those that we are binding synchronously,
+                    // and everything else that is to be bound normally (asynchronously).
+                    loaderResults.bindWorkspace();
+                    // For now, continue posting the binding of AllApps as there are other
+                    // issues that arise from that.
+                    loaderResults.bindAllApps();
+                    loaderResults.bindDeepShortcuts();
                     return true;
                 } else {
-                    sWorkerThread.setPriority(Thread.NORM_PRIORITY);
+                    mLoaderTask = new LoaderTask(mApp.getContext(), loaderResults);
                     sWorker.post(mLoaderTask);
                 }
             }
@@ -593,13 +597,13 @@ public class LauncherModel extends BroadcastReceiver
      */
     private class LoaderTask implements Runnable {
         private Context mContext;
-        private int mPageToBindFirst;
+        private final LoaderResults mResults;
 
         private boolean mStopped;
 
-        LoaderTask(Context context, int pageToBindFirst) {
+        LoaderTask(Context context, LoaderResults results) {
             mContext = context;
-            mPageToBindFirst = pageToBindFirst;
+            mResults = results;
         }
 
         private void waitForIdle() {
@@ -612,35 +616,6 @@ public class LauncherModel extends BroadcastReceiver
                 // wait no longer than 1sec at a time
                 while (!mStopped && idleLock.awaitLocked(1000));
             }
-        }
-
-        void runBindSynchronousPage(int synchronousBindPage) {
-            if (synchronousBindPage == PagedView.INVALID_RESTORE_PAGE) {
-                // Ensure that we have a valid page index to load synchronously
-                throw new RuntimeException("Should not call runBindSynchronousPage() without " +
-                        "valid page index");
-            }
-            if (!mModelLoaded) {
-                // Ensure that we don't try and bind a specified page when the pages have not been
-                // loaded already (we should load everything asynchronously in that case)
-                throw new RuntimeException("Expecting AllApps and Workspace to be loaded");
-            }
-            synchronized (mLock) {
-                if (mIsLoaderTaskRunning) {
-                    // Ensure that we are never running the background loading at this point since
-                    // we also touch the background collections
-                    throw new RuntimeException("Error! Background loading is already running");
-                }
-            }
-
-            // Divide the set of loaded items into those that we are binding synchronously, and
-            // everything else that is to be bound normally (asynchronously).
-            bindWorkspace(synchronousBindPage);
-            // XXX: For now, continue posting the binding of AllApps as there are other issues that
-            //      arise from that.
-            onlyBindAllApps();
-
-            bindDeepShortcuts();
         }
 
         private void verifyNotStopped() throws CancellationException {
@@ -666,7 +641,7 @@ public class LauncherModel extends BroadcastReceiver
 
                 verifyNotStopped();
                 if (DEBUG_LOADERS) Log.d(TAG, "step 1.2: bind workspace workspace");
-                bindWorkspace(mPageToBindFirst);
+                mResults.bindWorkspace();
 
                 // Take a break
                 if (DEBUG_LOADERS) {
@@ -681,8 +656,12 @@ public class LauncherModel extends BroadcastReceiver
                 if (DEBUG_LOADERS) Log.d(TAG, "step 2.1: loading all apps");
                 loadAllApps();
 
+                if (DEBUG_LOADERS) Log.d(TAG, "step 2.2: Binding all apps");
                 verifyNotStopped();
-                if (DEBUG_LOADERS) Log.d(TAG, "step 2.2: Update icon cache");
+                mResults.bindAllApps();
+
+                verifyNotStopped();
+                if (DEBUG_LOADERS) Log.d(TAG, "step 2.3: Update icon cache");
                 updateIconCache();
 
                 // Take a break
@@ -700,7 +679,7 @@ public class LauncherModel extends BroadcastReceiver
 
                 verifyNotStopped();
                 if (DEBUG_LOADERS) Log.d(TAG, "step 3.2: bind deep shortcuts");
-                bindDeepShortcuts();
+                mResults.bindDeepShortcuts();
 
                 // Take a break
                 if (DEBUG_LOADERS) Log.d(TAG, "step 3 completed, wait for idle");
@@ -738,36 +717,6 @@ public class LauncherModel extends BroadcastReceiver
             synchronized (LoaderTask.this) {
                 mStopped = true;
                 this.notify();
-            }
-        }
-
-        /**
-         * Gets the callbacks object.  If we've been stopped, or if the launcher object
-         * has somehow been garbage collected, return null instead.  Pass in the Callbacks
-         * object that was around when the deferred message was scheduled, and if there's
-         * a new Callbacks object around then also return null.  This will save us from
-         * calling onto it with data that will be ignored.
-         */
-        Callbacks tryGetCallbacks(Callbacks oldCallbacks) {
-            synchronized (mLock) {
-                if (mStopped) {
-                    return null;
-                }
-
-                if (mCallbacks == null) {
-                    return null;
-                }
-
-                final Callbacks callbacks = mCallbacks.get();
-                if (callbacks != oldCallbacks) {
-                    return null;
-                }
-                if (callbacks == null) {
-                    Log.w(TAG, "no mCallbacks");
-                    return null;
-                }
-
-                return callbacks;
             }
         }
 
@@ -1313,291 +1262,6 @@ public class LauncherModel extends BroadcastReceiver
             }
         }
 
-        /** Filters the set of items who are directly or indirectly (via another container) on the
-         * specified screen. */
-        private void filterCurrentWorkspaceItems(long currentScreenId,
-                ArrayList<ItemInfo> allWorkspaceItems,
-                ArrayList<ItemInfo> currentScreenItems,
-                ArrayList<ItemInfo> otherScreenItems) {
-            // Purge any null ItemInfos
-            Iterator<ItemInfo> iter = allWorkspaceItems.iterator();
-            while (iter.hasNext()) {
-                ItemInfo i = iter.next();
-                if (i == null) {
-                    iter.remove();
-                }
-            }
-
-            // Order the set of items by their containers first, this allows use to walk through the
-            // list sequentially, build up a list of containers that are in the specified screen,
-            // as well as all items in those containers.
-            Set<Long> itemsOnScreen = new HashSet<Long>();
-            Collections.sort(allWorkspaceItems, new Comparator<ItemInfo>() {
-                @Override
-                public int compare(ItemInfo lhs, ItemInfo rhs) {
-                    return Utilities.longCompare(lhs.container, rhs.container);
-                }
-            });
-            for (ItemInfo info : allWorkspaceItems) {
-                if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                    if (info.screenId == currentScreenId) {
-                        currentScreenItems.add(info);
-                        itemsOnScreen.add(info.id);
-                    } else {
-                        otherScreenItems.add(info);
-                    }
-                } else if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                    currentScreenItems.add(info);
-                    itemsOnScreen.add(info.id);
-                } else {
-                    if (itemsOnScreen.contains(info.container)) {
-                        currentScreenItems.add(info);
-                        itemsOnScreen.add(info.id);
-                    } else {
-                        otherScreenItems.add(info);
-                    }
-                }
-            }
-        }
-
-        /** Filters the set of widgets which are on the specified screen. */
-        private void filterCurrentAppWidgets(long currentScreenId,
-                ArrayList<LauncherAppWidgetInfo> appWidgets,
-                ArrayList<LauncherAppWidgetInfo> currentScreenWidgets,
-                ArrayList<LauncherAppWidgetInfo> otherScreenWidgets) {
-
-            for (LauncherAppWidgetInfo widget : appWidgets) {
-                if (widget == null) continue;
-                if (widget.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
-                        widget.screenId == currentScreenId) {
-                    currentScreenWidgets.add(widget);
-                } else {
-                    otherScreenWidgets.add(widget);
-                }
-            }
-        }
-
-        /** Sorts the set of items by hotseat, workspace (spatially from top to bottom, left to
-         * right) */
-        private void sortWorkspaceItemsSpatially(ArrayList<ItemInfo> workspaceItems) {
-            final InvariantDeviceProfile profile = mApp.getInvariantDeviceProfile();
-            final int screenCols = profile.numColumns;
-            final int screenCellCount = profile.numColumns * profile.numRows;
-            Collections.sort(workspaceItems, new Comparator<ItemInfo>() {
-                @Override
-                public int compare(ItemInfo lhs, ItemInfo rhs) {
-                    if (lhs.container == rhs.container) {
-                        // Within containers, order by their spatial position in that container
-                        switch ((int) lhs.container) {
-                            case LauncherSettings.Favorites.CONTAINER_DESKTOP: {
-                                long lr = (lhs.screenId * screenCellCount +
-                                        lhs.cellY * screenCols + lhs.cellX);
-                                long rr = (rhs.screenId * screenCellCount +
-                                        rhs.cellY * screenCols + rhs.cellX);
-                                return Utilities.longCompare(lr, rr);
-                            }
-                            case LauncherSettings.Favorites.CONTAINER_HOTSEAT: {
-                                // We currently use the screen id as the rank
-                                return Utilities.longCompare(lhs.screenId, rhs.screenId);
-                            }
-                            default:
-                                if (FeatureFlags.IS_DOGFOOD_BUILD) {
-                                    throw new RuntimeException("Unexpected container type when " +
-                                            "sorting workspace items.");
-                                }
-                                return 0;
-                        }
-                    } else {
-                        // Between containers, order by hotseat, desktop
-                        return Utilities.longCompare(lhs.container, rhs.container);
-                    }
-                }
-            });
-        }
-
-        private void bindWorkspaceScreens(final Callbacks oldCallbacks,
-                final ArrayList<Long> orderedScreens) {
-            final Runnable r = new Runnable() {
-                @Override
-                public void run() {
-                    Callbacks callbacks = tryGetCallbacks(oldCallbacks);
-                    if (callbacks != null) {
-                        callbacks.bindScreens(orderedScreens);
-                    }
-                }
-            };
-            mUiExecutor.execute(r);
-        }
-
-        private void bindWorkspaceItems(final Callbacks oldCallbacks,
-                final ArrayList<ItemInfo> workspaceItems,
-                final ArrayList<LauncherAppWidgetInfo> appWidgets,
-                final Executor executor) {
-
-            // Bind the workspace items
-            int N = workspaceItems.size();
-            for (int i = 0; i < N; i += ITEMS_CHUNK) {
-                final int start = i;
-                final int chunkSize = (i+ITEMS_CHUNK <= N) ? ITEMS_CHUNK : (N-i);
-                final Runnable r = new Runnable() {
-                    @Override
-                    public void run() {
-                        Callbacks callbacks = tryGetCallbacks(oldCallbacks);
-                        if (callbacks != null) {
-                            callbacks.bindItems(workspaceItems, start, start+chunkSize,
-                                    false);
-                        }
-                    }
-                };
-                executor.execute(r);
-            }
-
-            // Bind the widgets, one at a time
-            N = appWidgets.size();
-            for (int i = 0; i < N; i++) {
-                final LauncherAppWidgetInfo widget = appWidgets.get(i);
-                final Runnable r = new Runnable() {
-                    public void run() {
-                        Callbacks callbacks = tryGetCallbacks(oldCallbacks);
-                        if (callbacks != null) {
-                            callbacks.bindAppWidget(widget);
-                        }
-                    }
-                };
-                executor.execute(r);
-            }
-        }
-
-        /**
-         * Binds all loaded data to actual views on the main thread.
-         */
-        private void bindWorkspace(int synchronizeBindPage) {
-            final long t = SystemClock.uptimeMillis();
-            Runnable r;
-
-            // Don't use these two variables in any of the callback runnables.
-            // Otherwise we hold a reference to them.
-            final Callbacks oldCallbacks = mCallbacks.get();
-            if (oldCallbacks == null) {
-                // This launcher has exited and nobody bothered to tell us.  Just bail.
-                Log.w(TAG, "LoaderTask running with no launcher");
-                return;
-            }
-
-            // Save a copy of all the bg-thread collections
-            ArrayList<ItemInfo> workspaceItems = new ArrayList<>();
-            ArrayList<LauncherAppWidgetInfo> appWidgets = new ArrayList<>();
-            ArrayList<Long> orderedScreenIds = new ArrayList<>();
-
-            synchronized (sBgDataModel) {
-                workspaceItems.addAll(sBgDataModel.workspaceItems);
-                appWidgets.addAll(sBgDataModel.appWidgets);
-                orderedScreenIds.addAll(sBgDataModel.workspaceScreens);
-            }
-
-            final int currentScreen;
-            {
-                int currScreen = synchronizeBindPage != PagedView.INVALID_RESTORE_PAGE
-                        ? synchronizeBindPage : oldCallbacks.getCurrentWorkspaceScreen();
-                if (currScreen >= orderedScreenIds.size()) {
-                    // There may be no workspace screens (just hotseat items and an empty page).
-                    currScreen = PagedView.INVALID_RESTORE_PAGE;
-                }
-                currentScreen = currScreen;
-            }
-            final boolean validFirstPage = currentScreen >= 0;
-            final long currentScreenId =
-                    validFirstPage ? orderedScreenIds.get(currentScreen) : INVALID_SCREEN_ID;
-
-            // Separate the items that are on the current screen, and all the other remaining items
-            ArrayList<ItemInfo> currentWorkspaceItems = new ArrayList<>();
-            ArrayList<ItemInfo> otherWorkspaceItems = new ArrayList<>();
-            ArrayList<LauncherAppWidgetInfo> currentAppWidgets = new ArrayList<>();
-            ArrayList<LauncherAppWidgetInfo> otherAppWidgets = new ArrayList<>();
-
-            filterCurrentWorkspaceItems(currentScreenId, workspaceItems, currentWorkspaceItems,
-                    otherWorkspaceItems);
-            filterCurrentAppWidgets(currentScreenId, appWidgets, currentAppWidgets,
-                    otherAppWidgets);
-            sortWorkspaceItemsSpatially(currentWorkspaceItems);
-            sortWorkspaceItemsSpatially(otherWorkspaceItems);
-
-            // Tell the workspace that we're about to start binding items
-            r = new Runnable() {
-                public void run() {
-                    Callbacks callbacks = tryGetCallbacks(oldCallbacks);
-                    if (callbacks != null) {
-                        callbacks.clearPendingBinds();
-                        callbacks.startBinding();
-                    }
-                }
-            };
-            mUiExecutor.execute(r);
-
-            bindWorkspaceScreens(oldCallbacks, orderedScreenIds);
-
-            Executor mainExecutor = mUiExecutor;
-            // Load items on the current page.
-            bindWorkspaceItems(oldCallbacks, currentWorkspaceItems, currentAppWidgets, mainExecutor);
-
-            // In case of validFirstPage, only bind the first screen, and defer binding the
-            // remaining screens after first onDraw (and an optional the fade animation whichever
-            // happens later).
-            // This ensures that the first screen is immediately visible (eg. during rotation)
-            // In case of !validFirstPage, bind all pages one after other.
-            final Executor deferredExecutor =
-                    validFirstPage ? new ViewOnDrawExecutor(mUiExecutor) : mainExecutor;
-
-            mainExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    Callbacks callbacks = tryGetCallbacks(oldCallbacks);
-                    if (callbacks != null) {
-                        callbacks.finishFirstPageBind(
-                                validFirstPage ? (ViewOnDrawExecutor) deferredExecutor : null);
-                    }
-                }
-            });
-
-            bindWorkspaceItems(oldCallbacks, otherWorkspaceItems, otherAppWidgets, deferredExecutor);
-
-            // Tell the workspace that we're done binding items
-            r = new Runnable() {
-                public void run() {
-                    Callbacks callbacks = tryGetCallbacks(oldCallbacks);
-                    if (callbacks != null) {
-                        callbacks.finishBindingItems();
-                    }
-
-                    // If we're profiling, ensure this is the last thing in the queue.
-                    if (DEBUG_LOADERS) {
-                        Log.d(TAG, "bound workspace in "
-                            + (SystemClock.uptimeMillis()-t) + "ms");
-                    }
-
-                }
-            };
-            deferredExecutor.execute(r);
-
-            if (validFirstPage) {
-                r = new Runnable() {
-                    public void run() {
-                        Callbacks callbacks = tryGetCallbacks(oldCallbacks);
-                        if (callbacks != null) {
-                            // We are loading synchronously, which means, some of the pages will be
-                            // bound after first draw. Inform the callbacks that page binding is
-                            // not complete, and schedule the remaining pages.
-                            if (currentScreen != PagedView.INVALID_RESTORE_PAGE) {
-                                callbacks.onPageBoundSynchronously(currentScreen);
-                            }
-                            callbacks.executeOnNextDraw((ViewOnDrawExecutor) deferredExecutor);
-                        }
-                    }
-                };
-                mUiExecutor.execute(r);
-            }
-        }
-
         private void updateIconCache() {
             // Ignore packages which have a promise icon.
             HashSet<String> packagesToIgnore = new HashSet<>();
@@ -1619,43 +1283,8 @@ public class LauncherModel extends BroadcastReceiver
             mIconCache.updateDbIcons(packagesToIgnore);
         }
 
-        private void onlyBindAllApps() {
-            final Callbacks oldCallbacks = mCallbacks.get();
-            if (oldCallbacks == null) {
-                // This launcher has exited and nobody bothered to tell us.  Just bail.
-                Log.w(TAG, "LoaderTask running with no launcher (onlyBindAllApps)");
-                return;
-            }
-
-            // shallow copy
-            @SuppressWarnings("unchecked")
-            final ArrayList<AppInfo> list
-                    = (ArrayList<AppInfo>) mBgAllAppsList.data.clone();
-            Runnable r = new Runnable() {
-                public void run() {
-                    final long t = SystemClock.uptimeMillis();
-                    final Callbacks callbacks = tryGetCallbacks(oldCallbacks);
-                    if (callbacks != null) {
-                        callbacks.bindAllApplications(list);
-                    }
-                    if (DEBUG_LOADERS) {
-                        Log.d(TAG, "bound all " + list.size() + " apps from cache in "
-                                + (SystemClock.uptimeMillis() - t) + "ms");
-                    }
-                }
-            };
-            mUiExecutor.execute(r);
-        }
-
         private void loadAllApps() {
             final long loadTime = DEBUG_LOADERS ? SystemClock.uptimeMillis() : 0;
-
-            final Callbacks oldCallbacks = mCallbacks.get();
-            if (oldCallbacks == null) {
-                // This launcher has exited and nobody bothered to tell us.  Just bail.
-                Log.w(TAG, "LoaderTask running with no launcher (loadAllApps)");
-                return;
-            }
 
             final List<UserHandle> profiles = mUserManager.getUserProfiles();
 
@@ -1695,30 +1324,9 @@ public class LauncherModel extends BroadcastReceiver
                 }
             }
 
-            // Huh? Shouldn't this be inside the Runnable below?
-            final ArrayList<AppInfo> added = mBgAllAppsList.added;
-            mBgAllAppsList.added = new ArrayList<AppInfo>();
-
-
-            // Post callback on main thread
-            mUiExecutor.execute(new Runnable() {
-                public void run() {
-
-                    final long bindTime = SystemClock.uptimeMillis();
-                    final Callbacks callbacks = tryGetCallbacks(oldCallbacks);
-                    if (callbacks != null) {
-                        callbacks.bindAllApplications(added);
-                        if (DEBUG_LOADERS) {
-                            Log.d(TAG, "bound " + added.size() + " apps in "
-                                    + (SystemClock.uptimeMillis() - bindTime) + "ms");
-                        }
-                    } else {
-                        Log.i(TAG, "not binding apps: no Launcher activity");
-                    }
-                }
-            });
+            mBgAllAppsList.added = new ArrayList<>();
             if (DEBUG_LOADERS) {
-                Log.d(TAG, "Icons processed in "
+                Log.d(TAG, "All apps loaded in in "
                         + (SystemClock.uptimeMillis() - loadTime) + "ms");
             }
         }
@@ -1737,21 +1345,6 @@ public class LauncherModel extends BroadcastReceiver
                 }
             }
         }
-    }
-
-    public void bindDeepShortcuts() {
-        final MultiHashMap<ComponentKey, String> shortcutMapCopy =
-                sBgDataModel.deepShortcutMap.clone();
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                Callbacks callbacks = getCallback();
-                if (callbacks != null) {
-                    callbacks.bindDeepShortcutMap(shortcutMapCopy);
-                }
-            }
-        };
-        mUiExecutor.execute(r);
     }
 
     /**
@@ -1922,15 +1515,6 @@ public class LauncherModel extends BroadcastReceiver
 
     public Callbacks getCallback() {
         return mCallbacks != null ? mCallbacks.get() : null;
-    }
-
-    /**
-     * @return {@link FolderInfo} if its already loaded.
-     */
-    public FolderInfo findFolderById(Long folderId) {
-        synchronized (sBgDataModel) {
-            return sBgDataModel.folders.get(folderId);
-        }
     }
 
     /**
