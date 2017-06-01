@@ -124,11 +124,8 @@
     <item type="id" name="preview_image_id" />
 
 <!-- Popup items -->
-    <integer name="config_deepShortcutOpenDuration">220</integer>
-    <integer name="config_deepShortcutArrowOpenDuration">80</integer>
-    <integer name="config_deepShortcutOpenStagger">40</integer>
-    <integer name="config_deepShortcutCloseDuration">150</integer>
-    <integer name="config_deepShortcutCloseStagger">20</integer>
+    <integer name="config_popupOpenCloseDuration">220</integer>
+    <integer name="config_popupArrowOpenDuration">80</integer>
     <integer name="config_removeNotificationViewDuration">300</integer>
 
 <!-- Accessibility actions -->

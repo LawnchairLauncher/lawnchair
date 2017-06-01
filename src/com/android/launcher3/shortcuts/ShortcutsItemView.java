@@ -16,12 +16,10 @@
 
 package com.android.launcher3.shortcuts;
 
-import android.animation.Animator;
-import android.animation.AnimatorSet;
 import android.content.Context;
 import android.graphics.Point;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -30,9 +28,7 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
-import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
@@ -135,7 +131,17 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
             if (mSystemShortcutIcons == null) {
                 mSystemShortcutIcons = (LinearLayout) mLauncher.getLayoutInflater().inflate(
                         R.layout.system_shortcut_icons, mShortcutsLayout, false);
-                mShortcutsLayout.addView(mSystemShortcutIcons, 0);
+
+                View divider = LayoutInflater.from(getContext()).inflate(
+                        R.layout.horizontal_divider, this, false);
+
+                if (mShortcutsLayout.getChildCount() > 0) {
+                    mShortcutsLayout.addView(divider);
+                }
+                mShortcutsLayout.addView(mSystemShortcutIcons);
+                if (mShortcutsLayout.getChildCount() == 1) {
+                    mShortcutsLayout.addView(divider);
+                }
             }
             mSystemShortcutIcons.addView(shortcutView, index);
         } else {
@@ -207,51 +213,6 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
                 PopupContainerWithArrow.showForIcon(originalIcon);
             }
         }
-    }
-
-    @Override
-    public Animator createOpenAnimation(boolean isContainerAboveIcon, boolean pivotLeft) {
-        AnimatorSet openAnimation = LauncherAnimUtils.createAnimatorSet();
-        openAnimation.play(super.createOpenAnimation(isContainerAboveIcon, pivotLeft));
-        for (int i = 0; i < mShortcutsLayout.getChildCount(); i++) {
-            if (!(mShortcutsLayout.getChildAt(i) instanceof DeepShortcutView)) {
-                continue;
-            }
-            DeepShortcutView shortcutView = ((DeepShortcutView) mShortcutsLayout.getChildAt(i));
-            View deepShortcutIcon = shortcutView.getIconView();
-            deepShortcutIcon.setScaleX(0);
-            deepShortcutIcon.setScaleY(0);
-            openAnimation.play(LauncherAnimUtils.ofPropertyValuesHolder(
-                    deepShortcutIcon, new PropertyListBuilder().scale(1).build()));
-        }
-        return openAnimation;
-    }
-
-    @Override
-    public Animator createCloseAnimation(boolean isContainerAboveIcon, boolean pivotLeft,
-            long duration) {
-        AnimatorSet closeAnimation = LauncherAnimUtils.createAnimatorSet();
-        closeAnimation.play(super.createCloseAnimation(isContainerAboveIcon, pivotLeft, duration));
-        for (int i = 0; i < mShortcutsLayout.getChildCount(); i++) {
-            if (!(mShortcutsLayout.getChildAt(i) instanceof DeepShortcutView)) {
-                continue;
-            }
-            DeepShortcutView shortcutView = ((DeepShortcutView) mShortcutsLayout.getChildAt(i));
-            View deepShortcutIcon = shortcutView.getIconView();
-            deepShortcutIcon.setScaleX(1);
-            deepShortcutIcon.setScaleY(1);
-            closeAnimation.play(LauncherAnimUtils.ofPropertyValuesHolder(
-                    deepShortcutIcon, new PropertyListBuilder().scale(0).build()));
-        }
-        return closeAnimation;
-    }
-
-    @Override
-    public int getArrowColor(boolean isArrowAttachedToBottom) {
-        return ContextCompat.getColor(getContext(),
-                isArrowAttachedToBottom || mSystemShortcutIcons == null
-                        ? R.color.popup_background_color
-                        : R.color.popup_header_background_color);
     }
 
     @Override
