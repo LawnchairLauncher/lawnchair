@@ -25,7 +25,9 @@
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:padding="8dp"
-        android:scaleType="fitCenter"/>
+        android:scaleType="fitCenter"
+        android:focusable="false"
+        android:importantForAccessibility="no"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -51,11 +53,12 @@
                 android:layout_height="wrap_content"
                 android:textColor="?android:textColorSecondary"
                 android:textSize="14sp"
-                android:layout_gravity="center_vertical"/>
+                android:layout_gravity="center_vertical"
+                android:includeFontPadding="false"/>
 
             <com.android.launcher3.discovery.RatingView
                 android:id="@+id/rating_view"
-                android:layout_width="80dp"
+                android:layout_width="70dp"
                 android:layout_height="16dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"

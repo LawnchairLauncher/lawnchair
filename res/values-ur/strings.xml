@@ -76,10 +76,13 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"ہوم اسکرین گھمانے کی اجازت دیں"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"جب فون گھمایا جاتا ہے"</string>
     <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"موجودہ ڈسپلے ترتیب گھمانے کی اجازت نہیں دیتی"</string>
+    <string name="icon_badging_title" msgid="4418239350706629417">"آئیکن کی بیج سازی"</string>
+    <string name="icon_badging_desc_on" msgid="6022379097717134764">"سبھی ایپس کیلئے آن ہے"</string>
+    <string name="icon_badging_desc_off" msgid="1574640601251590211">"تمام ایپس کے لئے بند ہے"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"آئیکن کو ہوم اسکرین میں شامل کریں"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"نئی ایپس کیلئے"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"آئیکن کی شکل تبدیل کریں"</string>
-    <string name="icon_shape_no_override" msgid="3678524428085518367">"تبدیل نہ کریں"</string>
+    <string name="icon_shape_system_default" msgid="1709762974822753030">"سسٹم ڈیفالٹ کا استعمال کریں"</string>
     <string name="icon_shape_override_progress" msgid="3461735694970239908">"آئيکن کی شکل کی تبدیلیاں لاگو ہو رہی ہیں"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"نامعلوم"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ہٹائیں"</string>
@@ -115,4 +118,7 @@
     <string name="widget_resized" msgid="9130327887929620">"ویجیٹ کے سائز کو چوڑائی <xliff:g id="NUMBER_0">%1$s</xliff:g> اونچائی <xliff:g id="NUMBER_1">%2$s</xliff:g> میں تبدیل کر دیا گیا"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"شارٹ کٹس"</string>
     <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="APP_NAME">%2$s</xliff:g> کیلئے <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> شارٹ کٹس"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g> کے <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> شارٹ کٹس اور <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> اطلاعات"</string>
+    <string name="action_dismiss_notification" msgid="5909461085055959187">"برخاست کریں"</string>
+    <string name="notification_dismissed" msgid="6002233469409822874">"اطلاع مسترد ہو گئی"</string>
 </resources>
