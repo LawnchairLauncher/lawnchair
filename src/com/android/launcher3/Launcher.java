@@ -3970,7 +3970,7 @@ public class Launcher extends BaseActivity
      *                    refreshes the widgets and shortcuts associated with the given package/user
      */
     public void refreshAndBindWidgetsForPackageUser(@Nullable PackageUserKey packageUser) {
-        mModel.refreshAndBindWidgetsAndShortcuts(this, mWidgetsView.isEmpty(), packageUser);
+        mModel.refreshAndBindWidgetsAndShortcuts(packageUser);
     }
 
     public void lockScreenOrientation() {

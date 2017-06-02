@@ -91,9 +91,19 @@ public class BgDataModel {
     public final Map<ShortcutKey, MutableInt> pinnedShortcutCounts = new HashMap<>();
 
     /**
+     * True if the launcher has permission to access deep shortcuts.
+     */
+    public boolean hasShortcutHostPermission;
+
+    /**
      * Maps all launcher activities to the id's of their shortcuts (if they have any).
      */
     public final MultiHashMap<ComponentKey, String> deepShortcutMap = new MultiHashMap<>();
+
+    /**
+     * Entire list of widgets.
+     */
+    public final WidgetsModel widgetsModel = new WidgetsModel();
 
     /**
      * Clears all the data

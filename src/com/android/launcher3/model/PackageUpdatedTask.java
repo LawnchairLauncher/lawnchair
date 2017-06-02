@@ -44,6 +44,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.ItemInfoMatcher;
+import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 
@@ -373,11 +374,9 @@ public class PackageUpdatedTask extends ExtendedModelTask {
         } else if (Utilities.isAtLeastO() && mOp == OP_ADD) {
             // Load widgets for the new package.
             for (int i = 0; i < N; i++) {
-                LauncherModel model = app.getModel();
-                model.refreshAndBindWidgetsAndShortcuts(
-                        model.getCallback(), false /* bindFirst */,
-                        new PackageUserKey(packages[i], mUser) /* packageUser */);
+                dataModel.widgetsModel.update(app, new PackageUserKey(packages[i], mUser));
             }
+            bindUpdatedWidgets(dataModel);
         }
     }
 }
