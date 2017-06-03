@@ -29,6 +29,7 @@ public class LauncherClient {
     private OverlayCallbacks mCurrentCallbacks;
     private boolean mDestroyed;
     private boolean mIsResumed;
+    private boolean mIsServiceConnected;
     private LauncherClientCallbacks mLauncherClientCallbacks;
     private ILauncherOverlay mOverlay;
     private OverlayServiceConnection mServiceConnection;
@@ -48,6 +49,7 @@ public class LauncherClient {
         };
         mIsResumed = false;
         mDestroyed = false;
+        mIsServiceConnected = false;
         mServiceStatus = -1;
         mActivity = activity;
         mServiceIntent = LauncherClient.getServiceIntent(activity, targetPackage);
@@ -129,7 +131,10 @@ public class LauncherClient {
 
     private void removeClient(boolean removeAppConnection) {
         mDestroyed = true;
-        mActivity.unbindService(mServiceConnection);
+        if (mIsServiceConnected) {
+            mActivity.unbindService(mServiceConnection);
+            mIsServiceConnected = false;
+        }
         mActivity.unregisterReceiver(mUpdateReceiver);
 
         if (mCurrentCallbacks != null) {
@@ -260,6 +265,8 @@ public class LauncherClient {
 
             if (!connectSafely(mActivity, mServiceConnection, Context.BIND_ADJUST_WITH_ACTIVITY)) {
                 mState = 0;
+            } else {
+                mIsServiceConnected = true;
             }
         }
 
