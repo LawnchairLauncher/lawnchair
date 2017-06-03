@@ -18,8 +18,10 @@ package com.android.launcher3.dynamicui;
 
 import android.annotation.TargetApi;
 import android.app.WallpaperManager;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -58,7 +60,11 @@ public class ExtractionUtils {
 
     /** Starts the {@link ColorExtractionService} without checking the wallpaper id */
     public static void startColorExtractionService(Context context) {
-        context.startService(new Intent(context, ColorExtractionService.class));
+        JobScheduler jobScheduler = (JobScheduler) context.getSystemService(
+                Context.JOB_SCHEDULER_SERVICE);
+        jobScheduler.schedule(new JobInfo.Builder(Utilities.COLOR_EXTRACTION_JOB_ID,
+                new ComponentName(context, ColorExtractionService.class))
+                .setMinimumLatency(0).build());
     }
 
     private static boolean hasWallpaperIdChanged(Context context) {
