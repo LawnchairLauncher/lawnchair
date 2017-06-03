@@ -83,14 +83,10 @@
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नवीन अॅप्ससाठी"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"चिन्हाचा आकार बदला"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"सिस्‍टमचे डीफॉल्‍ट वापरा"</string>
-    <!-- no translation found for icon_shape_square (633575066111622774) -->
-    <skip />
-    <!-- no translation found for icon_shape_squircle (5658049910802669495) -->
-    <skip />
-    <!-- no translation found for icon_shape_circle (6550072265930144217) -->
-    <skip />
-    <!-- no translation found for icon_shape_teardrop (4525869388200835463) -->
-    <skip />
+    <string name="icon_shape_square" msgid="633575066111622774">"चौरस"</string>
+    <string name="icon_shape_squircle" msgid="5658049910802669495">"गोलाकार चौरस"</string>
+    <string name="icon_shape_circle" msgid="6550072265930144217">"वर्तुळ"</string>
+    <string name="icon_shape_teardrop" msgid="4525869388200835463">"अश्रू"</string>
     <string name="icon_shape_override_progress" msgid="3461735694970239908">"चिन्हाचा आकार बदल लागू करत आहे"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"अज्ञात"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"काढा"</string>

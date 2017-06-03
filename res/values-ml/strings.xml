@@ -83,14 +83,10 @@
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"പുതിയ ആപ്പുകൾക്ക്"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"ഐക്കണിന്റെ ആകാരം മാറ്റുക"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"സിസ്‌റ്റം ഡിഫോൾട്ട് ഉപയോഗിക്കുക"</string>
-    <!-- no translation found for icon_shape_square (633575066111622774) -->
-    <skip />
-    <!-- no translation found for icon_shape_squircle (5658049910802669495) -->
-    <skip />
-    <!-- no translation found for icon_shape_circle (6550072265930144217) -->
-    <skip />
-    <!-- no translation found for icon_shape_teardrop (4525869388200835463) -->
-    <skip />
+    <string name="icon_shape_square" msgid="633575066111622774">"ചതുരം"</string>
+    <string name="icon_shape_squircle" msgid="5658049910802669495">"ചതുരവൃത്തം"</string>
+    <string name="icon_shape_circle" msgid="6550072265930144217">"വൃത്തം"</string>
+    <string name="icon_shape_teardrop" msgid="4525869388200835463">"കണ്ണുനീര്‍ തുള്ളി"</string>
     <string name="icon_shape_override_progress" msgid="3461735694970239908">"ഐക്കൺ ആകാര മാറ്റങ്ങൾ പ്രയോഗിക്കുന്നു"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"അജ്ഞാതം"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"നീക്കംചെയ്യുക"</string>
