@@ -83,14 +83,10 @@
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"ਨਵੀਆਂ ਐਪਾਂ ਲਈ"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"ਆਈਕਨ ਦੀ ਆਕ੍ਰਿਤੀ ਬਦਲੋ"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"ਸਿਸਟਮ ਦੀ ਪੂਰਵ-ਨਿਰਧਾਰਤ ਸੈਟਿੰਗ ਵਰਤੋ"</string>
-    <!-- no translation found for icon_shape_square (633575066111622774) -->
-    <skip />
-    <!-- no translation found for icon_shape_squircle (5658049910802669495) -->
-    <skip />
-    <!-- no translation found for icon_shape_circle (6550072265930144217) -->
-    <skip />
-    <!-- no translation found for icon_shape_teardrop (4525869388200835463) -->
-    <skip />
+    <string name="icon_shape_square" msgid="633575066111622774">"ਵਰਗ"</string>
+    <string name="icon_shape_squircle" msgid="5658049910802669495">"ਵਰਗ ਰੂਪੀ ਗੋਲ-ਚੱਕਰ"</string>
+    <string name="icon_shape_circle" msgid="6550072265930144217">"ਗੋਲ-ਚੱਕਰ"</string>
+    <string name="icon_shape_teardrop" msgid="4525869388200835463">"ਹੰਝੂ ਦੀ ਬੂੰਦ"</string>
     <string name="icon_shape_override_progress" msgid="3461735694970239908">"ਆਈਕਨ ਦੀ ਆਕ੍ਰਿਤੀ ਵਿੱਚ ਤਬਦੀਲੀਆਂ ਨੂੰ ਲਾਗੂ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"ਅਗਿਆਤ"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ਹਟਾਓ"</string>

@@ -83,14 +83,10 @@
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"కొత్త అనువర్తనాల కోసం"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"చిహ్న ఆకారాన్ని మార్చు"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"సిస్టమ్ డిఫాల్ట్‌ను ఉపయోగించండి"</string>
-    <!-- no translation found for icon_shape_square (633575066111622774) -->
-    <skip />
-    <!-- no translation found for icon_shape_squircle (5658049910802669495) -->
-    <skip />
-    <!-- no translation found for icon_shape_circle (6550072265930144217) -->
-    <skip />
-    <!-- no translation found for icon_shape_teardrop (4525869388200835463) -->
-    <skip />
+    <string name="icon_shape_square" msgid="633575066111622774">"చతురస్రం"</string>
+    <string name="icon_shape_squircle" msgid="5658049910802669495">"చతురస్రాకార వృత్తం"</string>
+    <string name="icon_shape_circle" msgid="6550072265930144217">"వృత్తం"</string>
+    <string name="icon_shape_teardrop" msgid="4525869388200835463">"కన్నీటి చుక్క"</string>
     <string name="icon_shape_override_progress" msgid="3461735694970239908">"చిహ్న ఆకార మార్పులను వర్తింపజేస్తోంది"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"తెలియదు"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"తీసివేయి"</string>
