@@ -83,14 +83,10 @@
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"ಹೊಸ ಅಪ್ಲಿಕೇಶನ್‌ಗಳಿಗೆ"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"ಐಕಾನ್ ಆಕಾರವನ್ನು ಬದಲಿಸಿ"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"ಸಿಸ್ಟಂ ಡಿಫಾಲ್ಟ್ ಬಳಸಿ"</string>
-    <!-- no translation found for icon_shape_square (633575066111622774) -->
-    <skip />
-    <!-- no translation found for icon_shape_squircle (5658049910802669495) -->
-    <skip />
-    <!-- no translation found for icon_shape_circle (6550072265930144217) -->
-    <skip />
-    <!-- no translation found for icon_shape_teardrop (4525869388200835463) -->
-    <skip />
+    <string name="icon_shape_square" msgid="633575066111622774">"ಚೌಕ"</string>
+    <string name="icon_shape_squircle" msgid="5658049910802669495">"ಚೌಕವೃತ್ತ"</string>
+    <string name="icon_shape_circle" msgid="6550072265930144217">"ವೃತ್ತ"</string>
+    <string name="icon_shape_teardrop" msgid="4525869388200835463">"ಕಂಬನಿ"</string>
     <string name="icon_shape_override_progress" msgid="3461735694970239908">"ಐಕಾನ್ ಆಕಾರ ಬದಲಾವಣೆಯನ್ನು ಅನ್ವಯಿಸಲಾಗುತ್ತಿದೆ"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"ಅಪರಿಚಿತ"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ತೆಗೆದುಹಾಕಿ"</string>
