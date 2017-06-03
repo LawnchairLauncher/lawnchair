@@ -120,7 +120,7 @@
     <string name="widget_resized" msgid="9130327887929620">"ウィジェットのサイズを幅<xliff:g id="NUMBER_0">%1$s</xliff:g>、高さ<xliff:g id="NUMBER_1">%2$s</xliff:g>に変更しました"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"ショートカット"</string>
     <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="APP_NAME">%2$s</xliff:g>用の <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> 件のショートカット"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g>: <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> 件のショートカットと <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> 件の通知"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="APP_NAME">%3$s</xliff:g>: <xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> 個のショートカットと <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> 件の通知"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"表示しない"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"通知を非表示にしました"</string>
 </resources>
