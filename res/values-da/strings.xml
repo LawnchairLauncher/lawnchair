@@ -84,14 +84,10 @@
     <!-- no translation found for icon_shape_override_label (2977264953998281004) -->
     <skip />
     <string name="icon_shape_system_default" msgid="1709762974822753030">"Brug systemstandarden"</string>
-    <!-- no translation found for icon_shape_square (633575066111622774) -->
-    <skip />
-    <!-- no translation found for icon_shape_squircle (5658049910802669495) -->
-    <skip />
-    <!-- no translation found for icon_shape_circle (6550072265930144217) -->
-    <skip />
-    <!-- no translation found for icon_shape_teardrop (4525869388200835463) -->
-    <skip />
+    <string name="icon_shape_square" msgid="633575066111622774">"Kvadrat"</string>
+    <string name="icon_shape_squircle" msgid="5658049910802669495">"Kvadrat med runde hjørner"</string>
+    <string name="icon_shape_circle" msgid="6550072265930144217">"Cirkel"</string>
+    <string name="icon_shape_teardrop" msgid="4525869388200835463">"Dråbeform"</string>
     <!-- no translation found for icon_shape_override_progress (3461735694970239908) -->
     <skip />
     <string name="package_state_unknown" msgid="7592128424511031410">"Ukendt"</string>

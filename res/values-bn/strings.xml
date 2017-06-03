@@ -83,14 +83,10 @@
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"নতুন অ্যাপ্লিকেশানগুলির জন্যে"</string>
     <string name="icon_shape_override_label" msgid="2977264953998281004">"আইকনের আকৃতি পরিবর্তন করুন"</string>
     <string name="icon_shape_system_default" msgid="1709762974822753030">"সিস্টেমের ডিফল্ট মান ব্যবহার করুন"</string>
-    <!-- no translation found for icon_shape_square (633575066111622774) -->
-    <skip />
-    <!-- no translation found for icon_shape_squircle (5658049910802669495) -->
-    <skip />
-    <!-- no translation found for icon_shape_circle (6550072265930144217) -->
-    <skip />
-    <!-- no translation found for icon_shape_teardrop (4525869388200835463) -->
-    <skip />
+    <string name="icon_shape_square" msgid="633575066111622774">"চৌকো"</string>
+    <string name="icon_shape_squircle" msgid="5658049910802669495">"চৌকো-গোলাকার"</string>
+    <string name="icon_shape_circle" msgid="6550072265930144217">"গোলাকার"</string>
+    <string name="icon_shape_teardrop" msgid="4525869388200835463">"চোখের জল"</string>
     <string name="icon_shape_override_progress" msgid="3461735694970239908">"আইকনের আকৃতি পরিবর্তন করা হচ্ছে"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"অজানা"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"সরান"</string>
