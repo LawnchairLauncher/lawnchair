@@ -178,7 +178,7 @@ public class SpringAnimationHandler {
         return mDirection == Y_DIRECTION;
     }
 
-    private SpringAnimation createSpringAnimation(View view) {
+    public SpringAnimation createSpringAnimation(View view) {
         DynamicAnimation.ViewProperty property = isVerticalDirection()
                 ? DynamicAnimation.TRANSLATION_Y
                 : DynamicAnimation.TRANSLATION_X;
