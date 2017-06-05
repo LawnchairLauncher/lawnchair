@@ -93,9 +93,7 @@ public class LauncherAppState {
         mInvariantDeviceProfile = new InvariantDeviceProfile(mContext);
         mIconCache = new IconCache(mContext, mInvariantDeviceProfile);
         mWidgetCache = new WidgetPreviewLoader(mContext, mIconCache);
-
-        mModel = new LauncherModel(this, mIconCache,
-                Utilities.getOverrideObject(AppFilter.class, mContext, R.string.app_filter_class));
+        mModel = new LauncherModel(this, mIconCache, AppFilter.newInstance(mContext));
 
         LauncherAppsCompat.getInstance(mContext).addOnAppsChangedCallback(mModel);
 

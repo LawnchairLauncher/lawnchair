@@ -24,6 +24,7 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetInfo;
+import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.MainThreadExecutor;
@@ -58,6 +59,7 @@ public class LoaderResults {
     private final BgDataModel mBgDataModel;
     private final AllAppsList mBgAllAppsList;
     private final int mPageToBindFirst;
+
     private final WeakReference<Callbacks> mCallbacks;
 
     public LoaderResults(LauncherAppState app, BgDataModel dataModel,
@@ -358,7 +360,6 @@ public class LoaderResults {
         mUiExecutor.execute(r);
     }
 
-
     public void bindAllApps() {
         // shallow copy
         @SuppressWarnings("unchecked")
@@ -369,6 +370,20 @@ public class LoaderResults {
                 Callbacks callbacks = mCallbacks.get();
                 if (callbacks != null) {
                     callbacks.bindAllApplications(list);
+                }
+            }
+        };
+        mUiExecutor.execute(r);
+    }
+
+    public void bindWidgets() {
+        final MultiHashMap<PackageItemInfo, WidgetItem> widgets
+                = mBgDataModel.widgetsModel.getWidgetsMap();
+        Runnable r = new Runnable() {
+            public void run() {
+                Callbacks callbacks = mCallbacks.get();
+                if (callbacks != null) {
+                    callbacks.bindAllWidgets(widgets);
                 }
             }
         };

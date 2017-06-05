@@ -59,4 +59,15 @@ public abstract class ExtendedModelTask extends BaseModelUpdateTask {
             }
         });
     }
+
+    public void bindUpdatedWidgets(BgDataModel dataModel) {
+        final MultiHashMap<PackageItemInfo, WidgetItem> widgets
+                = dataModel.widgetsModel.getWidgetsMap();
+        scheduleCallbackTask(new CallbackTask() {
+            @Override
+            public void execute(Callbacks callbacks) {
+                callbacks.bindAllWidgets(widgets);
+            }
+        });
+    }
 }
