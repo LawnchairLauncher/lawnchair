@@ -102,7 +102,12 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         private SpringAnimation spring;
 
         public ViewHolder(View v) {
+            this(v, null);
+        }
+
+        public ViewHolder(View v, SpringAnimation spring) {
             super(v);
+            this.spring = spring;
         }
     }
 
@@ -285,6 +290,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        ViewHolder viewHolder;
         switch (viewType) {
             case VIEW_TYPE_ICON:
             case VIEW_TYPE_PREDICTION_ICON:
@@ -298,16 +304,19 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
                 // Ensure the all apps icon height matches the workspace icons
                 icon.getLayoutParams().height = getCellSize().y;
-                return new ViewHolder(icon);
+                viewHolder = new ViewHolder(icon);
+                break;
             case VIEW_TYPE_DISCOVERY_ITEM:
                 AppDiscoveryItemView appDiscoveryItemView = (AppDiscoveryItemView) mLayoutInflater
                         .inflate(R.layout.all_apps_discovery_item, parent, false);
                 appDiscoveryItemView.init(mIconClickListener, mLauncher.getAccessibilityDelegate(),
                         mIconLongClickListener);
-                return new ViewHolder(appDiscoveryItemView);
+                viewHolder = new ViewHolder(appDiscoveryItemView);
+                break;
             case VIEW_TYPE_EMPTY_SEARCH:
-                return new ViewHolder(mLayoutInflater.inflate(R.layout.all_apps_empty_search,
+                viewHolder = new ViewHolder(mLayoutInflater.inflate(R.layout.all_apps_empty_search,
                         parent, false));
+                break;
             case VIEW_TYPE_SEARCH_MARKET:
                 View searchMarketView = mLayoutInflater.inflate(R.layout.all_apps_search_market,
                         parent, false);
@@ -317,21 +326,30 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                         mLauncher.startActivitySafely(v, mMarketSearchIntent, null);
                     }
                 });
-                return new ViewHolder(searchMarketView);
+                viewHolder = new ViewHolder(searchMarketView);
+                break;
             case VIEW_TYPE_SEARCH_DIVIDER:
-                return new ViewHolder(mLayoutInflater.inflate(
+                viewHolder = new ViewHolder(mLayoutInflater.inflate(
                         R.layout.all_apps_search_divider, parent, false));
+                break;
             case VIEW_TYPE_APPS_LOADING_DIVIDER:
                 View loadingDividerView = mLayoutInflater.inflate(
                         R.layout.all_apps_discovery_loading_divider, parent, false);
-                return new ViewHolder(loadingDividerView);
+                viewHolder = new ViewHolder(loadingDividerView);
+                break;
             case VIEW_TYPE_PREDICTION_DIVIDER:
             case VIEW_TYPE_SEARCH_MARKET_DIVIDER:
-                return new ViewHolder(mLayoutInflater.inflate(
+                viewHolder = new ViewHolder(mLayoutInflater.inflate(
                         R.layout.all_apps_divider, parent, false));
+                break;
             default:
                 throw new RuntimeException("Unexpected view type");
         }
+
+        if (FeatureFlags.LAUNCHER3_PHYSICS && isViewType(viewType, VIEW_TYPE_MASK_HAS_SPRINGS)) {
+            viewHolder.spring = mSpringAnimationHandler.createSpringAnimation(viewHolder.itemView);
+        }
+        return viewHolder;
     }
 
     private Point getCellSize() {
@@ -340,7 +358,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        switch (holder.getItemViewType()) {
+        int viewType = holder.getItemViewType();
+        switch (viewType) {
             case VIEW_TYPE_ICON:
             case VIEW_TYPE_PREDICTION_ICON:
                 AppInfo info = mApps.getAdapterItems().get(position).appInfo;
@@ -377,17 +396,12 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 // nothing to do
                 break;
         }
+        if (FeatureFlags.LAUNCHER3_PHYSICS && isViewType(viewType, VIEW_TYPE_MASK_HAS_SPRINGS)) {
+            holder.spring = mSpringAnimationHandler.add(holder.itemView, position, mApps,
+                    mAppsPerRow, holder.spring);
+        }
         if (mBindViewCallback != null) {
             mBindViewCallback.onBindView(holder);
-        }
-    }
-
-    @Override
-    public void onViewAttachedToWindow(ViewHolder holder) {
-        int type = holder.getItemViewType();
-        if (FeatureFlags.LAUNCHER3_PHYSICS && isViewType(type, VIEW_TYPE_MASK_HAS_SPRINGS)) {
-            holder.spring = mSpringAnimationHandler.add(holder.itemView,
-                    holder.getAdapterPosition(), mApps, mAppsPerRow, holder.spring);
         }
     }
 
