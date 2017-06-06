@@ -12,10 +12,6 @@ public interface ILauncherOverlay extends IInterface {
 
     void endScroll() throws RemoteException;
 
-    String getVoiceSearchLanguage() throws RemoteException;
-
-    boolean isVoiceDetectionRunning() throws RemoteException;
-
     void onPause() throws RemoteException;
 
     void onResume() throws RemoteException;
@@ -23,8 +19,6 @@ public interface ILauncherOverlay extends IInterface {
     void onScroll(float progress) throws RemoteException;
 
     void openOverlay(int options) throws RemoteException;
-
-    void requestVoiceDetection(boolean start) throws RemoteException;
 
     void startScroll() throws RemoteException;
 
@@ -42,9 +36,6 @@ public interface ILauncherOverlay extends IInterface {
         static final int ON_PAUSE_TRANSACTION = 7;
         static final int ON_RESUME_TRANSACTION = 8;
         static final int OPEN_OVERLAY_TRANSACTION = 9;
-        static final int REQUEST_VOICE_DETECTION_TRANSACTION = 10;
-        static final int GET_VOICE_SEARCH_LANGUAGE_TRANSACTION = 11;
-        static final int IS_VOICE_DETECTION_RUNNING_TRANSACTION = 12;
 
 
         public static ILauncherOverlay asInterface(IBinder obj) {
@@ -113,22 +104,6 @@ public interface ILauncherOverlay extends IInterface {
                     data.enforceInterface(ILauncherOverlay.class.getName());
                     openOverlay(data.readInt());
                     return true;
-                case REQUEST_VOICE_DETECTION_TRANSACTION:
-                    data.enforceInterface(ILauncherOverlay.class.getName());
-                    requestVoiceDetection(data.readInt() != 0);
-                    return true;
-                case GET_VOICE_SEARCH_LANGUAGE_TRANSACTION:
-                    data.enforceInterface(ILauncherOverlay.class.getName());
-                    String language = getVoiceSearchLanguage();
-                    reply.writeNoException();
-                    reply.writeString(language);
-                    return true;
-                case IS_VOICE_DETECTION_RUNNING_TRANSACTION:
-                    data.enforceInterface(ILauncherOverlay.class.getName());
-                    boolean running = isVoiceDetectionRunning();
-                    reply.writeNoException();
-                    reply.writeInt(running ? 1 : 0);
-                    return true;
                 default:
                     return super.onTransact(code, data, reply, flags);
             }
@@ -165,37 +140,6 @@ public interface ILauncherOverlay extends IInterface {
                     mRemote.transact(END_SCROLL_TRANSACTION, data, null, FLAG_ONEWAY);
                 } finally {
                     data.recycle();
-                }
-            }
-
-            public String getVoiceSearchLanguage() throws RemoteException {
-                Parcel data = Parcel.obtain();
-                Parcel reply = Parcel.obtain();
-                try {
-                    data.writeInterfaceToken(ILauncherOverlay.class.getName());
-
-                    mRemote.transact(GET_VOICE_SEARCH_LANGUAGE_TRANSACTION, data, reply, 0);
-                    reply.readException();
-                    return reply.readString();
-                } finally {
-                    data.recycle();
-                    reply.recycle();
-                }
-            }
-
-            @Override
-            public boolean isVoiceDetectionRunning() throws RemoteException {
-                Parcel data = Parcel.obtain();
-                Parcel reply = Parcel.obtain();
-                try {
-                    data.writeInterfaceToken(ILauncherOverlay.class.getName());
-
-                    mRemote.transact(IS_VOICE_DETECTION_RUNNING_TRANSACTION, data, reply, 0);
-                    reply.readException();
-                    return reply.readInt() != 0;
-                } finally {
-                    data.recycle();
-                    reply.recycle();
                 }
             }
 
@@ -244,19 +188,6 @@ public interface ILauncherOverlay extends IInterface {
                     data.writeInt(options);
 
                     mRemote.transact(OPEN_OVERLAY_TRANSACTION, data, null, FLAG_ONEWAY);
-                } finally {
-                    data.recycle();
-                }
-            }
-
-            @Override
-            public void requestVoiceDetection(boolean start) throws RemoteException {
-                Parcel data = Parcel.obtain();
-                try {
-                    data.writeInterfaceToken(ILauncherOverlay.class.getName());
-                    data.writeInt(start ? 1 : 0);
-
-                    mRemote.transact(REQUEST_VOICE_DETECTION_TRANSACTION, data, null, FLAG_ONEWAY);
                 } finally {
                     data.recycle();
                 }
