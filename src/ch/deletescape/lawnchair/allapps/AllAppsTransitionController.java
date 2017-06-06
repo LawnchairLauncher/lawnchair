@@ -6,6 +6,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
@@ -21,6 +22,7 @@ import ch.deletescape.lawnchair.LauncherAnimUtils;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
 import ch.deletescape.lawnchair.Workspace;
+import ch.deletescape.lawnchair.dynamicui.ExtractedColors;
 import ch.deletescape.lawnchair.util.TouchController;
 
 /**
@@ -246,16 +248,14 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         mProgress = progress;
         float shiftCurrent = progress * mShiftRange;
 
-        float workspaceHotseatAlpha = Utilities.boundToRange(progress, 0f, 1);
-        float alpha = 1f - workspaceHotseatAlpha;
-        float interpolation = mAccelInterpolator.getInterpolation(workspaceHotseatAlpha);
+        float alpha = 1f - progress;
+        float interpolation = mAccelInterpolator.getInterpolation(progress);
 
-        int color = (Integer) mEvaluator.evaluate(mDecelInterpolator.getInterpolation(alpha),
-                mHotseatBackgroundColor, mAllAppsBackgroundColor);
-        float tmpAlpha = Float.valueOf(Utilities.getPrefs(mLauncher.getApplicationContext()).getString("pref_allAppsOpacity", "1.0"));
-        int bgAlpha = (int) (Utilities.boundToRange(1f - progress, 0, tmpAlpha) * 255);
+        int tmpAlpha = (int) (Float.valueOf(Utilities.getPrefs(mLauncher.getApplicationContext()).getString("pref_allAppsOpacity", "1.0")) * 255);
+        int allAppsBg = ColorUtils.setAlphaComponent(mAllAppsBackgroundColor, tmpAlpha);
+        int color = (int) mEvaluator.evaluate(mDecelInterpolator.getInterpolation(alpha), mHotseatBackgroundColor, allAppsBg);
 
-        mAppsView.setRevealDrawableColor(ColorUtils.setAlphaComponent(color, bgAlpha));
+        mAppsView.setRevealDrawableColor(color);
         mAppsView.getContentView().setAlpha(alpha);
         mAppsView.setTranslationY(shiftCurrent);
         mWorkspace.setHotseatTranslationAndAlpha(Workspace.Direction.Y, -mShiftRange + shiftCurrent,
