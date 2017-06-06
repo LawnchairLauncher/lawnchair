@@ -35,7 +35,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.IntDef;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -75,6 +74,7 @@ import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.shortcuts.ShortcutsItemView;
 import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.util.Themes;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -289,8 +289,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                 if (shouldUnroundBottomCorners) {
                     roundedCorners &= ~ROUNDED_BOTTOM_CORNERS;
                 }
-                int backgroundColor = ContextCompat.getColor(getContext(),
-                        R.color.notification_color_beneath);
+                int backgroundColor = Themes.getAttrColor(mLauncher, R.attr.popupColorTertiary);
                 mNotificationItemView.setBackgroundWithCorners(backgroundColor, roundedCorners);
 
                 mNotificationItemView.getMainView().setAccessibilityDelegate(mAccessibilityDelegate);
@@ -315,9 +314,8 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                 addView(item);
             }
         }
-        int backgroundColor = ContextCompat.getColor(getContext(), mNotificationItemView == null
-                ? R.color.popup_background_color
-                : R.color.popup_header_background_color);
+        int backgroundColor = Themes.getAttrColor(mLauncher, mNotificationItemView == null
+                ? R.attr.popupColorPrimary : R.attr.popupColorSecondary);
         mShortcutsItemView.setBackgroundWithCorners(backgroundColor, shortcutsItemRoundedCorners);
     }
 
@@ -544,7 +542,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             // since the latter expects the arrow which hasn't been added yet.
             PopupItemView itemAttachedToArrow = (PopupItemView)
                     (getChildAt(mIsAboveIcon ? getChildCount() - 1 : 0));
-            arrowPaint.setColor(ContextCompat.getColor(mLauncher, R.color.popup_background_color));
+            arrowPaint.setColor(Themes.getAttrColor(mLauncher, R.attr.popupColorPrimary));
             // The corner path effect won't be reflected in the shadow, but shouldn't be noticeable.
             int radius = getResources().getDimensionPixelSize(R.dimen.popup_arrow_corner_radius);
             arrowPaint.setPathEffect(new CornerPathEffect(radius));
@@ -671,8 +669,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
             removeNotification.playSequentially(hideArrow, showArrow);
             removeNotification.start();
             if (mShortcutsItemView != null) {
-                int backgroundColor = ContextCompat.getColor(getContext(),
-                        R.color.popup_background_color);
+                int backgroundColor = Themes.getAttrColor(mLauncher, R.attr.popupColorPrimary);
                 // With notifications gone, all corners of shortcuts item should be rounded.
                 mShortcutsItemView.setBackgroundWithCorners(backgroundColor,
                         ROUNDED_TOP_CORNERS | ROUNDED_BOTTOM_CORNERS);
