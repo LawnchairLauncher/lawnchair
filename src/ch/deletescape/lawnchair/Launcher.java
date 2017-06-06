@@ -3662,6 +3662,10 @@ public class Launcher extends Activity
         mWorkspace.setLauncherOverlay(overlay);
     }
 
+    public boolean isClientConnected(){
+        return mLauncherTab.getClient().isConnected();
+    }
+
     public interface LauncherOverlay {
 
         /**
