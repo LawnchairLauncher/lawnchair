@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.model.LoaderTask;
 import com.android.launcher3.util.ContentWriter;
 
 public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
@@ -52,7 +53,7 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
 
             final AppWidgetProviderInfo provider = widgets.getAppWidgetInfo(newWidgetIds[i]);
             final int state;
-            if (LauncherModel.isValidProvider(provider)) {
+            if (LoaderTask.isValidProvider(provider)) {
                 // This will ensure that we show 'Click to setup' UI if required.
                 state = LauncherAppWidgetInfo.FLAG_UI_NOT_READY;
             } else {
