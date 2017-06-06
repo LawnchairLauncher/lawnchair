@@ -123,6 +123,14 @@
             </intent-filter>
         </activity>
 
+        <service android:name=".NotificationListener"
+            android:label="Notification Badges"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
         <!--
         The settings provider contains Home's data, like the workspace favorites. The permissions
         should be changed to what is defined above. The authorities should also be changed to

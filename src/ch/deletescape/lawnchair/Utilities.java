@@ -158,9 +158,10 @@ public final class Utilities {
             Resources resources = packageManager.getResourcesForApplication(packageName);
             if (resources != null) {
                 final int id = resources.getIdentifier(resourceName, null, null);
+                boolean hasNotifications = NotificationListener.hasNotifications(packageName);
                 return createIconBitmap(
                         resources.getDrawableForDensity(id, LauncherAppState.getInstance()
-                                .getInvariantDeviceProfile().fillResIconDpi, null), context);
+                                .getInvariantDeviceProfile().fillResIconDpi, null), context, hasNotifications);
             }
         } catch (Exception e) {
             // Icon not found.
@@ -180,7 +181,7 @@ public final class Utilities {
         if (iconBitmapSize == icon.getWidth() && iconBitmapSize == icon.getHeight()) {
             return icon;
         }
-        return createIconBitmap(new BitmapDrawable(context.getResources(), icon), context);
+        return createIconBitmap(new BitmapDrawable(context.getResources(), icon), context, false);
     }
 
     /**
@@ -190,7 +191,7 @@ public final class Utilities {
     public static Bitmap createBadgedIconBitmap(
             Drawable icon, UserHandle user, Context context) {
         float scale = IconNormalizer.getInstance().getScale(icon, null);
-        Bitmap bitmap = createIconBitmap(icon, context, scale);
+        Bitmap bitmap = createIconBitmap(icon, context, scale, false);
         return badgeIconForUser(bitmap, user, context);
     }
 
@@ -205,7 +206,7 @@ public final class Utilities {
             if (badged instanceof BitmapDrawable) {
                 return ((BitmapDrawable) badged).getBitmap();
             } else {
-                return createIconBitmap(badged, context);
+                return createIconBitmap(badged, context, false);
             }
         } else {
             return icon;
@@ -220,7 +221,7 @@ public final class Utilities {
         RectF iconBounds = new RectF();
         float scale = IconNormalizer.getInstance().getScale(icon, iconBounds);
         scale = Math.min(scale, ShadowGenerator.getScaleForBounds(iconBounds));
-        return createIconBitmap(icon, context, scale);
+        return createIconBitmap(icon, context, scale, false);
     }
 
     /**
@@ -250,15 +251,15 @@ public final class Utilities {
     /**
      * Returns a bitmap suitable for the all apps view.
      */
-    public static Bitmap createIconBitmap(Drawable icon, Context context) {
-        return createIconBitmap(icon, context, 1.0f /* scale */);
+    public static Bitmap createIconBitmap(Drawable icon, Context context, boolean notificationBadge) {
+        return createIconBitmap(icon, context, 1.0f /* scale */, notificationBadge);
     }
 
     /**
      * @param scale the scale to apply before drawing {@param icon} on the canvas
      */
     @AddTrace(name = "create_iconbitmap")
-    public static Bitmap createIconBitmap(Drawable icon, Context context, float scale) {
+    public static Bitmap createIconBitmap(Drawable icon, Context context, float scale, boolean notificationBadge) {
         synchronized (sCanvas) {
             final int iconBitmapSize = getIconBitmapSize();
 
@@ -309,7 +310,16 @@ public final class Utilities {
             canvas.restore();
             icon.setBounds(sOldBounds);
             canvas.setBitmap(null);
-
+            if(notificationBadge) {
+                Bitmap b2 = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                Canvas c = new Canvas(b2);
+                Paint badgePaint = new Paint();
+                badgePaint.setStyle(Paint.Style.FILL);
+                badgePaint.setColor(Utilities.getColorAccent(LauncherAppState.getInstance().getContext()));
+                int radius = b2.getWidth() / 15;
+                c.drawCircle(b2.getWidth() - (radius + 10), radius + 10, radius, badgePaint);
+                return b2;
+            }
             return bitmap;
         }
     }

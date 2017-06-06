@@ -422,8 +422,19 @@ public class IconCache {
         return new IconLoadRequest(request, mWorkerHandler);
     }
 
-    private Bitmap getNonNullIcon(CacheEntry entry, UserHandle user) {
-        return entry.icon == null ? getDefaultIcon(user) : entry.icon;
+    private Bitmap getNonNullIcon(CacheEntry entry, UserHandle user, boolean notificationBadge) {
+        Bitmap b = entry.icon == null ? getDefaultIcon(user) : entry.icon;
+        if(notificationBadge) {
+            Bitmap b2 = b.copy(Bitmap.Config.ARGB_8888, true);
+            Canvas c = new Canvas(b2);
+            Paint badgePaint = new Paint();
+            badgePaint.setStyle(Paint.Style.FILL);
+            badgePaint.setColor(Utilities.getColorAccent(LauncherAppState.getInstance().getContext()));
+            int radius = b2.getWidth() / 15;
+            c.drawCircle(b2.getWidth() - (radius + 10), radius + 10, radius, badgePaint);
+            return b2;
+        }
+        return b;
     }
 
     /**
@@ -440,7 +451,8 @@ public class IconCache {
         application.contentDescription = entry.contentDescription;
         IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext);
         Drawable icon = iconPack == null ? null : iconPack.getIcon(application.componentName);
-        application.iconBitmap = icon == null ? getNonNullIcon(entry, user) : Utilities.createIconBitmap(icon, mContext);
+        boolean hasNotifications = NotificationListener.hasNotifications(application.componentName.getPackageName());
+        application.iconBitmap = icon == null ? getNonNullIcon(entry, user, hasNotifications) : Utilities.createIconBitmap(icon, mContext, hasNotifications);
         application.usingLowResIcon = entry.isLowResIcon;
     }
 
@@ -457,7 +469,8 @@ public class IconCache {
             application.contentDescription = entry.contentDescription;
             IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext);
             Drawable icon = iconPack == null ? null : iconPack.getIcon(application.componentName);
-            application.iconBitmap = icon == null ? entry.icon : Utilities.createIconBitmap(icon, mContext);
+            boolean hasNotifications = NotificationListener.hasNotifications(application.componentName.getPackageName());
+            application.iconBitmap = icon == null ? entry.icon : Utilities.createIconBitmap(icon, mContext, hasNotifications);
             application.usingLowResIcon = entry.isLowResIcon;
         }
     }
@@ -508,7 +521,8 @@ public class IconCache {
         CacheEntry entry = cacheLocked(component, info, user, usePkgIcon, useLowResIcon);
         IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext);
         Drawable icon = iconPack == null ? null : iconPack.getIcon(component);
-        Bitmap iBitmap = icon == null ? getNonNullIcon(entry, user) : Utilities.createIconBitmap(icon, mContext);
+        boolean hasNotifications = NotificationListener.hasNotifications(component.getPackageName());
+        Bitmap iBitmap = icon == null ? getNonNullIcon(entry, user, hasNotifications) : Utilities.createIconBitmap(icon, mContext, hasNotifications);
         shortcutInfo.setIcon(iBitmap);
         String title = Utilities.trim(entry.title);
         String key = "alias_" + component.flattenToString();
@@ -527,7 +541,8 @@ public class IconCache {
                 infoInOut.packageName, infoInOut.user, useLowResIcon);
         infoInOut.title = Utilities.trim(entry.title);
         infoInOut.contentDescription = entry.contentDescription;
-        infoInOut.iconBitmap = getNonNullIcon(entry, infoInOut.user);
+        boolean hasNotifications = NotificationListener.hasNotifications(infoInOut.packageName);
+        infoInOut.iconBitmap = getNonNullIcon(entry, infoInOut.user, hasNotifications);
         infoInOut.usingLowResIcon = entry.isLowResIcon;
     }
 

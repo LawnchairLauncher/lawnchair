@@ -434,7 +434,7 @@ public class AutoInstallsLayout {
                 return -1;
             }
 
-            ItemInfo.writeBitmap(mValues, Utilities.createIconBitmap(icon, mContext));
+            ItemInfo.writeBitmap(mValues, Utilities.createIconBitmap(icon, mContext, false));
             mValues.put(Favorites.ICON_PACKAGE, mIconRes.getResourcePackageName(iconId));
             mValues.put(Favorites.ICON_RESOURCE, mIconRes.getResourceName(iconId));
 

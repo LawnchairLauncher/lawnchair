@@ -36,6 +36,7 @@ import ch.deletescape.lawnchair.IconCache;
 import ch.deletescape.lawnchair.ItemInfo;
 import ch.deletescape.lawnchair.Launcher;
 import ch.deletescape.lawnchair.LauncherAppState;
+import ch.deletescape.lawnchair.NotificationListener;
 import ch.deletescape.lawnchair.PendingAddItemInfo;
 import ch.deletescape.lawnchair.R;
 import ch.deletescape.lawnchair.Utilities;
@@ -229,7 +230,8 @@ public class WidgetsContainerView extends BaseContainerView
         } else {
             PendingAddShortcutInfo createShortcutInfo = (PendingAddShortcutInfo) v.getTag();
             Drawable icon = mIconCache.getFullResIcon(createShortcutInfo.activityInfo);
-            preview = Utilities.createIconBitmap(icon, mLauncher);
+            boolean hasNotifications = NotificationListener.hasNotifications(createShortcutInfo.componentName.getPackageName());
+            preview = Utilities.createIconBitmap(icon, mLauncher, hasNotifications);
             createItemInfo.spanX = createItemInfo.spanY = 1;
             scale = ((float) mLauncher.getDeviceProfile().iconSizePx) / preview.getWidth();
         }
