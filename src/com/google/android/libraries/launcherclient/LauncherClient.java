@@ -20,6 +20,8 @@ import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 public class LauncherClient {
     private static AppServiceConnection sApplicationConnection;
 
@@ -87,7 +89,7 @@ public class LauncherClient {
             }
         }
         catch (RemoteException ignored) {
-
+            FirebaseCrash.report(ignored);
         }
     }
 
@@ -97,6 +99,7 @@ public class LauncherClient {
         }
         catch (SecurityException e) {
             Log.e("DrawerOverlayClient", "Unable to connect to overlay service");
+            FirebaseCrash.report(e);
             return false;
         }
     }
@@ -150,7 +153,7 @@ public class LauncherClient {
                 mOverlay.windowDetached(mActivity.isChangingConfigurations());
             }
             catch (RemoteException ignored) {
-
+                FirebaseCrash.report(ignored);
             }
             mOverlay = null;
         }
@@ -165,7 +168,7 @@ public class LauncherClient {
             mOverlay.endScroll();
         }
         catch (RemoteException ignored) {
-
+            FirebaseCrash.report(ignored);
         }
     }
 
@@ -178,7 +181,7 @@ public class LauncherClient {
             mOverlay.closeOverlay(animate ? 1 : 0);
         }
         catch (RemoteException ignored) {
-
+            FirebaseCrash.report(ignored);
         }
     }
 
@@ -213,7 +216,7 @@ public class LauncherClient {
                 mOverlay.onPause();
             }
             catch (RemoteException ignored) {
-
+                FirebaseCrash.report(ignored);
             }
         }
     }
@@ -230,7 +233,7 @@ public class LauncherClient {
                 mOverlay.onResume();
             }
             catch (RemoteException ignored) {
-
+                FirebaseCrash.report(ignored);
             }
         }
     }
@@ -279,7 +282,7 @@ public class LauncherClient {
             mOverlay.startScroll();
         }
         catch (RemoteException ignored) {
-
+            FirebaseCrash.report(ignored);
         }
     }
 
@@ -292,7 +295,7 @@ public class LauncherClient {
             mOverlay.onScroll(progressX);
         }
         catch (RemoteException ignored) {
-
+            FirebaseCrash.report(ignored);
         }
     }
 
