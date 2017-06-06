@@ -35,7 +35,7 @@ import java.util.HashSet;
 /**
  * Handles changes due to a sessions updates for a currently installing app.
  */
-public class PackageInstallStateChangedTask extends ExtendedModelTask {
+public class PackageInstallStateChangedTask extends BaseModelUpdateTask {
 
     private final PackageInstallInfo mInstallInfo;
 

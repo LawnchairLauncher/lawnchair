@@ -30,7 +30,6 @@ import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetInfo;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherSettings;
@@ -44,7 +43,6 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.ItemInfoMatcher;
-import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 
@@ -58,7 +56,7 @@ import java.util.HashSet;
  * Handles updates due to changes in package manager (app installed/updated/removed)
  * or when a user availability changes.
  */
-public class PackageUpdatedTask extends ExtendedModelTask {
+public class PackageUpdatedTask extends BaseModelUpdateTask {
 
     private static final boolean DEBUG = false;
     private static final String TAG = "PackageUpdatedTask";

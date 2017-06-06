@@ -16,6 +16,7 @@
 
 package com.android.launcher3.model;
 
+import android.os.Looper;
 import android.util.Log;
 
 import com.android.launcher3.AllAppsList;
@@ -32,6 +33,7 @@ import com.android.launcher3.PagedView;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.LooperIdleLock;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 
@@ -45,7 +47,7 @@ import java.util.Set;
 import java.util.concurrent.Executor;
 
 /**
- * Helper class to handle results of {@link com.android.launcher3.LauncherModel.LoaderTask}.
+ * Helper class to handle results of {@link com.android.launcher3.model.LoaderTask}.
  */
 public class LoaderResults {
 
@@ -388,5 +390,14 @@ public class LoaderResults {
             }
         };
         mUiExecutor.execute(r);
+    }
+
+    public LooperIdleLock newIdleLock(Object lock) {
+        LooperIdleLock idleLock = new LooperIdleLock(lock, Looper.getMainLooper());
+        // If we are not binding, there is no reason to wait for idle.
+        if (mCallbacks.get() == null) {
+            idleLock.queueIdle();
+        }
+        return idleLock;
     }
 }

@@ -38,7 +38,7 @@ import java.util.List;
 /**
  * Task to handle changing of lock state of the user
  */
-public class UserLockStateChangedTask extends ExtendedModelTask {
+public class UserLockStateChangedTask extends BaseModelUpdateTask {
 
     private final UserHandle mUser;
 
