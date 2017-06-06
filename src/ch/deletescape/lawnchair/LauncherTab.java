@@ -21,15 +21,18 @@ import ch.deletescape.lawnchair.Launcher.LauncherOverlayCallbacks;
 
 import com.google.android.libraries.launcherclient.LauncherClient;
 import com.google.android.libraries.launcherclient.LauncherClientCallbacksAdapter;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class LauncherTab {
 
     private LauncherClient mLauncherClient;
+    private FirebaseAnalytics fa;
 
     public LauncherTab(Launcher launcher) {
         mLauncherClient = new LauncherClient(launcher, new LauncherClientCallbacksAdapter(), true);
 
         launcher.setLauncherOverlay(new LauncherOverlays());
+        fa = FirebaseAnalytics.getInstance(launcher);
     }
 
     protected LauncherClient getClient() {
@@ -40,16 +43,19 @@ public class LauncherTab {
         @Override
         public void onScrollInteractionBegin() {
             mLauncherClient.startMove();
+            fa.logEvent("overlay_start_move", null);
         }
 
         @Override
         public void onScrollInteractionEnd() {
             mLauncherClient.endMove();
+            fa.logEvent("overlay_end_move", null);
         }
 
         @Override
         public void onScrollChange(float progress, boolean rtl) {
             mLauncherClient.updateMove(progress);
+            fa.logEvent("overlay_update_move", null);
         }
 
         @Override
