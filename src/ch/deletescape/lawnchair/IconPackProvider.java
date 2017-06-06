@@ -83,7 +83,7 @@ public class IconPackProvider {
         Trace trace = FirebasePerformance.getInstance().newTrace("iconpack_parse_appfilter");
         trace.start();
         Map<String, String> entries = new ArrayMap<>();
-        while (parser.next() != XmlPullParser.END_DOCUMENT) {
+        while (parser != null && parser.next() != XmlPullParser.END_DOCUMENT) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
