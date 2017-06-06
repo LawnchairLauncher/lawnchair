@@ -306,6 +306,12 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                         shortcutsItemRoundedCorners &= ~ROUNDED_TOP_CORNERS;
                     }
                 }
+                if (itemTypeToPopulate != PopupPopulator.Item.SYSTEM_SHORTCUT_ICON
+                        && numNotifications > 0) {
+                    // Condense shortcuts height when there are notifications.
+                    item.getLayoutParams().height = res.getDimensionPixelSize(
+                            R.dimen.bg_popup_item_condensed_height);
+                }
                 mShortcutsItemView.addShortcutView(item, itemTypeToPopulate);
                 if (shouldUnroundBottomCorners) {
                     shortcutsItemRoundedCorners &= ~ROUNDED_BOTTOM_CORNERS;
