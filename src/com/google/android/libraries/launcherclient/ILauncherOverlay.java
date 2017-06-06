@@ -146,166 +146,166 @@ public interface ILauncherOverlay extends IInterface {
             }
 
             public void closeOverlay(int options) throws RemoteException {
-                Parcel _data = Parcel.obtain();
+                Parcel data = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(ILauncherOverlay.class.getName());
-                    _data.writeInt(options);
+                    data.writeInterfaceToken(ILauncherOverlay.class.getName());
+                    data.writeInt(options);
 
-                    mRemote.transact(CLOSE_OVERLAY_TRANSACTION, _data, null, FLAG_ONEWAY);
+                    mRemote.transact(CLOSE_OVERLAY_TRANSACTION, data, null, FLAG_ONEWAY);
                 } finally {
-                    _data.recycle();
+                    data.recycle();
                 }
             }
 
             public void endScroll() throws RemoteException {
-                Parcel _data = Parcel.obtain();
+                Parcel data = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(ILauncherOverlay.class.getName());
+                    data.writeInterfaceToken(ILauncherOverlay.class.getName());
 
-                    mRemote.transact(END_SCROLL_TRANSACTION, _data, null, FLAG_ONEWAY);
+                    mRemote.transact(END_SCROLL_TRANSACTION, data, null, FLAG_ONEWAY);
                 } finally {
-                    _data.recycle();
+                    data.recycle();
                 }
             }
 
             public String getVoiceSearchLanguage() throws RemoteException {
-                Parcel _data = Parcel.obtain();
-                Parcel _reply = Parcel.obtain();
+                Parcel data = Parcel.obtain();
+                Parcel reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(ILauncherOverlay.class.getName());
+                    data.writeInterfaceToken(ILauncherOverlay.class.getName());
 
-                    mRemote.transact(GET_VOICE_SEARCH_LANGUAGE_TRANSACTION, _data, _reply, 0);
-                    _reply.readException();
-                    return _reply.readString();
+                    mRemote.transact(GET_VOICE_SEARCH_LANGUAGE_TRANSACTION, data, reply, 0);
+                    reply.readException();
+                    return reply.readString();
                 } finally {
-                    _data.recycle();
-                    _reply.recycle();
+                    data.recycle();
+                    reply.recycle();
                 }
             }
 
             @Override
             public boolean isVoiceDetectionRunning() throws RemoteException {
-                Parcel _data = Parcel.obtain();
-                Parcel _reply = Parcel.obtain();
+                Parcel data = Parcel.obtain();
+                Parcel reply = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(ILauncherOverlay.class.getName());
+                    data.writeInterfaceToken(ILauncherOverlay.class.getName());
 
-                    mRemote.transact(IS_VOICE_DETECTION_RUNNING_TRANSACTION, _data, _reply, 0);
-                    _reply.readException();
-                    return _reply.readInt() != 0;
+                    mRemote.transact(IS_VOICE_DETECTION_RUNNING_TRANSACTION, data, reply, 0);
+                    reply.readException();
+                    return reply.readInt() != 0;
                 } finally {
-                    _data.recycle();
-                    _reply.recycle();
+                    data.recycle();
+                    reply.recycle();
                 }
             }
 
             @Override
             public void onPause() throws RemoteException {
-                Parcel _data = Parcel.obtain();
+                Parcel data = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(ILauncherOverlay.class.getName());
+                    data.writeInterfaceToken(ILauncherOverlay.class.getName());
 
-                    mRemote.transact(ON_PAUSE_TRANSACTION, _data, null, FLAG_ONEWAY);
+                    mRemote.transact(ON_PAUSE_TRANSACTION, data, null, FLAG_ONEWAY);
                 } finally {
-                    _data.recycle();
+                    data.recycle();
                 }
             }
 
             @Override
             public void onResume() throws RemoteException {
-                Parcel _data = Parcel.obtain();
+                Parcel data = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(ILauncherOverlay.class.getName());
+                    data.writeInterfaceToken(ILauncherOverlay.class.getName());
 
-                    mRemote.transact(ON_RESUME_TRANSACTION, _data, null, FLAG_ONEWAY);
+                    mRemote.transact(ON_RESUME_TRANSACTION, data, null, FLAG_ONEWAY);
                 } finally {
-                    _data.recycle();
+                    data.recycle();
                 }
             }
 
             @Override
             public void onScroll(float progress) throws RemoteException {
-                Parcel _data = Parcel.obtain();
+                Parcel data = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(ILauncherOverlay.class.getName());
-                    _data.writeFloat(progress);
+                    data.writeInterfaceToken(ILauncherOverlay.class.getName());
+                    data.writeFloat(progress);
 
-                    mRemote.transact(ON_SCROLL_TRANSACTION, _data, null, FLAG_ONEWAY);
+                    mRemote.transact(ON_SCROLL_TRANSACTION, data, null, FLAG_ONEWAY);
                 } finally {
-                    _data.recycle();
+                    data.recycle();
                 }
             }
 
             @Override
             public void openOverlay(int options) throws RemoteException {
-                Parcel _data = Parcel.obtain();
+                Parcel data = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(ILauncherOverlay.class.getName());
-                    _data.writeInt(options);
+                    data.writeInterfaceToken(ILauncherOverlay.class.getName());
+                    data.writeInt(options);
 
-                    mRemote.transact(OPEN_OVERLAY_TRANSACTION, _data, null, FLAG_ONEWAY);
+                    mRemote.transact(OPEN_OVERLAY_TRANSACTION, data, null, FLAG_ONEWAY);
                 } finally {
-                    _data.recycle();
+                    data.recycle();
                 }
             }
 
             @Override
             public void requestVoiceDetection(boolean start) throws RemoteException {
-                Parcel _data = Parcel.obtain();
+                Parcel data = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(ILauncherOverlay.class.getName());
-                    _data.writeInt(start ? 1 : 0);
+                    data.writeInterfaceToken(ILauncherOverlay.class.getName());
+                    data.writeInt(start ? 1 : 0);
 
-                    mRemote.transact(REQUEST_VOICE_DETECTION_TRANSACTION, _data, null, FLAG_ONEWAY);
+                    mRemote.transact(REQUEST_VOICE_DETECTION_TRANSACTION, data, null, FLAG_ONEWAY);
                 } finally {
-                    _data.recycle();
+                    data.recycle();
                 }
             }
 
             @Override
             public void startScroll() throws RemoteException {
-                Parcel _data = Parcel.obtain();
+                Parcel data = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(ILauncherOverlay.class.getName());
+                    data.writeInterfaceToken(ILauncherOverlay.class.getName());
 
-                    mRemote.transact(START_SCROLL_TRANSACTION, _data, null, FLAG_ONEWAY);
+                    mRemote.transact(START_SCROLL_TRANSACTION, data, null, FLAG_ONEWAY);
                 } finally {
-                    _data.recycle();
+                    data.recycle();
                 }
             }
 
             @Override
             public void windowAttached(WindowManager.LayoutParams attrs, ILauncherOverlayCallback callbacks, int options) throws RemoteException {
-                Parcel _data = Parcel.obtain();
+                Parcel data = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(ILauncherOverlay.class.getName());
+                    data.writeInterfaceToken(ILauncherOverlay.class.getName());
                     if (attrs != null) {
-                        _data.writeInt(1);
-                        attrs.writeToParcel(_data, 0);
+                        data.writeInt(1);
+                        attrs.writeToParcel(data, 0);
                     } else {
-                        _data.writeInt(0);
+                        data.writeInt(0);
                     }
-                    _data.writeStrongBinder(callbacks.asBinder());
-                    _data.writeInt(options);
+                    data.writeStrongBinder(callbacks.asBinder());
+                    data.writeInt(options);
 
-                    _data.writeInt(1);
+                    data.writeInt(1);
 
-                    mRemote.transact(WINDOW_ATTACHED_TRANSACTION, _data, null, FLAG_ONEWAY);
+                    mRemote.transact(WINDOW_ATTACHED_TRANSACTION, data, null, FLAG_ONEWAY);
                 } finally {
-                    _data.recycle();
+                    data.recycle();
                 }
             }
 
             @Override
             public void windowDetached(boolean isChangingConfigurations) throws RemoteException {
-                Parcel _data = Parcel.obtain();
+                Parcel data = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(ILauncherOverlay.class.getName());
-                    _data.writeInt(isChangingConfigurations ? 1 : 0);
+                    data.writeInterfaceToken(ILauncherOverlay.class.getName());
+                    data.writeInt(isChangingConfigurations ? 1 : 0);
 
-                    mRemote.transact(WINDOW_DETACHED_TRANSACTION, _data, null, FLAG_ONEWAY);
+                    mRemote.transact(WINDOW_DETACHED_TRANSACTION, data, null, FLAG_ONEWAY);
                 } finally {
-                    _data.recycle();
+                    data.recycle();
                 }
             }
         }

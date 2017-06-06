@@ -65,26 +65,26 @@ public interface ILauncherOverlayCallback extends IInterface {
             }
 
             public void overlayScrollChanged(float progress) throws RemoteException {
-                Parcel _data = Parcel.obtain();
+                Parcel data = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(ILauncherOverlayCallback.class.getName());
-                    _data.writeFloat(progress);
+                    data.writeInterfaceToken(ILauncherOverlayCallback.class.getName());
+                    data.writeFloat(progress);
 
-                    mRemote.transact(OVERLAY_SCROLL_CHANGED_TRANSACTION, _data, null, FLAG_ONEWAY);
+                    mRemote.transact(OVERLAY_SCROLL_CHANGED_TRANSACTION, data, null, FLAG_ONEWAY);
                 } finally {
-                    _data.recycle();
+                    data.recycle();
                 }
             }
 
             public void overlayStatusChanged(int status) throws RemoteException {
-                Parcel _data = Parcel.obtain();
+                Parcel data = Parcel.obtain();
                 try {
-                    _data.writeInterfaceToken(ILauncherOverlayCallback.class.getName());
-                    _data.writeInt(status);
+                    data.writeInterfaceToken(ILauncherOverlayCallback.class.getName());
+                    data.writeInt(status);
 
-                    mRemote.transact(OVERLAY_STATUS_CHANGED_TRANSACTION, _data, null, FLAG_ONEWAY);
+                    mRemote.transact(OVERLAY_STATUS_CHANGED_TRANSACTION, data, null, FLAG_ONEWAY);
                 } finally {
-                    _data.recycle();
+                    data.recycle();
                 }
             }
         }

@@ -17,7 +17,6 @@
 package ch.deletescape.lawnchair;
 
 import ch.deletescape.lawnchair.Launcher.LauncherOverlay;
-import ch.deletescape.lawnchair.Launcher.LauncherOverlayCallbacks;
 
 import com.google.android.libraries.launcherclient.LauncherClient;
 import com.google.android.libraries.launcherclient.LauncherClientCallbacksAdapter;
@@ -56,10 +55,6 @@ public class LauncherTab {
         public void onScrollChange(float progress, boolean rtl) {
             mLauncherClient.updateMove(progress);
             fa.logEvent("overlay_update_move", null);
-        }
-
-        @Override
-        public void setOverlayCallbacks(LauncherOverlayCallbacks callbacks) {
         }
     }
 }

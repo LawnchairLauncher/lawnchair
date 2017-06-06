@@ -3659,9 +3659,6 @@ public class Launcher extends Activity
      * Call this after onCreate to set or clear overlay.
      */
     public void setLauncherOverlay(LauncherOverlay overlay) {
-        if (overlay != null) {
-            overlay.setOverlayCallbacks(new LauncherOverlayCallbacksImpl());
-        }
         mWorkspace.setLauncherOverlay(overlay);
     }
 
@@ -3670,36 +3667,17 @@ public class Launcher extends Activity
         /**
          * Touch interaction leading to overscroll has begun
          */
-        public void onScrollInteractionBegin();
+        void onScrollInteractionBegin();
 
         /**
          * Touch interaction related to overscroll has ended
          */
-        public void onScrollInteractionEnd();
+        void onScrollInteractionEnd();
 
         /**
          * Scroll progress, between 0 and 100, when the user scrolls beyond the leftmost
          * screen (or in the case of RTL, the rightmost screen).
          */
-        public void onScrollChange(float progress, boolean rtl);
-
-        /**
-         * Called when the launcher is ready to use the overlay
-         * @param callbacks A set of callbacks provided by Launcher in relation to the overlay
-         */
-        public void setOverlayCallbacks(LauncherOverlayCallbacks callbacks);
-    }
-
-    public interface LauncherOverlayCallbacks {
-        public void onScrollChanged(float progress);
-    }
-
-    class LauncherOverlayCallbacksImpl implements LauncherOverlayCallbacks {
-
-        public void onScrollChanged(float progress) {
-            if (mWorkspace != null) {
-                mWorkspace.onOverlayScrollChanged(progress);
-            }
-        }
+        void onScrollChange(float progress, boolean rtl);
     }
 }
