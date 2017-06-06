@@ -27,12 +27,16 @@
         <item name="android:colorEdgeEffect">#FF757575</item>
         <item name="android:keyboardLayout">@layout/all_apps_search_container</item>
         <item name="allAppsScrimColor">#DDFFFFFF</item>
+        <item name="popupColorPrimary">#FFF</item>
+        <item name="popupColorSecondary">#F5F5F5</item> <!-- Gray 100 -->
+        <item name="popupColorTertiary">#E0E0E0</item> <!-- Gray 300 -->
         <item name="isPrimaryColorDark">false</item>
     </style>
 
     <style name="LauncherTheme" parent="@style/BaseLauncherTheme"></style>
 
     <style name="LauncherThemeDark" parent="@style/LauncherTheme">
+        <item name="android:textColorPrimary">#FFFFFFFF</item>
         <item name="android:textColorSecondary">#FFFFFFFF</item>
         <item name="android:textColorTertiary">#CCFFFFFF</item>
         <item name="android:textColorHint">#A0FFFFFF</item>
@@ -40,6 +44,9 @@
         <item name="android:colorControlHighlight">#A0FFFFFF</item>
         <item name="android:colorPrimary">#FF333333</item>
         <item name="allAppsScrimColor">#33000000</item>
+        <item name="popupColorPrimary">?android:attr/colorPrimary</item>
+        <item name="popupColorSecondary">#424242</item> <!-- Gray 800 -->
+        <item name="popupColorTertiary">#757575</item> <!-- Gray 600 -->
         <item name="isPrimaryColorDark">true</item>
     </style>
 
@@ -106,12 +113,8 @@
     </style>
 
     <!-- Theme for the popup container -->
-    <!-- TODO: Add support for dark theme in shortcuts and widgets popup -->
-    <style name="IconOnlySystemShortcut" parent="@style/LauncherTheme">
-        <item name="android:tint">?android:attr/textColorHint</item>
-    </style>
-    <style name="IconWithTextSystemShortcut" parent="@style/LauncherTheme">
-        <item name="android:backgroundTint">?android:attr/textColorTertiary</item>
+    <style name="PopupItem">
+        <item name="android:colorControlHighlight">?attr/popupColorTertiary</item>
     </style>
 
     <!-- Drop targets -->
