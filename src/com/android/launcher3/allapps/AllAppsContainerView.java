@@ -91,9 +91,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         mLauncher = Launcher.getLauncher(context);
         mApps = new AlphabeticalAppsList(context);
-        mSpringAnimationHandler = new SpringAnimationHandler(SpringAnimationHandler.Y_DIRECTION);
-        mAdapter = new AllAppsGridAdapter(mLauncher, mApps, mLauncher, this,
-                mSpringAnimationHandler);
+        mAdapter = new AllAppsGridAdapter(mLauncher, mApps, mLauncher, this);
+        mSpringAnimationHandler = mAdapter.getSpringAnimationHandler();
         mApps.setAdapter(mAdapter);
         mLayoutManager = mAdapter.getLayoutManager();
         mSearchQueryBuilder = new SpannableStringBuilder();
