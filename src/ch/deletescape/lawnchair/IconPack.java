@@ -66,12 +66,14 @@ class IconPack {
         }
         File cachePath = new File(mContext.getCacheDir(), "iconpack/" + name);
         if(cachePath.exists()){
-                Bitmap b = BitmapFactory.decodeFile(cachePath.toString());
-                Drawable d = new FastBitmapDrawable(b) ;
+            Bitmap b = BitmapFactory.decodeFile(cachePath.toString());
+            if(b != null) {
+                Drawable d = new FastBitmapDrawable(b);
                 memoryCache.put(name, d);
                 trace.incrementCounter("filecache");
                 trace.stop();
                 return d;
+            }
         }
         Resources res;
         try {
